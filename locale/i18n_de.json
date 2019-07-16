@@ -1,0 +1,13 @@
+{
+    "app_name":"Jvx Mobile Client ",
+    "enter_code_label":"Benutzername",
+    "enter_code_hint":"Dein Benutzername",
+    "enter_otp_label":"Passwort",
+    "enter_otp_hint":"Dein Passwort",
+    "get_otp":"Get OTP",
+    "resend_otp":"Login Anfrage erneut senden",
+    "login":"Einloggen",
+    "enter_valid_number":"Einen validen Benutzernamen eingeben",
+    "enter_valid_otp":"Ein valides Passwort eingeben"
+}
+    
