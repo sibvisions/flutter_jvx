@@ -4,13 +4,14 @@ import 'package:jvx_mobile_v3/ui/page/startup_page.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JvxMobile extends StatelessWidget {
   final materialApp = MaterialApp(
-    title: UIData.appName,
+    title: globals.appName,
     theme: ThemeData(
-      primaryColor: Colors.black,
-      fontFamily: UIData.quickFont,
+      primaryColor: UIData.ui_kit_color_2,
+      fontFamily: UIData.ralewayFont,
       primarySwatch: Colors.amber
     ),
     debugShowCheckedModeBanner: false,

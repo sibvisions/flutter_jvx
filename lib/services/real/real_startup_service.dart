@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/services/abstract/i_startup_service.dart';
 import 'package:jvx_mobile_v3/services/network_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class StartupService extends NetworkService implements IStartupService {
   static const _kStartupUrl = '/api/startup';
@@ -16,6 +17,7 @@ class StartupService extends NetworkService implements IStartupService {
 
     if (result.mappedResult != null) {
       var res = StartupResponse.fromJson(result.mappedResult);
+      globals.clientId = res.applicationMetaData.clientId;
       return new NetworkServiceResponse(
         content: res,
         success: result.networkServiceResponse.success

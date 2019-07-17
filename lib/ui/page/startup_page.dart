@@ -5,9 +5,10 @@ import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/services/shared_preferences/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
 
 enum StartupValidationType { username, password }
 
@@ -20,35 +21,28 @@ class StartupPage extends StatefulWidget {
 class _StartupPageState extends State<StartupPage> with SingleTickerProviderStateMixin {
   final scaffoldState = GlobalKey<ScaffoldState>();
   StartupBloc startupBloc = new StartupBloc();
-  String applicationName = 'demo';
+  String applicationName = globals.appName;
   StreamSubscription<FetchProcess> apiStreamSubscription;
   AnimationController controller;
   Animation<double> animation;
 
   Widget startupBuilder() {
+    TranslationsDelegate().load(new Locale(globals.language));
     return StreamBuilder<bool>(
       stream: startupBloc.startupResult,
       initialData: false,
       builder: (context, snapshot) => Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
-        ),
-      ),
+        child: Image.asset('assets/images/sib_visions.jpg', width: (MediaQuery.of(context).size.width - 50),),
+      )
     );
   }
 
   @override
   void initState() {
     super.initState();
+    SharedPreferencesHelper().getAppName().then((val) => val != 'null' ? globals.appName = val : null);
+    SharedPreferencesHelper().getBaseUrl().then((val) => val != 'null' ? globals.baseUrl = val : null);
     apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
-    controller = new AnimationController(
-      vsync: this, duration: new Duration(milliseconds: 1500)
-    );
-    animation = new Tween(begin: 0.0, end: 1.0).animate(
-      new CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn)
-    );
-    animation.addListener(() => this.setState(() {}));
-    controller.forward();
     startupBloc.startupSink.add(
       new StartupViewModel(applicationName: applicationName)
     );

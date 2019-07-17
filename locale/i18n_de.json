@@ -1,13 +1,18 @@
 {
     "app_name":"Jvx Mobile Client ",
-    "enter_code_label":"Benutzername",
-    "enter_code_hint":"Dein Benutzername",
-    "enter_otp_label":"Passwort",
-    "enter_otp_hint":"Dein Passwort",
-    "get_otp":"Get OTP",
-    "resend_otp":"Login Anfrage erneut senden",
+    "enter_username_label":"Benutzername",
+    "enter_username_hint":"Dein Benutzername",
+    "enter_password_label":"Passwort",
+    "enter_password_hint":"Dein Passwort",
     "login":"Einloggen",
-    "enter_valid_number":"Einen validen Benutzernamen eingeben",
-    "enter_valid_otp":"Ein valides Passwort eingeben"
+    "enter_valid_username":"Einen validen Benutzernamen eingeben",
+    "enter_valid_password":"Ein valides Passwort eingeben",
+    "settings": "Einstellungen",
+    "settings_app_name": "Applikationsname",
+    "settings_app_name_hint": "Neuen Applikationsnamen eingeben",
+    "settings_base_url": "Basis Url",
+    "settings_base_url_hint": "Basis Url eingeben",
+    "settings_general": "Generelle Einstellungen",
+    "settings_languagae": "Sprache"
 }
     

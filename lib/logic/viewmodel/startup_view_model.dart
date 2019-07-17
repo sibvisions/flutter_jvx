@@ -15,7 +15,6 @@ class StartupViewModel {
 
   Future<Null> performStartup(StartupViewModel startupViewModel) async {
     NetworkServiceResponse<StartupResponse> result = await startupRepo.fetchStartupResponse(Startup(applicationName: startupViewModel.applicationName));
-    print(result.content.loginItem.name.toString());
     this.apiResult = result;
   }
 }

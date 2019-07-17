@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
+import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   apiResult.listen((FetchProcess p) {
@@ -17,6 +16,9 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
       } else {
         switch (p.type) {
           case ApiType.performLogin:
+            Future.delayed(const Duration(seconds: 1), () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage()));
+            });
             break;
           case ApiType.performStartup:
             // showSuccess(context, UIData.success, FontAwesomeIcons.check);

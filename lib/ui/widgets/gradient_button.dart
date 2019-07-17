@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class GradientButton extends StatelessWidget {
   final GestureTapCallback onPressed;
   final String text;
-  static List<Color> kitGradients = [
-    // new Color.fromRGBO(103, 218, 255, 1.0),
-    // new Color.fromRGBO(3, 169, 244, 1.0),
-    // new Color.fromRGBO(0, 122, 193, 1.0),
-    Colors.blueGrey.shade800,
-    Colors.black87,
-  ];
 
   GradientButton({@required this.onPressed, @required this.text});
 
@@ -27,7 +21,7 @@ class GradientButton extends StatelessWidget {
           decoration: ShapeDecoration(
               shape: const StadiumBorder(),
               gradient: LinearGradient(
-                colors: kitGradients,
+                colors: UIData.kitGradients2,
               )),
           child: Center(
             child: Text(

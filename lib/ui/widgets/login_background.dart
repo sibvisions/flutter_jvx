@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/tools/arc_clipper.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class LoginBackground extends StatelessWidget {
   final showIcon;
   final image;
-  LoginBackground({this.showIcon = true, this.image});
-  static List<Color> kitGradients = [
-    // new Color.fromRGBO(103, 218, 255, 1.0),
-    // new Color.fromRGBO(3, 169, 244, 1.0),
-    // new Color.fromRGBO(0, 122, 193, 1.0),
-    Colors.blueGrey.shade800,
-    Colors.black87,
-  ];
+  LoginBackground({this.showIcon = true, this.image = 'assets/images/sib_visions.jpg'});
 
   Widget topHalf(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
@@ -24,7 +18,7 @@ class LoginBackground extends StatelessWidget {
             new Container(
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(
-                colors: kitGradients,
+                colors: UIData.kitGradients2,
               )),
             ),
             showIcon
@@ -39,9 +33,9 @@ class LoginBackground extends StatelessWidget {
                 : new Container(
                     width: double.infinity,
                     child: image != null
-                        ? Image.network(
+                        ? Image.asset(
                             image,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fitHeight
                           )
                         : new Container())
           ],

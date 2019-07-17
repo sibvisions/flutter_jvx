@@ -69,3 +69,45 @@ showProgress(BuildContext context) {
 hideProgress(BuildContext context) {
   Navigator.pop(context);
 }
+
+showTextInputDialog(BuildContext context, String title, String textLabel, String textHint, initialVal, void onTapCallback(String val)) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      TextEditingController _controller = new TextEditingController(text: initialVal);
+      return AlertDialog(
+        
+        title: Text(title),
+        content: Form(
+          child: new TextField(
+            controller: _controller,
+            style: new TextStyle(
+                fontSize: 15.0, color: Colors.black),
+            decoration: new InputDecoration(
+                hintText: textHint,
+                labelText: textLabel,
+                labelStyle:
+                    TextStyle(fontWeight: FontWeight.w700)),
+          ),
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              textColor: UIData.ui_kit_color_2,
+              child: new Text("CLOSE"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              textColor: UIData.ui_kit_color_2,
+              child: new Text("OK"),
+              onPressed: () {
+                onTapCallback(_controller.text);
+                Navigator.of(context).pop();
+              },
+            ),
+        ],
+      );
+    }
+  );
+}

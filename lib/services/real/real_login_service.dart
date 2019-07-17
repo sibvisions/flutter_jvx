@@ -14,6 +14,8 @@ class LoginService extends NetworkService implements ILoginService {
   Future<NetworkServiceResponse<LoginResponse>> fetchLoginResponse(Login login) async {
     var result = await rest.postAsync<LoginResponse>(_kLoginUrl, login);
 
+    print("LOgin Response: " + result.mappedResult.toString());
+
     if (result.mappedResult != null) {
       var res = LoginResponse.fromJson(result.mappedResult);
       return new NetworkServiceResponse(

@@ -4,26 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class UIData {
-  //routes
-  static const String homeRoute = "/home";
-  static const String profileOneRoute = "/View Profile";
-  static const String profileTwoRoute = "/Profile 2";
-  static const String notFoundRoute = "/No Search Result";
-  static const String timelineOneRoute = "/Feed";
-  static const String timelineTwoRoute = "/Tweets";
-  static const String settingsOneRoute = "/Device Settings";
-  static const String shoppingOneRoute = "/Shopping List";
-  static const String shoppingTwoRoute = "/Shopping Details";
-  static const String shoppingThreeRoute = "/Product Details";
-  static const String paymentOneRoute = "/Credit Card";
-  static const String paymentTwoRoute = "/Payment Success";
-  static const String loginOneRoute = "/Login With OTP";
-  static const String loginTwoRoute = "/Login 2";
-  static const String dashboardOneRoute = "/Dashboard 1";
-  static const String dashboardTwoRoute = "/Dashboard 2";
-
-  //strings
-  static const String appName = "Jvx Mobile";
 
   //fonts
   static const String quickFont = "Quicksand";
@@ -65,12 +45,10 @@ class UIData {
   static const String coming_soon = "Coming Soon";
 
   static const MaterialColor ui_kit_color = Colors.grey;
+  static const MaterialColor ui_kit_color_2 = Colors.cyan;
 
 //colors
   static List<Color> kitGradients = [
-    // new Color.fromRGBO(103, 218, 255, 1.0),
-    // new Color.fromRGBO(3, 169, 244, 1.0),
-    // new Color.fromRGBO(0, 122, 193, 1.0),
     Colors.blueGrey.shade800,
     Colors.black87,
   ];

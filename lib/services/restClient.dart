@@ -1,6 +1,7 @@
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class RestClient {
   Map<String, String> headers = {
@@ -9,15 +10,14 @@ class RestClient {
   };
 
   Future<MappedNetworkServiceResponse<T>> getAsync<T>(String resourcePath) async {
-    var response = await http.get('http://172.16.0.19:8080/JVx.mobile/services/mobile' + resourcePath, headers: headers);
+    var response = await http.get(globals.baseUrl + resourcePath, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
     updateCookie(response);
     return processResponse<T>(response);
   }
 
   Future<MappedNetworkServiceResponse<T>> postAsync<T>(String resourcePath, dynamic data) async {
     var content = json.encode(data);
-    print(content);
-    var response = await http.post('http://172.16.0.19:8080/JVx.mobile/services/mobile' + resourcePath, body: content, headers: headers);
+    var response = await http.post(globals.baseUrl + resourcePath, body: content, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
     updateCookie(response);
     return processResponse<T>(response);
   }
@@ -46,10 +46,9 @@ class RestClient {
     String rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
-      // headers['Content-Type'] = 'application/json';
       headers['cookie'] =
         (index == -1) ? rawCookie : rawCookie.substring(0, index);
-      // globals.jsessionId = headers['cookie'];
+      globals.jsessionId = headers['cookie'];
     }
   }
 }

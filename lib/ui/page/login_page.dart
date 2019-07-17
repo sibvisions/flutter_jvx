@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/login_provider.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/translations.dart';
 
 enum LoginValidationType { username, password }
 
@@ -31,8 +31,9 @@ class LoginPageState extends State<LoginPage> {
   showValidationError(LoginValidationType type) {
     scaffoldState.currentState.showSnackBar(SnackBar(
       content: Text(type == LoginValidationType.username
-          ? UIData.enter_valid_number
-          : UIData.enter_valid_otp),
+          ? Translations.of(context).text('enter_valid_username')
+          : Translations.of(context).text('enter_valid_password'),
+      ),
       duration: Duration(seconds: 2),
       ),
     );
