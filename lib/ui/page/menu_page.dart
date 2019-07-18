@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
+import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
+import 'package:jvx_mobile_v3/ui/widgets/menu_list_widget.dart';
 
 class MenuPage extends StatelessWidget {
-  const MenuPage({Key key}) : super(key: key);
+  final List<MenuItem> menuItems;
+  final bool listMenuItemsInDrawer;
+
+  const MenuPage({Key key, this.menuItems, this.listMenuItemsInDrawer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return CommonScaffold(
-      appTitle: 'Menu', 
-      bodyData: Center(
-        child: Text('Hallo')
-      ),
+      appTitle: 'Menu',
+      bodyData: this.listMenuItemsInDrawer ? Center(child: Text('Choose Menu Item'),) :  MenuListWidget(menuItems: this.menuItems),
+      showDrawer: true,
+      drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: this.listMenuItemsInDrawer,),
     );
   }
 }

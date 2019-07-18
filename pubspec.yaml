@@ -31,6 +31,8 @@ dependencies:
   font_awesome_flutter:
   json_annotation: ^2.4.0
   shared_preferences: ^0.5.3+4
+  flutter_picker:
+    git: git://github.com/yangyxd/flutter_picker.git
 
 dev_dependencies:
   flutter_test:

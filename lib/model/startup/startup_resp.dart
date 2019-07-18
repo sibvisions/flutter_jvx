@@ -23,7 +23,6 @@ class StartupResponse {
   static readMenuItemListFromJson(List items) {
     List<MenuItem> convertedMenuItems = new List<MenuItem>();
     for (int i = 0; i < items.length; i++) {
-      print('Item ' + i.toString() + ': ' + items[i].toString());
       convertedMenuItems.add(MenuItem.fromJson(items[i]));
     }
     return convertedMenuItems;

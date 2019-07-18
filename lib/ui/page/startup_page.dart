@@ -5,10 +5,11 @@ import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
-import 'package:jvx_mobile_v3/services/shared_preferences/shared_preferences_helper.dart';
+import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum StartupValidationType { username, password }
 
@@ -27,7 +28,6 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   Animation<double> animation;
 
   Widget startupBuilder() {
-    TranslationsDelegate().load(new Locale(globals.language));
     return StreamBuilder<bool>(
       stream: startupBloc.startupResult,
       initialData: false,
@@ -40,12 +40,28 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    SharedPreferencesHelper().getAppName().then((val) => val != 'null' ? globals.appName = val : null);
-    SharedPreferencesHelper().getBaseUrl().then((val) => val != 'null' ? globals.baseUrl = val : null);
     apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
     startupBloc.startupSink.add(
       new StartupViewModel(applicationName: applicationName)
     );
+  }
+
+  loadSharedPrefs() {
+    SharedPreferencesHelper().getData().then((prefData) {
+      if (prefData['appName'] == 'null' || prefData['appName'] == null || prefData['appName'].isEmpty) {
+      } else {
+        globals.appName = prefData['appName'];
+      }
+      if (prefData['baseUrl'] == 'null' || prefData['baseUrl'] == null || prefData['baseUrl'].isEmpty) {
+      } else {
+        globals.baseUrl = prefData['baseUrl'];
+      }
+      if (prefData['language'] == 'null' || prefData['language'] == null || prefData['language'].isEmpty) {
+      } else {
+        globals.language = prefData['language'];
+      }
+      Translations.load(new Locale(globals.language));
+    });
   }
 
   @override
@@ -60,7 +76,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
     validationErrorCallback: showValidationError,
     child: Scaffold(
       key: scaffoldState,
-      backgroundColor: Color(0xffeeeeee),
+      backgroundColor: Colors.white,
       body: Center(
         child: startupBuilder()
       ),

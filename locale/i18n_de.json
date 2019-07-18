@@ -12,7 +12,10 @@
     "settings_app_name_hint": "Neuen Applikationsnamen eingeben",
     "settings_base_url": "Basis Url",
     "settings_base_url_hint": "Basis Url eingeben",
-    "settings_general": "Generelle Einstellungen",
-    "settings_languagae": "Sprache"
+    "settings_general": "Applikations Einstellungen",
+    "settings_language": "Sprache",
+    "settings_save": "Speichern",
+    "settings_exit": "Zurück",
+    "logout": "Ausloggen"
 }
     

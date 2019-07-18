@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/services/shared_preferences/shared_preferences_helper.dart';
+import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -15,7 +19,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl;
+  String appName, baseUrl, language;
 
   Widget settingsBuilder() {
     return SingleChildScrollView(
@@ -88,7 +92,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     title: Text(Translations.of(context).text('settings_language')),
                     trailing: Icon(FontAwesomeIcons.arrowDown),
-                    subtitle: Text(globals.language),
+                    subtitle: Text(this.language == null ? globals.language : this.language),
+                    onTap: () {
+                      showLanguagePicker(context);
+                    },
                   )
                 ],
               ),
@@ -99,24 +106,54 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  showLanguagePicker(BuildContext context) {
+    List languages = new List<String>();
+    languages.add('EN');
+    languages.add('DE');
+    new Picker(
+      adapter: PickerDataAdapter<String>(pickerdata: languages),
+      changeToFirst: true,
+      textAlign: TextAlign.center,
+      columnPadding: const EdgeInsets.all(8.0),
+      confirmTextStyle: TextStyle(
+        color: UIData.ui_kit_color_2
+      ),
+      cancelTextStyle: TextStyle(
+        color: UIData.ui_kit_color_2
+      ),
+      onConfirm: (Picker picker, List value) {
+        String newLang = picker.getSelectedValues()[0].toString().toLowerCase();
+        setState(() {
+          globals.language = newLang;
+          this.language = newLang;
+          Translations.load(new Locale(newLang));
+        });
+      }
+    ).show(scaffoldState.currentState);
+  }
+
   Widget settingsLoader() {
     return CommonScaffold(
+      scaffoldKey: scaffoldState,
       appTitle: Translations.of(context).text('settings'),
       showBottomNav: true,
       showFAB: false,
       backGroundColor: Colors.grey.shade300,
       bodyData: settingsBuilder(),
-      bottomButton1: 'EXIT',
-      bottomButton2: 'SAVE',
+      bottomButton1: Translations.of(context).text('settings_exit').toUpperCase(),
+      bottomButton2: Translations.of(context).text('settings_save').toUpperCase(),
       bottomButton1Function: () {
         Navigator.of(context).pop();
       },
       bottomButton2Function: () {
-        SharedPreferencesHelper().setAppName(this.appName.toString());
-        SharedPreferencesHelper().setBaseUrl(this.baseUrl.toString());
+        savePreferences();
         Navigator.of(context).pop();
       },
     );
+  }
+
+  savePreferences() async {
+    SharedPreferencesHelper().setData(this.appName, this.baseUrl, this.language);
   }
 
   @override

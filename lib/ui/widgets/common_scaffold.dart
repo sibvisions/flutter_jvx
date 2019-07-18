@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_float.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
@@ -6,6 +7,9 @@ class CommonScaffold extends StatelessWidget {
   final appTitle;
   final Widget bodyData;
   final showFAB;
+  final showDropdownButton;
+  final showSearchButton;
+  final showDrawer;
   final backGroundColor;
   final actionFirstIcon;
   final scaffoldKey;
@@ -17,6 +21,9 @@ class CommonScaffold extends StatelessWidget {
   final String bottomButton2;
   final Function bottomButton1Function;
   final Function bottomButton2Function;
+  final List<String> dropdownItems;
+  final Function dropdownCallback;
+  final Widget drawer;
 
   CommonScaffold(
     {
@@ -33,7 +40,13 @@ class CommonScaffold extends StatelessWidget {
       this.bottomButton1,
       this.bottomButton2,
       this.bottomButton1Function,
-      this.bottomButton2Function
+      this.bottomButton2Function,
+      this.showDropdownButton = false,
+      this.showSearchButton = false,
+      this.dropdownItems,
+      this.dropdownCallback,
+      this.showDrawer = false,
+      this.drawer
     }
   );
 
@@ -107,16 +120,28 @@ class CommonScaffold extends StatelessWidget {
           SizedBox(
             width: 5.0,
           ),
-          IconButton(
+          showSearchButton 
+          ? IconButton(
             onPressed: () {},
             icon: Icon(actionFirstIcon),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.more_vert),
           )
+          : SizedBox(width: 5.0,),
+          showDropdownButton
+          ? DropdownButton(
+            icon: Icon(FontAwesomeIcons.ellipsisV, color: Colors.black,),
+            onChanged: (String value) {
+              this.dropdownCallback(value);
+            },
+            items: this.dropdownItems.map((value) => DropdownMenuItem(
+              child: Text(value),
+              value: value,
+            )).toList(),
+          )
+          : SizedBox(width: 5.0,),
+          SizedBox(width: 10.0,)
         ],
       ),
+      drawer: showDrawer ? drawer : null,
       body: bodyData,
       floatingActionButton: showFAB
           ? CustomFloat(

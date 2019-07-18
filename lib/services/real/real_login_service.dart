@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/services/abstract/i_login_service.dart';
 import 'package:jvx_mobile_v3/services/network_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class LoginService extends NetworkService implements ILoginService {
   static const _kLoginUrl = '/api/login';
@@ -13,8 +14,6 @@ class LoginService extends NetworkService implements ILoginService {
   @override
   Future<NetworkServiceResponse<LoginResponse>> fetchLoginResponse(Login login) async {
     var result = await rest.postAsync<LoginResponse>(_kLoginUrl, login);
-
-    print("LOgin Response: " + result.mappedResult.toString());
 
     if (result.mappedResult != null) {
       var res = LoginResponse.fromJson(result.mappedResult);
