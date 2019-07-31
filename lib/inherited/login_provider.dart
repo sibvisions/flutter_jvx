@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Provider for getting the instance of the widget of [LoginProvider]
 class LoginProvider extends InheritedWidget {
   final Function validationErrorCallback;
   final Widget child;

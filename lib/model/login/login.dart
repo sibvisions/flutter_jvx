@@ -1,12 +1,11 @@
-import 'package:flutter/widgets.dart';
-
 class Login {
   String username;
   String password;
   String clientId;
   String action;
+  bool createAuthKey;
 
-  Login({this.username, this.password, this.clientId, @required this.action});
+  Login({this.username, this.password, this.clientId, this.action, this.createAuthKey = false});
 
   Map<String, dynamic> toJson() => {
     "loginData": {
@@ -23,6 +22,7 @@ class Login {
         "label": action
       }
     },
-    "clientId": clientId
+    "clientId": clientId,
+    "createAuthKey": createAuthKey
   };
 }

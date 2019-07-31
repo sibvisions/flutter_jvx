@@ -1,11 +1,7 @@
 import 'package:jvx_mobile_v3/model/login/login.dart';
 import 'package:jvx_mobile_v3/model/login/login_resp.dart';
-import 'package:jvx_mobile_v3/model/login_data.dart';
-import 'package:jvx_mobile_v3/model/login_password.dart';
-import 'package:jvx_mobile_v3/model/login_username.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_login_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 
 class MockLoginService implements ILoginService {

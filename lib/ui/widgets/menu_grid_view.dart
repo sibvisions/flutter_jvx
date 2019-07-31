@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class MenuGridView extends StatelessWidget {
   final List<MenuItem> items;
@@ -9,59 +12,46 @@ class MenuGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      padding: EdgeInsets.all(10.0),
-      childAspectRatio: 5.0 / 5.0,
-      children: _getGridViewItems(context),
-    );
-  }
-
-  _getGridViewItems(BuildContext context) {
-    List<Widget> widgets = new List<Widget>();
-    for (int i = 0; i < items.length; i++) {
-      var widget = _getGridItemUI(context, items[i]);
-      widgets.add(widget);
-    }
-    return widgets;
-  }
-
-  _getGridItemUI(BuildContext context, MenuItem item) {
-    return new InkWell(
-      onTap: () {
-        
-      },
-      child: new Card(
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            /*
-            new Image.network(
-              item.image,
-              fit: BoxFit.fill
-            ),
-            */
-            new Expanded(
-              child: new Center(
-                child: new Column(
-                  children: <Widget>[
-                    new SizedBox(height: 8.0,),
-                    new Text(
-                      item.action.label,
-                      style: new TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    new Text(item.group),
-                    new Text(item.action.componentId, textAlign: TextAlign.center,)
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
+    return new GridView.builder(
+      itemCount: this.items.length,
+      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2
       ),
+      itemBuilder: (BuildContext context, int index) {
+        return new GestureDetector(
+          child: new Card(
+            elevation: 5.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                items[index].image != null 
+                  ? new CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: !items[index].image.startsWith('FontAwesome') 
+                            ? new Image.asset('${globals.dir}${items[index].image}')
+                            : _iconBuilder(formatFontAwesomeText(items[index].image))
+                  )
+                  : new Text(""),
+                Align(child: Text(items[index].action.label), alignment: Alignment.bottomCenter,)
+              ],
+            ),
+          ),
+          onTap: () { },
+        );
+      },
     );
+  }
+
+  Icon _iconBuilder(Map data) {
+    Icon icon = new Icon(
+      data['icon'],
+      size: double.parse(data['size']),
+      color: UIData.ui_kit_color_2,
+      key: data['key'],
+      textDirection: data['textDirection'],
+    );
+
+    return icon;
   }
 }

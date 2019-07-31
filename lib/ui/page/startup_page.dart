@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
+import 'package:jvx_mobile_v3/logic/bloc/image_download_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/image_download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum StartupValidationType { username, password }
 
@@ -22,6 +24,7 @@ class StartupPage extends StatefulWidget {
 class _StartupPageState extends State<StartupPage> with SingleTickerProviderStateMixin {
   final scaffoldState = GlobalKey<ScaffoldState>();
   StartupBloc startupBloc = new StartupBloc();
+  LoginBloc loginBloc = new LoginBloc();
   String applicationName = globals.appName;
   StreamSubscription<FetchProcess> apiStreamSubscription;
   AnimationController controller;
@@ -44,7 +47,17 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
     startupBloc.startupSink.add(
       new StartupViewModel(applicationName: applicationName)
     );
+    loadSharedPrefs();
+    _downloadImages(context);
   }
+
+  _downloadImages(BuildContext context) {
+  ImageDownloadBloc imageDownloadBloc = new ImageDownloadBloc();
+  StreamSubscription<FetchProcess> apiStreamSubscription;
+
+  apiStreamSubscription = apiSubscription(imageDownloadBloc.apiResult, context);
+  imageDownloadBloc.imageDownloadSink.add(new ImageDownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
+}
 
   loadSharedPrefs() {
     SharedPreferencesHelper().getData().then((prefData) {

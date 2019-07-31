@@ -4,6 +4,9 @@ import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:rxdart/rxdart.dart';
 
+/// Business Logic Component for handling the `LoginState` and for handling the Login Rest Call.
+/// 
+/// Also responsible for logging the User in.
 class LoginBloc {
   final loginController = StreamController<LoginViewModel>();
   final apiController = BehaviorSubject<FetchProcess>();
@@ -19,6 +22,9 @@ class LoginBloc {
     loginResendController.stream.listen(resendLogin);
   }
 
+  /// on build of a [LoginBloc] a listener is inisiated and listens to the [loginController]
+  /// 
+  /// also the a listener listens to the [loginResendController]
   void apiCall(LoginViewModel loginViewModel) async {
     FetchProcess process = new FetchProcess(loading: true);
     apiController.add(process);
@@ -31,10 +37,12 @@ class LoginBloc {
     loginViewModel = null;
   }
 
+  /// Method for resending the request to download the images
   void resendLogin(bool flag) {
     loginResultController.add(false);
   }
 
+  /// Disposing of all of the controllers when not needed anymore
   void dispose() {
     loginController.close();
     loginResendController.close();
