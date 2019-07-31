@@ -1,1 +1,1 @@
-# Flutter Client for Jvx
+# Flutter Client for JVx
