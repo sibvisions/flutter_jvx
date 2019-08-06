@@ -10,6 +10,7 @@ import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/gradient_button.dart';
+import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
@@ -20,6 +21,7 @@ class LoginCard extends StatefulWidget {
 
 class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMixin {
   var deviceSize;
+  bool rememberMe = false;
   AnimationController controller;
   Animation<double> animation;
   LoginBloc loginBloc;
@@ -61,18 +63,25 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                                 TextStyle(fontWeight: FontWeight.w700)),
                         obscureText: true,
                       ),
-                      new SizedBox(
-                        height: 30.0,
+                      new CheckboxListTile(
+                        onChanged: (bool val) {
+                          setState(() {
+                            rememberMe = val;
+                          });
+                        },
+                        value: rememberMe,
+                        title: Text(Translations.of(context).text('remember_me')),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        activeColor: UIData.ui_kit_color_2,
                       ),
                       Container(
                         child: new GradientButton(
-                          onPressed: () => this.password.length > 0 && this.username.length > 0
-                            ? loginBloc.loginSink.add(new LoginViewModel.withPW(username: username, password: password))
-                            : print(this.password),
+                          onPressed: () {
+                            this.password.length > 0 && this.username.length > 0
+                            ? loginBloc.loginSink.add(new LoginViewModel.withPW(username: username, password: password, rememberMe: rememberMe))
+                            : print(this.password);
+                          },
                           text: Translations.of(context).text('login'))
-                      ),
-                      new SizedBox(
-                        height: 30.0,
                       ),
                       Container(
                         child: new FlatButton.icon(
@@ -82,7 +91,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                           label: Text(Translations.of(context).text('settings')),
                           icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
                         )
-                      )
+                      ),
                     ],
                   ),
                 ),

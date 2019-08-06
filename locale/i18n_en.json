@@ -16,5 +16,9 @@
     "settings_language": "Language",
     "settings_save": "Save",
     "settings_exit": "Exit",
-    "logout": "Logout"
+    "logout": "Logout",
+    "remember_me": "Remember me?",
+    "error": "Error",
+    "close": "Close",
+    "go_to_settings": "Go to settings"
 }

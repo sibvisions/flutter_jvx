@@ -9,16 +9,17 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 class LoginViewModel {
   String username;
   String password;
+  bool rememberMe;
   bool loginResult = false;
   NetworkServiceResponse apiResult;
   ILoginService loginRepo = new Injector().loginService;
 
   LoginViewModel({@required this.username});
 
-  LoginViewModel.withPW({@required this.username, @required this.password});
+  LoginViewModel.withPW({@required this.username, @required this.password, @required this.rememberMe});
 
   Future<Null> performLogin(LoginViewModel loginViewModel) async {
-    NetworkServiceResponse<LoginResponse> result = await loginRepo.fetchLoginResponse(Login(username: loginViewModel.username, password: loginViewModel.password, clientId: globals.clientId, action: 'Anmelden'));
+    NetworkServiceResponse<LoginResponse> result = await loginRepo.fetchLoginResponse(Login(username: loginViewModel.username, password: loginViewModel.password, clientId: globals.clientId, action: 'Anmelden', createAuthKey: rememberMe));
     this.apiResult = result;
   }
 }

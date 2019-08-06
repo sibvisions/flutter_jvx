@@ -16,6 +16,10 @@
     "settings_language": "Sprache",
     "settings_save": "Speichern",
     "settings_exit": "Zurück",
-    "logout": "Ausloggen"
+    "logout": "Ausloggen",
+    "remember_me": "Eingeloggt bleiben?",
+    "error": "Fehler",
+    "close": "Schließen",
+    "go_to_settings": "Zu Einstellungen"
 }
     

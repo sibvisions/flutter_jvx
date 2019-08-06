@@ -12,40 +12,8 @@ class UIData {
   static const String quickNormalFont = "Quicksand_Book.otf";
   static const String quickLightFont = "Quicksand_Light.otf";
 
-  //images
-  static const String imageDir = "assets/images";
-  static const String pkImage = "$imageDir/pk.jpg";
-  static const String profileImage = "$imageDir/profile.jpg";
-  static const String blankImage = "$imageDir/blank.jpg";
-  static const String dashboardImage = "$imageDir/dashboard.jpg";
-  static const String loginImage = "$imageDir/login.jpg";
-  static const String paymentImage = "$imageDir/payment.jpg";
-  static const String settingsImage = "$imageDir/setting.jpeg";
-  static const String shoppingImage = "$imageDir/shopping.jpeg";
-  static const String timelineImage = "$imageDir/timeline.jpeg";
-  static const String verifyImage = "$imageDir/verification.jpg";
-
-  //login
-  static const String enter_code_label = "Phone Number";
-  static const String enter_code_hint = "10 Digit Phone Number";
-  static const String enter_password_label = "Password";
-  static const String enter_password_hint = "5 Digit Password";
-  static const String get_password = "Get Password";
-  static const String resend_password = "Resend Password";
-  static const String login = "Login";
-  static const String enter_valid_number = "Enter 10 digit phone number";
-  static const String enter_valid_otp = "Enter 4 digit otp";
-
-  //gneric
-  static const String error = "Error";
-  static const String success = "Success";
-  static const String ok = "OK";
-  static const String forgot_password = "Forgot Password?";
-  static const String something_went_wrong = "Something went wrong";
-  static const String coming_soon = "Coming Soon";
-
   static const MaterialColor ui_kit_color = Colors.grey;
-  static const MaterialColor ui_kit_color_2 = Colors.cyan;
+  static const MaterialColor ui_kit_color_2 = Colors.orange;
 
 //colors
   static List<Color> kitGradients = [
