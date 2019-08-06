@@ -14,7 +14,17 @@ enum BorderLayoutConstraints {
   CENTER,
 }
 
-/// JVx border layout. Layouts up to 5 widgets with predefined positions.
+///
+/// The <code>JVxSequenceLayout</code> can be used as {@link java.awt.FlowLayout} with
+/// additional features. The additional features are:
+/// <ul>
+/// <li>stretch all components to the maximum size of the greatest component</li>
+/// <li>en-/disable wrapping when the width/height changes</li>
+/// <li>margins</li>
+/// </ul>
+///
+/// @author René Jahn, ported by Jürgen Hörmann
+///
 class JVxBorderLayout extends MultiChildRenderObjectWidget {
   final int iHorizontalGap;
   final int iVerticalGap;
@@ -64,16 +74,45 @@ class JVxBorderLayout extends MultiChildRenderObjectWidget {
 class RenderJVxBorderLayout extends RenderBox
     with ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
-  Map<Object, RenderBox> _idToChild = <Object, RenderBox>{};
+  RenderBox north;
+  RenderBox south;
+  RenderBox west;
+  RenderBox east;
+  RenderBox center;
   EdgeInsets insMargin;
   int iHorizontalGap;
   int iVerticalGap;
 
-  bool hasChild(Object childId) => _idToChild[childId] != null;
-  RenderBox getChild(Object childId) => _idToChild[childId];
-
   RenderJVxBorderLayout(this.insMargin, this.iHorizontalGap, this.iVerticalGap, { List<RenderBox> children }) {
     addAll(children);
+  }
+
+  void addLayoutComponent(RenderBox pComponent, BorderLayoutConstraints pConstraints)
+  {
+    if (pConstraints == null || pConstraints==BorderLayoutConstraints.CENTER)
+    {
+      center = pComponent;
+    }
+    else if (pConstraints == BorderLayoutConstraints.NORTH)
+    {
+      north = pComponent;
+    }
+    else if (pConstraints == BorderLayoutConstraints.SOUTH)
+    {
+      south = pComponent;
+    }
+    else if (pConstraints == BorderLayoutConstraints.EAST)
+    {
+      east = pComponent;
+    }
+    else if (pConstraints == BorderLayoutConstraints.WEST)
+    {
+      west = pComponent;
+    }
+    else
+    {
+      throw new ArgumentError("cannot add to layout: unknown constraint: " + pConstraints.toString());
+    }
   }
 
   @override
@@ -84,6 +123,7 @@ class RenderJVxBorderLayout extends RenderBox
 
   @override
   void performLayout() {
+
     Size size = this.constraints.biggest;
 
     double x = this.insMargin.left;
@@ -92,62 +132,57 @@ class RenderJVxBorderLayout extends RenderBox
     double width = size.width - x - this.insMargin.right;
     double height = size.height - y - this.insMargin.bottom;
 
-    // Map RenderBoxes and positions into _idToChild for sequentially calculate Widget
-    // position.
+    // Set components
     RenderBox child = firstChild;
     while (child != null) {
       final MultiChildLayoutParentData childParentData = child.parentData;
-      this._idToChild[childParentData.id] = child;
+      addLayoutComponent(child, childParentData.id);
+
       child = childParentData.nextSibling;
     }
 
     // layout NORTH
-    if (hasChild(BorderLayoutConstraints.NORTH)) {
-      child = getChild(BorderLayoutConstraints.NORTH);
-      child.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
-      final MultiChildLayoutParentData childParentData = child.parentData;
+    if (north != null) {
+      north.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      final MultiChildLayoutParentData childParentData = north.parentData;
       childParentData.offset = Offset(x, y);
 
-      y += child.size.height + iVerticalGap;
-      height -= child.size.height + iVerticalGap;
+      y += north.size.height + iVerticalGap;
+      height -= north.size.height + iVerticalGap;
     }
 
     // layout SOUTH
-    if (hasChild(BorderLayoutConstraints.SOUTH)) {
-      child = getChild(BorderLayoutConstraints.SOUTH);
-      child.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
-      final MultiChildLayoutParentData childParentData = child.parentData;
-      childParentData.offset = Offset(x, y + height - child.size.height);
+    if (south != null) {
+      south.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      final MultiChildLayoutParentData childParentData = south.parentData;
+      childParentData.offset = Offset(x, y + height - south.size.height);
 
-      height -= child.size.height + iVerticalGap;
+      height -= south.size.height + iVerticalGap;
     }
 
     // layout WEST
-    if (hasChild(BorderLayoutConstraints.WEST)) {
-      child = getChild(BorderLayoutConstraints.WEST);
-      child.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
-      final MultiChildLayoutParentData childParentData = child.parentData;
+    if (west != null) {
+      west.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      final MultiChildLayoutParentData childParentData = west.parentData;
       childParentData.offset = Offset(x, y);
 
-      x += child.size.width + iHorizontalGap;
-      width -= child.size.width + iHorizontalGap;
+      x += west.size.width + iHorizontalGap;
+      width -= west.size.width + iHorizontalGap;
     }
 
     // layout EAST
-    if (hasChild(BorderLayoutConstraints.EAST)) {
-      child = getChild(BorderLayoutConstraints.EAST);
-      child.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
-      final MultiChildLayoutParentData childParentData = child.parentData;
-      childParentData.offset = Offset(x + width - child.size.width, y);
+    if (east != null) {
+      east.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      final MultiChildLayoutParentData childParentData = east.parentData;
+      childParentData.offset = Offset(x + width - east.size.width, y);
 
-      width -= child.size.width + iHorizontalGap;
+      width -= east.size.width + iHorizontalGap;
     }
 
     // layout CENTER
-    if (hasChild(BorderLayoutConstraints.CENTER)) {
-      child = getChild(BorderLayoutConstraints.CENTER);
-      child.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
-      final MultiChildLayoutParentData childParentData = child.parentData;
+    if (center != null) {
+      center.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      final MultiChildLayoutParentData childParentData = center.parentData;
       childParentData.offset = Offset(x, y);
     }
 
@@ -170,29 +205,25 @@ class RenderJVxBorderLayout extends RenderBox
 
 
 class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayout> {
-  /// Marks a child with a layout identifier.
+  /// Marks a child with an BorderLayoutConstraints layout position.
   ///
-  /// Both the child and the id arguments must not be null.
+  /// The child must not be null.
   JVxBorderLayoutId({
     Key key,
-    @required this.id,
+    this.pConstraints,
     @required Widget child
   }) : assert(child != null),
-        assert(id != null),
-        super(key: key ?? ValueKey<Object>(id), child: child);
+        super(key: key ?? ValueKey<Object>(pConstraints), child: child);
 
-  /// An object representing the identity of this child.
-  ///
-  /// The [id] needs to be unique among the children that the
-  /// [CustomMultiChildLayout] manages.
-  final Object id;
+  /// An BorderLayoutConstraints defines the layout position of this child.
+  final BorderLayoutConstraints pConstraints;
 
   @override
   void applyParentData(RenderObject renderObject) {
     assert(renderObject.parentData is MultiChildLayoutParentData);
     final MultiChildLayoutParentData parentData = renderObject.parentData;
-    if (parentData.id != id) {
-      parentData.id = id;
+    if (parentData.id != pConstraints) {
+      parentData.id = pConstraints;
       final AbstractNode targetParent = renderObject.parent;
       if (targetParent is RenderObject)
         targetParent.markNeedsLayout();
@@ -202,6 +233,6 @@ class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayout> {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Object>('id', id));
+    properties.add(DiagnosticsProperty<Object>('id', pConstraints));
   }
 }
