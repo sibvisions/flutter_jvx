@@ -1,15 +1,15 @@
 import "jvx_form_layout_anchor.dart";
 
 
-class Constraint {
+class JVxConstraint {
   /// The top anchor.
-  Anchor _topAnchor;
+  JVxAnchor _topAnchor;
   /// The left anchor.
-  Anchor _leftAnchor;
+  JVxAnchor _leftAnchor;
   /// The bottom anchor.
-  Anchor _bottomAnchor;
+  JVxAnchor _bottomAnchor;
   /// The right anchor.
-  Anchor _rightAnchor;
+  JVxAnchor _rightAnchor;
 
   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /// Initialization
@@ -22,22 +22,22 @@ class Constraint {
   /// @param pBottomAnchor the left anchor.
   /// @param pRightAnchor the left anchor.
   ///
-  Constraint(Anchor pTopAnchor, Anchor pLeftAnchor, Anchor pBottomAnchor, Anchor pRightAnchor) {
+  JVxConstraint(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor, JVxAnchor pBottomAnchor, JVxAnchor pRightAnchor) {
     if (pLeftAnchor == null && pRightAnchor != null)
     {
-      pLeftAnchor = new Anchor.fromAnchor(pRightAnchor);
+      pLeftAnchor = new JVxAnchor.fromAnchor(pRightAnchor);
     }
     else if (pRightAnchor == null && pLeftAnchor != null)
     {
-      pRightAnchor = new Anchor.fromAnchor(pLeftAnchor);
+      pRightAnchor = new JVxAnchor.fromAnchor(pLeftAnchor);
     }
     if (pTopAnchor == null && pBottomAnchor != null)
     {
-      pTopAnchor = new Anchor.fromAnchor(pBottomAnchor);
+      pTopAnchor = new JVxAnchor.fromAnchor(pBottomAnchor);
     }
     else if (pBottomAnchor == null && pTopAnchor != null)
     {
-      pBottomAnchor = new Anchor.fromAnchor(pTopAnchor);
+      pBottomAnchor = new JVxAnchor.fromAnchor(pTopAnchor);
     }
     
     leftAnchor = pLeftAnchor;
@@ -51,9 +51,9 @@ class Constraint {
   /// @param pTopAnchor the left anchor.
   /// @param pLeftAnchor the left anchor.
   ///
-  Constraint.fromTopLeftAnchor(Anchor pTopAnchor, Anchor pLeftAnchor)
+  JVxConstraint.fromTopLeftAnchor(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor)
   {
-    Constraint(pTopAnchor, pLeftAnchor, null, null);
+    JVxConstraint(pTopAnchor, pLeftAnchor, null, null);
   }
 
   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +65,7 @@ class Constraint {
   ///
   /// @return the left anchor.
   ///
-  Anchor get leftAnchor
+  JVxAnchor get leftAnchor
   {
     return _leftAnchor;
   }
@@ -75,13 +75,13 @@ class Constraint {
   ///
   /// @param pLeftAnchor left to set
   ///
-  set leftAnchor(Anchor pLeftAnchor)
+  set leftAnchor(JVxAnchor pLeftAnchor)
   {
     if (pLeftAnchor == null && _rightAnchor != null)
     {
-      _leftAnchor = new Anchor.fromAnchor(_rightAnchor);
+      _leftAnchor = new JVxAnchor.fromAnchor(_rightAnchor);
     }
-    else if (pLeftAnchor.orientation == Anchor.VERTICAL)
+    else if (pLeftAnchor.orientation == JVxAnchor.VERTICAL)
     {
       throw new ArgumentError("A vertical anchor can not be used as left anchor!");
     }
@@ -96,7 +96,7 @@ class Constraint {
   ///
   /// @return the right anchor.
   ///
-  Anchor get rightAnchor
+  JVxAnchor get rightAnchor
   {
     return _rightAnchor;
   }
@@ -106,13 +106,13 @@ class Constraint {
   ///
   /// @param pRightAnchor the right anchor.
   ///
-  set rightAnchor(Anchor pRightAnchor)
+  set rightAnchor(JVxAnchor pRightAnchor)
   {
     if (pRightAnchor == null && _leftAnchor != null)
     {
-      _rightAnchor = new Anchor.fromAnchor(_leftAnchor);
+      _rightAnchor = new JVxAnchor.fromAnchor(_leftAnchor);
     }
-    else if (pRightAnchor.orientation == Anchor.VERTICAL)
+    else if (pRightAnchor.orientation == JVxAnchor.VERTICAL)
     {
       throw new ArgumentError("A vertical anchor can not be used as right anchor!");
     }
@@ -127,7 +127,7 @@ class Constraint {
   ///
   /// @return the top anchor.
   ///
-  Anchor get topAnchor
+  JVxAnchor get topAnchor
   {
     return _topAnchor;
   }
@@ -137,13 +137,13 @@ class Constraint {
   ///
   /// @param pTopAnchor the top anchor
   ///
-  set topAnchor(Anchor pTopAnchor)
+  set topAnchor(JVxAnchor pTopAnchor)
   {
     if (pTopAnchor == null && _bottomAnchor != null)
     {
-      _topAnchor = new Anchor.fromAnchor(_bottomAnchor);
+      _topAnchor = new JVxAnchor.fromAnchor(_bottomAnchor);
     }
-    else if (pTopAnchor.orientation == Anchor.HORIZONTAL)
+    else if (pTopAnchor.orientation == JVxAnchor.HORIZONTAL)
     {
       throw new ArgumentError("A horizontal anchor can not be used as top anchor!");
     }
@@ -158,7 +158,7 @@ class Constraint {
   ///
   /// @return the bottom anchor.
   ///
-  Anchor get bottomAnchor
+  JVxAnchor get bottomAnchor
   {
     return _bottomAnchor;
   }
@@ -168,13 +168,13 @@ class Constraint {
   ///
   /// @param pBottomAnchor the bottom to set
   ///
-  set bottomAnchor(Anchor pBottomAnchor)
+  set bottomAnchor(JVxAnchor pBottomAnchor)
   {
     if (pBottomAnchor == null && _topAnchor != null)
     {
-      _bottomAnchor = new Anchor.fromAnchor(_topAnchor);
+      _bottomAnchor = new JVxAnchor.fromAnchor(_topAnchor);
     }
-    else if (pBottomAnchor.orientation == Anchor.HORIZONTAL)
+    else if (pBottomAnchor.orientation == JVxAnchor.HORIZONTAL)
     {
       throw new ArgumentError("A vertical anchor can not be used as bottom anchor!");
     }

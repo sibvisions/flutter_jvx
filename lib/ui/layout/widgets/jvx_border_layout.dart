@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 ///           NORTH
 /// WEST    CENTER      EAST
 ///           SOUTH
-enum BorderLayoutConstraints {
+enum JVxBorderLayoutConstraints {
   NORTH,
   SOUTH,
   WEST,
@@ -87,25 +87,25 @@ class RenderJVxBorderLayout extends RenderBox
     addAll(children);
   }
 
-  void addLayoutComponent(RenderBox pComponent, BorderLayoutConstraints pConstraints)
+  void addLayoutComponent(RenderBox pComponent, JVxBorderLayoutConstraints pConstraints)
   {
-    if (pConstraints == null || pConstraints==BorderLayoutConstraints.CENTER)
+    if (pConstraints == null || pConstraints==JVxBorderLayoutConstraints.CENTER)
     {
       center = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.NORTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.NORTH)
     {
       north = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.SOUTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.SOUTH)
     {
       south = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.EAST)
+    else if (pConstraints == JVxBorderLayoutConstraints.EAST)
     {
       east = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.WEST)
+    else if (pConstraints == JVxBorderLayoutConstraints.WEST)
     {
       west = pComponent;
     }
@@ -216,7 +216,7 @@ class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayout> {
         super(key: key ?? ValueKey<Object>(pConstraints), child: child);
 
   /// An BorderLayoutConstraints defines the layout position of this child.
-  final BorderLayoutConstraints pConstraints;
+  final JVxBorderLayoutConstraints pConstraints;
 
   @override
   void applyParentData(RenderObject renderObject) {

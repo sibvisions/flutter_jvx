@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'i_layout.dart';
 import '../component/i_component.dart';
 
-class Layout<E> implements ILayout<E> {
+abstract class JVxLayout<E> implements ILayout<E> {
   
   /// The constraints for all components used by this layout.
   Map<IComponent, E> layoutConstraints = <IComponent, E>{};
@@ -12,8 +12,4 @@ class Layout<E> implements ILayout<E> {
   int	horizontalGap;
   /// the vertical gap between components.
   int	verticalGap;
-
-    Widget getWidget() {
-      return null;
-    }
 }

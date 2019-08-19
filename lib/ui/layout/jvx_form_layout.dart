@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'layout.dart';
-import 'jvx_form_layout.dart';
-import 'jvx_form_layout_contraint.dart';
-import 'jvx_form_layout_anchor.dart';
+import 'jvx_layout.dart';
+import 'widgets/jvx_form_layout.dart';
+import 'widgets/jvx_form_layout_contraint.dart';
+import 'widgets/jvx_form_layout_anchor.dart';
 import '../component/jvx_component.dart';
 
-class FormLayout extends Layout {
+class FormLayout extends JVxLayout {
   static final int stretch = 100;
   Key key;
   /// The valid state of anchor calculation. */

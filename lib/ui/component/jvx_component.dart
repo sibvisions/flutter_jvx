@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'i_component.dart';
 
-class JVxComponent implements IComponent {
+abstract class JVxComponent implements IComponent {
   String name;
   Key componentId;
   Color background;
@@ -23,8 +23,4 @@ class JVxComponent implements IComponent {
   bool get isMaximumSizeSet => maximumSize!=null;
 
   JVxComponent(this.componentId);
-
-  Widget getWidget() {
-    return null;
-  }
 }
