@@ -1,53 +1,30 @@
 import 'package:flutter/material.dart';
-import 'interfaces/component_data.dart';
-import '../layouts/jvx_border_layout.dart';
+import '../component/jvx_component.dart';
+import '../component/i_component.dart';
+import 'jvx_border_layout.dart';
+import 'layout.dart';
 
-class BorderLayoutData implements ComponentData {
-  /// the layout margins. */
-  EdgeInsets _insMargins = EdgeInsets.zero;
-  EdgeInsets get getMargins {
-    return _insMargins;
-  }
-  set setMargins(EdgeInsets pMargins) {
-    _insMargins = pMargins;
-  }
-
-  /// the horizontal gap between components.
-  int	_iHorizontalGap;
-  int get getHorizontalGap {
-    return _iHorizontalGap;
-  }
-  set setHorizontalGap(int pGap) {
-    _iHorizontalGap = pGap;
-  }
-  /// the vertical gap between components.
-  int	_iVerticalGap;
-  int get getVerticalGap {
-    return _iVerticalGap;
-  }
-  set setVerticalGap(int pGap) {
-    _iVerticalGap = pGap;
-  }
-
+class BorderLayout extends Layout<BorderLayoutConstraints> {
+  Key key;
   /// the north component.
-  Widget _north;
+  JVxComponent _north;
   /// the south component.
-  Widget _south;
+  JVxComponent _south;
   /// the east component.
-  Widget _east;
+  JVxComponent _east;
   /// the west component.
-  Widget _west;
+  JVxComponent _west;
   /// the center component. */
-  Widget _center;
+  JVxComponent _center;
 
-  BorderLayoutData();
+  BorderLayout();
 
-  BorderLayoutData.fromGap(int pHorizontalGap, int pVerticalGap) {
-    _iHorizontalGap = pHorizontalGap;
-    _iVerticalGap = pVerticalGap;
+  BorderLayout.fromGap(int pHorizontalGap, int pVerticalGap) {
+    horizontalGap = pHorizontalGap;
+    verticalGap = pVerticalGap;
   }
 
-  void removeLayoutComponent(Widget pComponent) {
+  void removeLayoutComponent(JVxComponent pComponent) {
       if (pComponent == _center)
       {
         _center = null;
@@ -70,7 +47,7 @@ class BorderLayoutData implements ComponentData {
       }
   }
 
-  void addLayoutComponent(Widget pComponent, BorderLayoutConstraints pConstraints)
+  void addLayoutComponent(JVxComponent pComponent, BorderLayoutConstraints pConstraints)
   {
     if (pConstraints == null || pConstraints == BorderLayoutConstraints.CENTER)
     {
@@ -98,7 +75,7 @@ class BorderLayoutData implements ComponentData {
     }
   }
 
-  BorderLayoutConstraints getConstraints(Widget comp)
+  BorderLayoutConstraints getConstraints(IComponent comp)
   {
     if (comp == _center)
     {
@@ -123,34 +100,34 @@ class BorderLayoutData implements ComponentData {
     return null;
   }
 
-  Widget getWidget(Key key) {
+  Widget getWidget() {
     List<JVxBorderLayoutId> children = new List<JVxBorderLayoutId>();
 
-    if (_center!=null) {
-      children.add(_center);
+    if (_center!=null && _center.isVisible) {
+      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: BorderLayoutConstraints.CENTER));
     }
 
-    if (_north!=null) {
-      children.add(_north);
+    if (_north!=null && _north.isVisible) {
+      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: BorderLayoutConstraints.NORTH));
     }
 
-    if (_south!=null) {
-      children.add(_south);
+    if (_south!=null && _south.isVisible) {
+      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: BorderLayoutConstraints.SOUTH));
     }
 
-    if (_west!=null) {
-      children.add(_west);
+    if (_west!=null && _west.isVisible) {
+      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: BorderLayoutConstraints.WEST));
     }
 
-    if (_east!=null) {
-      children.add(_east);
+    if (_east!=null && _east.isVisible) {
+      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: BorderLayoutConstraints.EAST));
     }
 
     return new JVxBorderLayout(
       key: key,
-      insMargin: _insMargins,
-      iHorizontalGap: _iHorizontalGap,
-      iVerticalGap: _iVerticalGap,
+      insMargin: margins,
+      iHorizontalGap: horizontalGap,
+      iVerticalGap: verticalGap,
       children: children
     );
   }
