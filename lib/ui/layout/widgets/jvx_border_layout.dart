@@ -25,12 +25,12 @@ enum JVxBorderLayoutConstraints {
 ///
 /// @author René Jahn, ported by Jürgen Hörmann
 ///
-class JVxBorderLayout extends MultiChildRenderObjectWidget {
+class JVxBorderLayoutWidget extends MultiChildRenderObjectWidget {
   final int iHorizontalGap;
   final int iVerticalGap;
   final EdgeInsets insMargin;
 
-  JVxBorderLayout({
+  JVxBorderLayoutWidget({
     Key key,
     List<JVxBorderLayoutId> children: const [],
     this.insMargin = EdgeInsets.zero,
@@ -39,11 +39,11 @@ class JVxBorderLayout extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderJVxBorderLayout(this.insMargin, this.iHorizontalGap, this.iVerticalGap);
+    return RenderJVxBorderLayoutWidget(this.insMargin, this.iHorizontalGap, this.iVerticalGap);
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderJVxBorderLayout renderObject) {
+  void updateRenderObject(BuildContext context, RenderJVxBorderLayoutWidget renderObject) {
 
     /// Force Layout, if some of the settings have changed
     if (renderObject.iHorizontalGap != this.iHorizontalGap) {
@@ -71,7 +71,7 @@ class JVxBorderLayout extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderJVxBorderLayout extends RenderBox
+class RenderJVxBorderLayoutWidget extends RenderBox
     with ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   RenderBox north;
@@ -83,7 +83,7 @@ class RenderJVxBorderLayout extends RenderBox
   int iHorizontalGap;
   int iVerticalGap;
 
-  RenderJVxBorderLayout(this.insMargin, this.iHorizontalGap, this.iVerticalGap, { List<RenderBox> children }) {
+  RenderJVxBorderLayoutWidget(this.insMargin, this.iHorizontalGap, this.iVerticalGap, { List<RenderBox> children }) {
     addAll(children);
   }
 
@@ -204,7 +204,7 @@ class RenderJVxBorderLayout extends RenderBox
 }
 
 
-class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayout> {
+class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayoutWidget> {
   /// Marks a child with an BorderLayoutConstraints layout position.
   ///
   /// The child must not be null.

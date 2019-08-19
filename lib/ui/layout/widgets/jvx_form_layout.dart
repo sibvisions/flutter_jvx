@@ -10,7 +10,7 @@ import 'dart:math';
 ///
 /// @author Martin Handsteiner, ported by Jürgen Hörmann
 ///
-class JVxFormLayout extends MultiChildRenderObjectWidget {
+class JVxFormLayoutWidget extends MultiChildRenderObjectWidget {
   /// The valid state of anchor calculation. */
   final bool valid;
   /// the x-axis alignment (default: {@link JVxConstants#CENTER}). */
@@ -23,24 +23,24 @@ class JVxFormLayout extends MultiChildRenderObjectWidget {
 	final vgap;
 
   /// The left border anchor. */
-  final Anchor leftAnchor;
+  final JVxAnchor leftAnchor;
   /// The left border anchor. */
-  final Anchor rightAnchor;
+  final JVxAnchor rightAnchor;
   /// The left border anchor. */
-  final Anchor topAnchor;
+  final JVxAnchor topAnchor;
   /// The left border anchor. */
-  final Anchor bottomAnchor;
+  final JVxAnchor bottomAnchor;
 
   /// The left margin border anchor. */
-  final Anchor leftMarginAnchor;
+  final JVxAnchor leftMarginAnchor;
   /// The left margin border anchor. */
-  final Anchor rightMarginAnchor;
+  final JVxAnchor rightMarginAnchor;
   /// The left margin border anchor. */
-  final Anchor topMarginAnchor;
+  final JVxAnchor topMarginAnchor;
   /// The left margin border anchor. */
-  final Anchor bottomMarginAnchor;
+  final JVxAnchor bottomMarginAnchor;
 
-  JVxFormLayout({
+  JVxFormLayoutWidget({
     Key key,
     List<JVxFormLayoutConstraint> children: const [],
     this.valid, this.horizontalAlignment, this.verticalAlignment, 
@@ -52,7 +52,7 @@ class JVxFormLayout extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderJVxFormLayout(
+    return RenderJVxFormLayoutWidget(
           this.valid, this.horizontalAlignment, this.verticalAlignment, 
           this.hgap, this.vgap,
           this.leftAnchor, this.rightAnchor, this.topAnchor, this.bottomAnchor,
@@ -61,7 +61,7 @@ class JVxFormLayout extends MultiChildRenderObjectWidget {
   }
 
     @override
-  void updateRenderObject(BuildContext context, RenderJVxFormLayout renderObject) {
+  void updateRenderObject(BuildContext context, RenderJVxFormLayoutWidget renderObject) {
 
     /// Force Layout, if some of the settings have changed
     if (renderObject.valid != this.valid) {
@@ -96,7 +96,7 @@ class JVxFormLayout extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderJVxFormLayout extends RenderBox
+class RenderJVxFormLayoutWidget extends RenderBox
     with ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
 
@@ -114,32 +114,32 @@ class RenderJVxFormLayout extends RenderBox
   static final int bottom = 3;
 
   /// The left border anchor. */
-  Anchor leftAnchor;
+  JVxAnchor leftAnchor;
   /// The left border anchor. */
-  Anchor rightAnchor;
+  JVxAnchor rightAnchor;
   /// The left border anchor. */
-  Anchor topAnchor;
+  JVxAnchor topAnchor;
   /// The left border anchor. */
-  Anchor bottomAnchor;
+  JVxAnchor bottomAnchor;
 
   /// The left margin border anchor. */
-  Anchor leftMarginAnchor;
+  JVxAnchor leftMarginAnchor;
   /// The left margin border anchor. */
-  Anchor rightMarginAnchor;
+  JVxAnchor rightMarginAnchor;
   /// The left margin border anchor. */
-  Anchor topMarginAnchor;
+  JVxAnchor topMarginAnchor;
   /// The left margin border anchor. */
-  Anchor bottomMarginAnchor;
+  JVxAnchor bottomMarginAnchor;
 
   /// All horizontal anchors. */
-  List<Anchor> horizontalAnchors;
+  List<JVxAnchor> horizontalAnchors;
   /// All vertical anchors. */
-  List<Anchor> verticalAnchors;
+  List<JVxAnchor> verticalAnchors;
   /// All vertical anchors. */
-  List<Anchor> anchorsBuffer;
+  List<JVxAnchor> anchorsBuffer;
 
   /// stores all constraints. */
-  Map<RenderBox, Constraint> layoutConstraints = <RenderBox, Constraint>{};
+  Map<RenderBox, JVxConstraint> layoutConstraints = <RenderBox, JVxConstraint>{};
 
   /// the x-axis alignment (default: {@link JVxConstants#CENTER}). */
   int	horizontalAlignment = stretch;
@@ -173,7 +173,7 @@ class RenderJVxFormLayout extends RenderBox
   /// True, if the bottom border is used by another anchor. */
   bool bottomBorderUsed = false;
 
-  RenderJVxFormLayout(
+  RenderJVxFormLayoutWidget(
         this.valid, this.horizontalAlignment, this.verticalAlignment, 
         this.hgap, this.vgap,
         this.leftAnchor, this.rightAnchor, this.topAnchor, this.bottomAnchor,
@@ -181,14 +181,14 @@ class RenderJVxFormLayout extends RenderBox
       { List<RenderBox> children }) {
     addAll(children);
 
-    horizontalAnchors = new List<Anchor>();
-    verticalAnchors = new List<Anchor>();
-    anchorsBuffer = new List<Anchor>();
+    horizontalAnchors = new List<JVxAnchor>();
+    verticalAnchors = new List<JVxAnchor>();
+    anchorsBuffer = new List<JVxAnchor>();
   }
 
-  void addLayoutComponent(RenderBox pComponent, Constraint pConstraint)
+  void addLayoutComponent(RenderBox pComponent, JVxConstraint pConstraint)
   {
-    Constraint constraint;
+    JVxConstraint constraint;
 
     if (pConstraint != null)
     {
@@ -271,7 +271,7 @@ class RenderJVxFormLayout extends RenderBox
   @override
   void performLayout() {
     // Set components
-    layoutConstraints = <RenderBox, Constraint>{}; 
+    layoutConstraints = <RenderBox, JVxConstraint>{}; 
     RenderBox child = firstChild;
     while (child != null) {
       final MultiChildLayoutParentData childParentData = child.parentData;
@@ -291,7 +291,7 @@ class RenderJVxFormLayout extends RenderBox
 
       //if (comp.isVisible())
       //{
-          Constraint constraint = layoutConstraints.values.elementAt(i);
+          JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
           double x = constraint.leftAnchor.getAbsolutePosition().toDouble();
           double width = constraint.rightAnchor.getAbsolutePosition() - x;
@@ -315,7 +315,7 @@ class RenderJVxFormLayout extends RenderBox
   /// @param pLeftTopAnchor the left or top anchor.
   /// @param pRightBottomAnchor the right or bottom anchor.
   ///
-  void clearAutoSize(Anchor pLeftTopAnchor, Anchor pRightBottomAnchor)
+  void clearAutoSize(JVxAnchor pLeftTopAnchor, JVxAnchor pRightBottomAnchor)
   {
 	  pLeftTopAnchor.relative = pLeftTopAnchor.autoSize;
 		pLeftTopAnchor.autoSizeCalculated = false;
@@ -339,7 +339,7 @@ class RenderJVxFormLayout extends RenderBox
   /// @param pEndAnchor end anchor.
   /// @return all auto size anchors between start and end anchor.
   ///
-  List<Anchor> getAutoSizeAnchorsBetween(Anchor pStartAnchor, Anchor pEndAnchor)
+  List<JVxAnchor> getAutoSizeAnchorsBetween(JVxAnchor pStartAnchor, JVxAnchor pEndAnchor)
   {
     anchorsBuffer.clear();
     while (pStartAnchor != null && pStartAnchor != pEndAnchor)
@@ -363,13 +363,13 @@ class RenderJVxFormLayout extends RenderBox
   /// @param pStartAnchor the start anchor.
   /// @param pEndAnchor the end anchor.
   ///
-  void initAutoSize(Anchor pStartAnchor, Anchor pEndAnchor)
+  void initAutoSize(JVxAnchor pStartAnchor, JVxAnchor pEndAnchor)
     {
-    	List<Anchor> anchors = getAutoSizeAnchorsBetween(pStartAnchor, pEndAnchor);
+    	List<JVxAnchor> anchors = getAutoSizeAnchorsBetween(pStartAnchor, pEndAnchor);
     	
 		for (int i = 0; i < anchors.length; i++)
 		{
-			Anchor anchor = anchors[i];
+			JVxAnchor anchor = anchors[i];
 			anchor.relative = false;
 			if (!anchor.relatedAnchor.autoSize)
 			{
@@ -388,13 +388,13 @@ class RenderJVxFormLayout extends RenderBox
   /// @param pRightBottomAnchor the right or bottom anchor
   /// @return amount of autosize anchors left.
   ///
-  int finishAutoSizeCalculation(Anchor pLeftTopAnchor, Anchor pRightBottomAnchor)
+  int finishAutoSizeCalculation(JVxAnchor pLeftTopAnchor, JVxAnchor pRightBottomAnchor)
   {
-    List<Anchor> anchors = getAutoSizeAnchorsBetween(pLeftTopAnchor, pRightBottomAnchor);
+    List<JVxAnchor> anchors = getAutoSizeAnchorsBetween(pLeftTopAnchor, pRightBottomAnchor);
     int count = anchors.length;
     for (int i = 0, size = anchors.length; i < size; i++)
   {
-    Anchor anchor = anchors[i];
+    JVxAnchor anchor = anchors[i];
     if (!anchor.firstCalculation)
     {
       anchor.autoSizeCalculated = true;
@@ -412,9 +412,9 @@ class RenderJVxFormLayout extends RenderBox
   /// @param pPreferredSize the preferred size.
   /// @param pAutoSizeCount the amount of autoSizeCount.
   ///
-  void calculateAutoSize(Anchor pLeftTopAnchor, Anchor pRightBottomAnchor, int pPreferredSize, int pAutoSizeCount)
+  void calculateAutoSize(JVxAnchor pLeftTopAnchor, JVxAnchor pRightBottomAnchor, int pPreferredSize, int pAutoSizeCount)
     {
-    	List<Anchor> anchors = getAutoSizeAnchorsBetween(pLeftTopAnchor, pRightBottomAnchor);
+    	List<JVxAnchor> anchors = getAutoSizeAnchorsBetween(pLeftTopAnchor, pRightBottomAnchor);
     	int size = anchors.length;
     	if (size == pAutoSizeCount) // && pLeftTopAnchor.getRelatedAnchor() == pRightBottomAnchor)
     	{
@@ -427,7 +427,7 @@ class RenderJVxFormLayout extends RenderBox
     		int diffSize = ((pPreferredSize - fixedSize + size - 1) / size).round();
     		for (int i = 0; i < size; i++)
     		{
-    			Anchor anchor = anchors[i];
+    			JVxAnchor anchor = anchors[i];
     			if (diffSize > -anchor.position)
     			{
     				anchor.position = -diffSize;
@@ -450,7 +450,7 @@ class RenderJVxFormLayout extends RenderBox
     		int diffSize = ((pPreferredSize - fixedSize + size - 1) / size).round();
     		for (int i = 0; i < size; i++)
     		{
-    			Anchor anchor = anchors[i];
+    			JVxAnchor anchor = anchors[i];
     			if (diffSize > anchor.position)
     			{
     				anchor.position = diffSize;
@@ -481,11 +481,11 @@ class RenderJVxFormLayout extends RenderBox
   /// @param pRightBottomAnchor the right or bottom anchor.
   /// @param pPreferredSize the preferred size.
   ///
-  void calculateRelativeAnchor(Anchor pLeftTopAnchor, Anchor pRightBottomAnchor, int pPreferredSize)
+  void calculateRelativeAnchor(JVxAnchor pLeftTopAnchor, JVxAnchor pRightBottomAnchor, int pPreferredSize)
   {
     if (pLeftTopAnchor.relative)
     {
-      Anchor rightBottom = pRightBottomAnchor.getRelativeAnchor();
+      JVxAnchor rightBottom = pRightBottomAnchor.getRelativeAnchor();
       if (rightBottom != null && rightBottom != pLeftTopAnchor)
       {
         int pref = rightBottom.getAbsolutePosition() - pRightBottomAnchor.getAbsolutePosition() + pPreferredSize;
@@ -515,7 +515,7 @@ class RenderJVxFormLayout extends RenderBox
     }
     else if (pRightBottomAnchor.relative)
     {
-      Anchor leftTop = pLeftTopAnchor.getRelativeAnchor();
+      JVxAnchor leftTop = pLeftTopAnchor.getRelativeAnchor();
       if (leftTop != null && leftTop != pRightBottomAnchor)
       {
         int pref = pLeftTopAnchor.getAbsolutePosition() - leftTop.getAbsolutePosition() + pPreferredSize;
@@ -567,7 +567,7 @@ class RenderJVxFormLayout extends RenderBox
       // clear auto size anchors.
       for (int i = 0; i < this.layoutConstraints.length; i++)
       {
-        Constraint constraint = layoutConstraints.values.elementAt(i);
+        JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
         clearAutoSize(constraint.leftAnchor, constraint.rightAnchor);
         clearAutoSize(constraint.topAnchor, constraint.bottomAnchor);
@@ -592,7 +592,7 @@ class RenderJVxFormLayout extends RenderBox
       // init component auto size anchors.
       for (int i = 0; i < this.layoutConstraints.length; i++)
       {
-        Constraint constraint = layoutConstraints.values.elementAt(i);
+        JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
         initAutoSize(constraint.leftAnchor, constraint.rightAnchor);
         initAutoSize(constraint.rightAnchor, constraint.leftAnchor);
@@ -609,7 +609,7 @@ class RenderJVxFormLayout extends RenderBox
           RenderBox comp = this.layoutConstraints.keys.elementAt(i);
           //if (comp.isVisible())
           //{
-            Constraint constraint = layoutConstraints.values.elementAt(i);
+            JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
             Size preferredSize = this.getPreferredSize(comp);
 
@@ -623,7 +623,7 @@ class RenderJVxFormLayout extends RenderBox
           //RenderBox comp = this.layoutConstraints.keys.elementAt(i);
           //if (comp.isVisible())
           //{
-            Constraint constraint = layoutConstraints.values.elementAt(i);
+            JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
             int count = finishAutoSizeCalculation(constraint.leftAnchor, constraint.rightAnchor);
             if (count > 0 && count < autoSizeCount)
@@ -664,7 +664,7 @@ class RenderJVxFormLayout extends RenderBox
         RenderBox comp = this.layoutConstraints.keys.elementAt(i);
         //if (comp.isVisible())
         //{
-          Constraint constraint = layoutConstraints.values.elementAt(i);
+          JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
           Size preferredSize = getPreferredSize(comp);
           Size minimumSize = getMinimumSize(comp);
@@ -927,7 +927,7 @@ class RenderJVxFormLayout extends RenderBox
       for (int i = 0; i < this.layoutConstraints.length; i++) {
         RenderBox comp = this.layoutConstraints.keys.elementAt(i);
         //if (comp.isVisible()) {
-          Constraint constraint = layoutConstraints.values.elementAt(i);
+          JVxConstraint constraint = layoutConstraints.values.elementAt(i);
 
           Size preferredSize = getPreferredSize(comp);
 
@@ -943,7 +943,7 @@ class RenderJVxFormLayout extends RenderBox
 
 }
 
-class JVxFormLayoutConstraint extends ParentDataWidget<JVxFormLayout> {
+class JVxFormLayoutConstraint extends ParentDataWidget<JVxFormLayoutWidget> {
   /// Marks a child with a layout identifier.
   ///
   /// Both the child and the id arguments must not be null.
@@ -958,7 +958,7 @@ class JVxFormLayoutConstraint extends ParentDataWidget<JVxFormLayout> {
   ///
   /// The [id] needs to be unique among the children that the
   /// [CustomMultiChildLayout] manages.
-  final Constraint id;
+  final JVxConstraint id;
 
   @override
   void applyParentData(RenderObject renderObject) {

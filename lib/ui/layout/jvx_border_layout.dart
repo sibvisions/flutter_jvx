@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
-import 'jvx_border_layout.dart';
-import 'layout.dart';
+import 'widgets/jvx_border_layout.dart';
+import 'jvx_layout.dart';
 
-class BorderLayout extends Layout<BorderLayoutConstraints> {
+class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
   Key key;
   /// the north component.
   JVxComponent _north;
@@ -17,9 +17,9 @@ class BorderLayout extends Layout<BorderLayoutConstraints> {
   /// the center component. */
   JVxComponent _center;
 
-  BorderLayout();
+  JVxBorderLayout();
 
-  BorderLayout.fromGap(int pHorizontalGap, int pVerticalGap) {
+  JVxBorderLayout.fromGap(int pHorizontalGap, int pVerticalGap) {
     horizontalGap = pHorizontalGap;
     verticalGap = pVerticalGap;
   }
@@ -47,25 +47,25 @@ class BorderLayout extends Layout<BorderLayoutConstraints> {
       }
   }
 
-  void addLayoutComponent(JVxComponent pComponent, BorderLayoutConstraints pConstraints)
+  void addLayoutComponent(JVxComponent pComponent, JVxBorderLayoutConstraints pConstraints)
   {
-    if (pConstraints == null || pConstraints == BorderLayoutConstraints.CENTER)
+    if (pConstraints == null || pConstraints == JVxBorderLayoutConstraints.CENTER)
     {
       _center = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.NORTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.NORTH)
     {
       _north = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.SOUTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.SOUTH)
     {
       _south = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.EAST)
+    else if (pConstraints == JVxBorderLayoutConstraints.EAST)
     {
       _east = pComponent;
     }
-    else if (pConstraints == BorderLayoutConstraints.WEST)
+    else if (pConstraints == JVxBorderLayoutConstraints.WEST)
     {
       _west = pComponent;
     }
@@ -75,27 +75,27 @@ class BorderLayout extends Layout<BorderLayoutConstraints> {
     }
   }
 
-  BorderLayoutConstraints getConstraints(IComponent comp)
+  JVxBorderLayoutConstraints getConstraints(IComponent comp)
   {
     if (comp == _center)
     {
-      return BorderLayoutConstraints.CENTER;
+      return JVxBorderLayoutConstraints.CENTER;
     }
     else if (comp == _north)
     {
-      return BorderLayoutConstraints.NORTH;
+      return JVxBorderLayoutConstraints.NORTH;
     }
     else if (comp == _south)
     {
-      return BorderLayoutConstraints.SOUTH;
+      return JVxBorderLayoutConstraints.SOUTH;
     }
     else if (comp == _west)
     {
-      return BorderLayoutConstraints.WEST;
+      return JVxBorderLayoutConstraints.WEST;
     }
     else if (comp == _east)
     {
-      return BorderLayoutConstraints.EAST;
+      return JVxBorderLayoutConstraints.EAST;
     }
     return null;
   }
@@ -104,26 +104,26 @@ class BorderLayout extends Layout<BorderLayoutConstraints> {
     List<JVxBorderLayoutId> children = new List<JVxBorderLayoutId>();
 
     if (_center!=null && _center.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: BorderLayoutConstraints.CENTER));
+      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: JVxBorderLayoutConstraints.CENTER));
     }
 
     if (_north!=null && _north.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: BorderLayoutConstraints.NORTH));
+      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: JVxBorderLayoutConstraints.NORTH));
     }
 
     if (_south!=null && _south.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: BorderLayoutConstraints.SOUTH));
+      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: JVxBorderLayoutConstraints.SOUTH));
     }
 
     if (_west!=null && _west.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: BorderLayoutConstraints.WEST));
+      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: JVxBorderLayoutConstraints.WEST));
     }
 
     if (_east!=null && _east.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: BorderLayoutConstraints.EAST));
+      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: JVxBorderLayoutConstraints.EAST));
     }
 
-    return new JVxBorderLayout(
+    return new JVxBorderLayoutWidget(
       key: key,
       insMargin: margins,
       iHorizontalGap: horizontalGap,

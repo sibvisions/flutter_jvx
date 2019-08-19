@@ -1,4 +1,4 @@
-import "../form_layout.dart";
+import "../jvx_form_layout.dart";
 
 //****************************************************************
 // Subclass definition
@@ -10,7 +10,7 @@ import "../form_layout.dart";
 /// @author Martin Handsteiner, ported by Jürgen Hörmann
 ///
 
-class Anchor {
+class JVxAnchor {
   /// Constant for horizontal anchors.
   static const HORIZONTAL = 0;
 
@@ -18,13 +18,13 @@ class Anchor {
   static const VERTICAL = 1;
 
   /// The layout for this anchor.
-  FormLayout layout;
+  JVxFormLayout layout;
 
   /// The orientation of this anchor.
   int orientation;
 
   /// The related anchor to this anchor.
-  Anchor relatedAnchor;
+  JVxAnchor relatedAnchor;
 
   /// true, if this anchor should be auto sized.
   bool autoSize;
@@ -62,13 +62,13 @@ class Anchor {
 
   bool isBorderAnchor() => relatedAnchor == null;
 
-  Anchor(this.layout, this.orientation) {
+  JVxAnchor(this.layout, this.orientation) {
     relatedAnchor = null;
     autoSize = false;
     _position = 0;
   }
 
-  Anchor.fromAnchor(pRelatedAnchor) {
+  JVxAnchor.fromAnchor(pRelatedAnchor) {
     layout = pRelatedAnchor.layout;
     orientation = pRelatedAnchor.orientation;
     relatedAnchor = pRelatedAnchor;
@@ -76,7 +76,7 @@ class Anchor {
     _position = 0;
   }
 
-  Anchor.fromAnchorAndPosition(pRelatedAnchor, int pPosition) {
+  JVxAnchor.fromAnchorAndPosition(pRelatedAnchor, int pPosition) {
     layout = pRelatedAnchor.layout;
     orientation = pRelatedAnchor.orientation;
     relatedAnchor = pRelatedAnchor;
@@ -90,7 +90,7 @@ class Anchor {
   /// @param pRelatedAnchor the relatedAnchor to set.
   /// @return true, if pRelatedAnchor has a cycle reference to this anchor.
   ///
-  bool hasCycleReference(Anchor pRelatedAnchor) {
+  bool hasCycleReference(JVxAnchor pRelatedAnchor) {
     do {
       if (pRelatedAnchor == this) {
         return true;
@@ -108,7 +108,7 @@ class Anchor {
   ///
   /// @param pRelatedAnchor the relatedAnchor to set.
   ///
-  void setRelatedAnchor(Anchor pRelatedAnchor) {
+  void setRelatedAnchor(JVxAnchor pRelatedAnchor) {
     if (layout != pRelatedAnchor.layout ||
         orientation != pRelatedAnchor.orientation) {
       throw new ArgumentError(
@@ -143,8 +143,8 @@ class Anchor {
   ///
   /// @return the related border anchor.
   ///
-  Anchor getBorderAnchor() {
-    Anchor borderAnchor = this;
+  JVxAnchor getBorderAnchor() {
+    JVxAnchor borderAnchor = this;
     while (borderAnchor.relatedAnchor != null) {
       borderAnchor = borderAnchor.relatedAnchor;
     }
@@ -156,8 +156,8 @@ class Anchor {
   ///
   /// @return the related unused auto size anchor.
   ///
-  Anchor getRelativeAnchor() {
-    Anchor relativeAnchor = this;
+  JVxAnchor getRelativeAnchor() {
+    JVxAnchor relativeAnchor = this;
     while (relativeAnchor != null && !relativeAnchor.relative) {
       relativeAnchor = relativeAnchor.relatedAnchor;
     }

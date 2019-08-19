@@ -5,7 +5,7 @@ import 'widgets/jvx_form_layout_contraint.dart';
 import 'widgets/jvx_form_layout_anchor.dart';
 import '../component/jvx_component.dart';
 
-class FormLayout extends JVxLayout {
+class JVxFormLayout extends JVxLayout {
   static final int stretch = 100;
   Key key;
   /// The valid state of anchor calculation. */
@@ -16,34 +16,34 @@ class FormLayout extends JVxLayout {
 	int	verticalAlignment = stretch;
 
   /// The left border anchor. */
-  Anchor leftAnchor;
+  JVxAnchor leftAnchor;
   /// The left border anchor. */
-  Anchor rightAnchor;
+  JVxAnchor rightAnchor;
   /// The left border anchor. */
-  Anchor topAnchor;
+  JVxAnchor topAnchor;
   /// The left border anchor. */
-  Anchor bottomAnchor;
+  JVxAnchor bottomAnchor;
 
   /// The left margin border anchor. */
-  Anchor leftMarginAnchor;
+  JVxAnchor leftMarginAnchor;
   /// The left margin border anchor. */
-  Anchor rightMarginAnchor;
+  JVxAnchor rightMarginAnchor;
   /// The left margin border anchor. */
-  Anchor topMarginAnchor;
+  JVxAnchor topMarginAnchor;
   /// The left margin border anchor. */
-  Anchor bottomMarginAnchor;
+  JVxAnchor bottomMarginAnchor;
 
   /// All left default anchors. */
-  List<Anchor> leftDefaultAnchors;
+  List<JVxAnchor> leftDefaultAnchors;
   /// All top default anchors. */
-  List<Anchor> topDefaultAnchors;
+  List<JVxAnchor> topDefaultAnchors;
   /// All left default anchors. */
-  List<Anchor> rightDefaultAnchors;
+  List<JVxAnchor> rightDefaultAnchors;
   /// All top default anchors. */
-  List<Anchor> bottomDefaultAnchors;
+  List<JVxAnchor> bottomDefaultAnchors;
 
   /// stores all constraints. */
-  Map<JVxComponent, Constraint> _layoutConstraints = <JVxComponent, Constraint>{};
+  Map<JVxComponent, JVxConstraint> _layoutConstraints = <JVxComponent, JVxConstraint>{};
 
   ///
   /// Gets the margins.
@@ -79,26 +79,26 @@ class FormLayout extends JVxLayout {
     }
   }
 
-  FormLayout(this.key) {
+  JVxFormLayout(this.key) {
     verticalGap = 5;
     horizontalGap = 5;
-    leftAnchor = new Anchor(this, Anchor.HORIZONTAL);
-    rightAnchor = new Anchor(this, Anchor.HORIZONTAL);
-    topAnchor = new Anchor(this, Anchor.VERTICAL);
-    bottomAnchor = new Anchor(this, Anchor.VERTICAL);
-    leftMarginAnchor = new Anchor.fromAnchorAndPosition(leftAnchor, 10);
-    rightMarginAnchor = new Anchor.fromAnchorAndPosition(rightAnchor, -10);
-    topMarginAnchor = new Anchor.fromAnchorAndPosition(topAnchor, 10);
-    bottomMarginAnchor = new Anchor.fromAnchorAndPosition(bottomAnchor, -10);
-    leftDefaultAnchors = new List<Anchor>();
-    topDefaultAnchors = new List<Anchor>();
-    rightDefaultAnchors = new List<Anchor>();
-    bottomDefaultAnchors = new List<Anchor>();
+    leftAnchor = new JVxAnchor(this, JVxAnchor.HORIZONTAL);
+    rightAnchor = new JVxAnchor(this, JVxAnchor.HORIZONTAL);
+    topAnchor = new JVxAnchor(this, JVxAnchor.VERTICAL);
+    bottomAnchor = new JVxAnchor(this, JVxAnchor.VERTICAL);
+    leftMarginAnchor = new JVxAnchor.fromAnchorAndPosition(leftAnchor, 10);
+    rightMarginAnchor = new JVxAnchor.fromAnchorAndPosition(rightAnchor, -10);
+    topMarginAnchor = new JVxAnchor.fromAnchorAndPosition(topAnchor, 10);
+    bottomMarginAnchor = new JVxAnchor.fromAnchorAndPosition(bottomAnchor, -10);
+    leftDefaultAnchors = new List<JVxAnchor>();
+    topDefaultAnchors = new List<JVxAnchor>();
+    rightDefaultAnchors = new List<JVxAnchor>();
+    bottomDefaultAnchors = new List<JVxAnchor>();
   }
 
-  void addLayoutComponent(JVxComponent pComponent, Constraint pConstraint)
+  void addLayoutComponent(JVxComponent pComponent, JVxConstraint pConstraint)
   {
-    Constraint constraint;
+    JVxConstraint constraint;
 
     if (pConstraint != null)
     {
@@ -148,15 +148,15 @@ class FormLayout extends JVxLayout {
   /// @param pGap the horizontal or vertical gap.
   /// @return the leftTop and rightBottom Anchors.
   ///
-  List<Anchor> createDefaultAnchors(List<Anchor> pLeftTopDefaultAnchors, 
-    									  List<Anchor> pRightBottomDefaultAnchors, 
-    		                              Anchor pLeftTopAnchor, 
-    		                              Anchor pRightBottomAnchor, 
+  List<JVxAnchor> createDefaultAnchors(List<JVxAnchor> pLeftTopDefaultAnchors, 
+    									  List<JVxAnchor> pRightBottomDefaultAnchors, 
+    		                              JVxAnchor pLeftTopAnchor, 
+    		                              JVxAnchor pRightBottomAnchor, 
     		                              int pColumnOrRow,
     		                              int pGap)
   {
-    List<Anchor> defaultAnchors;
-    Anchor anchor;
+    List<JVxAnchor> defaultAnchors;
+    JVxAnchor anchor;
     int gap;
     bool rightBottom = pColumnOrRow < 0;
     if (rightBottom)
@@ -182,9 +182,9 @@ class FormLayout extends JVxLayout {
       }
       else
       {
-        defaultAnchors.add(new Anchor.fromAnchorAndPosition(defaultAnchors[size - 1], gap));
+        defaultAnchors.add(new JVxAnchor.fromAnchorAndPosition(defaultAnchors[size - 1], gap));
       }
-      defaultAnchors.add(new Anchor.fromAnchor(defaultAnchors[size]));
+      defaultAnchors.add(new JVxAnchor.fromAnchor(defaultAnchors[size]));
       size = defaultAnchors.length;
     }
     if (rightBottom)
@@ -204,7 +204,7 @@ class FormLayout extends JVxLayout {
 	/// @param pRow the row.
 	/// @return the constraints for the given component.
 	///
-  Constraint createConstraint(int pColumn, int pRow)
+  JVxConstraint createConstraint(int pColumn, int pRow)
   {
     return createConstraintWithBeginEnd(pColumn, pRow, pColumn, pRow);
   }
@@ -218,10 +218,10 @@ class FormLayout extends JVxLayout {
 	/// @param pEndRow the end row.
 	/// @return the constraints for the given component.
 	///
-  Constraint createConstraintWithBeginEnd(int pBeginColumn, int pBeginRow, int pEndColumn, int pEndRow)
+  JVxConstraint createConstraintWithBeginEnd(int pBeginColumn, int pBeginRow, int pEndColumn, int pEndRow)
   {
-    List<Anchor> left = createDefaultAnchors(leftDefaultAnchors, rightDefaultAnchors, leftMarginAnchor, rightMarginAnchor, pBeginColumn, horizontalGap);
-    List<Anchor> right;
+    List<JVxAnchor> left = createDefaultAnchors(leftDefaultAnchors, rightDefaultAnchors, leftMarginAnchor, rightMarginAnchor, pBeginColumn, horizontalGap);
+    List<JVxAnchor> right;
     if (pBeginColumn == pEndColumn)
     {
       right = left;
@@ -231,8 +231,8 @@ class FormLayout extends JVxLayout {
       right = createDefaultAnchors(leftDefaultAnchors, rightDefaultAnchors, leftMarginAnchor, rightMarginAnchor, pEndColumn, horizontalGap);
     }
     
-    List<Anchor> top = createDefaultAnchors(topDefaultAnchors, bottomDefaultAnchors, topMarginAnchor, bottomMarginAnchor, pBeginRow, verticalGap);
-    List<Anchor> bottom;
+    List<JVxAnchor> top = createDefaultAnchors(topDefaultAnchors, bottomDefaultAnchors, topMarginAnchor, bottomMarginAnchor, pBeginRow, verticalGap);
+    List<JVxAnchor> bottom;
     if (pBeginRow == pEndRow)
     {
       bottom = top;
@@ -241,7 +241,7 @@ class FormLayout extends JVxLayout {
     {
       bottom = createDefaultAnchors(topDefaultAnchors, bottomDefaultAnchors, topMarginAnchor, bottomMarginAnchor, pEndRow, verticalGap);
     }
-    return new Constraint(top[0], 
+    return new JVxConstraint(top[0], 
                 left[0], 
                 bottom[1], 
                 right[1]);
@@ -257,7 +257,7 @@ class FormLayout extends JVxLayout {
                      id: this._layoutConstraints.values.elementAt(i)));
     }
 
-    return JVxFormLayout(
+    return JVxFormLayoutWidget(
       key: key,
       valid: this._valid,
       children: children,

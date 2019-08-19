@@ -1,5 +1,5 @@
 import 'dart:core';
-import '../layouts/i_layout.dart';
+import '../layout/i_layout.dart';
 import '../component/i_component.dart';
 
 abstract class IContainer extends IComponent {
