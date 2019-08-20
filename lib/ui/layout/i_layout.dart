@@ -8,9 +8,9 @@ abstract class ILayout<E>  {
   /// the layout margins. */
   EdgeInsets margins = EdgeInsets.zero;
   /// the horizontal gap between components.
-  int	horizontalGap;
+  int	horizontalGap = 0;
   /// the vertical gap between components.
-  int	verticalGap;
+  int	verticalGap = 0;
 
   Widget getWidget();
 }

@@ -9,7 +9,12 @@ abstract class JVxLayout<E> implements ILayout<E> {
   /// the layout margins. */
   EdgeInsets margins = EdgeInsets.zero;
   /// the horizontal gap between components.
-  int	horizontalGap;
+  int	horizontalGap = 0;
   /// the vertical gap between components.
-  int	verticalGap;
+  int	verticalGap = 0;
+
+  void parseFromString(String layoutString) {
+    List<String> parameter = layoutString?.split(",");
+    
+  }
 }

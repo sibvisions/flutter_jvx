@@ -5,7 +5,7 @@ import 'widgets/jvx_border_layout.dart';
 import 'jvx_layout.dart';
 
 class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
-  Key key;
+  Key key = UniqueKey();
   /// the north component.
   JVxComponent _north;
   /// the south component.
@@ -22,6 +22,11 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
   JVxBorderLayout.fromGap(int pHorizontalGap, int pVerticalGap) {
     horizontalGap = pHorizontalGap;
     verticalGap = pVerticalGap;
+  }
+
+  JVxBorderLayout.fromLayoutString(String layoutString) {
+    List<String> parameter = layoutString?.split(",");
+    
   }
 
   void removeLayoutComponent(JVxComponent pComponent) {
