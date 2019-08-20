@@ -31,6 +31,12 @@ class SharedPreferencesHelper {
     return prefLoginData;
   }
 
+  Future<String> getAppVersion() async {
+    prefs = await SharedPreferences.getInstance();
+    String appVersion = prefs.getString('appVersion');
+    return appVersion;
+  }
+
   void setData(String appName, String baseUrl, String language) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('appName', appName);
@@ -47,5 +53,10 @@ class SharedPreferencesHelper {
   void setAuthKey(String authKey) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('authKey', authKey);
+  }
+
+  void setAppVersion(String appVersion) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('appVersion', appVersion);
   }
 }

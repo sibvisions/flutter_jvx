@@ -21,10 +21,10 @@ class LoginBloc {
     loginController.stream.listen(apiCall);
     loginResendController.stream.listen(resendLogin);
   }
-
+  
   /// on build of a [LoginBloc] a listener is inisiated and listens to the [loginController]
   /// 
-  /// also the a listener listens to the [loginResendController]
+  /// also a listener listens to the [loginResendController]
   void apiCall(LoginViewModel loginViewModel) async {
     FetchProcess process = new FetchProcess(loading: true);
     apiController.add(process);
@@ -37,7 +37,7 @@ class LoginBloc {
     loginViewModel = null;
   }
 
-  /// Method for resending the request to download the images
+  /// Method for resending the request to login
   void resendLogin(bool flag) {
     loginResultController.add(false);
   }

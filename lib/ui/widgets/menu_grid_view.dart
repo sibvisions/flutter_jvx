@@ -1,11 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
+import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class MenuGridView extends StatelessWidget {
+  OpenScreenBloc openScreenBloc = OpenScreenBloc();
+  StreamSubscription<FetchProcess> apiStreamSubscription;
   final List<MenuItem> items;
   
   MenuGridView({Key key, this.items}) : super(key: key);
@@ -33,11 +42,18 @@ class MenuGridView extends StatelessWidget {
                             : _iconBuilder(formatFontAwesomeText(items[index].image))
                   )
                   : new Text(""),
-                Align(child: Text(items[index].action.label), alignment: Alignment.bottomCenter,)
+                Text(items[index].action.label, style: TextStyle(fontSize: 20),),
               ],
             ),
           ),
-          onTap: () { },
+          onTap: () {
+            prefix0.Action action = items[index].action;
+            
+            apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
+            openScreenBloc.openScreenSink.add(
+              new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+            );
+          },
         );
       },
     );

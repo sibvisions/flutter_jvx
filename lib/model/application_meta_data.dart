@@ -1,3 +1,5 @@
+import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
+
 class ApplicationMetaData {
   String langCode;
   String name;
@@ -5,7 +7,9 @@ class ApplicationMetaData {
   String clientId;
   String version;
 
-  ApplicationMetaData({this.langCode, this.name, this.languageResource, this.clientId, this.version});
+  ApplicationMetaData({this.langCode, this.name, this.languageResource, this.clientId, this.version}) {
+    SharedPreferencesHelper().setAppVersion(this.version);
+  }
 
   ApplicationMetaData.fromJson(Map<String, dynamic> json)
     : langCode = json['langCode'],

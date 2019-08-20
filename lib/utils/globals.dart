@@ -7,4 +7,5 @@ String language = 'de';
 String clientId;
 String jsessionId;
 List<String> images;
+Map<String, String> translation = Map<String, String>();
 String dir;

@@ -2,10 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
-import 'package:jvx_mobile_v3/logic/bloc/image_download_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/image_download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
@@ -24,7 +21,6 @@ class StartupPage extends StatefulWidget {
 class _StartupPageState extends State<StartupPage> with SingleTickerProviderStateMixin {
   final scaffoldState = GlobalKey<ScaffoldState>();
   StartupBloc startupBloc = new StartupBloc();
-  LoginBloc loginBloc = new LoginBloc();
   String applicationName = globals.appName;
   StreamSubscription<FetchProcess> apiStreamSubscription;
   AnimationController controller;
@@ -43,24 +39,16 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
+    apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);    
     startupBloc.startupSink.add(
-      new StartupViewModel(applicationName: applicationName)
+      new StartupViewModel(applicationName: applicationName, layoutMode: 'generic')
     );
+    
     loadSharedPrefs();
-    _downloadImages(context);
   }
 
-  _downloadImages(BuildContext context) {
-  ImageDownloadBloc imageDownloadBloc = new ImageDownloadBloc();
-  StreamSubscription<FetchProcess> apiStreamSubscription;
-
-  apiStreamSubscription = apiSubscription(imageDownloadBloc.apiResult, context);
-  imageDownloadBloc.imageDownloadSink.add(new ImageDownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
-}
-
-  loadSharedPrefs() {
-    SharedPreferencesHelper().getData().then((prefData) {
+  loadSharedPrefs() async {
+    await SharedPreferencesHelper().getData().then((prefData) {
       if (prefData['appName'] == 'null' || prefData['appName'] == null || prefData['appName'].isEmpty) {
       } else {
         globals.appName = prefData['appName'];
@@ -73,7 +61,6 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       } else {
         globals.language = prefData['language'];
       }
-      Translations.load(new Locale(globals.language));
     });
   }
 
