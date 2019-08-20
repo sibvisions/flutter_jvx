@@ -7,4 +7,9 @@ class Action {
   Action.fromJson(Map<String, dynamic> json)
     : componentId = json['componentId'],
       label = json['label'];
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'componentId': componentId,
+    'label': label
+  };
 }

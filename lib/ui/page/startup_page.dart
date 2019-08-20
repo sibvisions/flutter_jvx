@@ -41,7 +41,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
     super.initState();
     apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);    
     startupBloc.startupSink.add(
-      new StartupViewModel(applicationName: applicationName)
+      new StartupViewModel(applicationName: applicationName, layoutMode: 'generic')
     );
     
     loadSharedPrefs();

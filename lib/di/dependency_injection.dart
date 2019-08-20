@@ -1,6 +1,7 @@
 import 'package:jvx_mobile_v3/services/abstract/i_download_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_login_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_logout_service.dart';
+import 'package:jvx_mobile_v3/services/abstract/i_open_screen_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_startup_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_login_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_logout_service.dart';
@@ -8,6 +9,7 @@ import 'package:jvx_mobile_v3/services/mock/mock_startup_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_download_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_login_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_logout_service.dart';
+import 'package:jvx_mobile_v3/services/real/real_open_screen_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_startup_service.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 
@@ -61,6 +63,15 @@ class Injector {
         return DownloadService(new RestClient());
       default:
         return DownloadService(new RestClient());
+    }
+  }
+
+  IOpenScreenService get openScreenService {
+    switch (_flavor) {
+      case Flavor.MOCK:
+        return OpenScreenService(new RestClient());
+      default:
+        return OpenScreenService(new RestClient());
     }
   }
 }

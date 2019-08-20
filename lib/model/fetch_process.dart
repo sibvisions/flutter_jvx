@@ -1,6 +1,6 @@
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 
-enum ApiType { performStartup, performLogin, performLogout, performDownload }
+enum ApiType { performStartup, performLogin, performLogout, performDownload, performOpenScreen }
 
 class FetchProcess<T> {
   ApiType type;

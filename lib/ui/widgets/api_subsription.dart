@@ -66,6 +66,8 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performDownload:
             break;
+          case ApiType.performOpenScreen:
+            break;
         }
       }
     }

@@ -8,19 +8,20 @@ import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 
 class StartupViewModel {
   String applicationName;
+  String layoutMode;
   bool startupResult = false;
   NetworkServiceResponse apiResult;
   StartupService startupRepo = Injector().startupService;
 
-  StartupViewModel({@required this.applicationName});
+  StartupViewModel({@required this.applicationName, @required this.layoutMode});
 
   Future<Null> performStartup(StartupViewModel startupViewModel) async {
     await SharedPreferencesHelper().getLoginData().then((onValue) async {
       if (onValue['authKey'] != null) {
-        NetworkServiceResponse<StartupResponse> result = await startupRepo.fetchStartupResponse(Startup(applicationName: startupViewModel.applicationName, authKey: onValue['authKey']));
+        NetworkServiceResponse<StartupResponse> result = await startupRepo.fetchStartupResponse(Startup(applicationName: startupViewModel.applicationName, authKey: onValue['authKey'], layoutMode: startupViewModel.layoutMode));
         this.apiResult = result;
       } else {
-        NetworkServiceResponse<StartupResponse> result = await startupRepo.fetchStartupResponse(Startup(applicationName: startupViewModel.applicationName));
+        NetworkServiceResponse<StartupResponse> result = await startupRepo.fetchStartupResponse(Startup(applicationName: startupViewModel.applicationName, layoutMode: startupViewModel.layoutMode));
         this.apiResult = result;
       }
     });
