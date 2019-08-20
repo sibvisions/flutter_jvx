@@ -58,9 +58,9 @@ class Injector {
   IDownloadSerivce get downloadService {
     switch (_flavor) {
       case Flavor.MOCK:
-        return ImageDownloadService(new RestClient());
+        return DownloadService(new RestClient());
       default:
-        return ImageDownloadService(new RestClient());
+        return DownloadService(new RestClient());
     }
   }
 }

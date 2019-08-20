@@ -3,6 +3,7 @@ import 'package:jvx_mobile_v3/inherited/login_provider.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 enum LoginValidationType { username, password }
 
@@ -42,6 +43,11 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    loadTranslation();
+  }
+
+  loadTranslation() async {
+    await Translations.load(new Locale(globals.language));
   }
 
   @override

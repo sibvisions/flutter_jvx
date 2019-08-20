@@ -36,7 +36,7 @@ class RestClient {
     return processResponse<T>(response);
   }
 
-  Future<MappedNetworkServiceResponse<T>> postAsyncImage<T>(String resourcePath, dynamic data) async {
+  Future<MappedNetworkServiceResponse<T>> postAsyncDownload<T>(String resourcePath, dynamic data) async {
     var content = json.encode(data);
     var response;
     try {

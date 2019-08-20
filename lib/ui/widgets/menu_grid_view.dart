@@ -33,7 +33,7 @@ class MenuGridView extends StatelessWidget {
                             : _iconBuilder(formatFontAwesomeText(items[index].image))
                   )
                   : new Text(""),
-                Align(child: Text(items[index].action.label), alignment: Alignment.bottomCenter,)
+                Text(items[index].action.label, style: TextStyle(fontSize: 20),),
               ],
             ),
           ),
