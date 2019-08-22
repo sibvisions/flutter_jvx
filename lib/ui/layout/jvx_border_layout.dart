@@ -19,17 +19,11 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
 
   JVxBorderLayout();
 
-  JVxBorderLayout.fromGap(int pHorizontalGap, int pVerticalGap) {
-    horizontalGap = pHorizontalGap;
-    verticalGap = pVerticalGap;
-  }
-
   JVxBorderLayout.fromLayoutString(String layoutString) {
-    List<String> parameter = layoutString?.split(",");
-    
+    parseFromString(layoutString);
   }
 
-  void removeLayoutComponent(JVxComponent pComponent) {
+  void removeLayoutComponent(IComponent pComponent) {
       if (pComponent == _center)
       {
         _center = null;
@@ -52,7 +46,7 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
       }
   }
 
-  void addLayoutComponent(JVxComponent pComponent, JVxBorderLayoutConstraints pConstraints)
+  void addLayoutComponent(IComponent pComponent, JVxBorderLayoutConstraints pConstraints)
   {
     if (pConstraints == null || pConstraints == JVxBorderLayoutConstraints.CENTER)
     {

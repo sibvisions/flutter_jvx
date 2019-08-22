@@ -15,6 +15,15 @@ abstract class JVxLayout<E> implements ILayout<E> {
 
   void parseFromString(String layoutString) {
     List<String> parameter = layoutString?.split(",");
-    
+
+    double top = double.parse(parameter[1]);
+    double left = double.parse(parameter[2]);
+    double bottom = double.parse(parameter[3]);
+    double right = double.parse(parameter[4]);
+
+    margins = EdgeInsets.fromLTRB(left, top, right, bottom);
+    horizontalGap = int.parse(parameter[5]);
+    verticalGap = int.parse(parameter[6]);
   }
+
 }

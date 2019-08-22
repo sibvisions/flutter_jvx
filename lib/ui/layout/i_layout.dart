@@ -12,5 +12,8 @@ abstract class ILayout<E>  {
   /// the vertical gap between components.
   int	verticalGap = 0;
 
+  E getConstraints(IComponent comp);
+  void addLayoutComponent(IComponent pComponent, E pConstraints);
+  void removeLayoutComponent(IComponent pComponent);
   Widget getWidget();
 }
