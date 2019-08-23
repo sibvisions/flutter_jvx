@@ -9,6 +9,7 @@ import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
+import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -67,6 +68,8 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           case ApiType.performDownload:
             break;
           case ApiType.performOpenScreen:
+            Key componentID = new Key(p.response.content.componentId);
+            Navigator.of(context).push(MaterialPageRoute(builder:  (context) => OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID,)));
             break;
         }
       }
