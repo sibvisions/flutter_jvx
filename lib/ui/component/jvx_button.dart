@@ -9,6 +9,14 @@ class JVxButton extends JVxComponent {
   }
 
   Widget getWidget() {
-    return MaterialButton(key: this.componentId, onPressed: buttonPressed);
+    return MaterialButton(
+      key: this.componentId, 
+      onPressed: buttonPressed,
+      child: Text(this.name, 
+        style: TextStyle(
+          backgroundColor: this.background,
+        ),
+      ),
+    );
   }
 }

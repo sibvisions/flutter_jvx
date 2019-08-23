@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:jvx_mobile_v3/utils/globals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesHelper {
@@ -37,6 +40,22 @@ class SharedPreferencesHelper {
     return appVersion;
   }
 
+  Future<Map<String, String>> getTranslation() async {
+    prefs = await SharedPreferences.getInstance();
+    String jsonString = prefs.getString('translation');
+
+    Map<String, String> result;
+
+    if (jsonString != null)
+      result = Map.from(json.decode(jsonString).map((key, val) {
+        return MapEntry(
+          key.toString(),
+          val.toString()
+        );
+      }));
+    return result;
+  }
+
   void setData(String appName, String baseUrl, String language) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('appName', appName);
@@ -58,5 +77,13 @@ class SharedPreferencesHelper {
   void setAppVersion(String appVersion) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('appVersion', appVersion);
+  }
+
+  void setTranslation(Map<String, String> translation) async {
+    String hashmapString = json.encode(translation);
+
+    prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('translation', hashmapString);
   }
 }

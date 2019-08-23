@@ -39,12 +39,11 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
+    loadSharedPrefs();
     apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);    
     startupBloc.startupSink.add(
       new StartupViewModel(applicationName: applicationName, layoutMode: 'generic')
     );
-    
-    loadSharedPrefs();
   }
 
   loadSharedPrefs() async {
@@ -62,6 +61,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
         globals.language = prefData['language'];
       }
     });
+    await SharedPreferencesHelper().getTranslation().then((prefData) => globals.translation = prefData);
   }
 
   @override

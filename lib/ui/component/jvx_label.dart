@@ -14,9 +14,9 @@ class JVxLabel extends JVxComponent implements IComponent {
       TextAlign align = TextAlign.left;
 
       return new Text(text, 
-                key: componentId, 
-                style: style,
-                textAlign: align
-              );
+        key: componentId,
+        style: style,
+        textAlign: align
+      );
   }
 }

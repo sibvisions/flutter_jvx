@@ -6,7 +6,7 @@ enum BorderLayoutConstraints {
   CENTER
 }
 
-enum UIClasses {
+enum UIComponents {
   BUTTON,
   LABEL,
   PANEL
@@ -15,7 +15,7 @@ enum UIClasses {
 class JvxComponent {
   String id;
   String name;
-  UIClasses className;
+  UIComponents className;
   int verticalAlignment;
   String text;
   bool eventAction;
@@ -47,13 +47,13 @@ class JvxComponent {
 
     switch (json['className']) {
       case 'Panel':
-        className = UIClasses.PANEL;
+        className = UIComponents.PANEL;
         break;
       case 'Button':
-        className = UIClasses.BUTTON;
+        className = UIComponents.BUTTON;
         break;
       default:
-        className = UIClasses.LABEL;
+        className = UIComponents.LABEL;
         break;
     }
 

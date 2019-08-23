@@ -38,7 +38,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 
                 globals.dir = _dir;
 
-              // if (val != p.response.content.applicationMetaData.version)
+              if (val != p.response.content.applicationMetaData.version)
                 _download(context);
             });
             SharedPreferencesHelper().getLoginData().then((onValue) {

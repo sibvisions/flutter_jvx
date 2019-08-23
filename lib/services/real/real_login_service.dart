@@ -36,5 +36,9 @@ class LoginService extends NetworkService implements ILoginService {
         message: result.networkServiceResponse.message
       );
     }
+    return new NetworkServiceResponse(
+      success: result.networkServiceResponse.success,
+      message: result.networkServiceResponse.message
+    );
   }
 }
