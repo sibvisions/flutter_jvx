@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'jvx_layout.dart';
 import 'widgets/jvx_form_layout.dart';
 import 'widgets/jvx_form_layout_contraint.dart';
 import 'widgets/jvx_form_layout_anchor.dart';
 import '../component/jvx_component.dart';
 
-class JVxFormLayout extends JVxLayout {
+class JVxFormLayout extends JVxLayout<JVxConstraint> {
   static final int stretch = 100;
   Key key;
   /// The valid state of anchor calculation. */
@@ -80,6 +81,19 @@ class JVxFormLayout extends JVxLayout {
   }
 
   JVxFormLayout(this.key) {
+    init();
+  }
+
+  JVxFormLayout.fromLayoutString(String layoutString) {
+    init();
+    parseFromString(layoutString);
+    List<String> parameter = layoutString?.split(",");
+
+    horizontalAlignment = int.parse(parameter[7]);
+    verticalAlignment = int.parse(parameter[8]);
+  }
+
+  void init() {
     verticalGap = 5;
     horizontalGap = 5;
     leftAnchor = new JVxAnchor(this, JVxAnchor.HORIZONTAL);
@@ -96,7 +110,7 @@ class JVxFormLayout extends JVxLayout {
     bottomDefaultAnchors = new List<JVxAnchor>();
   }
 
-  void addLayoutComponent(JVxComponent pComponent, JVxConstraint pConstraint)
+  void addLayoutComponent(IComponent pComponent, JVxConstraint pConstraint)
   {
     JVxConstraint constraint;
 
@@ -113,28 +127,25 @@ class JVxFormLayout extends JVxLayout {
     {
       throw new ArgumentError("Constraint " + pConstraint.toString() + " is not allowed!");
     }
-    /*else if (constraint.leftAnchor.layout != this
-        || constraint.rightAnchor.layout != this
-        || constraint.topAnchor.layout != this
-        || constraint.bottomAnchor.layout != this)
-    {
-      throw new ArgumentError("Constraint " + pConstraint.toString() + " has anchors for an other layout!");
-    }*/
     else
     {
       _layoutConstraints.putIfAbsent(pComponent, () => constraint);
-      //_layoutConstraints.add(JVxFormLayoutConstraint(child: pComponent.getWidget(), id: constraint));
     }
 
     _valid = false;
   }
 
-  void removeLayoutComponent(JVxComponent pComponent) 
+  void removeLayoutComponent(IComponent pComponent) 
   {
     _layoutConstraints.remove(pComponent);
     //_layoutConstraints.removeWhere((formLayoutContraints) => formLayoutContraints.child==pComponent.getWidget());
     
     _valid = false;
+  }
+
+    @override
+  JVxConstraint getConstraints(IComponent comp) {
+    return _layoutConstraints[comp];
   }
 
   ///

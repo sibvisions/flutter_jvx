@@ -2,29 +2,63 @@ import 'package:flutter/material.dart';
 import 'i_container.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
-import '../layout/i_layout.dart';
+import '../layout/jvx_layout.dart';
 
 abstract class JVxContainer extends JVxComponent implements IContainer {
-  ILayout layout;
+  JVxLayout layout;
+  List<JVxComponent> components = new List<JVxComponent>();
+
   JVxContainer(Key componentId) : super(componentId);
 
-  ///
-	/// Checks if it's allowed to add a specific component to this container.
-	/// 
-	/// @param pComponent the component to be added
-  /// @param pConstraints an object expressing layout constraints
-	/// @param pIndex the position in the container's list at which to insert the IComponent; -1 means insert at the end component
-	///
-	void checkAdd(IComponent pComponent, Object pConstraints, int pIndex)
-	{
-    if (pComponent == null)
-    {
-        throw new ArgumentError("Component can't be null!");
-    }
-	    
-		if (!(pComponent is JVxComponent))
+  void add(IComponent pComponent) {
+    addWithContraintsAndIndex(pComponent, null, -1);
+  }
+
+  void addWithConstraints(IComponent pComponent, Object pConstraints) {
+    addWithContraintsAndIndex(pComponent, pConstraints, -1);
+  }
+
+  void addWithIndex(IComponent pComponent, int pIndex) {
+    addWithContraintsAndIndex(pComponent, null, pIndex);
+  }
+
+  void addWithContraintsAndIndex(IComponent pComponent, Object pConstraints, int pIndex) {
+      if (pIndex < 0)
+			{
+				components.add(pComponent);
+			}
+			else
+			{
+				components.insert(pIndex, pComponent);
+			}
+
+      if (layout != null) {
+        layout.addLayoutComponent(pComponent, pConstraints);
+      }
+    
+  }
+
+  void remove(int pIndex) {
+      IComponent pComponent = components[pIndex];
+      if (layout!=null) {
+        layout.removeLayoutComponent(pComponent);
+      }
+      components.removeAt(pIndex);
+  }
+
+  void removeWithComponent(IComponent pComponent) {
+    int index = components.indexOf(pComponent); // For compatibility reasons, it has to call remove(int pIndex).
+		
+		if (index >= 0)
 		{
-			throw new ArgumentError("Only JVxComponents may be added to JVxContainer!"); 
+			remove(index);
 		}
-	}
+  }
+
+  void removeAll() {
+    while (components.length > 0)
+		{
+			remove(components.length - 1);
+		}
+  }
 }

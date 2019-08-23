@@ -11,7 +11,13 @@ enum JVxBorderLayoutConstraints {
   SOUTH,
   WEST,
   EAST,
-  CENTER,
+  CENTER
+}
+
+
+JVxBorderLayoutConstraints getJVxBorderLayoutConstraintsFromString(String jvxBorderLayoutConstraintsString) {
+  jvxBorderLayoutConstraintsString = 'Fruit.$jvxBorderLayoutConstraintsString';
+  return JVxBorderLayoutConstraints.values.firstWhere((f)=> f.toString() == jvxBorderLayoutConstraintsString, orElse: () => null);
 }
 
 ///
