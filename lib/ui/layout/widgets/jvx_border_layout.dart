@@ -7,16 +7,16 @@ import 'package:flutter/foundation.dart';
 /// WEST    CENTER      EAST
 ///           SOUTH
 enum JVxBorderLayoutConstraints {
-  NORTH,
-  SOUTH,
-  WEST,
-  EAST,
-  CENTER
+  North,
+  South,
+  West,
+  East,
+  Center
 }
 
 
 JVxBorderLayoutConstraints getJVxBorderLayoutConstraintsFromString(String jvxBorderLayoutConstraintsString) {
-  jvxBorderLayoutConstraintsString = 'Fruit.$jvxBorderLayoutConstraintsString';
+  jvxBorderLayoutConstraintsString = 'JVxBorderLayoutConstraints.$jvxBorderLayoutConstraintsString';
   return JVxBorderLayoutConstraints.values.firstWhere((f)=> f.toString() == jvxBorderLayoutConstraintsString, orElse: () => null);
 }
 
@@ -95,23 +95,23 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
   void addLayoutComponent(RenderBox pComponent, JVxBorderLayoutConstraints pConstraints)
   {
-    if (pConstraints == null || pConstraints==JVxBorderLayoutConstraints.CENTER)
+    if (pConstraints == null || pConstraints==JVxBorderLayoutConstraints.Center)
     {
       center = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.NORTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.North)
     {
       north = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.SOUTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.South)
     {
       south = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.EAST)
+    else if (pConstraints == JVxBorderLayoutConstraints.East)
     {
       east = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.WEST)
+    else if (pConstraints == JVxBorderLayoutConstraints.West)
     {
       west = pComponent;
     }

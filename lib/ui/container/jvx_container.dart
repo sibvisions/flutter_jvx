@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout.dart';
 import 'i_container.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
 import '../layout/jvx_layout.dart';
+import '../layout/jvx_border_layout.dart';
 
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
@@ -14,7 +16,7 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
     addWithContraintsAndIndex(pComponent, null, -1);
   }
 
-  void addWithConstraints(IComponent pComponent, Object pConstraints) {
+  void addWithConstraints(IComponent pComponent, String pConstraints) {
     addWithContraintsAndIndex(pComponent, pConstraints, -1);
   }
 
@@ -22,7 +24,7 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
     addWithContraintsAndIndex(pComponent, null, pIndex);
   }
 
-  void addWithContraintsAndIndex(IComponent pComponent, Object pConstraints, int pIndex) {
+  void addWithContraintsAndIndex(IComponent pComponent, String pConstraints, int pIndex) {
       if (pIndex < 0)
 			{
 				components.add(pComponent);
@@ -33,7 +35,10 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
 			}
 
       if (layout != null) {
-        layout.addLayoutComponent(pComponent, pConstraints);
+        if (layout is JVxBorderLayout) {
+          JVxBorderLayoutConstraints contraints = getJVxBorderLayoutConstraintsFromString(pConstraints);
+          (layout as JVxBorderLayout).addLayoutComponent(pComponent, contraints);
+        }
       }
     
   }

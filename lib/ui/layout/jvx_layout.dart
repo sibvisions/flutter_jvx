@@ -26,4 +26,9 @@ abstract class JVxLayout<E> implements ILayout<E> {
     verticalGap = int.parse(parameter[6]);
   }
 
+  static String getLayoutName(String layoutString) {
+    List<String> parameter = layoutString?.split(",");
+    return parameter[0];
+  }
+
 }
