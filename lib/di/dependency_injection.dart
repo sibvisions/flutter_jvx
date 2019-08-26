@@ -1,3 +1,4 @@
+import 'package:jvx_mobile_v3/services/abstract/i_close_screen_request.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_download_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_login_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_logout_service.dart';
@@ -6,6 +7,7 @@ import 'package:jvx_mobile_v3/services/abstract/i_startup_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_login_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_logout_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_startup_service.dart';
+import 'package:jvx_mobile_v3/services/real/real_close_screen_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_download_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_login_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_logout_service.dart';
@@ -72,6 +74,15 @@ class Injector {
         return OpenScreenService(new RestClient());
       default:
         return OpenScreenService(new RestClient());
+    }
+  }
+
+  ICloseScreenService get closeScreenService {
+    switch (_flavor) {
+      case Flavor.MOCK:
+        return CloseScreenService(new RestClient());
+      default:
+        return CloseScreenService(new RestClient());
     }
   }
 }

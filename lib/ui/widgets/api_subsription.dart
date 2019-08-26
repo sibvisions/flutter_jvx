@@ -71,6 +71,9 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             Key componentID = new Key(p.response.content.componentId);
             Navigator.of(context).push(MaterialPageRoute(builder:  (context) => OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID,)));
             break;
+          case ApiType.performCloseScreen:
+            Navigator.of(context).pop();
+            break;
         }
       }
     }
