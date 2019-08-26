@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/logic/bloc/close_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class OpenScreenPage extends StatelessWidget {
-  final List<dynamic> changedComponents;
+  final List<ChangedComponent> changedComponents;
   final Key componentId;
   const OpenScreenPage({Key key, this.changedComponents, this.componentId}) : super(key: key);
 

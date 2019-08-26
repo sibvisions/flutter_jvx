@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/model/jvx_component.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 
 class OpenScreenResponse {
-  List<JvxComponent> changedComponents;
+  List<ChangedComponent> changedComponents;
   String name;
   String componentId;
 
@@ -16,7 +16,7 @@ class OpenScreenResponse {
     List<dynamic> chComp = json[0]['changedComponents'];
 
     chComp.forEach((val) {
-      changedComponents.add(JvxComponent.fromJson(val));
+      changedComponents.add(ChangedComponent.fromJson(val));
     });
   }
 }

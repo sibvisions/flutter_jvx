@@ -48,23 +48,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
 
   void addLayoutComponent(IComponent pComponent, JVxBorderLayoutConstraints pConstraints)
   {
-    if (pConstraints == null || pConstraints == JVxBorderLayoutConstraints.CENTER)
+    if (pConstraints == null || pConstraints == JVxBorderLayoutConstraints.Center)
     {
       _center = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.NORTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.North)
     {
       _north = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.SOUTH)
+    else if (pConstraints == JVxBorderLayoutConstraints.South)
     {
       _south = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.EAST)
+    else if (pConstraints == JVxBorderLayoutConstraints.East)
     {
       _east = pComponent;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.WEST)
+    else if (pConstraints == JVxBorderLayoutConstraints.West)
     {
       _west = pComponent;
     }
@@ -78,23 +78,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
   {
     if (comp == _center)
     {
-      return JVxBorderLayoutConstraints.CENTER;
+      return JVxBorderLayoutConstraints.Center;
     }
     else if (comp == _north)
     {
-      return JVxBorderLayoutConstraints.NORTH;
+      return JVxBorderLayoutConstraints.North;
     }
     else if (comp == _south)
     {
-      return JVxBorderLayoutConstraints.SOUTH;
+      return JVxBorderLayoutConstraints.South;
     }
     else if (comp == _west)
     {
-      return JVxBorderLayoutConstraints.WEST;
+      return JVxBorderLayoutConstraints.West;
     }
     else if (comp == _east)
     {
-      return JVxBorderLayoutConstraints.EAST;
+      return JVxBorderLayoutConstraints.East;
     }
     return null;
   }
@@ -103,23 +103,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
     List<JVxBorderLayoutId> children = new List<JVxBorderLayoutId>();
 
     if (_center!=null && _center.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: JVxBorderLayoutConstraints.CENTER));
+      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: JVxBorderLayoutConstraints.Center));
     }
 
     if (_north!=null && _north.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: JVxBorderLayoutConstraints.NORTH));
+      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: JVxBorderLayoutConstraints.North));
     }
 
     if (_south!=null && _south.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: JVxBorderLayoutConstraints.SOUTH));
+      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: JVxBorderLayoutConstraints.South));
     }
 
     if (_west!=null && _west.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: JVxBorderLayoutConstraints.WEST));
+      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: JVxBorderLayoutConstraints.West));
     }
 
     if (_east!=null && _east.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: JVxBorderLayoutConstraints.EAST));
+      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: JVxBorderLayoutConstraints.East));
     }
 
     return new JVxBorderLayoutWidget(

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'jvx_component.dart';
 
 class JVxButton extends JVxComponent {
-  JVxButton(Key componentId) : super(componentId);
+  String text = "";
+
+  JVxButton(Key componentId) : super(componentId) {
+    this.background = Colors.grey;
+  }
 
   void buttonPressed() {
   
@@ -12,7 +16,7 @@ class JVxButton extends JVxComponent {
     return MaterialButton(
       key: this.componentId, 
       onPressed: buttonPressed,
-      child: Text(this.name, 
+      child: Text(text, 
         style: TextStyle(
           backgroundColor: this.background,
         ),

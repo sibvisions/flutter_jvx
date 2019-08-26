@@ -4,14 +4,14 @@ import 'i_component.dart';
 abstract class JVxComponent implements IComponent {
   String name;
   Key componentId;
-  Color background;
+  Color background = Colors.white;
   Color foreground;
-  TextStyle style;
+  TextStyle style = new TextStyle(fontSize: 10.0, color: Colors.black);
   Size preferredSize;
   Size minimumSize;
   Size maximumSize;
-  bool isVisible;
-  bool enabled;
+  bool isVisible = true;
+  bool enabled = true;
 
   Key parentComponentId;
   List<Key> childComponentIds;
