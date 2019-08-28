@@ -74,6 +74,8 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           case ApiType.performCloseScreen:
             Navigator.of(context).pop();
             break;
+          case ApiType.performPressButton:
+            break;
         }
       }
     }

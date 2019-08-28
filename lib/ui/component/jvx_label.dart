@@ -5,7 +5,7 @@ import 'i_component.dart';
 class JVxLabel extends JVxComponent implements IComponent {
   String text = "";
 
-  JVxLabel(Key componentId, { this.text, TextStyle style }) : super(componentId) {
+  JVxLabel(Key componentId, BuildContext context, { this.text, TextStyle style }) : super(componentId, context) {
       super.style = style;
   }
 

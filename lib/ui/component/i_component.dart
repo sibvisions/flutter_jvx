@@ -11,6 +11,7 @@ abstract class IComponent {
   Size maximumSize;
   bool isVisible;
   bool enabled;
+  BuildContext context;
 
   Key parentComponentId;
   List<Key> childComponentIds;

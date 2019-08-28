@@ -13,16 +13,16 @@ import 'component/jvx_label.dart';
 
 class JVxComponentCreator {
 
-  static JVxComponent create(ChangedComponent component) {
+  static JVxComponent create(ChangedComponent component, BuildContext context) {
     JVxComponent componentClass; 
 
     if (component.className=="Panel") {
-      componentClass = new JVxPanel(Key(component.id));
+      componentClass = new JVxPanel(Key(component.id), context);
     } else if (component.className=="Label") {
-      componentClass = new JVxLabel(Key(component.id));
+      componentClass = new JVxLabel(Key(component.id), context);
       (componentClass as JVxLabel).text = component.text;
     } else if (component.className=="Button") {
-      componentClass = new JVxButton(Key(component.id));
+      componentClass = new JVxButton(Key(component.id), context);
       (componentClass as JVxButton).text = component.text;
     }
 

@@ -16,7 +16,6 @@ class OpenScreenService extends NetworkService implements IOpenScreenService {
 
     if (result.mappedResult != null) {
       var res = OpenScreenResponse.fromJson(result.mappedResult);
-      print(res.changedComponents[0].layout);
       return new NetworkServiceResponse(
         content: res,
         success: result.networkServiceResponse.success

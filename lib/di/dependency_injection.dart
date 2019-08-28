@@ -1,8 +1,9 @@
-import 'package:jvx_mobile_v3/services/abstract/i_close_screen_request.dart';
+import 'package:jvx_mobile_v3/services/abstract/i_close_screen_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_download_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_login_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_logout_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_open_screen_service.dart';
+import 'package:jvx_mobile_v3/services/abstract/i_press_button_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_startup_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_login_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_logout_service.dart';
@@ -12,6 +13,7 @@ import 'package:jvx_mobile_v3/services/real/real_download_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_login_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_logout_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_open_screen_service.dart';
+import 'package:jvx_mobile_v3/services/real/real_press_button_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_startup_service.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 
@@ -83,6 +85,15 @@ class Injector {
         return CloseScreenService(new RestClient());
       default:
         return CloseScreenService(new RestClient());
+    }
+  }
+
+  IPressButtonService get pressButtonService {
+    switch (_flavor) {
+      case Flavor.MOCK:
+        return PressButtonService(new RestClient());
+      default:
+        return PressButtonService(new RestClient());
     }
   }
 }

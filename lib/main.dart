@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:jvx_mobile_v3/di/dependency_injection.dart';
 import 'package:jvx_mobile_v3/jvx_mobile.dart';
+import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+
+GetIt getIt = GetIt.instance;
 
 void main() {
+  getIt.registerSingleton<JVxScreen>(JVxScreen.withoutArgs());
   Injector.configure(Flavor.PRO);
   runApp(JvxMobile());
 }

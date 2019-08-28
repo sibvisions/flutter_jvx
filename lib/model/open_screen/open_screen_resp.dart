@@ -19,4 +19,5 @@ class OpenScreenResponse {
       changedComponents.add(ChangedComponent.fromJson(val));
     });
   }
+  
 }

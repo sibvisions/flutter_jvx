@@ -7,20 +7,23 @@ import 'jvx_component_creater.dart';
 class JVxScreen {
   Key componentId;
   Map<String, JVxComponent> components = new Map<String, JVxComponent>();
+  BuildContext context;
 
-  JVxScreen(this.componentId, List<ChangedComponent> changedComponents) {
+  JVxScreen(this.componentId, List<ChangedComponent> changedComponents, this.context) {
 
     for(var i = 0; i < changedComponents.length; i++){
-      this.addComponent(changedComponents[i]);
+      this.addComponent(changedComponents[i], context);
     }
   }
+
+  JVxScreen.withoutArgs();
 
   updateComponents(List<ChangedComponent> changedComponentsJson) {
 
   }
 
-  void addComponent(ChangedComponent component) {
-      JVxComponent componentClass = JVxComponentCreator.create(component);
+  void addComponent(ChangedComponent component, BuildContext context) {
+      JVxComponent componentClass = JVxComponentCreator.create(component, context);
 
       if (componentClass!= null) {
         components.putIfAbsent(component.id, () => componentClass);

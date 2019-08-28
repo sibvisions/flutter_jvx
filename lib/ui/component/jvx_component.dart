@@ -12,6 +12,7 @@ abstract class JVxComponent implements IComponent {
   Size maximumSize;
   bool isVisible = true;
   bool enabled = true;
+  BuildContext context;
 
   Key parentComponentId;
   List<Key> childComponentIds;
@@ -22,5 +23,5 @@ abstract class JVxComponent implements IComponent {
   bool get isMinimumSizeSet => minimumSize!=null;
   bool get isMaximumSizeSet => maximumSize!=null;
 
-  JVxComponent(this.componentId);
+  JVxComponent(this.componentId, this.context);
 }

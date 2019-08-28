@@ -67,17 +67,24 @@ class XmlLoader {
   XmlLoader();
 
   Future<Map<String, String>> loadTranslationsXml(String lang) {
-    Future.delayed(const Duration(seconds: 5), () async {
+    Future.delayed(const Duration(seconds: 5), () {
       if (lang == 'en') {
         File file;
 
         if (globals.translation != null)
           file = new File(globals.translation['translation.xml']);
 
-        String contents = await file.readAsString();
+        String contents = file.readAsStringSync();
 
         xml.XmlDocument doc = xml.parse(contents);
 
+        print('JO: ' + doc.findAllElements('entry').toList()[0].attributes[0].value.toString());
+
+        doc.findAllElements('entry').map((f) {
+          print('Hello ' + f.toString());
+        });
+
+        /*
         this.currentXml = doc;
 
         Map<String, String> translation = Map<String, String>();
@@ -86,12 +93,16 @@ class XmlLoader {
           translation[f.getAttribute('key')] = f.text;
         });
 
+        print('Hello: ' + translation['Username:'].toString());
+        
+
         return translation;
+        */
       }
       if (globals.translation['translation_$lang.xml'] != null) {
         File file = new File(globals.translation['translation_$lang.xml']);
 
-        String contents = await file.readAsString();
+        String contents = file.readAsStringSync();
 
         xml.XmlDocument doc = xml.parse(contents);
 

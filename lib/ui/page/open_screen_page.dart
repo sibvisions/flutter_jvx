@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:jvx_mobile_v3/logic/bloc/close_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
@@ -16,6 +17,15 @@ class OpenScreenPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GetIt getIt = GetIt.instance;
+
+    getIt.get<JVxScreen>().componentId = this.componentId;
+    getIt.get<JVxScreen>().context = context;
+
+    for(var i = 0; i < changedComponents.length; i++){
+      getIt.get<JVxScreen>().addComponent(changedComponents[i], context);
+    }    
+
     return WillPopScope(
       onWillPop: () {
         CloseScreenBloc closeScreenBloc = CloseScreenBloc();
@@ -29,7 +39,10 @@ class OpenScreenPage extends StatelessWidget {
         return;
       },
       child: Scaffold(
-        body: JVxScreen(this.componentId, this.changedComponents).getWidget(),
+        appBar: AppBar(
+          title: Text('OpenScreen'),
+        ),
+        body: getIt.get<JVxScreen>().getWidget(),
       ),
     );
   }

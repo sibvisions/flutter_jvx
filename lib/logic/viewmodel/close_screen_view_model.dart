@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:jvx_mobile_v3/di/dependency_injection.dart';
 import 'package:jvx_mobile_v3/model/close_screen/close_screen.dart';
-import 'package:jvx_mobile_v3/services/abstract/i_close_screen_request.dart';
+import 'package:jvx_mobile_v3/services/abstract/i_close_screen_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 
 class CloseScreenViewModel {

@@ -1,5 +1,5 @@
 import 'package:jvx_mobile_v3/model/close_screen/close_screen.dart';
-import 'package:jvx_mobile_v3/services/abstract/i_close_screen_request.dart';
+import 'package:jvx_mobile_v3/services/abstract/i_close_screen_service.dart';
 import 'package:jvx_mobile_v3/services/network_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
