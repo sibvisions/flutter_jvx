@@ -10,6 +10,7 @@ class JVxPanel extends JVxContainer implements IContainer {
       return  new Container(key: componentId, color: this.background, child: this.layout.getWidget());
     } else {
       // TODO no layout defined
+      return new Container(child: Text('No layout defined'),);
     }
   }
 }

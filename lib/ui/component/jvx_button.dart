@@ -25,6 +25,7 @@ class JVxButton extends JVxComponent {
     );
   }
 
+  @override
   Widget getWidget() {
     return RaisedButton(
       key: this.componentId, 

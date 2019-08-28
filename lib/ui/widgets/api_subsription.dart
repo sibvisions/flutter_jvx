@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
+import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
@@ -75,6 +78,9 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             Navigator.of(context).pop();
             break;
           case ApiType.performPressButton:
+            GetIt getIt = GetIt.instance;
+
+            getIt.get<JVxScreen>().updateComponents(p.response.content.updatedComponents);
             break;
         }
       }
