@@ -4,17 +4,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class Translations {
   Translations(Locale locale) {
     this.locale = locale;
-    _localizedValues = null;
+    _localizedValues = Map<dynamic, dynamic>();
+    _localizedValues2 = Map<dynamic, dynamic>();
   }
 
   Locale locale;
   static Map<dynamic, dynamic> _localizedValues;
+  static Map<dynamic, dynamic> _localizedValues2;
 
   static Translations of(BuildContext context) {
     return Localizations.of<Translations>(context, Translations);
@@ -24,15 +27,20 @@ class Translations {
     return _localizedValues[key] ?? '** $key not found';
   }
 
+  String text2(String key) {
+    return _localizedValues2[key] ?? text(key);
+  }
+
   static Future<Translations> load(Locale locale) async {
-    print("Language Code: ${locale.languageCode}");
     try {
       Translations translations = new Translations(locale);
       String jsonContent =
         await rootBundle.loadString("locale/i18n_${locale.languageCode}.json");
       _localizedValues = json.decode(jsonContent);
       
-      XmlLoader().loadTranslationsXml(locale.languageCode);
+      await SharedPreferencesHelper().getTranslation().then((prefData) => globals.translation = prefData);
+
+      await XmlLoader().loadTranslationsXml(locale.languageCode).then((val) => _localizedValues2 = val);
 
       return translations;
     } catch (e) {
@@ -66,8 +74,8 @@ class XmlLoader {
 
   XmlLoader();
 
-  Future<Map<String, String>> loadTranslationsXml(String lang) {
-    Future.delayed(const Duration(seconds: 5), () {
+  Future<Map<String, String>> loadTranslationsXml(String lang) async {
+    return await Future.delayed(const Duration(seconds: 5), () {
       if (lang == 'en') {
         File file;
 
@@ -78,26 +86,13 @@ class XmlLoader {
 
         xml.XmlDocument doc = xml.parse(contents);
 
-        print('JO: ' + doc.findAllElements('entry').toList()[0].attributes[0].value.toString());
+        Map<String, String> translations = Map<String, String>();
 
-        doc.findAllElements('entry').map((f) {
-          print('Hello ' + f.toString());
+        doc.findAllElements('entry').toList().forEach((e) {
+          translations[e.attributes.first.value] = e.text;
         });
 
-        /*
-        this.currentXml = doc;
-
-        Map<String, String> translation = Map<String, String>();
-
-        this.currentXml.findAllElements('entry').map((f) {
-          translation[f.getAttribute('key')] = f.text;
-        });
-
-        print('Hello: ' + translation['Username:'].toString());
-        
-
-        return translation;
-        */
+        return translations;
       }
       if (globals.translation['translation_$lang.xml'] != null) {
         File file = new File(globals.translation['translation_$lang.xml']);
@@ -106,20 +101,14 @@ class XmlLoader {
 
         xml.XmlDocument doc = xml.parse(contents);
 
-        this.currentXml = doc;
+        Map<String, String> translations = Map<String, String>();
 
-        Map<String, String> translation = Map<String, String>();
-
-        this.currentXml.findAllElements('entry').map((f) {
-          translation[f.getAttribute('key')] = f.text;
+        doc.findAllElements('entry').toList().forEach((e) {
+          translations[e.attributes.first.value] = e.text;
         });
 
-        return translation;
+        return translations;
       }
-
-      return null;
     });
-
-    return null;
   }
 }

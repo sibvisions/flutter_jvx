@@ -42,7 +42,7 @@ class MenuDrawerWidget extends StatelessWidget {
     );
 
     ListTile settingsTile = new ListTile(
-      title: Text(Translations.of(context).text('settings')),
+      title: Text(Translations.of(context).text2('Settings')),
       leading: Icon(FontAwesomeIcons.cog),
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
@@ -50,7 +50,7 @@ class MenuDrawerWidget extends StatelessWidget {
     );
 
     ListTile logoutTile = new ListTile(
-      title: Text(Translations.of(context).text('logout')),
+      title: Text(Translations.of(context).text2('Logout')),
       leading: Icon(FontAwesomeIcons.signOutAlt),
       onTap: () {
         apiStreamSubscription = apiSubscription(logoutBloc.apiResult, context);

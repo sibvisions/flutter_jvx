@@ -61,7 +61,6 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
         globals.language = prefData['language'];
       }
     });
-    await SharedPreferencesHelper().getTranslation().then((prefData) => globals.translation = prefData);
   }
 
   @override

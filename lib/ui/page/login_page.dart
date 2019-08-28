@@ -43,11 +43,6 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    loadTranslation();
-  }
-
-  loadTranslation() async {
-    await Translations.load(new Locale(globals.language));
   }
 
   @override

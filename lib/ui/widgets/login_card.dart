@@ -44,8 +44,8 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                         style:
                             new TextStyle(fontSize: 15.0, color: Colors.black),
                         decoration: new InputDecoration(
-                            hintText: Translations.of(context).text("enter_username_hint"),
-                            labelText: Translations.of(context).text("enter_username_label"),
+                            // hintText: Translations.of(context).text2("Username:"),
+                            labelText: Translations.of(context).text2("Username:"),
                             labelStyle: TextStyle(fontWeight: FontWeight.w700)),
                       ),
                       new SizedBox(
@@ -56,8 +56,8 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                         style: new TextStyle(
                             fontSize: 15.0, color: Colors.black),
                         decoration: new InputDecoration(
-                            hintText: Translations.of(context).text('enter_password_hint'),
-                            labelText: Translations.of(context).text('enter_password_label'),
+                            // hintText: Translations.of(context).text('enter_password_hint'),
+                            labelText: Translations.of(context).text2('Password:'),
                             labelStyle:
                                 TextStyle(fontWeight: FontWeight.w700)),
                         obscureText: true,
@@ -69,7 +69,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                           });
                         },
                         value: rememberMe,
-                        title: Text(Translations.of(context).text('remember_me')),
+                        title: Text(Translations.of(context).text2('Remember me?')),
                         controlAffinity: ListTileControlAffinity.leading,
                         activeColor: UIData.ui_kit_color_2,
                       ),
@@ -80,14 +80,14 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                             ? loginBloc.loginSink.add(new LoginViewModel.withPW(username: username, password: password, rememberMe: rememberMe))
                             : print(this.password);
                           },
-                          text: Translations.of(context).text('login'))
+                          text: Translations.of(context).text2('Logon'))
                       ),
                       Container(
                         child: new FlatButton.icon(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
                           },
-                          label: Text(Translations.of(context).text('settings')),
+                          label: Text(Translations.of(context).text2('Settings')),
                           icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
                         )
                       ),

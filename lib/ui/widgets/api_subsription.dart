@@ -7,7 +7,6 @@ import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
-import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
@@ -16,6 +15,7 @@ import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
 
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {  
@@ -34,35 +34,40 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             });
             break;
           case ApiType.performStartup:
-            SharedPreferencesHelper().getAppVersion().then((val) async {
-              if (val == null)
-                SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
+            globals.language = p.response.content.language.langCode;
+            Translations.load(new Locale(globals.language)).then((val) {
+              SharedPreferencesHelper().getAppVersion().then((val) async {
+                if (val == null)
+                  SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
 
-                var _dir = (await getApplicationDocumentsDirectory()).path;
+                  var _dir = (await getApplicationDocumentsDirectory()).path;
 
-                globals.dir = _dir;
+                  globals.dir = _dir;
 
-              if (val != p.response.content.applicationMetaData.version)
-                _download(context);
-            });
-            SharedPreferencesHelper().getLoginData().then((onValue) {
-              if (onValue['username'] == null && onValue['password'] == null) {
-                if (p.response.content.loginItem != null) {
-                  Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
-                  });
-                } else {
-                  Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: p.response.content.items, listMenuItemsInDrawer: true,)));
-                  });
+                if (val != p.response.content.applicationMetaData.version) {
+                  SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
+                  _download(context);
                 }
-              } else {
-                LoginBloc loginBloc = new LoginBloc();
-                StreamSubscription<FetchProcess> apiStreamSubscription;
+              });
+              SharedPreferencesHelper().getLoginData().then((onValue) {
+                if (onValue['username'] == null && onValue['password'] == null) {
+                  if (p.response.content.loginItem != null) {
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+                    });
+                  } else {
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: p.response.content.items, listMenuItemsInDrawer: true,)));
+                    });
+                  }
+                } else {
+                  LoginBloc loginBloc = new LoginBloc();
+                  StreamSubscription<FetchProcess> apiStreamSubscription;
 
-                apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
-                loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
-              }
+                  apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
+                  loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
+                }
+              });
             });
             break;
           case ApiType.performLogout:

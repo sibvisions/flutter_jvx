@@ -104,9 +104,11 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   showLanguagePicker(BuildContext context) {
-    List languages = new List<String>();
-    languages.add('EN');
-    languages.add('DE');
+    List languages 
+      = globals.translation.keys.map((k) => k.replaceAll('translation_', '').replaceAll('.xml', '')).toList();
+
+    languages.remove('translation');
+
     new Picker(
       adapter: PickerDataAdapter<String>(pickerdata: languages),
       changeToFirst: true,
@@ -132,13 +134,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget settingsLoader() {
     return CommonScaffold(
       scaffoldKey: scaffoldState,
-      appTitle: Translations.of(context).text('settings'),
+      appTitle: Translations.of(context).text2('Settings'),
       showBottomNav: true,
       showFAB: false,
       backGroundColor: Colors.grey.shade300,
       bodyData: settingsBuilder(),
-      bottomButton1: Translations.of(context).text('settings_exit').toUpperCase(),
-      bottomButton2: Translations.of(context).text('settings_save').toUpperCase(),
+      bottomButton1: Translations.of(context).text2('Exit').toUpperCase(),
+      bottomButton2: Translations.of(context).text2('Save').toUpperCase(),
       bottomButton1Function: () {
         Navigator.of(context).pop();
       },
