@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../model/component_properties.dart';
 import 'i_component.dart';
 
 abstract class JVxComponent implements IComponent {
   String name;
   Key componentId;
-  Color background = Colors.white;
+  Color background = Colors.transparent;
   Color foreground;
   TextStyle style = new TextStyle(fontSize: 10.0, color: Colors.black);
   Size preferredSize;
@@ -24,4 +25,10 @@ abstract class JVxComponent implements IComponent {
   bool get isMaximumSizeSet => maximumSize!=null;
 
   JVxComponent(this.componentId, this.context);
+
+  void updateProperties(ComponentProperties properties) {
+    background = properties.getProperty("background");
+    name = properties.getProperty("name");
+    isVisible = properties.getProperty("visible", true);
+  }
 }

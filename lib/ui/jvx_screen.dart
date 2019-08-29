@@ -20,6 +20,12 @@ class JVxScreen {
 
   updateComponents(List<ChangedComponent> changedComponentsJson) {
 
+    changedComponentsJson?.forEach((changedComponent) {
+        if (components.containsKey(changedComponent.id)) {
+          JVxComponent component = components[changedComponent.parent];
+          component.updateProperties(changedComponent.componentProperties);
+        }
+    });
   }
 
   void addComponent(ChangedComponent component, BuildContext context) {
@@ -32,7 +38,8 @@ class JVxScreen {
           JVxComponent parentComponent = components[component.parent];
           if (parentComponent!= null && parentComponent is JVxContainer) {
             componentClass.parentComponentId = Key(component.parent);
-            parentComponent.addWithConstraints(componentClass, component.constraint);
+            String constraint = component.componentProperties.getProperty("constraints");
+            parentComponent.addWithConstraints(componentClass, constraint);
           }
         }
       }

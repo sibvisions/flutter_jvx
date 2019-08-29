@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:flutter/rendering.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,8 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
 
 class RestClient {
+  bool debug = true;
+
   Map<String, String> headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -16,6 +19,10 @@ class RestClient {
   Future<MappedNetworkServiceResponse<T>> getAsync<T>(String resourcePath) async {
     var response = await http.get(globals.baseUrl + resourcePath, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
     updateCookie(response);
+    if (debug) {
+      debugPrint("Response:"+ response.body);
+    }
+
     return processResponse<T>(response);
   }
 
@@ -33,6 +40,11 @@ class RestClient {
       );
     }
     updateCookie(response);
+
+    if (debug) {
+      debugPrint("Response:"+ response.body);
+    }
+
     return processResponse<T>(response);
   }
 
