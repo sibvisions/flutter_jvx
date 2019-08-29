@@ -20,7 +20,6 @@ class LoginResponse {
   LoginResponse({this.language, this.items, this.componentId, this.name, this.authenticationData});
 
   LoginResponse.fromJson(List jsonData) {
-    print("LOginRESP: " + jsonData.toString());
     language = Language.fromJson(jsonData[0]);
     authenticationData = AuthenticationData.fromJson(jsonData[1]);
     items = readMenuItemListFromJson(jsonData[2]['items']);

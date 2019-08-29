@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_mobile_v3/ui/tools/restart.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
@@ -146,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
       bottomButton2Function: () {
         savePreferences();
-        Navigator.of(context).pop();
+        RestartWidget.restartApp(context);
       },
     );
   }

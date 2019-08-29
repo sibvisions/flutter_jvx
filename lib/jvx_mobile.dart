@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/page/login_page.dart';
+import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
+import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
 import 'package:jvx_mobile_v3/ui/page/startup_page.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -16,7 +19,7 @@ class JvxMobile extends StatelessWidget {
     ),
     debugShowCheckedModeBanner: false,
     showPerformanceOverlay: false,
-    home: StartupPage(),
+    //home: StartupPage(),
     localizationsDelegates: [
       const TranslationsDelegate(),
       GlobalMaterialLocalizations.delegate,
@@ -26,6 +29,12 @@ class JvxMobile extends StatelessWidget {
       const Locale("en", "US"),
       const Locale("de", "DE")
     ],
+    initialRoute: '/',
+    routes: {
+      '/': (context) => StartupPage(),
+      '/settings': (context) => SettingsPage(),
+      '/login': (context) => LoginPage(),
+    },
   );
 
   @override

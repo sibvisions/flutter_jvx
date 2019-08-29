@@ -37,14 +37,17 @@ class SharedPreferencesHelper {
   Future<String> getAppVersion() async {
     prefs = await SharedPreferences.getInstance();
     String appVersion = prefs.getString('appVersion');
-    return appVersion;
+    if (appVersion != null)
+      return appVersion;
+    
+    return "0.0.0";
   }
 
   Future<Map<String, String>> getTranslation() async {
     prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('translation');
 
-    Map<String, String> result;
+    Map<String, String> result = new Map<String, String>();
 
     if (jsonString != null)
       result = Map.from(json.decode(jsonString).map((key, val) {
