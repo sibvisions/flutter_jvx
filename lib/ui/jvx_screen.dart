@@ -22,8 +22,8 @@ class JVxScreen {
 
     changedComponentsJson?.forEach((changedComponent) {
         if (components.containsKey(changedComponent.id)) {
-          JVxComponent component = components[changedComponent.parent];
-          component.updateProperties(changedComponent.componentProperties);
+          JVxComponent component = components[changedComponent.id];
+          component?.updateProperties(changedComponent.componentProperties);
         }
     });
   }
