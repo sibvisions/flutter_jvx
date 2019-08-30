@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,23 +61,25 @@ class SharedPreferencesHelper {
     return result;
   }
 
-  Future<Map<String, String>> getApplicationStyle() async {
+  Future<Map<String, dynamic>> getApplicationStyle() async {
     prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('applicationStyle');
 
-    Map<String, String> result = <String, String>{};
+    print("JSONSTRING: " + jsonString.toString());
+
+    Map<String, dynamic> result;
 
     if (jsonString != null)
       result = Map.from(json.decode(jsonString).map((key, val) {
         if (key.toString() == 'menu')
           return MapEntry(
             key.toString(),
-            val.map((k, v) {
+            Map.from(val.map((k, v) {
               return MapEntry(
                 k.toString(),
                 v.toString()
               );
-            })
+            }))
           );
 
         return MapEntry(
@@ -84,6 +87,10 @@ class SharedPreferencesHelper {
           val.toString()
         );
       }));
+    else
+      return null;
+
+    return result;
   }
 
   void setData(String appName, String baseUrl, String language) async {
@@ -117,7 +124,7 @@ class SharedPreferencesHelper {
     prefs.setString('translation', hashmapString);
   }
 
-  void setApplicationStyle(Map<String, String> applicationStyle) async {
+  void setApplicationStyle(Map<String, dynamic> applicationStyle) async {
     String hashmapString = json.encode(applicationStyle);
 
     prefs = await SharedPreferences.getInstance();

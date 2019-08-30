@@ -9,6 +9,7 @@ import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/application_style_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
+import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
@@ -46,10 +47,12 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 
                   globals.dir = _dir;
 
-                // if (val != p.response.content.applicationMetaData.version) {
+                _downloadAppStyle(context);
+                
+                if (val != p.response.content.applicationMetaData.version) {
                   SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
                   _download(context);
-                // }
+                }
               });
               SharedPreferencesHelper().getLoginData().then((onValue) {
                 if (onValue['username'] == null && onValue['password'] == null) {
@@ -91,6 +94,8 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performApplicationStyle:
             globals.applicationStyle = p.response.content;
+            print("LOGIN BACKGROUND: " + globals.applicationStyle.loginBackground);
+            SharedPreferencesHelper().setApplicationStyle(globals.applicationStyle.toJson());
             break;
         }
       }
@@ -103,11 +108,21 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 _download(BuildContext context) {
   DownloadBloc downloadBloc1 = new DownloadBloc();
   DownloadBloc downloadBloc2 = new DownloadBloc();
+
+  downloadBloc1.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
+  downloadBloc2.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: false, libraryImages: false, name: 'translation'));
+}
+
+_downloadAppStyle(BuildContext context) {
   ApplicationStyleBloc applicationStyleBloc = new ApplicationStyleBloc();
   StreamSubscription apiStreamSubscription;
 
-  apiStreamSubscription = apiSubscription(applicationStyleBloc.apiResult, context);
-  applicationStyleBloc.applicationStyleSink.add(new ApplicationStyleViewModel(clientId: globals.clientId, name: 'applicationStyle', contentMode: 'json'));
-  downloadBloc1.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
-  downloadBloc2.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: false, libraryImages: false, name: 'translation'));
+  SharedPreferencesHelper().getApplicationStyle().then((val) {
+    if (val != null) {
+      globals.applicationStyle = ApplicationStyleResponse.fromJson(val);
+    } else {
+      apiStreamSubscription = apiSubscription(applicationStyleBloc.apiResult, context);
+      applicationStyleBloc.applicationStyleSink.add(new ApplicationStyleViewModel(clientId: globals.clientId, name: 'applicationStyle', contentMode: 'json'));
+    }
+  });
 }

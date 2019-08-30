@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
+import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
