@@ -1,6 +1,5 @@
-import 'package:jvx_mobile_v3/ui/component/jvx_button.dart';
-import 'package:jvx_mobile_v3/ui/editor/jvx_text_field.dart';
-
+import 'editor/jvx_text_field.dart';
+import 'component/jvx_button.dart';
 import 'container/jvx_container.dart';
 import 'layout/jvx_border_layout.dart';
 import 'layout/jvx_layout.dart';
@@ -19,25 +18,25 @@ class JVxComponentCreator {
       componentClass = new JVxPanel(Key(component.id), context);
     } else if (component.className=="Label") {
       componentClass = new JVxLabel(Key(component.id), context);
-      (componentClass as JVxLabel).text = component.text;
     } else if (component.className=="Button") {
       componentClass = new JVxButton(Key(component.id), context);
-      (componentClass as JVxButton).text = component.text;
     } else if (component.className=="TextField") {
       componentClass = new JVxTextField(Key(component.id), context);
-      (componentClass as JVxTextField).setValue(component.text);
+      (componentClass as JVxTextField).setValue(component.componentProperties.getProperty("text"));
     }
 
-    if (componentClass is JVxContainer && (component.layout?.isNotEmpty ?? true)) {
+    String layout = component.componentProperties.getProperty("layout");
+    if (componentClass is JVxContainer && (layout?.isNotEmpty ?? true)) {
       JVxContainer container = componentClass;
-      String layoutName = JVxLayout.getLayoutName(component.layout);
+      String layoutName = JVxLayout.getLayoutName(layout);
 
       if (layoutName=="BorderLayout") {
-          container.layout = JVxBorderLayout.fromLayoutString(component.layout);
+          container.layout = JVxBorderLayout.fromLayoutString(layout);
       }
     }
 
+    componentClass?.updateProperties(component.componentProperties);
+
     return componentClass;
   }
-
 }

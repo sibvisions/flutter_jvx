@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/component_properties.dart';
 
 abstract class IComponent {
   String name;
@@ -22,6 +23,7 @@ abstract class IComponent {
   bool get isMinimumSizeSet;
   bool get isMaximumSizeSet;
 
+  void updateProperties(ComponentProperties properties);
 
   Widget getWidget();
 }

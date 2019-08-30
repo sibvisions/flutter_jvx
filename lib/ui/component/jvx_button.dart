@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/logic/bloc/press_button_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/press_button_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'jvx_component.dart';
@@ -18,23 +19,34 @@ class JVxButton extends JVxComponent {
     this.background = Colors.grey;
   }
 
+  @override
+  void updateProperties(ComponentProperties properties) {
+    super.updateProperties(properties);
+    text = properties.getProperty("text");
+  }
+
   void buttonPressed() {
     apiStreamSubscription = apiSubscription(pressButtonBloc.apiResult, context);
     pressButtonBloc.pressButtonController.add(
-      PressButtonViewModel(clientId: globals.clientId, action: prefix0.Action(componentId: componentId.toString().replaceAll("[<'", '').replaceAll("'>]", ''), label: this.name))
+      PressButtonViewModel(clientId: globals.clientId, 
+        action: prefix0.Action(componentId: this.name, 
+        label: this.text))
     );
   }
 
   @override
   Widget getWidget() {
-    return RaisedButton(
-      key: this.componentId, 
-      onPressed: buttonPressed,
-      color: this.background,
-      child: Text(text, 
-        style: TextStyle(
+    return 
+      SizedBox(
+        child: RaisedButton(
+          key: this.componentId, 
+          onPressed: buttonPressed,
+          color: this.background,
+          child: Text(text, 
+            style: TextStyle(
+            ),
+          ),
         ),
-      ),
-    );
+      );
   }
 }
