@@ -18,7 +18,7 @@ formatFontAwesomeText(String text) {
 
   arr.removeAt(0);
 
-  Map<String, dynamic> keyValue = new Map<String, dynamic>();
+  Map<String, dynamic> keyValue = <String, dynamic>{};
 
   arr.forEach((f) {
     var att = f.split('=');

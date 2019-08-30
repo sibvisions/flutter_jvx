@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
-import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
@@ -20,7 +19,7 @@ fetchApiResult(BuildContext context, NetworkServiceResponse snapshot) {
         ),
         FlatButton(
           child: Text(Translations.of(context).text('go_to_settings')),
-          onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SettingsPage())),
+          onPressed: () => Navigator.of(context).pushReplacementNamed('/settings'),
         )
       ],
     )

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/tools/arc_clipper.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class LoginBackground extends StatelessWidget {
   final showIcon;
@@ -32,9 +33,9 @@ class LoginBackground extends StatelessWidget {
                   )
                 : new Container(
                     width: double.infinity,
-                    child: image != null
+                    child: globals.applicationStyle.loginIcon != null
                         ? Image.asset(
-                            image,
+                            '${globals.dir}${globals.applicationStyle.loginIcon}',
                             fit: BoxFit.fitHeight
                           )
                         : new Container())

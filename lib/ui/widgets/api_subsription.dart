@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:jvx_mobile_v3/logic/bloc/application_style_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/application_style_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
@@ -44,16 +46,16 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 
                   globals.dir = _dir;
 
-                if (val != p.response.content.applicationMetaData.version) {
+                // if (val != p.response.content.applicationMetaData.version) {
                   SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
                   _download(context);
-                }
+                // }
               });
               SharedPreferencesHelper().getLoginData().then((onValue) {
                 if (onValue['username'] == null && onValue['password'] == null) {
                   if (p.response.content.loginItem != null) {
                     Future.delayed(const Duration(seconds: 1), () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+                      Navigator.of(context).pushReplacementNamed('/login');
                     });
                   } else {
                     Future.delayed(const Duration(seconds: 1), () {
@@ -71,7 +73,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             });
             break;
           case ApiType.performLogout:
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
+            Navigator.of(context).pushReplacementNamed('/login');
             break;
           case ApiType.performDownload:
             break;
@@ -87,6 +89,9 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 
             getIt.get<JVxScreen>().updateComponents(p.response.content.updatedComponents);
             break;
+          case ApiType.performApplicationStyle:
+            globals.applicationStyle = p.response.content;
+            break;
         }
       }
     }
@@ -98,11 +103,11 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 _download(BuildContext context) {
   DownloadBloc downloadBloc1 = new DownloadBloc();
   DownloadBloc downloadBloc2 = new DownloadBloc();
-  // StreamSubscription<FetchProcess> apiStreamSubscription1;
-  // StreamSubscription<FetchProcess> apiStreamSubscription2;
+  ApplicationStyleBloc applicationStyleBloc = new ApplicationStyleBloc();
+  StreamSubscription apiStreamSubscription;
 
-  // apiStreamSubscription1 = apiSubscription(downloadBloc1.apiResult, context);
-  // apiStreamSubscription2 = apiSubscription(downloadBloc2.apiResult, context);
+  apiStreamSubscription = apiSubscription(applicationStyleBloc.apiResult, context);
+  applicationStyleBloc.applicationStyleSink.add(new ApplicationStyleViewModel(clientId: globals.clientId, name: 'applicationStyle', contentMode: 'json'));
   downloadBloc1.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
   downloadBloc2.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: false, libraryImages: false, name: 'translation'));
 }

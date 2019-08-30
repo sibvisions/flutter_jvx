@@ -10,4 +10,4 @@ class MockLogoutService implements ILogoutService {
   }
 }
 
-var kLogoutResponse = new List();
+var kLogoutResponse = [];

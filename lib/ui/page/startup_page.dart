@@ -61,7 +61,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
         globals.language = prefData['language'];
       }
       if (globals.appName == null && globals.baseUrl == null)
-        Navigator.pushNamed(context, '/settings');
+        Navigator.pushReplacementNamed(context, '/settings');
     });
   }
 

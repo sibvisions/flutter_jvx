@@ -86,7 +86,7 @@ class XmlLoader {
 
         xml.XmlDocument doc = xml.parse(contents);
 
-        Map<String, String> translations = Map<String, String>();
+        Map<String, String> translations = <String, String>{};
 
         doc.findAllElements('entry').toList().forEach((e) {
           translations[e.attributes.first.value] = e.text;
@@ -101,7 +101,7 @@ class XmlLoader {
 
         xml.XmlDocument doc = xml.parse(contents);
 
-        Map<String, String> translations = Map<String, String>();
+        Map<String, String> translations = <String, String>{};
 
         doc.findAllElements('entry').toList().forEach((e) {
           translations[e.attributes.first.value] = e.text;

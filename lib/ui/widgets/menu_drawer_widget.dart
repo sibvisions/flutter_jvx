@@ -45,7 +45,7 @@ class MenuDrawerWidget extends StatelessWidget {
       title: Text(Translations.of(context).text2('Settings')),
       leading: Icon(FontAwesomeIcons.cog),
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
+        Navigator.of(context).pushNamed('/settings');
       },
     );
 

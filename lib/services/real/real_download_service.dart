@@ -33,13 +33,12 @@ class DownloadService extends NetworkService implements IDownloadSerivce {
     if (result.mappedResult != null) {
       var archive = result.mappedResult;
 
-      globals.translation = Map<String, String>();
+      globals.translation = <String, String>{};
 
       for (var file in archive) {
         var filename = '$_dir/${file.name}';
         if (file.isFile) {
           var outFile = File(filename);
-          print('TRANSLATION: ${globals.translation}');
           globals.translation[file.name] = filename;
           outFile = await outFile.create(recursive: true);
           await outFile.writeAsBytes(file.content);

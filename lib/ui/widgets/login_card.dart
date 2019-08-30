@@ -12,6 +12,7 @@ import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/gradient_button.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class LoginCard extends StatefulWidget {
   @override
@@ -38,6 +39,12 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
+                      new Text(
+                        globals.applicationStyle.loginTitle,
+                        style: TextStyle(
+                          fontSize: 20
+                        ),
+                      ),
                       new TextField(
                         onChanged: (username) => this.username = username,
                         enabled: !snapshot.data,
@@ -85,7 +92,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                       Container(
                         child: new FlatButton.icon(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingsPage()));
+                            Navigator.of(context).pushNamed('/settings');
                           },
                           label: Text(Translations.of(context).text2('Settings')),
                           icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
@@ -102,7 +109,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
     return Opacity(
       opacity: animation.value,
       child: SizedBox(
-        height: deviceSize.height / 2 - 20,
+        height: deviceSize.height / 2 - 5,
         width: deviceSize.width * 0.85,
         child: new Card(
             color: Colors.white, elevation: 2.0, child: loginBuilder()),

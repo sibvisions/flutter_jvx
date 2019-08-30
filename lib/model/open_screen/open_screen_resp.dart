@@ -9,7 +9,7 @@ class OpenScreenResponse {
   OpenScreenResponse({@required this.changedComponents, @required this.componentId, @required this.name});
 
   OpenScreenResponse.fromJson(List json) {
-    changedComponents = List();
+    changedComponents = [];
     name = json[0]['name'];
     componentId = json[0]['componentId'];
 

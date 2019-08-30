@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:jvx_mobile_v3/ui/component/jvx_button.dart';
+import 'package:jvx_mobile_v3/ui/editor/jvx_text_field.dart';
 
 import 'container/jvx_container.dart';
 import 'layout/jvx_border_layout.dart';
@@ -14,7 +13,7 @@ import 'component/jvx_label.dart';
 class JVxComponentCreator {
 
   static JVxComponent create(ChangedComponent component, BuildContext context) {
-    JVxComponent componentClass; 
+    JVxComponent componentClass;
 
     if (component.className=="Panel") {
       componentClass = new JVxPanel(Key(component.id), context);
@@ -24,6 +23,9 @@ class JVxComponentCreator {
     } else if (component.className=="Button") {
       componentClass = new JVxButton(Key(component.id), context);
       (componentClass as JVxButton).text = component.text;
+    } else if (component.className=="TextField") {
+      componentClass = new JVxTextField(Key(component.id), context);
+      (componentClass as JVxTextField).setValue(component.text);
     }
 
     if (componentClass is JVxContainer && (component.layout?.isNotEmpty ?? true)) {

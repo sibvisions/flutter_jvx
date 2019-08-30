@@ -12,7 +12,7 @@ class SharedPreferencesHelper {
   Future<Map<String, String>> getData() async {
     prefs = await SharedPreferences.getInstance();
 
-    Map<String, String> prefData = new Map<String, String>();
+    Map<String, String> prefData = <String, String>{};
 
     prefData['appName'] = prefs.getString('appName');
     prefData['baseUrl'] = prefs.getString('baseUrl');
@@ -24,7 +24,7 @@ class SharedPreferencesHelper {
   Future<Map<String, String>> getLoginData() async {
     prefs = await SharedPreferences.getInstance();
     
-    Map<String, String> prefLoginData = new Map<String, String>();
+    Map<String, String> prefLoginData = <String, String>{};
 
     prefLoginData['authKey'] = prefs.getString('authKey');
 
@@ -47,7 +47,7 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('translation');
 
-    Map<String, String> result = new Map<String, String>();
+    Map<String, String> result = <String, String>{};
 
     if (jsonString != null)
       result = Map.from(json.decode(jsonString).map((key, val) {
@@ -57,6 +57,32 @@ class SharedPreferencesHelper {
         );
       }));
     return result;
+  }
+
+  Future<Map<String, String>> getApplicationStyle() async {
+    prefs = await SharedPreferences.getInstance();
+    String jsonString = prefs.getString('applicationStyle');
+
+    Map<String, String> result = <String, String>{};
+
+    if (jsonString != null)
+      result = Map.from(json.decode(jsonString).map((key, val) {
+        if (key.toString() == 'menu')
+          return MapEntry(
+            key.toString(),
+            val.map((k, v) {
+              return MapEntry(
+                k.toString(),
+                v.toString()
+              );
+            })
+          );
+
+        return MapEntry(
+          key.toString(),
+          val.toString()
+        );
+      }));
   }
 
   void setData(String appName, String baseUrl, String language) async {
@@ -88,5 +114,13 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
 
     prefs.setString('translation', hashmapString);
+  }
+
+  void setApplicationStyle(Map<String, String> applicationStyle) async {
+    String hashmapString = json.encode(applicationStyle);
+
+    prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('applicationStyle', hashmapString);
   }
 }
