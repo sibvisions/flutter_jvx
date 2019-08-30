@@ -9,7 +9,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
 
 class RestClient {
-  bool debug = true;
+  bool debug = false;
 
   Map<String, String> headers = {
     'Content-Type': 'application/json',
