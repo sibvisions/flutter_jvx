@@ -15,7 +15,7 @@ abstract class JVxComponent implements IComponent {
   bool enabled = true;
   BuildContext context;
 
-  Key parentComponentId;
+  String parentComponentId;
   List<Key> childComponentIds;
 
   bool get isForegroundSet => foreground!=null;

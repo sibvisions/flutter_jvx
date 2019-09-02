@@ -14,7 +14,7 @@ abstract class IComponent {
   bool enabled;
   BuildContext context;
 
-  Key parentComponentId;
+  String parentComponentId;
   List<Key> childComponentIds;
 
   bool get isForegroundSet;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout.dart';
+import '../../model/component_properties.dart';
+import '../layout/widgets/jvx_border_layout.dart';
 import 'i_container.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
@@ -66,4 +67,17 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
 			remove(components.length - 1);
 		}
   }
+
+    void updateComponentProperties(Key componentId, ComponentProperties properties) {
+      IComponent pComponent = components.firstWhere((c) => c.componentId == componentId);
+
+      pComponent?.updateProperties(properties);
+
+      if (layout != null) {
+        if (layout is JVxBorderLayout) {
+          JVxBorderLayoutConstraints contraints = layout.getConstraints(pComponent);
+          (layout as JVxBorderLayout).addLayoutComponent(pComponent, contraints);
+        }
+      }
+    }
 }

@@ -24,6 +24,13 @@ class JVxScreen {
         if (components.containsKey(changedComponent.id)) {
           JVxComponent component = components[changedComponent.id];
           component?.updateProperties(changedComponent.componentProperties);
+
+          if (component?.parentComponentId != null) {
+            JVxComponent parentComponent = components[component.parentComponentId];
+            if (parentComponent!= null && parentComponent is JVxContainer) {
+              parentComponent.updateComponentProperties(component.componentId, changedComponent.componentProperties);
+            }
+          }
         }
     });
   }
@@ -37,7 +44,7 @@ class JVxScreen {
         if (component.parent?.isNotEmpty ?? false) {
           JVxComponent parentComponent = components[component.parent];
           if (parentComponent!= null && parentComponent is JVxContainer) {
-            componentClass.parentComponentId = Key(component.parent);
+            componentClass.parentComponentId = component.parent;
             String constraint = component.componentProperties.getProperty("constraints");
             parentComponent.addWithConstraints(componentClass, constraint);
           }

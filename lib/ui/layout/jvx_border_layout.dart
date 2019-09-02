@@ -76,23 +76,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
 
   JVxBorderLayoutConstraints getConstraints(IComponent comp)
   {
-    if (comp == _center)
+    if (comp?.componentId == _center?.componentId)
     {
       return JVxBorderLayoutConstraints.Center;
     }
-    else if (comp == _north)
+    else if (comp?.componentId == _north?.componentId)
     {
       return JVxBorderLayoutConstraints.North;
     }
-    else if (comp == _south)
+    else if (comp?.componentId == _south?.componentId)
     {
       return JVxBorderLayoutConstraints.South;
     }
-    else if (comp == _west)
+    else if (comp?.componentId == _west?.componentId)
     {
       return JVxBorderLayoutConstraints.West;
     }
-    else if (comp == _east)
+    else if (comp?.componentId == _east?.componentId)
     {
       return JVxBorderLayoutConstraints.East;
     }

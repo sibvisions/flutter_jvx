@@ -1,4 +1,6 @@
 import 'dart:core';
+import 'package:flutter/material.dart';
+import '../../model/component_properties.dart';
 import '../layout/jvx_layout.dart';
 import '../component/i_component.dart';
 
@@ -11,4 +13,5 @@ abstract class IContainer extends IComponent {
   void remove(int pIndex);
   void removeWithComponent(IComponent pComponent);
   void removeAll();
+  void updateComponentProperties(Key componentId, ComponentProperties properties);
 }
