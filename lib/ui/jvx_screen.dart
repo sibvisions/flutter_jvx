@@ -36,17 +36,20 @@ class JVxScreen {
   }
 
   void addComponent(ChangedComponent component, BuildContext context) {
-      JVxComponent componentClass = JVxComponentCreator.create(component, context);
 
-      if (componentClass!= null) {
-        components.putIfAbsent(component.id, () => componentClass);
+      if (!components.containsKey(component.id)) {
+        JVxComponent componentClass = JVxComponentCreator.create(component, context);
 
-        if (component.parent?.isNotEmpty ?? false) {
-          JVxComponent parentComponent = components[component.parent];
-          if (parentComponent!= null && parentComponent is JVxContainer) {
-            componentClass.parentComponentId = component.parent;
-            String constraint = component.componentProperties.getProperty("constraints");
-            parentComponent.addWithConstraints(componentClass, constraint);
+        if (componentClass!= null) {
+          components.putIfAbsent(component.id, () => componentClass);
+
+          if (component.parent?.isNotEmpty ?? false) {
+            JVxComponent parentComponent = components[component.parent];
+            if (parentComponent!= null && parentComponent is JVxContainer) {
+              componentClass.parentComponentId = component.parent;
+              String constraint = component.componentProperties.getProperty("constraints");
+              parentComponent.addWithConstraints(componentClass, constraint);
+            }
           }
         }
       }
