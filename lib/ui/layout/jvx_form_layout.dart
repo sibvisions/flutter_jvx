@@ -6,7 +6,7 @@ import 'widgets/jvx_form_layout_contraint.dart';
 import 'widgets/jvx_form_layout_anchor.dart';
 import '../component/jvx_component.dart';
 
-class JVxFormLayout extends JVxLayout<JVxConstraint> {
+class JVxFormLayout extends JVxLayout<JVxFormLayoutConstraint> {
   static final int stretch = 100;
   Key key;
   /// The valid state of anchor calculation. */
@@ -44,7 +44,7 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
   List<JVxAnchor> bottomDefaultAnchors;
 
   /// stores all constraints. */
-  Map<JVxComponent, JVxConstraint> _layoutConstraints = <JVxComponent, JVxConstraint>{};
+  Map<JVxComponent, JVxFormLayoutConstraint> _layoutConstraints = <JVxComponent, JVxFormLayoutConstraint>{};
 
   ///
   /// Gets the margins.
@@ -110,9 +110,9 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
     bottomDefaultAnchors = new List<JVxAnchor>();
   }
 
-  void addLayoutComponent(IComponent pComponent, JVxConstraint pConstraint)
+  void addLayoutComponent(IComponent pComponent, JVxFormLayoutConstraint pConstraint)
   {
-    JVxConstraint constraint;
+    JVxFormLayoutConstraint constraint;
 
     if (pConstraint != null)
     {
@@ -144,7 +144,7 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
   }
 
     @override
-  JVxConstraint getConstraints(IComponent comp) {
+  JVxFormLayoutConstraint getConstraints(IComponent comp) {
     return _layoutConstraints[comp];
   }
 
@@ -215,7 +215,7 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
 	/// @param pRow the row.
 	/// @return the constraints for the given component.
 	///
-  JVxConstraint createConstraint(int pColumn, int pRow)
+  JVxFormLayoutConstraint createConstraint(int pColumn, int pRow)
   {
     return createConstraintWithBeginEnd(pColumn, pRow, pColumn, pRow);
   }
@@ -229,7 +229,7 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
 	/// @param pEndRow the end row.
 	/// @return the constraints for the given component.
 	///
-  JVxConstraint createConstraintWithBeginEnd(int pBeginColumn, int pBeginRow, int pEndColumn, int pEndRow)
+  JVxFormLayoutConstraint createConstraintWithBeginEnd(int pBeginColumn, int pBeginRow, int pEndColumn, int pEndRow)
   {
     List<JVxAnchor> left = createDefaultAnchors(leftDefaultAnchors, rightDefaultAnchors, leftMarginAnchor, rightMarginAnchor, pBeginColumn, horizontalGap);
     List<JVxAnchor> right;
@@ -252,7 +252,7 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
     {
       bottom = createDefaultAnchors(topDefaultAnchors, bottomDefaultAnchors, topMarginAnchor, bottomMarginAnchor, pEndRow, verticalGap);
     }
-    return new JVxConstraint(top[0], 
+    return new JVxFormLayoutConstraint(top[0], 
                 left[0], 
                 bottom[1], 
                 right[1]);
@@ -260,11 +260,11 @@ class JVxFormLayout extends JVxLayout<JVxConstraint> {
 
   Widget getWidget() {
 
-    List<JVxFormLayoutConstraint> children = new List<JVxFormLayoutConstraint>();
+    List<JVxFormLayoutConstraintData> children = new List<JVxFormLayoutConstraintData>();
 
     for (int i=0; i<this._layoutConstraints.keys.length;i++) {
       children.add(
-        new JVxFormLayoutConstraint(child: this._layoutConstraints.keys.elementAt(i).getWidget(), 
+        new JVxFormLayoutConstraintData(child: this._layoutConstraints.keys.elementAt(i).getWidget(), 
                      id: this._layoutConstraints.values.elementAt(i)));
     }
 

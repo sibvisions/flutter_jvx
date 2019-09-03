@@ -1,7 +1,7 @@
 import "jvx_form_layout_anchor.dart";
 
 
-class JVxConstraint {
+class JVxFormLayoutConstraint {
   /// The top anchor.
   JVxAnchor _topAnchor;
   /// The left anchor.
@@ -22,7 +22,7 @@ class JVxConstraint {
   /// @param pBottomAnchor the left anchor.
   /// @param pRightAnchor the left anchor.
   ///
-  JVxConstraint(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor, JVxAnchor pBottomAnchor, JVxAnchor pRightAnchor) {
+  JVxFormLayoutConstraint(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor, JVxAnchor pBottomAnchor, JVxAnchor pRightAnchor) {
     if (pLeftAnchor == null && pRightAnchor != null)
     {
       pLeftAnchor = new JVxAnchor.fromAnchor(pRightAnchor);
@@ -51,9 +51,9 @@ class JVxConstraint {
   /// @param pTopAnchor the left anchor.
   /// @param pLeftAnchor the left anchor.
   ///
-  JVxConstraint.fromTopLeftAnchor(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor)
+  JVxFormLayoutConstraint.fromTopLeftAnchor(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor)
   {
-    JVxConstraint(pTopAnchor, pLeftAnchor, null, null);
+    JVxFormLayoutConstraint(pTopAnchor, pLeftAnchor, null, null);
   }
 
   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

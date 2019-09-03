@@ -144,7 +144,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     this.east = null;
     this.west = null;
     this.center = null;
-    
+
     RenderBox child = firstChild;
     while (child != null) {
       final MultiChildLayoutParentData childParentData = child.parentData;
@@ -155,7 +155,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
     // layout NORTH
     if (north != null) {
-      north.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      north.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: 0, maxHeight: double.infinity), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = north.parentData;
       childParentData.offset = Offset(x, y);
 
@@ -165,7 +165,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
     // layout SOUTH
     if (south != null) {
-      south.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: 0, maxHeight: height), parentUsesSize: true);
+      south.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: 0, maxHeight: double.infinity), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = south.parentData;
       childParentData.offset = Offset(x, y + height - south.size.height);
 
@@ -174,7 +174,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
     // layout WEST
     if (west != null) {
-      west.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+      west.layout(BoxConstraints(minWidth: 0, maxWidth: double.infinity, minHeight: height, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = west.parentData;
       childParentData.offset = Offset(x, y);
 
@@ -184,7 +184,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
     // layout EAST
     if (east != null) {
-      east.layout(BoxConstraints(minWidth: 0, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+      east.layout(BoxConstraints(minWidth: 0, maxWidth: double.infinity, minHeight: height, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = east.parentData;
       childParentData.offset = Offset(x + width - east.size.width, y);
 

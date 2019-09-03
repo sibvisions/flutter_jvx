@@ -42,7 +42,7 @@ class JVxFormLayoutWidget extends MultiChildRenderObjectWidget {
 
   JVxFormLayoutWidget({
     Key key,
-    List<JVxFormLayoutConstraint> children: const [],
+    List<JVxFormLayoutConstraintData> children: const [],
     this.valid, this.horizontalAlignment, this.verticalAlignment, 
     this.hgap, this.vgap,
     this.leftAnchor, this.rightAnchor, this.topAnchor, this.bottomAnchor,
@@ -139,7 +139,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
   List<JVxAnchor> anchorsBuffer;
 
   /// stores all constraints. */
-  Map<RenderBox, JVxConstraint> layoutConstraints = <RenderBox, JVxConstraint>{};
+  Map<RenderBox, JVxFormLayoutConstraint> layoutConstraints = <RenderBox, JVxFormLayoutConstraint>{};
 
   /// the x-axis alignment (default: {@link JVxConstants#CENTER}). */
   int	horizontalAlignment = stretch;
@@ -186,9 +186,9 @@ class RenderJVxFormLayoutWidget extends RenderBox
     anchorsBuffer = new List<JVxAnchor>();
   }
 
-  void addLayoutComponent(RenderBox pComponent, JVxConstraint pConstraint)
+  void addLayoutComponent(RenderBox pComponent, JVxFormLayoutConstraint pConstraint)
   {
-    JVxConstraint constraint;
+    JVxFormLayoutConstraint constraint;
 
     if (pConstraint != null)
     {
@@ -271,7 +271,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
   @override
   void performLayout() {
     // Set components
-    layoutConstraints = <RenderBox, JVxConstraint>{}; 
+    layoutConstraints = <RenderBox, JVxFormLayoutConstraint>{}; 
     RenderBox child = firstChild;
     while (child != null) {
       final MultiChildLayoutParentData childParentData = child.parentData;
@@ -291,7 +291,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
       //if (comp.isVisible())
       //{
-          JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+          JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
           double x = constraint.leftAnchor.getAbsolutePosition().toDouble();
           double width = constraint.rightAnchor.getAbsolutePosition() - x;
@@ -567,7 +567,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
       // clear auto size anchors.
       for (int i = 0; i < this.layoutConstraints.length; i++)
       {
-        JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+        JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
         clearAutoSize(constraint.leftAnchor, constraint.rightAnchor);
         clearAutoSize(constraint.topAnchor, constraint.bottomAnchor);
@@ -592,7 +592,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
       // init component auto size anchors.
       for (int i = 0; i < this.layoutConstraints.length; i++)
       {
-        JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+        JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
         initAutoSize(constraint.leftAnchor, constraint.rightAnchor);
         initAutoSize(constraint.rightAnchor, constraint.leftAnchor);
@@ -609,7 +609,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
           RenderBox comp = this.layoutConstraints.keys.elementAt(i);
           //if (comp.isVisible())
           //{
-            JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+            JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
             Size preferredSize = this.getPreferredSize(comp);
 
@@ -623,7 +623,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
           //RenderBox comp = this.layoutConstraints.keys.elementAt(i);
           //if (comp.isVisible())
           //{
-            JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+            JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
             int count = finishAutoSizeCalculation(constraint.leftAnchor, constraint.rightAnchor);
             if (count > 0 && count < autoSizeCount)
@@ -664,7 +664,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
         RenderBox comp = this.layoutConstraints.keys.elementAt(i);
         //if (comp.isVisible())
         //{
-          JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+          JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
           Size preferredSize = getPreferredSize(comp);
           Size minimumSize = getMinimumSize(comp);
@@ -927,7 +927,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
       for (int i = 0; i < this.layoutConstraints.length; i++) {
         RenderBox comp = this.layoutConstraints.keys.elementAt(i);
         //if (comp.isVisible()) {
-          JVxConstraint constraint = layoutConstraints.values.elementAt(i);
+          JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
           Size preferredSize = getPreferredSize(comp);
 
@@ -943,11 +943,11 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
 }
 
-class JVxFormLayoutConstraint extends ParentDataWidget<JVxFormLayoutWidget> {
+class JVxFormLayoutConstraintData extends ParentDataWidget<JVxFormLayoutWidget> {
   /// Marks a child with a layout identifier.
   ///
   /// Both the child and the id arguments must not be null.
-  JVxFormLayoutConstraint({
+  JVxFormLayoutConstraintData({
     Key key,
     this.id,
     @required Widget child,
@@ -958,7 +958,7 @@ class JVxFormLayoutConstraint extends ParentDataWidget<JVxFormLayoutWidget> {
   ///
   /// The [id] needs to be unique among the children that the
   /// [CustomMultiChildLayout] manages.
-  final JVxConstraint id;
+  final JVxFormLayoutConstraint id;
 
   @override
   void applyParentData(RenderObject renderObject) {

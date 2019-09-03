@@ -39,6 +39,8 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
         if (layout is JVxBorderLayout) {
           JVxBorderLayoutConstraints contraints = getJVxBorderLayoutConstraintsFromString(pConstraints);
           (layout as JVxBorderLayout).addLayoutComponent(pComponent, contraints);
+        } else if (layout is JVxBorderLayout) {
+          
         }
       }
     

@@ -1,3 +1,5 @@
+import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
+
 import 'editor/jvx_text_field.dart';
 import 'component/jvx_button.dart';
 import 'container/jvx_container.dart';
@@ -32,6 +34,8 @@ class JVxComponentCreator {
 
       if (layoutName=="BorderLayout") {
           container.layout = JVxBorderLayout.fromLayoutString(layout);
+      } else if (layoutName=="FormLayout") {
+          container.layout = JVxFormLayout.fromLayoutString(layout);
       }
     }
 

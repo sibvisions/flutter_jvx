@@ -15,14 +15,12 @@ class JVxButton extends JVxComponent {
   StreamSubscription<FetchProcess> apiStreamSubscription;
   PressButtonBloc pressButtonBloc = PressButtonBloc();
 
-  JVxButton(Key componentId, BuildContext context) : super(componentId, context) {
-    this.background = Colors.grey;
-  }
+  JVxButton(Key componentId, BuildContext context) : super(componentId, context);
 
   @override
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);
-    text = properties.getProperty("text");
+    text = properties.getProperty<String>("text");
   }
 
   void buttonPressed() {
@@ -43,8 +41,7 @@ class JVxButton extends JVxComponent {
           onPressed: buttonPressed,
           color: this.background,
           child: Text(text, 
-            style: TextStyle(
-            ),
+            style: style
           ),
         ),
       );
