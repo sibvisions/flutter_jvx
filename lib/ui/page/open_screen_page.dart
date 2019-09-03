@@ -30,6 +30,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
     }    
 
     return WillPopScope(
+      key: globals.openPageKey,
       onWillPop: () {
         CloseScreenBloc closeScreenBloc = CloseScreenBloc();
         StreamSubscription<FetchProcess> apiStreamSubscription;

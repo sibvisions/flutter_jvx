@@ -88,7 +88,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             Navigator.of(context).pop();
             break;
           case ApiType.performPressButton:
-            RebuildOpenScreen.rebuildOpenScreenPage(context, p.response.content.updatedComponents);
+            RebuildOpenScreen.rebuildOpenScreenPage(globals.openPageKey.currentContext, p.response.content.updatedComponents);
         
             break;
           case ApiType.performApplicationStyle:

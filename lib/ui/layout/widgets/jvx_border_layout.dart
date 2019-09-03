@@ -139,6 +139,12 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     double height = size.height - y - this.insMargin.bottom;
 
     // Set components
+    this.north = null;
+    this.south = null;
+    this.east = null;
+    this.west = null;
+    this.center = null;
+    
     RenderBox child = firstChild;
     while (child != null) {
       final MultiChildLayoutParentData childParentData = child.parentData;
