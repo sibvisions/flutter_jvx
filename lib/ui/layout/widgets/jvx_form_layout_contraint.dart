@@ -184,5 +184,10 @@ class JVxFormLayoutConstraint {
     }
   }
 
+  static JVxFormLayoutConstraint getConstraintsFromString(String contraintsString) {
+    List<String> anchors = contraintsString.split(";");
+    
+  }
+
 }
 

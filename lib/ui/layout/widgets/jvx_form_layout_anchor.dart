@@ -163,4 +163,9 @@ class JVxAnchor {
     }
     return relativeAnchor;
   }
+
+  static JVxAnchor getAnchorFromString(String anchorString) {
+    List<String> values = anchorString.split(",");
+      
+  }
 }
