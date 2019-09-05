@@ -6,10 +6,11 @@ import 'jvx_component_creater.dart';
 
 class JVxScreen {
   Key componentId;
-  Map<String, JVxComponent> components = new Map<String, JVxComponent>();
+  Map<String, JVxComponent> components = <String, JVxComponent>{};
   BuildContext context;
+  Function buttonCallback;
 
-  JVxScreen(this.componentId, List<ChangedComponent> changedComponents, this.context) {
+  JVxScreen(this.componentId, List<ChangedComponent> changedComponents, this.context, this.buttonCallback) {
 
     for(var i = 0; i < changedComponents.length; i++){
       this.addComponent(changedComponents[i], context);

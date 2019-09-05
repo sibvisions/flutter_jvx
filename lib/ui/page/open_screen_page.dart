@@ -20,17 +20,26 @@ class OpenScreenPage extends StatefulWidget {
 }
 
 class _OpenScreenPageState extends State<OpenScreenPage> {
+
+  void rebuildOpenScreen(List<ChangedComponent> data) {
+    this.setState(() {
+      getIt.get<JVxScreen>().updateComponents(data);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     getIt.get<JVxScreen>().componentId = widget.componentId;
     getIt.get<JVxScreen>().context = context;
+    getIt.get<JVxScreen>().buttonCallback = (List<ChangedComponent> data) {
+      rebuildOpenScreen(data);
+    };
 
     for(var i = 0; i < widget.changedComponents.length; i++){
       getIt.get<JVxScreen>().addComponent(widget.changedComponents[i], context);
     }    
 
     return WillPopScope(
-      key: globals.openPageKey,
       onWillPop: () {
         CloseScreenBloc closeScreenBloc = CloseScreenBloc();
         StreamSubscription<FetchProcess> apiStreamSubscription;

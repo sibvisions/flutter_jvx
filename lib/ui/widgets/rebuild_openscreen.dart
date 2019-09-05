@@ -8,11 +8,13 @@ class RebuildOpenScreen extends StatefulWidget {
 
   RebuildOpenScreen({this.child});
 
-  static rebuildOpenScreenPage(BuildContext context, List<ChangedComponent> data) {
+  static rebuildOpenScreenPage(BuildContext context) {
     final _RebuildOpenScreenState state =
       context.ancestorStateOfType(const TypeMatcher<_RebuildOpenScreenState>());
 
-    state.rebuildOpenScreen(data);
+    
+
+    state.rebuildOpenScreen();
   }
 
   _RebuildOpenScreenState createState() => _RebuildOpenScreenState();
@@ -21,9 +23,8 @@ class RebuildOpenScreen extends StatefulWidget {
 class _RebuildOpenScreenState extends State<RebuildOpenScreen> {
   Key key = new UniqueKey();
 
-  void rebuildOpenScreen(List<ChangedComponent> data) {
+  void rebuildOpenScreen() {
     this.setState(() {
-      getIt.get<JVxScreen>().updateComponents(data);
       key = new UniqueKey();
     });
   }

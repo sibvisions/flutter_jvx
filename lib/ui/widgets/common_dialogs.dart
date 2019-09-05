@@ -74,7 +74,7 @@ showProgress(BuildContext context) {
 }
 
 hideProgress(BuildContext context) {
-  Navigator.pop(context);
+  Navigator.of(context).pop();
 }
 
 showTextInputDialog(BuildContext context, String title, String textLabel, String textHint, initialVal, void onTapCallback(String val)) {
