@@ -6,7 +6,7 @@ import 'jvx_component_creater.dart';
 
 class JVxScreen {
   Key componentId;
-  Map<String, JVxComponent> components = new Map<String, JVxComponent>();
+  Map<String, JVxComponent> components = <String, JVxComponent>{};
   BuildContext context;
   Function buttonCallback;
 

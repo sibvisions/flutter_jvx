@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/ui/tools/restart.dart';
 GetIt getIt = GetIt.instance;
 
 void main() {
+  getIt.allowReassignment = true;
   getIt.registerSingleton<JVxScreen>(JVxScreen.withoutArgs());
   Injector.configure(Flavor.PRO);
   runApp(new RestartWidget(

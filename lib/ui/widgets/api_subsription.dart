@@ -11,6 +11,7 @@ import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
@@ -87,6 +88,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             )));
             break;
           case ApiType.performCloseScreen:
+            getIt.registerSingleton<JVxScreen>(JVxScreen.withoutArgs());
             Navigator.of(context).pop();
             break;
           case ApiType.performPressButton:  
