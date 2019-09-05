@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/application_style_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
+import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
@@ -18,13 +19,14 @@ import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {  
   apiResult.listen((FetchProcess p) {
     if (p.loading) {
-      showProgress(context);
+      //showProgress(context);
     } else {
-      hideProgress(context);
+      //hideProgress(context);
       if (p.response.success == false) {
         fetchApiResult(context, p.response);
       } else {
@@ -80,16 +82,15 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
-            Navigator.of(context).push(MaterialPageRoute(builder:  (context) => RebuildOpenScreen(
-              child: OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID,
-            ))));
+            Navigator.of(context).push(MaterialPageRoute(builder:  (context) => 
+              OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID,
+            )));
             break;
           case ApiType.performCloseScreen:
             Navigator.of(context).pop();
             break;
-          case ApiType.performPressButton:
-            RebuildOpenScreen.rebuildOpenScreenPage(globals.openPageKey.currentContext, p.response.content.updatedComponents);
-        
+          case ApiType.performPressButton:  
+            getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);      
             break;
           case ApiType.performApplicationStyle:
             globals.applicationStyle = p.response.content;
