@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_grid_view.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_list_widget.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class MenuPage extends StatelessWidget {
   final List<MenuItem> menuItems;
@@ -16,9 +17,9 @@ class MenuPage extends StatelessWidget {
 
     return CommonScaffold(
       appTitle: 'Menu',
-      bodyData: /*this.listMenuItemsInDrawer ? Center(child: Text('Choose Menu Item'),) : */ MenuGridView(items: this.menuItems),
+      bodyData: globals.applicationStyle.menuMode == 'grid' ? MenuGridView(items: this.menuItems) : MenuListWidget(menuItems: this.menuItems),
       showDrawer: true,
-      drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: this.listMenuItemsInDrawer,),
+      drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: globals.applicationStyle.menuMode == 'drawer' ? true : false,),
     );
   }
 }

@@ -1,11 +1,26 @@
-import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
+import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/column_view.dart';
+import 'package:jvx_mobile_v3/model/popup_size.dart';
 
 abstract class ICellEditor {
-  JVxEditor _jVxEditor;
+  int horizontalAlignment;
+  int verticalAlignment;
+  int preferredEditorMode;
+  String additionalCondition;
+  ColumnView columnView;
+  bool displayReferencedColumnName;
+  bool displayConcatMask;
+  PopupSize popupSize;
+  bool searchColumnMapping;
+  bool searchTextAnywhere;
+  bool sortByColumnName;
+  bool tableHeaderVisible;
+  bool validationEnabled;
+  bool doNotClearColumnNames;
+  String className;
+  bool tableReadonly;
+  bool directCellEditor;
+  bool autoOpenPopup;
 
-  JVxEditor get jvxEditor;
-  set jvxEditor(JVxEditor jVxEditor);
-
-  getValue();
-  setValue(value);
+  Widget getWidget();
 }

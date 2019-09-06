@@ -9,6 +9,9 @@ class OpenScreenResponse {
   OpenScreenResponse({@required this.changedComponents, @required this.componentId, @required this.name});
 
   OpenScreenResponse.fromJson(List json) {
+    if (json[0]['title'] == 'Error')
+      return;
+      
     changedComponents = [];
     name = json[0]['name'];
     componentId = json[0]['componentId'];

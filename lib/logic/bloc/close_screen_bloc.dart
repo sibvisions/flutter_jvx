@@ -11,8 +11,8 @@ class CloseScreenBloc {
   final closeScreenResultController = BehaviorSubject<bool>();
   Sink<CloseScreenViewModel> get closeScreenSink => closeScreenController.sink;
   Sink<bool> get resendCloseScreenSink => closeScreenResendController.sink;
-  Stream<bool> get closeScreenResult => closeScreenResultController.stream;
-  Stream<FetchProcess> get apiResult => apiController.stream;
+  Stream<bool> get closeScreenResult => closeScreenResultController.stream.asBroadcastStream();
+  Stream<FetchProcess> get apiResult => apiController.stream.asBroadcastStream();
 
   CloseScreenBloc() {
     closeScreenController.stream.listen(apiCall);

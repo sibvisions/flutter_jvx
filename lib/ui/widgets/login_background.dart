@@ -33,6 +33,9 @@ class LoginBackground extends StatelessWidget {
                         )),
                   )
                 : new Container(
+                    decoration: BoxDecoration(
+                      color: Color(int.parse('0xFF${globals.applicationStyle.loginBackground}'))
+                    ),
                     width: double.infinity,
                     child: checkIfImageExists('${globals.dir}${globals.applicationStyle.loginIcon}')
                         ? Image.asset(
