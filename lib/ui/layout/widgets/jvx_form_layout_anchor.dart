@@ -164,8 +164,22 @@ class JVxAnchor {
     return relativeAnchor;
   }
 
-  static JVxAnchor getAnchorFromString(String anchorString) {
+  JVxAnchor.fromContraintsString(this.layout, String anchorString) {
     List<String> values = anchorString.split(",");
+    relatedAnchor = null;
+    autoSize = false;
+    _position = 0;
+    
+    if (values.length==4) {
       
+      if (values[1]!="-") {
+
+      }
+      if (values[3]=="a") {
+        autoSize = true;
+      } else {
+        _position = int.parse(values[3]);
+      }
+    }
   }
 }
