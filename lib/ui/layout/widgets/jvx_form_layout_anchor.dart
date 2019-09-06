@@ -17,6 +17,9 @@ class JVxAnchor {
   /// Constant for vertical anchors.
   static const VERTICAL = 1;
 
+  /// The name of this anchor
+  String name;
+  
   /// The layout for this anchor.
   JVxFormLayout layout;
 
@@ -175,6 +178,7 @@ class JVxAnchor {
       if (values[1]!="-") {
 
       }
+
       if (values[3]=="a") {
         autoSize = true;
       } else {
