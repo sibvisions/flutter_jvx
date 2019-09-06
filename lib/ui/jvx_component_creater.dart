@@ -1,6 +1,4 @@
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
-
-import 'editor/jvx_text_field.dart';
 import 'component/jvx_button.dart';
 import 'container/jvx_container.dart';
 import 'layout/jvx_border_layout.dart';
@@ -22,9 +20,9 @@ class JVxComponentCreator {
       componentClass = new JVxLabel(Key(component.id), context);
     } else if (component.className=="Button") {
       componentClass = new JVxButton(Key(component.id), context);
-    } else if (component.className=="TextField") {
-      componentClass = new JVxTextField(Key(component.id), context);
-      (componentClass as JVxTextField).setValue(component.componentProperties.getProperty("text"));
+    //} else if (component.className=="TextField") {
+      //componentClass = new JVxTextField(Key(component.id), context);
+      //(componentClass as JVxTextField).setValue(component.componentProperties.getProperty("text"));
     }
 
     String layout = component.componentProperties.getProperty("layout");

@@ -37,19 +37,20 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
 
     for(var i = 0; i < widget.changedComponents.length; i++){
       getIt.get<JVxScreen>().addComponent(widget.changedComponents[i], context);
-    }    
+    }
 
     return WillPopScope(
-      onWillPop: () {
+      onWillPop: () async {
         CloseScreenBloc closeScreenBloc = CloseScreenBloc();
         StreamSubscription<FetchProcess> apiStreamSubscription;
 
         apiStreamSubscription = apiSubscription(closeScreenBloc.apiResult, context);
+          
         closeScreenBloc.closeScreenController.add(
           new CloseScreenViewModel(clientId: globals.clientId, componentId: widget.componentId)
         );
 
-        return;
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(

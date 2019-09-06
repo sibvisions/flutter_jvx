@@ -21,7 +21,7 @@ class LoginPageState extends State<LoginPage> {
     validationErrorCallback: showValidationError,
     child: Scaffold(
       key: scaffoldState,
-      backgroundColor: Color(0xffeeeeee),
+      backgroundColor: Color(int.parse('0xFF${globals.applicationStyle.loginBackground.substring(1)}')),
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[LoginBackground(), LoginWidgets()],

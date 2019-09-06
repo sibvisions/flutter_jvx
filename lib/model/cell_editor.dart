@@ -1,9 +1,7 @@
-import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
-import 'package:jvx_mobile_v3/ui/editor/i_cell_editor.dart';
 
-class JVxCellEditor implements ICellEditor {
+class CellEditor {
   int horizontalAlignment;
   int verticalAlignment;
   int preferredEditorMode;
@@ -22,10 +20,4 @@ class JVxCellEditor implements ICellEditor {
   bool tableReadonly;
   bool directCellEditor;
   bool autoOpenPopup;
-
-  @override
-  Widget getWidget() {
-    // ToDo: Implement getWidget
-    return null;
-  }
 }

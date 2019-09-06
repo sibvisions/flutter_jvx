@@ -11,11 +11,9 @@ import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/ui/widgets/rebuild_openscreen.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
@@ -25,9 +23,9 @@ import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {  
   apiResult.listen((FetchProcess p) {
     if (p.loading) {
-      //showProgress(context);
+      showProgress(context);
     } else {
-      //hideProgress(context);
+      hideProgress(context);
       if (p.response.success == false) {
         fetchApiResult(context, p.response);
       } else {
@@ -89,7 +87,6 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performCloseScreen:
             getIt.registerSingleton<JVxScreen>(JVxScreen.withoutArgs());
-            Navigator.of(context).pop();
             break;
           case ApiType.performPressButton:  
             getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);      
