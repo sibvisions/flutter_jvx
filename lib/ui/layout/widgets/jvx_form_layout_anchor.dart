@@ -16,9 +16,6 @@ class JVxAnchor {
 
   /// Constant for vertical anchors.
   static const VERTICAL = 1;
-
-  /// The name of this anchor
-  String name;
   
   /// The layout for this anchor.
   JVxFormLayout layout;
@@ -58,7 +55,7 @@ class JVxAnchor {
   }
 
   /// True, if the anchor is not calculated by components preferred size.
-  bool relative;
+  bool relative = false;
 
   /// True, if the relative anchor is not calculated.
   bool firstCalculation;
@@ -165,25 +162,5 @@ class JVxAnchor {
       relativeAnchor = relativeAnchor.relatedAnchor;
     }
     return relativeAnchor;
-  }
-
-  JVxAnchor.fromContraintsString(this.layout, String anchorString) {
-    List<String> values = anchorString.split(",");
-    relatedAnchor = null;
-    autoSize = false;
-    _position = 0;
-    
-    if (values.length==4) {
-      
-      if (values[1]!="-") {
-
-      }
-
-      if (values[3]=="a") {
-        autoSize = true;
-      } else {
-        _position = int.parse(values[3]);
-      }
-    }
   }
 }

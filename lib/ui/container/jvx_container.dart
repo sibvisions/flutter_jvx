@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import '../../model/component_properties.dart';
 import '../layout/widgets/jvx_border_layout.dart';
 import 'i_container.dart';
@@ -38,9 +39,9 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
       if (layout != null) {
         if (layout is JVxBorderLayout) {
           JVxBorderLayoutConstraints contraints = getJVxBorderLayoutConstraintsFromString(pConstraints);
-          (layout as JVxBorderLayout).addLayoutComponent(pComponent, contraints);
-        } else if (layout is JVxBorderLayout) {
-          
+          layout.addLayoutComponent(pComponent, contraints);
+        } else if (layout is JVxFormLayout) {
+          layout.addLayoutComponent(pComponent, pConstraints);
         }
       }
     

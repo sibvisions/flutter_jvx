@@ -183,11 +183,5 @@ class JVxFormLayoutConstraint {
       _bottomAnchor = pBottomAnchor;
     }
   }
-
-  static JVxFormLayoutConstraint getConstraintsFromString(String contraintsString) {
-    List<String> anchors = contraintsString.split(";");
-    
-  }
-
 }
 
