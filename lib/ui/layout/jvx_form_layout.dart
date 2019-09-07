@@ -16,6 +16,7 @@ class JVxFormLayout extends JVxLayout<String> {
 	/// the y-axis alignment (default: {@link JVxConstants#CENTER}). */
 	int	verticalAlignment = stretch;
 
+  Map<String,JVxAnchor> defaultAnchors = Map<String, JVxAnchor>();
   Map<String,JVxAnchor> anchors = Map<String, JVxAnchor>();
 
   /// stores all constraints. */
@@ -41,17 +42,17 @@ class JVxFormLayout extends JVxLayout<String> {
   {
     if (pMargins == null)
     {
-      anchors["tm"].position = 0;
-      anchors["lm"].position = 0;
-      anchors["bm"].position = 0;
-      anchors["rm"].position = 0;
+      defaultAnchors["tm"].position = 0;
+      defaultAnchors["lm"].position = 0;
+      defaultAnchors["bm"].position = 0;
+      defaultAnchors["rm"].position = 0;
     }
     else
     {
-      anchors["tm"].position = pMargins.top.round();
-      anchors["lm"].position = pMargins.left.round();
-      anchors["bm"].position = -pMargins.bottom.round();
-      anchors["rm"].position = -pMargins.right.round();
+      defaultAnchors["tm"].position = pMargins.top.round();
+      defaultAnchors["lm"].position = pMargins.left.round();
+      defaultAnchors["bm"].position = -pMargins.bottom.round();
+      defaultAnchors["rm"].position = -pMargins.right.round();
     }
   }
 
@@ -74,15 +75,147 @@ class JVxFormLayout extends JVxLayout<String> {
     addDefaultAnchors();
   }
 
+  void generateAnchors() {
+    anchors = Map<String, JVxAnchor>.from(defaultAnchors);
+
+    for (int i=0; i<this._layoutConstraints.keys.length;i++) {
+      List<String> anchors = this._layoutConstraints.values.elementAt(i).split(";");
+      if (anchors.length==4) {
+          getAnchorFromString(anchors[0], JVxAnchor.VERTICAL);
+          getAnchorFromString(anchors[1], JVxAnchor.HORIZONTAL);
+          getAnchorFromString(anchors[2], JVxAnchor.VERTICAL);
+          getAnchorFromString(anchors[3], JVxAnchor.HORIZONTAL);
+      }
+    }
+  }
+
   void addDefaultAnchors() {
-    anchors.putIfAbsent("l", () => JVxAnchor(this, JVxAnchor.HORIZONTAL));
-    anchors.putIfAbsent("r", () => JVxAnchor(this, JVxAnchor.HORIZONTAL));
-    anchors.putIfAbsent("t", () => JVxAnchor(this, JVxAnchor.VERTICAL));
-    anchors.putIfAbsent("b", () => JVxAnchor(this, JVxAnchor.VERTICAL));
-    anchors.putIfAbsent("lm", () => JVxAnchor.fromAnchorAndPosition(anchors["l"], 10));
-    anchors.putIfAbsent("rm", () => JVxAnchor.fromAnchorAndPosition(anchors["r"], -10));
-    anchors.putIfAbsent("tm", () => JVxAnchor.fromAnchorAndPosition(anchors["t"], 10));
-    anchors.putIfAbsent("bm", () => JVxAnchor.fromAnchorAndPosition(anchors["b"], -10));
+    defaultAnchors.putIfAbsent("l", () => JVxAnchor(this, JVxAnchor.HORIZONTAL, "l"));
+    defaultAnchors.putIfAbsent("r", () => JVxAnchor(this, JVxAnchor.HORIZONTAL, "r"));
+    defaultAnchors.putIfAbsent("t", () => JVxAnchor(this, JVxAnchor.VERTICAL, "t"));
+    defaultAnchors.putIfAbsent("b", () => JVxAnchor(this, JVxAnchor.VERTICAL, "b"));
+    defaultAnchors.putIfAbsent("lm", () => JVxAnchor.fromAnchorAndPosition(defaultAnchors["l"], 10, "lm"));
+    defaultAnchors.putIfAbsent("rm", () => JVxAnchor.fromAnchorAndPosition(defaultAnchors["r"], -10, "rm"));
+    defaultAnchors.putIfAbsent("tm", () => JVxAnchor.fromAnchorAndPosition(defaultAnchors["t"], 10, "tm"));
+    defaultAnchors.putIfAbsent("bm", () => JVxAnchor.fromAnchorAndPosition(defaultAnchors["b"], -10, "bm"));
+  }
+
+    ///
+  /// Creates the default anchors.
+  /// 
+  /// @param pLeftTopDefaultAnchors the vector to store the anchors.
+  /// @param pRightBottomDefaultAnchors the vector to store the anchors.
+  /// @param pLeftTopAnchor the left or top margin anchor.
+  /// @param pRightBottomAnchor the right or bottom margin anchor.
+  /// @param pColumnOrRow the column or the row.
+  /// @param pGap the horizontal or vertical gap.
+  /// @return the leftTop and rightBottom Anchors.
+  ///
+  List<JVxAnchor> createDefaultAnchors(List<JVxAnchor> pLeftTopDefaultAnchors, 
+    									  List<JVxAnchor> pRightBottomDefaultAnchors, 
+    		                              JVxAnchor pLeftTopAnchor, 
+    		                              JVxAnchor pRightBottomAnchor, 
+    		                              int pColumnOrRow,
+    		                              int pGap)
+  {
+    List<JVxAnchor> defaultAnchors;
+    JVxAnchor anchor;
+    int gap;
+    bool rightBottom = pColumnOrRow < 0;
+    if (rightBottom)
+    {
+        pColumnOrRow = (-pColumnOrRow - 1) * 2;
+        defaultAnchors = pRightBottomDefaultAnchors;
+        anchor = pRightBottomAnchor;
+        gap = -pGap;
+    }
+    else
+    {
+        pColumnOrRow *= 2;
+        defaultAnchors = pLeftTopDefaultAnchors;
+        anchor = pLeftTopAnchor;
+        gap = pGap;
+    }
+    int size = defaultAnchors.length;
+    while (pColumnOrRow >= size)
+    {
+      if (size == 0)
+      {
+        defaultAnchors.add(anchor);
+      }
+      else
+      {
+        defaultAnchors.add(new JVxAnchor.fromAnchorAndPosition(defaultAnchors[size - 1], gap, "noname"));
+      }
+      defaultAnchors.add(new JVxAnchor.fromAnchor(defaultAnchors[size], "noname"));
+      size = defaultAnchors.length;
+    }
+    if (rightBottom)
+    {
+        return [defaultAnchors[pColumnOrRow + 1], defaultAnchors[pColumnOrRow]];
+    }
+    else
+    {
+        return [defaultAnchors[pColumnOrRow], defaultAnchors[pColumnOrRow + 1]]; 
+    }
+  }
+
+  ///
+	/// Creates the default constraints for the given column and row.
+  /// 
+	/// @param pColumn the column.
+	/// @param pRow the row.
+	/// @return the constraints for the given component.
+	///
+  JVxFormLayoutConstraint createConstraint(int pColumn, int pRow)
+  {
+    return createConstraintWithBeginEnd(pColumn, pRow, pColumn, pRow);
+  }
+
+  ///
+  /// Creates the default constraints for the given column and row.
+  /// 
+	/// @param pBeginColumn the begin column.
+  /// @param pBeginRow the begin row.
+	/// @param pEndColumn the end column.
+	/// @param pEndRow the end row.
+	/// @return the constraints for the given component.
+	///
+  JVxFormLayoutConstraint createConstraintWithBeginEnd(int pBeginColumn, int pBeginRow, int pEndColumn, int pEndRow)
+  {
+    List<JVxAnchor> leftDefaultAnchors = new List<JVxAnchor>();
+    List<JVxAnchor> topDefaultAnchors = new List<JVxAnchor>();
+    List<JVxAnchor> rightDefaultAnchors = new List<JVxAnchor>();
+    List<JVxAnchor> bottomDefaultAnchors = new List<JVxAnchor>();
+    JVxAnchor leftMarginAnchor = new JVxAnchor.fromAnchorAndPosition(anchors["l"], 10, "lm");
+    JVxAnchor rightMarginAnchor = new JVxAnchor.fromAnchorAndPosition(anchors["r"], -10, "rm");
+    JVxAnchor topMarginAnchor = new JVxAnchor.fromAnchorAndPosition(anchors["t"], 10, "tm");
+    JVxAnchor bottomMarginAnchor = new JVxAnchor.fromAnchorAndPosition(anchors["b"], -10, "bm");
+    List<JVxAnchor> left = createDefaultAnchors(leftDefaultAnchors, rightDefaultAnchors, leftMarginAnchor, rightMarginAnchor, pBeginColumn, horizontalGap);
+    List<JVxAnchor> right;
+    if (pBeginColumn == pEndColumn)
+    {
+      right = left;
+    }
+    else
+    {
+      right = createDefaultAnchors(leftDefaultAnchors, rightDefaultAnchors, leftMarginAnchor, rightMarginAnchor, pEndColumn, horizontalGap);
+    }
+    
+    List<JVxAnchor> top = createDefaultAnchors(topDefaultAnchors, bottomDefaultAnchors, topMarginAnchor, bottomMarginAnchor, pBeginRow, verticalGap);
+    List<JVxAnchor> bottom;
+    if (pBeginRow == pEndRow)
+    {
+      bottom = top;
+    }
+    else
+    {
+      bottom = createDefaultAnchors(topDefaultAnchors, bottomDefaultAnchors, topMarginAnchor, bottomMarginAnchor, pEndRow, verticalGap);
+    }
+    return new JVxFormLayoutConstraint(top[0], 
+                left[0], 
+                bottom[1], 
+                right[1]);
   }
 
   void addLayoutComponent(IComponent pComponent, String pConstraint)
@@ -113,6 +246,24 @@ class JVxFormLayout extends JVxLayout<String> {
     return _layoutConstraints[comp];
   }
 
+
+  JVxFormLayoutConstraint getConstraintsFromStringNew(String pConstraints) {
+    List<String> anchors = pConstraints.split(";");
+
+    if (anchors.length==4) {
+      JVxAnchor topAnchor = getAnchorFromStringNew(anchors[0], JVxAnchor.VERTICAL);
+      JVxAnchor leftAnchor = getAnchorFromStringNew(anchors[1], JVxAnchor.HORIZONTAL);
+      JVxAnchor bottomAnchor = getAnchorFromStringNew(anchors[2], JVxAnchor.VERTICAL);
+      JVxAnchor rightAnchor = getAnchorFromStringNew(anchors[3], JVxAnchor.HORIZONTAL);
+
+      if (topAnchor!=null && leftAnchor!=null && bottomAnchor!= null && rightAnchor!= null) {
+        return JVxFormLayoutConstraint(topAnchor, leftAnchor, bottomAnchor, rightAnchor);
+      }
+    }
+
+    return null;
+  }
+
   JVxFormLayoutConstraint getConstraintsFromString(String pConstraints) {
     List<String> anchors = pConstraints.split(";");
 
@@ -130,6 +281,20 @@ class JVxFormLayout extends JVxLayout<String> {
     return null;
   }
 
+  JVxAnchor getAnchorFromStringNew(String pAnchor, int orientation) {
+    List<String> values = pAnchor.split(",");
+    
+    if (values.length!=4) {
+      return null;
+    }
+
+    if (anchors.containsKey(values[0])) {
+      return anchors[values[0]];
+    }
+
+    return null;
+  }
+
   JVxAnchor getAnchorFromString(String pAnchor, int orientation) {
     List<String> values = pAnchor.split(",");
     
@@ -137,9 +302,18 @@ class JVxFormLayout extends JVxLayout<String> {
       return null;
     }
 
-    JVxAnchor anchor = JVxAnchor(this, orientation);
+    JVxAnchor anchor;
+    
+    if (anchors.containsKey(values[0])) {
+      anchor = anchors[values[0]];
+    } else {
+      anchor = JVxAnchor(this, orientation, values[0]);
+    }
+    
     if (values[1]!="-" && anchors.containsKey(values[1])) {
       anchor.relatedAnchor = anchors[values[1]];
+    } else {
+      print("no anchor found");
     }
 
     if (values[3]=="a") {
@@ -155,13 +329,30 @@ class JVxFormLayout extends JVxLayout<String> {
   Widget getWidget() {
 
     List<JVxFormLayoutConstraintData> children = new List<JVxFormLayoutConstraintData>();
+    this.generateAnchors();
 
     for (int i=0; i<this._layoutConstraints.keys.length;i++) {
-      JVxFormLayoutConstraint constraint = this.getConstraintsFromString(this._layoutConstraints.values.elementAt(i));
-      if (constraint!=null) {
+      //JVxFormLayoutConstraint constraint1;
+      JVxFormLayoutConstraint constraint2;
+      
+      //constraint1 =  createConstraint(i, 0);
+      constraint2 = this.getConstraintsFromStringNew(this._layoutConstraints.values.elementAt(i));
+
+      //print("contraint1:");
+      //JVxFormLayout.LogPrint(constraint1.toJson().toString());
+      //print("contraint2:");
+      //JVxFormLayout.LogPrint(constraint2.toJson().toString());
+
+      //if (constraint1.toJson().toString()!=constraint2.toJson().toString()) {
+      //  print ("Constraints not equal!!!!");
+      //} else {
+      //  print ("constraints are equal!!!");
+      //}
+
+      if (constraint2 !=null) {
         children.add(
           new JVxFormLayoutConstraintData(child: this._layoutConstraints.keys.elementAt(i).getWidget(), 
-                     id: constraint));
+                id: constraint2));
       }
     }
 
@@ -182,4 +373,26 @@ class JVxFormLayout extends JVxLayout<String> {
       topMarginAnchor: anchors["tm"],
       bottomMarginAnchor: anchors["bm"]);
   }
+
+  static void LogPrint(Object object) async {
+    int defaultPrintLength = 1000;
+    if (object == null || object.toString().length <= defaultPrintLength) {
+       print(object);
+    } else {
+       String log = object.toString();
+       int start = 0;
+       int endIndex = defaultPrintLength;
+       int logLength = log.length;
+       int tmpLogLength = log.length;
+       while (endIndex < logLength) {
+          print(log.substring(start, endIndex));
+          endIndex += defaultPrintLength;
+          start += defaultPrintLength;
+          tmpLogLength -= defaultPrintLength;
+       }
+       if (tmpLogLength > 0) {
+          print(log.substring(start, logLength));
+       }
+    }
+}
 }

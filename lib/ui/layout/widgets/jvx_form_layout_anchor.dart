@@ -17,6 +17,9 @@ class JVxAnchor {
   /// Constant for vertical anchors.
   static const VERTICAL = 1;
   
+  /// The name of this anchor.
+  String name;
+
   /// The layout for this anchor.
   JVxFormLayout layout;
 
@@ -62,13 +65,13 @@ class JVxAnchor {
 
   bool isBorderAnchor() => relatedAnchor == null;
 
-  JVxAnchor(this.layout, this.orientation) {
+  JVxAnchor(this.layout, this.orientation, this.name) {
     relatedAnchor = null;
     autoSize = false;
     _position = 0;
   }
 
-  JVxAnchor.fromAnchor(pRelatedAnchor) {
+  JVxAnchor.fromAnchor(pRelatedAnchor, this.name) {
     layout = pRelatedAnchor.layout;
     orientation = pRelatedAnchor.orientation;
     relatedAnchor = pRelatedAnchor;
@@ -76,7 +79,7 @@ class JVxAnchor {
     _position = 0;
   }
 
-  JVxAnchor.fromAnchorAndPosition(pRelatedAnchor, int pPosition) {
+  JVxAnchor.fromAnchorAndPosition(pRelatedAnchor, int pPosition, this.name) {
     layout = pRelatedAnchor.layout;
     orientation = pRelatedAnchor.orientation;
     relatedAnchor = pRelatedAnchor;
@@ -163,4 +166,18 @@ class JVxAnchor {
     }
     return relativeAnchor;
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': name,
+    'position': _position,
+    'orientation': orientation,
+    'autoSize': autoSize,
+    'relative': relative,
+    'autoSizeCalculated': autoSizeCalculated,
+    'firstCalculation': firstCalculation,
+    'relatedAnchor': relatedAnchor?.toJson(),
+    'layout': layout?.toString(),
+    'isBorderAnchor': isBorderAnchor(),
+    'hashCode': this.hashCode.toString(),
+  };
 }

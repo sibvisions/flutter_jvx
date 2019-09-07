@@ -10,9 +10,7 @@ class JVxLabel extends JVxComponent implements IComponent {
   TextAlign verticalAlignment = JVxTextAlign.defaultAlign;
   Alignment horizontalAlignment = JVxAlignment.defaultAlignment;
 
-  JVxLabel(Key componentId, BuildContext context, { this.text, TextStyle style }) : super(componentId, context) {
-      super.style = style;
-  }
+  JVxLabel(Key componentId, BuildContext context, { this.text }) : super(componentId, context);
 
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);

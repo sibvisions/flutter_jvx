@@ -25,19 +25,19 @@ class JVxFormLayoutConstraint {
   JVxFormLayoutConstraint(JVxAnchor pTopAnchor, JVxAnchor pLeftAnchor, JVxAnchor pBottomAnchor, JVxAnchor pRightAnchor) {
     if (pLeftAnchor == null && pRightAnchor != null)
     {
-      pLeftAnchor = new JVxAnchor.fromAnchor(pRightAnchor);
+      pLeftAnchor = new JVxAnchor.fromAnchor(pRightAnchor, "l");
     }
     else if (pRightAnchor == null && pLeftAnchor != null)
     {
-      pRightAnchor = new JVxAnchor.fromAnchor(pLeftAnchor);
+      pRightAnchor = new JVxAnchor.fromAnchor(pLeftAnchor, "r");
     }
     if (pTopAnchor == null && pBottomAnchor != null)
     {
-      pTopAnchor = new JVxAnchor.fromAnchor(pBottomAnchor);
+      pTopAnchor = new JVxAnchor.fromAnchor(pBottomAnchor, "t");
     }
     else if (pBottomAnchor == null && pTopAnchor != null)
     {
-      pBottomAnchor = new JVxAnchor.fromAnchor(pTopAnchor);
+      pBottomAnchor = new JVxAnchor.fromAnchor(pTopAnchor, "b");
     }
     
     leftAnchor = pLeftAnchor;
@@ -79,7 +79,7 @@ class JVxFormLayoutConstraint {
   {
     if (pLeftAnchor == null && _rightAnchor != null)
     {
-      _leftAnchor = new JVxAnchor.fromAnchor(_rightAnchor);
+      _leftAnchor = new JVxAnchor.fromAnchor(_rightAnchor, "l");
     }
     else if (pLeftAnchor.orientation == JVxAnchor.VERTICAL)
     {
@@ -110,7 +110,7 @@ class JVxFormLayoutConstraint {
   {
     if (pRightAnchor == null && _leftAnchor != null)
     {
-      _rightAnchor = new JVxAnchor.fromAnchor(_leftAnchor);
+      _rightAnchor = new JVxAnchor.fromAnchor(_leftAnchor, "r");
     }
     else if (pRightAnchor.orientation == JVxAnchor.VERTICAL)
     {
@@ -141,7 +141,7 @@ class JVxFormLayoutConstraint {
   {
     if (pTopAnchor == null && _bottomAnchor != null)
     {
-      _topAnchor = new JVxAnchor.fromAnchor(_bottomAnchor);
+      _topAnchor = new JVxAnchor.fromAnchor(_bottomAnchor, "t");
     }
     else if (pTopAnchor.orientation == JVxAnchor.HORIZONTAL)
     {
@@ -172,7 +172,7 @@ class JVxFormLayoutConstraint {
   {
     if (pBottomAnchor == null && _topAnchor != null)
     {
-      _bottomAnchor = new JVxAnchor.fromAnchor(_topAnchor);
+      _bottomAnchor = new JVxAnchor.fromAnchor(_topAnchor, "b");
     }
     else if (pBottomAnchor.orientation == JVxAnchor.HORIZONTAL)
     {
@@ -183,5 +183,14 @@ class JVxFormLayoutConstraint {
       _bottomAnchor = pBottomAnchor;
     }
   }
+
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'bottomAnchor': bottomAnchor.toJson(),
+    'leftAnchor': leftAnchor.toJson(),
+    'rightAnchor': rightAnchor.toJson(),
+    'topAnchor': topAnchor.toJson(),
+    'hashCode': this.hashCode.toString(),
+  };
 }
 

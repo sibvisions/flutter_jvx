@@ -188,65 +188,13 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
   void addLayoutComponent(RenderBox pComponent, JVxFormLayoutConstraint pConstraint)
   {
-    JVxFormLayoutConstraint constraint;
-
-    if (pConstraint != null)
-    {
-      constraint = pConstraint;
-    }
-    else
-    {
-      constraint = null;
-
-      /*Container parent = pComponent.parent.getParent();
-      int zOrder = parent.getComponentZOrder(pComponent);
-
-      if (zOrder == parent.getComponentCount() - 1)
-      {
-        Constraint consBefore;
-        if (zOrder == 0)
-        {
-          consBefore = null;
-        }
-        else
-        {
-          consBefore = getConstraint(parent.getComponent(zOrder - 1));
-        }
-        if (consBefore == null)
-        {
-          constraint = createConstraint(0, 0);
-        }
-        else
-        {
-          int col = leftDefaultAnchors.indexOf(consBefore.leftAnchor) / 2 + 1;
-          int row = topDefaultAnchors.indexOf(consBefore.topAnchor) / 2;
-
-          if (pConstraint == NEWLINE || (pConstraint == null && col % newlineCount == 0))
-          {
-            constraint = createConstraint(0, row + 1);
-          }
-          else if (pConstraint == null)
-          {
-            constraint = createConstraint(col, row);
-          }
-        }
-      }*/
-    }
-
-    if (constraint == null)
+    if (pConstraint == null)
     {
       throw new ArgumentError("Constraint " + pConstraint.toString() + " is not allowed!");
     }
-    /*else if (constraint.leftAnchor.layout != this
-        || constraint.rightAnchor.layout != this
-        || constraint.topAnchor.layout != this
-        || constraint.bottomAnchor.layout != this)
-    {
-      throw new ArgumentError("Constraint " + pConstraint.toString() + " has anchors for an other layout!");
-    }*/
     else
     {
-      layoutConstraints.putIfAbsent(pComponent, () => constraint);
+      layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
     }
 
     valid = false;
@@ -462,14 +410,16 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
   Size getPreferredSize(RenderBox renderBox) {
     renderBox.layout(
-      BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
+      BoxConstraints.tightFor(),
+      //BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
       parentUsesSize: true);
     return renderBox.size;
   }
 
     Size getMinimumSize(RenderBox renderBox) {
     renderBox.layout(
-      BoxConstraints(minWidth: 0, maxWidth: this.constraints.smallest.width, minHeight: 0, maxHeight: this.constraints.smallest.height), 
+      BoxConstraints.tightFor(),
+      //BoxConstraints(minWidth: 0, maxWidth: this.constraints.smallest.width, minHeight: 0, maxHeight: this.constraints.smallest.height), 
       parentUsesSize: true);
     return renderBox.size;
   }

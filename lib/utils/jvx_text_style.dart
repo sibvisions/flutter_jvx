@@ -50,32 +50,34 @@ class JVxTextStyle {
     return style;
   }
 
-static TextStyle addForecolorToTextStyle(Color color, [TextStyle style]) {
-  if (style!=null) {
-    return TextStyle(
-      inherit: style.inherit,
-      color: color,
-      backgroundColor: style.backgroundColor,
-      fontSize: style.fontSize,
-      fontWeight: style.fontWeight,
-      fontStyle: style.fontStyle,
-      letterSpacing: style.letterSpacing,
-      wordSpacing: style.wordSpacing,
-      textBaseline: style.textBaseline,
-      height: style.height,
-      locale: style.locale,
-      foreground: style.foreground,
-      background: style.background,
-      shadows: style.shadows,
-      fontFeatures: style.fontFeatures,
-      decoration: style.decoration,
-      decorationColor: style.decorationColor,
-      decorationStyle: style.decorationStyle,
-      decorationThickness: style.decorationThickness,
-      debugLabel: style.debugLabel);
-    } else {
-      return TextStyle(color: color);
-    }
+  static TextStyle addForecolorToTextStyle(Color color, [TextStyle style]) {
+    if (color!=null) {
+      if (style!=null) {
+        return TextStyle(
+          inherit: style.inherit,
+          color: color,
+          backgroundColor: style.backgroundColor,
+          fontSize: style.fontSize,
+          fontWeight: style.fontWeight,
+          fontStyle: style.fontStyle,
+          letterSpacing: style.letterSpacing,
+          wordSpacing: style.wordSpacing,
+          textBaseline: style.textBaseline,
+          height: style.height,
+          locale: style.locale,
+          foreground: style.foreground,
+          background: style.background,
+          shadows: style.shadows,
+          fontFeatures: style.fontFeatures,
+          decoration: style.decoration,
+          decorationColor: style.decorationColor,
+          decorationStyle: style.decorationStyle,
+          decorationThickness: style.decorationThickness,
+          debugLabel: style.debugLabel);
+        } else {
+          return TextStyle(color: color);
+        }
+      }
+    return style;
   }
-
 }
