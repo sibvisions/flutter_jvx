@@ -330,6 +330,7 @@ class JVxFormLayout extends JVxLayout<String> {
 
     List<JVxFormLayoutConstraintData> children = new List<JVxFormLayoutConstraintData>();
     this.generateAnchors();
+    this.generateAnchors();
 
     for (int i=0; i<this._layoutConstraints.keys.length;i++) {
       //JVxFormLayoutConstraint constraint1;

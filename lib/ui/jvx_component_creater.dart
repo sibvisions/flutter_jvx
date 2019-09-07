@@ -23,6 +23,9 @@ class JVxComponentCreator {
     //} else if (component.className=="TextField") {
       //componentClass = new JVxTextField(Key(component.id), context);
       //(componentClass as JVxTextField).setValue(component.componentProperties.getProperty("text"));
+    } else if (!component.destroy) {
+      componentClass = new JVxLabel(Key(component.id), context);
+      (componentClass as JVxLabel).text = "undefined";
     }
 
     String layout = component.componentProperties.getProperty("layout");

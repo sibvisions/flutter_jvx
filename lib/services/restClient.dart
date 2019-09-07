@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/log.dart';
 
 class RestClient {
   bool debug = true;
@@ -19,7 +20,7 @@ class RestClient {
     var response = await http.get(globals.baseUrl + resourcePath, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
     updateCookie(response);
     if (debug) {
-      debugPrint("Response:"+ response.body);
+      Log.printLong("Response:"+ response.body);
     }
 
     return processResponse<T>(response);
@@ -41,7 +42,7 @@ class RestClient {
     updateCookie(response);
 
     if (debug) {
-      debugPrint("Response:"+ response.body);
+      Log.printLong("Response:"+ response.body);
     }
 
     return processResponse<T>(response);

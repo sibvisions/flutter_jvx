@@ -1,4 +1,5 @@
 import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/utils/convertion.dart';
 
 class ChangedComponent {
   String id;
@@ -24,7 +25,7 @@ class ChangedComponent {
     className = json['className'];
     parent = json['parent'];
     indexOf = json['indexOf'];
-    //destroy = json['~destroy'];
+    destroy = Convertion.convertToBool(json['~destroy']);
 
     componentProperties = new ComponentProperties(json);
   }
