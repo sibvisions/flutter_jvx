@@ -1,6 +1,8 @@
+import 'package:jvx_mobile_v3/ui/jvx_cell_editor_creator.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import 'component/jvx_button.dart';
 import 'container/jvx_container.dart';
+import 'editor/jvx_editor.dart';
 import 'layout/jvx_border_layout.dart';
 import 'layout/jvx_layout.dart';
 import '../model/changed_component.dart';
@@ -20,12 +22,12 @@ class JVxComponentCreator {
       componentClass = new JVxLabel(Key(component.id), context);
     } else if (component.className=="Button") {
       componentClass = new JVxButton(Key(component.id), context);
-    //} else if (component.className=="TextField") {
-      //componentClass = new JVxTextField(Key(component.id), context);
-      //(componentClass as JVxTextField).setValue(component.componentProperties.getProperty("text"));
+    } else if (component.className=="Editor") {
+      componentClass = new JVxEditor(Key(component.id), context);
+      (componentClass as JVxEditor).cellEditor = JVxCellEditorCreator.create(component.componentProperties, context);
     } else if (!component.destroy) {
       componentClass = new JVxLabel(Key(component.id), context);
-      (componentClass as JVxLabel).text = "undefined";
+      (componentClass as JVxLabel).text = "Undefined Component '" + component.className + "'!";
     }
 
     String layout = component.componentProperties.getProperty("layout");

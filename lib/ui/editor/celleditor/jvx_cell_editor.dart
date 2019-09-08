@@ -1,9 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
+import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
-import 'package:jvx_mobile_v3/ui/editor/i_cell_editor.dart';
+
+import 'i_cell_editor.dart';
 
 class JVxCellEditor implements ICellEditor {
+  BuildContext context;
   int horizontalAlignment;
   int verticalAlignment;
   int preferredEditorMode;
@@ -18,10 +21,18 @@ class JVxCellEditor implements ICellEditor {
   bool tableHeaderVisible;
   bool validationEnabled;
   bool doNotClearColumnNames;
-  String className;
   bool tableReadonly;
   bool directCellEditor;
   bool autoOpenPopup;
+  String contentType;
+
+  JVxCellEditor(ComponentProperties properties, this.context) {
+    horizontalAlignment = properties.getProperty<int>("horizontalAlignment");
+    verticalAlignment = properties.getProperty<int>("verticalAlignment");
+    preferredEditorMode = properties.getProperty<int>("preferredEditorMode");
+    contentType = properties.getProperty<String>("contentType");
+    directCellEditor = properties.getProperty<bool>("directCellEditor", false);
+  }
 
   @override
   Widget getWidget() {

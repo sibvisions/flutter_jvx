@@ -7,8 +7,13 @@ import '../utils/hex_color.dart';
 
 class ComponentProperties {   
   Map<String, dynamic> properties = new Map<String, dynamic>();
+  ComponentProperties cellEditorProperties;
 
-  ComponentProperties(this.properties);
+  ComponentProperties(this.properties) {
+    if (this.properties.containsKey("cellEditor")) {
+      cellEditorProperties = new ComponentProperties(this.properties["cellEditor"]);
+    }
+  }
 
   T getProperty<T>(String propertyName, [T defaultValue]) {
     dynamic value;
@@ -28,6 +33,12 @@ class ComponentProperties {
       if (HexColor.isHexColor(value) && T == HexColor) {
         return HexColor(value) as T;
       }
+
+      if (T == Size) {
+        List<String> sizeString = value.split(",");
+        return Size(double.parse(sizeString[0]), double.parse(sizeString[1])) as T;
+      }
+
     } else if (value is int) {
       if (T == TextAlign) {
         return JVxTextAlign.getTextAlignFromInt(value) as T;

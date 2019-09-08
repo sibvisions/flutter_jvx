@@ -10,7 +10,7 @@ class JVxLabel extends JVxComponent implements IComponent {
   TextAlign verticalAlignment = JVxTextAlign.defaultAlign;
   Alignment horizontalAlignment = JVxAlignment.defaultAlignment;
 
-  JVxLabel(Key componentId, BuildContext context, { this.text }) : super(componentId, context);
+  JVxLabel(Key componentId, BuildContext context) : super(componentId, context);
 
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);
@@ -23,6 +23,7 @@ class JVxLabel extends JVxComponent implements IComponent {
   Widget getWidget() {
       return 
       SizedBox(
+        key: componentId,
         child: Container(
           alignment: horizontalAlignment,
           color: this.background,

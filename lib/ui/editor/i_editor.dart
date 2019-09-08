@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/editor/jvx_cell_editor.dart';
+
+import 'celleditor/jvx_cell_editor.dart';
 
 abstract class IEditor {
-  JVxCellEditor jVxCellEditor;
+  Size maximumSize;
+  String dataProvider;
+  String dataRow;
+  String columnName;
+  bool readonly = false;
+  bool eventFocusGained = false;
+  JVxCellEditor cellEditor;
 
   Widget getWidget();
 }

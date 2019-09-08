@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
+import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
 
 abstract class ICellEditor {
+  BuildContext context;
   int horizontalAlignment;
   int verticalAlignment;
   int preferredEditorMode;
@@ -17,10 +19,11 @@ abstract class ICellEditor {
   bool tableHeaderVisible;
   bool validationEnabled;
   bool doNotClearColumnNames;
-  String className;
   bool tableReadonly;
   bool directCellEditor;
   bool autoOpenPopup;
+
+  ICellEditor(ComponentProperties properties, this.context);
 
   Widget getWidget();
 }
