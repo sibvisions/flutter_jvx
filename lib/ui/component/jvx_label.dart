@@ -14,7 +14,7 @@ class JVxLabel extends JVxComponent implements IComponent {
 
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);
-    text = properties.getProperty<String>("text");
+    text = properties.getProperty<String>("text", text);
     verticalAlignment = properties.getProperty<TextAlign>("verticalAlignment", JVxTextAlign.defaultAlign);
     horizontalAlignment = properties.getProperty<Alignment>("horizontalAlignment", JVxAlignment.defaultAlignment);
   }

@@ -78,13 +78,71 @@ class JVxFormLayout extends JVxLayout<String> {
   void generateAnchors() {
     anchors = Map<String, JVxAnchor>.from(defaultAnchors);
 
-    for (int i=0; i<this._layoutConstraints.keys.length;i++) {
-      List<String> anchors = this._layoutConstraints.values.elementAt(i).split(";");
+    this._layoutConstraints.forEach((k,v) {
+      List<String> anchors = v.split(";");
       if (anchors.length==4) {
-          getAnchorFromString(anchors[0], JVxAnchor.VERTICAL);
-          getAnchorFromString(anchors[1], JVxAnchor.HORIZONTAL);
-          getAnchorFromString(anchors[2], JVxAnchor.VERTICAL);
-          getAnchorFromString(anchors[3], JVxAnchor.HORIZONTAL);
+        anchors.asMap().forEach((index,a) {
+          if(index % 2 == 0) {
+            addAnchorFromString(a, JVxAnchor.VERTICAL);
+          } else {
+            addAnchorFromString(a, JVxAnchor.HORIZONTAL);
+          }
+        });
+      }
+    });
+
+    this._layoutConstraints.forEach((k,v) {
+      List<String> anchors = v.split(";");
+      if (anchors.length==4) {
+        anchors.forEach((a) {
+          updateRelatedAnchorFromString(a);
+        });
+      }
+    });
+  }
+
+  void addAnchorFromString(String pAnchor, int orientation) {
+    List<String> values = pAnchor.split(",");
+    
+    if (values.length!=4) {
+      return;
+    }
+
+    JVxAnchor anchor;
+    
+    if (anchors.containsKey(values[0])) {
+      anchor = anchors[values[0]];
+    } else {
+      anchor = JVxAnchor(this, orientation, values[0]);
+    }
+    
+    if (values[1]!="-" && anchors.containsKey(values[1])) {
+      anchor.relatedAnchor = anchors[values[1]];
+    }
+
+    if (values[3]=="a") {
+      anchor.autoSize = true;
+    } else {
+      anchor.position = int.parse(values[3]);
+    }
+
+    anchors.putIfAbsent(values[0], () => anchor);
+  }
+
+  void updateRelatedAnchorFromString(String pAnchor) {
+    List<String> values = pAnchor.split(",");
+
+    if (values.length!=4) {
+      return;
+    }
+
+    JVxAnchor anchor = anchors[values[0]];
+    if (values[1]!="-") {
+      if (anchors.containsKey(values[1])) {
+        anchor.relatedAnchor = anchors[values[1]];
+        anchors.putIfAbsent(values[0], () => anchor);
+      } else {
+        throw new ArgumentError("Related anchor (Name: '" + values[1] + "') not found!");
       }
     }
   }
@@ -247,23 +305,6 @@ class JVxFormLayout extends JVxLayout<String> {
   }
 
 
-  JVxFormLayoutConstraint getConstraintsFromStringNew(String pConstraints) {
-    List<String> anchors = pConstraints.split(";");
-
-    if (anchors.length==4) {
-      JVxAnchor topAnchor = getAnchorFromStringNew(anchors[0], JVxAnchor.VERTICAL);
-      JVxAnchor leftAnchor = getAnchorFromStringNew(anchors[1], JVxAnchor.HORIZONTAL);
-      JVxAnchor bottomAnchor = getAnchorFromStringNew(anchors[2], JVxAnchor.VERTICAL);
-      JVxAnchor rightAnchor = getAnchorFromStringNew(anchors[3], JVxAnchor.HORIZONTAL);
-
-      if (topAnchor!=null && leftAnchor!=null && bottomAnchor!= null && rightAnchor!= null) {
-        return JVxFormLayoutConstraint(topAnchor, leftAnchor, bottomAnchor, rightAnchor);
-      }
-    }
-
-    return null;
-  }
-
   JVxFormLayoutConstraint getConstraintsFromString(String pConstraints) {
     List<String> anchors = pConstraints.split(";");
 
@@ -281,81 +322,42 @@ class JVxFormLayout extends JVxLayout<String> {
     return null;
   }
 
-  JVxAnchor getAnchorFromStringNew(String pAnchor, int orientation) {
-    List<String> values = pAnchor.split(",");
-    
-    if (values.length!=4) {
-      return null;
-    }
-
-    if (anchors.containsKey(values[0])) {
-      return anchors[values[0]];
-    }
-
-    return null;
-  }
-
   JVxAnchor getAnchorFromString(String pAnchor, int orientation) {
     List<String> values = pAnchor.split(",");
-    
-    if (values.length!=4) {
-      return null;
-    }
-
-    JVxAnchor anchor;
-    
-    if (anchors.containsKey(values[0])) {
-      anchor = anchors[values[0]];
-    } else {
-      anchor = JVxAnchor(this, orientation, values[0]);
-    }
-    
-    if (values[1]!="-" && anchors.containsKey(values[1])) {
-      anchor.relatedAnchor = anchors[values[1]];
-    } else {
-      print("no anchor found");
-    }
-
-    if (values[3]=="a") {
-      anchor.autoSize = true;
-    } else {
-      anchor.position = int.parse(values[3]);
-    }
-    anchors.putIfAbsent(values[0], () => anchor);
-    return anchor;
-
+    return anchors[values[0]];
   }
 
   Widget getWidget() {
 
     List<JVxFormLayoutConstraintData> children = new List<JVxFormLayoutConstraintData>();
     this.generateAnchors();
-    this.generateAnchors();
 
-    for (int i=0; i<this._layoutConstraints.keys.length;i++) {
-      //JVxFormLayoutConstraint constraint1;
-      JVxFormLayoutConstraint constraint2;
-      
-      //constraint1 =  createConstraint(i, 0);
-      constraint2 = this.getConstraintsFromStringNew(this._layoutConstraints.values.elementAt(i));
+    this._layoutConstraints.forEach((k, v) {
+      if (k.isVisible) {
+        //JVxFormLayoutConstraint constraint1;
+        JVxFormLayoutConstraint constraint2;
+        
+        //constraint1 =  createConstraint(i, 0);
+        constraint2 = this.getConstraintsFromString(v);
 
-      //print("contraint1:");
-      //JVxFormLayout.LogPrint(constraint1.toJson().toString());
-      //print("contraint2:");
-      //JVxFormLayout.LogPrint(constraint2.toJson().toString());
+        //print("contraint1:");
+        //JVxFormLayout.LogPrint(constraint1.toJson().toString());
+        //print("contraint2:");
+        //JVxFormLayout.LogPrint(constraint2.toJson().toString());
 
-      //if (constraint1.toJson().toString()!=constraint2.toJson().toString()) {
-      //  print ("Constraints not equal!!!!");
-      //} else {
-      //  print ("constraints are equal!!!");
-      //}
+        //if (constraint1.toJson().toString()!=constraint2.toJson().toString()) {
+        //  print ("Constraints not equal!!!!");
+        //} else {
+        //  print ("constraints are equal!!!");
+        //}
 
-      if (constraint2 !=null) {
-        children.add(
-          new JVxFormLayoutConstraintData(child: this._layoutConstraints.keys.elementAt(i).getWidget(), 
-                id: constraint2));
+        if (constraint2 !=null) {
+          children.add(
+            new JVxFormLayoutConstraintData(child: k.getWidget(), 
+                  id: constraint2));
+        }
       }
-    }
+    });
 
     return JVxFormLayoutWidget(
       key: key,
@@ -374,26 +376,4 @@ class JVxFormLayout extends JVxLayout<String> {
       topMarginAnchor: anchors["tm"],
       bottomMarginAnchor: anchors["bm"]);
   }
-
-  static void LogPrint(Object object) async {
-    int defaultPrintLength = 1000;
-    if (object == null || object.toString().length <= defaultPrintLength) {
-       print(object);
-    } else {
-       String log = object.toString();
-       int start = 0;
-       int endIndex = defaultPrintLength;
-       int logLength = log.length;
-       int tmpLogLength = log.length;
-       while (endIndex < logLength) {
-          print(log.substring(start, endIndex));
-          endIndex += defaultPrintLength;
-          start += defaultPrintLength;
-          tmpLogLength -= defaultPrintLength;
-       }
-       if (tmpLogLength > 0) {
-          print(log.substring(start, logLength));
-       }
-    }
-}
 }
