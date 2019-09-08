@@ -94,8 +94,12 @@ class JVxFormLayout extends JVxLayout<String> {
     this._layoutConstraints.forEach((k,v) {
       List<String> anchors = v.split(";");
       if (anchors.length==4) {
-        anchors.forEach((a) {
-          updateRelatedAnchorFromString(a);
+        anchors.asMap().forEach((index,a) {
+          if(index % 2 == 0) {
+            updateRelatedAnchorFromString(a, JVxAnchor.VERTICAL);
+          } else {
+            updateRelatedAnchorFromString(a, JVxAnchor.HORIZONTAL);
+          }
         });
       }
     });
@@ -129,7 +133,7 @@ class JVxFormLayout extends JVxLayout<String> {
     anchors.putIfAbsent(values[0], () => anchor);
   }
 
-  void updateRelatedAnchorFromString(String pAnchor) {
+  void updateRelatedAnchorFromString(String pAnchor, int orientation) {
     List<String> values = pAnchor.split(",");
 
     if (values.length!=4) {
@@ -142,7 +146,10 @@ class JVxFormLayout extends JVxLayout<String> {
         anchor.relatedAnchor = anchors[values[1]];
         anchors.putIfAbsent(values[0], () => anchor);
       } else {
-        throw new ArgumentError("Related anchor (Name: '" + values[1] + "') not found!");
+        JVxAnchor anchor = JVxAnchor(this, orientation, values[1]);
+        anchors.putIfAbsent(values[1], () => anchor);
+        updateRelatedAnchorFromString(pAnchor, orientation);
+        //throw new ArgumentError("Related anchor (Name: '" + values[1] + "') not found!");
       }
     }
   }
