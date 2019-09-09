@@ -10,11 +10,11 @@ fetchApiResult(BuildContext context, NetworkServiceResponse snapshot) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(Translations.of(context).text('error')),
+      title: Text(Translations.of(context).text('Error')),
       content: Text(snapshot.message),
       actions: <Widget>[
         FlatButton(
-          child: Text(Translations.of(context).text('close')),
+          child: Text(Translations.of(context).text('Close')),
           onPressed: () => exit(0),
         ),
         FlatButton(

@@ -50,7 +50,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
           new CloseScreenViewModel(clientId: globals.clientId, componentId: widget.componentId)
         );
 
-        return false;
+        return true;
       },
       child: Scaffold(
         appBar: AppBar(

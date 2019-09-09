@@ -24,7 +24,17 @@ class LoginPageState extends State<LoginPage> {
       backgroundColor: Color(int.parse('0xFF${globals.applicationStyle.loginBackground.substring(1)}')),
       body: Stack(
         fit: StackFit.expand,
-        children: <Widget>[LoginBackground(), LoginWidgets()],
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 100, 8, 8),
+            child: Image.asset(
+              '${globals.dir}${globals.applicationStyle.loginIcon}',
+              fit: BoxFit.none,
+              alignment: Alignment.topCenter,
+            ),
+          ),
+          LoginWidgets()
+        ],
       ),
     ),
   );

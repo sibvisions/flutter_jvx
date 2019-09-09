@@ -40,7 +40,10 @@ class Translations {
       
       await SharedPreferencesHelper().getTranslation().then((prefData) => globals.translation = prefData);
 
-      await XmlLoader().loadTranslationsXml(locale.languageCode).then((val) => _localizedValues2 = val);
+      if (globals.translation['translation_${locale.languageCode}'] != null) {
+        print("ITS NOT NULL");
+        await XmlLoader().loadTranslationsXml(locale.languageCode).then((val) => _localizedValues2 = val);
+      }
 
       return translations;
     } catch (e) {
@@ -78,26 +81,30 @@ class XmlLoader {
     return await Future.delayed(const Duration(seconds: 5), () {
       if (lang == 'en') {
         File file;
+        String contents;
 
-        if (globals.translation != null)
+        if (globals.translation['translation.xml'] != null)
           file = new File(globals.translation['translation.xml']);
+          contents = file.readAsStringSync();
 
-        String contents = file.readAsStringSync();
+        if (contents != null) {
+          xml.XmlDocument doc = xml.parse(contents);
 
-        xml.XmlDocument doc = xml.parse(contents);
+          Map<String, String> translations = <String, String>{};
 
-        Map<String, String> translations = <String, String>{};
+          doc.findAllElements('entry').toList().forEach((e) {
+            translations[e.attributes.first.value] = e.text;
+          });
 
-        doc.findAllElements('entry').toList().forEach((e) {
-          translations[e.attributes.first.value] = e.text;
-        });
-
-        return translations;
+          return translations;
+        }
       }
       if (globals.translation['translation_$lang.xml'] != null) {
-        File file = new File(globals.translation['translation_$lang.xml']);
+        File file;
+        String contents;
 
-        String contents = file.readAsStringSync();
+        file = new File(globals.translation['translation_$lang.xml']);
+        contents = file.readAsStringSync();
 
         xml.XmlDocument doc = xml.parse(contents);
 
