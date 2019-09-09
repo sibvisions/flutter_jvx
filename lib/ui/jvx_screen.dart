@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/main.dart';
 import '../model/changed_component.dart';
 import 'component/jvx_component.dart';
 import 'container/jvx_container.dart';

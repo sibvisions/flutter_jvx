@@ -47,10 +47,10 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 
                 _downloadAppStyle(context);
                 
-                //if (val != p.response.content.applicationMetaData.version) {
+                if (val != p.response.content.applicationMetaData.version) {
                   SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
                   _download(context);
-                //}
+                }
               });
               SharedPreferencesHelper().getLoginData().then((onValue) {
                 if (onValue['username'] == null && onValue['password'] == null) {
@@ -85,7 +85,6 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             )));
             break;
           case ApiType.performCloseScreen:
-            getIt.registerSingleton<JVxScreen>(JVxScreen.withoutArgs());
             break;
           case ApiType.performPressButton:
             getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);      
