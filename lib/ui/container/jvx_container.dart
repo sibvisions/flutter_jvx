@@ -11,6 +11,7 @@ import '../layout/jvx_border_layout.dart';
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
   List<JVxComponent> components = new List<JVxComponent>();
+  List<String> constraints = new List<String>();
 
   JVxContainer(Key componentId, BuildContext context) : super(componentId, context);
 
@@ -30,10 +31,12 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
       if (pIndex < 0)
 			{
 				components.add(pComponent);
+        constraints.add(pConstraints);
 			}
 			else
 			{
 				components.insert(pIndex, pComponent);
+        constraints.insert(pIndex, pConstraints);
 			}
 
       if (layout != null) {
@@ -71,16 +74,20 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
 		}
   }
 
-    void updateComponentProperties(Key componentId, ComponentProperties properties) {
-      IComponent pComponent = components.firstWhere((c) => c.componentId == componentId);
+  JVxComponent getComponentWithContraint(String constraint) {
+    return components?.elementAt(constraints?.indexOf(constraint));
+  }
 
-      pComponent?.updateProperties(properties);
+  void updateComponentProperties(Key componentId, ComponentProperties properties) {
+    IComponent pComponent = components.firstWhere((c) => c.componentId == componentId);
 
-      if (layout != null) {
-        if (layout is JVxBorderLayout) {
-          JVxBorderLayoutConstraints contraints = layout.getConstraints(pComponent);
-          (layout as JVxBorderLayout).addLayoutComponent(pComponent, contraints);
-        }
+    pComponent?.updateProperties(properties);
+
+    if (layout != null) {
+      if (layout is JVxBorderLayout) {
+        JVxBorderLayoutConstraints contraints = layout.getConstraints(pComponent);
+        (layout as JVxBorderLayout).addLayoutComponent(pComponent, contraints);
       }
     }
+  }
 }

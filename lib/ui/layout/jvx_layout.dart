@@ -28,7 +28,11 @@ abstract class JVxLayout<E> implements ILayout<E> {
 
   static String getLayoutName(String layoutString) {
     List<String> parameter = layoutString?.split(",");
-    return parameter[0];
+    if (parameter!= null && parameter.length>0) {
+      return parameter[0];
+    } 
+
+    return null;
   }
 
   void updateLayoutData(String layoutData) {

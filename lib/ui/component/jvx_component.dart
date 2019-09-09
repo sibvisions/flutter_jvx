@@ -9,7 +9,7 @@ abstract class JVxComponent implements IComponent {
   Key componentId;
   Color background = Colors.transparent;
   Color foreground;
-  TextStyle style = new TextStyle(fontSize: 10.0, color: Colors.black);
+  TextStyle style = new TextStyle(fontSize: 12.0, color: Colors.black);
   Size preferredSize;
   Size minimumSize;
   Size maximumSize;

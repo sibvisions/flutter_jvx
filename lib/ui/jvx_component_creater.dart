@@ -1,3 +1,4 @@
+import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
 import 'package:jvx_mobile_v3/ui/jvx_cell_editor_creator.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import 'component/jvx_button.dart';
@@ -18,6 +19,8 @@ class JVxComponentCreator {
 
     if (component.className=="Panel") {
       componentClass = new JVxPanel(Key(component.id), context);
+    } else if (component.className=="SplitPanel") {
+      componentClass = new JVxSplitPanel(Key(component.id), context);
     } else if (component.className=="Label") {
       componentClass = new JVxLabel(Key(component.id), context);
     } else if (component.className=="Button") {
