@@ -19,7 +19,7 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
 
   JVxBorderLayout();
 
-  JVxBorderLayout.fromLayoutString(String layoutString) {
+  JVxBorderLayout.fromLayoutString(String layoutString, String layoutData) {
     parseFromString(layoutString);
   }
 

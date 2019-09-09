@@ -13,8 +13,8 @@ abstract class JVxLayout<E> implements ILayout<E> {
   /// the vertical gap between components.
   int	verticalGap = 0;
 
-  void parseFromString(String layoutString) {
-    List<String> parameter = layoutString?.split(",");
+  void parseFromString(String layout) {
+    List<String> parameter = layout?.split(",");
 
     double top = double.parse(parameter[1]);
     double left = double.parse(parameter[2]);
@@ -29,6 +29,10 @@ abstract class JVxLayout<E> implements ILayout<E> {
   static String getLayoutName(String layoutString) {
     List<String> parameter = layoutString?.split(",");
     return parameter[0];
+  }
+
+  void updateLayoutData(String layoutData) {
+
   }
 
 }

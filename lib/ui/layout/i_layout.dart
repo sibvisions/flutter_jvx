@@ -15,5 +15,6 @@ abstract class ILayout<E>  {
   E getConstraints(IComponent comp);
   void addLayoutComponent(IComponent pComponent, E pConstraints);
   void removeLayoutComponent(IComponent pComponent);
+  void updateLayoutData(String layoutData);
   Widget getWidget();
 }

@@ -34,11 +34,12 @@ class JVxComponentCreator {
     if (componentClass is JVxContainer && (layout?.isNotEmpty ?? true)) {
       JVxContainer container = componentClass;
       String layoutName = JVxLayout.getLayoutName(layout);
+      String layoutData = component.componentProperties.getProperty("layoutData");
 
       if (layoutName=="BorderLayout") {
-          container.layout = JVxBorderLayout.fromLayoutString(layout);
+          container.layout = JVxBorderLayout.fromLayoutString(layout, layoutData);
       } else if (layoutName=="FormLayout") {
-          container.layout = JVxFormLayout.fromLayoutString(layout);
+          container.layout = JVxFormLayout.fromLayoutString(layout, layoutData);
       }
     }
 
