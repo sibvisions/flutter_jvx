@@ -1,5 +1,6 @@
 import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
 import 'package:jvx_mobile_v3/ui/jvx_cell_editor_creator.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import 'component/jvx_button.dart';
 import 'container/jvx_container.dart';
@@ -40,9 +41,11 @@ class JVxComponentCreator {
       String layoutData = component.componentProperties.getProperty("layoutData");
 
       if (layoutName=="BorderLayout") {
-          container.layout = JVxBorderLayout.fromLayoutString(layout, layoutData);
+        container.layout = JVxBorderLayout.fromLayoutString(layout, layoutData);
       } else if (layoutName=="FormLayout") {
-          container.layout = JVxFormLayout.fromLayoutString(layout, layoutData);
+        container.layout = JVxFormLayout.fromLayoutString(layout, layoutData);
+      } else if (layoutName == "FlowLayout") { 
+        container.layout = JVxFlowLayout.fromLayoutString(layout, layoutData);
       }
     }
 

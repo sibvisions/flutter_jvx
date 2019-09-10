@@ -29,6 +29,8 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   @override
   Widget getWidget() {
-    return cellEditor.getWidget();
+    return Container(
+      child: SizedBox(width: 100, child: cellEditor.getWidget())
+    );
   }
 }

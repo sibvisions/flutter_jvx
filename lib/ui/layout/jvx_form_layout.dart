@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
+import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
 import 'jvx_layout.dart';
 import 'widgets/jvx_form_layout.dart';
 import 'widgets/jvx_form_layout_contraint.dart';
@@ -7,14 +8,13 @@ import 'widgets/jvx_form_layout_anchor.dart';
 import '../component/jvx_component.dart';
 
 class JVxFormLayout extends JVxLayout<String> {
-  static final int stretch = 100;
   Key key;
   /// The valid state of anchor calculation. */
   bool _valid = false;
   /// the x-axis alignment (default: {@link JVxConstants#CENTER}). */
-	int	horizontalAlignment = stretch;
+	int	horizontalAlignment = IAlignmentConstants.ALIGN_CENTER;
 	/// the y-axis alignment (default: {@link JVxConstants#CENTER}). */
-	int	verticalAlignment = stretch;
+	int	verticalAlignment = IAlignmentConstants.ALIGN_CENTER;
 
   Map<String,JVxAnchor> defaultAnchors = Map<String, JVxAnchor>();
   Map<String,JVxAnchor> anchors = Map<String, JVxAnchor>();

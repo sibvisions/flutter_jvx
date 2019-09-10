@@ -246,6 +246,10 @@ class RenderJVxFormLayoutWidget extends RenderBox
           double y = constraint.topAnchor.getAbsolutePosition().toDouble();
           double height = constraint.bottomAnchor.getAbsolutePosition() - y;
 
+          if(width==double.infinity || height==double.infinity) {
+            print("Infinity height or width for FormLayout");
+          }
+
           comp.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
           final MultiChildLayoutParentData childParentData = comp.parentData;
           childParentData.offset = Offset(x, y);
@@ -253,7 +257,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
     }
 
     this.valid = true;
-    this.size = this.constraints.biggest;
+    this.size = Size(double.parse(this.preferredWidth.toString()), double.parse(this.preferredHeight.toString())); //this.constraints.biggest;
   }
   
 
