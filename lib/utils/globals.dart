@@ -12,3 +12,4 @@ List<String> images;
 Map<String, String> translation = <String, String>{};
 String dir;
 ApplicationStyleResponse applicationStyle;
+bool isLoading = false;

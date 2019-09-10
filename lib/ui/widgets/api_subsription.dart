@@ -23,9 +23,9 @@ import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {  
   apiResult.listen((FetchProcess p) {
     if (p.loading) {
-      //showProgress(context);
+      showProgress(context);
     } else {
-      //hideProgress(context);
+      hideProgress(context);
       if (p.response.success == false) {
         fetchApiResult(context, p.response);
       } else {

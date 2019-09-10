@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 fetchApiResult(BuildContext context, NetworkServiceResponse snapshot) {
   showDialog(
@@ -62,19 +63,29 @@ showSuccess(BuildContext context, String message, IconData icon) {
 }
 
 showProgress(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.yellow,
-      ),
-    )
-  );
+  if (!globals.isLoading) {
+    globals.isLoading = true;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.yellow,
+        ),
+      )
+    );
+
+    print("Show Progress!");
+  }
 }
 
 hideProgress(BuildContext context) {
-  Navigator.of(context).pop();
+  if (globals.isLoading) {
+    globals.isLoading = false;
+    Navigator.of(context).pop();
+    print("Hide Progress!");
+  }
 }
 
 showTextInputDialog(BuildContext context, String title, String textLabel, String textHint, initialVal, void onTapCallback(String val)) {
