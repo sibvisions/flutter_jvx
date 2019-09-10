@@ -10,6 +10,7 @@ import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
+import 'package:jvx_mobile_v3/model/base_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
@@ -29,6 +30,11 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
       if (p.response.success == false) {
         fetchApiResult(context, p.response);
       } else {
+        if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isError) {
+          BaseResponse response = (p.response.content as BaseResponse);
+          showTextInputDialog(context, response.title, response.message, response.details, null, null);
+          return;
+        }
         switch (p.type) {
           case ApiType.performLogin:
             Future.delayed(const Duration(seconds: 1), () {

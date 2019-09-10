@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:jvx_mobile_v3/model/base_resp.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
 
-class OpenScreenResponse {
+class OpenScreenResponse extends BaseResponse {
   List<ChangedComponent> changedComponents;
   List<JVxMetaData> metaData;
   List<JVxData> data;
@@ -12,8 +13,8 @@ class OpenScreenResponse {
 
   OpenScreenResponse({@required this.changedComponents, @required this.componentId, @required this.name});
 
-  OpenScreenResponse.fromJson(List json) {
-    if (json[0]['title'] == 'Error')
+  OpenScreenResponse.fromJson(List json) : super.fromJson(json) {
+    if (isError)
       return;
       
     changedComponents = <ChangedComponent>[];
