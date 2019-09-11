@@ -87,7 +87,7 @@ showProgress(BuildContext context) {
       barrierDismissible: false,
       builder: (context) => Center(
         child: CircularProgressIndicator(
-          backgroundColor: Colors.yellow,
+          backgroundColor: UIData.ui_kit_color_2,
         ),
       )
     );

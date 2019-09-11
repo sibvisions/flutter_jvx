@@ -60,9 +60,6 @@ class DownloadService extends NetworkService implements IDownloadSerivce {
   Future<NetworkServiceResponse<File>> fetchImage(Download download) async {
     var result = await rest.postAsyncDownload(_kDownloadUrl, download.toJson());
 
-    var _dir = (await getApplicationDocumentsDirectory()).path;
-
-    globals.dir = _dir;
   
     if (result.mappedResult != null) {
       var archive = result.mappedResult;
@@ -70,7 +67,7 @@ class DownloadService extends NetworkService implements IDownloadSerivce {
       globals.images = List<String>();
 
       for (var file in archive) {
-        var filename = '$_dir/${file.name}';
+        var filename = '${globals.dir}/${file.name}';
         if (file.isFile) {
           var outFile = File(filename);
           globals.images.add(filename);

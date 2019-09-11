@@ -25,6 +25,33 @@ class RestClient {
     return processResponse<T>(response);
   }
 
+  Future get(String resourcePath) async {
+    var response = await http.get(globals.baseUrl + resourcePath, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
+    updateCookie(response);
+    if (debug) {
+      Log.printLong("Response: ${response.body}");
+    }
+
+    return response.body;
+  }
+
+  Future post(String resourcePath, dynamic data) async {
+    var content = json.encode(data);
+    var response;
+
+    try {
+      response = await http.Client().post(globals.baseUrl + resourcePath, body: content, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
+    } catch (e) {}
+    
+    updateCookie(response);
+
+    if (debug) {
+      Log.printLong('Response: ${response.body}');
+    }
+
+    return response.body;
+  }
+
   Future<MappedNetworkServiceResponse<T>> postAsync<T>(String resourcePath, dynamic data) async {
     var content = json.encode(data);
     var response;
@@ -82,11 +109,6 @@ class RestClient {
         )
       );
     }
-  }
-
-  Future<bool> _hasToDownloadAssets(String name, String dir) async {
-    var file = File('$dir/$name.zip');
-    return !(await file.exists());
   }
 
   MappedNetworkServiceResponse<T> processResponse<T>(http.Response response) {

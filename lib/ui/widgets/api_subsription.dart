@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,14 +48,11 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
               if (val == null)
                 SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
 
-                var _dir = (await getApplicationDocumentsDirectory()).path;
+              var _dir = (await getApplicationDocumentsDirectory()).path;
 
-                globals.dir = _dir;
+              globals.dir = _dir;
 
-                _downloadAppStyle(context);
-
-                globals.hasToDownload = true;
-
+              globals.hasToDownload = true;
               
               if (val != p.response.content.applicationMetaData.version) {
                 SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
@@ -62,31 +60,63 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
 
               if (globals.hasToDownload)
                 _download(context);
-              SharedPreferencesHelper().getLoginData().then((onValue) {
-                if (onValue['username'] == null && onValue['password'] == null) {
-                  if (p.response.content.loginItem != null) {
-                    Future.delayed(const Duration(seconds: 1), () {
-                      Navigator.of(context).pushReplacementNamed('/login');
-                    });
-                  } else {
-                    Future.delayed(const Duration(seconds: 1), () {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: p.response.content.items, listMenuItemsInDrawer: true,)));
-                    });
-                  }
-                } else {
-                  LoginBloc loginBloc = new LoginBloc();
-                  StreamSubscription<FetchProcess> apiStreamSubscription;
 
-                  apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
-                  loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
-                }
-              });
+              _downloadAppStyle(context);
+
+              if (!globals.hasToDownload) {
+                SharedPreferencesHelper().getLoginData().then((onValue) {
+                  if (onValue['username'] == null && onValue['password'] == null) {
+                    if (p.response.content.loginItem != null) {
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.of(context).pushReplacementNamed('/login');
+                      });
+                    } else {
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: p.response.content.items, listMenuItemsInDrawer: true,)));
+                      });
+                    }
+                  } else {
+                    LoginBloc loginBloc = new LoginBloc();
+                    StreamSubscription<FetchProcess> apiStreamSubscription;
+
+                    apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
+                    loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
+                  }
+                });
+              }
             });
             break;
           case ApiType.performLogout:
             Navigator.of(context).pushReplacementNamed('/login');
             break;
           case ApiType.performDownload:
+            if (globals.hasToDownload) {
+              showProgress(context);
+              Future.delayed(const Duration(seconds: 5), () {
+                SharedPreferencesHelper().getLoginData().then((onValue) {
+                  if (onValue['username'] == null && onValue['password'] == null) {
+                    if (globals.startupResponse.loginItem != null) {
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.of(context).pushReplacementNamed('/login');
+                      });
+                    } else {
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: globals.startupResponse.items, listMenuItemsInDrawer: true,)));
+                      });
+                    }
+                  } else {
+                    LoginBloc loginBloc = new LoginBloc();
+                    StreamSubscription<FetchProcess> apiStreamSubscription;
+
+                    apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
+                    loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
+                  }
+                  hideProgress(context);
+                });
+              });
+            }
+
+            globals.hasToDownload = false;
             break;
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
@@ -109,7 +139,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   });
 }
 
-_download(BuildContext context) {
+_download(BuildContext context) async {
   DownloadBloc downloadBloc1 = new DownloadBloc();
   DownloadBloc downloadBloc2 = new DownloadBloc();
   StreamSubscription apiStreamSubscription;
