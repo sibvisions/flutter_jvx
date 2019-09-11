@@ -11,6 +11,7 @@ class ChangedComponent {
   ComponentProperties componentProperties;
   CellEditor cellEditor;
   bool destroy;
+  bool remove;
 
   ChangedComponent({
     this.id,
@@ -29,6 +30,7 @@ class ChangedComponent {
     parent = json['parent'];
     indexOf = json['indexOf'];
     destroy = Convertion.convertToBool(json['~destroy']);
+    remove = Convertion.convertToBool(json['~remove']);
     
     if (json['cellEditor'] != null) cellEditor = CellEditor.fromJson(json['cellEditor']);
     componentProperties = new ComponentProperties(json);

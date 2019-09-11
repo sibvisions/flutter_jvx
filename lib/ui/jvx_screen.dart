@@ -30,6 +30,15 @@ class JVxScreen {
     changedComponentsJson?.forEach((changedComponent) {
         if (components.containsKey(changedComponent.id)) {
           JVxComponent component = components[changedComponent.id];
+
+          if (changedComponent.destroy) {
+            destroyComponent(component);
+          } else if (changedComponent.remove) {
+            removeComponent(component);
+          } else if (changedComponent.parent.isNotEmpty && changedComponent.parent!=component.parentComponentId) {
+
+          }
+
           component?.updateProperties(changedComponent.componentProperties);
 
           if (component?.parentComponentId != null) {
@@ -60,6 +69,19 @@ class JVxScreen {
           }
         }
       }
+  }
+
+
+  void removeComponent(JVxComponent component) {
+
+  }
+
+  void destroyComponent(JVxComponent component) {
+
+  }
+
+  void moveComponent(JVxComponent component) {
+    
   }
 
   JVxComponent getRootComponent() {
