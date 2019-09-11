@@ -17,6 +17,11 @@ class OpenScreenViewModel {
 
   Future<Null> performOpenScreen(OpenScreenViewModel openScreenViewModel) async {
     NetworkServiceResponse<OpenScreenResponse> result = await openScreenRepo.fetchOpenScreenResponse(OpenScreen(clientId: openScreenViewModel.clientId, manualClose: openScreenViewModel.manualClose, action: openScreenViewModel.action));
+    
+    if (result.content!=null) {
+      result.content.title = action.label;
+    }
+
     this.apiResult = result;  
   }
 }

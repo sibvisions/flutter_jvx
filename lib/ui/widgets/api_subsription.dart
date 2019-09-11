@@ -36,6 +36,10 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           BaseResponse response = (p.response.content as BaseResponse);
           showError(context, response.title, response.message);
           return;
+        } else if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isSessionExpired) {
+          BaseResponse response = (p.response.content as BaseResponse);
+          showSessionExpired(context, response.title, "App will restart.");
+          return;
         }
         switch (p.type) {
           case ApiType.performLogin:
@@ -122,7 +126,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
             Navigator.of(context).push(MaterialPageRoute(builder:  (context) => 
-              OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID,
+              OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID, title: p.response.content.title
             )));
             break;
           case ApiType.performCloseScreen:
