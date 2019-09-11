@@ -27,6 +27,22 @@ fetchApiResult(BuildContext context, NetworkServiceResponse snapshot) {
   );
 }
 
+showError(BuildContext context, String title, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Close'),
+          onPressed: () => Navigator.of(context).pop(),
+        )
+      ],
+    )
+  );
+}
+
 showSuccess(BuildContext context, String message, IconData icon) {
   showDialog(
     context: context,

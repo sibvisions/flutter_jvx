@@ -1,10 +1,10 @@
 {
     "app_name":"Jvx Mobile Client ",
-    "enter_username_label":"Benutzername",
+    "Username:":"Benutzername",
     "enter_username_hint":"Dein Benutzername",
-    "enter_password_label":"Passwort",
+    "Password:":"Passwort",
     "enter_password_hint":"Dein Passwort",
-    "login":"Einloggen",
+    "Logon":"Einloggen",
     "enter_valid_username":"Einen validen Benutzernamen eingeben",
     "enter_valid_password":"Ein valides Passwort eingeben",
     "Settings": "Einstellungen",
@@ -16,10 +16,10 @@
     "settings_language": "Sprache",
     "Save": "Speichern",
     "Exit": "Zurück",
-    "logout": "Ausloggen",
+    "Logout": "Ausloggen",
     "Remember me?": "Eingeloggt bleiben?",
-    "error": "Fehler",
-    "close": "Schließen",
+    "Error": "Fehler",
+    "Close": "Schließen",
     "go_to_settings": "Zu Einstellungen"
 }
     

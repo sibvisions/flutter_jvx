@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/logout_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/logout_view_model.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
+import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
@@ -72,7 +75,14 @@ class MenuDrawerWidget extends StatelessWidget {
                     )
                     : null,
           onTap: () {
-            print("Pressed Menu Item: " + item.action.label);
+            prefix0.Action action = item.action;
+            OpenScreenBloc openScreenBloc = OpenScreenBloc();
+            StreamSubscription<FetchProcess> apiStreamSubscription;
+
+            apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
+            openScreenBloc.openScreenSink.add(
+              new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+            );
           },
         );
 

@@ -13,7 +13,7 @@ class UIData {
   static const String quickLightFont = "Quicksand_Light.otf";
 
   static const MaterialColor ui_kit_color = Colors.grey;
-  static const MaterialColor ui_kit_color_2 = Colors.orange;
+  static const MaterialColor ui_kit_color_2 = Colors.blue;
 
 //colors
   static List<Color> kitGradients = [

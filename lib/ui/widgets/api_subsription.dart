@@ -17,7 +17,6 @@ import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 
@@ -32,7 +31,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
       } else {
         if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isError) {
           BaseResponse response = (p.response.content as BaseResponse);
-          showTextInputDialog(context, response.title, response.message, response.details, null, null);
+          showError(context, response.title, response.message);
           return;
         }
         switch (p.type) {
@@ -43,21 +42,26 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performStartup:
             globals.language = p.response.content.language.langCode;
-              SharedPreferencesHelper().getAppVersion().then((val) async {
-                if (val == null)
-                  SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
+            globals.startupResponse = p.response.content;
+            SharedPreferencesHelper().getAppVersion().then((val) async {
+              if (val == null)
+                SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
 
-                  var _dir = (await getApplicationDocumentsDirectory()).path;
+                var _dir = (await getApplicationDocumentsDirectory()).path;
 
-                  globals.dir = _dir;
+                globals.dir = _dir;
 
                 _downloadAppStyle(context);
-                
-                if (val != p.response.content.applicationMetaData.version) {
-                  SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
-                  _download(context);
-                }
-              });
+
+                globals.hasToDownload = true;
+
+              
+              if (val != p.response.content.applicationMetaData.version) {
+                SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
+              }
+
+              if (globals.hasToDownload)
+                _download(context);
               SharedPreferencesHelper().getLoginData().then((onValue) {
                 if (onValue['username'] == null && onValue['password'] == null) {
                   if (p.response.content.loginItem != null) {
@@ -77,12 +81,12 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
                   loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
                 }
               });
+            });
             break;
           case ApiType.performLogout:
             Navigator.of(context).pushReplacementNamed('/login');
             break;
           case ApiType.performDownload:
-            Translations.load(new Locale(globals.language));
             break;
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
@@ -97,7 +101,6 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performApplicationStyle:
             globals.applicationStyle = p.response.content;
-            print("LOGIN BACKGROUND: " + globals.applicationStyle.loginBackground);
             SharedPreferencesHelper().setApplicationStyle(globals.applicationStyle.toJson());
             break;
         }
@@ -106,13 +109,13 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   });
 }
 
-
-
 _download(BuildContext context) {
   DownloadBloc downloadBloc1 = new DownloadBloc();
   DownloadBloc downloadBloc2 = new DownloadBloc();
+  StreamSubscription apiStreamSubscription;
 
   downloadBloc1.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
+  apiStreamSubscription = apiSubscription(downloadBloc2.apiResult, context);
   downloadBloc2.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: false, libraryImages: false, name: 'translation'));
 }
 

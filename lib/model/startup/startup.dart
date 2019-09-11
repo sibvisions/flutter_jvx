@@ -8,6 +8,6 @@ class Startup {
   Map<String, dynamic> toJson() => {
     'applicationName': applicationName,
     'authKey': authKey,
-    'layoutMode': layoutMode
+    'layoutMode': layoutMode,
   };
 }

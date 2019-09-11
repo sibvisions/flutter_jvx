@@ -5,7 +5,6 @@ import 'package:jvx_mobile_v3/di/dependency_injection.dart';
 import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'package:jvx_mobile_v3/services/real/real_download_service.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class DownloadViewModel {
   String name;

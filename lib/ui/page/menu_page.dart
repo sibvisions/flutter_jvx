@@ -17,9 +17,22 @@ class MenuPage extends StatelessWidget {
 
     return CommonScaffold(
       appTitle: 'Menu',
-      bodyData: globals.applicationStyle.menuMode == 'grid' ? MenuGridView(items: this.menuItems) : MenuListWidget(menuItems: this.menuItems),
+      bodyData: getMenuWidget(),
       showDrawer: true,
       drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: globals.applicationStyle.menuMode == 'drawer' ? true : false,),
     );
+  }
+
+  Widget getMenuWidget() {
+    if (globals.applicationStyle.menuMode == 'grid') {
+      return MenuGridView(items: this.menuItems,);
+    } else if (globals.applicationStyle.menuMode == 'list') {
+      return MenuListWidget(menuItems: this.menuItems,);
+    } else if (globals.applicationStyle.menuMode == 'drawer') {
+      return Center(
+        child: Text('Choose Item'),
+      );
+    }
+    return null;
   }
 }

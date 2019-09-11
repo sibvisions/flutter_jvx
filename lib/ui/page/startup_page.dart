@@ -6,13 +6,10 @@ import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
-import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum StartupValidationType { username, password }
 
@@ -34,9 +31,11 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
     return StreamBuilder<bool>(
       stream: startupBloc.startupResult,
       initialData: false,
-      builder: (context, snapshot) => Center(
-        child: Image.asset('assets/images/sib_visions.jpg', width: (MediaQuery.of(context).size.width - 50),),
-      )
+      builder: (context, snapshot) {
+        return Center(
+          child: Image.asset('assets/images/sib_visions.jpg', width: (MediaQuery.of(context).size.width - 50),),
+        );
+      }
     );
   }
 
@@ -58,7 +57,8 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       }
       if (prefData['baseUrl'] == 'null' || prefData['baseUrl'] == null || prefData['baseUrl'].isEmpty) {
       } else {
-        globals.baseUrl = prefData['baseUrl'];
+        if (globals.baseUrl.isEmpty)
+          globals.baseUrl = prefData['baseUrl'];
       }
       if (prefData['language'] == 'null' || prefData['language'] == null || prefData['language'].isEmpty) {
       } else {
@@ -67,6 +67,8 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       if (globals.appName == null && globals.baseUrl == null)
         Navigator.pushReplacementNamed(context, '/settings');
     });
+    await SharedPreferencesHelper().getWelcome().then((val) => globals.hasToDownload = val);
+    await SharedPreferencesHelper().getAppVersion().then((val) => globals.appVersion = val);
   }
 
   @override

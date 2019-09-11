@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'dart:core';
-
-import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesHelper {
@@ -10,6 +7,13 @@ class SharedPreferencesHelper {
   String appName;
   String baseUrl;
   String language;
+
+  Future<bool> getWelcome() async {
+    prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('welcome') == null)
+      return true;
+    return prefs.getBool('welcome');
+  }
 
   Future<Map<String, String>> getData() async {
     prefs = await SharedPreferences.getInstance();
@@ -65,8 +69,6 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('applicationStyle');
 
-    print("JSONSTRING: " + jsonString.toString());
-
     Map<String, dynamic> result;
 
     if (jsonString != null)
@@ -91,6 +93,11 @@ class SharedPreferencesHelper {
       return null;
 
     return result;
+  }
+
+  void setWelcome(bool welcome) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setBool('welcome', welcome);
   }
 
   void setData(String appName, String baseUrl, String language) async {

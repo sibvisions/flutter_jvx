@@ -29,7 +29,8 @@ class RestClient {
     var content = json.encode(data);
     var response;
     try {
-      response = await http.Client().post(globals.baseUrl + resourcePath, body: content, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
+      response = await http.Client()
+        .post(globals.baseUrl + resourcePath, body: content, headers: { 'Content-Type': 'application/json', 'cookie': globals.jsessionId });
     } catch (e) {
       return new MappedNetworkServiceResponse<T>(
         networkServiceResponse: new NetworkServiceResponse<T>(

@@ -44,8 +44,6 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       }
     });
 
-    print('PARENT ID: ${getIt.get<JVxScreen>().components.values.toList()[0].name}');
-
     super.initState();
   }
 
