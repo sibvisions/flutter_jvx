@@ -36,5 +36,6 @@ abstract class JVxComponent implements IComponent {
     foreground = properties.getProperty<HexColor>("foreground", null);
     style = JVxTextStyle.addForecolorToTextStyle(foreground, style);
     enabled = properties.getProperty<bool>("enabled", true);
+    parentComponentId = properties.getProperty<String>("parent");
   }
 }
