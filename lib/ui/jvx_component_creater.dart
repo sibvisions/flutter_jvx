@@ -1,4 +1,5 @@
 import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
+import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';
 import 'package:jvx_mobile_v3/ui/jvx_cell_editor_creator.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
@@ -29,6 +30,8 @@ class JVxComponentCreator {
     } else if (component.className=="Editor") {
       componentClass = new JVxEditor(Key(component.id), context);
       (componentClass as JVxEditor).cellEditor = JVxCellEditorCreator.create(component.componentProperties, context);
+    } else if (component.className=="Table") {
+      componentClass = new JVxTable(Key(component.id), context);
     } else if (!component.destroy) {
       componentClass = new JVxLabel(Key(component.id), context);
       (componentClass as JVxLabel).text = "Undefined Component '" + component.className + "'!";
