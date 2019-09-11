@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
@@ -29,6 +30,17 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   @override
   Widget getWidget() {
-    return cellEditor.getWidget();
+
+    BoxConstraints constraints = BoxConstraints.tightFor();
+
+    //if (maximumSize!=null) {
+    //  constraints = BoxConstraints.loose(maximumSize);
+    //}
+
+    return Container(
+      constraints: constraints,
+      color: Colors.grey[300],
+      child: SizedBox(width: 100, child: cellEditor.getWidget())
+    );
   }
 }

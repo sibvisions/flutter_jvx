@@ -17,10 +17,9 @@ class JVxPanel extends JVxContainer implements IContainer {
     }
 
     if (child!= null) {
-      return SizedBox( key: componentId,
-          child: Container(
+      return Container(
             color: this.background, 
-            child: child)
+            child: child
         );
     } else {
       return new Container();

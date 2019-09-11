@@ -219,6 +219,8 @@ class RenderJVxFormLayoutWidget extends RenderBox
   @override
   void performLayout() {
     // Set components
+    double layoutWidth = 0;
+    double layoutHeight = 0;
     layoutConstraints = <RenderBox, JVxFormLayoutConstraint>{}; 
     RenderBox child = firstChild;
     while (child != null) {
@@ -237,24 +239,33 @@ class RenderJVxFormLayoutWidget extends RenderBox
     {
       RenderBox comp = this.layoutConstraints.keys.elementAt(i);
 
-      //if (comp.isVisible())
-      //{
-          JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
+      JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
-          double x = constraint.leftAnchor.getAbsolutePosition().toDouble();
-          double width = constraint.rightAnchor.getAbsolutePosition() - x;
-          double y = constraint.topAnchor.getAbsolutePosition().toDouble();
-          double height = constraint.bottomAnchor.getAbsolutePosition() - y;
+      double x = constraint.leftAnchor.getAbsolutePosition().toDouble();
+      double width = constraint.rightAnchor.getAbsolutePosition() - x;
+      double y = constraint.topAnchor.getAbsolutePosition().toDouble();
+      double height = constraint.bottomAnchor.getAbsolutePosition() - y;
 
-          comp.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
-          final MultiChildLayoutParentData childParentData = comp.parentData;
-          childParentData.offset = Offset(x, y);
-      //}
+      if(width==double.infinity || height==double.infinity) {
+        print("Infinity height or width for FormLayout");
+      }
+
+      comp.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+      final MultiChildLayoutParentData childParentData = comp.parentData;
+      childParentData.offset = Offset(x, y);
+
+      if (comp.size.width+x>layoutWidth) {
+        layoutWidth = comp.size.width+x;
+      }
+      if (comp.size.height+y>layoutHeight) {
+        layoutHeight = comp.size.height+y;
+      }
     }
 
     this.valid = true;
-    this.size = this.constraints.biggest;
-  }
+    Size size = this.constraints.constrain(Size(layoutWidth, layoutHeight));
+    this.size = size;
+ }
   
 
   ///

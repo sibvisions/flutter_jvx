@@ -7,9 +7,31 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context);
   
+void valueChanged(dynamic value) {
+}
+
+  List<DropdownMenuItem> getItems() {
+      List<DropdownMenuItem> items = List<DropdownMenuItem>();
+
+      items.add(getItem("Mr.", "Mr."));
+      items.add(getItem("Mrs.", "Mrs."));
+
+      return items;
+  }
+
+  DropdownMenuItem getItem(String value, String text) {
+    return DropdownMenuItem(
+      value: value,
+      child: Text(text)
+    );
+  }
+
   @override
   Widget getWidget() {
     // ToDo: Implement getWidget
-    return DropdownButton();
+    return DropdownButton(
+      items: getItems(),
+      onChanged: valueChanged
+    );
   }
 }

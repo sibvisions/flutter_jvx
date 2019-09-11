@@ -2,7 +2,7 @@
 
 class Log {
   static void printLong(Object object) async {
-    int defaultPrintLength = 1000;
+    int defaultPrintLength = 950;
     if (object == null || object.toString().length <= defaultPrintLength) {
        print(object);
     } else {
