@@ -33,6 +33,10 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           BaseResponse response = (p.response.content as BaseResponse);
           showError(context, response.title, response.message);
           return;
+        } else if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isSessionExpired) {
+          BaseResponse response = (p.response.content as BaseResponse);
+          showSessionExpired(context, response.title, "App will restart.");
+          return;
         }
         switch (p.type) {
           case ApiType.performLogin:

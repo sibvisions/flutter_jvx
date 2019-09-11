@@ -15,11 +15,12 @@ class CreateLoginResponse extends BaseResponse {
 class LoginResponse extends BaseResponse {
   Language language;
   List<MenuItem> items;
-  String name;
   String componentId;
   AuthenticationData authenticationData;
 
-  LoginResponse({this.language, this.items, this.componentId, this.name, this.authenticationData});
+  LoginResponse({this.language, this.items, this.componentId, String name, this.authenticationData}) {
+    super.name = name;
+  }
 
   LoginResponse.fromJson(List jsonData) : super.fromJson(jsonData) {
     language = Language.fromJson(jsonData[0]);

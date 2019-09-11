@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
+import 'package:jvx_mobile_v3/ui/tools/restart.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -37,6 +38,22 @@ showError(BuildContext context, String title, String message) {
         FlatButton(
           child: Text('Close'),
           onPressed: () => Navigator.of(context).pop(),
+        )
+      ],
+    )
+  );
+}
+
+showSessionExpired(BuildContext context, String title, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Close'),
+          onPressed: () => RestartWidget.restartApp(context),
         )
       ],
     )
