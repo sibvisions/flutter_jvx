@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
-import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
@@ -66,7 +64,12 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       if (globals.appName == null && globals.baseUrl == null)
         Navigator.pushReplacementNamed(context, '/settings');
     });
-    await SharedPreferencesHelper().getWelcome().then((val) => globals.hasToDownload = val);
+    await SharedPreferencesHelper().getWelcome().then((val) {
+      globals.hasToDownload = val;
+      if (val ?? true) {
+        SharedPreferencesHelper().setWelcome(false);
+      }
+    });
     await SharedPreferencesHelper().getAppVersion().then((val) => globals.appVersion = val);
   }
 

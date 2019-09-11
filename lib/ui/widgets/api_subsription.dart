@@ -13,6 +13,8 @@ import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/base_resp.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/services/data_service.dart';
+import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
@@ -51,10 +53,9 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
               var _dir = (await getApplicationDocumentsDirectory()).path;
 
               globals.dir = _dir;
-
-              globals.hasToDownload = true;
               
               if (val != p.response.content.applicationMetaData.version) {
+                globals.hasToDownload = true;
                 SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
               }
 
