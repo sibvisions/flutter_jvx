@@ -12,10 +12,11 @@ import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class OpenScreenPage extends StatefulWidget {
+  final String title;
   final List<ChangedComponent> changedComponents;
   final Key componentId;
 
-  OpenScreenPage({Key key, this.changedComponents, this.componentId}) : super(key: key);
+  OpenScreenPage({Key key, this.changedComponents, this.componentId, this.title}) : super(key: key);
 
   _OpenScreenPageState createState() => _OpenScreenPageState();
 }
@@ -38,7 +39,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       };
 
       getIt.get<JVxScreen>().components = <String, JVxComponent>{};
-      
+      getIt.get<JVxScreen>().title = widget.title;
       for(var i = 0; i < widget.changedComponents.length; i++){
         getIt.get<JVxScreen>().addComponent(widget.changedComponents[i], context);
       }
@@ -65,7 +66,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       child: Scaffold(
         key: widget.componentId,
         appBar: AppBar(
-          title: Text('OpenScreen'),
+          title: Text(getIt.get<JVxScreen>().title),
         ),
         body: getIt.get<JVxScreen>().getWidget(),
       ),

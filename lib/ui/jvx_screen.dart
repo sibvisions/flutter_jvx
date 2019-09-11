@@ -6,6 +6,7 @@ import 'container/jvx_container.dart';
 import 'jvx_component_creater.dart';
 
 class JVxScreen {
+  String title = "OpenScreen";
   Key componentId;
   Map<String, JVxComponent> components = <String, JVxComponent>{};
   BuildContext context;
