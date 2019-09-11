@@ -125,9 +125,14 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
-            Navigator.of(context).push(MaterialPageRoute(builder:  (context) => 
-              OpenScreenPage(changedComponents: p.response.content.changedComponents, componentId: componentID, title: p.response.content.title
-            )));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => 
+              OpenScreenPage(
+                changedComponents: p.response.content.changedComponents,
+                data: p.response.content.data,
+                metaData: p.response.content.metaData,
+                componentId: componentID, 
+                title: p.response.content.title)
+            ));
             break;
           case ApiType.performCloseScreen:
             break;

@@ -7,7 +7,6 @@ import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
-import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/gradient_button.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';

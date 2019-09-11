@@ -48,6 +48,13 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   }
 
   loadSharedPrefs() async {
+    await SharedPreferencesHelper().getWelcome().then((val) {
+      globals.hasToDownload = val;
+      if (val ?? true) {
+        Navigator.of(context).pushReplacementNamed('/settings');
+        SharedPreferencesHelper().setWelcome(false);
+      }
+    });
     await SharedPreferencesHelper().getData().then((prefData) {
       if (prefData['appName'] == 'null' || prefData['appName'] == null || prefData['appName'].isEmpty) {
       } else {
@@ -61,14 +68,8 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       } else {
         globals.language = prefData['language'];
       }
-      if (globals.appName == null && globals.baseUrl == null)
+      if (globals.appName == null || globals.baseUrl == null)
         Navigator.pushReplacementNamed(context, '/settings');
-    });
-    await SharedPreferencesHelper().getWelcome().then((val) {
-      globals.hasToDownload = val;
-      if (val ?? true) {
-        SharedPreferencesHelper().setWelcome(false);
-      }
     });
     await SharedPreferencesHelper().getAppVersion().then((val) => globals.appVersion = val);
   }
