@@ -5,9 +5,6 @@ import 'jvx_container.dart';
 class JVxPanel extends JVxContainer implements IContainer {
   JVxPanel(Key componentId, BuildContext context) : super(componentId, context);
 
-
-
-
   Widget getWidget() {
     Widget child;
     if (this.layout != null) {

@@ -11,7 +11,6 @@ import '../layout/jvx_border_layout.dart';
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
   List<JVxComponent> components = new List<JVxComponent>();
-  List<String> constraints = new List<String>();
 
   JVxContainer(Key componentId, BuildContext context) : super(componentId, context);
 
@@ -31,13 +30,13 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
       if (pIndex < 0)
 			{
 				components.add(pComponent);
-        constraints.add(pConstraints);
 			}
 			else
 			{
 				components.insert(pIndex, pComponent);
-        constraints.insert(pIndex, pConstraints);
 			}
+
+      pComponent.state = JVxComponentState.Added;
 
       if (layout != null) {
         if (layout is JVxBorderLayout) {
@@ -64,6 +63,7 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
 		if (index >= 0)
 		{
 			remove(index);
+      pComponent.state = JVxComponentState.Free;
 		}
   }
 

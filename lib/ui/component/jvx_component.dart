@@ -7,6 +7,7 @@ import 'i_component.dart';
 abstract class JVxComponent implements IComponent {
   String name;
   Key componentId;
+  JVxComponentState state = JVxComponentState.Free;
   Color background = Colors.transparent;
   Color foreground;
   TextStyle style = new TextStyle(fontSize: 12.0, color: Colors.black);
@@ -15,6 +16,7 @@ abstract class JVxComponent implements IComponent {
   Size maximumSize;
   bool isVisible = true;
   bool enabled = true;
+  String constraints = "";
   BuildContext context;
 
   String parentComponentId;
@@ -36,6 +38,7 @@ abstract class JVxComponent implements IComponent {
     foreground = properties.getProperty<HexColor>("foreground", null);
     style = JVxTextStyle.addForecolorToTextStyle(foreground, style);
     enabled = properties.getProperty<bool>("enabled", true);
-    parentComponentId = properties.getProperty<String>("parent");
+    parentComponentId = properties.getProperty<String>("parent", parentComponentId);
+    constraints = properties.getProperty<String>("constraints", constraints);
   }
 }

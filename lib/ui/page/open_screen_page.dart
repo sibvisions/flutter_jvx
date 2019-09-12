@@ -46,9 +46,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       getIt.get<JVxScreen>().data = widget.data;
       getIt.get<JVxScreen>().metaData = widget.metaData;
       getIt.get<JVxScreen>().title = widget.title;
-      for(var i = 0; i < widget.changedComponents.length; i++){
-        getIt.get<JVxScreen>().addComponent(widget.changedComponents[i], context);
-      }
+      getIt.get<JVxScreen>().updateComponents(widget.changedComponents);
     });
 
     super.initState();

@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 
+/// Component state defines current state
+enum JVxComponentState {
+  /// Component is added to the widget tree
+  Added,
+  /// Component is not added to the widget tree
+  Free,
+  /// Component was destroyed
+  Destroyed
+}
+
 abstract class IComponent {
   String name;
   Key componentId;
+  JVxComponentState state;
   Color background;
   Color foreground;
   TextStyle style;
@@ -12,6 +23,7 @@ abstract class IComponent {
   Size maximumSize;
   bool isVisible;
   bool enabled;
+  String constraints;
   BuildContext context;
 
   String parentComponentId;
