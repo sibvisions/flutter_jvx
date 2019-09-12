@@ -75,7 +75,7 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
   }
 
   JVxComponent getComponentWithContraint(String constraint) {
-    return components?.elementAt(constraints?.indexOf(constraint));
+    return components?.firstWhere((component) => component.constraints==constraint);
   }
 
   void updateComponentProperties(Key componentId, ComponentProperties properties) {
