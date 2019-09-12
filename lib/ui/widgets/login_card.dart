@@ -32,7 +32,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
         initialData: false,
         builder: (context, snapshot) => Form(
               child: Padding(
-                padding: const EdgeInsets.all(18.0),
+                padding: const EdgeInsets.all(15.0),
                 child: SingleChildScrollView(
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
