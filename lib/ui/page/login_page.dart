@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/login_provider.dart';
-import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -42,8 +41,8 @@ class LoginPageState extends State<LoginPage> {
   showValidationError(LoginValidationType type) {
     scaffoldState.currentState.showSnackBar(SnackBar(
       content: Text(type == LoginValidationType.username
-          ? Translations.of(context).text('enter_valid_username')
-          : Translations.of(context).text('enter_valid_password'),
+          ? Translations.of(context).text2('enter_valid_username', 'Enter a valid username')
+          : Translations.of(context).text2('enter_valid_password', 'Enter a valid password'),
       ),
       duration: Duration(seconds: 2),
       ),
