@@ -55,6 +55,10 @@ class JVxScreen {
     });
   }
 
+  JVxData getData(String dataProvider) {
+    return data?.firstWhere((d) => d.dataProvider==dataProvider);
+  }
+
   void _addComponent(ChangedComponent component) {
     JVxComponent componentClass;
 
