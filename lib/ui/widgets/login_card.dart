@@ -51,7 +51,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                             new TextStyle(fontSize: 15.0, color: Colors.black),
                         decoration: new InputDecoration(
                             // hintText: Translations.of(context).text2("Username:"),
-                            labelText: Translations.of(context).text2("Username:"),
+                            labelText: Translations.of(context).text2("Username:", 'Username:'),
                             labelStyle: TextStyle(fontWeight: FontWeight.w700)),
                       ),
                       new SizedBox(
@@ -63,7 +63,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                             fontSize: 15.0, color: Colors.black),
                         decoration: new InputDecoration(
                             // hintText: Translations.of(context).text('enter_password_hint'),
-                            labelText: Translations.of(context).text2('Password:'),
+                            labelText: Translations.of(context).text2('Password:', 'Password:'),
                             labelStyle:
                                 TextStyle(fontWeight: FontWeight.w700)),
                         obscureText: true,
@@ -75,7 +75,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                           });
                         },
                         value: rememberMe,
-                        title: Text(Translations.of(context).text2('Remember me?')),
+                        title: Text(Translations.of(context).text2('Remember me?', 'Remember me?')),
                         controlAffinity: ListTileControlAffinity.leading,
                         activeColor: UIData.ui_kit_color_2,
                       ),
@@ -86,14 +86,14 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                             ? loginBloc.loginSink.add(new LoginViewModel.withPW(username: username, password: password, rememberMe: rememberMe))
                             : print(this.password);
                           },
-                          text: Translations.of(context).text2('Logon'))
+                          text: Translations.of(context).text2('Logon', 'Logon'))
                       ),
                       Container(
                         child: new FlatButton.icon(
                           onPressed: () {
                             Navigator.of(context).pushNamed('/settings');
                           },
-                          label: Text(Translations.of(context).text2('Settings')),
+                          label: Text(Translations.of(context).text2('Settings', 'Settings')),
                           icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
                         )
                       ),
