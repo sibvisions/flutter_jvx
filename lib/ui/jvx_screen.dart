@@ -62,11 +62,9 @@ class JVxScreen {
   }
 
   void selectRecord(String dataProvider, int index, [bool fetch = false]) {
-
     JVxData selectData = this.getData(dataProvider);
 
     if (selectData != null && index < selectData.records.length) {
-      
       SelectRecordBloc selectRecordBloc = SelectRecordBloc();
       StreamSubscription<FetchProcess> apiStreamSubscription = 
         apiSubscription(selectRecordBloc.apiResult, context);

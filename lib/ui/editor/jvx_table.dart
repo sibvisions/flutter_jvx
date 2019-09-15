@@ -29,7 +29,7 @@ class JVxTable extends JVxEditor {
   }
 
   void _onRowTapped(int index) {
-      getIt.get<JVxScreen>().selectRecord(dataProvider, index, true);
+      getIt.get<JVxScreen>().selectRecord(dataProvider, index, false);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {
