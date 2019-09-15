@@ -12,8 +12,7 @@ class JVxTable extends JVxEditor {
 	bool showVerticalLines = false;
 	// the show horizontal lines flag.
 	bool showHorizontalLines = false;
-
-  //
+  // the show table header flag
   bool tableHeaderVisible = true;
 
   Size maximumSize;
@@ -25,12 +24,12 @@ class JVxTable extends JVxEditor {
     super.updateProperties(properties);
     maximumSize = properties.getProperty<Size>("maximumSize",null);
     showVerticalLines = properties.getProperty<bool>("showVerticalLines", showVerticalLines);
-    showVerticalLines = properties.getProperty<bool>("showVerticalLines");
+    showHorizontalLines = properties.getProperty<bool>("showHorizontalLines", showHorizontalLines);
     tableHeaderVisible = properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
   }
 
-  void _onRowTapped() {
-
+  void _onRowTapped(int index) {
+      getIt.get<JVxScreen>().selectRecord(dataProvider, index, true);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {
@@ -49,20 +48,22 @@ class JVxTable extends JVxEditor {
     }
   }
 
-  Widget getTableColumn(String text, bool isHeader) {
-    if (isHeader) {
+  Widget getTableColumn(String text, int rowIndex) {
+    if (rowIndex==-1) {
       return Container(
-        child: 
-          Text(text, 
-            style: this.style),
-        padding: EdgeInsets.all(5),
-      );
+            child: 
+              Text(text, 
+                style: this.style),
+            padding: EdgeInsets.all(5),
+        );
     } else {
-      return Container(
-        child: 
-          Text(text, 
-            style: this.style),
-        padding: EdgeInsets.all(5),
+      return GestureDetector( child:
+          Container(
+            child: 
+              Text(text, 
+                style: this.style),
+            padding: EdgeInsets.all(5)),
+        onTap: () => _onRowTapped(rowIndex),
       );
     }
   }
@@ -73,7 +74,7 @@ class JVxTable extends JVxEditor {
 
     if (data!=null && data.columnNames!=null) {
       data.columnNames.forEach((c) {
-        children.add(getTableColumn(c.toString(), true));
+        children.add(getTableColumn(c.toString(), -1));
       });
     }
 
@@ -86,11 +87,11 @@ class JVxTable extends JVxEditor {
     JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
 
     if (data!=null) {
-      data.records.forEach((r) {
+      data.records.asMap().forEach((i,r) {
         if (r is List) {
           List<Widget> children = new List<Widget>();
           r.forEach((c) {
-            children.add(getTableColumn(c.toString(), false));
+            children.add(getTableColumn(c.toString(), i));
           });
 
           rows.add(getTableRow(children, false));
@@ -102,9 +103,16 @@ class JVxTable extends JVxEditor {
 
   @override
   Widget getWidget() {
-
-    TableBorder border = TableBorder.all();
     List<TableRow> rows = new List<TableRow>();
+    TableBorder border = TableBorder(); 
+    
+    if (showHorizontalLines && !showVerticalLines) {
+      border = TableBorder(bottom: BorderSide(), top: BorderSide());
+    } else if (!showHorizontalLines && showVerticalLines) {
+      border = TableBorder(left: BorderSide(), right: BorderSide());
+    } else if (showHorizontalLines && showVerticalLines) {
+      border = TableBorder.all();
+    }
 
     if (tableHeaderVisible) {
       rows.add(getHeaderRow());
