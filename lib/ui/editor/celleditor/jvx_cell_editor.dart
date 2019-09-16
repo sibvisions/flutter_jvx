@@ -28,6 +28,7 @@ class JVxCellEditor implements ICellEditor {
   bool autoOpenPopup;
   String contentType;
   LinkReference linkReference;
+  String dataProvider;
 
   JVxCellEditor(ComponentProperties properties, this.context) {
     horizontalAlignment = properties.getProperty<int>("horizontalAlignment");

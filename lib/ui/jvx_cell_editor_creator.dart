@@ -29,6 +29,8 @@ class JVxCellEditorCreator {
       } else {
         jVxCellEditor = JVxTextCellEditor(properties.cellEditorProperties, context);
       }
+
+      jVxCellEditor.dataProvider = properties.getProperty<String>("dataProvider");
     }
 
 

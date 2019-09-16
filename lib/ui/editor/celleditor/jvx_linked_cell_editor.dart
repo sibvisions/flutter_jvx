@@ -12,7 +12,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context);
   
   void valueChanged(dynamic value) {
-
+    getIt.get<JVxScreen>().setValues(this.dataProvider, value);
   }
 
   List<DropdownMenuItem> getItems(JVxData data) {
@@ -29,7 +29,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
         data.records.forEach((record) {
           record.asMap().forEach((i, c) {
             if (visibleComunsIndex.contains(i)) {
-              items.add(getItem(c.toString(), c.toString()));
+              items.add(getItem(i, c.toString()));
             }
           });
         });
@@ -40,7 +40,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
       return items;
   }
 
-  DropdownMenuItem getItem(String value, String text) {
+  DropdownMenuItem getItem(dynamic value, String text) {
     return DropdownMenuItem(
       value: value,
       child: Text(text)

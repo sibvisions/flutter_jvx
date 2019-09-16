@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/filter.dart';
+import 'package:jvx_mobile_v3/model/open_screen/open_screen_resp.dart';
 import 'package:jvx_mobile_v3/services/data_service.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
@@ -86,10 +87,19 @@ class JVxScreen {
     }
   }
 
-  void setValues(String dataProvider, List columnNames, List values, List filterColumnNames, List filterValues) {
+  OpenScreenResponse setValues(String dataProvider, int index) {
     DataService dataService = DataService(RestClient());
 
-    return dataService.setValues(dataProvider, columnNames, values, filterColumnNames, filterValues);
+    JVxData data = getData(dataProvider);
+
+    OpenScreenResponse response;
+
+    dataService.setValues(dataProvider, data.columnNames, data.records[index]).then((val) {
+      response = val;
+      buttonCallback(response.changedComponents);
+    });
+
+    return response;
   }
 
   JVxData getData(String dataProvider, [List<dynamic> columnNames]) {
@@ -108,6 +118,7 @@ class JVxScreen {
       JVxData jvxData) {
         // jvxData.records.add(['LORENZ']);
         // jvxData.records.add(['JÜRGEN']);
+        // jvxData is null!!! Warum?
         data.add(jvxData);
         buttonCallback(<ChangedComponent>[]);
         //return returnData;
