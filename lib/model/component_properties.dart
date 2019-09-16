@@ -9,6 +9,8 @@ class ComponentProperties {
   Map<String, dynamic> properties = new Map<String, dynamic>();
   ComponentProperties cellEditorProperties;
 
+  Type typeOfElementsInList<T>(List<T> e) => T;
+
   ComponentProperties(this.properties) {
     if (this.properties.containsKey("cellEditor")) {
       cellEditorProperties = new ComponentProperties(this.properties["cellEditor"]);
@@ -44,6 +46,14 @@ class ComponentProperties {
         return JVxTextAlign.getTextAlignFromInt(value) as T;
       } else if (T == Alignment) {
         return JVxAlignment.getAlignmentFromInt(value) as T;
+      }
+    } else if (value is List<dynamic>) {
+      if (T.toString()==List<String>().runtimeType.toString()) {
+          List<String> newValue = List<String>();
+          value.forEach((v) {
+            newValue.add(v.toString());
+          });
+          value = newValue;
       }
     }
 

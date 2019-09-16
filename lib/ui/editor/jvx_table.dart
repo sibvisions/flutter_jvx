@@ -8,6 +8,8 @@ import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 
 class JVxTable extends JVxEditor {
+  // visible column names
+  List<String> columnNames = List<String>();
   // the show vertical lines flag.
 	bool showVerticalLines = false;
 	// the show horizontal lines flag.
@@ -26,6 +28,7 @@ class JVxTable extends JVxEditor {
     showVerticalLines = properties.getProperty<bool>("showVerticalLines", showVerticalLines);
     showHorizontalLines = properties.getProperty<bool>("showHorizontalLines", showHorizontalLines);
     tableHeaderVisible = properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
+    columnNames = properties.getProperty<List<String>>("columnNames", columnNames);
   }
 
   void _onRowTapped(int index) {
