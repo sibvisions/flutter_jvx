@@ -12,13 +12,30 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context);
   
   void valueChanged(dynamic value) {
+
   }
 
   List<DropdownMenuItem> getItems(JVxData data) {
-      List<DropdownMenuItem> items = List<DropdownMenuItem>();
-      
-      items.add(getItem("Mr.", "Mr."));
-      items.add(getItem("Mrs.", "Mrs."));
+      List<DropdownMenuItem> items = <DropdownMenuItem>[];
+      List<int> visibleComunsIndex = <int>[];
+
+      if (data != null && data.records.isNotEmpty) {
+        data.columnNames.asMap().forEach((i, v) {
+          if (this.linkReference.referencedColumnNames.contains(v)) {
+            visibleComunsIndex.add(i);
+          }
+        });
+
+        data.records.forEach((record) {
+          record.asMap().forEach((i, c) {
+            if (visibleComunsIndex.contains(i)) {
+              items.add(getItem(c.toString(), c.toString()));
+            }
+          });
+        });
+      }
+      else
+        items.add(getItem('loading', 'Loading...'));
 
       return items;
   }

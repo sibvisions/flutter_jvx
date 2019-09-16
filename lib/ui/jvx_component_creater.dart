@@ -33,11 +33,12 @@ class JVxComponentCreator {
     } else if (component.className=="Editor") {
       componentClass = new JVxEditor(Key(component.id), context);
       (componentClass as JVxEditor).cellEditor = JVxCellEditorCreator.create(component.componentProperties, context);
+      (componentClass as JVxEditor).cellEditor.linkReference = component.cellEditor.linkReference;
     } else if (component.className=="Table") {
       componentClass = new JVxTable(Key(component.id), context);
     } else if (!component.destroy) {
       componentClass = new JVxLabel(Key(component.id), context);
-      (componentClass as JVxLabel).text = "Undefined Component '" + component.className + "'!";
+      (componentClass as JVxLabel).text = "Undefined Component '";
     }
 
     String layout = component.componentProperties.getProperty("layout");

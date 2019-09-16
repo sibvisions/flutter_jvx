@@ -37,7 +37,7 @@ class MenuDrawerWidget extends StatelessWidget {
 
     tiles.add(
       DrawerHeader(
-        child: Text(globals.appName, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+        child: Text(globals.applicationStyle.loginTitle, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
         decoration: BoxDecoration(
           color: UIData.ui_kit_color_2
         ),

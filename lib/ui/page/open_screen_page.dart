@@ -39,7 +39,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       getIt.get<JVxScreen>().componentId = widget.componentId;
       getIt.get<JVxScreen>().context = context;
       getIt.get<JVxScreen>().buttonCallback = (List<ChangedComponent> data) {
-        rebuildOpenScreen(data);
+          rebuildOpenScreen(data);
       };
 
       getIt.get<JVxScreen>().components = <String, JVxComponent>{};

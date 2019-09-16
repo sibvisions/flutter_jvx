@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/link_reference.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
 
 import 'i_cell_editor.dart';
@@ -26,6 +27,7 @@ class JVxCellEditor implements ICellEditor {
   bool directCellEditor;
   bool autoOpenPopup;
   String contentType;
+  LinkReference linkReference;
 
   JVxCellEditor(ComponentProperties properties, this.context) {
     horizontalAlignment = properties.getProperty<int>("horizontalAlignment");

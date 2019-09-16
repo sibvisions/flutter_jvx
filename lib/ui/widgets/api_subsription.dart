@@ -134,7 +134,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           case ApiType.performCloseScreen:
             break;
           case ApiType.performPressButton:
-            getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);      
+            getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);
             break;
           case ApiType.performApplicationStyle:
             globals.applicationStyle = p.response.content;

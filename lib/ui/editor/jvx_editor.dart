@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 import '../../main.dart';
 import '../jvx_screen.dart';
 import 'celleditor/jvx_cell_editor.dart';
+import 'celleditor/jvx_linked_cell_editor.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -39,8 +40,8 @@ class JVxEditor extends JVxComponent implements IEditor {
     //if (maximumSize!=null) {
     //  constraints = BoxConstraints.loose(maximumSize);
     //}
+    JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
 
-    JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
     cellEditor.setData(data);
 
     return Container(

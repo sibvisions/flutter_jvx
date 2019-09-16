@@ -22,7 +22,8 @@ class JvxMobile extends StatelessWidget {
     localizationsDelegates: [
       const TranslationsDelegate(),
       GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
     ],
     supportedLocales: [
       const Locale("en", "US"),

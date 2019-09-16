@@ -6,8 +6,11 @@ import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/filter.dart';
+import 'package:jvx_mobile_v3/services/data_service.dart';
+import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
+import '../main.dart';
 import '../model/changed_component.dart';
 import 'component/jvx_component.dart';
 import 'container/jvx_container.dart';
@@ -62,9 +65,12 @@ class JVxScreen {
   }
 
   void selectRecord(String dataProvider, int index, [bool fetch = false]) {
+    DataService dataService = DataService(RestClient());
+
     JVxData selectData = this.getData(dataProvider);
 
     if (selectData != null && index < selectData.records.length) {
+      /*
       SelectRecordBloc selectRecordBloc = SelectRecordBloc();
       StreamSubscription<FetchProcess> apiStreamSubscription = 
         apiSubscription(selectRecordBloc.apiResult, context);
@@ -74,11 +80,42 @@ class JVxScreen {
           filter: Filter(columnNames: selectData.columnNames, values: selectData.records[index]), 
           fetch: fetch)
       );
+      */
+      dataService.selectRecord(dataProvider, selectData.columnNames, selectData.records[index], fetch, globals.clientId)
+          .then((val) => getIt.get<JVxScreen>().buttonCallback(val.updatedComponents));
     }
   }
 
-  JVxData getData(String dataProvider) {
-    return data?.firstWhere((d) => d.dataProvider==dataProvider);
+  void setValues(String dataProvider, List columnNames, List values, List filterColumnNames, List filterValues) {
+    DataService dataService = DataService(RestClient());
+
+    return dataService.setValues(dataProvider, columnNames, values, filterColumnNames, filterValues);
+  }
+
+  JVxData getData(String dataProvider, [List<dynamic> columnNames]) {
+    DataService dataService = DataService(RestClient());
+
+    var returnData;
+
+    data.forEach((data) {
+      data.dataProvider == dataProvider ? returnData = data : returnData = null;
+      print('DATAPROVIDER: $dataProvider + DATA DATA PROVIDER: ${data.dataProvider}');
+    });
+
+    if (returnData == null) {
+      dataService.getData(
+          dataProvider, globals.clientId, columnNames, null, null).then((
+      JVxData jvxData) {
+        // jvxData.records.add(['LORENZ']);
+        // jvxData.records.add(['JÜRGEN']);
+        data.add(jvxData);
+        buttonCallback(<ChangedComponent>[]);
+        //return returnData;
+      });
+      return null;
+    } else {
+      return returnData;
+    }
   }
 
   void _addComponent(ChangedComponent component) {
