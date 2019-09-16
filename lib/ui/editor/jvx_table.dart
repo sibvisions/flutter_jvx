@@ -77,7 +77,9 @@ class JVxTable extends JVxEditor {
 
     if (data!=null && data.columnNames!=null) {
       data.columnNames.forEach((c) {
-        children.add(getTableColumn(c.toString(), -1));
+        if(columnNames.contains(c)) {
+          children.add(getTableColumn(c.toString(), -1));
+        }
       });
     }
 
@@ -86,15 +88,22 @@ class JVxTable extends JVxEditor {
 
   List<TableRow> getDataRows() {
     List<TableRow> rows = new List<TableRow>();
-    
+    List<int> visibleColumnsIndex = new List<int>();
     JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
 
     if (data!=null) {
+      data.columnNames.asMap().forEach((i,r) {
+        if (columnNames.contains(r)) {
+          visibleColumnsIndex.add(i);
+        }
+      });
       data.records.asMap().forEach((i,r) {
         if (r is List) {
           List<Widget> children = new List<Widget>();
-          r.forEach((c) {
-            children.add(getTableColumn(c.toString(), i));
+          r.asMap().forEach((j,c) {
+            if (visibleColumnsIndex.contains(j)) {
+              children.add(getTableColumn(c.toString(), i));
+            }
           });
 
           rows.add(getTableRow(children, false));
