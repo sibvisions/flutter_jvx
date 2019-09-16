@@ -1,11 +1,18 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/logic/bloc/select_record_bloc.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/select_record_view_model.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
+import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/model/filter.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
+import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import '../model/changed_component.dart';
 import 'component/jvx_component.dart';
 import 'container/jvx_container.dart';
 import 'jvx_component_creater.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen {
   String title = "OpenScreen";
@@ -52,6 +59,26 @@ class JVxScreen {
           this._addComponent(changedComponent);
         }
     });
+  }
+
+  void selectRecord(String dataProvider, int index, [bool fetch = false]) {
+    JVxData selectData = this.getData(dataProvider);
+
+    if (selectData != null && index < selectData.records.length) {
+      SelectRecordBloc selectRecordBloc = SelectRecordBloc();
+      StreamSubscription<FetchProcess> apiStreamSubscription = 
+        apiSubscription(selectRecordBloc.apiResult, context);
+      selectRecordBloc.selectRecordController.add(
+        SelectRecordViewModel(clientId: globals.clientId, 
+          dataProvider: dataProvider,
+          filter: Filter(columnNames: selectData.columnNames, values: selectData.records[index]), 
+          fetch: fetch)
+      );
+    }
+  }
+
+  JVxData getData(String dataProvider) {
+    return data?.firstWhere((d) => d.dataProvider==dataProvider);
   }
 
   void _addComponent(ChangedComponent component) {

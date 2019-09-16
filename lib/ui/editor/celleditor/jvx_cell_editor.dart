@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
 
 import 'i_cell_editor.dart';
@@ -33,6 +34,11 @@ class JVxCellEditor implements ICellEditor {
     contentType = properties.getProperty<String>("contentType");
     directCellEditor = properties.getProperty<bool>("directCellEditor", false);
   }
+
+  void setData(JVxData data) {
+    
+  }
+
 
   @override
   Widget getWidget() {

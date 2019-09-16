@@ -5,6 +5,7 @@ import 'package:jvx_mobile_v3/services/abstract/i_login_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_logout_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_open_screen_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_press_button_service.dart';
+import 'package:jvx_mobile_v3/services/abstract/i_select_record_service.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_startup_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_login_service.dart';
 import 'package:jvx_mobile_v3/services/mock/mock_logout_service.dart';
@@ -16,6 +17,7 @@ import 'package:jvx_mobile_v3/services/real/real_login_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_logout_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_open_screen_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_press_button_service.dart';
+import 'package:jvx_mobile_v3/services/real/real_select_record_service.dart';
 import 'package:jvx_mobile_v3/services/real/real_startup_service.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 
@@ -96,6 +98,15 @@ class Injector {
         return PressButtonService(new RestClient());
       default:
         return PressButtonService(new RestClient());
+    }
+  }
+
+  ISelectRecordService get selectRecordService {
+    switch (_flavor) {
+      case Flavor.MOCK:
+        return SelectRecordService(new RestClient());
+      default:
+        return SelectRecordService(new RestClient());
     }
   }
 

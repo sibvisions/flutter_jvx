@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 
+import '../../main.dart';
+import '../jvx_screen.dart';
 import 'celleditor/jvx_cell_editor.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
@@ -36,6 +39,9 @@ class JVxEditor extends JVxComponent implements IEditor {
     //if (maximumSize!=null) {
     //  constraints = BoxConstraints.loose(maximumSize);
     //}
+
+    JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
+    cellEditor.setData(data);
 
     return Container(
       constraints: constraints,
