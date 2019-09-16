@@ -89,6 +89,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                           text: Translations.of(context).text2('Logon', 'Logon'))
                       ),
                       Container(
+                        padding: EdgeInsets.only(),
                         child: new FlatButton.icon(
                           onPressed: () {
                             Navigator.of(context).pushNamed('/settings');
