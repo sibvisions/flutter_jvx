@@ -8,6 +8,8 @@ import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 
 class JVxTable extends JVxEditor {
+  // visible column names
+  List<String> columnNames = List<String>();
   // the show vertical lines flag.
 	bool showVerticalLines = false;
 	// the show horizontal lines flag.
@@ -26,6 +28,7 @@ class JVxTable extends JVxEditor {
     showVerticalLines = properties.getProperty<bool>("showVerticalLines", showVerticalLines);
     showHorizontalLines = properties.getProperty<bool>("showHorizontalLines", showHorizontalLines);
     tableHeaderVisible = properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
+    columnNames = properties.getProperty<List<String>>("columnNames", columnNames);
   }
 
   void _onRowTapped(int index) {
@@ -74,7 +77,9 @@ class JVxTable extends JVxEditor {
 
     if (data!=null && data.columnNames!=null) {
       data.columnNames.forEach((c) {
-        children.add(getTableColumn(c.toString(), -1));
+        if(columnNames.contains(c)) {
+          children.add(getTableColumn(c.toString(), -1));
+        }
       });
     }
 
@@ -83,15 +88,22 @@ class JVxTable extends JVxEditor {
 
   List<TableRow> getDataRows() {
     List<TableRow> rows = new List<TableRow>();
-    
+    List<int> visibleColumnsIndex = new List<int>();
     JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
 
     if (data!=null) {
+      data.columnNames.asMap().forEach((i,r) {
+        if (columnNames.contains(r)) {
+          visibleColumnsIndex.add(i);
+        }
+      });
       data.records.asMap().forEach((i,r) {
         if (r is List) {
           List<Widget> children = new List<Widget>();
-          r.forEach((c) {
-            children.add(getTableColumn(c.toString(), i));
+          r.asMap().forEach((j,c) {
+            if (visibleColumnsIndex.contains(j)) {
+              children.add(getTableColumn(c.toString(), i));
+            }
           });
 
           rows.add(getTableRow(children, false));
