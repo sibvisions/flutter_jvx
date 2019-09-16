@@ -62,7 +62,8 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       }
       if (prefData['baseUrl'] == 'null' || prefData['baseUrl'] == null || prefData['baseUrl'].isEmpty) {
       } else {
-        globals.baseUrl = prefData['baseUrl'];
+        if (globals.baseUrl.isEmpty)
+          globals.baseUrl = prefData['baseUrl'];
       }
       if (prefData['language'] == 'null' || prefData['language'] == null || prefData['language'].isEmpty) {
       } else {

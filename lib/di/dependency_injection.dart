@@ -27,14 +27,14 @@ enum Flavor { MOCK, PRO }
 
 /// For injecting instances of Services
 class Injector {
-  static final Injector _singelton = new Injector._internal();
+  static final Injector _singleton = new Injector._internal();
   static Flavor _flavor;
 
   static void configure(Flavor flavor) async {
     _flavor = flavor;
   }
 
-  factory Injector() => _singelton;
+  factory Injector() => _singleton;
 
   Injector._internal();
 
@@ -46,7 +46,7 @@ class Injector {
         return LoginService(new RestClient());
     }
   }
-  
+
   IStartupService get startupService {
     switch (_flavor) {
       case Flavor.MOCK:
