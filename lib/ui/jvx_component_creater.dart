@@ -38,7 +38,8 @@ class JVxComponentCreator {
       componentClass = new JVxTable(Key(component.id), context);
     } else if (!component.destroy) {
       componentClass = new JVxLabel(Key(component.id), context);
-      (componentClass as JVxLabel).text = "Undefined Component '";
+      (componentClass as JVxLabel).text = "Undefined Component '" + 
+            (component.className!=null?component.className:"") + "'!";
     }
 
     String layout = component.componentProperties.getProperty("layout");

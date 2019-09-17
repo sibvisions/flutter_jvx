@@ -19,6 +19,7 @@ import 'jvx_component_creater.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen {
+  bool debug = true;
   String title = "OpenScreen";
   Key componentId;
   Map<String, JVxComponent> components = <String, JVxComponent>{};
@@ -37,15 +38,23 @@ class JVxScreen {
   }
 
   void updateComponents(List<ChangedComponent> changedComponentsJson) {
+    if (debug)
+      print("JVxScreen updateComponents:");
     changedComponentsJson?.forEach((changedComponent) {
         if (components.containsKey(changedComponent.id)) {
           JVxComponent component = components[changedComponent.id];
 
           if (changedComponent.destroy) {
+            if (debug)
+              print("Destroy component (id:" + changedComponent.id + ")");
             _destroyComponent(component);
           } else if (changedComponent.remove) {
+            if (debug)
+              print("Remove component (id:" + changedComponent.id + ")");
             _removeComponent(component);
           } else {
+            _moveComponent(component, changedComponent);
+
             if (component.state!=JVxComponentState.Added) {
               _addComponent(changedComponent);
             }
@@ -60,6 +69,10 @@ class JVxScreen {
             }
           }
         } else {
+          if (debug)
+            print("Add component (id:" + changedComponent.id + 
+            ",parent:" + (changedComponent.parent!=null?changedComponent.parent:"") +
+                ", className: " + (changedComponent.className!=null?changedComponent.className:"") + ")");
           this._addComponent(changedComponent);
         }
     });
@@ -141,18 +154,25 @@ class JVxScreen {
     if (componentClass!= null) {
       componentClass.state = JVxComponentState.Added;
       components.putIfAbsent(component.id, () => componentClass);
-
-      if (componentClass.parentComponentId?.isNotEmpty ?? false) {
-        JVxComponent parentComponent = components[componentClass.parentComponentId];
-        if (parentComponent!= null && parentComponent is JVxContainer) {
-          parentComponent.addWithConstraints(componentClass, componentClass.constraints);
-        }
-      }
+      _addToParent(componentClass);
     } 
   }
 
+  void _addToParent(JVxComponent component) {
+    if (component.parentComponentId?.isNotEmpty ?? false) {
+      JVxComponent parentComponent = components[component.parentComponentId];
+      if (parentComponent!= null && parentComponent is JVxContainer) {
+        parentComponent.addWithConstraints(component, component.constraints);
+      }
+    }
+  }
 
   void _removeComponent(JVxComponent component) {
+    _removeFromParent(component);
+    component.state = JVxComponentState.Free;
+  }
+
+  void _removeFromParent(JVxComponent component) {
     if (component.parentComponentId!=null && component.parentComponentId.isNotEmpty) {
       JVxComponent parentComponent = components[component.parentComponentId];
       if (parentComponent!= null && parentComponent is JVxContainer) {
@@ -168,7 +188,22 @@ class JVxScreen {
   }
 
   void _moveComponent(JVxComponent component, ChangedComponent newComponent) {
-    
+    if (component.parentComponentId!=newComponent.parent) {
+      if (debug)
+        print("Move component (id:" + newComponent.id + 
+              ",oldParent:" + (component.parentComponentId!=null?component.parentComponentId:"") +
+              ",newParent:" + (newComponent.parent!=null?newComponent.parent:"") + 
+              ", className: " + (newComponent.className!=null?newComponent.className:"") + ")");
+      
+      if (component.parentComponentId!=null) {
+        _removeFromParent(component);
+      }
+
+      if (newComponent.parent!=null) {
+        component.parentComponentId = newComponent.parent;
+        _addToParent(component);
+      }
+    }
   }
 
   JVxComponent getRootComponent() {
