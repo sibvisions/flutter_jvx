@@ -69,11 +69,15 @@ class JVxScreen {
             }
           }
         } else {
-          if (debug)
-            print("Add component (id:" + changedComponent.id + 
-            ",parent:" + (changedComponent.parent!=null?changedComponent.parent:"") +
-                ", className: " + (changedComponent.className!=null?changedComponent.className:"") + ")");
-          this._addComponent(changedComponent);
+          if (!changedComponent.destroy && !changedComponent.remove) {
+            if (debug)
+              print("Add component (id:" + changedComponent.id + 
+              ",parent:" + (changedComponent.parent!=null?changedComponent.parent:"") +
+                  ", className: " + (changedComponent.className!=null?changedComponent.className:"") + ")");
+            this._addComponent(changedComponent);
+          } else {
+            print("Cannot remove or destroy component with id " + changedComponent.id + ", because its not in the components list.");
+          }
         }
     });
   }
