@@ -107,14 +107,18 @@ class JVxScreen {
   OpenScreenResponse setValues(String dataProvider, int index) {
     DataService dataService = DataService(RestClient());
 
-    JVxData data = getData(dataProvider);
+    JVxData d = getData(dataProvider);
 
     OpenScreenResponse response;
 
-    dataService.setValues(dataProvider, data.columnNames, data.records[index]).then((val) {
-      response = val;
-      buttonCallback(response.changedComponents);
-    });
+    if (d != null) {
+      dataService.setValues(dataProvider, d.columnNames, d.records[index], globals.clientId).then((val) {
+        response = val;
+        buttonCallback(response.changedComponents);
+      });
+    } else {
+      print("JVxScreen/setValues: No data found for dataProvider '" + (dataProvider!=null?dataProvider:"") + "'!");
+    }
 
     return response;
   }
@@ -124,9 +128,10 @@ class JVxScreen {
 
     var returnData;
 
-    data.forEach((data) {
-      data.dataProvider == dataProvider ? returnData = data : returnData = null;
-      print('DATAPROVIDER: $dataProvider + DATA DATA PROVIDER: ${data.dataProvider}');
+    data.forEach((d) {
+      if (d.dataProvider == dataProvider)
+        returnData = d;
+      //print('DATAPROVIDER: $dataProvider + DATA DATA PROVIDER: ${d.dataProvider}');
     });
 
     if (returnData == null) {

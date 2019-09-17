@@ -12,7 +12,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context);
   
   void valueChanged(dynamic value) {
-    getIt.get<JVxScreen>().setValues(this.dataProvider, value);
+    getIt.get<JVxScreen>().setValues(this.linkReference.dataProvider, value);
   }
 
   List<DropdownMenuItem> getItems(JVxData data) {

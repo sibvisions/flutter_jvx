@@ -40,10 +40,10 @@ class JVxEditor extends JVxComponent implements IEditor {
     //if (maximumSize!=null) {
     //  constraints = BoxConstraints.loose(maximumSize);
     //}
-    JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
-
-    cellEditor.setData(data);
-
+    if (cellEditor.linkReference!=null) {
+      JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
+      cellEditor.setData(data);
+    }
     return Container(
       constraints: constraints,
       color: Colors.grey[300],

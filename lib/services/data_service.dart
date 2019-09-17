@@ -63,7 +63,7 @@ class DataService {
     return SelectRecordResponse.fromJson(json.decode(responseBody));
   }
 
-  Future<OpenScreenResponse> setValues(String dataProvider, List columnNames, List values, [List filterColumnNames, List filterValues]) async {
+  Future<OpenScreenResponse> setValues(String dataProvider, List columnNames, List values, String clientId, [List filterColumnNames, List filterValues]) async {
     if (dataProvider == null || columnNames == null || values == null)
       return null;
 
@@ -74,7 +74,8 @@ class DataService {
       },
       'dataProvider': dataProvider,
       'columnNames': columnNames,
-      'values': values
+      'values': values,
+      'clientId': clientId,
     };
 
     OpenScreenResponse openScreenResponse = OpenScreenResponse.fromJson(json.decode(await restClient.post('/api/dal/setValues', body)));
