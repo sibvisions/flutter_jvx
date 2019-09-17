@@ -131,6 +131,11 @@ class RenderJVxBorderLayoutWidget extends RenderBox
   void performLayout() {
 
     Size size = this.constraints.biggest;
+    if (size.width==double.infinity || size.height==double.infinity) {
+      print("Infinity height or width for BorderLayout");
+      size = Size((size.width==double.infinity?double.maxFinite:size.width),
+                  (size.height==double.infinity?double.maxFinite:size.height));
+    }
 
     double x = this.insMargin.left;
     double y = this.insMargin.top;

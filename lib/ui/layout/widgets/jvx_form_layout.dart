@@ -248,6 +248,10 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
       if(width==double.infinity || height==double.infinity) {
         print("Infinity height or width for FormLayout");
+      } else if (width<0 || height<0) {
+        print("Negative height or width for FormLayout");
+        width = (width<0)?width*-1:width;
+        height = (height<0)?height*-1:height;
       }
 
       comp.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
@@ -422,16 +426,27 @@ class RenderJVxFormLayoutWidget extends RenderBox
   Size getPreferredSize(RenderBox renderBox) {
     renderBox.layout(
       BoxConstraints.tightFor(),
+      //BoxConstraints.loose(this.constraints.biggest),
       //BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
       parentUsesSize: true);
+
+    if (renderBox.size.width==double.infinity || renderBox.size.height==double.infinity) {
+      print("getPrefererredSize: Infinity height or width for FormLayout");
+    }
+
     return renderBox.size;
   }
 
     Size getMinimumSize(RenderBox renderBox) {
     renderBox.layout(
       BoxConstraints.tightFor(),
+      //BoxConstraints.loose(this.constraints.biggest),
       //BoxConstraints(minWidth: 0, maxWidth: this.constraints.smallest.width, minHeight: 0, maxHeight: this.constraints.smallest.height), 
       parentUsesSize: true);
+
+    if (renderBox.size.width==double.infinity || renderBox.size.height==double.infinity) {
+      print("getMinimumSize: Infinity height or width for FormLayout");
+    }
     return renderBox.size;
   }
 

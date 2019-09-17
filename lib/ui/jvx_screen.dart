@@ -19,7 +19,7 @@ import 'jvx_component_creater.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen {
-  bool debug = true;
+  bool debug = false;
   String title = "OpenScreen";
   Key componentId;
   Map<String, JVxComponent> components = <String, JVxComponent>{};

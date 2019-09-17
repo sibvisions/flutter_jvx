@@ -1,4 +1,5 @@
 import 'package:jvx_mobile_v3/ui/container/jvx_group_panel.dart';
+import 'package:jvx_mobile_v3/ui/container/jvx_scroll_panel.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';
 import 'package:jvx_mobile_v3/ui/jvx_cell_editor_creator.dart';
@@ -24,6 +25,8 @@ class JVxComponentCreator {
       componentClass = new JVxPanel(Key(component.id), context);
     } else if (component.className=="GroupPanel") {
       componentClass = new JVxGroupPanel(Key(component.id), context);
+    } else if (component.className=="ScrollPanel") {
+      componentClass = new JVxScrollPanel(Key(component.id), context);
     } else if (component.className=="SplitPanel") {
       componentClass = new JVxSplitPanel(Key(component.id), context);
     } else if (component.className=="Label") {
