@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import '../../model/component_properties.dart';
 import '../layout/widgets/jvx_border_layout.dart';
@@ -44,6 +45,8 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
           layout.addLayoutComponent(pComponent, contraints);
         } else if (layout is JVxFormLayout) {
           layout.addLayoutComponent(pComponent, pConstraints);
+        } else if (layout is JVxFlowLayout) {
+          layout.addLayoutComponent(pComponent, pConstraints);
         }
       }
     
@@ -58,8 +61,8 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
   }
 
   void removeWithComponent(IComponent pComponent) {
-    int index = components.indexOf(pComponent); // For compatibility reasons, it has to call remove(int pIndex).
-		
+    int index = components.indexWhere((c) => c.componentId.toString() == pComponent.componentId.toString());
+    
 		if (index >= 0)
 		{
 			remove(index);

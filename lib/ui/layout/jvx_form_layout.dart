@@ -171,7 +171,7 @@ class JVxFormLayout extends JVxLayout<String> {
 
   void removeLayoutComponent(IComponent pComponent) 
   {
-    _layoutConstraints.remove(pComponent);
+    _layoutConstraints.removeWhere((c, s) => c.componentId.toString() == pComponent.componentId.toString());
     //_layoutConstraints.removeWhere((formLayoutContraints) => formLayoutContraints.child==pComponent.getWidget());
     
     _valid = false;
