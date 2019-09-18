@@ -209,7 +209,48 @@ class JVxScreen {
       element.parentComponentId==null && element.state==JVxComponentState.Added);
   }
 
+  void debugPrintCurrentWidgetTree() {
+    int level = 0;
+    JVxComponent component = getRootComponent();
+    print("--------------------");
+    print("Current widget tree:");
+    print("--------------------");
+    debugPrintComponent(component, level);
+    print("--------------------");
+  }
+
+  void debugPrintComponent(JVxComponent component, int level) {
+    if (component!=null) {
+      String debugString = "--" * level;
+
+      debugString += " id: " + component.componentId.toString() + 
+                     ", parent: " + (component.parentComponentId!=null?component.parentComponentId:"") +
+                     ", className: " + component.runtimeType.toString() +
+                     ", constraints: " + (component.constraints!=null?component.constraints:"")
+                     ;
+
+      if (component is JVxContainer) {
+          debugString += ", layout: " + (component.layout!=null?component.layout.runtimeType.toString():"") +
+                         ", childCount: " + (component.components!=null?component.components.length.toString():"0");
+        print(debugString);
+          
+        if (component.components!=null) {
+          component.components.forEach((c) {
+            debugPrintComponent(c, (level+1));
+          });
+        }
+      } else {
+        print(debugString);
+      }
+
+    }
+  }
+
   Widget getWidget() {
+
+    if (debug) 
+      debugPrintCurrentWidgetTree();
+
     JVxComponent component = this.getRootComponent();
 
     if (component!= null) {
@@ -218,7 +259,7 @@ class JVxScreen {
       // ToDO
       return Container(
         alignment: Alignment.center,
-        child: Text('Test'),
+        child: Text('No root component defined!'),
       );
     }
   }

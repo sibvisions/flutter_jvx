@@ -24,23 +24,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
   }
 
   void removeLayoutComponent(IComponent pComponent) {
-      if (pComponent == _center)
+      if (_center!=null && pComponent.componentId.toString() == _center.componentId.toString())
       {
         _center = null;
       }
-      else if (pComponent == _north)
+      else if (_north!=null && pComponent.componentId.toString() == _north.componentId.toString())
       {
         _north = null;
       }
-      else if (pComponent == _south)
+      else if (_south!=null && pComponent.componentId.toString() == _south.componentId.toString())
       {
         _south = null;
       }
-      else if (pComponent == _east)
+      else if (_east!=null && pComponent.componentId.toString() == _east.componentId.toString())
       {
         _east = null;
       }
-      else if (pComponent == _west)
+      else if (_west!=null && pComponent.componentId.toString() == _west.componentId.toString())
       {
         _west = null;
       }
@@ -76,23 +76,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
 
   JVxBorderLayoutConstraints getConstraints(IComponent comp)
   {
-    if (comp?.componentId == _center?.componentId)
+    if (comp?.componentId.toString() == _center?.componentId.toString())
     {
       return JVxBorderLayoutConstraints.Center;
     }
-    else if (comp?.componentId == _north?.componentId)
+    else if (comp?.componentId.toString() == _north?.componentId.toString())
     {
       return JVxBorderLayoutConstraints.North;
     }
-    else if (comp?.componentId == _south?.componentId)
+    else if (comp?.componentId.toString() == _south?.componentId.toString())
     {
       return JVxBorderLayoutConstraints.South;
     }
-    else if (comp?.componentId == _west?.componentId)
+    else if (comp?.componentId.toString() == _west?.componentId.toString())
     {
       return JVxBorderLayoutConstraints.West;
     }
-    else if (comp?.componentId == _east?.componentId)
+    else if (comp?.componentId.toString() == _east?.componentId.toString())
     {
       return JVxBorderLayoutConstraints.East;
     }
