@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/data/select_record_resp.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen_resp.dart';
+import 'package:jvx_mobile_v3/model/set_value/set_value_resp.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/utils/log.dart';
 
@@ -63,7 +64,7 @@ class DataService {
     return SelectRecordResponse.fromJson(json.decode(responseBody));
   }
 
-  Future<OpenScreenResponse> setValues(String dataProvider, List columnNames, List values, String clientId, [List filterColumnNames, List filterValues]) async {
+  Future<SetValueResponse> setValues(String dataProvider, List columnNames, List values, String clientId, [List filterColumnNames, List filterValues]) async {
     if (dataProvider == null || columnNames == null || values == null)
       return null;
 
@@ -78,10 +79,8 @@ class DataService {
       'clientId': clientId,
     };
 
-    OpenScreenResponse openScreenResponse = OpenScreenResponse.fromJson(json.decode(await restClient.post('/api/dal/setValues', body)));
+    SetValueResponse setValueResponse = SetValueResponse.fromJson(json.decode(await restClient.post('/api/dal/setValues', body)));
 
-    print(openScreenResponse.name);
-
-    return openScreenResponse;
+    return setValueResponse;
   }
 }

@@ -7,6 +7,7 @@ import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/filter.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen_resp.dart';
+import 'package:jvx_mobile_v3/model/set_value/set_value_resp.dart';
 import 'package:jvx_mobile_v3/services/data_service.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
@@ -88,28 +89,19 @@ class JVxScreen {
     JVxData selectData = this.getData(dataProvider);
 
     if (selectData != null && index < selectData.records.length) {
-      /*
-      SelectRecordBloc selectRecordBloc = SelectRecordBloc();
-      StreamSubscription<FetchProcess> apiStreamSubscription = 
-        apiSubscription(selectRecordBloc.apiResult, context);
-      selectRecordBloc.selectRecordController.add(
-        SelectRecordViewModel(clientId: globals.clientId, 
-          dataProvider: dataProvider,
-          filter: Filter(columnNames: selectData.columnNames, values: selectData.records[index]), 
-          fetch: fetch)
-      );
-      */
       dataService.selectRecord(dataProvider, selectData.columnNames, selectData.records[index], fetch, globals.clientId)
           .then((val) => getIt.get<JVxScreen>().buttonCallback(val.updatedComponents));
     }
   }
 
-  OpenScreenResponse setValues(String dataProvider, int index) {
+  SetValueResponse setValues(String localDataProvider, String dataProvider, int index) {
     DataService dataService = DataService(RestClient());
 
-    JVxData d = getData(dataProvider);
+    JVxData d = getData(localDataProvider);
 
-    OpenScreenResponse response;
+    print('RECORDS: ${d.columnNames}');
+
+    SetValueResponse response;
 
     if (d != null) {
       dataService.setValues(dataProvider, d.columnNames, d.records[index], globals.clientId).then((val) {
@@ -128,22 +120,19 @@ class JVxScreen {
 
     var returnData;
 
+    print('DATAPROVDER: ' + dataProvider);
+
     data.forEach((d) {
       if (d.dataProvider == dataProvider)
         returnData = d;
-      //print('DATAPROVIDER: $dataProvider + DATA DATA PROVIDER: ${d.dataProvider}');
     });
 
     if (returnData == null) {
       dataService.getData(
           dataProvider, globals.clientId, columnNames, null, null).then((
       JVxData jvxData) {
-        // jvxData.records.add(['LORENZ']);
-        // jvxData.records.add(['JÜRGEN']);
-        // jvxData is null!!! Warum?
         data.add(jvxData);
         buttonCallback(<ChangedComponent>[]);
-        //return returnData;
       });
       return null;
     } else {
