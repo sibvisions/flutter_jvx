@@ -72,7 +72,7 @@ class JVxScreen {
         } else {
           if (!changedComponent.destroy && !changedComponent.remove) {
             if (debug)
-              print("Add component (id:" + changedComponent.id + 
+              print("Add component (id:" + changedComponent.id +
               ",parent:" + (changedComponent.parent!=null?changedComponent.parent:"") +
                   ", className: " + (changedComponent.className!=null?changedComponent.className:"") + ")");
             this._addComponent(changedComponent);
@@ -98,6 +98,7 @@ class JVxScreen {
     DataService dataService = DataService(RestClient());
 
     dataService.setValues(dataProvider, columnNames, value, globals.clientId).then((val) {
+      print("CHANGEDCOMPONENTS" + val.changedComponents.toString());
       this.updateComponents(val.changedComponents);
       buttonCallback(val.changedComponents);
     });

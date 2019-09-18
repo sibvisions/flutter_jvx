@@ -12,6 +12,8 @@ class SetValueResponse extends BaseResponse {
 
     changedComponents = <ChangedComponent>[];
 
-    json.forEach((c) => changedComponents.add(ChangedComponent.fromJson(c)));
+    json.forEach((c) {
+      changedComponents.add(ChangedComponent.fromJson(c));
+    });
   }
 }
