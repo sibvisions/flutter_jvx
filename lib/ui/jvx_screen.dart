@@ -20,7 +20,7 @@ import 'jvx_component_creater.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen {
-  bool debug = false;
+  bool debug = true;
   String title = "OpenScreen";
   Key componentId;
   Map<String, JVxComponent> components = <String, JVxComponent>{};
@@ -94,25 +94,13 @@ class JVxScreen {
     }
   }
 
-  SetValueResponse setValues(String localDataProvider, String dataProvider, int index) {
+  void setValues(String dataProvider, List<dynamic> columnNames, List<dynamic> value) {
     DataService dataService = DataService(RestClient());
 
-    JVxData d = getData(localDataProvider);
-
-    print('RECORDS: ${d.columnNames}');
-
-    SetValueResponse response;
-
-    if (d != null) {
-      dataService.setValues(dataProvider, d.columnNames, d.records[index], globals.clientId).then((val) {
-        response = val;
-        buttonCallback(response.changedComponents);
-      });
-    } else {
-      print("JVxScreen/setValues: No data found for dataProvider '" + (dataProvider!=null?dataProvider:"") + "'!");
-    }
-
-    return response;
+    dataService.setValues(dataProvider, columnNames, value, globals.clientId).then((val) {
+      this.updateComponents(val.changedComponents);
+      buttonCallback(val.changedComponents);
+    });
   }
 
   JVxData getData(String dataProvider, [List<dynamic> columnNames]) {
