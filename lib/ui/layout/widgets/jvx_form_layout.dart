@@ -103,6 +103,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /// Class members
   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  BoxConstraints formConstraints;
 
   /// Constraint for starting a new row for the given component.
   static final String newLine = "\n";
@@ -231,6 +232,17 @@ class RenderJVxFormLayoutWidget extends RenderBox
     }
 
     calculateAnchors();
+
+
+    if (this.constraints.maxWidth!=double.infinity && this.constraints.maxWidth > preferredWidth) {
+      preferredWidth = this.constraints.maxWidth.round();
+    } 
+
+    if (this.constraints.maxHeight!=double.infinity && this.constraints.maxHeight > preferredHeight) {
+      preferredHeight = this.constraints.maxHeight.round();
+    } 
+
+    formConstraints = BoxConstraints.loose(Size(preferredWidth.toDouble(), preferredHeight.toDouble()));
 
     doCalculateTargetDependentAnchors();
     
@@ -813,9 +825,9 @@ class RenderJVxFormLayoutWidget extends RenderBox
   void doCalculateTargetDependentAnchors() {
     if (calculateTargetDependentAnchors) {
       // set border anchors
-      Size size = this.constraints.biggest;
-      Size minSize = this.constraints.smallest;
-      Size maxSize = this.constraints.biggest;
+      Size size = this.formConstraints.biggest;
+      Size minSize = this.formConstraints.smallest;
+      Size maxSize = this.formConstraints.biggest;
       EdgeInsets ins = EdgeInsets.zero;
       size = Size(size.width-ins.left + ins.right, size.height - ins.top + ins.bottom);
       minSize = Size(minSize.width-ins.left + ins.right, minSize.height - ins.top + ins.bottom);

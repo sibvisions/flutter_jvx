@@ -37,14 +37,7 @@ class JVxFlowLayout extends JVxLayout<String> {
 
   void addLayoutComponent(IComponent pComponent, String pConstraint)
   {
-    if (pConstraint == null || pConstraint.isEmpty)
-    {
-      throw new ArgumentError("Constraint " + pConstraint.toString() + " is not allowed!");
-    }
-    else
-    {
-      layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
-    }
+    layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
   }
 
   void removeLayoutComponent(IComponent pComponent) 
