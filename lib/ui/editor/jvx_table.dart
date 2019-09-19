@@ -132,9 +132,13 @@ class JVxTable extends JVxEditor {
 
     rows.addAll(getDataRows());
 
-    return Table(
-      border: border,
-      children: rows,
-    );
+    if (rows.length>0 && rows[0].children!=null && rows[0].children.length>0) {
+      return Table(
+        border: border,
+        children: rows,
+      );
+    } else {
+      return Container(child: Text("No table data"));
+    }
   }
 }
