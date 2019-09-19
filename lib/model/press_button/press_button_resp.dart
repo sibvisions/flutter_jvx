@@ -16,7 +16,7 @@ class PressButtonResponse extends BaseResponse {
     name = json[1]['name'];
     List<dynamic> chComp = json[0]['changedComponents'];
 
-    chComp.forEach((val) {
+    chComp?.forEach((val) {
       updatedComponents.add(ChangedComponent.fromJson(val));
     });
   }   
