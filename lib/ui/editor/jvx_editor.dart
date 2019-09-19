@@ -19,8 +19,10 @@ class JVxEditor extends JVxComponent implements IEditor {
   bool eventFocusGained = false;
   JVxCellEditor cellEditor;
   
-  JVxEditor(Key componentId, BuildContext context) : super(componentId, context) {
-    if (cellEditor.linkReference!=null) {
+  JVxEditor(Key componentId, BuildContext context) : super(componentId, context);
+
+  void initData() {
+    if (cellEditor?.linkReference!=null) {
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.dataProvider);
       if (data !=null)
         cellEditor.setData(data);

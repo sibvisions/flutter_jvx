@@ -62,6 +62,9 @@ class JVxComponentCreator {
 
     componentClass?.updateProperties(component.componentProperties);
 
+    if (componentClass is JVxEditor) 
+      componentClass.initData();
+
     return componentClass;
   }
 }

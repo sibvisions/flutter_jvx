@@ -107,16 +107,18 @@ class JVxScreen {
   JVxData getData(String dataProvider, [List<dynamic> columnNames]) {
     DataService dataService = DataService(RestClient());
 
-    var returnData;
+    JVxData returnData;
 
-    print('DATAPROVDER: ' + dataProvider);
+    print('DATAPROVDER: ' + (dataProvider!=null?dataProvider:""));
 
-    data.forEach((d) {
-      if (d.dataProvider == dataProvider)
-        returnData = d;
-    });
+    if (dataProvider!=null) {
+      data.forEach((d) {
+        if (d.dataProvider == dataProvider)
+          returnData = d;
+      });
+    }
 
-    if (returnData == null) {
+    if (returnData == null && dataProvider!=null && columnNames!=null) {
       dataService.getData(
           dataProvider, globals.clientId, columnNames, null, null).then((
       JVxData jvxData) {
