@@ -12,6 +12,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context);
   
   void valueChanged(dynamic value) {
+    this.value = value;
     getIt.get<JVxScreen>().setValues(dataProvider, linkReference.columnNames, [value]);
   }
 
@@ -49,6 +50,9 @@ class JVxLinkedCellEditor extends JVxCellEditor {
 
   @override
   void setData(JVxData data) {
+    if (data?.records?.length==1) {
+      this.value = data.records[0][0];
+    }
     this._items = getItems(data);
   }
 
@@ -56,6 +60,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   Widget getWidget() {
     // ToDo: Implement getWidget
     return DropdownButton(
+      value: this.value,
       items: this._items,
       onChanged: valueChanged
     );

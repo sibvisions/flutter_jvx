@@ -19,7 +19,13 @@ class JVxEditor extends JVxComponent implements IEditor {
   bool eventFocusGained = false;
   JVxCellEditor cellEditor;
   
-  JVxEditor(Key componentId, BuildContext context) : super(componentId, context);
+  JVxEditor(Key componentId, BuildContext context) : super(componentId, context) {
+    if (cellEditor.linkReference!=null) {
+      JVxData data = getIt.get<JVxScreen>().getData(cellEditor.dataProvider);
+      if (data !=null)
+        cellEditor.setData(data);
+    }
+  }
 
   @override
   void updateProperties(ComponentProperties properties) {
@@ -35,17 +41,14 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   Widget getWidget() {
 
-    BoxConstraints constraints = BoxConstraints.tightFor();
-
-    //if (maximumSize!=null) {
-    //  constraints = BoxConstraints.loose(maximumSize);
-    //}
     if (cellEditor.linkReference!=null) {
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
-      cellEditor.setData(data);
+      if (data !=null)
+        cellEditor.setData(data);
     }
+
     return Container(
-      constraints: constraints,
+      constraints: BoxConstraints.tightFor(),
       color: Colors.grey[300],
       child: SizedBox(width: 100, child: cellEditor.getWidget())
     );

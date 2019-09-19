@@ -29,6 +29,7 @@ class JVxCellEditor implements ICellEditor {
   String contentType;
   LinkReference linkReference;
   String dataProvider;
+  dynamic value="";
 
   JVxCellEditor(ComponentProperties properties, this.context) {
     horizontalAlignment = properties.getProperty<int>("horizontalAlignment");

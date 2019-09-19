@@ -23,6 +23,7 @@ abstract class ICellEditor {
   bool tableReadonly;
   bool directCellEditor;
   bool autoOpenPopup;
+  dynamic value;
 
   ICellEditor(ComponentProperties properties, this.context);
 

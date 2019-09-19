@@ -11,6 +11,9 @@ class JVxSplitPanel extends JVxContainer implements IContainer {
   /// Constant for vertical anchors.
   static const VERTICAL = 1;
 
+  /// Constant for relative anchors.
+  static const RELATIVE = 2;
+
   int dividerPosition;
   int dividerAlignment;
 
@@ -28,18 +31,18 @@ class JVxSplitPanel extends JVxContainer implements IContainer {
     List<Widget> widgets = new List<Widget>();
 
     if (firstComponent != null) {
-      widgets.add(firstComponent.getWidget());
+      widgets.add(Expanded(child:firstComponent.getWidget()));
     } else {
       widgets.add(Container());
     }
 
     if (secondComponent != null) {
-      widgets.add(secondComponent.getWidget());
+      widgets.add(Expanded(child:secondComponent.getWidget()));
     } else {
       widgets.add(Container());
     }
 
-    if (dividerAlignment==HORIZONTAL) {
+    if (dividerAlignment==HORIZONTAL || dividerAlignment == RELATIVE) {
       return Row(
         key: componentId, 
         children: widgets,
