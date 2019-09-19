@@ -25,7 +25,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     if (cellEditor?.linkReference!=null) {
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.dataProvider);
       if (data !=null)
-        cellEditor.setData(data);
+        cellEditor.setInitialData(data);
     }
   }
 
