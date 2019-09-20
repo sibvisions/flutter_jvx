@@ -27,9 +27,7 @@ class JVxCellEditorCreator {
         jVxCellEditor = JVxDateCellEditor(properties.cellEditorProperties, context);
       } else if (className=="ImageViewer") {
         jVxCellEditor = JVxImageViewer(properties.cellEditorProperties, context);
-      } else if (className=="MultiLineCellEditor") {
-        jVxCellEditor = JVxMultiLineCellEditor(properties.cellEditorProperties, context);
-      } else {
+      }  else {
         jVxCellEditor = JVxTextCellEditor(properties.cellEditorProperties, context);
       }
     }
