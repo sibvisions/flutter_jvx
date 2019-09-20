@@ -8,7 +8,7 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import '../../jvx_screen.dart';
 
 class JVxLinkedCellEditor extends JVxCellEditor {
-  List<DropdownMenuItem> _items = List<DropdownMenuItem>();
+  List<DropdownMenuItem> _items = <DropdownMenuItem>[];
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context);
   
   void valueChanged(dynamic value) {
@@ -18,18 +18,18 @@ class JVxLinkedCellEditor extends JVxCellEditor {
 
   List<DropdownMenuItem> getItems(JVxData data) {
       List<DropdownMenuItem> items = <DropdownMenuItem>[];
-      List<int> visibleComunsIndex = <int>[];
+      List<int> visibleColumnsIndex = <int>[];
 
       if (data != null && data.records.isNotEmpty) {
         data.columnNames.asMap().forEach((i, v) {
           if (this.linkReference.referencedColumnNames.contains(v)) {
-            visibleComunsIndex.add(i);
+            visibleColumnsIndex.add(i);
           }
         });
 
         data.records.forEach((record) {
           record.asMap().forEach((i, c) {
-            if (visibleComunsIndex.contains(i)) {
+            if (visibleColumnsIndex.contains(i)) {
               items.add(getItem(c.toString(), c.toString()));
             }
           });
@@ -82,7 +82,6 @@ class JVxLinkedCellEditor extends JVxCellEditor {
 
   @override
   Widget getWidget() {
-    // ToDo: Implement getWidget
     return DropdownButton(
       value: this.value,
       items: this._items,
