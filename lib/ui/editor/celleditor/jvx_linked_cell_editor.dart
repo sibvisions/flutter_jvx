@@ -97,7 +97,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   @override
   Widget getWidget() {
     return DropdownButton(
-      icon: IconButton(icon: Icon(FontAwesomeIcons.chevronCircleDown)),
+      icon: IconButton(icon: Icon(FontAwesomeIcons.chevronCircleDown), onPressed: () {},),
       value: this.value,
       items: this._items,
       onChanged: valueChanged,

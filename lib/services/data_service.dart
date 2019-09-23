@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/data/select_record_resp.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen_resp.dart';
-import 'package:jvx_mobile_v3/model/set_value/set_value_resp.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/utils/log.dart';
 

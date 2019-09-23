@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
@@ -41,7 +43,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
   }
 
   ChoiceCellEditorImage loadImage(String path) {
-    Image image = Image.asset('${globals.dir}$path');
+    Image image = Image.file(File('${globals.dir}$path'));
     try {
     } catch (e) {
       selectedImage = defaultImage;
@@ -66,7 +68,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
   Widget getWidget() {
     return Container(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 16, maxHeight: 16),
+        constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
         child: FlatButton(
           onPressed: () => changeImage(),
           padding: EdgeInsets.all(0.0),

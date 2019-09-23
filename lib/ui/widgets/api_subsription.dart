@@ -94,7 +94,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
           case ApiType.performDownload:
             if (globals.hasToDownload) {
               showProgress(context);
-              Future.delayed(const Duration(seconds: 5), () {
+              // Future.delayed(const Duration(seconds: 5), () {
                 SharedPreferencesHelper().getLoginData().then((onValue) {
                   if (onValue['username'] == null && onValue['password'] == null) {
                     if (globals.startupResponse.loginItem != null) {
@@ -115,7 +115,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
                   }
                   hideProgress(context);
                 });
-              });
+              // });
             }
 
             globals.hasToDownload = false;

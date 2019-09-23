@@ -1,6 +1,5 @@
 import 'package:jvx_mobile_v3/model/data/data/select_record_resp.dart';
 import 'package:jvx_mobile_v3/model/data/select_record.dart';
-import 'package:jvx_mobile_v3/model/press_button/press_button_resp.dart';
 import 'package:jvx_mobile_v3/services/abstract/i_select_record_service.dart';
 import 'package:jvx_mobile_v3/services/network_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';

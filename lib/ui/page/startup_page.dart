@@ -71,8 +71,8 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
         // Translations.load(Locale(prefData['language']));
         globals.language = prefData['language'];
       }
-      if (globals.appName == null || globals.baseUrl == null)
-        Navigator.pushReplacementNamed(context, '/settings');
+      // if (globals.appName == null || globals.baseUrl == null)
+        // Navigator.pushReplacementNamed(context, '/settings');
     });
     await SharedPreferencesHelper().getAppVersion().then((val) => globals.appVersion = val);
   }

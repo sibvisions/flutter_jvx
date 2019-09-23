@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/tools/arc_clipper.dart';
 import 'package:jvx_mobile_v3/utils/check_if_image_exists.dart';
@@ -38,8 +40,8 @@ class LoginBackground extends StatelessWidget {
                     ),
                     width: double.infinity,
                     child: checkIfImageExists('${globals.dir}${globals.applicationStyle.loginIcon}')
-                        ? Image.asset(
-                            '${globals.dir}${globals.applicationStyle.loginIcon}',
+                        ? Image.file(
+                            File('${globals.dir}${globals.applicationStyle.loginIcon}'),
                             fit: BoxFit.fitHeight
                           )
                         : new Container())
