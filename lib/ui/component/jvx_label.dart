@@ -27,12 +27,14 @@ class JVxLabel extends JVxComponent implements IComponent {
         child: Container(
           alignment: horizontalAlignment,
           color: this.background,
-          child: Text(text, 
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child:Text(text, 
             style: style,
             textAlign: verticalAlignment
           ),
           ),
-        
+        )
       );
   }
 }

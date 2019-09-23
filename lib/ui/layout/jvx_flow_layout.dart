@@ -53,14 +53,20 @@ class JVxFlowLayout extends JVxLayout<String> {
   Widget getWidget() {
     List<Widget> children = new List<Widget>();
     Axis direction = orientation==VERTICAL?Axis.vertical:Axis.horizontal;
+    WrapCrossAlignment wrapCrossAlignment = WrapCrossAlignment.start;
 
     this.layoutConstraints.forEach((k, v) {
-      children.add(k.getWidget());
+        children.add(k.getWidget());
     });
 
-    return Wrap(
-      children: children,
-      direction: direction,
-    );
+    if (componentAlignment==IAlignmentConstants.ALIGN_STRETCH)
+    {
+      return Column(children: children,);
+    } else {
+      return Wrap(
+        children: children,
+        direction: direction,
+      );
+    }    
   }
 }

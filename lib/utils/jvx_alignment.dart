@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class JVxAlignment {
-  static Alignment defaultAlignment = Alignment.topLeft;
+  static Alignment defaultAlignment = Alignment.center;
 
   static Alignment getAlignmentFromInt(int textAlign) {
     switch(textAlign) {
