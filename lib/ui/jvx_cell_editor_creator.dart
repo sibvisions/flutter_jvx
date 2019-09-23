@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_image_viewer.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_multi_line_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_number_cell_editor.dart';
@@ -27,6 +28,8 @@ class JVxCellEditorCreator {
         jVxCellEditor = JVxDateCellEditor(properties.cellEditorProperties, context);
       } else if (className=="ImageViewer") {
         jVxCellEditor = JVxImageViewer(properties.cellEditorProperties, context);
+      } else if (className=="ChoiceCellEditor") {
+        jVxCellEditor = JVxChoiceCellEditor(properties.cellEditorProperties, context);
       }  else {
         jVxCellEditor = JVxTextCellEditor(properties.cellEditorProperties, context);
       }

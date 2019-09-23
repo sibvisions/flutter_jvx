@@ -17,11 +17,13 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   JVxChoiceCellEditor(ComponentProperties properties, BuildContext context)
       : super(properties, context) {
-    defaultImageName = properties.getProperty<String>('defaultImageName', defaultImageName);
-    allowedVales = properties.getProperty<List<String>>('allowedValues', allowedVales);
+    defaultImageName =
+        properties.getProperty<String>('defaultImageName', defaultImageName);
+    allowedVales =
+        properties.getProperty<List<String>>('allowedValues', allowedVales);
     imageNames = properties.getProperty<List<String>>('imageNames', imageNames);
 
-    defaultImage = loadImage(defaultImageName);
+    // defaultImage = loadImage(defaultImageName);
     loadImages();
   }
 
@@ -34,35 +36,37 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   void loadImages() {
     imageNames.forEach((image) => _items.add(loadImage(image)));
+
+    selectedImage = _items[0];
   }
 
   ChoiceCellEditorImage loadImage(String path) {
-    Image image;
+    Image image = Image.asset('${globals.dir}$path');
     try {
-      image = Image.asset('${globals.dir}$path');
     } catch (e) {
       selectedImage = defaultImage;
     }
     String val = allowedVales[imageNames.indexOf(path)];
 
-    ChoiceCellEditorImage choiceCellEditorImage = ChoiceCellEditorImage(value: val, image: image);
+    ChoiceCellEditorImage choiceCellEditorImage =
+        ChoiceCellEditorImage(value: val, image: image);
     return choiceCellEditorImage;
   }
 
   changeImage() {
-    if ((_items.indexOf(selectedImage) + 1) <= _items.length)
+    if ((_items.indexOf(selectedImage) + 1) < _items.length)
       selectedImage = _items[_items.indexOf(selectedImage) + 1];
     else
       selectedImage = _items[0];
 
-    getIt.get<JVxScreen>().buttonCallback();
+    getIt.get<JVxScreen>().buttonCallback(null);
   }
 
   @override
   Widget getWidget() {
     return Container(
       child: ConstrainedBox(
-        constraints: BoxConstraints.expand(),
+        constraints: BoxConstraints(),
         child: FlatButton(
           onPressed: () => changeImage(),
           padding: EdgeInsets.all(0.0),
