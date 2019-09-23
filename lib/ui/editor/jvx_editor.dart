@@ -35,7 +35,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     maximumSize = properties.getProperty<Size>("maximumSize",null);
     dataProvider = properties.getProperty<String>("dataProvider", dataProvider);
     dataRow = properties.getProperty<String>("dataRow");
-    columnName = properties.getProperty<String>("columnName");
+    columnName = properties.getProperty<String>("columnName", columnName);
     readonly = properties.getProperty<bool>("readonly", readonly);
     eventFocusGained = properties.getProperty<bool>("eventFocusGained", eventFocusGained);
   }
@@ -45,6 +45,10 @@ class JVxEditor extends JVxComponent implements IEditor {
 
     if (cellEditor.linkReference!=null) {
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
+      if (data !=null)
+        cellEditor.setData(data);
+    } else { 
+      JVxData data = getIt.get<JVxScreen>().getData(this.dataProvider, [this.columnName]);
       if (data !=null)
         cellEditor.setData(data);
     }

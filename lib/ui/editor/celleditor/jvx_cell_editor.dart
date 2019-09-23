@@ -30,6 +30,7 @@ class JVxCellEditor implements ICellEditor {
   LinkReference linkReference;
   String dataProvider;
   dynamic value;
+  String columnName;
 
   JVxCellEditor(ComponentProperties properties, this.context) {
     horizontalAlignment = properties.getProperty<int>("horizontalAlignment");
@@ -37,6 +38,7 @@ class JVxCellEditor implements ICellEditor {
     preferredEditorMode = properties.getProperty<int>("preferredEditorMode");
     contentType = properties.getProperty<String>("contentType");
     directCellEditor = properties.getProperty<bool>("directCellEditor", false);
+    columnName = properties.getProperty<String>("columnName", columnName);
   }
 
   void setInitialData(JVxData data) {
