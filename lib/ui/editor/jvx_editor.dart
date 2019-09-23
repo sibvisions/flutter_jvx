@@ -33,7 +33,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);
     maximumSize = properties.getProperty<Size>("maximumSize",null);
-    dataProvider = properties.getProperty<String>("dataProvider");
+    dataProvider = properties.getProperty<String>("dataProvider", dataProvider);
     dataRow = properties.getProperty<String>("dataRow");
     columnName = properties.getProperty<String>("columnName");
     readonly = properties.getProperty<bool>("readonly", readonly);

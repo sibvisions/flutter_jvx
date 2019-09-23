@@ -104,7 +104,7 @@ class JVxScreen {
     });
   }
 
-  JVxData getData(String dataProvider, [List<dynamic> columnNames]) {
+  JVxData getData(String dataProvider, [List<dynamic> columnNames, int reload]) {
     DataService dataService = DataService(RestClient());
 
     JVxData returnData;
@@ -118,7 +118,8 @@ class JVxScreen {
       });
     }
 
-    if (returnData == null && dataProvider!=null && columnNames!=null) {
+    if ((returnData == null || reload==-1) && 
+    dataProvider!=null && columnNames!=null) {
       dataService.getData(
           dataProvider, globals.clientId, columnNames, null, null).then((
       JVxData jvxData) {

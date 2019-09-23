@@ -18,6 +18,7 @@ class JVxTable extends JVxEditor {
   // the show table header flag
   bool tableHeaderVisible = true;
 
+  int reload = -1;
   Size maximumSize;
 
   JVxTable(Key componentId, BuildContext context) : super(componentId, context);
@@ -30,6 +31,7 @@ class JVxTable extends JVxEditor {
     showHorizontalLines = properties.getProperty<bool>("showHorizontalLines", showHorizontalLines);
     tableHeaderVisible = properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
     columnNames = properties.getProperty<List<String>>("columnNames", columnNames);
+    reload = properties.getProperty<int>("reload");
   }
 
   void _onRowTapped(int index) {
@@ -76,8 +78,7 @@ class JVxTable extends JVxEditor {
     }
   }
 
-  TableRow getHeaderRow() {
-    JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
+  TableRow getHeaderRow(JVxData data) {
     List<Widget> children = new List<Widget>();
 
     if (data!=null && data.columnNames!=null) {
@@ -91,10 +92,9 @@ class JVxTable extends JVxEditor {
     return getTableRow(children, true);
   }
 
-  List<TableRow> getDataRows() {
+  List<TableRow> getDataRows(JVxData data) {
     List<TableRow> rows = new List<TableRow>();
     List<int> visibleColumnsIndex = new List<int>();
-    JVxData data = getIt.get<JVxScreen>().getData(dataProvider);
 
     if (data!=null) {
       data.columnNames.asMap().forEach((i,r) {
@@ -120,6 +120,8 @@ class JVxTable extends JVxEditor {
 
   @override
   Widget getWidget() {
+    JVxData data = getIt.get<JVxScreen>().getData(dataProvider, this.columnNames, this.reload);
+    this.reload = null;
     List<TableRow> rows = new List<TableRow>();
     TableBorder border = TableBorder(); 
     
@@ -132,10 +134,10 @@ class JVxTable extends JVxEditor {
     }
 
     if (tableHeaderVisible) {
-      rows.add(getHeaderRow());
+      rows.add(getHeaderRow(data));
     }
 
-    rows.addAll(getDataRows());
+    rows.addAll(getDataRows(data));
 
     if (rows.length>0 && rows[0].children!=null && rows[0].children.length>0) {
       return Table(
