@@ -66,7 +66,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
   Widget getWidget() {
     return Container(
       child: ConstrainedBox(
-        constraints: BoxConstraints(),
+        constraints: BoxConstraints(maxWidth: 16, maxHeight: 16),
         child: FlatButton(
           onPressed: () => changeImage(),
           padding: EdgeInsets.all(0.0),

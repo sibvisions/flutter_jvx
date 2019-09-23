@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 
 import '../../main.dart';
@@ -53,10 +54,15 @@ class JVxEditor extends JVxComponent implements IEditor {
         cellEditor.setData(data);
     }
 
+    if(this.cellEditor is JVxChoiceCellEditor) {
+      return Container(child: this.cellEditor.getWidget());
+    } else {  
     return Container(
       constraints: BoxConstraints.tightFor(),
-      color: Colors.grey[300],
-      child: SizedBox(width: 100, child: cellEditor.getWidget())
+      color: Colors.grey[200],
+      child: Container(width: 100, child: cellEditor.getWidget())
     );
+
+    }
   }
 }
