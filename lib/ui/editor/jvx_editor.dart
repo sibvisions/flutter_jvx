@@ -43,8 +43,9 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   @override
   Widget getWidget() {
-
+    Color color = Colors.grey[200];
     if (cellEditor.linkReference!=null) {
+      color = Colors.transparent;
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
       if (data !=null)
         cellEditor.setData(data);
@@ -59,7 +60,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     } else {  
     return Container(
       constraints: BoxConstraints.tightFor(),
-      color: Colors.grey[200],
+      color: color,
       child: Container(width: 100, child: cellEditor.getWidget())
     );
 
