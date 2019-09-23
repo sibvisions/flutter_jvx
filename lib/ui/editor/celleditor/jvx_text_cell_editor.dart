@@ -30,6 +30,7 @@ class JVxTextCellEditor extends JVxCellEditor {
     _controller.text = (this.value!=null ? this.value.toString() : "");
     // ToDo: Implement getWidget
     return TextField(
+      key: this.key,
       controller: _controller,
       maxLines: multiLine ? 4 : 1,
       keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
