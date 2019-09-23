@@ -24,9 +24,11 @@ class OpenScreenResponse extends BaseResponse {
 
     List<dynamic> chComp = json[0]['changedComponents'];
 
-    chComp.forEach((val) {
-      changedComponents.add(ChangedComponent.fromJson(val));
-    });
+    if (chComp != null) {
+      chComp.forEach((val) {
+        changedComponents.add(ChangedComponent.fromJson(val));
+      });
+    }
 
     data = <JVxData>[];
     metaData = <JVxMetaData>[];

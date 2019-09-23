@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
 
 enum StartupValidationType { username, password }
 
@@ -67,6 +68,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       }
       if (prefData['language'] == 'null' || prefData['language'] == null || prefData['language'].isEmpty) {
       } else {
+        Translations.load(Locale(prefData['language']));
         globals.language = prefData['language'];
       }
       if (globals.appName == null || globals.baseUrl == null)

@@ -24,11 +24,11 @@ class Translations {
   }
 
   String text(String key) {
-    return _localizedValues[key] ?? '** $key not found';
+    return _localizedValues[key];
   }
 
   String text2(String key, [String defaultValue]) {
-    return _localizedValues2[key] ?? defaultValue ?? text(key);
+    return _localizedValues2[key] ?? text(key) ?? defaultValue;
   }
 
   static Future<Translations> load(Locale locale) async {

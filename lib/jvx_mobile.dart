@@ -14,7 +14,7 @@ class JvxMobile extends StatelessWidget {
     theme: ThemeData(
       primaryColor: UIData.ui_kit_color_2,
       fontFamily: UIData.ralewayFont,
-      primarySwatch: Colors.amber
+      primarySwatch: UIData.ui_kit_color_2,
     ),
     debugShowCheckedModeBanner: false,
     showPerformanceOverlay: false,

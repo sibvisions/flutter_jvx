@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_mobile_v3/model/language.dart';
 import 'package:jvx_mobile_v3/ui/tools/restart.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
@@ -30,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                Translations.of(context).text('settings_general'),
+                Translations.of(context).text2('settings_general', 'General Settings'),
                 style: TextStyle(color: Colors.grey.shade700),
               ),
             ),
@@ -44,15 +45,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.server,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text('settings_app_name')),
+                    title: Text(Translations.of(context).text2('settings_app_name', 'App name')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
                     subtitle: Text(this.appName == null ? globals.appName : this.appName),
                     onTap: () {
                       showTextInputDialog(
                         context, 
-                        Translations.of(context).text('settings_app_name'), 
-                        Translations.of(context).text('settings_app_name'), 
-                        Translations.of(context).text('settings_app_name_hint'),
+                        Translations.of(context).text2('settings_app_name', 'App name'),
+                        Translations.of(context).text2('settings_app_name', 'App name'),
+                        Translations.of(context).text2('settings_app_name_hint', 'Enter App name'),
                         globals.appName,
                         (String value) {
                           if (value == null) this.appName = globals.appName;
@@ -66,15 +67,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.keyboard,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text('settings_base_url')),
+                    title: Text(Translations.of(context).text2('settings_base_url', 'Base Url')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
                     subtitle: Text(this.baseUrl == null ? globals.baseUrl : this.baseUrl),
                     onTap: () {
                       showTextInputDialog(
                         context,
-                        Translations.of(context).text('settings_base_url'),
-                        Translations.of(context).text('settings_base_url'),
-                        Translations.of(context).text('settings_base_url_hint'),
+                        Translations.of(context).text2('settings_base_url', 'Base Url'),
+                        Translations.of(context).text2('settings_base_url', 'Base Url'),
+                        Translations.of(context).text2('settings_base_url_hint', 'Enter Base Url'),
                         globals.baseUrl,
                         (String value) {
                           if (value == null) this.baseUrl = globals.baseUrl;
@@ -88,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.language,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text('settings_language')),
+                    title: Text(Translations.of(context).text2('settings_language', 'Language')),
                     trailing: Icon(FontAwesomeIcons.arrowDown),
                     subtitle: Text(this.language == null ? globals.language : this.language),
                     onTap: () {
@@ -135,13 +136,13 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget settingsLoader() {
     return CommonScaffold(
       scaffoldKey: scaffoldState,
-      appTitle: Translations.of(context).text2('Settings'),
+      appTitle: Translations.of(context).text2('Settings', 'Settings'),
       showBottomNav: true,
       showFAB: false,
       backGroundColor: Colors.grey.shade300,
       bodyData: settingsBuilder(),
-      bottomButton1: Translations.of(context).text2('Exit').toUpperCase(),
-      bottomButton2: Translations.of(context).text2('Save').toUpperCase(),
+      bottomButton1: Translations.of(context).text2('Exit', 'Exit').toUpperCase(),
+      bottomButton2: Translations.of(context).text2('Save', 'Save').toUpperCase(),
       bottomButton1Function: () {
         Navigator.of(context).pop();
       },

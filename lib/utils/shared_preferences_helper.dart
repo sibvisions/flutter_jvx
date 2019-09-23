@@ -102,9 +102,9 @@ class SharedPreferencesHelper {
 
   void setData(String appName, String baseUrl, String language) async {
     prefs = await SharedPreferences.getInstance();
-    prefs.setString('appName', appName);
-    prefs.setString('baseUrl', baseUrl);
-    prefs.setString('language', language);
+    if (appName != null && appName.isNotEmpty) prefs.setString('appName', appName);
+    if (baseUrl != null && baseUrl.isNotEmpty) prefs.setString('baseUrl', baseUrl);
+    if (language != null && language.isNotEmpty) prefs.setString('language', language);
   }
 
   void setLoginData(String username, String password) async {

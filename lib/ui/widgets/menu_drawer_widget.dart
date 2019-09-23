@@ -34,13 +34,14 @@ class MenuDrawerWidget extends StatelessWidget {
 
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = new List<Widget>();
-
+    
     tiles.add(
-      DrawerHeader(
-        child: Text(globals.applicationStyle.loginTitle, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+      UserAccountsDrawerHeader(
         decoration: BoxDecoration(
           color: UIData.ui_kit_color_2
         ),
+        accountEmail: null,
+        accountName: Text(globals.applicationStyle.loginTitle, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
       )
     );
 
@@ -90,7 +91,7 @@ class MenuDrawerWidget extends StatelessWidget {
       }
     }
 
-    tiles.add(Divider());
+    if (this.listMenuItems) tiles.add(Divider());
     tiles.add(settingsTile);
     tiles.add(Divider());
     tiles.add(logoutTile);

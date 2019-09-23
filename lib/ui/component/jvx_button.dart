@@ -40,9 +40,11 @@ class JVxButton extends JVxComponent {
           key: this.componentId, 
           onPressed: buttonPressed,
           color: this.background,
+          elevation: 10,
           child: Text(text, 
             style: style
           ),
+          splashColor: this.background,
         ),
       );
   }

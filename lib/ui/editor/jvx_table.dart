@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxTable extends JVxEditor {
   // visible column names
@@ -39,15 +40,19 @@ class JVxTable extends JVxEditor {
     if (isHeader) {
       return TableRow(
         decoration: BoxDecoration(
-        color: Colors.grey[200],
-      ),
-      children: children);
+          boxShadow: [BoxShadow(color: UIData.ui_kit_color_2, spreadRadius: 1)],
+          color: Colors.grey[200],
+        ),
+        children: children
+      );
     } else {
       return TableRow(
         decoration: BoxDecoration(
-        color: Colors.grey[200]
-      ),
-      children: children);
+          boxShadow: [BoxShadow(color: UIData.ui_kit_color_2, spreadRadius: 1)],
+          color: Colors.grey[200],
+        ),
+        children: children
+      );
     }
   }
 
