@@ -33,6 +33,8 @@ class JVxCellEditorCreator {
     }
 
     jVxCellEditor.dataProvider = properties.getProperty<String>("dataProvider");
+    jVxCellEditor.columnName = properties.getProperty<String>("columnName");
+
 
     return jVxCellEditor;
   }
