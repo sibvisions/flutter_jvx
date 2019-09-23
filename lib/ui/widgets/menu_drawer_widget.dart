@@ -40,7 +40,7 @@ class MenuDrawerWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: UIData.ui_kit_color_2
         ),
-        accountEmail: null,
+        accountEmail: Text(globals.appName),
         accountName: Text(globals.applicationStyle.loginTitle, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
       )
     );
