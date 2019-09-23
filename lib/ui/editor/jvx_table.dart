@@ -11,6 +11,8 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 class JVxTable extends JVxEditor {
   // visible column names
   List<String> columnNames = List<String>();
+  // column labels for header 
+  List<String> columnLabels = List<String>();
   // the show vertical lines flag.
 	bool showVerticalLines = false;
 	// the show horizontal lines flag.
@@ -32,6 +34,7 @@ class JVxTable extends JVxEditor {
     tableHeaderVisible = properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
     columnNames = properties.getProperty<List<String>>("columnNames", columnNames);
     reload = properties.getProperty<int>("reload");
+    columnLabels = properties.getProperty<List<String>>("columnLabels", columnLabels);
   }
 
   void _onRowTapped(int index) {
@@ -78,14 +81,12 @@ class JVxTable extends JVxEditor {
     }
   }
 
-  TableRow getHeaderRow(JVxData data) {
+  TableRow getHeaderRow() {
     List<Widget> children = new List<Widget>();
 
-    if (data!=null && data.columnNames!=null) {
-      data.columnNames.forEach((c) {
-        if(columnNames.contains(c)) {
-          children.add(getTableColumn(c.toString(), -1));
-        }
+    if (this.columnLabels!=null) {
+      this.columnLabels.forEach((c) {
+        children.add(getTableColumn(c.toString(), -1));
       });
     }
 
@@ -134,7 +135,7 @@ class JVxTable extends JVxEditor {
     }
 
     if (tableHeaderVisible) {
-      rows.add(getHeaderRow(data));
+      rows.add(getHeaderRow());
     }
 
     rows.addAll(getDataRows(data));
