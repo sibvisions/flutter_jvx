@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/model/popup_size.dart';
 import 'i_cell_editor.dart';
 
 class JVxCellEditor implements ICellEditor {
+  Key key = GlobalKey<FormState>();
   BuildContext context;
   int horizontalAlignment;
   int verticalAlignment;
