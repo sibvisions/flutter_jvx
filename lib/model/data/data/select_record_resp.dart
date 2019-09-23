@@ -16,8 +16,10 @@ class SelectRecordResponse extends BaseResponse {
     name = json[0]['name'];
     List<dynamic> chComp = json[0]['changedComponents'];
 
-    chComp.forEach((val) {
-      updatedComponents.add(ChangedComponent.fromJson(val));
-    });
+    if (chComp != null) {
+      chComp.forEach((val) {
+        updatedComponents.add(ChangedComponent.fromJson(val));
+      });
+    }
   }   
 }
