@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -45,15 +46,15 @@ class JVxTable extends JVxEditor {
     if (isHeader) {
       return TableRow(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: UIData.ui_kit_color_2, spreadRadius: 1)],
-          color: Colors.grey[200],
+          boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
+          color: Colors.grey[400],
         ),
         children: children
       );
     } else {
       return TableRow(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: UIData.ui_kit_color_2, spreadRadius: 1)],
+          boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
           color: Colors.grey[200],
         ),
         children: children
@@ -63,20 +64,26 @@ class JVxTable extends JVxEditor {
 
   Widget getTableColumn(String text, int rowIndex) {
     if (rowIndex==-1) {
-      return Container(
-            child: 
-              Text(text, 
-                style: this.style),
-            padding: EdgeInsets.all(5),
-        );
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+              child:
+                Text(JVxLabel.utf8convert(text),
+                  style: this.style),
+              padding: EdgeInsets.all(5),
+          ),
+      );
     } else {
-      return GestureDetector( child:
-          Container(
-            child: 
-              Text(text, 
-                style: this.style),
-            padding: EdgeInsets.all(5)),
-        onTap: () => _onRowTapped(rowIndex),
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector( child:
+            Container(
+              child:
+                Text(text,
+                  style: this.style),
+              padding: EdgeInsets.all(5)),
+          onTap: () => _onRowTapped(rowIndex),
+        ),
       );
     }
   }

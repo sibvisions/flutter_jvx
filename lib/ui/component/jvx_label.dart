@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/utils/jvx_alignment.dart';
 import 'package:jvx_mobile_v3/utils/jvx_text_align.dart';
@@ -12,9 +14,14 @@ class JVxLabel extends JVxComponent implements IComponent {
 
   JVxLabel(Key componentId, BuildContext context) : super(componentId, context);
 
+  static String utf8convert(String text) {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
+  }
+
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);
-    text = properties.getProperty<String>("text", text);
+    text = utf8convert(properties.getProperty<String>("text", text));
     verticalAlignment = properties.getProperty<TextAlign>("verticalAlignment", JVxTextAlign.defaultAlign);
     horizontalAlignment = properties.getProperty<Alignment>("horizontalAlignment", JVxAlignment.defaultAlignment);
   }
