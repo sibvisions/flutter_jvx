@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -28,7 +29,7 @@ class JVxTextCellEditor extends JVxCellEditor {
   
   @override
   Widget getWidget() {
-    _controller.text = (this.value!=null ? this.value.toString() : "");
+    _controller.text = (this.value!=null ? JVxLabel.utf8convert(this.value.toString()) : "");
     // ToDo: Implement getWidget
     return TextField(
       decoration: InputDecoration(

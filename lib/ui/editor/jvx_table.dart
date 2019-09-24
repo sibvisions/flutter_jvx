@@ -79,7 +79,7 @@ class JVxTable extends JVxEditor {
         child: GestureDetector( child:
             Container(
               child:
-                Text(text,
+                Text(JVxLabel.utf8convert(text),
                   style: this.style),
               padding: EdgeInsets.all(5)),
           onTap: () => _onRowTapped(rowIndex),

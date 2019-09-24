@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 
 import '../../jvx_screen.dart';
 
 class JVxLinkedCellEditor extends JVxCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
+  String initialData;
 
   JVxLinkedCellEditor(ComponentProperties properties, BuildContext context)
       : super(properties, context);
@@ -55,7 +56,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                text,
+                JVxLabel.utf8convert(text),
               ),
             ],
           ),
@@ -82,6 +83,8 @@ class JVxLinkedCellEditor extends JVxCellEditor {
       }
     }
 
+    initialData = data.records[0][0];
+
     this.setData(data);
   }
 
@@ -97,7 +100,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   @override
   Widget getWidget() {
     return DropdownButton(
-      // icon: IconButton(icon: Icon(FontAwesomeIcons.chevronCircleDown), onPressed: () {},),
+      hint: Text(initialData),
       value: this.value,
       items: this._items,
       onChanged: valueChanged,
