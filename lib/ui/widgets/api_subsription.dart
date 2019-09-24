@@ -137,8 +137,11 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);
             break;
           case ApiType.performApplicationStyle:
-            globals.applicationStyle = p.response.content;
-            SharedPreferencesHelper().setApplicationStyle(globals.applicationStyle.toJson());
+            if (p.response.content != null) {
+              globals.applicationStyle = p.response.content;
+              SharedPreferencesHelper().setApplicationStyle(
+                  globals.applicationStyle.toJson());
+            }
             break;
         }
       }

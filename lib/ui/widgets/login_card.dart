@@ -38,12 +38,12 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      new Text(
+                      globals.applicationStyle != null ? new Text(
                         globals.applicationStyle.loginTitle,
                         style: TextStyle(
                           fontSize: 20
                         ),
-                      ),
+                      ) : Container(),
                       new TextField(
                         onChanged: (username) => this.username = username,
                         enabled: !snapshot.data,

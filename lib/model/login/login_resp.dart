@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:jvx_mobile_v3/model/auth_data.dart';
 import 'package:jvx_mobile_v3/model/base_resp.dart';
 import 'package:jvx_mobile_v3/model/language.dart';
@@ -22,7 +24,7 @@ class LoginResponse extends BaseResponse {
     super.name = name;
   }
 
-  LoginResponse.fromJson(List jsonData) : super.fromJson(jsonData) {
+  LoginResponse.fromJson(List jsonData) : super.fromJson(jsonData){
     language = Language.fromJson(jsonData[0]);
     authenticationData = AuthenticationData.fromJson(jsonData[1]);
     items = readMenuItemListFromJson(jsonData[2]['items']);

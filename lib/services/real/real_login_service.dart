@@ -12,33 +12,34 @@ class LoginService extends NetworkService implements ILoginService {
   LoginService(RestClient rest) : super(rest);
 
   @override
-  Future<NetworkServiceResponse<LoginResponse>> fetchLoginResponse(Login login) async {
+  Future<NetworkServiceResponse<LoginResponse>> fetchLoginResponse(
+      Login login) async {
     var result = await rest.postAsync<LoginResponse>(_kLoginUrl, login);
 
     try {
       if (result.mappedResult != null) {
         var res;
         if (result.mappedResult[1]['name'] == 'authenticationData') {
-          SharedPreferencesHelper().setAuthKey(result.mappedResult[1]['authKey']);
           res = LoginResponse.fromJson(result.mappedResult);
+          SharedPreferencesHelper()
+              .setAuthKey(result.mappedResult[1]['authKey']);
         } else {
-          if (login.createAuthKey) SharedPreferencesHelper().setLoginData(login.username, login.password);
           res = LoginResponse.fromJsonWithoutKey(result.mappedResult);
+          if (login.createAuthKey) {
+            SharedPreferencesHelper()
+                .setLoginData(login.username, login.password);
+          }
         }
         return new NetworkServiceResponse(
-          content: res,
-          success: result.networkServiceResponse.success
-        );
+            content: res, success: result.networkServiceResponse.success);
       }
     } catch (e) {
       return new NetworkServiceResponse(
-        success: result.networkServiceResponse.success,
-        message: result.networkServiceResponse.message
-      );
+          success: result.networkServiceResponse.success,
+          message: result.networkServiceResponse.message);
     }
     return new NetworkServiceResponse(
-      success: result.networkServiceResponse.success,
-      message: result.networkServiceResponse.message
-    );
+        success: result.networkServiceResponse.success,
+        message: result.networkServiceResponse.message);
   }
 }

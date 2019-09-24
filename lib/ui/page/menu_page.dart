@@ -14,24 +14,35 @@ class MenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool drawerMenu;
+
+    if (globals.applicationStyle != null) {
+       drawerMenu = globals.applicationStyle.menuMode == 'drawer' ? true : false;
+    } else {
+      drawerMenu = false;
+    }
 
     return CommonScaffold(
       appTitle: 'Menu',
       bodyData: getMenuWidget(),
       showDrawer: true,
-      drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: globals.applicationStyle.menuMode == 'drawer' ? true : false,),
+      drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: drawerMenu,),
     );
   }
 
   Widget getMenuWidget() {
-    if (globals.applicationStyle.menuMode == 'grid') {
+    if (globals.applicationStyle != null) {
+      if (globals.applicationStyle.menuMode == 'grid') {
+        return MenuGridView(items: this.menuItems,);
+      } else if (globals.applicationStyle.menuMode == 'list') {
+        return MenuListWidget(menuItems: this.menuItems,);
+      } else if (globals.applicationStyle.menuMode == 'drawer') {
+        return Center(
+          child: Text('Choose Item'),
+        );
+      }
+    } else {
       return MenuGridView(items: this.menuItems,);
-    } else if (globals.applicationStyle.menuMode == 'list') {
-      return MenuListWidget(menuItems: this.menuItems,);
-    } else if (globals.applicationStyle.menuMode == 'drawer') {
-      return Center(
-        child: Text('Choose Item'),
-      );
     }
     return null;
   }

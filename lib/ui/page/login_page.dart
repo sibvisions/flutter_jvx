@@ -20,17 +20,17 @@ class LoginPageState extends State<LoginPage> {
     validationErrorCallback: showValidationError,
     child: Scaffold(
       key: scaffoldState,
-      backgroundColor: Color(int.parse('0xFF${globals.applicationStyle.loginBackground.substring(1)}')),
+      backgroundColor: globals.applicationStyle != null ? Color(int.parse('0xFF${globals.applicationStyle.loginBackground.substring(1)}')) : null,
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 100, 8, 8),
-            child: Image.asset(
+            child: globals.applicationStyle != null ? Image.asset(
               '${globals.dir}${globals.applicationStyle.loginIcon}',
               fit: BoxFit.none,
               alignment: Alignment.topCenter,
-            ),
+            ) : Container(),
           ),
           LoginWidgets()
         ],

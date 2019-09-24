@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/tools/restart.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -32,11 +33,11 @@ showError(BuildContext context, String title, String message) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(title),
-      content: Text(message),
+      title: Text(JVxLabel.utf8convert(title)),
+      content: Text(JVxLabel.utf8convert(message)),
       actions: <Widget>[
         FlatButton(
-          child: Text('Close'),
+          child: Text(Translations.of(context).text2('Close', 'Close')),
           onPressed: () => Navigator.of(context).pop(),
         )
       ],
