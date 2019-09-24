@@ -24,7 +24,10 @@ class LoginResponse extends BaseResponse {
     super.name = name;
   }
 
-  LoginResponse.fromJson(List jsonData) : super.fromJson(jsonData){
+  LoginResponse.fromJson(List jsonData) : super.fromLoginJson(jsonData){
+    if (isError || isSessionExpired)
+      return;
+
     language = Language.fromJson(jsonData[0]);
     authenticationData = AuthenticationData.fromJson(jsonData[1]);
     items = readMenuItemListFromJson(jsonData[2]['items']);
@@ -32,7 +35,10 @@ class LoginResponse extends BaseResponse {
     componentId = jsonData[2]['componentId'];
   }
 
-  LoginResponse.fromJsonWithoutKey(List jsonData) : super.fromJson(jsonData) {
+  LoginResponse.fromJsonWithoutKey(List jsonData) : super.fromLoginJson(jsonData) {
+    if (isError || isSessionExpired)
+      return;
+
     language = Language.fromJson(jsonData[0]);
     items = readMenuItemListFromJson(jsonData[1]['items']);
     name = jsonData[1]['name'];
