@@ -156,6 +156,10 @@ class JVxTable extends JVxEditor {
       return Table(
         border: border,
         children: rows,
+        columnWidths: const <int, TableColumnWidth>{
+          0: FlexColumnWidth(3),
+          1: FlexColumnWidth(1)
+        },
       );
     } else {
       return Container(child: Text("No table data"));
