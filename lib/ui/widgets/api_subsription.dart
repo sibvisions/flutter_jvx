@@ -31,7 +31,14 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
       } else {
         if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isError) {
           BaseResponse response = (p.response.content as BaseResponse);
-          showError(context, response.title, response.message);
+
+          if (response.message == 'Invalid application!') {
+            showGoToSettings(context, response.title, response.message);
+          } else if (response.message == 'Application name is undefined!') {
+            showGoToSettings(context, response.title, response.message);
+          } else {
+            showError(context, response.title, response.message);
+          }
           return;
         } else if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isSessionExpired) {
           BaseResponse response = (p.response.content as BaseResponse);
@@ -45,6 +52,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             });
             break;
           case ApiType.performStartup:
+            globals.clientId = p.response.content.applicationMetaData.clientId;
             globals.language = p.response.content.language.langCode;
             globals.startupResponse = p.response.content;
             SharedPreferencesHelper().getAppVersion().then((val) async {

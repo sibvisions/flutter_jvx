@@ -57,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         globals.appName,
                         (String value) {
                           if (value == null) this.appName = globals.appName;
-                          else this.appName = value; globals.appName = value;
+                          else { this.appName = value; globals.appName = value; }
                         }
                       );
                     },
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         globals.baseUrl,
                         (String value) {
                           if (value == null) this.baseUrl = globals.baseUrl;
-                          else this.baseUrl = value; globals.baseUrl = value;
+                          else { this.baseUrl = value; globals.baseUrl = value; }
                         }
                       );
                     },

@@ -42,21 +42,15 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    loadSharedPrefs();
-    apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);    
-    startupBloc.startupSink.add(
-      new StartupViewModel(applicationName: applicationName, layoutMode: 'generic')
-    );
+    Future.wait([loadSharedPrefs()]).then((val) {
+      apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
+      startupBloc.startupSink.add(
+        new StartupViewModel(applicationName: globals.appName, layoutMode: 'generic')
+      );
+    });
   }
 
-  loadSharedPrefs() async {
-    await SharedPreferencesHelper().getWelcome().then((val) {
-      globals.hasToDownload = val;
-      if (val ?? true) {
-        Navigator.of(context).pushReplacementNamed('/settings');
-        SharedPreferencesHelper().setWelcome(false);
-      }
-    });
+  Future<Null> loadSharedPrefs() async {
     await SharedPreferencesHelper().getData().then((prefData) {
       if (prefData['appName'] == 'null' || prefData['appName'] == null || prefData['appName'].isEmpty) {
       } else {
@@ -64,8 +58,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       }
       if (prefData['baseUrl'] == 'null' || prefData['baseUrl'] == null || prefData['baseUrl'].isEmpty) {
       } else {
-        if (globals.baseUrl.isEmpty || globals.baseUrl == null)
-          globals.baseUrl = prefData['baseUrl'];
+        globals.baseUrl = prefData['baseUrl'];
       }
       if (prefData['language'] == 'null' || prefData['language'] == null || prefData['language'].isEmpty) {
       } else {

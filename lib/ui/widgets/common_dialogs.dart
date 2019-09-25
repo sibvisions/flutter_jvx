@@ -29,6 +29,26 @@ fetchApiResult(BuildContext context, NetworkServiceResponse snapshot) {
   );
 }
 
+showGoToSettings(BuildContext context, String title, String message) {
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(Translations.of(context).text('Close')),
+            onPressed: () => exit(0),
+          ),
+          FlatButton(
+            child: Text(Translations.of(context).text('go_to_settings')),
+            onPressed: () => Navigator.of(context).pushReplacementNamed('/settings'),
+          )
+        ],
+      )
+  );
+}
+
 showError(BuildContext context, String title, String message) {
   showDialog(
     context: context,

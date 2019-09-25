@@ -12,7 +12,7 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('welcome') == null)
       return true;
-    return prefs.getBool('welcome');
+    return false;
   }
 
   Future<Map<String, String>> getData() async {

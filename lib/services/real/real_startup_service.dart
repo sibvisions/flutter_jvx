@@ -17,7 +17,6 @@ class StartupService extends NetworkService implements IStartupService {
 
     if (result.mappedResult != null) {
       var res = StartupResponse.fromJson(result.mappedResult);
-      globals.clientId = res.applicationMetaData.clientId;
       return new NetworkServiceResponse(
         content: res,
         success: result.networkServiceResponse.success

@@ -10,7 +10,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JvxMobile extends StatelessWidget {
   final materialApp = MaterialApp(
-    title: globals.appName,
+    title: 'JVx Mobile',
     theme: ThemeData(
       primaryColor: UIData.ui_kit_color_2,
       fontFamily: UIData.ralewayFont,
