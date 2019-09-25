@@ -122,12 +122,15 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
       children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: JVxBorderLayoutConstraints.East));
     }
 
-    return new JVxBorderLayoutWidget(
-      key: key,
-      insMargin: margins,
-      iHorizontalGap: horizontalGap,
-      iVerticalGap: verticalGap,
-      children: children
+    return Container(
+      margin: this.margins,
+      child: JVxBorderLayoutWidget(
+        key: key,
+        insMargin: margins,
+        iHorizontalGap: horizontalGap,
+        iVerticalGap: verticalGap,
+        children: children
+      )
     );
   }
 }
