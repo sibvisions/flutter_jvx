@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
@@ -11,13 +10,17 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxTable extends JVxEditor {
   // visible column names
-  List<String> columnNames = List<String>();
-  // column labels for header 
-  List<String> columnLabels = List<String>();
+  List<String> columnNames = <String>[];
+
+  // column labels for header
+  List<String> columnLabels = <String>[];
+
   // the show vertical lines flag.
-	bool showVerticalLines = false;
-	// the show horizontal lines flag.
-	bool showHorizontalLines = false;
+  bool showVerticalLines = false;
+
+  // the show horizontal lines flag.
+  bool showHorizontalLines = false;
+
   // the show table header flag
   bool tableHeaderVisible = true;
 
@@ -28,59 +31,57 @@ class JVxTable extends JVxEditor {
   @override
   void updateProperties(ComponentProperties properties) {
     super.updateProperties(properties);
-    maximumSize = properties.getProperty<Size>("maximumSize",null);
-    showVerticalLines = properties.getProperty<bool>("showVerticalLines", showVerticalLines);
-    showHorizontalLines = properties.getProperty<bool>("showHorizontalLines", showHorizontalLines);
-    tableHeaderVisible = properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
-    columnNames = properties.getProperty<List<String>>("columnNames", columnNames);
+    maximumSize = properties.getProperty<Size>("maximumSize", null);
+    showVerticalLines =
+        properties.getProperty<bool>("showVerticalLines", showVerticalLines);
+    showHorizontalLines = properties.getProperty<bool>(
+        "showHorizontalLines", showHorizontalLines);
+    tableHeaderVisible =
+        properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
+    columnNames =
+        properties.getProperty<List<String>>("columnNames", columnNames);
     reload = properties.getProperty<int>("reload");
     columnLabels = properties.getProperty<List<String>>("columnLabels", columnLabels);
     reload = -1;
   }
 
   void _onRowTapped(int index) {
-      getIt.get<JVxScreen>().selectRecord(dataProvider, index, true);
+    getIt.get<JVxScreen>().selectRecord(dataProvider, index, false);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {
     if (isHeader) {
       return TableRow(
-        decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
-          color: Colors.grey[400],
-        ),
-        children: children
-      );
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
+            color: Colors.grey[400],
+          ),
+          children: children);
     } else {
       return TableRow(
-        decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
-          color: Colors.grey[200],
-        ),
-        children: children
-      );
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
+            color: Colors.grey[200],
+          ),
+          children: children);
     }
   }
 
   Widget getTableColumn(String text, int rowIndex) {
-    if (rowIndex==-1) {
+    if (rowIndex == -1) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-              child:
-                Text(JVxLabel.utf8convert(text),
-                  style: this.style),
-              padding: EdgeInsets.all(5),
-          ),
+          child: Text(JVxLabel.utf8convert(text), style: this.style),
+          padding: EdgeInsets.all(5),
+        ),
       );
     } else {
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GestureDetector( child:
-            Container(
-              child:
-                Text(JVxLabel.utf8convert(text),
-                  style: this.style),
+        child: GestureDetector(
+          child: Container(
+              child: Text(JVxLabel.utf8convert(text), style: this.style),
               padding: EdgeInsets.all(5)),
           onTap: () => _onRowTapped(rowIndex),
         ),
@@ -91,7 +92,7 @@ class JVxTable extends JVxEditor {
   TableRow getHeaderRow() {
     List<Widget> children = new List<Widget>();
 
-    if (this.columnLabels!=null) {
+    if (this.columnLabels != null) {
       this.columnLabels.forEach((c) {
         children.add(getTableColumn(c.toString(), -1));
       });
@@ -104,16 +105,16 @@ class JVxTable extends JVxEditor {
     List<TableRow> rows = new List<TableRow>();
     List<int> visibleColumnsIndex = new List<int>();
 
-    if (data!=null) {
-      data.columnNames.asMap().forEach((i,r) {
+    if (data != null) {
+      data.columnNames.asMap().forEach((i, r) {
         if (columnNames.contains(r)) {
           visibleColumnsIndex.add(i);
         }
       });
-      data.records.asMap().forEach((i,r) {
+      data.records.asMap().forEach((i, r) {
         if (r is List) {
           List<Widget> children = new List<Widget>();
-          r.asMap().forEach((j,c) {
+          r.asMap().forEach((j, c) {
             if (visibleColumnsIndex.contains(j)) {
               children.add(getTableColumn(c.toString(), i));
             }
@@ -128,11 +129,13 @@ class JVxTable extends JVxEditor {
 
   @override
   Widget getWidget() {
-    JVxData data = getIt.get<JVxScreen>().getData(dataProvider, this.columnNames, this.reload);
+    JVxData data = getIt
+        .get<JVxScreen>()
+        .getData(dataProvider, this.columnNames, this.reload);
     this.reload = null;
     List<TableRow> rows = new List<TableRow>();
-    TableBorder border = TableBorder(); 
-    
+    TableBorder border = TableBorder();
+
     if (showHorizontalLines && !showVerticalLines) {
       border = TableBorder(bottom: BorderSide(), top: BorderSide());
     } else if (!showHorizontalLines && showVerticalLines) {
@@ -147,7 +150,9 @@ class JVxTable extends JVxEditor {
 
     rows.addAll(getDataRows(data));
 
-    if (rows.length>0 && rows[0].children!=null && rows[0].children.length>0) {
+    if (rows.length > 0 &&
+        rows[0].children != null &&
+        rows[0].children.length > 0) {
       return Table(
         border: border,
         children: rows,

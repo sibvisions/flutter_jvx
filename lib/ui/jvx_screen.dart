@@ -20,7 +20,7 @@ import 'jvx_component_creater.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen {
-  bool debug = true;
+  bool debug = false;
   String title = "OpenScreen";
   Key componentId;
   Map<String, JVxComponent> components = <String, JVxComponent>{};
@@ -31,55 +31,65 @@ class JVxScreen {
 
   JVxScreen();
 
-  bool isMovedComponent(JVxComponent component, ChangedComponent changedComponent) {
-    if ((changedComponent.parent == null || changedComponent.parent.isEmpty) && 
-        component.parentComponentId != null && component.parentComponentId.isNotEmpty) {
-        
-    }
+  bool isMovedComponent(
+      JVxComponent component, ChangedComponent changedComponent) {
+    if ((changedComponent.parent == null || changedComponent.parent.isEmpty) &&
+        component.parentComponentId != null &&
+        component.parentComponentId.isNotEmpty) {}
   }
 
   void updateComponents(List<ChangedComponent> changedComponentsJson) {
-    if (debug)
-      print("JVxScreen updateComponents:");
+    if (debug) print("JVxScreen updateComponents:");
     changedComponentsJson?.forEach((changedComponent) {
-        if (components.containsKey(changedComponent.id)) {
-          JVxComponent component = components[changedComponent.id];
+      if (components.containsKey(changedComponent.id)) {
+        JVxComponent component = components[changedComponent.id];
 
-          if (changedComponent.destroy) {
-            if (debug)
-              print("Destroy component (id:" + changedComponent.id + ")");
-            _destroyComponent(component);
-          } else if (changedComponent.remove) {
-            if (debug)
-              print("Remove component (id:" + changedComponent.id + ")");
-            _removeComponent(component);
-          } else {
-            _moveComponent(component, changedComponent);
-
-            if (component.state!=JVxComponentState.Added) {
-              _addComponent(changedComponent);
-            }
-          
-            component?.updateProperties(changedComponent.componentProperties);
-
-            if (component?.parentComponentId != null) {
-              JVxComponent parentComponent = components[component.parentComponentId];
-              if (parentComponent!= null && parentComponent is JVxContainer) {
-                parentComponent.updateComponentProperties(component.componentId, changedComponent.componentProperties);
-              }
-            }
-          }
+        if (changedComponent.destroy) {
+          if (debug)
+            print("Destroy component (id:" + changedComponent.id + ")");
+          _destroyComponent(component);
+        } else if (changedComponent.remove) {
+          if (debug) print("Remove component (id:" + changedComponent.id + ")");
+          _removeComponent(component);
         } else {
-          if (!changedComponent.destroy && !changedComponent.remove) {
-            if (debug)
-              print("Add component (id:" + changedComponent.id +
-              ",parent:" + (changedComponent.parent!=null?changedComponent.parent:"") +
-                  ", className: " + (changedComponent.className!=null?changedComponent.className:"") + ")");
-            this._addComponent(changedComponent);
-          } else {
-            print("Cannot remove or destroy component with id " + changedComponent.id + ", because its not in the components list.");
+          _moveComponent(component, changedComponent);
+
+          if (component.state != JVxComponentState.Added) {
+            _addComponent(changedComponent);
+          }
+
+          component?.updateProperties(changedComponent.componentProperties);
+
+          if (component?.parentComponentId != null) {
+            JVxComponent parentComponent =
+                components[component.parentComponentId];
+            if (parentComponent != null && parentComponent is JVxContainer) {
+              parentComponent.updateComponentProperties(
+                  component.componentId, changedComponent.componentProperties);
+            }
           }
         }
+      } else {
+        if (!changedComponent.destroy && !changedComponent.remove) {
+          if (debug)
+            print("Add component (id:" +
+                changedComponent.id +
+                ",parent:" +
+                (changedComponent.parent != null
+                    ? changedComponent.parent
+                    : "") +
+                ", className: " +
+                (changedComponent.className != null
+                    ? changedComponent.className
+                    : "") +
+                ")");
+          this._addComponent(changedComponent);
+        } else {
+          print("Cannot remove or destroy component with id " +
+              changedComponent.id +
+              ", because its not in the components list.");
+        }
+      }
     });
   }
 
@@ -89,43 +99,52 @@ class JVxScreen {
     JVxData selectData = this.getData(dataProvider);
 
     if (selectData != null && index < selectData.records.length) {
-      dataService.selectRecord(dataProvider, selectData.columnNames, selectData.records[index], fetch, globals.clientId)
-          .then((val) => getIt.get<JVxScreen>().buttonCallback(val.updatedComponents));
+      dataService
+          .selectRecord(dataProvider, selectData.columnNames,
+              selectData.records[index], fetch, globals.clientId)
+          .then((val) =>
+              getIt.get<JVxScreen>().buttonCallback(val.updatedComponents));
     }
   }
 
-  void setValues(String dataProvider, List<dynamic> columnNames, List<dynamic> value) {
+  void setValues(
+      String dataProvider, List<dynamic> columnNames, List<dynamic> value) {
     DataService dataService = DataService(RestClient());
 
-    dataService.setValues(dataProvider, columnNames, value, globals.clientId).then((val) {
+    dataService
+        .setValues(dataProvider, columnNames, value, globals.clientId)
+        .then((val) {
       print("CHANGEDCOMPONENTS" + val.changedComponents.toString());
       this.updateComponents(val.changedComponents);
       buttonCallback(val.changedComponents);
     });
   }
 
-  JVxData getData(String dataProvider, [List<dynamic> columnNames, int reload]) {
+  JVxData getData(String dataProvider,
+      [List<dynamic> columnNames, int reload]) {
     DataService dataService = DataService(RestClient());
 
     JVxData returnData;
 
-    print('DATAPROVDER: ' + (dataProvider!=null?dataProvider:""));
 
-    if (dataProvider!=null) {
+    print('DATAPROVDER: ' + (dataProvider != null ? dataProvider : ""));
+
+    if (dataProvider != null) {
       data.forEach((d) {
-        if (d.dataProvider == dataProvider)
-          returnData = d;
+        if (d.dataProvider == dataProvider) returnData = d;
       });
     }
 
-    if ((returnData == null || reload==-1) && 
-    dataProvider!=null && columnNames!=null) {
-      dataService.getData(
-          dataProvider, globals.clientId, columnNames, null, null).then((
-      JVxData jvxData) {
+    if ((returnData == null || reload == -1) &&
+        dataProvider != null &&
+        columnNames != null) {
+      dataService
+          .getData(dataProvider, globals.clientId, columnNames, null, null)
+          .then((JVxData jvxData) {
         data.add(jvxData);
         buttonCallback(<ChangedComponent>[]);
       });
+
       return null;
     } else {
       return returnData;
@@ -141,17 +160,17 @@ class JVxScreen {
       componentClass = components[component.id];
     }
 
-    if (componentClass!= null) {
+    if (componentClass != null) {
       componentClass.state = JVxComponentState.Added;
       components.putIfAbsent(component.id, () => componentClass);
       _addToParent(componentClass);
-    } 
+    }
   }
 
   void _addToParent(JVxComponent component) {
     if (component.parentComponentId?.isNotEmpty ?? false) {
       JVxComponent parentComponent = components[component.parentComponentId];
-      if (parentComponent!= null && parentComponent is JVxContainer) {
+      if (parentComponent != null && parentComponent is JVxContainer) {
         parentComponent.addWithConstraints(component, component.constraints);
       }
     }
@@ -163,10 +182,11 @@ class JVxScreen {
   }
 
   void _removeFromParent(JVxComponent component) {
-    if (component.parentComponentId!=null && component.parentComponentId.isNotEmpty) {
+    if (component.parentComponentId != null &&
+        component.parentComponentId.isNotEmpty) {
       JVxComponent parentComponent = components[component.parentComponentId];
-      if (parentComponent!= null && parentComponent is JVxContainer) {
-          parentComponent?.removeWithComponent(component);
+      if (parentComponent != null && parentComponent is JVxContainer) {
+        parentComponent?.removeWithComponent(component);
       }
     }
   }
@@ -178,18 +198,25 @@ class JVxScreen {
   }
 
   void _moveComponent(JVxComponent component, ChangedComponent newComponent) {
-    if (component.parentComponentId!=newComponent.parent) {
+    if (component.parentComponentId != newComponent.parent) {
       if (debug)
-        print("Move component (id:" + newComponent.id + 
-              ",oldParent:" + (component.parentComponentId!=null?component.parentComponentId:"") +
-              ",newParent:" + (newComponent.parent!=null?newComponent.parent:"") + 
-              ", className: " + (newComponent.className!=null?newComponent.className:"") + ")");
-      
-      if (component.parentComponentId!=null) {
+        print("Move component (id:" +
+            newComponent.id +
+            ",oldParent:" +
+            (component.parentComponentId != null
+                ? component.parentComponentId
+                : "") +
+            ",newParent:" +
+            (newComponent.parent != null ? newComponent.parent : "") +
+            ", className: " +
+            (newComponent.className != null ? newComponent.className : "") +
+            ")");
+
+      if (component.parentComponentId != null) {
         _removeFromParent(component);
       }
 
-      if (newComponent.parent!=null) {
+      if (newComponent.parent != null) {
         component.parentComponentId = newComponent.parent;
         _addToParent(component);
       }
@@ -197,8 +224,9 @@ class JVxScreen {
   }
 
   JVxComponent getRootComponent() {
-    return this.components.values.firstWhere((element) => 
-      element.parentComponentId==null && element.state==JVxComponentState.Added);
+    return this.components.values.firstWhere((element) =>
+        element.parentComponentId == null &&
+        element.state == JVxComponentState.Added);
   }
 
   void debugPrintCurrentWidgetTree() {
@@ -212,40 +240,48 @@ class JVxScreen {
   }
 
   void debugPrintComponent(JVxComponent component, int level) {
-    if (component!=null) {
+    if (component != null) {
       String debugString = "--" * level;
 
-      debugString += " id: " + component.componentId.toString() + 
-                     ", parent: " + (component.parentComponentId!=null?component.parentComponentId:"") +
-                     ", className: " + component.runtimeType.toString() +
-                     ", constraints: " + (component.constraints!=null?component.constraints:"")
-                     ;
+      debugString += " id: " +
+          component.componentId.toString() +
+          ", parent: " +
+          (component.parentComponentId != null
+              ? component.parentComponentId
+              : "") +
+          ", className: " +
+          component.runtimeType.toString() +
+          ", constraints: " +
+          (component.constraints != null ? component.constraints : "");
 
       if (component is JVxContainer) {
-          debugString += ", layout: " + (component.layout!=null?component.layout.runtimeType.toString():"") +
-                         ", childCount: " + (component.components!=null?component.components.length.toString():"0");
+        debugString += ", layout: " +
+            (component.layout != null
+                ? component.layout.runtimeType.toString()
+                : "") +
+            ", childCount: " +
+            (component.components != null
+                ? component.components.length.toString()
+                : "0");
         print(debugString);
-          
-        if (component.components!=null) {
+
+        if (component.components != null) {
           component.components.forEach((c) {
-            debugPrintComponent(c, (level+1));
+            debugPrintComponent(c, (level + 1));
           });
         }
       } else {
         print(debugString);
       }
-
     }
   }
 
   Widget getWidget() {
-
-    if (debug) 
-      debugPrintCurrentWidgetTree();
+    if (debug) debugPrintCurrentWidgetTree();
 
     JVxComponent component = this.getRootComponent();
 
-    if (component!= null) {
+    if (component != null) {
       return component.getWidget();
     } else {
       // ToDO

@@ -18,16 +18,14 @@ class ComponentProperties {
   }
 
   T getProperty<T>(String propertyName, [T defaultValue]) {
-    dynamic value;
     if (this.properties.containsKey(propertyName)) {
-        value = convertProperty<T>(this.properties[propertyName]);
+      return convertProperty<T>(this.properties[propertyName]);
+    } else {
+      if (defaultValue!=null)
+        return defaultValue;
+      else
+        return null;
     }
-
-    if (defaultValue!=null && value==null) {
-      return defaultValue;
-    }
-
-    return value;
   }
 
   T convertProperty<T>(dynamic value) {
@@ -48,8 +46,8 @@ class ComponentProperties {
         return JVxAlignment.getAlignmentFromInt(value) as T;
       }
     } else if (value is List<dynamic>) {
-      if (T.toString()==List<String>().runtimeType.toString()) {
-          List<String> newValue = List<String>();
+      if (T.toString() == 'List<String>') {
+          List<String> newValue = <String>[];
           value.forEach((v) {
             newValue.add(v.toString());
           });
