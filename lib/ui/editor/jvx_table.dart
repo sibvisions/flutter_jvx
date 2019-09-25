@@ -21,7 +21,6 @@ class JVxTable extends JVxEditor {
   // the show table header flag
   bool tableHeaderVisible = true;
 
-  int reload = -1;
   Size maximumSize;
 
   JVxTable(Key componentId, BuildContext context) : super(componentId, context);
@@ -36,10 +35,11 @@ class JVxTable extends JVxEditor {
     columnNames = properties.getProperty<List<String>>("columnNames", columnNames);
     reload = properties.getProperty<int>("reload");
     columnLabels = properties.getProperty<List<String>>("columnLabels", columnLabels);
+    reload = -1;
   }
 
   void _onRowTapped(int index) {
-      getIt.get<JVxScreen>().selectRecord(dataProvider, index, false);
+      getIt.get<JVxScreen>().selectRecord(dataProvider, index, true);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {

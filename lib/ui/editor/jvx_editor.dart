@@ -19,7 +19,8 @@ class JVxEditor extends JVxComponent implements IEditor {
   bool readonly = false;
   bool eventFocusGained = false;
   JVxCellEditor cellEditor;
-  
+  int reload = -1;
+
   JVxEditor(Key componentId, BuildContext context) : super(componentId, context);
 
   void initData() {
@@ -50,7 +51,8 @@ class JVxEditor extends JVxComponent implements IEditor {
       if (data !=null)
         cellEditor.setData(data);
     } else { 
-      JVxData data = getIt.get<JVxScreen>().getData(this.dataProvider, [this.columnName]);
+      JVxData data = getIt.get<JVxScreen>().getData(this.dataProvider, [this.columnName], reload);
+      reload = null;
       if (data !=null)
         cellEditor.setData(data);
     }
