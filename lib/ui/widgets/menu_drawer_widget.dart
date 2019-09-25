@@ -40,6 +40,7 @@ class MenuDrawerWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: UIData.ui_kit_color_2
         ),
+        currentAccountPicture: CircleAvatar(child: Icon(FontAwesomeIcons.userTie, size: 40,),),
         accountEmail: globals.applicationStyle != null ? Text(globals.appName) : null,
         accountName: globals.applicationStyle != null ? Text(globals.applicationStyle.loginTitle, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),) : Text(globals.appName),
       )

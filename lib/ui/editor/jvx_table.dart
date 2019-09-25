@@ -157,7 +157,7 @@ class JVxTable extends JVxEditor {
         border: border,
         children: rows,
         columnWidths: const <int, TableColumnWidth>{
-          0: FlexColumnWidth(3),
+          0: FlexColumnWidth(2),
           1: FlexColumnWidth(1)
         },
       );

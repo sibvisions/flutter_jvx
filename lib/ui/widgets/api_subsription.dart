@@ -140,6 +140,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             ));
             break;
           case ApiType.performCloseScreen:
+            Navigator.of(context).pop();
             break;
           case ApiType.performPressButton:
             getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);

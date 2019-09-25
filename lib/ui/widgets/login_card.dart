@@ -114,7 +114,6 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
     return Opacity(
       opacity: animation.value,
       child: SizedBox(
-        height: deviceSize.height / 2 - 5,
         width: deviceSize.width * 0.85,
         child: new Card(
             color: Colors.white, elevation: 2.0, child: loginBuilder()),

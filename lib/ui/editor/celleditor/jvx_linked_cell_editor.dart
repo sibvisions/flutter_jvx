@@ -100,7 +100,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   @override
   Widget getWidget() {
     return DropdownButton(
-      hint: Text(initialData),
+      hint: Text(JVxLabel.utf8convert(initialData)),
       value: this.value,
       items: this._items,
       onChanged: valueChanged,

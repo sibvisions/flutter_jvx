@@ -70,20 +70,24 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        CloseScreenBloc closeScreenBloc = CloseScreenBloc();
-        StreamSubscription<FetchProcess> apiStreamSubscription;
-
-        apiStreamSubscription =
-            apiSubscription(closeScreenBloc.apiResult, context);
-
-        closeScreenBloc.closeScreenController.add(new CloseScreenViewModel(
-            clientId: globals.clientId, componentId: widget.componentId));
-
-        return true;
+        return false;
       },
       child: Scaffold(
         key: widget.componentId,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              CloseScreenBloc closeScreenBloc = CloseScreenBloc();
+              StreamSubscription<FetchProcess> apiStreamSubscription;
+
+              apiStreamSubscription =
+                  apiSubscription(closeScreenBloc.apiResult, context);
+
+              closeScreenBloc.closeScreenController.add(new CloseScreenViewModel(
+                  clientId: globals.clientId, componentId: widget.componentId));
+            },
+          ),
           title: Text(getIt.get<JVxScreen>().title),
         ),
         body: getIt.get<JVxScreen>().getWidget(),

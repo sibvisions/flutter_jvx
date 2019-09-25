@@ -39,7 +39,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
   void loadImages() {
     imageNames.forEach((image) => _items.add(loadImage(image)));
 
-    selectedImage = _items[0];
+    selectedImage = _items[1];
   }
 
   ChoiceCellEditorImage loadImage(String path) {
