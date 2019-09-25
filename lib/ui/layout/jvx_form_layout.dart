@@ -29,8 +29,8 @@ class JVxFormLayout extends JVxLayout<String> {
   ///
   EdgeInsets get margins
   {
-    return new EdgeInsets.fromLTRB(anchors["lm"].position, anchors["tm"].position, 
-    -anchors["rm"].position, -anchors["bm"].position);
+    return new EdgeInsets.fromLTRB(anchors["lm"].position.toDouble(), anchors["tm"].position.toDouble(), 
+    -anchors["rm"].position.toDouble(), -anchors["bm"].position.toDouble());
   }
     
   ///
@@ -216,21 +216,24 @@ class JVxFormLayout extends JVxLayout<String> {
       }
     });
 
-    return JVxFormLayoutWidget(
-      key: key,
-      valid: this._valid,
-      children: children,
-      hgap: this.horizontalGap,
-      vgap: this.verticalGap,
-      horizontalAlignment: this.horizontalAlignment,
-      verticalAlignment: this.verticalAlignment,
-      leftAnchor: anchors["l"],
-      rightAnchor: anchors["r"],
-      topAnchor: anchors["t"],
-      bottomAnchor: anchors["b"],
-      leftMarginAnchor: anchors["lm"],
-      rightMarginAnchor: anchors["rm"],
-      topMarginAnchor: anchors["tm"],
-      bottomMarginAnchor: anchors["bm"]);
+    return Container(
+      margin: this.margins,
+      child: JVxFormLayoutWidget(
+        key: key,
+        valid: this._valid,
+        children: children,
+        hgap: this.horizontalGap,
+        vgap: this.verticalGap,
+        horizontalAlignment: this.horizontalAlignment,
+        verticalAlignment: this.verticalAlignment,
+        leftAnchor: anchors["l"],
+        rightAnchor: anchors["r"],
+        topAnchor: anchors["t"],
+        bottomAnchor: anchors["b"],
+        leftMarginAnchor: anchors["lm"],
+        rightMarginAnchor: anchors["rm"],
+        topMarginAnchor: anchors["tm"],
+        bottomMarginAnchor: anchors["bm"])
+      );
   }
 }
