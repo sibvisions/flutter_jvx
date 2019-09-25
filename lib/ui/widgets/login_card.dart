@@ -43,7 +43,12 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                         style: TextStyle(
                           fontSize: 20
                         ),
-                      ) : Container(),
+                      ) : Text(
+                        globals.appName,
+                        style: TextStyle(
+                          fontSize: 20
+                        ),
+                      ),
                       new TextField(
                         onChanged: (username) => this.username = username,
                         enabled: !snapshot.data,

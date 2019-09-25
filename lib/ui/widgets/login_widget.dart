@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_card.dart';
 
 class LoginWidgets extends StatelessWidget {
@@ -8,9 +9,7 @@ class LoginWidgets extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 100.0,
-            ),
+            LoginBackground(),
             LoginCard()
           ],
         ),

@@ -7,6 +7,7 @@ import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/component_properties.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'jvx_component.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
@@ -39,10 +40,13 @@ class JVxButton extends JVxComponent {
         child: RaisedButton(
           key: this.componentId, 
           onPressed: buttonPressed,
-          color: this.background,
+          color: UIData.ui_kit_color_2[400],
           elevation: 10,
           child: Text(text, 
-            style: style
+            style: TextStyle(
+              fontSize: style.fontSize,
+              color: Colors.white
+            )
           ),
           splashColor: this.background,
         ),

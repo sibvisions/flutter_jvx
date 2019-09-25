@@ -7,59 +7,32 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class LoginBackground extends StatelessWidget {
-  final showIcon;
-  final image;
-  LoginBackground({this.showIcon = true, this.image = 'assets/images/sib_visions.jpg'});
+  LoginBackground();
 
   Widget topHalf(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
-    return new Flexible(
-      flex: 2,
-      child: ClipPath(
-        clipper: new ArcClipper(),
-        child: Stack(
-          children: <Widget>[
-            new Container(
-              decoration: new BoxDecoration(
-                  gradient: new LinearGradient(
-                colors: UIData.kitGradients2,
-              )),
-            ),
-            showIcon
-                ? new Center(
-                    child: SizedBox(
-                        height: deviceSize.height / 8,
-                        width: deviceSize.width / 2,
-                        child: FlutterLogo(
-                          colors: Colors.yellow,
-                        )),
-                  )
-                : new Container(
-                    decoration: BoxDecoration(
-                      color: Color(int.parse('0xFF${globals.applicationStyle.loginBackground}'))
-                    ),
-                    width: double.infinity,
-                    child: checkIfImageExists('${globals.dir}${globals.applicationStyle.loginIcon}')
-                        ? Image.file(
-                            File('${globals.dir}${globals.applicationStyle.loginIcon}'),
-                            fit: BoxFit.fitHeight
-                          )
-                        : new Container())
-          ],
-        ),
+    return Container(
+      width: MediaQuery.of(context).size.width - 100,
+      height: 100,
+      child: Stack(
+        children: <Widget>[
+          new Container(
+              decoration: BoxDecoration(color: Colors.white),
+              width: double.infinity,
+              child: globals.applicationStyle == null ? Image.asset(
+                'assets/images/sib_visions.jpg',
+                fit: BoxFit.fitHeight,
+              ) : Image.file(
+                File('${globals.dir}${globals.applicationStyle.loginIcon}'),
+                fit: BoxFit.fitHeight
+              )
+          )
+        ],
       ),
     );
   }
 
-  final bottomHalf = new Flexible(
-    flex: 3,
-    child: new Container(),
-  );
-
   @override
   Widget build(BuildContext context) {
-    return new Column(
-      children: <Widget>[topHalf(context), bottomHalf],
-    );
+    return topHalf(context);
   }
 }

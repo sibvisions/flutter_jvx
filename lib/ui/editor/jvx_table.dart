@@ -53,15 +53,15 @@ class JVxTable extends JVxEditor {
     if (isHeader) {
       return TableRow(
           decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
-            color: Colors.grey[400],
+            boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
+            color: UIData.ui_kit_color_2[200],
           ),
           children: children);
     } else {
       return TableRow(
           decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.grey[800], spreadRadius: 1)],
-            color: Colors.grey[200],
+            boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
+            color: Colors.white,
           ),
           children: children);
     }
@@ -72,7 +72,7 @@ class JVxTable extends JVxEditor {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          child: Text(JVxLabel.utf8convert(text), style: this.style),
+          child: Text(JVxLabel.utf8convert(text), style: TextStyle(fontSize: style.fontSize, fontWeight: FontWeight.bold, color: Colors.grey[700])),
           padding: EdgeInsets.all(5),
         ),
       );

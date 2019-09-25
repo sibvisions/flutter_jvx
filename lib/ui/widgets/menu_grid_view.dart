@@ -29,8 +29,7 @@ class MenuGridView extends StatelessWidget {
           child: new Card(
             elevation: 5.0,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 items[index].image != null 
                   ? new CircleAvatar(
@@ -39,7 +38,7 @@ class MenuGridView extends StatelessWidget {
                             ? new Image.asset('${globals.dir}${items[index].image}')
                             : _iconBuilder(formatFontAwesomeText(items[index].image))
                   )
-                  : new Text(""),
+                  : Container(),
                 Container(
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child:Text(items[index].action.label, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)),
@@ -65,7 +64,7 @@ class MenuGridView extends StatelessWidget {
     Icon icon = new Icon(
       data['icon'],
       size: double.parse(data['size']),
-      color: UIData.ui_kit_color_2,
+      color: UIData.ui_kit_color_2[300],
       key: data['key'],
       textDirection: data['textDirection'],
     );
