@@ -11,14 +11,16 @@ class OpenScreenResponse extends BaseResponse {
   List<JVxData> data;
   String componentId;
 
-  OpenScreenResponse({@required this.changedComponents, @required this.componentId, @required String name}) {
+  OpenScreenResponse(
+      {@required this.changedComponents,
+      @required this.componentId,
+      @required String name}) {
     super.name = name;
   }
 
   OpenScreenResponse.fromJson(List json) : super.fromJson(json) {
-    if (isError || isSessionExpired)
-      return;
-      
+    if (isError || isSessionExpired) return;
+
     changedComponents = <ChangedComponent>[];
     componentId = json[0]['componentId'];
 
@@ -40,5 +42,4 @@ class OpenScreenResponse extends BaseResponse {
         metaData.add(JVxMetaData.fromJson(f));
     });
   }
-  
 }

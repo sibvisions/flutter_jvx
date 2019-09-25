@@ -21,13 +21,19 @@ class OpenScreenPage extends StatefulWidget {
   final List<JVxMetaData> metaData;
   final Key componentId;
 
-  OpenScreenPage({Key key, this.changedComponents, this.data, this.metaData, this.componentId, this.title}) : super(key: key);
+  OpenScreenPage(
+      {Key key,
+      this.changedComponents,
+      this.data,
+      this.metaData,
+      this.componentId,
+      this.title})
+      : super(key: key);
 
   _OpenScreenPageState createState() => _OpenScreenPageState();
 }
 
 class _OpenScreenPageState extends State<OpenScreenPage> {
-
   void rebuildOpenScreen(List<ChangedComponent> changedComponents) {
     this.setState(() {
       getIt.get<JVxScreen>().updateComponents(changedComponents);
@@ -44,10 +50,10 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       getIt.get<JVxScreen>().componentId = widget.componentId;
       getIt.get<JVxScreen>().context = context;
       getIt.get<JVxScreen>().buttonCallback = (List<ChangedComponent> data) {
-          if (data != null)
-            rebuildOpenScreen(data);
-          else
-            rebuild();
+        if (data != null)
+          rebuildOpenScreen(data);
+        else
+          rebuild();
       };
 
       getIt.get<JVxScreen>().components = <String, JVxComponent>{};
@@ -67,11 +73,11 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
         CloseScreenBloc closeScreenBloc = CloseScreenBloc();
         StreamSubscription<FetchProcess> apiStreamSubscription;
 
-        apiStreamSubscription = apiSubscription(closeScreenBloc.apiResult, context);
-          
-        closeScreenBloc.closeScreenController.add(
-          new CloseScreenViewModel(clientId: globals.clientId, componentId: widget.componentId)
-        );
+        apiStreamSubscription =
+            apiSubscription(closeScreenBloc.apiResult, context);
+
+        closeScreenBloc.closeScreenController.add(new CloseScreenViewModel(
+            clientId: globals.clientId, componentId: widget.componentId));
 
         return true;
       },

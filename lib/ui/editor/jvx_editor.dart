@@ -25,8 +25,9 @@ class JVxEditor extends JVxComponent implements IEditor {
   void initData() {
     if (cellEditor?.linkReference!=null) {
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.dataProvider);
-      if (data !=null)
+      if (data !=null) {
         cellEditor.setInitialData(data);
+      }
     }
   }
 
@@ -49,7 +50,7 @@ class JVxEditor extends JVxComponent implements IEditor {
       JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
       if (data !=null)
         cellEditor.setData(data);
-    } else { 
+    } else {
       JVxData data = getIt.get<JVxScreen>().getData(this.dataProvider, [this.columnName]);
       if (data !=null)
         cellEditor.setData(data);

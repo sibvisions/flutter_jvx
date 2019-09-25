@@ -34,7 +34,7 @@ abstract class JVxComponent implements IComponent {
     background = properties.getProperty<HexColor>("background");
     name = properties.getProperty<String>("name");
     isVisible = properties.getProperty<bool>("visible", true);
-    style = JVxTextStyle.addFontToTextStyle(properties.getProperty<String>("font", ""),style);
+    style = JVxTextStyle.addFontToTextStyle(properties.getProperty<String>("font", ""), style);
     foreground = properties.getProperty<HexColor>("foreground", null);
     style = JVxTextStyle.addForecolorToTextStyle(foreground, style);
     enabled = properties.getProperty<bool>("enabled", true);

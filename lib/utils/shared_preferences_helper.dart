@@ -92,7 +92,8 @@ class SharedPreferencesHelper {
     else
       return null;
 
-    return result;
+    // return result;
+    return null;
   }
 
   void setWelcome(bool welcome) async {
