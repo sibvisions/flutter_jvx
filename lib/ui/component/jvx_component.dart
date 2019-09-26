@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/utils/hex_color.dart';
 import 'package:jvx_mobile_v3/utils/jvx_text_style.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 import '../../model/component_properties.dart';
 import 'i_component.dart';
 

@@ -23,28 +23,60 @@ class MenuDrawerWidget extends StatelessWidget {
   final List<MenuItem> menuItems;
   final bool listMenuItems;
 
-  MenuDrawerWidget({Key key, @required this.menuItems, this.listMenuItems = false}) : super(key: key);
-  
+  MenuDrawerWidget(
+      {Key key, @required this.menuItems, this.listMenuItems = false})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: _buildListViewForDrawer(context, this.menuItems)
-    );
+    return Drawer(child: _buildListViewForDrawer(context, this.menuItems));
   }
 
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = new List<Widget>();
-    
-    tiles.add(
-      UserAccountsDrawerHeader(
-        decoration: BoxDecoration(
-          color: UIData.ui_kit_color_2
-        ),
-        currentAccountPicture: CircleAvatar(child: Icon(FontAwesomeIcons.userTie, size: 40,),),
-        accountEmail: globals.applicationStyle != null ? Text(globals.appName) : null,
-        accountName: globals.applicationStyle != null ? Text(globals.applicationStyle.loginTitle, style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),) : Text(globals.appName),
-      )
-    );
+
+    tiles.add(DrawerHeader(
+      decoration: BoxDecoration(color: UIData.ui_kit_color_2),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircleAvatar(
+                radius: 35,
+                child: Icon(
+                  FontAwesomeIcons.userTie,
+                  size: 40,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              globals.applicationStyle != null
+                  ? Text(
+                      globals.applicationStyle.loginTitle,
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: UIData.ui_kit_color_2.computeLuminance() > 0.5
+                              ? Colors.black
+                              : Colors.white),
+                    )
+                  : Text(
+                      globals.appName,
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: UIData.textColor),
+                    )
+            ],
+          )
+        ],
+      ),
+    ));
 
     ListTile settingsTile = new ListTile(
       title: Text(Translations.of(context).text2('Settings', 'Settings')),
@@ -59,7 +91,8 @@ class MenuDrawerWidget extends StatelessWidget {
       leading: Icon(FontAwesomeIcons.signOutAlt),
       onTap: () {
         apiStreamSubscription = apiSubscription(logoutBloc.apiResult, context);
-        logoutBloc.logoutSink.add(new LogoutViewModel(clientId: globals.clientId));
+        logoutBloc.logoutSink
+            .add(new LogoutViewModel(clientId: globals.clientId));
       },
     );
 
@@ -68,23 +101,22 @@ class MenuDrawerWidget extends StatelessWidget {
         ListTile tile = new ListTile(
           title: Text(item.action.label),
           subtitle: Text('Group: ' + item.group),
-          leading: item.image != null 
-                    ? new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child: !item.image.startsWith('FontAwesome') 
-                              ? new Image.asset('${globals.dir}${item.image}')
-                              : _iconBuilder(formatFontAwesomeText(item.image))
-                    )
-                    : null,
+          leading: item.image != null
+              ? new CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: !item.image.startsWith('FontAwesome')
+                      ? new Image.asset('${globals.dir}${item.image}')
+                      : _iconBuilder(formatFontAwesomeText(item.image)))
+              : null,
           onTap: () {
             prefix0.Action action = item.action;
             OpenScreenBloc openScreenBloc = OpenScreenBloc();
             StreamSubscription<FetchProcess> apiStreamSubscription;
 
-            apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
-            openScreenBloc.openScreenSink.add(
-              new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
-            );
+            apiStreamSubscription =
+                apiSubscription(openScreenBloc.apiResult, context);
+            openScreenBloc.openScreenSink.add(new OpenScreenViewModel(
+                action: action, clientId: globals.clientId, manualClose: true));
           },
         );
 
@@ -98,7 +130,9 @@ class MenuDrawerWidget extends StatelessWidget {
     tiles.add(logoutTile);
     // tiles.add(Divider());
 
-    return new ListView(children: tiles,);
+    return new ListView(
+      children: tiles,
+    );
   }
 
   Icon _iconBuilder(Map data) {

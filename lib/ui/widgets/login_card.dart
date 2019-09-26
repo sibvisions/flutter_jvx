@@ -32,7 +32,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
         initialData: false,
         builder: (context, snapshot) => Form(
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
                 child: SingleChildScrollView(
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -41,12 +41,14 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                       globals.applicationStyle != null ? new Text(
                         globals.applicationStyle.loginTitle,
                         style: TextStyle(
-                          fontSize: 20
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ) : Text(
                         globals.appName,
                         style: TextStyle(
-                          fontSize: 20
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       new TextField(
@@ -84,6 +86,7 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                         controlAffinity: ListTileControlAffinity.leading,
                         activeColor: UIData.ui_kit_color_2,
                       ),
+                      SizedBox(height: 10,),
                       Container(
                         child: new GradientButton(
                           onPressed: () {
@@ -93,15 +96,20 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                           },
                           text: Translations.of(context).text2('Logon', 'Logon'))
                       ),
-                      Container(
-                        padding: EdgeInsets.only(),
-                        child: new FlatButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('/settings');
-                          },
-                          label: Text(Translations.of(context).text2('Settings', 'Settings')),
-                          icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
-                        )
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(top: 10),
+                            child: new FlatButton.icon(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed('/settings');
+                              },
+                              label: Text(Translations.of(context).text2('Settings', 'Settings')),
+                              icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
+                            )
+                          ),
+                        ],
                       ),
                     ],
                   ),

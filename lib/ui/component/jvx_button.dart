@@ -45,7 +45,7 @@ class JVxButton extends JVxComponent {
           child: Text(text, 
             style: TextStyle(
               fontSize: style.fontSize,
-              color: Colors.white
+              color: UIData.textColor
             )
           ),
           splashColor: this.background,

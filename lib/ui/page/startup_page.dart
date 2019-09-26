@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
 import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -42,7 +43,9 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    Future.wait([loadSharedPrefs()]).then((val) {
+    Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
+      globals.appName = val[0].appName;
+      globals.baseUrl = val[0].baseUrl;
       apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
       startupBloc.startupSink.add(
         new StartupViewModel(applicationName: globals.appName, layoutMode: 'generic')

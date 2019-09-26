@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class UIData {
-
   //fonts
   static const String quickFont = "Quicksand";
   static const String ralewayFont = "Raleway";
@@ -20,16 +19,9 @@ class UIData {
     Colors.blueGrey.shade800,
     Colors.black87,
   ];
-  static List<Color> kitGradients2 = [
-    Colors.blue,
-    Colors.blue
-  ];
+  static List<Color> kitGradients2 = [Colors.blue, Colors.blue];
 
-  //randomcolor
-  static final Random _random = new Random();
-
-  /// Returns a random color.
-  static Color next() {
-    return new Color(0xFF000000 + _random.nextInt(0x00FFFFFF));
-  }
+  static Color textColor = UIData.ui_kit_color_2.computeLuminance() > 0.5
+      ? Colors.black
+      : Colors.white;
 }

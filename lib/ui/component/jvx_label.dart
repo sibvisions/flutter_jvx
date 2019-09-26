@@ -28,20 +28,26 @@ class JVxLabel extends JVxComponent implements IComponent {
 
   @override
   Widget getWidget() {
-    return SizedBox(
-      key: componentId,
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        alignment: horizontalAlignment,
-        color: this.background,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(text,
-              style: style,
-              textAlign: verticalAlignment
-          ),
-        ),
-      )
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SizedBox(
+          width: constraints.minWidth,
+          height: constraints.minHeight,
+          key: componentId,
+          child: Container(
+            width:  MediaQuery.of(context).size.width * 0.5,
+            alignment: horizontalAlignment,
+            color: this.background,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(text,
+                  style: style,
+                  textAlign: verticalAlignment
+              ),
+            ),
+          )
+        );
+      }
     );
   }
 }
