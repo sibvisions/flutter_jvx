@@ -20,5 +20,6 @@
     "Remember me?": "Remember me?",
     "Error": "Error",
     "Close": "Close",
-    "go_to_settings": "Go to settings"
+    "go_to_settings": "Go to settings",
+    "no_username_or_password": "Please enter username and password"
 }

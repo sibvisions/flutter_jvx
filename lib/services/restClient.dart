@@ -67,7 +67,7 @@ class RestClient {
     updateCookie(response);
 
     if (debug) {
-      Log.printLong("Response:"+ response.body);
+      Log.printLong("$content Response:"+ response.body);
     }
 
     return processResponse<T>(response);

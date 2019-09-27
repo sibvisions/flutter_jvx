@@ -79,7 +79,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         globals.baseUrl,
                         (String value) {
                           if (value == null) this.baseUrl = globals.baseUrl;
-                          else { this.baseUrl = value; globals.baseUrl = value; }
+                          else {
+                            if (value.endsWith('/')) {
+                              value = value.substring(0, value.length - 1);
+                            }
+
+                            this.baseUrl = value; globals.baseUrl = value;
+                          }
                         }
                       );
                     },

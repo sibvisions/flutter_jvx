@@ -17,3 +17,4 @@ bool isLoading = false;
 bool hasToDownload = false;
 StartupResponse startupResponse;
 String appVersion;
+String username = '';

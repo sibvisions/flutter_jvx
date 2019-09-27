@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/gradient_button.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -18,19 +19,23 @@ class LoginCard extends StatefulWidget {
   _LoginCardState createState() => new _LoginCardState();
 }
 
-class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMixin {
+class _LoginCardState extends State<LoginCard>
+    with SingleTickerProviderStateMixin {
   var deviceSize;
   bool rememberMe = false;
   AnimationController controller;
   Animation<double> animation;
   LoginBloc loginBloc;
-  String username = '', password = '';
+  String username = '',
+      password = '';
   StreamSubscription<FetchProcess> apiStreamSubscription;
 
-  Widget loginBuilder() => StreamBuilder<bool>(
+  Widget loginBuilder() =>
+      StreamBuilder<bool>(
         stream: loginBloc.loginResult,
         initialData: false,
-        builder: (context, snapshot) => Form(
+        builder: (context, snapshot) =>
+            Form(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
                 child: SingleChildScrollView(
@@ -38,13 +43,15 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      globals.applicationStyle != null ? new Text(
+                      globals.applicationStyle != null
+                          ? new Text(
                         globals.applicationStyle.loginTitle,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
-                      ) : Text(
+                      )
+                          : Text(
                         globals.appName,
                         style: TextStyle(
                           fontSize: 20,
@@ -54,25 +61,29 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                       new TextField(
                         onChanged: (username) => this.username = username,
                         enabled: !snapshot.data,
-                        style:
-                            new TextStyle(fontSize: 15.0, color: Colors.black),
+                        style: new TextStyle(
+                            fontSize: 15.0, color: Colors.black),
                         decoration: new InputDecoration(
-                            // hintText: Translations.of(context).text2("Username:"),
-                            labelText: Translations.of(context).text2("Username:", 'Username:'),
+                          // hintText: Translations.of(context).text2("Username:"),
+                            labelText: Translations.of(context)
+                                .text2("Username:", 'Username:'),
                             labelStyle: TextStyle(fontWeight: FontWeight.w700)),
                       ),
                       new SizedBox(
                         height: 10.0,
                       ),
                       new TextField(
+                        onSubmitted: (String value) {
+                          _login(context);
+                        },
                         onChanged: (password) => this.password = password,
                         style: new TextStyle(
                             fontSize: 15.0, color: Colors.black),
                         decoration: new InputDecoration(
-                            // hintText: Translations.of(context).text('enter_password_hint'),
-                            labelText: Translations.of(context).text2('Password:', 'Password:'),
-                            labelStyle:
-                                TextStyle(fontWeight: FontWeight.w700)),
+                          // hintText: Translations.of(context).text('enter_password_hint'),
+                            labelText: Translations.of(context)
+                                .text2('Password:', 'Password:'),
+                            labelStyle: TextStyle(fontWeight: FontWeight.w700)),
                         obscureText: true,
                       ),
                       new CheckboxListTile(
@@ -82,33 +93,37 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
                           });
                         },
                         value: rememberMe,
-                        title: Text(Translations.of(context).text2('Remember me?', 'Remember me?')),
+                        title: Text(Translations.of(context)
+                            .text2('Remember me?', 'Remember me?')),
                         controlAffinity: ListTileControlAffinity.leading,
                         activeColor: UIData.ui_kit_color_2,
                       ),
-                      SizedBox(height: 10,),
-                      Container(
-                        child: new GradientButton(
-                          onPressed: () {
-                            this.password.length > 0 && this.username.length > 0
-                            ? loginBloc.loginSink.add(new LoginViewModel.withPW(username: username, password: password, rememberMe: rememberMe))
-                            : print(this.password);
-                          },
-                          text: Translations.of(context).text2('Logon', 'Logon'))
+                      SizedBox(
+                        height: 10,
                       ),
+                      Container(
+                          child: new GradientButton(
+                              onPressed: () {
+                                _login(context);
+                              },
+                              text: Translations.of(context)
+                                  .text2('Logon', 'Logon'))),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Container(
-                            padding: EdgeInsets.only(top: 10),
-                            child: new FlatButton.icon(
-                              onPressed: () {
-                                Navigator.of(context).pushNamed('/settings');
-                              },
-                              label: Text(Translations.of(context).text2('Settings', 'Settings')),
-                              icon: Icon(FontAwesomeIcons.cog, color: UIData.ui_kit_color_2,),
-                            )
-                          ),
+                              padding: EdgeInsets.only(top: 10),
+                              child: new FlatButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed('/settings');
+                                },
+                                label: Text(Translations.of(context)
+                                    .text2('Settings', 'Settings')),
+                                icon: Icon(
+                                  FontAwesomeIcons.cog,
+                                  color: UIData.ui_kit_color_2,
+                                ),
+                              )),
                         ],
                       ),
                     ],
@@ -156,12 +171,27 @@ class _LoginCardState extends State<LoginCard> with SingleTickerProviderStateMix
   }
 
   showPasswordError(BuildContext context) {
-    LoginProvider.of(context).validationErrorCallback(LoginValidationType.password);
+    LoginProvider.of(context)
+        .validationErrorCallback(LoginValidationType.password);
+  }
+
+  _login(BuildContext context) {
+    if (this.password.length > 0 && this.username.length > 0) {
+      loginBloc.loginSink.add(
+          new LoginViewModel.withPW(
+              username: username,
+              password: password,
+              rememberMe: rememberMe));
+    } else {
+      showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('no_username_or_password', 'Please enter username and password'));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    deviceSize = MediaQuery.of(context).size;
+    deviceSize = MediaQuery
+        .of(context)
+        .size;
     return loginCard();
   }
 }

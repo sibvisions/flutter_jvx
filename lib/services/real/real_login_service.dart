@@ -5,6 +5,7 @@ import 'package:jvx_mobile_v3/services/network_service.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class LoginService extends NetworkService implements ILoginService {
   static const _kLoginUrl = '/api/login';
@@ -16,6 +17,8 @@ class LoginService extends NetworkService implements ILoginService {
       Login login) async {
     var result = await rest.postAsync<LoginResponse>(_kLoginUrl, login);
 
+    globals.username = login.username;
+
     try {
       if (result.mappedResult != null) {
         var res;
@@ -23,6 +26,7 @@ class LoginService extends NetworkService implements ILoginService {
           res = LoginResponse.fromJson(result.mappedResult);
           SharedPreferencesHelper()
               .setAuthKey(result.mappedResult[1]['authKey']);
+          SharedPreferencesHelper().setLoginData(login.username, login.password);
         } else {
           res = LoginResponse.fromJsonWithoutKey(result.mappedResult);
           if (login.createAuthKey) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/login_provider.dart';
+import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -24,6 +25,7 @@ class LoginPageState extends State<LoginPage> {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
+          /*
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 100, 8, 8),
             child: globals.applicationStyle != null ? Image.asset(
@@ -32,6 +34,8 @@ class LoginPageState extends State<LoginPage> {
               alignment: Alignment.topCenter,
             ) : Container(),
           ),
+         */
+          LoginBackground(),
           LoginWidgets()
         ],
       ),

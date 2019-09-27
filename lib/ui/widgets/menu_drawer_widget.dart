@@ -35,48 +35,7 @@ class MenuDrawerWidget extends StatelessWidget {
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = new List<Widget>();
 
-    tiles.add(DrawerHeader(
-      decoration: BoxDecoration(color: UIData.ui_kit_color_2),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircleAvatar(
-                radius: 35,
-                child: Icon(
-                  FontAwesomeIcons.userTie,
-                  size: 40,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              globals.applicationStyle != null
-                  ? Text(
-                      globals.applicationStyle.loginTitle,
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: UIData.ui_kit_color_2.computeLuminance() > 0.5
-                              ? Colors.black
-                              : Colors.white),
-                    )
-                  : Text(
-                      globals.appName,
-                      style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          color: UIData.textColor),
-                    )
-            ],
-          )
-        ],
-      ),
-    ));
+    tiles.add(_buildDrawerHeader());
 
     ListTile settingsTile = new ListTile(
       title: Text(Translations.of(context).text2('Settings', 'Settings')),
@@ -133,6 +92,66 @@ class MenuDrawerWidget extends StatelessWidget {
     return new ListView(
       children: tiles,
     );
+  }
+
+  Widget _buildDrawerHeader() {
+    return DrawerHeader(
+        decoration: BoxDecoration(color: UIData.ui_kit_color_2),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                globals.applicationStyle != null
+                    ? Text(globals.applicationStyle.loginTitle,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: UIData.textColor,
+                        ))
+                    : Text(
+                        globals.appName,
+                        style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: UIData.textColor),
+                      ),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'Angemeldet als',
+                  style: TextStyle(color: UIData.textColor, fontSize: 12),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  globals.username,
+                  style: TextStyle(color: UIData.textColor, fontSize: 23),
+                )
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                CircleAvatar(
+                  child: Icon(
+                    FontAwesomeIcons.userTie,
+                    size: 60,
+                  ),
+                  radius: 55,
+                ),
+                Text(
+                  'Version ${globals.appVersion}',
+                  style: TextStyle(color: UIData.textColor),
+                )
+              ],
+            )
+          ],
+        ));
   }
 
   Icon _iconBuilder(Map data) {

@@ -20,7 +20,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:path_provider/path_provider.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 
-apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {  
+apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   apiResult.listen((FetchProcess p) {
     if (p.loading) {
       showProgress(context);
@@ -29,7 +29,8 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
       if (p.response.success == false) {
         fetchApiResult(context, p.response);
       } else {
-        if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isError) {
+        if (p.response.content is BaseResponse &&
+            (p.response.content as BaseResponse).isError) {
           BaseResponse response = (p.response.content as BaseResponse);
 
           if (response.message == 'Invalid application!') {
@@ -40,7 +41,8 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             showError(context, response.title, response.message);
           }
           return;
-        } else if (p.response.content is BaseResponse && (p.response.content as BaseResponse).isSessionExpired) {
+        } else if (p.response.content is BaseResponse &&
+            (p.response.content as BaseResponse).isSessionExpired) {
           BaseResponse response = (p.response.content as BaseResponse);
           showSessionExpired(context, response.title, "App will restart.");
           return;
@@ -48,7 +50,11 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
         switch (p.type) {
           case ApiType.performLogin:
             Future.delayed(const Duration(seconds: 1), () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: p.response.content.items, listMenuItemsInDrawer: true,)));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => MenuPage(
+                        menuItems: p.response.content.items,
+                        listMenuItemsInDrawer: true,
+                      )));
             });
             break;
           case ApiType.performStartup:
@@ -57,40 +63,55 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             globals.startupResponse = p.response.content;
             SharedPreferencesHelper().getAppVersion().then((val) async {
               if (val == null)
-                SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
+                SharedPreferencesHelper().setAppVersion(
+                    p.response.content.applicationMetaData.version);
 
               var _dir = (await getApplicationDocumentsDirectory()).path;
 
               globals.dir = _dir;
-              
+
               if (val != p.response.content.applicationMetaData.version) {
                 globals.hasToDownload = true;
-                SharedPreferencesHelper().setAppVersion(p.response.content.applicationMetaData.version);
+                SharedPreferencesHelper().setAppVersion(
+                    p.response.content.applicationMetaData.version);
               }
 
-              if (globals.hasToDownload)
-                _download(context);
+              if (globals.hasToDownload) _download(context);
 
               _downloadAppStyle(context);
 
               if (!globals.hasToDownload) {
+                if (p.response.content.loginItem != null) {
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.of(context).pushReplacementNamed('/login');
+                  });
+                  return;
+                }
+
                 SharedPreferencesHelper().getLoginData().then((onValue) {
-                  if (onValue['username'] == null && onValue['password'] == null) {
-                    if (p.response.content.loginItem != null) {
-                      Future.delayed(const Duration(seconds: 1), () {
-                        Navigator.of(context).pushReplacementNamed('/login');
-                      });
-                    } else {
-                      Future.delayed(const Duration(seconds: 1), () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: p.response.content.items, listMenuItemsInDrawer: true,)));
-                      });
-                    }
+                  if (onValue['username'] == null || onValue['username'] == 'null' ||
+                      onValue['password'] == null || onValue['password'] == 'null' ||
+                      onValue['authKey'] != null || onValue['authKey'] != 'null'
+                  ) {
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MenuPage(
+                                menuItems: p.response.content.items,
+                                listMenuItemsInDrawer: true,
+                              )));
+                    });
                   } else {
+                    globals.username = onValue['username'];
+
                     LoginBloc loginBloc = new LoginBloc();
                     StreamSubscription<FetchProcess> apiStreamSubscription;
 
-                    apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
-                    loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
+                    apiStreamSubscription =
+                        apiSubscription(loginBloc.apiResult, context);
+                    loginBloc.loginSink.add(new LoginViewModel.withPW(
+                        username: onValue['username'],
+                        password: onValue['password'],
+                        rememberMe: true));
                   }
                 });
               }
@@ -103,26 +124,35 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             if (globals.hasToDownload) {
               showProgress(context);
               // Future.delayed(const Duration(seconds: 5), () {
-                SharedPreferencesHelper().getLoginData().then((onValue) {
-                  if (onValue['username'] == null && onValue['password'] == null) {
-                    if (globals.startupResponse.loginItem != null) {
-                      Future.delayed(const Duration(seconds: 1), () {
-                        Navigator.of(context).pushReplacementNamed('/login');
-                      });
-                    } else {
-                      Future.delayed(const Duration(seconds: 1), () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: globals.startupResponse.items, listMenuItemsInDrawer: true,)));
-                      });
-                    }
+              SharedPreferencesHelper().getLoginData().then((onValue) {
+                if (onValue['username'] == null &&
+                    onValue['password'] == null) {
+                  if (globals.startupResponse.loginItem != null) {
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.of(context).pushReplacementNamed('/login');
+                    });
                   } else {
-                    LoginBloc loginBloc = new LoginBloc();
-                    StreamSubscription<FetchProcess> apiStreamSubscription;
-
-                    apiStreamSubscription = apiSubscription(loginBloc.apiResult, context);
-                    loginBloc.loginSink.add(new LoginViewModel.withPW(username: onValue['username'], password: onValue['password'], rememberMe: true));
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MenuPage(
+                                menuItems: globals.startupResponse.items,
+                                listMenuItemsInDrawer: true,
+                              )));
+                    });
                   }
-                  hideProgress(context);
-                });
+                } else {
+                  LoginBloc loginBloc = new LoginBloc();
+                  StreamSubscription<FetchProcess> apiStreamSubscription;
+
+                  apiStreamSubscription =
+                      apiSubscription(loginBloc.apiResult, context);
+                  loginBloc.loginSink.add(new LoginViewModel.withPW(
+                      username: onValue['username'],
+                      password: onValue['password'],
+                      rememberMe: true));
+                }
+                hideProgress(context);
+              });
               // });
             }
 
@@ -130,26 +160,27 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => 
-              OpenScreenPage(
-                changedComponents: p.response.content.changedComponents,
-                data: p.response.content.data,
-                metaData: p.response.content.metaData,
-                componentId: componentID, 
-                title: p.response.content.title)
-            ));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => OpenScreenPage(
+                    changedComponents: p.response.content.changedComponents,
+                    data: p.response.content.data,
+                    metaData: p.response.content.metaData,
+                    componentId: componentID,
+                    title: p.response.content.title)));
             break;
           case ApiType.performCloseScreen:
             Navigator.of(context).pop();
             break;
           case ApiType.performPressButton:
-            getIt.get<JVxScreen>().buttonCallback(p.response.content.updatedComponents);
+            getIt
+                .get<JVxScreen>()
+                .buttonCallback(p.response.content.updatedComponents);
             break;
           case ApiType.performApplicationStyle:
             if (p.response.content != null) {
               globals.applicationStyle = p.response.content;
-              SharedPreferencesHelper().setApplicationStyle(
-                  globals.applicationStyle.toJson());
+              SharedPreferencesHelper()
+                  .setApplicationStyle(globals.applicationStyle.toJson());
             }
             break;
         }
@@ -163,9 +194,17 @@ _download(BuildContext context) async {
   DownloadBloc downloadBloc2 = new DownloadBloc();
   StreamSubscription apiStreamSubscription;
 
-  downloadBloc1.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: true, libraryImages: true, name: 'images'));
+  downloadBloc1.downloadSink.add(new DownloadViewModel(
+      clientId: globals.clientId,
+      applicationImages: true,
+      libraryImages: true,
+      name: 'images'));
   apiStreamSubscription = apiSubscription(downloadBloc2.apiResult, context);
-  downloadBloc2.downloadSink.add(new DownloadViewModel(clientId: globals.clientId, applicationImages: false, libraryImages: false, name: 'translation'));
+  downloadBloc2.downloadSink.add(new DownloadViewModel(
+      clientId: globals.clientId,
+      applicationImages: false,
+      libraryImages: false,
+      name: 'translation'));
 }
 
 _downloadAppStyle(BuildContext context) {
@@ -176,8 +215,13 @@ _downloadAppStyle(BuildContext context) {
     if (val != null) {
       globals.applicationStyle = ApplicationStyleResponse.fromJson(val);
     } else {
-      apiStreamSubscription = apiSubscription(applicationStyleBloc.apiResult, context);
-      applicationStyleBloc.applicationStyleSink.add(new ApplicationStyleViewModel(clientId: globals.clientId, name: 'applicationStyle', contentMode: 'json'));
+      apiStreamSubscription =
+          apiSubscription(applicationStyleBloc.apiResult, context);
+      applicationStyleBloc.applicationStyleSink.add(
+          new ApplicationStyleViewModel(
+              clientId: globals.clientId,
+              name: 'applicationStyle',
+              contentMode: 'json'));
     }
   });
 }

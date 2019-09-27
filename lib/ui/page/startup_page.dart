@@ -44,8 +44,10 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
   void initState() {
     super.initState();
     Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
-      globals.appName = val[0].appName;
-      globals.baseUrl = val[0].baseUrl;
+      if (val[0].debug) {
+        globals.appName = val[0].appName;
+        globals.baseUrl = val[0].baseUrl;
+      }
       apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
       startupBloc.startupSink.add(
         new StartupViewModel(applicationName: globals.appName, layoutMode: 'generic')

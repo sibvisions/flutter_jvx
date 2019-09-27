@@ -1,4 +1,5 @@
 {
-  "baseUrl": "http://172.16.0.13/services/mobile",
-  "appName": "Industrie40v2"
+  "baseUrl": "http://172.16.0.18/services/mobile",
+  "appName": "Industrie40v2",
+  "debug": true
 }

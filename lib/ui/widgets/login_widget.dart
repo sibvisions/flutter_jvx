@@ -9,7 +9,7 @@ class LoginWidgets extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            LoginBackground(),
+            SizedBox(height: 100,),
             LoginCard()
           ],
         ),
