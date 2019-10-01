@@ -75,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         context,
                         Translations.of(context).text2('settings_base_url', 'Base Url'),
                         Translations.of(context).text2('settings_base_url', 'Base Url'),
-                        Translations.of(context).text2('settings_base_url_hint', 'Enter Base Url'),
+                        'http://enter.baseUrl/services/mobile', // Translations.of(context).text2('settings_base_url_hint', 'Enter Base Url'),
                         globals.baseUrl,
                         (String value) {
                           if (value == null) this.baseUrl = globals.baseUrl;
