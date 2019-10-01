@@ -20,7 +20,7 @@ import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
-import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
+import '../page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -62,13 +62,11 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
         switch (p.type) {
           case ApiType.performLogin:
             globals.items = p.response.content.items;
-            Future.delayed(const Duration(seconds: 1), () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MenuPage(
-                        menuItems: p.response.content.items,
-                        listMenuItemsInDrawer: true,
-                      )));
-            });
+            Navigator.pushReplacement(context, MaterialPageRoute(
+                builder: (context) => MenuPage(
+                      menuItems: p.response.content.items,
+                      listMenuItemsInDrawer: true,
+                    )));
             break;
           case ApiType.performStartup:
             globals.clientId = p.response.content.applicationMetaData.clientId;

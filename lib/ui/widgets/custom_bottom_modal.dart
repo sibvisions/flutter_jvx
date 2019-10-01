@@ -24,8 +24,8 @@ showCustomBottomModalMenu(BuildContext context, List<MenuItem> items, Key curren
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(30),
-              topRight: const Radius.circular(30),
+              topLeft: const Radius.circular(15),
+              topRight: const Radius.circular(15),
             )
           ),
           child: ListView.builder(
