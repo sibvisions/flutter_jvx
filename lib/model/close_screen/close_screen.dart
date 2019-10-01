@@ -1,3 +1,4 @@
+/// Model for the [CloseScreen] request.
 class CloseScreen {
   String componentId;
   String clientId;

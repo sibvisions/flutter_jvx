@@ -1,3 +1,4 @@
+/// Model Class for the [ApplicationStyle] request. 
 class ApplicationStyle {
   String clientId;
   String name = "applicationStyle";

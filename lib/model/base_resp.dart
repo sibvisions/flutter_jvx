@@ -1,5 +1,6 @@
-
-
+/// Base Response model for all the responses.
+/// 
+/// Manages errors for the response classes.
 class BaseResponse {
   String details;
   String message;
@@ -25,6 +26,7 @@ class BaseResponse {
     }
   }
 
+  /// Special for [LoginResponse].
   BaseResponse.fromLoginJson(List json) {
     if (json.length > 2) {
       details = json[2]['details'];

@@ -86,6 +86,7 @@ class _LoginCardState extends State<LoginCard>
                             labelStyle: TextStyle(fontWeight: FontWeight.w700)),
                         obscureText: true,
                       ),
+                      SizedBox(height: 10,),
                       new CheckboxListTile(
                         onChanged: (bool val) {
                           setState(() {
@@ -99,7 +100,7 @@ class _LoginCardState extends State<LoginCard>
                         activeColor: UIData.ui_kit_color_2,
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       Container(
                           child: new GradientButton(
@@ -121,7 +122,7 @@ class _LoginCardState extends State<LoginCard>
                                     .text2('Settings', 'Settings')),
                                 icon: Icon(
                                   FontAwesomeIcons.cog,
-                                  color: UIData.ui_kit_color_2,
+                                  color: UIData.ui_kit_color_2[300],
                                 ),
                               )),
                         ],

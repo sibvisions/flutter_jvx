@@ -1,6 +1,9 @@
 library jvx_mobile_v3.globals;
 
+import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
+import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/model/startup/startup_resp.dart';
 
 String appName;
@@ -18,3 +21,5 @@ bool hasToDownload = false;
 StartupResponse startupResponse;
 String appVersion;
 String username = '';
+List<MenuItem> items;
+prefix0.Action changeScreen;

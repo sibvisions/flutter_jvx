@@ -1,5 +1,6 @@
 import 'package:jvx_mobile_v3/model/filter.dart';
 
+/// Model for the [SelectRecord] request.
 class SelectRecord {
   String clientId;
   String dataProvider;

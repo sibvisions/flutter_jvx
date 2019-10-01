@@ -5,7 +5,7 @@ class DownloadWrapper extends StatefulWidget {
 
   final Stream<bool> stream;
 
-  DownloadWrapper({Key key, this.child, this.stream}) : super(key: key);
+  DownloadWrapper({Key key, @required this.child, @required this.stream}) : super(key: key);
 
   @override
   _DownloadWrapperState createState() => _DownloadWrapperState();

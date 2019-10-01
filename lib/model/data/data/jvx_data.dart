@@ -1,3 +1,4 @@
+/// Data holding Class for [JVxComponent]'s.
 class JVxData {
   int selectedRow;
   bool isAllFetched;

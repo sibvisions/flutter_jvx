@@ -16,7 +16,7 @@ import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
-/// the [Drawer] for the [AppBar] with dynamic [MenuItem]s
+/// the [Drawer] for the [AppBar] with dynamic [MenuItem]'s
 class MenuDrawerWidget extends StatelessWidget {
   LogoutBloc logoutBloc = new LogoutBloc();
   StreamSubscription<FetchProcess> apiStreamSubscription;
@@ -120,10 +120,12 @@ class MenuDrawerWidget extends StatelessWidget {
                 SizedBox(
                   height: 15,
                 ),
-                Text(
+                globals.username.isNotEmpty 
+                ? Text(
                   'Angemeldet als',
                   style: TextStyle(color: UIData.textColor, fontSize: 12),
-                ),
+                )
+                : Container(),
                 SizedBox(
                   height: 10,
                 ),

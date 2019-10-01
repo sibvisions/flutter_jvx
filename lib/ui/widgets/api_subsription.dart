@@ -3,27 +3,39 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/logic/bloc/application_style_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/close_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/application_style_view_model.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
+import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/base_resp.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   apiResult.listen((FetchProcess p) {
     if (p.loading) {
-      showProgress(context);
+      if (p.type == ApiType.performDownload) {
+        showProgress(context, 'Downloading Resources');
+      } else {
+        showProgress(context);
+      }
     } else {
       hideProgress(context);
       if (p.response.success == false) {
@@ -49,6 +61,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
         }
         switch (p.type) {
           case ApiType.performLogin:
+            globals.items = p.response.content.items;
             Future.delayed(const Duration(seconds: 1), () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => MenuPage(
@@ -76,14 +89,20 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
                     p.response.content.applicationMetaData.version);
               }
 
+              // Just for debug reasons
+              globals.hasToDownload = true;
+
               if (globals.hasToDownload) _download(context);
 
               _downloadAppStyle(context);
 
               if (!globals.hasToDownload) {
+                Translations.load(Locale(globals.language));
                 if (p.response.content.loginItem != null) {
                   Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.of(context).pushReplacementNamed('/login');
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => LoginPage()
+                    ));
                   });
                   return;
                 }
@@ -94,6 +113,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
                       onValue['authKey'] != null || onValue['authKey'] != 'null'
                   ) {
                     Future.delayed(const Duration(seconds: 1), () {
+                      globals.items = p.response.content.items;
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => MenuPage(
                                 menuItems: p.response.content.items,
@@ -118,58 +138,83 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             });
             break;
           case ApiType.performLogout:
-            Navigator.of(context).pushReplacementNamed('/login');
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginPage()));
             break;
           case ApiType.performDownload:
             if (globals.hasToDownload) {
+              Translations.load(Locale(globals.language));
               showProgress(context);
-              // Future.delayed(const Duration(seconds: 5), () {
-              SharedPreferencesHelper().getLoginData().then((onValue) {
-                if (onValue['username'] == null &&
-                    onValue['password'] == null) {
-                  if (globals.startupResponse.loginItem != null) {
+              if (globals.startupResponse.loginItem != null) {
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => LoginPage()
+                    ));
+                  });
+                  return;
+                }
+
+                SharedPreferencesHelper().getLoginData().then((onValue) {
+                  if (onValue['username'] == null || onValue['username'] == 'null' ||
+                      onValue['password'] == null || onValue['password'] == 'null' ||
+                      onValue['authKey'] != null || onValue['authKey'] != 'null'
+                  ) {
                     Future.delayed(const Duration(seconds: 1), () {
-                      Navigator.of(context).pushReplacementNamed('/login');
-                    });
-                  } else {
-                    Future.delayed(const Duration(seconds: 1), () {
+                      globals.items = globals.startupResponse.items;
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => MenuPage(
                                 menuItems: globals.startupResponse.items,
                                 listMenuItemsInDrawer: true,
                               )));
                     });
-                  }
-                } else {
-                  LoginBloc loginBloc = new LoginBloc();
-                  StreamSubscription<FetchProcess> apiStreamSubscription;
+                  } else {
+                    globals.username = onValue['username'];
 
-                  apiStreamSubscription =
-                      apiSubscription(loginBloc.apiResult, context);
-                  loginBloc.loginSink.add(new LoginViewModel.withPW(
-                      username: onValue['username'],
-                      password: onValue['password'],
-                      rememberMe: true));
-                }
-                hideProgress(context);
-              });
-              // });
+                    LoginBloc loginBloc = new LoginBloc();
+                    StreamSubscription<FetchProcess> apiStreamSubscription;
+
+                    apiStreamSubscription =
+                        apiSubscription(loginBloc.apiResult, context);
+                    loginBloc.loginSink.add(new LoginViewModel.withPW(
+                        username: onValue['username'],
+                        password: onValue['password'],
+                        rememberMe: true));
+                  }
+                  hideProgress(context);
+                });
             }
 
             globals.hasToDownload = false;
             break;
           case ApiType.performOpenScreen:
             Key componentID = new Key(p.response.content.componentId);
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => OpenScreenPage(
-                    changedComponents: p.response.content.changedComponents,
-                    data: p.response.content.data,
-                    metaData: p.response.content.metaData,
-                    componentId: componentID,
-                    title: p.response.content.title)));
+            /*
+            if (globals.changeScreen != null) {
+              globals.changeScreen = null;
+              getIt.get<JVxScreen>().componentId = componentID;
+              getIt.get<JVxScreen>().context = context;
+
+              getIt.get<JVxScreen>().components = <String, JVxComponent>{};
+              getIt.get<JVxScreen>().data = p.response.content.data;
+              getIt.get<JVxScreen>().metaData = p.response.content.metaData;
+              getIt.get<JVxScreen>().title = p.response.content.title;
+              getIt.get<JVxScreen>().updateComponents(p.response.content.changedComponents);
+              getIt.get<JVxScreen>().buttonCallback(null);
+            } else {
+              */
+              print('HELLO OPENSCREEN');
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => new OpenScreenPage(
+                      changedComponents: p.response.content.changedComponents,
+                      data: p.response.content.data,
+                      metaData: p.response.content.metaData,
+                      componentId: componentID,
+                      title: p.response.content.title,
+                      items: globals.items,)));
+            // }
             break;
           case ApiType.performCloseScreen:
-            Navigator.of(context).pop();
+            print('HELLO CLOSESCREEN');
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MenuPage(menuItems: globals.items, listMenuItemsInDrawer: false,)));
             break;
           case ApiType.performPressButton:
             getIt

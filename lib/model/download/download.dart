@@ -1,3 +1,4 @@
+/// Model for the [Download] request.
 class Download {
   String name;
   bool libraryImages;

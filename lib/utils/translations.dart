@@ -28,7 +28,7 @@ class Translations {
   }
 
   String text2(String key, [String defaultValue]) {
-    return _localizedValues2[key] ?? text(key) ?? defaultValue;
+    return _localizedValues2[key] ?? text(key) ?? defaultValue; // text(key) ?? defaultValue;
   }
 
   static Future<Translations> load(Locale locale) async {
@@ -38,11 +38,8 @@ class Translations {
         await rootBundle.loadString("locale/i18n_${locale.languageCode}.json");
       _localizedValues = json.decode(jsonContent);
       
-      await SharedPreferencesHelper().getTranslation().then((prefData) => globals.translation = prefData);
-
-      if (globals.translation['translation_${locale.languageCode}'] != null) {
-        print("ITS NOT NULL");
-        await XmlLoader().loadTranslationsXml(locale.languageCode).then((val) => _localizedValues2 = val);
+      if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
+        _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
       }
 
       return translations;
@@ -77,35 +74,16 @@ class XmlLoader {
 
   XmlLoader();
 
-  Future<Map<String, String>> loadTranslationsXml(String lang) async {
-    return await Future.delayed(const Duration(seconds: 5), () {
-      if (lang == 'en') {
-        File file;
-        String contents;
+  Map<String, String> loadTranslationsXml(String lang) {
+    if (lang == 'en') {
+      File file;
+      String contents;
 
-        if (globals.translation['translation.xml'] != null)
-          file = new File(globals.translation['translation.xml']);
-          contents = file.readAsStringSync();
-
-        if (contents != null) {
-          xml.XmlDocument doc = xml.parse(contents);
-
-          Map<String, String> translations = <String, String>{};
-
-          doc.findAllElements('entry').toList().forEach((e) {
-            translations[e.attributes.first.value] = e.text;
-          });
-
-          return translations;
-        }
-      }
-      if (globals.translation['translation_$lang.xml'] != null) {
-        File file;
-        String contents;
-
-        file = new File(globals.translation['translation_$lang.xml']);
+      if (globals.translation['translation.xml'] != null)
+        file = new File(globals.translation['translation.xml']);
         contents = file.readAsStringSync();
 
+      if (contents != null) {
         xml.XmlDocument doc = xml.parse(contents);
 
         Map<String, String> translations = <String, String>{};
@@ -116,6 +94,24 @@ class XmlLoader {
 
         return translations;
       }
-    });
+    }
+    if (globals.translation['translation_$lang.xml'] != null) {
+      File file;
+      String contents;
+
+      file = new File(globals.translation['translation_$lang.xml']);
+      contents = file.readAsStringSync();
+
+      xml.XmlDocument doc = xml.parse(contents);
+
+      Map<String, String> translations = <String, String>{};
+
+      doc.findAllElements('entry').toList().forEach((e) {
+        translations[e.attributes.first.value] = e.text;
+      });
+
+      return translations;
+    }
+    return <String, String>{};
   }
 }

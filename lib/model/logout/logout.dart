@@ -1,3 +1,4 @@
+/// Model for [Logout] request.
 class Logout {
   String clientId;
 

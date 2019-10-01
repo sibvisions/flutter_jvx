@@ -1,3 +1,4 @@
+/// Model for [Login] request.
 class Login {
   String username;
   String password;

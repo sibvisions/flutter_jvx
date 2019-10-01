@@ -1,3 +1,4 @@
+/// Request for the [Startup] request.
 class Startup {
   String applicationName;
   String authKey;

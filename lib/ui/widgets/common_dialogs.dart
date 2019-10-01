@@ -116,7 +116,7 @@ showSuccess(BuildContext context, String message, IconData icon) {
   );
 }
 
-showProgress(BuildContext context) {
+showProgress(BuildContext context, [String loadingText]) {
   if (!globals.isLoading) {
     globals.isLoading = true;
     
@@ -124,9 +124,25 @@ showProgress(BuildContext context) {
       context: context,
       barrierDismissible: false,
       builder: (context) => Center(
-        child: CircularProgressIndicator(
-          backgroundColor: UIData.ui_kit_color_2,
-        ),
+          child: Material(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              width: 100,
+              height: 100,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                  ),
+                  SizedBox(height: 10,),
+                  Text(loadingText ?? 'Loading...', style: TextStyle(fontSize: 12, color: Colors.black),)
+                ],
+              ),
+            ),
+          ),
       )
     );
 

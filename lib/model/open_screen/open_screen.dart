@@ -1,5 +1,6 @@
 import 'package:jvx_mobile_v3/model/action.dart';
 
+/// Model for [OpenScreen] request.
 class OpenScreen {
   String clientId;
   bool manualClose;

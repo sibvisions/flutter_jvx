@@ -115,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
     List languages 
       = globals.translation.keys.map((k) => k.replaceAll('translation_', '').replaceAll('.xml', '')).toList();
 
-    languages.remove('translation');
+    languages[languages.indexOf('translation')] = 'en';
 
     new Picker(
       adapter: PickerDataAdapter<String>(pickerdata: languages),

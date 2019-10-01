@@ -9,9 +9,11 @@ import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
+import 'package:jvx_mobile_v3/ui/widgets/custom_bottom_modal.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class OpenScreenPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class OpenScreenPage extends StatefulWidget {
   final List<JVxData> data;
   final List<JVxMetaData> metaData;
   final Key componentId;
+  final List<MenuItem> items;
 
   OpenScreenPage(
       {Key key,
@@ -27,7 +30,8 @@ class OpenScreenPage extends StatefulWidget {
       this.data,
       this.metaData,
       this.componentId,
-      this.title})
+      this.title,
+      this.items})
       : super(key: key);
 
   _OpenScreenPageState createState() => _OpenScreenPageState();
@@ -75,6 +79,12 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       child: Scaffold(
         key: widget.componentId,
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(FontAwesomeIcons.ellipsisV),
+              onPressed: () => showCustomBottomModalMenu(context, widget.items, widget.componentId),
+            )
+          ],
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {

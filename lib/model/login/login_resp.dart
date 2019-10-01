@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:jvx_mobile_v3/model/auth_data.dart';
 import 'package:jvx_mobile_v3/model/base_resp.dart';
 import 'package:jvx_mobile_v3/model/language.dart';
@@ -14,6 +12,11 @@ class CreateLoginResponse extends BaseResponse {
   }
 }
 
+/// Model for the Response of the [Login] Request.
+/// 
+/// * [language]: Information about the language to use in the app.
+/// * [items]: A list of [MenuItem]'s which will be shown in the [MenuPage].
+/// * [authenticationData]: Holds an [authKey] which will be used to login automatically.
 class LoginResponse extends BaseResponse {
   Language language;
   List<MenuItem> items;
@@ -24,6 +27,7 @@ class LoginResponse extends BaseResponse {
     super.name = name;
   }
 
+  /// Json Decoder for the Response with an [authKey].
   LoginResponse.fromJson(List jsonData) : super.fromLoginJson(jsonData){
     if (isError || isSessionExpired)
       return;
@@ -35,6 +39,7 @@ class LoginResponse extends BaseResponse {
     componentId = jsonData[2]['componentId'];
   }
 
+  /// Json Decoder for the Response without an [authKey].
   LoginResponse.fromJsonWithoutKey(List jsonData) : super.fromLoginJson(jsonData) {
     if (isError || isSessionExpired)
       return;

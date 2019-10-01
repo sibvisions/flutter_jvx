@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
@@ -38,7 +39,9 @@ class MenuGridView extends StatelessWidget {
                             ? new Image.asset('${globals.dir}${items[index].image}')
                             : _iconBuilder(formatFontAwesomeText(items[index].image))
                   )
-                  : Container(),
+                  :new CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: Icon(FontAwesomeIcons.clone, size: 48, color: Colors.grey[300],)),
                 Container(
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child:Text(items[index].action.label, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)),
@@ -63,7 +66,7 @@ class MenuGridView extends StatelessWidget {
   Icon _iconBuilder(Map data) {
     Icon icon = new Icon(
       data['icon'],
-      size: double.parse(data['size']),
+      size: double.parse(data['size'] ?? '16'),
       color: UIData.ui_kit_color_2[300],
       key: data['key'],
       textDirection: data['textDirection'],

@@ -33,7 +33,6 @@ class JvxMobile extends StatelessWidget {
     routes: {
       '/': (context) => StartupPage(),
       '/settings': (context) => SettingsPage(),
-      '/login': (context) => LoginPage(),
     },
   );
 
