@@ -8,12 +8,17 @@ class ChangedComponent {
   String className;
   String parent;
   int indexOf;
-  ComponentProperties componentProperties;
+
   CellEditor cellEditor;
   bool destroy;
   bool remove;
-  String layout;
-  String layoutData;
+
+  ComponentProperties componentProperties;
+
+  get hasLayout  => (layoutName?.isNotEmpty ?? true);
+  get layoutName => getLayoutName(layoutRaw);
+  get layoutRaw => componentProperties.getProperty<String>("layout");
+  get layoutData => componentProperties.getProperty<String>("layoutData");
 
   ChangedComponent({
     this.id,
@@ -31,12 +36,19 @@ class ChangedComponent {
     className = json['className'];
     parent = json['parent'];
     indexOf = json['indexOf'];
-    layout = json['layout'];
-    layoutData = json['layoutData'];
     destroy = Convertion.convertToBool(json['~destroy']);
     remove = Convertion.convertToBool(json['~remove']);
     
     if (json['cellEditor'] != null) cellEditor = CellEditor.fromJson(json['cellEditor']);
     componentProperties = new ComponentProperties(json);
+  }
+
+  static String getLayoutName(String layoutString) {
+    List<String> parameter = layoutString?.split(",");
+    if (parameter!= null && parameter.length>0) {
+      return parameter[0];
+    } 
+
+    return null;
   }
 }

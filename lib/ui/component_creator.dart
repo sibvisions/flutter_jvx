@@ -47,7 +47,7 @@ class ComponentCreator implements IComponentCreator {
     }
 
     if (component is IContainer)
-      component.layout = _createLayout(component, changedComponent);
+      component.layout = _createLayout(changedComponent);
 
     component?.updateProperties(changedComponent.componentProperties);
 
@@ -60,15 +60,13 @@ class ComponentCreator implements IComponentCreator {
 
 
 
-  ILayout _createLayout(IComponent component, ChangedComponent changedComponent) {
+  ILayout _createLayout(ChangedComponent changedComponent) {
 
-    if (changedComponent?.layout?.isNotEmpty ?? true) {
-      String layoutName = _getLayoutName(changedComponent.layout);
-
-      switch (layoutName) {
-        case "BorderLayout": { return JVxBorderLayout.fromLayoutString(changedComponent.layout, changedComponent.layoutData); } break; 
-        case "FormLayout": { return JVxFormLayout.fromLayoutString(changedComponent.layout, changedComponent.layoutData); } break; 
-        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(changedComponent.layout, changedComponent.layoutData); } break;
+    if (changedComponent.hasLayout) {
+      switch (changedComponent.layoutName) {
+        case "BorderLayout": { return JVxBorderLayout.fromLayoutString(changedComponent.layoutRaw, changedComponent.layoutData); } break; 
+        case "FormLayout": { return JVxFormLayout.fromLayoutString(changedComponent.layoutRaw, changedComponent.layoutData); } break; 
+        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(changedComponent.layoutRaw, changedComponent.layoutData); } break;
       }
     }
 
@@ -76,31 +74,27 @@ class ComponentCreator implements IComponentCreator {
   }
 
 
-  ICellEditor _createCellEditor(ComponentProperties properties) {
+  ICellEditor _createCellEditor(ChangedComponent changedComponent) {
     ICellEditor cellEditor;
 
-    String className = properties.cellEditorProperties.getProperty<String>("className");
-
-    if (className?.isNotEmpty ?? true) {
-      switch (className) {
-        case "TextCellEditor":    { cellEditor = JVxTextCellEditor(properties.cellEditorProperties, context); } break;
-        case "NumberCellEditor":  { cellEditor = JVxNumberCellEditor(properties.cellEditorProperties, context); } break;
-        case "LinkedCellEditor":  { cellEditor = JVxLinkedCellEditor(properties.cellEditorProperties, context); } break; 
-        case "DateCellEditor":    { cellEditor = JVxDateCellEditor(properties.cellEditorProperties, context); } break; 
-        case "ImageViewer":       { cellEditor = JVxImageViewer(properties.cellEditorProperties, context); } break; 
-        case "ChoiceCellEditor":  { cellEditor = JVxChoiceCellEditor(properties.cellEditorProperties, context); } break;
-      }
+    switch (changedComponent?.cellEditor?.className) {
+      case "TextCellEditor":    { cellEditor = JVxTextCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break;
+      case "NumberCellEditor":  { cellEditor = JVxNumberCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break;
+      case "LinkedCellEditor":  { cellEditor = JVxLinkedCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break; 
+      case "DateCellEditor":    { cellEditor = JVxDateCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break; 
+      case "ImageViewer":       { cellEditor = JVxImageViewer(changedComponent.componentProperties.cellEditorProperties, context); } break; 
+      case "ChoiceCellEditor":  { cellEditor = JVxChoiceCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break;
     }
 
-    cellEditor.dataProvider = properties.getProperty<String>("dataProvider");
-    cellEditor.columnName = properties.getProperty<String>("columnName");
+    cellEditor.dataProvider = changedComponent.componentProperties.getProperty<String>("dataProvider");
+    cellEditor.columnName = changedComponent.componentProperties.getProperty<String>("columnName");
 
     return cellEditor;
   }
 
   JVxEditor _createEditor(ChangedComponent changedComponent) {
     JVxEditor editor = new JVxEditor(Key(changedComponent.id), context);
-    editor.cellEditor = _createCellEditor(changedComponent.componentProperties);
+    editor.cellEditor = _createCellEditor(changedComponent);
     editor.cellEditor.linkReference = changedComponent.cellEditor.linkReference;
     return editor;
   }
@@ -111,12 +105,4 @@ class ComponentCreator implements IComponentCreator {
     return component;
   }
 
-  String _getLayoutName(String layoutString) {
-    List<String> parameter = layoutString?.split(",");
-    if (parameter!= null && parameter.length>0) {
-      return parameter[0];
-    } 
-
-    return null;
-  }
 }
