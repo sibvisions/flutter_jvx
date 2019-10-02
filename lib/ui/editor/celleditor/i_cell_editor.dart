@@ -23,7 +23,9 @@ abstract class ICellEditor {
   bool tableReadonly;
   bool directCellEditor;
   bool autoOpenPopup;
+  String dataProvider;
   dynamic value;
+  String columnName;
 
   ICellEditor(ComponentProperties properties, this.context);
 

@@ -12,6 +12,8 @@ class ChangedComponent {
   CellEditor cellEditor;
   bool destroy;
   bool remove;
+  String layout;
+  String layoutData;
 
   ChangedComponent({
     this.id,
@@ -29,6 +31,8 @@ class ChangedComponent {
     className = json['className'];
     parent = json['parent'];
     indexOf = json['indexOf'];
+    layout = json['layout'];
+    layoutData = json['layoutData'];
     destroy = Convertion.convertToBool(json['~destroy']);
     remove = Convertion.convertToBool(json['~remove']);
     
