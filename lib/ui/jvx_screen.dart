@@ -1,42 +1,36 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/logic/bloc/select_record_bloc.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/select_record_view_model.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
-import 'package:jvx_mobile_v3/model/fetch_process.dart';
-import 'package:jvx_mobile_v3/model/filter.dart';
-import 'package:jvx_mobile_v3/model/open_screen/open_screen_resp.dart';
-import 'package:jvx_mobile_v3/model/set_value/set_value_resp.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/services/data_service.dart';
 import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
+import 'package:jvx_mobile_v3/ui/component_creator.dart';
+import 'package:jvx_mobile_v3/ui/i_component_creator.dart';
 import '../main.dart';
 import '../model/changed_component.dart';
 import 'component/jvx_component.dart';
 import 'container/jvx_container.dart';
-import 'jvx_component_creater.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen {
+  IComponentCreator _componentCreator;
   bool debug = false;
   String title = "OpenScreen";
   Key componentId;
   Map<String, JVxComponent> components = <String, JVxComponent>{};
   List<JVxData> data = <JVxData>[];
   List<JVxMetaData> metaData = <JVxMetaData>[];
-  BuildContext context;
   Function buttonCallback;
 
-  JVxScreen();
-
-  bool isMovedComponent(
-      JVxComponent component, ChangedComponent changedComponent) {
-    if ((changedComponent.parent == null || changedComponent.parent.isEmpty) &&
-        component.parentComponentId != null &&
-        component.parentComponentId.isNotEmpty) {}
+  set context(BuildContext pPosition) {
+      _componentCreator.context = pPosition;
   }
+  get context {
+    return _componentCreator.context;
+  }
+
+  JVxScreen(this._componentCreator);
 
   void updateComponents(List<ChangedComponent> changedComponentsJson) {
     if (debug) print("JVxScreen updateComponents:");
@@ -58,31 +52,25 @@ class JVxScreen {
             _addComponent(changedComponent);
           }
 
-          component?.updateProperties(changedComponent.componentProperties);
+          component?.updateProperties(changedComponent);
 
           if (component?.parentComponentId != null) {
             JVxComponent parentComponent =
                 components[component.parentComponentId];
             if (parentComponent != null && parentComponent is JVxContainer) {
               parentComponent.updateComponentProperties(
-                  component.componentId, changedComponent.componentProperties);
+                  component.componentId, changedComponent);
             }
           }
         }
       } else {
         if (!changedComponent.destroy && !changedComponent.remove) {
-          if (debug)
-            print("Add component (id:" +
-                changedComponent.id +
-                ",parent:" +
-                (changedComponent.parent != null
-                    ? changedComponent.parent
-                    : "") +
-                ", className: " +
-                (changedComponent.className != null
-                    ? changedComponent.className
-                    : "") +
+          if (debug) {
+            String parent = changedComponent.getProperty<String>(ComponentProperty.PARENT);
+            print("Add component (id:" + changedComponent.id + ",parent:" + (parent != null ? parent : "") +
+                ", className: " + (changedComponent.className != null ? changedComponent.className : "") +
                 ")");
+          }
           this._addComponent(changedComponent);
         } else {
           print("Cannot remove or destroy component with id " +
@@ -155,7 +143,7 @@ class JVxScreen {
     JVxComponent componentClass;
 
     if (!components.containsKey(component.id)) {
-      componentClass = JVxComponentCreator.create(component, context);
+      componentClass = _componentCreator.createComponent(component);
     } else {
       componentClass = components[component.id];
     }
@@ -198,26 +186,21 @@ class JVxScreen {
   }
 
   void _moveComponent(JVxComponent component, ChangedComponent newComponent) {
-    if (component.parentComponentId != newComponent.parent) {
+    String parent = newComponent.getProperty(ComponentProperty.PARENT);
+    if (component.parentComponentId != parent) {
       if (debug)
-        print("Move component (id:" +
-            newComponent.id +
-            ",oldParent:" +
-            (component.parentComponentId != null
-                ? component.parentComponentId
-                : "") +
-            ",newParent:" +
-            (newComponent.parent != null ? newComponent.parent : "") +
-            ", className: " +
-            (newComponent.className != null ? newComponent.className : "") +
+        print("Move component (id:" + newComponent.id +
+            ",oldParent:" + (component.parentComponentId != null ? component.parentComponentId : "") +
+            ",newParent:" + (parent != null ? parent : "") +
+            ", className: " + (newComponent.className != null ? newComponent.className : "") +
             ")");
 
       if (component.parentComponentId != null) {
         _removeFromParent(component);
       }
 
-      if (newComponent.parent != null) {
-        component.parentComponentId = newComponent.parent;
+      if (parent != null) {
+        component.parentComponentId = parent;
         _addToParent(component);
       }
     }

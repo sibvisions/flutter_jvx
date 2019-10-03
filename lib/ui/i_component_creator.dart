@@ -5,6 +5,6 @@ import 'component/i_component.dart';
 abstract class IComponentCreator {
   BuildContext context;
 
-  IComponentCreator(this.context);
-  IComponent create(ChangedComponent component);
+  IComponentCreator([this.context]);
+  IComponent createComponent(ChangedComponent component);
 }

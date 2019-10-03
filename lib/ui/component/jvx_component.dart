@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/utils/hex_color.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
+import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
 import 'package:jvx_mobile_v3/utils/jvx_text_style.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-import '../../model/component_properties.dart';
 import 'i_component.dart';
 
 abstract class JVxComponent implements IComponent {
@@ -31,15 +31,15 @@ abstract class JVxComponent implements IComponent {
 
   JVxComponent(this.componentId, this.context);
 
-  void updateProperties(ComponentProperties properties) {
-    background = properties.getProperty<HexColor>("background");
-    name = properties.getProperty<String>("name");
-    isVisible = properties.getProperty<bool>("visible", true);
-    style = JVxTextStyle.addFontToTextStyle(properties.getProperty<String>("font", ""), style);
-    foreground = properties.getProperty<HexColor>("foreground", null);
+  void updateProperties(ChangedComponent changedComponent) {
+    background = changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
+    name = changedComponent.getProperty<String>(ComponentProperty.NAME);
+    isVisible = changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
+    style = JVxTextStyle.addFontToTextStyle(changedComponent.getProperty<String>(ComponentProperty.FONT, ""), style);
+    foreground = changedComponent.getProperty<HexColor>(ComponentProperty.FOREGROUND, null);
     style = JVxTextStyle.addForecolorToTextStyle(foreground, style);
-    enabled = properties.getProperty<bool>("enabled", true);
-    parentComponentId = properties.getProperty<String>("parent", parentComponentId);
-    constraints = properties.getProperty<String>("constraints", constraints);
+    enabled = changedComponent.getProperty<bool>(ComponentProperty.ENABLED, true);
+    parentComponentId = changedComponent.getProperty<String>(ComponentProperty.PARENT, parentComponentId);
+    constraints = changedComponent.getProperty<String>(ComponentProperty.CONSTRAINTS, constraints);
   }
 }

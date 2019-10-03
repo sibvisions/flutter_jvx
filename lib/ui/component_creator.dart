@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/container/i_container.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_group_panel.dart';
@@ -27,7 +27,7 @@ import 'component/jvx_label.dart';
 class ComponentCreator implements IComponentCreator {
   BuildContext context;
 
-  ComponentCreator(this.context);
+  ComponentCreator([this.context]);
 
   IComponent createComponent(ChangedComponent changedComponent) {
     IComponent component;
@@ -49,7 +49,7 @@ class ComponentCreator implements IComponentCreator {
     if (component is IContainer)
       component.layout = _createLayout(changedComponent);
 
-    component?.updateProperties(changedComponent.componentProperties);
+    component?.updateProperties(changedComponent);
 
     if (component is JVxEditor) {
       component.initData();
@@ -61,12 +61,14 @@ class ComponentCreator implements IComponentCreator {
 
 
   ILayout _createLayout(ChangedComponent changedComponent) {
+    if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
+      String layoutRaw = changedComponent.getProperty<String>(ComponentProperty.LAYOUT);
+      String layoutData = changedComponent.getProperty<String>(ComponentProperty.LAYOUT_DATA);
 
-    if (changedComponent.hasLayout) {
       switch (changedComponent.layoutName) {
-        case "BorderLayout": { return JVxBorderLayout.fromLayoutString(changedComponent.layoutRaw, changedComponent.layoutData); } break; 
-        case "FormLayout": { return JVxFormLayout.fromLayoutString(changedComponent.layoutRaw, changedComponent.layoutData); } break; 
-        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(changedComponent.layoutRaw, changedComponent.layoutData); } break;
+        case "BorderLayout": { return JVxBorderLayout.fromLayoutString(layoutRaw, layoutData); } break; 
+        case "FormLayout": { return JVxFormLayout.fromLayoutString(layoutRaw, layoutData); } break; 
+        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(layoutRaw, layoutData); } break;
       }
     }
 
@@ -78,16 +80,16 @@ class ComponentCreator implements IComponentCreator {
     ICellEditor cellEditor;
 
     switch (changedComponent?.cellEditor?.className) {
-      case "TextCellEditor":    { cellEditor = JVxTextCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break;
-      case "NumberCellEditor":  { cellEditor = JVxNumberCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break;
-      case "LinkedCellEditor":  { cellEditor = JVxLinkedCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break; 
-      case "DateCellEditor":    { cellEditor = JVxDateCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break; 
-      case "ImageViewer":       { cellEditor = JVxImageViewer(changedComponent.componentProperties.cellEditorProperties, context); } break; 
-      case "ChoiceCellEditor":  { cellEditor = JVxChoiceCellEditor(changedComponent.componentProperties.cellEditorProperties, context); } break;
+      case "TextCellEditor":    { cellEditor = JVxTextCellEditor(changedComponent.cellEditor, context); } break;
+      case "NumberCellEditor":  { cellEditor = JVxNumberCellEditor(changedComponent.cellEditor, context); } break;
+      case "LinkedCellEditor":  { cellEditor = JVxLinkedCellEditor(changedComponent.cellEditor, context); } break; 
+      case "DateCellEditor":    { cellEditor = JVxDateCellEditor(changedComponent.cellEditor, context); } break; 
+      case "ImageViewer":       { cellEditor = JVxImageViewer(changedComponent.cellEditor, context); } break; 
+      case "ChoiceCellEditor":  { cellEditor = JVxChoiceCellEditor(changedComponent.cellEditor, context); } break;
     }
 
-    cellEditor.dataProvider = changedComponent.componentProperties.getProperty<String>("dataProvider");
-    cellEditor.columnName = changedComponent.componentProperties.getProperty<String>("columnName");
+    cellEditor.dataProvider = changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER);
+    cellEditor.columnName = changedComponent.getProperty<String>(ComponentProperty.COLUMN_NAME);
 
     return cellEditor;
   }

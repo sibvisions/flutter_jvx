@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 
 /// Component state defines current state
 enum JVxComponentState {
@@ -35,7 +35,7 @@ abstract class IComponent {
   bool get isMinimumSizeSet;
   bool get isMaximumSizeSet;
 
-  void updateProperties(ComponentProperties properties);
+  void updateProperties(ChangedComponent changedComponent);
 
   Widget getWidget();
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'i_container.dart';
 import 'jvx_container.dart';
@@ -19,10 +20,10 @@ class JVxSplitPanel extends JVxContainer implements IContainer {
 
   JVxSplitPanel(Key componentId, BuildContext context) : super(componentId, context);
 
-  void updateProperties(ComponentProperties properties) {
-    super.updateProperties(properties);
-    dividerPosition = properties.getProperty<int>("dividerPosition");
-    dividerAlignment = properties.getProperty<int>("dividerAlignment", HORIZONTAL);
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+    dividerPosition = changedComponent.getProperty<int>(ComponentProperty.DIVIDER_POSITION);
+    dividerAlignment = changedComponent.getProperty<int>(ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
   }
 
   Widget getWidget() {
