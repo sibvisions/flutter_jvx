@@ -1,42 +1,30 @@
-import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
+import 'package:flutter/widgets.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/services/data_service.dart';
-import 'package:jvx_mobile_v3/services/restClient.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/component_creator.dart';
-import 'package:jvx_mobile_v3/ui/i_component_creator.dart';
-import '../main.dart';
-import '../model/changed_component.dart';
-import 'component/jvx_component.dart';
-import 'container/jvx_container.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/container/i_container.dart';
+import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 
-class JVxScreen {
+class ComponentScreen {
   IComponentCreator _componentCreator;
+  Map<String, IComponent> components = <String, IComponent>{};
   bool debug = false;
-  String title = "OpenScreen";
-  Key componentId;
-  Map<String, JVxComponent> components = <String, JVxComponent>{};
-  List<JVxData> data = <JVxData>[];
-  List<JVxMetaData> metaData = <JVxMetaData>[];
-  Function buttonCallback;
 
-  set context(BuildContext pPosition) {
-      _componentCreator.context = pPosition;
+  set context(BuildContext context) {
+      _componentCreator.context = context;
   }
   get context {
     return _componentCreator.context;
   }
 
-  JVxScreen(this._componentCreator);
+  ComponentScreen(this._componentCreator);
 
   void updateComponents(List<ChangedComponent> changedComponentsJson) {
     if (debug) print("JVxScreen updateComponents:");
     changedComponentsJson?.forEach((changedComponent) {
       if (components.containsKey(changedComponent.id)) {
-        JVxComponent component = components[changedComponent.id];
+        IComponent component = components[changedComponent.id];
 
         if (changedComponent.destroy) {
           if (debug)
@@ -55,9 +43,9 @@ class JVxScreen {
           component?.updateProperties(changedComponent);
 
           if (component?.parentComponentId != null) {
-            JVxComponent parentComponent =
+            IComponent parentComponent =
                 components[component.parentComponentId];
-            if (parentComponent != null && parentComponent is JVxContainer) {
+            if (parentComponent != null && parentComponent is IContainer) {
               parentComponent.updateComponentProperties(
                   component.componentId, changedComponent);
             }
@@ -81,64 +69,6 @@ class JVxScreen {
     });
   }
 
-  void selectRecord(String dataProvider, int index, [bool fetch = false]) {
-    DataService dataService = DataService(RestClient());
-
-    JVxData selectData = this.getData(dataProvider);
-
-    if (selectData != null && index < selectData.records.length) {
-      dataService
-          .selectRecord(dataProvider, selectData.columnNames,
-              selectData.records[index], fetch, globals.clientId)
-          .then((val) =>
-              getIt.get<JVxScreen>().buttonCallback(val.updatedComponents));
-    }
-  }
-
-  void setValues(
-      String dataProvider, List<dynamic> columnNames, List<dynamic> value) {
-    DataService dataService = DataService(RestClient());
-
-    dataService
-        .setValues(dataProvider, columnNames, value, globals.clientId)
-        .then((val) {
-      print("CHANGEDCOMPONENTS" + val.changedComponents.toString());
-      this.updateComponents(val.changedComponents);
-      buttonCallback(val.changedComponents);
-    });
-  }
-
-  JVxData getData(String dataProvider,
-      [List<dynamic> columnNames, int reload]) {
-    DataService dataService = DataService(RestClient());
-
-    JVxData returnData;
-
-
-    print('DATAPROVDER: ' + (dataProvider != null ? dataProvider : ""));
-
-    if (dataProvider != null) {
-      data.forEach((d) {
-        if (d.dataProvider == dataProvider) returnData = d;
-      });
-    }
-
-    if ((returnData == null || reload == -1) &&
-        dataProvider != null &&
-        columnNames != null) {
-      dataService
-          .getData(dataProvider, globals.clientId, columnNames, null, null)
-          .then((JVxData jvxData) {
-        data.add(jvxData);
-        buttonCallback(<ChangedComponent>[]);
-      });
-
-      return null;
-    } else {
-      return returnData;
-    }
-  }
-
   void _addComponent(ChangedComponent component) {
     JVxComponent componentClass;
 
@@ -155,37 +85,37 @@ class JVxScreen {
     }
   }
 
-  void _addToParent(JVxComponent component) {
+  void _addToParent(IComponent component) {
     if (component.parentComponentId?.isNotEmpty ?? false) {
-      JVxComponent parentComponent = components[component.parentComponentId];
-      if (parentComponent != null && parentComponent is JVxContainer) {
+      IComponent parentComponent = components[component.parentComponentId];
+      if (parentComponent != null && parentComponent is IContainer) {
         parentComponent.addWithConstraints(component, component.constraints);
       }
     }
   }
 
-  void _removeComponent(JVxComponent component) {
+  void _removeComponent(IComponent component) {
     _removeFromParent(component);
     component.state = JVxComponentState.Free;
   }
 
-  void _removeFromParent(JVxComponent component) {
+  void _removeFromParent(IComponent component) {
     if (component.parentComponentId != null &&
         component.parentComponentId.isNotEmpty) {
-      JVxComponent parentComponent = components[component.parentComponentId];
-      if (parentComponent != null && parentComponent is JVxContainer) {
+      IComponent parentComponent = components[component.parentComponentId];
+      if (parentComponent != null && parentComponent is IContainer) {
         parentComponent?.removeWithComponent(component);
       }
     }
   }
 
-  void _destroyComponent(JVxComponent component) {
+  void _destroyComponent(IComponent component) {
     _removeComponent(component);
     components.remove(component.componentId);
     component.state = JVxComponentState.Destroyed;
   }
 
-  void _moveComponent(JVxComponent component, ChangedComponent newComponent) {
+  void _moveComponent(IComponent component, ChangedComponent newComponent) {
     String parent = newComponent.getProperty(ComponentProperty.PARENT);
     if (component.parentComponentId != parent) {
       if (debug)
@@ -206,7 +136,7 @@ class JVxScreen {
     }
   }
 
-  JVxComponent getRootComponent() {
+  IComponent getRootComponent() {
     return this.components.values.firstWhere((element) =>
         element.parentComponentId == null &&
         element.state == JVxComponentState.Added);
@@ -214,7 +144,7 @@ class JVxScreen {
 
   void debugPrintCurrentWidgetTree() {
     int level = 0;
-    JVxComponent component = getRootComponent();
+    IComponent component = getRootComponent();
     print("--------------------");
     print("Current widget tree:");
     print("--------------------");
@@ -222,7 +152,7 @@ class JVxScreen {
     print("--------------------");
   }
 
-  void debugPrintComponent(JVxComponent component, int level) {
+  void debugPrintComponent(IComponent component, int level) {
     if (component != null) {
       String debugString = "--" * level;
 
@@ -237,7 +167,7 @@ class JVxScreen {
           ", constraints: " +
           (component.constraints != null ? component.constraints : "");
 
-      if (component is JVxContainer) {
+      if (component is IContainer) {
         debugString += ", layout: " +
             (component.layout != null
                 ? component.layout.runtimeType.toString()
@@ -256,22 +186,6 @@ class JVxScreen {
       } else {
         print(debugString);
       }
-    }
-  }
-
-  Widget getWidget() {
-    if (debug) debugPrintCurrentWidgetTree();
-
-    JVxComponent component = this.getRootComponent();
-
-    if (component != null) {
-      return component.getWidget();
-    } else {
-      // ToDO
-      return Container(
-        alignment: Alignment.center,
-        child: Text('No root component defined!'),
-      );
     }
   }
 }

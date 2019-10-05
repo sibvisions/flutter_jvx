@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
@@ -10,7 +9,6 @@ import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
 
 enum StartupValidationType { username, password }
 

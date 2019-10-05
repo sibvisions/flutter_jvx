@@ -8,7 +8,7 @@ import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;

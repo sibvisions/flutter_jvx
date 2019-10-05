@@ -9,7 +9,6 @@ import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';

@@ -6,6 +6,8 @@ import 'package:jvx_mobile_v3/ui/layout/jvx_layout.dart';
 
 abstract class IContainer extends IComponent {
   JVxLayout layout;
+  List<IComponent> components = new List<IComponent>();
+
   void add(IComponent pComponent);
   void addWithConstraints(IComponent pComponent, String pConstraints);
   void addWithIndex(IComponent pComponent, int pIndex);

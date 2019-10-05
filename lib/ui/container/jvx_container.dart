@@ -11,7 +11,7 @@ import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout.dart';
 
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
-  List<JVxComponent> components = new List<JVxComponent>();
+  List<IComponent> components = new List<IComponent>();
 
   JVxContainer(Key componentId, BuildContext context) : super(componentId, context);
 

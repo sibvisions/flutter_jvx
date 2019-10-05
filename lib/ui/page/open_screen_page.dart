@@ -11,7 +11,7 @@ import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_bottom_modal.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
