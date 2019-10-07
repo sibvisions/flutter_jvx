@@ -17,7 +17,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
   void valueChanged(dynamic value) {
     this.value = value;
     getIt
-        .get<JVxScreen>()
+        .get<JVxScreen>("screen")
         .setValues(dataProvider, linkReference.columnNames, [value]);
   }
 

@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/model/startup/startup_resp.dart';
 String appName;
 String baseUrl; //'http://172.16.0.15:8080/JVx.mobile/services/mobile';
 String language = 'de';
+bool debug = false;
 String clientId;
 String jsessionId;
 List<String> images;

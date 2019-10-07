@@ -6,7 +6,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/log.dart';
 
 class RestClient {
-  bool debug = false;
+  bool debug = globals.debug;
 
   Map<String, String> headers = {
     'Content-Type': 'application/json',

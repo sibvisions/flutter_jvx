@@ -95,6 +95,7 @@ class _StartupPageState extends State<StartupPage> {
       if (val[0].debug) {
         globals.appName = val[0].appName;
         globals.baseUrl = val[0].baseUrl;
+        globals.debug = val[0].debug;
       }
       Startup request = Startup(
           layoutMode: 'generic',

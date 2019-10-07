@@ -40,7 +40,7 @@ class OpenScreenPage extends StatefulWidget {
 class _OpenScreenPageState extends State<OpenScreenPage> {
   void rebuildOpenScreen(List<ChangedComponent> changedComponents) {
     this.setState(() {
-      getIt.get<JVxScreen>().updateComponents(changedComponents);
+      getIt.get<JVxScreen>("screen").updateComponents(changedComponents);
     });
   }
 
@@ -51,20 +51,20 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
   @override
   void initState() {
     setState(() {
-      getIt.get<JVxScreen>().componentId = widget.componentId;
-      getIt.get<JVxScreen>().context = context;
-      getIt.get<JVxScreen>().buttonCallback = (List<ChangedComponent> data) {
+      getIt.get<JVxScreen>("screen").componentId = widget.componentId;
+      getIt.get<JVxScreen>("screen").context = context;
+      getIt.get<JVxScreen>("screen").buttonCallback = (List<ChangedComponent> data) {
         if (data != null)
           rebuildOpenScreen(data);
         else
           rebuild();
       };
 
-      getIt.get<JVxScreen>().components = <String, JVxComponent>{};
-      getIt.get<JVxScreen>().data = widget.data;
-      getIt.get<JVxScreen>().metaData = widget.metaData;
-      getIt.get<JVxScreen>().title = widget.title;
-      getIt.get<JVxScreen>().updateComponents(widget.changedComponents);
+      getIt.get<JVxScreen>("screen").components = <String, JVxComponent>{};
+      getIt.get<JVxScreen>("screen").data = widget.data;
+      getIt.get<JVxScreen>("screen").metaData = widget.metaData;
+      getIt.get<JVxScreen>("screen").title = widget.title;
+      getIt.get<JVxScreen>("screen").updateComponents(widget.changedComponents);
     });
 
     super.initState();
@@ -98,9 +98,9 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
                   clientId: globals.clientId, componentId: widget.componentId));
             },
           ),
-          title: Text(getIt.get<JVxScreen>().title),
+          title: Text(getIt.get<JVxScreen>("screen").title),
         ),
-        body: getIt.get<JVxScreen>().getWidget(),
+        body: getIt.get<JVxScreen>("screen").getWidget(),
       ),
     );
   }
