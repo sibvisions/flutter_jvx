@@ -1,7 +1,8 @@
 import 'package:jvx_mobile_v3/model/action.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
 
 /// Model for [OpenScreen] request.
-class OpenScreen {
+class OpenScreen extends Request {
   String clientId;
   bool manualClose;
   Action action;

@@ -1,4 +1,6 @@
-class AuthenticationData {
+import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
+
+class AuthenticationData extends ResponseObject {
   String authKey;
   String name;
 

@@ -5,7 +5,7 @@ import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
 
 /// Model for the Response of the [OpenScreen] Request.
-/// 
+///
 /// * [changedComponents]: A list of items which will be build and shown in the [OpenScreenPage].
 /// * [metaData]: Information about the [data] and how to use it.
 /// * [data]: Data which will be filled into the [JVxComponents] generated with the [changedComponents].

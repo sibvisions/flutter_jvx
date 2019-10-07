@@ -1,5 +1,7 @@
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
+
 /// Model for [Logout] request.
-class Logout {
+class Logout extends Request {
   String clientId;
 
   Logout({this.clientId});

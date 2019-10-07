@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://127.0.0.1:8080/JVx.mobile/services/mobile",
+  "baseUrl": "http://172.16.0.12:8080/JVx.mobile/services/mobile",
   "appName": "demo",
   "debug": true
 }

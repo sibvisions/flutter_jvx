@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/inherited/login_provider.dart';
 import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
+import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/model/login/login.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
@@ -178,11 +182,24 @@ class _LoginCardState extends State<LoginCard>
 
   _login(BuildContext context) {
     if (this.password.length > 0 && this.username.length > 0) {
+      /*
       loginBloc.loginSink.add(
           new LoginViewModel.withPW(
               username: username,
               password: password,
               rememberMe: rememberMe));
+      */
+
+      Login login = Login(
+        action: 'Anmelden',
+        clientId: globals.clientId,
+        createAuthKey: rememberMe,
+        username: username,
+        password: password,
+        requestType: RequestType.LOGIN
+      );
+
+      BlocProvider.of<ApiBloc>(context).dispatch(login);
     } else {
       showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('no_username_or_password', 'Please enter username and password'));
     }
