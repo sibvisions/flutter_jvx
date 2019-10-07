@@ -9,7 +9,7 @@ import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 class ComponentScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
-  bool debug = false;
+  bool debug = true;
 
   set context(BuildContext context) {
       _componentCreator.context = context;

@@ -47,7 +47,7 @@ class JVxTable extends JVxEditor {
   }
 
   void _onRowTapped(int index) {
-    getIt.get<JVxScreen>().selectRecord(dataProvider, index, false);
+    getIt.get<JVxScreen>("screen").selectRecord(dataProvider, index, false);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {
@@ -131,7 +131,7 @@ class JVxTable extends JVxEditor {
   @override
   Widget getWidget() {
     JVxData data = getIt
-        .get<JVxScreen>()
+        .get<JVxScreen>("screen")
         .getData(dataProvider, this.columnNames, this.reload);
     this.reload = null;
     List<TableRow> rows = new List<TableRow>();

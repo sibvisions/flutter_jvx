@@ -9,6 +9,7 @@ String appName = "demo";
 //String baseUrl; //'http://172.16.0.15:8080/JVx.mobile/services/mobile';
 String baseUrl = 'http://127.0.0.1:8080/JVx.mobile/services/mobile';
 String language = 'de';
+bool debug = false;
 String clientId;
 String jsessionId;
 List<String> images;

@@ -10,7 +10,7 @@ GetIt getIt = GetIt.instance;
 
 void main() {
   getIt.allowReassignment = true;
-  getIt.registerSingleton<JVxScreen>(JVxScreen(ComponentCreator()));
+  getIt.registerSingleton<JVxScreen>(JVxScreen(ComponentCreator()), "screen");
   Injector.configure(Flavor.PRO);
   runApp(new RestartWidget(
     child: JvxMobile(),

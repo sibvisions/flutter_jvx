@@ -60,7 +60,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
     else
       selectedImage = _items[0];
 
-    getIt.get<JVxScreen>().buttonCallback(null);
+    getIt.get<JVxScreen>("screen").buttonCallback(null);
   }
 
   @override

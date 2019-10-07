@@ -20,7 +20,7 @@ import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:jvx_mobile_v3/ui//screen/screen.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   apiResult.listen((FetchProcess p) {
@@ -210,7 +210,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
             break;
           case ApiType.performPressButton:
             getIt
-                .get<JVxScreen>()
+                .get<JVxScreen>("screen")
                 .buttonCallback(p.response.content.updatedComponents);
             break;
           case ApiType.performApplicationStyle:

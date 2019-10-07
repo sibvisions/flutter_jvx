@@ -24,7 +24,7 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   void initData() {
     if (cellEditor?.linkReference!=null) {
-      JVxData data = getIt.get<JVxScreen>().getData(cellEditor.dataProvider);
+      JVxData data = getIt.get<JVxScreen>("screen").getData(cellEditor.dataProvider);
       if (data !=null) {
         cellEditor.setInitialData(data);
       }
@@ -44,14 +44,20 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   @override
   Widget getWidget() {
+
+    BoxConstraints constraints = BoxConstraints.tightFor();
+
+    if (maximumSize!=null)
+      constraints = BoxConstraints.loose(maximumSize);
+
     Color color = Colors.grey[200];
     if (cellEditor.linkReference!=null) {
       color = Colors.transparent;
-      JVxData data = getIt.get<JVxScreen>().getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
+      JVxData data = getIt.get<JVxScreen>("screen").getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
       if (data !=null)
         cellEditor.setData(data);
     } else { 
-      JVxData data = getIt.get<JVxScreen>().getData(this.dataProvider, [this.columnName], reload);
+      JVxData data = getIt.get<JVxScreen>("screen").getData(this.dataProvider, [this.columnName], reload);
       reload = null;
 
       if (data !=null)
@@ -62,7 +68,7 @@ class JVxEditor extends JVxComponent implements IEditor {
       return Container(child: this.cellEditor.getWidget());
     } else {  
     return Container(
-      constraints: BoxConstraints.tightFor(),
+      constraints: constraints,
       color: color,
       child: Container(width: 100, child: cellEditor.getWidget())
     );

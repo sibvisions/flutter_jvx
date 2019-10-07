@@ -45,6 +45,7 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
       if (val[0].debug) {
         globals.appName = val[0].appName;
         globals.baseUrl = val[0].baseUrl;
+        globals.debug = val[0].debug;
       }
       apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
       startupBloc.startupSink.add(

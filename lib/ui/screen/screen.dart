@@ -11,7 +11,6 @@ import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxScreen extends ComponentScreen {
-  bool debug = false;
   String title = "OpenScreen";
   Key componentId;
   List<JVxData> data = <JVxData>[];
@@ -30,7 +29,7 @@ class JVxScreen extends ComponentScreen {
           .selectRecord(dataProvider, selectData.columnNames,
               selectData.records[index], fetch, globals.clientId)
           .then((val) =>
-              getIt.get<JVxScreen>().buttonCallback(val.updatedComponents));
+              getIt.get<JVxScreen>("screen").buttonCallback(val.updatedComponents));
     }
   }
 
