@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
-import 'i_container.dart';
-import 'jvx_container.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
+import 'package:jvx_mobile_v3/ui/container/i_container.dart';
+import 'package:jvx_mobile_v3/ui/container/jvx_container.dart';
+
 
 class JVxGroupPanel extends JVxContainer implements IContainer {
   String text = "";
   JVxGroupPanel(Key componentId, BuildContext context) : super(componentId, context);
 
-  void updateProperties(ComponentProperties properties) {
-    super.updateProperties(properties);
-    text = properties.getProperty<String>("text", text);
+  void updateProperties(ChangedComponent changedcomponent) {
+    super.updateProperties(changedcomponent);
+    text = changedcomponent.getProperty<String>(ComponentProperty.TEXT, text);
   }
 
   Widget getWidget() {

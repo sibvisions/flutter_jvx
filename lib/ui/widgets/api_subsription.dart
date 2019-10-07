@@ -3,21 +3,15 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/logic/bloc/application_style_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/close_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/download_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/login_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/application_style_view_model.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/download_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/login_view_model.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/base_resp.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
 import '../page/menu_page.dart';
@@ -26,7 +20,7 @@ import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/ui//screen/screen.dart';
 
 apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
   apiResult.listen((FetchProcess p) {

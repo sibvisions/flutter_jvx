@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_card.dart';
 
 class LoginWidgets extends StatelessWidget {

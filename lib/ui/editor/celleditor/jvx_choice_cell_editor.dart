@@ -1,12 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
+import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/choice_cell_editor_image.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxChoiceCellEditor extends JVxCellEditor {
@@ -17,13 +16,13 @@ class JVxChoiceCellEditor extends JVxCellEditor {
   List<String> imageNames;
   ChoiceCellEditorImage selectedImage;
 
-  JVxChoiceCellEditor(ComponentProperties properties, BuildContext context)
-      : super(properties, context) {
+  JVxChoiceCellEditor(CellEditor changedCellEditor, BuildContext context)
+      : super(changedCellEditor, context) {
     defaultImageName =
-        properties.getProperty<String>('defaultImageName', defaultImageName);
+        changedCellEditor.getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME, defaultImageName);
     allowedVales =
-        properties.getProperty<List<String>>('allowedValues', allowedVales);
-    imageNames = properties.getProperty<List<String>>('imageNames', imageNames);
+        changedCellEditor.getProperty<List<String>>(CellEditorProperty.ALLOWED_VALUES, allowedVales);
+    imageNames = changedCellEditor.getProperty<List<String>>(CellEditorProperty.IMAGE_NAMES, imageNames);
 
     // defaultImage = loadImage(defaultImageName);
     loadImages();

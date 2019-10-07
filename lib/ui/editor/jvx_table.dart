@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxTable extends JVxEditor {
@@ -29,19 +30,19 @@ class JVxTable extends JVxEditor {
   JVxTable(Key componentId, BuildContext context) : super(componentId, context);
 
   @override
-  void updateProperties(ComponentProperties properties) {
-    super.updateProperties(properties);
-    maximumSize = properties.getProperty<Size>("maximumSize", null);
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+    maximumSize = changedComponent.getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
     showVerticalLines =
-        properties.getProperty<bool>("showVerticalLines", showVerticalLines);
-    showHorizontalLines = properties.getProperty<bool>(
-        "showHorizontalLines", showHorizontalLines);
+        changedComponent.getProperty<bool>(ComponentProperty.SHOW_VERTICAL_LINES, showVerticalLines);
+    showHorizontalLines = changedComponent.getProperty<bool>(
+        ComponentProperty.SHOW_HORIZONTAL_LINES, showHorizontalLines);
     tableHeaderVisible =
-        properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
+        changedComponent.getProperty<bool>(ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
     columnNames =
-        properties.getProperty<List<String>>("columnNames", columnNames);
-    reload = properties.getProperty<int>("reload");
-    columnLabels = properties.getProperty<List<String>>("columnLabels", columnLabels);
+        changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_NAMES, columnNames);
+    reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
+    columnLabels = changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_LABELS, columnLabels);
     reload = -1;
   }
 

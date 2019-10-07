@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/main.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
-
-import '../../main.dart';
-import '../jvx_screen.dart';
-import 'celleditor/jvx_cell_editor.dart';
-import 'celleditor/jvx_linked_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -33,14 +32,14 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   @override
-  void updateProperties(ComponentProperties properties) {
-    super.updateProperties(properties);
-    maximumSize = properties.getProperty<Size>("maximumSize",null);
-    dataProvider = properties.getProperty<String>("dataProvider", dataProvider);
-    dataRow = properties.getProperty<String>("dataRow");
-    columnName = properties.getProperty<String>("columnName", columnName);
-    readonly = properties.getProperty<bool>("readonly", readonly);
-    eventFocusGained = properties.getProperty<bool>("eventFocusGained", eventFocusGained);
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+    maximumSize = changedComponent.getProperty<Size>(ComponentProperty.MAXIMUM_SIZE,null);
+    dataProvider = changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER, dataProvider);
+    dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
+    columnName = changedComponent.getProperty<String>(ComponentProperty.COLUMN_NAME, columnName);
+    readonly = changedComponent.getProperty<bool>(ComponentProperty.READONLY, readonly);
+    eventFocusGained = changedComponent.getProperty<bool>(ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
   }
 
   @override

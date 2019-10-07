@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/logic/bloc/press_button_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/press_button_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
-import 'package:jvx_mobile_v3/model/component_properties.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'jvx_component.dart';
@@ -19,9 +20,9 @@ class JVxButton extends JVxComponent {
   JVxButton(Key componentId, BuildContext context) : super(componentId, context);
 
   @override
-  void updateProperties(ComponentProperties properties) {
-    super.updateProperties(properties);
-    text = properties.getProperty<String>("text");
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+    text = changedComponent.getProperty<String>(ComponentProperty.TEXT);
   }
 
   void buttonPressed() {

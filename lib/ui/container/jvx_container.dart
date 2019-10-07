@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/ui/component/i_component.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/container/i_container.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_border_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
-import '../../model/component_properties.dart';
-import '../layout/widgets/jvx_border_layout.dart';
-import 'i_container.dart';
-import '../component/jvx_component.dart';
-import '../component/i_component.dart';
-import '../layout/jvx_layout.dart';
-import '../layout/jvx_border_layout.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_layout.dart';
+import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout.dart';
 
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
-  List<JVxComponent> components = new List<JVxComponent>();
+  List<IComponent> components = new List<IComponent>();
 
   JVxContainer(Key componentId, BuildContext context) : super(componentId, context);
 
@@ -81,10 +81,10 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
     return components?.firstWhere((component) => component.constraints==constraint);
   }
 
-  void updateComponentProperties(Key componentId, ComponentProperties properties) {
+  void updateComponentProperties(Key componentId, ChangedComponent changedComponent) {
     IComponent pComponent = components.firstWhere((c) => c.componentId == componentId);
 
-    pComponent?.updateProperties(properties);
+    pComponent?.updateProperties(changedComponent);
 
     if (layout != null) {
       if (layout is JVxBorderLayout) {
