@@ -3,9 +3,11 @@ import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_linked_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 
-class JVxMultiLineCellEditor extends JVxCellEditor {
+class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
   List<ListTile> _items = <ListTile>[];
   String selectedValue;
 

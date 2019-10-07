@@ -29,7 +29,6 @@ class JVxCellEditor implements ICellEditor {
   bool directCellEditor = false;
   bool autoOpenPopup;
   String contentType;
-  LinkReference linkReference;
   String dataProvider;
   dynamic value;
   String columnName;
@@ -42,6 +41,10 @@ class JVxCellEditor implements ICellEditor {
     directCellEditor = changedCellEditor.getProperty<bool>(CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
     columnName = changedCellEditor.getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
   }
+
+  VoidCallback onBeginEditing;
+  VoidCallback onEndEditing;
+  ValueChanged<dynamic> onValueChanged;
 
   void setInitialData(JVxData data) {
 

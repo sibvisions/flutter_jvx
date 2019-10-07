@@ -97,7 +97,7 @@ class ComponentCreator implements IComponentCreator {
   JVxEditor _createEditor(ChangedComponent changedComponent) {
     JVxEditor editor = new JVxEditor(Key(changedComponent.id), context);
     editor.cellEditor = _createCellEditor(changedComponent);
-    editor.cellEditor.linkReference = changedComponent.cellEditor.linkReference;
+    //editor.cellEditor.linkReference = changedComponent.cellEditor.linkReference;
     return editor;
   }
 

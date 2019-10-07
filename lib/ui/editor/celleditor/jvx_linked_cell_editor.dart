@@ -5,9 +5,10 @@ import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 
-class JVxLinkedCellEditor extends JVxCellEditor {
+class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
   String initialData;
 
@@ -19,6 +20,7 @@ class JVxLinkedCellEditor extends JVxCellEditor {
     getIt
         .get<JVxScreen>("screen")
         .setValues(dataProvider, linkReference.columnNames, [value]);
+    this.onValueChanged(value);
   }
 
   List<DropdownMenuItem> getItems(JVxData data) {

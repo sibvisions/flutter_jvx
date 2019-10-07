@@ -7,8 +7,12 @@ import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
+
+//typedef EndEditing<T> = void Function(T value);
+//typedef VoidCallback BeginEditing = void Function();
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -17,13 +21,40 @@ class JVxEditor extends JVxComponent implements IEditor {
   String columnName;
   bool readonly = false;
   bool eventFocusGained = false;
-  JVxCellEditor cellEditor;
+  JVxCellEditor _cellEditor;
   int reload = -1;
+
+  get cellEditor => _cellEditor;
+  set cellEditor(JVxCellEditor editor) {
+    _cellEditor = editor;
+    _cellEditor.onBeginEditing = onBeginEditing;
+    _cellEditor.onEndEditing = onEndEditing;
+    _cellEditor.onValueChanged = onValueChanged;
+  } 
 
   JVxEditor(Key componentId, BuildContext context) : super(componentId, context);
 
+  void onBeginEditing() {
+    
+  }
+
+  void onValueChanged(dynamic value) {
+    List<dynamic> columnNames = [columnName];
+
+    if (_cellEditor is JVxReferencedCellEditor)
+      columnNames = (_cellEditor as JVxReferencedCellEditor).linkReference.columnNames;
+
+    getIt
+        .get<JVxScreen>("screen")
+        .setValues(dataProvider, columnNames, [value]);
+  }
+
+  void onEndEditing() {
+    
+  }
+
   void initData() {
-    if (cellEditor?.linkReference!=null) {
+    if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor)?.linkReference!=null) {
       JVxData data = getIt.get<JVxScreen>("screen").getData(cellEditor.dataProvider);
       if (data !=null) {
         cellEditor.setInitialData(data);
@@ -51,9 +82,11 @@ class JVxEditor extends JVxComponent implements IEditor {
       constraints = BoxConstraints.loose(maximumSize);
 
     Color color = Colors.grey[200];
-    if (cellEditor.linkReference!=null) {
+    if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor).linkReference!=null) {
       color = Colors.transparent;
-      JVxData data = getIt.get<JVxScreen>("screen").getData(cellEditor.linkReference.dataProvider, cellEditor.linkReference.referencedColumnNames);
+      JVxData data = getIt.get<JVxScreen>("screen").getData(
+        (_cellEditor as JVxReferencedCellEditor).linkReference.dataProvider, 
+        (_cellEditor as JVxReferencedCellEditor).linkReference.referencedColumnNames);
       if (data !=null)
         cellEditor.setData(data);
     } else { 
