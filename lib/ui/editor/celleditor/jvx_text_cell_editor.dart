@@ -43,6 +43,8 @@ class JVxTextCellEditor extends JVxCellEditor {
       controller: _controller,
       maxLines: multiLine ? 4 : 1,
       keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
+      onEditingComplete: onEndEditing,
+      onChanged: onValueChanged,
     );
   }
 }

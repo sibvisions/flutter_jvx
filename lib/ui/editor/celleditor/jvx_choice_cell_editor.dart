@@ -61,6 +61,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
       selectedImage = _items[0];
 
     getIt.get<JVxScreen>("screen").buttonCallback(null);
+    onValueChanged(_items.indexOf(selectedImage));
   }
 
   @override
