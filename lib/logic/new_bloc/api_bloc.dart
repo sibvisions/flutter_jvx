@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/application_meta_data.dart';
+import 'package:jvx_mobile_v3/model/application_style/application_style.dart';
+import 'package:jvx_mobile_v3/model/auth_data.dart';
 import 'package:jvx_mobile_v3/model/close_screen/close_screen.dart';
 import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/model/login/login.dart';
@@ -34,6 +37,8 @@ class ApiBloc extends Bloc<Request, Response> {
       yield* closescreen(event);
     } else if (event is Download) {
       yield* download(event);
+    } else if (event is ApplicationStyle) {
+      yield* application_style(event);
     }
   }
 
@@ -64,6 +69,13 @@ class ApiBloc extends Bloc<Request, Response> {
 
   Stream<Response> login(Login request) async* {
     Response resp = await processRequest(request);
+
+    AuthenticationData authData;
+    if (resp.responseObjects != null)
+      authData = resp.responseObjects.firstWhere((r) => r is AuthenticationData, orElse: () => null);
+
+    if (authData != null)
+      SharedPreferencesHelper().setAuthKey(authData.authKey);
 
     yield resp;
   }
@@ -121,6 +133,10 @@ class ApiBloc extends Bloc<Request, Response> {
     yield resp;
   }
 
+  Stream<Response> application_style(ApplicationStyle request) async* {
+    yield await processRequest(request);
+  }
+
   Future<Response> processRequest(Request request) async {
     RestClient restClient = RestClient();
     Response response;
@@ -170,16 +186,20 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
         response.requestType = request.requestType;
+        response.download = ZipDecoder().decodeBytes(response.download);
         return response;
         break;
       case RequestType.DOWNLOAD_IMAGES:
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
         response.requestType = request.requestType;
+        response.download = ZipDecoder().decodeBytes(response.download);
         return response;
         break;
-      case RequestType.DOWNLOAD_APP_STYLE:
-        // TODO: Handle this case.
+      case RequestType.APP_STYLE:
+        response =
+            await restClient.postAsyncDownload('/download', request.toJson());
+        response.requestType = request.requestType;
         break;
     }
 

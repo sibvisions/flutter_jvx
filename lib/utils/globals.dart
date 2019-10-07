@@ -7,7 +7,6 @@ import 'package:jvx_mobile_v3/model/startup/startup_resp.dart';
 
 String appName;
 String baseUrl; //'http://172.16.0.15:8080/JVx.mobile/services/mobile';
-//String baseUrl = 'http://127.0.0.1:8080/JVx.mobile/services/mobile';
 String language = 'de';
 String clientId;
 String jsessionId;

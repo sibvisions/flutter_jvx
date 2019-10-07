@@ -64,7 +64,7 @@ class RestClient {
   Future<Response> postAsync(String resourcePath, dynamic data) async {
     var content = json.encode(data);
     var response;
-
+    
     Response resp;
     try {
       response = await http.Client().post(globals.baseUrl + resourcePath,
@@ -103,7 +103,7 @@ class RestClient {
             'cookie': globals.jsessionId
           });
 
-      resp.download = ZipDecoder().decodeBytes(response.bodyBytes);
+      resp.download = response.bodyBytes;
     } catch (e) {
       resp = Response()
         ..error = true

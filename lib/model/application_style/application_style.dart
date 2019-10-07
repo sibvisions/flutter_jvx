@@ -1,12 +1,13 @@
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
+
 /// Model Class for the [ApplicationStyle] request. 
-class ApplicationStyle {
-  String clientId;
+class ApplicationStyle extends Request {
   String name = "applicationStyle";
   String contentMode = "json";
   bool libraryImages = false;
   bool applicationImages = false;
 
-  ApplicationStyle({this.clientId, this.name, this.contentMode});
+  ApplicationStyle({this.name, this.contentMode, String clientId, RequestType requestType}) : super(clientId: clientId, requestType: requestType);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'clientId': clientId,

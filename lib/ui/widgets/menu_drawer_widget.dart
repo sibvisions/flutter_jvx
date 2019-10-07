@@ -1,14 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/logout_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
+import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/logout_view_model.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:jvx_mobile_v3/model/login_item.dart';
+import 'package:jvx_mobile_v3/model/logout/logout.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
@@ -17,8 +24,6 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 /// the [Drawer] for the [AppBar] with dynamic [MenuItem]'s
 class MenuDrawerWidget extends StatelessWidget {
-  LogoutBloc logoutBloc = new LogoutBloc();
-  StreamSubscription<FetchProcess> apiStreamSubscription;
   final List<MenuItem> menuItems;
   final bool listMenuItems;
 
@@ -28,7 +33,18 @@ class MenuDrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(child: _buildListViewForDrawer(context, this.menuItems));
+    return BlocBuilder<ApiBloc, Response>(
+      builder: (context, state) {
+        if (state == null || state.loading || state.responseObjects == null) {
+          return Drawer(child: Center(child: Text('Loading...'),),);
+        }
+
+        if (state.requestType == RequestType.LOGOUT && (state.error == null || !state.error) && !state.loading) {
+          Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => LoginPage())));
+        }
+        return Drawer(child: _buildListViewForDrawer(context, this.menuItems));
+      }
+    );
   }
 
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
@@ -48,9 +64,9 @@ class MenuDrawerWidget extends StatelessWidget {
       title: Text(Translations.of(context).text2('Logout', 'Logout')),
       leading: Icon(FontAwesomeIcons.signOutAlt),
       onTap: () {
-        apiStreamSubscription = apiSubscription(logoutBloc.apiResult, context);
-        logoutBloc.logoutSink
-            .add(new LogoutViewModel(clientId: globals.clientId));
+        Logout logout = Logout(clientId: globals.clientId, requestType: RequestType.LOGOUT);
+
+        BlocProvider.of<ApiBloc>(context).dispatch(logout);
       },
     );
 

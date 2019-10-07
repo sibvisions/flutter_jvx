@@ -38,6 +38,10 @@ class LoginPageState extends State<LoginPage> {
 
   Widget loginBuilder() => BlocBuilder<ApiBloc, Response>(
         builder: (context, state) {
+          if (state.requestType == RequestType.LOGOUT && !state.loading && (state.error == null || !state.error)) {
+            return loginScaffold();
+          }
+
           if (state.requestType == RequestType.LOGIN &&
               !state.loading &&
               (state.error == null || !state.error) &&
@@ -52,18 +56,11 @@ class LoginPageState extends State<LoginPage> {
                       builder: (_) => MenuPage(
                             menuItems: menu.items,
                           ))));
-          } else if ((state.error == null || !state.error) &&
-              state.requestType == RequestType.LOGIN) {
-            return Scaffold(
-              body: Center(
-                child: Text('Loading...'),
-              ),
-            );
           }
 
           if ((state.requestType == RequestType.DOWNLOAD_IMAGES ||
-              state.requestType == RequestType.DOWNLOAD_TRANSLATION) &&
-              state.loading ||
+                      state.requestType == RequestType.DOWNLOAD_TRANSLATION) &&
+                  state.loading ||
               state.download == null) {
             return Scaffold(
               body: Center(
@@ -75,21 +72,6 @@ class LoginPageState extends State<LoginPage> {
           return loginScaffold();
         },
       );
-
-  showValidationError(LoginValidationType type) {
-    scaffoldState.currentState.showSnackBar(
-      SnackBar(
-        content: Text(
-          type == LoginValidationType.username
-              ? Translations.of(context)
-                  .text2('enter_valid_username', 'Enter a valid username')
-              : Translations.of(context)
-                  .text2('enter_valid_password', 'Enter a valid password'),
-        ),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
 
   @override
   void initState() {
