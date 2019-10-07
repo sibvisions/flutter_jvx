@@ -1,16 +1,21 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/inherited/startup_provider.dart';
-import 'package:jvx_mobile_v3/logic/bloc/startup_bloc.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/startup_view_model.dart';
-import 'package:jvx_mobile_v3/model/fetch_process.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:jvx_mobile_v3/model/api/response/response.dart';
+import 'package:jvx_mobile_v3/model/application_meta_data.dart';
+import 'package:jvx_mobile_v3/model/download/download.dart';
+import 'package:jvx_mobile_v3/model/login_item.dart';
+import 'package:jvx_mobile_v3/model/menu.dart';
+import 'package:jvx_mobile_v3/model/startup/startup.dart';
+import 'package:jvx_mobile_v3/ui/page/login_page.dart';
+import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
-import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
 
 enum StartupValidationType { username, password }
 
@@ -20,23 +25,66 @@ class StartupPage extends StatefulWidget {
   _StartupPageState createState() => _StartupPageState();
 }
 
-class _StartupPageState extends State<StartupPage> with SingleTickerProviderStateMixin {
-  final scaffoldState = GlobalKey<ScaffoldState>();
-  StartupBloc startupBloc = new StartupBloc();
-  String applicationName = globals.appName;
-  StreamSubscription<FetchProcess> apiStreamSubscription;
-  AnimationController controller;
-  Animation<double> animation;
+class _StartupPageState extends State<StartupPage> {
+  bool errorMsgShown = false;
 
-  Widget startupBuilder() {
-    return StreamBuilder<bool>(
-      stream: startupBloc.startupResult,
-      initialData: false,
-      builder: (context, snapshot) {
-        return Center(
-          child: Image.asset('assets/images/sib_visions.jpg', width: (MediaQuery.of(context).size.width - 50),),
+  Widget newStartupBuilder() {
+    return BlocBuilder<ApiBloc, Response>(
+      builder: (context, state) {
+        if (state != null &&
+            !state.loading &&
+            state.requestType == RequestType.STARTUP &&
+            state.responseObjects != null &&
+            (state.error != true || state.error == null)) {
+          String appVersion;
+          SharedPreferencesHelper().getAppVersion().then((val) => appVersion = val);
+
+          ApplicationMetaData applicationMetaData = (state.responseObjects
+                .firstWhere((r) => r is ApplicationMetaData, orElse: () => null)
+            as ApplicationMetaData);
+
+          //if (appVersion != applicationMetaData.version) {
+            SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
+            _download();
+          //}
+
+          Menu menu = state.responseObjects
+              .firstWhere((r) => r is Menu, orElse: () => null);
+          Future.delayed(Duration.zero, () {
+            if (menu == null) {
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => LoginPage()));
+            } else {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (_) => MenuPage(
+                        menuItems: menu.items,
+                      )));
+            }
+          });
+        } else if (state != null &&
+            !state.loading &&
+            (state.error != null && state.error == true) &&
+            errorMsgShown == false) {
+          errorMsgShown = true;
+          Future.delayed(Duration.zero,
+              () => showGoToSettings(context, 'Error', state.message));
+        }
+
+        return Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'assets/images/sib_visions.jpg',
+                  width: (MediaQuery.of(context).size.width - 50),
+                ),
+              ),
+              Text('Loading...'),
+            ],
+          ),
         );
-      }
+      },
     );
   }
 
@@ -48,61 +96,71 @@ class _StartupPageState extends State<StartupPage> with SingleTickerProviderStat
         globals.appName = val[0].appName;
         globals.baseUrl = val[0].baseUrl;
       }
-      apiStreamSubscription = apiSubscription(startupBloc.apiResult, context);
-      startupBloc.startupSink.add(
-        new StartupViewModel(applicationName: globals.appName, layoutMode: 'generic')
-      );
+      Startup request = Startup(
+          layoutMode: 'generic',
+          applicationName: globals.appName,
+          requestType: RequestType.STARTUP);
+
+      BlocProvider.of<ApiBloc>(context).dispatch(request);
     });
   }
 
   Future<Null> loadSharedPrefs() async {
     await SharedPreferencesHelper().getData().then((prefData) {
-      if (prefData['appName'] == 'null' || prefData['appName'] == null || prefData['appName'].isEmpty) {
+      if (prefData['appName'] == 'null' ||
+          prefData['appName'] == null ||
+          prefData['appName'].isEmpty) {
       } else {
         globals.appName = prefData['appName'];
       }
-      if (prefData['baseUrl'] == 'null' || prefData['baseUrl'] == null || prefData['baseUrl'].isEmpty) {
+      if (prefData['baseUrl'] == 'null' ||
+          prefData['baseUrl'] == null ||
+          prefData['baseUrl'].isEmpty) {
       } else {
         globals.baseUrl = prefData['baseUrl'];
       }
-      if (prefData['language'] == 'null' || prefData['language'] == null || prefData['language'].isEmpty) {
+      if (prefData['language'] == 'null' ||
+          prefData['language'] == null ||
+          prefData['language'].isEmpty) {
       } else {
         globals.language = prefData['language'];
       }
       // if (globals.appName == null || globals.baseUrl == null)
-        // Navigator.pushReplacementNamed(context, '/settings');
+      // Navigator.pushReplacementNamed(context, '/settings');
     });
-    await SharedPreferencesHelper().getAppVersion().then((val) => globals.appVersion = val);
+    await SharedPreferencesHelper()
+        .getAppVersion()
+        .then((val) => globals.appVersion = val);
+  }
+
+  _download() {
+    Download translation = Download(
+        applicationImages: false,
+        libraryImages: false,
+        clientId: globals.clientId,
+        name: 'translation',
+        requestType: RequestType.DOWNLOAD_TRANSLATION);
+
+    BlocProvider.of<ApiBloc>(context).dispatch(translation);    
+
+    Download images = Download(
+      applicationImages: true,
+      libraryImages: true,
+      clientId: globals.clientId,
+      name: 'images',
+      requestType: RequestType.DOWNLOAD_IMAGES
+    );
+
+    BlocProvider.of<ApiBloc>(context).dispatch(images);
   }
 
   @override
   void dispose() {
-    controller?.dispose();
-    startupBloc?.dispose();
-    apiStreamSubscription?.cancel();
     super.dispose();
-  }
-
-  Widget startupLoader() => StartupProvider(
-    validationErrorCallback: showValidationError,
-    child: Scaffold(
-      key: scaffoldState,
-      backgroundColor: Colors.white,
-      body: Center(
-        child: startupBuilder()
-      ),
-    ),
-  );
-
-  showValidationError(StartupValidationType type) {
-    scaffoldState.currentState.showSnackBar(SnackBar(
-      content: Text("Something went wrong"),
-      duration: Duration(seconds: 2),
-    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return startupLoader();
+    return newStartupBuilder();
   }
 }

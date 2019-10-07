@@ -1,5 +1,7 @@
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
+
 /// Model for the [CloseScreen] request.
-class CloseScreen {
+class CloseScreen extends Request {
   String componentId;
   String clientId;
 

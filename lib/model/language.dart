@@ -1,12 +1,13 @@
-class Language {
+import 'api/response/response_object.dart';
+
+class Language extends ResponseObject {
   String langCode;
-  String name;
   String languageResource;
 
-  Language({this.langCode, this.name, this.languageResource});
+  Language({this.langCode, this.languageResource});
 
   Language.fromJson(Map<String, dynamic> json)
     : langCode = json['langCode'],
-      name = json['name'],
-      languageResource = json['languageResource'];
+      languageResource = json['languageResource'],
+      super.fromJson(json);
 }
