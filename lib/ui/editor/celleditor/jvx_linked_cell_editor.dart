@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
@@ -78,7 +80,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       }
     }
 
-    initialData = data.records[0][0];
+    initialData = data.records[0][0].toString();
 
     this.setData(data);
   }

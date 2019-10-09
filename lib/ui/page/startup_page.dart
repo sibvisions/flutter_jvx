@@ -3,16 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
+import 'package:jvx_mobile_v3/logic/new_bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/application_meta_data.dart';
+import 'package:jvx_mobile_v3/model/application_style/application_style.dart';
 import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/model/login_item.dart';
 import 'package:jvx_mobile_v3/model/menu.dart';
 import 'package:jvx_mobile_v3/model/startup/startup.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -33,41 +34,51 @@ class _StartupPageState extends State<StartupPage> {
       builder: (context, state) {
         if (state != null &&
             !state.loading &&
-            state.requestType == RequestType.STARTUP &&
-            state.responseObjects != null &&
-            (state.error != true || state.error == null)) {
-          String appVersion;
-          SharedPreferencesHelper().getAppVersion().then((val) => appVersion = val);
-
-          ApplicationMetaData applicationMetaData = (state.responseObjects
-                .firstWhere((r) => r is ApplicationMetaData, orElse: () => null)
-            as ApplicationMetaData);
-
-          //if (appVersion != applicationMetaData.version) {
-            SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
-            _download();
-          //}
-
-          Menu menu = state.responseObjects
-              .firstWhere((r) => r is Menu, orElse: () => null);
-          Future.delayed(Duration.zero, () {
-            if (menu == null) {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => LoginPage()));
-            } else {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (_) => MenuPage(
-                        menuItems: menu.items,
-                      )));
-            }
-          });
-        } else if (state != null &&
-            !state.loading &&
-            (state.error != null && state.error == true) &&
-            errorMsgShown == false) {
+            !errorMsgShown) {
           errorMsgShown = true;
-          Future.delayed(Duration.zero,
-              () => showGoToSettings(context, 'Error', state.message));
+          Future.delayed(Duration.zero, () => handleError(state, context));
+        }
+
+        if (state != null &&
+            !state.loading &&
+            state.requestType == RequestType.STARTUP &&
+            state.applicationMetaData != null &&
+            state.language != null &&
+            (!state.error || state.error == null)) {
+          String appVersion;
+          SharedPreferencesHelper().getAppVersion().then((val) {
+            appVersion = val;
+
+            ApplicationMetaData applicationMetaData = state.applicationMetaData;
+
+            if (appVersion != applicationMetaData.version) {
+              SharedPreferencesHelper()
+                  .setAppVersion(applicationMetaData.version);
+              _download();
+            }
+
+            ApplicationStyle applicationStyle = ApplicationStyle(
+                clientId: applicationMetaData.clientId,
+                requestType: RequestType.APP_STYLE,
+                name: 'applicationStyle',
+                contentMode: 'json');
+
+            BlocProvider.of<ApiBloc>(context).dispatch(applicationStyle);
+
+            Menu menu = state.menu;
+
+            Future.delayed(Duration.zero, () {
+              if (menu == null) {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => LoginPage()));
+              } else {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (_) => MenuPage(
+                          menuItems: menu.items,
+                        )));
+              }
+            });
+          });
         }
 
         return Scaffold(
@@ -100,6 +111,8 @@ class _StartupPageState extends State<StartupPage> {
       Startup request = Startup(
           layoutMode: 'generic',
           applicationName: globals.appName,
+          screenHeight: MediaQuery.of(context).size.height.toInt(),
+          screenWidth: MediaQuery.of(context).size.width.toInt(),
           requestType: RequestType.STARTUP);
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);
@@ -129,9 +142,6 @@ class _StartupPageState extends State<StartupPage> {
       // if (globals.appName == null || globals.baseUrl == null)
       // Navigator.pushReplacementNamed(context, '/settings');
     });
-    await SharedPreferencesHelper()
-        .getAppVersion()
-        .then((val) => globals.appVersion = val);
   }
 
   _download() {
@@ -142,15 +152,14 @@ class _StartupPageState extends State<StartupPage> {
         name: 'translation',
         requestType: RequestType.DOWNLOAD_TRANSLATION);
 
-    BlocProvider.of<ApiBloc>(context).dispatch(translation);    
+    BlocProvider.of<ApiBloc>(context).dispatch(translation);
 
     Download images = Download(
-      applicationImages: true,
-      libraryImages: true,
-      clientId: globals.clientId,
-      name: 'images',
-      requestType: RequestType.DOWNLOAD_IMAGES
-    );
+        applicationImages: true,
+        libraryImages: true,
+        clientId: globals.clientId,
+        name: 'images',
+        requestType: RequestType.DOWNLOAD_IMAGES);
 
     BlocProvider.of<ApiBloc>(context).dispatch(images);
   }

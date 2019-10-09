@@ -169,17 +169,7 @@ class _LoginCardState extends State<LoginCard>
     apiStreamSubscription?.cancel();
     super.dispose();
   }
-
-  showUsernameError(BuildContext context) {
-    LoginProvider.of(context)
-        .validationErrorCallback(LoginValidationType.username);
-  }
-
-  showPasswordError(BuildContext context) {
-    LoginProvider.of(context)
-        .validationErrorCallback(LoginValidationType.password);
-  }
-
+  
   _login(BuildContext context) {
     if (this.password.length > 0 && this.username.length > 0) {
       /*

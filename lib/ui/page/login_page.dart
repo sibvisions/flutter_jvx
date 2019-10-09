@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/inherited/login_provider.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
+import 'package:jvx_mobile_v3/logic/new_bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/menu.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
-import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 import 'menu_page.dart';
-
-enum LoginValidationType { username, password }
 
 class LoginPage extends StatefulWidget {
   @override
@@ -23,6 +20,7 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
+  bool errorMsgShown = false;
 
   Widget loginScaffold() => Scaffold(
         key: scaffoldState,
@@ -38,16 +36,22 @@ class LoginPageState extends State<LoginPage> {
 
   Widget loginBuilder() => BlocBuilder<ApiBloc, Response>(
         builder: (context, state) {
-          if (state.requestType == RequestType.LOGOUT && !state.loading && (state.error == null || !state.error)) {
+        if (state != null &&
+            !state.loading &&
+            !errorMsgShown) {
+          errorMsgShown = true;
+          Future.delayed(Duration.zero, () => handleError(state, context));
+        }
+
+          if (state != null && state.requestType == RequestType.LOGOUT && !state.loading && (state.error == null || !state.error)) {
             return loginScaffold();
           }
 
-          if (state.requestType == RequestType.LOGIN &&
+          if (state != null && state.requestType == RequestType.LOGIN &&
               !state.loading &&
               (state.error == null || !state.error) &&
-              state.responseObjects != null) {
-            Menu menu = state.responseObjects
-                .firstWhere((r) => r is Menu, orElse: () => null);
+              state.loginItem != null) {
+            Menu menu = state.menu;
 
             if (menu != null)
               Future.delayed(
@@ -58,10 +62,9 @@ class LoginPageState extends State<LoginPage> {
                           ))));
           }
 
-          if ((state.requestType == RequestType.DOWNLOAD_IMAGES ||
+          if (state != null && (state.requestType == RequestType.DOWNLOAD_IMAGES ||
                       state.requestType == RequestType.DOWNLOAD_TRANSLATION) &&
-                  state.loading ||
-              state.download == null) {
+                  state.loading) {
             return Scaffold(
               body: Center(
                 child: Text('Loading...'),

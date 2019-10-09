@@ -1,22 +1,25 @@
+import 'package:jvx_mobile_v3/model/action.dart';
+import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 
-class ScreenGeneric {
-  String name;
-  String componentId;
+class ScreenGeneric extends ResponseObject {
   List<ChangedComponent> changedComponents;
+  Action action;
 
-  ScreenGeneric({this.name, this.componentId, this.changedComponents});
+  ScreenGeneric({this.changedComponents});
 
   ScreenGeneric.fromChangedComponentsJson(Map<String, dynamic> json) {
-    componentId = json['componentId'];
-
     changedComponents = getComponents(json['changedComponents']);
+    super.name = json['name'];
+    super.componentId = json['componentId'];
   }
 
   ScreenGeneric.fromUpdateComponentsJson(Map<String, dynamic> json) {
     componentId = json['componentId'];
 
     changedComponents = getComponents(json['updatedComponents']);
+    super.name = json['name'];
+    super.componentId = json['componentId'];
   }
 
   static getComponents(List json) {

@@ -1,4 +1,6 @@
 import 'package:archive/archive.dart';
+import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
+import 'package:jvx_mobile_v3/model/api/exceptions/session_timeout_exception.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'dart:convert';
@@ -75,16 +77,53 @@ class RestClient {
           });
     } catch (e) {
       return Response()
+        ..title = 'Connection Error'
+        ..errorName = 'connection.error'
         ..error = true
-        ..message = 'Could not connect to server!';
+        ..message = 'An error with status code ${(response as http.Response).statusCode} occured.'
+        ..details = '(${(response as http.Response).statusCode}): ${(response as http.Response).body}';
     }
 
     if (response == null || (response as http.Response).statusCode != 200) {
-      return Response.fromJson(json.decode(response.body));
+      return Response()
+        ..title = 'Connection Error'
+        ..errorName = 'server.error'
+        ..error = true
+        ..message = 'An error with status code ${(response as http.Response).statusCode} occured.'
+        ..details = '(${(response as http.Response).statusCode}): ${(response as http.Response).body}';
     } else {
-      resp = Response.fromJson(json.decode(response.body));
+      try {
+        if (json.decode(response.body) is List) {
+          resp = Response.fromJson(json.decode(response.body));
+        } else {
+          resp = Response.fromJsonForAppStyle(json.decode(response.body));
+        }
+      } catch (e) {
+        if (e is ApiException) {
+          return Response()
+            ..details = e.details
+            ..message = e.message
+            ..title = e.title
+            ..errorName = e.name
+            ..error = true;
+        } else if (e is SessionExpiredException) {
+          return Response()
+            ..details = e.details
+            ..message = e.message
+            ..title = e.title
+            ..errorName = e.name
+            ..error = true;
+        } else {
+          return Response()
+            ..title = 'Error'
+            ..errorName = 'error'
+            ..error = true
+            ..message = 'An error occured.'
+            ..details = '${e.toString()}';
+        }
+      }
     }
-
+    
     updateCookie(response);
     return resp;
   }

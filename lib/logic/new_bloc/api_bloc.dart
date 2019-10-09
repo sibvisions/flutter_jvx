@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/application_meta_data.dart';
@@ -12,11 +14,13 @@ import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/model/login/login.dart';
 import 'package:jvx_mobile_v3/model/logout/logout.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen.dart';
+import 'package:jvx_mobile_v3/model/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/startup/startup.dart';
 import 'package:jvx_mobile_v3/services/new_rest_client.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ApiBloc extends Bloc<Request, Response> {
@@ -38,7 +42,7 @@ class ApiBloc extends Bloc<Request, Response> {
     } else if (event is Download) {
       yield* download(event);
     } else if (event is ApplicationStyle) {
-      yield* application_style(event);
+      yield* applicationStyle(event);
     }
   }
 
@@ -52,15 +56,16 @@ class ApiBloc extends Bloc<Request, Response> {
 
     Response resp = await processRequest(request);
 
-    if (resp.error == null || !resp.error) {
+    if (!resp.error) {
       if (resp != null &&
-          resp.responseObjects != null &&
-          resp.responseObjects.length > 0) {
-        ApplicationMetaData applicationMetaData = (resp.responseObjects
-                .firstWhere((r) => r is ApplicationMetaData, orElse: () => null)
-            as ApplicationMetaData);
-        if (applicationMetaData != null)
+          resp.applicationMetaData != null) {
+        ApplicationMetaData applicationMetaData = resp.applicationMetaData;
+        if (applicationMetaData != null) {
           globals.clientId = applicationMetaData.clientId;
+          globals.language = applicationMetaData.langCode;
+          globals.appVersion = applicationMetaData.version;
+          Translations.load(Locale(globals.language));
+        }
       }
     }
 
@@ -71,8 +76,8 @@ class ApiBloc extends Bloc<Request, Response> {
     Response resp = await processRequest(request);
 
     AuthenticationData authData;
-    if (resp.responseObjects != null)
-      authData = resp.responseObjects.firstWhere((r) => r is AuthenticationData, orElse: () => null);
+    if (resp.authenticationData != null)
+      authData = resp.authenticationData;
 
     if (authData != null)
       SharedPreferencesHelper().setAuthKey(authData.authKey);
@@ -85,11 +90,20 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> openscreen(OpenScreen request) async* {
-    yield await processRequest(request);
+    prefix0.Action action = request.action;
+
+    Response resp = await processRequest(request);
+
+    if (resp.screenGeneric != null)
+      resp.screenGeneric.action = action;
+
+    yield resp;
   }
 
   Stream<Response> closescreen(CloseScreen request) async* {
-    yield await processRequest(request);
+    Response resp = await processRequest(request);
+    
+    yield resp;
   }
 
   Stream<Response> download(Download request) async* {
@@ -114,6 +128,7 @@ class ApiBloc extends Bloc<Request, Response> {
         }
       }
       SharedPreferencesHelper().setTranslation(globals.translation);
+      Translations.load(Locale(globals.language));
     } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
       var archive = resp.download;
 
@@ -133,7 +148,7 @@ class ApiBloc extends Bloc<Request, Response> {
     yield resp;
   }
 
-  Stream<Response> application_style(ApplicationStyle request) async* {
+  Stream<Response> applicationStyle(ApplicationStyle request) async* {
     yield await processRequest(request);
   }
 
@@ -145,48 +160,62 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.STARTUP:
         response = await restClient.postAsync('/api/startup', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
         return response;
         break;
       case RequestType.LOGIN:
         response = await restClient.postAsync('/api/login', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
         return response;
         break;
       case RequestType.LOGOUT:
         response = await restClient.postAsync('/api/logout', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
         return response;
         break;
       case RequestType.OPEN_SCREEN:
         response =
             await restClient.postAsync('/api/openScreen', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.CLOSE_SCREEN:
         response =
             await restClient.postAsync('/api/closeScreen', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.DAL_SELECT_RECORD:
         response = await restClient.postAsync(
             '/api/dal/selectRecord', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.DAL_SET_VALUE:
         response =
             await restClient.postAsync('/api/dal/setValue', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.DAL_FETCH:
         response =
             await restClient.postAsync('/api/dal/fetch', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.DOWNLOAD_TRANSLATION:
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
         response.requestType = request.requestType;
         response.download = ZipDecoder().decodeBytes(response.download);
+        updateResponse(response);
         return response;
         break;
       case RequestType.DOWNLOAD_IMAGES:
@@ -194,15 +223,47 @@ class ApiBloc extends Bloc<Request, Response> {
             await restClient.postAsyncDownload('/download', request.toJson());
         response.requestType = request.requestType;
         response.download = ZipDecoder().decodeBytes(response.download);
+        updateResponse(response);
         return response;
         break;
       case RequestType.APP_STYLE:
         response =
-            await restClient.postAsyncDownload('/download', request.toJson());
+            await restClient.postAsync('/download', request.toJson());
         response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.PRESS_BUTTON:
+        // TODO: Handle this case.
         break;
     }
 
     return null;
+  }
+
+  Response updateResponse(Response response) {
+    Response currentResponse = currentState;
+    Response toUpdate = response;
+
+    if (toUpdate.applicationMetaData == null)
+      toUpdate.applicationMetaData = currentResponse.applicationMetaData;
+    if (toUpdate.applicationStyle == null)
+      toUpdate.applicationStyle = currentResponse.applicationStyle;
+    if (toUpdate.authenticationData == null)
+      toUpdate.authenticationData = currentResponse.authenticationData;
+    if (toUpdate.language == null)
+      toUpdate.language = currentResponse.language;
+    if (toUpdate.jVxData == null)
+      toUpdate.jVxData = currentResponse.jVxData;
+    if (toUpdate.jVxMetaData == null)
+      toUpdate.jVxMetaData = currentResponse.jVxMetaData;
+    if (toUpdate.loginItem == null)
+      toUpdate.loginItem = currentResponse.loginItem;
+    if (toUpdate.menu == null)
+      toUpdate.menu = currentResponse.menu;
+    if (toUpdate.screenGeneric == null)
+      toUpdate.screenGeneric = currentResponse.screenGeneric;
+
+    return toUpdate;
   }
 }
