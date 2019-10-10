@@ -1,3 +1,4 @@
+import 'package:jvx_mobile_v3/model/action.dart';
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
 import 'package:jvx_mobile_v3/model/api/exceptions/session_timeout_exception.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
@@ -21,6 +22,7 @@ class Response {
   bool loading = false;
   String message;
   String title;
+  Action action;
   String details;
   ApplicationMetaData applicationMetaData;
   Language language;

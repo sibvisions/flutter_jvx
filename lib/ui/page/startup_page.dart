@@ -39,47 +39,7 @@ class _StartupPageState extends State<StartupPage> {
           Future.delayed(Duration.zero, () => handleError(state, context));
         }
 
-        if (state != null &&
-            !state.loading &&
-            state.requestType == RequestType.STARTUP &&
-            state.applicationMetaData != null &&
-            state.language != null &&
-            (!state.error || state.error == null)) {
-          String appVersion;
-          SharedPreferencesHelper().getAppVersion().then((val) {
-            appVersion = val;
-
-            ApplicationMetaData applicationMetaData = state.applicationMetaData;
-
-            if (appVersion != applicationMetaData.version) {
-              SharedPreferencesHelper()
-                  .setAppVersion(applicationMetaData.version);
-              _download();
-            }
-
-            ApplicationStyle applicationStyle = ApplicationStyle(
-                clientId: applicationMetaData.clientId,
-                requestType: RequestType.APP_STYLE,
-                name: 'applicationStyle',
-                contentMode: 'json');
-
-            BlocProvider.of<ApiBloc>(context).dispatch(applicationStyle);
-
-            Menu menu = state.menu;
-
-            Future.delayed(Duration.zero, () {
-              if (menu == null) {
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => LoginPage()));
-              } else {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (_) => MenuPage(
-                          menuItems: menu.items,
-                        )));
-              }
-            });
-          });
-        }
+        startupHandler(state);
 
         return Scaffold(
           body: Column(
@@ -172,5 +132,49 @@ class _StartupPageState extends State<StartupPage> {
   @override
   Widget build(BuildContext context) {
     return newStartupBuilder();
+  }
+
+  void startupHandler(Response state) {
+    if (state != null &&
+        !state.loading &&
+        state.requestType == RequestType.STARTUP &&
+        state.applicationMetaData != null &&
+        state.language != null &&
+        (!state.error || state.error == null)) {
+      String appVersion;
+      SharedPreferencesHelper().getAppVersion().then((val) {
+        appVersion = val;
+
+        ApplicationMetaData applicationMetaData = state.applicationMetaData;
+
+        if (appVersion != applicationMetaData.version) {
+          SharedPreferencesHelper()
+              .setAppVersion(applicationMetaData.version);
+          _download();
+        }
+
+        ApplicationStyle applicationStyle = ApplicationStyle(
+            clientId: applicationMetaData.clientId,
+            requestType: RequestType.APP_STYLE,
+            name: 'applicationStyle',
+            contentMode: 'json');
+
+        BlocProvider.of<ApiBloc>(context).dispatch(applicationStyle);
+
+        Menu menu = state.menu;
+
+        Future.delayed(Duration.zero, () {
+          if (menu == null) {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => LoginPage()));
+          } else {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (_) => MenuPage(
+                      menuItems: menu.items,
+                    )));
+          }
+        });
+      });
+    }
   }
 }

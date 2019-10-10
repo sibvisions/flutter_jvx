@@ -1,10 +1,8 @@
-import 'package:jvx_mobile_v3/model/action.dart';
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 
 class ScreenGeneric extends ResponseObject {
   List<ChangedComponent> changedComponents;
-  Action action;
 
   ScreenGeneric({this.changedComponents});
 

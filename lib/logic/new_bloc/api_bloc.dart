@@ -50,6 +50,8 @@ class ApiBloc extends Bloc<Request, Response> {
     Map<String, String> authData =
         await SharedPreferencesHelper().getLoginData();
 
+    globals.username = authData['username'];
+
     if (authData['authKey'] != null) {
       request.authKey = authData['authKey'];
     }
@@ -73,6 +75,9 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> login(Login request) async* {
+    globals.username = request.username;
+    SharedPreferencesHelper().setLoginData(request.username, request.password);
+
     Response resp = await processRequest(request);
 
     AuthenticationData authData;
@@ -94,8 +99,8 @@ class ApiBloc extends Bloc<Request, Response> {
 
     Response resp = await processRequest(request);
 
-    if (resp.screenGeneric != null)
-      resp.screenGeneric.action = action;
+    if (!resp.error)
+      resp.action = action;
 
     yield resp;
   }
@@ -149,6 +154,8 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
+    globals.dir = (await getApplicationDocumentsDirectory()).path;
+
     yield await processRequest(request);
   }
 

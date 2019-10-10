@@ -36,18 +36,20 @@ class LoginPageState extends State<LoginPage> {
 
   Widget loginBuilder() => BlocBuilder<ApiBloc, Response>(
         builder: (context, state) {
-        if (state != null &&
-            !state.loading &&
-            !errorMsgShown) {
-          errorMsgShown = true;
-          Future.delayed(Duration.zero, () => handleError(state, context));
-        }
+          if (state != null && !state.loading && !errorMsgShown) {
+            errorMsgShown = true;
+            Future.delayed(Duration.zero, () => handleError(state, context));
+          }
 
-          if (state != null && state.requestType == RequestType.LOGOUT && !state.loading && (state.error == null || !state.error)) {
+          if (state != null &&
+              state.requestType == RequestType.LOGOUT &&
+              !state.loading &&
+              !state.error) {
             return loginScaffold();
           }
 
-          if (state != null && state.requestType == RequestType.LOGIN &&
+          if (state != null &&
+              state.requestType == RequestType.LOGIN &&
               !state.loading &&
               (state.error == null || !state.error) &&
               state.loginItem != null) {
@@ -62,9 +64,10 @@ class LoginPageState extends State<LoginPage> {
                           ))));
           }
 
-          if (state != null && (state.requestType == RequestType.DOWNLOAD_IMAGES ||
-                      state.requestType == RequestType.DOWNLOAD_TRANSLATION) &&
-                  state.loading) {
+          if (state != null &&
+              (state.requestType == RequestType.DOWNLOAD_IMAGES ||
+                  state.requestType == RequestType.DOWNLOAD_TRANSLATION) &&
+              state.loading) {
             return Scaffold(
               body: Center(
                 child: Text('Loading...'),
@@ -72,7 +75,18 @@ class LoginPageState extends State<LoginPage> {
             );
           }
 
-          return loginScaffold();
+          if (state != null &&
+              state.requestType == RequestType.APP_STYLE &&
+              !state.loading &&
+              !state.error) {
+            globals.applicationStyle = state.applicationStyle;
+            return loginScaffold();
+          }
+
+          return Scaffold(
+              body: Center(
+            child: Text('Loading...'),
+          ));
         },
       );
 

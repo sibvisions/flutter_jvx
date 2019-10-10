@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/tools/arc_clipper.dart';
-import 'package:jvx_mobile_v3/utils/check_if_image_exists.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
