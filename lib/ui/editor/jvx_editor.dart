@@ -11,10 +11,8 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
+import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
-
-//typedef EndEditing<T> = void Function(T value);
-//typedef VoidCallback BeginEditing = void Function();
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -24,7 +22,17 @@ class JVxEditor extends JVxComponent implements IEditor {
   bool readonly = false;
   bool eventFocusGained = false;
   JVxCellEditor _cellEditor;
+  ComponentData _data;
   int reload = -1;
+
+  ComponentData get data => _data;
+  set data(ComponentData data) {
+    _data?.unregisterDataChanged(onServerDataChanged);
+    _data = data;
+    _data?.registerDataChanged(onServerDataChanged);
+
+    this.cellEditor.value = _data.getColumnData(context, columnName);
+  }
 
   get cellEditor => _cellEditor;
   set cellEditor(JVxCellEditor editor) {
@@ -53,6 +61,10 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   void onEndEditing() {
     
+  }
+
+  void onServerDataChanged() {
+
   }
 
   void initData() {

@@ -52,7 +52,7 @@ class ComponentCreator implements IComponentCreator {
     component?.updateProperties(changedComponent);
 
     if (component is JVxEditor) {
-      component.initData();
+      //component.initData();
     }
 
     return component;

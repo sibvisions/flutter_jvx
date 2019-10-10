@@ -4,9 +4,12 @@ import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/container/i_container.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
+import 'package:jvx_mobile_v3/ui/screen/data_screen.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 
-class ComponentScreen {
+class ComponentScreen extends DataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
   bool debug = true;
@@ -74,6 +77,13 @@ class ComponentScreen {
 
     if (!components.containsKey(component.id)) {
       componentClass = _componentCreator.createComponent(component);
+      if (componentClass is JVxEditor) {
+        componentClass.data = this.getComponentData(componentClass.dataProvider);
+        if (componentClass.cellEditor is JVxReferencedCellEditor) {
+          (componentClass.cellEditor as JVxReferencedCellEditor).data = 
+            this.getComponentData((componentClass.cellEditor as JVxReferencedCellEditor).linkReference.dataProvider);
+        }
+      }
     } else {
       componentClass = components[component.id];
     }

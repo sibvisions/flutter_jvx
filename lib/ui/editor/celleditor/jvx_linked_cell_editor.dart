@@ -95,10 +95,22 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   }
 
   @override
+  void onServerDataChanged() {
+
+  }
+
+  @override
   Widget getWidget() {
+    String h = this.value;
+    String v = this.value;
+    this._items = getItems(this.data.getData(this.context));
+
+    if (!this._items.contains((i) => (i as DropdownMenuItem).value==v))
+      v = null;
+
     return DropdownButton(
-      hint: Text(JVxLabel.utf8convert(initialData)),
-      value: this.value,
+      hint: Text(JVxLabel.utf8convert(h)),
+      value: v,
       items: this._items,
       onChanged: valueChanged,
       isExpanded: true,

@@ -197,7 +197,7 @@ apiSubscription(Stream<FetchProcess> apiResult, BuildContext context) {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => new OpenScreenPage(
                       changedComponents: p.response.content.changedComponents,
-                      data: p.response.content.data,
+                      data: p.response.content._data,
                       metaData: p.response.content.metaData,
                       componentId: componentID,
                       title: p.response.content.title,
