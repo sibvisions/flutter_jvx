@@ -49,7 +49,11 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   void onValueChanged(dynamic value) {
-    data.setValues(context, [value]);
+    if (_cellEditor!=null && _cellEditor is JVxReferencedCellEditor) {
+      data.setValues(context, [value], (_cellEditor as JVxReferencedCellEditor).linkReference.columnNames);
+    } else {
+      data.setValues(context, [value]);
+    }
   }
 
   void onEndEditing() {

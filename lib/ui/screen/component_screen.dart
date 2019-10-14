@@ -23,9 +23,9 @@ class ComponentScreen extends DataScreen {
 
   ComponentScreen(this._componentCreator);
 
-  void updateComponents(List<ChangedComponent> changedComponentsJson) {
+  void updateComponents(List<ChangedComponent> changedComponents) {
     if (debug) print("JVxScreen updateComponents:");
-    changedComponentsJson?.forEach((changedComponent) {
+    changedComponents?.forEach((changedComponent) {
       if (components.containsKey(changedComponent.id)) {
         IComponent component = components[changedComponent.id];
 

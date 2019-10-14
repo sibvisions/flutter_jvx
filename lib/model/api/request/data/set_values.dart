@@ -7,7 +7,7 @@ class SetValues extends Request {
   String dataProvider;
   List<dynamic> columnNames;
   List<dynamic> values;
-  Filter filter = Filter();
+  Filter filter;
 
   SetValues(this.dataProvider, this.columnNames, this.values, [this.filter]) : 
       super(clientId: globals.clientId, requestType: RequestType.DAL_SET_VALUE);
@@ -17,6 +17,6 @@ class SetValues extends Request {
     'dataProvider': dataProvider,
     'columnNames': columnNames,
     'values': values,
-    'filter': filter?.toJson()
+    'filter': filter!=null?filter.toJson():Filter().toJson()
   };
 }
