@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
@@ -12,8 +11,8 @@ import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/logout/logout.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/model/open_screen/open_screen.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
-import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -23,6 +22,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 class MenuDrawerWidget extends StatelessWidget {
   final List<MenuItem> menuItems;
   final bool listMenuItems;
+  String title;
 
   MenuDrawerWidget(
       {Key key, @required this.menuItems, this.listMenuItems = false})
@@ -77,13 +77,15 @@ class MenuDrawerWidget extends StatelessWidget {
               : null,
           onTap: () {
             prefix0.Action action = item.action;
-            OpenScreenBloc openScreenBloc = OpenScreenBloc();
-            StreamSubscription<FetchProcess> apiStreamSubscription;
+                        title = action.label;
 
-            apiStreamSubscription =
-                apiSubscription(openScreenBloc.apiResult, context);
-            openScreenBloc.openScreenSink.add(new OpenScreenViewModel(
-                action: action, clientId: globals.clientId, manualClose: true));
+            OpenScreen openScreen = OpenScreen(
+                action: action,
+                clientId: globals.clientId,
+                manualClose: true,
+                requestType: RequestType.OPEN_SCREEN);
+
+            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },
         );
 

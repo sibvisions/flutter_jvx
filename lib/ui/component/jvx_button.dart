@@ -7,7 +7,6 @@ import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'jvx_component.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -26,7 +25,6 @@ class JVxButton extends JVxComponent {
   }
 
   void buttonPressed() {
-    apiStreamSubscription = apiSubscription(pressButtonBloc.apiResult, context);
     pressButtonBloc.pressButtonController.add(
       PressButtonViewModel(clientId: globals.clientId, 
         action: prefix0.Action(componentId: this.name, 

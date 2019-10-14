@@ -14,6 +14,7 @@ import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/model/login/login.dart';
 import 'package:jvx_mobile_v3/model/logout/logout.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen.dart';
+import 'package:jvx_mobile_v3/model/press_button/press_button.dart';
 import 'package:jvx_mobile_v3/model/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/startup/startup.dart';
 import 'package:jvx_mobile_v3/services/new_rest_client.dart';
@@ -43,6 +44,8 @@ class ApiBloc extends Bloc<Request, Response> {
       yield* download(event);
     } else if (event is ApplicationStyle) {
       yield* applicationStyle(event);
+    } else if (event is PressButton) {
+      yield* pressButton(event);
     }
   }
 
@@ -157,6 +160,14 @@ class ApiBloc extends Bloc<Request, Response> {
     globals.dir = (await getApplicationDocumentsDirectory()).path;
 
     yield await processRequest(request);
+  }
+
+  Stream<Response> pressButton(PressButton request) async* {
+    Response resp = await processRequest(request);
+
+    // To-Do: Need to call buttoncallback
+
+    yield resp;
   }
 
   Future<Response> processRequest(Request request) async {
