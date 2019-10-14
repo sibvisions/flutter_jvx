@@ -9,7 +9,7 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.da
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
-class JVxChoiceCellEditor extends JVxReferencedCellEditor {
+class JVxChoiceCellEditor extends JVxCellEditor {
   List<ChoiceCellEditorImage> _items = <ChoiceCellEditorImage>[];
   String defaultImageName;
   ChoiceCellEditorImage defaultImage;
@@ -31,11 +31,7 @@ class JVxChoiceCellEditor extends JVxReferencedCellEditor {
 
   void valueChanged(dynamic value) {
     this.value = value;
-    data.setValues(context, [value]);
-    /*getIt
-        .get<JVxScreen>()
-        .setValues(dataProvider, columnView.columnNames, [value]);
-        */
+    this.onValueChanged(value);
   }
 
   void loadImages() {
@@ -63,7 +59,6 @@ class JVxChoiceCellEditor extends JVxReferencedCellEditor {
     else
       selectedImage = _items[0];
 
-    getIt.get<JVxScreen>("screen").buttonCallback(null);
     onValueChanged(_items.indexOf(selectedImage));
   }
 

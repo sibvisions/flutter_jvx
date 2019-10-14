@@ -23,7 +23,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   bool eventFocusGained = false;
   JVxCellEditor _cellEditor;
   ComponentData _data;
-  int reload = -1;
+  int reload;
 
   ComponentData get data => _data;
   set data(ComponentData data) {
@@ -49,11 +49,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   void onValueChanged(dynamic value) {
-    if (_cellEditor!=null && _cellEditor is JVxReferencedCellEditor) {
-      data.setValues(context, [value], (_cellEditor as JVxReferencedCellEditor).linkReference.columnNames);
-    } else {
-      data.setValues(context, [value]);
-    }
+    data.setValues(context, [value]);
   }
 
   void onEndEditing() {
@@ -62,12 +58,6 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   void onServerDataChanged() {
     this.cellEditor?.value = _data.getColumnData(context, columnName);
-  }
-
-  void initData() {
-    //if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor)?.linkReference!=null) {
-    //    cellEditor.setInitialData(data.getData(context));
-    //}
   }
 
   @override
@@ -90,20 +80,6 @@ class JVxEditor extends JVxComponent implements IEditor {
       constraints = BoxConstraints.loose(maximumSize);
 
     Color color = Colors.grey[200];
-    /*if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor).linkReference!=null) {
-      color = Colors.transparent;
-      JVxData data = getIt.get<JVxScreen>("screen").getData(
-        (_cellEditor as JVxReferencedCellEditor).linkReference.dataProvider, 
-        (_cellEditor as JVxReferencedCellEditor).linkReference.referencedColumnNames);
-      if (data !=null)
-        cellEditor.setData(data);
-    } else { 
-      JVxData data = getIt.get<JVxScreen>("screen").getData(this.dataProvider, [this.columnName], reload);
-      reload = null;
-
-      if (data !=null)
-        cellEditor.setData(data);
-    }*/
 
     if(this.cellEditor is JVxChoiceCellEditor) {
       return Container(child: this.cellEditor.getWidget());

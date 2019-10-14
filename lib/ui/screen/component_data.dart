@@ -56,8 +56,8 @@ class ComponentData {
     return "";
   }
 
-  JVxData getData(BuildContext context) {
-    if (isFetching==false && (_data==null || !_data.isAllFetched)) {
+  JVxData getData(BuildContext context, int reload) {
+    if (reload==-1 || (isFetching==false && (_data==null || !_data.isAllFetched))) {
       this._fetchData(context);
     }
       

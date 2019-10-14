@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,40 +42,6 @@ class OpenScreenPage extends StatefulWidget {
 class _OpenScreenPageState extends State<OpenScreenPage> {
   JVxScreen screen = JVxScreen(ComponentCreator()); 
   bool errorMsgShown = false;
-    
-  void rebuildOpenScreen(List<ChangedComponent> changedComponents) {
-    //this.setState(() {
-    //  getIt.get<JVxScreen>("screen").updateComponents(changedComponents);
-    //});
-  }
-
-  void rebuild() {
-    //this.setState(() {});
-  }
-
-  @override
-  void initState() {
-    /*setState(() {
-      getIt.get<JVxScreen>("screen").componentId = widget.componentId;
-      getIt.get<JVxScreen>("screen").context = context;
-      getIt.get<JVxScreen>("screen").buttonCallback =
-          (List<ChangedComponent> data) {
-        if (data != null)
-          rebuildOpenScreen(data);
-        else
-          rebuild();
-      };
-
-      getIt.get<JVxScreen>("screen").components = <String, JVxComponent>{};
-      getIt.get<JVxScreen>("screen").updateData(widget.data, widget.metaData);
-      getIt.get<JVxScreen>("screen").data = widget.data;
-      getIt.get<JVxScreen>("screen").metaData = widget.metaData;
-      getIt.get<JVxScreen>("screen").title = widget.title;
-      getIt.get<JVxScreen>("screen").updateComponents(widget.changedComponents);
-    });
-*/
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +64,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
 
       if (isScreenRequest(state.requestType)) {
         screen.context = context;
-        screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric.changedComponents);
+        screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric);
       }
 
       return WillPopScope(
@@ -129,7 +94,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
             ),
             title: Text(widget.title),
           ),
-          body: screen.getWidget() //getIt.get<JVxScreen>("screen").getWidget(),
+          body: screen.getWidget()
         ),
       );
     });

@@ -16,7 +16,6 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
 
   void valueChanged(dynamic value) {
     this.value = value;
-    //data.setValues(context, [value], linkReference.columnNames);
     this.onValueChanged(value);
   }
 
@@ -104,7 +103,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   Widget getWidget() {
     String h = this.value;
     String v = this.value;
-    this._items = getItems(this.data.getData(this.context));
+    this._items = getItems(this.data.getData(this.context, null));
 
     if (!this._items.contains((i) => (i as DropdownMenuItem).value==v))
       v = null;

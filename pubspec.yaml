@@ -23,7 +23,6 @@ dependencies:
   archive: ^2.0.10
   xml: ^3.2.0
   gson: ^0.1.2
-  get_it: ^2.0.3
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
   equatable: ^0.2.0

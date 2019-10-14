@@ -6,7 +6,7 @@ import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/press_button.dart';
+import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/application_meta_data.dart';
@@ -266,7 +266,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.PRESS_BUTTON:
         response =
-            await restClient.postAsync('/api/dal/pressButton', request.toJson());
+            await restClient.postAsync('/api/pressButton', request.toJson());
         response.requestType = request.requestType;
         updateResponse(response);
         return response;
@@ -288,16 +288,16 @@ class ApiBloc extends Bloc<Request, Response> {
       toUpdate.authenticationData = currentResponse.authenticationData;
     if (toUpdate.language == null)
       toUpdate.language = currentResponse.language;
-    if (toUpdate.jVxData == null)
-      toUpdate.jVxData = currentResponse.jVxData;
-    if (toUpdate.jVxMetaData == null)
-      toUpdate.jVxMetaData = currentResponse.jVxMetaData;
+    //if (toUpdate.jVxData == null)
+    //  toUpdate.jVxData = currentResponse.jVxData;
+    //if (toUpdate.jVxMetaData == null)
+    //  toUpdate.jVxMetaData = currentResponse.jVxMetaData;
     if (toUpdate.loginItem == null)
       toUpdate.loginItem = currentResponse.loginItem;
     if (toUpdate.menu == null)
       toUpdate.menu = currentResponse.menu;
-    if (toUpdate.screenGeneric == null)
-      toUpdate.screenGeneric = currentResponse.screenGeneric;
+    //if (toUpdate.screenGeneric == null)
+    //  toUpdate.screenGeneric = currentResponse.screenGeneric;
 
     return toUpdate;
   }

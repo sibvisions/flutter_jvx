@@ -17,10 +17,6 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
   void valueChanged(dynamic value) {
     this.value = value;
     this.onValueChanged(value);
-    /*getIt
-        .get<JVxScreen>()
-        .setValues(dataProvider, linkReference.columnNames, [value]);
-        */
   }
 
   List<ListTile> getItems(JVxData data) {

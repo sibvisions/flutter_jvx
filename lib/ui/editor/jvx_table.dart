@@ -51,7 +51,7 @@ class JVxTable extends JVxEditor {
         changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_NAMES, columnNames);
     reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
     columnLabels = changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_LABELS, columnLabels);
-    reload = -1;
+    reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
   }
 
   void _onRowTapped(int index) {
@@ -143,11 +143,6 @@ class JVxTable extends JVxEditor {
 
   @override
   Widget getWidget() {
-    /*JVxData data = getIt
-        .get<JVxScreen>("screen")
-        .getData(dataProvider, this.columnNames, this.reload);
-    */
-    this.reload = null;
     List<TableRow> rows = new List<TableRow>();
     TableBorder border = TableBorder();
 
@@ -163,7 +158,8 @@ class JVxTable extends JVxEditor {
       rows.add(getHeaderRow());
     }
 
-    rows.addAll(getDataRows(data.getData(context)));
+    rows.addAll(getDataRows(data.getData(context, this.reload)));
+    this.reload = null;
 
     if (rows.length > 0 &&
         rows[0].children != null &&
