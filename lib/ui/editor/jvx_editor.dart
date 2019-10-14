@@ -31,7 +31,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
 
-    this.cellEditor.value = _data.getColumnData(context, columnName);
+    this.cellEditor?.value = _data.getColumnData(context, columnName);
   }
 
   get cellEditor => _cellEditor;
@@ -49,14 +49,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   void onValueChanged(dynamic value) {
-    List<dynamic> columnNames = [columnName];
-
-    if (_cellEditor is JVxReferencedCellEditor)
-      columnNames = (_cellEditor as JVxReferencedCellEditor).linkReference.columnNames;
-
-    getIt
-        .get<JVxScreen>("screen")
-        .setValues(dataProvider, columnNames, [value]);
+    data.setValues(context, [value]);
   }
 
   void onEndEditing() {
@@ -64,16 +57,13 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   void onServerDataChanged() {
-
+    this.cellEditor?.value = _data.getColumnData(context, columnName);
   }
 
   void initData() {
-    if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor)?.linkReference!=null) {
-      JVxData data = getIt.get<JVxScreen>("screen").getData(cellEditor.dataProvider);
-      if (data !=null) {
-        cellEditor.setInitialData(data);
-      }
-    }
+    //if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor)?.linkReference!=null) {
+    //    cellEditor.setInitialData(data.getData(context));
+    //}
   }
 
   @override
@@ -96,7 +86,7 @@ class JVxEditor extends JVxComponent implements IEditor {
       constraints = BoxConstraints.loose(maximumSize);
 
     Color color = Colors.grey[200];
-    if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor).linkReference!=null) {
+    /*if (_cellEditor is JVxReferencedCellEditor && (_cellEditor as JVxReferencedCellEditor).linkReference!=null) {
       color = Colors.transparent;
       JVxData data = getIt.get<JVxScreen>("screen").getData(
         (_cellEditor as JVxReferencedCellEditor).linkReference.dataProvider, 
@@ -109,7 +99,7 @@ class JVxEditor extends JVxComponent implements IEditor {
 
       if (data !=null)
         cellEditor.setData(data);
-    }
+    }*/
 
     if(this.cellEditor is JVxChoiceCellEditor) {
       return Container(child: this.cellEditor.getWidget());

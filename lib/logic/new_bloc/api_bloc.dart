@@ -1,9 +1,12 @@
 import 'dart:io';
-
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/application_meta_data.dart';
@@ -14,12 +17,9 @@ import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/model/login/login.dart';
 import 'package:jvx_mobile_v3/model/logout/logout.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen.dart';
-import 'package:jvx_mobile_v3/model/press_button/press_button.dart';
-import 'package:jvx_mobile_v3/model/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/startup/startup.dart';
 import 'package:jvx_mobile_v3/services/new_rest_client.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
-
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
@@ -44,6 +44,8 @@ class ApiBloc extends Bloc<Request, Response> {
       yield* download(event);
     } else if (event is ApplicationStyle) {
       yield* applicationStyle(event);
+    } else if (event is SetValues || event is SelectRecord || event is FetchData) {
+      yield* data(event);
     } else if (event is PressButton) {
       yield* pressButton(event);
     }
@@ -108,6 +110,25 @@ class ApiBloc extends Bloc<Request, Response> {
     yield resp;
   }
 
+  Stream<Response> data(SetValues request) async* {
+    Response resp = await processRequest(request);
+
+    yield resp;
+  }
+
+  Stream<Response> pressButton(PressButton request) async* {
+    prefix0.Action action = request.action;
+
+    Response resp = await processRequest(request);
+
+    if (!resp.error)
+      resp.action = action;
+
+    yield resp;
+  }
+
+  
+
   Stream<Response> closescreen(CloseScreen request) async* {
     Response resp = await processRequest(request);
     
@@ -160,14 +181,6 @@ class ApiBloc extends Bloc<Request, Response> {
     globals.dir = (await getApplicationDocumentsDirectory()).path;
 
     yield await processRequest(request);
-  }
-
-  Stream<Response> pressButton(PressButton request) async* {
-    Response resp = await processRequest(request);
-
-    // To-Do: Need to call buttoncallback
-
-    yield resp;
   }
 
   Future<Response> processRequest(Request request) async {
@@ -252,7 +265,11 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.PRESS_BUTTON:
-        // TODO: Handle this case.
+        response =
+            await restClient.postAsync('/api/dal/pressButton', request.toJson());
+        response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
         break;
     }
 
