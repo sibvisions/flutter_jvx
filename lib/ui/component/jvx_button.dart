@@ -1,14 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/data/press_button.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/press_button.dart' as prefix1;
 import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/fetch_process.dart';
-import 'package:jvx_mobile_v3/model/press_button/press_button.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'jvx_component.dart';
@@ -25,11 +20,7 @@ class JVxButton extends JVxComponent {
   }
 
   void buttonPressed() {
-<<<<<<< HEAD
     PressButton pressButton = PressButton(prefix0.Action(componentId: this.name,
-=======
-    prefix1.PressButton pressButton = prefix1.PressButton(prefix0.Action(componentId: this.name,
->>>>>>> d8a5de59e68fafa309824171e2b67e8eac8ecf28
         label: this.text));
 
     BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
