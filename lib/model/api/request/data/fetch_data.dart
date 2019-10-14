@@ -8,7 +8,7 @@ class FetchData extends Request {
   int fromRow = -1;
   int rowCount = -1;
 
-  FetchData(String dataProvider, [List<dynamic> columnNames, this.fromRow, this.rowCount]) : 
+  FetchData(this.dataProvider, [this.columnNames, this.fromRow, this.rowCount]) : 
       super(clientId: globals.clientId, requestType: RequestType.DAL_FETCH);
 
   Map<String, dynamic> toJson() => <String, dynamic>{

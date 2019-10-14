@@ -110,7 +110,7 @@ class ApiBloc extends Bloc<Request, Response> {
     yield resp;
   }
 
-  Stream<Response> data(SetValues request) async* {
+  Stream<Response> data(Request request) async* {
     Response resp = await processRequest(request);
 
     yield resp;
@@ -229,7 +229,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.DAL_SET_VALUE:
         response =
-            await restClient.postAsync('/api/dal/setValue', request.toJson());
+            await restClient.postAsync('/api/dal/setValues', request.toJson());
         response.requestType = request.requestType;
         updateResponse(response);
         return response;

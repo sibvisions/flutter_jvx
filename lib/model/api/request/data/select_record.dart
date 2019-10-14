@@ -5,10 +5,9 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 /// Model for the [SelectRecord] request.
 class SelectRecord extends Request {
-  String clientId;
   String dataProvider;
   bool fetch;
-  Filter filter;
+  Filter filter = Filter();
 
   SelectRecord(this.dataProvider, [this.fetch, this.filter])  : 
       super(clientId: globals.clientId, requestType: RequestType.DAL_SELECT_RECORD);

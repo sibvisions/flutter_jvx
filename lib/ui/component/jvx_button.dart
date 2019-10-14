@@ -26,18 +26,10 @@ class JVxButton extends JVxComponent {
   }
 
   void buttonPressed() {
-<<<<<<< HEAD
     PressButton pressButton = PressButton(prefix0.Action(componentId: this.name,
         label: this.text));
 
     BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
-=======
-    pressButtonBloc.pressButtonController.add(
-      PressButtonViewModel(clientId: globals.clientId, 
-        action: prefix0.Action(componentId: this.name, 
-        label: this.text))
-    );
->>>>>>> 24c82427658660d58590b93f9088fa8e97dacb71
   }
 
   @override

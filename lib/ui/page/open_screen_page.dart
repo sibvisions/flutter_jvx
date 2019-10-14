@@ -5,10 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/error_handler.dart';
-<<<<<<< HEAD
-=======
-import 'package:jvx_mobile_v3/main.dart';
->>>>>>> 24c82427658660d58590b93f9088fa8e97dacb71
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/close_screen/close_screen.dart';

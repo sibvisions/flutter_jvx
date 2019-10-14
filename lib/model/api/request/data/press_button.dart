@@ -6,7 +6,6 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 /// Model for the [PressButton] request.
 class PressButton extends Request {
-  String clientId;
   Action action;
 
   PressButton(this.action)  : 
