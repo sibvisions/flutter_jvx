@@ -3,22 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/logic/bloc/close_screen_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/error_handler.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
-import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/close_screen/close_screen.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
-import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
-import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_bottom_modal.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
@@ -46,21 +41,22 @@ class OpenScreenPage extends StatefulWidget {
 }
 
 class _OpenScreenPageState extends State<OpenScreenPage> {
+  JVxScreen screen = JVxScreen(ComponentCreator()); 
   bool errorMsgShown = false;
     
   void rebuildOpenScreen(List<ChangedComponent> changedComponents) {
-    this.setState(() {
-      getIt.get<JVxScreen>("screen").updateComponents(changedComponents);
-    });
+    //this.setState(() {
+    //  getIt.get<JVxScreen>("screen").updateComponents(changedComponents);
+    //});
   }
 
   void rebuild() {
-    this.setState(() {});
+    //this.setState(() {});
   }
 
   @override
   void initState() {
-    setState(() {
+    /*setState(() {
       getIt.get<JVxScreen>("screen").componentId = widget.componentId;
       getIt.get<JVxScreen>("screen").context = context;
       getIt.get<JVxScreen>("screen").buttonCallback =
@@ -78,7 +74,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
       getIt.get<JVxScreen>("screen").title = widget.title;
       getIt.get<JVxScreen>("screen").updateComponents(widget.changedComponents);
     });
-
+*/
     super.initState();
   }
 
@@ -99,6 +95,12 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
                   listMenuItemsInDrawer: false,
                 )))
         );
+      }
+
+      if (isScreenRequest(state.requestType)) {
+        screen.context = context;
+        screen.updateComponents(state.screenGeneric.changedComponents);
+        screen.updateData(state.jVxData, state.jVxMetaData);
       }
 
       return WillPopScope(
@@ -128,7 +130,7 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
             ),
             title: Text(widget.title),
           ),
-          body: getIt.get<JVxScreen>("screen").getWidget(),
+          body: screen.getWidget() //getIt.get<JVxScreen>("screen").getWidget(),
         ),
       );
     });

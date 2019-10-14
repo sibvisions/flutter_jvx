@@ -28,9 +28,11 @@ class JVxTable extends JVxEditor {
 
   Size maximumSize;
 
-  ComponentData get data => this.data;
+  @override
   set data(ComponentData data) {
-
+    super.data?.unregisterDataChanged(onServerDataChanged);
+    super.data = data;
+    super.data?.registerDataChanged(onServerDataChanged);
   }
 
   JVxTable(Key componentId, BuildContext context) : super(componentId, context);
@@ -53,7 +55,7 @@ class JVxTable extends JVxEditor {
   }
 
   void _onRowTapped(int index) {
-    getIt.get<JVxScreen>("screen").selectRecord(dataProvider, index, false);
+    data.selectRecord(context, index);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {
@@ -135,10 +137,16 @@ class JVxTable extends JVxEditor {
   }
 
   @override
+  void onServerDataChanged() {
+
+  }
+
+  @override
   Widget getWidget() {
-    JVxData data = getIt
+    /*JVxData data = getIt
         .get<JVxScreen>("screen")
         .getData(dataProvider, this.columnNames, this.reload);
+    */
     this.reload = null;
     List<TableRow> rows = new List<TableRow>();
     TableBorder border = TableBorder();
@@ -155,7 +163,7 @@ class JVxTable extends JVxEditor {
       rows.add(getHeaderRow());
     }
 
-    rows.addAll(getDataRows(data));
+    rows.addAll(getDataRows(data.getData(context)));
 
     if (rows.length > 0 &&
         rows[0].children != null &&

@@ -16,7 +16,8 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
 
   void valueChanged(dynamic value) {
     this.value = value;
-    this.onValueChanged(value);
+    data.setValues(context, [value]);
+    //this.onValueChanged(value);
   }
 
   List<DropdownMenuItem> getItems(JVxData data) {
