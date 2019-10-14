@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/new_bloc/error_handler.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';

@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix1;
 import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
