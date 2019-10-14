@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
@@ -18,11 +17,9 @@ import 'package:jvx_mobile_v3/model/download/download.dart';
 import 'package:jvx_mobile_v3/model/login/login.dart';
 import 'package:jvx_mobile_v3/model/logout/logout.dart';
 import 'package:jvx_mobile_v3/model/open_screen/open_screen.dart';
-import 'package:jvx_mobile_v3/model/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/startup/startup.dart';
 import 'package:jvx_mobile_v3/services/new_rest_client.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
-
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
