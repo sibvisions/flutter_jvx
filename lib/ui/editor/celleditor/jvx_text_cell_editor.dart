@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/main.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/cell_editor.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxTextCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
   
-  JVxTextCellEditor(ComponentProperties properties, BuildContext context) : super(properties, context) {
-    multiLine = (properties.getProperty<String>('contentType')?.contains('multiline') ?? false);
+  JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
+    multiLine = (changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE)?.contains('multiline') ?? false);
   }
 
   @override
@@ -44,6 +43,8 @@ class JVxTextCellEditor extends JVxCellEditor {
       controller: _controller,
       maxLines: multiLine ? 4 : 1,
       keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
+      onEditingComplete: onEndEditing,
+      onChanged: onValueChanged,
     );
   }
 }

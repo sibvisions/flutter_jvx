@@ -1,42 +1,31 @@
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
-import 'package:jvx_mobile_v3/utils/convertion.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 
-class ChangedComponent {
+class ChangedComponent extends ComponentProperties {
+  static final String _cellEditorIdentifier = "cellEditor";
   String id;
   String name;
   String className;
-  String parent;
-  int indexOf;
-  ComponentProperties componentProperties;
   CellEditor cellEditor;
   bool destroy;
   bool remove;
-  String layout;
-  String layoutData;
 
-  ChangedComponent({
-    this.id,
-    this.name,
-    this.className,
-    this.parent,
-    this.indexOf,
-    this.destroy,
-    this.cellEditor,
-  });
+  get layoutName {
+    List<String> parameter = this.getProperty<String>(ComponentProperty.LAYOUT)?.split(",");
+    if (parameter!= null && parameter.length>0) {
+      return parameter[0];
+    } 
 
-  ChangedComponent.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    className = json['className'];
-    parent = json['parent'];
-    indexOf = json['indexOf'];
-    layout = json['layout'];
-    layoutData = json['layoutData'];
-    destroy = Convertion.convertToBool(json['~destroy']);
-    remove = Convertion.convertToBool(json['~remove']);
+    return null;
+  }
+
+  ChangedComponent.fromJson(Map<String, dynamic> json) : super(json) {
+    id = this.getProperty<String>(ComponentProperty.ID);
+    name = this.getProperty<String>(ComponentProperty.NAME);
+    className = this.getProperty<String>(ComponentProperty.CLASS_NAME);
+    destroy = this.getProperty<bool>(ComponentProperty.$DESTROY, false);
+    remove =  this.getProperty<bool>(ComponentProperty.$REMOVE, false);
     
-    if (json['cellEditor'] != null) cellEditor = CellEditor.fromJson(json['cellEditor']);
-    componentProperties = new ComponentProperties(json);
+    if (json[_cellEditorIdentifier] != null) cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);
   }
 }

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
-import 'package:jvx_mobile_v3/ui/jvx_screen.dart';
+import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
+import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxTable extends JVxEditor {
@@ -26,27 +28,34 @@ class JVxTable extends JVxEditor {
 
   Size maximumSize;
 
+  @override
+  set data(ComponentData data) {
+    super.data?.unregisterDataChanged(onServerDataChanged);
+    super.data = data;
+    super.data?.registerDataChanged(onServerDataChanged);
+  }
+
   JVxTable(Key componentId, BuildContext context) : super(componentId, context);
 
   @override
-  void updateProperties(ComponentProperties properties) {
-    super.updateProperties(properties);
-    maximumSize = properties.getProperty<Size>("maximumSize", null);
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+    maximumSize = changedComponent.getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
     showVerticalLines =
-        properties.getProperty<bool>("showVerticalLines", showVerticalLines);
-    showHorizontalLines = properties.getProperty<bool>(
-        "showHorizontalLines", showHorizontalLines);
+        changedComponent.getProperty<bool>(ComponentProperty.SHOW_VERTICAL_LINES, showVerticalLines);
+    showHorizontalLines = changedComponent.getProperty<bool>(
+        ComponentProperty.SHOW_HORIZONTAL_LINES, showHorizontalLines);
     tableHeaderVisible =
-        properties.getProperty<bool>("tableHeaderVisible", tableHeaderVisible);
+        changedComponent.getProperty<bool>(ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
     columnNames =
-        properties.getProperty<List<String>>("columnNames", columnNames);
-    reload = properties.getProperty<int>("reload");
-    columnLabels = properties.getProperty<List<String>>("columnLabels", columnLabels);
-    reload = -1;
+        changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_NAMES, columnNames);
+    reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
+    columnLabels = changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_LABELS, columnLabels);
+    reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
   }
 
   void _onRowTapped(int index) {
-    getIt.get<JVxScreen>().selectRecord(dataProvider, index, false);
+    data.selectRecord(context, index);
   }
 
   TableRow getTableRow(List<Widget> children, bool isHeader) {
@@ -128,11 +137,12 @@ class JVxTable extends JVxEditor {
   }
 
   @override
+  void onServerDataChanged() {
+
+  }
+
+  @override
   Widget getWidget() {
-    JVxData data = getIt
-        .get<JVxScreen>()
-        .getData(dataProvider, this.columnNames, this.reload);
-    this.reload = null;
     List<TableRow> rows = new List<TableRow>();
     TableBorder border = TableBorder();
 
@@ -148,7 +158,8 @@ class JVxTable extends JVxEditor {
       rows.add(getHeaderRow());
     }
 
-    rows.addAll(getDataRows(data));
+    rows.addAll(getDataRows(data.getData(context, this.reload)));
+    this.reload = null;
 
     if (rows.length > 0 &&
         rows[0].children != null &&

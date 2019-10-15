@@ -2,14 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/logic/bloc/close_screen_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/open_screen_bloc.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/close_screen_view_model.dart';
-import 'package:jvx_mobile_v3/logic/viewmodel/open_screen_view_model.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix1;
-import 'package:jvx_mobile_v3/model/fetch_process.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/widgets/api_subsription.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -69,6 +63,7 @@ Icon _iconBuilder(Map data) {
 
 changeScreen(BuildContext context, Key componentId, prefix1.Action action) {
   globals.changeScreen = action;
+  /*
 
   CloseScreenBloc closeScreenBloc = CloseScreenBloc();
   // StreamSubscription<FetchProcess> closeApiStreamsubscription = apiSubscription(closeScreenBloc.apiResult, context);
@@ -77,4 +72,5 @@ changeScreen(BuildContext context, Key componentId, prefix1.Action action) {
   OpenScreenBloc openScreenBloc = OpenScreenBloc();
   StreamSubscription<FetchProcess> apiStreamsubscription = apiSubscription(openScreenBloc.apiResult, context);
   openScreenBloc.openScreenSink.add(OpenScreenViewModel(clientId: globals.clientId, manualClose: true, action: action));
+  */
 }

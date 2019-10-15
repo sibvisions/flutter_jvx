@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
+import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
-import 'package:jvx_mobile_v3/model/component_properties.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/link_reference.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
+import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/i_cell_editor.dart';
 
-import 'i_cell_editor.dart';
 
 class JVxCellEditor implements ICellEditor {
   Key key = GlobalKey<FormState>();
@@ -25,22 +26,25 @@ class JVxCellEditor implements ICellEditor {
   bool validationEnabled;
   bool doNotClearColumnNames;
   bool tableReadonly;
-  bool directCellEditor;
+  bool directCellEditor = false;
   bool autoOpenPopup;
   String contentType;
-  LinkReference linkReference;
   String dataProvider;
   dynamic value;
   String columnName;
 
-  JVxCellEditor(ComponentProperties properties, this.context) {
-    horizontalAlignment = properties.getProperty<int>("horizontalAlignment");
-    verticalAlignment = properties.getProperty<int>("verticalAlignment");
-    preferredEditorMode = properties.getProperty<int>("preferredEditorMode");
-    contentType = properties.getProperty<String>("contentType");
-    directCellEditor = properties.getProperty<bool>("directCellEditor", false);
-    columnName = properties.getProperty<String>("columnName", columnName);
+  JVxCellEditor(CellEditor changedCellEditor, this.context) {
+    horizontalAlignment = changedCellEditor.getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);
+    verticalAlignment = changedCellEditor.getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
+    preferredEditorMode = changedCellEditor.getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
+    contentType = changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE);
+    directCellEditor = changedCellEditor.getProperty<bool>(CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
+    columnName = changedCellEditor.getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
   }
+
+  VoidCallback onBeginEditing;
+  VoidCallback onEndEditing;
+  ValueChanged<dynamic> onValueChanged;
 
   void setInitialData(JVxData data) {
 
