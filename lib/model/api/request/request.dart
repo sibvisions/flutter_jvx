@@ -12,7 +12,8 @@ enum RequestType {
   DAL_SELECT_RECORD,
   DAL_SET_VALUE,
   DAL_FETCH,
-  PRESS_BUTTON
+  PRESS_BUTTON,
+  NAVIGATION
 }
 
 bool isScreenRequest(RequestType type) {
@@ -21,7 +22,8 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.DAL_SELECT_RECORD ||
     type == RequestType.DAL_SET_VALUE ||
     type == RequestType.PRESS_BUTTON ||
-    type == RequestType.CLOSE_SCREEN);
+    type == RequestType.CLOSE_SCREEN ||
+    type == RequestType.NAVIGATION);
 }
 
 abstract class Request extends Equatable {

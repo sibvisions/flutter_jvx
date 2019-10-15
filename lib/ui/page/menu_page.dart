@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
@@ -14,6 +15,8 @@ class MenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     bool drawerMenu;
 
     if (globals.applicationStyle != null) {
@@ -22,11 +25,20 @@ class MenuPage extends StatelessWidget {
       drawerMenu = false;
     }
 
-    return CommonScaffold(
-      appTitle: 'Menu',
-      bodyData: getMenuWidget(),
-      showDrawer: true,
-      drawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: drawerMenu,),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Menu'),
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () { _scaffoldKey.currentState.openEndDrawer(); },
+            icon: Icon(FontAwesomeIcons.ellipsisV),
+          ),
+        ],
+      ),
+      body: getMenuWidget(),
+      endDrawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: drawerMenu,),
     );
   }
 

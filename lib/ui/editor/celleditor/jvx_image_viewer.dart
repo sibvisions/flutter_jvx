@@ -10,6 +10,9 @@ class JVxImageViewer extends JVxCellEditor {
   @override
   Widget getWidget() {
     // ToDo: Implement getWidget
-    return Image();
+    return Image.asset(
+                  'assets/images/sib_visions.jpg',
+                  width: (MediaQuery.of(context).size.width - 50),
+                );
   }
 }

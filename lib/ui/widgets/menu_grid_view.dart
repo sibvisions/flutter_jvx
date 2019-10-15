@@ -28,10 +28,8 @@ class MenuGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<ApiBloc>(context).state.listen((resp) {
-      if (resp != null &&
-          !resp.loading &&
-          !errorMsgShown) {
-          errorMsgShown = true;
+      if (resp != null && !resp.loading && !errorMsgShown) {
+        errorMsgShown = true;
         Future.delayed(Duration.zero, () => handleError(resp, context));
       }
 
@@ -66,9 +64,8 @@ class MenuGridView extends StatelessWidget {
         return new GestureDetector(
           child: new Card(
             margin: EdgeInsets.all(6),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)
-            ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             elevation: 2.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -106,7 +103,7 @@ class MenuGridView extends StatelessWidget {
             OpenScreen openScreen = OpenScreen(
                 action: action,
                 clientId: globals.clientId,
-                manualClose: true,
+                manualClose: false,
                 requestType: RequestType.OPEN_SCREEN);
 
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);

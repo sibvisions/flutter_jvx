@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
+import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
@@ -44,10 +45,14 @@ class ApiBloc extends Bloc<Request, Response> {
       yield* download(event);
     } else if (event is ApplicationStyle) {
       yield* applicationStyle(event);
-    } else if (event is SetValues || event is SelectRecord || event is FetchData) {
+    } else if (event is SetValues ||
+        event is SelectRecord ||
+        event is FetchData) {
       yield* data(event);
     } else if (event is PressButton) {
       yield* pressButton(event);
+    } else if (event is Navigation) {
+      yield* navigation(event);
     }
   }
 
@@ -64,8 +69,7 @@ class ApiBloc extends Bloc<Request, Response> {
     Response resp = await processRequest(request);
 
     if (!resp.error) {
-      if (resp != null &&
-          resp.applicationMetaData != null) {
+      if (resp != null && resp.applicationMetaData != null) {
         ApplicationMetaData applicationMetaData = resp.applicationMetaData;
         if (applicationMetaData != null) {
           globals.clientId = applicationMetaData.clientId;
@@ -86,8 +90,7 @@ class ApiBloc extends Bloc<Request, Response> {
     Response resp = await processRequest(request);
 
     AuthenticationData authData;
-    if (resp.authenticationData != null)
-      authData = resp.authenticationData;
+    if (resp.authenticationData != null) authData = resp.authenticationData;
 
     if (authData != null)
       SharedPreferencesHelper().setAuthKey(authData.authKey);
@@ -104,8 +107,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
     Response resp = await processRequest(request);
 
-    if (!resp.error)
-      resp.action = action;
+    if (!resp.error) resp.action = action;
 
     yield resp;
   }
@@ -121,17 +123,14 @@ class ApiBloc extends Bloc<Request, Response> {
 
     Response resp = await processRequest(request);
 
-    if (!resp.error)
-      resp.action = action;
+    if (!resp.error) resp.action = action;
 
     yield resp;
   }
 
-  
-
   Stream<Response> closescreen(CloseScreen request) async* {
     Response resp = await processRequest(request);
-    
+
     yield resp;
   }
 
@@ -181,6 +180,23 @@ class ApiBloc extends Bloc<Request, Response> {
     globals.dir = (await getApplicationDocumentsDirectory()).path;
 
     yield await processRequest(request);
+  }
+
+  Stream<Response> navigation(Navigation request) async* {
+    Response resp = await processRequest(request);
+
+    if ((resp.screenGeneric != null && resp.screenGeneric.changedComponents.isEmpty) &&
+        resp.jVxData.isEmpty &&
+        resp.jVxMetaData.isEmpty) {
+      CloseScreen closeScreen = CloseScreen(
+          clientId: globals.clientId,
+          componentId: request.componentId,
+          requestType: RequestType.CLOSE_SCREEN);
+
+      dispatch(closeScreen);
+    }
+
+    yield resp;
   }
 
   Future<Response> processRequest(Request request) async {
@@ -258,8 +274,7 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.APP_STYLE:
-        response =
-            await restClient.postAsync('/download', request.toJson());
+        response = await restClient.postAsync('/download', request.toJson());
         response.requestType = request.requestType;
         updateResponse(response);
         return response;
@@ -267,6 +282,13 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.PRESS_BUTTON:
         response =
             await restClient.postAsync('/api/pressButton', request.toJson());
+        response.requestType = request.requestType;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.NAVIGATION:
+        response =
+            await restClient.postAsync('/api/navigation', request.toJson());
         response.requestType = request.requestType;
         updateResponse(response);
         return response;
@@ -286,16 +308,14 @@ class ApiBloc extends Bloc<Request, Response> {
       toUpdate.applicationStyle = currentResponse.applicationStyle;
     if (toUpdate.authenticationData == null)
       toUpdate.authenticationData = currentResponse.authenticationData;
-    if (toUpdate.language == null)
-      toUpdate.language = currentResponse.language;
+    if (toUpdate.language == null) toUpdate.language = currentResponse.language;
     //if (toUpdate.jVxData == null)
     //  toUpdate.jVxData = currentResponse.jVxData;
     //if (toUpdate.jVxMetaData == null)
     //  toUpdate.jVxMetaData = currentResponse.jVxMetaData;
     if (toUpdate.loginItem == null)
       toUpdate.loginItem = currentResponse.loginItem;
-    if (toUpdate.menu == null)
-      toUpdate.menu = currentResponse.menu;
+    if (toUpdate.menu == null) toUpdate.menu = currentResponse.menu;
     //if (toUpdate.screenGeneric == null)
     //  toUpdate.screenGeneric = currentResponse.screenGeneric;
 

@@ -80,11 +80,11 @@ class RestClient {
         ..details = '(${(response as http.Response).statusCode}): ${(response as http.Response).body}';
     } else {
       try {
-        if (json.decode(response.body) is List) {
-          resp = Response.fromJson(json.decode(response.body));
-        } else {
-          resp = Response.fromJsonForAppStyle(json.decode(response.body));
-        }
+         if (json.decode(response.body) is List) {
+           resp = Response.fromJson(json.decode(response.body));
+         } else {
+           resp = Response.fromJsonForAppStyle(json.decode(response.body));
+         }
       } catch (e) {
         if (e is ApiException) {
           return Response()

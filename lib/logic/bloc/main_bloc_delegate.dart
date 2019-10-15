@@ -7,6 +7,9 @@ class MainBlocDelegate extends BlocDelegate {
     print('**********************************************');
     print('Transition: { currentState: ${transition.currentState}, event: ${transition.event}, nextState: ${transition.nextState} }');
     print('ERROR: ${transition.nextState.error}');
+    if (transition.nextState.error) {
+      print(transition.nextState.message);
+    }
     print('**********************************************');
   }
 }

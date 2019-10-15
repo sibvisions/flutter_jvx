@@ -33,7 +33,7 @@ class MenuListWidget extends StatelessWidget {
               OpenScreen openScreen = OpenScreen(
                   action: action,
                   clientId: globals.clientId,
-                  manualClose: true,
+                  manualClose: false,
                   requestType: RequestType.OPEN_SCREEN);
 
               BlocProvider.of<ApiBloc>(context).dispatch(openScreen);

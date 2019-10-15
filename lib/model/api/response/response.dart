@@ -54,7 +54,8 @@ class Response {
   }
 
   Response.fromJson(List json) {
-    checkForError(json[0]);
+    if (json.isNotEmpty)
+      checkForError(json[0]);
 
     error = false;
 

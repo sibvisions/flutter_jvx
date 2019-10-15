@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
@@ -14,6 +15,7 @@ import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_bottom_modal.dart';
+import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 import 'menu_page.dart';
@@ -39,7 +41,8 @@ class OpenScreenPage extends StatefulWidget {
   _OpenScreenPageState createState() => _OpenScreenPageState();
 }
 
-class _OpenScreenPageState extends State<OpenScreenPage> {
+class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObserver {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   JVxScreen screen = JVxScreen(ComponentCreator()); 
   bool errorMsgShown = false;
 
@@ -72,24 +75,24 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
           return false;
         },
         child: Scaffold(
-          key: widget.componentId,
+          endDrawer: MenuDrawerWidget(menuItems: widget.items, listMenuItems: true,),
+          key: _scaffoldKey,
           appBar: AppBar(
             actions: <Widget>[
               IconButton(
                 icon: Icon(FontAwesomeIcons.ellipsisV),
-                onPressed: () => showCustomBottomModalMenu(
-                    context, widget.items, widget.componentId),
+                onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
               )
             ],
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                CloseScreen closeScreen = CloseScreen(
-                    clientId: globals.clientId,
-                    componentId: widget.componentId.toString().replaceAll("[<'", '').replaceAll("'>]", ''),
-                    requestType: RequestType.CLOSE_SCREEN);
+                Navigation navigation = Navigation(
+                  clientId: globals.clientId,
+                  componentId: widget.componentId.toString().replaceAll("[<'", '').replaceAll("'>]", ''),
+                );
 
-                BlocProvider.of<ApiBloc>(context).dispatch(closeScreen);
+                BlocProvider.of<ApiBloc>(context).dispatch(navigation);
               },
             ),
             title: Text(widget.title),
@@ -98,5 +101,21 @@ class _OpenScreenPageState extends State<OpenScreenPage> {
         ),
       );
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  didChangeMetrics() {
   }
 }

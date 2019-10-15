@@ -121,10 +121,7 @@ class CommonScaffold extends StatelessWidget {
             width: 5.0,
           ),
           showSearchButton 
-          ? IconButton(
-            onPressed: () {},
-            icon: Icon(actionFirstIcon),
-          )
+          ? actionFirstIcon
           : SizedBox(width: 5.0,),
           showDropdownButton
           ? DropdownButton(
