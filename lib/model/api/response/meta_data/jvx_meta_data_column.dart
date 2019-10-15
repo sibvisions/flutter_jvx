@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data_cell_editor.dart';
+import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data_cell_editor.dart';
 
 class JVxMetaDataColumn {
   String name;

@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/base_resp.dart';
+import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
 
 /// Response from the [ApplicationStyle] Request.
 /// 
@@ -19,7 +19,7 @@ import 'package:jvx_mobile_v3/model/base_resp.dart';
 ///  * `grid`: Shows the [MenuGridView].
 ///  * `list`: Shows the [MenuListWidget].
 ///  * `drawer`: Shows the [MenuItem]'s in the [MenuDrawerWidget].
-class ApplicationStyleResponse extends BaseResponse {
+class ApplicationStyleResponse extends ResponseObject {
   String loginTitle;
   String loginBackground;
   String loginInfotext;
@@ -29,7 +29,7 @@ class ApplicationStyleResponse extends BaseResponse {
 
   ApplicationStyleResponse();
 
-  ApplicationStyleResponse.fromJson(Map<String, dynamic> json) : super.fromJson([json]) {
+  ApplicationStyleResponse.fromJson(Map<String, dynamic> json) {
     loginTitle = json['login.title'];
     loginBackground = json['login.background'];
     loginInfotext = json['login.infotext'];

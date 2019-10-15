@@ -1,6 +1,7 @@
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data_column.dart';
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data_data_provider.dart';
+
+import 'jvx_meta_data_column.dart';
+import 'jvx_meta_data_data_provider.dart';
 
 class JVxMetaData extends ResponseObject {
   String dataProvider;

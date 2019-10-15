@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';

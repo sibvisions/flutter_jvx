@@ -2,7 +2,6 @@ import 'package:archive/archive.dart';
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
 import 'package:jvx_mobile_v3/model/api/exceptions/session_timeout_exception.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
-import 'package:jvx_mobile_v3/services/network_service_response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -15,18 +14,6 @@ class RestClient {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   };
-
-  Future<MappedNetworkServiceResponse<T>> getAsync<T>(
-      String resourcePath) async {
-    var response = await http.get(globals.baseUrl + resourcePath, headers: {
-      'Content-Type': 'application/json',
-      'cookie': globals.jsessionId
-    });
-    updateCookie(response);
-    if (debug) {
-      Log.printLong("Response:" + response.body);
-    }
-  }
 
   Future get(String resourcePath) async {
     var response = await http.get(globals.baseUrl + resourcePath, headers: {

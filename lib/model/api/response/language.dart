@@ -1,4 +1,4 @@
-import 'api/response/response_object.dart';
+import 'response_object.dart';
 
 class Language extends ResponseObject {
   String langCode;

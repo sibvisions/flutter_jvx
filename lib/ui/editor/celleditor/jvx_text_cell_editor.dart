@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';

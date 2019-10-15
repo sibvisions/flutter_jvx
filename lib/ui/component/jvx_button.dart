@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';

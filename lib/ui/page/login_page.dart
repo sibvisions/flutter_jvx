@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/logic/new_bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
-import 'package:jvx_mobile_v3/model/menu.dart';
+import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;

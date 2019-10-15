@@ -1,4 +1,5 @@
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data_data_provider.dart';
+
+import 'jvx_meta_data_data_provider.dart';
 
 class JVxMetaDataCellEditor {
   int length;

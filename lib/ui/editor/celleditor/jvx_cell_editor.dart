@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/column_view.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/link_reference.dart';
 import 'package:jvx_mobile_v3/model/popup_size.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';

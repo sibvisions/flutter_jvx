@@ -1,11 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/new_bloc/api_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
+import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/filter.dart';
 
 

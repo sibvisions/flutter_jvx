@@ -2,16 +2,16 @@ import 'package:jvx_mobile_v3/model/action.dart';
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
 import 'package:jvx_mobile_v3/model/api/exceptions/session_timeout_exception.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/application_style/application_style_resp.dart';
-import 'package:jvx_mobile_v3/model/auth_data.dart';
-import 'package:jvx_mobile_v3/model/data/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/data/meta_data/jvx_meta_data.dart';
-import 'package:jvx_mobile_v3/model/login_item.dart';
-import 'package:jvx_mobile_v3/model/menu.dart';
-import 'package:jvx_mobile_v3/model/screen_generic.dart';
+import 'package:jvx_mobile_v3/model/api/response/application_style_resp.dart';
+import 'package:jvx_mobile_v3/model/api/response/auth_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
+import 'package:jvx_mobile_v3/model/api/response/menu.dart';
+import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
 
-import '../../application_meta_data.dart';
-import '../../language.dart';
+import 'application_meta_data.dart';
+import 'language.dart';
+import 'meta_data/jvx_meta_data.dart';
 import 'response_object.dart';
 
 class Response {
