@@ -18,12 +18,19 @@ import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
-class MenuGridView extends StatelessWidget {
+class MenuGridView extends StatefulWidget {
   final List<MenuItem> items;
-  String title;
-  bool errorMsgShown = false;
 
   MenuGridView({Key key, this.items}) : super(key: key);
+
+  @override
+  _MenuGridViewState createState() => _MenuGridViewState();
+}
+
+class _MenuGridViewState extends State<MenuGridView> {
+  String title;
+
+  bool errorMsgShown = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,7 @@ class MenuGridView extends StatelessWidget {
 
         Key componentID = new Key(screenGeneric.componentId);
 
-        globals.items = items;
+        globals.items = widget.items;
 
         Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => new OpenScreenPage(
@@ -57,7 +64,7 @@ class MenuGridView extends StatelessWidget {
     });
 
     return new GridView.builder(
-      itemCount: this.items.length,
+      itemCount: this.widget.items.length,
       gridDelegate:
           new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemBuilder: (BuildContext context, int index) {
@@ -70,14 +77,14 @@ class MenuGridView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                items[index].image != null
+                widget.items[index].image != null
                     ? new CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        child: !items[index].image.startsWith('FontAwesome')
+                        child: !widget.items[index].image.startsWith('FontAwesome')
                             ? new Image.asset(
-                                '${globals.dir}${items[index].image}')
+                                '${globals.dir}${widget.items[index].image}')
                             : _iconBuilder(
-                                formatFontAwesomeText(items[index].image)))
+                                formatFontAwesomeText(widget.items[index].image)))
                     : new CircleAvatar(
                         backgroundColor: Colors.transparent,
                         child: Icon(
@@ -88,7 +95,7 @@ class MenuGridView extends StatelessWidget {
                 Container(
                     padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                     child: Text(
-                      items[index].action.label,
+                      widget.items[index].action.label,
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center,
                     )),
@@ -96,7 +103,7 @@ class MenuGridView extends StatelessWidget {
             ),
           ),
           onTap: () {
-            prefix0.Action action = items[index].action;
+            prefix0.Action action = widget.items[index].action;
 
             title = action.label;
 
