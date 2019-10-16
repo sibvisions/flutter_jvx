@@ -10,6 +10,7 @@ import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
@@ -34,97 +35,100 @@ class _MenuGridViewState extends State<MenuGridView> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ApiBloc>(context).state.listen((resp) {
-      if (resp != null && !resp.loading && !errorMsgShown) {
-        errorMsgShown = true;
-        Future.delayed(Duration.zero, () => handleError(resp, context));
-      }
+    return BlocBuilder<ApiBloc, Response>(
+      builder: (context, state) {
+        if (state != null && !state.loading && !errorMsgShown) {
+          errorMsgShown = true;
+          Future.delayed(Duration.zero, () => handleError(state, context));
+        }
 
-      if (resp != null &&
-          resp.screenGeneric != null &&
-          resp.requestType == RequestType.OPEN_SCREEN) {
-        ScreenGeneric screenGeneric = resp.screenGeneric;
-        List<JVxData> data = resp.jVxData;
-        List<JVxMetaData> metaData = resp.jVxMetaData;
+        if (state != null &&
+            state.screenGeneric != null &&
+            state.requestType == RequestType.OPEN_SCREEN) {
+              print('OPENSCREEN');
+          ScreenGeneric screenGeneric = state.screenGeneric;
+          List<JVxData> data = state.jVxData;
+          List<JVxMetaData> metaData = state.jVxMetaData;
 
-        Key componentID = new Key(screenGeneric.componentId);
+          Key componentID = new Key(screenGeneric.componentId);
 
-        globals.items = widget.items;
+          globals.items = widget.items;
 
-        Future.delayed(Duration.zero, () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => new OpenScreenPage(
-                  changedComponents: screenGeneric.changedComponents,
-                  data: data,
-                  metaData: metaData,
-                  componentId: componentID,
-                  title: title,
-                  items: globals.items,
-                ))));
-      }
-    });
+          Future.delayed(Duration.zero, () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => new OpenScreenPage(
+                    changedComponents: screenGeneric.changedComponents,
+                    data: data,
+                    metaData: metaData,
+                    componentId: componentID,
+                    title: title,
+                    items: globals.items,
+                  ))));
+        }
 
-    return new GridView.builder(
-      itemCount: this.widget.items.length,
-      gridDelegate:
-          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-      itemBuilder: (BuildContext context, int index) {
-        return new GestureDetector(
-          child: new Card(
-            margin: EdgeInsets.all(6),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            elevation: 2.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                widget.items[index].image != null
-                    ? new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: !widget.items[index].image.startsWith('FontAwesome')
-                            ? new Image.asset(
-                                '${globals.dir}${widget.items[index].image}')
-                            : _iconBuilder(
-                                formatFontAwesomeText(widget.items[index].image)))
-                    : new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(
-                          FontAwesomeIcons.clone,
-                          size: 48,
-                          color: Colors.grey[300],
+        return new GridView.builder(
+          itemCount: this.widget.items.length,
+          gridDelegate:
+              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+          itemBuilder: (BuildContext context, int index) {
+            return new GestureDetector(
+              child: new Card(
+                margin: EdgeInsets.all(6),
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                elevation: 2.0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    widget.items[index].image != null
+                        ? new CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: !widget.items[index].image.startsWith('FontAwesome')
+                                ? new Image.asset(
+                                    '${globals.dir}${widget.items[index].image}')
+                                : _iconBuilder(
+                                    formatFontAwesomeText(widget.items[index].image)))
+                        : new CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            child: Icon(
+                              FontAwesomeIcons.clone,
+                              size: 48,
+                              color: Colors.grey[300],
+                            )),
+                    Container(
+                        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        child: Text(
+                          widget.items[index].action.label,
+                          style: TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
                         )),
-                Container(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                    child: Text(
-                      widget.items[index].action.label,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    )),
-              ],
-            ),
-          ),
-          onTap: () {
-            prefix0.Action action = widget.items[index].action;
+                  ],
+                ),
+              ),
+              onTap: () {
+                prefix0.Action action = widget.items[index].action;
 
-            title = action.label;
+                title = action.label;
 
-            OpenScreen openScreen = OpenScreen(
-                action: action,
-                clientId: globals.clientId,
-                manualClose: false,
-                requestType: RequestType.OPEN_SCREEN);
+                OpenScreen openScreen = OpenScreen(
+                    action: action,
+                    clientId: globals.clientId,
+                    manualClose: false,
+                    requestType: RequestType.OPEN_SCREEN);
 
-            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+                BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
 
-            /*
-            OpenScreenBloc openScreenBloc = OpenScreenBloc();
-            StreamSubscription<FetchProcess> apiStreamSubscription;
-            
-            apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
-            openScreenBloc.openScreenSink.add(
-              new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+                /*
+                OpenScreenBloc openScreenBloc = OpenScreenBloc();
+                StreamSubscription<FetchProcess> apiStreamSubscription;
+                
+                apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
+                openScreenBloc.openScreenSink.add(
+                  new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+                );
+
+                */
+              },
             );
-
-            */
           },
         );
       },
