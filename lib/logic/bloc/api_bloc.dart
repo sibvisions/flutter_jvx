@@ -155,6 +155,7 @@ class ApiBloc extends Bloc<Request, Response> {
           await outFile.writeAsBytes(file.content);
         }
       }
+      
       SharedPreferencesHelper().setTranslation(globals.translation);
       Translations.load(Locale(globals.language));
     } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {

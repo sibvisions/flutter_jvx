@@ -130,6 +130,7 @@ class RestClient {
           });
 
       resp.download = response.bodyBytes;
+      resp.error = false;
     } catch (e) {
       resp = Response()
         ..error = true

@@ -80,6 +80,7 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   Future<Null> loadSharedPrefs() async {
+    globals.translation = await SharedPreferencesHelper().getTranslation();
     await SharedPreferencesHelper().getData().then((prefData) {
       if (prefData['appName'] == 'null' ||
           prefData['appName'] == null ||
