@@ -57,11 +57,15 @@ class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObse
       }
 
       if (state.requestType == RequestType.CLOSE_SCREEN) {
-        Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+        Future.delayed(Duration.zero, () => Navigator.of(context).pop()
+        /*
+
+        pushReplacement(MaterialPageRoute(
             builder: (context) => MenuPage(
                   menuItems: globals.items,
                   listMenuItemsInDrawer: false,
-                )))
+                )));
+                */
         );
       }
 

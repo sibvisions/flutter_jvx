@@ -51,7 +51,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
         globals.items = widget.items;
 
-        Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+        Future.delayed(Duration.zero, () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => new OpenScreenPage(
                   changedComponents: screenGeneric.changedComponents,
                   data: data,
