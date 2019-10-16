@@ -44,7 +44,7 @@ class MenuGridView extends StatelessWidget {
 
         globals.items = items;
 
-        Navigator.of(context).push(MaterialPageRoute(
+        Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => new OpenScreenPage(
                   changedComponents: screenGeneric.changedComponents,
                   data: data,
@@ -52,7 +52,7 @@ class MenuGridView extends StatelessWidget {
                   componentId: componentID,
                   title: title,
                   items: globals.items,
-                )));
+                ))));
       }
     });
 
