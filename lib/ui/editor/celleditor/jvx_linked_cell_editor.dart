@@ -109,7 +109,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       v = null;
 
     return DropdownButton(
-      hint: Text(JVxLabel.utf8convert(h)),
+      hint: Text(JVxLabel.utf8convert(h==null?"":h)),
       value: v,
       items: this._items,
       onChanged: valueChanged,
