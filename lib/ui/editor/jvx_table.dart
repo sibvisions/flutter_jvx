@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
-import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxTable extends JVxEditor {
@@ -115,18 +113,19 @@ class JVxTable extends JVxEditor {
     List<int> visibleColumnsIndex = new List<int>();
 
     if (data != null) {
-      data.columnNames.asMap().forEach((i, r) {
-        if (columnNames.contains(r)) {
-          visibleColumnsIndex.add(i);
-        }
+      columnNames.forEach((r) {
+        visibleColumnsIndex.add(
+          data.columnNames.indexOf(r)); 
       });
       data.records.asMap().forEach((i, r) {
         if (r is List) {
           List<Widget> children = new List<Widget>();
-          r.asMap().forEach((j, c) {
-            if (visibleColumnsIndex.contains(j)) {
-              children.add(getTableColumn(c.toString(), i));
-            }
+
+          visibleColumnsIndex.forEach((i) {
+            if (i<r.length)
+              children.add(getTableColumn(r[i]!=null?r[i].toString():"", i));
+            else 
+              children.add(getTableColumn("", i));
           });
 
           rows.add(getTableRow(children, false));
@@ -145,6 +144,7 @@ class JVxTable extends JVxEditor {
   Widget getWidget() {
     List<TableRow> rows = new List<TableRow>();
     TableBorder border = TableBorder();
+    Map<int, TableColumnWidth> columnWidths = Map<int,TableColumnWidth>();
 
     if (showHorizontalLines && !showVerticalLines) {
       border = TableBorder(bottom: BorderSide(), top: BorderSide());
@@ -164,13 +164,15 @@ class JVxTable extends JVxEditor {
     if (rows.length > 0 &&
         rows[0].children != null &&
         rows[0].children.length > 0) {
+
+      rows[0].children.asMap().forEach((i,c) {
+        columnWidths.putIfAbsent(i, () => IntrinsicColumnWidth());
+      });
+      
       return Table(
         border: border,
         children: rows,
-        columnWidths: const <int, TableColumnWidth>{
-          0: FlexColumnWidth(2),
-          1: FlexColumnWidth(1)
-        },
+        columnWidths: columnWidths
       );
     } else {
       return Container(child: Text("No table data"));
