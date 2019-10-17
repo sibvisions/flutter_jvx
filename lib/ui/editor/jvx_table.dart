@@ -121,9 +121,9 @@ class JVxTable extends JVxEditor {
         if (r is List) {
           List<Widget> children = new List<Widget>();
 
-          visibleColumnsIndex.forEach((i) {
-            if (i<r.length)
-              children.add(getTableColumn(r[i]!=null?r[i].toString():"", i));
+          visibleColumnsIndex.forEach((j) {
+            if (j<r.length)
+              children.add(getTableColumn(r[j]!=null?r[j].toString():"", i));
             else 
               children.add(getTableColumn("", i));
           });
