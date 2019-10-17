@@ -104,7 +104,9 @@ class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObse
             ),
             title: Text(widget.title),
           ),
-          body: screen.getWidget()
+          body: //SingleChildScrollView(child: 
+                screen.getWidget()
+              //),
         ),
       );
     });
