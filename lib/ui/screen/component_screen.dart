@@ -149,7 +149,8 @@ class ComponentScreen extends DataScreen {
   IComponent getRootComponent() {
     return this.components.values.firstWhere((element) =>
         element.parentComponentId == null &&
-        element.state == JVxComponentState.Added);
+        element.state == JVxComponentState.Added
+        , orElse: () => null);
   }
 
   void debugPrintCurrentWidgetTree() {

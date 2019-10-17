@@ -36,7 +36,12 @@ class _MenuGridViewState extends State<MenuGridView> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiBloc, Response>(
+      condition: (previousState, state) {
+          return previousState.hashCode!=state.hashCode;
+      },
       builder: (context, state) {
+        print("*** MenuGridView - RequestType: " + state.requestType.toString());
+
         if (state != null && !state.loading && !errorMsgShown) {
           errorMsgShown = true;
           Future.delayed(Duration.zero, () => handleError(state, context));
@@ -54,7 +59,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
           globals.items = widget.items;
 
-          Future.delayed(Duration.zero, () => Navigator.of(context).push(MaterialPageRoute(
+          Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => new OpenScreenPage(
                     changedComponents: screenGeneric.changedComponents,
                     data: data,

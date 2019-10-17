@@ -12,13 +12,11 @@ import 'package:jvx_mobile_v3/model/api/request/close_screen.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
-import 'package:jvx_mobile_v3/ui/widgets/custom_bottom_modal.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-
-import 'menu_page.dart';
 
 class OpenScreenPage extends StatefulWidget {
   final String title;
@@ -48,7 +46,13 @@ class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ApiBloc, Response>(builder: (context, state) {
+    return BlocBuilder<ApiBloc, Response>(
+        condition: (previousState, state) {
+            return previousState.hashCode!=state.hashCode;
+      },
+      builder: (context, state) {
+      print("*** OpenScreenPage - RequestType: " + state.requestType.toString());
+
       if (state != null &&
           !state.loading &&
           !errorMsgShown) {
@@ -57,21 +61,20 @@ class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObse
       }
 
       if (state.requestType == RequestType.CLOSE_SCREEN) {
-        Future.delayed(Duration.zero, () => Navigator.of(context).pop()
-        /*
-
-        pushReplacement(MaterialPageRoute(
+        Future.delayed(Duration.zero, () => Navigator.of(context).
+          pushReplacement(MaterialPageRoute(
             builder: (context) => MenuPage(
                   menuItems: globals.items,
                   listMenuItemsInDrawer: false,
-                )));
-                */
-        );
+                )
+              )
+            )
+          );
       }
 
       if (isScreenRequest(state.requestType)) {
-        screen.context = context;
-        screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric);
+          screen.context = context;
+          screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric);
       }
 
       return WillPopScope(
