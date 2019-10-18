@@ -15,6 +15,7 @@ class ComponentScreen extends DataScreen {
   bool debug = false;
 
   set context(BuildContext context) {
+      super.context = context;
       _componentCreator.context = context;
   }
   get context {

@@ -20,6 +20,8 @@ class ComponentData {
   List<VoidCallback> _onDataChanged = [];
   List<VoidCallback> _onMetaDataChanged = [];
 
+  ValueChanged<Request> addToRequestQueue;
+
   ComponentData(this.dataProvider);
 
 
@@ -37,6 +39,9 @@ class ComponentData {
 
     isFetching = false;
     _onDataChanged.forEach((d) => d());
+
+    //_requestQueue.remove(request);
+    //_sendFromQueue();
   }
 
   void updateSelectedRow(int selectedRow) {
@@ -82,7 +87,8 @@ class ComponentData {
       if (fetch!=null)
         select.fetch = fetch;
 
-      BlocProvider.of<ApiBloc>(context).dispatch(select);
+      addToRequestQueue(select);
+      //BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, _data.records, "Select Record", "Select record failed. Index out of bounds!");
     }
@@ -97,7 +103,8 @@ class ComponentData {
     if (filter!=null)
       setValues.filter = filter;
 
-    BlocProvider.of<ApiBloc>(context).dispatch(setValues);
+    addToRequestQueue(setValues);
+    //BlocProvider.of<ApiBloc>(context).dispatch(setValues);
   }
 
   void _fetchData(BuildContext context) {
@@ -109,7 +116,8 @@ class ComponentData {
         fetch.rowCount = 100;
       }
 
-      BlocProvider.of<ApiBloc>(context).dispatch(fetch);
+      addToRequestQueue(fetch);
+      //BlocProvider.of<ApiBloc>(context).dispatch(fetch);
   }
 
   dynamic _getColumnValue(String columnName) {

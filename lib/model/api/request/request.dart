@@ -29,6 +29,7 @@ bool isScreenRequest(RequestType type) {
 
 abstract class Request extends Equatable {
   RequestType requestType;
+  bool isProcessing = false;
   String clientId;
 
   Request({this.requestType, this.clientId});

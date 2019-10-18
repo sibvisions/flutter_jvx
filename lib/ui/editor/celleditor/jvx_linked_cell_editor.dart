@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 
@@ -52,7 +53,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                JVxLabel.utf8convert(text),
+                Properties.utf8convert(text),
               ),
             ],
           ),
@@ -74,7 +75,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       v = null;
 
     return DropdownButton(
-      hint: Text(JVxLabel.utf8convert(h==null?"":h)),
+      hint: Text(Properties.utf8convert(h==null?"":h)),
       value: v,
       items: this._items,
       onChanged: valueChanged,
