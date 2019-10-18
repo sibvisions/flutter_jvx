@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/menu.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -37,6 +39,14 @@ class LoginPageState extends State<LoginPage> {
 
   Widget loginBuilder() => BlocBuilder<ApiBloc, Response>(
         builder: (context, state) {
+          if (state != null && state.loading && state.requestType == RequestType.LOADING) {
+            SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
+          }
+
+          if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
+            SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+          }
+
           if (state != null && !state.loading && !errorMsgShown) {
             errorMsgShown = true;
             Future.delayed(Duration.zero, () => handleError(state, context));
@@ -53,7 +63,7 @@ class LoginPageState extends State<LoginPage> {
               state.requestType == RequestType.LOGIN &&
               !state.loading &&
               (state.error == null || !state.error) &&
-              state.loginItem != null) {
+              state.menu != null) {
             Menu menu = state.menu;
 
             if (menu != null)
@@ -63,17 +73,6 @@ class LoginPageState extends State<LoginPage> {
                       builder: (_) => MenuPage(
                             menuItems: menu.items,
                           ))));
-          }
-
-          if (state != null &&
-              (state.requestType == RequestType.DOWNLOAD_IMAGES ||
-                  state.requestType == RequestType.DOWNLOAD_TRANSLATION) &&
-              state.loading) {
-            return Scaffold(
-              body: Center(
-                child: Text('Loading...'),
-              ),
-            );
           }
 
           if (state != null &&

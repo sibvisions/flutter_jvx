@@ -13,7 +13,8 @@ enum RequestType {
   DAL_SET_VALUE,
   DAL_FETCH,
   PRESS_BUTTON,
-  NAVIGATION
+  NAVIGATION,
+  LOADING
 }
 
 bool isScreenRequest(RequestType type) {

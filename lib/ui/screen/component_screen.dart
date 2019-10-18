@@ -12,7 +12,7 @@ import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 class ComponentScreen extends DataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
-  bool debug = true;
+  bool debug = false;
 
   set context(BuildContext context) {
       _componentCreator.context = context;

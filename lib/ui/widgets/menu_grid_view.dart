@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,6 +16,7 @@ import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
 import 'package:jvx_mobile_v3/ui/page/open_screen_page.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -37,10 +39,19 @@ class _MenuGridViewState extends State<MenuGridView> {
   Widget build(BuildContext context) {
     return BlocBuilder<ApiBloc, Response>(
       condition: (previousState, state) {
+          print('*** MenuGridView - HashCode: PREVIOUS: ${previousState.hashCode} NOW: ${state.hashCode}');
           return previousState.hashCode!=state.hashCode;
       },
       builder: (context, state) {
         print("*** MenuGridView - RequestType: " + state.requestType.toString());
+
+        if (state != null && state.loading && state.requestType == RequestType.LOADING) {
+          SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
+        }
+
+        if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
+          SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+        }
 
         if (state != null && !state.loading && !errorMsgShown) {
           errorMsgShown = true;
@@ -50,7 +61,6 @@ class _MenuGridViewState extends State<MenuGridView> {
         if (state != null &&
             state.screenGeneric != null &&
             state.requestType == RequestType.OPEN_SCREEN) {
-              print('OPENSCREEN');
           ScreenGeneric screenGeneric = state.screenGeneric;
           List<JVxData> data = state.jVxData;
           List<JVxMetaData> metaData = state.jVxMetaData;
