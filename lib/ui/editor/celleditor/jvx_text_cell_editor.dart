@@ -10,6 +10,7 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 class JVxTextCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
+  bool valueChanged = false;
   
   JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
     multiLine = (changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE)?.contains('multiline') ?? false);
@@ -24,6 +25,16 @@ class JVxTextCellEditor extends JVxCellEditor {
         this.value = data.records[0][index];
     }
     //this.value = getItems(data);
+  }
+
+  void onTextFieldValueChanged(dynamic newValue) {
+    this.value = newValue;
+    this.valueChanged = true;
+  }
+
+  void onTextFieldEndEditing() {
+    if (this.valueChanged)
+      super.onValueChanged(this.value);
   }
   
   @override
@@ -43,8 +54,8 @@ class JVxTextCellEditor extends JVxCellEditor {
       controller: _controller,
       maxLines: multiLine ? 4 : 1,
       keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
-      onEditingComplete: onEndEditing,
-      onChanged: onValueChanged,
+      onEditingComplete: onTextFieldEndEditing,
+      onChanged: onTextFieldValueChanged,
     );
   }
 }

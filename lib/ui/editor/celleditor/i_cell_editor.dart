@@ -10,7 +10,6 @@ abstract class ICellEditor {
   int verticalAlignment;
   int preferredEditorMode;
   String additionalCondition;
-  ColumnView columnView;
   bool displayReferencedColumnName;
   bool displayConcatMask;
   PopupSize popupSize;

@@ -24,20 +24,20 @@ class JVxAnchor {
   JVxFormLayout layout;
 
   /// The orientation of this anchor.
-  int orientation;
+  int orientation = 0;
 
   /// The related anchor to this anchor.
   JVxAnchor relatedAnchor;
 
   /// true, if this anchor should be auto sized.
-  bool autoSize;
+  bool autoSize = false;
 
 
   /// The position of this anchor.
-  bool autoSizeCalculated;
+  bool autoSizeCalculated = false;
 
   /// The position of this anchor.
-  int _position;
+  int _position = 0;
 
   ///
   /// Sets the position of this Anchor.
@@ -61,7 +61,7 @@ class JVxAnchor {
   bool relative = false;
 
   /// True, if the relative anchor is not calculated.
-  bool firstCalculation;
+  bool firstCalculation = false;
 
   bool isBorderAnchor() => relatedAnchor == null;
 
