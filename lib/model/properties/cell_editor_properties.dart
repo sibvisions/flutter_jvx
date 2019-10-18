@@ -11,7 +11,9 @@ enum CellEditorProperty {
   COLUMN_NAME,
   DEFAULT_IMAGE_NAME,
   ALLOWED_VALUES,
-  IMAGE_NAMES
+  IMAGE_NAMES,
+  DATE_FORMAT,
+  NUMBER_FORMAT
 }
 
 class CellEditorProperties {

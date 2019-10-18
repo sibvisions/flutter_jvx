@@ -28,8 +28,5 @@ abstract class ICellEditor {
 
   ICellEditor(CellEditor cellEditor, this.context);
 
-  void setInitialData(JVxData data); 
-  void setData(JVxData data);
-
   Widget getWidget();
 }

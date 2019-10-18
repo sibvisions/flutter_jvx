@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
@@ -58,40 +56,6 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
             ],
           ),
         ));
-  }
-
-  @override
-  void setInitialData(JVxData data) {
-    if (data != null &&
-        data.selectedRow != null &&
-        data.selectedRow >= 0 &&
-        data.selectedRow < data.records.length &&
-        data.columnNames != null &&
-        data.columnNames.length > 0 &&
-        this.linkReference != null &&
-        this.linkReference.referencedColumnNames != null &&
-        this.linkReference.referencedColumnNames.length > 0) {
-      int columnIndex = -1;
-      data.columnNames.asMap().forEach((i, c) {
-        if (this.linkReference.referencedColumnNames[0] == c) columnIndex = i;
-      });
-      if (columnIndex >= 0) {
-        value = data.records[data.selectedRow][columnIndex];
-      }
-    }
-
-    initialData = data.records[0][0].toString();
-
-    this.setData(data);
-  }
-
-  @override
-  void setData(JVxData data) {
-    /*if (data?.records?.length==1) {
-      this.value = data.records[0][0];
-    }*/
-
-    this._items = getItems(data);
   }
 
   @override

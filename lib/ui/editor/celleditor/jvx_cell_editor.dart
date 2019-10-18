@@ -45,14 +45,6 @@ class JVxCellEditor implements ICellEditor {
   VoidCallback onEndEditing;
   ValueChanged<dynamic> onValueChanged;
 
-  void setInitialData(JVxData data) {
-
-  }
-
-  void setData(JVxData data) {
-    
-  }
-
 
   @override
   Widget getWidget() {
