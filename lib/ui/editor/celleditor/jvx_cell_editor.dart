@@ -39,6 +39,7 @@ class JVxCellEditor implements ICellEditor {
     contentType = changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE);
     directCellEditor = changedCellEditor.getProperty<bool>(CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
     columnName = changedCellEditor.getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
+    dataProvider = changedCellEditor.getProperty<String>(CellEditorProperty.DATA_PROVIDER);
   }
 
   VoidCallback onBeginEditing;

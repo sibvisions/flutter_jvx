@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
+import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/utils/jvx_alignment.dart';
@@ -14,14 +15,9 @@ class JVxLabel extends JVxComponent implements IComponent {
 
   JVxLabel(Key componentId, BuildContext context) : super(componentId, context);
 
-  static String utf8convert(String text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
-  }
-
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);
-    text = utf8convert(changedProperties.getProperty<String>(ComponentProperty.TEXT, text));
+    text = changedProperties.getProperty<String>(ComponentProperty.TEXT, text);
     verticalAlignment = changedProperties.getProperty<TextAlign>(ComponentProperty.VERTICAL_ALIGNMENT, JVxTextAlign.defaultAlign);
     horizontalAlignment = changedProperties.getProperty<Alignment>(ComponentProperty.HORIZONTAL_ALIGNMENT, JVxAlignment.defaultAlignment);
   }

@@ -84,8 +84,8 @@ class ComponentCreator implements IComponentCreator {
       case "ChoiceCellEditor":  { cellEditor = JVxChoiceCellEditor(changedComponent.cellEditor, context); } break;
     }
 
-    cellEditor.dataProvider = changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER);
-    cellEditor.columnName = changedComponent.getProperty<String>(ComponentProperty.COLUMN_NAME);
+    //cellEditor.dataProvider = changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER);
+    //cellEditor.columnName = changedComponent.getProperty<String>(ComponentProperty.COLUMN_NAME);
 
     return cellEditor;
   }

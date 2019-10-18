@@ -7,6 +7,7 @@ import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'jvx_component.dart';
+import 'dart:convert';
 
 class JVxButton extends JVxComponent {
   String text = "";

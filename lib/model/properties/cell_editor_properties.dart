@@ -13,7 +13,8 @@ enum CellEditorProperty {
   ALLOWED_VALUES,
   IMAGE_NAMES,
   DATE_FORMAT,
-  NUMBER_FORMAT
+  NUMBER_FORMAT,
+  DATA_PROVIDER
 }
 
 class CellEditorProperties {

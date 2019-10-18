@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/utils/jvx_alignment.dart';
 import 'package:jvx_mobile_v3/utils/jvx_text_align.dart';
@@ -40,6 +42,9 @@ class Properties {
             as T;
       } else if (T == bool) {
         return (value.toLowerCase() == 'true') as T;
+      } else if (T == String) {
+        if (value!=null)
+          return utf8convert(value) as T;
       }
     } else if (value is int) {
       if (T == TextAlign) {
@@ -76,5 +81,10 @@ class Properties {
     }
 
     return result;
+  }
+
+  static String utf8convert(String text) {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
   }
 }

@@ -37,7 +37,8 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       });
     }
 
-    if (items.length == 0) items.add(getItem('loading', 'Loading...'));
+    if (items.length == 0) 
+      items.add(getItem('loading', 'Loading...'));
 
     return items;
   }
