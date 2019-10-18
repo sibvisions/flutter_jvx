@@ -74,6 +74,7 @@ class ComponentData {
       select.filter = Filter(columnNames: _data.columnNames, values: _data.records[index]);
 
       BlocProvider.of<ApiBloc>(context).dispatch(select);
+      _data.selectedRow = index;
     } else {
       IndexError(index, _data.records, "Select Record", "Select record failed. Index out of bounds!");
     }
