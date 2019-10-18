@@ -79,21 +79,15 @@ class RestClient {
         ..message = 'An error with status code ${(response as http.Response).statusCode} occured.'
         ..details = '(${(response as http.Response).statusCode}): ${(response as http.Response).body}';
     } else {
+      dynamic decodedBody = json.decode(response.body);
       try {
-         if (json.decode(response.body) is List) {
-           resp = Response.fromJson(json.decode(response.body));
+         if (decodedBody is List) {
+           resp = Response.fromJson(decodedBody);
          } else {
-           resp = Response.fromJsonForAppStyle(json.decode(response.body));
+           resp = Response.fromJsonForAppStyle(decodedBody);
          }
       } catch (e) {
         if (e is ApiException) {
-          return Response()
-            ..details = e.details
-            ..message = e.message
-            ..title = e.title
-            ..errorName = e.name
-            ..error = true;
-        } else if (e is SessionExpiredException) {
           return Response()
             ..details = e.details
             ..message = e.message

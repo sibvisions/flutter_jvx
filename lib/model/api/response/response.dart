@@ -43,19 +43,16 @@ class Response {
   }
 
   static checkForError(Map<String, dynamic> json) {
-    if (json != null && json['title'] == 'Error') {
-      if (json['name'] == 'message.sessionexpired')
-        throw new SessionExpiredException(
-            details: json['details'], title: json['title'], name: json['name']);
-      else
-        throw new ApiException(
-            details: json['details'], title: json['title'], name: json['name']);
+    if (json != null && (json['title'] == 'Error' || json['title'] == 'Session Expired')) {
+      throw new ApiException(
+          details: json['details'], title: json['title'], name: json['name'], message: json['message']);
     }
   }
 
   Response.fromJson(List json) {
-    if (json.isNotEmpty)
-      checkForError(json[0]);
+    if (json.isNotEmpty) {
+      json.forEach((e) => checkForError(e));
+    }
 
     error = false;
 

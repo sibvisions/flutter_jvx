@@ -98,7 +98,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if (authData != null)
       SharedPreferencesHelper().setAuthKey(authData.authKey);
-
+      
     yield resp;
   }
 

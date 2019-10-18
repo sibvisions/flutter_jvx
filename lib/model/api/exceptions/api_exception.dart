@@ -1,8 +1,8 @@
 class ApiException implements Exception {
-  String message = 'Api Exception. App will Restart';
+  String message;
   String title;
   String details;
   String name;
 
-  ApiException({this.title, this.details, this.name});
+  ApiException({this.title, this.details, this.name, this.message});
 }

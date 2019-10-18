@@ -47,9 +47,9 @@ class LoginPageState extends State<LoginPage> {
             SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
           }
 
-          if (state != null && !state.loading && !errorMsgShown) {
+          if (state != null && !state.loading && !errorMsgShown && state.error) {
             errorMsgShown = true;
-            Future.delayed(Duration.zero, () => handleError(state, context));
+            SchedulerBinding.instance.addPostFrameCallback((_) => handleError(state, context));
           }
 
           if (state != null &&
@@ -83,10 +83,7 @@ class LoginPageState extends State<LoginPage> {
             return loginScaffold();
           }
 
-          return Scaffold(
-              body: Center(
-            child: Text('Loading...'),
-          ));
+            return loginScaffold();
         },
       );
 
