@@ -53,7 +53,7 @@ class _MenuGridViewState extends State<MenuGridView> {
           SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
         }
 
-        if (state != null && !state.loading && !errorMsgShown) {
+        if (state != null && !state.loading && !errorMsgShown && state.error) {
           errorMsgShown = true;
           Future.delayed(Duration.zero, () => handleError(state, context));
         }
