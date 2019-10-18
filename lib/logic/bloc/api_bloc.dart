@@ -31,6 +31,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
+    yield Response()
+      ..loading = true
+      ..error = false
+      ..requestType = RequestType.LOADING;
     if (event is Startup) {
       yield* startup(event);
     } else if (event is Login) {
@@ -102,7 +106,7 @@ class ApiBloc extends Bloc<Request, Response> {
     yield await processRequest(request);
   }
 
-  Stream<Response> openscreen(OpenScreen request) async* {
+  Stream<Response> openscreen(OpenScreen request) async* {    
     prefix0.Action action = request.action;
 
     Response resp = await processRequest(request);
@@ -155,7 +159,7 @@ class ApiBloc extends Bloc<Request, Response> {
           await outFile.writeAsBytes(file.content);
         }
       }
-      
+
       SharedPreferencesHelper().setTranslation(globals.translation);
       Translations.load(Locale(globals.language));
     } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
@@ -186,7 +190,8 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> navigation(Navigation request) async* {
     Response resp = await processRequest(request);
 
-    if ((resp.screenGeneric != null && resp.screenGeneric.changedComponents.isEmpty) &&
+    if ((resp.screenGeneric != null &&
+            resp.screenGeneric.changedComponents.isEmpty) &&
         resp.jVxData.isEmpty &&
         resp.jVxMetaData.isEmpty) {
       CloseScreen closeScreen = CloseScreen(
@@ -293,6 +298,9 @@ class ApiBloc extends Bloc<Request, Response> {
         response.requestType = request.requestType;
         updateResponse(response);
         return response;
+        break;
+      case RequestType.LOADING:
+        // TODO: Handle this case.
         break;
     }
 

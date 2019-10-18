@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
@@ -39,42 +41,52 @@ class OpenScreenPage extends StatefulWidget {
   _OpenScreenPageState createState() => _OpenScreenPageState();
 }
 
-class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObserver {
+class _OpenScreenPageState extends State<OpenScreenPage>
+    with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  JVxScreen screen = JVxScreen(ComponentCreator()); 
+  JVxScreen screen = JVxScreen(ComponentCreator());
   bool errorMsgShown = false;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ApiBloc, Response>(
-        condition: (previousState, state) {
-            return previousState.hashCode!=state.hashCode;
-      },
-      builder: (context, state) {
-      print("*** OpenScreenPage - RequestType: " + state.requestType.toString());
+    return BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
+      return previousState.hashCode != state.hashCode;
+    }, builder: (context, state) {
+      print(
+          "*** OpenScreenPage - RequestType: " + state.requestType.toString());
+
+      if (state != null &&
+          state.loading &&
+          state.requestType == RequestType.LOADING) {
+        SchedulerBinding.instance
+            .addPostFrameCallback((_) => showProgress(context));
+      }
 
       if (state != null &&
           !state.loading &&
-          !errorMsgShown) {
+          state.requestType != RequestType.LOADING) {
+        SchedulerBinding.instance
+            .addPostFrameCallback((_) => hideProgress(context));
+      }
+
+      if (state != null && !state.loading && !errorMsgShown) {
         errorMsgShown = true;
-        Future.delayed(Duration.zero, () => handleError(state, context));
+        SchedulerBinding.instance
+            .addPostFrameCallback((_) => handleError(state, context));
       }
 
       if (state.requestType == RequestType.CLOSE_SCREEN) {
-        Future.delayed(Duration.zero, () => Navigator.of(context).
-          pushReplacement(MaterialPageRoute(
-            builder: (context) => MenuPage(
-                  menuItems: globals.items,
-                  listMenuItemsInDrawer: false,
-                )
-              )
-            )
-          );
+        SchedulerBinding.instance.addPostFrameCallback(
+            (_) => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => MenuPage(
+                      menuItems: globals.items,
+                      listMenuItemsInDrawer: false,
+                    ))));
       }
 
-      if (isScreenRequest(state.requestType)) {
-          screen.context = context;
-          screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric);
+      if (isScreenRequest(state.requestType) && !state.loading) {
+        screen.context = context;
+        screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric);
       }
 
       return WillPopScope(
@@ -82,32 +94,35 @@ class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObse
           return false;
         },
         child: Scaffold(
-          endDrawer: MenuDrawerWidget(menuItems: widget.items, listMenuItems: true,),
-          key: _scaffoldKey,
-          appBar: AppBar(
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(FontAwesomeIcons.ellipsisV),
-                onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
-              )
-            ],
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigation navigation = Navigation(
-                  clientId: globals.clientId,
-                  componentId: widget.componentId.toString().replaceAll("[<'", '').replaceAll("'>]", ''),
-                );
-
-                BlocProvider.of<ApiBloc>(context).dispatch(navigation);
-              },
+            endDrawer: MenuDrawerWidget(
+              menuItems: widget.items,
+              listMenuItems: true,
             ),
-            title: Text(widget.title),
-          ),
-          body: //SingleChildScrollView(child: 
-                screen.getWidget()
-              //),
-        ),
+            key: _scaffoldKey,
+            appBar: AppBar(
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(FontAwesomeIcons.ellipsisV),
+                  onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
+                )
+              ],
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigation navigation = Navigation(
+                    clientId: globals.clientId,
+                    componentId: widget.componentId
+                        .toString()
+                        .replaceAll("[<'", '')
+                        .replaceAll("'>]", ''),
+                  );
+
+                  BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                },
+              ),
+              title: Text(widget.title),
+            ),
+            body: screen.getWidget()),
       );
     });
   }
@@ -125,6 +140,5 @@ class _OpenScreenPageState extends State<OpenScreenPage> with WidgetsBindingObse
   }
 
   @override
-  didChangeMetrics() {
-  }
+  didChangeMetrics() {}
 }
