@@ -86,7 +86,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
       if (isScreenRequest(state.requestType) && !state.loading) {
         screen.context = context;
-        screen.update(state.jVxData, state.jVxMetaData, state.screenGeneric);
+        screen.update(state.request, state.jVxData, state.jVxMetaData, state.screenGeneric);
       }
 
       return WillPopScope(

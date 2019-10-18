@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
@@ -38,6 +39,13 @@ class ComponentData {
     _onDataChanged.forEach((d) => d());
   }
 
+  void updateSelectedRow(int selectedRow) {
+    if (_data.selectedRow!=selectedRow) {
+      _data.selectedRow = selectedRow;
+      _onDataChanged.forEach((d) => d());
+    }
+  }
+
   void updateMetaData(JVxMetaData pMetaData) {
     this.metaData = pMetaData;
     _onMetaDataChanged.forEach((d) => d());
@@ -66,15 +74,15 @@ class ComponentData {
 
   void selectRecord(BuildContext context, int index, [bool fetch = false]) {
     if (index < _data.records.length) {
-      SelectRecord select = SelectRecord(dataProvider);
+      SelectRecord select = SelectRecord(
+        dataProvider, 
+        Filter(columnNames: _data.columnNames, values: _data.records[index]),
+        index);
 
       if (fetch!=null)
         select.fetch = fetch;
 
-      select.filter = Filter(columnNames: _data.columnNames, values: _data.records[index]);
-
       BlocProvider.of<ApiBloc>(context).dispatch(select);
-      _data.selectedRow = index;
     } else {
       IndexError(index, _data.records, "Select Record", "Select record failed. Index out of bounds!");
     }

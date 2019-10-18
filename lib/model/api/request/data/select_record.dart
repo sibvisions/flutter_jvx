@@ -8,8 +8,9 @@ class SelectRecord extends Request {
   String dataProvider;
   bool fetch;
   Filter filter = Filter();
+  int selectedRow;
 
-  SelectRecord(this.dataProvider, [this.fetch, this.filter])  : 
+  SelectRecord(this.dataProvider, this.filter, this.selectedRow, [this.fetch])  : 
       super(clientId: globals.clientId, requestType: RequestType.DAL_SELECT_RECORD);
 
   Map<String, dynamic> toJson() => <String, dynamic>{

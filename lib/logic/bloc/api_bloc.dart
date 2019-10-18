@@ -213,18 +213,22 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.STARTUP:
         response = await restClient.postAsync('/api/startup', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
       case RequestType.LOGIN:
         response = await restClient.postAsync('/api/login', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
       case RequestType.LOGOUT:
         response = await restClient.postAsync('/api/logout', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -232,6 +236,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsync('/api/openScreen', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -239,6 +244,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsync('/api/closeScreen', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -246,6 +252,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response = await restClient.postAsync(
             '/api/dal/selectRecord', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -253,6 +260,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsync('/api/dal/setValues', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -260,6 +268,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsync('/api/dal/fetch', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -267,6 +276,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         response.download = ZipDecoder().decodeBytes(response.download);
         updateResponse(response);
         return response;
@@ -275,6 +285,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         response.download = ZipDecoder().decodeBytes(response.download);
         updateResponse(response);
         return response;
@@ -282,6 +293,7 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.APP_STYLE:
         response = await restClient.postAsync('/download', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -289,6 +301,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsync('/api/pressButton', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;
@@ -296,6 +309,7 @@ class ApiBloc extends Bloc<Request, Response> {
         response =
             await restClient.postAsync('/api/navigation', request.toJson());
         response.requestType = request.requestType;
+        response.request = request;
         updateResponse(response);
         return response;
         break;

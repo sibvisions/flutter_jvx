@@ -33,6 +33,7 @@ class Response {
   List<JVxData> jVxData = <JVxData>[];
   List<JVxMetaData> jVxMetaData = <JVxMetaData>[];
   ApplicationStyleResponse applicationStyle;
+  Request request;
 
   Response();
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
@@ -15,8 +16,8 @@ class JVxScreen extends ComponentScreen {
 
   JVxScreen(IComponentCreator componentCreator) : super(componentCreator);
   
-  void update(List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {
-    updateData(data, metaData);
+  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {
+    updateData(request, data, metaData);
     if (genericScreen!=null)
       updateComponents(genericScreen.changedComponents);
   }
