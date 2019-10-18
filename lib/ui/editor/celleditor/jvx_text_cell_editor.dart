@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
@@ -16,25 +15,16 @@ class JVxTextCellEditor extends JVxCellEditor {
     multiLine = (changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE)?.contains('multiline') ?? false);
   }
 
-  @override
-  void setData(JVxData data) {
-    if (data!=null && data.columnNames!=null && data.columnNames.length>0 && data.records!=null && 
-    data.records.length>0) {
-      int index = data.columnNames.indexOf(this.columnName);
-      if (index>=0 && index<=data.records[0].length) 
-        this.value = data.records[0][index];
-    }
-    //this.value = getItems(data);
-  }
-
   void onTextFieldValueChanged(dynamic newValue) {
     this.value = newValue;
     this.valueChanged = true;
   }
 
   void onTextFieldEndEditing() {
-    if (this.valueChanged)
+    if (this.valueChanged) {
       super.onValueChanged(this.value);
+      this.valueChanged = false;
+    }
   }
   
   @override
