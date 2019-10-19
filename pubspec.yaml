@@ -26,6 +26,7 @@ dependencies:
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
   equatable: ^0.2.0
+  intl: ^0.15.8
 
 dev_dependencies:
   flutter_test:

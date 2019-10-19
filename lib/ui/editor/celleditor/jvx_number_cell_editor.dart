@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/formatter/numeric_text_formatter.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxNumberCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
@@ -29,6 +32,27 @@ class JVxNumberCellEditor extends JVxCellEditor {
       this.valueChanged = false;
     }
   }
+
+  List<TextInputFormatter> getImputFormatter() {
+    List<TextInputFormatter> formatter = List<TextInputFormatter>();
+    if (numberFormat!=null && numberFormat.isNotEmpty) 
+    formatter.add(NumericTextFormatter(intl.NumberFormat(numberFormat, globals.language)));
+
+    return  formatter;
+  }
+
+  String getFormattedValue() {
+    if (this.value!=null) {
+      if (numberFormat!=null && numberFormat.isNotEmpty) {
+        intl.NumberFormat format = intl.NumberFormat(numberFormat, globals.language);
+        return format.format(Properties.utf8convert(this.value));
+      }
+
+      return Properties.utf8convert(this.value);
+    } 
+
+    return "";
+  }
   
   @override
   Widget getWidget() {
@@ -37,8 +61,8 @@ class JVxNumberCellEditor extends JVxCellEditor {
     if (horizontalAlignment==IAlignmentConstants.ALIGN_RIGHT)
       direction = TextDirection.rtl;
 
-    _controller.text = (this.value!=null ? Properties.utf8convert(this.value.toString()) : "");
-    // ToDo: Implement getWidget
+    _controller.text = getFormattedValue();
+
     return TextField(
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
@@ -55,6 +79,7 @@ class JVxNumberCellEditor extends JVxCellEditor {
       onEditingComplete: onTextFieldEndEditing,
       onChanged: onTextFieldValueChanged,
       textDirection: direction,
+      inputFormatters: getImputFormatter(),
     );
   }
 }
