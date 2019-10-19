@@ -11,7 +11,6 @@ class JVxDateCellEditor extends JVxCellEditor {
       dateFormat = changedCellEditor.getProperty<String>(CellEditorProperty.DATE_FORMAT);
   }
 
-  @override
   void onDateValueChanged(dynamic value) {
     super.onValueChanged(this.value);
   }

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
+import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
@@ -79,7 +80,7 @@ class JVxTable extends JVxEditor {
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          child: Text(JVxLabel.utf8convert(text), style: TextStyle(fontSize: style.fontSize, fontWeight: FontWeight.bold, color: Colors.grey[700])),
+          child: Text(Properties.utf8convert(text), style: TextStyle(fontSize: style.fontSize, fontWeight: FontWeight.bold, color: Colors.grey[700])),
           padding: EdgeInsets.all(5),
         ),
       );
@@ -88,7 +89,7 @@ class JVxTable extends JVxEditor {
         padding: const EdgeInsets.all(8.0),
         child: GestureDetector(
           child: Container(
-              child: Text(JVxLabel.utf8convert(text), style: this.style),
+              child: Text(Properties.utf8convert(text), style: this.style),
               padding: EdgeInsets.all(5)),
           onTap: () => _onRowTapped(rowIndex),
         ),
