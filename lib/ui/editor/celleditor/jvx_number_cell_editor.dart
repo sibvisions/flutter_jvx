@@ -1,38 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
+<<<<<<< HEAD
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
+=======
+import 'package:jvx_mobile_v3/ui/editor/celleditor/formatter/numeric_text_formatter.dart';
+>>>>>>> master
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxNumberCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
-  bool multiLine = false;
   bool valueChanged = false;
   String numberFormat;
+  List<TextInputFormatter> textInputFormatter;
+  TextInputType textInputType;
+  String tempValue;
+
+  @override 
+  set value(dynamic pValue) {
+    super.value = pValue;
+    this.tempValue = getFormattedValue();
+    _controller.text = this.tempValue;
+  }
   
   JVxNumberCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
-      numberFormat = changedCellEditor.getProperty<String>(CellEditorProperty.NUMBER_FORMAT);
+    numberFormat = changedCellEditor.getProperty<String>(CellEditorProperty.NUMBER_FORMAT);
+
+    /// ToDo intl Number Formatter only supports only patterns with up to 16 digits 
+    if (numberFormat!=null) {
+      List<String> numberFormatParts = numberFormat.split(".");
+      if (numberFormatParts.length>1 && numberFormatParts[1].length>16) {
+        numberFormat = numberFormatParts[0] + "." + numberFormatParts[1].substring(0,16);
+      }
+    }
+
+    textInputFormatter = this.getImputFormatter();
+    textInputType = this.getKeyboardType();
   }
 
   void onTextFieldValueChanged(dynamic newValue) {
-    this.value = newValue;
+    this.tempValue = newValue;
     this.valueChanged = true;
   }
 
   void onTextFieldEndEditing() {
     if (this.valueChanged) {
+      intl.NumberFormat format = intl.NumberFormat(numberFormat);
+      if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
+        tempValue = tempValue.substring(0,tempValue.length-1);
+      this.value = NumericTextFormatter.convertToNumber(tempValue, numberFormat);
       super.onValueChanged(this.value);
       this.valueChanged = false;
     }
   }
+
+  List<TextInputFormatter> getImputFormatter() {
+    List<TextInputFormatter> formatter = List<TextInputFormatter>();
+    if (numberFormat!=null && numberFormat.isNotEmpty) 
+    formatter.add(NumericTextFormatter(numberFormat)); //globals.language));
+
+    return  formatter;
+  }
+
+  String getFormattedValue() {
+    if (this.value!=null) {
+      if (numberFormat!=null && numberFormat.isNotEmpty) {
+        intl.NumberFormat format = intl.NumberFormat(numberFormat);
+        return format.format(this.value);
+      }
+
+      return this.value;
+    } 
+
+    return "";
+  }
+
+  TextInputType getKeyboardType() {
+    if (numberFormat!=null && numberFormat.isNotEmpty) {
+      if (!numberFormat.contains("."))
+        return TextInputType.number;
+    }
+
+    return TextInputType.numberWithOptions(decimal: true);
+  }
   
   @override
   Widget getWidget() {
+<<<<<<< HEAD
     _controller.text = (this.value!=null ? Properties.utf8convert(this.value.toString()) : "");
     // ToDo: Implement getWidget
+=======
+    TextDirection direction = TextDirection.ltr;
+
+    if (horizontalAlignment==IAlignmentConstants.ALIGN_RIGHT)
+      direction = TextDirection.rtl;
+
+>>>>>>> master
     return TextField(
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
@@ -44,10 +114,11 @@ class JVxNumberCellEditor extends JVxCellEditor {
       ),
       key: this.key,
       controller: _controller,
-      maxLines: multiLine ? 4 : 1,
-      keyboardType: TextInputType.number,
+      keyboardType: textInputType,
       onEditingComplete: onTextFieldEndEditing,
       onChanged: onTextFieldValueChanged,
+      textDirection: direction,
+      inputFormatters: textInputFormatter,
     );
   }
 }

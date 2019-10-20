@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
+import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
@@ -57,6 +58,8 @@ class ApiBloc extends Bloc<Request, Response> {
       yield* pressButton(event);
     } else if (event is Navigation) {
       yield* navigation(event);
+    } else if (event is DeviceStatus) {
+      yield* deviceStatus(event);
     }
   }
 
@@ -128,6 +131,12 @@ class ApiBloc extends Bloc<Request, Response> {
     Response resp = await processRequest(request);
 
     if (!resp.error) resp.action = action;
+
+    yield resp;
+  }
+
+  Stream<Response> deviceStatus(Request request) async* {
+    Response resp = await processRequest(request);
 
     yield resp;
   }
@@ -308,6 +317,14 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.NAVIGATION:
         response =
             await restClient.postAsync('/api/navigation', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.DEVICE_STATUS:
+        response =
+            await restClient.postAsync('/api/deviceStatus', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);

@@ -95,7 +95,7 @@ class ComponentData {
   }
 
   void setValues(BuildContext context, List<dynamic> values, [List<dynamic> columnNames, Filter filter]) {
-    SetValues setValues = SetValues(this.dataProvider, _data.columnNames, values);
+    SetValues setValues = SetValues(this.dataProvider, _data?.columnNames, values);
 
     if (columnNames!=null)
       setValues.columnNames = columnNames;

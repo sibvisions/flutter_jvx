@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
@@ -131,17 +133,22 @@ class RenderJVxBorderLayoutWidget extends RenderBox
   void performLayout() {
 
     Size size = this.constraints.biggest;
-    if (size.width==double.infinity || size.height==double.infinity) {
+    /*if (size.width==double.infinity || size.height==double.infinity) {
       print("Infinity height or width for BorderLayout");
       size = Size((size.width==double.infinity?double.maxFinite:size.width),
                   (size.height==double.infinity?double.maxFinite:size.height));
-    }
+    }*/
 
     double x = this.insMargin.left;
     double y = this.insMargin.top;
 
     double width = size.width - x - this.insMargin.right;
     double height = size.height - y - this.insMargin.bottom;
+
+    double layoutWidth = 0;
+    double layoutHeight = 0;
+    double layoutMiddleWidth = 0;
+    double layoutMiddleHeight = 0;
 
     // Set components
     this.north = null;
@@ -166,6 +173,8 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
       y += north.size.height + iVerticalGap;
       height -= north.size.height + iVerticalGap;
+      layoutWidth += north.size.width;
+      layoutHeight += north.size.height;
     }
 
     // layout SOUTH
@@ -175,6 +184,8 @@ class RenderJVxBorderLayoutWidget extends RenderBox
       childParentData.offset = Offset(x, y + height - south.size.height);
 
       height -= south.size.height + iVerticalGap;
+      layoutWidth = max(south.size.width,layoutWidth);
+      layoutHeight += south.size.height;
     }
 
     // layout WEST
@@ -185,6 +196,8 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
       x += west.size.width + iHorizontalGap;
       width -= west.size.width + iHorizontalGap;
+      layoutMiddleWidth += west.size.width + iHorizontalGap;
+      layoutMiddleHeight = max(west.size.height + iVerticalGap, layoutMiddleHeight);
     }
 
     // layout EAST
@@ -194,14 +207,26 @@ class RenderJVxBorderLayoutWidget extends RenderBox
       childParentData.offset = Offset(x + width - east.size.width, y);
 
       width -= east.size.width + iHorizontalGap;
+      layoutMiddleWidth += east.size.width + iHorizontalGap;
+      layoutMiddleHeight = max(east.size.height + iVerticalGap, layoutMiddleHeight);
     }
 
     // layout CENTER
     if (center != null) {
-      center.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+      double minHeight = height;
+
+      if (minHeight==double.infinity)
+        minHeight = 0;
+
+      center.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: minHeight, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = center.parentData;
-      childParentData.offset = Offset(x, y);
+      childParentData.offset = Offset(x, y); 
+      layoutMiddleWidth += center.size.width + iHorizontalGap;
+      layoutMiddleHeight = max(center.size.height + iVerticalGap, layoutMiddleHeight);
     }
+
+    layoutWidth = max(layoutWidth,layoutMiddleWidth);
+    layoutHeight += layoutMiddleHeight;
 
     // borderLayout uses max space available
     this.size = size;
