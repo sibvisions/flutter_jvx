@@ -27,6 +27,7 @@ dependencies:
   flutter_bloc: ^0.21.0
   equatable: ^0.2.0
   intl: ^0.15.8
+  keyboard_actions: ^2.1.2
 
 dev_dependencies:
   flutter_test:

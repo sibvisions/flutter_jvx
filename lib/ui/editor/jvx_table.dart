@@ -170,11 +170,11 @@ class JVxTable extends JVxEditor {
         columnWidths.putIfAbsent(i, () => IntrinsicColumnWidth());
       });
       
-      return Table(
+      return Container(child: Table(
         border: border,
         children: rows,
         columnWidths: columnWidths
-      );
+      ));
     } else {
       return Container(child: Text("No table data"));
     }
