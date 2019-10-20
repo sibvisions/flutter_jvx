@@ -128,7 +128,8 @@ class ComponentScreen extends DataScreen {
 
   void _moveComponent(IComponent component, ChangedComponent newComponent) {
     String parent = newComponent.getProperty(ComponentProperty.PARENT);
-    if (component.parentComponentId != parent) {
+    String constraints = newComponent.getProperty(ComponentProperty.CONSTRAINTS);
+    if (newComponent.hasProperty(ComponentProperty.PARENT) && component.parentComponentId != parent) {
       if (debug)
         print("Move component (id:" + newComponent.id +
             ",oldParent:" + (component.parentComponentId != null ? component.parentComponentId : "") +
@@ -142,6 +143,22 @@ class ComponentScreen extends DataScreen {
 
       if (parent != null) {
         component.parentComponentId = parent;
+        _addToParent(component);
+      }
+    } else if (newComponent.hasProperty(ComponentProperty.CONSTRAINTS) && component.constraints != constraints) {
+      if (debug)
+        print("Update constraints (id:" + newComponent.id +
+            ",oldConstraints:" + (component.constraints != null ? component.constraints : "") +
+            ",newConstraints:" + (constraints != null ? constraints : "") +
+            ", className: " + (newComponent.className != null ? newComponent.className : "") +
+            ")");
+
+      if (component.parentComponentId != null) {
+        _removeFromParent(component);
+      }
+
+      if (constraints != null) {
+        component.constraints = constraints;
         _addToParent(component);
       }
     }

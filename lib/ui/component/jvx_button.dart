@@ -17,7 +17,7 @@ class JVxButton extends JVxComponent {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    text = changedComponent.getProperty<String>(ComponentProperty.TEXT);
+    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
   }
 
   void buttonPressed() {
@@ -36,7 +36,7 @@ class JVxButton extends JVxComponent {
           onPressed: buttonPressed,
           color: UIData.ui_kit_color_2[400],
           elevation: 10,
-          child: Text(text, 
+          child: Text(text!=null?text:"", 
             style: TextStyle(
               fontSize: style.fontSize,
               color: UIData.textColor

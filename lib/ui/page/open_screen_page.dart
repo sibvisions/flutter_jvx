@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
@@ -44,9 +45,22 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   JVxScreen screen = JVxScreen(ComponentCreator());
   bool errorMsgShown = false;
+  Orientation lastOrientation;
+
 
   @override
   Widget build(BuildContext context) {
+    if (lastOrientation==null)
+      lastOrientation = MediaQuery.of(context).orientation;
+    else if (lastOrientation!=MediaQuery.of(context).orientation) {
+      DeviceStatus status = DeviceStatus(
+        screenSize: MediaQuery.of(context).size,
+        timeZoneCode: "", 
+        langCode: "");
+      BlocProvider.of<ApiBloc>(context).dispatch(status);
+      lastOrientation = MediaQuery.of(context).orientation;
+    }
+
     return BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
       return previousState.hashCode != state.hashCode;
     }, builder: (context, state) {
