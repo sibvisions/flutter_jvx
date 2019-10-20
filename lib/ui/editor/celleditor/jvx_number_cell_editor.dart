@@ -4,12 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-<<<<<<< HEAD
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
-=======
 import 'package:jvx_mobile_v3/ui/editor/celleditor/formatter/numeric_text_formatter.dart';
->>>>>>> master
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -93,16 +88,11 @@ class JVxNumberCellEditor extends JVxCellEditor {
   
   @override
   Widget getWidget() {
-<<<<<<< HEAD
-    _controller.text = (this.value!=null ? Properties.utf8convert(this.value.toString()) : "");
-    // ToDo: Implement getWidget
-=======
     TextDirection direction = TextDirection.ltr;
 
     if (horizontalAlignment==IAlignmentConstants.ALIGN_RIGHT)
       direction = TextDirection.rtl;
 
->>>>>>> master
     return TextField(
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
