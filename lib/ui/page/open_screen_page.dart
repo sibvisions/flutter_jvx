@@ -98,7 +98,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       }
 
       if (isScreenRequest(state.requestType) &&
-          state.screenGeneric != null &&
+          //state.screenGeneric != null &&
           !state.loading &&
           !state.error) {
 
