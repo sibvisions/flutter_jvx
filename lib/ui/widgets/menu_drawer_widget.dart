@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/api/request/close_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/request/logout.dart';
@@ -20,10 +21,11 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 class MenuDrawerWidget extends StatelessWidget {
   final List<MenuItem> menuItems;
   final bool listMenuItems;
+  final Key currentScreen;
   String title;
 
   MenuDrawerWidget(
-      {Key key, @required this.menuItems, this.listMenuItems = false})
+      {Key key, @required this.menuItems, this.listMenuItems = false, this.currentScreen})
       : super(key: key);
 
   @override
@@ -72,16 +74,31 @@ class MenuDrawerWidget extends StatelessWidget {
                   child: !item.image.startsWith('FontAwesome')
                       ? new Image.asset('${globals.dir}${item.image}')
                       : _iconBuilder(formatFontAwesomeText(item.image)))
-              : null,
+              : new CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: Icon(
+                    FontAwesomeIcons.clone,
+                    size: 48,
+                    color: Colors.grey[300],
+                  )),
           onTap: () {
             prefix0.Action action = item.action;
-                        title = action.label;
+            title = action.label;
 
             OpenScreen openScreen = OpenScreen(
                 action: action,
                 clientId: globals.clientId,
                 manualClose: false,
                 requestType: RequestType.OPEN_SCREEN);
+
+            // CloseScreen closeScreen = CloseScreen(
+            //     clientId: globals.clientId,
+            //     componentId: currentScreen
+            //         .toString()
+            //         .replaceAll("[<'", '')
+            //         .replaceAll("'>]", ''),
+            //     openScreen: openScreen,
+            //     requestType: RequestType.CLOSE_SCREEN);
 
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },

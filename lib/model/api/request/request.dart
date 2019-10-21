@@ -24,7 +24,7 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.DAL_SELECT_RECORD ||
     type == RequestType.DAL_SET_VALUE ||
     type == RequestType.PRESS_BUTTON ||
-    type == RequestType.CLOSE_SCREEN ||
+    // type == RequestType.CLOSE_SCREEN ||
     type == RequestType.NAVIGATION ||
     type == RequestType.DEVICE_STATUS);
 }

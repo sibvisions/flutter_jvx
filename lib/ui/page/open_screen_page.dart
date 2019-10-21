@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/model/api/request/close_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
+import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
@@ -47,16 +49,15 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   bool errorMsgShown = false;
   Orientation lastOrientation;
 
-
   @override
   Widget build(BuildContext context) {
-    if (lastOrientation==null)
+    if (lastOrientation == null)
       lastOrientation = MediaQuery.of(context).orientation;
-    else if (lastOrientation!=MediaQuery.of(context).orientation) {
+    else if (lastOrientation != MediaQuery.of(context).orientation) {
       DeviceStatus status = DeviceStatus(
-        screenSize: MediaQuery.of(context).size,
-        timeZoneCode: "", 
-        langCode: "");
+          screenSize: MediaQuery.of(context).size,
+          timeZoneCode: "",
+          langCode: "");
       BlocProvider.of<ApiBloc>(context).dispatch(status);
       lastOrientation = MediaQuery.of(context).orientation;
     }
@@ -82,24 +83,52 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       }
 
       if (state != null && !state.loading && !errorMsgShown) {
-        errorMsgShown = true;
-        SchedulerBinding.instance
-            .addPostFrameCallback((_) => handleError(state, context));
+        SchedulerBinding.instance.addPostFrameCallback(
+            (_) => errorMsgShown = handleError(state, context));
       }
 
       if (state.requestType == RequestType.CLOSE_SCREEN) {
-        SchedulerBinding.instance.addPostFrameCallback(
-            (_) => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => MenuPage(
-                      menuItems: globals.items,
-                      listMenuItemsInDrawer: false,
-                    ))));
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => MenuPage(
+                    menuItems: globals.items,
+                    listMenuItemsInDrawer: false,
+                  )));
+        });
       }
 
-      if (isScreenRequest(state.requestType) && !state.loading) {
+      if (isScreenRequest(state.requestType) &&
+          state.screenGeneric != null &&
+          !state.loading &&
+          !state.error) {
+
+        if (state.requestType == RequestType.OPEN_SCREEN) {
+          if (mounted && _scaffoldKey.currentState != null && _scaffoldKey.currentState.isEndDrawerOpen)
+            SchedulerBinding.instance.addPostFrameCallback((_) => Navigator.of(context).pop());
+          screen = JVxScreen(ComponentCreator());
+        }
         screen.context = context;
-        screen.update(state.request, state.jVxData, state.jVxMetaData, state.screenGeneric);
+        screen.update(state.request, state.jVxData, state.jVxMetaData,
+            state.screenGeneric);
       }
+
+      /*
+      if (state.requestType == RequestType.OPEN_SCREEN &&
+          state.screenGeneric != null &&
+          !state.loading &&
+          !state.error) {
+        SchedulerBinding.instance.addPostFrameCallback(
+            (_) => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (_) => OpenScreenPage(
+                      changedComponents: state.screenGeneric.changedComponents,
+                      componentId: Key(state.screenGeneric.componentId),
+                      data: state.jVxData,
+                      metaData: state.jVxMetaData,
+                      items: widget.items,
+                      title: state.action.label,
+                    ))));
+      }
+      */
 
       return WillPopScope(
         onWillPop: () async {
@@ -109,6 +138,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
             endDrawer: MenuDrawerWidget(
               menuItems: widget.items,
               listMenuItems: true,
+              currentScreen: widget.componentId,
             ),
             key: _scaffoldKey,
             appBar: AppBar(
