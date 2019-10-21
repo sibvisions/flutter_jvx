@@ -48,9 +48,12 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   JVxScreen screen = JVxScreen(ComponentCreator());
   bool errorMsgShown = false;
   Orientation lastOrientation;
+  String title;
 
   @override
   Widget build(BuildContext context) {
+    title = widget.title;
+
     if (lastOrientation == null)
       lastOrientation = MediaQuery.of(context).orientation;
     else if (lastOrientation != MediaQuery.of(context).orientation) {
@@ -106,29 +109,12 @@ class _OpenScreenPageState extends State<OpenScreenPage>
           if (mounted && _scaffoldKey.currentState != null && _scaffoldKey.currentState.isEndDrawerOpen)
             SchedulerBinding.instance.addPostFrameCallback((_) => Navigator.of(context).pop());
           screen = JVxScreen(ComponentCreator());
+          title = state.action.label;
         }
         screen.context = context;
         screen.update(state.request, state.jVxData, state.jVxMetaData,
             state.screenGeneric);
       }
-
-      /*
-      if (state.requestType == RequestType.OPEN_SCREEN &&
-          state.screenGeneric != null &&
-          !state.loading &&
-          !state.error) {
-        SchedulerBinding.instance.addPostFrameCallback(
-            (_) => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (_) => OpenScreenPage(
-                      changedComponents: state.screenGeneric.changedComponents,
-                      componentId: Key(state.screenGeneric.componentId),
-                      data: state.jVxData,
-                      metaData: state.jVxMetaData,
-                      items: widget.items,
-                      title: state.action.label,
-                    ))));
-      }
-      */
 
       return WillPopScope(
         onWillPop: () async {
@@ -162,7 +148,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   BlocProvider.of<ApiBloc>(context).dispatch(navigation);
                 },
               ),
-              title: Text(widget.title),
+              title: Text(title),
             ),
             body: screen.getWidget()),
       );

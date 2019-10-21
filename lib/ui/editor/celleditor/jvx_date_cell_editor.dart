@@ -6,18 +6,30 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 
 class JVxDateCellEditor extends JVxCellEditor {
   String dateFormat;
-  
-  JVxDateCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
-      dateFormat = changedCellEditor.getProperty<String>(CellEditorProperty.DATE_FORMAT);
+
+  JVxDateCellEditor(CellEditor changedCellEditor, BuildContext context)
+      : super(changedCellEditor, context) {
+    dateFormat =
+        changedCellEditor.getProperty<String>(CellEditorProperty.DATE_FORMAT);
   }
 
   void onDateValueChanged(dynamic value) {
     super.onValueChanged(this.value);
   }
-  
+
   @override
   Widget getWidget() {
     // ToDo: Implement getWidget
-    return TextField();
+    return FlatButton(
+      child: Text(''),
+      onPressed: () => showDatePicker(
+          context: context,
+          firstDate: DateTime(1900),
+          lastDate: DateTime(2050),
+          initialDate: DateTime.now().subtract(Duration(seconds: 1))).then((date) {
+            this.value = date.toString();
+            this.onValueChanged(date.toString());
+          }),
+    );
   }
 }
