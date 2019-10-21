@@ -101,9 +101,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       }
 
       if (isScreenRequest(state.requestType) &&
-          state.screenGeneric != null &&
-          !state.loading &&
-          !state.error) {
+          //state.screenGeneric != null &&
+          !state.loading //&& !state.error
+          ) {
 
         if (state.requestType == RequestType.OPEN_SCREEN) {
           if (mounted && _scaffoldKey.currentState != null && _scaffoldKey.currentState.isEndDrawerOpen)
