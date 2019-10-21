@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/container/i_container.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
+import 'package:jvx_mobile_v3/ui/layout/i_layout.dart';
 import 'package:jvx_mobile_v3/ui/screen/data_screen.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -129,6 +130,13 @@ class ComponentScreen extends DataScreen {
   void _moveComponent(IComponent component, ChangedComponent newComponent) {
     String parent = newComponent.getProperty(ComponentProperty.PARENT);
     String constraints = newComponent.getProperty(ComponentProperty.CONSTRAINTS);
+    String layoutData = newComponent.getProperty(ComponentProperty.LAYOUT_DATA);
+
+    if (newComponent.hasProperty(ComponentProperty.LAYOUT_DATA) && layoutData != null && layoutData.isNotEmpty) {
+      if (component is IContainer)
+        component.layout?.updateLayoutData(layoutData);
+    }
+
     if (newComponent.hasProperty(ComponentProperty.PARENT) && component.parentComponentId != parent) {
       if (debug)
         print("Move component (id:" + newComponent.id +
