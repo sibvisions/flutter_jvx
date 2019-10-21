@@ -90,8 +90,8 @@ class JVxNumberCellEditor extends JVxCellEditor {
   Widget getWidget() {
     TextDirection direction = TextDirection.ltr;
 
-    if (horizontalAlignment==IAlignmentConstants.ALIGN_RIGHT)
-      direction = TextDirection.rtl;
+    //if (horizontalAlignment==IAlignmentConstants.ALIGN_RIGHT)
+    //  direction = TextDirection.rtl;
 
     return TextField(
       decoration: InputDecoration(
