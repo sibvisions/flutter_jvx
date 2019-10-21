@@ -32,33 +32,69 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
-    yield Response()
-      ..loading = true
-      ..error = false
-      ..requestType = RequestType.LOADING;
     if (event is Startup) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* startup(event);
     } else if (event is Login) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* login(event);
     } else if (event is Logout) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* logout(event);
     } else if (event is OpenScreen) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* openscreen(event);
     } else if (event is CloseScreen) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* closescreen(event);
     } else if (event is Download) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* download(event);
     } else if (event is ApplicationStyle) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* applicationStyle(event);
     } else if (event is SetValues ||
         event is SelectRecord ||
         event is FetchData) {
       yield* data(event);
     } else if (event is PressButton) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* pressButton(event);
     } else if (event is Navigation) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* navigation(event);
     } else if (event is DeviceStatus) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
       yield* deviceStatus(event);
     }
   }

@@ -3,7 +3,7 @@ import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 
-handleError(Response response, BuildContext context) {
+bool handleError(Response response, BuildContext context) {
   if (response.error) {
     if (response.errorName == 'message.sessionexpired') {
       showSessionExpired(context, response.title, 'App will restart.');
@@ -18,5 +18,7 @@ handleError(Response response, BuildContext context) {
     } else {
       showError(context, response.title, response.message);
     }
+    return true;
   }
+  return false;
 }

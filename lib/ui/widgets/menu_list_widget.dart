@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/api/request/close_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
@@ -27,6 +28,16 @@ class MenuListWidget extends StatelessWidget {
             title: Text(this.menuItems[index].action.label),
             subtitle: Text('Group: ' + this.menuItems[index].group),
             onTap: () {
+              CloseScreen closeScreen = CloseScreen(
+                  clientId: globals.clientId,
+                  componentId: this.menuItems[index].action.componentId
+                      .toString()
+                      .replaceAll("[<'", '')
+                      .replaceAll("'>]", ''),
+                  requestType: RequestType.CLOSE_SCREEN);
+
+              BlocProvider.of<ApiBloc>(context).dispatch(closeScreen);
+
               prefix0.Action action = menuItems[index].action;
               title = action.label;
 

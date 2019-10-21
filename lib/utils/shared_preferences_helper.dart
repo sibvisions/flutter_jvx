@@ -34,7 +34,10 @@ class SharedPreferencesHelper {
 
     prefLoginData['authKey'] = prefs.getString('authKey');
 
-    prefLoginData['username'] = prefs.getString('username');
+    if (prefs.getString('username') != null)
+      prefLoginData['username'] = prefs.getString('username');
+    else
+      prefLoginData['username'] = '';
     prefLoginData['password'] = prefs.getString('password');
 
     return prefLoginData;

@@ -172,13 +172,15 @@ class ComponentScreen extends DataScreen {
   }
 
   void debugPrintCurrentWidgetTree() {
-    int level = 0;
-    IComponent component = getRootComponent();
-    print("--------------------");
-    print("Current widget tree:");
-    print("--------------------");
-    debugPrintComponent(component, level);
-    print("--------------------");
+    if (debug) {
+      int level = 0;
+      IComponent component = getRootComponent();
+      print("--------------------");
+      print("Current widget tree:");
+      print("--------------------");
+      debugPrintComponent(component, level);
+      print("--------------------");
+    }
   }
 
   void debugPrintComponent(IComponent component, int level) {
