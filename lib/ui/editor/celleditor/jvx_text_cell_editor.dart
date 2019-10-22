@@ -10,14 +10,21 @@ class JVxTextCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
   bool valueChanged = false;
+  FocusNode node = FocusNode();
   
   JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
     multiLine = (changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE)?.contains('multiline') ?? false);
+    node.addListener(() {
+      if (!node.hasFocus)
+        onTextFieldEndEditing();
+    });
   }
 
   void onTextFieldValueChanged(dynamic newValue) {
-    this.value = newValue;
-    this.valueChanged = true;
+    if (this.value!=newValue) {
+      this.value = newValue;
+      this.valueChanged = true;
+    }
   }
 
   void onTextFieldEndEditing() {
@@ -46,6 +53,7 @@ class JVxTextCellEditor extends JVxCellEditor {
       keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
       onEditingComplete: onTextFieldEndEditing,
       onChanged: onTextFieldValueChanged,
+      focusNode: node,
     );
   }
 }

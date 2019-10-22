@@ -14,7 +14,7 @@ class JVxDateCellEditor extends JVxCellEditor {
   }
 
   void onDateValueChanged(dynamic value) {
-    super.onValueChanged(this.value);
+    super.onValueChanged('20.10.2019');
   }
 
   @override
@@ -28,7 +28,7 @@ class JVxDateCellEditor extends JVxCellEditor {
           lastDate: DateTime(2050),
           initialDate: DateTime.now().subtract(Duration(seconds: 1))).then((date) {
             this.value = date.toString();
-            this.onValueChanged(date.toString());
+            this.onDateValueChanged(date.toString());
           }),
     );
   }
