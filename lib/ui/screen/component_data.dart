@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/filter.dart';
+import 'package:jvx_mobile_v3/model/properties/properties.dart';
 
 
 class ComponentData {
@@ -123,7 +124,11 @@ class ComponentData {
   dynamic _getColumnValue(String columnName) {
     int columnIndex = _getColumnIndex(columnName);
     if (columnIndex!=null && _data.selectedRow>=0 && _data.selectedRow < _data.records.length) {
-      return _data.records[_data.selectedRow][columnIndex];
+      dynamic value = _data.records[_data.selectedRow][columnIndex];
+      if (value is String)
+        return Properties.utf8convert(value);
+      else 
+        return value;
     }
 
     return "";

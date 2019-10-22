@@ -61,6 +61,10 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   @override
   Widget getWidget() {
+    if (this.value != null && (this.value as String).isNotEmpty) {
+      selectedImage = _items[this.allowedVales.indexOf(this.value)];
+    }
+
     return Container(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),

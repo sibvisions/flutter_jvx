@@ -29,7 +29,7 @@ class JVxTextCellEditor extends JVxCellEditor {
   
   @override
   Widget getWidget() {
-    _controller.text = (this.value!=null ? Properties.utf8convert(this.value.toString()) : "");
+    _controller.text = (this.value!=null ? this.value.toString() : "");
     
     return TextField(
       decoration: InputDecoration(

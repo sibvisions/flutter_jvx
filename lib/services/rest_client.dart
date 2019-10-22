@@ -53,6 +53,8 @@ class RestClient {
   Future<Response> postAsync(String resourcePath, dynamic data) async {
     var content = json.encode(data);
     var response;
+
+    print('REQUEST: $content');
     
     Response resp;
     try {
