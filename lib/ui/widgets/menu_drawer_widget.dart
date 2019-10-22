@@ -72,8 +72,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
     if (widget.listMenuItems) {
       for (MenuItem item in items) {
-        print('CURRENT TITLE: $title, SELECTED TITLE: ${item.action.label}');
-        if (title != item.action.label) {
         ListTile tile = new ListTile(
           title: Text(item.action.label),
           subtitle: Text('Group: ' + item.group),
@@ -116,7 +114,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         );
 
         tiles.add(tile);
-      }
       }
     }
 
