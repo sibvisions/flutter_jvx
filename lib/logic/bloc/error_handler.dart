@@ -10,7 +10,7 @@ bool handleError(Response response, BuildContext context) {
     } else if (response.errorName == 'message.error' && response.requestType == RequestType.STARTUP) {
       showGoToSettings(context, response.title, response.message);
     } else if (response.errorName == 'message.error') {
-      showSessionExpired(context, response.title, response.message);
+      showError(context, response.title, response.message);
     } else if (response.errorName == 'server.error') {
       showSessionExpired(context, response.title, response.message);
     } else if (response.errorName == 'connection.error') {
