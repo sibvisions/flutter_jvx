@@ -124,7 +124,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
             endDrawer: MenuDrawerWidget(
               menuItems: widget.items,
               listMenuItems: true,
-              currentScreen: widget.componentId,
+              currentTitle: widget.title,
             ),
             key: _scaffoldKey,
             appBar: AppBar(
