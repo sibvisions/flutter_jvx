@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
@@ -15,9 +17,15 @@ class JVxImageCellEditor extends JVxCellEditor {
   @override
   Widget getWidget() {
     // ToDo: Implement getWidget
-    return Image.asset(
-                  defaultImageName!=null?'${globals.dir}$defaultImageName':'assets/images/sib_visions.jpg',
-                  //width: (MediaQuery.of(context).size.width - 50),
-                );
+    File image = File(defaultImageName!=null?'${globals.dir}$defaultImageName':'assets/images/sib_visions.jpg');
+
+    if (image.existsSync()) {
+      return Image.file(
+                    File(defaultImageName!=null?'${globals.dir}$defaultImageName':'assets/images/sib_visions.jpg'),
+                    //width: (MediaQuery.of(context).size.width - 50),
+                  );
+    } else {
+      return Container();
+    }
   }
 }

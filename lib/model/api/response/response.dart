@@ -51,7 +51,6 @@ class Response {
   }
 
   Response.fromJson(List json) {
-    print('RESPONSE JSON: $json');
     if (json.isNotEmpty) {
       json.forEach((e) => checkForError(e));
     }

@@ -18,24 +18,31 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 /// the [Drawer] for the [AppBar] with dynamic [MenuItem]'s
-class MenuDrawerWidget extends StatelessWidget {
+class MenuDrawerWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
   final bool listMenuItems;
-  final Key currentScreen;
-  String title;
+  final String currentTitle;
 
   MenuDrawerWidget(
-      {Key key, @required this.menuItems, this.listMenuItems = false, this.currentScreen})
+      {Key key, @required this.menuItems, this.listMenuItems = false, this.currentTitle})
       : super(key: key);
 
   @override
+  _MenuDrawerWidgetState createState() => _MenuDrawerWidgetState();
+}
+
+class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
+  String title;
+
+  @override
   Widget build(BuildContext context) {
+    title = widget.currentTitle;
     return BlocBuilder<ApiBloc, Response>(
       builder: (context, state) {
         if (state.requestType == RequestType.LOGOUT && (state.error == null || !state.error) && !state.loading) {
           Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => LoginPage())));
         }
-        return Drawer(child: _buildListViewForDrawer(context, this.menuItems));
+        return Drawer(child: _buildListViewForDrawer(context, this.widget.menuItems));
       }
     );
   }
@@ -63,8 +70,10 @@ class MenuDrawerWidget extends StatelessWidget {
       },
     );
 
-    if (listMenuItems) {
+    if (widget.listMenuItems) {
       for (MenuItem item in items) {
+        print('CURRENT TITLE: $title, SELECTED TITLE: ${item.action.label}');
+        if (title != item.action.label) {
         ListTile tile = new ListTile(
           title: Text(item.action.label),
           subtitle: Text('Group: ' + item.group),
@@ -82,8 +91,10 @@ class MenuDrawerWidget extends StatelessWidget {
                     color: Colors.grey[300],
                   )),
           onTap: () {
+            setState(() {
+              title = item.action.label;
+            });
             prefix0.Action action = item.action;
-            title = action.label;
 
             OpenScreen openScreen = OpenScreen(
                 action: action,
@@ -106,9 +117,10 @@ class MenuDrawerWidget extends StatelessWidget {
 
         tiles.add(tile);
       }
+      }
     }
 
-    if (this.listMenuItems) tiles.add(Divider());
+    if (this.widget.listMenuItems) tiles.add(Divider());
     tiles.add(settingsTile);
     tiles.add(Divider());
     tiles.add(logoutTile);
