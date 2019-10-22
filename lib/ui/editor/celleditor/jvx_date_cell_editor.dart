@@ -23,8 +23,8 @@ class JVxDateCellEditor extends JVxCellEditor {
     // ToDo: Implement getWidget
     return FlatButton(
       child: Text((this.value != null)
-          ? DateFormat(this.dateFormat).format(
-              DateTime.fromMillisecondsSinceEpoch(this.value))
+          ? DateFormat(this.dateFormat)
+              .format(DateTime.fromMillisecondsSinceEpoch(this.value))
           : ''),
       onPressed: () => showDatePicker(
         context: context,

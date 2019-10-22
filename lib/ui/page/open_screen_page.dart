@@ -49,10 +49,15 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   bool errorMsgShown = false;
   Orientation lastOrientation;
   String title;
+  String componentId;
 
   @override
   Widget build(BuildContext context) {
     title = widget.title;
+    componentId = widget.componentId
+        .toString()
+        .replaceAll("[<'", '')
+        .replaceAll("'>]", '');
 
     if (lastOrientation == null)
       lastOrientation = MediaQuery.of(context).orientation;
@@ -101,15 +106,18 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       }
 
       if (isScreenRequest(state.requestType) &&
-          //state.screenGeneric != null &&
-          !state.loading //&& !state.error
+              //state.screenGeneric != null &&
+              !state.loading //&& !state.error
           ) {
-
         if (state.requestType == RequestType.OPEN_SCREEN) {
-          if (mounted && _scaffoldKey.currentState != null && _scaffoldKey.currentState.isEndDrawerOpen)
-            SchedulerBinding.instance.addPostFrameCallback((_) => Navigator.of(context).pop());
+          if (mounted &&
+              _scaffoldKey.currentState != null &&
+              _scaffoldKey.currentState.isEndDrawerOpen)
+            SchedulerBinding.instance
+                .addPostFrameCallback((_) => Navigator.of(context).pop());
           screen = JVxScreen(ComponentCreator());
           title = state.action.label;
+          componentId = state.screenGeneric.componentId;
         }
         screen.context = context;
         screen.update(state.request, state.jVxData, state.jVxMetaData,
@@ -139,10 +147,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 onPressed: () {
                   Navigation navigation = Navigation(
                     clientId: globals.clientId,
-                    componentId: widget.componentId
-                        .toString()
-                        .replaceAll("[<'", '')
-                        .replaceAll("'>]", ''),
+                    componentId: componentId
                   );
 
                   BlocProvider.of<ApiBloc>(context).dispatch(navigation);
