@@ -30,6 +30,7 @@ bool isScreenRequest(RequestType type) {
 }
 
 abstract class Request extends Equatable {
+  int sequenceNo;
   RequestType requestType;
   bool isProcessing = false;
   String clientId;

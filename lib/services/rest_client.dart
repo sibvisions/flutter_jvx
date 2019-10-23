@@ -107,6 +107,10 @@ class RestClient {
       }
     }
     
+    if (debug) {
+      Log.printLong('Response: ${response.body}');
+    }
+
     updateCookie(response);
     return resp;
   }
