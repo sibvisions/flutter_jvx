@@ -37,50 +37,40 @@ class _MenuGridViewState extends State<MenuGridView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ApiBloc, Response>(
-      condition: (previousState, state) {
-          print('*** MenuGridView - HashCode: PREVIOUS: ${previousState.hashCode} NOW: ${state.hashCode}');
-          return previousState.hashCode!=state.hashCode;
-      },
-      builder: (context, state) {
-        print("*** MenuGridView - RequestType: " + state.requestType.toString());
+    return errorAndLoadingListener(
+      BlocListener<ApiBloc, Response>(
+        // condition: (previousState, state) {
+        //   print(
+        //       '*** MenuGridView - HashCode: PREVIOUS: ${previousState.hashCode} NOW: ${state.hashCode}');
+        //   return previousState.hashCode != state.hashCode;
+        // },
+        listener: (context, state) {
+          print("*** MenuGridView - RequestType: " +
+              state.requestType.toString());
 
-        if (state != null && state.loading && state.requestType == RequestType.LOADING) {
-          SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
-        }
+          if (state != null &&
+              state.screenGeneric != null &&
+              state.requestType == RequestType.OPEN_SCREEN) {
+            ScreenGeneric screenGeneric = state.screenGeneric;
+            List<JVxData> data = state.jVxData;
+            List<JVxMetaData> metaData = state.jVxMetaData;
 
-        if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
-          SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
-        }
+            Key componentID = new Key(screenGeneric.componentId);
 
-        if (state != null && !state.loading && !errorMsgShown && state.error) {
-          errorMsgShown = true;
-          Future.delayed(Duration.zero, () => handleError(state, context));
-        }
+            globals.items = widget.items;
 
-        if (state != null &&
-            state.screenGeneric != null &&
-            state.requestType == RequestType.OPEN_SCREEN) {
-          ScreenGeneric screenGeneric = state.screenGeneric;
-          List<JVxData> data = state.jVxData;
-          List<JVxMetaData> metaData = state.jVxMetaData;
-
-          Key componentID = new Key(screenGeneric.componentId);
-
-          globals.items = widget.items;
-
-          Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => new OpenScreenPage(
-                    changedComponents: screenGeneric.changedComponents,
-                    data: data,
-                    metaData: metaData,
-                    componentId: componentID,
-                    title: title,
-                    items: globals.items,
-                  ))));
-        }
-
-        return new GridView.builder(
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => new OpenScreenPage(
+                      changedComponents: screenGeneric.changedComponents,
+                      data: data,
+                      metaData: metaData,
+                      componentId: componentID,
+                      title: title,
+                      items: globals.items,
+                    )));
+          }
+        },
+        child: GridView.builder(
           itemCount: this.widget.items.length,
           gridDelegate:
               new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
@@ -88,8 +78,8 @@ class _MenuGridViewState extends State<MenuGridView> {
             return new GestureDetector(
               child: new Card(
                 margin: EdgeInsets.all(6),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
                 elevation: 2.0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,11 +87,12 @@ class _MenuGridViewState extends State<MenuGridView> {
                     widget.items[index].image != null
                         ? new CircleAvatar(
                             backgroundColor: Colors.transparent,
-                            child: !widget.items[index].image.startsWith('FontAwesome')
+                            child: !widget.items[index].image
+                                    .startsWith('FontAwesome')
                                 ? new Image.asset(
                                     '${globals.dir}${widget.items[index].image}')
-                                : _iconBuilder(
-                                    formatFontAwesomeText(widget.items[index].image)))
+                                : _iconBuilder(formatFontAwesomeText(
+                                    widget.items[index].image)))
                         : new CircleAvatar(
                             backgroundColor: Colors.transparent,
                             child: Icon(
@@ -133,20 +124,20 @@ class _MenuGridViewState extends State<MenuGridView> {
                 BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
 
                 /*
-                OpenScreenBloc openScreenBloc = OpenScreenBloc();
-                StreamSubscription<FetchProcess> apiStreamSubscription;
-                
-                apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
-                openScreenBloc.openScreenSink.add(
-                  new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
-                );
+                    OpenScreenBloc openScreenBloc = OpenScreenBloc();
+                    StreamSubscription<FetchProcess> apiStreamSubscription;
+                    
+                    apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
+                    openScreenBloc.openScreenSink.add(
+                      new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+                    );
 
-                */
+                    */
               },
             );
           },
-        );
-      },
+        ),
+      ),
     );
   }
 

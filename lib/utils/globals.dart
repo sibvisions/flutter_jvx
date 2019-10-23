@@ -20,3 +20,4 @@ String appVersion;
 String username = '';
 List<MenuItem> items;
 prefix0.Action changeScreen;
+int timeout = 10;
