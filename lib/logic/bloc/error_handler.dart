@@ -1,4 +1,7 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
@@ -15,10 +18,57 @@ bool handleError(Response response, BuildContext context) {
       showSessionExpired(context, response.title, response.message);
     } else if (response.errorName == 'connection.error') {
       showGoToSettings(context, response.title, response.message);
+    } else if (response.errorName == 'timeout.error') {
+      showGoToSettings(context, response.title, response.message);
     } else {
       showError(context, response.title, response.message);
     }
     return true;
   }
   return false;
+}
+
+Widget errorHandlerListener(Widget child) {
+  return BlocListener<ApiBloc, Response>(
+    listener: (BuildContext context, Response state) {
+      if (state != null && !state.loading && state.error) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => handleError(state, context));
+      }
+    },
+    child: child,
+  );
+}
+
+Widget loadingListener(Widget child) {
+  return BlocListener<ApiBloc, Response>(
+    listener: (BuildContext context, Response state) {
+      if (state != null && state.loading && state.requestType == RequestType.LOADING) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
+      }
+
+      if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+      }
+    },
+    child: child,
+  );
+}
+
+Widget errorAndLoadingListener(Widget child) {
+  return BlocListener<ApiBloc, Response>(
+    listener: (BuildContext context, Response state) {
+      if (state != null && state.loading && state.requestType == RequestType.LOADING) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
+      }
+
+      if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+      }
+
+      if (state != null && !state.loading && state.error) {
+        SchedulerBinding.instance.addPostFrameCallback((_) => handleError(state, context));
+      }
+    },
+    child: child,
+  );
 }

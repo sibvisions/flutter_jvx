@@ -100,8 +100,8 @@ class _StartupPageState extends State<StartupPage> {
       } else {
         globals.language = prefData['language'];
       }
-      // if (globals.appName == null || globals.baseUrl == null)
-      // Navigator.pushReplacementNamed(context, '/settings');
+      if (globals.appName == null || globals.baseUrl == null)
+        Navigator.pushReplacementNamed(context, '/settings');
     });
   }
 

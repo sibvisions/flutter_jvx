@@ -43,8 +43,8 @@ showError(BuildContext context, String title, String message) {
   );
 }
 
-showSessionExpired(BuildContext context, String title, String message) {
-  showDialog(
+showSessionExpired(BuildContext context, String title, String message) async {
+  await showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: Text(title),
@@ -52,11 +52,13 @@ showSessionExpired(BuildContext context, String title, String message) {
       actions: <Widget>[
         FlatButton(
           child: Text('Close'),
-          onPressed: () => RestartWidget.restartApp(context),
+          onPressed: () => Navigator.of(context).pop(),
         )
       ],
     )
-  );
+  ).then((val) {
+    RestartWidget.restartApp(context);
+  });
 }
 
 showSuccess(BuildContext context, String message, IconData icon) {

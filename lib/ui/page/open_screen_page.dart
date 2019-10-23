@@ -70,94 +70,79 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       lastOrientation = MediaQuery.of(context).orientation;
     }
 
-    return BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
-      return previousState.hashCode != state.hashCode;
-    }, builder: (context, state) {
-      print(
-          "*** OpenScreenPage - RequestType: " + state.requestType.toString());
-
-      if (state != null &&
-          state.loading &&
-          state.requestType == RequestType.LOADING) {
-        SchedulerBinding.instance
-            .addPostFrameCallback((_) => showProgress(context));
-      }
-
-      if (state != null &&
-          !state.loading &&
-          state.requestType != RequestType.LOADING) {
-        SchedulerBinding.instance
-            .addPostFrameCallback((_) => hideProgress(context));
-      }
-
-      if (state != null && !state.loading && !errorMsgShown) {
-        SchedulerBinding.instance.addPostFrameCallback(
-            (_) => errorMsgShown = handleError(state, context));
-      }
-
-      if (state.requestType == RequestType.CLOSE_SCREEN) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => MenuPage(
-                    menuItems: globals.items,
-                    listMenuItemsInDrawer: false,
-                  )));
-        });
-      }
-
-      if (isScreenRequest(state.requestType) &&
-              //state.screenGeneric != null &&
-              !state.loading //&& !state.error
-          ) {
-        if (state.requestType == RequestType.OPEN_SCREEN) {
-          if (mounted &&
-              _scaffoldKey.currentState != null &&
-              _scaffoldKey.currentState.isEndDrawerOpen)
-            SchedulerBinding.instance
-                .addPostFrameCallback((_) => Navigator.of(context).pop());
-          screen = JVxScreen(ComponentCreator());
-          title = state.action.label;
-          componentId = state.screenGeneric.componentId;
-        }
-        screen.context = context;
-        screen.update(state.request, state.jVxData, state.jVxMetaData,
-            state.screenGeneric);
-      }
-
-      return WillPopScope(
-        onWillPop: () async {
-          return false;
+    return errorAndLoadingListener(
+      BlocListener<ApiBloc, Response>(
+        listener: (BuildContext context, Response state) {
+          if (state.requestType == RequestType.CLOSE_SCREEN) {
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => MenuPage(
+                        menuItems: globals.items,
+                        listMenuItemsInDrawer: false,
+                      )));
+            });
+          }
         },
-        child: Scaffold(
-            endDrawer: MenuDrawerWidget(
-              menuItems: widget.items,
-              listMenuItems: true,
-              currentTitle: widget.title,
-            ),
-            key: _scaffoldKey,
-            appBar: AppBar(
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(FontAwesomeIcons.ellipsisV),
-                  onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
-                )
-              ],
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigation navigation = Navigation(
-                    clientId: globals.clientId,
-                    componentId: componentId
-                  );
+        child: BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
+          return previousState.hashCode != state.hashCode;
+        }, builder: (context, state) {
+          print("*** OpenScreenPage - RequestType: " +
+              state.requestType.toString());
 
-                  BlocProvider.of<ApiBloc>(context).dispatch(navigation);
-                },
-              ),
-              title: Text(title),
-            ),
-            body: screen.getWidget()),
-      );
-    });
+          if (isScreenRequest(state.requestType) &&
+                  //state.screenGeneric != null &&
+                  !state.loading //&& !state.error
+              ) {
+            if (state.requestType == RequestType.OPEN_SCREEN) {
+              if (mounted &&
+                  _scaffoldKey.currentState != null &&
+                  _scaffoldKey.currentState.isEndDrawerOpen)
+                SchedulerBinding.instance
+                    .addPostFrameCallback((_) => Navigator.of(context).pop());
+              screen = JVxScreen(ComponentCreator());
+              title = state.action.label;
+              componentId = state.screenGeneric.componentId;
+            }
+            screen.context = context;
+            screen.update(state.request, state.jVxData, state.jVxMetaData,
+                state.screenGeneric);
+          }
+
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Scaffold(
+                endDrawer: MenuDrawerWidget(
+                  menuItems: widget.items,
+                  listMenuItems: true,
+                  currentTitle: widget.title,
+                ),
+                key: _scaffoldKey,
+                appBar: AppBar(
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(FontAwesomeIcons.ellipsisV),
+                      onPressed: () =>
+                          _scaffoldKey.currentState.openEndDrawer(),
+                    )
+                  ],
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigation navigation = Navigation(
+                          clientId: globals.clientId, componentId: componentId);
+
+                      BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                    },
+                  ),
+                  title: Text(title),
+                ),
+                body: screen.getWidget()),
+          );
+        }),
+      ),
+    );
   }
 
   @override
