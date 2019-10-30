@@ -85,7 +85,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   backgroundColor: Colors.transparent,
                   child: Icon(
                     FontAwesomeIcons.clone,
-                    size: 48,
+                    size: 32,
                     color: Colors.grey[300],
                   )),
           onTap: () {

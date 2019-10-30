@@ -5,6 +5,7 @@ import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/api/response/auth_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/download_action.dart';
 import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
 import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
@@ -33,6 +34,7 @@ class Response {
   List<JVxData> jVxData = <JVxData>[];
   List<JVxMetaData> jVxMetaData = <JVxMetaData>[];
   ApplicationStyleResponse applicationStyle;
+  DownloadAction downloadAction;
   Request request;
 
   Response();
@@ -85,6 +87,12 @@ class Response {
           break;
         case ResponseObjectType.DAL_META_DATA:
           jVxMetaData.add(JVxMetaData.fromJson(r));
+          break;
+        case ResponseObjectType.DOWNLOAD:
+          downloadAction = DownloadAction.fromJson(r);
+          break;
+        case ResponseObjectType.UPLOAD:
+          // TODO: Handle this case.
           break;
       }
     });

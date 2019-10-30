@@ -61,8 +61,15 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   @override
   Widget getWidget() {
-    if (this.value != null && (this.value as String).isNotEmpty) {
-      selectedImage = _items[this.allowedVales.indexOf(this.value)];
+    if (this.value is bool) {
+      if (this.value)
+        selectedImage = _items[0];
+      else
+        selectedImage = _items[1];
+    } else {
+      if (this.value != null && (this.value as String).isNotEmpty) {
+        selectedImage = _items[this.allowedVales.indexOf(this.value)];
+      }
     }
 
     return Container(

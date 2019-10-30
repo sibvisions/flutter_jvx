@@ -33,10 +33,15 @@ class Config {
       debug = json['debug'];
 
   static Future<Config> loadFile() async {
-    String configString =
-        await rootBundle.loadString("env/conf.json");
+    Config config;
+    try {
+      String configString =
+          await rootBundle.loadString("env/conf.json");
 
-    Config config = Config.fromJson(json.decode(configString));
+      config = Config.fromJson(json.decode(configString));
+    } catch (e) {
+      print('Error: Config File not found');
+    }
 
     return config;
   }

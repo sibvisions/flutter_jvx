@@ -14,6 +14,7 @@ import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/model/api/request/startup.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -63,9 +64,24 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
-      if (val[0].debug) {
-        globals.appName = val[0].appName;
-        globals.baseUrl = val[0].baseUrl;
+      if (val[0] != null && val[0].debug != null && val[0].debug) {
+        if (val[0].appName != null && val[0].appName.isNotEmpty) {
+          globals.appName = val[0].appName;
+        } else {
+          showError(context, 'Error in Config', 'Please enter a valid application name in conf.json and restart the app.');
+          return;
+        }
+
+        if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
+          if (val[0].baseUrl.endsWith('/')) {
+            showError(context, 'Error in Config', 'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
+            return;
+          } else {
+            globals.baseUrl = val[0].baseUrl;
+          }
+        } else {
+          showError(context, 'Error in Config', 'Please enter a valid base url in conf.json and restart the app.');
+        }
         globals.debug = val[0].debug;
       }
       Startup request = Startup(

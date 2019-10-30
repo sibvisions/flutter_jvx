@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
@@ -22,10 +23,16 @@ class JVxDateCellEditor extends JVxCellEditor {
   Widget getWidget() {
     // ToDo: Implement getWidget
     return FlatButton(
-      child: Text((this.value != null)
-          ? DateFormat(this.dateFormat)
-              .format(DateTime.fromMillisecondsSinceEpoch(this.value))
-          : ''),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text((this.value != null)
+              ? DateFormat(this.dateFormat)
+                  .format(DateTime.fromMillisecondsSinceEpoch(this.value))
+              : ''),
+          Icon(FontAwesomeIcons.calendarAlt, color: Colors.grey[600],)
+        ],
+      ),
       onPressed: () => showDatePicker(
         context: context,
         firstDate: DateTime(1900),

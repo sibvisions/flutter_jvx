@@ -6,7 +6,9 @@ enum ResponseObjectType {
   DAL_META_DATA,
   LOGIN,
   MENU,
-  AUTHENTICATIONDATA
+  AUTHENTICATIONDATA,
+  DOWNLOAD,
+  UPLOAD,
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {
