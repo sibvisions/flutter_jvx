@@ -102,6 +102,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               screen.context = context;
               screen.update(state.request, state.jVxData, state.jVxMetaData,
                   state.screenGeneric);
+              this.setState(() {});
             }
           }
         },
