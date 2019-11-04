@@ -1,24 +1,23 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
-import 'package:jvx_mobile_v3/model/api/request/close_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
-import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
@@ -159,4 +158,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   didChangeMetrics() {}
+
+  Future<File> openFilePicker(BuildContext context) async {
+    File file =  
+        await FilePicker.getFile(type: FileType.ANY);
+
+    return file;
+  }
 }

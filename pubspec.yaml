@@ -22,13 +22,14 @@ dependencies:
     git: git://github.com/yangyxd/flutter_picker.git
   path_provider: any
   archive: ^2.0.10
-  xml: ^3.2.0
+  xml: ^3.2.0 
   gson: ^0.1.2
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
   equatable: ^0.2.0
   intl: ^0.15.8
   keyboard_actions: ^2.1.2
+  file_picker: ^1.4.2
 
 dev_dependencies:
   flutter_test:

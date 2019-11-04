@@ -169,7 +169,7 @@ class _StartupPageState extends State<StartupPage> {
               .setAppVersion(applicationMetaData.version);
           _download();
         }
-
+        
         ApplicationStyle applicationStyle = ApplicationStyle(
             clientId: applicationMetaData.clientId,
             requestType: RequestType.APP_STYLE,
