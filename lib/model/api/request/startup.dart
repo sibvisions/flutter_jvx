@@ -7,8 +7,9 @@ class Startup extends Request {
   String layoutMode;
   int screenWidth;
   int screenHeight;
+  String appMode;
 
-  Startup({this.applicationName, this.authKey, this.layoutMode, this.screenWidth, this.screenHeight, String clientId, RequestType requestType})
+  Startup({this.applicationName, this.authKey, this.layoutMode, this.screenWidth, this.screenHeight, this.appMode, String clientId, RequestType requestType})
     : super(clientId: clientId, requestType: requestType);
 
   Map<String, dynamic> toJson() => {
@@ -17,5 +18,6 @@ class Startup extends Request {
     'layoutMode': layoutMode,
     'screenWidth': screenWidth,
     'screenHeight': screenHeight,
+    'appMode': appMode
   };
 }
