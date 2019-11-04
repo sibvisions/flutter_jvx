@@ -8,8 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
+import 'package:jvx_mobile_v3/model/api/request/download.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
@@ -89,6 +91,30 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     //state.screenGeneric != null &&
                     !state.loading //&& !state.error
                 ) {
+              if (state.requestType == RequestType.PRESS_BUTTON) {
+                if (state.downloadAction != null) {
+                  Download download = Download(
+                    applicationImages: false,
+                    libraryImages: false,
+                    clientId: globals.clientId,
+                    fileId: state.downloadAction.fileId,
+                    name: 'download',
+                    requestType: RequestType.DOWNLOAD
+                  );
+
+                  BlocProvider.of<ApiBloc>(context).dispatch(download);
+                } else if (state.uploadAction != null) {
+                  openFilePicker(context).then((file) {
+                    Upload upload = Upload(
+                      clientId: globals.clientId,
+                      file: file,
+                      fileId: state.uploadAction.fileId,
+                      requestType: RequestType.UPLOAD
+                    );
+                  });
+                }
+              }
+
               if (state.requestType == RequestType.OPEN_SCREEN) {
                 if (mounted &&
                     _scaffoldKey.currentState != null &&
