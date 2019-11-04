@@ -32,7 +32,7 @@ Widget errorHandlerListener(Widget child) {
   return BlocListener<ApiBloc, Response>(
     listener: (BuildContext context, Response state) {
       if (state != null && !state.loading && state.error) {
-        SchedulerBinding.instance.addPostFrameCallback((_) => handleError(state, context));
+        handleError(state, context);
       }
     },
     child: child,
@@ -58,15 +58,15 @@ Widget errorAndLoadingListener(Widget child) {
   return BlocListener<ApiBloc, Response>(
     listener: (BuildContext context, Response state) {
       if (state != null && state.loading && state.requestType == RequestType.LOADING) {
-        SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
+        showProgress(context);
       }
 
       if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
-        SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+        hideProgress(context);
       }
 
       if (state != null && !state.loading && state.error) {
-        SchedulerBinding.instance.addPostFrameCallback((_) => handleError(state, context));
+        handleError(state, context);
       }
     },
     child: child,

@@ -96,6 +96,12 @@ class ApiBloc extends Bloc<Request, Response> {
         ..error = false
         ..requestType = RequestType.LOADING;
       yield* deviceStatus(event);
+    } else if (event is Download) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
+      yield* download(event);
     }
   }
 
@@ -137,7 +143,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if (authData != null)
       SharedPreferencesHelper().setAuthKey(authData.authKey);
-      
+
     yield resp;
   }
 
@@ -145,7 +151,7 @@ class ApiBloc extends Bloc<Request, Response> {
     yield await processRequest(request);
   }
 
-  Stream<Response> openscreen(OpenScreen request) async* {    
+  Stream<Response> openscreen(OpenScreen request) async* {
     prefix0.Action action = request.action;
 
     Response resp = await processRequest(request);
@@ -186,39 +192,51 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download request) async* {
     Response resp = await processRequest(request);
 
-    var _dir = (await getApplicationDocumentsDirectory()).path;
+    if (request.requestType == RequestType.DOWNLOAD) {
+      final directory = Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
 
-    globals.dir = _dir;
+      var filename = '${directory.path}/download';
 
-    if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-      var archive = resp.download;
+      var outFile = File(filename);
+      outFile = await outFile.create(recursive: true);
+      await outFile.writeAsBytes(resp.download);
+    } else {
+      var _dir = (await getApplicationDocumentsDirectory()).path;
 
-      globals.translation = <String, String>{};
+      globals.dir = _dir;
 
-      for (var file in archive) {
-        var filename = '$_dir/${file.name}';
-        if (file.isFile) {
-          var outFile = File(filename);
-          globals.translation[file.name] = filename;
-          outFile = await outFile.create(recursive: true);
-          await outFile.writeAsBytes(file.content);
+      if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+        var archive = resp.download;
+
+        globals.translation = <String, String>{};
+
+        for (var file in archive) {
+          var filename = '$_dir/${file.name}';
+          if (file.isFile) {
+            var outFile = File(filename);
+            globals.translation[file.name] = filename;
+            outFile = await outFile.create(recursive: true);
+            await outFile.writeAsBytes(file.content);
+          }
         }
-      }
 
-      SharedPreferencesHelper().setTranslation(globals.translation);
-      Translations.load(Locale(globals.language));
-    } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
-      var archive = resp.download;
+        SharedPreferencesHelper().setTranslation(globals.translation);
+        Translations.load(Locale(globals.language));
+      } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
+        var archive = resp.download;
 
-      globals.images = List<String>();
+        globals.images = List<String>();
 
-      for (var file in archive) {
-        var filename = '${globals.dir}/${file.name}';
-        if (file.isFile) {
-          var outFile = File(filename);
-          globals.images.add(filename);
-          outFile = await outFile.create(recursive: true);
-          await outFile.writeAsBytes(file.content);
+        for (var file in archive) {
+          var filename = '${globals.dir}/${file.name}';
+          if (file.isFile) {
+            var outFile = File(filename);
+            globals.images.add(filename);
+            outFile = await outFile.create(recursive: true);
+            await outFile.writeAsBytes(file.content);
+          }
         }
       }
     }
@@ -367,6 +385,17 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.LOADING:
+        // Just loading.
+        break;
+      case RequestType.DOWNLOAD:
+        response =
+            await restClient.postAsyncDownload('/download', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.UPLOAD:
         // TODO: Handle this case.
         break;
     }

@@ -74,16 +74,15 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       BlocListener<ApiBloc, Response>(
         listener: (BuildContext context, Response state) {
           if (state.requestType == RequestType.CLOSE_SCREEN) {
-            SchedulerBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MenuPage(
-                        menuItems: globals.items,
-                        listMenuItemsInDrawer: false,
-                      )));
-            });
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => MenuPage(
+                      menuItems: globals.items,
+                      listMenuItemsInDrawer: false,
+                    )));
           }
         },
-        child: BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
+        child:
+            BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
           return previousState.hashCode != state.hashCode;
         }, builder: (context, state) {
           print("*** OpenScreenPage - RequestType: " +

@@ -9,6 +9,7 @@ import 'package:jvx_mobile_v3/model/api/response/download_action.dart';
 import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
 import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
+import 'package:jvx_mobile_v3/model/api/response/upload_action.dart';
 
 import 'application_meta_data.dart';
 import 'language.dart';
@@ -35,6 +36,7 @@ class Response {
   List<JVxMetaData> jVxMetaData = <JVxMetaData>[];
   ApplicationStyleResponse applicationStyle;
   DownloadAction downloadAction;
+  UploadAction uploadAction;
   Request request;
 
   Response();
@@ -92,7 +94,7 @@ class Response {
           downloadAction = DownloadAction.fromJson(r);
           break;
         case ResponseObjectType.UPLOAD:
-          // TODO: Handle this case.
+          uploadAction = UploadAction.fromJson(r);
           break;
       }
     });

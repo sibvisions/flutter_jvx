@@ -31,32 +31,27 @@ class _StartupPageState extends State<StartupPage> {
   bool errorMsgShown = false;
 
   Widget newStartupBuilder() {
-    return BlocBuilder<ApiBloc, Response>(
-      builder: (context, state) {
-        if (state != null &&
-            !state.loading &&
-            !errorMsgShown) {
-          errorMsgShown = true;
-          Future.delayed(Duration.zero, () => handleError(state, context));
-        }
+    return errorHandlerListener(
+      BlocBuilder<ApiBloc, Response>(
+        builder: (context, state) {
+          startupHandler(state);
 
-        startupHandler(state);
-
-        return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Center(
-                child: Image.asset(
-                  'assets/images/sib_visions.jpg',
-                  width: (MediaQuery.of(context).size.width - 50),
+          return Scaffold(
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Center(
+                  child: Image.asset(
+                    'assets/images/sib_visions.jpg',
+                    width: (MediaQuery.of(context).size.width - 50),
+                  ),
                 ),
-              ),
-              Text('Loading...'),
-            ],
-          ),
-        );
-      },
+                Text('Loading...'),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -84,6 +79,12 @@ class _StartupPageState extends State<StartupPage> {
         }
         globals.debug = val[0].debug;
       }
+
+      if (globals.appName == null || globals.baseUrl == null) {
+        Navigator.pushReplacementNamed(context, '/settings');
+        return;
+      }
+
       Startup request = Startup(
           layoutMode: 'generic',
           applicationName: globals.appName,
@@ -116,8 +117,6 @@ class _StartupPageState extends State<StartupPage> {
       } else {
         globals.language = prefData['language'];
       }
-      if (globals.appName == null || globals.baseUrl == null)
-        Navigator.pushReplacementNamed(context, '/settings');
     });
   }
 
