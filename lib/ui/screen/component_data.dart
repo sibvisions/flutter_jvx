@@ -89,6 +89,8 @@ class ComponentData {
         select.fetch = fetch;
 
       addToRequestQueue(select);
+      _data.selectedRow = index;
+      _onDataChanged.forEach((d) => d());
       //BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, _data.records, "Select Record", "Select record failed. Index out of bounds!");
