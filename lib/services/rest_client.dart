@@ -1,12 +1,18 @@
 import 'dart:async';
 
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
+import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as prefHttp;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/log.dart';
 import 'package:http_middleware/http_middleware.dart';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+
 
 class RestClient {
   bool debug = false;
@@ -163,6 +169,31 @@ class RestClient {
     }
     updateCookie(response);
     return resp;
+  }
+
+  Future<Response> postAsyncUpload(String resourcePath, Upload data) async {
+    http = prefHttp.Client();
+    var content = json.encode(data.toJson());
+    var response;
+    Response resp = Response();
+
+    try {
+      var stream = new prefHttp.ByteStream(DelegatingStream.typed(data.file.openRead()));
+      var length = await data.file.length();
+
+      var uri = Uri.parse(resourcePath);
+
+      var request = new prefHttp.MultipartRequest("POST", uri);
+      var multiFileId = new prefHttp.MultipartFile.fromString('fileId', data.fileId);
+      var multiClientId = new prefHttp.MultipartFile.fromString('clientId', data.clientId);
+      var multipartFile = new prefHttp.MultipartFile('data', stream, length, filename: basename(data.file.path));
+
+      request.files.add(multipartFile);
+      var response = await request.send();
+      
+    } catch (e) {
+
+    }
   }
 
   void updateCookie(prefHttp.Response response) {

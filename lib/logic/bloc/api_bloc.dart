@@ -396,7 +396,7 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.UPLOAD:
-        // TODO: Handle this case.
+        
         break;
     }
 

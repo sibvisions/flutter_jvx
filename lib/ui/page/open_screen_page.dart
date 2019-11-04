@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,9 +9,11 @@ import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/close_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
+import 'package:jvx_mobile_v3/model/api/request/download.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
@@ -79,6 +84,32 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       menuItems: globals.items,
                       listMenuItemsInDrawer: false,
                     )));
+          }
+
+          if (state != null && !state.loading && !state.error && state.requestType == RequestType.PRESS_BUTTON && state.downloadAction != null) {
+            Download download = Download(
+              applicationImages: false,
+              libraryImages: false,
+              clientId: globals.clientId,
+              fileId: state.downloadAction.fileId,
+              requestType: RequestType.DOWNLOAD,
+              name: 'download'
+            );
+
+            BlocProvider.of<ApiBloc>(context).dispatch(download);
+          }
+
+          if (state != null && !state.loading && !state.error && state.requestType == RequestType.PRESS_BUTTON && state.uploadAction != null) {
+            openFilePicker(context).then((file) {
+              Upload upload = Upload(
+                fileId: state.uploadAction.fileId,
+                clientId: globals.clientId,
+                file: null,
+                requestType: RequestType.UPLOAD
+              );
+
+              BlocProvider.of<ApiBloc>(context).dispatch(upload);
+            });         
           }
         },
         child:
@@ -158,4 +189,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   didChangeMetrics() {}
+
+  Future<File> openFilePicker(BuildContext context) async {
+    File file =  
+        await FilePicker.getFile(type: FileType.ANY);
+
+    return file;
+  }
 }
