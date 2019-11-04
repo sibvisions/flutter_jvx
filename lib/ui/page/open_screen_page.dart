@@ -12,6 +12,7 @@ import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
@@ -23,17 +24,19 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class OpenScreenPage extends StatefulWidget {
   final String title;
-  final List<ChangedComponent> changedComponents;
   final List<JVxData> data;
   final List<JVxMetaData> metaData;
   final Key componentId;
   final List<MenuItem> items;
+  final Request request;
+  final ScreenGeneric screenGeneric;
 
   OpenScreenPage(
       {Key key,
-      this.changedComponents,
+      this.screenGeneric,
       this.data,
       this.metaData,
+      this.request,
       this.componentId,
       this.title,
       this.items})
@@ -79,73 +82,71 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       menuItems: globals.items,
                       listMenuItemsInDrawer: false,
                     )));
+          } else {
+            print("*** OpenScreenPage - RequestType: " +
+                state.requestType.toString());
+
+            if (isScreenRequest(state.requestType) &&
+                    //state.screenGeneric != null &&
+                    !state.loading //&& !state.error
+                ) {
+              if (state.requestType == RequestType.OPEN_SCREEN) {
+                if (mounted &&
+                    _scaffoldKey.currentState != null &&
+                    _scaffoldKey.currentState.isEndDrawerOpen)
+                  SchedulerBinding.instance.addPostFrameCallback(
+                      (_) => Navigator.of(context).pop());
+                screen = JVxScreen(ComponentCreator());
+                title = state.action.label;
+                componentId = state.screenGeneric.componentId;
+              }
+              screen.context = context;
+              screen.update(state.request, state.jVxData, state.jVxMetaData,
+                  state.screenGeneric);
+            }
           }
         },
-        child:
-            BlocBuilder<ApiBloc, Response>(condition: (previousState, state) {
-          return previousState.hashCode != state.hashCode;
-        }, builder: (context, state) {
-          print("*** OpenScreenPage - RequestType: " +
-              state.requestType.toString());
+        child: WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+              endDrawer: MenuDrawerWidget(
+                menuItems: widget.items,
+                listMenuItems: true,
+                currentTitle: widget.title,
+              ),
+              key: _scaffoldKey,
+              appBar: AppBar(
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(FontAwesomeIcons.ellipsisV),
+                    onPressed: () =>
+                        _scaffoldKey.currentState.openEndDrawer(),
+                  )
+                ],
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigation navigation = Navigation(
+                        clientId: globals.clientId, componentId: componentId);
 
-          if (isScreenRequest(state.requestType) &&
-                  //state.screenGeneric != null &&
-                  !state.loading //&& !state.error
-              ) {
-            if (state.requestType == RequestType.OPEN_SCREEN) {
-              if (mounted &&
-                  _scaffoldKey.currentState != null &&
-                  _scaffoldKey.currentState.isEndDrawerOpen)
-                SchedulerBinding.instance
-                    .addPostFrameCallback((_) => Navigator.of(context).pop());
-              screen = JVxScreen(ComponentCreator());
-              title = state.action.label;
-              componentId = state.screenGeneric.componentId;
-            }
-            screen.context = context;
-            screen.update(state.request, state.jVxData, state.jVxMetaData,
-                state.screenGeneric);
-          }
-
-          return WillPopScope(
-            onWillPop: () async {
-              return false;
-            },
-            child: Scaffold(
-                endDrawer: MenuDrawerWidget(
-                  menuItems: widget.items,
-                  listMenuItems: true,
-                  currentTitle: widget.title,
+                    BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                  },
                 ),
-                key: _scaffoldKey,
-                appBar: AppBar(
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(FontAwesomeIcons.ellipsisV),
-                      onPressed: () =>
-                          _scaffoldKey.currentState.openEndDrawer(),
-                    )
-                  ],
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigation navigation = Navigation(
-                          clientId: globals.clientId, componentId: componentId);
-
-                      BlocProvider.of<ApiBloc>(context).dispatch(navigation);
-                    },
-                  ),
-                  title: Text(title),
-                ),
-                body: screen.getWidget()),
-          );
-        }),
+                title: Text(title),
+              ),
+              body: screen.getWidget()),
+        )
       ),
     );
   }
 
   @override
   void initState() {
+    screen.context = context;
+    screen.update(widget.request, widget.data, widget.metaData,
+                  widget.screenGeneric);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
