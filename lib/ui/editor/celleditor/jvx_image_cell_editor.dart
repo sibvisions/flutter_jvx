@@ -9,21 +9,22 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
+  Image defaultImage;
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
     defaultImageName = changedCellEditor.getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME);
+    if (defaultImageName!=null) {
+      File file = File(defaultImageName!=null?'${globals.dir}$defaultImageName':'assets/images/sib_visions.jpg');
+      if (file.existsSync())
+        defaultImage = Image.file(file);
+      }
   }
   
   @override
   Widget getWidget() {
     // ToDo: Implement getWidget
-    File image = File(defaultImageName!=null?'${globals.dir}$defaultImageName':'assets/images/sib_visions.jpg');
-
-    if (image.existsSync()) {
-      return Image.file(
-                    File(defaultImageName!=null?'${globals.dir}$defaultImageName':'assets/images/sib_visions.jpg'),
-                    //width: (MediaQuery.of(context).size.width - 50),
-                  );
+    if (defaultImage!=null) {
+      return defaultImage;
     } else {
       return Container();
     }
