@@ -49,9 +49,15 @@ class _MenuGridViewState extends State<MenuGridView> {
               state.requestType.toString());
 
           if (state != null &&
+              state.requestType == RequestType.APP_STYLE &&
+              !state.loading &&
+              !state.error) {
+            globals.applicationStyle = state.applicationStyle;
+          }
+
+          if (state != null &&
               state.screenGeneric != null &&
               state.requestType == RequestType.OPEN_SCREEN) {
-
             Key componentID = new Key(state.screenGeneric.componentId);
             globals.items = widget.items;
 
