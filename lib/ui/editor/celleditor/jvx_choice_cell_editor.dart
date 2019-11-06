@@ -22,7 +22,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
         changedCellEditor.getProperty<List<String>>(CellEditorProperty.ALLOWED_VALUES, allowedVales);
     imageNames = changedCellEditor.getProperty<List<String>>(CellEditorProperty.IMAGE_NAMES, imageNames);
 
-    // defaultImage = loadImage(defaultImageName);
+    defaultImage = loadImage(defaultImageName);
     loadImages();
   }
 
@@ -69,6 +69,8 @@ class JVxChoiceCellEditor extends JVxCellEditor {
     } else {
       if (this.value != null && (this.value as String).isNotEmpty) {
         selectedImage = _items[this.allowedVales.indexOf(this.value)];
+      } else if (defaultImage != null) {
+        selectedImage = defaultImage;
       }
     }
 
