@@ -18,9 +18,8 @@ class MenuPage extends StatelessWidget {
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     bool drawerMenu;
-
     if (globals.applicationStyle != null) {
-       drawerMenu = globals.applicationStyle.menuMode == 'drawer' ? true : false;
+      drawerMenu = globals.applicationStyle.menuMode == 'drawer' ? true : false;
     } else {
       drawerMenu = false;
     }
