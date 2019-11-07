@@ -17,11 +17,17 @@ import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
-class MenuListWidget extends StatelessWidget {
+class MenuListWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
-  String title;
 
   MenuListWidget({Key key, @required this.menuItems}) : super(key: key);
+
+  @override
+  _MenuListWidgetState createState() => _MenuListWidgetState();
+}
+
+class _MenuListWidgetState extends State<MenuListWidget> {
+  String title;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +38,7 @@ class MenuListWidget extends StatelessWidget {
               state.screenGeneric != null &&
               state.requestType == RequestType.OPEN_SCREEN) {
             Key componentID = new Key(state.screenGeneric.componentId);
-            globals.items = this.menuItems;
+            globals.items = this.widget.menuItems;
 
             Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
@@ -56,7 +62,7 @@ class MenuListWidget extends StatelessWidget {
   }
 
   List<ListTile> _buildListTiles(BuildContext context) {
-    var newMap = groupBy(this.menuItems, (obj) => obj.group);
+    var newMap = groupBy(this.widget.menuItems, (obj) => obj.group);
 
     List<ListTile> tiles = <ListTile>[];
 

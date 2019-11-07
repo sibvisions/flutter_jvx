@@ -31,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.all(16),
               child: Text(
                 Translations.of(context).text2('settings_general', 'General Settings'),
-                style: TextStyle(color: Colors.grey.shade700),
+                style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.bold),
               ),
             ),
             Card(

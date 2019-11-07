@@ -35,7 +35,8 @@ class _StartupPageState extends State<StartupPage> {
     return errorHandlerListener(
       BlocBuilder<ApiBloc, Response>(
         builder: (context, state) {
-          startupHandler(state);
+          _startupHandler(state);
+          _navigationHandler(state);
 
           return Scaffold(
             body: Column(
@@ -64,19 +65,22 @@ class _StartupPageState extends State<StartupPage> {
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
           globals.appName = val[0].appName;
         } else {
-          showError(context, 'Error in Config', 'Please enter a valid application name in conf.json and restart the app.');
+          showError(context, 'Error in Config',
+              'Please enter a valid application name in conf.json and restart the app.');
           return;
         }
 
         if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
           if (val[0].baseUrl.endsWith('/')) {
-            showError(context, 'Error in Config', 'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
+            showError(context, 'Error in Config',
+                'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
             return;
           } else {
             globals.baseUrl = val[0].baseUrl;
           }
         } else {
-          showError(context, 'Error in Config', 'Please enter a valid base url in conf.json and restart the app.');
+          showError(context, 'Error in Config',
+              'Please enter a valid base url in conf.json and restart the app.');
         }
         globals.debug = val[0].debug;
       }
@@ -152,7 +156,25 @@ class _StartupPageState extends State<StartupPage> {
     return newStartupBuilder();
   }
 
-  void startupHandler(Response state) {
+  void _navigationHandler(Response state) {
+    if (state != null && state.requestType == RequestType.APP_STYLE) {
+      Menu menu = state.menu;
+
+      SchedulerBinding.instance.addPostFrameCallback((duration) {
+        if (menu == null) {
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (_) => MenuPage(
+                    menuItems: menu.items,
+                  )));
+        }
+      });
+    }
+  }
+
+  void _startupHandler(Response state) {
     if (state != null &&
         state.requestType == RequestType.STARTUP &&
         state.applicationMetaData != null &&
@@ -164,11 +186,10 @@ class _StartupPageState extends State<StartupPage> {
         ApplicationMetaData applicationMetaData = state.applicationMetaData;
 
         if (appVersion != applicationMetaData.version) {
-          SharedPreferencesHelper()
-              .setAppVersion(applicationMetaData.version);
+          SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
         }
-        
+
         ApplicationStyle applicationStyle = ApplicationStyle(
             clientId: applicationMetaData.clientId,
             requestType: RequestType.APP_STYLE,
@@ -176,20 +197,6 @@ class _StartupPageState extends State<StartupPage> {
             contentMode: 'json');
 
         BlocProvider.of<ApiBloc>(context).dispatch(applicationStyle);
-
-        Menu menu = state.menu;
-
-        SchedulerBinding.instance.addPostFrameCallback((duration) {
-          if (menu == null) {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => LoginPage()));
-          } else {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (_) => MenuPage(
-                      menuItems: menu.items,
-                    )));
-          }
-        });
       });
     }
   }
