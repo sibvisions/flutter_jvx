@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
@@ -153,11 +154,9 @@ class _StartupPageState extends State<StartupPage> {
 
   void startupHandler(Response state) {
     if (state != null &&
-        !state.loading &&
         state.requestType == RequestType.STARTUP &&
         state.applicationMetaData != null &&
-        state.language != null &&
-        (!state.error || state.error == null)) {
+        state.language != null) {
       String appVersion;
       SharedPreferencesHelper().getAppVersion().then((val) {
         appVersion = val;
@@ -180,7 +179,7 @@ class _StartupPageState extends State<StartupPage> {
 
         Menu menu = state.menu;
 
-        Future.delayed(Duration.zero, () {
+        SchedulerBinding.instance.addPostFrameCallback((duration) {
           if (menu == null) {
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => LoginPage()));

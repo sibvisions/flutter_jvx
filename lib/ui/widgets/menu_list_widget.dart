@@ -19,13 +19,12 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class MenuListWidget extends StatelessWidget {
   final List<MenuItem> menuItems;
+  String title;
 
-  const MenuListWidget({Key key, @required this.menuItems}) : super(key: key);
+  MenuListWidget({Key key, @required this.menuItems}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {    
-    String title;
-
+  Widget build(BuildContext context) {
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         listener: (context, state) {
@@ -49,15 +48,14 @@ class MenuListWidget extends StatelessWidget {
         },
         child: Container(
           child: ListView(
-            children: _buildListTiles(context, title),
+            children: _buildListTiles(context),
           ),
         ),
       ),
     );
   }
 
-  List<ListTile> _buildListTiles(BuildContext context, String titlev) {
-    String title = titlev;
+  List<ListTile> _buildListTiles(BuildContext context) {
     var newMap = groupBy(this.menuItems, (obj) => obj.group);
 
     List<ListTile> tiles = <ListTile>[];
