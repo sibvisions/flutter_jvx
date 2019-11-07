@@ -26,6 +26,7 @@ class MenuPage extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade300 : Colors.white,
       appBar: AppBar(
         title: Text('Menu'),
         automaticallyImplyLeading: false,

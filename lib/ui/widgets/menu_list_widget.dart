@@ -52,76 +52,96 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                     )));
           }
         },
-        child: Container(
-          child: ListView(
-            children: _buildListTiles(context),
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: _buildListTiles(context),
+            ),
           ),
         ),
       ),
     );
   }
 
-  List<ListTile> _buildListTiles(BuildContext context) {
+  List<Widget> _buildListTiles(BuildContext context) {
     var newMap = groupBy(this.widget.menuItems, (obj) => obj.group);
 
-    List<ListTile> tiles = <ListTile>[];
+    List<Widget> tiles = <Widget>[];
 
     newMap.forEach((k, v) {
-      ListTile heading = ListTile(
-        title: Text(k, style: Theme.of(context).textTheme.headline,),
-      );
+      Widget heading = Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: ListTile(
+            title: Text(
+              k,
+              style: TextStyle(
+                  color: Colors.grey.shade700, fontWeight: FontWeight.bold),
+            ),
+          ));
 
       tiles.add(heading);
 
-      v.forEach((mItem) {
-        ListTile tile = ListTile(
-                title: Text(mItem.action.label),
-                onTap: () {
-                  // CloseScreen closeScreen = CloseScreen(
-                  //     clientId: globals.clientId,
-                  //     componentId: this.menuItems[index].action.componentId
-                  //         .toString()
-                  //         .replaceAll("[<'", '')
-                  //         .replaceAll("'>]", ''),
-                  //     requestType: RequestType.CLOSE_SCREEN);
+      Widget card = Card(
+        color: Colors.white,
+        elevation: 2.0,
+        child: Column(children: _buildTiles(v)),
+      );
 
-                  // BlocProvider.of<ApiBloc>(context).dispatch(closeScreen);
-
-                  prefix0.Action action = mItem.action;
-                  title = action.label;
-
-                  OpenScreen openScreen = OpenScreen(
-                      action: action,
-                      clientId: globals.clientId,
-                      manualClose: false,
-                      requestType: RequestType.OPEN_SCREEN);
-
-                  BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-                },
-                leading: mItem.image != null
-                    ? new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: !mItem
-                                .image
-                                .startsWith('FontAwesome')
-                            ? new Image.asset(
-                                '${globals.dir}${mItem.image}')
-                            : _iconBuilder(formatFontAwesomeText(
-                                mItem.image)))
-                    : new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(
-                          FontAwesomeIcons.clone,
-                          size: 48,
-                          color: Colors.grey[300],
-                        )),
-              );
-
-              tiles.add(tile);
-      });
+      tiles.add(card);
     });
 
     return tiles;
+  }
+
+  List<Widget> _buildTiles(List v) {
+    List<Widget> widgets = <Widget>[];
+
+    v.forEach((mItem) {
+      Widget tile = ListTile(
+        contentPadding: EdgeInsets.all(10),
+        title: Text(mItem.action.label),
+        onTap: () {
+          // CloseScreen closeScreen = CloseScreen(
+          //     clientId: globals.clientId,
+          //     componentId: this.menuItems[index].action.componentId
+          //         .toString()
+          //         .replaceAll("[<'", '')
+          //         .replaceAll("'>]", ''),
+          //     requestType: RequestType.CLOSE_SCREEN);
+
+          // BlocProvider.of<ApiBloc>(context).dispatch(closeScreen);
+
+          prefix0.Action action = mItem.action;
+          title = action.label;
+
+          OpenScreen openScreen = OpenScreen(
+              action: action,
+              clientId: globals.clientId,
+              manualClose: false,
+              requestType: RequestType.OPEN_SCREEN);
+
+          BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+        },
+        leading: mItem.image != null
+            ? new CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: !mItem.image.startsWith('FontAwesome')
+                    ? new Image.asset('${globals.dir}${mItem.image}')
+                    : _iconBuilder(formatFontAwesomeText(mItem.image)))
+            : new CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: Icon(
+                  FontAwesomeIcons.clone,
+                  size: 32,
+                  color: Colors.grey[300],
+                )),
+      );
+      widgets.add(tile);
+    });
+
+    return widgets;
   }
 
   Icon _iconBuilder(Map data) {
