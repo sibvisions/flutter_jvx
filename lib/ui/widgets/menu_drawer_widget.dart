@@ -156,7 +156,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                 ),
                 globals.username.isNotEmpty 
                 ? Text(
-                  'Angemeldet als',
+                  Translations.of(context).text2('Logged in as', 'Logged in as'),
                   style: TextStyle(color: UIData.textColor, fontSize: 12),
                 )
                 : Container(),
