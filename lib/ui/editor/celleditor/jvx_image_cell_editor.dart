@@ -19,7 +19,7 @@ class JVxImageCellEditor extends JVxCellEditor {
       File file = File(defaultImageName != null
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
-      if (file.existsSync()) defaultImage = Image.asset('assets/images/sib_visions.jpg');
+      if (file.existsSync()) defaultImage = Image.file(file);
     }
   }
 
@@ -27,9 +27,7 @@ class JVxImageCellEditor extends JVxCellEditor {
   Widget getWidget() {
     // ToDo: Implement getWidget
     if (defaultImage != null) {
-      return Image.asset('${globals.dir}$defaultImageName');
-    } else {
-      return Container();
+      return defaultImage;
     }
   }
 }

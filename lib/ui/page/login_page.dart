@@ -75,13 +75,13 @@ class LoginPageState extends State<LoginPage> {
                           ))));
           }
 
-          if (state != null &&
-              state.requestType == RequestType.APP_STYLE &&
-              !state.loading &&
-              !state.error) {
-            globals.applicationStyle = state.applicationStyle;
-            return loginScaffold();
-          }
+          // if (state != null &&
+          //     state.requestType == RequestType.APP_STYLE &&
+          //     !state.loading &&
+          //     !state.error) {
+          //   globals.applicationStyle = state.applicationStyle;
+          //   return loginScaffold();
+          // }
 
             return loginScaffold();
         },

@@ -247,7 +247,11 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
     globals.dir = (await getApplicationDocumentsDirectory()).path;
 
-    yield await processRequest(request);
+    Response resp = await processRequest(request);
+
+    globals.applicationStyle = resp.applicationStyle;
+
+    yield resp;
   }
 
   Stream<Response> navigation(Navigation request) async* {
