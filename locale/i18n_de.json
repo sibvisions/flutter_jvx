@@ -15,13 +15,14 @@
     "settings_general": "Applikations Einstellungen",
     "settings_language": "Sprache",
     "Save": "Speichern",
-    "Exit": "Zurück",
+    "Exit": "Beenden",
     "Logout": "Ausloggen",
     "Remember me?": "Eingeloggt bleiben?",
     "Error": "Fehler",
     "Close": "Schließen",
     "go_to_settings": "Zu Einstellungen",
     "no_username_or_password": "Bitte geben sie Benutzernamen und Passwort ein",
-    "Logged in as": "Angemeldet als"
+    "Logged in as": "Angemeldet als",
+    "Back": "Zurück"
 }
     

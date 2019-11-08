@@ -147,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
       showFAB: false,
       backGroundColor: Colors.grey.shade300,
       bodyData: settingsBuilder(),
-      bottomButton1: Translations.of(context).text2('Exit', 'Exit').toUpperCase(),
+      bottomButton1: Translations.of(context).text2('Back', 'Back').toUpperCase(),
       bottomButton2: Translations.of(context).text2('Save', 'Save').toUpperCase(),
       bottomButton1Function: () {
         Navigator.of(context).pop();

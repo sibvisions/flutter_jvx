@@ -54,6 +54,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
         },
         child: SingleChildScrollView(
           child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 7),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,7 +73,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
 
     newMap.forEach((k, v) {
       Widget heading = Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 13),
           child: ListTile(
             title: Text(
               k,
@@ -100,7 +101,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
 
     v.forEach((mItem) {
       Widget tile = ListTile(
-        contentPadding: EdgeInsets.all(10),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         title: Text(mItem.action.label),
         onTap: () {
           // CloseScreen closeScreen = CloseScreen(
@@ -137,8 +138,11 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                   size: 32,
                   color: Colors.grey[300],
                 )),
+        trailing: Icon(FontAwesomeIcons.chevronRight, color: Colors.grey[300],),
       );
       widgets.add(tile);
+      if (v.indexOf(mItem) < v.length - 1)
+        widgets.add(Divider(height: 2, indent: 15, endIndent: 15,));
     });
 
     return widgets;

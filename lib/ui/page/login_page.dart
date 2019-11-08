@@ -27,7 +27,7 @@ class LoginPageState extends State<LoginPage> {
 
   Widget loginScaffold() => Scaffold(
         key: scaffoldState,
-        backgroundColor: globals.applicationStyle != null
+        backgroundColor: (globals.applicationStyle != null && globals.applicationStyle.loginBackground != null)
             ? Color(int.parse(
                 '0xFF${globals.applicationStyle.loginBackground.substring(1)}'))
             : null,
