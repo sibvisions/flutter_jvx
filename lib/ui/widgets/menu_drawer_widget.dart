@@ -137,7 +137,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                globals.applicationStyle != null
+                (globals.applicationStyle != null && globals.applicationStyle.loginTitle != null)
                     ? Text(globals.applicationStyle.loginTitle,
                         style: TextStyle(
                           fontSize: 18.0,

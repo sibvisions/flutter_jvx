@@ -36,7 +36,7 @@ class _LoginCardState extends State<LoginCard>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              globals.applicationStyle != null
+              (globals.applicationStyle != null && globals.applicationStyle.loginTitle != null)
                   ? new Text(
                 globals.applicationStyle.loginTitle,
                 style: TextStyle(
