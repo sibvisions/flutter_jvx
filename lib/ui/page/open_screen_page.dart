@@ -127,6 +127,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 title = state.action.label;
                 componentId = state.screenGeneric.componentId;
               }
+
               screen.context = context;
               screen.update(state.request, state.jVxData, state.jVxMetaData,
                   state.screenGeneric);

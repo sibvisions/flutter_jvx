@@ -17,7 +17,8 @@ enum RequestType {
   LOADING,
   DEVICE_STATUS,
   DOWNLOAD,
-  UPLOAD
+  UPLOAD,
+  CHANGE
 }
 
 bool isScreenRequest(RequestType type) {
@@ -28,7 +29,9 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.PRESS_BUTTON ||
     // type == RequestType.CLOSE_SCREEN ||
     type == RequestType.NAVIGATION ||
-    type == RequestType.DEVICE_STATUS);
+    type == RequestType.DEVICE_STATUS ||
+    type == RequestType.UPLOAD ||
+    type == RequestType.DOWNLOAD);
 }
 
 abstract class Request extends Equatable {

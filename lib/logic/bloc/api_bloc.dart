@@ -3,6 +3,7 @@ import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/api/request/change.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
@@ -109,6 +110,12 @@ class ApiBloc extends Bloc<Request, Response> {
         ..error = false
         ..requestType = RequestType.LOADING);
       yield* upload(event);
+    } else if (event is Change) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* change(event);
     }
   }
 
@@ -286,6 +293,10 @@ class ApiBloc extends Bloc<Request, Response> {
     yield resp;
   }
 
+  Stream<Response> change(Change request) async* {
+    yield await processRequest(request);
+  }
+
   Future<Response> processRequest(Request request) async {
     RestClient restClient = RestClient();
     Response response;
@@ -416,6 +427,14 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.UPLOAD:
         response =
           await restClient.postAsyncUpload('/upload', request);
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.CHANGE:
+        response =
+          await restClient.postAsync('/api/changes', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
