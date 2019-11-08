@@ -18,6 +18,7 @@ import 'response_object.dart';
 
 class Response {
   dynamic download;
+  String downloadFileName;
   RequestType requestType;
   bool error;
   String errorName;

@@ -98,7 +98,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     libraryImages: false,
                     clientId: globals.clientId,
                     fileId: state.downloadAction.fileId,
-                    name: 'download',
+                    name: 'file',
                     requestType: RequestType.DOWNLOAD
                   );
 
@@ -111,6 +111,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       fileId: state.uploadAction.fileId,
                       requestType: RequestType.UPLOAD
                     );
+
+                    BlocProvider.of<ApiBloc>(context).dispatch(upload);
                   });
                 }
               }

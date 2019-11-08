@@ -10,6 +10,7 @@ import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/application_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/application_style.dart';
@@ -102,6 +103,12 @@ class ApiBloc extends Bloc<Request, Response> {
         ..error = false
         ..requestType = RequestType.LOADING);
       yield* download(event);
+    } else if (event is Upload) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* upload(event);
     }
   }
 
@@ -197,7 +204,7 @@ class ApiBloc extends Bloc<Request, Response> {
           ? await getExternalStorageDirectory()
           : await getApplicationDocumentsDirectory();
 
-      var filename = '${directory.path}/download';
+      var filename = '${directory.path}/${resp.downloadFileName}';
 
       var outFile = File(filename);
       outFile = await outFile.create(recursive: true);
@@ -249,6 +256,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
     Response resp = await processRequest(request);
 
+
     globals.applicationStyle = resp.applicationStyle;
 
     yield resp;
@@ -268,6 +276,12 @@ class ApiBloc extends Bloc<Request, Response> {
 
       dispatch(closeScreen);
     }
+
+    yield resp;
+  }
+
+  Stream<Response> upload(Upload request) async* {
+    Response resp = await processRequest(request);
 
     yield resp;
   }
@@ -400,6 +414,12 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.UPLOAD:
+        response =
+          await restClient.postAsyncUpload('/upload', request);
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
         break;
     }
 

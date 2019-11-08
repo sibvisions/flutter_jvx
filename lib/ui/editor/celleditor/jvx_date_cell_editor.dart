@@ -26,7 +26,7 @@ class JVxDateCellEditor extends JVxCellEditor {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text((this.value != null)
+          Text((this.value != null && this.value is int)
               ? DateFormat(this.dateFormat)
                   .format(DateTime.fromMillisecondsSinceEpoch(this.value))
               : ''),
@@ -37,7 +37,7 @@ class JVxDateCellEditor extends JVxCellEditor {
         context: context,
         firstDate: DateTime(1900),
         lastDate: DateTime(2050),
-        initialDate: (this.value != null)
+        initialDate: (this.value != null && this.value is int)
             ? DateTime.fromMillisecondsSinceEpoch(this.value)
             : DateTime.now().subtract(Duration(seconds: 1)),
       ).then((date) {

@@ -119,7 +119,6 @@ class RestClient {
           resp = Response.fromJsonForAppStyle(decodedBody);
         }
       } catch (e) {
-        print(e);
         if (e is ApiException) {
           return Response()
             ..details = e.details
@@ -161,19 +160,31 @@ class RestClient {
       http.close();
       resp.download = response.bodyBytes;
       resp.error = false;
+      resp.downloadFileName = (response as prefHttp.Response).headers['content-disposition'].split(' ')[1].substring(9);
     } catch (e) {
-      http.close();
-      resp = Response()
+      return Response()
+        ..title = 'Connection Error'
+        ..errorName = 'connection.error'
         ..error = true
-        ..message = 'Error';
+        ..message = 'An error occured.';
     }
+
+    if (response == null || (response as prefHttp.Response).statusCode != 200) {
+      return Response()
+        ..title = 'Connection Error'
+        ..errorName = 'server.error'
+        ..error = true
+        ..message =
+            'An error with status code ${(response as prefHttp.Response).statusCode} occured.'
+        ..details =
+            '(${(response as prefHttp.Response).statusCode}): ${(response as prefHttp.Response).body}';
+    }
+
     updateCookie(response);
     return resp;
   }
 
   Future<Response> postAsyncUpload(String resourcePath, Upload data) async {
-    http = prefHttp.Client();
-    var content = json.encode(data.toJson());
     var response;
     Response resp = Response();
 
@@ -182,19 +193,75 @@ class RestClient {
           new prefHttp.ByteStream(DelegatingStream.typed(data.file.openRead()));
       var length = await data.file.length();
 
-      var uri = Uri.parse(resourcePath);
+      var uri = Uri.parse(globals.baseUrl + resourcePath);
 
       var request = new prefHttp.MultipartRequest("POST", uri);
-      var multiFileId =
-          new prefHttp.MultipartFile.fromString('fileId', data.fileId);
-      var multiClientId =
-          new prefHttp.MultipartFile.fromString('clientId', data.clientId);
+
+      request.headers.addAll({'cookie': globals.jsessionId});
+
+      Map<String, String> formFields = {
+        'clientId': data.clientId,
+        'fileId': data.fileId
+      };
+
       var multipartFile = new prefHttp.MultipartFile('data', stream, length,
           filename: basename(data.file.path));
 
+      request.fields.addAll(formFields);
       request.files.add(multipartFile);
-      var response = await request.send();
-    } catch (e) {}
+      
+      final streamedResponse = await request.send();
+
+      response = await prefHttp.Response.fromStream(streamedResponse);
+    } catch (e) {
+      return Response()
+        ..title = 'Connection Error'
+        ..errorName = 'connection.error'
+        ..error = true
+        ..message = 'An error occured.';
+    }
+
+    if (response == null || (response as prefHttp.Response).statusCode != 200) {
+      return Response()
+        ..title = 'Connection Error'
+        ..errorName = 'server.error'
+        ..error = true
+        ..message =
+            'An error with status code ${(response as prefHttp.Response).statusCode} occured.'
+        ..details =
+            '(${(response as prefHttp.Response).statusCode}): ${(response as prefHttp.Response).body}';
+    } else {
+      dynamic decodedBody = json.decode(response.body);
+
+      print(decodedBody.toString());
+
+      try {
+        if (decodedBody is List) {
+          resp = Response.fromJson(decodedBody);
+        } else {
+          resp = Response.fromJsonForAppStyle(decodedBody);
+        }
+      } catch (e) {
+        if (e is ApiException) {
+          return Response()
+            ..details = e.details
+            ..message = e.message
+            ..title = e.title
+            ..errorName = e.name
+            ..error = true;
+        } else {
+          return Response()
+            ..title = 'Error'
+            ..errorName = 'error'
+            ..error = true
+            ..message = 'An error occured.'
+            ..details = '${e.toString()}';
+        }
+      }
+    }
+
+    updateCookie(response);
+    return resp;
   }
 
   void updateCookie(prefHttp.Response response) {
