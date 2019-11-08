@@ -13,7 +13,6 @@ import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-
 class RestClient {
   bool debug = false;
 
@@ -74,7 +73,7 @@ class RestClient {
     http = prefHttp.Client();
     var content = json.encode(data);
     var response;
-    
+
     Response resp;
     try {
       response = await http.post(globals.baseUrl + resourcePath,
@@ -107,17 +106,20 @@ class RestClient {
         ..title = 'Connection Error'
         ..errorName = 'server.error'
         ..error = true
-        ..message = 'An error with status code ${(response as prefHttp.Response).statusCode} occured.'
-        ..details = '(${(response as prefHttp.Response).statusCode}): ${(response as prefHttp.Response).body}';
+        ..message =
+            'An error with status code ${(response as prefHttp.Response).statusCode} occured.'
+        ..details =
+            '(${(response as prefHttp.Response).statusCode}): ${(response as prefHttp.Response).body}';
     } else {
       dynamic decodedBody = json.decode(response.body);
       try {
-         if (decodedBody is List) {
-           resp = Response.fromJson(decodedBody);
-         } else {
-           resp = Response.fromJsonForAppStyle(decodedBody);
-         }
+        if (decodedBody is List) {
+          resp = Response.fromJson(decodedBody);
+        } else {
+          resp = Response.fromJsonForAppStyle(decodedBody);
+        }
       } catch (e) {
+        print(e);
         if (e is ApiException) {
           return Response()
             ..details = e.details
@@ -135,7 +137,7 @@ class RestClient {
         }
       }
     }
-    
+
     if (debug) {
       Log.printLong('Response: ${response.body}');
     }
@@ -144,15 +146,13 @@ class RestClient {
     return resp;
   }
 
-  Future<Response> postAsyncDownload(
-      String resourcePath, dynamic data) async {
+  Future<Response> postAsyncDownload(String resourcePath, dynamic data) async {
     http = prefHttp.Client();
     var content = json.encode(data);
     var response;
     Response resp = Response();
     try {
-      response = await http.post(
-          globals.baseUrl + resourcePath,
+      response = await http.post(globals.baseUrl + resourcePath,
           body: content,
           headers: {
             'Content-Type': 'application/json',
@@ -178,22 +178,23 @@ class RestClient {
     Response resp = Response();
 
     try {
-      var stream = new prefHttp.ByteStream(DelegatingStream.typed(data.file.openRead()));
+      var stream =
+          new prefHttp.ByteStream(DelegatingStream.typed(data.file.openRead()));
       var length = await data.file.length();
 
       var uri = Uri.parse(resourcePath);
 
       var request = new prefHttp.MultipartRequest("POST", uri);
-      var multiFileId = new prefHttp.MultipartFile.fromString('fileId', data.fileId);
-      var multiClientId = new prefHttp.MultipartFile.fromString('clientId', data.clientId);
-      var multipartFile = new prefHttp.MultipartFile('data', stream, length, filename: basename(data.file.path));
+      var multiFileId =
+          new prefHttp.MultipartFile.fromString('fileId', data.fileId);
+      var multiClientId =
+          new prefHttp.MultipartFile.fromString('clientId', data.clientId);
+      var multipartFile = new prefHttp.MultipartFile('data', stream, length,
+          filename: basename(data.file.path));
 
       request.files.add(multipartFile);
       var response = await request.send();
-      
-    } catch (e) {
-
-    }
+    } catch (e) {}
   }
 
   void updateCookie(prefHttp.Response response) {

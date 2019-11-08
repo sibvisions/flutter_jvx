@@ -44,7 +44,10 @@ class Response {
   Response.fromJsonForAppStyle(Map<String, dynamic> json) {
     checkForError(json);
     error = false;
-    applicationStyle = ApplicationStyleResponse.fromJson(json);
+    if (json != null)
+      applicationStyle = ApplicationStyleResponse.fromJson(json);
+    else
+      applicationStyle = null;
   }
 
   static checkForError(Map<String, dynamic> json) {

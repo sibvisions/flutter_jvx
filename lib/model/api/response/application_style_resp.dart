@@ -35,7 +35,10 @@ class ApplicationStyleResponse extends ResponseObject {
     loginInfotext = json['login.infotext'];
     loginIcon = json['login.icon'];
     desktopIcon = json['desktop.icon'];
-    menuMode = json['menu']['mode'];
+    if (json['menu'] != null)
+      menuMode = json['menu']['mode'];
+    else
+      menuMode = null;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{

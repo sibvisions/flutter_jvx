@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_grid_view.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_list_widget.dart';
@@ -24,9 +23,15 @@ class MenuPage extends StatelessWidget {
       drawerMenu = false;
     }
 
+    Color backgroundColor = Colors.white;
+
+    if (globals.applicationStyle != null && globals.applicationStyle.menuMode != null) {
+      backgroundColor = globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade300 : Colors.white;
+    }
+
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade300 : Colors.white,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Menu'),
         automaticallyImplyLeading: false,
@@ -52,6 +57,8 @@ class MenuPage extends StatelessWidget {
         return Center(
           child: Text('Choose Item'),
         );
+      } else if (globals.applicationStyle.menuMode == null) {
+        return MenuGridView(items: this.menuItems,);
       }
     } else {
       return MenuGridView(items: this.menuItems,);
