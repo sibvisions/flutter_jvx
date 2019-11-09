@@ -276,6 +276,7 @@ class ApiBloc extends Bloc<Request, Response> {
             resp.screenGeneric.changedComponents.isEmpty) &&
         resp.jVxData.isEmpty &&
         resp.jVxMetaData.isEmpty) {
+      print('CLOSE REQUEST: ' + request.componentId);
       CloseScreen closeScreen = CloseScreen(
           clientId: globals.clientId,
           componentId: request.componentId,

@@ -26,7 +26,7 @@ class MenuPage extends StatelessWidget {
     Color backgroundColor = Colors.white;
 
     if (globals.applicationStyle != null && globals.applicationStyle.menuMode != null) {
-      backgroundColor = globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade200 : Colors.white;
+      backgroundColor = globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade200 : Colors.grey.shade200;
     }
 
     return Scaffold(
