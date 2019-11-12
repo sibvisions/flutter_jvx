@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_label.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 
 class JVxLinkedCellEditor extends JVxReferencedCellEditor {
@@ -24,7 +23,9 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
 
     if (data != null && data.records.isNotEmpty) {
       data.columnNames.asMap().forEach((i, v) {
-        if (this.columnView.columnNames.contains(v)) {
+        if (this.columnView!=null && this.columnView.columnNames!=null && this.columnView.columnNames.contains(v)) {
+          visibleColumnsIndex.add(i);
+        } else if (this.linkReference != null && this.linkReference.columnNames!=null && this.linkReference.columnNames.contains(v)) {
           visibleColumnsIndex.add(i);
         }
       });
