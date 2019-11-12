@@ -60,7 +60,11 @@ class ComponentData {
   dynamic getColumnData(BuildContext context, String columnName) {
     if (isFetching==false && (_data==null || 
       (_data.selectedRow >= _data.records.length && !_data.isAllFetched))) {
-      this._fetchData(context);
+      if (_data==null || _data.selectedRow==null || _data.selectedRow<0) {
+        this._fetchData(context, 0);
+      } else {
+        this._fetchData(context, _data.selectedRow);
+      }
     } 
     
     if (_data!=null && _data.selectedRow < _data.records.length) {
@@ -70,9 +74,13 @@ class ComponentData {
     return "";
   }
 
-  JVxData getData(BuildContext context, int reload) {
+  JVxData getData(BuildContext context, int reload, int rowCountNeeded) {
     if (reload==-1 || (isFetching==false && (_data==null || !_data.isAllFetched))) {
-      this._fetchData(context);
+      if (rowCountNeeded>=0 && _data!=null && _data.records != null && _data.records.length>=rowCountNeeded) {
+        return _data;
+      }
+
+      this._fetchData(context, rowCountNeeded);
     }
       
     return _data;
@@ -110,13 +118,13 @@ class ComponentData {
     //BlocProvider.of<ApiBloc>(context).dispatch(setValues);
   }
 
-  void _fetchData(BuildContext context) {
+  void _fetchData(BuildContext context, int rowCountNeeded) {
       this.isFetching = true;
       FetchData fetch = FetchData(dataProvider);
 
-      if (_data!=null && !_data.isAllFetched) {
+      if (_data!=null && !_data.isAllFetched && rowCountNeeded!=-1) {
         fetch.fromRow = _data.records.length;
-        fetch.rowCount = 100;
+        fetch.rowCount = rowCountNeeded;
       }
 
       addToRequestQueue(fetch);
