@@ -31,7 +31,8 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.NAVIGATION ||
     type == RequestType.DEVICE_STATUS ||
     type == RequestType.UPLOAD ||
-    type == RequestType.DOWNLOAD);
+    type == RequestType.DOWNLOAD ||
+    type == RequestType.CHANGE);
 }
 
 abstract class Request extends Equatable {

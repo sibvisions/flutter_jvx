@@ -26,7 +26,7 @@ class MenuGridView extends StatefulWidget {
   final List<MenuItem> items;
   final bool groupedMenuMode;
 
-  MenuGridView({Key key, this.items, this.groupedMenuMode = false})
+  MenuGridView({Key key, this.items, this.groupedMenuMode = true})
       : super(key: key);
 
   @override
@@ -176,6 +176,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
     groupedMItems.forEach((k, v) {
       Widget group = GridView.count(
+        padding: EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: ScrollPhysics(),
@@ -206,25 +207,28 @@ class _MenuGridViewState extends State<MenuGridView> {
   Widget _buildGroupItemCard(MenuItem menuItem) {
     return new GestureDetector(
       child: new Card(
-        margin: EdgeInsets.all(6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 2.0,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            menuItem.image != null
-                ? new CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: !menuItem.image.startsWith('FontAwesome')
-                        ? new Image.asset('${globals.dir}${menuItem.image}')
-                        : _iconBuilder(formatFontAwesomeText(menuItem.image)))
-                : new CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: Icon(
-                      FontAwesomeIcons.clone,
-                      size: 48,
-                      color: Colors.grey[300],
-                    )),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: menuItem.image != null
+                  ? new CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: !menuItem.image.startsWith('FontAwesome')
+                          ? new Image.asset('${globals.dir}${menuItem.image}')
+                          : _iconBuilder(formatFontAwesomeText(menuItem.image)))
+                  : new CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: Icon(
+                        FontAwesomeIcons.clone,
+                        size: 48,
+                        color: Colors.grey[300],
+                      )),
+            ),
             Container(
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                 child: Text(
@@ -264,7 +268,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
   Widget _buildGroupHeader(String groupName) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 13),
+        padding: EdgeInsets.symmetric(horizontal: 5),
         child: ListTile(
           title: Text(
             groupName,
