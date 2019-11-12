@@ -25,7 +25,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       data.columnNames.asMap().forEach((i, v) {
         if (this.columnView!=null && this.columnView.columnNames!=null && this.columnView.columnNames.contains(v)) {
           visibleColumnsIndex.add(i);
-        } else if (this.linkReference != null && this.linkReference.columnNames!=null && this.linkReference.columnNames.contains(v)) {
+        } else if (this.linkReference != null && this.linkReference.referencedColumnNames!=null && this.linkReference.referencedColumnNames.contains(v)) {
           visibleColumnsIndex.add(i);
         }
       });
