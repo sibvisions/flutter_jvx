@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
+import 'package:jvx_mobile_v3/utils/translations.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class JVxDateCellEditor extends JVxCellEditor {
   String dateFormat;
@@ -35,6 +37,7 @@ class JVxDateCellEditor extends JVxCellEditor {
       ),
       onPressed: () => showDatePicker(
         context: context,
+        locale: Locale(globals.language),
         firstDate: DateTime(1900),
         lastDate: DateTime(2050),
         initialDate: (this.value != null && this.value is int)

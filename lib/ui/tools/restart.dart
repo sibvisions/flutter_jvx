@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class RestartWidget extends StatefulWidget {
   final Widget child;
@@ -6,6 +7,8 @@ class RestartWidget extends StatefulWidget {
   RestartWidget({this.child});
 
   static restartApp(BuildContext context) {
+    globals.loadConf = false;
+
     final _RestartWidgetState state =
       context.ancestorStateOfType(const TypeMatcher<_RestartWidgetState>());
     

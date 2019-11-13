@@ -24,13 +24,19 @@ class Config {
   String baseUrl;
   String appName;
   bool debug;
+  String username;
+  String password;
+  String appMode;
 
-  Config({this.baseUrl, this.appName, this.debug});
+  Config({this.baseUrl, this.appName, this.debug, this.username, this.password, this.appMode});
 
   Config.fromJson(Map<String, dynamic> json)
     : baseUrl = json['baseUrl'],
       appName = json['appName'],
-      debug = json['debug'];
+      debug = json['debug'],
+      username = json['username'],
+      password = json['password'],
+      appMode = json['appMode'];
 
   static Future<Config> loadFile() async {
     Config config;

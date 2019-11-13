@@ -24,7 +24,10 @@ class MenuDrawerWidget extends StatefulWidget {
   final String currentTitle;
 
   MenuDrawerWidget(
-      {Key key, @required this.menuItems, this.listMenuItems = false, this.currentTitle})
+      {Key key,
+      @required this.menuItems,
+      this.listMenuItems = false,
+      this.currentTitle})
       : super(key: key);
 
   @override
@@ -37,20 +40,29 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   @override
   Widget build(BuildContext context) {
     title = widget.currentTitle;
-    return BlocBuilder<ApiBloc, Response>(
-      builder: (context, state) {
-        if (state.requestType == RequestType.LOGOUT && (state.error == null || !state.error) && !state.loading) {
-          Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => LoginPage())));
-        }
-        return Drawer(child: _buildListViewForDrawer(context, this.widget.menuItems));
+    return BlocBuilder<ApiBloc, Response>(builder: (context, state) {
+      if (state.requestType == RequestType.LOGOUT &&
+          (state.error == null || !state.error) &&
+          !state.loading) {
+        Future.delayed(
+            Duration.zero,
+            () => Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => LoginPage())));
       }
-    );
+      return Drawer(
+          child: Column(
+        children: <Widget>[
+          _buildDrawerHeader(),
+          Expanded(flex: 2, child: _buildListViewForDrawer(context, this.widget.menuItems)),
+        ],
+      ));
+    });
   }
 
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = new List<Widget>();
 
-    tiles.add(_buildDrawerHeader());
+    // tiles.add(_buildDrawerHeader());
 
     ListTile settingsTile = new ListTile(
       title: Text(Translations.of(context).text2('Settings', 'Settings')),
@@ -64,7 +76,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
       title: Text(Translations.of(context).text2('Logout', 'Logout')),
       leading: Icon(FontAwesomeIcons.signOutAlt),
       onTap: () {
-        Logout logout = Logout(clientId: globals.clientId, requestType: RequestType.LOGOUT);
+        Logout logout =
+            Logout(clientId: globals.clientId, requestType: RequestType.LOGOUT);
 
         BlocProvider.of<ApiBloc>(context).dispatch(logout);
       },
@@ -112,7 +125,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },
         );
-
         tiles.add(tile);
       }
     }
@@ -137,7 +149,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                (globals.applicationStyle != null && globals.applicationStyle.loginTitle != null)
+                (globals.applicationStyle != null &&
+                        globals.applicationStyle.loginTitle != null)
                     ? Text(globals.applicationStyle.loginTitle,
                         style: TextStyle(
                           fontSize: 18.0,
@@ -154,12 +167,13 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                 SizedBox(
                   height: 15,
                 ),
-                globals.username.isNotEmpty 
-                ? Text(
-                  Translations.of(context).text2('Logged in as', 'Logged in as'),
-                  style: TextStyle(color: UIData.textColor, fontSize: 12),
-                )
-                : Container(),
+                globals.username.isNotEmpty
+                    ? Text(
+                        Translations.of(context)
+                            .text2('Logged in as', 'Logged in as'),
+                        style: TextStyle(color: UIData.textColor, fontSize: 12),
+                      )
+                    : Container(),
                 SizedBox(
                   height: 10,
                 ),
