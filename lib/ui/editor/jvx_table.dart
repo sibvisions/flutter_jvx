@@ -27,6 +27,10 @@ class JVxTable extends JVxEditor {
 
   Size maximumSize;
 
+  ScrollController _scrollController = ScrollController();
+  int pageSize = 40;
+  int pageIndex = 0;
+
   @override
   set data(ComponentData data) {
     super.data?.unregisterDataChanged(onServerDataChanged);
@@ -34,7 +38,9 @@ class JVxTable extends JVxEditor {
     super.data?.registerDataChanged(onServerDataChanged);
   }
 
-  JVxTable(Key componentId, BuildContext context) : super(componentId, context);
+  JVxTable(Key componentId, BuildContext context) : super(componentId, context) {
+    _scrollController.addListener(_scrollListener);
+  }
 
   @override
   void updateProperties(ChangedComponent changedComponent) {
@@ -119,17 +125,19 @@ class JVxTable extends JVxEditor {
           data.columnNames.indexOf(r)); 
       });
       data.records.asMap().forEach((i, r) {
-        if (r is List) {
-          List<Widget> children = new List<Widget>();
+        if (i>=pageIndex*pageSize && i<(pageIndex+1)*pageSize) {
+          if (r is List) {
+            List<Widget> children = new List<Widget>();
 
-          visibleColumnsIndex.forEach((j) {
-            if (j<r.length)
-              children.add(getTableColumn(r[j]!=null?r[j].toString():"", i));
-            else 
-              children.add(getTableColumn("", i));
-          });
+            visibleColumnsIndex.forEach((j) {
+              if (j<r.length)
+                children.add(getTableColumn(r[j]!=null?r[j].toString():"", i));
+              else 
+                children.add(getTableColumn("", i));
+            });
 
-          rows.add(getTableRow(children, false));
+            rows.add(getTableRow(children, false));
+          }
         }
       });
     }
@@ -139,6 +147,18 @@ class JVxTable extends JVxEditor {
   @override
   void onServerDataChanged() {
 
+  }
+
+  _scrollListener() {
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      this.pageIndex += 1;
+      data.getData(context, this.reload, this.pageSize*(this.pageIndex+1));
+    } else if (_scrollController.offset <= _scrollController.position.minScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      this.pageIndex -= 1;
+      if (this.pageIndex<0) this.pageIndex = 0;
+    }
   }
 
   @override
@@ -159,22 +179,28 @@ class JVxTable extends JVxEditor {
       rows.add(getHeaderRow());
     }
 
-    rows.addAll(getDataRows(data.getData(context, this.reload)));
+    rows.addAll(getDataRows(data.getData(context, this.reload, (this.pageIndex+1)*this.pageSize)));
     this.reload = null;
 
     if (rows.length > 0 &&
         rows[0].children != null &&
         rows[0].children.length > 0) {
 
-      rows[0].children.asMap().forEach((i,c) {
+      /*rows[0].children.asMap().forEach((i,c) {
         columnWidths.putIfAbsent(i, () => IntrinsicColumnWidth());
       });
-      
-      return Container(child: Table(
-        border: border,
-        children: rows,
-        columnWidths: columnWidths
-      ));
+      */
+
+      return Container(
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child:  Table(
+            border: border,
+            children: rows,
+            columnWidths: columnWidths
+          )
+        )
+      );
     } else {
       return Container(child: Text("No table data"));
     }

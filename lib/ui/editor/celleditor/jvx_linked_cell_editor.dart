@@ -8,6 +8,8 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.da
 class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
   String initialData;
+  int pageIndex = 0;
+  int pageSize = 40;
 
   JVxLinkedCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context);
@@ -23,19 +25,23 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
 
     if (data != null && data.records.isNotEmpty) {
       data.columnNames.asMap().forEach((i, v) {
-        if (this.columnView!=null && this.columnView.columnNames!=null && this.columnView.columnNames.contains(v)) {
-          visibleColumnsIndex.add(i);
-        } else if (this.linkReference != null && this.linkReference.columnNames!=null && this.linkReference.columnNames.contains(v)) {
+        if (this.columnView!=null && this.columnView.columnNames!=null) {
+          if (this.columnView.columnNames.contains(v)) {
+            visibleColumnsIndex.add(i);
+          }
+        } else if (this.linkReference != null && this.linkReference.referencedColumnNames!=null && this.linkReference.referencedColumnNames.contains(v)) {
           visibleColumnsIndex.add(i);
         }
       });
 
-      data.records.forEach((record) {
-        record.asMap().forEach((i, c) {
-          if (visibleColumnsIndex.contains(i)) {
-            items.add(getItem(c.toString(), c.toString()));
-          }
-        });
+      data.records.asMap().forEach((j,record) {
+        if (j>=pageIndex*pageSize && j<(pageIndex+1)*pageSize) {
+          record.asMap().forEach((i, c) {
+            if (visibleColumnsIndex.contains(i)) {
+              items.add(getItem(c.toString(), c.toString()));
+            }
+          });
+        }
       });
     }
 
@@ -70,7 +76,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   Widget getWidget() {
     String h = this.value;
     String v = this.value;
-    this._items = getItems(this.data.getData(this.context, null));
+    this._items = getItems(this.data.getData(this.context, null, (this.pageIndex+1)*this.pageSize));
 
     if (!this._items.contains((i) => (i as DropdownMenuItem).value==v))
       v = null;
