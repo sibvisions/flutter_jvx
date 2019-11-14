@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/main.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
@@ -12,7 +8,6 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
-import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -31,7 +26,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
 
-    this.cellEditor?.value = _data.getColumnData(context, columnName);
+    this.cellEditor?.value = _data.getColumnData(context, columnName, null);
   }
 
   get cellEditor => _cellEditor;
@@ -60,7 +55,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   void onServerDataChanged() {
-    this.cellEditor?.value = _data.getColumnData(context, columnName);
+    this.cellEditor?.value = _data.getColumnData(context, columnName, null);
   }
 
   @override
@@ -72,11 +67,17 @@ class JVxEditor extends JVxComponent implements IEditor {
     columnName = changedComponent.getProperty<String>(ComponentProperty.COLUMN_NAME, columnName);
     readonly = changedComponent.getProperty<bool>(ComponentProperty.READONLY, readonly);
     eventFocusGained = changedComponent.getProperty<bool>(ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
+    bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
+    if (rel!=null && rel)
+      this.reload = -1;
   }
 
   @override
   Widget getWidget() {
-
+    if (reload==-1) {
+      this.cellEditor?.value = data.getColumnData(context, this.columnName, this.reload);
+      this.reload = null;
+    }
     BoxConstraints constraints = BoxConstraints.tightFor();
 
     if (maximumSize!=null)

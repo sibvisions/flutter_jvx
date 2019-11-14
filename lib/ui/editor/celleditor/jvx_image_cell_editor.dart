@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,9 +27,16 @@ class JVxImageCellEditor extends JVxCellEditor {
 
   @override
   Widget getWidget() {
+    Image image = defaultImage;
+
+    if (this.value!=null) {
+      Uint8List bytes = base64Decode(this.value);
+      image = Image.memory(bytes);
+    }
+
     // ToDo: Implement getWidget
-    if (defaultImage != null) {
-      return defaultImage;
+    if (image != null) {
+      return image;
     }
   }
 }

@@ -57,8 +57,8 @@ class ComponentData {
     _onMetaDataChanged.forEach((d) => d());
   }
 
-  dynamic getColumnData(BuildContext context, String columnName) {
-    if (isFetching==false && (_data==null || 
+  dynamic getColumnData(BuildContext context, String columnName, int reload) {
+    if (isFetching==false && (_data==null || reload==-1 ||
       (_data.selectedRow >= _data.records.length && !_data.isAllFetched))) {
       if (_data==null || _data.selectedRow==null || _data.selectedRow<0) {
         this._fetchData(context, 0);
