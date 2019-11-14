@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/model/api/request/loading.dart';
 import 'package:jvx_mobile_v3/model/api/request/login.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
@@ -24,7 +25,9 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 enum StartupValidationType { username, password }
 
 class StartupPage extends StatefulWidget {
-  StartupPage({Key key}) : super(key: key);
+  bool loadConf;
+
+  StartupPage(this.loadConf, {Key key}) : super(key: key);
 
   _StartupPageState createState() => _StartupPageState();
 }
@@ -63,7 +66,8 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
-      if (globals.loadConf) {
+      print('HELLO ${widget.loadConf}');
+      if (widget.loadConf) {
         if (val[0] != null && val[0].debug != null && val[0].debug) {
           if (val[0].appName != null && val[0].appName.isNotEmpty) {
             globals.appName = val[0].appName;
@@ -99,6 +103,8 @@ class _StartupPageState extends State<StartupPage> {
             globals.appMode = val[0].appMode;
           }
         }
+      } else {
+        BlocProvider.of<ApiBloc>(context).dispatch(Loading());
       }
 
       if (globals.appName == null || globals.baseUrl == null) {

@@ -32,7 +32,8 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.DEVICE_STATUS ||
     type == RequestType.UPLOAD ||
     type == RequestType.DOWNLOAD ||
-    type == RequestType.CHANGE);
+    type == RequestType.CHANGE ||
+    type == RequestType.UPLOAD);
 }
 
 abstract class Request extends Equatable {

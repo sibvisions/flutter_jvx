@@ -10,7 +10,7 @@ import 'logic/bloc/api_bloc.dart';
 void main() {
   BlocSupervisor.delegate = MainBlocDelegate();
   runApp(MultiBlocProvider(
-    child: RestartWidget(child: JvxMobile()),
+    child: RestartWidget(loadConfigBuilder: (bool loadConf) => JvxMobile(loadConf)),
     providers: [
       BlocProvider<ApiBloc>(
         builder: (_) => ApiBloc(),

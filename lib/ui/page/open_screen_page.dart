@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
@@ -76,106 +77,102 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
-        listener: (BuildContext context, Response state) {
-          if (state.requestType == RequestType.CLOSE_SCREEN) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => MenuPage(
-                      menuItems: globals.items,
-                      listMenuItemsInDrawer: false,
-                    )));
-          } else {
-            print("*** OpenScreenPage - RequestType: " +
-                state.requestType.toString());
+          listener: (BuildContext context, Response state) {
+            if (state.requestType == RequestType.CLOSE_SCREEN) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => MenuPage(
+                        menuItems: globals.items,
+                        listMenuItemsInDrawer: false,
+                      )));
+            } else {
+              print("*** OpenScreenPage - RequestType: " +
+                  state.requestType.toString());
 
-            if (isScreenRequest(state.requestType) &&
-                    //state.screenGeneric != null &&
-                    !state.loading //&& !state.error
-                ) {
-              if (state.requestType == RequestType.PRESS_BUTTON) {
-                if (state.downloadAction != null) {
-                  Download download = Download(
-                    applicationImages: false,
-                    libraryImages: false,
-                    clientId: globals.clientId,
-                    fileId: state.downloadAction.fileId,
-                    name: 'file',
-                    requestType: RequestType.DOWNLOAD
-                  );
+              if (isScreenRequest(state.requestType) &&
+                      //state.screenGeneric != null &&
+                      !state.loading //&& !state.error
+                  ) {
+                if (state.requestType == RequestType.PRESS_BUTTON) {
+                  if (state.downloadAction != null) {
+                    Download download = Download(
+                        applicationImages: false,
+                        libraryImages: false,
+                        clientId: globals.clientId,
+                        fileId: state.downloadAction.fileId,
+                        name: 'file',
+                        requestType: RequestType.DOWNLOAD);
 
-                  BlocProvider.of<ApiBloc>(context).dispatch(download);
-                } else if (state.uploadAction != null) {
-                  openFilePicker(context).then((file) {
-                    Upload upload = Upload(
-                      clientId: globals.clientId,
-                      file: file,
-                      fileId: state.uploadAction.fileId,
-                      requestType: RequestType.UPLOAD
-                    );
+                    BlocProvider.of<ApiBloc>(context).dispatch(download);
+                  } else if (state.uploadAction != null) {
+                    openFilePicker(context).then((file) {
+                      Upload upload = Upload(
+                          clientId: globals.clientId,
+                          file: file,
+                          fileId: state.uploadAction.fileId,
+                          requestType: RequestType.UPLOAD);
 
-                    BlocProvider.of<ApiBloc>(context).dispatch(upload);
-                  });
+                      BlocProvider.of<ApiBloc>(context).dispatch(upload);
+                    });
+                  }
                 }
-              }
 
-              if (state.requestType == RequestType.OPEN_SCREEN) {
-                if (mounted &&
-                    _scaffoldKey.currentState != null &&
-                    _scaffoldKey.currentState.isEndDrawerOpen)
-                  SchedulerBinding.instance.addPostFrameCallback(
-                      (_) => Navigator.of(context).pop());
-                screen = JVxScreen(ComponentCreator());
-                title = state.action.label;
-                componentId = state.screenGeneric.componentId;
+                if (state.requestType == RequestType.OPEN_SCREEN) {
+                  if (mounted &&
+                      _scaffoldKey.currentState != null &&
+                      _scaffoldKey.currentState.isEndDrawerOpen)
+                    SchedulerBinding.instance.addPostFrameCallback(
+                        (_) => Navigator.of(context).pop());
+                  screen = JVxScreen(ComponentCreator());
+                  title = state.action.label;
+                  componentId = state.screenGeneric.componentId;
+                }
+                screen.context = context;
+                screen.update(state.request, state.jVxData, state.jVxMetaData,
+                    state.screenGeneric);
+                this.setState(() {});
               }
-
-              screen.context = context;
-              screen.update(state.request, state.jVxData, state.jVxMetaData,
-                  state.screenGeneric);
-              this.setState(() {});
             }
-          }
-        },
-        child: WillPopScope(
-          onWillPop: () async {
-            return false;
           },
-          child: Scaffold(
-              endDrawer: MenuDrawerWidget(
-                menuItems: widget.items,
-                listMenuItems: true,
-                currentTitle: widget.title,
-              ),
-              key: _scaffoldKey,
-              appBar: AppBar(
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(FontAwesomeIcons.ellipsisV),
-                    onPressed: () =>
-                        _scaffoldKey.currentState.openEndDrawer(),
-                  )
-                ],
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigation navigation = Navigation(
-                        clientId: globals.clientId, componentId: componentId);
-
-                    BlocProvider.of<ApiBloc>(context).dispatch(navigation);
-                  },
+          child: WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Scaffold(
+                endDrawer: MenuDrawerWidget(
+                  menuItems: widget.items,
+                  listMenuItems: true,
+                  currentTitle: widget.title,
                 ),
-                title: Text(title),
-              ),
-              body: screen.getWidget()),
-        )
-      ),
+                key: _scaffoldKey,
+                appBar: AppBar(
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(FontAwesomeIcons.ellipsisV),
+                      onPressed: () =>
+                          _scaffoldKey.currentState.openEndDrawer(),
+                    )
+                  ],
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigation navigation = Navigation(
+                          clientId: globals.clientId, componentId: componentId);
+
+                      BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                    },
+                  ),
+                  title: Text(title),
+                ),
+                body: screen.getWidget()),
+          )),
     );
   }
 
   @override
   void initState() {
     screen.context = context;
-    screen.update(widget.request, widget.data, widget.metaData,
-                  widget.screenGeneric);
+    screen.update(
+        widget.request, widget.data, widget.metaData, widget.screenGeneric);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -190,8 +187,47 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   didChangeMetrics() {}
 
   Future<File> openFilePicker(BuildContext context) async {
-    File file =  
-        await FilePicker.getFile(type: FileType.ANY);
+    File file;
+    
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: ListView(
+            children: <Widget>[
+              ListTile(
+                title: Text('Camera'),
+                onTap: () => pick('camera').then((val) {file = val; Navigator.of(context).pop();}),
+              ),
+              ListTile(
+                title: Text('Gallery'),
+                onTap: () => pick('gallery').then((val) {file = val; Navigator.of(context).pop();}),
+              ),
+              ListTile(
+                title: Text('File System'),
+                onTap: () => pick('file system').then((val) {file = val; Navigator.of(context).pop();}),
+              )
+            ],
+          ),
+        );
+      }
+    );
+
+    return file;
+  }
+
+  Future<File> pick(String type) async {
+    File file;
+
+    if (type == 'camera') {
+      file = await ImagePicker.pickImage(source: ImageSource.camera);
+    } else if (type == 'gallery') {
+      file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    } else if (type == 'file system') {
+      file = await FilePicker.getFile(type: FileType.ANY);
+    }
+
+    print('FILE: $file');
 
     return file;
   }
