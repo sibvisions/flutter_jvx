@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/ui/container/jvx_scroll_panel.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/i_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_image_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/jvx_lazy_table.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
@@ -40,7 +41,7 @@ class ComponentCreator implements IComponentCreator {
         case "SplitPanel":    { component = new JVxSplitPanel(Key(changedComponent.id), context); } break; 
         case "Label":         { component = new JVxLabel(Key(changedComponent.id), context); } break; 
         case "Button":        { component = new JVxButton(Key(changedComponent.id), context); } break; 
-        case "Table":         { component = new JVxTable(Key(changedComponent.id), context); } break;
+        case "Table":         { component = new JVxLazyTable(Key(changedComponent.id), context); } break;
         case "Editor":        { component = _createEditor(changedComponent); } break;
         default:              { component = _createDefaultComponent(changedComponent); } break;
       }
