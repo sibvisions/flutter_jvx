@@ -82,6 +82,7 @@ class RestClient {
             'Content-Type': 'application/json',
             'cookie': globals.jsessionId
           });
+      print(response.body);
       http.close();
     } catch (e) {
       http.close();

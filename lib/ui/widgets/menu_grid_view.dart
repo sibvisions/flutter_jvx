@@ -176,7 +176,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
     groupedMItems.forEach((k, v) {
       Widget group = GridView.count(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 5),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: ScrollPhysics(),
@@ -207,6 +207,7 @@ class _MenuGridViewState extends State<MenuGridView> {
   Widget _buildGroupItemCard(MenuItem menuItem) {
     return new GestureDetector(
       child: new Card(
+        margin: EdgeInsets.all(5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 2.0,
         child: Column(
@@ -268,13 +269,14 @@ class _MenuGridViewState extends State<MenuGridView> {
 
   Widget _buildGroupHeader(String groupName) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5),
+        padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
         child: ListTile(
-          title: Text(
+                  title: Text(
             groupName,
+            textAlign: TextAlign.left, 
             // textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.grey.shade700, fontWeight: FontWeight.bold),
+                color: Colors.grey.shade700, fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ));
   }

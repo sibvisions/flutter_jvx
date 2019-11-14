@@ -123,7 +123,9 @@ class ApiBloc extends Bloc<Request, Response> {
     Map<String, String> authData =
         await SharedPreferencesHelper().getLoginData();
 
-    globals.username = authData['username'];
+    if (globals.username.isEmpty || globals.username == null) {
+      globals.username = authData['username'];
+    }
 
     if (authData['authKey'] != null) {
       request.authKey = authData['authKey'];
