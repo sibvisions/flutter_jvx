@@ -96,6 +96,7 @@ class _StartupPageState extends State<StartupPage> {
           screenHeight: MediaQuery.of(context).size.height.toInt(),
           screenWidth: MediaQuery.of(context).size.width.toInt(),
           appMode: "full",
+          readAheadLimit: 100,
           requestType: RequestType.STARTUP);
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);

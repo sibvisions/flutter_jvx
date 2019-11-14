@@ -124,7 +124,7 @@ class ComponentData {
 
       if (_data!=null && !_data.isAllFetched && rowCountNeeded!=-1) {
         fetch.fromRow = _data.records.length;
-        fetch.rowCount = rowCountNeeded;
+        fetch.rowCount = rowCountNeeded - _data.records.length;
       }
 
       addToRequestQueue(fetch);
