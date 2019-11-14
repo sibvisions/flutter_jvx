@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
+import 'package:jvx_mobile_v3/model/api/request/loading.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
@@ -116,6 +117,11 @@ class ApiBloc extends Bloc<Request, Response> {
         ..error = false
         ..requestType = RequestType.LOADING);
       yield* change(event);
+    } else if (event is Loading) {
+      yield Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING;
     }
   }
 
@@ -123,7 +129,8 @@ class ApiBloc extends Bloc<Request, Response> {
     Map<String, String> authData =
         await SharedPreferencesHelper().getLoginData();
 
-    if (globals.username.isEmpty || globals.username == null) {
+    if ((globals.username.isEmpty || globals.username == null) && (globals.password.isEmpty || globals.password == null)) {
+      globals.password = authData['password'];
       globals.username = authData['username'];
     }
 
@@ -164,6 +171,9 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> logout(Logout request) async* {
+    SharedPreferencesHelper().setLoginData('', '');
+    globals.username = '';
+    globals.password = '';
     yield await processRequest(request);
   }
 

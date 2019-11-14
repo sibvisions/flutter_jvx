@@ -215,6 +215,8 @@ class RestClient {
 
       response = await prefHttp.Response.fromStream(streamedResponse);
     } catch (e) {
+      print('EXCEPTION: $e');
+
       return Response()
         ..title = 'Connection Error'
         ..errorName = 'connection.error'

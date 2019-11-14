@@ -154,7 +154,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
       bottomButton2Function: () {
         savePreferences();
-        RestartWidget.restartApp(context);
+        RestartWidget.restartApp(context, loadConf: false);
       },
     );
   }

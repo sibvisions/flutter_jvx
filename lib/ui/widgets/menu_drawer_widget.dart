@@ -125,6 +125,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },
         );
+        tiles.add(Divider());
         tiles.add(tile);
       }
     }
