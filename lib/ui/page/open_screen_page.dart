@@ -105,13 +105,15 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     BlocProvider.of<ApiBloc>(context).dispatch(download);
                   } else if (state.uploadAction != null) {
                     openFilePicker(context).then((file) {
-                      Upload upload = Upload(
-                          clientId: globals.clientId,
-                          file: file,
-                          fileId: state.uploadAction.fileId,
-                          requestType: RequestType.UPLOAD);
+                      if (file != null) {
+                        Upload upload = Upload(
+                            clientId: globals.clientId,
+                            file: file,
+                            fileId: state.uploadAction.fileId,
+                            requestType: RequestType.UPLOAD);
 
-                      BlocProvider.of<ApiBloc>(context).dispatch(upload);
+                        BlocProvider.of<ApiBloc>(context).dispatch(upload);
+                      }
                     });
                   }
                 }
@@ -190,20 +192,27 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     File file;
     
     await showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15))
+      ),
       context: context,
       builder: (BuildContext context) {
         return Container(
+          height: 190,
           child: ListView(
             children: <Widget>[
               ListTile(
+                leading: Icon(FontAwesomeIcons.camera),
                 title: Text('Camera'),
                 onTap: () => pick('camera').then((val) {file = val; Navigator.of(context).pop();}),
               ),
               ListTile(
+                leading: Icon(FontAwesomeIcons.images),
                 title: Text('Gallery'),
                 onTap: () => pick('gallery').then((val) {file = val; Navigator.of(context).pop();}),
               ),
               ListTile(
+                leading: Icon(FontAwesomeIcons.folderOpen),
                 title: Text('File System'),
                 onTap: () => pick('file system').then((val) {file = val; Navigator.of(context).pop();}),
               )
