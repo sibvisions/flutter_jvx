@@ -12,13 +12,14 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
   Image defaultImage;
+  File file;
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
     defaultImageName = changedCellEditor
         .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME);
     if (defaultImageName != null) {
-      File file = File(defaultImageName != null
+      file = File(defaultImageName != null
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
       if (file.existsSync()) defaultImage = Image.file(file);
@@ -29,14 +30,22 @@ class JVxImageCellEditor extends JVxCellEditor {
   Widget getWidget() {
     Image image = defaultImage;
 
-    if (this.value!=null) {
+    if (this.value != null) {
       Uint8List bytes = base64Decode(this.value);
       image = Image.memory(bytes);
     }
 
+    FileImage placeholder = FileImage(file);
+
     // ToDo: Implement getWidget
     if (image != null) {
-      return image;
+      return FadeInImage(
+        image: image.image,
+        placeholder: placeholder,
+        fit: BoxFit.contain,
+        width: 256,
+        height: 256,
+      );
     }
   }
 }

@@ -34,7 +34,10 @@ class JVxLazyTable extends JVxEditor {
   List<int> columnFlex;
 
   TextStyle get headerTextStyle {
-    return TextStyle(fontSize: style.fontSize, fontWeight: FontWeight.bold, color: Colors.grey[700]);
+    return TextStyle(
+        fontSize: style.fontSize,
+        fontWeight: FontWeight.bold,
+        color: Colors.grey[700]);
   }
 
   TextStyle get itemTextStyle {
@@ -48,25 +51,29 @@ class JVxLazyTable extends JVxEditor {
     super.data?.registerDataChanged(onServerDataChanged);
   }
 
-  JVxLazyTable(Key componentId, BuildContext context) : super(componentId, context) {
+  JVxLazyTable(Key componentId, BuildContext context)
+      : super(componentId, context) {
     _scrollController.addListener(_scrollListener);
   }
 
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    maximumSize = changedComponent.getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
-    showVerticalLines =
-        changedComponent.getProperty<bool>(ComponentProperty.SHOW_VERTICAL_LINES, showVerticalLines);
+    maximumSize = changedComponent.getProperty<Size>(
+        ComponentProperty.MAXIMUM_SIZE, null);
+    showVerticalLines = changedComponent.getProperty<bool>(
+        ComponentProperty.SHOW_VERTICAL_LINES, showVerticalLines);
     showHorizontalLines = changedComponent.getProperty<bool>(
         ComponentProperty.SHOW_HORIZONTAL_LINES, showHorizontalLines);
-    tableHeaderVisible =
-        changedComponent.getProperty<bool>(ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
-    columnNames =
-        changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_NAMES, columnNames);
+    tableHeaderVisible = changedComponent.getProperty<bool>(
+        ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
+    columnNames = changedComponent.getProperty<List<String>>(
+        ComponentProperty.COLUMN_NAMES, columnNames);
     reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
-    columnLabels = changedComponent.getProperty<List<String>>(ComponentProperty.COLUMN_LABELS, columnLabels);
-    reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
+    columnLabels = changedComponent.getProperty<List<String>>(
+        ComponentProperty.COLUMN_LABELS, columnLabels);
+    reload =
+        changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
   }
 
   void _onRowTapped(int index) {
@@ -80,51 +87,47 @@ class JVxLazyTable extends JVxEditor {
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: UIData.ui_kit_color_2[200],
           ),
-          child: Row(
-            children: children
-          )
-        );
+          child: Row(children: children));
     } else {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: Colors.white,
           ),
-          child: Row(
-            children: children
-          )
-        );
+          child: Row(children: children));
     }
   }
 
   Widget getTableColumn(String text, int rowIndex, int columnIndex) {
     int flex = 1;
 
-    if (columnFlex!=null && columnIndex < columnFlex.length)
+    if (columnFlex != null && columnIndex < columnFlex.length)
       flex = columnFlex[columnIndex];
 
     if (rowIndex == -1) {
       return Expanded(
-        flex: flex,
-        child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: Text(Properties.utf8convert(text), style: this.headerTextStyle),
-          padding: EdgeInsets.all(5),
-        ),
-      ));
+          flex: flex,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: Text(Properties.utf8convert(text),
+                  style: this.headerTextStyle),
+              padding: EdgeInsets.all(5),
+            ),
+          ));
     } else {
       return Expanded(
-        flex: flex,
-        child:Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GestureDetector(
-          child: Container(
-              child: Text(Properties.utf8convert(text), style: this.itemTextStyle),
-              padding: EdgeInsets.all(5)),
-          onTap: () => _onRowTapped(rowIndex),
-        ),
-      ));
+          flex: flex,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              child: Container(
+                  child: Text(Properties.utf8convert(text),
+                      style: this.itemTextStyle),
+                  padding: EdgeInsets.all(5)),
+              onTap: () => _onRowTapped(rowIndex),
+            ),
+          ));
     }
   }
 
@@ -140,52 +143,58 @@ class JVxLazyTable extends JVxEditor {
     return getTableRow(children, true);
   }
 
-  Container getDataRow(JVxData data, int index) {
+  Widget getDataRow(JVxData data, int index) {
     List<Widget> children = new List<Widget>();
     List<int> visibleColumnsIndex = new List<int>();
 
-    if (data != null && data.records!=null && index<data.records.length) {
+    if (data != null && data.records != null && index < data.records.length) {
       List<dynamic> columns = data.records[index];
 
       columnNames.forEach((r) {
-        visibleColumnsIndex.add(
-          data.columnNames.indexOf(r)); 
+        visibleColumnsIndex.add(data.columnNames.indexOf(r));
       });
 
-      visibleColumnsIndex.asMap().forEach((i,j) {
-        if (j<columns.length)
-          children.add(getTableColumn(columns[j]!=null?columns[j].toString():"", index, i));
-        else 
+      visibleColumnsIndex.asMap().forEach((i, j) {
+        if (j < columns.length)
+          children.add(getTableColumn(
+              columns[j] != null ? columns[j].toString() : "", index, i));
+        else
           children.add(getTableColumn("", index, j));
       });
 
-      return getTableRow(children, false);
+      return Dismissible(
+        confirmDismiss: (DismissDirection direction) async => Future.delayed(Duration(seconds: 2), () => true),
+        background: Container(color: Colors.red, child: Text('DELETE'),),
+        child: getTableRow(children, false),
+        key: Key(index.toString()),
+        onDismissed: (DismissDirection direction) =>
+            print(direction.toString()),
+      );
     }
 
     return Container();
   }
 
   @override
-  void onServerDataChanged() {
-
-  }
+  void onServerDataChanged() {}
 
   Widget itemBuilder(BuildContext ctxt, int index) {
-    if (index==0 && tableHeaderVisible) {
+    if (index == 0 && tableHeaderVisible) {
       return getHeaderRow();
     } else {
-      if (tableHeaderVisible)
-        index--;
+      if (tableHeaderVisible) index--;
       return getDataRow(_data, index);
     }
   }
 
   _scrollListener() {
-    fetchMoreYOffset = MediaQuery.of(context).size.height*4;
-    if (_scrollController.offset+this.fetchMoreYOffset >= _scrollController.position.maxScrollExtent &&
+    fetchMoreYOffset = MediaQuery.of(context).size.height * 4;
+    if (_scrollController.offset + this.fetchMoreYOffset >=
+            _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      if (_data!=null && _data.records!=null)
-        data.getData(context, this.reload, this.pageSize+_data.records.length);
+      if (_data != null && _data.records != null)
+        data.getData(
+            context, this.reload, this.pageSize + _data.records.length);
     }
   }
 
@@ -193,28 +202,28 @@ class JVxLazyTable extends JVxEditor {
     int calculateForRecordCount = 10;
 
     List<int> maxLengthPerColumn = new List<int>(this.columnLabels.length);
-    columnLabels.asMap().forEach((i,l) {
-      int textWidth = TextUtils.getTextWidth(l, itemTextStyle); 
+    columnLabels.asMap().forEach((i, l) {
+      int textWidth = TextUtils.getTextWidth(l, itemTextStyle);
       maxLengthPerColumn[i] = textWidth;
     });
 
-    if (_data!=null && _data.records!=null) {
+    if (_data != null && _data.records != null) {
       List<int> visibleColumnsIndex = new List<int>();
       columnNames.forEach((r) {
-        visibleColumnsIndex.add(
-          _data.columnNames.indexOf(r)); 
+        visibleColumnsIndex.add(_data.columnNames.indexOf(r));
       });
 
-      if (_data.records.length<calculateForRecordCount)
+      if (_data.records.length < calculateForRecordCount)
         calculateForRecordCount = _data.records.length;
 
-      for(int ii=0; ii< calculateForRecordCount; ii++) {
+      for (int ii = 0; ii < calculateForRecordCount; ii++) {
         List<dynamic> columns = _data.records[ii];
         visibleColumnsIndex.asMap().forEach((i, j) {
-          if (j<columns.length && columns[j]!=null) {
-            String value = columns[j]!=null?columns[j].toString():"";
-            int textWidth = TextUtils.getTextWidth(value, itemTextStyle); 
-            if (maxLengthPerColumn[i]==null || maxLengthPerColumn[i]<textWidth) {
+          if (j < columns.length && columns[j] != null) {
+            String value = columns[j] != null ? columns[j].toString() : "";
+            int textWidth = TextUtils.getTextWidth(value, itemTextStyle);
+            if (maxLengthPerColumn[i] == null ||
+                maxLengthPerColumn[i] < textWidth) {
               maxLengthPerColumn[i] = textWidth;
             }
           }
@@ -239,14 +248,14 @@ class JVxLazyTable extends JVxEditor {
       border = TableBorder.all();
     }
 
-    int itemCount = tableHeaderVisible?1:0;
+    int itemCount = tableHeaderVisible ? 1 : 0;
     _data = data.getData(context, reload, pageSize);
     this.reload = null;
 
     this.calculateColumnFlex();
 
-    if (_data!=null && _data.records!=null)
-      itemCount+= _data.records.length;
+    if (_data != null && _data.records != null)
+      itemCount += _data.records.length;
 
     return ListView.builder(
       controller: _scrollController,

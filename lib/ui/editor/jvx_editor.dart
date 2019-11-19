@@ -35,13 +35,12 @@ class JVxEditor extends JVxComponent implements IEditor {
     _cellEditor.onBeginEditing = onBeginEditing;
     _cellEditor.onEndEditing = onEndEditing;
     _cellEditor.onValueChanged = onValueChanged;
-  } 
-
-  JVxEditor(Key componentId, BuildContext context) : super(componentId, context);
-
-  void onBeginEditing() {
-    
   }
+
+  JVxEditor(Key componentId, BuildContext context)
+      : super(componentId, context);
+
+  void onBeginEditing() {}
 
   void onValueChanged(dynamic value) {
     if (this.cellEditor is JVxReferencedCellEditor)
@@ -50,9 +49,7 @@ class JVxEditor extends JVxComponent implements IEditor {
       data.setValues(context, [value], [columnName]);
   }
 
-  void onEndEditing() {
-    
-  }
+  void onEndEditing() {}
 
   void onServerDataChanged() {
     this.cellEditor?.value = _data.getColumnData(context, columnName, null);
@@ -61,39 +58,45 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    maximumSize = changedComponent.getProperty<Size>(ComponentProperty.MAXIMUM_SIZE,null);
-    dataProvider = changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER, dataProvider);
+    maximumSize = changedComponent.getProperty<Size>(
+        ComponentProperty.MAXIMUM_SIZE, null);
+    dataProvider = changedComponent.getProperty<String>(
+        ComponentProperty.DATA_PROVIDER, dataProvider);
     dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
-    columnName = changedComponent.getProperty<String>(ComponentProperty.COLUMN_NAME, columnName);
-    readonly = changedComponent.getProperty<bool>(ComponentProperty.READONLY, readonly);
-    eventFocusGained = changedComponent.getProperty<bool>(ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
-    bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
-    if (rel!=null && rel)
-      this.reload = -1;
+    columnName = changedComponent.getProperty<String>(
+        ComponentProperty.COLUMN_NAME, columnName);
+    readonly = changedComponent.getProperty<bool>(
+        ComponentProperty.READONLY, readonly);
+    eventFocusGained = changedComponent.getProperty<bool>(
+        ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
+    try {
+      this.reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
+    } catch (e) {
+      bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
+      if (rel != null && rel) this.reload = -1;
+    }
   }
 
   @override
   Widget getWidget() {
-    if (reload==-1) {
-      this.cellEditor?.value = data.getColumnData(context, this.columnName, this.reload);
+    if (reload == -1) {
+      this.cellEditor?.value =
+          data.getColumnData(context, this.columnName, this.reload);
       this.reload = null;
     }
     BoxConstraints constraints = BoxConstraints.tightFor();
 
-    if (maximumSize!=null)
-      constraints = BoxConstraints.loose(maximumSize);
+    if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
 
     Color color = Colors.grey[200];
 
-    if(this.cellEditor is JVxChoiceCellEditor) {
+    if (this.cellEditor is JVxChoiceCellEditor) {
       return Container(child: this.cellEditor.getWidget());
-    } else {  
-    return Container(
-      constraints: constraints,
-      color: color,
-      child: Container(width: 100, child: cellEditor.getWidget())
-    );
-
+    } else {
+      return Container(
+          constraints: constraints,
+          color: color,
+          child: Container(width: 100, child: cellEditor.getWidget()));
     }
   }
 }

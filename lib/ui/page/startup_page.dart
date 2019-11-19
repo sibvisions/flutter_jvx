@@ -67,41 +67,42 @@ class _StartupPageState extends State<StartupPage> {
     super.initState();
     Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
       print('HELLO ${widget.loadConf}');
-      if (widget.loadConf) {
-        if (val[0] != null && val[0].debug != null && val[0].debug) {
-          if (val[0].appName != null && val[0].appName.isNotEmpty) {
-            globals.appName = val[0].appName;
-          } else {
+      if (widget.loadConf &&
+          val[0] != null &&
+          val[0].debug != null &&
+          val[0].debug) {
+        if (val[0].appName != null && val[0].appName.isNotEmpty) {
+          globals.appName = val[0].appName;
+        } else {
+          showError(context, 'Error in Config',
+              'Please enter a valid application name in conf.json and restart the app.');
+          return;
+        }
+
+        if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
+          if (val[0].baseUrl.endsWith('/')) {
             showError(context, 'Error in Config',
-                'Please enter a valid application name in conf.json and restart the app.');
+                'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
             return;
-          }
-
-          if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
-            if (val[0].baseUrl.endsWith('/')) {
-              showError(context, 'Error in Config',
-                  'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
-              return;
-            } else {
-              globals.baseUrl = val[0].baseUrl;
-            }
           } else {
-            showError(context, 'Error in Config',
-                'Please enter a valid base url in conf.json and restart the app.');
+            globals.baseUrl = val[0].baseUrl;
           }
-          globals.debug = val[0].debug;
+        } else {
+          showError(context, 'Error in Config',
+              'Please enter a valid base url in conf.json and restart the app.');
+        }
+        globals.debug = val[0].debug;
 
-          if (val[0].username != null && val[0].username.isNotEmpty) {
-            globals.username = val[0].username;
-          }
+        if (val[0].username != null && val[0].username.isNotEmpty) {
+          globals.username = val[0].username;
+        }
 
-          if (val[0].password != null && val[0].password.isNotEmpty) {
-            globals.password = val[0].password;
-          }
+        if (val[0].password != null && val[0].password.isNotEmpty) {
+          globals.password = val[0].password;
+        }
 
-          if (val[0].appMode != null && val[0].appMode.isNotEmpty) {
-            globals.appMode = val[0].appMode;
-          }
+        if (val[0].appMode != null && val[0].appMode.isNotEmpty) {
+          globals.appMode = val[0].appMode;
         }
       } else {
         BlocProvider.of<ApiBloc>(context).dispatch(Loading());
