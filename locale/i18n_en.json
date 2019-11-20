@@ -23,5 +23,9 @@
     "go_to_settings": "Go to settings",
     "no_username_or_password": "Please enter username and password",
     "Logged in as": "Logged in as",
-    "Back": "Back"
+    "Back": "Back",
+    "Pick file": "Pick file",
+    "File System": "File System",
+    "Gallery": "Gallery",
+    "Camera": "Camera"
 }

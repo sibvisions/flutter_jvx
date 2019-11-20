@@ -163,8 +163,12 @@ class JVxLazyTable extends JVxEditor {
       });
 
       return Dismissible(
-        confirmDismiss: (DismissDirection direction) async => Future.delayed(Duration(seconds: 2), () => true),
-        background: Container(color: Colors.red, child: Text('DELETE'),),
+        confirmDismiss: (DismissDirection direction) async =>
+            Future.delayed(Duration(seconds: 2), () => true),
+        background: Container(
+          color: Colors.red,
+          child: Text('DELETE'),
+        ),
         child: getTableRow(children, false),
         key: Key(index.toString()),
         onDismissed: (DismissDirection direction) =>
@@ -257,10 +261,16 @@ class JVxLazyTable extends JVxEditor {
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;
 
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: itemCount,
-      itemBuilder: itemBuilder,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) => Container(
+        width: constraints.minWidth,
+        height: constraints.minHeight,
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: itemCount,
+          itemBuilder: itemBuilder,
+        ),
+      ),
     );
   }
 }

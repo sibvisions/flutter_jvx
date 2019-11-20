@@ -15,10 +15,11 @@ enum RequestType {
   PRESS_BUTTON,
   NAVIGATION,
   LOADING,
+  RELOAD,
   DEVICE_STATUS,
   DOWNLOAD,
   UPLOAD,
-  CHANGE
+  CHANGE,
 }
 
 bool isScreenRequest(RequestType type) {
