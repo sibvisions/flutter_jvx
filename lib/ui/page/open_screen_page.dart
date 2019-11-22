@@ -231,70 +231,64 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     )
                   ],
                 ),
-                Flexible(
-                  child: ListView(
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () => pick('camera').then((val) {
-                          file = val;
-                          Navigator.of(context).pop();
-                        }),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(FontAwesomeIcons.camera, color: UIData.ui_kit_color_2,),
-                              SizedBox(width: 15,),
-                              Text(
-                                Translations.of(context).text2('Camera', 'Camera'),
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
+                GestureDetector(
+                  onTap: () => pick('camera').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.camera, color: UIData.ui_kit_color_2,),
+                        SizedBox(width: 15,),
+                        Text(
+                          Translations.of(context).text2('Camera', 'Camera'),
+                          style: TextStyle(fontSize: 18),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () => pick('gallery').then((val) {
-                          file = val;
-                          Navigator.of(context).pop();
-                        }),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(FontAwesomeIcons.images, color: UIData.ui_kit_color_2,),
-                              SizedBox(width: 15,),
-                              Text(
-                                Translations.of(context).text2('Gallery', 'Gallery'),
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => pick('gallery').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.images, color: UIData.ui_kit_color_2,),
+                        SizedBox(width: 15,),
+                        Text(
+                          Translations.of(context).text2('Gallery', 'Gallery'),
+                          style: TextStyle(fontSize: 18),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () => pick('file system').then((val) {
-                          file = val;
-                          Navigator.of(context).pop();
-                        }),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(FontAwesomeIcons.folderOpen, color: UIData.ui_kit_color_2,),
-                              SizedBox(width: 15,),
-                              Text(
-                                Translations.of(context).text2('File System', 'File System'),
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => pick('file system').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.folderOpen, color: UIData.ui_kit_color_2,),
+                        SizedBox(width: 15,),
+                        Text(
+                          Translations.of(context).text2('File System', 'File System'),
+                          style: TextStyle(fontSize: 18),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -20,8 +20,8 @@ class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
   Image defaultImage;
   File file;
-  double width = 256;
-  double heigth = 256;
+  double width = 100;
+  double heigth = 100;
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
@@ -45,18 +45,7 @@ class JVxImageCellEditor extends JVxCellEditor {
       img = Image.memory(bytes);
       placeholder = MemoryImage(bytes);
     }
-
-    // ToDo: Implement getWidget
-    // if (image != null) {
-    //   return FadeInImage(
-    //     image: image.image,
-    //     placeholder: placeholder,
-    //     fit: BoxFit.contain,
-    //     width: image.width,
-    //     height: image.height,
-    //   );
-    // }
-
+    
     Completer<ui.Image> completer = new Completer<ui.Image>();
     img.image
         .resolve(new ImageConfiguration())
@@ -64,33 +53,38 @@ class JVxImageCellEditor extends JVxCellEditor {
       completer.complete(info.image);
     }));
 
-    print('DEFAULT IMAGE NAME: $defaultImageName');
-
-    return new FutureBuilder<ui.Image>(
+    return new FutureBuilder<ui.Image>( 
       future: completer.future,
       builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+        if (img.image is MemoryImage) {
+          return Image(
+            image: img.image,
+            width: width,
+            height: heigth,
+          );
+        }
+
         if (snapshot.hasData && this.value == null) {
           width = snapshot.data.width.toDouble();
           heigth = snapshot.data.height.toDouble();
 
           BlocProvider.of<ApiBloc>(context)
               .dispatch(Reload(requestType: RequestType.RELOAD));
+
+          return Image(
+            image: img.image,
+            width: width,
+            height: heigth,
+          );
         }
 
-        return Image(
-          image: placeholder,
+        return Container(
           width: width,
           height: heigth,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
         );
-
-        // return FadeInImage(
-        //   fadeInDuration: Duration(microseconds: 1),
-        //   fadeOutDuration: Duration(microseconds: 1),
-        //   placeholder: placeholder,
-        //   image: img.image,
-        //   width: width,
-        //   height: heigth,
-        // );
       },
     );
   }

@@ -46,7 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     title: Text(Translations.of(context).text2('settings_app_name', 'App name')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
-                    subtitle: Text(this.appName == null ? globals.appName : this.appName),
+                    subtitle: Text(globals.appName != null ? globals.appName : ''),
                     onTap: () {
                       showTextInputDialog(
                         context, 
@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     title: Text(Translations.of(context).text2('settings_base_url', 'Base Url')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
-                    subtitle: Text(this.baseUrl == null ? globals.baseUrl : this.baseUrl),
+                    subtitle: Text(globals.baseUrl != null ? globals.baseUrl : ''),
                     onTap: () {
                       showTextInputDialog(
                         context,
@@ -96,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     title: Text(Translations.of(context).text2('settings_language', 'Language')),
                     trailing: Icon(FontAwesomeIcons.arrowDown),
-                    subtitle: Text(this.language == null ? globals.language : this.language),
+                    subtitle: Text(globals.language != null ? globals.language : ''),
                     onTap: () {
                       showLanguagePicker(context);
                     },

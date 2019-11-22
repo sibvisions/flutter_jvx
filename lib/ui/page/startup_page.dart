@@ -37,27 +37,27 @@ class _StartupPageState extends State<StartupPage> {
 
   Widget newStartupBuilder() {
     return errorHandlerListener(
-      BlocBuilder<ApiBloc, Response>(
-        builder: (context, state) {
+      BlocListener<ApiBloc, Response>(
+        listener: (context, state) {
+          print('Startup Page Request Type: ${state.requestType}');
           _startupHandler(state);
           _navigationHandler(state);
           _loginHandler(state);
-
-          return Scaffold(
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Center(
-                  child: Image.asset(
-                    'assets/images/sib_visions.jpg',
-                    width: (MediaQuery.of(context).size.width - 50),
-                  ),
-                ),
-                Text('Loading...'),
-              ],
-            ),
-          );
         },
+        child: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'assets/images/sib_visions.jpg',
+                  width: (MediaQuery.of(context).size.width - 50),
+                ),
+              ),
+              Text('Loading...'),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -73,6 +73,7 @@ class _StartupPageState extends State<StartupPage> {
           val[0].debug) {
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
           globals.appName = val[0].appName;
+          SharedPreferencesHelper().setData(val[0].appName, null, null);
         } else {
           showError(context, 'Error in Config',
               'Please enter a valid application name in conf.json and restart the app.');
@@ -86,6 +87,7 @@ class _StartupPageState extends State<StartupPage> {
             return;
           } else {
             globals.baseUrl = val[0].baseUrl;
+            SharedPreferencesHelper().setData(null, val[0].baseUrl, null);
           }
         } else {
           showError(context, 'Error in Config',
@@ -105,7 +107,7 @@ class _StartupPageState extends State<StartupPage> {
           globals.appMode = val[0].appMode;
         }
       } else {
-        BlocProvider.of<ApiBloc>(context).dispatch(Loading());
+        //BlocProvider.of<ApiBloc>(context).dispatch(Loading());
       }
 
       if (globals.appName == null || globals.baseUrl == null) {
@@ -184,12 +186,10 @@ class _StartupPageState extends State<StartupPage> {
     if (state != null &&
         state.requestType == RequestType.LOGIN &&
         state.menu != null) {
-      SchedulerBinding.instance.addPostFrameCallback((duration) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (_) => MenuPage(
                   menuItems: state.menu.items,
                 )));
-      });
     }
   }
 
@@ -211,7 +211,6 @@ class _StartupPageState extends State<StartupPage> {
         BlocProvider.of<ApiBloc>(context).dispatch(login);
       }
 
-      SchedulerBinding.instance.addPostFrameCallback((duration) {
         if (menu == null) {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
@@ -221,7 +220,6 @@ class _StartupPageState extends State<StartupPage> {
                     menuItems: menu.items,
                   )));
         }
-      });
     }
   }
 
@@ -235,6 +233,8 @@ class _StartupPageState extends State<StartupPage> {
         appVersion = val;
 
         ApplicationMetaData applicationMetaData = state.applicationMetaData;
+
+        print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
 
         if (appVersion != applicationMetaData.version) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
