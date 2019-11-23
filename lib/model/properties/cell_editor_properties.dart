@@ -14,7 +14,10 @@ enum CellEditorProperty {
   IMAGE_NAMES,
   DATE_FORMAT,
   NUMBER_FORMAT,
-  DATA_PROVIDER
+  DATA_PROVIDER,
+  SELECTED_VALUE,
+  DESELECTED_VALUE,
+  TEXT
 }
 
 class CellEditorProperties {

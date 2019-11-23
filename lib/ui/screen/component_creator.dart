@@ -5,6 +5,7 @@ import 'package:jvx_mobile_v3/ui/container/jvx_group_panel.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_scroll_panel.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/i_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_image_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_lazy_table.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';
@@ -77,12 +78,13 @@ class ComponentCreator implements IComponentCreator {
     ICellEditor cellEditor;
 
     switch (changedComponent?.cellEditor?.className) {
-      case "TextCellEditor":    { cellEditor = JVxTextCellEditor(changedComponent.cellEditor, context); } break;
-      case "NumberCellEditor":  { cellEditor = JVxNumberCellEditor(changedComponent.cellEditor, context); } break;
-      case "LinkedCellEditor":  { cellEditor = JVxLinkedCellEditor(changedComponent.cellEditor, context); } break; 
-      case "DateCellEditor":    { cellEditor = JVxDateCellEditor(changedComponent.cellEditor, context); } break; 
-      case "ImageViewer":       { cellEditor = JVxImageCellEditor(changedComponent.cellEditor, context); } break; 
-      case "ChoiceCellEditor":  { cellEditor = JVxChoiceCellEditor(changedComponent.cellEditor, context); } break;
+      case "TextCellEditor":     { cellEditor = JVxTextCellEditor(changedComponent.cellEditor, context); } break;
+      case "NumberCellEditor":   { cellEditor = JVxNumberCellEditor(changedComponent.cellEditor, context); } break;
+      case "LinkedCellEditor":   { cellEditor = JVxLinkedCellEditor(changedComponent.cellEditor, context); } break; 
+      case "DateCellEditor":     { cellEditor = JVxDateCellEditor(changedComponent.cellEditor, context); } break; 
+      case "ImageViewer":        { cellEditor = JVxImageCellEditor(changedComponent.cellEditor, context); } break; 
+      case "ChoiceCellEditor":   { cellEditor = JVxChoiceCellEditor(changedComponent.cellEditor, context); } break;
+      case "CheckBoxCellEditor": { cellEditor = JVxCheckboxCellEditor(changedComponent.cellEditor, context); } break;
     }
 
     //cellEditor.dataProvider = changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER);

@@ -122,6 +122,11 @@ class ApiBloc extends Bloc<Request, Response> {
         ..loading = true
         ..error = false
         ..requestType = RequestType.LOADING;
+    } else if (event.requestType == RequestType.RELOAD) {
+      yield Response()
+        ..loading = false
+        ..error = false
+        ..requestType = RequestType.RELOAD;
     }
   }
 
@@ -309,7 +314,7 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> change(Change request) async* {
     yield await processRequest(request);
   }
-
+  
   Future<Response> processRequest(Request request) async {
     RestClient restClient = RestClient();
     Response response;
@@ -452,6 +457,9 @@ class ApiBloc extends Bloc<Request, Response> {
         response.request = request;
         updateResponse(response);
         return response;
+        break;
+      case RequestType.RELOAD:
+        // TODO: Handle this case.
         break;
     }
 

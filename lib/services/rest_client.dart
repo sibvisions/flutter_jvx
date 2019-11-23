@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
+import 'package:jvx_mobile_v3/model/api/request/download.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'dart:convert';
@@ -14,7 +16,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class RestClient {
-  bool debug = false;
+  bool debug = true;
 
   /*
   HttpClientWithMiddleware http = HttpClientWithMiddleware.build(
@@ -82,7 +84,6 @@ class RestClient {
             'Content-Type': 'application/json',
             'cookie': globals.jsessionId
           });
-      print(response.body);
       http.close();
     } catch (e) {
       http.close();
@@ -151,7 +152,7 @@ class RestClient {
     var content = json.encode(data);
     var response;
     Response resp = Response();
-    try {
+    
       response = await http.post(globals.baseUrl + resourcePath,
           body: content,
           headers: {
@@ -161,7 +162,10 @@ class RestClient {
       http.close();
       resp.download = response.bodyBytes;
       resp.error = false;
-      resp.downloadFileName = (response as prefHttp.Response).headers['content-disposition'].split(' ')[1].substring(9);
+      if (data['name'] == 'file') {
+        resp.downloadFileName = (response as prefHttp.Response).headers['content-disposition'].split(' ')[1].substring(9);
+      }
+      try {
     } catch (e) {
       return Response()
         ..title = 'Connection Error'

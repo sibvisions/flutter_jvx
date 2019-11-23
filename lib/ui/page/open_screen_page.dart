@@ -23,6 +23,8 @@ import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class OpenScreenPage extends StatefulWidget {
   final String title;
@@ -105,13 +107,15 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     BlocProvider.of<ApiBloc>(context).dispatch(download);
                   } else if (state.uploadAction != null) {
                     openFilePicker(context).then((file) {
-                      Upload upload = Upload(
-                          clientId: globals.clientId,
-                          file: file,
-                          fileId: state.uploadAction.fileId,
-                          requestType: RequestType.UPLOAD);
+                      if (file != null) {
+                        Upload upload = Upload(
+                            clientId: globals.clientId,
+                            file: file,
+                            fileId: state.uploadAction.fileId,
+                            requestType: RequestType.UPLOAD);
 
-                      BlocProvider.of<ApiBloc>(context).dispatch(upload);
+                        BlocProvider.of<ApiBloc>(context).dispatch(upload);
+                      }
                     });
                   }
                 }
@@ -137,33 +141,43 @@ class _OpenScreenPageState extends State<OpenScreenPage>
             onWillPop: () async {
               return false;
             },
-            child: Scaffold(
-                endDrawer: MenuDrawerWidget(
-                  menuItems: widget.items,
-                  listMenuItems: true,
-                  currentTitle: widget.title,
-                ),
-                key: _scaffoldKey,
-                appBar: AppBar(
-                  actions: <Widget>[
-                    IconButton(
-                      icon: Icon(FontAwesomeIcons.ellipsisV),
-                      onPressed: () =>
-                          _scaffoldKey.currentState.openEndDrawer(),
-                    )
-                  ],
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigation navigation = Navigation(
-                          clientId: globals.clientId, componentId: componentId);
+            child: BlocBuilder<ApiBloc, Response>(
+              condition: (Response previous, Response current) {
+                if (previous.requestType == current.requestType) {
+                  return false;
+                }
+                return true;
+              },
+              builder: (context, state) {
+                return Scaffold(
+                    endDrawer: MenuDrawerWidget(
+                      menuItems: widget.items,
+                      listMenuItems: true,
+                      currentTitle: widget.title,
+                    ),
+                    key: _scaffoldKey,
+                    appBar: AppBar(
+                      actions: <Widget>[
+                        IconButton(
+                          icon: Icon(FontAwesomeIcons.ellipsisV),
+                          onPressed: () =>
+                              _scaffoldKey.currentState.openEndDrawer(),
+                        )
+                      ],
+                      leading: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigation navigation = Navigation(
+                              clientId: globals.clientId, componentId: componentId);
 
-                      BlocProvider.of<ApiBloc>(context).dispatch(navigation);
-                    },
-                  ),
-                  title: Text(title),
-                ),
-                body: screen.getWidget()),
+                          BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                        },
+                      ),
+                      title: Text(title),
+                    ),
+                    body: screen.getWidget());
+              }
+            ),
           )),
     );
   }
@@ -188,30 +202,99 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   Future<File> openFilePicker(BuildContext context) async {
     File file;
-    
+
     await showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text('Camera'),
-                onTap: () => pick('camera').then((val) {file = val; Navigator.of(context).pop();}),
-              ),
-              ListTile(
-                title: Text('Gallery'),
-                onTap: () => pick('gallery').then((val) {file = val; Navigator.of(context).pop();}),
-              ),
-              ListTile(
-                title: Text('File System'),
-                onTap: () => pick('file system').then((val) {file = val; Navigator.of(context).pop();}),
-              )
-            ],
-          ),
-        );
-      }
-    );
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 220,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        Translations.of(context)
+                            .text2('Pick file', 'Pick file'),
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    IconButton(
+                      color: Colors.grey[300],
+                      icon: Icon(FontAwesomeIcons.timesCircle),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () => pick('camera').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.camera, color: UIData.ui_kit_color_2,),
+                        SizedBox(width: 15,),
+                        Text(
+                          Translations.of(context).text2('Camera', 'Camera'),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => pick('gallery').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.images, color: UIData.ui_kit_color_2,),
+                        SizedBox(width: 15,),
+                        Text(
+                          Translations.of(context).text2('Gallery', 'Gallery'),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => pick('file system').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.folderOpen, color: UIData.ui_kit_color_2,),
+                        SizedBox(width: 15,),
+                        Text(
+                          Translations.of(context).text2('File System', 'File System'),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
 
     return file;
   }

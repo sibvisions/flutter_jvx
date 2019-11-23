@@ -37,27 +37,27 @@ class _StartupPageState extends State<StartupPage> {
 
   Widget newStartupBuilder() {
     return errorHandlerListener(
-      BlocBuilder<ApiBloc, Response>(
-        builder: (context, state) {
+      BlocListener<ApiBloc, Response>(
+        listener: (context, state) {
+          print('Startup Page Request Type: ${state.requestType}');
           _startupHandler(state);
           _navigationHandler(state);
           _loginHandler(state);
-
-          return Scaffold(
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Center(
-                  child: Image.asset(
-                    'assets/images/sib_visions.jpg',
-                    width: (MediaQuery.of(context).size.width - 50),
-                  ),
-                ),
-                Text('Loading...'),
-              ],
-            ),
-          );
         },
+        child: Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'assets/images/sib_visions.jpg',
+                  width: (MediaQuery.of(context).size.width - 50),
+                ),
+              ),
+              Text('Loading...'),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -67,44 +67,47 @@ class _StartupPageState extends State<StartupPage> {
     super.initState();
     Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
       print('HELLO ${widget.loadConf}');
-      if (widget.loadConf) {
-        if (val[0] != null && val[0].debug != null && val[0].debug) {
-          if (val[0].appName != null && val[0].appName.isNotEmpty) {
-            globals.appName = val[0].appName;
-          } else {
+      if (widget.loadConf &&
+          val[0] != null &&
+          val[0].debug != null &&
+          val[0].debug) {
+        if (val[0].appName != null && val[0].appName.isNotEmpty) {
+          globals.appName = val[0].appName;
+          SharedPreferencesHelper().setData(val[0].appName, null, null);
+        } else {
+          showError(context, 'Error in Config',
+              'Please enter a valid application name in conf.json and restart the app.');
+          return;
+        }
+
+        if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
+          if (val[0].baseUrl.endsWith('/')) {
             showError(context, 'Error in Config',
-                'Please enter a valid application name in conf.json and restart the app.');
+                'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
             return;
-          }
-
-          if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
-            if (val[0].baseUrl.endsWith('/')) {
-              showError(context, 'Error in Config',
-                  'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
-              return;
-            } else {
-              globals.baseUrl = val[0].baseUrl;
-            }
           } else {
-            showError(context, 'Error in Config',
-                'Please enter a valid base url in conf.json and restart the app.');
+            globals.baseUrl = val[0].baseUrl;
+            SharedPreferencesHelper().setData(null, val[0].baseUrl, null);
           }
-          globals.debug = val[0].debug;
+        } else {
+          showError(context, 'Error in Config',
+              'Please enter a valid base url in conf.json and restart the app.');
+        }
+        globals.debug = val[0].debug;
 
-          if (val[0].username != null && val[0].username.isNotEmpty) {
-            globals.username = val[0].username;
-          }
+        if (val[0].username != null && val[0].username.isNotEmpty) {
+          globals.username = val[0].username;
+        }
 
-          if (val[0].password != null && val[0].password.isNotEmpty) {
-            globals.password = val[0].password;
-          }
+        if (val[0].password != null && val[0].password.isNotEmpty) {
+          globals.password = val[0].password;
+        }
 
-          if (val[0].appMode != null && val[0].appMode.isNotEmpty) {
-            globals.appMode = val[0].appMode;
-          }
+        if (val[0].appMode != null && val[0].appMode.isNotEmpty) {
+          globals.appMode = val[0].appMode;
         }
       } else {
-        BlocProvider.of<ApiBloc>(context).dispatch(Loading());
+        //BlocProvider.of<ApiBloc>(context).dispatch(Loading());
       }
 
       if (globals.appName == null || globals.baseUrl == null) {
@@ -183,12 +186,10 @@ class _StartupPageState extends State<StartupPage> {
     if (state != null &&
         state.requestType == RequestType.LOGIN &&
         state.menu != null) {
-      SchedulerBinding.instance.addPostFrameCallback((duration) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (_) => MenuPage(
                   menuItems: state.menu.items,
                 )));
-      });
     }
   }
 
@@ -210,7 +211,6 @@ class _StartupPageState extends State<StartupPage> {
         BlocProvider.of<ApiBloc>(context).dispatch(login);
       }
 
-      SchedulerBinding.instance.addPostFrameCallback((duration) {
         if (menu == null) {
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
@@ -220,7 +220,6 @@ class _StartupPageState extends State<StartupPage> {
                     menuItems: menu.items,
                   )));
         }
-      });
     }
   }
 
@@ -234,6 +233,8 @@ class _StartupPageState extends State<StartupPage> {
         appVersion = val;
 
         ApplicationMetaData applicationMetaData = state.applicationMetaData;
+
+        print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
 
         if (appVersion != applicationMetaData.version) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
