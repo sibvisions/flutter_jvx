@@ -142,12 +142,8 @@ class LazyDropdown extends StatelessWidget {
             children: <Widget>[
               ButtonBar(alignment: MainAxisAlignment.spaceEvenly, children: <
                   Widget>[
-                new IconButton(
-                  icon: Icon(Icons.save),
-                  onPressed: _onSave,
-                ),
-                new IconButton(icon: Icon(Icons.delete), onPressed: _onDelete),
-                new IconButton(icon: Icon(Icons.cancel), onPressed: _onCancel),
+                new RaisedButton(child: Text("Delete"), onPressed: _onDelete),
+                new RaisedButton(child: Text("Cancel"), onPressed: _onCancel),
               ]),
               Container(
                   child: TextField(
