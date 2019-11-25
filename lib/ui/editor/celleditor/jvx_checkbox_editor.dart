@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 
 class JVxCheckboxCellEditor extends JVxCellEditor {
-  List<String> allowedValues;
   dynamic selectedValue = true;
   dynamic deselectedValue = false;
   String text;
@@ -18,14 +16,18 @@ class JVxCheckboxCellEditor extends JVxCellEditor {
   }
 
   void valueChanged(dynamic value) {
-    this.value = value;
-    this.onValueChanged(value);
+    this.value = boolToValue(value);
+    this.onValueChanged(this.value);
   }
 
-  bool getBoolValue(dynamic value) {
+  dynamic boolToValue(bool value) {
+    if (value) return selectedValue;
+    return deselectedValue;
+  }
+
+  bool valueToBool(dynamic value) {
     if (value == selectedValue) return true;
-    if (value == deselectedValue) return false;
-    return null;
+    return false;
   }
 
   @override
@@ -36,7 +38,7 @@ class JVxCheckboxCellEditor extends JVxCellEditor {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Checkbox(
-          value: getBoolValue(this.value),
+          value: valueToBool(this.value),
           onChanged: (bool change) => valueChanged(change),
           tristate: true,
         ),
