@@ -5,7 +5,7 @@ import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_dropdown_button.dart' as custom;
-import 'package:jvx_mobile_v3/ui/widgets/lazy_linked_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/widgets/lazy_dropdown.dart';
 
 class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
@@ -80,18 +80,21 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   @override
   void onServerDataChanged() {}
 
-  void onSave(dynamic value) {}
+  void onSave(dynamic value) {
+    onValueChanged(value);
+  }
 
   void onFilter(dynamic value) {}
 
   void onScrollToEnd() {
     JVxData _data = data.getData(context, null, pageSize);
     if (_data != null && _data.records != null)
-        data.getData(
-            context, null, this.pageSize + _data.records.length);
+      data.getData(context, null, this.pageSize + _data.records.length);
   }
 
-  void onCancel() {}
+  void onCancel() {
+    onValueChanged(null);
+  }
 
   @override
   Widget getWidget() {
@@ -100,12 +103,12 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
     JVxData data = this
         .data
         .getData(this.context, null, (this.pageIndex + 1) * this.pageSize);
-    this._items = getItems(data);
-
-    if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
-      v = null;
 
     if (data.records.length < 20) {
+      this._items = getItems(data);
+      if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
+        v = null;
+
       return custom.CustomDropdownButton(
         hint: Text(Properties.utf8convert(h == null ? "" : h)),
         value: v,
@@ -114,6 +117,12 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         isExpanded: true,
       );
     } else {
+      this._items = List<DropdownMenuItem<dynamic>>();
+      if (v==null)
+        this._items.add(this.getItem("", ""));
+      else 
+        this._items.add(this.getItem(v, v));
+
       return custom.CustomDropdownButton(
         hint: Text(Properties.utf8convert(h == null ? "" : h)),
         value: v,
@@ -123,7 +132,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         onOpen: () {
           showDialog(
               context: context,
-              builder: (context) => LazyLinkedCellEditor(
+              builder: (context) => LazyDropdown(
                   data: data,
                   context: context,
                   visibleColumnIndex: this.getVisibleColumnIndex(data),

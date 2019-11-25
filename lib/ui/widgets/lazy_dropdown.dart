@@ -4,7 +4,7 @@ import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
-class LazyLinkedCellEditor extends StatelessWidget {
+class LazyDropdown extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _controller = TextEditingController();
   final List<int> visibleColumnIndex;
@@ -18,7 +18,7 @@ class LazyLinkedCellEditor extends StatelessWidget {
   final BuildContext context;
   final double fetchMoreYOffset;
 
-  LazyLinkedCellEditor(
+  LazyDropdown(
       {@required this.data,
       @required this.allowNull,
       @required this.context,
@@ -28,8 +28,8 @@ class LazyLinkedCellEditor extends StatelessWidget {
       this.onScrollToEnd,
       this.onFilter,
       this.fetchMoreYOffset = 0}) {
-        _scrollController.addListener(_scrollListener);
-      }
+    _scrollController.addListener(_scrollListener);
+  }
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (this.onFilter != null) this.onFilter(newValue);
@@ -51,7 +51,11 @@ class LazyLinkedCellEditor extends StatelessWidget {
   }
 
   void _onRowTapped(int index) {
-
+    Navigator.of(this.context).pop();
+    if (this.onSave!=null && data.records.length>index) {
+      dynamic value = this.data.records[index][visibleColumnIndex[0]];
+      this.onSave(value);
+    }
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {
@@ -117,7 +121,7 @@ class LazyLinkedCellEditor extends StatelessWidget {
     if (_scrollController.offset + this.fetchMoreYOffset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-        if (this.onScrollToEnd!=null) this.onScrollToEnd();
+      if (this.onScrollToEnd != null) this.onScrollToEnd();
     }
   }
 
@@ -126,9 +130,7 @@ class LazyLinkedCellEditor extends StatelessWidget {
     int itemCount = 0;
     if (data != null && data.records != null) itemCount = data.records.length;
 
-    return Padding(
-      padding: EdgeInsets.only(left: 0, top: 0, right: 0, bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Dialog(
+    return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -174,8 +176,6 @@ class LazyLinkedCellEditor extends StatelessWidget {
               ),
             ],
           ),
-        )
-      )
-    );
+        ));
   }
 }
