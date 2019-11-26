@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -88,14 +89,19 @@ class JVxEditor extends JVxComponent implements IEditor {
 
     if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
 
-    Color color = Colors.grey[200];
+    Color color = Colors.transparent; // Colors.grey[200];
 
     if (this.cellEditor is JVxChoiceCellEditor) {
       return Container(child: this.cellEditor.getWidget());
     } else {
       return Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(5),   
+            border: Border.all(color: UIData.ui_kit_color_2)    
+          ),
           constraints: constraints,
-          color: color,
+          //color: color,
           child: Container(width: 100, child: cellEditor.getWidget()));
     }
   }

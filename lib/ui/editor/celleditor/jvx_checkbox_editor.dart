@@ -26,23 +26,21 @@ class JVxCheckboxCellEditor extends JVxCellEditor {
   }
 
   bool valueToBool(dynamic value) {
-    if (value == selectedValue) return true;
+    if (value != null && value == selectedValue) return true;
     return false;
   }
 
   @override
   Widget getWidget() {
-    print('CHECKBOX: ' + this.value.toString());
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Checkbox(
           value: valueToBool(this.value),
           onChanged: (bool change) => valueChanged(change),
-          tristate: true,
+          tristate: false,
         ),
-        text != null ? SizedBox(width: 5,) : Container(),
+        text != null ? SizedBox(width: 0,) : Container(),
         text != null ? Text(text) : Container(),
       ],
     );
