@@ -130,6 +130,13 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
+
+                if (state.screenGeneric != null && !state.screenGeneric.update) {
+                  screen = JVxScreen(ComponentCreator());
+                  //title = 'To-Do';
+                  componentId = state.screenGeneric.componentId;
+                }
+
                 screen.context = context;
                 screen.update(state.request, state.jVxData, state.jVxMetaData,
                     state.screenGeneric);

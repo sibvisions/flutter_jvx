@@ -36,7 +36,7 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
                 Text(text, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,),
               ],
             ) ,
-            Divider(color: Colors.grey[600], height: 10,),
+            Divider(color: Colors.grey[600], height: 10),
             child
           ],
         ),

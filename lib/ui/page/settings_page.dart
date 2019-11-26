@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:package_info/package_info.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -100,6 +101,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     onTap: () {
                       showLanguagePicker(context);
                     },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      FontAwesomeIcons.codeBranch,
+                      color: UIData.ui_kit_color_2,
+                    ),
+                    title: Text('Version: ${PackageInfo.fromPlatform().then((val) => val.version)}'),
                   )
                 ],
               ),

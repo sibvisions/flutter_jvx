@@ -77,27 +77,27 @@ class LazyDropdown extends StatelessWidget {
           children.add(getTableColumn("", index, j));
       });
 
-      return getTableRow(children, false);
+      return getTableRow(children, index, false);
     }
 
     return Container();
   }
 
-  Container getTableRow(List<Widget> children, bool isHeader) {
+  Container getTableRow(List<Widget> children, int index, bool isHeader) {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: UIData.ui_kit_color_2[200],
           ),
-          child: Row(children: children));
+          child: ListTile(title: Row(children: children)));
     } else {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: Colors.white,
           ),
-          child: Row(children: children));
+          child: ListTile(title: Row(children: children), onTap: () => _onRowTapped(index),));
     }
   }
 
@@ -108,12 +108,9 @@ class LazyDropdown extends StatelessWidget {
         flex: flex,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            child: Container(
-                child: Text(Properties.utf8convert(text)),
-                padding: EdgeInsets.all(5)),
-            onTap: () => _onRowTapped(rowIndex),
-          ),
+          child: Container(
+              child: Text(Properties.utf8convert(text)),
+              padding: EdgeInsets.all(5)),
         ));
   }
 

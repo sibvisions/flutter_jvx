@@ -104,7 +104,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         .data
         .getData(this.context, null, (this.pageIndex + 1) * this.pageSize);
 
-    if (data.records.length < 20) {
+    if (data != null && data.records.length < 20) {
       this._items = getItems(data);
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;
