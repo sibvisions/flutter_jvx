@@ -18,7 +18,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl, language;
+  String appName, baseUrl, language, version;
+
+  @override
+  void initState() { 
+    super.initState();
+    loadVersion();
+  }
 
   Widget settingsBuilder() {
     return SingleChildScrollView(
@@ -102,20 +108,42 @@ class _SettingsPageState extends State<SettingsPage> {
                       showLanguagePicker(context);
                     },
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'App info',
+                style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Card(
+              color: Colors.white,
+              elevation: 2.0,
+              child: Column(
+                children: <Widget>[
                   ListTile(
                     leading: Icon(
                       FontAwesomeIcons.codeBranch,
-                      color: UIData.ui_kit_color_2,
                     ),
-                    title: Text('Version: ${PackageInfo.fromPlatform().then((val) => val.version)}'),
+                    title: Text('Version: $version'),
                   )
-                ],
-              ),
+                ]
+              )
             )
           ],
         ),
       ),
     );
+  }
+
+  loadVersion() {
+    PackageInfo.fromPlatform().then((val) {
+      setState(() {
+        version = val.version;
+      });
+    });
   }
 
   showLanguagePicker(BuildContext context) {

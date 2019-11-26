@@ -117,6 +117,13 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                         BlocProvider.of<ApiBloc>(context).dispatch(upload);
                       }
                     });
+                  } else if (state.closeScreenAction != null &&
+                      state.screenGeneric == null) {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => MenuPage(
+                              menuItems: globals.items,
+                              listMenuItemsInDrawer: false,
+                            )));
                   }
                 }
 
@@ -131,7 +138,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   componentId = state.screenGeneric.componentId;
                 }
 
-                if (state.screenGeneric != null && !state.screenGeneric.update) {
+                if (state.screenGeneric != null &&
+                    !state.screenGeneric.update) {
                   screen = JVxScreen(ComponentCreator());
                   //title = 'To-Do';
                   componentId = state.screenGeneric.componentId;
@@ -146,45 +154,57 @@ class _OpenScreenPageState extends State<OpenScreenPage>
           },
           child: WillPopScope(
             onWillPop: () async {
-              return false;
+              Navigation navigation = Navigation(
+                  clientId: globals.clientId, componentId: componentId);
+
+              BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+
+              bool close = false;
+
+              await for (Response res in BlocProvider.of<ApiBloc>(context).state) {
+                if (res.requestType == RequestType.NAVIGATION) {
+                  close = true;
+                }
+              }
+
+              return close;
             },
             child: BlocBuilder<ApiBloc, Response>(
-              condition: (Response previous, Response current) {
-                if (previous.requestType == current.requestType) {
-                  return false;
-                }
-                return true;
-              },
-              builder: (context, state) {
-                return Scaffold(
-                    endDrawer: MenuDrawerWidget(
-                      menuItems: widget.items,
-                      listMenuItems: true,
-                      currentTitle: widget.title,
-                    ),
-                    key: _scaffoldKey,
-                    appBar: AppBar(
-                      actions: <Widget>[
-                        IconButton(
-                          icon: Icon(FontAwesomeIcons.ellipsisV),
-                          onPressed: () =>
-                              _scaffoldKey.currentState.openEndDrawer(),
-                        )
-                      ],
-                      leading: IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        onPressed: () {
-                          Navigation navigation = Navigation(
-                              clientId: globals.clientId, componentId: componentId);
-
-                          BlocProvider.of<ApiBloc>(context).dispatch(navigation);
-                        },
-                      ),
-                      title: Text(title),
-                    ),
-                    body: screen.getWidget());
+                condition: (Response previous, Response current) {
+              if (previous.requestType == current.requestType) {
+                return false;
               }
-            ),
+              return true;
+            }, builder: (context, state) {
+              return Scaffold(
+                  endDrawer: MenuDrawerWidget(
+                    menuItems: widget.items,
+                    listMenuItems: true,
+                    currentTitle: widget.title,
+                  ),
+                  key: _scaffoldKey,
+                  appBar: AppBar(
+                    actions: <Widget>[
+                      IconButton(
+                        icon: Icon(FontAwesomeIcons.ellipsisV),
+                        onPressed: () =>
+                            _scaffoldKey.currentState.openEndDrawer(),
+                      )
+                    ],
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigation navigation = Navigation(
+                            clientId: globals.clientId,
+                            componentId: componentId);
+
+                        BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                      },
+                    ),
+                    title: Text(title),
+                  ),
+                  body: screen.getWidget());
+            }),
           )),
     );
   }
@@ -248,8 +268,13 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Icon(FontAwesomeIcons.camera, color: UIData.ui_kit_color_2,),
-                        SizedBox(width: 15,),
+                        Icon(
+                          FontAwesomeIcons.camera,
+                          color: UIData.ui_kit_color_2,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
                         Text(
                           Translations.of(context).text2('Camera', 'Camera'),
                           style: TextStyle(fontSize: 18),
@@ -268,8 +293,13 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Icon(FontAwesomeIcons.images, color: UIData.ui_kit_color_2,),
-                        SizedBox(width: 15,),
+                        Icon(
+                          FontAwesomeIcons.images,
+                          color: UIData.ui_kit_color_2,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
                         Text(
                           Translations.of(context).text2('Gallery', 'Gallery'),
                           style: TextStyle(fontSize: 18),
@@ -288,10 +318,16 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Icon(FontAwesomeIcons.folderOpen, color: UIData.ui_kit_color_2,),
-                        SizedBox(width: 15,),
+                        Icon(
+                          FontAwesomeIcons.folderOpen,
+                          color: UIData.ui_kit_color_2,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
                         Text(
-                          Translations.of(context).text2('File System', 'File System'),
+                          Translations.of(context)
+                              .text2('File System', 'File System'),
                           style: TextStyle(fontSize: 18),
                         ),
                       ],

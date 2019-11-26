@@ -87,7 +87,7 @@ class JVxLazyTable extends JVxEditor {
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: UIData.ui_kit_color_2[200],
           ),
-          child: ListTile(title: Row(children: children)));
+          child: Row(children: children));
     } else {
       return Container(
           decoration: BoxDecoration(

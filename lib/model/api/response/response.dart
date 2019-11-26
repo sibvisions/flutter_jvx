@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/model/api/exceptions/session_timeout_exception.dar
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/api/response/auth_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/close_screen_action.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/download_action.dart';
 import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
@@ -38,6 +39,7 @@ class Response {
   ApplicationStyleResponse applicationStyle;
   DownloadAction downloadAction;
   UploadAction uploadAction;
+  CloseScreenAction closeScreenAction;
   Request request;
 
   Response();
@@ -99,6 +101,9 @@ class Response {
           break;
         case ResponseObjectType.UPLOAD:
           uploadAction = UploadAction.fromJson(r);
+          break;
+        case ResponseObjectType.CLOSESCREEN:
+          closeScreenAction = CloseScreenAction.fromJson(r);
           break;
       }
     });

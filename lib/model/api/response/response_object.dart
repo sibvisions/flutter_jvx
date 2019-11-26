@@ -9,6 +9,7 @@ enum ResponseObjectType {
   AUTHENTICATIONDATA,
   DOWNLOAD,
   UPLOAD,
+  CLOSESCREEN
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {
