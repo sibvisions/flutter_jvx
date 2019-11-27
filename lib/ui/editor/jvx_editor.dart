@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
+import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
@@ -79,8 +80,8 @@ class JVxEditor extends JVxComponent implements IEditor {
 
     cellEditorEditable = changedComponent.getProperty<bool>(ComponentProperty.CELL_EDITOR__EDITABLE, cellEditorEditable);
     cellEditorPlaceholder = changedComponent.getProperty<String>(ComponentProperty.CELL_EDITOR__PLACEHOLDER, cellEditorPlaceholder);
-    cellEditorBackground = changedComponent.getProperty<Color>(ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
-    cellEditorForeground = changedComponent.getProperty<Color>(ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
+    cellEditorBackground = changedComponent.getProperty<HexColor>(ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
+    cellEditorForeground = changedComponent.getProperty<HexColor>(ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
     cellEditorHorizontalAlignment = changedComponent.getProperty<int>(ComponentProperty.CELL_EDITOR__HORIZONTAL_ALIGNMENT, cellEditorHorizontalAlignment);
     cellEditorFont = changedComponent.getProperty<String>(ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
     try {

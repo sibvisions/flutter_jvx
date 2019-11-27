@@ -115,7 +115,7 @@ class ComponentData {
     if (index < _data.records.length) {
       SelectRecord select = SelectRecord(
         dataProvider, 
-        Filter(columnNames: _data.columnNames, values: _data.records[index]),
+        Filter(columnNames: this.primaryKeyColumns, values: _data.getRow(index, this.primaryKeyColumns)),
         index,
         RequestType.DAL_SELECT_RECORD);
 
