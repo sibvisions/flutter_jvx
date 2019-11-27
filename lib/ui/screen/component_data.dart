@@ -26,6 +26,31 @@ class ComponentData {
   ComponentData(this.dataProvider);
 
 
+  bool get deleteEnabled {
+    if (metaData!=null && metaData.deleteEnabled!=null) return metaData.deleteEnabled;
+    return false;
+  }
+
+  bool get updateEnabled {
+    if (metaData!=null && metaData.updateEnabled!=null) return metaData.updateEnabled;
+    return false;
+  }
+
+  bool get insertEnabled {
+    if (metaData!=null && metaData.insertEnabled!=null) return metaData.insertEnabled;
+    return false;
+  }
+
+  List<String> get primaryKeyColumns {
+    if (metaData!=null && metaData.primaryKeyColumns!=null) return metaData.primaryKeyColumns;
+    return null;
+  }
+
+  List<dynamic> primaryKeyColumnsForRow(int index) {
+    if (metaData!=null && metaData.primaryKeyColumns!=null) return metaData.primaryKeyColumns;
+    return null;
+  }
+
   void updateData(JVxData pData) {
     if (_data==null || _data.isAllFetched)
       _data = pData;
@@ -110,7 +135,7 @@ class ComponentData {
     if (index < _data.records.length) {
       SelectRecord select = SelectRecord(
         dataProvider, 
-        Filter(columnNames: _data.columnNames, values: _data.records[index]),
+        Filter(columnNames: this.primaryKeyColumns, values: _data.getRow(index, this.primaryKeyColumns)),
         index,
         RequestType.DAL_DELETE);
 

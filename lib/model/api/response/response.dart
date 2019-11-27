@@ -93,7 +93,7 @@ class Response {
         case ResponseObjectType.DAL_FETCH:
           jVxData.add(JVxData.fromJson(r));
           break;
-        case ResponseObjectType.DAL_META_DATA:
+        case ResponseObjectType.DAL_METADATA:
           jVxMetaData.add(JVxMetaData.fromJson(r));
           break;
         case ResponseObjectType.DOWNLOAD:

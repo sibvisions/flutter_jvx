@@ -10,6 +10,26 @@ class JVxData extends ResponseObject {
 
   JVxData({this.selectedRow, this.isAllFetched, this.dataProvider, this.records, this.columnNames});
 
+  List<dynamic> getRow(int index, [List<String> pColumnNames]) {
+    List<dynamic> row = <dynamic>[];
+    
+    if (index<this.records.length) {
+      if (pColumnNames==null) pColumnNames = this.columnNames;
+      List<int> columnIndexes = <int>[];
+
+      pColumnNames.forEach((c) {
+        int index = this.columnNames.indexOf(c);
+        if (index>=0) columnIndexes.add(index);
+      });
+
+      columnIndexes.forEach((i) {
+        row.add(this.records[index][i]);
+      });
+    }
+
+    return row;
+  }
+
   JVxData.fromJson(Map<String, dynamic> json)
     : selectedRow = json['selectedRow'],
       isAllFetched = json['isAllFetched'],
