@@ -19,7 +19,7 @@ showGoToSettings(BuildContext context, String title, String message) {
             onPressed: () => exit(0),
           ),
           FlatButton(
-            child: Text(Translations.of(context).text('go_to_settings')),
+            child: Text(Translations.of(context).text('To Settings')),
             onPressed: () => Navigator.of(context).pushReplacementNamed('/settings'),
           )
         ],

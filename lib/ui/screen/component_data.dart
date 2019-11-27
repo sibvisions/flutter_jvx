@@ -91,7 +91,8 @@ class ComponentData {
       SelectRecord select = SelectRecord(
         dataProvider, 
         Filter(columnNames: _data.columnNames, values: _data.records[index]),
-        index);
+        index,
+        RequestType.DAL_SELECT_RECORD);
 
       if (fetch!=null)
         select.fetch = fetch;
@@ -102,6 +103,23 @@ class ComponentData {
       //BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, _data.records, "Select Record", "Select record failed. Index out of bounds!");
+    }
+  }
+
+  void deleteRecord(BuildContext context, int index) {
+    if (index < _data.records.length) {
+      SelectRecord select = SelectRecord(
+        dataProvider, 
+        Filter(columnNames: _data.columnNames, values: _data.records[index]),
+        index,
+        RequestType.DAL_DELETE);
+
+      addToRequestQueue(select);
+      _data.selectedRow = index;
+      _onDataChanged.forEach((d) => d());
+      //BlocProvider.of<ApiBloc>(context).dispatch(select);
+    } else {
+      IndexError(index, _data.records, "Delete Record", "Delete record failed. Index out of bounds!");
     }
   }
 

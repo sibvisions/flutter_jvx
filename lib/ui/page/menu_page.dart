@@ -50,18 +50,20 @@ class MenuPage extends StatelessWidget {
   Widget getMenuWidget() {
     if (globals.applicationStyle != null) {
       if (globals.applicationStyle.menuMode == 'grid') {
-        return MenuGridView(items: this.menuItems,);
+        return MenuGridView(items: this.menuItems, groupedMenuMode: false);
       } else if (globals.applicationStyle.menuMode == 'list') {
         return MenuListWidget(menuItems: this.menuItems,);
       } else if (globals.applicationStyle.menuMode == 'drawer') {
         return Center(
           child: Text('Choose Item'),
         );
+      } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
+        return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
       } else if (globals.applicationStyle.menuMode == null) {
-        return MenuGridView(items: this.menuItems,);
+        return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
       }
     } else {
-      return MenuGridView(items: this.menuItems,);
+      return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
     }
     return null;
   }

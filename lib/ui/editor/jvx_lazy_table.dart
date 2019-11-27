@@ -80,7 +80,7 @@ class JVxLazyTable extends JVxEditor {
     data.selectRecord(context, index);
   }
 
-  Container getTableRow(List<Widget> children, int index, bool isHeader) {
+  Widget getTableRow(List<Widget> children, int index, bool isHeader) {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
@@ -90,11 +90,12 @@ class JVxLazyTable extends JVxEditor {
           child: Row(children: children));
     } else {
       return Container(
-          decoration: BoxDecoration(
+        decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: Colors.white,
           ),
-          child: ListTile(title: Row(children: children), onTap: () => _onRowTapped(index),));
+        child: ListTile(title: Row(children: children), onTap: () => _onRowTapped(index)),
+      );
     }
   }
 
@@ -169,10 +170,9 @@ class JVxLazyTable extends JVxEditor {
           color: Colors.red,
           child: Text('DELETE'),
         ),
-        child: getTableRow(children, index, false),
-        key: Key(index.toString()),
-        onDismissed: (DismissDirection direction) =>
-            print(direction.toString()),
+        child: Container(color: Colors.white, child: getTableRow(children, index, false)),
+        key: UniqueKey(),
+        onDismissed: (DismissDirection direction) => this.data.deleteRecord(context, index),
       );
     }
 

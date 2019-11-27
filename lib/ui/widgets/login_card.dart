@@ -72,7 +72,6 @@ class _LoginCardState extends State<LoginCard>
                 style: new TextStyle(
                     fontSize: 15.0, color: Colors.black),
                 decoration: new InputDecoration(
-                  // hintText: Translations.of(context).text('enter_password_hint'),
                     labelText: Translations.of(context)
                         .text2('Password:', 'Password:'),
                     labelStyle: TextStyle(fontWeight: FontWeight.w700)),
@@ -174,7 +173,7 @@ class _LoginCardState extends State<LoginCard>
 
       BlocProvider.of<ApiBloc>(context).dispatch(login);
     } else {
-      showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('no_username_or_password', 'Please enter username and password'));
+      showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('Please enter your username and password'));
     }
   }
 

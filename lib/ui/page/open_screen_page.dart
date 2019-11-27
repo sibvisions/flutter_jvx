@@ -327,7 +327,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                         ),
                         Text(
                           Translations.of(context)
-                              .text2('File System', 'File System'),
+                              .text2('Filesystem'),
                           style: TextStyle(fontSize: 18),
                         ),
                       ],

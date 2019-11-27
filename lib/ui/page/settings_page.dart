@@ -37,7 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                Translations.of(context).text2('settings_general', 'General Settings'),
+                Translations.of(context).text2('Application Settings', 'Application Settings'),
                 style: TextStyle(color: Colors.grey.shade700, fontWeight: FontWeight.bold),
               ),
             ),
@@ -51,15 +51,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.server,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text2('settings_app_name', 'App name')),
+                    title: Text(Translations.of(context).text2('App name', 'App name')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
                     subtitle: Text(globals.appName != null ? globals.appName : ''),
                     onTap: () {
                       showTextInputDialog(
                         context, 
-                        Translations.of(context).text2('settings_app_name', 'App name'),
-                        Translations.of(context).text2('settings_app_name', 'App name'),
-                        Translations.of(context).text2('settings_app_name_hint', 'Enter App name'),
+                        Translations.of(context).text2('App name', 'App name'),
+                        Translations.of(context).text2('App name', 'App name'),
+                        Translations.of(context).text2('Enter new App Name', 'Enter App name'),
                         globals.appName,
                         (String value) {
                           if (value == null) this.appName = globals.appName;
@@ -73,15 +73,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.keyboard,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text2('settings_base_url', 'Base Url')),
+                    title: Text(Translations.of(context).text2('Base Url', 'Base Url')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
                     subtitle: Text(globals.baseUrl != null ? globals.baseUrl : ''),
                     onTap: () {
                       showTextInputDialog(
                         context,
-                        Translations.of(context).text2('settings_base_url', 'Base Url'),
-                        Translations.of(context).text2('settings_base_url', 'Base Url'),
-                        'http://enter.baseUrl/services/mobile', // Translations.of(context).text2('settings_base_url_hint', 'Enter Base Url'),
+                        Translations.of(context).text2('Base Url', 'Base Url'),
+                        Translations.of(context).text2('Base Url', 'Base Url'),
+                        'http://enter.baseUrl/services/mobile',
                         globals.baseUrl,
                         (String value) {
                           if (value == null) this.baseUrl = globals.baseUrl;
@@ -101,7 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.language,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text2('settings_language', 'Language')),
+                    title: Text(Translations.of(context).text2('Language', 'Language')),
                     trailing: Icon(FontAwesomeIcons.arrowDown),
                     subtitle: Text(globals.language != null ? globals.language : ''),
                     onTap: () {
@@ -154,6 +154,8 @@ class _SettingsPageState extends State<SettingsPage> {
       languages[languages.indexOf('translation')] = 'en';
 
     new Picker(
+      confirmText: Translations.of(context).text2('Confirmation'),
+      cancelText: Translations.of(context).text2('Cancel'),
       adapter: PickerDataAdapter<String>(pickerdata: languages),
       changeToFirst: true,
       textAlign: TextAlign.center,

@@ -27,7 +27,7 @@ class Translations {
   }
 
   String text2(String key, [String defaultValue]) {
-    return _localizedValues2[key] ?? text(key) ?? defaultValue; // text(key) ?? defaultValue;
+    return _localizedValues2[key] ?? key; // text(key) ?? defaultValue;
   }
 
   static Future<Translations> load(Locale locale) async {

@@ -461,6 +461,14 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.RELOAD:
         // TODO: Handle this case.
         break;
+      case RequestType.DAL_DELETE:
+        response =
+          await restClient.postAsync('/api/dal/deleteRecord', request.toJson());
+          response.requestType = request.requestType;
+          response.request = request;
+          updateResponse(response);
+          return response;
+        break;
     }
 
     return null;
