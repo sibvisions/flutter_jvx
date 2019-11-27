@@ -31,25 +31,30 @@ class Translations {
   }
 
   static Future<Translations> load(Locale locale) async {
+    Translations translations = new Translations(locale);
+
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
+      _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
+    }
+
+    return translations;
+
+    /*
     try {
       Translations translations = new Translations(locale);
-      String jsonContent =
-        await rootBundle.loadString("locale/i18n_${locale.languageCode}.json");
+      String jsonContent = await rootBundle
+          .loadString("locale/i18n_${locale.languageCode}.json");
       _localizedValues = json.decode(jsonContent);
-      
-      if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
-        _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
-      }
 
       return translations;
     } catch (e) {
       Translations translations = new Translations(const Locale('en'));
-      String jsonContent =
-        await rootBundle.loadString("locale/i18n_en.json");
+      String jsonContent = await rootBundle.loadString("locale/i18n_en.json");
       _localizedValues = json.decode(jsonContent);
       print('default tranlation loaded');
       return translations;
     }
+    */
   }
 
   get currentLanguage => locale.languageCode;
@@ -80,7 +85,7 @@ class XmlLoader {
 
       if (globals.translation['translation.xml'] != null)
         file = new File(globals.translation['translation.xml']);
-        contents = file.readAsStringSync();
+      contents = file.readAsStringSync();
 
       if (contents != null) {
         xml.XmlDocument doc = xml.parse(contents);

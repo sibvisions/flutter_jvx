@@ -154,7 +154,7 @@ class _SettingsPageState extends State<SettingsPage> {
       languages[languages.indexOf('translation')] = 'en';
 
     new Picker(
-      confirmText: Translations.of(context).text2('Confirmation'),
+      confirmText: Translations.of(context).text2('Confirm'),
       cancelText: Translations.of(context).text2('Cancel'),
       adapter: PickerDataAdapter<String>(pickerdata: languages),
       changeToFirst: true,

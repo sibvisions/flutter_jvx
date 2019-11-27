@@ -25,7 +25,7 @@ class ChangedComponent extends ComponentProperties {
     className = this.getProperty<String>(ComponentProperty.CLASS_NAME);
     destroy = this.getProperty<bool>(ComponentProperty.$DESTROY, false);
     remove =  this.getProperty<bool>(ComponentProperty.$REMOVE, false);
-    
+
     if (json[_cellEditorIdentifier] != null) cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);
   }
 }

@@ -94,7 +94,7 @@ class JVxLazyTable extends JVxEditor {
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: Colors.white,
           ),
-        child: ListTile(title: Row(children: children), onTap: () => _onRowTapped(index)),
+        child: ListTile(onTap: () => _onRowTapped(index), title: Row(children: children)),
       );
     }
   }

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 class HexColor extends Color {
-  static RegExp colorHex = RegExp("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\$");
+  static RegExp colorHex = RegExp(r"^#[A-Fa-f0-9-]{6}$");
 
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
@@ -13,7 +13,7 @@ class HexColor extends Color {
 
   static bool isHexColor(dynamic hexColor) {
     if (hexColor is String) {
-      return colorHex.hasMatch(hexColor);
+      return colorHex.hasMatch(hexColor.toUpperCase());
     }
     return false;
   }
