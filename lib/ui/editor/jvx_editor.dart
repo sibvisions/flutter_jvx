@@ -20,6 +20,12 @@ class JVxEditor extends JVxComponent implements IEditor {
   JVxCellEditor _cellEditor;
   ComponentData _data;
   int reload;
+  Color cellEditorBackground;
+  bool cellEditorEditable;
+  String cellEditorFont;
+  Color cellEditorForeground;
+  int cellEditorHorizontalAlignment;
+  String cellEditorPlaceholder;
 
   ComponentData get data => _data;
   set data(ComponentData data) {
@@ -70,6 +76,13 @@ class JVxEditor extends JVxComponent implements IEditor {
         ComponentProperty.READONLY, readonly);
     eventFocusGained = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
+
+    cellEditorEditable = changedComponent.getProperty<bool>(ComponentProperty.CELL_EDITOR__EDITABLE, cellEditorEditable);
+    cellEditorPlaceholder = changedComponent.getProperty<String>(ComponentProperty.CELL_EDITOR__PLACEHOLDER, cellEditorPlaceholder);
+    cellEditorBackground = changedComponent.getProperty<Color>(ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
+    cellEditorForeground = changedComponent.getProperty<Color>(ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
+    cellEditorHorizontalAlignment = changedComponent.getProperty<int>(ComponentProperty.CELL_EDITOR__HORIZONTAL_ALIGNMENT, cellEditorHorizontalAlignment);
+    cellEditorFont = changedComponent.getProperty<String>(ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
     try {
       this.reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
     } catch (e) {
@@ -96,7 +109,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     } else {
       return Container(
           decoration: BoxDecoration(
-            color: Colors.transparent,
+            color: cellEditorBackground != null ? cellEditorBackground : Colors.transparent,
             borderRadius: BorderRadius.circular(5),   
             border: Border.all(color: UIData.ui_kit_color_2)    
           ),

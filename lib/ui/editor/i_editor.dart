@@ -10,6 +10,12 @@ abstract class IEditor {
   String columnName;
   bool readonly = false;
   bool eventFocusGained = false;
+  bool cellEditorEditable;
+  String cellEditorPlaceholder;
+  Color cellEditorBackground;
+  Color cellEditorForeground;
+  int cellEditorHorizontalAlignment;
+  String cellEditorFont;
   JVxCellEditor cellEditor;
   ComponentData data;
 

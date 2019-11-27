@@ -5,6 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_mobile_v3/custom_screen/custom_screen_api.dart';
+import 'package:jvx_mobile_v3/custom_screen/i_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
@@ -34,6 +36,7 @@ class MenuGridView extends StatefulWidget {
 }
 
 class _MenuGridViewState extends State<MenuGridView> {
+  CustomScreenApi customScreenApi = CustomScreenApi();
   String title;
 
   bool errorMsgShown = false;
@@ -140,17 +143,21 @@ class _MenuGridViewState extends State<MenuGridView> {
             ),
           ),
           onTap: () {
-            prefix0.Action action = menuItems[index].action;
+            if (!customScreenApi.showCustomScreen()) {
+              prefix0.Action action = menuItems[index].action;
 
-            title = action.label;
+              title = action.label;
 
-            OpenScreen openScreen = OpenScreen(
-                action: action,
-                clientId: globals.clientId,
-                manualClose: false,
-                requestType: RequestType.OPEN_SCREEN);
+              OpenScreen openScreen = OpenScreen(
+                  action: action,
+                  clientId: globals.clientId,
+                  manualClose: false,
+                  requestType: RequestType.OPEN_SCREEN);
 
-            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+              BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+            } else {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => customScreenApi.getWidget()));
+            }
 
             /*
                     OpenScreenBloc openScreenBloc = OpenScreenBloc();
@@ -271,12 +278,14 @@ class _MenuGridViewState extends State<MenuGridView> {
     return Padding(
         padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
         child: ListTile(
-                  title: Text(
+          title: Text(
             groupName,
-            textAlign: TextAlign.left, 
+            textAlign: TextAlign.left,
             // textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.grey.shade700, fontWeight: FontWeight.bold, fontSize: 18),
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
           ),
         ));
   }

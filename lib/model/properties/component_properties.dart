@@ -1,6 +1,14 @@
 
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 
+/// ComponentProperty.SCREEN__TITLE_NEW = screen.titleNew
+/// 
+/// ComponentProperty.SCREEN__TITLE = screen.title
+/// 
+/// ComponentProperty.SCREEN_TITLE = screenTitle
+/// 
+/// ComponentProperty.SCREENTITLE = screentitle
+
 enum ComponentProperty {
   ID,
   NAME,
@@ -33,7 +41,14 @@ enum ComponentProperty {
   READONLY,
   EVENT_FOCUS_GAINED,
   $DESTROY,
-  $REMOVE
+  $REMOVE,
+  SCREEN__TITLE,
+  CELL_EDITOR__EDITABLE,
+  CELL_EDITOR__PLACEHOLDER,
+  CELL_EDITOR__BACKGROUND,
+  CELL_EDITOR__FOREGROUND,
+  CELL_EDITOR__HORIZONTAL_ALIGNMENT,
+  CELL_EDITOR__FONT,
 }
 
 class ComponentProperties {

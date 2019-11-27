@@ -43,8 +43,7 @@ class Properties {
       } else if (T == bool) {
         return (value.toLowerCase() == 'true') as T;
       } else if (T == String) {
-        if (value!=null)
-          return utf8convert(value) as T;
+        if (value != null) return utf8convert(value) as T;
       }
     } else if (value is int) {
       if (T == TextAlign) {
@@ -68,7 +67,23 @@ class Properties {
   String propertyAsString(String property) {
     String result = property.split('.').last.toLowerCase();
 
-    if (result.contains('_')) {
+    if (result.contains('__')) {
+      result.split('__').asMap().forEach((i, p) {
+        p = p.replaceAll('\$', '~');
+        if (i == 0)
+          result = p;
+        else
+          result += '.${p.toLowerCase()}';
+      });
+
+      result.split('_').asMap().forEach((i, p) {
+        p = p.replaceAll('\$', '~');
+        if (i == 0)
+          result = p;
+        else
+          result += '${p[0].toUpperCase()}${p.substring(1)}';
+      });
+    } else if (result.contains('_')) {
       result.split('_').asMap().forEach((i, p) {
         p = p.replaceAll('\$', '~');
         if (i == 0)
