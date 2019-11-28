@@ -23,11 +23,14 @@ class Translations {
   }
 
   String text(String key) {
+    if (locale.languageCode == 'en') {
+      return key;
+    }
     return _localizedValues[key];
   }
 
   String text2(String key, [String defaultValue]) {
-    return _localizedValues2[key] ?? key; // text(key) ?? defaultValue;
+    return _localizedValues2[key] ?? text(key) ?? key;
   }
 
   static Future<Translations> load(Locale locale) async {
@@ -35,26 +38,20 @@ class Translations {
 
     if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
       _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
+    } else {
+      try {
+        Translations translations = new Translations(const Locale('en'));
+        String jsonContent = await rootBundle
+            .loadString("locale/i18n_de.json");
+        _localizedValues = json.decode(jsonContent);
+
+        return translations;
+      } catch (e) {
+        throw new Error();
+      }
     }
 
     return translations;
-
-    /*
-    try {
-      Translations translations = new Translations(locale);
-      String jsonContent = await rootBundle
-          .loadString("locale/i18n_${locale.languageCode}.json");
-      _localizedValues = json.decode(jsonContent);
-
-      return translations;
-    } catch (e) {
-      Translations translations = new Translations(const Locale('en'));
-      String jsonContent = await rootBundle.loadString("locale/i18n_en.json");
-      _localizedValues = json.decode(jsonContent);
-      print('default tranlation loaded');
-      return translations;
-    }
-    */
   }
 
   get currentLanguage => locale.languageCode;

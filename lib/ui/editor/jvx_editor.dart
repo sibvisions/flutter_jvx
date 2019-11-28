@@ -78,12 +78,19 @@ class JVxEditor extends JVxComponent implements IEditor {
     eventFocusGained = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
 
-    cellEditorEditable = changedComponent.getProperty<bool>(ComponentProperty.CELL_EDITOR__EDITABLE, cellEditorEditable);
-    cellEditorPlaceholder = changedComponent.getProperty<String>(ComponentProperty.CELL_EDITOR__PLACEHOLDER, cellEditorPlaceholder);
-    cellEditorBackground = changedComponent.getProperty<HexColor>(ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
-    cellEditorForeground = changedComponent.getProperty<HexColor>(ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
-    cellEditorHorizontalAlignment = changedComponent.getProperty<int>(ComponentProperty.CELL_EDITOR__HORIZONTAL_ALIGNMENT, cellEditorHorizontalAlignment);
-    cellEditorFont = changedComponent.getProperty<String>(ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
+    cellEditorEditable = changedComponent.getProperty<bool>(
+        ComponentProperty.CELL_EDITOR__EDITABLE, cellEditorEditable);
+    cellEditorPlaceholder = changedComponent.getProperty<String>(
+        ComponentProperty.CELL_EDITOR__PLACEHOLDER, cellEditorPlaceholder);
+    cellEditorBackground = changedComponent.getProperty<HexColor>(
+        ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
+    cellEditorForeground = changedComponent.getProperty<HexColor>(
+        ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
+    cellEditorHorizontalAlignment = changedComponent.getProperty<int>(
+        ComponentProperty.CELL_EDITOR__HORIZONTAL_ALIGNMENT,
+        cellEditorHorizontalAlignment);
+    cellEditorFont = changedComponent.getProperty<String>(
+        ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
     try {
       this.reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
     } catch (e) {
@@ -110,10 +117,11 @@ class JVxEditor extends JVxComponent implements IEditor {
     } else {
       return Container(
           decoration: BoxDecoration(
-            color: cellEditorBackground != null ? cellEditorBackground : Colors.transparent,
-            borderRadius: BorderRadius.circular(5),   
-            border: Border.all(color: UIData.ui_kit_color_2)    
-          ),
+              color: cellEditorBackground != null
+                  ? cellEditorBackground
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: UIData.ui_kit_color_2)),
           constraints: constraints,
           //color: color,
           child: Container(width: 100, child: cellEditor.getWidget()));

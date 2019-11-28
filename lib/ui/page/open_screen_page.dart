@@ -247,7 +247,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       padding: const EdgeInsets.only(left: 16),
                       child: Text(
                         Translations.of(context)
-                            .text2('Pick file', 'Pick file'),
+                            .text2('Choose file', 'Choose file'),
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

@@ -45,7 +45,6 @@ flutter:
   assets:
     - assets/images/sib_visions.jpg
     - assets/images/sibvisions.png
-    - locale/i18n_en.json
     - locale/i18n_de.json
     - env/conf.json
 

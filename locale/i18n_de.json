@@ -1,11 +1,4 @@
 {
-    "Username:":"Benutzername",
-    "Your username":"Dein Benutzername",
-    "Password:":"Passwort",
-    "Your password":"Dein Passwort",
-    "Logon":"Einloggen",
-    "Enter valid username":"Einen validen Benutzernamen eingeben",
-    "Enter valid password":"Ein valides Passwort eingeben",
     "Settings": "Einstellungen",
     "App name": "Applikationsname",
     "Enter new App Name": "Neuen Applikationsnamen eingeben",
@@ -15,18 +8,8 @@
     "Language": "Sprache",
     "Save": "Speichern",
     "Exit": "Beenden",
-    "Logout": "Ausloggen",
-    "Remember me?": "Eingeloggt bleiben?",
     "Error": "Fehler",
     "Close": "Schließen",
     "To Settings": "Zu Einstellungen",
-    "Please enter your username and password": "Bitte geben sie Benutzernamen und Passwort ein",
-    "Logged in as": "Angemeldet als",
-    "Back": "Zurück",
-    "Pick file": "Wähle eine Datei",
-    "Filesystem": "Dateisystem",
-    "Gallery": "Gallerie",
-    "Camera": "Kamera",
-    "Confirm": "Bestätigen"
+    "Back": "Zurück"
 }
-    

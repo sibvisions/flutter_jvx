@@ -99,7 +99,7 @@ class _LoginCardState extends State<LoginCard>
                         _login(context);
                       },
                       text: Translations.of(context)
-                          .text2('Logon', 'Logon'))),
+                          .text2('Login', 'Login'))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -153,7 +153,7 @@ class _LoginCardState extends State<LoginCard>
   }
   
   _login(BuildContext context) {
-    if (this.password.length > 0 && this.username.length > 0) {
+    // if (this.password.length > 0 && this.username.length > 0) {
       /*
       loginBloc.loginSink.add(
           new LoginViewModel.withPW(
@@ -172,9 +172,9 @@ class _LoginCardState extends State<LoginCard>
       );
 
       BlocProvider.of<ApiBloc>(context).dispatch(login);
-    } else {
-      showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('Please enter your username and password'));
-    }
+    // } else {
+    //   showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('Please enter your username and password.'));
+    // }
   }
 
   @override
