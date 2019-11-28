@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/request/change.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
@@ -79,7 +80,8 @@ class ApiBloc extends Bloc<Request, Response> {
       yield* applicationStyle(event);
     } else if (event is SetValues ||
         event is SelectRecord ||
-        event is FetchData) {
+        event is FetchData ||
+        event is FilterData) {
       yield* data(event);
     } else if (event is PressButton) {
       yield updateResponse(Response()
@@ -377,6 +379,14 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DAL_FETCH:
         response =
             await restClient.postAsync('/api/dal/fetch', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.DAL_FILTER:
+        response =
+            await restClient.postAsync('/api/dal/filter', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
