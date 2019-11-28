@@ -145,22 +145,13 @@ class JVxLazyTable extends JVxEditor {
   }
 
   Widget getDataRow(JVxData data, int index) {
-    List<Widget> children = new List<Widget>();
-    List<int> visibleColumnsIndex = new List<int>();
-
+    
     if (data != null && data.records != null && index < data.records.length) {
-      List<dynamic> columns = data.records[index];
+      List<Widget> children = new List<Widget>();
 
-      columnNames.forEach((r) {
-        visibleColumnsIndex.add(data.columnNames.indexOf(r));
-      });
-
-      visibleColumnsIndex.asMap().forEach((i, j) {
-        if (j < columns.length)
-          children.add(getTableColumn(
-              columns[j] != null ? columns[j].toString() : "", index, i));
-        else
-          children.add(getTableColumn("", index, j));
+      data.getRow(index, columnNames).asMap().forEach((i,c) {
+        children.add(getTableColumn(
+              c != null ? c.toString() : "", index, i));
       });
 
       return Dismissible(
