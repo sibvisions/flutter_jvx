@@ -45,6 +45,7 @@ class JVxCellEditor implements ICellEditor {
   VoidCallback onBeginEditing;
   VoidCallback onEndEditing;
   ValueChanged<dynamic> onValueChanged;
+  ValueChanged<dynamic> onFilter;
 
 
   @override

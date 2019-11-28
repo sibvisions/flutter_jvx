@@ -43,6 +43,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     _cellEditor.onBeginEditing = onBeginEditing;
     _cellEditor.onEndEditing = onEndEditing;
     _cellEditor.onValueChanged = onValueChanged;
+    _cellEditor.onFilter = onFilter;
   }
 
   JVxEditor(Key componentId, BuildContext context)
@@ -55,6 +56,10 @@ class JVxEditor extends JVxComponent implements IEditor {
       data.setValues(context, [value]);
     else
       data.setValues(context, [value], [columnName]);
+  }
+
+  void onFilter(dynamic value) {
+    data.filterData(context, value, this.rawComponentId);
   }
 
   void onEndEditing() {}
