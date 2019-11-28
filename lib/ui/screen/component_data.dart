@@ -65,9 +65,6 @@ class ComponentData {
 
     isFetching = false;
     _onDataChanged.forEach((d) => d());
-
-    //_requestQueue.remove(request);
-    //_sendFromQueue();
   }
 
   void updateSelectedRow(int selectedRow) {
