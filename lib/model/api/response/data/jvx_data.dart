@@ -7,8 +7,10 @@ class JVxData extends ResponseObject {
   int selectedRow;
   bool isAllFetched;
   String dataProvider;
-  List<dynamic> records;
+  List<dynamic> records = <dynamic>[];
   List<dynamic> columnNames;
+  int from;
+  int to;
 
   JVxData({this.selectedRow, this.isAllFetched, this.dataProvider, this.records, this.columnNames});
 
@@ -62,5 +64,7 @@ class JVxData extends ResponseObject {
       dataProvider = json['dataProvider'],
       records = json['records'],
       columnNames = json['columnNames'],
+      from = json['from'],
+      to = json['to'],
       super.fromJson(json);
 }

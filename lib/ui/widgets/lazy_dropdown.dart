@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/screen/data_provider.dart';
+import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class LazyDropdown extends StatefulWidget {
@@ -14,11 +14,13 @@ class LazyDropdown extends StatefulWidget {
   final ValueChanged<String> onFilter;
   final BuildContext context;
   final double fetchMoreYOffset;
+  final ComponentData data;
 
   LazyDropdown(
       {//@required this.data,
       @required this.allowNull,
       @required this.context,
+      this.data,
       this.visibleColumnIndex,
       this.onSave,
       this.onCancel,
@@ -40,16 +42,16 @@ class _LazyDropdownState extends State<LazyDropdown> {
   @override
   void initState() {
     super.initState();
+    widget.data.registerDataChanged(updateData);
     _scrollController.addListener(_scrollListener);
+  }
+
+  void updateData() {
+    this.setState(() {});
   }
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (this.widget.onFilter != null) this.widget.onFilter(newValue);
-  }
-
-  void _onSave() {
-    Navigator.of(this.widget.context).pop();
-    if (this.widget.onSave != null) this.widget.onSave("Test");
   }
 
   void _onCancel() {
@@ -64,15 +66,18 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   void _onRowTapped(int index) {
     Navigator.of(this.widget.context).pop();
-    if (this.widget.onSave!=null && DataProvider.of(widget.context).records.length>index) {
-      dynamic value = DataProvider.of(widget.context).records[index][widget.visibleColumnIndex[0]];
+    JVxData data = widget.data.getData(context, null, 0);
+    if (this.widget.onSave!=null && data.records.length>index) {
+      dynamic value = data.records[index][widget.visibleColumnIndex[0]];
       this.widget.onSave(value);
+      this.updateData();
     }
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {
     //return Text("Na oida");
-    return getDataRow(DataProvider.of(ctxt), index);
+    JVxData data = widget.data.getData(context, null, 0);
+    return getDataRow(data, index);
   }
 
   Widget getDataRow(JVxData data, int index) {
@@ -137,7 +142,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
   @override
   Widget build(BuildContext context) {
     int itemCount = 0;
-    if (DataProvider.of(context) != null && DataProvider.of(context).records != null) itemCount = DataProvider.of(context).records.length;
+    JVxData data = widget.data.getData(context, null, 0);
+    if (data != null && data.records != null) itemCount = data.records.length;
 
     return Dialog(
         shape: RoundedRectangleBorder(

@@ -4,7 +4,6 @@ import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/screen/data_provider.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_dropdown_button.dart' as custom;
 import 'package:jvx_mobile_v3/ui/widgets/lazy_dropdown.dart';
 
@@ -13,7 +12,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   String initialData;
   int pageIndex = 0;
   int pageSize = 100;
-  DataProvider dropdownProvider;
+  int reload;
 
   JVxLinkedCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context);
@@ -80,23 +79,34 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   }
 
   @override
-  void onServerDataChanged() {}
+  void onServerDataChanged() {
+    
+  }
 
   void onScrollToEnd() {
+    print("Scrolled to end");
     JVxData _data = data.getData(context, null, pageSize);
     if (_data != null && _data.records != null)
       data.getData(context, null, this.pageSize + _data.records.length);
+  }
+
+  void onFilterDropDown(dynamic value) {
+    this.reload = -1;
+    this.onFilter(value);
   }
 
   @override
   Widget getWidget() {
     String h = this.value;
     String v = this.value;
-    JVxData data = this
-        .data
-        .getData(this.context, null, (this.pageIndex + 1) * this.pageSize);
+    JVxData data;
 
-    if (data != null && data.records.length < 20) {
+
+    if (false) { //(data != null && data.records.length < 20) {
+      data = this
+        .data
+        .getData(this.context, this.reload, (this.pageIndex + 1) * this.pageSize);
+            this.reload = null;
       this._items = getItems(data);
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;
@@ -109,26 +119,14 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         isExpanded: true,
       );
     } else {
+      data = this
+        .data
+        .getData(this.context, null, 0);
       this._items = List<DropdownMenuItem<dynamic>>();
       if (v==null)
         this._items.add(this.getItem("", ""));
       else 
         this._items.add(this.getItem(v, v));
-
-        if (dropdownProvider==null) {
-          dropdownProvider = new DataProvider(
-                  data: data, 
-                  child: LazyDropdown(
-                    //data: data,
-                    context: context,
-                    visibleColumnIndex: this.getVisibleColumnIndex(data),
-                    fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
-                    onSave: onValueChanged,
-                    onFilter: onFilter,
-                    allowNull: true,
-                    onScrollToEnd: onScrollToEnd)
-                );
-        }
 
       return custom.CustomDropdownButton(
         hint: Text(Properties.utf8convert(h == null ? "" : h)),
@@ -137,9 +135,22 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         onChanged: valueChanged,
         isExpanded: true,
         onOpen: () {
+          this.onFilter(null);
           showDialog(
               context: context,
-              builder: (context) => dropdownProvider
+              builder: (context) => LazyDropdown(
+                    data: this.data,
+                    context: context,
+                    visibleColumnIndex: this.getVisibleColumnIndex(data),
+                    fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
+                    onSave: (value) {
+                        this.value = value;
+                        onValueChanged(value);
+                      },
+                    onFilter: onFilterDropDown,
+                    allowNull: true,
+                    onScrollToEnd: onScrollToEnd)
+                
           );
         },
       );
