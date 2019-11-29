@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
+import 'package:jvx_mobile_v3/ui/screen/data_provider.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
-class LazyDropdown extends StatelessWidget {
-  final ScrollController _scrollController = ScrollController();
-  final TextEditingController _controller = TextEditingController();
+class LazyDropdown extends StatefulWidget {
   final List<int> visibleColumnIndex;
-  final FocusNode node = FocusNode();
-  final JVxData data;
   final allowNull;
   final ValueChanged<dynamic> onSave;
   final VoidCallback onCancel;
@@ -19,7 +16,7 @@ class LazyDropdown extends StatelessWidget {
   final double fetchMoreYOffset;
 
   LazyDropdown(
-      {@required this.data,
+      {//@required this.data,
       @required this.allowNull,
       @required this.context,
       this.visibleColumnIndex,
@@ -27,40 +24,55 @@ class LazyDropdown extends StatelessWidget {
       this.onCancel,
       this.onScrollToEnd,
       this.onFilter,
-      this.fetchMoreYOffset = 0}) {
+      this.fetchMoreYOffset = 0});
+
+  @override
+  _LazyDropdownState createState() => _LazyDropdownState();
+}
+
+class _LazyDropdownState extends State<LazyDropdown> {
+  final ScrollController _scrollController = ScrollController();
+
+  final TextEditingController _controller = TextEditingController();
+
+  final FocusNode node = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
     _scrollController.addListener(_scrollListener);
   }
 
   void onTextFieldValueChanged(dynamic newValue) {
-    if (this.onFilter != null) this.onFilter(newValue);
+    if (this.widget.onFilter != null) this.widget.onFilter(newValue);
   }
 
   void _onSave() {
-    Navigator.of(this.context).pop();
-    if (this.onSave != null) this.onSave("Test");
+    Navigator.of(this.widget.context).pop();
+    if (this.widget.onSave != null) this.widget.onSave("Test");
   }
 
   void _onCancel() {
-    Navigator.of(this.context).pop();
-    if (this.onCancel != null) this.onCancel();
+    Navigator.of(this.widget.context).pop();
+    if (this.widget.onCancel != null) this.widget.onCancel();
   }
 
   void _onDelete() {
-    Navigator.of(this.context).pop();
-    if (this.onSave != null) this.onSave(null);
+    Navigator.of(this.widget.context).pop();
+    if (this.widget.onSave != null) this.widget.onSave(null);
   }
 
   void _onRowTapped(int index) {
-    Navigator.of(this.context).pop();
-    if (this.onSave!=null && data.records.length>index) {
-      dynamic value = this.data.records[index][visibleColumnIndex[0]];
-      this.onSave(value);
+    Navigator.of(this.widget.context).pop();
+    if (this.widget.onSave!=null && DataProvider.of(widget.context).records.length>index) {
+      dynamic value = DataProvider.of(widget.context).records[index][widget.visibleColumnIndex[0]];
+      this.widget.onSave(value);
     }
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {
     //return Text("Na oida");
-    return getDataRow(data, index);
+    return getDataRow(DataProvider.of(ctxt), index);
   }
 
   Widget getDataRow(JVxData data, int index) {
@@ -69,7 +81,7 @@ class LazyDropdown extends StatelessWidget {
     if (data != null && data.records != null && index < data.records.length) {
       List<dynamic> columns = data.records[index];
 
-      this.visibleColumnIndex.asMap().forEach((i, j) {
+      this.widget.visibleColumnIndex.asMap().forEach((i, j) {
         if (j < columns.length)
           children.add(getTableColumn(
               columns[j] != null ? columns[j].toString() : "", index, i));
@@ -115,17 +127,17 @@ class LazyDropdown extends StatelessWidget {
   }
 
   _scrollListener() {
-    if (_scrollController.offset + this.fetchMoreYOffset >=
+    if (_scrollController.offset + this.widget.fetchMoreYOffset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      if (this.onScrollToEnd != null) this.onScrollToEnd();
+      if (this.widget.onScrollToEnd != null) this.widget.onScrollToEnd();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     int itemCount = 0;
-    if (data != null && data.records != null) itemCount = data.records.length;
+    if (DataProvider.of(context) != null && DataProvider.of(context).records != null) itemCount = DataProvider.of(context).records.length;
 
     return Dialog(
         shape: RoundedRectangleBorder(
@@ -153,7 +165,7 @@ class LazyDropdown extends StatelessWidget {
                       borderSide:
                           BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
                 ),
-                key: this.key,
+                key: widget.key,
                 controller: _controller,
                 maxLines: 1,
                 keyboardType: TextInputType.text,

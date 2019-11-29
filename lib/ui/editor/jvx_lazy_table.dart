@@ -145,22 +145,13 @@ class JVxLazyTable extends JVxEditor {
   }
 
   Widget getDataRow(JVxData data, int index) {
-    List<Widget> children = new List<Widget>();
-    List<int> visibleColumnsIndex = new List<int>();
 
     if (data != null && data.records != null && index < data.records.length) {
-      List<dynamic> columns = data.records[index];
+      List<Widget> children = new List<Widget>();
 
-      columnNames.forEach((r) {
-        visibleColumnsIndex.add(data.columnNames.indexOf(r));
-      });
-
-      visibleColumnsIndex.asMap().forEach((i, j) {
-        if (j < columns.length)
-          children.add(getTableColumn(
-              columns[j] != null ? columns[j].toString() : "", index, i));
-        else
-          children.add(getTableColumn("", index, j));
+      data.getRow(index, columnNames).asMap().forEach((i,c) {
+        children.add(getTableColumn(
+              c != null ? c.toString() : "", index, i));
       });
 
       return Dismissible(
@@ -202,42 +193,6 @@ class JVxLazyTable extends JVxEditor {
     }
   }
 
-  void calculateColumnFlex() {
-    int calculateForRecordCount = 10;
-
-    List<int> maxLengthPerColumn = new List<int>(this.columnLabels.length);
-    columnLabels.asMap().forEach((i, l) {
-      int textWidth = TextUtils.getTextWidth(l, itemTextStyle);
-      maxLengthPerColumn[i] = textWidth;
-    });
-
-    if (_data != null && _data.records != null) {
-      List<int> visibleColumnsIndex = new List<int>();
-      columnNames.forEach((r) {
-        visibleColumnsIndex.add(_data.columnNames.indexOf(r));
-      });
-
-      if (_data.records.length < calculateForRecordCount)
-        calculateForRecordCount = _data.records.length;
-
-      for (int ii = 0; ii < calculateForRecordCount; ii++) {
-        List<dynamic> columns = _data.records[ii];
-        visibleColumnsIndex.asMap().forEach((i, j) {
-          if (j < columns.length && columns[j] != null) {
-            String value = columns[j] != null ? columns[j].toString() : "";
-            int textWidth = TextUtils.getTextWidth(value, itemTextStyle);
-            if (maxLengthPerColumn[i] == null ||
-                maxLengthPerColumn[i] < textWidth) {
-              maxLengthPerColumn[i] = textWidth;
-            }
-          }
-        });
-      }
-    }
-
-    columnFlex = maxLengthPerColumn;
-  }
-
   @override
   Widget getWidget() {
     //List<TableRow> rows = new List<TableRow>();
@@ -256,7 +211,7 @@ class JVxLazyTable extends JVxEditor {
     _data = data.getData(context, reload, pageSize);
     this.reload = null;
 
-    this.calculateColumnFlex();
+    this.columnFlex = _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle);
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;

@@ -20,7 +20,7 @@ class DataScreen {
 
     data?.forEach((d) {
       ComponentData cData = getComponentData(d.dataProvider);
-      cData.updateData(d);
+      cData.updateData(d, (request.requestType==RequestType.DAL_FILTER));
     });
 
     metaData?.forEach((m) {

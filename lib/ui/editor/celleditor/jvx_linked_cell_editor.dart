@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/screen/data_provider.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_dropdown_button.dart' as custom;
 import 'package:jvx_mobile_v3/ui/widgets/lazy_dropdown.dart';
 
@@ -12,6 +13,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   String initialData;
   int pageIndex = 0;
   int pageSize = 100;
+  DataProvider dropdownProvider;
 
   JVxLinkedCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context);
@@ -80,20 +82,10 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   @override
   void onServerDataChanged() {}
 
-  void onSave(dynamic value) {
-    onValueChanged(value);
-  }
-
-  void onFilter(dynamic value) {}
-
   void onScrollToEnd() {
     JVxData _data = data.getData(context, null, pageSize);
     if (_data != null && _data.records != null)
       data.getData(context, null, this.pageSize + _data.records.length);
-  }
-
-  void onCancel() {
-    onValueChanged(null);
   }
 
   @override
@@ -123,6 +115,21 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       else 
         this._items.add(this.getItem(v, v));
 
+        if (dropdownProvider==null) {
+          dropdownProvider = new DataProvider(
+                  data: data, 
+                  child: LazyDropdown(
+                    //data: data,
+                    context: context,
+                    visibleColumnIndex: this.getVisibleColumnIndex(data),
+                    fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
+                    onSave: onValueChanged,
+                    onFilter: onFilter,
+                    allowNull: true,
+                    onScrollToEnd: onScrollToEnd)
+                );
+        }
+
       return custom.CustomDropdownButton(
         hint: Text(Properties.utf8convert(h == null ? "" : h)),
         value: v,
@@ -132,16 +139,8 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         onOpen: () {
           showDialog(
               context: context,
-              builder: (context) => LazyDropdown(
-                  data: data,
-                  context: context,
-                  visibleColumnIndex: this.getVisibleColumnIndex(data),
-                  fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
-                  onSave: onSave,
-                  onFilter: onFilter,
-                  allowNull: true,
-                  onScrollToEnd: onScrollToEnd,
-                  onCancel: onCancel));
+              builder: (context) => dropdownProvider
+          );
         },
       );
     }

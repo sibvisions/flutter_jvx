@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
@@ -51,8 +52,8 @@ class ComponentData {
     return null;
   }
 
-  void updateData(JVxData pData) {
-    if (_data==null || _data.isAllFetched)
+  void updateData(JVxData pData, [bool overrideData = false]) {
+    if (_data==null || _data.isAllFetched || overrideData)
       _data = pData;
     else {
       _data.records.addAll(pData.records);
@@ -65,9 +66,6 @@ class ComponentData {
 
     isFetching = false;
     _onDataChanged.forEach((d) => d());
-
-    //_requestQueue.remove(request);
-    //_sendFromQueue();
   }
 
   void updateSelectedRow(int selectedRow) {
@@ -146,6 +144,11 @@ class ComponentData {
     } else {
       IndexError(index, _data.records, "Delete Record", "Delete record failed. Index out of bounds!");
     }
+  }
+
+  void filterData(BuildContext context, dynamic value, String editorComponentId) {
+    FilterData filter = FilterData(dataProvider, value, editorComponentId);
+    addToRequestQueue(filter);
   }
 
   void setValues(BuildContext context, List<dynamic> values, [List<dynamic> columnNames, Filter filter]) {

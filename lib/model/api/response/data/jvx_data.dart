@@ -1,4 +1,6 @@
+import 'package:flutter/rendering.dart';
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
+import 'package:jvx_mobile_v3/utils/text_utils.dart';
 
 /// Data holding Class for [JVxComponent]'s.
 class JVxData extends ResponseObject {
@@ -14,7 +16,7 @@ class JVxData extends ResponseObject {
     List<dynamic> row = <dynamic>[];
     
     if (index<this.records.length) {
-      if (pColumnNames==null) pColumnNames = this.columnNames;
+      if (pColumnNames==null) pColumnNames = List<String>.from(this.columnNames);
       List<int> columnIndexes = <int>[];
 
       pColumnNames.forEach((c) {
@@ -28,6 +30,30 @@ class JVxData extends ResponseObject {
     }
 
     return row;
+  }
+
+  List<int> getColumnFlex(List<String> columnLabels, List<String> columnNames, TextStyle textStyle, [int calculateForRecordCount = 10]) {
+    List<int> maxLengthPerColumn = new List<int>(columnLabels.length);
+    columnLabels.asMap().forEach((i, l) {
+      int textWidth = TextUtils.getTextWidth(l, textStyle);
+      maxLengthPerColumn[i] = textWidth;
+    });
+
+    if (this.records != null) {
+      if (this.records.length < calculateForRecordCount)
+        calculateForRecordCount = this.records.length;
+
+      for (int ii = 0; ii < calculateForRecordCount; ii++) {
+        this.getRow(ii, columnNames).asMap().forEach((i,c) {
+          String value = c != null ? c.toString() : "";
+          int textWidth = TextUtils.getTextWidth(value, textStyle);
+          if (maxLengthPerColumn[i] == null || maxLengthPerColumn[i] < textWidth) 
+            maxLengthPerColumn[i] = textWidth;
+        });
+      }
+    }
+
+    return maxLengthPerColumn;
   }
 
   JVxData.fromJson(Map<String, dynamic> json)
