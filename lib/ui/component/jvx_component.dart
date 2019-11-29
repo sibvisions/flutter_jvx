@@ -35,7 +35,7 @@ abstract class JVxComponent implements IComponent {
   void updateProperties(ChangedComponent changedComponent) {
     rawComponentId = changedComponent.getProperty<String>(ComponentProperty.ID);
     background = changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
-    name = changedComponent.getProperty<String>(ComponentProperty.NAME);
+    name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     isVisible = changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
     style = JVxTextStyle.addFontToTextStyle(changedComponent.getProperty<String>(ComponentProperty.FONT, ""), style);
     foreground = changedComponent.getProperty<HexColor>(ComponentProperty.FOREGROUND, null);

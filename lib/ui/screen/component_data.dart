@@ -53,9 +53,9 @@ class ComponentData {
   }
 
   void updateData(JVxData pData, [bool overrideData = false]) {
-    if (_data==null || _data.isAllFetched || overrideData)
+    if (_data==null || _data.isAllFetched || overrideData) {
       _data = pData;
-    else {
+    } else {
       _data.records.addAll(pData.records);
       _data.selectedRow = pData.selectedRow;
       _data.isAllFetched = pData.isAllFetched;
@@ -84,9 +84,9 @@ class ComponentData {
     if (isFetching==false && (_data==null || reload==-1 ||
       (_data.selectedRow >= _data.records.length && !_data.isAllFetched))) {
       if (_data==null || _data.selectedRow==null || _data.selectedRow<0) {
-        this._fetchData(context, 0);
+        this._fetchData(context, reload, 0);
       } else {
-        this._fetchData(context, _data.selectedRow);
+        this._fetchData(context, reload, _data.selectedRow);
       }
     } 
     
@@ -98,12 +98,13 @@ class ComponentData {
   }
 
   JVxData getData(BuildContext context, int reload, int rowCountNeeded) {
+
     if (reload==-1 || (isFetching==false && (_data==null || !_data.isAllFetched))) {
-      if (rowCountNeeded>=0 && _data!=null && _data.records != null && _data.records.length>=rowCountNeeded) {
+      if (reload!=-1 && rowCountNeeded>=0 && _data!=null && _data.records != null && _data.records.length>=rowCountNeeded) {
         return _data;
       }
-
-      this._fetchData(context, rowCountNeeded);
+      
+      this._fetchData(context, reload, rowCountNeeded);
     }
       
     return _data;
@@ -146,8 +147,8 @@ class ComponentData {
     }
   }
 
-  void filterData(BuildContext context, dynamic value, String editorComponentId) {
-    FilterData filter = FilterData(dataProvider, value, editorComponentId);
+  void filterData(BuildContext context, String value, String editorComponentId) {
+    FilterData filter = FilterData(dataProvider, value, editorComponentId, null, 0, 100);
     addToRequestQueue(filter);
   }
 
@@ -164,11 +165,14 @@ class ComponentData {
     //BlocProvider.of<ApiBloc>(context).dispatch(setValues);
   }
 
-  void _fetchData(BuildContext context, int rowCountNeeded) {
+  void _fetchData(BuildContext context, int reload, int rowCountNeeded) {
       this.isFetching = true;
       FetchData fetch = FetchData(dataProvider);
 
-      if (_data!=null && !_data.isAllFetched && rowCountNeeded!=-1) {
+      if (reload==-1 && rowCountNeeded!=-1) {
+        fetch.fromRow = 0;
+        fetch.rowCount = rowCountNeeded - _data.records.length;
+      } else if (_data!=null && !_data.isAllFetched && rowCountNeeded!=-1) {
         fetch.fromRow = _data.records.length;
         fetch.rowCount = rowCountNeeded - _data.records.length;
       }

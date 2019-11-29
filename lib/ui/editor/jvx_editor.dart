@@ -59,7 +59,9 @@ class JVxEditor extends JVxComponent implements IEditor {
   }
 
   void onFilter(dynamic value) {
-    data.filterData(context, value, this.rawComponentId);
+    if (cellEditor is JVxReferencedCellEditor) {
+      (cellEditor as JVxReferencedCellEditor).data.filterData(context, value, this.name);
+    }
   }
 
   void onEndEditing() {}
