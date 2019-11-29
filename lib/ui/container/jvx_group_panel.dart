@@ -27,7 +27,7 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
       return Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          //crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.start,

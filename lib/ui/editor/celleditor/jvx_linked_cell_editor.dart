@@ -111,12 +111,14 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;
 
-      return custom.CustomDropdownButton(
-        hint: Text(Properties.utf8convert(h == null ? "" : h)),
-        value: v,
-        items: this._items,
-        onChanged: valueChanged,
-        isExpanded: true,
+      return DropdownButtonHideUnderline(
+          child: custom.CustomDropdownButton(
+          hint: Text(Properties.utf8convert(h == null ? "" : h)),
+          value: v,
+          items: this._items,
+          onChanged: valueChanged,
+          isExpanded: true,
+        )
       );
     } else {
       data = this
@@ -128,31 +130,33 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       else 
         this._items.add(this.getItem(v, v));
 
-      return custom.CustomDropdownButton(
-        hint: Text(Properties.utf8convert(h == null ? "" : h)),
-        value: v,
-        items: this._items,
-        onChanged: valueChanged,
-        isExpanded: true,
-        onOpen: () {
-          this.onFilter(null);
-          showDialog(
-              context: context,
-              builder: (context) => LazyDropdown(
-                    data: this.data,
-                    context: context,
-                    visibleColumnIndex: this.getVisibleColumnIndex(data),
-                    fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
-                    onSave: (value) {
-                        this.value = value;
-                        onValueChanged(value);
-                      },
-                    onFilter: onFilterDropDown,
-                    allowNull: true,
-                    onScrollToEnd: onScrollToEnd)
-                
-          );
-        },
+      return DropdownButtonHideUnderline(
+        child: custom.CustomDropdownButton(
+          hint: Text(Properties.utf8convert(h == null ? "" : h)),
+          value: v,
+          items: this._items,
+          onChanged: valueChanged,
+          isExpanded: true,
+          onOpen: () {
+            this.onFilter(null);
+            showDialog(
+                context: context,
+                builder: (context) => LazyDropdown(
+                      data: this.data,
+                      context: context,
+                      visibleColumnIndex: this.getVisibleColumnIndex(data),
+                      fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
+                      onSave: (value) {
+                          this.value = value;
+                          onValueChanged(value);
+                        },
+                      onFilter: onFilterDropDown,
+                      allowNull: true,
+                      onScrollToEnd: onScrollToEnd)
+                  
+            );
+          },
+        )
       );
     }
   }
