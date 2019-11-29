@@ -46,6 +46,12 @@ class _LazyDropdownState extends State<LazyDropdown> {
     _scrollController.addListener(_scrollListener);
   }
 
+  @override
+  void dispose() {
+    widget.data.unregisterDataChanged(updateData);
+    super.dispose();
+  }
+
   void updateData() {
     this.setState(() {});
   }
