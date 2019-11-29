@@ -37,55 +37,44 @@ class LoginPageState extends State<LoginPage> {
         ),
       );
 
-  Widget loginBuilder() => BlocBuilder<ApiBloc, Response>(
-        builder: (context, state) {
-          if (state != null && state.loading && state.requestType == RequestType.LOADING) {
-            SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
-          }
+  Widget loginBuilder() => errorAndLoadingListener(
+      BlocBuilder<ApiBloc, Response>(
+          builder: (context, state) {
+            if (state != null &&
+                state.requestType == RequestType.LOGOUT &&
+                !state.loading &&
+                !state.error) {
+              return loginScaffold();
+            }
 
-          if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
-            SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
-          }
+            if (state != null &&
+                state.requestType == RequestType.LOGIN &&
+                !state.loading &&
+                (state.error == null || !state.error) &&
+                state.menu != null) {
+              Menu menu = state.menu;
 
-          if (state != null && !state.loading && !errorMsgShown && state.error) {
-            errorMsgShown = true;
-            SchedulerBinding.instance.addPostFrameCallback((_) => handleError(state, context));
-          }
+              if (menu != null)
+                Future.delayed(
+                    Duration.zero,
+                    () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (_) => MenuPage(
+                              menuItems: menu.items,
+                            ))));
+            }
 
-          if (state != null &&
-              state.requestType == RequestType.LOGOUT &&
-              !state.loading &&
-              !state.error) {
-            return loginScaffold();
-          }
+            // if (state != null &&
+            //     state.requestType == RequestType.APP_STYLE &&
+            //     !state.loading &&
+            //     !state.error) {
+            //   globals.applicationStyle = state.applicationStyle;
+            //   return loginScaffold();
+            // }
 
-          if (state != null &&
-              state.requestType == RequestType.LOGIN &&
-              !state.loading &&
-              (state.error == null || !state.error) &&
-              state.menu != null) {
-            Menu menu = state.menu;
-
-            if (menu != null)
-              Future.delayed(
-                  Duration.zero,
-                  () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (_) => MenuPage(
-                            menuItems: menu.items,
-                          ))));
-          }
-
-          // if (state != null &&
-          //     state.requestType == RequestType.APP_STYLE &&
-          //     !state.loading &&
-          //     !state.error) {
-          //   globals.applicationStyle = state.applicationStyle;
-          //   return loginScaffold();
-          // }
-
-            return loginScaffold();
-        },
-      );
+              return loginScaffold();
+          },
+        ),
+  );
 
   @override
   void initState() {

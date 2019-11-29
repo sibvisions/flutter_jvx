@@ -11,6 +11,6 @@ class OpenScreen extends Request {
   Map<String, dynamic> toJson() => <String, dynamic>{
     'clientId': clientId,
     'manualClose': manualClose,
-    'action': action.toJson()
+    'componentId': action.componentId
   };
 }

@@ -13,6 +13,6 @@ class PressButton extends Request {
 
   Map<String, dynamic> toJson() => {
     'clientId': clientId,
-    'action': action.toJson()
+    'componentId': action.componentId
   };
 }
