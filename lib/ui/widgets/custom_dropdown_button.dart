@@ -6,6 +6,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 const Duration _kDropdownMenuDuration = Duration(milliseconds: 300);
 const double _kMenuItemHeight = kMinInteractiveDimension;
@@ -838,49 +839,52 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> with 
       );
     }
 
-    const Icon defaultIcon = Icon(Icons.arrow_drop_down);
+    const Icon defaultIcon = Icon(FontAwesomeIcons.sortDown);
 
     Widget result = DefaultTextStyle(
       style: _textStyle,
       child: Container(
-        padding: padding.resolve(Directionality.of(context)),
+        padding: EdgeInsets.only(right: 10, left: 10),
         height: widget.isDense ? _denseButtonHeight : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             widget.isExpanded ? Expanded(child: innerItemsWidget) : innerItemsWidget,
-            IconTheme(
-              data: IconThemeData(
-                color: _iconColor,
-                size: widget.iconSize,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: IconTheme(
+                data: IconThemeData(
+                  color: _iconColor,
+                  size: widget.iconSize,
+                ),
+                child: widget.icon ?? defaultIcon,
               ),
-              child: widget.icon ?? defaultIcon,
             ),
           ],
         ),
       ),
     );
 
-    if (!DropdownButtonHideUnderline.at(context)) {
-      final double bottom = widget.isDense ? 0.0 : 8.0;
-      result = Stack(
-        children: <Widget>[
-          result,
-          Positioned(
-            left: 0.0,
-            right: 0.0,
-            bottom: bottom,
-            child: widget.underline ?? Container(
-              height: 1.0,
-              decoration: const BoxDecoration(
-                border: Border(bottom: BorderSide(color: Color(0xFFBDBDBD), width: 0.0))
-              ),
-            ),
-          ),
-        ],
-      );
-    }
+    // if (!DropdownButtonHideUnderline.at(context)) {
+    //   final double bottom = widget.isDense ? 0.0 : 8.0;
+    //   result = Stack(
+    //     children: <Widget>[
+    //       result,
+    //       Positioned(
+    //         left: 0.0,
+    //         right: 0.0,
+    //         bottom: bottom,
+    //         child: widget.underline ?? Container(
+    //           height: 1.0,
+    //           decoration: const BoxDecoration(
+    //             border: Border(bottom: BorderSide(color: Color(0xFFBDBDBD), width: 0.0))
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   );
+    // }
 
     return Semantics(
       button: true,

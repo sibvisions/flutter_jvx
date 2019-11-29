@@ -39,7 +39,9 @@ class JVxTextCellEditor extends JVxCellEditor {
     _controller.text = (this.value!=null ? this.value.toString() : "");
     
     return TextField(
+      style: TextStyle(color: foreground != null ? foreground : Colors.black),
       decoration: InputDecoration(
+        fillColor: background != null ? background : Colors.transparent,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 0.0)
         ),
@@ -54,6 +56,7 @@ class JVxTextCellEditor extends JVxCellEditor {
       onEditingComplete: onTextFieldEndEditing,
       onChanged: onTextFieldValueChanged,
       focusNode: node,
+      enabled: editable,
     );
   }
 }

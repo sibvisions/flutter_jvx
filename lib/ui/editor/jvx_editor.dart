@@ -102,6 +102,13 @@ class JVxEditor extends JVxComponent implements IEditor {
       bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
       if (rel != null && rel) this.reload = -1;
     }
+
+    // _cellEditor.background = cellEditorBackground;
+    // _cellEditor.foreground = cellEditorForeground;
+    // _cellEditor.horizontalAlignment = cellEditorHorizontalAlignment;
+    // _cellEditor.font = cellEditorFont;
+    // _cellEditor.placeholder = cellEditorPlaceholder;
+    // _cellEditor.editable = cellEditorEditable;
   }
 
   @override
@@ -122,11 +129,9 @@ class JVxEditor extends JVxComponent implements IEditor {
     } else {
       return Container(
           decoration: BoxDecoration(
-              color: cellEditorBackground != null
-                  ? cellEditorBackground
-                  : Colors.transparent,
+              color: cellEditorBackground != null ? cellEditorBackground : Colors.transparent,
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: UIData.ui_kit_color_2)),
+              border: cellEditor.borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
           constraints: constraints,
           //color: color,
           child: Container(width: 100, child: cellEditor.getWidget()));
