@@ -32,76 +32,44 @@ class JVxImageCellEditor extends JVxCellEditor {
       file = File(defaultImageName != null
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
-      if (file.existsSync()) defaultImage = Image.file(file);
+      if (file.existsSync()) {
+        currentImage = Image.memory(file.readAsBytesSync());
+        BlocProvider.of<ApiBloc>(context)
+            .dispatch(Reload(requestType: RequestType.RELOAD));
+      }
     }
+  }
 
-    currentImage = Image.memory(file.readAsBytesSync());
-    BlocProvider.of<ApiBloc>(context)
-        .dispatch(Reload(requestType: RequestType.RELOAD));
+  @override
+  set value(dynamic value) {
+    super.value = value;
+    if (value != null) {
+      Image img = Image.file(file);
 
-    // Image img = new Image.file(file);
-    // ImageProvider placeholder = FileImage(file);
+      Uint8List bytes = base64Decode(value);
+      img = Image.memory(bytes);
 
-    // if (this.value != null) {
-    //   Uint8List bytes = base64Decode(this.value);
-    //   img = Image.memory(bytes);
-    //   placeholder = MemoryImage(bytes);
-    // }
+      Completer<ui.Image> completer = new Completer<ui.Image>();
+      img.image
+          .resolve(new ImageConfiguration())
+          .addListener(ImageStreamListener((ImageInfo info, bool _) {
+        completer.complete(info.image);
+      }));
 
-    // Completer<ui.Image> completer = new Completer<ui.Image>();
-    // img.image
-    //     .resolve(new ImageConfiguration())
-    //     .addListener(ImageStreamListener((ImageInfo info, bool _) {
-    //   completer.complete(info.image);
-    // }));
-
-    // currentImage = new FutureBuilder<ui.Image>(
-    //   future: completer.future,
-    //   builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-    //     if (img.image is MemoryImage) {
-    //       return Image(
-    //         image: img.image,
-    //         width: width,
-    //         height: heigth,
-    //       );
-    //     }
-
-    //     if (snapshot.hasData && this.value == null) {
-    //       width = snapshot.data.width.toDouble();
-    //       heigth = snapshot.data.height.toDouble();
-
-    //       BlocProvider.of<ApiBloc>(context)
-    //           .dispatch(Reload(requestType: RequestType.RELOAD));
-
-    //       return Image(
-    //         image: img.image,
-    //         width: width,
-    //         height: heigth,
-    //       );
-    //     }
-
-    //     return Container(
-    //       width: width,
-    //       height: heigth,
-    //       child: Center(
-    //         child: CircularProgressIndicator(),
-    //       ),
-    //     );
-    //   },
-    // );
-
-    // currentImage = img;
+      completer.future.then((ui.Image snapshot) {
+        if (snapshot != null) {
+          currentImage = img;
+          BlocProvider.of<ApiBloc>(context)
+              .dispatch(Reload(requestType: RequestType.RELOAD));
+        }
+      });
+    }
   }
 
   @override
   Widget getWidget() {
-    if (this.value != null) {
-      Uint8List bytes = base64Decode(this.value);
-      currentImage = Image.memory(bytes);
-      BlocProvider.of<ApiBloc>(context)
-          .dispatch(Reload(requestType: RequestType.RELOAD));
-    }
-
     return currentImage;
   }
+
+  changeImage() {}
 }
