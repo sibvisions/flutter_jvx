@@ -157,6 +157,10 @@ class ApiBloc extends Bloc<Request, Response> {
           Translations.load(Locale(globals.language));
         }
       }
+
+      if (resp != null && resp.loginItem != null) {
+        SharedPreferencesHelper().setAuthKey(null);
+      }
     }
 
     yield resp;
@@ -346,7 +350,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.OPEN_SCREEN:
         response =
-            await restClient.postAsync('/api/openScreen', request.toJson());
+            await restClient.postAsync('/api/v2/openScreen', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
@@ -419,7 +423,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.PRESS_BUTTON:
         response =
-            await restClient.postAsync('/api/pressButton', request.toJson());
+            await restClient.postAsync('/api/v2/pressButton', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
