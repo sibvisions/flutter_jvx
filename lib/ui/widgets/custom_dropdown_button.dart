@@ -844,7 +844,7 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>> with 
     Widget result = DefaultTextStyle(
       style: _textStyle,
       child: Container(
-        padding: EdgeInsets.only(right: 10, left: 10),
+        padding: EdgeInsets.only(right: 0, left: 0),
         height: widget.isDense ? _denseButtonHeight : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

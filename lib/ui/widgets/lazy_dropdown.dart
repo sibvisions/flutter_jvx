@@ -161,15 +161,17 @@ class _LazyDropdownState extends State<LazyDropdown> {
                 new RaisedButton(child: Text("Cancel"), onPressed: _onCancel),
               ]),
               Container(
-                  child: TextField(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: TextField(
                 decoration: InputDecoration(
-                  hintText: "Filter",
-                  enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+                    hintText: "Filter",
+                    enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: UIData.ui_kit_color_2, width: 1.0)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
                 ),
                 key: widget.key,
                 controller: _controller,
@@ -177,7 +179,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
                 keyboardType: TextInputType.text,
                 onChanged: onTextFieldValueChanged,
                 focusNode: node,
-              )),
+              ),
+                  )),
               Expanded(
                 child: ListView.builder(
                   controller: _scrollController,
