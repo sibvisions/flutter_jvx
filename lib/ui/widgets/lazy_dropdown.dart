@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/column_view.dart';
+import 'package:jvx_mobile_v3/model/link_reference.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class LazyDropdown extends StatefulWidget {
-  final List<int> visibleColumnIndex;
   final allowNull;
   final ValueChanged<dynamic> onSave;
   final VoidCallback onCancel;
@@ -17,17 +18,20 @@ class LazyDropdown extends StatefulWidget {
   final BuildContext context;
   final double fetchMoreYOffset;
   final ComponentData data;
+  final LinkReference linkReference;
+  final ColumnView columnView;
 
   LazyDropdown(
       {//@required this.data,
       @required this.allowNull,
       @required this.context,
       this.data,
-      this.visibleColumnIndex,
       this.onSave,
       this.onCancel,
       this.onScrollToEnd,
       this.onFilter,
+      this.columnView,
+      this.linkReference,
       this.fetchMoreYOffset = 0});
 
   @override
@@ -40,6 +44,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   final FocusNode node = FocusNode();
   Timer filterTimer; // 200-300 Milliseconds
   dynamic lastChangedFilter;
+  List<int> visibleColumnIndex = <int>[];
 
   @override
   void initState() {
@@ -55,6 +60,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   }
 
   void updateData() {
+    this.visibleColumnIndex = this.getVisibleColumnIndex(widget.data.getData(context, null, 0));
     this.setState(() {});
   }
 
@@ -83,7 +89,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
     Navigator.of(this.widget.context).pop();
     JVxData data = widget.data.getData(context, null, 0);
     if (this.widget.onSave!=null && data.records.length>index) {
-      dynamic value = data.records[index][widget.visibleColumnIndex[0]];
+      dynamic value = data.getRow(index);
+      //dynamic value = data.records[index][0];
       this.widget.onSave(value);
       this.updateData();
     }
@@ -101,7 +108,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
     if (data != null && data.records != null && index < data.records.length) {
       List<dynamic> columns = data.records[index];
 
-      this.widget.visibleColumnIndex.asMap().forEach((i, j) {
+      this.visibleColumnIndex.asMap().forEach((i, j) {
         if (j < columns.length)
           children.add(getTableColumn(
               columns[j] != null ? columns[j].toString() : "", index, i));
@@ -146,6 +153,25 @@ class _LazyDropdownState extends State<LazyDropdown> {
         ));
   }
 
+  List<int> getVisibleColumnIndex(JVxData data) {
+    List<int> visibleColumnsIndex = <int>[];
+    if (data != null && data.records.isNotEmpty) {
+      data.columnNames.asMap().forEach((i, v) {
+        if (widget.columnView != null && widget.columnView.columnNames != null) {
+          if (widget.columnView.columnNames.contains(v)) {
+            visibleColumnsIndex.add(i);
+          }
+        } else if (widget.linkReference != null &&
+            widget.linkReference.referencedColumnNames != null &&
+            widget.linkReference.referencedColumnNames.contains(v)) {
+          visibleColumnsIndex.add(i);
+        }
+      });
+    }
+
+    return visibleColumnsIndex;
+  }
+
   _scrollListener() {
     if (_scrollController.offset + this.widget.fetchMoreYOffset >=
             _scrollController.position.maxScrollExtent &&
@@ -177,10 +203,10 @@ class _LazyDropdownState extends State<LazyDropdown> {
               ]),
               Container(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                     child: TextField(
                 decoration: InputDecoration(
-                    hintText: "Filter",
+                    hintText: "Search",
                     enabledBorder: OutlineInputBorder(
                         borderSide:
                             BorderSide(color: UIData.ui_kit_color_2, width: 1.0)),

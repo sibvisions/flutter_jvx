@@ -22,6 +22,13 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
     this.onValueChanged(value);
   }
 
+  void onLazyDropDownValueChanged(dynamic value) {
+      JVxData data = this.data.getData(context, null, 0);
+      this.value = value[this.getVisibleColumnIndex(data)[0]];
+      //dynamic id = value[0];
+      this.onValueChanged(this.value);
+  }
+
   List<int> getVisibleColumnIndex(JVxData data) {
     List<int> visibleColumnsIndex = <int>[];
     if (data != null && data.records.isNotEmpty) {
@@ -79,9 +86,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   }
 
   @override
-  void onServerDataChanged() {
-    
-  }
+  void onServerDataChanged() {}
 
   void onScrollToEnd() {
     print("Scrolled to end");
@@ -101,63 +106,56 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
     String v = this.value;
     JVxData data;
 
-
-    if (false) { //(data != null && data.records.length < 20) {
-      data = this
-        .data
-        .getData(this.context, this.reload, (this.pageIndex + 1) * this.pageSize);
-            this.reload = null;
+    if (false) {
+      //(data != null && data.records.length < 20) {
+      data = this.data.getData(
+          this.context, this.reload, (this.pageIndex + 1) * this.pageSize);
+      this.reload = null;
       this._items = getItems(data);
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;
 
       return DropdownButtonHideUnderline(
           child: custom.CustomDropdownButton(
-          hint: Text(Properties.utf8convert(h == null ? "" : h)),
-          value: v,
-          items: this._items,
-          onChanged: valueChanged,
-          isExpanded: true,
-        )
-      );
+        hint: Text(Properties.utf8convert(h == null ? "" : h)),
+        value: v,
+        items: this._items,
+        onChanged: valueChanged,
+        isExpanded: true,
+      ));
     } else {
-      data = this
-        .data
-        .getData(this.context, null, 0);
       this._items = List<DropdownMenuItem<dynamic>>();
-      if (v==null)
+      if (v == null)
         this._items.add(this.getItem("", ""));
-      else 
+      else
         this._items.add(this.getItem(v, v));
 
       return DropdownButtonHideUnderline(
-        child: custom.CustomDropdownButton(
-          hint: Text(Properties.utf8convert(h == null ? "" : h)),
-          value: v,
-          items: this._items,
-          onChanged: valueChanged,
-          isExpanded: true,
-          onOpen: () {
-            this.onFilter(null);
-            showDialog(
-                context: context,
-                builder: (context) => LazyDropdown(
-                      data: this.data,
-                      context: context,
-                      visibleColumnIndex: this.getVisibleColumnIndex(data),
-                      fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
-                      onSave: (value) {
-                          this.value = value;
-                          onValueChanged(value);
-                        },
-                      onFilter: onFilterDropDown,
-                      allowNull: true,
-                      onScrollToEnd: onScrollToEnd)
-                  
-            );
-          },
-        )
-      );
+          child: custom.CustomDropdownButton(
+        hint: Text(Properties.utf8convert(h == null ? "" : h)),
+        value: v,
+        items: this._items,
+        onChanged: valueChanged,
+        isExpanded: true,
+        onOpen: () {
+          this.onFilter(null);
+          showDialog(
+              context: context,
+              builder: (context) => LazyDropdown(
+                  data: this.data,
+                  context: context,
+                  linkReference: this.linkReference,
+                  columnView: this.columnView,
+                  fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
+                  onSave: (value) {
+                    this.value = value;
+                    onLazyDropDownValueChanged(value);
+                  },
+                  onFilter: onFilterDropDown,
+                  allowNull: true,
+                  onScrollToEnd: onScrollToEnd));
+        },
+      ));
     }
   }
 }

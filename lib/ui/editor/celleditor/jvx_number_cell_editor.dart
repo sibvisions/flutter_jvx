@@ -65,7 +65,7 @@ class JVxNumberCellEditor extends JVxCellEditor {
   }
 
   String getFormattedValue() {
-    if (this.value!=null) {
+    if (this.value!=null && (this.value is int || this.value is double) ) {
       if (numberFormat!=null && numberFormat.isNotEmpty) {
         intl.NumberFormat format = intl.NumberFormat(numberFormat);
         return format.format(this.value);
