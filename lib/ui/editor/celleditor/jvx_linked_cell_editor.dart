@@ -22,9 +22,9 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
     this.onValueChanged(value);
   }
 
-  void onLazyDropDownValueChanged(dynamic value) {
+  void onLazyDropDownValueChanged(dynamic pValue) {
       JVxData data = this.data.getData(context, null, 0);
-      this.value = value[this.getVisibleColumnIndex(data)[0]];
+      this.value = pValue[this.getVisibleColumnIndex(data)[0]];
       //dynamic id = value[0];
       this.onValueChanged(this.value);
   }
@@ -79,6 +79,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
             children: <Widget>[
               Text(
                 Properties.utf8convert(text),
+                overflow: TextOverflow.fade
               ),
             ],
           ),
@@ -121,7 +122,6 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         value: v,
         items: this._items,
         onChanged: valueChanged,
-        isExpanded: true,
       ));
     } else {
       this._items = List<DropdownMenuItem<dynamic>>();
@@ -136,7 +136,6 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         value: v,
         items: this._items,
         onChanged: valueChanged,
-        isExpanded: true,
         onOpen: () {
           this.onFilter(null);
           showDialog(

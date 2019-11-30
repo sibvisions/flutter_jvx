@@ -99,7 +99,12 @@ class Properties {
   }
 
   static String utf8convert(String text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
+    try {
+      List<int> bytes = text.toString().codeUnits;
+      return utf8.decode(bytes);
+    } catch (e) {
+      print("Failed to decode string to utf-8!");
+      return text;
+    }
   }
 }
