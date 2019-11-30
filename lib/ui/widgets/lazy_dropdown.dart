@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
@@ -34,10 +36,10 @@ class LazyDropdown extends StatefulWidget {
 
 class _LazyDropdownState extends State<LazyDropdown> {
   final ScrollController _scrollController = ScrollController();
-
   final TextEditingController _controller = TextEditingController();
-
   final FocusNode node = FocusNode();
+  Timer filterTimer; // 200-300 Milliseconds
+  dynamic lastChangedFilter;
 
   @override
   void initState() {
@@ -56,8 +58,15 @@ class _LazyDropdownState extends State<LazyDropdown> {
     this.setState(() {});
   }
 
-  void onTextFieldValueChanged(dynamic newValue) {
-    if (this.widget.onFilter != null) this.widget.onFilter(newValue);
+  void startTimerValueChanged(dynamic value) {
+    lastChangedFilter = value;
+    if (filterTimer!=null && filterTimer.isActive) filterTimer.cancel();
+    
+    filterTimer = new Timer(Duration(milliseconds: 300), onTextFieldValueChanged);
+  }
+
+  void onTextFieldValueChanged() {
+    if (this.widget.onFilter != null) this.widget.onFilter(lastChangedFilter);
   }
 
   void _onCancel() {
@@ -161,7 +170,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              ButtonBar(alignment: MainAxisAlignment.spaceEvenly, children: <
+              ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: <
                   Widget>[
                 new RaisedButton(child: Text("Delete"), onPressed: _onDelete),
                 new RaisedButton(child: Text("Cancel"), onPressed: _onCancel),
@@ -181,7 +190,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
                 controller: _controller,
                 maxLines: 1,
                 keyboardType: TextInputType.text,
-                onChanged: onTextFieldValueChanged,
+                onChanged: startTimerValueChanged,
                 focusNode: node,
               )),
               Expanded(
