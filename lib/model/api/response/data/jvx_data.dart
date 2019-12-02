@@ -1,5 +1,6 @@
 import 'package:flutter/rendering.dart';
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
+import 'package:jvx_mobile_v3/model/filter.dart';
 import 'package:jvx_mobile_v3/utils/text_utils.dart';
 
 /// Data holding Class for [JVxComponent]'s.
@@ -56,6 +57,16 @@ class JVxData extends ResponseObject {
     }
 
     return maxLengthPerColumn;
+  }
+
+  bool deleteLocalRecord(Filter filter) {
+
+    this.records?.forEach((r) {
+      if (r is List) {
+        //columnNames.asMap().forEach(f)
+      }
+    });
+    
   }
 
   JVxData.fromJson(Map<String, dynamic> json)
