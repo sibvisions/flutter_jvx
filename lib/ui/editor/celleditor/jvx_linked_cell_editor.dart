@@ -25,7 +25,6 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   void onLazyDropDownValueChanged(dynamic pValue) {
       JVxData data = this.data.getData(context, null, 0);
       this.value = pValue[this.getVisibleColumnIndex(data)[0]];
-      //dynamic id = value[0];
       this.onValueChanged(this.value);
   }
 

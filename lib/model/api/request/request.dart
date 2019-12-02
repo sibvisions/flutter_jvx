@@ -37,7 +37,8 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.DOWNLOAD ||
     type == RequestType.CHANGE ||
     type == RequestType.UPLOAD ||
-    type == RequestType.DAL_FILTER);
+    type == RequestType.DAL_FILTER ||
+    type == RequestType.DAL_DELETE);
 }
 
 abstract class Request extends Equatable {

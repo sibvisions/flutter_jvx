@@ -139,8 +139,8 @@ class ComponentData {
         RequestType.DAL_DELETE);
 
       addToRequestQueue(select);
-      _data.selectedRow = index;
-      _onDataChanged.forEach((d) => d());
+      //_data.selectedRow = index;
+      //_onDataChanged.forEach((d) => d());
       //BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, _data.records, "Delete Record", "Delete record failed. Index out of bounds!");

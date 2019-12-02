@@ -90,7 +90,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
     JVxData data = widget.data.getData(context, null, 0);
     if (this.widget.onSave!=null && data.records.length>index) {
       dynamic value = data.getRow(index);
-      //dynamic value = data.records[index][0];
       this.widget.onSave(value);
       this.updateData();
     }
