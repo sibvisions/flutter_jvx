@@ -63,6 +63,10 @@ class JVxImageCellEditor extends JVxCellEditor {
               .dispatch(Reload(requestType: RequestType.RELOAD));
         }
       });
+    } else {
+      currentImage = Image.memory(file.readAsBytesSync());
+      BlocProvider.of<ApiBloc>(context)
+          .dispatch(Reload(requestType: RequestType.RELOAD));
     }
   }
 
