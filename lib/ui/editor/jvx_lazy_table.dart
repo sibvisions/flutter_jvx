@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
@@ -154,17 +155,34 @@ class JVxLazyTable extends JVxEditor {
               c != null ? c.toString() : "", index, i));
       });
 
-      return Dismissible(
-        confirmDismiss: (DismissDirection direction) async =>
-            Future.delayed(Duration(seconds: 2), () => true),
-        background: Container(
-          color: Colors.red,
-          child: Text('DELETE'),
-        ),
-        child: Container(color: Colors.white, child: getTableRow(children, index, false)),
-        key: UniqueKey(),
-        onDismissed: (DismissDirection direction) => this.data.deleteRecord(context, index),
-      );
+      if (this.data.deleteEnabled) {
+        /*return Dismissible(
+          confirmDismiss: (DismissDirection direction) async =>
+              Future.delayed(Duration(seconds: 2), () => true),
+          background: Container(
+            color: Colors.red,
+            child: Text('DELETE'),
+          ),
+          child: Container(color: Colors.white, child: getTableRow(children, index, false)),
+          key: UniqueKey(),
+          onDismissed: (DismissDirection direction) => this.data.deleteRecord(context, index),
+        );*/
+        return Slidable(
+          actionExtentRatio: 0.25,
+          child: Container(color: Colors.white, child: getTableRow(children, index, false)),
+          actionPane: SlidableDrawerActionPane(),
+          secondaryActions: <Widget>[
+            new IconSlideAction(
+              caption: 'Delete',
+              color: Colors.red,
+              icon: Icons.delete,
+              onTap: () => this.data.deleteRecord(context, index),
+            ),
+          ],
+        );
+      } else {
+        return Container(color: Colors.white, child: getTableRow(children, index, false));
+      }
     }
 
     return Container();
