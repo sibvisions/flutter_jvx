@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
+import 'package:jvx_mobile_v3/model/filter.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 
 class DataScreen {
@@ -17,6 +18,11 @@ class DataScreen {
   Queue<Request> _requestQueue = Queue<Request>();
 
   void updateData(Request request, List<JVxData> data, List<JVxMetaData> metaData) {
+
+    if(request is SelectRecord && request.requestType==RequestType.DAL_DELETE) {
+      ComponentData cData = getComponentData(request.dataProvider);
+      cData.data.deleteLocalRecord(request.filter);
+    }
 
     data?.forEach((d) {
       ComponentData cData = getComponentData(d.dataProvider);

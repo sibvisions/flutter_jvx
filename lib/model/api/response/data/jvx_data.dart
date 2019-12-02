@@ -59,14 +59,51 @@ class JVxData extends ResponseObject {
     return maxLengthPerColumn;
   }
 
-  bool deleteLocalRecord(Filter filter) {
+  List<int> getColumnIndex(List<dynamic> columnNames) {
+    List<int> visibleColumnsIndex = <int>[];
+      this.columnNames.asMap().forEach((i, v) {
+        if (columnNames != null) {
+          if (columnNames.contains(v)) {
+            visibleColumnsIndex.add(i);
+          }
+        } 
+      });
 
-    this.records?.forEach((r) {
-      if (r is List) {
-        //columnNames.asMap().forEach(f)
+    return visibleColumnsIndex;
+  }
+
+  int getRowIndexWithFilter(Filter filter) {
+    int rowIndex  = -1;
+    if (this.records!=null && filter.values!=null && filter.columnNames!=null && 
+      filter.values.length == filter.columnNames.length) {
+      List<int> columnIndex = this.getColumnIndex(filter.columnNames);
+      for (int i=0; i<this.records.length;i++) {
+        dynamic r = this.records[i];
+        if (r is List) {
+          bool found = true;
+          columnIndex.asMap().forEach((j,ci) {
+            found = (r[ci] == filter.values[j]) & found;
+          });
+
+          if (found) {
+            rowIndex = i;
+            break;
+          }
+        }
       }
-    });
-    
+    }
+
+    return rowIndex;
+  }
+
+  bool deleteLocalRecord(Filter filter) {
+    int index = this.getRowIndexWithFilter(filter);
+    if (index>=0) {
+      this.records.removeAt(index);
+      return true;
+    }
+
+    return false;
   }
 
   JVxData.fromJson(Map<String, dynamic> json)
