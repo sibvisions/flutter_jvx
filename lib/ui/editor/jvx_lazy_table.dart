@@ -126,7 +126,9 @@ class JVxLazyTable extends JVxEditor {
               value: 1,
             )
           ]).then((val) {
-            if (val != null) {}
+            if (val != null) {
+              this.data.insertRecord(context);
+            }
           });
     }
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/insert_record.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
@@ -144,6 +145,14 @@ class ComponentData {
       //BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, data.records, "Delete Record", "Delete record failed. Index out of bounds!");
+    }
+  }
+
+  void insertRecord(BuildContext context) {
+    if (insertEnabled) {
+      InsertRecord insert = InsertRecord(this.dataProvider);
+
+      addToRequestQueue(insert);
     }
   }
 
