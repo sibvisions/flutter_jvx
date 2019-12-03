@@ -14,6 +14,7 @@ enum RequestType {
   DAL_FETCH,
   DAL_DELETE,
   DAL_FILTER,
+  DAL_INSERT,
   PRESS_BUTTON,
   NAVIGATION,
   LOADING,
@@ -39,7 +40,8 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.UPLOAD ||
     type == RequestType.DAL_FILTER ||
     type == RequestType.DAL_DELETE ||
-    type == RequestType.RELOAD);
+    type == RequestType.RELOAD ||
+    type == RequestType.DAL_INSERT);
 }
 
 abstract class Request extends Equatable {
