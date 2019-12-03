@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
@@ -8,6 +9,7 @@ import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/utils/text_utils.dart';
+import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxLazyTable extends JVxEditor {
@@ -33,6 +35,7 @@ class JVxLazyTable extends JVxEditor {
   double fetchMoreYOffset = 0;
   JVxData _data;
   List<int> columnFlex;
+  var _tapPosition;
 
   TextStyle get headerTextStyle {
     return TextStyle(
@@ -92,11 +95,37 @@ class JVxLazyTable extends JVxEditor {
     } else {
       return Container(
         decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-            color: Colors.white,
-          ),
-        child: ListTile(onTap: () => _onRowTapped(index), title: Row(children: children)),
+          boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
+          color: Colors.white,
+        ),
+        child: GestureDetector(
+            onTap: () {
+              _onRowTapped(index);
+            },
+            child: ListTile(title: Row(children: children))),
       );
+    }
+  }
+
+  showContextMenu(BuildContext context) {
+    if (this.data.insertEnabled) {
+      showMenu(
+          position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
+              Offset.zero & MediaQuery.of(context).size),
+          context: context,
+          items: <PopupMenuEntry<int>>[
+            PopupMenuItem(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Icon(FontAwesomeIcons.plusSquare, color: Colors.grey[600],),
+                  Text(Translations.of(context).text2('Insert')),
+                ],
+              ),
+              enabled: true,
+              value: 1,
+            )
+          ]).then((val) {});
     }
   }
 
@@ -146,34 +175,22 @@ class JVxLazyTable extends JVxEditor {
   }
 
   Widget getDataRow(JVxData data, int index) {
-
     if (data != null && data.records != null && index < data.records.length) {
       List<Widget> children = new List<Widget>();
 
-      data.getRow(index, columnNames).asMap().forEach((i,c) {
-        children.add(getTableColumn(
-              c != null ? c.toString() : "", index, i));
+      data.getRow(index, columnNames).asMap().forEach((i, c) {
+        children.add(getTableColumn(c != null ? c.toString() : "", index, i));
       });
 
       if (this.data.deleteEnabled) {
-        /*return Dismissible(
-          confirmDismiss: (DismissDirection direction) async =>
-              Future.delayed(Duration(seconds: 2), () => true),
-          background: Container(
-            color: Colors.red,
-            child: Text('DELETE'),
-          ),
-          child: Container(color: Colors.white, child: getTableRow(children, index, false)),
-          key: UniqueKey(),
-          onDismissed: (DismissDirection direction) => this.data.deleteRecord(context, index),
-        );*/
         return Slidable(
           actionExtentRatio: 0.25,
-          child: Container(color: Colors.white, child: getTableRow(children, index, false)),
+          child: Container(
+              color: Colors.white, child: getTableRow(children, index, false)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
             new IconSlideAction(
-              caption: 'Delete',
+              caption: Translations.of(context).text2('Delete'),
               color: Colors.red,
               icon: Icons.delete,
               onTap: () => this.data.deleteRecord(context, index),
@@ -181,7 +198,8 @@ class JVxLazyTable extends JVxEditor {
           ],
         );
       } else {
-        return Container(color: Colors.white, child: getTableRow(children, index, false));
+        return Container(
+            color: Colors.white, child: getTableRow(children, index, false));
       }
     }
 
@@ -229,7 +247,8 @@ class JVxLazyTable extends JVxEditor {
     _data = data.getData(context, reload, pageSize);
     this.reload = null;
 
-    this.columnFlex = _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle);
+    this.columnFlex =
+        _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle);
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;
@@ -238,10 +257,14 @@ class JVxLazyTable extends JVxEditor {
       builder: (BuildContext context, BoxConstraints constraints) => Container(
         width: constraints.minWidth,
         height: constraints.minHeight,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: itemCount,
-          itemBuilder: itemBuilder,
+        child: GestureDetector(
+          onTapDown: (details) => _tapPosition = details.globalPosition,
+          onLongPress: () => showContextMenu(context),
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: itemCount,
+            itemBuilder: itemBuilder,
+          ),
         ),
       ),
     );

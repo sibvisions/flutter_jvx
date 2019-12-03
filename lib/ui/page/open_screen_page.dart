@@ -128,13 +128,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 }
 
                 if (state.requestType == RequestType.OPEN_SCREEN) {
+                  title = state.screenGeneric.screenTitle;
                   if (mounted &&
                       _scaffoldKey.currentState != null &&
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
                   screen = JVxScreen(ComponentCreator());
-                  title = state.action.label;
+                  // title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
 

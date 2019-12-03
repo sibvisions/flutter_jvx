@@ -5,6 +5,12 @@ class ScreenGeneric extends ResponseObject {
   List<ChangedComponent> changedComponents;
   bool update;
 
+  get screenTitle {
+    if (this.changedComponents != null && this.changedComponents.length > 0) {
+      return this.changedComponents[0].screenTitle;
+    }
+  }
+
   ScreenGeneric({this.changedComponents});
 
   ScreenGeneric.fromChangedComponentsJson(Map<String, dynamic> json) {
