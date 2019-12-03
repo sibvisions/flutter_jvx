@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:ui' as prefix1;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
@@ -55,12 +57,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   JVxScreen screen = JVxScreen(ComponentCreator());
   bool errorMsgShown = false;
   Orientation lastOrientation;
-  String title;
+  String title = '';
   String componentId;
 
   @override
   Widget build(BuildContext context) {
-    title = widget.title;
     componentId = widget.componentId
         .toString()
         .replaceAll("[<'", '')
@@ -128,7 +129,6 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 }
 
                 if (state.requestType == RequestType.OPEN_SCREEN) {
-                  title = state.screenGeneric.screenTitle;
                   if (mounted &&
                       _scaffoldKey.currentState != null &&
                       _scaffoldKey.currentState.isEndDrawerOpen)
@@ -142,7 +142,6 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 if (state.screenGeneric != null &&
                     !state.screenGeneric.update) {
                   screen = JVxScreen(ComponentCreator());
-                  //title = 'To-Do';
                   componentId = state.screenGeneric.componentId;
                 }
 
@@ -162,7 +161,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
               bool close = false;
 
-              await for (Response res in BlocProvider.of<ApiBloc>(context).state) {
+              await for (Response res
+                  in BlocProvider.of<ApiBloc>(context).state) {
                 if (res.requestType == RequestType.NAVIGATION) {
                   close = true;
                 }
@@ -177,6 +177,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               }
               return true;
             }, builder: (context, state) {
+              if (state.screenGeneric != null && !state.screenGeneric.update) {
+                title = state.screenGeneric.screenTitle;
+              }
               return Scaffold(
                   endDrawer: MenuDrawerWidget(
                     menuItems: widget.items,
@@ -260,8 +263,19 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   ],
                 ),
                 GestureDetector(
-                  onTap: () => pick('camera').then((val) {
-                    file = val;
+                  onTap: () => pick('camera').then((val) async {
+                    ImageProperties properties =
+                        await FlutterNativeImage.getImageProperties(val.path);
+                    File compressedImage =
+                        await FlutterNativeImage.compressImage(val.path,
+                            quality: 80,
+                            targetWidth: 320,
+                            targetHeight:
+                                (properties.height * 320 / properties.width)
+                                    .round());
+
+                    file = compressedImage;
+
                     Navigator.of(context).pop();
                   }),
                   child: Padding(
@@ -327,8 +341,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           width: 15,
                         ),
                         Text(
-                          Translations.of(context)
-                              .text2('Filesystem'),
+                          Translations.of(context).text2('Filesystem'),
                           style: TextStyle(fontSize: 18),
                         ),
                       ],
@@ -353,8 +366,6 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     } else if (type == 'file system') {
       file = await FilePicker.getFile(type: FileType.ANY);
     }
-
-    print('FILE: $file');
 
     return file;
   }

@@ -43,7 +43,7 @@ class JVxImageCellEditor extends JVxCellEditor {
   @override
   set value(dynamic value) {
     super.value = value;
-    if (value != null) {
+    if (value != null && value.toString().isNotEmpty) {
       Image img = Image.file(file);
 
       Uint8List bytes = base64Decode(value);

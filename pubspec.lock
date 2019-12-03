@@ -207,6 +207,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_native_image:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "5d71bdc5624a846a1e973a43018f7b17d636fdc8"
+      url: "https://github.com/btastic/flutter_native_image.git"
+    source: git
+    version: "0.0.4"
   flutter_picker:
     dependency: "direct main"
     description:
