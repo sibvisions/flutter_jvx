@@ -36,7 +36,10 @@ class UIData {
     Colors.blueGrey.shade800,
     Colors.black87,
   ];
-  static List<Color> kitGradients2 = [Color(0xFF055ba2), Colors.blue];
+  static List<Color> kitGradients2 = [
+    UIData.ui_kit_color_2,
+    UIData.ui_kit_color_2[400]
+  ];
 
   static Color textColor = UIData.ui_kit_color_2.computeLuminance() > 0.5
       ? Colors.black
