@@ -64,9 +64,16 @@ class JVxImageCellEditor extends JVxCellEditor {
         }
       });
     } else {
-      currentImage = Image.memory(file.readAsBytesSync());
-      BlocProvider.of<ApiBloc>(context)
-          .dispatch(Reload(requestType: RequestType.RELOAD));
+      if (defaultImageName != null) {
+        file = File(defaultImageName != null
+            ? '${globals.dir}$defaultImageName'
+            : 'assets/images/sib_visions.jpg');
+        if (file.existsSync()) {
+          currentImage = Image.memory(file.readAsBytesSync());
+          BlocProvider.of<ApiBloc>(context)
+              .dispatch(Reload(requestType: RequestType.RELOAD));
+        }
+      }
     }
   }
 
@@ -74,6 +81,4 @@ class JVxImageCellEditor extends JVxCellEditor {
   Widget getWidget() {
     return currentImage;
   }
-
-  changeImage() {}
 }

@@ -198,7 +198,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
               ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: <
                   Widget>[
                 new RaisedButton(child: Text("Delete"), onPressed: _onDelete),
-                new RaisedButton(child: Text("Cancel"), onPressed: _onCancel),
+                new RaisedButton(child: Text("Cancel", style: TextStyle(color: Colors.white),), onPressed: _onCancel, color: UIData.ui_kit_color_2,),
               ]),
               Container(
                   child: Padding(

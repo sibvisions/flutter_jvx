@@ -52,12 +52,14 @@ class JVxEditor extends JVxComponent implements IEditor {
   void onBeginEditing() {}
 
   void onValueChanged(dynamic value) {
-    data.setValues(context, (value is List)?value:[value], [columnName]);
+    data.setValues(context, (value is List) ? value : [value], [columnName]);
   }
 
   void onFilter(dynamic value) {
     if (cellEditor is JVxReferencedCellEditor) {
-      (cellEditor as JVxReferencedCellEditor).data.filterData(context, value, this.name);
+      (cellEditor as JVxReferencedCellEditor)
+          .data
+          .filterData(context, value, this.name);
     }
   }
 
@@ -121,19 +123,23 @@ class JVxEditor extends JVxComponent implements IEditor {
 
     if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
 
-    Color color = Colors.transparent; // Colors.grey[200];
-
     if (this.cellEditor is JVxChoiceCellEditor) {
       return Container(child: this.cellEditor.getWidget());
     } else {
       return Container(
           decoration: BoxDecoration(
-              color: cellEditorBackground != null ? cellEditorBackground : Colors.transparent,
+              color: cellEditorBackground != null
+                  ? cellEditorBackground
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(5),
-              border: cellEditor.borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
+              border: cellEditor.borderVisible
+                  ? Border.all(color: UIData.ui_kit_color_2)
+                  : null),
           constraints: constraints,
           //color: color,
-          child: Container(width: 100, child: cellEditor.getWidget()));
+          child: DefaultTextStyle(
+              style: TextStyle(color: cellEditorForeground != null ? cellEditorForeground : Colors.black, fontFamily: 'Raleway'),
+              child: Container(width: 100, child: cellEditor.getWidget()) ));
     }
   }
 }
