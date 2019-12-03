@@ -100,6 +100,7 @@ showProgress(BuildContext context, [String loadingText]) {
               child: Opacity(
                 opacity: 0.7,
                 child: Material(
+                  borderRadius: BorderRadius.circular(15),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,

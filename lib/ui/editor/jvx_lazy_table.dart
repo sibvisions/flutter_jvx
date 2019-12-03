@@ -125,7 +125,9 @@ class JVxLazyTable extends JVxEditor {
               enabled: true,
               value: 1,
             )
-          ]).then((val) {});
+          ]).then((val) {
+            if (val != null) {}
+          });
     }
   }
 
