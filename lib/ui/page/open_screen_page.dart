@@ -269,9 +269,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     File compressedImage =
                         await FlutterNativeImage.compressImage(val.path,
                             quality: 80,
-                            targetWidth: 320,
+                            targetWidth: globals.uploadPicWidth,
                             targetHeight:
-                                (properties.height * 320 / properties.width)
+                                (properties.height * globals.uploadPicWidth / properties.width)
                                     .round());
 
                     file = compressedImage;

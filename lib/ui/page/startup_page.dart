@@ -73,7 +73,7 @@ class _StartupPageState extends State<StartupPage> {
           val[0].debug) {
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
           globals.appName = val[0].appName;
-          SharedPreferencesHelper().setData(val[0].appName, null, null);
+          SharedPreferencesHelper().setData(val[0].appName, null, null, null);
         } else {
           showError(context, 'Error in Config',
               'Please enter a valid application name in conf.json and restart the app.');
@@ -87,7 +87,7 @@ class _StartupPageState extends State<StartupPage> {
             return;
           } else {
             globals.baseUrl = val[0].baseUrl;
-            SharedPreferencesHelper().setData(null, val[0].baseUrl, null);
+            SharedPreferencesHelper().setData(null, val[0].baseUrl, null, null);
           }
         } else {
           showError(context, 'Error in Config',
@@ -148,6 +148,10 @@ class _StartupPageState extends State<StartupPage> {
           prefData['language'].isEmpty) {
       } else {
         globals.language = prefData['language'];
+      }
+
+      if (prefData['picSize'] != null) {
+        globals.uploadPicWidth = prefData['picSize'];
       }
     });
   }
