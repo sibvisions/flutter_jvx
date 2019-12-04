@@ -39,6 +39,10 @@ class DataScreen {
       cData?.updateSelectedRow(request.selectedRow);
     }
 
+    if (request!=null && request.subsequentRequest!=null) {
+      this._addToRequestQueue(request.subsequentRequest);
+    }
+
     _requestQueue.remove(request);
     _sendFromQueue();
   }

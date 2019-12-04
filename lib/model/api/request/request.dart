@@ -51,6 +51,7 @@ abstract class Request extends Equatable {
   RequestType requestType;
   bool isProcessing = false;
   String clientId;
+  Request subsequentRequest;
 
   Request({this.requestType, this.clientId});
 

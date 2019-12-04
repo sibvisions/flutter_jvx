@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/insert_record.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/save_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
@@ -154,6 +155,11 @@ class ComponentData {
 
       addToRequestQueue(insert);
     }
+  }
+
+  void saveData(BuildContext context) {
+    SaveData save = SaveData(this.dataProvider);
+    addToRequestQueue(save);
   }
 
   void filterData(BuildContext context, String value, String editorComponentId) {
