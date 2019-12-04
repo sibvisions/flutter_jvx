@@ -7,6 +7,7 @@ import 'package:jvx_mobile_v3/model/api/request/change.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/insert_record.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/save_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
@@ -83,7 +84,8 @@ class ApiBloc extends Bloc<Request, Response> {
         event is SelectRecord ||
         event is FetchData ||
         event is FilterData ||
-        event is InsertRecord) {
+        event is InsertRecord ||
+        event is SaveData) {
       yield* data(event);
     } else if (event is PressButton) {
       yield updateResponse(Response()
@@ -406,6 +408,22 @@ class ApiBloc extends Bloc<Request, Response> {
         updateResponse(response);
         return response;
         break;
+      case RequestType.DAL_DELETE:
+        response =
+          await restClient.postAsync('/api/dal/deleteRecord', request.toJson());
+          response.requestType = request.requestType;
+          response.request = request;
+          updateResponse(response);
+          return response;
+        break;
+      case RequestType.DAL_SAVE:
+        response =
+          await restClient.postAsync('/api/dal/save', request.toJson());
+          response.requestType = request.requestType;
+          response.request = request;
+          updateResponse(response);
+          return response;
+        break;
       case RequestType.DOWNLOAD_TRANSLATION:
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
@@ -484,14 +502,6 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.RELOAD:
         // TODO: Handle this case.
-        break;
-      case RequestType.DAL_DELETE:
-        response =
-          await restClient.postAsync('/api/dal/deleteRecord', request.toJson());
-          response.requestType = request.requestType;
-          response.request = request;
-          updateResponse(response);
-          return response;
         break;
     }
 

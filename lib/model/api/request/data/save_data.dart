@@ -2,12 +2,12 @@
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
-/// Model for the [InsertRecord] request.
-class InsertRecord extends Request {
+/// Model for the [SaveData] request.
+class SaveData extends Request {
   String dataProvider;
 
-  InsertRecord(this.dataProvider)  : 
-      super(clientId: globals.clientId, requestType: RequestType.DAL_INSERT);
+  SaveData(this.dataProvider)  : 
+      super(clientId: globals.clientId, requestType: RequestType.DAL_SAVE);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'clientId': clientId,
