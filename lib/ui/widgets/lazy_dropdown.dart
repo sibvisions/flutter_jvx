@@ -97,7 +97,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   Widget itemBuilder(BuildContext ctxt, int index) {
     //return Text("Na oida");
-    JVxData data = widget.data.getData(context, null, 0);
+    JVxData data = widget.data.data;
     return getDataRow(data, index);
   }
 
