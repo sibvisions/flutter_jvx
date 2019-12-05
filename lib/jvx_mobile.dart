@@ -8,7 +8,11 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class JvxMobile extends StatelessWidget {
-  final materialApp = MaterialApp(
+  bool loadConf;
+
+  JvxMobile(this.loadConf);
+
+  MaterialApp materialApp() => MaterialApp(
     title: 'JVx Mobile',
     theme: ThemeData(
       primaryColor: UIData.ui_kit_color_2,
@@ -30,13 +34,13 @@ class JvxMobile extends StatelessWidget {
     ],
     initialRoute: '/',
     routes: {
-      '/': (context) => StartupPage(),
+      '/': (context) => StartupPage(this.loadConf),
       '/settings': (context) => SettingsPage(),
     },
   );
 
   @override
   Widget build(BuildContext context) {
-    return materialApp;
+    return materialApp();
   }
 }

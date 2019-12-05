@@ -5,19 +5,26 @@ import 'jvx_meta_data_data_provider.dart';
 
 class JVxMetaData extends ResponseObject {
   String dataProvider;
-  List<JVxMetaDataDataProvider> detailDataProviders;
+  List<JVxMetaDataDataProvider> detailDataProviders = <JVxMetaDataDataProvider>[];
   bool deleteEnabled;
   bool updateEnabled;
-  List<JVxMetaDataColumn> columns;
+  bool insertEnabled;
+  List<JVxMetaDataColumn> columns = <JVxMetaDataColumn>[];
+  List<String> primaryKeyColumns = <String>[];
 
   JVxMetaData({this.dataProvider, this.columns, this.detailDataProviders, this.deleteEnabled, this.updateEnabled});
 
   JVxMetaData.fromJson(Map<String, dynamic> json) {
     dataProvider = json['dataProvider'];
-    if (json['detailDataProviders'] != null) detailDataProviders = json['detailDataProviders'].forEach((dp) => JVxMetaDataDataProvider.fromJson(dp));
+    if (json['detailDataProviders'] != null) 
+      json['detailDataProviders'].forEach((dp) => detailDataProviders.add(JVxMetaDataDataProvider.fromJson(dp)));
     deleteEnabled = json['deleteEnabled'];
     updateEnabled = json['updateEnabled'];
-    if (json['columns'] != null) columns = json['columns'].forEach((c) => JVxMetaDataColumn.fromJson(c));
+    insertEnabled = json['insertEnabled'];
+    if (json['primaryKeyColumns'] != null) 
+      primaryKeyColumns = List<String>.from(json['primaryKeyColumns']);
+    if (json['columns'] != null) 
+      json['columns'].forEach((c) => columns.add(JVxMetaDataColumn.fromJson(c)));
     super.name = json['name'];
     super.componentId = json['componentId'];
   }

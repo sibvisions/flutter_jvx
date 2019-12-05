@@ -13,7 +13,8 @@ dependencies:
     sdk: flutter
   flutter_cupertino_localizations: ^1.0.1
   cupertino_icons: ^0.1.2
-  http: ^0.12.0+2
+  http_middleware: ^1.0.0
+  http: ^0.11.3+16
   font_awesome_flutter:
   json_annotation: ^2.4.0
   shared_preferences: ^0.5.3+4
@@ -21,13 +22,19 @@ dependencies:
     git: git://github.com/yangyxd/flutter_picker.git
   path_provider: any
   archive: ^2.0.10
-  xml: ^3.2.0
+  xml: ^3.2.0 
   gson: ^0.1.2
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
   equatable: ^0.2.0
   intl: ^0.15.8
   keyboard_actions: ^2.1.2
+  file_picker: ^1.4.2
+  image_picker: ^0.6.1+11
+  package_info: ^0.4.0+11
+  flutter_slidable: "^0.5.4"
+  flutter_native_image:
+    git: https://github.com/btastic/flutter_native_image.git
 
 dev_dependencies:
   flutter_test:
@@ -41,7 +48,6 @@ flutter:
   assets:
     - assets/images/sib_visions.jpg
     - assets/images/sibvisions.png
-    - locale/i18n_en.json
     - locale/i18n_de.json
     - env/conf.json
 

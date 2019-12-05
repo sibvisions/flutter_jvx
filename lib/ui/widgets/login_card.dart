@@ -36,7 +36,7 @@ class _LoginCardState extends State<LoginCard>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              globals.applicationStyle != null
+              (globals.applicationStyle != null && globals.applicationStyle.loginTitle != null)
                   ? new Text(
                 globals.applicationStyle.loginTitle,
                 style: TextStyle(
@@ -72,7 +72,6 @@ class _LoginCardState extends State<LoginCard>
                 style: new TextStyle(
                     fontSize: 15.0, color: Colors.black),
                 decoration: new InputDecoration(
-                  // hintText: Translations.of(context).text('enter_password_hint'),
                     labelText: Translations.of(context)
                         .text2('Password:', 'Password:'),
                     labelStyle: TextStyle(fontWeight: FontWeight.w700)),
@@ -100,7 +99,7 @@ class _LoginCardState extends State<LoginCard>
                         _login(context);
                       },
                       text: Translations.of(context)
-                          .text2('Logon', 'Logon'))),
+                          .text2('Login', 'Login'))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
@@ -154,7 +153,7 @@ class _LoginCardState extends State<LoginCard>
   }
   
   _login(BuildContext context) {
-    if (this.password.length > 0 && this.username.length > 0) {
+    // if (this.password.length > 0 && this.username.length > 0) {
       /*
       loginBloc.loginSink.add(
           new LoginViewModel.withPW(
@@ -173,9 +172,9 @@ class _LoginCardState extends State<LoginCard>
       );
 
       BlocProvider.of<ApiBloc>(context).dispatch(login);
-    } else {
-      showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('no_username_or_password', 'Please enter username and password'));
-    }
+    // } else {
+    //   showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('Please enter your username and password.'));
+    // }
   }
 
   @override

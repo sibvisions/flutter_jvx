@@ -12,10 +12,18 @@ enum RequestType {
   DAL_SELECT_RECORD,
   DAL_SET_VALUE,
   DAL_FETCH,
+  DAL_DELETE,
+  DAL_FILTER,
+  DAL_INSERT,
+  DAL_SAVE,
   PRESS_BUTTON,
   NAVIGATION,
   LOADING,
-  DEVICE_STATUS
+  RELOAD,
+  DEVICE_STATUS,
+  DOWNLOAD,
+  UPLOAD,
+  CHANGE,
 }
 
 bool isScreenRequest(RequestType type) {
@@ -26,12 +34,24 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.PRESS_BUTTON ||
     // type == RequestType.CLOSE_SCREEN ||
     type == RequestType.NAVIGATION ||
-    type == RequestType.DEVICE_STATUS);
+    type == RequestType.DEVICE_STATUS ||
+    type == RequestType.UPLOAD ||
+    type == RequestType.DOWNLOAD ||
+    type == RequestType.CHANGE ||
+    type == RequestType.UPLOAD ||
+    type == RequestType.DAL_FILTER ||
+    type == RequestType.DAL_DELETE ||
+    type == RequestType.RELOAD ||
+    type == RequestType.DAL_INSERT ||
+    type == RequestType.DAL_SAVE);
 }
 
 abstract class Request extends Equatable {
+  int sequenceNo;
   RequestType requestType;
+  bool isProcessing = false;
   String clientId;
+  Request subsequentRequest;
 
   Request({this.requestType, this.clientId});
 

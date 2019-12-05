@@ -17,7 +17,7 @@ class LoginBackground extends StatelessWidget {
           new Container(
               decoration: BoxDecoration(color: Colors.white),
               width: double.infinity,
-              child: globals.applicationStyle == null
+              child: (globals.applicationStyle == null || globals.applicationStyle?.loginIcon == null)
                   ? Image.asset(
                       'assets/images/sib_visions.jpg',
                       fit: BoxFit.fitHeight,
@@ -47,7 +47,7 @@ class LoginBackground extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: globals.applicationStyle == null
+                child: (globals.applicationStyle == null || globals.applicationStyle?.loginIcon == null)
                     ? Image.asset('assets/images/sibvisions.png',
                         fit: BoxFit.fitHeight)
                     : Image.file(

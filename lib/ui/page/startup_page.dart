@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/model/api/request/loading.dart';
+import 'package:jvx_mobile_v3/model/api/request/login.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/application_meta_data.dart';
@@ -14,6 +17,7 @@ import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/model/api/request/startup.dart';
 import 'package:jvx_mobile_v3/ui/page/login_page.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
+import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -21,7 +25,9 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 enum StartupValidationType { username, password }
 
 class StartupPage extends StatefulWidget {
-  StartupPage({Key key}) : super(key: key);
+  bool loadConf;
+
+  StartupPage(this.loadConf, {Key key}) : super(key: key);
 
   _StartupPageState createState() => _StartupPageState();
 }
@@ -30,18 +36,15 @@ class _StartupPageState extends State<StartupPage> {
   bool errorMsgShown = false;
 
   Widget newStartupBuilder() {
-    return BlocBuilder<ApiBloc, Response>(
-      builder: (context, state) {
-        if (state != null &&
-            !state.loading &&
-            !errorMsgShown) {
-          errorMsgShown = true;
-          Future.delayed(Duration.zero, () => handleError(state, context));
-        }
-
-        startupHandler(state);
-
-        return Scaffold(
+    return errorHandlerListener(
+      BlocListener<ApiBloc, Response>(
+        listener: (context, state) {
+          print('Startup Page Request Type: ${state.requestType}');
+          _startupHandler(state);
+          _navigationHandler(state);
+          _loginHandler(state);
+        },
+        child: Scaffold(
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -54,8 +57,8 @@ class _StartupPageState extends State<StartupPage> {
               Text('Loading...'),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -63,16 +66,66 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
-      if (val[0].debug) {
-        globals.appName = val[0].appName;
-        globals.baseUrl = val[0].baseUrl;
+      print('HELLO ${widget.loadConf}');
+      if (widget.loadConf &&
+          val[0] != null &&
+          val[0].debug != null &&
+          val[0].debug) {
+        if (val[0].appName != null && val[0].appName.isNotEmpty) {
+          globals.appName = val[0].appName;
+          SharedPreferencesHelper().setData(val[0].appName, null, null, null);
+        } else {
+          showError(context, 'Error in Config',
+              'Please enter a valid application name in conf.json and restart the app.');
+          return;
+        }
+
+        if (val[0].baseUrl != null && val[0].baseUrl.isNotEmpty) {
+          if (val[0].baseUrl.endsWith('/')) {
+            showError(context, 'Error in Config',
+                'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
+            return;
+          } else {
+            globals.baseUrl = val[0].baseUrl;
+            SharedPreferencesHelper().setData(null, val[0].baseUrl, null, null);
+          }
+        } else {
+          showError(context, 'Error in Config',
+              'Please enter a valid base url in conf.json and restart the app.');
+        }
         globals.debug = val[0].debug;
+
+        if (val[0].username != null &&
+            val[0].username.isNotEmpty &&
+            (globals.username == null || globals.username.isEmpty)) {
+          globals.username = val[0].username;
+        }
+
+        if (val[0].password != null &&
+            val[0].password.isNotEmpty &&
+            (globals.password == null || globals.password.isEmpty)) {
+          globals.password = val[0].password;
+        }
+
+        if (val[0].appMode != null && val[0].appMode.isNotEmpty) {
+          globals.appMode = val[0].appMode;
+        }
+      } else {
+        //BlocProvider.of<ApiBloc>(context).dispatch(Loading());
       }
+
+      if (globals.appName == null || globals.baseUrl == null) {
+        Navigator.pushReplacementNamed(context, '/settings');
+        return;
+      }
+
       Startup request = Startup(
           layoutMode: 'generic',
           applicationName: globals.appName,
           screenHeight: MediaQuery.of(context).size.height.toInt(),
           screenWidth: MediaQuery.of(context).size.width.toInt(),
+          appMode: globals.appMode.isNotEmpty ? globals.appMode : 'preview',
+          readAheadLimit: 100,
           requestType: RequestType.STARTUP);
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);
@@ -100,8 +153,10 @@ class _StartupPageState extends State<StartupPage> {
       } else {
         globals.language = prefData['language'];
       }
-      // if (globals.appName == null || globals.baseUrl == null)
-      // Navigator.pushReplacementNamed(context, '/settings');
+
+      if (prefData['picSize'] != null) {
+        globals.uploadPicWidth = prefData['picSize'];
+      }
     });
   }
 
@@ -135,22 +190,75 @@ class _StartupPageState extends State<StartupPage> {
     return newStartupBuilder();
   }
 
-  void startupHandler(Response state) {
+  void _loginHandler(Response state) {
     if (state != null &&
-        !state.loading &&
+        state.requestType == RequestType.LOGIN &&
+        state.menu != null) {
+      if (state.userData != null) {
+        globals.username = state.userData.userName;
+
+        if (state.userData.profileImage != null)
+          globals.profileImage = state.userData.profileImage;
+      }
+
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => MenuPage(
+                menuItems: state.menu.items,
+              )));
+    }
+  }
+
+  void _navigationHandler(Response state) {
+    if (state != null && state.requestType == RequestType.APP_STYLE) {
+      Menu menu = state.menu;
+
+      if (state.menu == null &&
+          globals.username.isNotEmpty &&
+          globals.password.isNotEmpty) {
+        Login login = Login(
+            action: 'Anmelden',
+            clientId: globals.clientId,
+            createAuthKey: false,
+            username: globals.username,
+            password: globals.password,
+            requestType: RequestType.LOGIN);
+
+        BlocProvider.of<ApiBloc>(context).dispatch(login);
+      }
+
+      if (menu == null) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+      } else {
+        if (state.userData != null) {
+          globals.username = state.userData.userName;
+
+          if (state.userData.profileImage != null)
+            globals.profileImage = state.userData.profileImage;
+        }
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => MenuPage(
+                  menuItems: menu.items,
+                )));
+      }
+    }
+  }
+
+  void _startupHandler(Response state) {
+    if (state != null &&
         state.requestType == RequestType.STARTUP &&
         state.applicationMetaData != null &&
-        state.language != null &&
-        (!state.error || state.error == null)) {
+        state.language != null) {
       String appVersion;
       SharedPreferencesHelper().getAppVersion().then((val) {
         appVersion = val;
 
         ApplicationMetaData applicationMetaData = state.applicationMetaData;
 
+        print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
+
         if (appVersion != applicationMetaData.version) {
-          SharedPreferencesHelper()
-              .setAppVersion(applicationMetaData.version);
+          SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
         }
 
@@ -161,20 +269,6 @@ class _StartupPageState extends State<StartupPage> {
             contentMode: 'json');
 
         BlocProvider.of<ApiBloc>(context).dispatch(applicationStyle);
-
-        Menu menu = state.menu;
-
-        Future.delayed(Duration.zero, () {
-          if (menu == null) {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => LoginPage()));
-          } else {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (_) => MenuPage(
-                      menuItems: menu.items,
-                    )));
-          }
-        });
       });
     }
   }

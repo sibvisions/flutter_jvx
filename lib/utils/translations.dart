@@ -23,33 +23,34 @@ class Translations {
   }
 
   String text(String key) {
+    if (locale.languageCode == 'en') {
+      return key;
+    }
     return _localizedValues[key];
   }
 
   String text2(String key, [String defaultValue]) {
-    return _localizedValues2[key] ?? text(key) ?? defaultValue; // text(key) ?? defaultValue;
+    return _localizedValues2[key] ?? text(key) ?? key;
   }
 
   static Future<Translations> load(Locale locale) async {
-    try {
-      Translations translations = new Translations(locale);
-      String jsonContent =
-        await rootBundle.loadString("locale/i18n_${locale.languageCode}.json");
-      _localizedValues = json.decode(jsonContent);
-      
-      if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
-        _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
-      }
+    Translations translations = new Translations(locale);
 
-      return translations;
-    } catch (e) {
-      Translations translations = new Translations(const Locale('en'));
-      String jsonContent =
-        await rootBundle.loadString("locale/i18n_en.json");
-      _localizedValues = json.decode(jsonContent);
-      print('default tranlation loaded');
-      return translations;
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
+      _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
+    } else {
+      try {
+        Translations translations = new Translations(const Locale('en'));
+        String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
+        _localizedValues = json.decode(jsonContent);
+
+        return translations;
+      } catch (e) {
+        throw new Error();
+      }
     }
+
+    return translations;
   }
 
   get currentLanguage => locale.languageCode;
@@ -80,7 +81,12 @@ class XmlLoader {
 
       if (globals.translation['translation.xml'] != null)
         file = new File(globals.translation['translation.xml']);
+
+      if (file.existsSync()) {
         contents = file.readAsStringSync();
+      } else {
+        print('Error with Loading ${globals.translation["translation.xml"]}');
+      }
 
       if (contents != null) {
         xml.XmlDocument doc = xml.parse(contents);
@@ -99,8 +105,13 @@ class XmlLoader {
       String contents;
 
       file = new File(globals.translation['translation_$lang.xml']);
-      contents = file.readAsStringSync();
 
+      if (file.existsSync()) {
+        contents = file.readAsStringSync();
+      } else {
+        print('Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+      }
+      
       xml.XmlDocument doc = xml.parse(contents);
 
       Map<String, String> translations = <String, String>{};

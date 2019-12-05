@@ -4,10 +4,14 @@ import 'package:jvx_mobile_v3/model/api/exceptions/session_timeout_exception.dar
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/api/response/auth_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/close_screen_action.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
+import 'package:jvx_mobile_v3/model/api/response/download_action.dart';
 import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
 import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
+import 'package:jvx_mobile_v3/model/api/response/upload_action.dart';
+import 'package:jvx_mobile_v3/model/api/response/user_data.dart';
 
 import 'application_meta_data.dart';
 import 'language.dart';
@@ -16,6 +20,7 @@ import 'response_object.dart';
 
 class Response {
   dynamic download;
+  String downloadFileName;
   RequestType requestType;
   bool error;
   String errorName;
@@ -33,6 +38,10 @@ class Response {
   List<JVxData> jVxData = <JVxData>[];
   List<JVxMetaData> jVxMetaData = <JVxMetaData>[];
   ApplicationStyleResponse applicationStyle;
+  DownloadAction downloadAction;
+  UploadAction uploadAction;
+  CloseScreenAction closeScreenAction;
+  UserData userData;
   Request request;
 
   Response();
@@ -40,7 +49,10 @@ class Response {
   Response.fromJsonForAppStyle(Map<String, dynamic> json) {
     checkForError(json);
     error = false;
-    applicationStyle = ApplicationStyleResponse.fromJson(json);
+    if (json != null)
+      applicationStyle = ApplicationStyleResponse.fromJson(json);
+    else
+      applicationStyle = null;
   }
 
   static checkForError(Map<String, dynamic> json) {
@@ -83,8 +95,20 @@ class Response {
         case ResponseObjectType.DAL_FETCH:
           jVxData.add(JVxData.fromJson(r));
           break;
-        case ResponseObjectType.DAL_META_DATA:
+        case ResponseObjectType.DAL_METADATA:
           jVxMetaData.add(JVxMetaData.fromJson(r));
+          break;
+        case ResponseObjectType.DOWNLOAD:
+          downloadAction = DownloadAction.fromJson(r);
+          break;
+        case ResponseObjectType.UPLOAD:
+          uploadAction = UploadAction.fromJson(r);
+          break;
+        case ResponseObjectType.CLOSESCREEN:
+          closeScreenAction = CloseScreenAction.fromJson(r);
+          break;
+        case ResponseObjectType.USERDATA:
+          userData = UserData.fromJson(r);
           break;
       }
     });

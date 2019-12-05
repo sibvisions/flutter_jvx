@@ -9,6 +9,7 @@ class ChangedComponent extends ComponentProperties {
   CellEditor cellEditor;
   bool destroy;
   bool remove;
+  String screenTitle;
 
   get layoutName {
     List<String> parameter = this.getProperty<String>(ComponentProperty.LAYOUT)?.split(",");
@@ -25,7 +26,8 @@ class ChangedComponent extends ComponentProperties {
     className = this.getProperty<String>(ComponentProperty.CLASS_NAME);
     destroy = this.getProperty<bool>(ComponentProperty.$DESTROY, false);
     remove =  this.getProperty<bool>(ComponentProperty.$REMOVE, false);
-    
+    screenTitle = this.getProperty<String>(ComponentProperty.SCREEN__TITLE);
+
     if (json[_cellEditorIdentifier] != null) cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);
   }
 }

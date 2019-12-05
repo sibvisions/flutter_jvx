@@ -5,6 +5,7 @@ import 'package:jvx_mobile_v3/model/choice_cell_editor_image.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxChoiceCellEditor extends JVxCellEditor {
   List<ChoiceCellEditorImage> _items = <ChoiceCellEditorImage>[];
@@ -16,13 +17,14 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   JVxChoiceCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
-    defaultImageName =
-        changedCellEditor.getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME, defaultImageName);
-    allowedVales =
-        changedCellEditor.getProperty<List<String>>(CellEditorProperty.ALLOWED_VALUES, allowedVales);
-    imageNames = changedCellEditor.getProperty<List<String>>(CellEditorProperty.IMAGE_NAMES, imageNames);
+    defaultImageName = changedCellEditor.getProperty<String>(
+        CellEditorProperty.DEFAULT_IMAGE_NAME, defaultImageName);
+    allowedVales = changedCellEditor.getProperty<List<String>>(
+        CellEditorProperty.ALLOWED_VALUES, allowedVales);
+    imageNames = changedCellEditor.getProperty<List<String>>(
+        CellEditorProperty.IMAGE_NAMES, imageNames);
 
-    // defaultImage = loadImage(defaultImageName);
+    defaultImage = loadImage(defaultImageName);
     loadImages();
   }
 
@@ -39,8 +41,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   ChoiceCellEditorImage loadImage(String path) {
     Image image = Image.file(File('${globals.dir}$path'));
-    try {
-    } catch (e) {
+    try {} catch (e) {
       selectedImage = defaultImage;
     }
     String val = allowedVales[imageNames.indexOf(path)];
@@ -56,19 +57,43 @@ class JVxChoiceCellEditor extends JVxCellEditor {
     else
       selectedImage = _items[0];
 
-    onValueChanged(_items.indexOf(selectedImage));
+    onValueChanged(selectedImage.value);
   }
 
   @override
-  Widget getWidget() {
-    return Container(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
-        child: FlatButton(
-          onPressed: () => changeImage(),
-          padding: EdgeInsets.all(0.0),
-          child: selectedImage.image,
-        ),
+  Widget getWidget(
+      {bool editable,
+      Color background,
+      Color foreground,
+      String placeholder,
+      String font,
+      int horizontalAlignment}) {
+    setEditorProperties(
+        editable: editable,
+        background: background,
+        foreground: foreground,
+        placeholder: placeholder,
+        font: font,
+        horizontalAlignment: horizontalAlignment);
+    if (this.value is bool) {
+      if (this.value)
+        selectedImage = _items[0];
+      else
+        selectedImage = _items[1];
+    } else {
+      if (this.value != null && (this.value as String).isNotEmpty) {
+        selectedImage = _items[this.allowedVales.indexOf(this.value)];
+      } else if (defaultImage != null) {
+        selectedImage = defaultImage;
+      }
+    }
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
+      child: FlatButton(
+        onPressed: () => changeImage(),
+        padding: EdgeInsets.all(0.0),
+        child: selectedImage.image,
       ),
     );
   }

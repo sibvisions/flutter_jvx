@@ -8,6 +8,7 @@ import 'i_component.dart';
 abstract class JVxComponent implements IComponent {
   String name;
   Key componentId;
+  String rawComponentId;
   JVxComponentState state = JVxComponentState.Free;
   Color background = Colors.transparent;
   Color foreground;
@@ -32,8 +33,9 @@ abstract class JVxComponent implements IComponent {
   JVxComponent(this.componentId, this.context);
 
   void updateProperties(ChangedComponent changedComponent) {
+    rawComponentId = changedComponent.getProperty<String>(ComponentProperty.ID);
     background = changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
-    name = changedComponent.getProperty<String>(ComponentProperty.NAME);
+    name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     isVisible = changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
     style = JVxTextStyle.addFontToTextStyle(changedComponent.getProperty<String>(ComponentProperty.FONT, ""), style);
     foreground = changedComponent.getProperty<HexColor>(ComponentProperty.FOREGROUND, null);

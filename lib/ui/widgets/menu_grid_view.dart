@@ -5,6 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_mobile_v3/custom_screen/custom_screen_api.dart';
+import 'package:jvx_mobile_v3/custom_screen/i_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
@@ -20,133 +22,71 @@ import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:collection/collection.dart';
 
 class MenuGridView extends StatefulWidget {
   final List<MenuItem> items;
+  final bool groupedMenuMode;
 
-  MenuGridView({Key key, this.items}) : super(key: key);
+  MenuGridView({Key key, this.items, this.groupedMenuMode = true})
+      : super(key: key);
 
   @override
   _MenuGridViewState createState() => _MenuGridViewState();
 }
 
 class _MenuGridViewState extends State<MenuGridView> {
+  CustomScreenApi customScreenApi = CustomScreenApi();
   String title;
 
   bool errorMsgShown = false;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ApiBloc, Response>(
-      condition: (previousState, state) {
-          print('*** MenuGridView - HashCode: PREVIOUS: ${previousState.hashCode} NOW: ${state.hashCode}');
-          return previousState.hashCode!=state.hashCode;
-      },
-      builder: (context, state) {
-        print("*** MenuGridView - RequestType: " + state.requestType.toString());
+    return errorAndLoadingListener(
+      BlocListener<ApiBloc, Response>(
+        // condition: (previousState, state) {
+        //   print(
+        //       '*** MenuGridView - HashCode: PREVIOUS: ${previousState.hashCode} NOW: ${state.hashCode}');
+        //   return previousState.hashCode != state.hashCode;
+        // },
+        listener: (context, state) {
+          print("*** MenuGridView - RequestType: " +
+              state.requestType.toString());
 
-        if (state != null && state.loading && state.requestType == RequestType.LOADING) {
-          SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
-        }
+          // if (state != null &&
+          //     state.requestType == RequestType.APP_STYLE &&
+          //     !state.loading &&
+          //     !state.error) {
+          //   globals.applicationStyle = state.applicationStyle;
+          // }
 
-        if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
-          SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
-        }
+          if (state != null &&
+              state.screenGeneric != null &&
+              state.requestType == RequestType.OPEN_SCREEN) {
+            Key componentID = new Key(state.screenGeneric.componentId);
+            globals.items = widget.items;
 
-        if (state != null && !state.loading && !errorMsgShown && state.error) {
-          errorMsgShown = true;
-          Future.delayed(Duration.zero, () => handleError(state, context));
-        }
-
-        if (state != null &&
-            state.screenGeneric != null &&
-            state.requestType == RequestType.OPEN_SCREEN) {
-          ScreenGeneric screenGeneric = state.screenGeneric;
-          List<JVxData> data = state.jVxData;
-          List<JVxMetaData> metaData = state.jVxMetaData;
-
-          Key componentID = new Key(screenGeneric.componentId);
-
-          globals.items = widget.items;
-
-          Future.delayed(Duration.zero, () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => new OpenScreenPage(
-                    changedComponents: screenGeneric.changedComponents,
-                    data: data,
-                    metaData: metaData,
-                    componentId: componentID,
-                    title: title,
-                    items: globals.items,
-                  ))));
-        }
-
-        return new GridView.builder(
-          itemCount: this.widget.items.length,
-          gridDelegate:
-              new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          itemBuilder: (BuildContext context, int index) {
-            return new GestureDetector(
-              child: new Card(
-                margin: EdgeInsets.all(6),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                elevation: 2.0,
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => new OpenScreenPage(
+                      screenGeneric: state.screenGeneric,
+                      data: state.jVxData,
+                      metaData: state.jVxMetaData,
+                      request: state.request,
+                      componentId: componentID,
+                      title: title,
+                      items: globals.items,
+                    )));
+          }
+        },
+        child: widget.groupedMenuMode
+            ? SingleChildScrollView(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    widget.items[index].image != null
-                        ? new CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: !widget.items[index].image.startsWith('FontAwesome')
-                                ? new Image.asset(
-                                    '${globals.dir}${widget.items[index].image}')
-                                : _iconBuilder(
-                                    formatFontAwesomeText(widget.items[index].image)))
-                        : new CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: Icon(
-                              FontAwesomeIcons.clone,
-                              size: 48,
-                              color: Colors.grey[300],
-                            )),
-                    Container(
-                        padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Text(
-                          widget.items[index].action.label,
-                          style: TextStyle(fontSize: 20),
-                          textAlign: TextAlign.center,
-                        )),
-                  ],
+                  children: _buildGroupedGridView(this.widget.items),
                 ),
-              ),
-              onTap: () {
-                prefix0.Action action = widget.items[index].action;
-
-                title = action.label;
-
-                OpenScreen openScreen = OpenScreen(
-                    action: action,
-                    clientId: globals.clientId,
-                    manualClose: false,
-                    requestType: RequestType.OPEN_SCREEN);
-
-                BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-
-                /*
-                OpenScreenBloc openScreenBloc = OpenScreenBloc();
-                StreamSubscription<FetchProcess> apiStreamSubscription;
-                
-                apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
-                openScreenBloc.openScreenSink.add(
-                  new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
-                );
-
-                */
-              },
-            );
-          },
-        );
-      },
+              )
+            : _buildGridView(this.widget.items),
+      ),
     );
   }
 
@@ -160,5 +100,193 @@ class _MenuGridViewState extends State<MenuGridView> {
     );
 
     return icon;
+  }
+
+  Widget _buildGridView(List<MenuItem> menuItems) {
+    return GridView.builder(
+      itemCount: menuItems.length,
+      gridDelegate:
+          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      itemBuilder: (BuildContext context, int index) {
+        return new GestureDetector(
+          child: new Card(
+            margin: EdgeInsets.all(6),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            elevation: 2.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                menuItems[index].image != null
+                    ? new CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: !menuItems[index].image.startsWith('FontAwesome')
+                            ? new Image.asset(
+                                '${globals.dir}${menuItems[index].image}')
+                            : _iconBuilder(
+                                formatFontAwesomeText(menuItems[index].image)))
+                    : new CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Icon(
+                          FontAwesomeIcons.clone,
+                          size: 48,
+                          color: Colors.grey[300],
+                        )),
+                Container(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Text(
+                      menuItems[index].action.label,
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    )),
+              ],
+            ),
+          ),
+          onTap: () {
+            if (!customScreenApi.showCustomScreen()) {
+              prefix0.Action action = menuItems[index].action;
+
+              title = action.label;
+
+              OpenScreen openScreen = OpenScreen(
+                  action: action,
+                  clientId: globals.clientId,
+                  manualClose: false,
+                  requestType: RequestType.OPEN_SCREEN);
+
+              BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+            } else {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => customScreenApi.getWidget()));
+            }
+
+            /*
+                    OpenScreenBloc openScreenBloc = OpenScreenBloc();
+                    StreamSubscription<FetchProcess> apiStreamSubscription;
+
+                    apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
+                    openScreenBloc.openScreenSink.add(
+                      new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+                    );
+
+                    */
+          },
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildGroupedGridView(List<MenuItem> menuItems) {
+    Map<String, List<MenuItem>> groupedMItems =
+        groupBy(menuItems, (obj) => obj.group);
+
+    List<Widget> widgets = <Widget>[];
+
+    groupedMItems.forEach((k, v) {
+      Widget group = GridView.count(
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        physics: ScrollPhysics(),
+        crossAxisCount: 2,
+        children: _buildGroupGridViewCards(v),
+      );
+
+      widgets.add(_buildGroupHeader(v[0].group.toString()));
+
+      widgets.add(group);
+    });
+
+    return widgets;
+  }
+
+  List<Widget> _buildGroupGridViewCards(List<MenuItem> menuItems) {
+    List<Widget> widgets = <Widget>[];
+
+    menuItems.forEach((mItem) {
+      Widget menuItemCard = _buildGroupItemCard(mItem);
+
+      widgets.add(menuItemCard);
+    });
+
+    return widgets;
+  }
+
+  Widget _buildGroupItemCard(MenuItem menuItem) {
+    return new GestureDetector(
+      child: new Card(
+        margin: EdgeInsets.all(5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 2.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: menuItem.image != null
+                  ? new CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: !menuItem.image.startsWith('FontAwesome')
+                          ? new Image.asset('${globals.dir}${menuItem.image}')
+                          : _iconBuilder(formatFontAwesomeText(menuItem.image)))
+                  : new CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      child: Icon(
+                        FontAwesomeIcons.clone,
+                        size: 48,
+                        color: Colors.grey[300],
+                      )),
+            ),
+            Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: Text(
+                  menuItem.action.label,
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                )),
+          ],
+        ),
+      ),
+      onTap: () {
+        prefix0.Action action = menuItem.action;
+
+        title = action.label;
+
+        OpenScreen openScreen = OpenScreen(
+            action: action,
+            clientId: globals.clientId,
+            manualClose: false,
+            requestType: RequestType.OPEN_SCREEN);
+
+        BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+
+        /*
+                    OpenScreenBloc openScreenBloc = OpenScreenBloc();
+                    StreamSubscription<FetchProcess> apiStreamSubscription;
+                    
+                    apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
+                    openScreenBloc.openScreenSink.add(
+                      new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
+                    );
+
+                    */
+      },
+    );
+  }
+
+  Widget _buildGroupHeader(String groupName) {
+    return Padding(
+        padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+        child: ListTile(
+          title: Text(
+            groupName,
+            textAlign: TextAlign.left,
+            // textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.bold,
+                fontSize: 18),
+          ),
+        ));
   }
 }

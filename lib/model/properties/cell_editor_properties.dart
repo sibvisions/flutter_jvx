@@ -1,4 +1,3 @@
-
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 
 enum CellEditorProperty {
@@ -14,7 +13,12 @@ enum CellEditorProperty {
   IMAGE_NAMES,
   DATE_FORMAT,
   NUMBER_FORMAT,
-  DATA_PROVIDER
+  DATA_PROVIDER,
+  SELECTED_VALUE,
+  DESELECTED_VALUE,
+  TEXT,
+  BORDER_VISIBLE,
+  PLACEHOLDER_VISIBLE,
 }
 
 class CellEditorProperties {
@@ -25,14 +29,17 @@ class CellEditorProperties {
   }
 
   bool hasProperty(CellEditorProperty property) {
-    return _properties.hasProperty(_properties.propertyAsString(property.toString()));
+    return _properties
+        .hasProperty(_properties.propertyAsString(property.toString()));
   }
 
   void removeProperty(CellEditorProperty property) {
-    _properties.removeProperty(_properties.propertyAsString(property.toString()));
+    _properties
+        .removeProperty(_properties.propertyAsString(property.toString()));
   }
 
   T getProperty<T>(CellEditorProperty property, [T defaultValue]) {
-    return _properties.getProperty<T>(_properties.propertyAsString(property.toString()), defaultValue);
+    return _properties.getProperty<T>(
+        _properties.propertyAsString(property.toString()), defaultValue);
   }
 }

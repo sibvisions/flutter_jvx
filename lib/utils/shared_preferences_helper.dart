@@ -15,14 +15,15 @@ class SharedPreferencesHelper {
     return false;
   }
 
-  Future<Map<String, String>> getData() async {
+  Future<Map<String, dynamic>> getData() async {
     prefs = await SharedPreferences.getInstance();
 
-    Map<String, String> prefData = <String, String>{};
+    Map<String, dynamic> prefData = <String, dynamic>{};
 
     prefData['appName'] = prefs.getString('appName');
     prefData['baseUrl'] = prefs.getString('baseUrl');
     prefData['language'] = prefs.getString('language');
+    prefData['picSize'] = prefs.getInt('picSize');
 
     return prefData;
   }
@@ -104,13 +105,14 @@ class SharedPreferencesHelper {
     prefs.setBool('welcome', welcome);
   }
 
-  void setData(String appName, String baseUrl, String language) async {
+  void setData(String appName, String baseUrl, String language, int picSize) async {
     prefs = await SharedPreferences.getInstance();
     if (appName != null && appName.isNotEmpty) prefs.setString('appName', appName);
     if (baseUrl != null && baseUrl.isNotEmpty) {
       prefs.setString('baseUrl', baseUrl);
     }
     if (language != null && language.isNotEmpty) prefs.setString('language', language);
+    if (picSize != null && (picSize == 320 || picSize == 640 || picSize == 1024)) prefs.setInt('picSize', picSize);
   }
 
   void setLoginData(String username, String password) async {

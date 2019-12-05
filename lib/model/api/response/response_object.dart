@@ -3,10 +3,14 @@ enum ResponseObjectType {
   LANGUAGE,
   SCREEN_GENERIC,
   DAL_FETCH,
-  DAL_META_DATA,
+  DAL_METADATA,
   LOGIN,
   MENU,
-  AUTHENTICATIONDATA
+  AUTHENTICATIONDATA,
+  DOWNLOAD,
+  UPLOAD,
+  CLOSESCREEN,
+  USERDATA
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {

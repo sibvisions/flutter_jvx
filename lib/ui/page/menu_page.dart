@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_grid_view.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_list_widget.dart';
@@ -18,15 +17,21 @@ class MenuPage extends StatelessWidget {
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     bool drawerMenu;
-
     if (globals.applicationStyle != null) {
-       drawerMenu = globals.applicationStyle.menuMode == 'drawer' ? true : false;
+      drawerMenu = globals.applicationStyle.menuMode == 'drawer' ? true : false;
     } else {
       drawerMenu = false;
     }
 
+    Color backgroundColor = Colors.white;
+
+    if (globals.applicationStyle != null && globals.applicationStyle.menuMode != null) {
+      backgroundColor = globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade200 : Colors.grey.shade200;
+    }
+
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text('Menu'),
         automaticallyImplyLeading: false,
@@ -45,16 +50,20 @@ class MenuPage extends StatelessWidget {
   Widget getMenuWidget() {
     if (globals.applicationStyle != null) {
       if (globals.applicationStyle.menuMode == 'grid') {
-        return MenuGridView(items: this.menuItems,);
+        return MenuGridView(items: this.menuItems, groupedMenuMode: false);
       } else if (globals.applicationStyle.menuMode == 'list') {
         return MenuListWidget(menuItems: this.menuItems,);
       } else if (globals.applicationStyle.menuMode == 'drawer') {
         return Center(
           child: Text('Choose Item'),
         );
+      } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
+        return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
+      } else if (globals.applicationStyle.menuMode == null) {
+        return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
       }
     } else {
-      return MenuGridView(items: this.menuItems,);
+      return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
     }
     return null;
   }

@@ -4,10 +4,11 @@ import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/container/i_container.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_container.dart';
 
-
 class JVxGroupPanel extends JVxContainer implements IContainer {
   String text = "";
-  JVxGroupPanel(Key componentId, BuildContext context) : super(componentId, context);
+
+  JVxGroupPanel(Key componentId, BuildContext context)
+      : super(componentId, context);
 
   void updateProperties(ChangedComponent changedcomponent) {
     super.updateProperties(changedcomponent);
@@ -22,26 +23,28 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
       child = this.components[0].getWidget();
     }
 
-    if (child!= null) {
+    if (child != null) {
       return Container(
-            padding: EdgeInsets.fromLTRB(5, 10, 5, 5),
-            color: this.background, 
-            child: Container(
-              decoration: new BoxDecoration(
-              color: Colors.grey[600],
-                  borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(5.0),
-                      topRight: const Radius.circular(5.0))),
-              child: Container(
-                margin: EdgeInsets.fromLTRB(1, 1, 1, 1),
-                decoration: new BoxDecoration(
-                color: Colors.white,
-                    borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(5.0),
-                        topRight: const Radius.circular(5.0))),
-                child: child)
-            )
-        );
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  text,
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            Divider(color: Colors.grey[600], height: 10),
+            child
+          ],
+        ),
+      );
     } else {
       return new Container();
     }

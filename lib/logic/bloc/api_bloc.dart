@@ -3,13 +3,19 @@ import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
+import 'package:jvx_mobile_v3/model/api/request/change.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/insert_record.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/save_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
 import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
+import 'package:jvx_mobile_v3/model/api/request/loading.dart';
 import 'package:jvx_mobile_v3/model/api/request/navigation.dart';
 import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/application_meta_data.dart';
 import 'package:jvx_mobile_v3/model/api/request/application_style.dart';
@@ -33,69 +39,100 @@ class ApiBloc extends Bloc<Request, Response> {
   @override
   Stream<Response> mapEventToState(Request event) async* {
     if (event is Startup) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* startup(event);
     } else if (event is Login) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* login(event);
     } else if (event is Logout) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* logout(event);
     } else if (event is OpenScreen) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* openscreen(event);
     } else if (event is CloseScreen) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* closescreen(event);
     } else if (event is Download) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* download(event);
     } else if (event is ApplicationStyle) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* applicationStyle(event);
     } else if (event is SetValues ||
         event is SelectRecord ||
-        event is FetchData) {
+        event is FetchData ||
+        event is FilterData ||
+        event is InsertRecord ||
+        event is SaveData) {
       yield* data(event);
     } else if (event is PressButton) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* pressButton(event);
     } else if (event is Navigation) {
-      yield Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
-        ..requestType = RequestType.LOADING;
+        ..requestType = RequestType.LOADING);
       yield* navigation(event);
     } else if (event is DeviceStatus) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* deviceStatus(event);
+    } else if (event is Download) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* download(event);
+    } else if (event is Upload) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* upload(event);
+    } else if (event is Change) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* change(event);
+    } else if (event is Loading) {
       yield Response()
         ..loading = true
         ..error = false
         ..requestType = RequestType.LOADING;
-      yield* deviceStatus(event);
+    } else if (event.requestType == RequestType.RELOAD) {
+      yield Response()
+        ..loading = false
+        ..error = false
+        ..requestType = RequestType.RELOAD;
     }
   }
 
@@ -103,7 +140,11 @@ class ApiBloc extends Bloc<Request, Response> {
     Map<String, String> authData =
         await SharedPreferencesHelper().getLoginData();
 
-    globals.username = authData['username'];
+    if ((authData['username'] != null && authData['username'].isNotEmpty) &&
+        (authData['password'] != null && authData['password'].isNotEmpty)) {
+      globals.password = authData['password'];
+      globals.username = authData['username'];
+    }
 
     if (authData['authKey'] != null) {
       request.authKey = authData['authKey'];
@@ -121,6 +162,10 @@ class ApiBloc extends Bloc<Request, Response> {
           Translations.load(Locale(globals.language));
         }
       }
+
+      if (resp != null && resp.loginItem != null) {
+        SharedPreferencesHelper().setAuthKey(null);
+      }
     }
 
     yield resp;
@@ -128,8 +173,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   Stream<Response> login(Login request) async* {
     globals.username = request.username;
-    SharedPreferencesHelper().setLoginData(request.username, request.password);
 
+    if (request.createAuthKey) {
+      SharedPreferencesHelper().setLoginData(request.username, request.password);
+    }
     Response resp = await processRequest(request);
 
     AuthenticationData authData;
@@ -137,15 +184,18 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if (authData != null)
       SharedPreferencesHelper().setAuthKey(authData.authKey);
-      
+
     yield resp;
   }
 
   Stream<Response> logout(Logout request) async* {
+    SharedPreferencesHelper().setLoginData('', '');
+    globals.username = '';
+    globals.password = '';
     yield await processRequest(request);
   }
 
-  Stream<Response> openscreen(OpenScreen request) async* {    
+  Stream<Response> openscreen(OpenScreen request) async* {
     prefix0.Action action = request.action;
 
     Response resp = await processRequest(request);
@@ -186,39 +236,57 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download request) async* {
     Response resp = await processRequest(request);
 
-    var _dir = (await getApplicationDocumentsDirectory()).path;
+    if (request.requestType == RequestType.DOWNLOAD) {
+      final directory = Platform.isAndroid
+          ? await getExternalStorageDirectory()
+          : await getApplicationDocumentsDirectory();
 
-    globals.dir = _dir;
+      var filename = '${directory.path}/${resp.downloadFileName}';
 
-    if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-      var archive = resp.download;
+      var outFile = File(filename);
+      outFile = await outFile.create(recursive: true);
+      await outFile.writeAsBytes(resp.download);
+    } else {
+      var _dir;
 
-      globals.translation = <String, String>{};
-
-      for (var file in archive) {
-        var filename = '$_dir/${file.name}';
-        if (file.isFile) {
-          var outFile = File(filename);
-          globals.translation[file.name] = filename;
-          outFile = await outFile.create(recursive: true);
-          await outFile.writeAsBytes(file.content);
-        }
+      if (Platform.isIOS) {
+        _dir = (await getApplicationSupportDirectory()).path;
+      } else {
+        _dir = (await getApplicationDocumentsDirectory()).path;
       }
 
-      SharedPreferencesHelper().setTranslation(globals.translation);
-      Translations.load(Locale(globals.language));
-    } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
-      var archive = resp.download;
+      globals.dir = _dir;
 
-      globals.images = List<String>();
+      if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+        var archive = resp.download;
 
-      for (var file in archive) {
-        var filename = '${globals.dir}/${file.name}';
-        if (file.isFile) {
-          var outFile = File(filename);
-          globals.images.add(filename);
-          outFile = await outFile.create(recursive: true);
-          await outFile.writeAsBytes(file.content);
+        globals.translation = <String, String>{};
+
+        for (var file in archive) {
+          var filename = '$_dir/${file.name}';
+          if (file.isFile) {
+            var outFile = File(filename);
+            globals.translation[file.name] = filename;
+            outFile = await outFile.create(recursive: true);
+            await outFile.writeAsBytes(file.content);
+          }
+        }
+
+        SharedPreferencesHelper().setTranslation(globals.translation);
+        Translations.load(Locale(globals.language));
+      } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
+        var archive = resp.download;
+
+        globals.images = List<String>();
+
+        for (var file in archive) {
+          var filename = '${globals.dir}/${file.name}';
+          if (file.isFile) {
+            var outFile = File(filename);
+            globals.images.add(filename);
+            outFile = await outFile.create(recursive: true);
+            await outFile.writeAsBytes(file.content);
+          }
         }
       }
     }
@@ -227,9 +295,21 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
-    globals.dir = (await getApplicationDocumentsDirectory()).path;
+    var _dir;
 
-    yield await processRequest(request);
+    if (Platform.isIOS) {
+      _dir = (await getApplicationSupportDirectory()).path;
+    } else {
+      _dir = (await getApplicationDocumentsDirectory()).path;
+    }
+
+    globals.dir = _dir;
+
+    Response resp = await processRequest(request);
+
+    globals.applicationStyle = resp.applicationStyle;
+
+    yield resp;
   }
 
   Stream<Response> navigation(Navigation request) async* {
@@ -239,6 +319,7 @@ class ApiBloc extends Bloc<Request, Response> {
             resp.screenGeneric.changedComponents.isEmpty) &&
         resp.jVxData.isEmpty &&
         resp.jVxMetaData.isEmpty) {
+      print('CLOSE REQUEST: ' + request.componentId);
       CloseScreen closeScreen = CloseScreen(
           clientId: globals.clientId,
           componentId: request.componentId,
@@ -248,6 +329,16 @@ class ApiBloc extends Bloc<Request, Response> {
     }
 
     yield resp;
+  }
+
+  Stream<Response> upload(Upload request) async* {
+    Response resp = await processRequest(request);
+
+    yield resp;
+  }
+
+  Stream<Response> change(Change request) async* {
+    yield await processRequest(request);
   }
 
   Future<Response> processRequest(Request request) async {
@@ -279,7 +370,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.OPEN_SCREEN:
         response =
-            await restClient.postAsync('/api/openScreen', request.toJson());
+            await restClient.postAsync('/api/v2/openScreen', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
@@ -317,6 +408,38 @@ class ApiBloc extends Bloc<Request, Response> {
         updateResponse(response);
         return response;
         break;
+      case RequestType.DAL_FILTER:
+        response =
+            await restClient.postAsync('/api/dal/filter', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.DAL_INSERT:
+        response = await restClient.postAsync(
+            '/api/dal/insertRecord', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.DAL_DELETE:
+        response = await restClient.postAsync(
+            '/api/dal/deleteRecord', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.DAL_SAVE:
+        response =
+            await restClient.postAsync('/api/dal/save', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
       case RequestType.DOWNLOAD_TRANSLATION:
         response =
             await restClient.postAsyncDownload('/download', request.toJson());
@@ -344,7 +467,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.PRESS_BUTTON:
         response =
-            await restClient.postAsync('/api/pressButton', request.toJson());
+            await restClient.postAsync('/api/v2/pressButton', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
@@ -367,6 +490,31 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.LOADING:
+        // Just loading.
+        break;
+      case RequestType.DOWNLOAD:
+        response =
+            await restClient.postAsyncDownload('/download', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.UPLOAD:
+        response = await restClient.postAsyncUpload('/upload', request);
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.CHANGE:
+        response = await restClient.postAsync('/api/changes', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.RELOAD:
         // TODO: Handle this case.
         break;
     }
@@ -394,6 +542,7 @@ class ApiBloc extends Bloc<Request, Response> {
     if (toUpdate.menu == null) toUpdate.menu = currentResponse.menu;
     //if (toUpdate.screenGeneric == null)
     //  toUpdate.screenGeneric = currentResponse.screenGeneric;
+    if (toUpdate.userData == null) toUpdate.userData = currentResponse.userData;
 
     return toUpdate;
   }

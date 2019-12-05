@@ -5,11 +5,13 @@ class Download extends Request {
   String name;
   bool libraryImages;
   bool applicationImages;
+  String fileId;
 
   Download(
       {this.name,
       this.libraryImages,
       this.applicationImages,
+      this.fileId,
       String clientId,
       RequestType requestType})
       : super(clientId: clientId, requestType: requestType);
@@ -18,6 +20,7 @@ class Download extends Request {
         'name': name,
         'libraryImages': libraryImages,
         'applicationImages': applicationImages,
-        'clientId': clientId
+        'clientId': clientId,
+        'fileId': fileId
       };
 }

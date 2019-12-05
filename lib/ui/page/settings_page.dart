@@ -8,6 +8,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:package_info/package_info.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -17,7 +18,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl, language;
+  String appName, baseUrl, language, version;
+
+  @override
+  void initState() {
+    super.initState();
+    loadVersion();
+  }
 
   Widget settingsBuilder() {
     return SingleChildScrollView(
@@ -30,8 +37,10 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                Translations.of(context).text2('settings_general', 'General Settings'),
-                style: TextStyle(color: Colors.grey.shade700),
+                Translations.of(context)
+                    .text2('Application Settings', 'Application Settings'),
+                style: TextStyle(
+                    color: Colors.grey.shade700, fontWeight: FontWeight.bold),
               ),
             ),
             Card(
@@ -44,21 +53,28 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.server,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text2('settings_app_name', 'App name')),
+                    title: Text(
+                        Translations.of(context).text2('App name', 'App name')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
-                    subtitle: Text(this.appName == null ? globals.appName : this.appName),
+                    subtitle:
+                        Text(globals.appName != null ? globals.appName : ''),
                     onTap: () {
                       showTextInputDialog(
-                        context, 
-                        Translations.of(context).text2('settings_app_name', 'App name'),
-                        Translations.of(context).text2('settings_app_name', 'App name'),
-                        Translations.of(context).text2('settings_app_name_hint', 'Enter App name'),
-                        globals.appName,
-                        (String value) {
-                          if (value == null) this.appName = globals.appName;
-                          else { this.appName = value; globals.appName = value; }
+                          context,
+                          Translations.of(context)
+                              .text2('App name', 'App name'),
+                          Translations.of(context)
+                              .text2('App name', 'App name'),
+                          Translations.of(context)
+                              .text2('Enter new App Name', 'Enter App name'),
+                          globals.appName, (String value) {
+                        if (value == null)
+                          this.appName = globals.appName;
+                        else {
+                          this.appName = value;
+                          globals.appName = value;
                         }
-                      );
+                      });
                     },
                   ),
                   ListTile(
@@ -66,27 +82,31 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.keyboard,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text2('settings_base_url', 'Base Url')),
+                    title: Text(
+                        Translations.of(context).text2('Base Url', 'Base Url')),
                     trailing: Icon(FontAwesomeIcons.arrowRight),
-                    subtitle: Text(this.baseUrl == null ? globals.baseUrl : this.baseUrl),
+                    subtitle:
+                        Text(globals.baseUrl != null ? globals.baseUrl : ''),
                     onTap: () {
                       showTextInputDialog(
-                        context,
-                        Translations.of(context).text2('settings_base_url', 'Base Url'),
-                        Translations.of(context).text2('settings_base_url', 'Base Url'),
-                        'http://enter.baseUrl/services/mobile', // Translations.of(context).text2('settings_base_url_hint', 'Enter Base Url'),
-                        globals.baseUrl,
-                        (String value) {
-                          if (value == null) this.baseUrl = globals.baseUrl;
-                          else {
-                            if (value.endsWith('/')) {
-                              value = value.substring(0, value.length - 1);
-                            }
-
-                            this.baseUrl = value; globals.baseUrl = value;
+                          context,
+                          Translations.of(context)
+                              .text2('Base Url', 'Base Url'),
+                          Translations.of(context)
+                              .text2('Base Url', 'Base Url'),
+                          'http://enter.baseUrl/services/mobile',
+                          globals.baseUrl, (String value) {
+                        if (value == null)
+                          this.baseUrl = globals.baseUrl;
+                        else {
+                          if (value.endsWith('/')) {
+                            value = value.substring(0, value.length - 1);
                           }
+
+                          this.baseUrl = value;
+                          globals.baseUrl = value;
                         }
-                      );
+                      });
                     },
                   ),
                   ListTile(
@@ -94,49 +114,108 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.language,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: Text(Translations.of(context).text2('settings_language', 'Language')),
+                    title: Text(
+                        Translations.of(context).text2('Language', 'Language')),
                     trailing: Icon(FontAwesomeIcons.arrowDown),
-                    subtitle: Text(this.language == null ? globals.language : this.language),
+                    subtitle:
+                        Text(globals.language != null ? globals.language : ''),
                     onTap: () {
                       showLanguagePicker(context);
                     },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      FontAwesomeIcons.image,
+                      color: UIData.ui_kit_color_2,
+                    ),
+                    title: DropdownButtonHideUnderline(
+                      child: DropdownButton<int>(
+                        icon: Icon(FontAwesomeIcons.chevronDown, color: Colors.grey[500],),
+                        value: globals.uploadPicWidth,
+                        onChanged: (int size) {
+                          setState(() {
+                            globals.uploadPicWidth = size;
+                          });
+                        },
+                        items: <DropdownMenuItem<int>>[
+                          DropdownMenuItem(
+                            child: Text('Small (320 px)'),
+                            value: 320,
+                          ),
+                          DropdownMenuItem(
+                            child: Text('Medium (640 px)'),
+                            value: 640,
+                          ),
+                          DropdownMenuItem(
+                            child: Text('Big (1024 px)'),
+                            value: 1024,
+                          ),
+                        ],
+                      ),
+                    ),
                   )
                 ],
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'App info',
+                style: TextStyle(
+                    color: Colors.grey.shade700, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Card(
+                color: Colors.white,
+                elevation: 2.0,
+                child: Column(children: <Widget>[
+                  ListTile(
+                    leading: Icon(
+                      FontAwesomeIcons.codeBranch,
+                    ),
+                    title: Text('Version: $version'),
+                  )
+                ]))
           ],
         ),
       ),
     );
   }
 
+  loadVersion() {
+    PackageInfo.fromPlatform().then((val) {
+      setState(() {
+        version = val.version;
+      });
+    });
+  }
+
   showLanguagePicker(BuildContext context) {
-    List languages 
-      = globals.translation.keys.map((k) => k.replaceAll('translation_', '').replaceAll('.xml', '')).toList();
+    List languages = globals.translation.keys
+        .map((k) => k.replaceAll('translation_', '').replaceAll('.xml', ''))
+        .toList();
 
     if (languages != null && languages.isNotEmpty)
       languages[languages.indexOf('translation')] = 'en';
 
     new Picker(
-      adapter: PickerDataAdapter<String>(pickerdata: languages),
-      changeToFirst: true,
-      textAlign: TextAlign.center,
-      columnPadding: const EdgeInsets.all(8.0),
-      confirmTextStyle: TextStyle(
-        color: UIData.ui_kit_color_2
-      ),
-      cancelTextStyle: TextStyle(
-        color: UIData.ui_kit_color_2
-      ),
-      onConfirm: (Picker picker, List value) {
-        String newLang = picker.getSelectedValues()[0].toString().toLowerCase();
-        setState(() {
-          globals.language = newLang;
-          this.language = newLang;
-          Translations.load(new Locale(newLang));
-        });
-      }
-    ).show(scaffoldState.currentState);
+        confirmText: Translations.of(context).text2('Confirm'),
+        cancelText: Translations.of(context).text2('Cancel'),
+        adapter: PickerDataAdapter<String>(pickerdata: languages),
+        changeToFirst: true,
+        textAlign: TextAlign.center,
+        columnPadding: const EdgeInsets.all(8.0),
+        confirmTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+        cancelTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+        onConfirm: (Picker picker, List value) {
+          String newLang =
+              picker.getSelectedValues()[0].toString().toLowerCase();
+          setState(() {
+            globals.language = newLang;
+            this.language = newLang;
+            Translations.load(new Locale(newLang));
+          });
+        }).show(scaffoldState.currentState);
   }
 
   Widget settingsLoader() {
@@ -147,26 +226,29 @@ class _SettingsPageState extends State<SettingsPage> {
       showFAB: false,
       backGroundColor: Colors.grey.shade300,
       bodyData: settingsBuilder(),
-      bottomButton1: Translations.of(context).text2('Exit', 'Exit').toUpperCase(),
-      bottomButton2: Translations.of(context).text2('Save', 'Save').toUpperCase(),
+      bottomButton1:
+          Translations.of(context).text2('Back', 'Back').toUpperCase(),
+      bottomButton2:
+          Translations.of(context).text2('Save', 'Save').toUpperCase(),
       bottomButton1Function: () {
         Navigator.of(context).pop();
       },
       bottomButton2Function: () {
         savePreferences();
-        RestartWidget.restartApp(context);
+        RestartWidget.restartApp(context, loadConf: false);
       },
     );
   }
 
   savePreferences() async {
-    SharedPreferencesHelper().setData(this.appName, this.baseUrl, this.language);
+    SharedPreferencesHelper()
+        .setData(this.appName, this.baseUrl, this.language, globals.uploadPicWidth);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-       child: settingsLoader(),
+      child: settingsLoader(),
     );
   }
 }
