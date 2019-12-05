@@ -30,20 +30,18 @@ class JVxButton extends JVxActionComponent {
   @override
   Widget getWidget() {
     return 
-      SizedBox(
-        child: RaisedButton(
-          key: this.componentId, 
-          onPressed: buttonPressed,
-          color: UIData.ui_kit_color_2[400],
-          elevation: 10,
-          child: Text(text!=null?text:"", 
-            style: TextStyle(
-              fontSize: style.fontSize,
-              color: UIData.textColor
-            )
-          ),
-          splashColor: this.background,
+      RaisedButton(
+        key: this.componentId, 
+        onPressed: buttonPressed,
+        color: UIData.ui_kit_color_2[400],
+        elevation: 10,
+        child: Text(text!=null?text:"", 
+          style: TextStyle(
+            fontSize: style.fontSize,
+            color: UIData.textColor
+          )
         ),
+        splashColor: this.background,
       );
   }
 }

@@ -187,7 +187,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
     return Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
         elevation: 0.0,
         backgroundColor: Colors.transparent,
@@ -197,7 +197,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
             children: <Widget>[
               ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: <
                   Widget>[
-                new RaisedButton(child: Text("Delete"), onPressed: _onDelete),
+                new RaisedButton(child: Text("Clear"), onPressed: _onDelete, color: UIData.ui_kit_color_2[200],),
                 new RaisedButton(child: Text("Cancel", style: TextStyle(color: Colors.white),), onPressed: _onCancel, color: UIData.ui_kit_color_2,),
               ]),
               Container(
@@ -222,10 +222,13 @@ class _LazyDropdownState extends State<LazyDropdown> {
               ),
                   )),
               Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: itemCount,
-                  itemBuilder: itemBuilder,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: itemCount,
+                    itemBuilder: itemBuilder,
+                  ),
                 ),
               ),
             ],

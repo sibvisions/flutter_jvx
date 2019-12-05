@@ -54,20 +54,16 @@ class JVxTextCellEditor extends JVxCellEditor {
         horizontalAlignment: horizontalAlignment);
     _controller.text = (this.value != null ? this.value.toString() : "");
 
-    if (editable != null) {
-      this.editable = editable;
-    }
-
     return Container(
       decoration: BoxDecoration(
-          color: background != null ? background : Colors.transparent,
+          color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
           border:
               borderVisible && this.editable ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: TextField(
-        style: TextStyle(color: foreground != null ? foreground : Colors.black),
+        style: TextStyle(color: this.foreground != null ? this.foreground : Colors.black),
         decoration: InputDecoration(
-            fillColor: background != null ? background : Colors.transparent,
+            fillColor: this.background != null ? this.background : Colors.transparent,
             enabledBorder: OutlineInputBorder(
                 borderSide:
                     BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
