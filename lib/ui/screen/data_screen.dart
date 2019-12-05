@@ -63,8 +63,8 @@ class DataScreen {
   }
 
   void onButtonPressed(String componentId, String label) {
-    // wait until textfields focus lost. 100 millis should do it.
-    Future.delayed(const Duration(milliseconds: 100), () {
+    // wait until textfields focus lost. 10 millis should do it.
+    Future.delayed(const Duration(milliseconds: 10), () {
       PressButton pressButton = PressButton(jvxAction.Action(componentId: componentId, label: label));
       _addToRequestQueue(pressButton);
     });
