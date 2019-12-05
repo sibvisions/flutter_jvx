@@ -125,6 +125,12 @@ class JVxEditor extends JVxComponent implements IEditor {
     return Container(
         constraints: constraints,
         width: 100,
-        child: cellEditor.getWidget(editable: cellEditorEditable));
+        child: cellEditor.getWidget(
+            editable: cellEditorEditable,
+            background: cellEditorBackground,
+            foreground: cellEditorForeground,
+            placeholder: cellEditorPlaceholder,
+            horizontalAlignment: cellEditorHorizontalAlignment,
+            font: cellEditorFont));
   }
 }

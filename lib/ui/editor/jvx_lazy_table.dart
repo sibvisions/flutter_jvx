@@ -258,12 +258,12 @@ class JVxLazyTable extends JVxEditor {
       itemCount += _data.records.length;
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) => Container(
-        width: constraints.minWidth,
-        height: constraints.minHeight,
-        child: GestureDetector(
-          onTapDown: (details) => _tapPosition = details.globalPosition,
-          onLongPress: () => showContextMenu(context),
+      builder: (BuildContext context, BoxConstraints constraints) => GestureDetector(
+        onTapDown: (details) => _tapPosition = details.globalPosition,
+        onLongPress: () => showContextMenu(context),
+        child: Container(
+          width: constraints.minWidth,
+          height: constraints.minHeight,
           child: ListView.builder(
             controller: _scrollController,
             itemCount: itemCount,
