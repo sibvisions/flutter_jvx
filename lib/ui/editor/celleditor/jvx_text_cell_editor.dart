@@ -11,17 +11,20 @@ class JVxTextCellEditor extends JVxCellEditor {
   bool multiLine = false;
   bool valueChanged = false;
   FocusNode node = FocusNode();
-  
-  JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context) : super(changedCellEditor, context) {
-    multiLine = (changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE)?.contains('multiline') ?? false);
+
+  JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context)
+      : super(changedCellEditor, context) {
+    multiLine = (changedCellEditor
+            .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
+            ?.contains('multiline') ??
+        false);
     node.addListener(() {
-      if (!node.hasFocus)
-        onTextFieldEndEditing();
+      if (!node.hasFocus) onTextFieldEndEditing();
     });
   }
 
   void onTextFieldValueChanged(dynamic newValue) {
-    if (this.value!=newValue) {
+    if (this.value != newValue) {
       this.value = newValue;
       this.valueChanged = true;
     }
@@ -33,30 +36,55 @@ class JVxTextCellEditor extends JVxCellEditor {
       this.valueChanged = false;
     }
   }
-  
+
   @override
-  Widget getWidget() {
-    _controller.text = (this.value!=null ? this.value.toString() : "");
-    
-    return TextField(
-      style: TextStyle(color: foreground != null ? foreground : Colors.black),
-      decoration: InputDecoration(
-        fillColor: background != null ? background : Colors.transparent,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 0.0)
-        ),
-        focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 0.0)
-        ),
+  Widget getWidget(
+      {bool editable,
+      Color background,
+      Color foreground,
+      String placeholder,
+      String font,
+      int horizontalAlignment}) {
+    setEditorProperties(
+        editable: editable,
+        background: background,
+        foreground: foreground,
+        placeholder: placeholder,
+        font: font,
+        horizontalAlignment: horizontalAlignment);
+    _controller.text = (this.value != null ? this.value.toString() : "");
+
+    if (editable != null) {
+      this.editable = editable;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+          color: background != null ? background : Colors.transparent,
+          borderRadius: BorderRadius.circular(5),
+          border:
+              borderVisible && this.editable ? Border.all(color: UIData.ui_kit_color_2) : null),
+      child: TextField(
+        style: TextStyle(color: foreground != null ? foreground : Colors.black),
+        decoration: InputDecoration(
+            fillColor: background != null ? background : Colors.transparent,
+            enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+            focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+            disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 0.0))),
+        key: this.key,
+        controller: _controller,
+        maxLines: multiLine ? 4 : 1,
+        keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
+        onEditingComplete: onTextFieldEndEditing,
+        onChanged: onTextFieldValueChanged,
+        focusNode: node,
+        enabled: this.editable,
       ),
-      key: this.key,
-      controller: _controller,
-      maxLines: multiLine ? 4 : 1,
-      keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
-      onEditingComplete: onTextFieldEndEditing,
-      onChanged: onTextFieldValueChanged,
-      focusNode: node,
-      enabled: editable,
     );
   }
 }

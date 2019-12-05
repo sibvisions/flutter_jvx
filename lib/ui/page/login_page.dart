@@ -27,7 +27,8 @@ class LoginPageState extends State<LoginPage> {
 
   Widget loginScaffold() => Scaffold(
         key: scaffoldState,
-        backgroundColor: (globals.applicationStyle != null && globals.applicationStyle.loginBackground != null)
+        backgroundColor: (globals.applicationStyle != null &&
+                globals.applicationStyle.loginBackground != null)
             ? Color(int.parse(
                 '0xFF${globals.applicationStyle.loginBackground.substring(1)}'))
             : null,
@@ -38,15 +39,8 @@ class LoginPageState extends State<LoginPage> {
       );
 
   Widget loginBuilder() => errorAndLoadingListener(
-      BlocBuilder<ApiBloc, Response>(
-          builder: (context, state) {
-            if (state != null &&
-                state.requestType == RequestType.LOGOUT &&
-                !state.loading &&
-                !state.error) {
-              return loginScaffold();
-            }
-
+        BlocListener<ApiBloc, Response>(
+          listener: (context, state) {
             if (state != null &&
                 state.requestType == RequestType.LOGIN &&
                 !state.loading &&
@@ -55,26 +49,15 @@ class LoginPageState extends State<LoginPage> {
               Menu menu = state.menu;
 
               if (menu != null)
-                Future.delayed(
-                    Duration.zero,
-                    () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (_) => MenuPage(
-                              menuItems: menu.items,
-                            ))));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (_) => MenuPage(
+                          menuItems: menu.items,
+                        )));
             }
-
-            // if (state != null &&
-            //     state.requestType == RequestType.APP_STYLE &&
-            //     !state.loading &&
-            //     !state.error) {
-            //   globals.applicationStyle = state.applicationStyle;
-            //   return loginScaffold();
-            // }
-
-              return loginScaffold();
           },
+          child: loginScaffold(),
         ),
-  );
+      );
 
   @override
   void initState() {

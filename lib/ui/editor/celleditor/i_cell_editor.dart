@@ -28,5 +28,5 @@ abstract class ICellEditor {
 
   ICellEditor(CellEditor cellEditor, this.context);
 
-  Widget getWidget();
+  Widget getWidget({bool editable, Color background, Color foreground, String placeholder, String font, int horizontalAlignment});
 }

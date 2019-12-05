@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/widgets/custom_dropdown_button.dart' as custom;
 import 'package:jvx_mobile_v3/ui/widgets/lazy_dropdown.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
@@ -23,9 +24,9 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   }
 
   void onLazyDropDownValueChanged(dynamic pValue) {
-      JVxData data = this.data.getData(context, null, 0);
-      this.value = pValue[this.getVisibleColumnIndex(data)[0]];
-      this.onValueChanged(this.value);
+    JVxData data = this.data.getData(context, null, 0);
+    this.value = pValue[this.getVisibleColumnIndex(data)[0]];
+    this.onValueChanged(this.value);
   }
 
   List<int> getVisibleColumnIndex(JVxData data) {
@@ -76,10 +77,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                Properties.utf8convert(text),
-                overflow: TextOverflow.fade
-              ),
+              Text(Properties.utf8convert(text), overflow: TextOverflow.fade),
             ],
           ),
         ));
@@ -101,7 +99,20 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   }
 
   @override
-  Widget getWidget() {
+  Widget getWidget(
+      {bool editable,
+      Color background,
+      Color foreground,
+      String placeholder,
+      String font,
+      int horizontalAlignment}) {
+    setEditorProperties(
+        editable: editable,
+        background: background,
+        foreground: foreground,
+        placeholder: placeholder,
+        font: font,
+        horizontalAlignment: horizontalAlignment);
     String h = this.value;
     String v = this.value;
     JVxData data;
@@ -115,13 +126,21 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;
 
-      return DropdownButtonHideUnderline(
-          child: custom.CustomDropdownButton(
-        hint: Text(Properties.utf8convert(h == null ? "" : h)),
-        value: v,
-        items: this._items,
-        onChanged: valueChanged,
-      ));
+      return Container(
+        decoration: BoxDecoration(
+            color: background != null ? background : Colors.transparent,
+            borderRadius: BorderRadius.circular(5),
+            border: borderVisible
+                ? Border.all(color: UIData.ui_kit_color_2)
+                : null),
+        child: DropdownButtonHideUnderline(
+            child: custom.CustomDropdownButton(
+          hint: Text(Properties.utf8convert(h == null ? "" : h)),
+          value: v,
+          items: this._items,
+          onChanged: valueChanged,
+        )),
+      );
     } else {
       this._items = List<DropdownMenuItem<dynamic>>();
       if (v == null)
@@ -129,31 +148,39 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       else
         this._items.add(this.getItem(v, v));
 
-      return DropdownButtonHideUnderline(
-          child: custom.CustomDropdownButton(
-        hint: Text(Properties.utf8convert(h == null ? "" : h)),
-        value: v,
-        items: this._items,
-        onChanged: valueChanged,
-        onOpen: () {
-          this.onFilter(null);
-          showDialog(
-              context: context,
-              builder: (context) => LazyDropdown(
-                  data: this.data,
-                  context: context,
-                  linkReference: this.linkReference,
-                  columnView: this.columnView,
-                  fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
-                  onSave: (value) {
-                    this.value = value;
-                    onLazyDropDownValueChanged(value);
-                  },
-                  onFilter: onFilterDropDown,
-                  allowNull: true,
-                  onScrollToEnd: onScrollToEnd));
-        },
-      ));
+      return Container(
+        decoration: BoxDecoration(
+            color: background != null ? background : Colors.transparent,
+            borderRadius: BorderRadius.circular(5),
+            border: borderVisible
+                ? Border.all(color: UIData.ui_kit_color_2)
+                : null),
+        child: DropdownButtonHideUnderline(
+            child: custom.CustomDropdownButton(
+          hint: Text(Properties.utf8convert(h == null ? "" : h)),
+          value: v,
+          items: this._items,
+          onChanged: valueChanged,
+          onOpen: () {
+            this.onFilter(null);
+            showDialog(
+                context: context,
+                builder: (context) => LazyDropdown(
+                    data: this.data,
+                    context: context,
+                    linkReference: this.linkReference,
+                    columnView: this.columnView,
+                    fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
+                    onSave: (value) {
+                      this.value = value;
+                      onLazyDropDownValueChanged(value);
+                    },
+                    onFilter: onFilterDropDown,
+                    allowNull: true,
+                    onScrollToEnd: onScrollToEnd));
+          },
+        )),
+      );
     }
   }
 }

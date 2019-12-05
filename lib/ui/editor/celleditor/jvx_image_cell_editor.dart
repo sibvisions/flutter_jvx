@@ -15,6 +15,7 @@ import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
@@ -64,7 +65,7 @@ class JVxImageCellEditor extends JVxCellEditor {
         }
       });
     } else {
-      if (defaultImageName != null) {
+      if (defaultImageName != null && currentImage == null) {
         file = File(defaultImageName != null
             ? '${globals.dir}$defaultImageName'
             : 'assets/images/sib_visions.jpg');
@@ -78,7 +79,27 @@ class JVxImageCellEditor extends JVxCellEditor {
   }
 
   @override
-  Widget getWidget() {
-    return currentImage;
+  Widget getWidget(
+      {bool editable,
+      Color background,
+      Color foreground,
+      String placeholder,
+      String font,
+      int horizontalAlignment}) {
+    setEditorProperties(
+        editable: editable,
+        background: background,
+        foreground: foreground,
+        placeholder: placeholder,
+        font: font,
+        horizontalAlignment: horizontalAlignment);
+    return Container(
+        decoration: BoxDecoration(
+            color: background != null ? background : Colors.transparent,
+            borderRadius: BorderRadius.circular(5),
+            border: borderVisible
+                ? Border.all(color: UIData.ui_kit_color_2)
+                : null),
+        child: currentImage);
   }
 }
