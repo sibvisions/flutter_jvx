@@ -250,7 +250,7 @@ class ApiBloc extends Bloc<Request, Response> {
       var _dir;
 
       if (Platform.isIOS) {
-        _dir = (await getApplicationSupportDirectory());
+        _dir = (await getApplicationSupportDirectory()).path;
       } else {
         _dir = (await getApplicationDocumentsDirectory()).path;
       }
@@ -298,7 +298,7 @@ class ApiBloc extends Bloc<Request, Response> {
     var _dir;
 
     if (Platform.isIOS) {
-      _dir = (await getApplicationSupportDirectory());
+      _dir = (await getApplicationSupportDirectory()).path;
     } else {
       _dir = (await getApplicationDocumentsDirectory()).path;
     }
