@@ -542,6 +542,7 @@ class ApiBloc extends Bloc<Request, Response> {
     if (toUpdate.menu == null) toUpdate.menu = currentResponse.menu;
     //if (toUpdate.screenGeneric == null)
     //  toUpdate.screenGeneric = currentResponse.screenGeneric;
+    if (toUpdate.userData == null) toUpdate.userData = currentResponse.userData;
 
     return toUpdate;
   }

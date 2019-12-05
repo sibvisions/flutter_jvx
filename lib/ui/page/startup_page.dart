@@ -95,11 +95,15 @@ class _StartupPageState extends State<StartupPage> {
         }
         globals.debug = val[0].debug;
 
-        if (val[0].username != null && val[0].username.isNotEmpty && (globals.username == null || globals.username.isEmpty)) {
+        if (val[0].username != null &&
+            val[0].username.isNotEmpty &&
+            (globals.username == null || globals.username.isEmpty)) {
           globals.username = val[0].username;
         }
 
-        if (val[0].password != null && val[0].password.isNotEmpty && (globals.password == null || globals.password.isEmpty)) {
+        if (val[0].password != null &&
+            val[0].password.isNotEmpty &&
+            (globals.password == null || globals.password.isEmpty)) {
           globals.password = val[0].password;
         }
 
@@ -190,10 +194,17 @@ class _StartupPageState extends State<StartupPage> {
     if (state != null &&
         state.requestType == RequestType.LOGIN &&
         state.menu != null) {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => MenuPage(
-                  menuItems: state.menu.items,
-                )));
+      if (state.userData != null) {
+        globals.username = state.userData.userName;
+
+        if (state.userData.profileImage != null)
+          globals.profileImage = state.userData.profileImage;
+      }
+
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => MenuPage(
+                menuItems: state.menu.items,
+              )));
     }
   }
 
@@ -215,15 +226,21 @@ class _StartupPageState extends State<StartupPage> {
         BlocProvider.of<ApiBloc>(context).dispatch(login);
       }
 
-        if (menu == null) {
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
-        } else {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (_) => MenuPage(
-                    menuItems: menu.items,
-                  )));
+      if (menu == null) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+      } else {
+        if (state.userData != null) {
+          globals.username = state.userData.userName;
+
+          if (state.userData.profileImage != null)
+            globals.profileImage = state.userData.profileImage;
         }
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => MenuPage(
+                  menuItems: menu.items,
+                )));
+      }
     }
   }
 

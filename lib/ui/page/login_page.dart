@@ -46,6 +46,13 @@ class LoginPageState extends State<LoginPage> {
                 !state.loading &&
                 (state.error == null || !state.error) &&
                 state.menu != null) {
+              if (state.userData != null) {
+                globals.username = state.userData.userName;
+
+                if (state.userData.profileImage != null)
+                  globals.profileImage = state.userData.profileImage;
+              }
+
               Menu menu = state.menu;
 
               if (menu != null)

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -190,7 +191,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               children: <Widget>[
                 CircleAvatar(
                   child: Icon(
-                    FontAwesomeIcons.userTie,
+                    globals.profileImage.isNotEmpty ? Image.file(File(globals.profileImage), fit: BoxFit.cover,) : FontAwesomeIcons.userTie,
                     size: 60,
                   ),
                   radius: 55,

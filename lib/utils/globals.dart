@@ -18,6 +18,7 @@ bool isLoading = false;
 bool hasToDownload = false;
 String appVersion;
 String username = '';
+String profileImage = '';
 String password = '';
 String appMode = '';
 List<MenuItem> items;

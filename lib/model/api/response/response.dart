@@ -11,6 +11,7 @@ import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
 import 'package:jvx_mobile_v3/model/api/response/menu.dart';
 import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/api/response/upload_action.dart';
+import 'package:jvx_mobile_v3/model/api/response/user_data.dart';
 
 import 'application_meta_data.dart';
 import 'language.dart';
@@ -40,6 +41,7 @@ class Response {
   DownloadAction downloadAction;
   UploadAction uploadAction;
   CloseScreenAction closeScreenAction;
+  UserData userData;
   Request request;
 
   Response();
@@ -104,6 +106,9 @@ class Response {
           break;
         case ResponseObjectType.CLOSESCREEN:
           closeScreenAction = CloseScreenAction.fromJson(r);
+          break;
+        case ResponseObjectType.USERDATA:
+          userData = UserData.fromJson(r);
           break;
       }
     });
