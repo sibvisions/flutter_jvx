@@ -25,15 +25,17 @@ class DataScreen {
       cData.data.deleteLocalRecord(request.filter);
     }
 
-    data?.forEach((d) {
-      ComponentData cData = getComponentData(d.dataProvider);
-      cData.updateData(d, (request.requestType==RequestType.DAL_FILTER));
-    });
+    if (request==null || request?.requestType!=RequestType.DAL_SET_VALUE) {
+      data?.forEach((d) {
+        ComponentData cData = getComponentData(d.dataProvider);
+        cData.updateData(d, request.reload);
+      });
 
-    metaData?.forEach((m) {
-      ComponentData cData = getComponentData(m.dataProvider);
-      cData.updateMetaData(m);
-    });
+      metaData?.forEach((m) {
+        ComponentData cData = getComponentData(m.dataProvider);
+        cData.updateMetaData(m);
+      });
+    }
 
     if (request != null && request.requestType==RequestType.DAL_SELECT_RECORD && (request is SelectRecord)) {
       ComponentData cData = getComponentData(request.dataProvider);

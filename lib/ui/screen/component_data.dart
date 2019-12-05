@@ -55,8 +55,21 @@ class ComponentData {
   }
 
   void updateData(JVxData pData, [bool overrideData = false]) {
-    if (data==null || data.isAllFetched || overrideData) {
+    //if (data==null || data.isAllFetched || overrideData) {
+    if (data==null || overrideData) {
       data = pData;
+    } else if (data.isAllFetched){
+      if (pData.records.length>0) {
+        for (int i=pData.from;i<=pData.to;i++) {
+          if ((i-pData.from) < data.records.length && i<this.data.records.length) {
+            this.data.records[i] = pData.records[(i-pData.from)];
+          } else {
+            this.data.records.add(pData.records[(i-pData.from)]);
+          }
+        }
+      }
+      data.isAllFetched = pData.isAllFetched;
+      data.selectedRow = pData.selectedRow;
     } else {
       data.records.addAll(pData.records);
       data.selectedRow = pData.selectedRow;
@@ -105,8 +118,8 @@ class ComponentData {
       if (reload!=-1 && rowCountNeeded>=0 && data!=null && data.records != null && data.records.length>=rowCountNeeded) {
         return data;
       }
-      
-      this._fetchData(context, reload, rowCountNeeded);
+      if (!this.isFetching)
+        this._fetchData(context, reload, rowCountNeeded);
     }
       
     return data;
@@ -164,6 +177,7 @@ class ComponentData {
 
   void filterData(BuildContext context, String value, String editorComponentId) {
     FilterData filter = FilterData(dataProvider, value, editorComponentId, null, 0, 100);
+    filter.reload = true;
     addToRequestQueue(filter);
   }
 
@@ -191,6 +205,8 @@ class ComponentData {
         fetch.fromRow = data.records.length;
         fetch.rowCount = rowCountNeeded - data.records.length;
       }
+
+      fetch.reload = (reload==-1);
 
       addToRequestQueue(fetch);
       //BlocProvider.of<ApiBloc>(context).dispatch(fetch);

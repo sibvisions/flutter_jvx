@@ -60,7 +60,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   }
 
   void updateData() {
-    this.visibleColumnIndex = this.getVisibleColumnIndex(widget.data.getData(context, null, 0));
+    this.visibleColumnIndex = this.getVisibleColumnIndex(widget.data.data);
     this.setState(() {});
   }
 
@@ -182,7 +182,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   @override
   Widget build(BuildContext context) {
     int itemCount = 0;
-    JVxData data = widget.data.getData(context, null, 0);
+    JVxData data = widget.data.data;
     if (data != null && data.records != null) itemCount = data.records.length;
 
     return Dialog(
