@@ -52,6 +52,7 @@ abstract class Request extends Equatable {
   bool isProcessing = false;
   String clientId;
   Request subsequentRequest;
+  bool reload = false;
 
   Request({this.requestType, this.clientId});
 
