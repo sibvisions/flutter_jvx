@@ -51,7 +51,7 @@ class ApiBloc extends Bloc<Request, Response> {
         ..requestType = RequestType.LOADING);
       yield* login(event);
     } else if (event is Logout) {
-     yield updateResponse(Response()
+      yield updateResponse(Response()
         ..loading = true
         ..error = false
         ..requestType = RequestType.LOADING);
@@ -140,7 +140,8 @@ class ApiBloc extends Bloc<Request, Response> {
     Map<String, String> authData =
         await SharedPreferencesHelper().getLoginData();
 
-    if ((globals.username.isEmpty || globals.username == null) && (globals.password.isEmpty || globals.password == null)) {
+    if ((globals.username.isEmpty || globals.username == null) &&
+        (globals.password.isEmpty || globals.password == null)) {
       globals.password = authData['password'];
       globals.username = authData['username'];
     }
@@ -244,7 +245,13 @@ class ApiBloc extends Bloc<Request, Response> {
       outFile = await outFile.create(recursive: true);
       await outFile.writeAsBytes(resp.download);
     } else {
-      var _dir = (await getApplicationDocumentsDirectory()).path;
+      var _dir;
+
+      if (Platform.isIOS) {
+        _dir = (await getApplicationSupportDirectory());
+      } else {
+        _dir = (await getApplicationDocumentsDirectory()).path;
+      }
 
       globals.dir = _dir;
 
@@ -286,10 +293,17 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
-    globals.dir = (await getApplicationDocumentsDirectory()).path;
+    var _dir;
+
+    if (Platform.isIOS) {
+      _dir = (await getApplicationSupportDirectory());
+    } else {
+      _dir = (await getApplicationDocumentsDirectory()).path;
+    }
+
+    globals.dir = _dir;
 
     Response resp = await processRequest(request);
-
 
     globals.applicationStyle = resp.applicationStyle;
 
@@ -324,7 +338,7 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> change(Change request) async* {
     yield await processRequest(request);
   }
-  
+
   Future<Response> processRequest(Request request) async {
     RestClient restClient = RestClient();
     Response response;
@@ -401,28 +415,28 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.DAL_INSERT:
-        response =
-            await restClient.postAsync('/api/dal/insertRecord', request.toJson());
+        response = await restClient.postAsync(
+            '/api/dal/insertRecord', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
         return response;
         break;
       case RequestType.DAL_DELETE:
-        response =
-          await restClient.postAsync('/api/dal/deleteRecord', request.toJson());
-          response.requestType = request.requestType;
-          response.request = request;
-          updateResponse(response);
-          return response;
+        response = await restClient.postAsync(
+            '/api/dal/deleteRecord', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.DAL_SAVE:
         response =
-          await restClient.postAsync('/api/dal/save', request.toJson());
-          response.requestType = request.requestType;
-          response.request = request;
-          updateResponse(response);
-          return response;
+            await restClient.postAsync('/api/dal/save', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
         break;
       case RequestType.DOWNLOAD_TRANSLATION:
         response =
@@ -485,16 +499,14 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.UPLOAD:
-        response =
-          await restClient.postAsyncUpload('/upload', request);
+        response = await restClient.postAsyncUpload('/upload', request);
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
         return response;
         break;
       case RequestType.CHANGE:
-        response =
-          await restClient.postAsync('/api/changes', request.toJson());
+        response = await restClient.postAsync('/api/changes', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);

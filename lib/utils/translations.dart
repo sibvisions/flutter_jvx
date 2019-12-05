@@ -41,8 +41,7 @@ class Translations {
     } else {
       try {
         Translations translations = new Translations(const Locale('en'));
-        String jsonContent = await rootBundle
-            .loadString("locale/i18n_de.json");
+        String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
         _localizedValues = json.decode(jsonContent);
 
         return translations;
@@ -82,7 +81,12 @@ class XmlLoader {
 
       if (globals.translation['translation.xml'] != null)
         file = new File(globals.translation['translation.xml']);
-      contents = file.readAsStringSync();
+
+      if (file.existsSync()) {
+        contents = file.readAsStringSync();
+      } else {
+        print('Error with Loading ${globals.translation["translation.xml"]}');
+      }
 
       if (contents != null) {
         xml.XmlDocument doc = xml.parse(contents);
@@ -101,8 +105,13 @@ class XmlLoader {
       String contents;
 
       file = new File(globals.translation['translation_$lang.xml']);
-      contents = file.readAsStringSync();
 
+      if (file.existsSync()) {
+        contents = file.readAsStringSync();
+      } else {
+        print('Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+      }
+      
       xml.XmlDocument doc = xml.parse(contents);
 
       Map<String, String> translations = <String, String>{};
