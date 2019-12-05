@@ -5,7 +5,7 @@ import 'package:jvx_mobile_v3/ui/container/jvx_group_panel.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_scroll_panel.dart';
 import 'package:jvx_mobile_v3/ui/container/jvx_split_panel.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/i_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_image_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_lazy_table.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';

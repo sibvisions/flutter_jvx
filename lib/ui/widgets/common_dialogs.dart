@@ -50,7 +50,7 @@ showSessionExpired(BuildContext context, String title, String message) async {
             content: Text(message),
             actions: <Widget>[
               FlatButton(
-                child: Text('Close'),
+                child: Text('OK'),
                 onPressed: () => Navigator.of(context).pop(),
               )
             ],

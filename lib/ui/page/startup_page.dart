@@ -95,11 +95,11 @@ class _StartupPageState extends State<StartupPage> {
         }
         globals.debug = val[0].debug;
 
-        if (val[0].username != null && val[0].username.isNotEmpty) {
+        if (val[0].username != null && val[0].username.isNotEmpty && (globals.username == null || globals.username.isEmpty)) {
           globals.username = val[0].username;
         }
 
-        if (val[0].password != null && val[0].password.isNotEmpty) {
+        if (val[0].password != null && val[0].password.isNotEmpty && (globals.password == null || globals.password.isEmpty)) {
           globals.password = val[0].password;
         }
 

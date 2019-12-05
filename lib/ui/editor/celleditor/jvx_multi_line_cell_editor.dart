@@ -6,6 +6,7 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_linked_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
   List<ListTile> _items = <ListTile>[];
@@ -61,13 +62,12 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
         data.selectedRow < data.records.length &&
         data.columnNames != null &&
         data.columnNames.length > 0 &&
-        this.linkReference != null && this.linkReference.referencedColumnNames != null &&
+        this.linkReference != null &&
+        this.linkReference.referencedColumnNames != null &&
         this.linkReference.referencedColumnNames.length > 0) {
-
       int columnIndex = -1;
       data.columnNames.asMap().forEach((i, c) {
-        if (this.linkReference.referencedColumnNames[0] == c)
-          columnIndex = i;
+        if (this.linkReference.referencedColumnNames[0] == c) columnIndex = i;
       });
       if (columnIndex >= 0) {
         value = data.records[data.selectedRow][columnIndex];
@@ -83,12 +83,32 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
   }
 
   @override
-  Widget getWidget() {
-    return ListView.builder(
-      itemCount: _items.length,
-      itemBuilder: (context, index) {
-        return _items[index];
-      },
+  Widget getWidget(
+      {bool editable,
+      Color background,
+      Color foreground,
+      String placeholder,
+      String font,
+      int horizontalAlignment}) {
+    setEditorProperties(
+        editable: editable,
+        background: background,
+        foreground: foreground,
+        placeholder: placeholder,
+        font: font,
+        horizontalAlignment: horizontalAlignment);
+    return Container(
+      decoration: BoxDecoration(
+          color: background != null ? background : Colors.transparent,
+          borderRadius: BorderRadius.circular(5),
+          border:
+              borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
+      child: ListView.builder(
+        itemCount: _items.length,
+        itemBuilder: (context, index) {
+          return _items[index];
+        },
+      ),
     );
   }
 }
