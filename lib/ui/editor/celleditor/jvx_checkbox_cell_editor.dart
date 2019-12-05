@@ -50,11 +50,11 @@ class JVxCheckboxCellEditor extends JVxCellEditor {
         horizontalAlignment: horizontalAlignment);
 
     return Container(
-      decoration: BoxDecoration(
-          color: background != null ? background : Colors.transparent,
-          borderRadius: BorderRadius.circular(5),
-          border:
-              borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
+      // decoration: BoxDecoration(
+      //     color: background != null ? background : Colors.transparent,
+      //     borderRadius: BorderRadius.circular(5),
+      //     border:
+      //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
