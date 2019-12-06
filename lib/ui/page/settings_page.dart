@@ -9,6 +9,7 @@ import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:package_info/package_info.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -19,6 +20,8 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
   String appName, baseUrl, language, version;
+  String toSaveUsername;
+  String toSavePwd;
 
   @override
   void initState() {
@@ -130,7 +133,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     title: DropdownButtonHideUnderline(
                       child: DropdownButton<int>(
-                        icon: Icon(FontAwesomeIcons.chevronDown, color: Colors.grey[500],),
+                        icon: Icon(
+                          FontAwesomeIcons.chevronDown,
+                          color: Colors.grey[500],
+                        ),
                         value: globals.uploadPicWidth,
                         onChanged: (int size) {
                           setState(() {
@@ -153,6 +159,14 @@ class _SettingsPageState extends State<SettingsPage> {
                         ],
                       ),
                     ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      FontAwesomeIcons.qrcode,
+                      color: UIData.ui_kit_color_2,
+                    ),
+                    title: Text('Scan QR Code'),
+                    onTap: () => scanBarcode(),
                   )
                 ],
               ),
@@ -241,8 +255,49 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   savePreferences() async {
+    SharedPreferencesHelper().setData(
+        this.appName, this.baseUrl, this.language, globals.uploadPicWidth);
     SharedPreferencesHelper()
-        .setData(this.appName, this.baseUrl, this.language, globals.uploadPicWidth);
+        .setLoginData(toSaveUsername, toSavePwd);
+  }
+
+  Future scanBarcode() async {
+    String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
+        "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
+
+    Map<String, dynamic> properties = getProperties(barcodeResult);
+
+    setState(() {
+      if (properties['APPNAME'] != null) {
+        globals.appName = properties['APPNAME'];
+        appName = properties['APPNAME'];
+      }
+      if (properties['URL'] != null) {
+        globals.baseUrl = properties['URL'];
+        baseUrl = properties['URL'];
+      }
+      if (properties['USER'] != null && properties['PWD'] != null) {
+        toSaveUsername = properties['USER'];
+        toSavePwd = properties['PWD'];
+      }
+    });
+  }
+
+  Map<String, dynamic> getProperties(String barcodeResult) {
+    Map<String, dynamic> properties = <String, dynamic>{};
+
+    List<String> result = barcodeResult.split('\n');
+
+    result.forEach((element) {
+      if (element != null && element.isNotEmpty) {
+        String key = element.split("=")[0];
+        String value = element.split("=")[1];
+
+        properties[key] = value;
+      }
+    });
+
+    return properties;
   }
 
   @override

@@ -127,7 +127,6 @@ class JVxEditor extends JVxComponent implements IEditor {
 
     if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
     return Container(
-        constraints: constraints,
         width: 100,
         child: cellEditor.getWidget(
             editable: cellEditorEditable,

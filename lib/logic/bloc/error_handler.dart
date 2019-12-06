@@ -21,7 +21,7 @@ bool handleError(Response response, BuildContext context) {
     } else if (response.errorName == 'timeout.error') {
       showGoToSettings(context, response.title, response.message);
     } else {
-      showError(context, response.title, response.message);
+      showGoToSettings(context, response.title, response.message);
     }
     return true;
   }
