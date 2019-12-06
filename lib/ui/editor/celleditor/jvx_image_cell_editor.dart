@@ -19,7 +19,7 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
-  Image defaultImage;
+  Widget defaultImage;
   Widget currentImage;
   File file;
   double width = 100;
@@ -29,12 +29,13 @@ class JVxImageCellEditor extends JVxCellEditor {
       : super(changedCellEditor, context) {
     defaultImageName = changedCellEditor
         .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME);
+
     if (defaultImageName != null) {
       file = File(defaultImageName != null
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
       if (file.existsSync()) {
-        currentImage = Image.memory(file.readAsBytesSync());
+        defaultImage = Image.memory(file.readAsBytesSync());
         BlocProvider.of<ApiBloc>(context)
             .dispatch(Reload(requestType: RequestType.RELOAD));
       }
@@ -45,6 +46,9 @@ class JVxImageCellEditor extends JVxCellEditor {
   set value(dynamic value) {
     super.value = value;
     if (value != null && value.toString().isNotEmpty) {
+      currentImage = null;
+      defaultImage = null;
+
       Image img = Image.file(file);
 
       Uint8List bytes = base64Decode(value);
@@ -65,12 +69,14 @@ class JVxImageCellEditor extends JVxCellEditor {
         }
       });
     }
-    if (defaultImageName != null) {
+    if (value == null && defaultImageName != null && defaultImage == null) {
+      currentImage = null;
+
       file = File(defaultImageName != null
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
       if (file.existsSync()) {
-        currentImage = Image.memory(file.readAsBytesSync());
+        defaultImage = Image.memory(file.readAsBytesSync());
         BlocProvider.of<ApiBloc>(context)
             .dispatch(Reload(requestType: RequestType.RELOAD));
       }
@@ -99,6 +105,6 @@ class JVxImageCellEditor extends JVxCellEditor {
             border: borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)
                 : null),
-        child: currentImage);
+        child: currentImage != null ? currentImage : defaultImage);
   }
 }
