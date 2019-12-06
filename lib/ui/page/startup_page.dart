@@ -71,6 +71,16 @@ class _StartupPageState extends State<StartupPage> {
           val[0] != null &&
           val[0].debug != null &&
           val[0].debug) {
+
+        print("********************* JVx Config ********************");
+        print("Config loaded: ${val[0].debug}");
+        print("AppName: ${val[0].appName}");
+        print("Hostname: ${val[0].baseUrl}");
+        print("Username: ${val[0].username}");
+        print("Password: ${val[0].password}");
+        print("AppMode: ${val[0].appMode}");
+        print("******************************************************");
+
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
           globals.appName = val[0].appName;
           SharedPreferencesHelper().setData(val[0].appName, null, null, null);

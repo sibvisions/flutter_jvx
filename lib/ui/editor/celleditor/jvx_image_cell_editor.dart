@@ -46,7 +46,6 @@ class JVxImageCellEditor extends JVxCellEditor {
   set value(dynamic value) {
     super.value = value;
     if (value != null && value.toString().isNotEmpty) {
-      currentImage = null;
       defaultImage = null;
 
       Image img = Image.file(file);
