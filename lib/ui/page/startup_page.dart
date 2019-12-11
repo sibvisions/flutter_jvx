@@ -72,7 +72,7 @@ class _StartupPageState extends State<StartupPage> {
           val[0].debug != null &&
           val[0].debug) {
 
-        print("********************* JVx Config ********************");
+        print("******************************************************");
         print("Config loaded: ${val[0].debug}");
         print("AppName: ${val[0].appName}");
         print("Hostname: ${val[0].baseUrl}");
