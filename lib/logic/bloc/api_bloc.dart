@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
@@ -33,11 +34,27 @@ import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ApiBloc extends Bloc<Request, Response> {
+  Queue<Request> _queue = Queue<Request>();
+  int seqNo = 0;
+
   @override
   Response get initialState => Response()..loading = true;
 
   @override
+  void onEvent(Request event) {
+    event.sequenceNo = seqNo++;
+    _queue.add(event);
+    super.onEvent(event);
+  }
+
+  @override
   Stream<Response> mapEventToState(Request event) async* {
+    await for (Response response in makeRequest(_queue.removeFirst())) {
+      yield response;
+    }
+  }
+
+  Stream<Response> makeRequest(Request event) async* {
     if (event is Startup) {
       yield updateResponse(Response()
         ..loading = true
@@ -175,7 +192,8 @@ class ApiBloc extends Bloc<Request, Response> {
     globals.username = request.username;
 
     if (request.createAuthKey) {
-      SharedPreferencesHelper().setLoginData(request.username, request.password);
+      SharedPreferencesHelper()
+          .setLoginData(request.username, request.password);
     }
     Response resp = await processRequest(request);
 

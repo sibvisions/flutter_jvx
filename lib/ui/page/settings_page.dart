@@ -160,14 +160,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                  ListTile(
-                    leading: Icon(
-                      FontAwesomeIcons.qrcode,
-                      color: UIData.ui_kit_color_2,
-                    ),
-                    title: Text('Scan QR Code'),
-                    onTap: () => scanBarcode(),
-                  )
                 ],
               ),
             ),
@@ -234,11 +226,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget settingsLoader() {
     return CommonScaffold(
+      centerDocked: true,
       scaffoldKey: scaffoldState,
       appTitle: Translations.of(context).text2('Settings', 'Settings'),
       showBottomNav: true,
-      showFAB: false,
+      showFAB: true,
       backGroundColor: Colors.grey.shade300,
+      floatingIcon: FontAwesomeIcons.qrcode,
+      qrCallback: () => scanBarcode(),
       bodyData: settingsBuilder(),
       bottomButton1:
           Translations.of(context).text2('Back', 'Back').toUpperCase(),
@@ -257,8 +252,7 @@ class _SettingsPageState extends State<SettingsPage> {
   savePreferences() async {
     SharedPreferencesHelper().setData(
         this.appName, this.baseUrl, this.language, globals.uploadPicWidth);
-    SharedPreferencesHelper()
-        .setLoginData(toSaveUsername, toSavePwd);
+    SharedPreferencesHelper().setLoginData(toSaveUsername, toSavePwd);
   }
 
   Future scanBarcode() async {
@@ -286,16 +280,24 @@ class _SettingsPageState extends State<SettingsPage> {
   Map<String, dynamic> getProperties(String barcodeResult) {
     Map<String, dynamic> properties = <String, dynamic>{};
 
-    List<String> result = barcodeResult.split('\n');
+    if (barcodeResult != null && barcodeResult.isNotEmpty && barcodeResult != '-1') {
+      print(barcodeResult);
+      List<String> result = barcodeResult.split('\n');
 
-    result.forEach((element) {
-      if (element != null && element.isNotEmpty) {
-        String key = element.split("=")[0];
-        String value = element.split("=")[1];
+      properties['APPNAME'] = result[0].substring(result[0].indexOf(': ') + 2);
 
-        properties[key] = value;
-      }
-    });
+      properties['URL'] = result[1].substring(result[1].indexOf(': ') + 2);
+
+      // result.forEach((element) {
+      //   if (element != null && element.isNotEmpty) {
+      //     String key = element.split("=")[0];
+      //     String value = element.split("=")[1];
+
+      //     properties[key] = value;
+      //   }
+      // });
+
+    }
 
     return properties;
   }

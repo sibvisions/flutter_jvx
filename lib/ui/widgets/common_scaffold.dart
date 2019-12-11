@@ -24,6 +24,7 @@ class CommonScaffold extends StatelessWidget {
   final List<String> dropdownItems;
   final Function dropdownCallback;
   final Widget drawer;
+  final Function qrCallback;
 
   CommonScaffold(
     {
@@ -46,7 +47,8 @@ class CommonScaffold extends StatelessWidget {
       this.dropdownItems,
       this.dropdownCallback,
       this.showDrawer = false,
-      this.drawer
+      this.drawer,
+      this.qrCallback
     }
   );
 
@@ -142,14 +144,14 @@ class CommonScaffold extends StatelessWidget {
       body: bodyData,
       floatingActionButton: showFAB
           ? CustomFloat(
-              builder: centerDocked
-                  ? Text(
-                      "5",
-                      style: TextStyle(color: Colors.white, fontSize: 10.0),
-                    )
-                  : null,
+              // builder: centerDocked
+              //     ? Text(
+              //         "5",
+              //         style: TextStyle(color: Colors.white, fontSize: 10.0),
+              //       )
+              //     : null,
               icon: floatingIcon,
-              qrCallback: () {},
+              qrCallback: qrCallback,
             )
           : null,
       floatingActionButtonLocation: centerDocked

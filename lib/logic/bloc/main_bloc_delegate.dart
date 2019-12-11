@@ -4,6 +4,7 @@ class MainBlocDelegate extends BlocDelegate {
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
+
     // print('**********************************************');
     // print('Transition: { currentState: ${transition.currentState}, event: ${transition.event}, nextState: ${transition.nextState} }');
     // print('ERROR: ${transition.nextState.error}');
