@@ -217,7 +217,7 @@ class JVxFormLayout extends JVxLayout<String> {
     });
 
     return Container(
-      margin: this.margins,
+      //margin: this.margins,
       child: JVxFormLayoutWidget(
         key: key,
         valid: this._valid,

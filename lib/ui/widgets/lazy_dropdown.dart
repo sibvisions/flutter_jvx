@@ -22,7 +22,7 @@ class LazyDropdown extends StatefulWidget {
   final ColumnView columnView;
 
   LazyDropdown(
-      {//@required this.data,
+      { //@required this.data,
       @required this.allowNull,
       @required this.context,
       this.data,
@@ -66,9 +66,10 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   void startTimerValueChanged(dynamic value) {
     lastChangedFilter = value;
-    if (filterTimer!=null && filterTimer.isActive) filterTimer.cancel();
-    
-    filterTimer = new Timer(Duration(milliseconds: 300), onTextFieldValueChanged);
+    if (filterTimer != null && filterTimer.isActive) filterTimer.cancel();
+
+    filterTimer =
+        new Timer(Duration(milliseconds: 300), onTextFieldValueChanged);
   }
 
   void onTextFieldValueChanged() {
@@ -88,7 +89,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   void _onRowTapped(int index) {
     Navigator.of(this.widget.context).pop();
     JVxData data = widget.data.getData(context, null, 0);
-    if (this.widget.onSave!=null && data.records.length>index) {
+    if (this.widget.onSave != null && data.records.length > index) {
       dynamic value = data.getRow(index);
       this.widget.onSave(value);
       this.updateData();
@@ -135,7 +136,10 @@ class _LazyDropdownState extends State<LazyDropdown> {
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
             color: Colors.white,
           ),
-          child: ListTile(title: Row(children: children), onTap: () => _onRowTapped(index),));
+          child: ListTile(
+            title: Row(children: children),
+            onTap: () => _onRowTapped(index),
+          ));
     }
   }
 
@@ -156,7 +160,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
     List<int> visibleColumnsIndex = <int>[];
     if (data != null && data.records.isNotEmpty) {
       data.columnNames.asMap().forEach((i, v) {
-        if (widget.columnView != null && widget.columnView.columnNames != null) {
+        if (widget.columnView != null &&
+            widget.columnView.columnNames != null) {
           if (widget.columnView.columnNames.contains(v)) {
             visibleColumnsIndex.add(i);
           }
@@ -186,52 +191,65 @@ class _LazyDropdownState extends State<LazyDropdown> {
     if (data != null && data.records != null) itemCount = data.records.length;
 
     return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        ),
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         child: Container(
-          color: Colors.white,
-          child: Column(
-            children: <Widget>[
-              ButtonBar(alignment: MainAxisAlignment.spaceBetween, children: <
-                  Widget>[
-                new RaisedButton(child: Text("Clear"), onPressed: _onDelete, color: UIData.ui_kit_color_2[200],),
-                new RaisedButton(child: Text("Cancel", style: TextStyle(color: Colors.white),), onPressed: _onCancel, color: UIData.ui_kit_color_2,),
-              ]),
-              Container(
+          child: Container(
+            decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            child: Column(
+              children: <Widget>[
+                ButtonBar(
+                    alignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new RaisedButton(
+                        child: Text("Clear"),
+                        onPressed: _onDelete,
+                        color: UIData.ui_kit_color_2[200],
+                      ),
+                      new RaisedButton(
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: _onCancel,
+                        color: UIData.ui_kit_color_2,
+                      ),
+                    ]),
+                Container(
+                    child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search",
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: UIData.ui_kit_color_2, width: 1.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: UIData.ui_kit_color_2, width: 0.0)),
+                    ),
+                    key: widget.key,
+                    controller: _controller,
+                    maxLines: 1,
+                    keyboardType: TextInputType.text,
+                    onChanged: startTimerValueChanged,
+                    focusNode: node,
+                  ),
+                )),
+                Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                    child: TextField(
-                decoration: InputDecoration(
-                    hintText: "Search",
-                    enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: UIData.ui_kit_color_2, width: 1.0)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-                ),
-                key: widget.key,
-                controller: _controller,
-                maxLines: 1,
-                keyboardType: TextInputType.text,
-                onChanged: startTimerValueChanged,
-                focusNode: node,
-              ),
-                  )),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: itemCount,
-                    itemBuilder: itemBuilder,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: itemCount,
+                      itemBuilder: itemBuilder,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }
