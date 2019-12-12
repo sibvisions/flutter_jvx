@@ -156,8 +156,16 @@ class _OpenScreenPageState extends State<OpenScreenPage>
             onWillPop: () async {
               Navigation navigation = Navigation(
                   clientId: globals.clientId, componentId: componentId);
+                  
+              FocusScopeNode currentFocus = FocusScope.of(context);
 
-              BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+
+              Future.delayed(const Duration(milliseconds: 10), () {
+                BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+              });
 
               bool close = false;
 
@@ -202,7 +210,16 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                             clientId: globals.clientId,
                             componentId: componentId);
 
-                        BlocProvider.of<ApiBloc>(context).dispatch(navigation);
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+
+                        Future.delayed(const Duration(milliseconds: 10), () {
+                          BlocProvider.of<ApiBloc>(context)
+                              .dispatch(navigation);
+                        });
                       },
                     ),
                     title: Text(title),
@@ -270,9 +287,10 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                         await FlutterNativeImage.compressImage(val.path,
                             quality: 80,
                             targetWidth: globals.uploadPicWidth,
-                            targetHeight:
-                                (properties.height * globals.uploadPicWidth / properties.width)
-                                    .round());
+                            targetHeight: (properties.height *
+                                    globals.uploadPicWidth /
+                                    properties.width)
+                                .round());
 
                     file = compressedImage;
 

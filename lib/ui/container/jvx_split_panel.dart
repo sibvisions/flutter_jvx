@@ -18,39 +18,60 @@ class JVxSplitPanel extends JVxContainer implements IContainer {
   int dividerPosition;
   int dividerAlignment;
 
-  JVxSplitPanel(Key componentId, BuildContext context) : super(componentId, context);
+  JVxSplitPanel(Key componentId, BuildContext context)
+      : super(componentId, context);
 
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    dividerPosition = changedComponent.getProperty<int>(ComponentProperty.DIVIDER_POSITION);
-    dividerAlignment = changedComponent.getProperty<int>(ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
+    dividerPosition =
+        changedComponent.getProperty<int>(ComponentProperty.DIVIDER_POSITION);
+    dividerAlignment = changedComponent.getProperty<int>(
+        ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
   }
 
   Widget getWidget() {
     JVxComponent firstComponent = getComponentWithContraint("FIRST_COMPONENT");
-    JVxComponent secondComponent = getComponentWithContraint("SECOND_COMPONENT");
+    JVxComponent secondComponent =
+        getComponentWithContraint("SECOND_COMPONENT");
     List<Widget> widgets = new List<Widget>();
 
     if (firstComponent != null) {
-      widgets.add(Expanded(child:firstComponent.getWidget()));
+      widgets.add(Expanded(child: firstComponent.getWidget()));
     } else {
       widgets.add(Container());
     }
 
     if (secondComponent != null) {
-      widgets.add(Expanded(child:secondComponent.getWidget()));
+      widgets.add(Expanded(child: secondComponent.getWidget()));
     } else {
       widgets.add(Container());
     }
 
-    if (dividerAlignment==HORIZONTAL || dividerAlignment == RELATIVE) {
+    if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
       return Row(
-        key: componentId, 
+        key: componentId,
         children: widgets,
       );
+
+      // return new SingleChildScrollView(
+      //   scrollDirection: Axis.vertical,
+      //   child: new SizedBox(
+      //     width: MediaQuery.of(context).size.width,
+      //     height: MediaQuery.of(context).size.height,
+      //     child: new ListView(
+      //       scrollDirection: Axis.horizontal,
+      //       children: <Widget>[
+      //         new Row(
+      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //           children: widgets,
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      // );
     } else {
       return Column(
-        key: componentId, 
+        key: componentId,
         children: widgets,
       );
     }

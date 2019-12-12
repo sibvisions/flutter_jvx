@@ -14,7 +14,7 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 class ComponentScreen extends DataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
-  bool debug = globals.debug;
+  bool debug = false;
 
   set context(BuildContext context) {
       super.context = context;

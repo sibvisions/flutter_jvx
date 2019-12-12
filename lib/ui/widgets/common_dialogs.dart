@@ -96,35 +96,38 @@ showProgress(BuildContext context, [String loadingText]) {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => Container(
-              width: 100,
-              height: 100,
-              child: Center(
-                child: Opacity(
-                  opacity: 0.7,
-                  child: Material(
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          CircularProgressIndicator(
-                            backgroundColor: Colors.white,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.transparent,
+              content: Container(
+                child: Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Center(
+                    child: Opacity(
+                      opacity: 0.7,
+                      child: Material(
+                        child: Container(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              CircularProgressIndicator(
+                                backgroundColor: Colors.white,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                loadingText ?? 'Loading...',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
+                              )
+                            ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            loadingText ?? 'Loading...',
-                            style: TextStyle(fontSize: 12, color: Colors.black),
-                          )
-                        ],
+                        ),
                       ),
                     ),
                   ),

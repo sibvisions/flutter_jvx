@@ -190,8 +190,8 @@ class ComponentData {
     if (filter!=null)
       setValues.filter = filter;
 
-    addToRequestQueue(setValues);
-    //BlocProvider.of<ApiBloc>(context).dispatch(setValues);
+    //addToRequestQueue(setValues);
+    BlocProvider.of<ApiBloc>(context).dispatch(setValues);
   }
 
   void _fetchData(BuildContext context, int reload, int rowCountNeeded) {
@@ -208,8 +208,8 @@ class ComponentData {
 
       fetch.reload = (reload==-1);
 
-      addToRequestQueue(fetch);
-      //BlocProvider.of<ApiBloc>(context).dispatch(fetch);
+      //addToRequestQueue(fetch);
+      BlocProvider.of<ApiBloc>(context).dispatch(fetch);
   }
 
   dynamic _getColumnValue(String columnName) {

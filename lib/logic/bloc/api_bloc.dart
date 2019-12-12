@@ -42,7 +42,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   void onEvent(Request event) {
-    event.sequenceNo = seqNo++;
+    if (event.requestType != RequestType.RELOAD) {
+      event.sequenceNo = seqNo++;
+      print("~~~ Outgoing Request id: ${event.sequenceNo}");
+    }
     _queue.add(event);
     super.onEvent(event);
   }
@@ -50,6 +53,10 @@ class ApiBloc extends Bloc<Request, Response> {
   @override
   Stream<Response> mapEventToState(Request event) async* {
     await for (Response response in makeRequest(_queue.removeFirst())) {
+      if (response.requestType != RequestType.LOADING &&
+          response.requestType != RequestType.RELOAD) {
+        print("~~~ Incoming Response id: ${response.request.sequenceNo}");
+      }
       yield response;
     }
   }
