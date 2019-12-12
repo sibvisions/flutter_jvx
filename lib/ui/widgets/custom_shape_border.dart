@@ -6,8 +6,8 @@ class CustomShapeBorder extends ShapeBorder {
   Color color;
 
   CustomShapeBorder(
-    {this.borderWidth,
-    this.color,}
+    this.borderWidth,
+    this.color,
   );
 
   @override

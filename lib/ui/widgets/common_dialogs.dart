@@ -15,11 +15,11 @@ showGoToSettings(BuildContext context, String title, String message) {
             content: Text(message),
             actions: <Widget>[
               FlatButton(
-                child: Text(Translations.of(context).text('Close')),
+                child: Text(Translations.of(context).text2('Close')),
                 onPressed: () => exit(0),
               ),
               FlatButton(
-                child: Text(Translations.of(context).text('To Settings')),
+                child: Text(Translations.of(context).text2('To Settings')),
                 onPressed: () =>
                     Navigator.of(context).pushReplacementNamed('/settings'),
               )
