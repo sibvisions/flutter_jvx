@@ -96,44 +96,70 @@ showProgress(BuildContext context, [String loadingText]) {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-              backgroundColor: Colors.transparent,
-              content: Container(
-                child: Container(
-                  height: 200,
+        builder: (context) => Opacity(
+          opacity: 0.7,
+                  child: Container(
+                child: Center(
+                    child: Container(
+                  width: 100,
+                  height: 100,
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Center(
-                    child: Opacity(
-                      opacity: 0.7,
-                      child: Material(
-                        child: Container(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              CircularProgressIndicator(
-                                backgroundColor: Colors.white,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                loadingText ?? 'Loading...',
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.black),
-                              )
-                            ],
-                          ),
-                        ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          CircularProgressIndicator(backgroundColor: Colors.white),
+                          SizedBox(height: 10,),
+                          Text(loadingText ?? 'Loading...', style: TextStyle(fontSize: 10, color: Colors.black),)
+                        ],
                       ),
-                    ),
-                  ),
-                ),
+                )),
               ),
-            ));
+        ));
+
+    // showDialog(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (context) => AlertDialog(
+    //           backgroundColor: Colors.transparent,
+    //           content: Container(
+    //             child: Container(
+    //               height: 200,
+    //               decoration: BoxDecoration(
+    //                 color: Colors.white,
+    //                 borderRadius: BorderRadius.circular(15),
+    //               ),
+    //               child: Center(
+    //                 child: Opacity(
+    //                   opacity: 0.7,
+    //                   child: Material(
+    //                     child: Container(
+    //                       child: Column(
+    //                         mainAxisSize: MainAxisSize.max,
+    //                         mainAxisAlignment: MainAxisAlignment.center,
+    //                         children: <Widget>[
+    //                           CircularProgressIndicator(
+    //                             backgroundColor: Colors.white,
+    //                           ),
+    //                           SizedBox(
+    //                             height: 10,
+    //                           ),
+    //                           Text(
+    //                             loadingText ?? 'Loading...',
+    //                             style: TextStyle(
+    //                                 fontSize: 12, color: Colors.black),
+    //                           )
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //         ));
 
     print("Show Progress!");
   }

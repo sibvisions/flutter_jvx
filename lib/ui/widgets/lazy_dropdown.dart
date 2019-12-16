@@ -197,7 +197,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
           child: Container(
             decoration: new BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                borderRadius: BorderRadius.all(Radius.circular(5.0))),
             child: Column(
               children: <Widget>[
                 ButtonBar(
@@ -240,7 +240,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
                 )),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
                     child: ListView.builder(
                       controller: _scrollController,
                       itemCount: itemCount,
