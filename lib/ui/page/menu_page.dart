@@ -5,6 +5,7 @@ import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_grid_view.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_list_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class MenuPage extends StatelessWidget {
   final List<MenuItem> menuItems;
@@ -33,6 +34,7 @@ class MenuPage extends StatelessWidget {
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        backgroundColor: UIData.ui_kit_color_2,
         title: Text('Menu'),
         automaticallyImplyLeading: false,
         actions: <Widget>[

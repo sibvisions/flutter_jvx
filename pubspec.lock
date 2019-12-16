@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.9"
+  dynamic_theme:
+    dependency: "direct main"
+    description:
+      name: dynamic_theme
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   equatable:
     dependency: "direct main"
     description:
@@ -226,12 +233,10 @@ packages:
   flutter_picker:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: a0ed849a42f8be2a60d56d42697036d8f8a49dea
-      url: "git://github.com/yangyxd/flutter_picker.git"
-    source: git
-    version: "1.0.13"
+      name: flutter_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -418,7 +423,7 @@ packages:
       name: package_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0+11"
+    version: "0.4.0+13"
   package_resolver:
     dependency: transitive
     description:
@@ -629,4 +634,4 @@ packages:
     version: "2.1.16"
 sdks:
   dart: ">=2.4.0 <3.0.0"
-  flutter: ">=1.6.7 <2.0.0"
+  flutter: ">=1.10.0 <2.0.0"

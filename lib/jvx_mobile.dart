@@ -1,3 +1,4 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,35 +13,38 @@ class JvxMobile extends StatelessWidget {
 
   JvxMobile(this.loadConf);
 
-  MaterialApp materialApp() => MaterialApp(
-    title: 'JVx Mobile',
-    theme: ThemeData(
-      primaryColor: UIData.ui_kit_color_2,
-      fontFamily: UIData.ralewayFont,
-      primarySwatch: UIData.ui_kit_color_2,
-    ),
-    debugShowCheckedModeBanner: false,
-    showPerformanceOverlay: false,
-    //home: StartupPage(),
-    localizationsDelegates: [
-      const TranslationsDelegate(),
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: [
-      const Locale("en", "US"),
-      const Locale("de", "DE")
-    ],
-    initialRoute: '/',
-    routes: {
-      '/': (context) => StartupPage(this.loadConf),
-      '/settings': (context) => SettingsPage(),
-    },
-  );
+  MaterialApp materialApp(ThemeData theme) => MaterialApp(
+        title: 'JVx Mobile',
+        theme: theme,
+        debugShowCheckedModeBanner: false,
+        showPerformanceOverlay: false,
+        //home: StartupPage(),
+        localizationsDelegates: [
+          const TranslationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [const Locale("en", "US"), const Locale("de", "DE")],
+        initialRoute: '/',
+        routes: {
+          '/': (context) => StartupPage(this.loadConf),
+          '/settings': (context) => SettingsPage(),
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
-    return materialApp();
+    return DynamicTheme(
+      defaultBrightness: Brightness.light,
+      data: (brightness) => new ThemeData(
+        primarySwatch: UIData.ui_kit_color_2,
+        primaryColor: UIData.ui_kit_color_2,
+        fontFamily: UIData.ralewayFont,
+      ),
+      themedWidgetBuilder: (context, theme) {
+        return materialApp(theme);
+      },
+    );
   }
 }

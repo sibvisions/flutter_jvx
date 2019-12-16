@@ -13,7 +13,7 @@ class UIData {
   static const int sibblue = 0xFF055ba2;
 
   static const MaterialColor ui_kit_color = Colors.grey;
-  static const MaterialColor ui_kit_color_2 = Colors.blue;
+  static MaterialColor ui_kit_color_2 = Colors.blue;
 
   static const SIB_BLUE = MaterialColor(
     sibblue,

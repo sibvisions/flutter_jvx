@@ -74,8 +74,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         if (value == null)
                           this.appName = globals.appName;
                         else {
-                          this.appName = value;
-                          globals.appName = value;
+                          setState(() {
+                            this.appName = value;
+                            globals.appName = value;
+                          });
                         }
                       });
                     },
@@ -106,8 +108,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             value = value.substring(0, value.length - 1);
                           }
 
-                          this.baseUrl = value;
-                          globals.baseUrl = value;
+                          setState(() {
+                            this.baseUrl = value;
+                            globals.baseUrl = value;
+                          });
                         }
                       });
                     },
@@ -280,7 +284,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Map<String, dynamic> getProperties(String barcodeResult) {
     Map<String, dynamic> properties = <String, dynamic>{};
 
-    if (barcodeResult != null && barcodeResult.isNotEmpty && barcodeResult != '-1') {
+    if (barcodeResult != null &&
+        barcodeResult.isNotEmpty &&
+        barcodeResult != '-1') {
       print(barcodeResult);
       List<String> result = barcodeResult.split('\n');
 

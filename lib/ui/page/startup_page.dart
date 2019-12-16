@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 enum StartupValidationType { username, password }
 
@@ -71,7 +73,6 @@ class _StartupPageState extends State<StartupPage> {
           val[0] != null &&
           val[0].debug != null &&
           val[0].debug) {
-
         print("******************************************************");
         print("Config loaded: ${val[0].debug}");
         print("AppName: ${val[0].appName}");
@@ -205,7 +206,13 @@ class _StartupPageState extends State<StartupPage> {
         state.requestType == RequestType.LOGIN &&
         state.menu != null) {
       if (state.userData != null) {
-        globals.username = state.userData.userName;
+        if (state.userData.userName != null) {
+          globals.username = state.userData.userName;
+        }
+
+        if (state.userData.displayName != null) {
+          globals.displayName = state.userData.displayName;
+        }
 
         if (state.userData.profileImage != null)
           globals.profileImage = state.userData.profileImage;
@@ -220,6 +227,73 @@ class _StartupPageState extends State<StartupPage> {
 
   void _navigationHandler(Response state) {
     if (state != null && state.requestType == RequestType.APP_STYLE) {
+      if (state.applicationStyle != null &&
+          state.applicationStyle.themeColor != null) {
+        Map<int, Color> color = {
+          50: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .1),
+          100: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .2),
+          200: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .3),
+          300: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .4),
+          400: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .5),
+          500: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .6),
+          600: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .7),
+          700: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .8),
+          800: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              .9),
+          900: Color.fromRGBO(
+              state.applicationStyle.themeColor.red,
+              state.applicationStyle.themeColor.green,
+              state.applicationStyle.themeColor.blue,
+              1),
+        };
+
+        MaterialColor colorCustom =
+            MaterialColor(state.applicationStyle.themeColor.value, color);
+
+        UIData.ui_kit_color_2 = colorCustom;
+
+        DynamicTheme.of(context).setThemeData(new ThemeData(
+          primaryColor: UIData.ui_kit_color_2,
+          primarySwatch: UIData.ui_kit_color_2,
+          fontFamily: UIData.ralewayFont
+        ));
+      }
+
       Menu menu = state.menu;
 
       if (state.menu == null &&
@@ -240,12 +314,18 @@ class _StartupPageState extends State<StartupPage> {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
       } else {
-        if (state.userData != null) {
+      if (state.userData != null) {
+        if (state.userData.userName != null) {
           globals.username = state.userData.userName;
-
-          if (state.userData.profileImage != null)
-            globals.profileImage = state.userData.profileImage;
         }
+
+        if (state.userData.displayName != null) {
+          globals.displayName = state.userData.displayName;
+        }
+
+        if (state.userData.profileImage != null)
+          globals.profileImage = state.userData.profileImage;
+      }
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (_) => MenuPage(
                   menuItems: menu.items,
@@ -261,6 +341,17 @@ class _StartupPageState extends State<StartupPage> {
         state.language != null) {
       String appVersion;
       SharedPreferencesHelper().getAppVersion().then((val) {
+        if (state.userData != null) {
+          if (state.userData.userName != null) {
+            globals.username = state.userData.userName;
+          }
+          if (state.userData.displayName != null) {
+            globals.displayName = state.userData.displayName;
+          }
+
+          if (state.userData.profileImage != null)
+            globals.profileImage = state.userData.profileImage;
+        }
         appVersion = val;
 
         ApplicationMetaData applicationMetaData = state.applicationMetaData;

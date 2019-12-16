@@ -25,3 +25,4 @@ List<MenuItem> items;
 prefix0.Action changeScreen;
 int timeout = 10;
 int uploadPicWidth = 320;
+String displayName;

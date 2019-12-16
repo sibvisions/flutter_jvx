@@ -196,6 +196,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   ),
                   key: _scaffoldKey,
                   appBar: AppBar(
+                    backgroundColor: UIData.ui_kit_color_2,
                     actions: <Widget>[
                       IconButton(
                         icon: Icon(FontAwesomeIcons.ellipsisV),

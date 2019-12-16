@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,7 +56,9 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           child: Column(
         children: <Widget>[
           _buildDrawerHeader(),
-          Expanded(flex: 2, child: _buildListViewForDrawer(context, this.widget.menuItems)),
+          Expanded(
+              flex: 2,
+              child: _buildListViewForDrawer(context, this.widget.menuItems)),
         ],
       ));
     });
@@ -180,7 +184,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   height: 10,
                 ),
                 Text(
-                  globals.username,
+                  globals.displayName != null ? globals.displayName : globals.username,
                   style: TextStyle(color: UIData.textColor, fontSize: 23),
                 )
               ],
@@ -190,10 +194,18 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CircleAvatar(
-                  child: Icon(
-                    globals.profileImage.isNotEmpty ? Image.file(File(globals.profileImage), fit: BoxFit.cover,) : FontAwesomeIcons.userTie,
-                    size: 60,
-                  ),
+                  backgroundColor: Colors.white,
+                  backgroundImage: globals.profileImage.isNotEmpty ? Image.memory(
+                          base64Decode(globals.profileImage),
+                          fit: BoxFit.cover,
+                        ).image : null,
+                  child: globals.profileImage.isNotEmpty
+                      ? null
+                      : Icon(
+                          FontAwesomeIcons.userTie,
+                          color: UIData.ui_kit_color_2,
+                          size: 60,
+                        ),
                   radius: 55,
                 ),
                 Text(

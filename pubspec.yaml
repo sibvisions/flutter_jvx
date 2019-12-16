@@ -18,8 +18,7 @@ dependencies:
   font_awesome_flutter:
   json_annotation: ^2.4.0
   shared_preferences: ^0.5.3+4
-  flutter_picker:
-    git: git://github.com/yangyxd/flutter_picker.git
+  flutter_picker: ^1.1.0
   path_provider: any
   archive: ^2.0.10
   xml: ^3.2.0 
@@ -30,11 +29,12 @@ dependencies:
   keyboard_actions: ^2.1.2
   file_picker: ^1.4.2
   image_picker: ^0.6.1+11
-  package_info: ^0.4.0+11
+  package_info: ^0.4.0+13
   flutter_slidable: "^0.5.4"
   flutter_barcode_scanner: ^0.1.7
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
+  dynamic_theme: ^1.0.1
 
 dev_dependencies:
   flutter_test:

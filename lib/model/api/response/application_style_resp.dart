@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
+import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
 
 /// Response from the [ApplicationStyle] Request.
 /// 
@@ -26,6 +28,7 @@ class ApplicationStyleResponse extends ResponseObject {
   String loginIcon;
   String desktopIcon;
   String menuMode;
+  Color themeColor;
 
   ApplicationStyleResponse();
 
@@ -39,6 +42,11 @@ class ApplicationStyleResponse extends ResponseObject {
       menuMode = json['menu']['mode'];
     else
       menuMode = null;
+
+    if (json['theme'] != null && HexColor.isHexColor(json['theme']['color']))
+      themeColor = HexColor(json['theme']['color']);
+    else
+      themeColor = null;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -49,6 +57,9 @@ class ApplicationStyleResponse extends ResponseObject {
     'desktop.icon': desktopIcon,
     'menu': {
       'mode': menuMode
+    },
+    'theme': {
+      'color': themeColor.value
     }
   };
 }

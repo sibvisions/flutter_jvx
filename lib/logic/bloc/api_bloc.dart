@@ -214,10 +214,15 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> logout(Logout request) async* {
+    Response resp = await processRequest(request);
+
     SharedPreferencesHelper().setLoginData('', '');
     globals.username = '';
     globals.password = '';
-    yield await processRequest(request);
+    globals.profileImage = '';
+    globals.displayName = '';
+
+    yield resp;
   }
 
   Stream<Response> openscreen(OpenScreen request) async* {
