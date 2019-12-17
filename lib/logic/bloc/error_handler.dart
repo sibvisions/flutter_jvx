@@ -5,23 +5,24 @@ import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
+import 'package:jvx_mobile_v3/utils/translations.dart';
 
 bool handleError(Response response, BuildContext context) {
   if (response.error) {
     if (response.errorName == 'message.sessionexpired') {
       showSessionExpired(context, response.title, 'App will restart.');
     } else if (response.errorName == 'message.error' && response.requestType == RequestType.STARTUP) {
-      showGoToSettings(context, response.title, response.message);
+      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'message.error') {
-      showError(context, response.title, response.message);
+      showError(context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'server.error') {
-      showSessionExpired(context, response.title, response.message);
+      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'connection.error') {
-      showGoToSettings(context, response.title, response.message);
+      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'timeout.error') {
-      showGoToSettings(context, response.title, response.message);
+      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     } else {
-      showGoToSettings(context, response.title, response.message);
+      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     }
     return true;
   }
