@@ -24,8 +24,6 @@ class ComponentData {
   List<VoidCallback> _onDataChanged = [];
   List<VoidCallback> _onMetaDataChanged = [];
 
-  ValueChanged<Request> addToRequestQueue;
-
   ComponentData(this.dataProvider);
 
 
@@ -152,10 +150,7 @@ class ComponentData {
         index,
         RequestType.DAL_DELETE);
 
-      addToRequestQueue(select);
-      //_data.selectedRow = index;
-      //_onDataChanged.forEach((d) => d());
-      //BlocProvider.of<ApiBloc>(context).dispatch(select);
+      BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, data.records, "Delete Record", "Delete record failed. Index out of bounds!");
     }
@@ -165,13 +160,13 @@ class ComponentData {
     if (insertEnabled) {
       InsertRecord insert = InsertRecord(this.dataProvider);
 
-      addToRequestQueue(insert);
+      BlocProvider.of<ApiBloc>(context).dispatch(insert);
     }
   }
 
   void saveData(BuildContext context) {
     SaveData save = SaveData(this.dataProvider);
-    addToRequestQueue(save);
+    BlocProvider.of<ApiBloc>(context).dispatch(save);
   }
 
   void filterData(BuildContext context, String value, String editorComponentId) {
