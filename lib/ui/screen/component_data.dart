@@ -136,10 +136,9 @@ class ComponentData {
       if (fetch!=null)
         select.fetch = fetch;
 
-      addToRequestQueue(select);
       //_data.selectedRow = index;
       //_onDataChanged.forEach((d) => d());
-      //BlocProvider.of<ApiBloc>(context).dispatch(select);
+      BlocProvider.of<ApiBloc>(context).dispatch(select);
     } else {
       IndexError(index, data.records, "Select Record", "Select record failed. Index out of bounds!");
     }
@@ -178,7 +177,7 @@ class ComponentData {
   void filterData(BuildContext context, String value, String editorComponentId) {
     FilterData filter = FilterData(dataProvider, value, editorComponentId, null, 0, 100);
     filter.reload = true;
-    addToRequestQueue(filter);
+    BlocProvider.of<ApiBloc>(context).dispatch(filter);
   }
 
   void setValues(BuildContext context, List<dynamic> values, [List<dynamic> columnNames, Filter filter]) {
@@ -190,7 +189,6 @@ class ComponentData {
     if (filter!=null)
       setValues.filter = filter;
 
-    //addToRequestQueue(setValues);
     BlocProvider.of<ApiBloc>(context).dispatch(setValues);
   }
 
@@ -208,7 +206,6 @@ class ComponentData {
 
       fetch.reload = (reload==-1);
 
-      //addToRequestQueue(fetch);
       BlocProvider.of<ApiBloc>(context).dispatch(fetch);
   }
 
