@@ -109,16 +109,19 @@ class XmlLoader {
       if (file.existsSync()) {
         contents = file.readAsStringSync();
       } else {
-        print('Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+        print(
+            'Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
       }
-      
-      xml.XmlDocument doc = xml.parse(contents);
 
       Map<String, String> translations = <String, String>{};
 
-      doc.findAllElements('entry').toList().forEach((e) {
-        translations[e.attributes.first.value] = e.text;
-      });
+      if (contents != null && contents.length > 0) {
+        xml.XmlDocument doc = xml.parse(contents);
+
+        doc.findAllElements('entry').toList().forEach((e) {
+          translations[e.attributes.first.value] = e.text;
+        });
+      }
 
       return translations;
     }

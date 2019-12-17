@@ -288,15 +288,35 @@ class ApiBloc extends Bloc<Request, Response> {
       globals.dir = _dir;
 
       if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+        Directory directory = Directory('${globals.dir}/translations');
+
+        directory.listSync().forEach((entity) {
+          if (entity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+            Directory appNameDir = Directory(entity.path);
+
+            appNameDir.deleteSync(recursive: true);
+
+            // appNameDir.listSync().forEach((appNameEntity) {
+            //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+            //     Directory appVersionDir = Directory(appNameEntity.path);
+
+            //     appVersionDir.deleteSync();
+            //   }
+            // });
+          }
+        });
+
         var archive = resp.download;
 
         globals.translation = <String, String>{};
 
+        String trimmedUrl = globals.baseUrl.split('/')[2];
+
         for (var file in archive) {
-          var filename = '$_dir/${file.name}';
+          var filename = '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
           if (file.isFile) {
             var outFile = File(filename);
-            globals.translation[file.name] = filename;
+            globals.translation[file.name] = '$filename';
             outFile = await outFile.create(recursive: true);
             await outFile.writeAsBytes(file.content);
           }
