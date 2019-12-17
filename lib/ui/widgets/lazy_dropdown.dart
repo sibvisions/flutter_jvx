@@ -19,21 +19,22 @@ class LazyDropdown extends StatefulWidget {
   final BuildContext context;
   final double fetchMoreYOffset;
   final ComponentData data;
-  final LinkReference linkReference;
-  final ColumnView columnView;
+  final List<String> displayColumnNames;
 
   LazyDropdown(
-      { //@required this.data,
+      {
       @required this.allowNull,
       @required this.context,
-      this.data,
+      @required this.data,
+      this.displayColumnNames,
       this.onSave,
       this.onCancel,
       this.onScrollToEnd,
       this.onFilter,
-      this.columnView,
-      this.linkReference,
-      this.fetchMoreYOffset = 0});
+      this.fetchMoreYOffset = 0}) :
+        assert(allowNull != null),
+        assert(context != null),
+        assert(data != null);
 
   @override
   _LazyDropdownState createState() => _LazyDropdownState();
@@ -45,7 +46,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
   final FocusNode node = FocusNode();
   Timer filterTimer; // 200-300 Milliseconds
   dynamic lastChangedFilter;
-  List<int> visibleColumnIndex = <int>[];
 
   @override
   void initState() {
@@ -61,7 +61,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
   }
 
   void updateData() {
-    this.visibleColumnIndex = this.getVisibleColumnIndex(widget.data.data);
     this.setState(() {});
   }
 
@@ -89,32 +88,21 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   void _onRowTapped(int index) {
     Navigator.of(this.widget.context).pop();
-    JVxData data = widget.data.getData(context, null, 0);
-    if (this.widget.onSave != null && data.records.length > index) {
-      dynamic value = data.getRow(index);
+    if (this.widget.onSave != null) {
+      dynamic value = widget.data.data.getRow(index);
       this.widget.onSave(value);
       this.updateData();
     }
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {
-    //return Text("Na oida");
-    JVxData data = widget.data.data;
-    return getDataRow(data, index);
-  }
-
-  Widget getDataRow(JVxData data, int index) {
     List<Widget> children = new List<Widget>();
+    List<dynamic> row = widget.data.data.getRow(index, widget.displayColumnNames);
 
-    if (data != null && data.records != null && index < data.records.length) {
-      List<dynamic> columns = data.records[index];
-
-      this.visibleColumnIndex.asMap().forEach((i, j) {
-        if (j < columns.length)
-          children.add(getTableColumn(
-              columns[j] != null ? columns[j].toString() : "", index, i));
-        else
-          children.add(getTableColumn("", index, j));
+    if (row!=null) {
+      row.forEach((c) {
+        children.add(getTableColumn(
+              c != null ? c.toString() : "", index));
       });
 
       return getTableRow(children, index, false);
@@ -144,7 +132,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
     }
   }
 
-  Widget getTableColumn(String text, int rowIndex, int columnIndex) {
+  Widget getTableColumn(String text, int rowIndex) {
     int flex = 1;
 
     return Expanded(
@@ -155,26 +143,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
               child: Text(Properties.utf8convert(text)),
               padding: EdgeInsets.all(5)),
         ));
-  }
-
-  List<int> getVisibleColumnIndex(JVxData data) {
-    List<int> visibleColumnsIndex = <int>[];
-    if (data != null && data.records.isNotEmpty) {
-      data.columnNames.asMap().forEach((i, v) {
-        if (widget.columnView != null &&
-            widget.columnView.columnNames != null) {
-          if (widget.columnView.columnNames.contains(v)) {
-            visibleColumnsIndex.add(i);
-          }
-        } else if (widget.linkReference != null &&
-            widget.linkReference.referencedColumnNames != null &&
-            widget.linkReference.referencedColumnNames.contains(v)) {
-          visibleColumnsIndex.add(i);
-        }
-      });
-    }
-
-    return visibleColumnsIndex;
   }
 
   _scrollListener() {
