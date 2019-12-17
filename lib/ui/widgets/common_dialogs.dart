@@ -111,8 +111,6 @@ showProgress(BuildContext context, [String loadingText]) {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           CircularProgressIndicator(backgroundColor: Colors.white),
-                          SizedBox(height: 10,),
-                          Text(loadingText ?? 'Loading...', style: TextStyle(fontSize: 10, color: Colors.black),)
                         ],
                       ),
                 )),
