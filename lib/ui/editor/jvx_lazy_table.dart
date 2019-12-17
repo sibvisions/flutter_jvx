@@ -98,11 +98,15 @@ class JVxLazyTable extends JVxEditor {
           boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
           color: Colors.white,
         ),
-        child: GestureDetector(
-            onTap: () {
-              _onRowTapped(index);
-            },
-            child: ListTile(title: Row(children: children))),
+        child: Material(
+          color: Colors.white,
+                  child: InkWell(
+                    highlightColor: UIData.ui_kit_color_2[100],
+              onTap: () {
+                _onRowTapped(index);
+              },
+              child: ListTile(title: Row(children: children))),
+        ),
       );
     }
   }
