@@ -290,7 +290,7 @@ class _StartupPageState extends State<StartupPage> {
         DynamicTheme.of(context).setThemeData(new ThemeData(
           primaryColor: UIData.ui_kit_color_2,
           primarySwatch: UIData.ui_kit_color_2,
-          fontFamily: UIData.ralewayFont
+          fontFamily: UIData.ralewayFont,
         ));
       }
 

@@ -7,6 +7,7 @@ import 'package:jvx_mobile_v3/model/column_view.dart';
 import 'package:jvx_mobile_v3/model/link_reference.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
+import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class LazyDropdown extends StatefulWidget {
@@ -204,13 +205,13 @@ class _LazyDropdownState extends State<LazyDropdown> {
                     alignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       new RaisedButton(
-                        child: Text("Clear"),
+                        child: Text(Translations.of(context).text2("Clear")),
                         onPressed: _onDelete,
                         color: UIData.ui_kit_color_2[200],
                       ),
                       new RaisedButton(
                         child: Text(
-                          "Cancel",
+                          Translations.of(context).text2("Cancel"),
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: _onCancel,
@@ -222,7 +223,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: "Search",
+                      hintText: Translations.of(context).text2("Search"),
                       enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                               color: UIData.ui_kit_color_2, width: 1.0)),
