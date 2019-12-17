@@ -16,8 +16,6 @@ class DataScreen {
   BuildContext context;
   List<ComponentData> componentData = <ComponentData>[];
 
-  Queue<Request> _requestQueue = Queue<Request>();
-
   void updateData(Request request, List<JVxData> data, List<JVxMetaData> metaData) {
 
     if(request is SelectRecord && request.requestType==RequestType.DAL_DELETE) {
@@ -42,12 +40,6 @@ class DataScreen {
       cData?.updateSelectedRow(request.selectedRow);
     }
 
-    if (request!=null && request.subsequentRequest!=null) {
-      this._addToRequestQueue(request.subsequentRequest);
-    }
-
-    _requestQueue.remove(request);
-    _sendFromQueue();
   }
 
   ComponentData getComponentData(String dataProvider) {
@@ -57,7 +49,7 @@ class DataScreen {
 
     if (data==null) {
       data = ComponentData(dataProvider);
-      data.addToRequestQueue = this._addToRequestQueue;
+      //data.addToRequestQueue = this._addToRequestQueue;
       componentData.add(data);
     }
 
@@ -68,24 +60,7 @@ class DataScreen {
     // wait until textfields focus lost. 10 millis should do it.
     Future.delayed(const Duration(milliseconds: 10), () {
       PressButton pressButton = PressButton(jvxAction.Action(componentId: componentId, label: label));
-      _addToRequestQueue(pressButton);
+      BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
-  }
-
-  void _addToRequestQueue(Request request) {
-    _requestQueue.add(request);
-
-    if (_requestQueue.length==1)
-      _sendFromQueue();
-  }
-
-  void _sendFromQueue() {
-    if (_requestQueue.length>0) {
-      Request request = _requestQueue.first;
-      if (!request.isProcessing) {
-          request.isProcessing = true;
-          BlocProvider.of<ApiBloc>(context).dispatch(request);
-      }
-    }
   }
 }
