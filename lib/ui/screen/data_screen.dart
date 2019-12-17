@@ -1,6 +1,3 @@
-
-import 'dart:collection';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
@@ -11,6 +8,7 @@ import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as jvxAction;
+import 'package:jvx_mobile_v3/model/api/request/data/meta_data.dart' as dataModel;
 
 class DataScreen {
   BuildContext context;
@@ -33,6 +31,13 @@ class DataScreen {
         ComponentData cData = getComponentData(m.dataProvider);
         cData.updateMetaData(m);
       });
+
+      /*componentData.forEach((d) {
+        if (d.metaData==null) {
+          dataModel.MetaData meta = dataModel.MetaData(d.dataProvider);
+          BlocProvider.of<ApiBloc>(context).dispatch(meta);
+        }
+      });*/
     }
 
     if (request != null && request.requestType==RequestType.DAL_SELECT_RECORD && (request is SelectRecord)) {
