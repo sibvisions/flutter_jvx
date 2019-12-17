@@ -358,10 +358,10 @@ class _StartupPageState extends State<StartupPage> {
 
         print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
 
-        if (appVersion != applicationMetaData.version) {
+        // if (appVersion != applicationMetaData.version) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
-        }
+        // }
 
         ApplicationStyle applicationStyle = ApplicationStyle(
             clientId: applicationMetaData.clientId,

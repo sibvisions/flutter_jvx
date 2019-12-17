@@ -10,8 +10,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 class JvxMobile extends StatelessWidget {
   bool loadConf;
+  ThemeData theme;
 
-  JvxMobile(this.loadConf);
+  JvxMobile(this.loadConf, this.theme);
 
   MaterialApp materialApp(ThemeData theme) => MaterialApp(
         title: 'JVx Mobile',
@@ -35,16 +36,6 @@ class JvxMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DynamicTheme(
-      defaultBrightness: Brightness.light,
-      data: (brightness) => new ThemeData(
-        primarySwatch: UIData.ui_kit_color_2,
-        primaryColor: UIData.ui_kit_color_2,
-        fontFamily: UIData.ralewayFont,
-      ),
-      themedWidgetBuilder: (context, theme) {
-        return materialApp(theme);
-      },
-    );
+    return materialApp(this.theme);
   }
 }
