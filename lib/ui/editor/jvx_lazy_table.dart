@@ -84,7 +84,7 @@ class JVxLazyTable extends JVxEditor {
     data.selectRecord(context, index);
   }
 
-  Widget getTableRow(List<Widget> children, int index, bool isHeader) {
+  Widget getTableRow(List<Widget> children, int index, bool isHeader, bool isSelected) {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
@@ -96,12 +96,12 @@ class JVxLazyTable extends JVxEditor {
       return Container(
         decoration: BoxDecoration(
           boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-          color: Colors.white,
+          color: isSelected?UIData.ui_kit_color_2[500]:Colors.white,
         ),
         child: Material(
-          color: Colors.white,
+          color: isSelected?UIData.ui_kit_color_2[500]:Colors.white,
                   child: InkWell(
-                    highlightColor: UIData.ui_kit_color_2[100],
+                    highlightColor: UIData.ui_kit_color_2[500],
               onTap: () {
                 _onRowTapped(index);
               },
@@ -179,7 +179,7 @@ class JVxLazyTable extends JVxEditor {
       });
     }
 
-    return getTableRow(children, 0, true);
+    return getTableRow(children, 0, true, false);
   }
 
   Widget getDataRow(JVxData data, int index) {
@@ -194,7 +194,8 @@ class JVxLazyTable extends JVxEditor {
         return Slidable(
           actionExtentRatio: 0.25,
           child: Container(
-              color: Colors.white, child: getTableRow(children, index, false)),
+              color: Colors.white, 
+              child: getTableRow(children, index, false, index==data.selectedRow)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
             new IconSlideAction(
@@ -207,7 +208,8 @@ class JVxLazyTable extends JVxEditor {
         );
       } else {
         return Container(
-            color: Colors.white, child: getTableRow(children, index, false));
+            color: Colors.white, 
+            child: getTableRow(children, index, false, index==data.selectedRow));
       }
     }
 

@@ -1,4 +1,5 @@
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
+import 'package:jvx_mobile_v3/model/column_view.dart';
 
 import 'jvx_meta_data_column.dart';
 import 'jvx_meta_data_data_provider.dart';
@@ -11,6 +12,7 @@ class JVxMetaData extends ResponseObject {
   bool insertEnabled;
   List<JVxMetaDataColumn> columns = <JVxMetaDataColumn>[];
   List<String> primaryKeyColumns = <String>[];
+  List<String> tableColumnView;
 
   JVxMetaData({this.dataProvider, this.columns, this.detailDataProviders, this.deleteEnabled, this.updateEnabled});
 
@@ -27,5 +29,6 @@ class JVxMetaData extends ResponseObject {
       json['columns'].forEach((c) => columns.add(JVxMetaDataColumn.fromJson(c)));
     super.name = json['name'];
     super.componentId = json['componentId'];
+    if (json['columnView.table'] != null) tableColumnView = List<String>.from(json['columnView.table']);
   }
 }

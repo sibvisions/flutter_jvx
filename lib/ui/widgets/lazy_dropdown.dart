@@ -18,21 +18,22 @@ class LazyDropdown extends StatefulWidget {
   final BuildContext context;
   final double fetchMoreYOffset;
   final ComponentData data;
-  final LinkReference linkReference;
-  final ColumnView columnView;
+  final List<String> displayColumnNames;
 
   LazyDropdown(
       {
       @required this.allowNull,
       @required this.context,
-      this.data,
+      @required this.data,
+      this.displayColumnNames,
       this.onSave,
       this.onCancel,
       this.onScrollToEnd,
       this.onFilter,
-      this.columnView,
-      this.linkReference,
-      this.fetchMoreYOffset = 0});
+      this.fetchMoreYOffset = 0}) :
+        assert(allowNull != null),
+        assert(context != null),
+        assert(data != null);
 
   @override
   _LazyDropdownState createState() => _LazyDropdownState();
@@ -95,7 +96,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   Widget itemBuilder(BuildContext ctxt, int index) {
     List<Widget> children = new List<Widget>();
-    List<dynamic> row = widget.data.data.getRow(index, widget.columnView.columnNames);
+    List<dynamic> row = widget.data.data.getRow(index, widget.displayColumnNames);
 
     if (row!=null) {
       row.forEach((c) {

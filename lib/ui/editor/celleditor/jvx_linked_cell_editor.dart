@@ -154,6 +154,13 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       else
         this._items.add(this.getItem(v, v));
 
+      List<String> dropDownColumnNames;
+
+      if (this.columnView!=null)
+        dropDownColumnNames = this.columnView.columnNames;
+      else if (this.data.metaData!=null)
+        dropDownColumnNames = this.data.metaData.tableColumnView;
+
       return Container(
         decoration: BoxDecoration(
             color: background != null ? background : Colors.transparent,
@@ -174,8 +181,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
                 builder: (context) => LazyDropdown(
                     data: this.data,
                     context: context,
-                    linkReference: this.linkReference,
-                    columnView: this.columnView,
+                    displayColumnNames: dropDownColumnNames,
                     fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
                     onSave: (value) {
                       this.value = value;
