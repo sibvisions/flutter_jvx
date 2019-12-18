@@ -28,6 +28,7 @@ import 'package:jvx_mobile_v3/model/api/request/logout.dart';
 import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/startup.dart';
 import 'package:jvx_mobile_v3/services/rest_client.dart';
+import 'package:jvx_mobile_v3/utils/app_config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
@@ -193,6 +194,10 @@ class ApiBloc extends Bloc<Request, Response> {
         SharedPreferencesHelper().setAuthKey(null);
       }
     }
+
+    AppConfig.loadFile().then((AppConfig appConf) {
+      globals.handleSessionTimeout = appConf.handleSessionTimeout;
+    });
 
     yield resp;
   }

@@ -67,7 +67,7 @@ class _StartupPageState extends State<StartupPage> {
   @override
   void initState() {
     super.initState();
-    Future.wait([Config.loadFile(), loadSharedPrefs()]).then((val) {
+    Future.wait([Config.loadFile(), loadSharedPrefs(),]).then((val) {
       print('HELLO ${widget.loadConf}');
       if (widget.loadConf &&
           val[0] != null &&
