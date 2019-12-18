@@ -494,7 +494,7 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.DAL_METADATA:
         response =
-            await restClient.postAsync('/api/dal/metadata', request.toJson());
+            await restClient.postAsync('/api/dal/metaData', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);

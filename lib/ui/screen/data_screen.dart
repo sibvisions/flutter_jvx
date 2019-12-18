@@ -32,12 +32,12 @@ class DataScreen {
         cData.updateMetaData(m);
       });
 
-      /*componentData.forEach((d) {
+      componentData.forEach((d) {
         if (d.metaData==null) {
           dataModel.MetaData meta = dataModel.MetaData(d.dataProvider);
           BlocProvider.of<ApiBloc>(context).dispatch(meta);
         }
-      });*/
+      });
     }
 
     if (request != null && request.requestType==RequestType.DAL_SELECT_RECORD && (request is SelectRecord)) {
