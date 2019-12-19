@@ -48,14 +48,30 @@ class JVxDateCellEditor extends JVxCellEditor {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text((this.value != null && this.value is int)
-                ? DateFormat(this.dateFormat)
-                    .format(DateTime.fromMillisecondsSinceEpoch(this.value))
-                : '',
-                style: TextStyle(fontFamily: UIData.ralewayFont, fontSize: 15, color: this.foreground == null ? Colors.grey[700] : this.foreground),),
-            Icon(
-              FontAwesomeIcons.calendarAlt,
-              color: Colors.grey[600],
+            Flexible(
+              flex: 6,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  (this.value != null && this.value is int)
+                      ? DateFormat(this.dateFormat).format(
+                          DateTime.fromMillisecondsSinceEpoch(this.value))
+                      : '',
+                  style: TextStyle(
+                      fontFamily: UIData.ralewayFont,
+                      fontSize: 15,
+                      color: this.foreground == null
+                          ? Colors.grey[700]
+                          : this.foreground),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Icon(
+                FontAwesomeIcons.calendarAlt,
+                color: Colors.grey[600],
+              ),
             )
           ],
         ),
