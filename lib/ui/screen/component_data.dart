@@ -203,6 +203,9 @@ class ComponentData {
       }
 
       fetch.reload = (reload==-1);
+      
+      if (this.metaData==null)
+        fetch.includeMetaData = true;
 
       BlocProvider.of<ApiBloc>(context).dispatch(fetch);
   }
