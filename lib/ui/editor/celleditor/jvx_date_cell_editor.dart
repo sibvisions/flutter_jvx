@@ -52,7 +52,7 @@ class JVxDateCellEditor extends JVxCellEditor {
                 ? DateFormat(this.dateFormat)
                     .format(DateTime.fromMillisecondsSinceEpoch(this.value))
                 : '',
-                style: TextStyle(fontFamily: UIData.ralewayFont, fontSize: 15),),
+                style: TextStyle(fontFamily: UIData.ralewayFont, fontSize: 15, color: this.foreground == null ? Colors.grey[700] : this.foreground),),
             Icon(
               FontAwesomeIcons.calendarAlt,
               color: Colors.grey[600],

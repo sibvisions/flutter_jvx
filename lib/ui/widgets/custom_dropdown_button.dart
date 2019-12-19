@@ -885,7 +885,6 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
         builder: (BuildContext context, BoxConstraints constraints) {
           return Container(
               padding: EdgeInsets.only(right: 15, left: 5),
-              height: 60,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
