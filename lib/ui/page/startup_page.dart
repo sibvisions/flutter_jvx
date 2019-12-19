@@ -303,7 +303,7 @@ class _StartupPageState extends State<StartupPage> {
             clientId: globals.clientId,
             requestType: RequestType.DOWNLOAD_TRANSLATION);
 
-        BlocProvider.of(context).dispatch(download);
+        BlocProvider.of<ApiBloc>(context).dispatch(download);
       }
 
       Menu menu = state.menu;

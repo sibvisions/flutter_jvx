@@ -191,10 +191,10 @@ class ComponentData {
       this.isFetching = true;
       FetchData fetch = FetchData(dataProvider);
 
-      if (reload>=0) {
+      if (reload != null && reload>=0) {
         fetch.fromRow = reload;
         fetch.rowCount = 1;
-      } else if (reload==-1 && rowCountNeeded!=-1) {
+      } else if (reload != null && reload==-1 && rowCountNeeded!=-1) {
         fetch.fromRow = 0;
         fetch.rowCount = rowCountNeeded - data.records.length;
       } else if (data!=null && !data.isAllFetched && rowCountNeeded!=-1) {
