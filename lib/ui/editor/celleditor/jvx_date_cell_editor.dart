@@ -38,6 +38,7 @@ class JVxDateCellEditor extends JVxCellEditor {
         font: font,
         horizontalAlignment: horizontalAlignment);
     return Container(
+      height: 60,
       decoration: BoxDecoration(
           color: background != null ? background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
@@ -50,7 +51,8 @@ class JVxDateCellEditor extends JVxCellEditor {
             Text((this.value != null && this.value is int)
                 ? DateFormat(this.dateFormat)
                     .format(DateTime.fromMillisecondsSinceEpoch(this.value))
-                : ''),
+                : '',
+                style: TextStyle(fontFamily: UIData.ralewayFont, fontSize: 15),),
             Icon(
               FontAwesomeIcons.calendarAlt,
               color: Colors.grey[600],
