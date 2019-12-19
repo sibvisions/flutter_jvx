@@ -295,6 +295,17 @@ class _StartupPageState extends State<StartupPage> {
         ));
       }
 
+      if (Translations.of(context).shouldDownload()) {
+        Download download = Download(
+            applicationImages: false,
+            libraryImages: false,
+            name: 'translation',
+            clientId: globals.clientId,
+            requestType: RequestType.DOWNLOAD_TRANSLATION);
+
+        BlocProvider.of(context).dispatch(download);
+      }
+
       Menu menu = state.menu;
 
       if (state.menu == null &&
@@ -315,18 +326,18 @@ class _StartupPageState extends State<StartupPage> {
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
       } else {
-      if (state.userData != null) {
-        if (state.userData.userName != null) {
-          globals.username = state.userData.userName;
-        }
+        if (state.userData != null) {
+          if (state.userData.userName != null) {
+            globals.username = state.userData.userName;
+          }
 
-        if (state.userData.displayName != null) {
-          globals.displayName = state.userData.displayName;
-        }
+          if (state.userData.displayName != null) {
+            globals.displayName = state.userData.displayName;
+          }
 
-        if (state.userData.profileImage != null)
-          globals.profileImage = state.userData.profileImage;
-      }
+          if (state.userData.profileImage != null)
+            globals.profileImage = state.userData.profileImage;
+        }
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (_) => MenuPage(
                   menuItems: menu.items,
@@ -359,7 +370,7 @@ class _StartupPageState extends State<StartupPage> {
 
         print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
 
-        if (appVersion != applicationMetaData.version || Translations.of(context).shouldDownload()) {
+        if (appVersion != applicationMetaData.version) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
         }
