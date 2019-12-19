@@ -74,3 +74,4 @@
 
 # For conf file
 **/env/conf.json
+**/env/app.conf.json

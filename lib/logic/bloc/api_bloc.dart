@@ -28,10 +28,12 @@ import 'package:jvx_mobile_v3/model/api/request/logout.dart';
 import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
 import 'package:jvx_mobile_v3/model/api/request/startup.dart';
 import 'package:jvx_mobile_v3/services/rest_client.dart';
+import 'package:jvx_mobile_v3/utils/app_config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:jvx_mobile_v3/model/api/request/data/meta_data.dart' as dataModel;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -109,7 +111,8 @@ class ApiBloc extends Bloc<Request, Response> {
         event is FetchData ||
         event is FilterData ||
         event is InsertRecord ||
-        event is SaveData) {
+        event is SaveData ||
+        event is dataModel.MetaData) {
       yield* data(event);
     } else if (event is PressButton) {
       yield updateResponse(Response()
@@ -191,6 +194,10 @@ class ApiBloc extends Bloc<Request, Response> {
         SharedPreferencesHelper().setAuthKey(null);
       }
     }
+
+    AppConfig.loadFile().then((AppConfig appConf) {
+      globals.handleSessionTimeout = appConf.handleSessionTimeout;
+    });
 
     yield resp;
   }
@@ -485,6 +492,14 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DAL_SAVE:
         response =
             await restClient.postAsync('/api/dal/save', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.DAL_METADATA:
+        response =
+            await restClient.postAsync('/api/dal/metaData', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);
