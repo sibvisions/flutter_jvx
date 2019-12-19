@@ -22,6 +22,7 @@ import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 enum StartupValidationType { username, password }
@@ -358,10 +359,10 @@ class _StartupPageState extends State<StartupPage> {
 
         print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
 
-        // if (appVersion != applicationMetaData.version) {
+        if (appVersion != applicationMetaData.version || Translations.of(context).shouldDownload()) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
-        // }
+        }
 
         ApplicationStyle applicationStyle = ApplicationStyle(
             clientId: applicationMetaData.clientId,

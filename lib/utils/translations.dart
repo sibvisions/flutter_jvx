@@ -4,6 +4,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_mobile_v3/model/api/request/download.dart';
+import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
@@ -33,6 +36,28 @@ class Translations {
     return _localizedValues2[key] ?? text(key) ?? key;
   }
 
+  static Future<Translations> loadWithBuildContext(
+      Locale locale, BuildContext context) async {
+    Translations translations = new Translations(locale);
+
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
+      _localizedValues2 =
+          XmlLoader().loadTranslationsXml(locale.languageCode, context);
+    } else {
+      try {
+        Translations translations = new Translations(const Locale('en'));
+        String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
+        _localizedValues = json.decode(jsonContent);
+
+        return translations;
+      } catch (e) {
+        throw new Error();
+      }
+    }
+
+    return translations;
+  }
+
   static Future<Translations> load(Locale locale) async {
     Translations translations = new Translations(locale);
 
@@ -54,6 +79,8 @@ class Translations {
   }
 
   get currentLanguage => locale.languageCode;
+
+  bool shouldDownload() => _localizedValues2 != null && _localizedValues2.length > 0;
 }
 
 class TranslationsDelegate extends LocalizationsDelegate<Translations> {
@@ -62,11 +89,15 @@ class TranslationsDelegate extends LocalizationsDelegate<Translations> {
   @override
   bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
 
-  @override
-  Future<Translations> load(Locale locale) => Translations.load(locale);
+  Future<Translations> loadWithBuildContext(
+          Locale locale, BuildContext context) =>
+      Translations.loadWithBuildContext(locale, context);
 
   @override
   bool shouldReload(TranslationsDelegate old) => false;
+
+  @override
+  Future<Translations> load(Locale locale) => Translations.load(locale);
 }
 
 class XmlLoader {
@@ -74,7 +105,7 @@ class XmlLoader {
 
   XmlLoader();
 
-  Map<String, String> loadTranslationsXml(String lang) {
+  Map<String, String> loadTranslationsXml(String lang, [BuildContext context]) {
     if (lang == 'en') {
       File file;
       String contents;
@@ -86,6 +117,15 @@ class XmlLoader {
         contents = file.readAsStringSync();
       } else {
         print('Error with Loading ${globals.translation["translation.xml"]}');
+        print('Starting download...');
+        if (context != null) {
+          BlocProvider.of(context).dispatch(Download(
+              name: 'translation',
+              applicationImages: false,
+              libraryImages: false,
+              clientId: globals.clientId,
+              requestType: RequestType.DOWNLOAD_TRANSLATION));
+        }
       }
 
       if (contents != null) {
