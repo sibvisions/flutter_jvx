@@ -42,8 +42,11 @@ class JVxDateCellEditor extends JVxCellEditor {
       decoration: BoxDecoration(
           color: background != null ? background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
-          border:
-              borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
+          border: borderVisible
+              ? (this.editable
+                  ? Border.all(color: UIData.ui_kit_color_2)
+                  : Border.all(color: Colors.grey))
+              : null),
       child: FlatButton(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +62,7 @@ class JVxDateCellEditor extends JVxCellEditor {
                       : '',
                   style: TextStyle(
                       fontFamily: UIData.ralewayFont,
-                      fontSize: 15,
+                      fontSize: 16,
                       color: this.foreground == null
                           ? Colors.grey[700]
                           : this.foreground),
