@@ -303,17 +303,6 @@ class _StartupPageState extends State<StartupPage> {
             fontFamily: UIData.ralewayFont));
       }
 
-      if (Translations.of(context).shouldDownload()) {
-        Download download = Download(
-            applicationImages: false,
-            libraryImages: false,
-            name: 'translation',
-            clientId: globals.clientId,
-            requestType: RequestType.DOWNLOAD_TRANSLATION);
-
-        BlocProvider.of<ApiBloc>(context).dispatch(download);
-      }
-
       Menu menu = state.menu;
 
       if (state.menu == null &&
@@ -360,7 +349,7 @@ class _StartupPageState extends State<StartupPage> {
         state.applicationMetaData != null &&
         state.language != null) {
       String appVersion;
-      SharedPreferencesHelper().getAppVersion().then((val) {
+      SharedPreferencesHelper().getAppVersion().then((val) async {
         if (state.userData != null) {
           if (state.userData.userName != null) {
             globals.username = state.userData.userName;
@@ -383,7 +372,8 @@ class _StartupPageState extends State<StartupPage> {
           _download();
         }
 
-        if (Translations.of(context).shouldDownload()) {
+        bool shouddl = await Translations.shouldDownload();
+        if (shouddl) {
           Download translation = Download(
               applicationImages: false,
               libraryImages: false,

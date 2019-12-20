@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/download.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart' as xml;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
@@ -40,7 +41,7 @@ class Translations {
       Locale locale, BuildContext context) async {
     Translations translations = new Translations(locale);
 
-    if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null && await shouldDownload()) {
       _localizedValues2 =
           XmlLoader().loadTranslationsXml(locale.languageCode, context);
     } else {
@@ -80,7 +81,24 @@ class Translations {
 
   get currentLanguage => locale.languageCode;
 
-  bool shouldDownload() => _localizedValues2 == null && _localizedValues2.length <= 0;
+  static Future<bool> shouldDownload() async {
+    var _dir;
+
+    if (Platform.isIOS) {
+      _dir = (await getApplicationSupportDirectory()).path;
+    } else {
+      _dir = (await getApplicationDocumentsDirectory()).path;
+    }
+
+    String trimmedUrl = globals.baseUrl.split('/')[2];
+    Directory directory = Directory(
+        '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}');
+
+    if (directory.existsSync()) {
+      return false;
+    }
+    return true;
+  }
 }
 
 class TranslationsDelegate extends LocalizationsDelegate<Translations> {
