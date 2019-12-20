@@ -110,18 +110,25 @@ class JVxNumberCellEditor extends JVxCellEditor {
     //  direction = TextDirection.rtl;
 
     return Container(
+      height: 60,
       decoration: BoxDecoration(
           color: background != null ? background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
-          border:
-              borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
+          border: borderVisible && this.editable
+              ? Border.all(color: UIData.ui_kit_color_2)
+              : null),
       child: TextField(
         decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-        ),
+            fillColor:
+                this.background != null ? this.background : Colors.transparent,
+            enabledBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+            focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+            disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 0.0))),
         key: this.key,
         controller: _controller,
         keyboardType: textInputType,
@@ -129,6 +136,7 @@ class JVxNumberCellEditor extends JVxCellEditor {
         onChanged: onTextFieldValueChanged,
         textDirection: direction,
         inputFormatters: textInputFormatter,
+        enabled: this.editable,
       ),
     );
   }
