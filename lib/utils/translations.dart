@@ -62,7 +62,7 @@ class Translations {
   static Future<Translations> load(Locale locale) async {
     Translations translations = new Translations(locale);
 
-    if (globals.translation['translation_${locale.languageCode}.xml'] != null) {
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null && await shouldDownload()) {
       _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
     } else {
       try {
