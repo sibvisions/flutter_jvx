@@ -34,7 +34,6 @@ dependencies:
   flutter_barcode_scanner: ^0.1.7
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
-  dynamic_theme: ^1.0.1
 
 dev_dependencies:
   flutter_test:

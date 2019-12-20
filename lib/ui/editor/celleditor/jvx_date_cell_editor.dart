@@ -61,7 +61,6 @@ class JVxDateCellEditor extends JVxCellEditor {
                           DateTime.fromMillisecondsSinceEpoch(this.value))
                       : '',
                   style: TextStyle(
-                      fontFamily: UIData.ralewayFont,
                       fontSize: 16,
                       color: this.foreground == null
                           ? Colors.grey[700]

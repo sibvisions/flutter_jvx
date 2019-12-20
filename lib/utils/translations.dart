@@ -80,7 +80,7 @@ class Translations {
 
   get currentLanguage => locale.languageCode;
 
-  bool shouldDownload() => _localizedValues2 != null && _localizedValues2.length > 0;
+  bool shouldDownload() => _localizedValues2 == null && _localizedValues2.length <= 0;
 }
 
 class TranslationsDelegate extends LocalizationsDelegate<Translations> {

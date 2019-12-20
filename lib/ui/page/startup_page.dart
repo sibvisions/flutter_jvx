@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/loading.dart';
 import 'package:jvx_mobile_v3/model/api/request/login.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
@@ -68,7 +68,10 @@ class _StartupPageState extends State<StartupPage> {
   @override
   void initState() {
     super.initState();
-    Future.wait([Config.loadFile(), loadSharedPrefs(),]).then((val) {
+    Future.wait([
+      Config.loadFile(),
+      loadSharedPrefs(),
+    ]).then((val) {
       print('HELLO ${widget.loadConf}');
       if (widget.loadConf &&
           val[0] != null &&
@@ -288,11 +291,16 @@ class _StartupPageState extends State<StartupPage> {
 
         UIData.ui_kit_color_2 = colorCustom;
 
-        DynamicTheme.of(context).setThemeData(new ThemeData(
-          primaryColor: UIData.ui_kit_color_2,
-          primarySwatch: UIData.ui_kit_color_2,
-          fontFamily: UIData.ralewayFont,
-        ));
+        // DynamicTheme.of(context).setThemeData(new ThemeData(
+        //   primaryColor: UIData.ui_kit_color_2,
+        //   primarySwatch: UIData.ui_kit_color_2,
+        //   fontFamily: UIData.ralewayFont,
+        // ));
+
+        BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
+            primaryColor: UIData.ui_kit_color_2,
+            primarySwatch: UIData.ui_kit_color_2,
+            fontFamily: UIData.ralewayFont));
       }
 
       if (Translations.of(context).shouldDownload()) {
@@ -373,6 +381,17 @@ class _StartupPageState extends State<StartupPage> {
         if (appVersion != applicationMetaData.version) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
+        }
+
+        if (Translations.of(context).shouldDownload()) {
+          Download translation = Download(
+              applicationImages: false,
+              libraryImages: false,
+              clientId: globals.clientId,
+              name: 'translation',
+              requestType: RequestType.DOWNLOAD_TRANSLATION);
+
+          BlocProvider.of<ApiBloc>(context).dispatch(translation);
         }
 
         ApplicationStyle applicationStyle = ApplicationStyle(
