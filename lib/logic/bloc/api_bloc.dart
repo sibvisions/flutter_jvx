@@ -30,6 +30,7 @@ import 'package:jvx_mobile_v3/model/api/request/startup.dart';
 import 'package:jvx_mobile_v3/services/rest_client.dart';
 import 'package:jvx_mobile_v3/utils/app_config.dart';
 import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
@@ -55,12 +56,23 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
-    await for (Response response in makeRequest(_queue.removeFirst())) {
-      if (response.requestType != RequestType.LOADING &&
-          response.requestType != RequestType.RELOAD) {
-        print("~~~ Incoming Response id: ${response.request.sequenceNo}");
+    if (await _checkConnectivity()) {
+      if (_queue.length > 0) {
+        await for (Response response in makeRequest(_queue.removeFirst())) {
+          if (response.requestType != RequestType.LOADING &&
+              response.requestType != RequestType.RELOAD) {
+            print("~~~ Incoming Response id: ${response.request.sequenceNo}");
+          }
+          yield response;
+        }
       }
-      yield response;
+    } else {
+      _queue = Queue<Request>();
+      yield updateResponse(Response()
+        ..title = 'Connection Error'
+        ..errorName = 'internet.error'
+        ..error = true
+        ..message = 'No connection to the Internet');
     }
   }
 
@@ -615,5 +627,14 @@ class ApiBloc extends Bloc<Request, Response> {
     if (toUpdate.userData == null) toUpdate.userData = currentResponse.userData;
 
     return toUpdate;
+  }
+
+  Future<bool> _checkConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    }
+    return false;
   }
 }
