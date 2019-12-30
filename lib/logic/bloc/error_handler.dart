@@ -28,7 +28,7 @@ bool handleError(Response response, BuildContext context) {
     } else if (response.errorName == 'timeout.error') {
       showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'internet.error') {
-      showSessionExpired(context, Translations.of(context).text2('Error'), response.message);
+      showError(context, Translations.of(context).text2('Error'), response.message);
     } else {
       showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
     }

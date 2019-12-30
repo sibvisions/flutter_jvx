@@ -67,7 +67,7 @@ class ApiBloc extends Bloc<Request, Response> {
         }
       }
     } else {
-      _queue = Queue<Request>();
+      _queue.removeLast();
       yield updateResponse(Response()
         ..title = 'Connection Error'
         ..errorName = 'internet.error'
