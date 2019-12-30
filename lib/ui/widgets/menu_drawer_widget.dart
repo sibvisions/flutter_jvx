@@ -65,7 +65,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   }
 
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
-    List<Widget> tiles = new List<Widget>();
+    List<Widget> tiles = <Widget>[];
 
     // tiles.add(_buildDrawerHeader());
 

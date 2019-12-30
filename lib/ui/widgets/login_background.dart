@@ -17,17 +17,24 @@ class LoginBackground extends StatelessWidget {
           new Container(
               decoration: BoxDecoration(color: Colors.white),
               width: double.infinity,
-              child: (globals.applicationStyle == null || globals.applicationStyle?.loginIcon == null)
-                  ? Image.asset(
-                      'assets/images/sib_visions.jpg',
-                      fit: BoxFit.fitHeight,
-                    )
-                  : Image.file(
-                      File(
-                          '${globals.dir}${globals.applicationStyle.loginIcon}'),
-                      fit: BoxFit.fitHeight))
+              child: _getLoginImage())
         ],
       ),
+    );
+  }
+
+  _getLoginImage() {
+    if (globals.applicationStyle != null ||
+        globals.applicationStyle?.loginIcon != null) {
+      File loginImg = File('${globals.dir}${globals.applicationStyle.loginIcon}');
+    
+      if (loginImg.existsSync()) {
+        return Image.file(loginImg, fit: BoxFit.fitHeight);
+      }
+    }
+    return Image.asset(
+      'assets/images/sib_visions.jpg',
+      fit: BoxFit.fitHeight,
     );
   }
 
@@ -47,11 +54,13 @@ class LoginBackground extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: (globals.applicationStyle == null || globals.applicationStyle?.loginIcon == null)
+                child: (globals.applicationStyle == null ||
+                        globals.applicationStyle?.loginIcon == null)
                     ? Image.asset('assets/images/sibvisions.png',
                         fit: BoxFit.fitHeight)
                     : Image.file(
-                        File('${globals.dir}${globals.applicationStyle.loginIcon}'),
+                        File(
+                            '${globals.dir}${globals.applicationStyle.loginIcon}'),
                         fit: BoxFit.fitHeight),
               ),
             )
@@ -72,11 +81,11 @@ class LoginBackground extends StatelessWidget {
             new Container(
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(
-                    colors: UIData.kitGradients2,
-                  )),
+                colors: UIData.kitGradients2,
+              )),
             ),
             FlutterLogo(
-            colors: Colors.yellow,
+              colors: Colors.yellow,
             ),
           ],
         ),

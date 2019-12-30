@@ -291,12 +291,6 @@ class _StartupPageState extends State<StartupPage> {
 
         UIData.ui_kit_color_2 = colorCustom;
 
-        // DynamicTheme.of(context).setThemeData(new ThemeData(
-        //   primaryColor: UIData.ui_kit_color_2,
-        //   primarySwatch: UIData.ui_kit_color_2,
-        //   fontFamily: UIData.ralewayFont,
-        // ));
-
         BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
             primaryColor: UIData.ui_kit_color_2,
             primarySwatch: UIData.ui_kit_color_2,
@@ -367,21 +361,11 @@ class _StartupPageState extends State<StartupPage> {
 
         print('DOWNLOAD: ${appVersion != applicationMetaData.version}');
 
-        if (appVersion != applicationMetaData.version) {
+        bool shouddl = await Translations.shouldDownload();
+
+        if (appVersion != applicationMetaData.version || shouddl) {
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
           _download();
-        }
-
-        bool shouddl = await Translations.shouldDownload();
-        if (shouddl) {
-          Download translation = Download(
-              applicationImages: false,
-              libraryImages: false,
-              clientId: globals.clientId,
-              name: 'translation',
-              requestType: RequestType.DOWNLOAD_TRANSLATION);
-
-          BlocProvider.of<ApiBloc>(context).dispatch(translation);
         }
 
         ApplicationStyle applicationStyle = ApplicationStyle(

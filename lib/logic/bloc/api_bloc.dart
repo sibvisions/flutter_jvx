@@ -33,7 +33,8 @@ import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/meta_data.dart' as dataModel;
+import 'package:jvx_mobile_v3/model/api/request/data/meta_data.dart'
+    as dataModel;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -297,21 +298,24 @@ class ApiBloc extends Bloc<Request, Response> {
       if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
         Directory directory = Directory('${globals.dir}/translations');
 
-        directory.listSync().forEach((entity) {
-          if (entity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-            Directory appNameDir = Directory(entity.path);
+        if (directory.existsSync()) {
+          directory.listSync().forEach((entity) {
+            if (entity.path !=
+                '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+              Directory appNameDir = Directory(entity.path);
 
-            appNameDir.deleteSync(recursive: true);
+              appNameDir.deleteSync(recursive: true);
 
-            // appNameDir.listSync().forEach((appNameEntity) {
-            //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-            //     Directory appVersionDir = Directory(appNameEntity.path);
+              // appNameDir.listSync().forEach((appNameEntity) {
+              //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+              //     Directory appVersionDir = Directory(appNameEntity.path);
 
-            //     appVersionDir.deleteSync();
-            //   }
-            // });
-          }
-        });
+              //     appVersionDir.deleteSync();
+              //   }
+              // });
+            }
+          });
+        }
 
         var archive = resp.download;
 
@@ -320,7 +324,8 @@ class ApiBloc extends Bloc<Request, Response> {
         String trimmedUrl = globals.baseUrl.split('/')[2];
 
         for (var file in archive) {
-          var filename = '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
+          var filename =
+              '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
           if (file.isFile) {
             var outFile = File(filename);
             globals.translation[file.name] = '$filename';
