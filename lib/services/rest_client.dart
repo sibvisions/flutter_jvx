@@ -1,28 +1,17 @@
 import 'dart:async';
 
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
-import 'package:jvx_mobile_v3/model/api/request/download.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/request/upload.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as prefHttp;
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/log.dart';
-import 'package:http_middleware/http_middleware.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 
 class RestClient {
   bool debug = false;
-
-  /*
-  HttpClientWithMiddleware http = HttpClientWithMiddleware.build(
-    requestTimeout: Duration(seconds: globals.timeout),
-  );
-  */
 
   prefHttp.Client http;
 
