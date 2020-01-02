@@ -66,7 +66,8 @@ class ApiBloc extends Bloc<Request, Response> {
           yield response;
 
           if (response.request.subsequentRequest != null && !response.error) {
-            yield* makeRequest(response.request.subsequentRequest);
+            _queue.add(response.request.subsequentRequest);
+            mapEventToState(response.request.subsequentRequest);
           }
         }
       }
