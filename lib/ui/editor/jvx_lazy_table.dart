@@ -89,14 +89,14 @@ class JVxLazyTable extends JVxEditor {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-            color: UIData.ui_kit_color_2[200],
+            color: UIData.ui_kit_color_2[500],
           ),
           child: Row(children: children));
     } else {
       return Container(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-          color: isSelected?UIData.ui_kit_color_2[500]:Colors.white,
+          boxShadow: [BoxShadow(color: Colors.grey[400].withOpacity(0.5), spreadRadius: 1)],
+          color: isSelected?UIData.ui_kit_color_2[100].withOpacity(0.1):Colors.white,
         ),
         child: Material(
           color: isSelected?UIData.ui_kit_color_2[100].withOpacity(0.1):Colors.white,
