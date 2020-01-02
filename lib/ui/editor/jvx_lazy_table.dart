@@ -99,13 +99,13 @@ class JVxLazyTable extends JVxEditor {
           color: isSelected?UIData.ui_kit_color_2[500]:Colors.white,
         ),
         child: Material(
-          color: isSelected?UIData.ui_kit_color_2[500]:Colors.white,
+          color: isSelected?UIData.ui_kit_color_2[100].withOpacity(0.1):Colors.white,
                   child: InkWell(
                     highlightColor: UIData.ui_kit_color_2[500],
               onTap: () {
                 _onRowTapped(index);
               },
-              child: ListTile(title: Row(children: children))),
+              child: Container(height: 60, child: Row(children: children)))
         ),
       );
     }

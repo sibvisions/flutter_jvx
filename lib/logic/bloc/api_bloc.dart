@@ -64,6 +64,10 @@ class ApiBloc extends Bloc<Request, Response> {
             print("~~~ Incoming Response id: ${response.request.sequenceNo}");
           }
           yield response;
+
+          if (response.request.subsequentRequest != null && !response.error) {
+            yield* makeRequest(response.request.subsequentRequest);
+          }
         }
       }
     } else {
