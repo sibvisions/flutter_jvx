@@ -57,18 +57,19 @@ class ApiBloc extends Bloc<Request, Response> {
   @override
   Stream<Response> mapEventToState(Request event) async* {
     if (await _checkConnectivity()) {
-      if (_queue.length > 0) {
+      if (_queue.length != null) {
         await for (Response response in makeRequest(_queue.removeFirst())) {
           if (response.requestType != RequestType.LOADING &&
               response.requestType != RequestType.RELOAD) {
             print("~~~ Incoming Response id: ${response.request.sequenceNo}");
           }
-          yield response;
 
-          if (response.request.subsequentRequest != null && !response.error) {
+          if (response.request?.subsequentRequest != null) {
             _queue.add(response.request.subsequentRequest);
             mapEventToState(response.request.subsequentRequest);
           }
+
+          yield response;
         }
       }
     } else {
