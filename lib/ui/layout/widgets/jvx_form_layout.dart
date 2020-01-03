@@ -435,10 +435,15 @@ class RenderJVxFormLayoutWidget extends RenderBox
     	}
     }
 
-  Size getPreferredSize(RenderBox renderBox) {
+  Size getPreferredSize(RenderBox renderBox, JVxFormLayoutConstraint constraint) {
+    int margin = constraint.leftAnchor.getAbsolutePosition() + constraint.rightAnchor.getAbsolutePosition();
+    BoxConstraints constraints = BoxConstraints(minHeight: this.constraints.minHeight,
+    maxHeight: this.constraints.maxHeight, minWidth: this.constraints.minWidth,
+    maxWidth: this.constraints.maxWidth);
     renderBox.layout(
-      BoxConstraints.tightFor(),
-      //BoxConstraints.loose(this.constraints.biggest),
+      constraints,
+      //BoxConstraints.tightFor(),
+      //BoxConstraints.loose(constraints.biggest),
       //BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
       parentUsesSize: true);
 
@@ -451,8 +456,8 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
     Size getMinimumSize(RenderBox renderBox) {
     renderBox.layout(
-      BoxConstraints.tightFor(),
-      //BoxConstraints.loose(this.constraints.biggest),
+      //BoxConstraints.tightFor(),
+      BoxConstraints.loose(this.constraints.biggest),
       //BoxConstraints(minWidth: 0, maxWidth: this.constraints.smallest.width, minHeight: 0, maxHeight: this.constraints.smallest.height), 
       parentUsesSize: true);
 
@@ -599,7 +604,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
           //{
             JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
-            Size preferredSize = this.getPreferredSize(comp);
+            Size preferredSize = this.getPreferredSize(comp, constraint);
 
             calculateAutoSize(constraint.topAnchor, constraint.bottomAnchor, preferredSize.height.round(), autoSizeCount);
             calculateAutoSize(constraint.leftAnchor, constraint.rightAnchor, preferredSize.width.round(), autoSizeCount);
@@ -654,7 +659,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
         //{
           JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
-          Size preferredSize = getPreferredSize(comp);
+          Size preferredSize = getPreferredSize(comp, constraint);
           Size minimumSize = getMinimumSize(comp);
 
           if (constraint.rightAnchor.getBorderAnchor() == leftAnchor)
@@ -917,7 +922,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
         //if (comp.isVisible()) {
           JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
-          Size preferredSize = getPreferredSize(comp);
+          Size preferredSize = getPreferredSize(comp, constraint);
 
           calculateRelativeAnchor(constraint.leftAnchor, constraint.rightAnchor,
               preferredSize.width.round());

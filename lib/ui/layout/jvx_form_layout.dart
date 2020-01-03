@@ -112,14 +112,14 @@ class JVxFormLayout extends JVxLayout<String> {
       anchor = JVxAnchor(this, orientation, values[0]);
     }
     
-    if (values[1]!="-" && anchors.containsKey(values[1])) {
-      anchor.relatedAnchor = anchors[values[1]];
-    }
-
     if (values[3]=="a") {
       anchor.autoSize = true;
     } else {
       anchor.position = int.parse(values[3]);
+    }
+
+    if (values[1]!="-" && anchors.containsKey(values[1])) {
+      anchor.relatedAnchor = anchors[values[1]];
     }
 
     anchors.putIfAbsent(values[0], () => anchor);
@@ -216,7 +216,11 @@ class JVxFormLayout extends JVxLayout<String> {
       }
     });
 
-    return Container(
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Container(
+          width: constraints.maxWidth,
+      //decoration: BoxDecoration(color: Colors.green),
       //margin: this.margins,
       child: JVxFormLayoutWidget(
         key: key,
@@ -235,5 +239,7 @@ class JVxFormLayout extends JVxLayout<String> {
         topMarginAnchor: anchors["tm"],
         bottomMarginAnchor: anchors["bm"])
       );
+      }
+    );
   }
 }
