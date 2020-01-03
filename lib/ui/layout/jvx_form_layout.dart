@@ -27,18 +27,18 @@ class JVxFormLayout extends JVxLayout<String> {
   /// 
   /// @return the margins.
   ///
-  EdgeInsets get margins
+  /*EdgeInsets get margins
   {
     return new EdgeInsets.fromLTRB(anchors["lm"].position.toDouble(), anchors["tm"].position.toDouble(), 
     -anchors["rm"].position.toDouble(), -anchors["bm"].position.toDouble());
-  }
+  }*/
     
   ///
   /// Sets the margins.
   /// 
   /// @param pMargins the margins.
   ///
-  set margins(EdgeInsets pMargins) 
+  /*set margins(EdgeInsets pMargins) 
   {
     if (pMargins == null)
     {
@@ -54,7 +54,7 @@ class JVxFormLayout extends JVxLayout<String> {
       defaultAnchors["bm"].position = -pMargins.bottom.round();
       defaultAnchors["rm"].position = -pMargins.right.round();
     }
-  }
+  }*/
 
   JVxFormLayout(this.key) {
     init();
@@ -221,7 +221,7 @@ class JVxFormLayout extends JVxLayout<String> {
         return Container(
           width: constraints.maxWidth,
       //decoration: BoxDecoration(color: Colors.green),
-      //margin: this.margins,
+      margin: this.margins,
       child: JVxFormLayoutWidget(
         key: key,
         valid: this._valid,
