@@ -40,10 +40,10 @@ class DataScreen {
       });
     }
 
-    if (request != null && request.requestType==RequestType.DAL_SELECT_RECORD && (request is SelectRecord)) {
+    /*if (request != null && request.requestType==RequestType.DAL_SELECT_RECORD && (request is SelectRecord)) {
       ComponentData cData = getComponentData(request.dataProvider);
       cData?.updateSelectedRow(request.selectedRow);
-    }
+    }*/
 
   }
 
