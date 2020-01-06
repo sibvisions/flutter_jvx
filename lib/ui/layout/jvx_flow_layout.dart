@@ -56,6 +56,7 @@ class JVxFlowLayout extends JVxLayout<String> {
     WrapCrossAlignment wrapCrossAlignment = WrapCrossAlignment.start;
 
     this.layoutConstraints.forEach((k, v) {
+      if (k.isVisible)
         children.add(k.getWidget());
     });
 
