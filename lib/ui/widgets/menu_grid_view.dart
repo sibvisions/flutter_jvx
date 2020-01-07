@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/custom_screen/custom_screen_api.dart';
+import 'package:jvx_mobile_v3/custom_screen/first_custom_screen_api.dart';
+import 'package:jvx_mobile_v3/custom_screen/get_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/custom_screen/i_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
@@ -36,13 +38,15 @@ class MenuGridView extends StatefulWidget {
 }
 
 class _MenuGridViewState extends State<MenuGridView> {
-  CustomScreenApi customScreenApi = CustomScreenApi();
+  CustomScreenApi customScreenApi;
   String title;
 
   bool errorMsgShown = false;
 
   @override
   Widget build(BuildContext context) {
+    customScreenApi = getCustomScreenAPI();
+
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         // condition: (previousState, state) {
@@ -143,6 +147,8 @@ class _MenuGridViewState extends State<MenuGridView> {
             ),
           ),
           onTap: () {
+            customScreenApi.onMenuButtonPressed(context, menuItems[index].action.label, menuItems[index].group);
+
             if (!customScreenApi.showCustomScreen()) {
               prefix0.Action action = menuItems[index].action;
 
