@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class IAlignmentConstants {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// Constants
@@ -25,4 +27,26 @@ class IAlignmentConstants {
 	// Default align is for components, that have the possibility to change align independently. 
 	// DEFAULT means, what ever the component want, else use the direct setting.
 	static final int	ALIGN_DEFAULT	= -1;
+
+static MainAxisAlignment getMainAxisAlignment(int alignment) {
+  switch(alignment) {
+    case 0: return MainAxisAlignment.start;
+    case 1: return MainAxisAlignment.center;
+    case 2: return MainAxisAlignment.end;
+    case 3: return MainAxisAlignment.spaceBetween;
+  }
+
+  return MainAxisAlignment.start;
+}
+
+static CrossAxisAlignment getCrossAxisAlignment(int alignment) {
+  switch(alignment) {
+    case 0: return CrossAxisAlignment.start;
+    case 1: return CrossAxisAlignment.center;
+    case 2: return CrossAxisAlignment.end;
+    case 3: return CrossAxisAlignment.stretch;
+  }
+
+  return CrossAxisAlignment.start;
+}
 }
