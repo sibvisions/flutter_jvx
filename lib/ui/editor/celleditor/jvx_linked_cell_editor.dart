@@ -162,7 +162,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         dropDownColumnNames = this.data.metaData.tableColumnView;
 
       return Container(
-        height: 60,
+        height: 50,
         decoration: BoxDecoration(
             color: background != null ? background : Colors.transparent,
             borderRadius: BorderRadius.circular(5),

@@ -38,7 +38,7 @@ class JVxDateCellEditor extends JVxCellEditor {
         font: font,
         horizontalAlignment: horizontalAlignment);
     return Container(
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
           color: background != null ? background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),

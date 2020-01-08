@@ -55,7 +55,7 @@ class JVxTextCellEditor extends JVxCellEditor {
     _controller.text = (this.value != null ? this.value.toString() : "");
 
     return Container(
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),

@@ -436,16 +436,29 @@ class RenderJVxFormLayoutWidget extends RenderBox
     }
 
   Size getPreferredSize(RenderBox renderBox, JVxFormLayoutConstraint constraint) {
-    int margin = constraint.leftAnchor.getAbsolutePosition() + constraint.rightAnchor.getAbsolutePosition();
-    BoxConstraints constraints = BoxConstraints(minHeight: this.constraints.minHeight,
-    maxHeight: this.constraints.maxHeight, minWidth: this.constraints.minWidth,
-    maxWidth: this.constraints.maxWidth);
-    renderBox.layout(
-      constraints,
-      //BoxConstraints.tightFor(),
-      //BoxConstraints.loose(constraints.biggest),
-      //BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
-      parentUsesSize: true);
+
+    
+      renderBox.layout(
+        //constraints,
+        BoxConstraints.tightFor(),
+        //BoxConstraints.loose(constraints.biggest),
+        //BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
+        parentUsesSize: true);
+    
+    if (!renderBox.hasSize) {
+      int margin = constraint.leftAnchor.getAbsolutePosition() + constraint.rightAnchor.getAbsolutePosition();
+      BoxConstraints constraints = BoxConstraints(minHeight: 0,
+      maxHeight: this.constraints.maxHeight, minWidth: 0,
+      maxWidth: this.constraints.maxWidth-margin<0?this.constraints.maxWidth:this.constraints.maxWidth-margin);
+    
+      renderBox.layout(
+        constraints,
+        parentUsesSize: true);
+    }
+
+    if (!renderBox.hasSize) {
+      print("FormLayout: RenderBox has no size after layout!");
+    }
 
     if (renderBox.size.width==double.infinity || renderBox.size.height==double.infinity) {
       print("getPrefererredSize: Infinity height or width for FormLayout");
@@ -456,8 +469,8 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
     Size getMinimumSize(RenderBox renderBox) {
     renderBox.layout(
-      //BoxConstraints.tightFor(),
-      BoxConstraints.loose(this.constraints.biggest),
+      BoxConstraints.tightFor(),
+      //BoxConstraints.loose(this.constraints.biggest),
       //BoxConstraints(minWidth: 0, maxWidth: this.constraints.smallest.width, minHeight: 0, maxHeight: this.constraints.smallest.height), 
       parentUsesSize: true);
 
