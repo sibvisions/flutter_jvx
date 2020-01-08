@@ -12,42 +12,62 @@ class _FirstCustomScreenState extends State<FirstCustomScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('First Custom Screen')),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 20,
-                ),
-                Text(
-                  'Kontakt',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
-            ),
-            Divider(),
-            Container(
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    'Kontakt',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+              Divider(),
+              Container(
+                  padding: EdgeInsets.all(8.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Anrede',
+                    style: TextStyle(fontSize: 16),
+                  )),
+              _getAnredeDropdown(),
+              Container(
                 padding: EdgeInsets.all(8.0),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Anrede',
+                  'Titel',
                   style: TextStyle(fontSize: 16),
-                )),
-            _getDropdown(),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Titel',
-                style: TextStyle(fontSize: 16),
+                ),
               ),
-            ),
-            _getDropdown()
-          ],
+              _getTitelDropdown(),
+              Container(
+                padding: EdgeInsets.all(8.0),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Vorname',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              _getTextField(),
+              Container(
+                padding: EdgeInsets.all(8.0),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Nachname',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+              _getTextField()
+            ],
+          ),
         ),
       ),
     );
@@ -55,30 +75,31 @@ class _FirstCustomScreenState extends State<FirstCustomScreen> {
 
   Widget _getTextField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
       height: 60,
+      width: MediaQuery.of(context).size.width / 1.2,
       child: TextField(
         style: TextStyle(color: Colors.black),
         decoration: InputDecoration(
             fillColor: Colors.transparent,
             enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+                borderRadius: BorderRadius.circular(7),
+                borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 1)),
             focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
+                borderRadius: BorderRadius.circular(7),
+                borderSide: BorderSide(color: UIData.ui_kit_color_2, width: 1)),
             disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey, width: 0.0))),
+                borderRadius: BorderRadius.circular(7),
+                borderSide: BorderSide(color: Colors.grey, width: 1))),
       ),
     );
   }
 
-  Widget _getDropdown() {
+  Widget _getAnredeDropdown() {
     String value = 'Herr';
 
     return Container(
       height: 60,
-      width: MediaQuery.of(context).size.width / 1.3,
+      width: MediaQuery.of(context).size.width / 1.2,
       padding: EdgeInsets.all(10.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(7),
@@ -106,6 +127,54 @@ class _FirstCustomScreenState extends State<FirstCustomScreen> {
             DropdownMenuItem(
               value: 'Frau',
               child: Text('Frau'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getTitelDropdown() {
+    String value = 'Keinen';
+
+    return Container(
+      height: 60,
+      width: MediaQuery.of(context).size.width / 1.2,
+      padding: EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          border: Border(
+              top: BorderSide(
+                width: 1,
+                color: UIData.ui_kit_color_2,
+              ),
+              bottom: BorderSide(width: 1, color: UIData.ui_kit_color_2),
+              left: BorderSide(width: 1, color: UIData.ui_kit_color_2),
+              right: BorderSide(width: 1, color: UIData.ui_kit_color_2))),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          value: value,
+          onChanged: (String changed) {
+            setState(() {
+              value = changed;
+            });
+          },
+          items: <DropdownMenuItem<String>>[
+            DropdownMenuItem(
+              value: 'Keinen',
+              child: Text('Keinen'),
+            ),
+            DropdownMenuItem(
+              value: 'Mag',
+              child: Text('Mag'),
+            ),
+            DropdownMenuItem(
+              value: 'Dr',
+              child: Text('Dr'),
+            ),
+            DropdownMenuItem(
+              value: 'Dipl',
+              child: Text('Dipl'),
             ),
           ],
         ),
