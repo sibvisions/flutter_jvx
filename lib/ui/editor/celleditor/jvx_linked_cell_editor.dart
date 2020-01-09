@@ -15,6 +15,16 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   int pageSize = 100;
   int reload;
 
+  @override
+  get preferredSize {
+    return Size(200,50);
+  }
+
+  @override
+  get minimumSize {
+    return Size(50,50);
+  }
+
   JVxLinkedCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context);
 

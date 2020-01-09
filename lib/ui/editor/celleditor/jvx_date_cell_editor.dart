@@ -12,6 +12,16 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 class JVxDateCellEditor extends JVxCellEditor {
   String dateFormat;
 
+  @override
+  get preferredSize {
+    return Size(200,50);
+  }
+
+  @override
+  get minimumSize {
+    return Size(50,50);
+  }
+
   JVxDateCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
     dateFormat =

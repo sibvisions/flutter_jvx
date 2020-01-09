@@ -1,3 +1,5 @@
+import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+
 import "jvx_form_layout_anchor.dart";
 
 
@@ -10,6 +12,8 @@ class JVxFormLayoutConstraint {
   JVxAnchor _bottomAnchor;
   /// The right anchor.
   JVxAnchor _rightAnchor;
+
+  JVxComponent comp;
 
   ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   /// Initialization

@@ -209,6 +209,7 @@ class JVxFormLayout extends JVxLayout<String> {
         JVxFormLayoutConstraint constraint = this.getConstraintsFromString(v);
 
         if (constraint !=null) {
+          constraint.comp = k;
           children.add(
             new JVxFormLayoutConstraintData(child: k.getWidget(), 
                   id: constraint));
@@ -219,7 +220,7 @@ class JVxFormLayout extends JVxLayout<String> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return Container(
-      width: constraints.maxWidth,
+      //width: constraints.maxWidth,
       //decoration: BoxDecoration(color: Colors.green),
       margin: this.margins,
       child: JVxFormLayoutWidget(

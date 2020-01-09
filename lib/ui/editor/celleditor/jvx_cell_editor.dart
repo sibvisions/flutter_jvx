@@ -39,6 +39,14 @@ class JVxCellEditor implements ICellEditor {
   bool borderVisible;
   bool placeholderVisible;
 
+  Size preferredSize;
+  Size minimumSize;
+  Size maximumSize;
+
+  bool get isPreferredSizeSet => preferredSize!=null;
+  bool get isMinimumSizeSet => minimumSize!=null;
+  bool get isMaximumSizeSet => maximumSize!=null;
+
   JVxCellEditor(CellEditor changedCellEditor, this.context) {
     horizontalAlignment = changedCellEditor
         .getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);

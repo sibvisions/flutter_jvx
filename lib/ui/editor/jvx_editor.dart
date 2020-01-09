@@ -44,6 +44,34 @@ class JVxEditor extends JVxComponent implements IEditor {
     _cellEditor.onFilter = onFilter;
   }
 
+  @override
+  get preferredSize {
+    return _cellEditor.preferredSize;
+  }
+
+  @override
+  get minimumSize {
+    return _cellEditor.minimumSize;
+  }
+
+  @override
+  get isPreferredSizeSet {
+    if (this._cellEditor!=null) return this._cellEditor.isPreferredSizeSet;
+    return false;
+  }
+
+  @override
+  bool get isMinimumSizeSet {
+    if (this._cellEditor!=null) return this._cellEditor.isMinimumSizeSet;
+    return false;
+  }
+
+  @override
+  bool get isMaximumSizeSet {
+    if (this._cellEditor!=null) return this._cellEditor.isMaximumSizeSet;
+    return false;
+  }
+
   JVxEditor(Key componentId, BuildContext context)
       : super(componentId, context);
 
