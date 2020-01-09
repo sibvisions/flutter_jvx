@@ -31,6 +31,12 @@ class JVxTextCellEditor extends JVxCellEditor {
   }
 
   void onTextFieldEndEditing() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+    
     if (this.valueChanged) {
       super.onValueChanged(this.value);
       this.valueChanged = false;
@@ -52,7 +58,10 @@ class JVxTextCellEditor extends JVxCellEditor {
         placeholder: placeholder,
         font: font,
         horizontalAlignment: horizontalAlignment);
-    _controller.text = (this.value != null ? this.value.toString() : "");
+    //_controller.text = (this.value != null ? this.value.toString() : "");
+    String controllerValue = (this.value != null ? this.value.toString() : "");
+    _controller.value = _controller.value.copyWith(text: controllerValue, selection: 
+        TextSelection.collapsed(offset: controllerValue.length));
 
     return Container(
       height: 60,

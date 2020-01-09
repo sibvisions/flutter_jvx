@@ -176,10 +176,15 @@ class ComponentData {
   }
 
   void setValues(BuildContext context, List<dynamic> values, [List<dynamic> columnNames, Filter filter]) {
+
     SetValues setValues = SetValues(this.dataProvider, data?.columnNames, values);
 
-    if (columnNames!=null)
+    if (columnNames!=null) {
+      columnNames.asMap().forEach((i,f) {
+        if (i< values.length) this._setColumnValue(f, values[i]);
+      });
       setValues.columnNames = columnNames;
+    }
 
     if (filter!=null)
       setValues.filter = filter;
@@ -221,6 +226,13 @@ class ComponentData {
     }
 
     return "";
+  }
+
+  void _setColumnValue(String columnName, dynamic value) {
+    int columnIndex = _getColumnIndex(columnName);
+    if (columnIndex!=null && data.selectedRow>=0 && data.selectedRow < data.records.length) {
+      data.records[data.selectedRow][columnIndex] = value;
+    }
   }
 
   int _getColumnIndex(String columnName) {

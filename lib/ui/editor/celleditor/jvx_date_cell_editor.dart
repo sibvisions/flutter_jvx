@@ -77,7 +77,13 @@ class JVxDateCellEditor extends JVxCellEditor {
             )
           ],
         ),
-        onPressed: () => showDatePicker(
+        onPressed: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        return showDatePicker(
           context: context,
           locale: Locale(globals.language),
           firstDate: DateTime(1900),
@@ -90,7 +96,8 @@ class JVxDateCellEditor extends JVxCellEditor {
             this.value = date.toString();
             this.onDateValueChanged(date.millisecondsSinceEpoch);
           }
-        }),
+        });
+        }
       ),
     );
   }

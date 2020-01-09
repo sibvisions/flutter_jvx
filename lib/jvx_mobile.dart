@@ -14,7 +14,15 @@ class JvxMobile extends StatelessWidget {
 
   JvxMobile(this.loadConf);
 
-  MaterialApp materialApp(BuildContext context, ThemeData theme) => MaterialApp(
+  GestureDetector materialApp(BuildContext context, ThemeData theme) => GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+       child: MaterialApp(
         title: 'JVx Mobile',
         theme: theme,
         debugShowCheckedModeBanner: false,
@@ -32,7 +40,8 @@ class JvxMobile extends StatelessWidget {
           '/': (context) => StartupPage(this.loadConf),
           '/settings': (context) => SettingsPage(),
         },
-      );
+      )
+  );
 
   @override
   Widget build(BuildContext context) {

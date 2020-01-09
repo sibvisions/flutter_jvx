@@ -177,6 +177,11 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
           onChanged: valueChanged,
           onOpen: () {
             this.onFilter(null);
+            FocusScopeNode currentFocus = FocusScope.of(context);
+
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
             showDialog(
                 context: context,
                 builder: (context) => LazyDropdown(
