@@ -152,18 +152,13 @@ class JVxEditor extends JVxComponent implements IEditor {
     BoxConstraints constraints = BoxConstraints.tightFor();
 
     if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
-    return LayoutBuilder( 
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return Container( 
-              //decoration: BoxDecoration(color: Colors.red),
-              width: constraints.maxWidth!=double.infinity?constraints.maxWidth:null,
-              child: cellEditor.getWidget(
-                editable: cellEditorEditable,
-                background: cellEditorBackground,
-                foreground: cellEditorForeground,
-                placeholder: cellEditorPlaceholder,
-                horizontalAlignment: cellEditorHorizontalAlignment,
-                font: cellEditorFont)); }
-        );
+    return Container( 
+      child: cellEditor.getWidget(
+        editable: cellEditorEditable,
+        background: cellEditorBackground,
+        foreground: cellEditorForeground,
+        placeholder: cellEditorPlaceholder,
+        horizontalAlignment: cellEditorHorizontalAlignment,
+        font: cellEditorFont));
   }
 }

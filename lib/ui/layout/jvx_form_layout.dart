@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
@@ -217,12 +219,13 @@ class JVxFormLayout extends JVxLayout<String> {
       }
     });
 
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return Container(
-      //width: constraints.maxWidth,
-      //decoration: BoxDecoration(color: Colors.green),
+    List colors = [Colors.red, Colors.green, Colors.yellow, Colors.blue, Colors.brown, Colors.indigo, Colors.orange, Colors.pink, Colors.lightBlue];
+  Random random = new Random();
+  int index = random.nextInt(9);
+
+    return Container(
       margin: this.margins,
+      decoration: BoxDecoration(color: colors[index]),
       child: JVxFormLayoutWidget(
         key: key,
         valid: this._valid,
@@ -240,7 +243,5 @@ class JVxFormLayout extends JVxLayout<String> {
         topMarginAnchor: anchors["tm"],
         bottomMarginAnchor: anchors["bm"])
       );
-      }
-    );
   }
 }
