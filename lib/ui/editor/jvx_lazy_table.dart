@@ -28,6 +28,8 @@ class JVxLazyTable extends JVxEditor {
   // the show table header flag
   bool tableHeaderVisible = true;
 
+  int selectedRow;
+
   Size maximumSize;
 
   ScrollController _scrollController = ScrollController();
@@ -78,6 +80,8 @@ class JVxLazyTable extends JVxEditor {
         ComponentProperty.COLUMN_LABELS, columnLabels);
     reload =
         changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
+
+    selectedRow = changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW, selectedRow);
   }
 
   void _onRowTapped(int index) {
@@ -190,12 +194,15 @@ class JVxLazyTable extends JVxEditor {
         children.add(getTableColumn(c != null ? c.toString() : "", index, i));
       });
 
+      bool isSelected = index==data.selectedRow;
+      if (this.selectedRow!=null) isSelected = index==this.selectedRow;
+
       if (this.data.deleteEnabled) {
         return Slidable(
           actionExtentRatio: 0.25,
           child: Container(
               color: Colors.white, 
-              child: getTableRow(children, index, false, index==data.selectedRow)),
+              child: getTableRow(children, index, false, isSelected)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
             new IconSlideAction(
@@ -209,7 +216,7 @@ class JVxLazyTable extends JVxEditor {
       } else {
         return Container(
             color: Colors.white, 
-            child: getTableRow(children, index, false, index==data.selectedRow));
+            child: getTableRow(children, index, false, isSelected));
       }
     }
 

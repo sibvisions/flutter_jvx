@@ -49,6 +49,7 @@ enum ComponentProperty {
   CELL_EDITOR__FOREGROUND,
   CELL_EDITOR__HORIZONTAL_ALIGNMENT,
   CELL_EDITOR__FONT,
+  SELECTED_ROW
 }
 
 class ComponentProperties {
