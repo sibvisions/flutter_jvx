@@ -100,6 +100,11 @@ class SharedPreferencesHelper {
     return null;
   }
 
+  Future<String> getDeviceId() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString('deviceId');
+  }
+
   void setWelcome(bool welcome) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setBool('welcome', welcome);
@@ -145,5 +150,10 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
 
     prefs.setString('applicationStyle', hashmapString);
+  }
+
+  void setDeviceId(String deviceId) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('deviceId', deviceId);
   }
 }

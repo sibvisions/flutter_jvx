@@ -24,6 +24,7 @@ import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+import 'package:uuid/uuid.dart';
 
 enum StartupValidationType { username, password }
 
@@ -71,7 +72,7 @@ class _StartupPageState extends State<StartupPage> {
     Future.wait([
       Config.loadFile(),
       loadSharedPrefs(),
-    ]).then((val) {
+    ]).then((val) async {
       print('HELLO ${widget.loadConf}');
       if (widget.loadConf &&
           val[0] != null &&
@@ -141,7 +142,8 @@ class _StartupPageState extends State<StartupPage> {
           screenWidth: MediaQuery.of(context).size.width.toInt(),
           appMode: globals.appMode.isNotEmpty ? globals.appMode : 'preview',
           readAheadLimit: 100,
-          requestType: RequestType.STARTUP);
+          requestType: RequestType.STARTUP,
+          deviceId: await _getDeviceId());
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);
     });
@@ -193,6 +195,16 @@ class _StartupPageState extends State<StartupPage> {
         requestType: RequestType.DOWNLOAD_IMAGES);
 
     BlocProvider.of<ApiBloc>(context).dispatch(images);
+  }
+
+  Future<String> _getDeviceId() async {
+    String deviceId = await SharedPreferencesHelper().getDeviceId();
+    if (deviceId != null) {
+      return deviceId;
+    }
+    String generatedID = Uuid().v1();
+    SharedPreferencesHelper().setDeviceId(generatedID);
+    return generatedID;
   }
 
   @override
