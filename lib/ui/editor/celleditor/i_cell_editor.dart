@@ -26,6 +26,14 @@ abstract class ICellEditor {
   dynamic value;
   String columnName;
 
+  Size preferredSize;
+  Size minimumSize;
+  Size maximumSize;
+
+  bool get isPreferredSizeSet;
+  bool get isMinimumSizeSet;
+  bool get isMaximumSizeSet;
+
   ICellEditor(CellEditor cellEditor, this.context);
 
   Widget getWidget({bool editable, Color background, Color foreground, String placeholder, String font, int horizontalAlignment});

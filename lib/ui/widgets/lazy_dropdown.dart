@@ -169,6 +169,42 @@ class _LazyDropdownState extends State<LazyDropdown> {
                 borderRadius: BorderRadius.all(Radius.circular(5.0))),
             child: Column(
               children: <Widget>[
+                Container(
+                  color: UIData.ui_kit_color_2,
+                    child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: Translations.of(context).text2("Search"),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: UIData.ui_kit_color_2, width: 1.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: UIData.ui_kit_color_2, width: 0.0)),
+                    ),
+                    key: widget.key,
+                    controller: _controller,
+                    maxLines: 1,
+                    keyboardType: TextInputType.text,
+                    onChanged: startTimerValueChanged,
+                    focusNode: node,
+                  ),
+                )),
+
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: itemCount,
+                      itemBuilder: itemBuilder,
+                    ),
+                  ),
+                ),
+
                 ButtonBar(
                     alignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -186,37 +222,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
                         color: UIData.ui_kit_color_2,
                       ),
                     ]),
-                Container(
-                    child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: Translations.of(context).text2("Search"),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: UIData.ui_kit_color_2, width: 1.0)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: UIData.ui_kit_color_2, width: 0.0)),
-                    ),
-                    key: widget.key,
-                    controller: _controller,
-                    maxLines: 1,
-                    keyboardType: TextInputType.text,
-                    onChanged: startTimerValueChanged,
-                    focusNode: node,
-                  ),
-                )),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount: itemCount,
-                      itemBuilder: itemBuilder,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

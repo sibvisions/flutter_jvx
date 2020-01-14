@@ -11,6 +11,14 @@ abstract class ILayout<E>  {
   int	horizontalGap = 0;
   /// the vertical gap between components.
   int	verticalGap = 0;
+  
+  Size preferredSize;
+  Size minimumSize;
+  Size maximumSize;
+
+  bool get isPreferredSizeSet;
+  bool get isMinimumSizeSet;
+  bool get isMaximumSizeSet;
 
   E getConstraints(IComponent comp);
   void addLayoutComponent(IComponent pComponent, E pConstraints);
