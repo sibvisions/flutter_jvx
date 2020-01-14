@@ -1,20 +1,24 @@
-import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data_cell_editor.dart';
+import '../../../cell_editor.dart';
+import '../../../properties/component_properties.dart';
 
-class JVxMetaDataColumn {
+class JVxMetaDataColumn extends ComponentProperties {
+  static final String _cellEditorIdentifier = "cellEditor";
   String name;
   String label;
-  JVxMetaDataCellEditor jVxCellEditor;
+  CellEditor cellEditor;
   int dataTypeIdentifier;
   bool readOnly;
   bool nullable;
 
-  JVxMetaDataColumn({this.name, this.label, this.jVxCellEditor, this.dataTypeIdentifier, this.readOnly, this.nullable});
+  JVxMetaDataColumn.fromJson(Map<String, dynamic> json) : super(json) {
+    name = this.getProperty<String>(ComponentProperty.NAME);
+    label = this.getProperty<String>(ComponentProperty.LABEL);
+    dataTypeIdentifier =
+        this.getProperty<int>(ComponentProperty.DATA_TYPE_IDENTIFIER);
+    readOnly = this.getProperty<bool>(ComponentProperty.READONLY);
+    nullable = this.getProperty<bool>(ComponentProperty.NULLABLE);
 
-  JVxMetaDataColumn.fromJson(Map<String, dynamic> json)
-    : name = json['name'],
-      label = json['label'],
-      jVxCellEditor = JVxMetaDataCellEditor.fromJson(json['cellEditor']),
-      dataTypeIdentifier = json['dataTypeIdentifier'],
-      readOnly = json['readOnly'],
-      nullable = json['nullable'];
+    if (json[_cellEditorIdentifier] != null)
+      cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);
+  }
 }

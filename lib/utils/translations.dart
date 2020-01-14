@@ -41,7 +41,7 @@ class Translations {
       Locale locale, BuildContext context) async {
     Translations translations = new Translations(locale);
 
-    if (globals.translation['translation_${locale.languageCode}.xml'] != null && await shouldDownload()) {
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null && !(await shouldDownload())) {
       _localizedValues2 =
           XmlLoader().loadTranslationsXml(locale.languageCode, context);
     } else {
@@ -62,7 +62,7 @@ class Translations {
   static Future<Translations> load(Locale locale) async {
     Translations translations = new Translations(locale);
 
-    if (globals.translation['translation_${locale.languageCode}.xml'] != null && await shouldDownload()) {
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null && !(await shouldDownload())) {
       _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
     } else {
       try {

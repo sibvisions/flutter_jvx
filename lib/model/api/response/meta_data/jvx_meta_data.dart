@@ -1,5 +1,4 @@
 import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
-import 'package:jvx_mobile_v3/model/column_view.dart';
 
 import 'jvx_meta_data_column.dart';
 import 'jvx_meta_data_data_provider.dart';

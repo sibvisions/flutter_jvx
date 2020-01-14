@@ -1,12 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/column_view.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/link_reference.dart';
-import 'package:jvx_mobile_v3/model/popup_size.dart';
-import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/i_cell_editor.dart';
+
+import '../../../model/cell_editor.dart';
+import '../../../model/popup_size.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../model/properties/hex_color.dart';
+import 'i_cell_editor.dart';
 
 class JVxCellEditor implements ICellEditor {
   Key key = GlobalKey<FormState>();

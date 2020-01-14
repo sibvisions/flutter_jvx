@@ -60,7 +60,7 @@ class JVxCheckboxCellEditor extends JVxCellEditor {
         children: <Widget>[
           Checkbox(
             value: valueToBool(this.value),
-            onChanged: (bool change) => valueChanged(change),
+            onChanged: (bool change) => (this.editable != null && this.editable) ? valueChanged(change) : null,
             tristate: false,
           ),
           text != null

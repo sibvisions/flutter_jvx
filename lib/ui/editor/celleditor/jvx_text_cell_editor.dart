@@ -69,7 +69,7 @@ class JVxTextCellEditor extends JVxCellEditor {
           color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
           border:
-              borderVisible && this.editable ? Border.all(color: UIData.ui_kit_color_2) : null),
+              borderVisible && this.editable != null && this.editable ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: TextField(
         style: TextStyle(color: this.foreground != null ? this.foreground : Colors.black),
         decoration: InputDecoration(

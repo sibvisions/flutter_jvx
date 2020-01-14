@@ -9,7 +9,6 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.da
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/data_screen.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 class ComponentScreen extends DataScreen {
   IComponentCreator _componentCreator;

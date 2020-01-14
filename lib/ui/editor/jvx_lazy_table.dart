@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data_column.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
 import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
 import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/model/properties/properties.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
+import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
+import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/utils/text_utils.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
+
+import 'celleditor/jvx_referenced_cell_editor.dart';
 
 class JVxLazyTable extends JVxEditor {
   // visible column names
@@ -38,6 +45,7 @@ class JVxLazyTable extends JVxEditor {
   JVxData _data;
   List<int> columnFlex;
   var _tapPosition;
+  ComponentCreator componentCreator;
 
   TextStyle get headerTextStyle {
     return TextStyle(
@@ -59,6 +67,7 @@ class JVxLazyTable extends JVxEditor {
 
   JVxLazyTable(Key componentId, BuildContext context)
       : super(componentId, context) {
+    componentCreator = ComponentCreator(context);
     _scrollController.addListener(_scrollListener);
   }
 
@@ -81,14 +90,16 @@ class JVxLazyTable extends JVxEditor {
     reload =
         changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
 
-    selectedRow = changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW, selectedRow);
+    selectedRow = changedComponent.getProperty<int>(
+        ComponentProperty.SELECTED_ROW, selectedRow);
   }
 
   void _onRowTapped(int index) {
     data.selectRecord(context, index);
   }
 
-  Widget getTableRow(List<Widget> children, int index, bool isHeader, bool isSelected) {
+  Widget getTableRow(
+      List<Widget> children, int index, bool isHeader, bool isSelected) {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
@@ -99,18 +110,23 @@ class JVxLazyTable extends JVxEditor {
     } else {
       return Container(
         decoration: BoxDecoration(
-          boxShadow: [BoxShadow(color: Colors.grey[400].withOpacity(0.5), spreadRadius: 1)],
-          color: isSelected?UIData.ui_kit_color_2[100].withOpacity(0.1):Colors.white,
+          boxShadow: [
+            BoxShadow(color: Colors.grey[400].withOpacity(0.5), spreadRadius: 1)
+          ],
+          color: isSelected
+              ? UIData.ui_kit_color_2[100].withOpacity(0.1)
+              : Colors.white,
         ),
         child: Material(
-          color: isSelected?UIData.ui_kit_color_2[100].withOpacity(0.1):Colors.white,
-                  child: InkWell(
-                    highlightColor: UIData.ui_kit_color_2[500],
-              onTap: () {
-                _onRowTapped(index);
-              },
-              child: Container(height: 60, child: Row(children: children)))
-        ),
+            color: isSelected
+                ? UIData.ui_kit_color_2[100].withOpacity(0.1)
+                : Colors.white,
+            child: InkWell(
+                highlightColor: UIData.ui_kit_color_2[500],
+                onTap: () {
+                  _onRowTapped(index);
+                },
+                child: Container(height: 60, child: Row(children: children)))),
       );
     }
   }
@@ -126,7 +142,10 @@ class JVxLazyTable extends JVxEditor {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(FontAwesomeIcons.plusSquare, color: Colors.grey[600],),
+                  Icon(
+                    FontAwesomeIcons.plusSquare,
+                    color: Colors.grey[600],
+                  ),
                   Text(Translations.of(context).text2('Insert')),
                 ],
               ),
@@ -134,14 +153,33 @@ class JVxLazyTable extends JVxEditor {
               value: 1,
             )
           ]).then((val) {
-            if (val != null) {
-              this.data.insertRecord(context);
-            }
-          });
+        if (val != null) {
+          this.data.insertRecord(context);
+        }
+      });
     }
   }
 
-  Widget getTableColumn(String text, int rowIndex, int columnIndex) {
+  JVxCellEditor _getCellEditorForColumn(String text, String columnName) {
+    JVxMetaDataColumn column = this
+        .data
+        .metaData
+        .columns
+        .firstWhere((col) => col.name == columnName, orElse: () => null);
+
+    if (column != null) {
+      JVxCellEditor clEditor = componentCreator.createCellEditor(column.cellEditor);
+      // clEditor.onValueChanged = onValueChanged;
+      clEditor.editable = false;
+      clEditor.value = text;
+      return clEditor;
+    }
+    return null;
+  }
+
+  Widget getTableColumn(
+      String text, int rowIndex, int columnIndex, String columnName) {
+    JVxCellEditor cellEditor = _getCellEditorForColumn(text, columnName);
     int flex = 1;
 
     if (columnFlex != null && columnIndex < columnFlex.length)
@@ -165,8 +203,12 @@ class JVxLazyTable extends JVxEditor {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               child: Container(
-                  child: Text(Properties.utf8convert(text),
-                      style: this.itemTextStyle),
+                  // only for development
+                  child: (cellEditor is JVxChoiceCellEditor || cellEditor is JVxCheckboxCellEditor)
+                      ? cellEditor.getWidget()
+                      : Text(Properties.utf8convert(text)),
+                  // child: Text(Properties.utf8convert(text),
+                  //     style: this.itemTextStyle),
                   padding: EdgeInsets.all(5)),
               onTap: () => _onRowTapped(rowIndex),
             ),
@@ -179,7 +221,7 @@ class JVxLazyTable extends JVxEditor {
 
     if (this.columnLabels != null) {
       this.columnLabels.asMap().forEach((i, c) {
-        children.add(getTableColumn(c.toString(), -1, i));
+        children.add(getTableColumn(c.toString(), -1, i, columnNames[i]));
       });
     }
 
@@ -191,17 +233,18 @@ class JVxLazyTable extends JVxEditor {
       List<Widget> children = new List<Widget>();
 
       data.getRow(index, columnNames).asMap().forEach((i, c) {
-        children.add(getTableColumn(c != null ? c.toString() : "", index, i));
+        children.add(getTableColumn(
+            c != null ? c.toString() : "", index, i, columnNames[i]));
       });
 
-      bool isSelected = index==data.selectedRow;
-      if (this.selectedRow!=null) isSelected = index==this.selectedRow;
+      bool isSelected = index == data.selectedRow;
+      if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
       if (this.data.deleteEnabled) {
         return Slidable(
           actionExtentRatio: 0.25,
           child: Container(
-              color: Colors.white, 
+              color: Colors.white,
               child: getTableRow(children, index, false, isSelected)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
@@ -215,7 +258,7 @@ class JVxLazyTable extends JVxEditor {
         );
       } else {
         return Container(
-            color: Colors.white, 
+            color: Colors.white,
             child: getTableRow(children, index, false, isSelected));
       }
     }
@@ -271,7 +314,8 @@ class JVxLazyTable extends JVxEditor {
       itemCount += _data.records.length;
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) => GestureDetector(
+      builder: (BuildContext context, BoxConstraints constraints) =>
+          GestureDetector(
         onTapDown: (details) => _tapPosition = details.globalPosition,
         onLongPress: () => showContextMenu(context),
         child: Container(

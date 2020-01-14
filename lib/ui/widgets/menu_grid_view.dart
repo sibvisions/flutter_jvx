@@ -126,7 +126,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                         backgroundColor: Colors.transparent,
                         child: !menuItems[index].image.startsWith('FontAwesome')
                             ? new Image.asset(
-                                '${globals.dir}${menuItems[index].image}')
+                                '${globals.dir}${menuItems[index].image}',)
                             : _iconBuilder(
                                 formatFontAwesomeText(menuItems[index].image)))
                     : new CircleAvatar(

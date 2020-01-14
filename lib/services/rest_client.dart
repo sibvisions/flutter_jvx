@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
 import 'package:jvx_mobile_v3/model/api/request/upload.dart';
@@ -72,7 +73,7 @@ class RestClient {
           headers: {
             'Content-Type': 'application/json',
             'cookie': globals.jsessionId
-          });
+          }).timeout(const Duration(seconds: 10));
       http.close();
     } catch (e) {
       http.close();
@@ -141,21 +142,23 @@ class RestClient {
     var content = json.encode(data);
     var response;
     Response resp = Response();
-    
-      response = await http.post(globals.baseUrl + resourcePath,
-          body: content,
-          headers: {
-            'Content-Type': 'application/json',
-            'cookie': globals.jsessionId
-          });
-      http.close();
-      resp.download = response.bodyBytes;
-      resp.error = false;
-      if (data['name'] == 'file') {
-        resp.downloadFileName = (response as prefHttp.Response).headers['content-disposition'].split(' ')[1].substring(9);
-      }
-      try {
-    } catch (e) {
+
+    response = await http.post(globals.baseUrl + resourcePath,
+        body: content,
+        headers: {
+          'Content-Type': 'application/json',
+          'cookie': globals.jsessionId
+        });
+    http.close();
+    resp.download = response.bodyBytes;
+    resp.error = false;
+    if (data['name'] == 'file') {
+      resp.downloadFileName = (response as prefHttp.Response)
+          .headers['content-disposition']
+          .split(' ')[1]
+          .substring(9);
+    }
+    try {} catch (e) {
       return Response()
         ..title = 'Connection Error'
         ..errorName = 'connection.error'
@@ -203,7 +206,7 @@ class RestClient {
 
       request.fields.addAll(formFields);
       request.files.add(multipartFile);
-      
+
       final streamedResponse = await request.send();
 
       response = await prefHttp.Response.fromStream(streamedResponse);

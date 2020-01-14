@@ -5,13 +5,12 @@ import 'package:jvx_mobile_v3/model/choice_cell_editor_image.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxChoiceCellEditor extends JVxCellEditor {
   List<ChoiceCellEditorImage> _items = <ChoiceCellEditorImage>[];
   String defaultImageName;
   ChoiceCellEditorImage defaultImage;
-  List<String> allowedVales;
+  List<String> allowedValues;
   List<String> imageNames;
   ChoiceCellEditorImage selectedImage;
 
@@ -19,10 +18,18 @@ class JVxChoiceCellEditor extends JVxCellEditor {
       : super(changedCellEditor, context) {
     defaultImageName = changedCellEditor.getProperty<String>(
         CellEditorProperty.DEFAULT_IMAGE_NAME, defaultImageName);
-    allowedVales = changedCellEditor.getProperty<List<String>>(
-        CellEditorProperty.ALLOWED_VALUES, allowedVales);
+    if (defaultImageName == null) {
+      defaultImageName = changedCellEditor
+          .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE);
+    }
+    allowedValues = changedCellEditor.getProperty<List<String>>(
+        CellEditorProperty.ALLOWED_VALUES, allowedValues);
     imageNames = changedCellEditor.getProperty<List<String>>(
         CellEditorProperty.IMAGE_NAMES, imageNames);
+    if (imageNames == null || imageNames.length < 1) {
+      imageNames = changedCellEditor
+          .getProperty<List<String>>(CellEditorProperty.IMAGES);
+    }
 
     defaultImage = loadImage(defaultImageName);
     loadImages();
@@ -44,7 +51,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
     try {} catch (e) {
       selectedImage = defaultImage;
     }
-    String val = allowedVales[imageNames.indexOf(path)];
+    String val = allowedValues[imageNames.indexOf(path)];
 
     ChoiceCellEditorImage choiceCellEditorImage =
         ChoiceCellEditorImage(value: val, image: image);
@@ -82,7 +89,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
         selectedImage = _items[1];
     } else {
       if (this.value != null && (this.value as String).isNotEmpty) {
-        selectedImage = _items[this.allowedVales.indexOf(this.value)];
+        selectedImage = _items[this.allowedValues.indexOf(this.value)];
       } else if (defaultImage != null) {
         selectedImage = defaultImage;
       }
@@ -91,7 +98,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
       child: FlatButton(
-        onPressed: () => changeImage(),
+        onPressed: () => this.editable ? changeImage() : null,
         padding: EdgeInsets.all(0.0),
         child: selectedImage.image,
       ),
