@@ -96,6 +96,10 @@ class JVxFormLayout extends JVxLayout<String> {
   void addAnchorFromString(String pAnchor) {
     List<String> values = pAnchor.split(",");
     
+    if (values.length<4) {
+      throw new ArgumentError("Anchor data item count less then 4!");
+    }
+
     JVxAnchor anchor;
     
     if (anchors.containsKey(values[0])) {
@@ -111,9 +115,11 @@ class JVxFormLayout extends JVxLayout<String> {
     }
     
     if (values[3]=="a") {
-      anchor.autoSize = true;
-      if (values.length>4 && values[4].length>0) 
+      
+      if (values.length>4 && values[4].length>0) {
         anchor.position = int.parse(values[4]);
+      }
+      anchor.autoSize = true;
     } else {
       anchor.position = int.parse(values[3]);
     }
@@ -127,10 +133,6 @@ class JVxFormLayout extends JVxLayout<String> {
 
   void updateRelatedAnchorFromString(String pAnchor) {
     List<String> values = pAnchor.split(",");
-
-    if (values.length!=4) {
-      return;
-    }
 
     JVxAnchor anchor = anchors[values[0]];
     if (values[1]!="-") {
@@ -217,13 +219,8 @@ class JVxFormLayout extends JVxLayout<String> {
       }
     });
 
-    List colors = [Colors.red, Colors.green, Colors.yellow, Colors.blue, Colors.brown, Colors.indigo, Colors.orange, Colors.pink, Colors.lightBlue];
-  Random random = new Random();
-  int index = random.nextInt(9);
-
     return Container(
       //margin: this.margins,
-      decoration: BoxDecoration(color: colors[index]),
       child: JVxFormLayoutWidget(
         key: key,
         valid: this._valid,

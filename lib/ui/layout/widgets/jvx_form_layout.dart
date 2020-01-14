@@ -108,11 +108,11 @@ class RenderJVxFormLayoutWidget extends RenderBox
   /// Constraint for starting a new row for the given component.
   static final String newLine = "\n";
   static final int intMax = pow(2,31)-1;
-  static final int stretch = 100;
-  static final int left = 2;
-  static final int right = 4;
-  static final int top = 1;
-  static final int bottom = 3;
+  static final int stretch = 3;
+  static final int left = 0;
+  static final int right = 2;
+  static final int top = 0;
+  static final int bottom = 2;
 
   /// The left border anchor. */
   JVxAnchor leftAnchor;
