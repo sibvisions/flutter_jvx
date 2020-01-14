@@ -96,10 +96,6 @@ class JVxFormLayout extends JVxLayout<String> {
   void addAnchorFromString(String pAnchor) {
     List<String> values = pAnchor.split(",");
     
-    if (values.length!=4) {
-      return;
-    }
-
     JVxAnchor anchor;
     
     if (anchors.containsKey(values[0])) {
@@ -116,6 +112,8 @@ class JVxFormLayout extends JVxLayout<String> {
     
     if (values[3]=="a") {
       anchor.autoSize = true;
+      if (values.length>4 && values[4].length>0) 
+        anchor.position = int.parse(values[4]);
     } else {
       anchor.position = int.parse(values[3]);
     }
@@ -224,7 +222,7 @@ class JVxFormLayout extends JVxLayout<String> {
   int index = random.nextInt(9);
 
     return Container(
-      margin: this.margins,
+      //margin: this.margins,
       decoration: BoxDecoration(color: colors[index]),
       child: JVxFormLayoutWidget(
         key: key,

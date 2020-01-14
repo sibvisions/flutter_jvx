@@ -174,6 +174,9 @@ class RenderJVxFormLayoutWidget extends RenderBox
   /// True, if the bottom border is used by another anchor. */
   bool bottomBorderUsed = false;
 
+  double layoutWidth = 0;
+  double layoutHeight = 0;
+
   RenderJVxFormLayoutWidget(
         this.valid, this.horizontalAlignment, this.verticalAlignment, 
         this.hgap, this.vgap,
@@ -220,8 +223,6 @@ class RenderJVxFormLayoutWidget extends RenderBox
   @override
   void performLayout() {
     // Set components
-    double layoutWidth = 0;
-    double layoutHeight = 0;
     layoutConstraints = <RenderBox, JVxFormLayoutConstraint>{}; 
     RenderBox child = firstChild;
     while (child != null) {
@@ -233,16 +234,18 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
     calculateAnchors();
 
+    layoutWidth = preferredWidth.toDouble();
+    layoutHeight = preferredHeight.toDouble();
 
-    if (this.constraints.maxWidth!=double.infinity && this.constraints.maxWidth > preferredWidth) {
-      preferredWidth = this.constraints.maxWidth.round();
+    if (this.constraints.maxWidth!=double.infinity && this.constraints.maxWidth > layoutWidth) {
+      layoutWidth =  this.constraints.maxWidth;
     } 
 
-    if (this.constraints.maxHeight!=double.infinity && this.constraints.maxHeight > preferredHeight) {
-      preferredHeight = this.constraints.maxHeight.round();
-    } 
+    if (this.constraints.maxHeight!=double.infinity && this.constraints.maxHeight > layoutHeight) {
+      layoutHeight = this.constraints.maxHeight;
+    }
 
-    formConstraints = BoxConstraints.loose(Size(preferredWidth.toDouble(), preferredHeight.toDouble()));
+    //formConstraints = BoxConstraints.loose(Size(preferredWidth.toDouble(), preferredHeight.toDouble()));
 
     doCalculateTargetDependentAnchors();
     
@@ -269,18 +272,12 @@ class RenderJVxFormLayoutWidget extends RenderBox
       comp.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = comp.parentData;
       childParentData.offset = Offset(x, y);
-
-      if (comp.size.width+x>layoutWidth) {
-        layoutWidth = comp.size.width+x;
-      }
-      if (comp.size.height+y>layoutHeight) {
-        layoutHeight = comp.size.height+y;
-      }
     }
 
     this.valid = true;
-    Size size = this.constraints.constrain(Size(layoutWidth, layoutHeight));
-    this.size = size;
+    //Size size = this.constraints.constrain(Size(layoutWidth, layoutHeight));
+
+    this.size = Size(layoutWidth, layoutHeight);
  }
   
 
@@ -851,9 +848,9 @@ class RenderJVxFormLayoutWidget extends RenderBox
   void doCalculateTargetDependentAnchors() {
     if (calculateTargetDependentAnchors) {
       // set border anchors
-      Size size = this.formConstraints.biggest;
-      Size minSize = this.formConstraints.smallest;
-      Size maxSize = this.formConstraints.biggest;
+      Size size = Size(layoutWidth, layoutHeight);
+      Size minSize = Size(layoutWidth, layoutHeight);
+      Size maxSize = Size(layoutWidth, layoutHeight);
       EdgeInsets ins = EdgeInsets.zero;
       size = Size(size.width-ins.left + ins.right, size.height - ins.top + ins.bottom);
       minSize = Size(minSize.width-ins.left + ins.right, minSize.height - ins.top + ins.bottom);
