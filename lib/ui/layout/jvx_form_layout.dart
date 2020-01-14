@@ -97,7 +97,9 @@ class JVxFormLayout extends JVxLayout<String> {
     List<String> values = pAnchor.split(",");
     
     if (values.length<4) {
-      throw new ArgumentError("Anchor data item count less then 4!");
+      throw new ArgumentError("JVxFormLayout: The anchor data parsed from json is less then 4 items! AnchorData: " + pAnchor);
+    } else if (values.length<5) {
+      print("JVxFormLayout: The anchor data parsed from json is less then 5 items! AnchorData: " + pAnchor);
     }
 
     JVxAnchor anchor;
@@ -140,7 +142,7 @@ class JVxFormLayout extends JVxLayout<String> {
         anchor.relatedAnchor = anchors[values[1]];
         anchors.putIfAbsent(values[0], () => anchor);
       } else {
-        throw new ArgumentError("Related anchor (Name: '" + values[1] + "') not found!");
+        throw new ArgumentError("JVxFormLayout: Related anchor (Name: '" + values[1] + "') not found!");
       }
     }
   }
@@ -174,12 +176,10 @@ class JVxFormLayout extends JVxLayout<String> {
   void removeLayoutComponent(IComponent pComponent) 
   {
     _layoutConstraints.removeWhere((c, s) => c.componentId.toString() == pComponent.componentId.toString());
-    //_layoutConstraints.removeWhere((formLayoutContraints) => formLayoutContraints.child==pComponent.getWidget());
-    
     _valid = false;
   }
 
-    @override
+  @override
   String getConstraints(IComponent comp) {
     return _layoutConstraints[comp];
   }
@@ -220,7 +220,6 @@ class JVxFormLayout extends JVxLayout<String> {
     });
 
     return Container(
-      //margin: this.margins,
       child: JVxFormLayoutWidget(
         key: key,
         valid: this._valid,

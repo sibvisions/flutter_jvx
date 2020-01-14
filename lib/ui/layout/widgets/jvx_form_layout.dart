@@ -194,7 +194,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
   {
     if (pConstraint == null)
     {
-      throw new ArgumentError("Constraint " + pConstraint.toString() + " is not allowed!");
+      throw new ArgumentError("JVxFromLayout: Constraint " + pConstraint.toString() + " is not allowed!");
     }
     else
     {
@@ -239,13 +239,11 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
     if (this.constraints.maxWidth!=double.infinity && this.constraints.maxWidth > layoutWidth) {
       layoutWidth =  this.constraints.maxWidth;
-    } 
+    }
 
     if (this.constraints.maxHeight!=double.infinity && this.constraints.maxHeight > layoutHeight) {
       layoutHeight = this.constraints.maxHeight;
     }
-
-    //formConstraints = BoxConstraints.loose(Size(preferredWidth.toDouble(), preferredHeight.toDouble()));
 
     doCalculateTargetDependentAnchors();
     
@@ -262,22 +260,21 @@ class RenderJVxFormLayoutWidget extends RenderBox
       double height = constraint.bottomAnchor.getAbsolutePosition() - y;
 
       if(width==double.infinity || height==double.infinity) {
-        print("Infinity height or width for FormLayout");
+        print("JVxFormLayout: Infinity height or width for FormLayout");
       } else if (width<0 || height<0) {
-        print("Negative height or width for FormLayout");
+        print("JVxFormLayout: Negative height or width for FormLayout");
         width = (width<0)?width*-1:width;
         height = (height<0)?height*-1:height;
       }
 
       comp.layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+
       final MultiChildLayoutParentData childParentData = comp.parentData;
       childParentData.offset = Offset(x, y);
     }
 
     this.valid = true;
-    //Size size = this.constraints.constrain(Size(layoutWidth, layoutHeight));
-
-    this.size = Size(layoutWidth, layoutHeight);
+    this.size = this.constraints.constrain(Size(layoutWidth, layoutHeight));
  }
   
 
@@ -436,10 +433,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
     if (!constraint.comp.isPreferredSizeSet) {
       renderBox.layout(
-        //constraints,
         BoxConstraints.tightFor(),
-        //BoxConstraints.loose(constraints.biggest),
-        //BoxConstraints(minWidth: 0, maxWidth: this.constraints.biggest.width, minHeight: 0, maxHeight: this.constraints.biggest.height), 
         parentUsesSize: true);
     
       if (!renderBox.hasSize) {
@@ -458,26 +452,22 @@ class RenderJVxFormLayoutWidget extends RenderBox
       }
 
       if (renderBox.size.width==double.infinity || renderBox.size.height==double.infinity) {
-        print("getPrefererredSize: Infinity height or width for FormLayout");
+        print("JVxFormLayout: getPrefererredSize: Infinity height or width for FormLayout!");
       }
       return renderBox.size;
     } else {
       return constraint.comp.preferredSize;
     }
-
-    
   }
 
     Size getMinimumSize(RenderBox renderBox, JVxFormLayoutConstraint constraint) {
       if (!constraint.comp.isMinimumSizeSet) {
         renderBox.layout(
           BoxConstraints.tightFor(),
-          //BoxConstraints.loose(this.constraints.biggest),
-          //BoxConstraints(minWidth: 0, maxWidth: this.constraints.smallest.width, minHeight: 0, maxHeight: this.constraints.smallest.height), 
           parentUsesSize: true);
 
         if (renderBox.size.width==double.infinity || renderBox.size.height==double.infinity) {
-          print("getMinimumSize: Infinity height or width for FormLayout");
+          print("JVxFormLayout: getMinimumSize: Infinity height or width for FormLayout!");
         }
         return renderBox.size;
       } else {

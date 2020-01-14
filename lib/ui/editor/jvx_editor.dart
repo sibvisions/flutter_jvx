@@ -133,13 +133,6 @@ class JVxEditor extends JVxComponent implements IEditor {
       bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
       if (rel != null && rel) this.reload = -1;
     }
-
-    // _cellEditor.background = cellEditorBackground;
-    // _cellEditor.foreground = cellEditorForeground;
-    // _cellEditor.horizontalAlignment = cellEditorHorizontalAlignment;
-    // _cellEditor.font = cellEditorFont;
-    // _cellEditor.placeholder = cellEditorPlaceholder;
-    // _cellEditor.editable = cellEditorEditable;
   }
 
   @override
@@ -149,9 +142,7 @@ class JVxEditor extends JVxComponent implements IEditor {
           data.getColumnData(context, this.columnName, this.reload);
       this.reload = null;
     }
-    BoxConstraints constraints = BoxConstraints.tightFor();
 
-    if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
     return Container( 
       child: cellEditor.getWidget(
         editable: cellEditorEditable,

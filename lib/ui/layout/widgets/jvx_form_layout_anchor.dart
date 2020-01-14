@@ -62,8 +62,6 @@ class JVxAnchor {
     if (_relatedAnchor!=null) {
       this.orientation = anchor.orientation;
       this.layout = anchor.layout;
-      //autoSize = true;
-      //_position = 0;
     }
   }
   get relatedAnchor {

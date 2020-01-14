@@ -241,18 +241,6 @@ class JVxLazyTable extends JVxEditor {
 
   @override
   Widget getWidget() {
-    //List<TableRow> rows = new List<TableRow>();
-    TableBorder border = TableBorder();
-    //Map<int, TableColumnWidth> columnWidths = Map<int,TableColumnWidth>();
-
-    if (showHorizontalLines && !showVerticalLines) {
-      border = TableBorder(bottom: BorderSide(), top: BorderSide());
-    } else if (!showHorizontalLines && showVerticalLines) {
-      border = TableBorder(left: BorderSide(), right: BorderSide());
-    } else if (showHorizontalLines && showVerticalLines) {
-      border = TableBorder.all();
-    }
-
     int itemCount = tableHeaderVisible ? 1 : 0;
     _data = data.getData(context, reload, pageSize);
     this.reload = null;
