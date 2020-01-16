@@ -65,6 +65,23 @@ class JVxLazyTable extends JVxEditor {
     super.data?.registerDataChanged(onServerDataChanged);
   }
 
+  @override
+  get preferredSize {
+    return Size(300,200);
+  }
+
+  @override
+  get minimumSize {
+    return Size(50,100);
+  }
+
+  @override
+  bool get isPreferredSizeSet => preferredSize!=null;
+  @override
+  bool get isMinimumSizeSet => minimumSize!=null;
+  @override
+  bool get isMaximumSizeSet => maximumSize!=null;
+
   JVxLazyTable(Key componentId, BuildContext context)
       : super(componentId, context) {
     componentCreator = ComponentCreator(context);
