@@ -58,7 +58,8 @@ class _StartupPageState extends State<StartupPage> {
                   width: (MediaQuery.of(context).size.width - 50),
                 ),
               ),
-              Text('Loading...'),
+              CircularProgressIndicator(),
+              Text('Loading...')
             ],
           ),
         ),
@@ -302,11 +303,6 @@ class _StartupPageState extends State<StartupPage> {
             MaterialColor(state.applicationStyle.themeColor.value, color);
 
         UIData.ui_kit_color_2 = colorCustom;
-
-        BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
-            primaryColor: UIData.ui_kit_color_2,
-            primarySwatch: UIData.ui_kit_color_2,
-            fontFamily: UIData.ralewayFont));
       }
 
       Menu menu = state.menu;

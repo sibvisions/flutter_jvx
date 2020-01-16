@@ -13,7 +13,10 @@ void main() {
   BlocSupervisor.delegate = MainBlocDelegate();
   runApp(MultiBlocProvider(
       child: RestartWidget(
-          loadConfigBuilder: (bool loadConf) => JvxMobile(loadConf)),
+          loadConfigBuilder: (bool loadConf) =>
+              BlocBuilder<ThemeBloc, ThemeData>(builder: (context, state) {
+                return JvxMobile(loadConf, state);
+              })),
       providers: [
         BlocProvider<ApiBloc>(
           builder: (_) => ApiBloc(),

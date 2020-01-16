@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
+import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
 import 'package:jvx_mobile_v3/model/api/request/request.dart';
 import 'package:jvx_mobile_v3/model/api/response/response.dart';
 import 'package:jvx_mobile_v3/model/api/response/menu.dart';
@@ -11,6 +12,7 @@ import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
 import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
+import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 import 'menu_page.dart';
 
@@ -82,6 +84,14 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return loginBuilder();
+    BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
+        primaryColor: UIData.ui_kit_color_2,
+        primarySwatch: UIData.ui_kit_color_2,
+        fontFamily: UIData.ralewayFont));
+    return BlocBuilder<ThemeBloc, ThemeData>(
+      builder: (context, state) {
+        return loginBuilder();
+      }
+    );
   }
 }
