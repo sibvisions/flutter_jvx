@@ -45,7 +45,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
   @override
   Widget build(BuildContext context) {
-    customScreenApi = getCustomScreenAPI();
+    customScreenApi = CustomScreenApi();
 
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(

@@ -10,7 +10,7 @@ import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as jvxAction;
 import 'package:jvx_mobile_v3/model/api/request/data/meta_data.dart' as dataModel;
 
-class DataScreen {
+mixin DataScreen {
   BuildContext context;
   List<ComponentData> componentData = <ComponentData>[];
 

@@ -2,75 +2,67 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
-class FirstCustomScreen extends StatefulWidget {
+class FirstCustomScreenWidget extends StatefulWidget {
   @override
   _FirstCustomScreenState createState() => _FirstCustomScreenState();
 }
 
-class _FirstCustomScreenState extends State<FirstCustomScreen> {
+class _FirstCustomScreenState extends State<FirstCustomScreenWidget> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('First Custom Screen')),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: <Widget>[
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    'Kontakt',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
-              Divider(),
-              Container(
-                  padding: EdgeInsets.all(8.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Anrede',
-                    style: TextStyle(fontSize: 16),
-                  )),
-              _getAnredeDropdown(),
-              Container(
-                padding: EdgeInsets.all(8.0),
+    return SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              'Kontakt',
+              style: TextStyle(fontSize: 20),
+            ),
+            Divider(),
+            Container(
+                padding: EdgeInsets.fromLTRB(30, 8, 8, 8),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Titel',
+                  'Anrede',
                   style: TextStyle(fontSize: 16),
-                ),
+                )),
+            _getAnredeDropdown(),
+            Container(
+              padding: EdgeInsets.fromLTRB(30, 8, 8, 8),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Titel',
+                style: TextStyle(fontSize: 16),
               ),
-              _getTitelDropdown(),
-              Container(
-                padding: EdgeInsets.all(8.0),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Vorname',
-                  style: TextStyle(fontSize: 16),
-                ),
+            ),
+            _getTitelDropdown(),
+            Container(
+              padding: EdgeInsets.fromLTRB(30, 8, 8, 8),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Vorname',
+                style: TextStyle(fontSize: 16),
               ),
-              _getTextField(),
-              Container(
-                padding: EdgeInsets.all(8.0),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Nachname',
-                  style: TextStyle(fontSize: 16),
-                ),
+            ),
+            _getTextField(),
+            Container(
+              padding: EdgeInsets.fromLTRB(30, 8, 8, 8),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Nachname',
+                style: TextStyle(fontSize: 16),
               ),
-              _getTextField()
-            ],
-          ),
+            ),
+            _getTextField()
+          ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _getTextField() {

@@ -20,7 +20,7 @@ class ScreenBloc extends Bloc<Response, Widget> {
       ScreenGeneric screenGeneric = event.screenGeneric;
       List<JVxData> data = event.jVxData;
       List<JVxMetaData> metaData = event.jVxMetaData;
-      screen.updateComponents(screenGeneric.changedComponents);
+      screen.componentScreen.updateComponents(screenGeneric.changedComponents);
     }
     yield screen.getWidget();
   }

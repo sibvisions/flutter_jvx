@@ -10,7 +10,7 @@ import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/data_screen.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 
-class ComponentScreen extends DataScreen {
+class ComponentScreen with DataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
   bool debug = false;

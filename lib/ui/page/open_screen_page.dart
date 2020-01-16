@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jvx_mobile_v3/custom_screen/get_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
@@ -22,6 +23,7 @@ import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
+import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -54,7 +56,7 @@ class OpenScreenPage extends StatefulWidget {
 class _OpenScreenPageState extends State<OpenScreenPage>
     with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  JVxScreen screen = JVxScreen(ComponentCreator());
+  IScreen screen = IScreen(ComponentCreator(), getCustomScreen());
   bool errorMsgShown = false;
   Orientation lastOrientation;
   String title = '';
@@ -134,18 +136,18 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
-                  screen = JVxScreen(ComponentCreator());
+                  screen = IScreen(ComponentCreator(), getCustomScreen());
                   // title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
 
                 if (state.screenGeneric != null &&
                     !state.screenGeneric.update) {
-                  screen = JVxScreen(ComponentCreator());
+                  screen = IScreen(ComponentCreator(), getCustomScreen());
                   componentId = state.screenGeneric.componentId;
                 }
 
-                screen.context = context;
+                screen.componentScreen.context = context;
                 screen.update(state.request, state.jVxData, state.jVxMetaData,
                     state.screenGeneric);
                 this.setState(() {});
@@ -233,7 +235,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
-    screen.context = context;
+    screen.componentScreen.context = context;
     screen.update(
         widget.request, widget.data, widget.metaData, widget.screenGeneric);
     super.initState();

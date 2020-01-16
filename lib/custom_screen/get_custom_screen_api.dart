@@ -1,9 +1,14 @@
-import 'package:jvx_mobile_v3/custom_screen/custom_screen_api.dart';
-import 'package:jvx_mobile_v3/custom_screen/first_custom_screen_api.dart';
+import '../ui/screen/component_creator.dart';
+import '../ui/screen/i_screen.dart';
+import 'screen/first_custom_screen.dart';
 
-/// Devs need to return their CustomScreenAPI Instance here
-/// 
+/// Devs need to return their CustomScreen Instance here
+///
 /// This Method will be called from the Menu
-CustomScreenApi getCustomScreenAPI() {
-  return FirstCustomScreenApi();
+IScreen getCustomScreen() {
+  bool show = false;
+  if (show) {
+    return FirstCustomScreen(ComponentCreator());
+  }
+  return null;
 }
