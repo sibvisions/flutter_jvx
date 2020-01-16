@@ -12,7 +12,7 @@ class FirstCustomScreenApi extends CustomScreenApi {
 
   @override
   Widget getWidget() {
-    return FirstCustomScreen();
+    return FirstCustomScreenWidget();
   }
 
   @override

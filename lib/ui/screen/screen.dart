@@ -6,31 +6,34 @@ import 'package:jvx_mobile_v3/model/api/response/screen_generic.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_screen.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
+import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 
-class JVxScreen extends ComponentScreen {
+class JVxScreen implements IScreen {
   String title = "OpenScreen";
   Key componentId;
   List<JVxData> data = <JVxData>[];
   List<JVxMetaData> metaData = <JVxMetaData>[];
   Function buttonCallback;
+  ComponentScreen componentScreen;
 
-  JVxScreen(IComponentCreator componentCreator) : super(componentCreator);
+  JVxScreen(IComponentCreator componentCreator) : componentScreen = ComponentScreen(componentCreator);
   
+  @override
   void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {
-    updateData(request, data, metaData);
+    componentScreen.updateData(request, data, metaData);
     if (genericScreen!=null)
-      updateComponents(genericScreen.changedComponents);
+      componentScreen.updateComponents(genericScreen.changedComponents);
   }
 
+  @override
   Widget getWidget() {
-    if (debug) debugPrintCurrentWidgetTree();
+    if (componentScreen.debug) componentScreen.debugPrintCurrentWidgetTree();
 
-    IComponent component = this.getRootComponent();
+    IComponent component = this.componentScreen.getRootComponent();
 
     if (component != null) {
       return component.getWidget();
     } else {
-      // ToDO
       return Container(
         alignment: Alignment.center,
         child: Text('No root component defined!'),

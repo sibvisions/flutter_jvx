@@ -62,8 +62,8 @@ class JVxFlowLayout extends JVxLayout<String> {
     if (componentAlignment==IAlignmentConstants.ALIGN_STRETCH)
     {
       return Column(
-        children: children,
-        crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(this.horizontalAlignment),);
+          children: children,
+          crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(this.horizontalAlignment),);
     } else {
       return Wrap(
         children: children,
