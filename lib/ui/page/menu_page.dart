@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_grid_view.dart';
@@ -15,6 +17,11 @@ class MenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
+            primaryColor: UIData.ui_kit_color_2,
+            primarySwatch: UIData.ui_kit_color_2,
+            fontFamily: UIData.ralewayFont));
+            
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     bool drawerMenu;
