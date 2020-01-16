@@ -13,6 +13,14 @@ abstract class JVxLayout<E> implements ILayout<E> {
   /// the vertical gap between components.
   int	verticalGap = 0;
 
+  Size preferredSize;
+  Size minimumSize;
+  Size maximumSize;
+
+  bool get isPreferredSizeSet => preferredSize!=null;
+  bool get isMinimumSizeSet => minimumSize!=null;
+  bool get isMaximumSizeSet => maximumSize!=null;
+
   void parseFromString(String layout) {
     List<String> parameter = layout?.split(",");
 

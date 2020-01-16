@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
@@ -27,18 +29,18 @@ class JVxFormLayout extends JVxLayout<String> {
   /// 
   /// @return the margins.
   ///
-  EdgeInsets get margins
+  /*EdgeInsets get margins
   {
     return new EdgeInsets.fromLTRB(anchors["lm"].position.toDouble(), anchors["tm"].position.toDouble(), 
     -anchors["rm"].position.toDouble(), -anchors["bm"].position.toDouble());
-  }
+  }*/
     
   ///
   /// Sets the margins.
   /// 
   /// @param pMargins the margins.
   ///
-  set margins(EdgeInsets pMargins) 
+  /*set margins(EdgeInsets pMargins) 
   {
     if (pMargins == null)
     {
@@ -54,7 +56,7 @@ class JVxFormLayout extends JVxLayout<String> {
       defaultAnchors["bm"].position = -pMargins.bottom.round();
       defaultAnchors["rm"].position = -pMargins.right.round();
     }
-  }
+  }*/
 
   JVxFormLayout(this.key) {
     init();
@@ -94,8 +96,10 @@ class JVxFormLayout extends JVxLayout<String> {
   void addAnchorFromString(String pAnchor) {
     List<String> values = pAnchor.split(",");
     
-    if (values.length!=4) {
-      return;
+    if (values.length<4) {
+      throw new ArgumentError("JVxFormLayout: The anchor data parsed from json is less then 4 items! AnchorData: " + pAnchor);
+    } else if (values.length<5) {
+      print("JVxFormLayout: The anchor data parsed from json is less then 5 items! AnchorData: " + pAnchor);
     }
 
     JVxAnchor anchor;
@@ -112,14 +116,18 @@ class JVxFormLayout extends JVxLayout<String> {
       anchor = JVxAnchor(this, orientation, values[0]);
     }
     
-    if (values[1]!="-" && anchors.containsKey(values[1])) {
-      anchor.relatedAnchor = anchors[values[1]];
-    }
-
     if (values[3]=="a") {
+      
+      if (values.length>4 && values[4].length>0) {
+        anchor.position = int.parse(values[4]);
+      }
       anchor.autoSize = true;
     } else {
       anchor.position = int.parse(values[3]);
+    }
+
+    if (values[1]!="-" && anchors.containsKey(values[1])) {
+      anchor.relatedAnchor = anchors[values[1]];
     }
 
     anchors.putIfAbsent(values[0], () => anchor);
@@ -128,17 +136,13 @@ class JVxFormLayout extends JVxLayout<String> {
   void updateRelatedAnchorFromString(String pAnchor) {
     List<String> values = pAnchor.split(",");
 
-    if (values.length!=4) {
-      return;
-    }
-
     JVxAnchor anchor = anchors[values[0]];
     if (values[1]!="-") {
       if (anchors.containsKey(values[1])) {
         anchor.relatedAnchor = anchors[values[1]];
         anchors.putIfAbsent(values[0], () => anchor);
       } else {
-        throw new ArgumentError("Related anchor (Name: '" + values[1] + "') not found!");
+        throw new ArgumentError("JVxFormLayout: Related anchor (Name: '" + values[1] + "') not found!");
       }
     }
   }
@@ -172,12 +176,10 @@ class JVxFormLayout extends JVxLayout<String> {
   void removeLayoutComponent(IComponent pComponent) 
   {
     _layoutConstraints.removeWhere((c, s) => c.componentId.toString() == pComponent.componentId.toString());
-    //_layoutConstraints.removeWhere((formLayoutContraints) => formLayoutContraints.child==pComponent.getWidget());
-    
     _valid = false;
   }
 
-    @override
+  @override
   String getConstraints(IComponent comp) {
     return _layoutConstraints[comp];
   }
@@ -209,6 +211,7 @@ class JVxFormLayout extends JVxLayout<String> {
         JVxFormLayoutConstraint constraint = this.getConstraintsFromString(v);
 
         if (constraint !=null) {
+          constraint.comp = k;
           children.add(
             new JVxFormLayoutConstraintData(child: k.getWidget(), 
                   id: constraint));
@@ -217,7 +220,6 @@ class JVxFormLayout extends JVxLayout<String> {
     });
 
     return Container(
-      //margin: this.margins,
       child: JVxFormLayoutWidget(
         key: key,
         valid: this._valid,

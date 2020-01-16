@@ -5,11 +5,9 @@ import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   Size maximumSize;
@@ -44,6 +42,34 @@ class JVxEditor extends JVxComponent implements IEditor {
     _cellEditor.onEndEditing = onEndEditing;
     _cellEditor.onValueChanged = onValueChanged;
     _cellEditor.onFilter = onFilter;
+  }
+
+  @override
+  get preferredSize {
+    return _cellEditor.preferredSize;
+  }
+
+  @override
+  get minimumSize {
+    return _cellEditor.minimumSize;
+  }
+
+  @override
+  get isPreferredSizeSet {
+    if (this._cellEditor!=null) return this._cellEditor.isPreferredSizeSet;
+    return false;
+  }
+
+  @override
+  bool get isMinimumSizeSet {
+    if (this._cellEditor!=null) return this._cellEditor.isMinimumSizeSet;
+    return false;
+  }
+
+  @override
+  bool get isMaximumSizeSet {
+    if (this._cellEditor!=null) return this._cellEditor.isMaximumSizeSet;
+    return false;
   }
 
   JVxEditor(Key componentId, BuildContext context)
@@ -107,13 +133,6 @@ class JVxEditor extends JVxComponent implements IEditor {
       bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
       if (rel != null && rel) this.reload = -1;
     }
-
-    // _cellEditor.background = cellEditorBackground;
-    // _cellEditor.foreground = cellEditorForeground;
-    // _cellEditor.horizontalAlignment = cellEditorHorizontalAlignment;
-    // _cellEditor.font = cellEditorFont;
-    // _cellEditor.placeholder = cellEditorPlaceholder;
-    // _cellEditor.editable = cellEditorEditable;
   }
 
   @override
@@ -123,17 +142,14 @@ class JVxEditor extends JVxComponent implements IEditor {
           data.getColumnData(context, this.columnName, this.reload);
       this.reload = null;
     }
-    BoxConstraints constraints = BoxConstraints.tightFor();
 
-    if (maximumSize != null) constraints = BoxConstraints.loose(maximumSize);
-    return Container(
-        width: 100,
-        child: cellEditor.getWidget(
-            editable: cellEditorEditable,
-            background: cellEditorBackground,
-            foreground: cellEditorForeground,
-            placeholder: cellEditorPlaceholder,
-            horizontalAlignment: cellEditorHorizontalAlignment,
-            font: cellEditorFont));
+    return Container( 
+      child: cellEditor.getWidget(
+        editable: cellEditorEditable,
+        background: cellEditorBackground,
+        foreground: cellEditorForeground,
+        placeholder: cellEditorPlaceholder,
+        horizontalAlignment: cellEditorHorizontalAlignment,
+        font: cellEditorFont));
   }
 }

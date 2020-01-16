@@ -27,7 +27,7 @@ class JVxAnchor {
   int orientation = 0;
 
   /// The related anchor to this anchor.
-  JVxAnchor relatedAnchor;
+  JVxAnchor _relatedAnchor;
 
   /// true, if this anchor should be auto sized.
   bool autoSize = false;
@@ -55,6 +55,17 @@ class JVxAnchor {
   }
   get position {
     return _position;
+  }
+
+  set relatedAnchor(JVxAnchor anchor) {
+    _relatedAnchor= anchor;
+    if (_relatedAnchor!=null) {
+      this.orientation = anchor.orientation;
+      this.layout = anchor.layout;
+    }
+  }
+  get relatedAnchor {
+    return _relatedAnchor;
   }
 
   /// True, if the anchor is not calculated by components preferred size.

@@ -12,6 +12,16 @@ class JVxTextCellEditor extends JVxCellEditor {
   bool valueChanged = false;
   FocusNode node = FocusNode();
 
+  @override
+  get preferredSize {
+    return Size(200,50);
+  }
+
+  @override
+  get minimumSize {
+    return Size(10,50);
+  }
+
   JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
     multiLine = (changedCellEditor
@@ -64,7 +74,7 @@ class JVxTextCellEditor extends JVxCellEditor {
         TextSelection.collapsed(offset: controllerValue.length));
 
     return Container(
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),

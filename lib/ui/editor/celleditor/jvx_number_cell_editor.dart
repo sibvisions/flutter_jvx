@@ -19,6 +19,16 @@ class JVxNumberCellEditor extends JVxCellEditor {
   String tempValue;
 
   @override
+  get preferredSize {
+    return Size(200,50);
+  }
+
+  @override
+  get minimumSize {
+    return Size(50,50);
+  }
+
+  @override
   set value(dynamic pValue) {
     super.value = pValue;
     this.tempValue = getFormattedValue();
@@ -110,7 +120,7 @@ class JVxNumberCellEditor extends JVxCellEditor {
     //  direction = TextDirection.rtl;
 
     return Container(
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
           color: background != null ? background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
