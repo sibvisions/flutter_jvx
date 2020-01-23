@@ -19,11 +19,13 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
-  Widget defaultImage;
-  Widget currentImage;
+  Image defaultImage;
+  Image currentImage;
   File file;
   double width = 100;
   double heigth = 100;
+  BoxFit fit = BoxFit.contain;
+  Alignment alignment = Alignment.center;
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
@@ -35,7 +37,9 @@ class JVxImageCellEditor extends JVxCellEditor {
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
       if (file.existsSync()) {
-        defaultImage = Image.memory(file.readAsBytesSync());
+        defaultImage = Image.memory(
+          file.readAsBytesSync(),
+        );
         BlocProvider.of<ApiBloc>(context)
             .dispatch(Reload(requestType: RequestType.RELOAD));
       }
@@ -48,10 +52,14 @@ class JVxImageCellEditor extends JVxCellEditor {
     if (value != null && value.toString().isNotEmpty) {
       defaultImage = null;
 
-      Image img = Image.file(file);
+      Image img = Image.file(
+        file,
+      );
 
       Uint8List bytes = base64Decode(value);
-      img = Image.memory(bytes);
+      img = Image.memory(
+        bytes,
+      );
 
       Completer<ui.Image> completer = new Completer<ui.Image>();
       img.image
@@ -75,7 +83,9 @@ class JVxImageCellEditor extends JVxCellEditor {
           ? '${globals.dir}$defaultImageName'
           : 'assets/images/sib_visions.jpg');
       if (file.existsSync()) {
-        defaultImage = Image.memory(file.readAsBytesSync());
+        defaultImage = Image.memory(
+          file.readAsBytesSync(),
+        );
         BlocProvider.of<ApiBloc>(context)
             .dispatch(Reload(requestType: RequestType.RELOAD));
       }
@@ -97,13 +107,37 @@ class JVxImageCellEditor extends JVxCellEditor {
         placeholder: placeholder,
         font: font,
         horizontalAlignment: horizontalAlignment);
+
+    if (horizontalAlignment == 3) {
+      fit = BoxFit.fill;
+    } else if (horizontalAlignment == -1) {
+      fit = BoxFit.contain;
+      alignment = Alignment.center;
+    } else if (horizontalAlignment == 0) {
+      alignment = Alignment.centerLeft;
+    } else if (horizontalAlignment == 2) {
+      alignment = Alignment.centerRight;
+    }
+
+    ImageProvider currImageProv;
+    Image showImg;
+    if (currentImage != null) {
+      currImageProv = currentImage.image;
+      showImg = Image(
+        alignment: alignment,
+        image: currImageProv,
+        fit: fit,
+      );
+    }
+
     return Container(
+      height: 200,
         decoration: BoxDecoration(
             color: background != null ? background : Colors.transparent,
             borderRadius: BorderRadius.circular(5),
             border: borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)
                 : null),
-        child: currentImage != null ? currentImage : defaultImage);
+        child: currentImage != null ? showImg : defaultImage);
   }
 }

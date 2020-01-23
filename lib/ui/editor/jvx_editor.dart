@@ -143,7 +143,8 @@ class JVxEditor extends JVxComponent implements IEditor {
       this.reload = null;
     }
 
-    return Container( 
+    return Container(
+      height: preferredSize != null ? preferredSize.height : null,
       child: cellEditor.getWidget(
         editable: cellEditorEditable,
         background: cellEditorBackground,

@@ -295,16 +295,6 @@ class _SettingsPageState extends State<SettingsPage> {
       properties['APPNAME'] = result[0].substring(result[0].indexOf(': ') + 2);
 
       properties['URL'] = result[1].substring(result[1].indexOf(': ') + 2);
-
-      // result.forEach((element) {
-      //   if (element != null && element.isNotEmpty) {
-      //     String key = element.split("=")[0];
-      //     String value = element.split("=")[1];
-
-      //     properties[key] = value;
-      //   }
-      // });
-
     }
 
     return properties;
