@@ -64,11 +64,7 @@ class JVxFormLayout extends JVxLayout<String> {
 
   JVxFormLayout.fromLayoutString(String layoutString, String layoutData) {
     init();
-    parseFromString(layoutString);
-    List<String> parameter = layoutString?.split(",");
-
-    horizontalAlignment = int.parse(parameter[7]);
-    verticalAlignment = int.parse(parameter[8]);
+    updateLayoutString(layoutString);
     updateLayoutData(layoutData);
   }
 
@@ -76,6 +72,15 @@ class JVxFormLayout extends JVxLayout<String> {
     verticalGap = 5;
     horizontalGap = 5;
     addDefaultAnchors();
+  }
+
+  @override
+  void updateLayoutString(String layoutString) {
+    parseFromString(layoutString);
+    List<String> parameter = layoutString?.split(",");
+
+    horizontalAlignment = int.parse(parameter[7]);
+    verticalAlignment = int.parse(parameter[8]);
   }
 
 @override

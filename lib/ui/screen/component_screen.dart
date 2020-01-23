@@ -133,12 +133,19 @@ class ComponentScreen with DataScreen {
   void _moveComponent(IComponent component, ChangedComponent newComponent) {
     String parent = newComponent.getProperty(ComponentProperty.PARENT);
     String constraints = newComponent.getProperty(ComponentProperty.CONSTRAINTS);
+    String layout = newComponent.getProperty(ComponentProperty.LAYOUT);
     String layoutData = newComponent.getProperty(ComponentProperty.LAYOUT_DATA);
 
     if (newComponent.hasProperty(ComponentProperty.LAYOUT_DATA) && layoutData != null && layoutData.isNotEmpty) {
       if (component is IContainer)
         component.layout?.updateLayoutData(layoutData);
     }
+
+    if (newComponent.hasProperty(ComponentProperty.LAYOUT) && layout != null && layout.isNotEmpty) {
+      if (component is IContainer)
+        component.layout?.updateLayoutString(layout);
+    }
+
 
     if (newComponent.hasProperty(ComponentProperty.PARENT) && component.parentComponentId != parent) {
       if (debug)

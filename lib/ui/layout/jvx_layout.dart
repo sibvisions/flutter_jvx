@@ -43,6 +43,10 @@ abstract class JVxLayout<E> implements ILayout<E> {
     return null;
   }
 
+  void updateLayoutString(String layoutString) {
+    
+  }
+
   void updateLayoutData(String layoutData) {
 
   }
