@@ -10,7 +10,7 @@ import 'widgets/jvx_form_layout_anchor.dart';
 import '../component/jvx_component.dart';
 
 class JVxFormLayout extends JVxLayout<String> {
-  Key key;
+  Key key = UniqueKey();
   /// The valid state of anchor calculation. */
   bool _valid = false;
   /// the x-axis alignment (default: {@link JVxConstants#CENTER}). */
