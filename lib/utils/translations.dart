@@ -41,7 +41,8 @@ class Translations {
       Locale locale, BuildContext context) async {
     Translations translations = new Translations(locale);
 
-    if (globals.translation['translation_${locale.languageCode}.xml'] != null && !(await shouldDownload())) {
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null &&
+        !(await shouldDownload())) {
       _localizedValues2 =
           XmlLoader().loadTranslationsXml(locale.languageCode, context);
     } else {
@@ -62,7 +63,8 @@ class Translations {
   static Future<Translations> load(Locale locale) async {
     Translations translations = new Translations(locale);
 
-    if (globals.translation['translation_${locale.languageCode}.xml'] != null && !(await shouldDownload())) {
+    if (globals.translation['translation_${locale.languageCode}.xml'] != null &&
+        !(await shouldDownload())) {
       _localizedValues2 = XmlLoader().loadTranslationsXml(locale.languageCode);
     } else {
       try {
@@ -105,7 +107,24 @@ class TranslationsDelegate extends LocalizationsDelegate<Translations> {
   const TranslationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'de'].contains(locale.languageCode);
+  bool isSupported(Locale locale) {
+    List<String> suppLangs = <String>[];
+    if (globals.translation.length > 0) {
+      globals.translation.forEach((k, v) {
+        if (k != 'translation.xml') {
+          String resTrans = k.substring(12, k.indexOf('.'));
+
+          suppLangs.add(resTrans);
+        } else {
+          suppLangs.add('en');
+        }
+      });
+    } else {
+      suppLangs = ['en', 'de'];
+    }
+
+    return suppLangs.contains(locale.languageCode);
+  }
 
   Future<Translations> loadWithBuildContext(
           Locale locale, BuildContext context) =>

@@ -20,7 +20,7 @@ enum CellEditorProperty {
   BORDER_VISIBLE,
   PLACEHOLDER_VISIBLE,
   DEFAULT_IMAGE,
-  IMAGES
+  IMAGES,
 }
 
 class CellEditorProperties {

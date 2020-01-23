@@ -5,7 +5,6 @@ import 'package:jvx_mobile_v3/jvx_mobile.dart';
 import 'package:jvx_mobile_v3/logic/bloc/main_bloc_delegate.dart';
 import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
 import 'package:jvx_mobile_v3/ui/tools/restart.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 import 'logic/bloc/api_bloc.dart';
 

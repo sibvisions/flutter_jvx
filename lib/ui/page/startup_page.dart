@@ -303,6 +303,13 @@ class _StartupPageState extends State<StartupPage> {
             MaterialColor(state.applicationStyle.themeColor.value, color);
 
         UIData.ui_kit_color_2 = colorCustom;
+
+        BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
+          primaryColor: colorCustom,
+          primarySwatch: colorCustom,
+          brightness: Brightness.light,
+          fontFamily: 'Raleway'
+        ));
       }
 
       Menu menu = state.menu;

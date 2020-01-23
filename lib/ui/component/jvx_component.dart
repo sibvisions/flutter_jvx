@@ -24,24 +24,32 @@ abstract class JVxComponent implements IComponent {
   String parentComponentId;
   List<Key> childComponentIds;
 
-  bool get isForegroundSet => foreground!=null;
-  bool get isBackgroundSet => background!=null;
-  bool get isPreferredSizeSet => preferredSize!=null;
-  bool get isMinimumSizeSet => minimumSize!=null;
-  bool get isMaximumSizeSet => maximumSize!=null;
+  bool get isForegroundSet => foreground != null;
+  bool get isBackgroundSet => background != null;
+  bool get isPreferredSizeSet => preferredSize != null;
+  bool get isMinimumSizeSet => minimumSize != null;
+  bool get isMaximumSizeSet => maximumSize != null;
 
   JVxComponent(this.componentId, this.context);
 
   void updateProperties(ChangedComponent changedComponent) {
     rawComponentId = changedComponent.getProperty<String>(ComponentProperty.ID);
-    background = changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
+    background =
+        changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
-    isVisible = changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
-    style = JVxTextStyle.addFontToTextStyle(changedComponent.getProperty<String>(ComponentProperty.FONT, ""), style);
-    foreground = changedComponent.getProperty<HexColor>(ComponentProperty.FOREGROUND, null);
+    isVisible =
+        changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
+    style = JVxTextStyle.addFontToTextStyle(
+        changedComponent.getProperty<String>(ComponentProperty.FONT, ""),
+        style);
+    foreground = changedComponent.getProperty<HexColor>(
+        ComponentProperty.FOREGROUND, null);
     style = JVxTextStyle.addForecolorToTextStyle(foreground, style);
-    enabled = changedComponent.getProperty<bool>(ComponentProperty.ENABLED, true);
-    parentComponentId = changedComponent.getProperty<String>(ComponentProperty.PARENT, parentComponentId);
-    constraints = changedComponent.getProperty<String>(ComponentProperty.CONSTRAINTS, constraints);
+    enabled =
+        changedComponent.getProperty<bool>(ComponentProperty.ENABLED, true);
+    parentComponentId = changedComponent.getProperty<String>(
+        ComponentProperty.PARENT, parentComponentId);
+    constraints = changedComponent.getProperty<String>(
+        ComponentProperty.CONSTRAINTS, constraints);
   }
 }

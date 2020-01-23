@@ -53,6 +53,7 @@ enum ComponentProperty {
   LABEL,
   DATA_TYPE_IDENTIFIER,
   NULLABLE,
+  PREFERRED_SIZE,
 }
 
 class ComponentProperties {

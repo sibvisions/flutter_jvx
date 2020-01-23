@@ -84,10 +84,6 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
-        primaryColor: UIData.ui_kit_color_2,
-        primarySwatch: UIData.ui_kit_color_2,
-        fontFamily: UIData.ralewayFont));
     return BlocBuilder<ThemeBloc, ThemeData>(
       builder: (context, state) {
         return loginBuilder();

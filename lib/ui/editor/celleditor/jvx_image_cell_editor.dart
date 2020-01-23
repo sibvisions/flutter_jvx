@@ -110,9 +110,6 @@ class JVxImageCellEditor extends JVxCellEditor {
 
     if (horizontalAlignment == 3) {
       fit = BoxFit.fill;
-    } else if (horizontalAlignment == -1) {
-      fit = BoxFit.contain;
-      alignment = Alignment.center;
     } else if (horizontalAlignment == 0) {
       alignment = Alignment.centerLeft;
     } else if (horizontalAlignment == 2) {

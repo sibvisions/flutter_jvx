@@ -17,11 +17,6 @@ class MenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
-            primaryColor: UIData.ui_kit_color_2,
-            primarySwatch: UIData.ui_kit_color_2,
-            fontFamily: UIData.ralewayFont));
-            
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     bool drawerMenu;

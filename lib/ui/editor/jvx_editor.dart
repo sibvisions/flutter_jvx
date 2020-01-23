@@ -10,7 +10,6 @@ import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
-  Size maximumSize;
   String dataProvider;
   String dataRow;
   String columnName;
@@ -46,30 +45,38 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   @override
   get preferredSize {
+    if (super.preferredSize != null) return super.preferredSize;
+
     return _cellEditor.preferredSize;
   }
 
   @override
   get minimumSize {
+    if (super.minimumSize != null) return super.minimumSize;
+
     return _cellEditor.minimumSize;
   }
 
   @override
+  get maximumSize {
+    if (super.maximumSize != null) return super.maximumSize;
+
+    return _cellEditor.maximumSize;
+  }
+
+  @override
   get isPreferredSizeSet {
-    if (this._cellEditor!=null) return this._cellEditor.isPreferredSizeSet;
-    return false;
+    return super.isPreferredSizeSet | this.cellEditor?.isPreferredSizeSet;
   }
 
   @override
   bool get isMinimumSizeSet {
-    if (this._cellEditor!=null) return this._cellEditor.isMinimumSizeSet;
-    return false;
+    return super.isMinimumSizeSet | this.cellEditor?.isMinimumSizeSet;
   }
 
   @override
   bool get isMaximumSizeSet {
-    if (this._cellEditor!=null) return this._cellEditor.isMaximumSizeSet;
-    return false;
+    return super.isMaximumSizeSet | this.cellEditor?.isMaximumSizeSet;
   }
 
   JVxEditor(Key componentId, BuildContext context)
@@ -79,7 +86,12 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   void onValueChanged(dynamic value) {
     if (cellEditor is JVxReferencedCellEditor) {
-      data.setValues(context, (value is List) ? value : [value], (this.cellEditor as JVxReferencedCellEditor).linkReference.columnNames);
+      data.setValues(
+          context,
+          (value is List) ? value : [value],
+          (this.cellEditor as JVxReferencedCellEditor)
+              .linkReference
+              .columnNames);
     } else {
       data.setValues(context, (value is List) ? value : [value], [columnName]);
     }
@@ -102,6 +114,8 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
+    preferredSize = changedComponent.getProperty<Size>(
+        ComponentProperty.PREFERRED_SIZE, null);
     maximumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MAXIMUM_SIZE, null);
     dataProvider = changedComponent.getProperty<String>(
@@ -144,13 +158,14 @@ class JVxEditor extends JVxComponent implements IEditor {
     }
 
     return Container(
-      height: preferredSize != null ? preferredSize.height : null,
-      child: cellEditor.getWidget(
-        editable: cellEditorEditable,
-        background: cellEditorBackground,
-        foreground: cellEditorForeground,
-        placeholder: cellEditorPlaceholder,
-        horizontalAlignment: cellEditorHorizontalAlignment,
-        font: cellEditorFont));
+        height: super.preferredSize != null ? super.preferredSize.height : null,
+        width: super.preferredSize != null ? super.preferredSize.width : null,
+        child: cellEditor.getWidget(
+            editable: cellEditorEditable,
+            background: cellEditorBackground,
+            foreground: cellEditorForeground,
+            placeholder: cellEditorPlaceholder,
+            horizontalAlignment: cellEditorHorizontalAlignment,
+            font: cellEditorFont));
   }
 }
