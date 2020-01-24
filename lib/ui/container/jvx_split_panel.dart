@@ -36,21 +36,38 @@ class JVxSplitPanel extends JVxContainer implements IContainer {
     List<Widget> widgets = new List<Widget>();
 
     if (firstComponent != null) {
-      widgets.add(Expanded(child: firstComponent.getWidget()));
+      widgets.add(
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal, 
+          child: firstComponent.getWidget()
+        )
+      );
     } else {
       widgets.add(Container());
     }
 
     if (secondComponent != null) {
-      widgets.add(Expanded(child: secondComponent.getWidget()));
+      widgets.add(
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal, 
+          child: secondComponent.getWidget()
+        )
+      );
     } else {
       widgets.add(Container());
     }
 
     if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
-      return Row(
+      /*return Row(
         key: componentId,
         children: widgets,
+      );*/
+
+      return SingleChildScrollView( 
+        child: Wrap(
+          key: componentId,
+          children: widgets
+        )
       );
 
       // return new SingleChildScrollView(

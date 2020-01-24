@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout_constraint.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
 import 'widgets/jvx_border_layout.dart';
@@ -108,23 +109,23 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
     List<JVxBorderLayoutId> children = new List<JVxBorderLayoutId>();
 
     if (_center!=null && _center.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: JVxBorderLayoutConstraints.Center));
+      children.add(new JVxBorderLayoutId(child: _center.getWidget(), pConstraints: JVxBorderLayoutConstraintData(JVxBorderLayoutConstraints.Center, _center)));
     }
 
     if (_north!=null && _north.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: JVxBorderLayoutConstraints.North));
+      children.add(new JVxBorderLayoutId(child: _north.getWidget(), pConstraints: JVxBorderLayoutConstraintData(JVxBorderLayoutConstraints.North, _north)));
     }
 
     if (_south!=null && _south.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: JVxBorderLayoutConstraints.South));
+      children.add(new JVxBorderLayoutId(child: _south.getWidget(), pConstraints: JVxBorderLayoutConstraintData(JVxBorderLayoutConstraints.South, _south)));
     }
 
     if (_west!=null && _west.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: JVxBorderLayoutConstraints.West));
+      children.add(new JVxBorderLayoutId(child: _west.getWidget(), pConstraints: JVxBorderLayoutConstraintData(JVxBorderLayoutConstraints.West, _west)));
     }
 
     if (_east!=null && _east.isVisible) {
-      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: JVxBorderLayoutConstraints.East));
+      children.add(new JVxBorderLayoutId(child: _east.getWidget(), pConstraints: JVxBorderLayoutConstraintData(JVxBorderLayoutConstraints.East, _east)));
     }
 
     return Container(

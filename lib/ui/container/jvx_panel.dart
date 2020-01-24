@@ -5,7 +5,7 @@ import 'jvx_container.dart';
 class JVxPanel extends JVxContainer implements IContainer {
   JVxPanel(Key componentId, BuildContext context) : super(componentId, context);
 
-  @override
+  /*@override
   get preferredSize {
     return Size(300,500);
   }
@@ -13,7 +13,7 @@ class JVxPanel extends JVxContainer implements IContainer {
   @override
   get minimumSize {
     return Size(50,500);
-  }
+  }*/
 
   Widget getWidget() {
     Widget child;
