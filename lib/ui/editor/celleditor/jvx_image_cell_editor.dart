@@ -24,7 +24,7 @@ class JVxImageCellEditor extends JVxCellEditor {
   File file;
   double width = 100;
   double heigth = 100;
-  BoxFit fit = BoxFit.contain;
+  BoxFit fit = BoxFit.scaleDown;
   Alignment alignment = Alignment.center;
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
@@ -125,6 +125,13 @@ class JVxImageCellEditor extends JVxCellEditor {
         image: currImageProv,
         fit: fit,
       );
+    } else if (defaultImage != null) {
+      currImageProv = defaultImage.image;
+      showImg = Image(
+        alignment: alignment,
+        image: currImageProv,
+        fit: fit,
+      );
     }
 
     return Container(
@@ -135,6 +142,6 @@ class JVxImageCellEditor extends JVxCellEditor {
             border: borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)
                 : null),
-        child: currentImage != null ? showImg : defaultImage);
+        child: showImg);
   }
 }

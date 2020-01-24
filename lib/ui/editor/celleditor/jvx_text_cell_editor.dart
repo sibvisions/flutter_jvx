@@ -14,12 +14,12 @@ class JVxTextCellEditor extends JVxCellEditor {
 
   @override
   get preferredSize {
-    return Size(200,50);
+    return Size(200, 50);
   }
 
   @override
   get minimumSize {
-    return Size(10,50);
+    return Size(10, 50);
   }
 
   JVxTextCellEditor(CellEditor changedCellEditor, BuildContext context)
@@ -46,7 +46,7 @@ class JVxTextCellEditor extends JVxCellEditor {
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
-    
+
     if (this.valueChanged) {
       super.onValueChanged(this.value);
       this.valueChanged = false;
@@ -70,28 +70,24 @@ class JVxTextCellEditor extends JVxCellEditor {
         horizontalAlignment: horizontalAlignment);
     //_controller.text = (this.value != null ? this.value.toString() : "");
     String controllerValue = (this.value != null ? this.value.toString() : "");
-    _controller.value = _controller.value.copyWith(text: controllerValue, selection: 
-        TextSelection.collapsed(offset: controllerValue.length));
+    _controller.value = _controller.value.copyWith(
+        text: controllerValue,
+        selection: TextSelection.collapsed(offset: controllerValue.length));
 
     return Container(
-      height: 50,
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
-          border:
-              borderVisible && this.editable != null && this.editable ? Border.all(color: UIData.ui_kit_color_2) : null),
+          border: borderVisible && this.editable != null && this.editable
+              ? Border.all(color: UIData.ui_kit_color_2)
+              : Border.all(color: Colors.grey)),
       child: TextField(
-        style: TextStyle(color: this.foreground != null ? this.foreground : Colors.black),
         decoration: InputDecoration(
-            fillColor: this.background != null ? this.background : Colors.transparent,
-            enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-            focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-            disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey, width: 0.0))),
+          contentPadding: EdgeInsets.only(left: 12, right: 12),
+          border: InputBorder.none
+        ),
+        style: TextStyle(
+            color: this.editable ? (this.foreground != null ? this.foreground : Colors.black) : Colors.grey[700]),
         key: this.key,
         controller: _controller,
         maxLines: multiLine ? 4 : 1,
