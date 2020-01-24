@@ -7,6 +7,7 @@ import 'package:jvx_mobile_v3/ui/container/i_container.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_border_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_grid_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout_constraint.dart';
@@ -48,6 +49,8 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
         } else if (layout is JVxFormLayout) {
           layout.addLayoutComponent(pComponent, pConstraints);
         } else if (layout is JVxFlowLayout) {
+          layout.addLayoutComponent(pComponent, pConstraints);
+        } else if (layout is JVxGridLayout) {
           layout.addLayoutComponent(pComponent, pConstraints);
         }
       }

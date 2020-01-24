@@ -191,12 +191,11 @@ class ComponentScreen with DataScreen {
 
   void debugPrintCurrentWidgetTree() {
     if (debug) {
-      int level = 0;
       IComponent component = getRootComponent();
       print("--------------------");
       print("Current widget tree:");
       print("--------------------");
-      debugPrintComponent(component, level);
+      debugPrintComponent(component, 0);
       print("--------------------");
     }
   }

@@ -70,11 +70,11 @@ class GridLayoutConstraints {
 		 */
 		GridLayoutConstraints.fromGridPositionAndSizeAndInsets(int pGridX, int pGridY, int pGridWidth, int pGridHeight, EdgeInsets pInsets)
 		{ 
-			setGridX(pGridX);
-			setGridY(pGridY);
-			setGridWidth(pGridWidth);
-			setGridHeight(pGridHeight);
-			setInsets(pInsets);
+			gridX = pGridX;
+			gridY = pGridY;
+			gridWidth = pGridWidth;
+			gridHeight = pGridHeight;
+			insets = pInsets;
 		}
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +86,7 @@ class GridLayoutConstraints {
 		 *
 		 * @return the x-position
 		 */
-		int getGridX() {
+		int get gridX {
       return _gridX;
     }
 
@@ -95,12 +95,12 @@ class GridLayoutConstraints {
 		 *
 		 * @param pGridX the x-position to set
 		 */
-		void setGridX(int pGridX)
+		set gridX(int pGridX)
 		{
-            if (pGridX < 0)
-            {
-                throw new RangeError("The grid x must be a positive number.");
-            }
+      if (pGridX < 0)
+      {
+          throw new RangeError("The grid x must be a positive number.");
+      }
             
 			_gridX = pGridX;
 		}
@@ -110,7 +110,7 @@ class GridLayoutConstraints {
 		 *
 		 * @return the y-position
 		 */
-		int getGridY() {
+		int get gridY {
       return _gridY;
     } 
 
@@ -119,7 +119,7 @@ class GridLayoutConstraints {
 		 *
 		 * @param pGridY the x-position to set
 		 */
-		void setGridY(int pGridY)
+		set gridY(int pGridY)
 		{
       if (pGridY < 0)
       {
@@ -134,7 +134,7 @@ class GridLayoutConstraints {
 		 *
 		 * @return the width
 		 */
-		int getGridWidth() {
+		int get gridWidth {
       return _gridWidth;
     }
 
@@ -143,7 +143,7 @@ class GridLayoutConstraints {
 		 *
 		 * @param pGridWidth the height to set
 		 */
-		void setGridWidth(int pGridWidth)
+		set gridWidth(int pGridWidth)
 		{
       if (pGridWidth <= 0)
       {
@@ -158,7 +158,7 @@ class GridLayoutConstraints {
 		 *
 		 * @return the height
 		 */
-		int getGridHeight() {
+		int get gridHeight {
       return _gridHeight;
     }
 
@@ -167,7 +167,7 @@ class GridLayoutConstraints {
 		 *
 		 * @param pGridHeight the height to set
 		 */
-		void setGridHeight(int pGridHeight)
+		set gridHeight(int pGridHeight)
 		{
       if (pGridHeight <= 0)
       {
@@ -182,7 +182,7 @@ class GridLayoutConstraints {
 		 *
 		 * @return the insets
 		 */
-		EdgeInsets getInsets() {
+		EdgeInsets get insets {
       return _insets;
     } 
 		
@@ -191,11 +191,11 @@ class GridLayoutConstraints {
 		 *
 		 * @param pInsets the insets to set
 		 */
-		void setInsets(EdgeInsets pInsets)
+		set insets(EdgeInsets pInsets)
 		{
 			if (pInsets == null)
 			{
-				_insets = new EdgeInsets.all(0);
+				_insets = EdgeInsets.zero;
 			}
 			else
 			{

@@ -10,6 +10,7 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_cell_editor.dart
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_image_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_lazy_table.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_grid_layout.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
@@ -68,6 +69,7 @@ class ComponentCreator implements IComponentCreator {
         case "BorderLayout": { return JVxBorderLayout.fromLayoutString(layoutRaw, layoutData); } break; 
         case "FormLayout": { return JVxFormLayout.fromLayoutString(layoutRaw, layoutData); } break; 
         case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(layoutRaw, layoutData); } break;
+        case "GridLayout": { return JVxGridLayout.fromLayoutString(layoutRaw, layoutData);} break;
       }
     }
 
