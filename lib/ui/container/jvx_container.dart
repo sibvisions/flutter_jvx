@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/model/changed_component.dart';
+import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 import 'package:jvx_mobile_v3/ui/container/i_container.dart';
@@ -8,6 +9,7 @@ import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_layout.dart';
 import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout.dart';
+import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout_constraint.dart';
 
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
@@ -85,6 +87,9 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
     IComponent pComponent = components.firstWhere((c) => c.componentId == componentId);
 
     pComponent?.updateProperties(changedComponent);
+
+    preferredSize = changedComponent.getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
+    maximumSize = changedComponent.getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
 
     if (layout != null) {
       if (layout is JVxBorderLayout) {

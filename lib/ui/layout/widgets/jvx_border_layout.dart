@@ -3,24 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
+import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 
-/// Layout contraints to define widget position:
-///           NORTH
-/// WEST    CENTER      EAST
-///           SOUTH
-enum JVxBorderLayoutConstraints {
-  North,
-  South,
-  West,
-  East,
-  Center
-}
-
-
-JVxBorderLayoutConstraints getJVxBorderLayoutConstraintsFromString(String jvxBorderLayoutConstraintsString) {
-  jvxBorderLayoutConstraintsString = 'JVxBorderLayoutConstraints.$jvxBorderLayoutConstraintsString';
-  return JVxBorderLayoutConstraints.values.firstWhere((f)=> f.toString() == jvxBorderLayoutConstraintsString, orElse: () => null);
-}
+import 'jvx_border_layout_constraint.dart';
 
 ///
 /// The <code>JVxSequenceLayout</code> can be used as {@link java.awt.FlowLayout} with
@@ -83,10 +68,15 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     with ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   RenderBox north;
+  JVxComponent northComp;
   RenderBox south;
+  JVxComponent southComp;
   RenderBox west;
+  JVxComponent westComp;
   RenderBox east;
+  JVxComponent eastComp;
   RenderBox center;
+  JVxComponent centerComp;
   EdgeInsets insMargin;
   int iHorizontalGap;
   int iVerticalGap;
@@ -95,27 +85,32 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     addAll(children);
   }
 
-  void addLayoutComponent(RenderBox pComponent, JVxBorderLayoutConstraints pConstraints)
+  void addLayoutComponent(RenderBox pComponent, JVxBorderLayoutConstraintData pConstraints)
   {
-    if (pConstraints == null || pConstraints==JVxBorderLayoutConstraints.Center)
+    if (pConstraints == null || pConstraints.constraints==JVxBorderLayoutConstraints.Center)
     {
       center = pComponent;
+      centerComp = pConstraints.comp;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.North)
+    else if (pConstraints.constraints == JVxBorderLayoutConstraints.North)
     {
       north = pComponent;
+      northComp = pConstraints.comp;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.South)
+    else if (pConstraints.constraints == JVxBorderLayoutConstraints.South)
     {
       south = pComponent;
+      southComp = pConstraints.comp;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.East)
+    else if (pConstraints.constraints == JVxBorderLayoutConstraints.East)
     {
       east = pComponent;
+      eastComp = pConstraints.comp;
     }
-    else if (pConstraints == JVxBorderLayoutConstraints.West)
+    else if (pConstraints.constraints == JVxBorderLayoutConstraints.West)
     {
       west = pComponent;
+      westComp = pConstraints.comp;
     }
     else
     {
@@ -168,11 +163,18 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     // layout NORTH
     if (north != null) {
       double minWidth = width;
+      double minHeight = 0;
+      double maxHeight = double.infinity;
+
+      if (northComp.isPreferredSizeSet) {
+        maxHeight = northComp.preferredSize.height;
+        //minHeight = maxHeight;
+      }
 
       if (minWidth==double.infinity)
         minWidth = 0;
 
-      north.layout(BoxConstraints(minWidth: minWidth, maxWidth: width, minHeight: 0, maxHeight: double.infinity), parentUsesSize: true);
+      north.layout(BoxConstraints(minWidth: minWidth, maxWidth: width, minHeight: minHeight, maxHeight: maxHeight), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = north.parentData;
       childParentData.offset = Offset(x, y);
 
@@ -185,11 +187,18 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     // layout SOUTH
     if (south != null) {
       double minWidth = width;
+      double minHeight = 0;
+      double maxHeight = double.infinity;
+
+      if (southComp.isPreferredSizeSet) {
+        maxHeight = southComp.preferredSize.height;
+        //minHeight = maxHeight;
+      }
 
       if (minWidth==double.infinity)
         minWidth = 0;
 
-      south.layout(BoxConstraints(minWidth: minWidth, maxWidth: width, minHeight: 0, maxHeight: double.infinity), parentUsesSize: true);
+      south.layout(BoxConstraints(minWidth: minWidth, maxWidth: width, minHeight: minHeight, maxHeight: maxHeight), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = south.parentData;
       childParentData.offset = Offset(x, y + height - south.size.height);
 
@@ -201,11 +210,18 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     // layout WEST
     if (west != null) {
       double minHeight = height;
+      double minWidth = 0;
+      double maxWidth = double.infinity;
+
+      if (westComp.isPreferredSizeSet) {
+        maxWidth = westComp.preferredSize.width;
+        //minHeight = maxHeight;
+      }
 
       if (minHeight==double.infinity)
         minHeight = 0;
 
-      west.layout(BoxConstraints(minWidth: 0, maxWidth: double.infinity, minHeight: minHeight, maxHeight: height), parentUsesSize: true);
+      west.layout(BoxConstraints(minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = west.parentData;
       childParentData.offset = Offset(x, y);
 
@@ -218,11 +234,18 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     // layout EAST
     if (east != null) {
       double minHeight = height;
+      double minWidth = 0;
+      double maxWidth = double.infinity;
+
+      if (eastComp.isPreferredSizeSet) {
+        maxWidth = eastComp.preferredSize.width;
+        //minHeight = maxHeight;
+      }
 
       if (minHeight==double.infinity)
         minHeight = 0;
 
-      east.layout(BoxConstraints(minWidth: 0, maxWidth: double.infinity, minHeight: minHeight, maxHeight: height), parentUsesSize: true);
+      east.layout(BoxConstraints(minWidth: minWidth, maxWidth: maxWidth, minHeight: minHeight, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = east.parentData;
       childParentData.offset = Offset(x + width - east.size.width, y);
 
@@ -241,6 +264,16 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 
       if (minWidth==double.infinity)
         minWidth = 0;
+
+      if (height==double.infinity && centerComp.isPreferredSizeSet) {
+        height = centerComp.preferredSize.height;
+        minHeight = height;
+      }
+
+      if (width==double.infinity && centerComp.isPreferredSizeSet) {
+        width = centerComp.preferredSize.width;
+        minWidth = width;
+      }
 
       center.layout(BoxConstraints(minWidth: minWidth, maxWidth: width, minHeight: minHeight, maxHeight: height), parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = center.parentData;
@@ -282,7 +315,7 @@ class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayoutWidget> {
         super(key: key ?? ValueKey<Object>(pConstraints), child: child);
 
   /// An BorderLayoutConstraints defines the layout position of this child.
-  final JVxBorderLayoutConstraints pConstraints;
+  final JVxBorderLayoutConstraintData pConstraints;
 
   @override
   void applyParentData(RenderObject renderObject) {
