@@ -114,10 +114,6 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    preferredSize = changedComponent.getProperty<Size>(
-        ComponentProperty.PREFERRED_SIZE, null);
-    maximumSize = changedComponent.getProperty<Size>(
-        ComponentProperty.MAXIMUM_SIZE, null);
     dataProvider = changedComponent.getProperty<String>(
         ComponentProperty.DATA_PROVIDER, dataProvider);
     dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);

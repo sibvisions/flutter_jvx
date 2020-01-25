@@ -9,10 +9,9 @@ import 'package:jvx_mobile_v3/ui/editor/celleditor/i_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_image_cell_editor.dart';
 import 'package:jvx_mobile_v3/ui/editor/jvx_lazy_table.dart';
-import 'package:jvx_mobile_v3/ui/editor/jvx_table.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_grid_layout.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
+import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout_old.dart';
 import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
 import '../component/jvx_button.dart';
 import '../editor/celleditor/jvx_choice_cell_editor.dart';
@@ -68,7 +67,7 @@ class ComponentCreator implements IComponentCreator {
       switch (changedComponent.layoutName) {
         case "BorderLayout": { return JVxBorderLayout.fromLayoutString(layoutRaw, layoutData); } break; 
         case "FormLayout": { return JVxFormLayout.fromLayoutString(layoutRaw, layoutData); } break; 
-        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(layoutRaw, layoutData); } break;
+        case "FlowLayout": { return  JVxFlowLayoutOld.fromLayoutString(layoutRaw, layoutData); } break;
         case "GridLayout": { return JVxGridLayout.fromLayoutString(layoutRaw, layoutData);} break;
       }
     }

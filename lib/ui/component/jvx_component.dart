@@ -33,6 +33,10 @@ abstract class JVxComponent implements IComponent {
   JVxComponent(this.componentId, this.context);
 
   void updateProperties(ChangedComponent changedComponent) {
+    preferredSize = changedComponent.getProperty<Size>(
+        ComponentProperty.PREFERRED_SIZE, null);
+    maximumSize = changedComponent.getProperty<Size>(
+        ComponentProperty.MAXIMUM_SIZE, null);
     rawComponentId = changedComponent.getProperty<String>(ComponentProperty.ID);
     background =
         changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
