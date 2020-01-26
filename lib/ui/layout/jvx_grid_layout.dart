@@ -10,10 +10,10 @@ class JVxGridLayout extends JVxLayout<String> {
   Key key = UniqueKey();
 
 	// The number of rows.
-	int rows = 11;
+	int rows = 1;
 
 	// The number of columns.
-	int	columns = 3;
+	int	columns = 1;
 
   /// stores all constraints. */
   Map<JVxComponent, String> _constraintMap= <JVxComponent, String>{};
@@ -26,6 +26,10 @@ class JVxGridLayout extends JVxLayout<String> {
 
   void updateLayoutString(String layoutString) {
     parseFromString(layoutString);
+    List<String> parameter = layoutString?.split(",");
+
+    rows = int.parse(parameter[7]);
+    columns = int.parse(parameter[8]);
   }
 
   void addLayoutComponent(IComponent pComponent, String pConstraint)
