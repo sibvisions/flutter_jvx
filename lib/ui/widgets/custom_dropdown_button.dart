@@ -591,6 +591,7 @@ class CustomDropdownButton<T> extends StatefulWidget {
     this.iconSize = 24.0,
     this.isDense = false,
     this.isExpanded = false,
+    this.editable
   })  : assert(items == null ||
             items.isEmpty ||
             value == null ||
@@ -695,6 +696,7 @@ class CustomDropdownButton<T> extends StatefulWidget {
   /// If [isExpanded] is true, the inner width is expanded to fill its
   /// surrounding container.
   final bool isExpanded;
+  final bool editable;
 
   @override
   _CustomDropdownButtonState<T> createState() =>
@@ -933,7 +935,7 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
     return Semantics(
       button: true,
       child: GestureDetector(
-        onTap: _enabled
+        onTap: _enabled && widget.editable
             ? (widget.onOpen != null ? widget.onOpen : handleTap)
             : null,
         behavior: HitTestBehavior.opaque,

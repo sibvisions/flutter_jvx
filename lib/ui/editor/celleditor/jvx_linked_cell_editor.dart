@@ -146,15 +146,16 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         decoration: BoxDecoration(
             color: background != null ? background : Colors.transparent,
             borderRadius: BorderRadius.circular(5),
-            border: borderVisible
+            border: this.editable != null && this.editable ? (borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)
-                : null),
+                : null) : Border.all(color: Colors.grey)),
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
           hint: Text(Properties.utf8convert(h == null ? "" : h)),
           value: v,
           items: this._items,
           onChanged: valueChanged,
+          editable: this.editable != null ? this.editable : null,
         )),
       );
     } else {
@@ -176,15 +177,16 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         decoration: BoxDecoration(
             color: background != null ? background : Colors.transparent,
             borderRadius: BorderRadius.circular(5),
-            border: borderVisible
+            border: this.editable != null && this.editable ? (borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)
-                : null),
+                : null) : Border.all(color: Colors.grey)),
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
           hint: Text(Properties.utf8convert(h == null ? "" : h)),
           value: v,
           items: this._items,
           onChanged: valueChanged,
+          editable: this.editable != null ? this.editable : true,
           onOpen: () {
             this.onFilter(null);
             FocusScopeNode currentFocus = FocusScope.of(context);
