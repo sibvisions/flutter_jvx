@@ -3,6 +3,7 @@ library jvx_mobile_v3.globals;
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/response/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 
 String appName;
 String baseUrl; //'http://172.16.0.15:8080/JVx.mobile/services/mobile';
@@ -27,3 +28,4 @@ int timeout = 10;
 int uploadPicWidth = 320;
 String displayName;
 bool handleSessionTimeout = true;
+IScreen customScreen;
