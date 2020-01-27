@@ -48,9 +48,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/sib_visions.jpg
-    - assets/images/sibvisions.png
-    - locale/i18n_de.json
+    - assets/images/
+    - locale/
     - env/
 
   fonts:
