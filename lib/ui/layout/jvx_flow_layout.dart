@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/ui/component/i_component.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_flow_layout.dart';
 import 'i_alignment_constants.dart';
 import 'jvx_layout.dart';
 
@@ -20,7 +21,8 @@ class JVxFlowLayout extends JVxLayout<String> {
 	int orientation = 0;
 
 	// the component alignment. */
-	int componentAlignment = 1;
+	int horizontalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
+	int verticalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
 
   /// stores all constraints. */
   Map<JVxComponent, String> _constraintMap= <JVxComponent, String>{};
@@ -35,7 +37,8 @@ class JVxFlowLayout extends JVxLayout<String> {
     orientation = int.parse(parameter[7]);
     horizontalAlignment = int.parse(parameter[8]);
     verticalAlignment = int.parse(parameter[9]);
-    componentAlignment = int.parse(parameter[10]);
+    horizontalComponentAlignment = int.parse(parameter[10]);
+    verticalComponentAlignment = horizontalComponentAlignment;
   }
 
   void updateLayoutString(String layoutString) {
@@ -58,7 +61,29 @@ class JVxFlowLayout extends JVxLayout<String> {
   }
 
   Widget getWidget() {
-    return Container();
+    List<JVxFlowLayoutConstraintData> children = new List<JVxFlowLayoutConstraintData>();
+
+    this._constraintMap.forEach((k, v) {
+      if (k.isVisible) {
+          children.add(
+            new JVxFlowLayoutConstraintData(child: k.getWidget(), 
+                  id: k));
+      }
+    });
+
+    return Container(
+      child: JVxFlowLayoutWidget(
+        key: key,
+        children: children,
+        insMargin: margins,
+        horizontalGap: horizontalGap,
+        verticalGap: verticalGap,
+        horizontalAlignment: horizontalAlignment,
+        verticalAlignment: verticalAlignment,
+        orientation: orientation,
+        horizontalComponentAlignment: horizontalComponentAlignment,
+        verticalComponentAlignment: verticalComponentAlignment,
+      ));
   }
 
 }
