@@ -29,9 +29,10 @@ import 'package:uuid/uuid.dart';
 enum StartupValidationType { username, password }
 
 class StartupPage extends StatefulWidget {
-  bool loadConf;
+  final bool loadConf;
+  final Config config;
 
-  StartupPage(this.loadConf, {Key key}) : super(key: key);
+  StartupPage(this.loadConf, {Key key, this.config}) : super(key: key);
 
   _StartupPageState createState() => _StartupPageState();
 }
@@ -71,7 +72,7 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     Future.wait([
-      Config.loadFile(),
+      Config.loadFile(conf: widget.config),
       loadSharedPrefs(),
     ]).then((val) async {
       print('HELLO ${widget.loadConf}');

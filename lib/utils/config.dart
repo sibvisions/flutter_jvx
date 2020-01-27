@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Config for Developers:
 ///
@@ -38,7 +40,10 @@ class Config {
       password = json['password'],
       appMode = json['appMode'];
 
-  static Future<Config> loadFile() async {
+  static Future<Config> loadFile({Config conf}) async {
+    if (conf != null) {
+      return conf;
+    }
     Config config;
     try {
       String configString =
