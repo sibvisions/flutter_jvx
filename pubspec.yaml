@@ -36,6 +36,7 @@ dependencies:
     git: https://github.com/btastic/flutter_native_image.git
   connectivity: ^0.4.6+1
   uuid: ^2.0.4
+  sticky_headers: ^0.1.8+1
 
 dev_dependencies:
   flutter_test:
