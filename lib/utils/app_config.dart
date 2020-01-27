@@ -14,7 +14,7 @@ class AppConfig {
     AppConfig config;
     try {
       String configString =
-          await rootBundle.loadString("env/app.conf.json");
+          await rootBundle.loadString("packages/jvx_mobile_v3/env/app.conf.json");
 
       config = AppConfig.fromJson(json.decode(configString));
     } catch (e) {
