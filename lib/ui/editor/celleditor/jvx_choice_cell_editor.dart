@@ -48,10 +48,16 @@ class JVxChoiceCellEditor extends JVxCellEditor {
 
   ChoiceCellEditorImage loadImage(String path) {
     Image image = Image.file(File('${globals.dir}$path'));
+    String val;
     try {} catch (e) {
       selectedImage = defaultImage;
     }
-    String val = allowedValues[imageNames.indexOf(path)];
+
+    if (imageNames.indexOf(path) > allowedValues.length - 1) {
+      return defaultImage;
+    } else {
+      val = allowedValues[imageNames.indexOf(path)];
+    }
 
     ChoiceCellEditorImage choiceCellEditorImage =
         ChoiceCellEditorImage(value: val, image: image);

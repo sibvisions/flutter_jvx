@@ -2,14 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
 import 'package:jvx_mobile_v3/ui/page/startup_page.dart';
+import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class JvxMobile extends StatelessWidget {
   final bool loadConf;
   final ThemeData theme;
+  final Config config;
 
-  JvxMobile(this.loadConf, this.theme);
+  JvxMobile(this.loadConf, this.theme, {this.config});
 
   GestureDetector materialApp(BuildContext context, ThemeData theme) =>
       GestureDetector(
@@ -38,7 +40,7 @@ class JvxMobile extends StatelessWidget {
             ],
             initialRoute: '/',
             routes: {
-              '/': (context) => StartupPage(this.loadConf),
+              '/': (context) => StartupPage(this.loadConf, config: this.config,),
               '/settings': (context) => SettingsPage(),
             },
           ));

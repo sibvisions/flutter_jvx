@@ -52,6 +52,7 @@ class MenuPage extends StatelessWidget {
   }
 
   Widget getMenuWidget() {
+    return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
     if (globals.applicationStyle != null) {
       if (globals.applicationStyle.menuMode == 'grid') {
         return MenuGridView(items: this.menuItems, groupedMenuMode: false);

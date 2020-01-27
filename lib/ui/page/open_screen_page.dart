@@ -225,7 +225,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                         });
                       },
                     ),
-                    title: Text(title),
+                    title: Text(title ?? ''),
                   ),
                   body: screen.getWidget());
             }),

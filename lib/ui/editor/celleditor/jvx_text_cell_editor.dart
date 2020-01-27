@@ -95,7 +95,8 @@ class JVxTextCellEditor extends JVxCellEditor {
         onEditingComplete: onTextFieldEndEditing,
         onChanged: onTextFieldValueChanged,
         focusNode: node,
-        enabled: this.editable,
+        // enabled: this.editable,
+        readOnly: !this.editable,
       ),
     );
   }

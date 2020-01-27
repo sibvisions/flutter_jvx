@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
-import '../../custom_screen/custom_screen_api.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/action.dart' as prefix0;
@@ -29,15 +29,12 @@ class MenuGridView extends StatefulWidget {
 }
 
 class _MenuGridViewState extends State<MenuGridView> {
-  CustomScreenApi customScreenApi;
   String title;
 
   bool errorMsgShown = false;
 
   @override
   Widget build(BuildContext context) {
-    customScreenApi = CustomScreenApi();
-
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         // condition: (previousState, state) {
@@ -138,9 +135,6 @@ class _MenuGridViewState extends State<MenuGridView> {
             ),
           ),
           onTap: () {
-            customScreenApi.onMenuButtonPressed(context, menuItems[index].action.label, menuItems[index].group);
-
-            if (!customScreenApi.showCustomScreen()) {
               prefix0.Action action = menuItems[index].action;
 
               title = action.label;
@@ -152,9 +146,6 @@ class _MenuGridViewState extends State<MenuGridView> {
                   requestType: RequestType.OPEN_SCREEN);
 
               BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-            } else {
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => customScreenApi.getWidget()));
-            }
 
             /*
                     OpenScreenBloc openScreenBloc = OpenScreenBloc();
@@ -188,9 +179,14 @@ class _MenuGridViewState extends State<MenuGridView> {
         children: _buildGroupGridViewCards(v),
       );
 
-      widgets.add(_buildGroupHeader(v[0].group.toString()));
+      widgets.add(
+        StickyHeader(
+          header: Container(color: Colors.grey[200], child: _buildGroupHeader(v[0].group.toString())),
+          content: group,
+        )
+      );
 
-      widgets.add(group);
+      // widgets.add(group);
     });
 
     return widgets;

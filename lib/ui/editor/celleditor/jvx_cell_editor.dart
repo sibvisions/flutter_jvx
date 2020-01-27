@@ -33,7 +33,7 @@ class JVxCellEditor implements ICellEditor {
   HexColor foreground;
   String placeholder;
   String font;
-  bool editable;
+  bool editable = true;
   bool borderVisible;
   bool placeholderVisible;
 
