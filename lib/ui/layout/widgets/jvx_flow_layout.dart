@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_mobile_v3/ui/component/i_alignment_component.dart';
 import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
 
 import '../i_alignment_constants.dart';
@@ -10,9 +13,10 @@ class JVxFlowLayoutWidget extends MultiChildRenderObjectWidget {
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// Class members
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Map<RenderBox, JVxComponent>	constraintMap = <RenderBox, JVxComponent>{};
 
 	// the layout margins.
-	final EdgeInsets margins;
+	final EdgeInsets insMargin;
 	
 	// the horizontal gap between components. 
 	final int	horizontalGap;
@@ -28,61 +32,68 @@ class JVxFlowLayoutWidget extends MultiChildRenderObjectWidget {
 	final int orientation;
 
 	// the component alignment. */
-	final int componentAlignment;
+	final int horizontalComponentAlignment;
+	final int verticalComponentAlignment;
 
   JVxFlowLayoutWidget({
     Key key,
     List<JVxFlowLayoutConstraintData> children: const [],
-    this.margins = EdgeInsets.zero,
+    this.insMargin = EdgeInsets.zero,
     this.horizontalGap = 0,
     this.verticalGap = 0,
     this.horizontalAlignment = 1,
     this.verticalAlignment = 1,
     this.orientation = 0,
-    this.componentAlignment = 1 }) : super (key: key, children: children);
+    this.horizontalComponentAlignment = 1,
+    this.verticalComponentAlignment}) : super (key: key, children: children);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderJVxFlowLayoutWidget(this.horizontalAlignment, this.verticalAlignment, this.orientation, this.componentAlignment, 
-      this.margins, this.horizontalGap, this.verticalGap);
+    return RenderJVxFlowLayoutWidget(this.horizontalAlignment, this.verticalAlignment, this.orientation, this.horizontalComponentAlignment,
+        this.verticalComponentAlignment, this.insMargin, this.horizontalGap, this.verticalGap);
   }
 
   @override
   void updateRenderObject(BuildContext context, RenderJVxFlowLayoutWidget renderObject) {
 
     /// Force Layout, if some of the settings have changed
-    if (renderObject.horizontalAlignment != this.horizontalAlignment) {
-      renderObject.horizontalAlignment = this.horizontalAlignment;
+    if (renderObject.iHorizontalAlignment != this.horizontalAlignment) {
+      renderObject.iHorizontalAlignment = this.horizontalAlignment;
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.verticalAlignment != this.verticalAlignment) {
-      renderObject.verticalAlignment = this.verticalAlignment;
+    if (renderObject.iVerticalAlignment != this.verticalAlignment) {
+      renderObject.iVerticalAlignment = this.verticalAlignment;
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.orientation != this.orientation) {
-      renderObject.orientation = this.orientation;
+    if (renderObject.iOrientation != this.orientation) {
+      renderObject.iOrientation = this.orientation;
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.componentAlignment != this.componentAlignment) {
-      renderObject.componentAlignment = this.componentAlignment;
+    if (renderObject.iHorizontalComponentAlignment != this.horizontalComponentAlignment) {
+      renderObject.iHorizontalComponentAlignment = this.horizontalComponentAlignment;
+      renderObject.markNeedsLayout();
+    }
+
+    if (renderObject.iVerticalComponentAlignment != this.verticalComponentAlignment) {
+      renderObject.iVerticalComponentAlignment = this.verticalComponentAlignment;
       renderObject.markNeedsLayout();
     }
     
-    if (renderObject.horizontalGap != this.horizontalGap) {
-      renderObject.horizontalGap = this.horizontalGap;
+    if (renderObject.iHorizontalGap != this.horizontalGap) {
+      renderObject.iHorizontalGap = this.horizontalGap;
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.verticalGap != this.verticalGap) {
-      renderObject.verticalGap = this.verticalGap;
+    if (renderObject.iVerticalGap != this.verticalGap) {
+      renderObject.iVerticalGap = this.verticalGap;
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.margins != this.margins) {
-      renderObject.margins = this.margins;
+    if (renderObject.insMargins != this.insMargin) {
+      renderObject.insMargins = this.insMargin;
       renderObject.markNeedsLayout();
     }
   }
@@ -93,10 +104,11 @@ class JVxFlowLayoutWidget extends MultiChildRenderObjectWidget {
     properties.add(new IntProperty('horizontalAlignment', horizontalAlignment));
     properties.add(new IntProperty('verticalAlignment', verticalAlignment));
     properties.add(new IntProperty('orientation', orientation));
-    properties.add(new IntProperty('componentAlignment', componentAlignment));
+    properties.add(new IntProperty('horizontalComponentAlignment', horizontalComponentAlignment));
+    properties.add(new IntProperty('verticalComponentAlignment', verticalComponentAlignment));
     properties.add(new IntProperty('horizontalGap', horizontalGap));
     properties.add(new IntProperty('verticalGap', verticalGap));
-    properties.add(new StringProperty('margins', margins.toString()));
+    properties.add(new StringProperty('margins', insMargin.toString()));
   }
 
 }
@@ -109,36 +121,406 @@ class RenderJVxFlowLayoutWidget extends RenderBox
 	Map<RenderBox, JVxComponent>	constraintMap = <RenderBox, JVxComponent>{};
 
 	// the layout margins.
-	EdgeInsets margins;
+	EdgeInsets insMargins;
 	
 	// the horizontal gap between components. 
-	int	horizontalGap;
+	int	iHorizontalGap;
 
 	// the vertical gap between components. */
-	int	verticalGap;
+	int	iVerticalGap;
 
   	// the horizontal alignment.
-	int horizontalAlignment = IAlignmentConstants.ALIGN_CENTER;
+	int iHorizontalAlignment = IAlignmentConstants.ALIGN_CENTER;
 	// the vertical alignment.
-	int verticalAlignment = IAlignmentConstants.ALIGN_CENTER;
+	int iVerticalAlignment = IAlignmentConstants.ALIGN_CENTER;
 	
 	// the orientation.
-	int orientation = 0;
+	int iOrientation = 0;
 
 	// the component alignment. */
-	int componentAlignment = 1;
+	int iHorizontalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
+	int iVerticalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
+
+	/* 
+	 * the mark to wrap the layout if there is not enough space to show 
+	 * all components (FlowLayout mode).
+	 */
+  bool bAutoWrap = false;
 
   RenderJVxFlowLayoutWidget(
-    this.horizontalAlignment,
-    this.verticalAlignment,
-    this.orientation,
-    this.componentAlignment,
-    this.margins ,
-    this.horizontalGap,
-    this.verticalGap,
+    this.iHorizontalAlignment,
+    this.iVerticalAlignment,
+    this.iOrientation,
+    this.iHorizontalComponentAlignment,
+    this.iVerticalComponentAlignment,
+    this.insMargins ,
+    this.iHorizontalGap,
+    this.iVerticalGap,
     { List<RenderBox> children }) {
       addAll(children);
     }   
+
+  @override
+  void performLayout() {
+      // Set components
+    constraintMap = <RenderBox, JVxComponent>{}; 
+    RenderBox child = firstChild;
+    while (child != null) {
+      final MultiChildLayoutParentData childParentData = child.parentData;
+      addLayoutComponent(child, childParentData.id);
+
+      child = childParentData.nextSibling;
+    }
+
+		Size dimSize = this.constraints.biggest;
+    dimSize = Size(dimSize.width-(insMargins.left + insMargins.right), 
+                  dimSize.height- (insMargins.top + insMargins.bottom));
+
+		//x stores the columns
+		//y stores the rows
+		Rect rectCompInfo = calculateGrid();
+		
+		//ignore the insets!
+		Size dimPref = new Size(rectCompInfo.width * rectCompInfo.left + iHorizontalGap * (rectCompInfo.left - 1), 
+				                          rectCompInfo.height * rectCompInfo.top + iVerticalGap * (rectCompInfo.top - 1));
+		
+    if (dimSize.height==double.infinity) dimSize = Size(dimSize.width, dimPref.height);
+    if (dimSize.width==double.infinity) dimSize = Size(dimPref.width, dimSize.height);
+
+		int iLeft;
+		int iWidth;
+		
+		if (iHorizontalAlignment == IAlignmentConstants.ALIGN_STRETCH)
+		{
+			iLeft = insMargins.left.round();
+			iWidth = dimSize.width.round();
+		}
+		else
+		{
+			//align the layout in the container
+			iLeft = (((dimSize.width - dimPref.width) * getAlignmentFactor(iHorizontalAlignment)) + insMargins.left).round();
+			iWidth = dimPref.width.round();
+		}
+		
+		int iTop;
+		int iHeight;
+		
+		if (iVerticalAlignment == IAlignmentConstants.ALIGN_STRETCH)
+		{
+			iTop = insMargins.top.round();
+			iHeight = dimSize.height.round();
+		}
+		else
+		{
+			//align the layout in the container
+			iTop = (((dimSize.height - dimPref.height) * getAlignmentFactor(iVerticalAlignment)) + insMargins.top).round();
+			iHeight = dimPref.height.round();
+		}
+		
+		int fW = max<int>(1, iWidth);
+		int fPW = max<int>(1, dimPref.width.round());
+		int fH = max<int>(1, iHeight);
+		int fPH = max<int>(1, dimPref.height.round());
+		int x = 0;
+		int y = 0;
+		
+		JVxComponent comp;
+		
+		bool bFirst = true;
+		for (int i = 0, anz = constraintMap.length; i < anz; i++)
+		{
+			comp = constraintMap.values.elementAt(i);
+			
+			if (comp.isVisible)
+			{
+				Size size = this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
+				
+				if (iOrientation == 0)
+				{
+					if (!bFirst 
+						&& bAutoWrap 
+						&& dimSize.width > 0 
+						&& x + size.width > dimSize.width)
+					{
+						x = 0;
+						y += ((rectCompInfo.height + iVerticalGap) * fH / fPH).round();
+					}
+					else if (bFirst)
+					{
+						bFirst = false;
+					}
+					
+					if (iVerticalComponentAlignment == IAlignmentConstants.ALIGN_STRETCH)
+					{
+            double offsetX = iLeft + x * fW / fPW;
+            double offsetY = (iTop + y).toDouble();
+            double width = size.width * fW / fPW;
+            double height = rectCompInfo.height * fH / fPH;
+
+            constraintMap.keys.elementAt(i).layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+
+            final MultiChildLayoutParentData childParentData = constraintMap.keys.elementAt(i).parentData;
+            childParentData.offset = Offset(offsetX, offsetY);
+					}
+					else
+					{
+						double offsetX = iLeft + x * fW / fPW;
+            double offsetY = iTop + y + ((rectCompInfo.height - size.height) * getAlignmentFactor(iVerticalComponentAlignment)) * fH / fPH;
+            double width = size.width * fW / fPW;
+            double height = size.height * fH / fPH;
+
+            constraintMap.keys.elementAt(i).layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+
+            final MultiChildLayoutParentData childParentData = constraintMap.keys.elementAt(i).parentData;
+            childParentData.offset = Offset(offsetX, offsetY);
+					}
+					
+					x += (size.width + iHorizontalGap).round();
+				}
+				else
+				{
+					if (!bFirst 
+						&& bAutoWrap
+						&& dimSize.height > 0 
+						&& y + size.height > dimSize.height)
+					{
+						y = 0;
+						x += ((rectCompInfo.width + iHorizontalGap) * fW / fPW).round();
+					}
+					else if (bFirst)
+					{
+						bFirst = false;
+					}
+					
+					if (iHorizontalComponentAlignment == IAlignmentConstants.ALIGN_STRETCH)
+					{
+            double offsetX = (iLeft + x).toDouble();
+            double offsetY = iTop + y * fH / fPH;
+            double width = rectCompInfo.width * fW / fPW;
+            double height = size.height * fH / fPH;
+
+            constraintMap.keys.elementAt(i).layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+
+            final MultiChildLayoutParentData childParentData = constraintMap.keys.elementAt(i).parentData;
+            childParentData.offset = Offset(offsetX, offsetY);
+					}
+					else
+					{
+            double offsetX = iLeft + x + ((rectCompInfo.width - size.width) * getAlignmentFactor(iHorizontalComponentAlignment)) * fW / fPW;
+            double offsetY = iTop + y * fH / fPH;
+            double width = size.width * fW / fPW;
+            double height = size.height * fH / fPH;
+
+            constraintMap.keys.elementAt(i).layout(BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height), parentUsesSize: true);
+
+            final MultiChildLayoutParentData childParentData = constraintMap.keys.elementAt(i).parentData;
+            childParentData.offset = Offset(offsetX, offsetY);
+					}
+					
+					y += (size.height + iVerticalGap).round();
+				}
+			}
+		}
+
+    this.size = this.constraints.constrainSizeAndAttemptToPreserveAspectRatio(Size(fW.toDouble(), fH.toDouble()));
+  }
+
+
+  /*
+	 * Calculates the width, height, row and column count for the current components
+	 * of a container.
+	 * 
+	 * @param pContainer the container to be layouted
+	 * @return a rectangle with width, height, column count (stored in x) and row count
+	 *         (stored in y)
+	 */
+  Rect calculateGrid()
+	{
+		int iWidth = 0;
+		int iHeight = 0;
+
+		int iCalcWidth = 0;
+		int iCalcHeight = 0;
+		
+		int iAnzRows = 1;
+		int iAnzCols = 1;
+		
+		Size bounds = this.constraints.biggest;
+		bounds = Size(bounds.width-(insMargins.left + insMargins.right), 
+                  bounds.height- (insMargins.top + insMargins.bottom));
+
+		/*if (pContainer.getParent() instanceof JViewport)
+		{
+			Dimension dim = pContainer.getParent().getSize();
+			
+			if (dim.width < bounds.width)
+			{
+				bounds.width = dim.width;
+			}
+			if (dim.height < bounds.height)
+			{
+				bounds.height = dim.height;
+			}
+		}*/
+		
+		JVxComponent comp;
+
+		//needed because the visible state of the component will be checked!
+		bool bFirst = true;
+		
+		for (int i = 0, anz = constraintMap.length; i < anz; i++)
+		{
+			comp = constraintMap.values.elementAt(i);
+
+			if (comp.isVisible)
+			{
+				Size dimPref = this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
+				
+				if (iOrientation == 0)
+				{
+					if (!bFirst)
+					{
+						iCalcWidth += iHorizontalGap;
+					}
+					
+					iCalcWidth += dimPref.width.round();
+					iHeight = max<int>(iHeight, dimPref.height.round());
+					
+					//wrapping doesn't change the height, because the height will be used
+					//for all rows
+					if (!bFirst 
+						&& bAutoWrap 
+						&& bounds.width > 0 
+						&& iCalcWidth > bounds.width)
+					{
+						iCalcWidth = dimPref.width.round();
+						iAnzRows++;
+					}
+					else if (bFirst)
+					{
+						bFirst = false;
+					}
+					
+					iWidth = max<int>(iWidth, iCalcWidth);
+				}
+				else
+				{
+					if (!bFirst)
+					{
+						iCalcHeight += iVerticalGap;
+					}
+					
+					iWidth = max<int>(iWidth, dimPref.width.round());
+					iCalcHeight += dimPref.height.round();
+					
+					//wrapping doesn't change the width, because the width will be used
+					//for all columns
+					if (!bFirst
+						&& bAutoWrap 
+						&& bounds.height > 0 
+						&& iCalcHeight > bounds.height)
+					{
+						iCalcHeight = dimPref.height.round();
+						iAnzCols++;
+					}
+					else if (bFirst)
+					{
+						bFirst = false;
+					}
+					
+					iHeight = max<int>(iHeight, iCalcHeight);
+				}
+			}
+		}
+		
+		return new Rect.fromLTWH(iAnzCols.toDouble(), iAnzRows.toDouble(), iWidth.toDouble(), iHeight.toDouble());
+	}
+
+  /*
+	 * Gets the factor for an alignment value. The factor will be used
+	 * to align the components in the layout.
+	 * 
+	 * @param pAlign the alignment e.g {@link JVxConstants#LEFT}, {@link JVxConstants#CENTER}, {@link JVxConstants#RIGHT} 
+	 * @return the factor for the alignment e.g <code>0f</code>, <code>0.5f</code>, <code>1f</code>
+	 * @throws IllegalArgumentException if the alignment is unknown or not allowed
+	 */
+	double getAlignmentFactor(int pAlign)
+	{
+		switch (pAlign)
+		{
+			case 0:
+				return 0.0;
+			case 1:
+				return 0.5;
+			case 2:
+				return 1.0;
+			default:
+				throw new ArgumentError("Invalid alignment: " + pAlign.toString());
+		}
+	}
+
+  Size getPreferredSize(RenderBox renderBox, JVxComponent comp) {
+    if (!comp.isPreferredSizeSet) {
+      renderBox.layout(
+        BoxConstraints.tightFor(),
+        parentUsesSize: true);
+
+      if (!renderBox.hasSize) {
+        print("FlowLayout: RenderBox has no size after layout!");
+      }
+
+      if (renderBox.size.width==double.infinity || renderBox.size.height==double.infinity) {
+        print("FlowLayout: getPrefererredSize: Infinity height or width for FormLayout!");
+      }
+      return renderBox.size;
+    } else {
+      return comp.preferredSize;
+    }
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! MultiChildLayoutParentData)
+      child.parentData = MultiChildLayoutParentData();
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    defaultPaint(context, offset);
+  }
+
+  @override
+  bool hitTestChildren(HitTestResult result, { Offset position }) {
+    return defaultHitTestChildren(result, position: position);
+  }
+
+  void addLayoutComponent(RenderBox pComp, Object pConstraints)
+	{
+		ArgumentError.checkNotNull(pConstraints, "The constraints must not be null.");
+		
+    if (pConstraints is JVxComponent)
+		{
+			setConstraints(pComp, pConstraints);
+		}
+		else
+		{
+			throw new ArgumentError("Illegal constraint type " + pConstraints.runtimeType.toString());
+		}
+	}
+
+  /*
+	 * Puts the component and its constraints into the constraint Map.
+	 * 
+	 * @param pComponent the component
+	 * @param pConstraints the components constraints
+	 */
+	void setConstraints(RenderBox pComponent, JVxComponent pConstraints)
+	{
+		ArgumentError.checkNotNull(pComponent, "The component must not be null.");
+		ArgumentError.checkNotNull(pConstraints, "The constraints must not be null.");
+		
+		constraintMap.putIfAbsent(pComponent, () => pConstraints);
+	}
 }
 
 
