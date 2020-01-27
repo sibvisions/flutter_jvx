@@ -51,8 +51,8 @@ flutter:
     - assets/images/sib_visions.jpg
     - assets/images/sibvisions.png
     - locale/i18n_de.json
-    - packages/jvx_mobile_v3/env/conf.json
-    - packages/jvx_mobile_v3/env/app.conf.json
+    # - packages/jvx_mobile_v3/env/conf.json
+    # - packages/jvx_mobile_v3/env/app.conf.json
 
   fonts:
     - family: Quicksand
