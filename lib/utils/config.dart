@@ -47,7 +47,7 @@ class Config {
     Config config;
     try {
       String configString =
-          await rootBundle.loadString("packages/jvx_mobile_v3/env/conf.json");
+          await rootBundle.loadString("env/conf.json");
 
       config = Config.fromJson(json.decode(configString));
     } catch (e) {
