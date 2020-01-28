@@ -19,12 +19,11 @@ void main() {
 class JVxStartingWidget extends StatelessWidget {
   final IScreen iScreen;
   final Config config;
-  
-  const JVxStartingWidget({
-    Key key,
-    this.config,
-    this.iScreen,
-  }) : super(key: key);
+  final MaterialApp materialApp;
+
+  const JVxStartingWidget(
+      {Key key, this.config, this.iScreen, this.materialApp})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,15 @@ class JVxStartingWidget extends StatelessWidget {
         child: RestartWidget(
             loadConfigBuilder: (bool loadConf) =>
                 BlocBuilder<ThemeBloc, ThemeData>(builder: (context, state) {
-                  return JvxMobile(loadConf, state, config: this.config);
+                  return GestureDetector(
+                      onTap: () {
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                      },
+                      child: this.materialApp);
                 })),
         providers: [
           BlocProvider<ApiBloc>(
