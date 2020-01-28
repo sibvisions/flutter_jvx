@@ -195,6 +195,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_barcode_scanner:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: d7ab6545dafca754f9a2da7722b3b3f3f1752b06
+      url: "git://github.com/AmolGangadhare/flutter_barcode_scanner.git"
+    source: git
+    version: "0.1.7"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -230,6 +239,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -641,4 +657,4 @@ packages:
     version: "2.1.16"
 sdks:
   dart: ">=2.4.0 <3.0.0"
-  flutter: ">=1.10.0 <2.0.0"
+  flutter: ">=1.12.13+hotfix.5 <2.0.0"
