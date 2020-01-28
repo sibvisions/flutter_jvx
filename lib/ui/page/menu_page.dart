@@ -13,10 +13,16 @@ class MenuPage extends StatelessWidget {
   final List<MenuItem> menuItems;
   final bool listMenuItemsInDrawer;
 
-  const MenuPage({Key key, this.menuItems, this.listMenuItemsInDrawer}) : super(key: key);
+  const MenuPage({Key key, this.menuItems, this.listMenuItemsInDrawer})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Custom Screen
+    if (globals.customScreen != null) {
+      globals.customScreen.onMenu(this.menuItems);
+    }
+
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     bool drawerMenu;
@@ -28,8 +34,11 @@ class MenuPage extends StatelessWidget {
 
     Color backgroundColor = Colors.white;
 
-    if (globals.applicationStyle != null && globals.applicationStyle.menuMode != null) {
-      backgroundColor = globals.applicationStyle.menuMode == 'list' ? Colors.grey.shade200 : Colors.grey.shade200;
+    if (globals.applicationStyle != null &&
+        globals.applicationStyle.menuMode != null) {
+      backgroundColor = globals.applicationStyle.menuMode == 'list'
+          ? Colors.grey.shade200
+          : Colors.grey.shade200;
     }
 
     return Scaffold(
@@ -41,34 +50,53 @@ class MenuPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-            onPressed: () { _scaffoldKey.currentState.openEndDrawer(); },
+            onPressed: () {
+              _scaffoldKey.currentState.openEndDrawer();
+            },
             icon: Icon(FontAwesomeIcons.ellipsisV),
           ),
         ],
       ),
       body: getMenuWidget(),
-      endDrawer: MenuDrawerWidget(menuItems: this.menuItems, listMenuItems: drawerMenu,),
+      endDrawer: MenuDrawerWidget(
+        menuItems: this.menuItems,
+        listMenuItems: drawerMenu,
+      ),
     );
   }
 
   Widget getMenuWidget() {
-    return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
+    return MenuGridView(
+      items: this.menuItems,
+      groupedMenuMode: true,
+    );
     if (globals.applicationStyle != null) {
       if (globals.applicationStyle.menuMode == 'grid') {
         return MenuGridView(items: this.menuItems, groupedMenuMode: false);
       } else if (globals.applicationStyle.menuMode == 'list') {
-        return MenuListWidget(menuItems: this.menuItems,);
+        return MenuListWidget(
+          menuItems: this.menuItems,
+        );
       } else if (globals.applicationStyle.menuMode == 'drawer') {
         return Center(
           child: Text('Choose Item'),
         );
       } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
-        return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
+        return MenuGridView(
+          items: this.menuItems,
+          groupedMenuMode: true,
+        );
       } else if (globals.applicationStyle.menuMode == null) {
-        return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
+        return MenuGridView(
+          items: this.menuItems,
+          groupedMenuMode: true,
+        );
       }
     } else {
-      return MenuGridView(items: this.menuItems, groupedMenuMode: true,);
+      return MenuGridView(
+        items: this.menuItems,
+        groupedMenuMode: true,
+      );
     }
     return null;
   }

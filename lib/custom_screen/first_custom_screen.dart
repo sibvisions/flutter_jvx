@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_mobile_v3/model/menu_item.dart';
 
 import '../model/api/request/request.dart';
 import '../model/api/response/data/jvx_data.dart';
-import '../model/api/response/menu.dart';
 import '../model/api/response/meta_data/jvx_meta_data.dart';
 import '../model/api/response/screen_generic.dart';
 import '../ui/screen/component_creator.dart';
@@ -34,7 +34,7 @@ class FirstCustomScreen extends CustomScreen {
   }
 
   @override
-  onMenu(Menu menu) {
+  onMenu(List<MenuItem> menu) {
     
   }
 }
