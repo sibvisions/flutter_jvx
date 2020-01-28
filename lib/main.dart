@@ -12,8 +12,6 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 
 import 'logic/bloc/api_bloc.dart';
 
-typedef MaterialAppBuilder = MaterialApp Function(bool loadConfig, ThemeData themeData, {Config config});
-
 void main() {
   runApp(JVxStartingWidget());
 }
@@ -21,11 +19,12 @@ void main() {
 class JVxStartingWidget extends StatelessWidget {
   final IScreen iScreen;
   final Config config;
-  final MaterialAppBuilder materialAppBuilder;
-
-  const JVxStartingWidget(
-      {Key key, this.config, this.iScreen, this.materialAppBuilder})
-      : super(key: key);
+  
+  const JVxStartingWidget({
+    Key key,
+    this.config,
+    this.iScreen,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +36,7 @@ class JVxStartingWidget extends StatelessWidget {
         child: RestartWidget(
             loadConfigBuilder: (bool loadConf) =>
                 BlocBuilder<ThemeBloc, ThemeData>(builder: (context, state) {
-                  return GestureDetector(
-                      onTap: () {
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-                      },
-                      child: this.materialAppBuilder(loadConf, state, config: this.config));
-                      // JvxMobile(loadConf, state, config: this.config)
+                  return JvxMobile(loadConf, state, config: this.config);
                 })),
         providers: [
           BlocProvider<ApiBloc>(

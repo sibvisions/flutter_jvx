@@ -74,7 +74,8 @@ class Translations {
 
         return translations;
       } catch (e) {
-        throw new Error();
+        print('Translation not found');
+        //throw new Error();
       }
     }
 

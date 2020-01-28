@@ -13,29 +13,37 @@ class JvxMobile extends StatelessWidget {
 
   JvxMobile(this.loadConf, this.theme, {this.config});
 
-  MaterialApp materialApp(BuildContext context, ThemeData theme) =>
-      MaterialApp(
-        title: 'JVx Mobile',
-        theme: theme,
-        debugShowCheckedModeBanner: false,
-        showPerformanceOverlay: false,
-        //home: StartupPage(),
-        localizationsDelegates: [
-          const TranslationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [const Locale("en", "US"), const Locale("de", "DE")],
-        initialRoute: '/',
-        routes: {
-          '/': (context) => StartupPage(
-                this.loadConf,
-                config: this.config,
-              ),
-          '/settings': (context) => SettingsPage(),
-        },
-      );
+  GestureDetector materialApp(BuildContext context, ThemeData theme) =>
+      GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: MaterialApp(
+            title: 'JVx Mobile',
+            theme: theme,
+            debugShowCheckedModeBanner: false,
+            showPerformanceOverlay: false,
+            //home: StartupPage(),
+            localizationsDelegates: [
+              const TranslationsDelegate(),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale("en", "US"),
+              const Locale("de", "DE")
+            ],
+            initialRoute: '/',
+            routes: {
+              '/': (context) => StartupPage(this.loadConf, config: this.config,),
+              '/settings': (context) => SettingsPage(),
+            },
+          ));
 
   @override
   Widget build(BuildContext context) {
