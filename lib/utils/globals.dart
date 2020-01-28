@@ -29,3 +29,4 @@ int uploadPicWidth = 320;
 String displayName;
 bool handleSessionTimeout = true;
 IScreen customScreen;
+bool package = false;

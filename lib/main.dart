@@ -19,17 +19,22 @@ void main() {
 class JVxStartingWidget extends StatelessWidget {
   final IScreen iScreen;
   final Config config;
-  
+  final bool package;
+
   const JVxStartingWidget({
     Key key,
     this.config,
     this.iScreen,
+    this.package = false
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (iScreen != null) {
       globals.customScreen = this.iScreen;
+    }
+    if (package != null) {
+      globals.package = this.package;
     }
     BlocSupervisor.delegate = MainBlocDelegate();
     return MultiBlocProvider(
