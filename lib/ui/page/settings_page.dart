@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
@@ -262,10 +261,12 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future scanBarcode() async {
-    String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
+    // BARCODE SCANNER PACKAGE DOESNT WORK WITH NEW FLUTTER VERSIONS
 
-    Map<String, dynamic> properties = getProperties("barcodeResult");
+    // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
+    //     "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
+
+    Map<String, dynamic> properties = getProperties("");
 
     setState(() {
       if (properties['APPNAME'] != null) {
