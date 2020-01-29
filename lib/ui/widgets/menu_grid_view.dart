@@ -46,6 +46,10 @@ class _MenuGridViewState extends State<MenuGridView> {
           print("*** MenuGridView - RequestType: " +
               state.requestType.toString());
 
+          if (state != null && state.userData != null) {
+            globals.customScreenManager.onUserData(state.userData);
+          }
+
           // if (state != null &&
           //     state.requestType == RequestType.APP_STYLE &&
           //     !state.loading &&
