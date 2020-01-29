@@ -10,17 +10,18 @@ import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class MenuPage extends StatelessWidget {
-  final List<MenuItem> menuItems;
+  List<MenuItem> menuItems;
   final bool listMenuItemsInDrawer;
 
-  const MenuPage({Key key, this.menuItems, this.listMenuItemsInDrawer})
-      : super(key: key);
+  MenuPage({Key key, List<MenuItem> menuItems, this.listMenuItemsInDrawer})
+      : this.menuItems = menuItems,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Custom Screen
     if (globals.customScreenManager != null) {
-      globals.customScreenManager.onMenu(this.menuItems);
+      this.menuItems = globals.customScreenManager.onMenu(this.menuItems).toSet().toList();
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
