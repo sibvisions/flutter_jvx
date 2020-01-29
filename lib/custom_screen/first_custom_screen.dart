@@ -7,14 +7,10 @@ import '../model/api/response/data/jvx_data.dart';
 import '../model/api/response/meta_data/jvx_meta_data.dart';
 import '../model/api/response/screen_generic.dart';
 import '../ui/screen/component_creator.dart';
-import '../ui/screen/component_screen.dart';
 import 'custom_screen.dart'; 
 
 class FirstCustomScreen extends CustomScreen {
-  @override
-  ComponentScreen componentScreen;
-
-  FirstCustomScreen(ComponentCreator componentCreator) : componentScreen = ComponentScreen(componentCreator);
+  FirstCustomScreen(ComponentCreator componentCreator) : super(componentCreator);
 
   @override
   Widget getWidget() {

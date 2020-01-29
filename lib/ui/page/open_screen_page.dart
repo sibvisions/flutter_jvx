@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as prefix1;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jvx_mobile_v3/custom_screen/get_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
@@ -24,7 +22,6 @@ import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
-import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
