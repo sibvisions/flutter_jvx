@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
+import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 
 import '../model/api/request/request.dart';
 import '../model/api/response/data/jvx_data.dart';
@@ -29,12 +30,13 @@ class FirstCustomScreen extends CustomScreen {
   }
 
   @override
-  shouldShowCustomScreen() {
-    return true;
+  List<MenuItem> onMenu(List<MenuItem> menu) {
+    return menu;
   }
 
   @override
-  onMenu(List<MenuItem> menu) {
-    
+  IScreen getScreen(String componentId) {
+    // TODO: implement getScreen
+    return null;
   }
 }

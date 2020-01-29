@@ -2,7 +2,7 @@ import '../model/menu_item.dart';
 import '../ui/screen/i_screen.dart';
 
 abstract class ICustomScreen implements IScreen {
-  shouldShowCustomScreen();
+  IScreen getScreen(String componentId);
 
-  onMenu(List<MenuItem> menu);
+  List<MenuItem> onMenu(List<MenuItem> menu);
 }

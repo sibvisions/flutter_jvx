@@ -261,8 +261,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future scanBarcode() async {
-    // BARCODE SCANNER PACKAGE DOESNT WORK WITH NEW FLUTTER VERSIONS
-
     // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
     //     "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
 

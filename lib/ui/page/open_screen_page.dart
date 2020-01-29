@@ -56,7 +56,7 @@ class OpenScreenPage extends StatefulWidget {
 class _OpenScreenPageState extends State<OpenScreenPage>
     with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  IScreen screen = IScreen(ComponentCreator(), getCustomScreen());
+  IScreen screen;
   bool errorMsgShown = false;
   Orientation lastOrientation;
   String title = '';
@@ -136,14 +136,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
-                  screen = IScreen(ComponentCreator(), getCustomScreen());
+                  screen = globals.customScreen == null ? IScreen(ComponentCreator()) : globals.customScreen.getScreen(widget.componentId.toString());
                   // title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
 
                 if (state.screenGeneric != null &&
                     !state.screenGeneric.update) {
-                  screen = IScreen(ComponentCreator(), getCustomScreen());
+                  screen = globals.customScreen == null ? IScreen(ComponentCreator()) : globals.customScreen.getScreen(widget.componentId.toString());
                   componentId = state.screenGeneric.componentId;
                 }
 
@@ -235,6 +235,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
+    screen = globals.customScreen == null ? IScreen(ComponentCreator()) : globals.customScreen.getScreen(widget.componentId.toString());
     screen.componentScreen.context = context;
     screen.update(
         widget.request, widget.data, widget.metaData, widget.screenGeneric);
