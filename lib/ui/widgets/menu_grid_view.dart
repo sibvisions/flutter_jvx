@@ -55,7 +55,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
           if (state != null &&
               state.screenGeneric != null &&
-              state.requestType == RequestType.OPEN_SCREEN) {
+              state.requestType == RequestType.OPEN_SCREEN ) {
             Key componentID = new Key(state.screenGeneric.componentId);
             globals.items = widget.items;
 
@@ -68,6 +68,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                       componentId: componentID,
                       title: title,
                       items: globals.items,
+                      menuComponentId: (state.request as OpenScreen).action.componentId,
                     )));
           }
         },
@@ -258,7 +259,7 @@ class _MenuGridViewState extends State<MenuGridView> {
               action: action,
               clientId: globals.clientId,
               manualClose: false,
-              requestType: RequestType.OPEN_SCREEN);
+              requestType: RequestType.OPEN_SCREEN,);
 
           BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
         }

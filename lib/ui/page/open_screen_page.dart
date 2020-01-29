@@ -35,6 +35,7 @@ class OpenScreenPage extends StatefulWidget {
   final List<MenuItem> items;
   final Request request;
   final ScreenGeneric screenGeneric;
+  final String menuComponentId;
 
   OpenScreenPage(
       {Key key,
@@ -44,7 +45,8 @@ class OpenScreenPage extends StatefulWidget {
       this.request,
       this.componentId,
       this.title,
-      this.items})
+      this.items,
+      this.menuComponentId})
       : super(key: key);
 
   _OpenScreenPageState createState() => _OpenScreenPageState();
@@ -133,14 +135,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
-                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.componentId.toString());
+                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId);
                   // title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
 
                 if (state.screenGeneric != null &&
                     !state.screenGeneric.update) {
-                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.componentId.toString());
+                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId);
                   componentId = state.screenGeneric.componentId;
                 }
 
@@ -232,7 +234,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
-    screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.componentId.toString());
+    screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId.toString());
     screen.componentScreen.context = context;
     screen.update(
         widget.request, widget.data, widget.metaData, widget.screenGeneric);
