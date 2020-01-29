@@ -60,7 +60,14 @@ class ComponentData {
       if (pData.records.length>0) {
         for (int i=pData.from;i<=pData.to;i++) {
           if ((i-pData.from) < data.records.length && i<this.data.records.length) {
-            this.data.records[i] = pData.records[(i-pData.from)];
+            List<dynamic> record = pData.records[(i-pData.from)];
+            String recordState = record[record.length-1];
+            if (recordState=="I")
+              this.data.records.insert((i-pData.from), pData.records[(i-pData.from)]);
+            else if (recordState=="D")
+              this.data.records.removeAt((i-pData.from));
+            else
+              this.data.records[i] = pData.records[(i-pData.from)];
           } else {
             this.data.records.add(pData.records[(i-pData.from)]);
           }
