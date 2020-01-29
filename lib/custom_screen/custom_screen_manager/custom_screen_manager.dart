@@ -14,4 +14,8 @@ class CustomScreenManager extends ICustomScreenManager {
     return menu;
   }
 
+  @override
+  bool withServer(String componentId) {
+    return true;
+  }
 }

@@ -5,4 +5,6 @@ abstract class ICustomScreenManager {
   IScreen getScreen(String componentId);
 
   List<MenuItem> onMenu(List<MenuItem> menu);
+
+  bool withServer(String componentId);
 }

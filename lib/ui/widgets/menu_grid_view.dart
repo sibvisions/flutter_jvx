@@ -114,7 +114,8 @@ class _MenuGridViewState extends State<MenuGridView> {
                         backgroundColor: Colors.transparent,
                         child: !menuItems[index].image.startsWith('FontAwesome')
                             ? new Image.asset(
-                                '${globals.dir}${menuItems[index].image}',)
+                                '${globals.dir}${menuItems[index].image}',
+                              )
                             : _iconBuilder(
                                 formatFontAwesomeText(menuItems[index].image)))
                     : new CircleAvatar(
@@ -135,17 +136,17 @@ class _MenuGridViewState extends State<MenuGridView> {
             ),
           ),
           onTap: () {
-              prefix0.Action action = menuItems[index].action;
+            prefix0.Action action = menuItems[index].action;
 
-              title = action.label;
+            title = action.label;
 
-              OpenScreen openScreen = OpenScreen(
-                  action: action,
-                  clientId: globals.clientId,
-                  manualClose: false,
-                  requestType: RequestType.OPEN_SCREEN);
+            OpenScreen openScreen = OpenScreen(
+                action: action,
+                clientId: globals.clientId,
+                manualClose: false,
+                requestType: RequestType.OPEN_SCREEN);
 
-              BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
 
             /*
                     OpenScreenBloc openScreenBloc = OpenScreenBloc();
@@ -179,12 +180,12 @@ class _MenuGridViewState extends State<MenuGridView> {
         children: _buildGroupGridViewCards(v),
       );
 
-      widgets.add(
-        StickyHeader(
-          header: Container(color: Colors.grey[200], child: _buildGroupHeader(v[0].group.toString())),
-          content: group,
-        )
-      );
+      widgets.add(StickyHeader(
+        header: Container(
+            color: Colors.grey[200],
+            child: _buildGroupHeader(v[0].group.toString())),
+        content: group,
+      ));
 
       // widgets.add(group);
     });
@@ -241,17 +242,26 @@ class _MenuGridViewState extends State<MenuGridView> {
         ),
       ),
       onTap: () {
-        prefix0.Action action = menuItem.action;
+        if (globals.customScreenManager != null &&
+            !globals.customScreenManager
+                .withServer(menuItem.action.componentId)) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => globals.customScreenManager
+                  .getScreen(menuItem.action.componentId)
+                  .getWidget()));
+        } else {
+          prefix0.Action action = menuItem.action;
 
-        title = action.label;
+          title = action.label;
 
-        OpenScreen openScreen = OpenScreen(
-            action: action,
-            clientId: globals.clientId,
-            manualClose: false,
-            requestType: RequestType.OPEN_SCREEN);
+          OpenScreen openScreen = OpenScreen(
+              action: action,
+              clientId: globals.clientId,
+              manualClose: false,
+              requestType: RequestType.OPEN_SCREEN);
 
-        BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+          BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+        }
 
         /*
                     OpenScreenBloc openScreenBloc = OpenScreenBloc();
@@ -282,5 +292,4 @@ class _MenuGridViewState extends State<MenuGridView> {
           ),
         ));
   }
-
 }
