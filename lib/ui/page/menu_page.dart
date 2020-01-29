@@ -21,7 +21,7 @@ class MenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Custom Screen
     if (globals.customScreenManager != null) {
-      this.menuItems = globals.customScreenManager.onMenu(this.menuItems).toSet().toList();
+      this.menuItems = globals.customScreenManager.onMenu(this.menuItems);
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

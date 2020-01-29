@@ -59,7 +59,7 @@ class _MenuGridViewState extends State<MenuGridView> {
             Key componentID = new Key(state.screenGeneric.componentId);
             globals.items = widget.items;
 
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
+            Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
                       screenGeneric: state.screenGeneric,
                       data: state.jVxData,

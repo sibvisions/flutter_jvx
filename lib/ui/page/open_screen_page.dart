@@ -83,11 +83,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
             if (state.requestType == RequestType.CLOSE_SCREEN) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MenuPage(
-                        menuItems: globals.items,
-                        listMenuItemsInDrawer: false,
-                      )));
+              Navigator.of(context).pop();
             } else {
               print("*** OpenScreenPage - RequestType: " +
                   state.requestType.toString());
