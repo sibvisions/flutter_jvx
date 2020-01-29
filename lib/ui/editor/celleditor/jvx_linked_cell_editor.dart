@@ -129,8 +129,8 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         placeholder: placeholder,
         font: font,
         horizontalAlignment: horizontalAlignment);
-    String h = this.value;
-    String v = this.value;
+    String h = this.value.toString();
+    String v = this.value.toString();
     JVxData data;
 
     if (false) {
