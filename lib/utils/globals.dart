@@ -1,6 +1,6 @@
 library jvx_mobile_v3.globals;
 
-import 'package:jvx_mobile_v3/custom_screen/i_custom_screen.dart';
+import 'package:jvx_mobile_v3/custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
 import 'package:jvx_mobile_v3/model/action.dart' as prefix0;
 import 'package:jvx_mobile_v3/model/api/response/application_style_resp.dart';
 import 'package:jvx_mobile_v3/model/menu_item.dart';
@@ -28,5 +28,5 @@ int timeout = 10;
 int uploadPicWidth = 320;
 String displayName;
 bool handleSessionTimeout = true;
-ICustomScreen customScreen;
+ICustomScreenManager customScreenManager;
 bool package = false;

@@ -5,7 +5,7 @@ import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 
 class CustomScreenManager extends ICustomScreenManager {
   @override
-  getScreen(String componentId) {
+  IScreen getScreen(String componentId) {
     return IScreen(ComponentCreator());
   }
 

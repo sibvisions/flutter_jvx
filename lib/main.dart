@@ -1,12 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/custom_screen/i_custom_screen.dart';
+import 'package:jvx_mobile_v3/custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
 
 import 'package:jvx_mobile_v3/jvx_mobile.dart';
 import 'package:jvx_mobile_v3/logic/bloc/main_bloc_delegate.dart';
 import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
-import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 import 'package:jvx_mobile_v3/ui/tools/restart.dart';
 import 'package:jvx_mobile_v3/utils/config.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
@@ -18,7 +17,7 @@ void main() {
 }
 
 class JVxStartingWidget extends StatelessWidget {
-  final ICustomScreen iScreen;
+  final ICustomScreenManager iScreen;
   final Config config;
   final bool package;
 
@@ -32,7 +31,7 @@ class JVxStartingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (iScreen != null) {
-      globals.customScreen = this.iScreen;
+      globals.customScreenManager = this.iScreen;
     }
     if (package != null) {
       globals.package = this.package;

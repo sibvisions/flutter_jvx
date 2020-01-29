@@ -133,14 +133,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
-                  screen = globals.customScreen == null ? IScreen(ComponentCreator()) : globals.customScreen.getScreen(widget.componentId.toString());
+                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.componentId.toString());
                   // title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
 
                 if (state.screenGeneric != null &&
                     !state.screenGeneric.update) {
-                  screen = globals.customScreen == null ? IScreen(ComponentCreator()) : globals.customScreen.getScreen(widget.componentId.toString());
+                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.componentId.toString());
                   componentId = state.screenGeneric.componentId;
                 }
 
@@ -232,7 +232,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
-    screen = globals.customScreen == null ? IScreen(ComponentCreator()) : globals.customScreen.getScreen(widget.componentId.toString());
+    screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.componentId.toString());
     screen.componentScreen.context = context;
     screen.update(
         widget.request, widget.data, widget.metaData, widget.screenGeneric);
