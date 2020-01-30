@@ -12,6 +12,14 @@ import 'package:jvx_mobile_v3/utils/uidata.dart';
 class JVxDateCellEditor extends JVxCellEditor {
   String dateFormat;
 
+  get isTimeFormat {
+    return dateFormat.contains("H") || dateFormat.contains("m");
+  }
+
+  get isDateFormat {
+    return dateFormat.contains("d") || dateFormat.contains("M")|| dateFormat.contains("y");
+  }
+
   @override
   get preferredSize {
     return Size(200,50);
@@ -102,10 +110,21 @@ class JVxDateCellEditor extends JVxCellEditor {
               ? DateTime.fromMillisecondsSinceEpoch(this.value)
               : DateTime.now().subtract(Duration(seconds: 1)),
         ).then((date) {
-          if (date != null) {
-            this.value = date.toString();
-            this.onDateValueChanged(date.millisecondsSinceEpoch);
-          }
+          /*if (date!=null && isTimeFormat) {
+            return showTimePicker(
+              context: context,
+              initialTime: (this.value != null && this.value is int)
+              ? TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(this.value))
+              : TimeOfDay.fromDateTime(DateTime.now().subtract(Duration(seconds: 1)))
+            ).then((time) {
+
+            });
+          } else {*/
+            if (date != null) {
+              this.value = date.toString();
+              this.onDateValueChanged(date.millisecondsSinceEpoch);
+            }
+          //}
         });
         }
       ),
