@@ -4,6 +4,7 @@ import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 
+/// Implementation of the [ICustomScreenManager] interface.
 class CustomScreenManager extends ICustomScreenManager {
   @override
   IScreen getScreen(String componentId) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
 
@@ -9,6 +8,7 @@ import '../model/api/response/meta_data/jvx_meta_data.dart';
 import '../model/api/response/screen_generic.dart';
 import '../ui/screen/component_screen.dart';
 
+/// Implementation of [IScreen] for custom screens.
 class CustomScreen implements IScreen {
 
   CustomScreen(ComponentCreator componentCreator) : componentScreen = ComponentScreen(componentCreator);
