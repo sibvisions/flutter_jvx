@@ -249,7 +249,7 @@ class _MenuGridViewState extends State<MenuGridView> {
       onTap: () {
         if (globals.customScreenManager != null &&
             !globals.customScreenManager
-                .withServer(menuItem.action.componentId)) {
+                .getScreen(menuItem.action.componentId).withServer()) {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => globals.customScreenManager
                   .getScreen(menuItem.action.componentId)

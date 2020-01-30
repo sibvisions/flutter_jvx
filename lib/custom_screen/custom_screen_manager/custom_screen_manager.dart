@@ -16,10 +16,5 @@ class CustomScreenManager extends ICustomScreenManager {
   }
 
   @override
-  bool withServer(String componentId) {
-    return true;
-  }
-
-  @override
   onUserData(UserData userData) {}
 }

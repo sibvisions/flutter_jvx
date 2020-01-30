@@ -8,6 +8,4 @@ abstract class ICustomScreenManager {
   List<MenuItem> onMenu(List<MenuItem> menu);
 
   onUserData(UserData userData);
-
-  bool withServer(String componentId);
 }

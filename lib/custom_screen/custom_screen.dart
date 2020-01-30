@@ -23,4 +23,9 @@ class CustomScreen implements IScreen {
 
   @override
   void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {}
+
+  @override
+  bool withServer() {
+    return true;
+  }
 }

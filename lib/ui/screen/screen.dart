@@ -40,4 +40,9 @@ class JVxScreen implements IScreen {
       );
     }
   }
+
+  @override
+  bool withServer() {
+    return true;
+  }
 }

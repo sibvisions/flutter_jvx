@@ -15,4 +15,6 @@ abstract class IScreen {
   void update(Request request, List<JVxData> data, List<JVxMetaData> metaData,
       ScreenGeneric genericScreen);
   Widget getWidget();
+
+  bool withServer();
 }
