@@ -286,7 +286,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
     layoutHeight += layoutMiddleHeight;
 
     // borderLayout uses max space available
-    this.size = this.constraints.constrainSizeAndAttemptToPreserveAspectRatio(Size(layoutWidth, layoutHeight));
+    this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
   }
 
   @override

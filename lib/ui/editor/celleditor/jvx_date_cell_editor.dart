@@ -40,6 +40,30 @@ class JVxDateCellEditor extends JVxCellEditor {
     super.onValueChanged(value);
   }
 
+  void setDatePart(DateTime date) {
+    DateTime timePart;
+    if (this.value==null) 
+      timePart = DateTime(1970);
+    else 
+      timePart = DateTime.fromMillisecondsSinceEpoch(this.value);
+
+    timePart = DateTime(date.year, date.month, date.day, timePart.hour, timePart.minute, timePart.second, timePart.millisecond, timePart.microsecond);
+
+    this.value = date.millisecondsSinceEpoch;
+  }
+
+  void setTimePart(TimeOfDay time) {
+    DateTime date;
+    if (this.value==null) 
+      date = DateTime(1970);
+    else 
+      date = DateTime.fromMillisecondsSinceEpoch(this.value);
+
+    date = DateTime(date.year, date.month, date.day, time.hour, time.minute, 0, 0, 0);
+
+    this.value = date.millisecondsSinceEpoch;
+  }
+
   @override
   Widget getWidget(
       {bool editable,
@@ -110,21 +134,25 @@ class JVxDateCellEditor extends JVxCellEditor {
               ? DateTime.fromMillisecondsSinceEpoch(this.value)
               : DateTime.now().subtract(Duration(seconds: 1)),
         ).then((date) {
-          /*if (date!=null && isTimeFormat) {
+          if (date!=null && isTimeFormat) {
+            this.setDatePart(date);
             return showTimePicker(
               context: context,
               initialTime: (this.value != null && this.value is int)
               ? TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(this.value))
               : TimeOfDay.fromDateTime(DateTime.now().subtract(Duration(seconds: 1)))
             ).then((time) {
-
+              if (time!=null) {
+                this.setTimePart(time);
+                this.onDateValueChanged(this.value);
+              }
             });
-          } else {*/
+          } else {
             if (date != null) {
-              this.value = date.toString();
-              this.onDateValueChanged(date.millisecondsSinceEpoch);
+              this.setDatePart(date);
+              this.onDateValueChanged(this.value);
             }
-          //}
+          }
         });
         }
       ),
