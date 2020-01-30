@@ -10,11 +10,11 @@ class AppConfig {
   AppConfig.fromJson(Map<String, dynamic> json)
     : handleSessionTimeout = json['handleSessionTimeout'];
 
-  static Future<AppConfig> loadFile() async {
+  static Future<AppConfig> loadFile({String path}) async {
     AppConfig config;
     try {
       String configString =
-          await rootBundle.loadString("env/app.conf.json");
+          await rootBundle.loadString(path ?? "env/app.conf.json");
 
       config = AppConfig.fromJson(json.decode(configString));
     } catch (e) {
