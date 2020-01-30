@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -220,7 +222,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                   ? new CircleAvatar(
                       backgroundColor: Colors.transparent,
                       child: !menuItem.image.startsWith('FontAwesome')
-                          ? new Image.asset('${globals.dir}${menuItem.image}')
+                          ? new Image.file(File('${globals.dir}${menuItem.image}'),)
                           : _iconBuilder(formatFontAwesomeText(menuItem.image)))
                   : new CircleAvatar(
                       backgroundColor: Colors.transparent,

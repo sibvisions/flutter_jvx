@@ -51,11 +51,12 @@ class JVxImageCellEditor extends JVxCellEditor {
     super.value = value;
     if (value != null && value.toString().isNotEmpty) {
       defaultImage = null;
-
-      Image img = Image.file(
-        file,
-      );
-
+      Image img;
+      if (file != null) {
+        img = Image.file(
+          file,
+        );
+      }
       Uint8List bytes = base64Decode(value);
       img = Image.memory(
         bytes,
