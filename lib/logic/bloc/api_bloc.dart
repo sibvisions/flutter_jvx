@@ -214,9 +214,11 @@ class ApiBloc extends Bloc<Request, Response> {
       }
     }
 
-    AppConfig.loadFile().then((AppConfig appConf) {
-      globals.handleSessionTimeout = appConf.handleSessionTimeout;
-    });
+    if (!globals.package) {
+      AppConfig.loadFile().then((AppConfig appConf) {
+        globals.handleSessionTimeout = appConf.handleSessionTimeout;
+      });
+    }
 
     yield resp;
   }

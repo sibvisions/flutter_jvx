@@ -40,14 +40,14 @@ class Config {
       password = json['password'],
       appMode = json['appMode'];
 
-  static Future<Config> loadFile({Config conf}) async {
+  static Future<Config> loadFile({String path, Config conf}) async {
     if (conf != null) {
       return conf;
     }
     Config config;
     try {
       String configString =
-          await rootBundle.loadString("env/conf.json");
+          await rootBundle.loadString(path ?? "env/conf.json");
 
       config = Config.fromJson(json.decode(configString));
     } catch (e) {

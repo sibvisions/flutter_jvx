@@ -33,7 +33,7 @@ class LoginBackground extends StatelessWidget {
       }
     }
     return Image.asset(
-      'assets/images/sib_visions.jpg',
+      globals.package ? 'packages/jvx_mobile_v3/assets/images/sib_visions.jpg' : 'assets/images/sib_visions.jpg',
       fit: BoxFit.fitHeight,
     );
   }
@@ -56,7 +56,7 @@ class LoginBackground extends StatelessWidget {
               child: Center(
                 child: (globals.applicationStyle == null ||
                         globals.applicationStyle?.loginIcon == null)
-                    ? Image.asset('assets/images/sibvisions.png',
+                    ? Image.asset(globals.package ? 'packages/jvx_mobile_v3/assets/images/sibvisions.png' : 'assets/images/sibvisions.png',
                         fit: BoxFit.fitHeight)
                     : Image.file(
                         File(

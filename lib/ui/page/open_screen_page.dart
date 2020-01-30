@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as prefix1;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jvx_mobile_v3/custom_screen/get_custom_screen_api.dart';
 import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
 import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
 import 'package:jvx_mobile_v3/model/api/request/device_Status.dart';
@@ -24,7 +22,6 @@ import 'package:jvx_mobile_v3/model/menu_item.dart';
 import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
 import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
 import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
-import 'package:jvx_mobile_v3/ui/screen/screen.dart';
 import 'package:jvx_mobile_v3/ui/widgets/menu_drawer_widget.dart';
 import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
 import 'package:jvx_mobile_v3/utils/translations.dart';
@@ -38,6 +35,7 @@ class OpenScreenPage extends StatefulWidget {
   final List<MenuItem> items;
   final Request request;
   final ScreenGeneric screenGeneric;
+  final String menuComponentId;
 
   OpenScreenPage(
       {Key key,
@@ -47,7 +45,8 @@ class OpenScreenPage extends StatefulWidget {
       this.request,
       this.componentId,
       this.title,
-      this.items})
+      this.items,
+      this.menuComponentId})
       : super(key: key);
 
   _OpenScreenPageState createState() => _OpenScreenPageState();
@@ -56,7 +55,7 @@ class OpenScreenPage extends StatefulWidget {
 class _OpenScreenPageState extends State<OpenScreenPage>
     with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  IScreen screen = IScreen(ComponentCreator(), getCustomScreen());
+  IScreen screen;
   bool errorMsgShown = false;
   Orientation lastOrientation;
   String title = '';
@@ -84,11 +83,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
             if (state.requestType == RequestType.CLOSE_SCREEN) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => MenuPage(
-                        menuItems: globals.items,
-                        listMenuItemsInDrawer: false,
-                      )));
+              Navigator.of(context).pop();
             } else {
               print("*** OpenScreenPage - RequestType: " +
                   state.requestType.toString());
@@ -136,14 +131,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
-                  screen = IScreen(ComponentCreator(), getCustomScreen());
+                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId);
                   // title = state.action.label;
                   componentId = state.screenGeneric.componentId;
                 }
 
                 if (state.screenGeneric != null &&
                     !state.screenGeneric.update) {
-                  screen = IScreen(ComponentCreator(), getCustomScreen());
+                  screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId);
                   componentId = state.screenGeneric.componentId;
                 }
 
@@ -235,6 +230,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
+    screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId.toString());
     screen.componentScreen.context = context;
     screen.update(
         widget.request, widget.data, widget.metaData, widget.screenGeneric);
