@@ -69,12 +69,15 @@ class Translations {
     } else {
       try {
         Translations translations = new Translations(const Locale('en'));
-        String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
+        String jsonContent = await rootBundle.loadString(globals.package
+            ? "packages/jvx_mobile_v3/locale/i18n_de.json"
+            : "locale/i18n_de.json");
         _localizedValues = json.decode(jsonContent);
 
         return translations;
       } catch (e) {
-        throw new Error();
+        print('Translation not found');
+        //throw new Error();
       }
     }
 

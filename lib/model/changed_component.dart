@@ -10,6 +10,16 @@ class ChangedComponent extends ComponentProperties {
   bool destroy;
   bool remove;
   String screenTitle;
+  
+  ChangedComponent({
+    this.id,
+    this.name,
+    this.className,
+    this.cellEditor,
+    this.destroy,
+    this.remove,
+    this.screenTitle,
+  }) : super(null);
 
   get layoutName {
     List<String> parameter =

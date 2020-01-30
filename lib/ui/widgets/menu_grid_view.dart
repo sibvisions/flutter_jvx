@@ -48,6 +48,10 @@ class _MenuGridViewState extends State<MenuGridView> {
           print("*** MenuGridView - RequestType: " +
               state.requestType.toString());
 
+          if (state != null && state.userData != null && globals.customScreenManager != null) {
+            globals.customScreenManager.onUserData(state.userData);
+          }
+
           // if (state != null &&
           //     state.requestType == RequestType.APP_STYLE &&
           //     !state.loading &&
@@ -57,11 +61,11 @@ class _MenuGridViewState extends State<MenuGridView> {
 
           if (state != null &&
               state.screenGeneric != null &&
-              state.requestType == RequestType.OPEN_SCREEN) {
+              state.requestType == RequestType.OPEN_SCREEN ) {
             Key componentID = new Key(state.screenGeneric.componentId);
             globals.items = widget.items;
 
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
+            Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
                       screenGeneric: state.screenGeneric,
                       data: state.jVxData,
@@ -70,6 +74,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                       componentId: componentID,
                       title: title,
                       items: globals.items,
+                      menuComponentId: (state.request as OpenScreen).action.componentId,
                     )));
           }
         },
@@ -116,7 +121,8 @@ class _MenuGridViewState extends State<MenuGridView> {
                         backgroundColor: Colors.transparent,
                         child: !menuItems[index].image.startsWith('FontAwesome')
                             ? new Image.asset(
-                                '${globals.dir}${menuItems[index].image}',)
+                                '${globals.dir}${menuItems[index].image}',
+                              )
                             : _iconBuilder(
                                 formatFontAwesomeText(menuItems[index].image)))
                     : new CircleAvatar(
@@ -137,17 +143,17 @@ class _MenuGridViewState extends State<MenuGridView> {
             ),
           ),
           onTap: () {
-              prefix0.Action action = menuItems[index].action;
+            prefix0.Action action = menuItems[index].action;
 
-              title = action.label;
+            title = action.label;
 
-              OpenScreen openScreen = OpenScreen(
-                  action: action,
-                  clientId: globals.clientId,
-                  manualClose: false,
-                  requestType: RequestType.OPEN_SCREEN);
+            OpenScreen openScreen = OpenScreen(
+                action: action,
+                clientId: globals.clientId,
+                manualClose: false,
+                requestType: RequestType.OPEN_SCREEN);
 
-              BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
 
             /*
                     OpenScreenBloc openScreenBloc = OpenScreenBloc();
@@ -181,12 +187,12 @@ class _MenuGridViewState extends State<MenuGridView> {
         children: _buildGroupGridViewCards(v),
       );
 
-      widgets.add(
-        StickyHeader(
-          header: Container(color: Colors.grey[200], child: _buildGroupHeader(v[0].group.toString())),
-          content: group,
-        )
-      );
+      widgets.add(StickyHeader(
+        header: Container(
+            color: Colors.grey[200],
+            child: _buildGroupHeader(v[0].group.toString())),
+        content: group,
+      ));
 
       // widgets.add(group);
     });
@@ -243,17 +249,26 @@ class _MenuGridViewState extends State<MenuGridView> {
         ),
       ),
       onTap: () {
-        prefix0.Action action = menuItem.action;
+        if (globals.customScreenManager != null &&
+            !globals.customScreenManager
+                .getScreen(menuItem.action.componentId).withServer()) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => globals.customScreenManager
+                  .getScreen(menuItem.action.componentId)
+                  .getWidget()));
+        } else {
+          prefix0.Action action = menuItem.action;
 
-        title = action.label;
+          title = action.label;
 
-        OpenScreen openScreen = OpenScreen(
-            action: action,
-            clientId: globals.clientId,
-            manualClose: false,
-            requestType: RequestType.OPEN_SCREEN);
+          OpenScreen openScreen = OpenScreen(
+              action: action,
+              clientId: globals.clientId,
+              manualClose: false,
+              requestType: RequestType.OPEN_SCREEN,);
 
-        BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+          BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+        }
 
         /*
                     OpenScreenBloc openScreenBloc = OpenScreenBloc();
@@ -284,5 +299,4 @@ class _MenuGridViewState extends State<MenuGridView> {
           ),
         ));
   }
-
 }

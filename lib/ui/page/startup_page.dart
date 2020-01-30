@@ -55,7 +55,7 @@ class _StartupPageState extends State<StartupPage> {
             children: <Widget>[
               Center(
                 child: Image.asset(
-                  'assets/images/sib_visions.jpg',
+                  globals.package ? 'packages/jvx_mobile_v3/assets/images/sib_visions.jpg' : 'assets/images/sib_visions.jpg',
                   width: (MediaQuery.of(context).size.width - 50),
                 ),
               ),

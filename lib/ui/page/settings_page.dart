@@ -11,7 +11,6 @@ import 'package:jvx_mobile_v3/utils/translations.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:package_info/package_info.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -262,10 +261,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future scanBarcode() async {
-    String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
+    // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
+    //     "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
 
-    Map<String, dynamic> properties = getProperties(barcodeResult);
+    Map<String, dynamic> properties = getProperties("");
 
     setState(() {
       if (properties['APPNAME'] != null) {
