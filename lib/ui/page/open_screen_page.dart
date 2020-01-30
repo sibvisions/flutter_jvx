@@ -117,11 +117,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     });
                   } else if (state.closeScreenAction != null &&
                       state.screenGeneric == null) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => MenuPage(
-                              menuItems: globals.items,
-                              listMenuItemsInDrawer: false,
-                            )));
+                    Navigator.of(context).pop();
                   }
                 }
 
