@@ -24,10 +24,13 @@ class JVxPanel extends JVxContainer implements IContainer {
     }
 
     if (child!= null) {
-      return Container(
+      return SingleChildScrollView( 
+        child: Container(
             color: this.background, 
-            child: child
-        );
+            child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal, 
+          child: child)
+        ));
     } else {
       return new Container();
     }
