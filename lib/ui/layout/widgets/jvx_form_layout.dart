@@ -278,27 +278,38 @@ class RenderJVxFormLayoutWidget extends RenderBox
  }
   
 
-  ///
-  /// clears auto size position of anchor.
-  /// 
-  /// @param pLeftTopAnchor the left or top anchor.
-  /// @param pRightBottomAnchor the right or bottom anchor.
-  ///
-  void clearAutoSize(JVxAnchor pLeftTopAnchor, JVxAnchor pRightBottomAnchor)
-  {
-	  pLeftTopAnchor.relative = pLeftTopAnchor.autoSize;
-		pLeftTopAnchor.autoSizeCalculated = false;
-		pLeftTopAnchor.firstCalculation = true;
-    if (pLeftTopAnchor.autoSize)
+  /*
+     * clears auto size position of anchor.
+     * 
+     * @param pAnchor the left or top anchor.
+  */
+  void clearAutoSize(JVxAnchor pAnchor) {
+    pAnchor.relative = pAnchor.autoSize;
+        
+    JVxAnchor anchor = pAnchor;
+    while (anchor != null && !anchor.firstCalculation)
     {
-   		pLeftTopAnchor.position = 0;
-    }
-    pRightBottomAnchor.relative = pRightBottomAnchor.autoSize;
-    pRightBottomAnchor.autoSizeCalculated = false;
-    pRightBottomAnchor.firstCalculation = true;
-    if (pRightBottomAnchor.autoSize)
-    {
-   		pRightBottomAnchor.position = 0;
+        anchor.autoSizeCalculated = false;
+      if (anchor.autoSize)
+      {
+        if (anchor != pAnchor)
+        {
+            pAnchor.relative = false;
+        }
+        anchor.firstCalculation = true;
+      }
+      else if (anchor.relatedAnchor != null && anchor.relatedAnchor.autoSize)
+      {
+        if (anchor.relatedAnchor.relatedAnchor != null && !anchor.relatedAnchor.relatedAnchor.autoSize)
+        {
+            anchor.relatedAnchor.position = -anchor.position;
+        }
+        else
+        {
+            anchor.relatedAnchor.position = 0;
+        }
+      }
+      anchor = anchor.relatedAnchor;
     }
   }
 
@@ -570,8 +581,10 @@ class RenderJVxFormLayoutWidget extends RenderBox
       {
         JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
 
-        clearAutoSize(constraint.leftAnchor, constraint.rightAnchor);
-        clearAutoSize(constraint.topAnchor, constraint.bottomAnchor);
+        clearAutoSize(constraint.leftAnchor);
+        clearAutoSize(constraint.rightAnchor);
+        clearAutoSize(constraint.topAnchor);
+        clearAutoSize(constraint.bottomAnchor);
 
         if (!horizontalAnchors.contains(constraint.leftAnchor))
         {
