@@ -13,3 +13,16 @@ class JVxTextAlign {
     return defaultAlign;
   }
 }
+
+class JVxTextAlignVertical {
+  static TextAlignVertical defaultAlign = TextAlignVertical.center;
+
+  static TextAlignVertical getTextAlignFromInt(int textAlign) {
+    switch(textAlign) {
+      case 0: return TextAlignVertical.top;
+      case 1: return TextAlignVertical.center;
+      case 2: return TextAlignVertical.bottom;
+    }
+    return defaultAlign;
+  }
+}
