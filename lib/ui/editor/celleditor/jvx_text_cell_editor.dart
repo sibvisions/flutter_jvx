@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jvx_mobile_v3/model/cell_editor.dart';
 import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
 import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
 import 'package:jvx_mobile_v3/utils/jvx_text_align.dart';
 import 'package:jvx_mobile_v3/utils/uidata.dart';
@@ -15,7 +14,10 @@ class JVxTextCellEditor extends JVxCellEditor {
 
   @override
   get preferredSize {
-    return Size(200, 50);
+    if (multiLine)
+      return Size(200, 100);
+    else
+      return Size(200, 50);
   }
 
   @override
@@ -69,13 +71,12 @@ class JVxTextCellEditor extends JVxCellEditor {
         placeholder: placeholder,
         font: font,
         horizontalAlignment: horizontalAlignment);
-    //_controller.text = (this.value != null ? this.value.toString() : "");
     String controllerValue = (this.value != null ? this.value.toString() : "");
     _controller.value = _controller.value.copyWith(
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
@@ -83,7 +84,7 @@ class JVxTextCellEditor extends JVxCellEditor {
               ? Border.all(color: UIData.ui_kit_color_2)
               : Border.all(color: Colors.grey)),
       child: TextField(
-        textAlignVertical: JVxTextAlignVertical.getTextAlignFromInt(this.verticalAlignment),
+        //textAlignVertical: JVxTextAlignVertical.getTextAlignFromInt(this.verticalAlignment),
         textAlign: JVxTextAlign.getTextAlignFromInt(this.horizontalAlignment),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: 12, right: 12),
@@ -94,14 +95,13 @@ class JVxTextCellEditor extends JVxCellEditor {
         key: this.key,
         controller: _controller,
         minLines: null,
-        maxLines: null,
-        //maxLines: multiLine ? 4 : 1,
+        maxLines: multiLine ? null : 1,
         keyboardType: multiLine ? TextInputType.multiline : TextInputType.text,
         onEditingComplete: onTextFieldEndEditing,
         onChanged: onTextFieldValueChanged,
         focusNode: node,
         readOnly: !this.editable,
-        expands: true,
+        //expands: this.verticalAlignment==1 && multiLine ? true : false,
       ),
     );
   }

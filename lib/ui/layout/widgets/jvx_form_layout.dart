@@ -290,7 +290,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
     JVxAnchor relatedAutoSizeAnchor; // Remember the anchor where position is already initialized
     while (anchor != null && !anchor.firstCalculation)
     {
-        anchor.autoSizeCalculated = false;
+      anchor.autoSizeCalculated = false;
       if (anchor.autoSize)
       {
           if (anchor != pAnchor)
