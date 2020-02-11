@@ -287,27 +287,33 @@ class RenderJVxFormLayoutWidget extends RenderBox
     pAnchor.relative = pAnchor.autoSize;
         
     JVxAnchor anchor = pAnchor;
+    JVxAnchor relatedAutoSizeAnchor; // Remember the anchor where position is already initialized
     while (anchor != null && !anchor.firstCalculation)
     {
         anchor.autoSizeCalculated = false;
       if (anchor.autoSize)
       {
-        if (anchor != pAnchor)
-        {
-            pAnchor.relative = false;
-        }
-        anchor.firstCalculation = true;
+          if (anchor != pAnchor)
+          {
+              pAnchor.relative = false;
+          }
+          anchor.firstCalculation = true;
+          if (anchor != relatedAutoSizeAnchor) // If position is not yet initialized, initialize it with 0
+          {
+              anchor.position = 0;
+          }
       }
       else if (anchor.relatedAnchor != null && anchor.relatedAnchor.autoSize)
       {
-        if (anchor.relatedAnchor.relatedAnchor != null && !anchor.relatedAnchor.relatedAnchor.autoSize)
-        {
-            anchor.relatedAnchor.position = -anchor.position;
-        }
-        else
-        {
-            anchor.relatedAnchor.position = 0;
-        }
+          relatedAutoSizeAnchor = anchor.relatedAnchor; // on this anchor, the position will be initialized here
+            if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor.autoSize)
+            {
+                relatedAutoSizeAnchor.position = -anchor.position;
+            }
+            else
+            {
+                relatedAutoSizeAnchor.position = 0;
+            }
       }
       anchor = anchor.relatedAnchor;
     }
