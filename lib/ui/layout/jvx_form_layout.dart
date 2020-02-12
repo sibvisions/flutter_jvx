@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/layout/i_alignment_constants.dart';
 import 'jvx_layout.dart';
 import 'widgets/jvx_form_layout.dart';
 import 'widgets/jvx_form_layout_contraint.dart';

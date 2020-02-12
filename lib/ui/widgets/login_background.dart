@@ -1,9 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/tools/arc_clipper.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../ui/tools/arc_clipper.dart';
+import '../../utils/uidata.dart';
+import '../../utils/globals.dart' as globals;
 
 class LoginBackground extends StatelessWidget {
   LoginBackground();
@@ -71,7 +70,7 @@ class LoginBackground extends StatelessWidget {
   }
 
   Widget topHalf(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
+    //var deviceSize = MediaQuery.of(context).size;
     return new Flexible(
       flex: 2,
       child: ClipPath(

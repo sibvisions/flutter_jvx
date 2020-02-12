@@ -1,13 +1,13 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/api/response/response.dart';
-import 'package:jvx_mobile_v3/ui/tools/restart.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../logic/bloc/api_bloc.dart';
+import '../../model/api/request/request.dart';
+import '../../model/api/response/response.dart';
+import '../../ui/tools/restart.dart';
+import '../../ui/widgets/common_dialogs.dart';
+import '../../utils/translations.dart';
+import '../../utils/globals.dart' as globals;
 
 bool handleError(Response response, BuildContext context) {
   if (response.error && response.requestType != RequestType.LOGIN) {

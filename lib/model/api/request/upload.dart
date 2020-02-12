@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../../../model/api/request/request.dart';
 
 class Upload extends Request {
   String fileId;

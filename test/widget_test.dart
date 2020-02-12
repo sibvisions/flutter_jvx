@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../lib/utils/globals.dart' as globals;
 
 void main() {
   group('globals', () {

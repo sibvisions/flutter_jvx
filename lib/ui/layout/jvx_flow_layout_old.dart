@@ -1,6 +1,6 @@
 
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
+import '../../ui/component/i_component.dart';
 import 'i_alignment_constants.dart';
 import 'jvx_layout.dart';
 

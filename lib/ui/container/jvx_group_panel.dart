@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/ui/container/i_container.dart';
-import 'package:jvx_mobile_v3/ui/container/jvx_container.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/container/i_container.dart';
+import '../../ui/container/jvx_container.dart';
 
 class JVxGroupPanel extends JVxContainer implements IContainer {
   String text = "";

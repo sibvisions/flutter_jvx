@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_flow_layout.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/component/jvx_component.dart';
+import '../../ui/layout/widgets/jvx_flow_layout.dart';
 import 'i_alignment_constants.dart';
 import 'jvx_layout.dart';
 

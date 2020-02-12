@@ -1,8 +1,8 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_layout.dart';
+import '../../model/changed_component.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/layout/jvx_layout.dart';
 
 abstract class IContainer extends IComponent {
   JVxLayout layout;

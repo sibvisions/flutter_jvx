@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../../../model/api/request/request.dart';
 
 /// Request for the [Startup] request.
 class Startup extends Request {

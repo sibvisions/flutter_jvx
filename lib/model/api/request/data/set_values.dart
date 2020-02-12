@@ -1,6 +1,6 @@
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/filter.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../../../model/api/request/request.dart';
+import '../../../../model/filter.dart';
+import '../../../../utils/globals.dart' as globals;
 
 /// Model for [SetValues] request.
 class SetValues extends Request {

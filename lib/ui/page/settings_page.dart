@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
-import 'package:jvx_mobile_v3/ui/tools/restart.dart';
-import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_scaffold.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../logic/bloc/theme_bloc.dart';
+import '../../ui/tools/restart.dart';
+import '../../utils/shared_preferences_helper.dart';
+import '../../ui/widgets/common_dialogs.dart';
+import '../../ui/widgets/common_scaffold.dart';
+import '../../utils/globals.dart' as globals;
+import '../../utils/translations.dart';
+import '../../utils/uidata.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:package_info/package_info.dart';
 

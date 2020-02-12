@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
 
 class CustomShapeBorder extends ShapeBorder {
-  double borderWidth;
-  Color color;
+  final double borderWidth;
+  final Color color;
 
   CustomShapeBorder(
     this.borderWidth,

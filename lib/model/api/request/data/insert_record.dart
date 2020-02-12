@@ -1,6 +1,6 @@
 
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../../../model/api/request/request.dart';
+import '../../../../utils/globals.dart' as globals;
 
 /// Model for the [InsertRecord] request.
 class InsertRecord extends Request {

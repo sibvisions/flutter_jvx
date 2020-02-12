@@ -1,8 +1,8 @@
-import 'package:jvx_mobile_v3/custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
-import 'package:jvx_mobile_v3/model/api/response/user_data.dart';
-import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
-import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
+import 'i_custom_screen_manager.dart';
+import '../../model/api/response/user_data.dart';
+import '../../model/menu_item.dart';
+import '../../ui/screen/component_creator.dart';
+import '../../ui/screen/i_screen.dart';
 
 /// Implementation of the [ICustomScreenManager] interface.
 class CustomScreenManager extends ICustomScreenManager {

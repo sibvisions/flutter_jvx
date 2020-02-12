@@ -2,22 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data_column.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_choice_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
-import 'package:jvx_mobile_v3/ui/screen/component_creator.dart';
-import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
-import 'package:jvx_mobile_v3/utils/text_utils.dart';
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-
-import 'celleditor/jvx_referenced_cell_editor.dart';
+import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
+import '../../model/changed_component.dart';
+import '../../model/api/response/data/jvx_data.dart';
+import '../../model/properties/component_properties.dart';
+import '../../model/properties/properties.dart';
+import '../../ui/editor/celleditor/jvx_cell_editor.dart';
+import '../../ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
+import '../../ui/editor/celleditor/jvx_choice_cell_editor.dart';
+import '../../ui/editor/jvx_editor.dart';
+import '../../ui/screen/component_creator.dart';
+import '../../ui/screen/component_data.dart';
+import '../../utils/translations.dart';
+import '../../utils/uidata.dart';
 
 class JVxLazyTable extends JVxEditor {
   // visible column names

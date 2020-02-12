@@ -1,6 +1,6 @@
-import 'package:jvx_mobile_v3/model/api/response/user_data.dart';
-import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/screen/i_screen.dart';
+import '../../model/api/response/user_data.dart';
+import '../../model/menu_item.dart';
+import '../../ui/screen/i_screen.dart';
 
 /// Interface for the [CustomScreenManager] class.
 abstract class ICustomScreenManager {

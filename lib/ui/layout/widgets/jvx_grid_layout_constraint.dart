@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import '../../../ui/component/jvx_component.dart';
 
 class GridLayoutConstraints {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

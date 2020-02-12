@@ -1,5 +1,5 @@
-import 'package:jvx_mobile_v3/model/api/request/open_screen.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../../../model/api/request/open_screen.dart';
+import '../../../model/api/request/request.dart';
 
 /// Model for the [CloseScreen] request.
 class CloseScreen extends Request {

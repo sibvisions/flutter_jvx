@@ -1,5 +1,5 @@
-import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
-import 'package:jvx_mobile_v3/model/menu_item.dart';
+import '../../../model/api/response/response_object.dart';
+import '../../../model/menu_item.dart';
 
 class Menu extends ResponseObject {
   List<MenuItem> items;

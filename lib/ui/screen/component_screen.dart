@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_action_component.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-import 'package:jvx_mobile_v3/ui/container/i_container.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/jvx_editor.dart';
-import 'package:jvx_mobile_v3/ui/screen/data_screen.dart';
-import 'package:jvx_mobile_v3/ui/screen/i_component_creator.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/component/jvx_action_component.dart';
+import '../../ui/component/jvx_component.dart';
+import '../../ui/container/i_container.dart';
+import '../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
+import '../../ui/editor/jvx_editor.dart';
+import '../../ui/screen/data_screen.dart';
+import '../../ui/screen/i_component_creator.dart';
 
 class ComponentScreen with DataScreen {
   IComponentCreator _componentCreator;

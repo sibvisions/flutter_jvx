@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:jvx_mobile_v3/utils/config.dart';
+import 'utils/config.dart';
 
 import 'jvx_mobile.dart';
 import 'logic/bloc/api_bloc.dart';

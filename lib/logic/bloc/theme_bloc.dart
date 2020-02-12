@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../utils/uidata.dart';
 
 class ThemeBloc extends Bloc<ThemeData, ThemeData> {
   @override

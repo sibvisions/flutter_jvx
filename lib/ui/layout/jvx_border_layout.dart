@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout_constraint.dart';
+import '../../ui/layout/widgets/jvx_border_layout_constraint.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
 import 'widgets/jvx_border_layout.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
+import '../../ui/screen/component_data.dart';
 
 import 'celleditor/jvx_cell_editor.dart';
 

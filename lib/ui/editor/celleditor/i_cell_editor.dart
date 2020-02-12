@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/column_view.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/popup_size.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/popup_size.dart';
 
 abstract class ICellEditor {
   BuildContext context;

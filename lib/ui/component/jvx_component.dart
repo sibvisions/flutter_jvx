@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
-import 'package:jvx_mobile_v3/utils/jvx_text_style.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../model/properties/hex_color.dart';
+import '../../utils/jvx_text_style.dart';
 import 'i_component.dart';
 
 abstract class JVxComponent implements IComponent {

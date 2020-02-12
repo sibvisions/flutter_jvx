@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/main.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_linked_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/screen/screen.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/api/response/data/jvx_data.dart';
+import '../../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
+import '../../../utils/uidata.dart';
 
 class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
   List<ListTile> _items = <ListTile>[];
@@ -54,7 +50,6 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
     );
   }
 
-  @override
   void setInitialData(JVxData data) {
     if (data != null &&
         data.selectedRow != null &&
@@ -77,7 +72,6 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
     this.setData(data);
   }
 
-  @override
   void setData(JVxData data) {
     this._items = getItems(data);
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
-import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
+import '../../../model/api/response/response_object.dart';
+import '../../../model/properties/hex_color.dart';
 
 /// Response from the [ApplicationStyle] Request.
 /// 

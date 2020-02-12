@@ -1,8 +1,6 @@
-
-import 'package:flutter/foundation.dart';
-import 'package:jvx_mobile_v3/model/action.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../../model/action.dart';
+import '../../../model/api/request/request.dart';
+import '../../../utils/globals.dart' as globals;
 
 /// Model for the [PressButton] request.
 class PressButton extends Request {

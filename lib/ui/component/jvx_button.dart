@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/press_button.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_action_component.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-import 'package:jvx_mobile_v3/model/action.dart' as jvxAction;
+import '../../logic/bloc/api_bloc.dart';
+import '../../model/api/request/press_button.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/component/jvx_action_component.dart';
+import '../../utils/uidata.dart';
+import '../../model/action.dart' as jvxAction;
 
 class JVxButton extends JVxActionComponent {
   String text = "";

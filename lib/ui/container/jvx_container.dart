@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-import 'package:jvx_mobile_v3/ui/container/i_container.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_border_layout.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_flow_layout_old.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_form_layout.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_grid_layout.dart';
-import 'package:jvx_mobile_v3/ui/layout/jvx_layout.dart';
-import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_border_layout_constraint.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/component/jvx_component.dart';
+import '../../ui/container/i_container.dart';
+import '../../ui/layout/jvx_border_layout.dart';
+import '../../ui/layout/jvx_flow_layout.dart';
+import '../../ui/layout/jvx_form_layout.dart';
+import '../../ui/layout/jvx_grid_layout.dart';
+import '../../ui/layout/jvx_layout.dart';
+import '../../ui/layout/widgets/jvx_border_layout_constraint.dart';
 
 abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;

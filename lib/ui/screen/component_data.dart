@@ -1,17 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/fetch_data.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/filter_data.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/insert_record.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/save_data.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/set_values.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/api/request/data/select_record.dart';
-import 'package:jvx_mobile_v3/model/api/response/meta_data/jvx_meta_data.dart';
-import 'package:jvx_mobile_v3/model/filter.dart';
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
+import '../../logic/bloc/api_bloc.dart';
+import '../../model/api/request/data/fetch_data.dart';
+import '../../model/api/request/data/filter_data.dart';
+import '../../model/api/request/data/insert_record.dart';
+import '../../model/api/request/data/save_data.dart';
+import '../../model/api/request/data/set_values.dart';
+import '../../model/api/request/request.dart';
+import '../../model/api/response/data/jvx_data.dart';
+import '../../model/api/request/data/select_record.dart';
+import '../../model/api/response/meta_data/jvx_meta_data.dart';
+import '../../model/filter.dart';
+import '../../model/properties/properties.dart';
 
 
 class ComponentData {

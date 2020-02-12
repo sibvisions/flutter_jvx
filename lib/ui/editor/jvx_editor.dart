@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/model/properties/hex_color.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/editor/i_editor.dart';
-import 'package:jvx_mobile_v3/ui/screen/component_data.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../model/properties/hex_color.dart';
+import '../../ui/component/jvx_component.dart';
+import '../../ui/editor/celleditor/jvx_cell_editor.dart';
+import '../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
+import '../../ui/editor/i_editor.dart';
+import '../../ui/screen/component_data.dart';
 
 class JVxEditor extends JVxComponent implements IEditor {
   String dataProvider;

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
+import '../../../utils/globals.dart' as globals;
+import '../../../utils/uidata.dart';
 
 class JVxDateCellEditor extends JVxCellEditor {
   String dateFormat;

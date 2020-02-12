@@ -1,9 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/utils/jvx_alignment.dart';
-import 'package:jvx_mobile_v3/utils/jvx_text_align.dart';
-
+import '../../utils/jvx_alignment.dart';
+import '../../utils/jvx_text_align.dart';
 import 'hex_color.dart';
 
 class Properties {

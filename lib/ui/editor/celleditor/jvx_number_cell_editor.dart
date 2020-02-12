@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/formatter/numeric_text_formatter.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/layout/i_alignment_constants.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../../model/cell_editor.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../ui/editor/celleditor/formatter/numeric_text_formatter.dart';
+import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
+import '../../../utils/uidata.dart';
 
 class JVxNumberCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();

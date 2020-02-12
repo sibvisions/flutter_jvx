@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/ui/widgets/custom_float.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../ui/widgets/custom_float.dart';
+import '../../utils/uidata.dart';
 
 class CommonScaffold extends StatelessWidget {
   final appTitle;

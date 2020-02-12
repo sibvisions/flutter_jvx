@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../../../model/api/request/request.dart';
 
 class Navigation extends Request {
   String componentId;

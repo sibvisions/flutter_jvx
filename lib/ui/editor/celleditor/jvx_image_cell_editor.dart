@@ -7,15 +7,14 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/loading.dart';
-import 'package:jvx_mobile_v3/model/api/request/reload.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../../logic/bloc/api_bloc.dart';
+import '../../../model/api/request/reload.dart';
+import '../../../model/api/request/request.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
+import '../../../utils/globals.dart' as globals;
+import '../../../utils/uidata.dart';
 
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;

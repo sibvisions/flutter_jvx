@@ -1,5 +1,5 @@
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
+import '../model/cell_editor.dart';
+import '../model/properties/component_properties.dart';
 
 class ChangedComponent extends ComponentProperties {
   static final String _cellEditorIdentifier = "cellEditor";

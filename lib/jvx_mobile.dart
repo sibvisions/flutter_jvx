@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/ui/page/settings_page.dart';
-import 'package:jvx_mobile_v3/ui/page/startup_page.dart';
-import 'package:jvx_mobile_v3/utils/config.dart';
-import 'package:jvx_mobile_v3/utils/translations.dart';
+import 'ui/page/settings_page.dart';
+import 'ui/page/startup_page.dart';
+import 'utils/config.dart';
+import 'utils/translations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class JvxMobile extends StatelessWidget {

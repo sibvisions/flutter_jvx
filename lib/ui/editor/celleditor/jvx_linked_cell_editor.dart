@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/api/response/data/jvx_data.dart';
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_referenced_cell_editor.dart';
-import 'package:jvx_mobile_v3/ui/widgets/custom_dropdown_button.dart' as custom;
-import 'package:jvx_mobile_v3/ui/widgets/lazy_dropdown.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/api/response/data/jvx_data.dart';
+import '../../../model/properties/properties.dart';
+import '../../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
+import '../../../ui/widgets/custom_dropdown_button.dart' as custom;
+import '../../../ui/widgets/lazy_dropdown.dart';
+import '../../../utils/uidata.dart';
 
 class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];

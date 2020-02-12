@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../../../model/api/request/request.dart';
 
 /// Model for [Login] request.
 class Login extends Request{

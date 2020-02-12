@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../utils/uidata.dart';
 
 class CustomFloat extends StatelessWidget {
   final IconData icon;

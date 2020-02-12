@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/cell_editor.dart';
-import 'package:jvx_mobile_v3/model/properties/cell_editor_properties.dart';
-import 'package:jvx_mobile_v3/ui/editor/celleditor/jvx_cell_editor.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
 
 class JVxCheckboxCellEditor extends JVxCellEditor {
   dynamic selectedValue = true;

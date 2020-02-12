@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:io';
-
-import 'package:jvx_mobile_v3/model/api/exceptions/api_exception.dart';
-import 'package:jvx_mobile_v3/model/api/request/upload.dart';
-import 'package:jvx_mobile_v3/model/api/response/response.dart';
+import '../model/api/exceptions/api_exception.dart';
+import '../model/api/request/upload.dart';
+import '../model/api/response/response.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as prefHttp;
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/log.dart';
+import '../utils/globals.dart' as globals;
+import '../utils/log.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 

@@ -1,10 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-
+import '../../../ui/component/jvx_component.dart';
 import 'jvx_border_layout_constraint.dart';
 
 ///

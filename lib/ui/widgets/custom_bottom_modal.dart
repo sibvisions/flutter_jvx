@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_mobile_v3/model/action.dart' as prefix1;
-import 'package:jvx_mobile_v3/model/menu_item.dart';
-import 'package:jvx_mobile_v3/ui/widgets/fontAwesomeChanger.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../model/action.dart' as prefix1;
+import '../../model/menu_item.dart';
+import '../../ui/widgets/fontAwesomeChanger.dart';
+import '../../utils/globals.dart' as globals;
+import '../../utils/uidata.dart';
 
 showCustomBottomModalMenu(BuildContext context, List<MenuItem> items, Key currentComponentId) {
   showModalBottomSheet(

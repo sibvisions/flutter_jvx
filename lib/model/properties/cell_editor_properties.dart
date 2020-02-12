@@ -1,4 +1,4 @@
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
+import '../../model/properties/properties.dart';
 
 enum CellEditorProperty {
   CLASS_NAME,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/changed_component.dart';
-import 'package:jvx_mobile_v3/model/properties/component_properties.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/component/jvx_component.dart';
 
 class JVxLabel extends JVxComponent implements IComponent {
   String text = "";

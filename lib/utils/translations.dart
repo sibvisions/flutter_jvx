@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/download.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../model/api/request/download.dart';
+import '../model/api/request/request.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart' as xml;
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../utils/globals.dart' as globals;
 
 class Translations {
   Translations(Locale locale) {

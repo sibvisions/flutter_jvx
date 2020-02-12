@@ -1,29 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
-import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/loading.dart';
-import 'package:jvx_mobile_v3/model/api/request/login.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/api/response/response.dart';
-import 'package:jvx_mobile_v3/model/api/response/application_meta_data.dart';
-import 'package:jvx_mobile_v3/model/api/request/application_style.dart';
-import 'package:jvx_mobile_v3/model/api/request/download.dart';
-import 'package:jvx_mobile_v3/model/api/response/login_item.dart';
-import 'package:jvx_mobile_v3/model/api/response/menu.dart';
-import 'package:jvx_mobile_v3/model/api/request/startup.dart';
-import 'package:jvx_mobile_v3/ui/page/login_page.dart';
-import 'package:jvx_mobile_v3/ui/page/menu_page.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/utils/config.dart';
-import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
+import '../../logic/bloc/api_bloc.dart';
+import '../../logic/bloc/error_handler.dart';
+import '../../logic/bloc/theme_bloc.dart';
+import '../../model/api/request/login.dart';
+import '../../model/api/request/request.dart';
+import '../../model/api/response/response.dart';
+import '../../model/api/response/application_meta_data.dart';
+import '../../model/api/request/application_style.dart';
+import '../../model/api/request/download.dart';
+import '../../model/api/response/menu.dart';
+import '../../model/api/request/startup.dart';
+import '../../ui/page/login_page.dart';
+import '../../ui/page/menu_page.dart';
+import '../../ui/widgets/common_dialogs.dart';
+import '../../utils/config.dart';
+import '../../utils/shared_preferences_helper.dart';
+import '../../utils/globals.dart' as globals;
+import '../../utils/translations.dart';
+import '../../utils/uidata.dart';
 import 'package:uuid/uuid.dart';
 
 enum StartupValidationType { username, password }

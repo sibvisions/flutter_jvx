@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_mobile_v3/ui/component/i_component.dart';
-import 'package:jvx_mobile_v3/ui/component/jvx_component.dart';
-import 'package:jvx_mobile_v3/ui/layout/widgets/jvx_grid_layout.dart';
-
+import '../../ui/component/i_component.dart';
+import '../../ui/component/jvx_component.dart';
+import '../../ui/layout/widgets/jvx_grid_layout.dart';
 import 'jvx_layout.dart';
 import 'widgets/jvx_grid_layout_constraint.dart';
 

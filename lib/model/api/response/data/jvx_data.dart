@@ -1,7 +1,7 @@
 import 'package:flutter/rendering.dart';
-import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
-import 'package:jvx_mobile_v3/model/filter.dart';
-import 'package:jvx_mobile_v3/utils/text_utils.dart';
+import '../../../../model/api/response/response_object.dart';
+import '../../../../model/filter.dart';
+import '../../../../utils/text_utils.dart';
 
 /// Data holding Class for [JVxComponent]'s.
 class JVxData extends ResponseObject {

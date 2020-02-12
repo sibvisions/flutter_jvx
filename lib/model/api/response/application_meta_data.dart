@@ -1,5 +1,5 @@
-import 'package:jvx_mobile_v3/model/api/response/response_object.dart';
-import 'package:jvx_mobile_v3/utils/shared_preferences_helper.dart';
+import '../../../model/api/response/response_object.dart';
+import '../../../utils/shared_preferences_helper.dart';
 
 class ApplicationMetaData extends ResponseObject {
   String langCode;

@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_mobile_v3/model/properties/properties.dart';
-import 'package:jvx_mobile_v3/ui/tools/restart.dart';
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
+import '../../model/properties/properties.dart';
+import '../../ui/tools/restart.dart';
+import '../../utils/translations.dart';
+import '../../utils/uidata.dart';
+import '../../utils/globals.dart' as globals;
 
 showGoToSettings(BuildContext context, String title, String message) {
   showDialog(

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/api_bloc.dart';
-import 'package:jvx_mobile_v3/logic/bloc/error_handler.dart';
-import 'package:jvx_mobile_v3/logic/bloc/theme_bloc.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
-import 'package:jvx_mobile_v3/model/api/response/response.dart';
-import 'package:jvx_mobile_v3/model/api/response/menu.dart';
-import 'package:jvx_mobile_v3/ui/widgets/common_dialogs.dart';
-import 'package:jvx_mobile_v3/ui/widgets/login_background.dart';
-import 'package:jvx_mobile_v3/ui/widgets/login_widget.dart';
-import 'package:jvx_mobile_v3/utils/globals.dart' as globals;
-import 'package:jvx_mobile_v3/utils/translations.dart';
-import 'package:jvx_mobile_v3/utils/uidata.dart';
-
+import '../../logic/bloc/api_bloc.dart';
+import '../../logic/bloc/error_handler.dart';
+import '../../logic/bloc/theme_bloc.dart';
+import '../../model/api/request/request.dart';
+import '../../model/api/response/response.dart';
+import '../../model/api/response/menu.dart';
+import '../../ui/widgets/common_dialogs.dart';
+import '../../ui/widgets/login_background.dart';
+import '../../ui/widgets/login_widget.dart';
+import '../../utils/globals.dart' as globals;
+import '../../utils/translations.dart';
 import 'menu_page.dart';
 
 class LoginPage extends StatefulWidget {

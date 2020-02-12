@@ -1,5 +1,5 @@
-import 'package:jvx_mobile_v3/model/action.dart';
-import 'package:jvx_mobile_v3/model/api/request/request.dart';
+import '../../../model/action.dart';
+import '../../../model/api/request/request.dart';
 
 /// Model for [OpenScreen] request.
 class OpenScreen extends Request {

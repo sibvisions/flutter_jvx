@@ -1,6 +1,6 @@
-import 'package:jvx_mobile_v3/model/action.dart';
-import 'package:jvx_mobile_v3/model/login_password.dart';
-import 'package:jvx_mobile_v3/model/login_username.dart';
+import '../model/action.dart';
+import '../model/login_password.dart';
+import '../model/login_username.dart';
 
 class LoginData {
   LoginUsername username;
