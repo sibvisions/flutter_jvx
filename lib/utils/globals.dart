@@ -1,4 +1,4 @@
-library jvx_mobile_v3.globals;
+library jvx_flutterclient.globals;
 
 import '../custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
 import '../model/action.dart' as prefix0;

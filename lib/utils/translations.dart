@@ -69,7 +69,7 @@ class Translations {
       try {
         Translations translations = new Translations(const Locale('en'));
         String jsonContent = await rootBundle.loadString(globals.package
-            ? "packages/jvx_mobile_v3/locale/i18n_de.json"
+            ? "packages/jvx_flutterclient/locale/i18n_de.json"
             : "locale/i18n_de.json");
         _localizedValues = json.decode(jsonContent);
 
