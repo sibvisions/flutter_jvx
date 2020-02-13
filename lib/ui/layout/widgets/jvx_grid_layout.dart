@@ -339,38 +339,4 @@ class JVxGridLayoutConstraintData extends ParentDataWidget<JVxGridLayoutWidget> 
     properties.add(DiagnosticsProperty<Object>('id', id));
   }
 
-  @override
-  bool debugIsValidAncestor(RenderObjectWidget ancestor) {
-    assert(JVxGridLayoutWidget != dynamic);
-    assert(JVxGridLayoutWidget != RenderObjectWidget);
-    return ancestor is JVxGridLayoutWidget;
-  }
-
-  @override
-  Iterable<DiagnosticsNode> debugDescribeInvalidAncestorChain({ String description, DiagnosticsNode ownershipChain, bool foundValidAncestor, Iterable<Widget> badAncestors }) sync* {
-    assert(JVxGridLayoutWidget != dynamic);
-    assert(JVxGridLayoutWidget != RenderObjectWidget);
-    if (!foundValidAncestor) {
-      yield ErrorDescription(
-        '$runtimeType widgets must be placed inside $JVxGridLayoutWidget widgets.\n'
-        '$description has no $JVxGridLayoutWidget ancestor at all.'
-      );
-    } else {
-      assert(badAncestors.isNotEmpty);
-      yield ErrorDescription(
-        '$runtimeType widgets must be placed directly inside $JVxGridLayoutWidget widgets.\n'
-        '$description has a $JVxGridLayoutWidget ancestor, but there are other widgets between them:'
-      );
-      for (Widget ancestor in badAncestors) {
-        if (ancestor.runtimeType == runtimeType) {
-          yield ErrorDescription('- $ancestor (this is a different $runtimeType than the one with the problem)');
-        } else {
-          yield ErrorDescription('- $ancestor');
-        }
-      }
-      yield ErrorDescription('These widgets cannot come between a $runtimeType and its $JVxGridLayoutWidget.');
-    }
-    yield ErrorDescription('The ownership chain for the parent of the offending $runtimeType was:\n  $ownershipChain');
-  }
-
 }

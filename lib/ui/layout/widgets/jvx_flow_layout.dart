@@ -555,39 +555,5 @@ class JVxFlowLayoutConstraintData extends ParentDataWidget<JVxFlowLayoutWidget> 
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Object>('id', id));
   }
-
-  @override
-  bool debugIsValidAncestor(RenderObjectWidget ancestor) {
-    assert(JVxFlowLayoutWidget != dynamic);
-    assert(JVxFlowLayoutWidget != RenderObjectWidget);
-    return ancestor is JVxFlowLayoutWidget;
-  }
-
-  @override
-  Iterable<DiagnosticsNode> debugDescribeInvalidAncestorChain({ String description, DiagnosticsNode ownershipChain, bool foundValidAncestor, Iterable<Widget> badAncestors }) sync* {
-    assert(JVxFlowLayoutWidget != dynamic);
-    assert(JVxFlowLayoutWidget != RenderObjectWidget);
-    if (!foundValidAncestor) {
-      yield ErrorDescription(
-        '$runtimeType widgets must be placed inside $JVxFlowLayoutWidget widgets.\n'
-        '$description has no $JVxFlowLayoutWidget ancestor at all.'
-      );
-    } else {
-      assert(badAncestors.isNotEmpty);
-      yield ErrorDescription(
-        '$runtimeType widgets must be placed directly inside $JVxFlowLayoutWidget widgets.\n'
-        '$description has a $JVxFlowLayoutWidget ancestor, but there are other widgets between them:'
-      );
-      for (Widget ancestor in badAncestors) {
-        if (ancestor.runtimeType == runtimeType) {
-          yield ErrorDescription('- $ancestor (this is a different $runtimeType than the one with the problem)');
-        } else {
-          yield ErrorDescription('- $ancestor');
-        }
-      }
-      yield ErrorDescription('These widgets cannot come between a $runtimeType and its $JVxFlowLayoutWidget.');
-    }
-    yield ErrorDescription('The ownership chain for the parent of the offending $runtimeType was:\n  $ownershipChain');
-  }
   
 }
