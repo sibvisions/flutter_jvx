@@ -27,18 +27,22 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
       return Container(
         child: Column(
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  width: 10,
+            Padding(
+              padding: EdgeInsets.only(top: 8),
+              child:
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      text,
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                Text(
-                  text,
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                ),
-              ],
             ),
             Divider(color: Colors.grey[600], height: 10),
             child
