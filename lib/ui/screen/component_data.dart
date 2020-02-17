@@ -16,6 +16,7 @@ import '../../model/properties/properties.dart';
 
 class ComponentData {
   String dataProvider;
+  bool isFetchingMetaData = false;
   bool isFetching = false;
 
   JVxData data;
@@ -97,6 +98,7 @@ class ComponentData {
 
   void updateMetaData(JVxMetaData pMetaData) {
     this.metaData = pMetaData;
+    this.isFetchingMetaData = false;
     _onMetaDataChanged.forEach((d) => d());
   }
 

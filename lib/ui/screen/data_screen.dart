@@ -33,7 +33,8 @@ mixin DataScreen {
       });
 
       componentData.forEach((d) {
-        if (d.metaData==null) {
+        if (d.metaData==null && !d.isFetchingMetaData) {
+          d.isFetchingMetaData = true;
           dataModel.MetaData meta = dataModel.MetaData(d.dataProvider);
           BlocProvider.of<ApiBloc>(context).dispatch(meta);
         }
