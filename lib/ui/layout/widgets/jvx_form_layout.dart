@@ -283,39 +283,20 @@ class RenderJVxFormLayoutWidget extends RenderBox
      * 
      * @param pAnchor the left or top anchor.
   */
-  void clearAutoSize(JVxAnchor pAnchor) {
-    pAnchor.relative = pAnchor.autoSize;
-        
-    JVxAnchor anchor = pAnchor;
-    JVxAnchor relatedAutoSizeAnchor; // Remember the anchor where position is already initialized
-    while (anchor != null && !anchor.firstCalculation)
+  void clearAutoSize(List<JVxAnchor> pAnchorList, JVxAnchor pAnchor) {
+    while (pAnchor != null && !pAnchorList.contains(pAnchor))
     {
-      anchor.autoSizeCalculated = false;
-      if (anchor.autoSize)
-      {
-          if (anchor != pAnchor)
-          {
-              pAnchor.relative = false;
-          }
-          anchor.firstCalculation = true;
-          if (anchor != relatedAutoSizeAnchor) // If position is not yet initialized, initialize it with 0
-          {
-              anchor.position = 0;
-          }
-      }
-      else if (anchor.relatedAnchor != null && anchor.relatedAnchor.autoSize)
-      {
-          relatedAutoSizeAnchor = anchor.relatedAnchor; // on this anchor, the position will be initialized here
-            if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor.autoSize)
-            {
-                relatedAutoSizeAnchor.position = -anchor.position;
-            }
-            else
-            {
-                relatedAutoSizeAnchor.position = 0;
-            }
-      }
-      anchor = anchor.relatedAnchor;
+        pAnchorList.add(pAnchor);
+
+        pAnchor.relative = pAnchor.autoSize;
+        pAnchor.autoSizeCalculated = false;
+        pAnchor.firstCalculation = true;
+        if (pAnchor.autoSize)
+        {
+            pAnchor.position = 0;
+        }
+
+        pAnchor = pAnchor.relatedAnchor;
     }
   }
 
@@ -343,6 +324,22 @@ class RenderJVxFormLayoutWidget extends RenderBox
     return anchorsBuffer;
   }
 
+  /*
+    * Inits the autosize with negative gap, to ensure the gaps are, as there is no component in this row or column.
+    * @param pAnchor the anchor
+    */
+  void initAutoSizeWithAnchor(JVxAnchor pAnchor)
+  {
+      if (pAnchor.relatedAnchor != null && pAnchor.relatedAnchor.autoSize)
+      {
+          JVxAnchor relatedAutoSizeAnchor = pAnchor.relatedAnchor;
+          if (relatedAutoSizeAnchor.relatedAnchor != null && !relatedAutoSizeAnchor.relatedAnchor.autoSize)
+          {
+              relatedAutoSizeAnchor.position = -pAnchor.position;
+          }
+      }
+  }
+
   ///
   /// init component auto size position of anchor.
   /// 
@@ -350,8 +347,8 @@ class RenderJVxFormLayoutWidget extends RenderBox
   /// @param pEndAnchor the end anchor.
   ///
   void initAutoSize(JVxAnchor pStartAnchor, JVxAnchor pEndAnchor)
-    {
-    	List<JVxAnchor> anchors = getAutoSizeAnchorsBetween(pStartAnchor, pEndAnchor);
+  {
+    List<JVxAnchor> anchors = getAutoSizeAnchorsBetween(pStartAnchor, pEndAnchor);
     	
 		for (int i = 0; i < anchors.length; i++)
 		{
@@ -586,29 +583,20 @@ class RenderJVxFormLayoutWidget extends RenderBox
       for (int i = 0; i < this.layoutConstraints.length; i++)
       {
         JVxFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
+        
+        clearAutoSize(horizontalAnchors, constraint.leftAnchor);
+        clearAutoSize(horizontalAnchors, constraint.rightAnchor);
+        clearAutoSize(verticalAnchors, constraint.topAnchor);
+        clearAutoSize(verticalAnchors, constraint.bottomAnchor);
+        }
+        horizontalAnchors.forEach((anchor) {
+            initAutoSizeWithAnchor(anchor);
+        });
 
-        clearAutoSize(constraint.leftAnchor);
-        clearAutoSize(constraint.rightAnchor);
-        clearAutoSize(constraint.topAnchor);
-        clearAutoSize(constraint.bottomAnchor);
+        verticalAnchors.forEach((anchor) {
+            initAutoSizeWithAnchor(anchor);
+      });
 
-        if (!horizontalAnchors.contains(constraint.leftAnchor))
-        {
-          horizontalAnchors.add(constraint.leftAnchor);
-        }
-        if (!horizontalAnchors.contains(constraint.rightAnchor))
-        {
-          horizontalAnchors.add(constraint.rightAnchor);
-        }
-        if (!verticalAnchors.contains(constraint.topAnchor))
-        {
-          verticalAnchors.add(constraint.topAnchor);
-        }
-        if (!verticalAnchors.contains(constraint.bottomAnchor))
-        {
-          verticalAnchors.add(constraint.bottomAnchor);
-        }
-      }
       // init component auto size anchors.
       for (int i = 0; i < this.layoutConstraints.length; i++)
       {
