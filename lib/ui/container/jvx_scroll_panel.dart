@@ -3,7 +3,17 @@ import 'i_container.dart';
 import 'jvx_container.dart';
 
 class JVxScrollPanel extends JVxContainer implements IContainer {
-  JVxScrollPanel(Key componentId, BuildContext context) : super(componentId, context);
+  Key key = GlobalKey();
+  ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0;
+  
+  JVxScrollPanel(Key componentId, BuildContext context) : super(componentId, context) {
+    _scrollController.addListener(_scrollListener);
+  }
+
+  _scrollListener() {
+    this._scrollOffset = _scrollController.offset;
+  }
 
   Widget getWidget() {
     Widget child;
@@ -14,11 +24,12 @@ class JVxScrollPanel extends JVxContainer implements IContainer {
     }
 
     if (child!= null) {
-      return SingleChildScrollView( 
+      return SingleChildScrollView(
+          key: this.key,
           child: Container(
-            color: this.background, 
-            child: child
-          )
+                color: this.background, 
+                child: child
+              )
         );
     } else {
       return new Container();

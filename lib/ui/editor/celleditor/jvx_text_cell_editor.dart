@@ -87,7 +87,7 @@ class JVxTextCellEditor extends JVxCellEditor {
         //textAlignVertical: JVxTextAlignVertical.getTextAlignFromInt(this.verticalAlignment),
         textAlign: JVxTextAlign.getTextAlignFromInt(this.horizontalAlignment),
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(left: 12, right: 12),
+          contentPadding: EdgeInsets.all(12),
           border: InputBorder.none
         ),
         style: TextStyle(

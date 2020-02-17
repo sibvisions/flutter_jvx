@@ -57,6 +57,13 @@ class Properties {
         });
         value = newValue;
       }
+    } else if (value is bool) {
+      if (T == int) {
+        if (value) 
+          return 1 as T; 
+        else
+          return 0 as T;
+      }
     }
 
     return value;
