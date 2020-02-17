@@ -17,6 +17,7 @@ import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 
 class JVxLazyTable extends JVxEditor {
+  Key key = GlobalKey();
   // visible column names
   List<String> columnNames = <String>[];
 
@@ -324,6 +325,7 @@ class JVxLazyTable extends JVxEditor {
           width: constraints.minWidth,
           height: constraints.minHeight,
           child: ListView.builder(
+            key: this.key,
             controller: _scrollController,
             itemCount: itemCount,
             itemBuilder: itemBuilder,
