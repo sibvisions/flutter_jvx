@@ -70,6 +70,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
     else
       selectedImage = _items[0];
 
+    this.value = selectedImage.value;
     onValueChanged(selectedImage.value);
   }
 
