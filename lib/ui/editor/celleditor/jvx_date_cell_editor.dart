@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:jvx_flutterclient/utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
@@ -21,7 +22,8 @@ class JVxDateCellEditor extends JVxCellEditor {
 
   @override
   get preferredSize {
-    return Size(200,50);
+    double width = TextUtils.getTextWidth(TextUtils.averageCharactersDateField, Theme.of(context).textTheme.title).toDouble();
+    return Size(width+16,50);
   }
 
   @override

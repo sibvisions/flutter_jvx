@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:jvx_flutterclient/utils/jvx_text_align.dart';
+import 'package:jvx_flutterclient/utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/formatter/numeric_text_formatter.dart';
@@ -18,7 +20,8 @@ class JVxNumberCellEditor extends JVxCellEditor {
 
   @override
   get preferredSize {
-    return Size(200,50);
+    double width = TextUtils.getTextWidth(TextUtils.averageCharactersTextField, Theme.of(context).textTheme.button).toDouble();
+    return Size(width,50);
   }
 
   @override
@@ -117,26 +120,22 @@ class JVxNumberCellEditor extends JVxCellEditor {
     //if (horizontalAlignment==IAlignmentConstants.ALIGN_RIGHT)
     //  direction = TextDirection.rtl;
 
-    return Container(
-      height: 50,
+    return DecoratedBox(
       decoration: BoxDecoration(
-          color: background != null ? background : Colors.transparent,
+          color: this.background != null ? this.background : Colors.transparent,
           borderRadius: BorderRadius.circular(5),
-          border: borderVisible && this.editable
+          border: borderVisible && this.editable != null && this.editable
               ? Border.all(color: UIData.ui_kit_color_2)
-              : null),
+              : Border.all(color: Colors.grey)),
       child: TextField(
+        //textAlignVertical: JVxTextAlignVertical.getTextAlignFromInt(this.verticalAlignment),
+        textAlign: JVxTextAlign.getTextAlignFromInt(this.horizontalAlignment),
         decoration: InputDecoration(
-            fillColor:
-                this.background != null ? this.background : Colors.transparent,
-            enabledBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-            focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: UIData.ui_kit_color_2, width: 0.0)),
-            disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey, width: 0.0))),
+          contentPadding: EdgeInsets.all(12),
+          border: InputBorder.none
+        ),
+        style: TextStyle(
+            color: this.editable ? (this.foreground != null ? this.foreground : Colors.black) : Colors.grey[700]),
         key: this.key,
         controller: _controller,
         keyboardType: textInputType,

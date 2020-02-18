@@ -25,7 +25,8 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
 
     if (child != null) {
       return Container(
-        child: Column(
+        child: SingleChildScrollView(child: 
+        Column(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 8),
@@ -47,6 +48,7 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
             Divider(color: Colors.grey[600], height: 10),
             child
           ],
+        ),
         ),
       );
     } else {

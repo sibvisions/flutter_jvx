@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
@@ -14,10 +15,11 @@ class JVxTextCellEditor extends JVxCellEditor {
 
   @override
   get preferredSize {
+    double width = TextUtils.getTextWidth(TextUtils.averageCharactersTextField, Theme.of(context).textTheme.button).toDouble();
     if (multiLine)
-      return Size(200, 100);
+      return Size(width, 100);
     else
-      return Size(200, 50);
+      return Size(width, 50);
   }
 
   @override
