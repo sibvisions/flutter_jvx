@@ -5,6 +5,7 @@ import '../../ui/container/i_container.dart';
 import '../../ui/container/jvx_container.dart';
 
 class JVxGroupPanel extends JVxContainer implements IContainer {
+  Key key = GlobalKey();
   String text = "";
 
   JVxGroupPanel(Key componentId, BuildContext context)
@@ -24,8 +25,10 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
     }
 
     if (child != null) {
-      return Container(
-        child: SingleChildScrollView(child: 
+      return  SingleChildScrollView(
+          key: key,
+          child: Container(
+        child:
         Column(
           children: <Widget>[
             Padding(
@@ -45,7 +48,6 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
                   ],
                 ),
             ),
-            Divider(color: Colors.grey[600], height: 10),
             child
           ],
         ),
