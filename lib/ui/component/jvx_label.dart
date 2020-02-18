@@ -54,8 +54,10 @@ class JVxLabel extends JVxComponent implements IComponent {
         color: this.background,
         child: Align(
           alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
-          child: Text(text,
+          child: Padding(padding: EdgeInsets.only(bottom: 2), 
+            child:Text(text,
               style: style,
+          )
           ),
         ),
       )
