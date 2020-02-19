@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
 import '../../model/changed_component.dart';
@@ -37,9 +38,10 @@ class JVxLazyTable extends JVxEditor {
 
   Size maximumSize;
 
-  ScrollController _scrollController = ScrollController();
+  ItemScrollController _scrollController = ItemScrollController();
+  ItemPositionsListener _scrollPositionListener = ItemPositionsListener.create();
   int pageSize = 100;
-  double fetchMoreYOffset = 0;
+  double fetchMoreItemOffset = 20;
   JVxData _data;
   List<int> columnFlex;
   var _tapPosition;
@@ -59,8 +61,10 @@ class JVxLazyTable extends JVxEditor {
   @override
   set data(ComponentData data) {
     super.data?.unregisterDataChanged(onServerDataChanged);
+    super.data?.unregisterSelectedRowChanged(onSelectedRowChanged);
     super.data = data;
     super.data?.registerDataChanged(onServerDataChanged);
+    super.data?.registerSelectedRowChanged(onSelectedRowChanged);
   }
 
   @override
@@ -83,7 +87,7 @@ class JVxLazyTable extends JVxEditor {
   JVxLazyTable(Key componentId, BuildContext context)
       : super(componentId, context) {
     componentCreator = ComponentCreator(context);
-    _scrollController.addListener(_scrollListener);
+    _scrollPositionListener.itemPositions.addListener(_scrollListener);
   }
 
   @override
@@ -105,6 +109,11 @@ class JVxLazyTable extends JVxEditor {
     reload =
         changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
 
+    int newSelectedRow = changedComponent.getProperty<int>(
+        ComponentProperty.SELECTED_ROW);
+    if (newSelectedRow>=0 && newSelectedRow!=selectedRow && this.data!=null && this.data.data!=null)
+      this.data.updateSelectedRow(newSelectedRow, true);
+    
     selectedRow = changedComponent.getProperty<int>(
         ComponentProperty.SELECTED_ROW, selectedRow);
   }
@@ -231,7 +240,7 @@ class JVxLazyTable extends JVxEditor {
     }
   }
 
-  Container getHeaderRow() {
+  Widget getHeaderRow() {
     List<Widget> children = new List<Widget>();
 
     if (this.columnLabels != null) {
@@ -284,6 +293,12 @@ class JVxLazyTable extends JVxEditor {
   @override
   void onServerDataChanged() {}
 
+  void onSelectedRowChanged(dynamic selectedRow) {
+    if (_scrollController!=null && selectedRow is int && selectedRow >=0) {
+      _scrollController.scrollTo(index: selectedRow, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    }
+  }
+
   Widget itemBuilder(BuildContext ctxt, int index) {
     if (index == 0 && tableHeaderVisible) {
       return getHeaderRow();
@@ -294,12 +309,10 @@ class JVxLazyTable extends JVxEditor {
   }
 
   _scrollListener() {
-    fetchMoreYOffset = MediaQuery.of(context).size.height * 4;
-    if (_scrollController.offset + this.fetchMoreYOffset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      if (_data != null && _data.records != null)
-        data.getData(
+    ItemPosition pos = this._scrollPositionListener.itemPositions.value.lastWhere((itemPosition) => itemPosition.itemTrailingEdge>0);
+
+    if (pos!=null && _data!=null && _data.records!=null && pos.index+fetchMoreItemOffset > _data.records.length) {
+      data.getData(
             context, this.reload, this.pageSize + _data.records.length);
     }
   }
@@ -324,9 +337,10 @@ class JVxLazyTable extends JVxEditor {
         child: Container(
           width: constraints.minWidth,
           height: constraints.minHeight,
-          child: ListView.builder(
+          child: ScrollablePositionedList.builder(
             key: this.key,
-            controller: _scrollController,
+            itemScrollController: _scrollController,
+            itemPositionsListener: _scrollPositionListener,
             itemCount: itemCount,
             itemBuilder: itemBuilder,
           ),

@@ -24,6 +24,7 @@ class ComponentData {
 
   List<VoidCallback> _onDataChanged = [];
   List<VoidCallback> _onMetaDataChanged = [];
+  List<ValueChanged<dynamic>> _onSelectedRowChanged = [];
 
   ComponentData(this.dataProvider);
 
@@ -56,6 +57,7 @@ class ComponentData {
   void updateData(JVxData pData, [bool overrideData = false]) {
     //if (data==null || data.isAllFetched || overrideData) {
     if (data==null || overrideData) {
+      if (data!=null && pData!=null && data.selectedRow != pData.selectedRow) _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data = pData;
     } else if (data.isAllFetched){
       if (pData.records.length>0) {
@@ -75,9 +77,11 @@ class ComponentData {
         }
       }
       data.isAllFetched = pData.isAllFetched;
+      if (data.selectedRow != pData.selectedRow) _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data.selectedRow = pData.selectedRow;
     } else {
       data.records.addAll(pData.records);
+      if (data.selectedRow != pData.selectedRow) _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data.selectedRow = pData.selectedRow;
       data.isAllFetched = pData.isAllFetched;
     }
@@ -89,9 +93,10 @@ class ComponentData {
     _onDataChanged.forEach((d) => d());
   }
 
-  void updateSelectedRow(int selectedRow) {
+  void updateSelectedRow(int selectedRow, [bool raiseSelectedRowChangeEvent = false]) {
     if (data.selectedRow!=selectedRow) {
       data.selectedRow = selectedRow;
+      if (raiseSelectedRowChangeEvent) _onSelectedRowChanged.forEach((d) => d(selectedRow));
       _onDataChanged.forEach((d) => d());
     }
   }
@@ -246,6 +251,14 @@ class ComponentData {
 
   int _getColumnIndex(String columnName) {
     return data?.columnNames?.indexWhere((c) => c == columnName);
+  }
+
+  void registerSelectedRowChanged(ValueChanged<dynamic> callback) {
+    _onSelectedRowChanged.add(callback);
+  }
+
+  void unregisterSelectedRowChanged(ValueChanged<dynamic> callback) {
+    _onSelectedRowChanged.remove(callback);
   }
 
   void registerDataChanged(VoidCallback callback) {
