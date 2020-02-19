@@ -45,10 +45,10 @@
                             <constraint firstItem="nna-WY-fdy" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.5" id="1Wa-Vp-ZTO"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
                             <constraint firstItem="rTb-VR-h7F" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3EE-yQ-fGh"/>
-                            <constraint firstItem="xbc-2k-c8Z" firstAttribute="top" secondItem="rTb-VR-h7F" secondAttribute="bottom" constant="20" id="3H0-Kx-C9R"/>
                             <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
                             <constraint firstAttribute="bottom" secondItem="Cxf-yv-N9a" secondAttribute="bottom" id="H43-0O-BI5"/>
                             <constraint firstAttribute="trailing" secondItem="Cxf-yv-N9a" secondAttribute="trailing" id="Hq4-Ve-XaV"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="rTb-VR-h7F" secondAttribute="bottom" constant="20" id="I0x-pE-s2K"/>
                             <constraint firstItem="nna-WY-fdy" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="WPy-2b-XKi"/>
                             <constraint firstItem="Cxf-yv-N9a" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="adl-Lv-P6u"/>
                             <constraint firstItem="Cxf-yv-N9a" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="j8q-v1-Gdn"/>
