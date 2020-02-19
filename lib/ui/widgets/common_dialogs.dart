@@ -50,7 +50,7 @@ showSessionExpired(BuildContext context, String title, String message) async {
             content: Text(message),
             actions: <Widget>[
               FlatButton(
-                child: Text('OK'),
+                child: Text(Translations.of(context).text2('OK', 'OK')),
                 onPressed: () => Navigator.of(context).pop(),
               )
             ],
@@ -193,14 +193,14 @@ showTextInputDialog(BuildContext context, String title, String textLabel,
           actions: <Widget>[
             new FlatButton(
               textColor: UIData.ui_kit_color_2,
-              child: new Text("CLOSE"),
+              child: new Text(Translations.of(context).text2('Close', 'Close')),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
               textColor: UIData.ui_kit_color_2,
-              child: new Text("OK"),
+              child: new Text(Translations.of(context).text2('OK', 'OK')),
               onPressed: () {
                 onTapCallback(_controller.text);
                 Navigator.of(context).pop();
