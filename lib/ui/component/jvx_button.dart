@@ -30,10 +30,6 @@ class JVxButton extends JVxActionComponent {
       PressButton pressButton = PressButton(jvxAction.Action(componentId: this.name, label: this.text));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
-
-    //if (this.onButtonPressed!=null) {
-    //  this.onButtonPressed(this.name, this.text);
-    //}
   }
 
   @override
@@ -41,7 +37,7 @@ class JVxButton extends JVxActionComponent {
     return 
       RaisedButton(
         key: this.componentId, 
-        onPressed: buttonPressed,
+        onPressed: this.enabled?buttonPressed:null,
         color: UIData.ui_kit_color_2[400],
         elevation: 10,
         child: Text(text!=null?text:"", 
