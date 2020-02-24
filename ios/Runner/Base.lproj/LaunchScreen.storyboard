@@ -25,18 +25,18 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_background" translatesAutoresizingMaskIntoConstraints="NO" id="Cxf-yv-N9a">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_icon" translatesAutoresizingMaskIntoConstraints="NO" id="nna-WY-fdy">
-                                <rect key="frame" x="131" y="148" width="152" height="152"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_logo" translatesAutoresizingMaskIntoConstraints="NO" id="rTb-VR-h7F">
+                                <rect key="frame" x="101" y="797" width="212" height="45"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="152" id="R0N-y7-V3e"/>
-                                    <constraint firstAttribute="width" constant="152" id="kOg-Sr-n7F"/>
+                                    <constraint firstAttribute="height" constant="45" id="HGc-78-wWh"/>
+                                    <constraint firstAttribute="width" constant="212" id="ifT-SU-nED"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_logo" translatesAutoresizingMaskIntoConstraints="NO" id="rTb-VR-h7F">
-                                <rect key="frame" x="98.5" y="792" width="217" height="50"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_icon" translatesAutoresizingMaskIntoConstraints="NO" id="nna-WY-fdy">
+                                <rect key="frame" x="101" y="112.5" width="212" height="223"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="HGc-78-wWh"/>
-                                    <constraint firstAttribute="width" constant="217" id="ifT-SU-nED"/>
+                                    <constraint firstAttribute="height" constant="223" id="R0N-y7-V3e"/>
+                                    <constraint firstAttribute="width" constant="212" id="kOg-Sr-n7F"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -62,8 +62,8 @@
     </scenes>
     <resources>
         <image name="LaunchImage" width="0.5" height="0.5"/>
-        <image name="launch_background" width="384" height="512"/>
-        <image name="launch_icon" width="76" height="76"/>
-        <image name="launch_logo" width="108.5" height="25"/>
+        <image name="launch_background" width="3072" height="3072"/>
+        <image name="launch_icon" width="212" height="223"/>
+        <image name="launch_logo" width="212" height="45"/>
     </resources>
 </document>

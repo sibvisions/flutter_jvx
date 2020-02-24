@@ -4,17 +4,17 @@
     <item>
         <bitmap
             android:gravity="fill"
-            android:src="@mipmap/launch_background" />
+            android:src="@drawable/jvx_bg" />
     </item>
 
     <item android:top="200dp">
-        <bitmap android:src="@mipmap/launch_icon"
+        <bitmap android:src="@drawable/jvx_ss"
             android:gravity="top" />
     </item>
 
     <item android:bottom="20dp">
         <bitmap
             android:gravity="bottom"
-            android:src="@mipmap/launch_logo" />
+            android:src="@drawable/sibvision_logo" />
     </item>
 </layer-list>

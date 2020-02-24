@@ -9,7 +9,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="jvx_mobile_v3"
+        android:label="VisionX Pre"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
