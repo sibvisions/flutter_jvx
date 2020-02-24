@@ -16,5 +16,5 @@
         <bitmap
             android:gravity="bottom"
             android:src="@mipmap/sibvision_logo" />
-    </item>-->
+    </item>
 </layer-list>

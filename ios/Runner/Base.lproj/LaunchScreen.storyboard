@@ -19,36 +19,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="YRO-k0-Ey4">
-                                <rect key="frame" x="207" y="448" width="0.5" height="0.5"/>
-                            </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_background" translatesAutoresizingMaskIntoConstraints="NO" id="Cxf-yv-N9a">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_logo" translatesAutoresizingMaskIntoConstraints="NO" id="rTb-VR-h7F">
-                                <rect key="frame" x="101" y="797" width="212" height="45"/>
+                                <rect key="frame" x="107" y="785.5" width="200" height="42"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="45" id="HGc-78-wWh"/>
-                                    <constraint firstAttribute="width" constant="212" id="ifT-SU-nED"/>
+                                    <constraint firstAttribute="height" constant="42" id="HGc-78-wWh"/>
+                                    <constraint firstAttribute="width" constant="200" id="ifT-SU-nED"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_icon" translatesAutoresizingMaskIntoConstraints="NO" id="nna-WY-fdy">
-                                <rect key="frame" x="101" y="112.5" width="212" height="223"/>
+                                <rect key="frame" x="138" y="151.5" width="138" height="145"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="223" id="R0N-y7-V3e"/>
-                                    <constraint firstAttribute="width" constant="212" id="kOg-Sr-n7F"/>
+                                    <constraint firstAttribute="height" constant="145" id="R0N-y7-V3e"/>
+                                    <constraint firstAttribute="width" constant="138" id="kOg-Sr-n7F"/>
                                 </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="nna-WY-fdy" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.5" id="1Wa-Vp-ZTO"/>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="1a2-6s-vTC"/>
                             <constraint firstItem="rTb-VR-h7F" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3EE-yQ-fGh"/>
-                            <constraint firstItem="YRO-k0-Ey4" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="4X2-HB-R7a"/>
                             <constraint firstAttribute="bottom" secondItem="Cxf-yv-N9a" secondAttribute="bottom" id="H43-0O-BI5"/>
                             <constraint firstAttribute="trailing" secondItem="Cxf-yv-N9a" secondAttribute="trailing" id="Hq4-Ve-XaV"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="rTb-VR-h7F" secondAttribute="bottom" constant="20" id="I0x-pE-s2K"/>
+                            <constraint firstItem="rTb-VR-h7F" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="1.8" id="UrI-sr-Chu"/>
                             <constraint firstItem="nna-WY-fdy" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="WPy-2b-XKi"/>
                             <constraint firstItem="Cxf-yv-N9a" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="adl-Lv-P6u"/>
                             <constraint firstItem="Cxf-yv-N9a" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="j8q-v1-Gdn"/>
@@ -61,9 +56,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="0.5" height="0.5"/>
         <image name="launch_background" width="3072" height="3072"/>
-        <image name="launch_icon" width="212" height="223"/>
-        <image name="launch_logo" width="212" height="45"/>
+        <image name="launch_icon" width="138" height="145"/>
+        <image name="launch_logo" width="200" height="42"/>
     </resources>
 </document>
