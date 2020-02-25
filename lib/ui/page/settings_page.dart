@@ -245,7 +245,11 @@ class _SettingsPageState extends State<SettingsPage> {
       bottomButton2:
           Translations.of(context).text2('Save', 'Save').toUpperCase(),
       bottomButton1Function: () {
-        Navigator.of(context).pop();
+        if (ModalRoute.of(context).settings.arguments is String && ModalRoute.of(context).settings.arguments=="error.dialog") {
+          RestartWidget.restartApp(context, loadConf: false);
+        } else {
+          Navigator.of(context).pop();
+        }
       },
       bottomButton2Function: () {
         savePreferences();
