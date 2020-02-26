@@ -4,8 +4,9 @@ The Flutter Client is a mobile app for the [JVx framework](https://doc.sibvision
 
 # Requirements
 
-* Java 6 or later
-* A JVx application, running on a Java application server, using [JVx mobile UI](https://sourceforge.net/projects/jvxmobile/) 
+* [Flutter dev environment](https://flutter.dev/docs/get-started/install)
+* Java 6 or later (for the JVx application)
+* A JVx application, running on a Java application (Jetty, Tomcat, ...) server, using [JVx mobile UI](https://sourceforge.net/projects/jvxmobile/) 
 
 # Build
 
