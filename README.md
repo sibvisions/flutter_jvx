@@ -14,3 +14,11 @@ We use [Visual Studio Code](https://code.visualstudio.com/) and [Android Studio]
 # Run
 
 We recommend that you use the client as library and create your own app. We have an example [here](../../../flutterclient.example).
+
+Following dependency is required in your pubspec.yaml:
+
+    jvx_flutterclient:
+        git:
+        url: https://github.com/sibvisions/flutterclient.git
+        
+It's also possible to use the app itself - standalone and not as library. You have the choice.
