@@ -47,18 +47,25 @@ class _StartupPageState extends State<StartupPage> {
           _loginHandler(state);
         },
         child: Scaffold(
-          body: Column(
+          body: widget.config!=null && widget.config.startupWidget!=null ? widget.config.startupWidget : new Stack(
+      children: <Widget>[
+        new Container(
+          decoration: new BoxDecoration(
+            image: new DecorationImage(image: new AssetImage(globals.package ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png' : 'assets/images/jvx_bg.png'), fit: BoxFit.cover,),
+          ),
+        ),Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Center(
                 child: Image.asset(
-                  globals.package ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg' : 'assets/images/sib_visions.jpg',
-                  width: (MediaQuery.of(context).size.width - 50),
+                  globals.package ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png' : 'assets/images/jvx_ss.png',
+                  width: 150,
                 ),
               ),
               CircularProgressIndicator(),
               Text('Loading...')
             ],
+          )]
           ),
         ),
       ),

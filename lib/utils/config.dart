@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'globals.dart' as globals;
 
 /// Config for Developers:
 ///
@@ -7,17 +10,17 @@ import 'package:flutter/services.dart';
 ///
 /// To create a new config add conf.json file to /env/
 /// and add the to properties [baseUrl], [appName] and [debug].
-/// 
+///
 /// [baseUrl]: Url for the JVx Server
-/// 
+///
 /// [appName]: Application name of the JVx Application
-/// 
-/// [debug]: 
-/// 
+///
+/// [debug]:
+///
 ///   `true`: The config will load.
-/// 
+///
 ///   `false`: The config will not load.
-/// 
+///
 /// When releasing or going in production mode. The [debug] property has to be `false`.
 class Config {
   String baseUrl;
@@ -26,16 +29,24 @@ class Config {
   String username;
   String password;
   String appMode;
+  Widget startupWidget;
 
-  Config({this.baseUrl, this.appName, this.debug, this.username, this.password, this.appMode});
+  Config(
+      {this.baseUrl,
+      this.appName,
+      this.debug,
+      this.username,
+      this.password,
+      this.appMode,
+      this.startupWidget});
 
   Config.fromJson(Map<String, dynamic> json)
-    : baseUrl = json['baseUrl'],
-      appName = json['appName'],
-      debug = json['debug'],
-      username = json['username'],
-      password = json['password'],
-      appMode = json['appMode'];
+      : baseUrl = json['baseUrl'],
+        appName = json['appName'],
+        debug = json['debug'],
+        username = json['username'],
+        password = json['password'],
+        appMode = json['appMode'];
 
   static Future<Config> loadFile({String path, Config conf}) async {
     if (conf != null) {
