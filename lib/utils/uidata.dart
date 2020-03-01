@@ -31,6 +31,22 @@ class UIData {
     }
   );
 
+  static const JVX_BLUE = MaterialColor(
+    sibblue,
+    <int, Color>{
+      50: Color.fromRGBO(0,55,88, .1),
+      100: Color.fromRGBO(0,55,88, .2),
+      200: Color.fromRGBO(0,55,88, .3),
+      300: Color.fromRGBO(0,55,88, .4),
+      400: Color.fromRGBO(0,55,88, .5),
+      500: Color.fromRGBO(0,55,88, .6),
+      600: Color.fromRGBO(0,55,88, .7),
+      700: Color.fromRGBO(0,55,88, .8),
+      800: Color.fromRGBO(0,55,88, .9),
+      900: Color.fromRGBO(0,55,88, 1),
+    }
+  );
+
 //colors
   static List<Color> kitGradients = [
     Colors.blueGrey.shade800,
