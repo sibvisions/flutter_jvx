@@ -319,7 +319,7 @@ class RenderJVxFlowLayoutWidget extends RenderBox
 			}
 		}
 
-    this.size = this.constraints.constrainSizeAndAttemptToPreserveAspectRatio(Size(fW.toDouble(), fH.toDouble()));
+    this.size = this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
   }
 
 

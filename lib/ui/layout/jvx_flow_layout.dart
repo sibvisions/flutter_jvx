@@ -31,6 +31,10 @@ class JVxFlowLayout extends JVxLayout<String> {
 
   JVxFlowLayout.fromLayoutString(String layoutString, String layoutData) {
     updateLayoutString(layoutString);
+  }
+
+  void updateLayoutString(String layoutString) {
+    parseFromString(layoutString);
 
     List<String> parameter = layoutString?.split(",");
 
@@ -39,10 +43,6 @@ class JVxFlowLayout extends JVxLayout<String> {
     verticalAlignment = int.parse(parameter[9]);
     horizontalComponentAlignment = int.parse(parameter[10]);
     verticalComponentAlignment = horizontalComponentAlignment;
-  }
-
-  void updateLayoutString(String layoutString) {
-    parseFromString(layoutString);
   }
 
   void addLayoutComponent(IComponent pComponent, String pConstraint)
