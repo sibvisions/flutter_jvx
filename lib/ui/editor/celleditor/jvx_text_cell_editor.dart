@@ -10,6 +10,7 @@ import '../../../utils/uidata.dart';
 class JVxTextCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
+  bool password = false;
   bool valueChanged = false;
   FocusNode node = FocusNode();
 
@@ -32,6 +33,10 @@ class JVxTextCellEditor extends JVxCellEditor {
     multiLine = (changedCellEditor
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('multiline') ??
+        false);
+    password = (changedCellEditor
+            .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
+            ?.contains('password') ??
         false);
     node.addListener(() {
       if (!node.hasFocus) onTextFieldEndEditing();
@@ -103,6 +108,7 @@ class JVxTextCellEditor extends JVxCellEditor {
         onChanged: onTextFieldValueChanged,
         focusNode: node,
         readOnly: !this.editable,
+        obscureText: this.password
         //expands: this.verticalAlignment==1 && multiLine ? true : false,
       ),
     );
