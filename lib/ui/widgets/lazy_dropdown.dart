@@ -137,7 +137,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-              child: Text(Properties.utf8convert(text)),
+              child: Text(text),
               padding: EdgeInsets.all(5)),
         ));
   }

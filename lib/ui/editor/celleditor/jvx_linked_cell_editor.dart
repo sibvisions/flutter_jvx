@@ -95,7 +95,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(Properties.utf8convert(text), overflow: TextOverflow.fade),
+              Text(text, overflow: TextOverflow.fade),
             ],
           ),
         ));
@@ -153,7 +153,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
                 : null) : Border.all(color: Colors.grey)),
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
-          hint: Text(Properties.utf8convert(h == null ? "" : h)),
+          hint: Text(h == null ? "" : h),
           value: v,
           items: this._items,
           onChanged: valueChanged,
@@ -184,7 +184,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
                 : null) : Border.all(color: Colors.grey)),
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
-          hint: Text(Properties.utf8convert(h == null ? "" : h)),
+          hint: Text(h == null ? "" : h),
           value: v,
           items: this._items,
           onChanged: valueChanged,

@@ -31,8 +31,8 @@ showError(BuildContext context, String title, String message) {
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text(Properties.utf8convert(title)),
-            content: Text(Properties.utf8convert(message)),
+            title: Text(title),
+            content: Text(message),
             actions: <Widget>[
               FlatButton(
                 child: Text(Translations.of(context).text2('Close', 'Close')),
@@ -51,7 +51,13 @@ showSessionExpired(BuildContext context, String title, String message) async {
             actions: <Widget>[
               FlatButton(
                 child: Text(Translations.of(context).text2('OK', 'OK')),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  globals.username = '';
+                  globals.password = '';
+                  globals.profileImage = '';
+                  globals.displayName = ''; 
+                  Navigator.of(context).pop();
+                }
               )
             ],
           )).then((val) {

@@ -245,10 +245,11 @@ class ApiBloc extends Bloc<Request, Response> {
     Response resp = await processRequest(request);
 
     SharedPreferencesHelper().setLoginData('', '');
-    globals.username = '';
-    globals.password = '';
-    globals.profileImage = '';
-    globals.displayName = '';
+    SharedPreferencesHelper().setAuthKey(null);
+    //globals.username = '';
+    //globals.password = '';
+    //globals.profileImage = '';
+    //globals.displayName = '';
 
     yield resp;
   }

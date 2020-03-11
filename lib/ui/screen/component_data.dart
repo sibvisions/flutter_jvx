@@ -234,7 +234,7 @@ class ComponentData {
     if (columnIndex!=null && data.selectedRow>=0 && data.selectedRow < data.records.length) {
       dynamic value = data.records[data.selectedRow][columnIndex];
       if (value is String)
-        return Properties.utf8convert(value);
+        return value;
       else 
         return value;
     }

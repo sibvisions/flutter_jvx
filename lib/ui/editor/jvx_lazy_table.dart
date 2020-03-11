@@ -215,7 +215,7 @@ class JVxLazyTable extends JVxEditor {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              child: Text(Properties.utf8convert(text),
+              child: Text(text,
                   style: this.headerTextStyle),
               padding: EdgeInsets.all(5),
             ),
@@ -230,7 +230,7 @@ class JVxLazyTable extends JVxEditor {
                   // only for development
                   child: (cellEditor is JVxChoiceCellEditor || cellEditor is JVxCheckboxCellEditor)
                       ? cellEditor.getWidget()
-                      : Text(Properties.utf8convert(text)),
+                      : Text(text),
                   // child: Text(Properties.utf8convert(text),
                   //     style: this.itemTextStyle),
                   padding: EdgeInsets.all(5)),

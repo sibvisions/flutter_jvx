@@ -41,7 +41,7 @@ class Properties {
       } else if (T == bool) {
         return (value.toLowerCase() == 'true') as T;
       } else if (T == String) {
-        if (value != null) return utf8convert(value) as T;
+        if (value != null) return value as T;
       }
     } else if (value is int) {
       if (T == TextAlign) {
@@ -101,15 +101,5 @@ class Properties {
     }
 
     return result;
-  }
-
-  static String utf8convert(String text) {
-    try {
-      List<int> bytes = text.toString().codeUnits;
-      return utf8.decode(bytes);
-    } catch (e) {
-      print("Failed to decode string to utf-8!");
-      return text;
-    }
   }
 }

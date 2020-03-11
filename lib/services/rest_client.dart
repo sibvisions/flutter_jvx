@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:jvx_flutterclient/model/properties/properties.dart';
+
 import '../model/api/exceptions/api_exception.dart';
 import '../model/api/request/upload.dart';
 import '../model/api/response/response.dart';
@@ -31,7 +33,8 @@ class RestClient {
       Log.printLong("Response: ${response.body}");
     }
 
-    return response.body;
+    String body = this.utf8convert(response.body);
+    return body;
   }
 
   Future post(String resourcePath, dynamic data) async {
@@ -56,7 +59,8 @@ class RestClient {
       Log.printLong('Response: ${response.body}');
     }
 
-    return response.body;
+    String body = this.utf8convert(response.body);
+    return body;
   }
 
   Future<Response> postAsync(String resourcePath, dynamic data) async {
@@ -106,7 +110,8 @@ class RestClient {
         ..details =
             '(${(response as prefHttp.Response).statusCode}): ${(response as prefHttp.Response).body}';
     } else {
-      dynamic decodedBody = json.decode(response.body);
+      String body = this.utf8convert(response.body);
+      dynamic decodedBody = json.decode(body);
       try {
         if (decodedBody is List) {
           resp = Response.fromJson(decodedBody);
@@ -273,6 +278,16 @@ class RestClient {
       headers['cookie'] =
           (index == -1) ? rawCookie : rawCookie.substring(0, index);
       globals.jsessionId = headers['cookie'];
+    }
+  }
+
+  String utf8convert(String text) {
+    try {
+      List<int> bytes = text.toString().codeUnits;
+      return utf8.decode(bytes);
+    } catch (e) {
+      print("Failed to decode string to utf-8!");
+      return text;
     }
   }
 }
