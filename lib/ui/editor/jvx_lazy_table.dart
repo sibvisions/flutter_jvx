@@ -111,7 +111,7 @@ class JVxLazyTable extends JVxEditor {
 
     int newSelectedRow = changedComponent.getProperty<int>(
         ComponentProperty.SELECTED_ROW);
-    if (newSelectedRow>=0 && newSelectedRow!=selectedRow && this.data!=null && this.data.data!=null)
+    if (newSelectedRow!=null && newSelectedRow>=0 && newSelectedRow!=selectedRow && this.data!=null && this.data.data!=null)
       this.data.updateSelectedRow(newSelectedRow, true);
     
     selectedRow = changedComponent.getProperty<int>(
