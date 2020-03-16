@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/utils/uidata.dart';
 
 bool checkFontAwesome(String text) {
   if (text.contains('FontAwesome')) {
@@ -30,6 +31,25 @@ formatFontAwesomeText(String text) {
   
 
   return keyValue;
+}
+
+convertFontAwesomeTextToIcon(String text, Color color) {
+  if (!checkFontAwesome(text)) 
+    return "This is no fontawesome string";
+  
+  List<String> arr = text.split(',');
+
+  String icon = arr[0];
+  Size size = Size(16,16);
+
+  if (arr.length>=3 && double.tryParse(arr[1])!=null && double.tryParse(arr[2])!=null) 
+    size = Size(double.parse(arr[1]), double.parse(arr[2]));
+
+  return new Icon(
+    chooseIcon(convertToMethodName(icon)),
+    size: size.width,
+    color: color,
+  );
 }
 
 String convertToMethodName(String text) {

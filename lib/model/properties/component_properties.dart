@@ -53,6 +53,7 @@ enum ComponentProperty {
   DATA_TYPE_IDENTIFIER,
   NULLABLE,
   PREFERRED_SIZE,
+  IMAGE
 }
 
 class ComponentProperties {
