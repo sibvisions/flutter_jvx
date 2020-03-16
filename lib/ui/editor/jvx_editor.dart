@@ -147,7 +147,7 @@ class JVxEditor extends JVxComponent implements IEditor {
 
   @override
   Widget getWidget() {
-    if (reload == -1) {
+    if (reload != null) {
       this.cellEditor?.value =
           data.getColumnData(context, this.columnName, this.reload);
       this.reload = null;

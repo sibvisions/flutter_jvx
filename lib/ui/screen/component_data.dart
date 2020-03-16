@@ -108,7 +108,7 @@ class ComponentData {
   }
 
   dynamic getColumnData(BuildContext context, String columnName, int reload) {
-    if (isFetching==false && (data==null || reload==-1 ||
+    if (isFetching==false && (data==null || reload!=null ||
       (data.selectedRow >= data.records.length && !data.isAllFetched))) {
       if (data==null || data.selectedRow==null || data.selectedRow<0) {
         this._fetchData(context, reload, 0);
