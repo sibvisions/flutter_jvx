@@ -376,7 +376,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     } else if (type == 'gallery') {
       file = await ImagePicker.pickImage(source: ImageSource.gallery);
     } else if (type == 'file system') {
-      file = await FilePicker.getFile(type: FileType.ANY);
+      file = await FilePicker.getFile(type: FileType.any);
     }
 
     return file;
