@@ -55,6 +55,25 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           Expanded(
               flex: 2,
               child: _buildListViewForDrawer(context, this.widget.menuItems)),
+          Divider(),
+          ListTile(
+            title: Text(Translations.of(context).text2('Settings', 'Settings')),
+            leading: Icon(FontAwesomeIcons.cog),
+            onTap: () {
+              Navigator.of(context).pushNamed('/settings');
+            },
+          ),
+          Divider(),
+          ListTile(
+            title: Text(Translations.of(context).text2('Logout', 'Logout')),
+            leading: Icon(FontAwesomeIcons.signOutAlt),
+            onTap: () {
+              Logout logout =
+                  Logout(clientId: globals.clientId, requestType: RequestType.LOGOUT);
+
+              BlocProvider.of<ApiBloc>(context).dispatch(logout);
+            },
+          )
         ],
       ));
     });
@@ -62,27 +81,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
   ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = <Widget>[];
-
-    // tiles.add(_buildDrawerHeader());
-
-    ListTile settingsTile = new ListTile(
-      title: Text(Translations.of(context).text2('Settings', 'Settings')),
-      leading: Icon(FontAwesomeIcons.cog),
-      onTap: () {
-        Navigator.of(context).pushNamed('/settings');
-      },
-    );
-
-    ListTile logoutTile = new ListTile(
-      title: Text(Translations.of(context).text2('Logout', 'Logout')),
-      leading: Icon(FontAwesomeIcons.signOutAlt),
-      onTap: () {
-        Logout logout =
-            Logout(clientId: globals.clientId, requestType: RequestType.LOGOUT);
-
-        BlocProvider.of<ApiBloc>(context).dispatch(logout);
-      },
-    );
 
     if (widget.listMenuItems) {
       for (MenuItem item in items) {
@@ -130,12 +128,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         tiles.add(tile);
       }
     }
-
-    if (this.widget.listMenuItems) tiles.add(Divider());
-    tiles.add(settingsTile);
-    tiles.add(Divider());
-    tiles.add(logoutTile);
-    // tiles.add(Divider());
 
     return new ListView(
       children: tiles,
