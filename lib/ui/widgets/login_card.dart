@@ -11,6 +11,7 @@ import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 
 class LoginCard extends StatefulWidget {
+  final focus = FocusNode();
   @override
   _LoginCardState createState() => new _LoginCardState();
 }
@@ -49,7 +50,12 @@ class _LoginCardState extends State<LoginCard>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              new TextField(
+              new TextFormField(
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (v){
+                  FocusScope.of(context).requestFocus(widget.focus);
+                },
+                autocorrect: false,
                 onChanged: (username) => this.username = username,
                 style: new TextStyle(
                     fontSize: 15.0, color: Colors.black),
@@ -62,10 +68,11 @@ class _LoginCardState extends State<LoginCard>
               new SizedBox(
                 height: 10.0,
               ),
-              new TextField(
-                onSubmitted: (String value) {
+              new TextFormField(
+                onFieldSubmitted: (String value) {
                   _login(context);
                 },
+                focusNode: widget.focus,
                 onChanged: (password) => this.password = password,
                 style: new TextStyle(
                     fontSize: 15.0, color: Colors.black),
