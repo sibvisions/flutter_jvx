@@ -52,13 +52,6 @@ class _MenuGridViewState extends State<MenuGridView> {
             globals.customScreenManager.onUserData(state.userData);
           }
 
-          // if (state != null &&
-          //     state.requestType == RequestType.APP_STYLE &&
-          //     !state.loading &&
-          //     !state.error) {
-          //   globals.applicationStyle = state.applicationStyle;
-          // }
-
           if (state != null &&
               state.screenGeneric != null &&
               state.requestType == RequestType.OPEN_SCREEN ) {
@@ -154,17 +147,6 @@ class _MenuGridViewState extends State<MenuGridView> {
                 requestType: RequestType.OPEN_SCREEN);
 
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-
-            /*
-                    OpenScreenBloc openScreenBloc = OpenScreenBloc();
-                    StreamSubscription<FetchProcess> apiStreamSubscription;
-
-                    apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
-                    openScreenBloc.openScreenSink.add(
-                      new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
-                    );
-
-                    */
           },
         );
       },
@@ -269,17 +251,6 @@ class _MenuGridViewState extends State<MenuGridView> {
 
           BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
         }
-
-        /*
-                    OpenScreenBloc openScreenBloc = OpenScreenBloc();
-                    StreamSubscription<FetchProcess> apiStreamSubscription;
-                    
-                    apiStreamSubscription = apiSubscription(openScreenBloc.apiResult, context);
-                    openScreenBloc.openScreenSink.add(
-                      new OpenScreenViewModel(action: action, clientId: globals.clientId, manualClose: true)
-                    );
-
-                    */
       },
     );
   }

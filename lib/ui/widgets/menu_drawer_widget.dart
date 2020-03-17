@@ -124,6 +124,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             setState(() {
               title = item.action.label;
             });
+            Navigator.of(context).pop();
             prefix0.Action action = item.action;
 
             OpenScreen openScreen = OpenScreen(
@@ -131,15 +132,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                 clientId: globals.clientId,
                 manualClose: false,
                 requestType: RequestType.OPEN_SCREEN);
-
-            // CloseScreen closeScreen = CloseScreen(
-            //     clientId: globals.clientId,
-            //     componentId: currentScreen
-            //         .toString()
-            //         .replaceAll("[<'", '')
-            //         .replaceAll("'>]", ''),
-            //     openScreen: openScreen,
-            //     requestType: RequestType.CLOSE_SCREEN);
 
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },

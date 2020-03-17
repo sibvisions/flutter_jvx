@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui/widgets/menu_empty_widget.dart';
 import '../../model/menu_item.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
 import '../../ui/widgets/menu_grid_view.dart';
@@ -74,9 +75,7 @@ class MenuPage extends StatelessWidget {
           menuItems: this.menuItems,
           );
       } else if (globals.applicationStyle.menuMode == 'drawer') {
-        return Center(
-          child: Text('Choose Item'),
-          );
+        return MenuEmpty();
       } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
         return MenuGridView(
           items: this.menuItems,

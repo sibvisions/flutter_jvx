@@ -31,13 +31,20 @@ class _MenuListWidgetState extends State<MenuListWidget> {
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         listener: (context, state) {
+          print("*** MenuListWidget - RequestType: " +
+              state.requestType.toString());
+
+          if (state != null && state.userData != null && globals.customScreenManager != null) {
+            globals.customScreenManager.onUserData(state.userData);
+          }
+
           if (state != null &&
               state.screenGeneric != null &&
-              state.requestType == RequestType.OPEN_SCREEN) {
+              state.requestType == RequestType.OPEN_SCREEN ) {
             Key componentID = new Key(state.screenGeneric.componentId);
-            globals.items = this.widget.menuItems;
+            globals.items = widget.menuItems;
 
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
+            Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
                       screenGeneric: state.screenGeneric,
                       data: state.jVxData,
@@ -46,6 +53,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                       componentId: componentID,
                       title: title,
                       items: globals.items,
+                      menuComponentId: (state.request as OpenScreen).action.componentId,
                     )));
           }
         },
