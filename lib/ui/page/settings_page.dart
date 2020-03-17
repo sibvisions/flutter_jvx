@@ -236,7 +236,10 @@ class _SettingsPageState extends State<SettingsPage> {
       appTitle: Translations.of(context).text2('Settings', 'Settings'),
       showBottomNav: true,
       showFAB: true,
-      backGroundColor: Colors.grey.shade300,
+      backGroundColor: (globals.applicationStyle != null &&
+                globals.applicationStyle.desktopColor != null)
+            ? globals.applicationStyle.desktopColor
+            : Colors.grey.shade300,
       floatingIcon: FontAwesomeIcons.qrcode,
       qrCallback: () => scanBarcode(),
       bodyData: settingsBuilder(),

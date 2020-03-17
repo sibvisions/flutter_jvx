@@ -23,10 +23,12 @@ import '../../../model/properties/hex_color.dart';
 ///  * `drawer`: Shows the [MenuItem]'s in the [MenuDrawerWidget].
 class ApplicationStyleResponse extends ResponseObject {
   String loginTitle;
-  String loginBackground;
+  Color loginBackground;
   String loginInfotext;
   String loginIcon;
+  String loginLogo;
   String desktopIcon;
+  Color desktopColor;
   String menuMode;
   Color themeColor;
 
@@ -34,9 +36,9 @@ class ApplicationStyleResponse extends ResponseObject {
 
   ApplicationStyleResponse.fromJson(Map<String, dynamic> json) {
     loginTitle = json['login.title'];
-    loginBackground = json['login.background'];
     loginInfotext = json['login.infotext'];
     loginIcon = json['login.icon'];
+    loginLogo = json['login.logo'];
     desktopIcon = json['desktop.icon'];
     if (json['menu'] != null)
       menuMode = json['menu']['mode'];
@@ -47,6 +49,16 @@ class ApplicationStyleResponse extends ResponseObject {
       themeColor = HexColor(json['theme']['color']);
     else
       themeColor = null;
+
+    if (json['desktop.color'] != null && HexColor.isHexColor(json['desktop.color']))
+      desktopColor = HexColor(json['desktop.color']);
+    else
+      desktopColor = null;
+
+    if (json['login.background'] != null && HexColor.isHexColor(json['login.background']))
+      loginBackground = HexColor(json['login.background']);
+    else
+      loginBackground = null;
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -54,6 +66,7 @@ class ApplicationStyleResponse extends ResponseObject {
     'login.background': loginBackground,
     'login.infotext': loginInfotext,
     'login.icon': loginIcon,
+    'login.logo': loginLogo,
     'desktop.icon': desktopIcon,
     'menu': {
       'mode': menuMode

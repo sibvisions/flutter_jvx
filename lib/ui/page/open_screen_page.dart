@@ -180,7 +180,26 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               if (state.screenGeneric != null && !state.screenGeneric.update) {
                 title = state.screenGeneric.screenTitle;
               }
+
+              Widget child;
+
+              if ((globals.applicationStyle != null && globals.applicationStyle?.desktopIcon != null)) {
+                child = Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: FileImage(File(
+                                      '${globals.dir}${globals.applicationStyle.desktopIcon}')), 
+                                      fit: BoxFit.cover)),
+                  child: screen.getWidget());           
+              } else {
+                return screen.getWidget();
+              }
+
               return Scaffold(
+                backgroundColor: (globals.applicationStyle != null &&
+                      globals.applicationStyle.desktopColor != null)
+                  ? globals.applicationStyle.desktopColor
+                  : null,
                   endDrawer: MenuDrawerWidget(
                     menuItems: widget.items,
                     listMenuItems: true,
@@ -218,7 +237,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     ),
                     title: Text(title ?? ''),
                   ),
-                  body: screen.getWidget());
+                  body: child);
             }),
           )),
     );

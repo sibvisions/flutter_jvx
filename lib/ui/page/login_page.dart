@@ -28,8 +28,7 @@ class LoginPageState extends State<LoginPage> {
         key: scaffoldState,
         backgroundColor: (globals.applicationStyle != null &&
                 globals.applicationStyle.loginBackground != null)
-            ? Color(int.parse(
-                '0xFF${globals.applicationStyle.loginBackground.substring(1)}'))
+            ? globals.applicationStyle.loginBackground
             : null,
         body: Stack(
           fit: StackFit.expand,

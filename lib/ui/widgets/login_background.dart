@@ -54,12 +54,12 @@ class LoginBackground extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                 child: (globals.applicationStyle == null ||
-                        globals.applicationStyle?.loginIcon == null)
+                        globals.applicationStyle?.loginLogo == null)
                     ? Image.asset(globals.package ? 'packages/jvx_flutterclient/assets/images/sibvisions.png' : 'assets/images/sibvisions.png',
                         fit: BoxFit.fitHeight)
                     : Image.file(
                         File(
-                            '${globals.dir}${globals.applicationStyle.loginIcon}'),
+                            '${globals.dir}${globals.applicationStyle.loginLogo}'),
                         fit: BoxFit.fitHeight),
               ),
             )
