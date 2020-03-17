@@ -60,6 +60,7 @@ class MenuPage extends StatelessWidget {
       endDrawer: MenuDrawerWidget(
         menuItems: this.menuItems,
         listMenuItems: drawerMenu,
+        groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped'),
       ),
     );
   }
