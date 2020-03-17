@@ -19,6 +19,7 @@ import '../../utils/globals.dart' as globals;
 /// the [Drawer] for the [AppBar] with dynamic [MenuItem]'s
 class MenuDrawerWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
+  final bool groupedMenuMode;
   final bool listMenuItems;
   final String currentTitle;
 
@@ -26,7 +27,8 @@ class MenuDrawerWidget extends StatefulWidget {
       {Key key,
       @required this.menuItems,
       this.listMenuItems = false,
-      this.currentTitle})
+      this.currentTitle,
+      this.groupedMenuMode = true})
       : super(key: key);
 
   @override
@@ -87,12 +89,24 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     List<Widget> tiles = <Widget>[];
 
     if (widget.listMenuItems) {
+      String lastGroupName = "";
       for (int i=0; i<items.length;i++) {
         MenuItem item = items[i];
-        ListTile tile = new ListTile(
+
+        if (widget.groupedMenuMode && item.group!=null && item.group.isNotEmpty && item.group!=lastGroupName) {
+            ListTile groupTile = new ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+          title: Text(item.group, style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ))); 
+          tiles.add(groupTile);
+          lastGroupName = item.group;
+        }
+
+        ListTile tile = new ListTile(
           title: Text(item.action.label),
-          subtitle: Text('Group: ' + item.group),
+          //subtitle: Text('Group: ' + item.group),
           leading: item.image != null
               ? new CircleAvatar(
                   backgroundColor: Colors.transparent,
@@ -130,7 +144,9 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },
         );
+        
         tiles.add(tile);
+
         if (i<(items.length-1))
           tiles.add(Divider(height: 1));
       }
