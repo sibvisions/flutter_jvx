@@ -55,18 +55,21 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           Expanded(
               flex: 2,
               child: _buildListViewForDrawer(context, this.widget.menuItems)),
-          Divider(),
+              Container(
+        color: UIData.ui_kit_color_2,
+        child: Column(children: <Widget>[
+          Divider(height: 1),
           ListTile(
-            title: Text(Translations.of(context).text2('Settings', 'Settings')),
-            leading: Icon(FontAwesomeIcons.cog),
+            title: Text(Translations.of(context).text2('Settings', 'Settings'), style: TextStyle(color: UIData.textColor),),
+            leading: Icon(FontAwesomeIcons.cog, color: UIData.textColor),
             onTap: () {
               Navigator.of(context).pushNamed('/settings');
             },
           ),
-          Divider(),
+          Divider(height: 1, color: UIData.textColor),
           ListTile(
-            title: Text(Translations.of(context).text2('Logout', 'Logout')),
-            leading: Icon(FontAwesomeIcons.signOutAlt),
+            title: Text(Translations.of(context).text2('Logout', 'Logout'), style: TextStyle(color: UIData.textColor)),
+            leading: Icon(FontAwesomeIcons.signOutAlt, color: UIData.textColor),
             onTap: () {
               Logout logout =
                   Logout(clientId: globals.clientId, requestType: RequestType.LOGOUT);
@@ -74,17 +77,20 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               BlocProvider.of<ApiBloc>(context).dispatch(logout);
             },
           )
+          ],)),
         ],
       ));
     });
   }
 
-  ListView _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
+  MediaQuery _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = <Widget>[];
 
     if (widget.listMenuItems) {
-      for (MenuItem item in items) {
+      for (int i=0; i<items.length;i++) {
+        MenuItem item = items[i];
         ListTile tile = new ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
           title: Text(item.action.label),
           subtitle: Text('Group: ' + item.group),
           leading: item.image != null
@@ -124,13 +130,18 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
           },
         );
-        tiles.add(Divider());
         tiles.add(tile);
+        if (i<(items.length-1))
+          tiles.add(Divider(height: 1));
       }
     }
 
-    return new ListView(
-      children: tiles,
+    return MediaQuery.removePadding(
+      context: context, 
+      removeTop: true,
+      child: ListView(
+        children: tiles,
+      )
     );
   }
 
