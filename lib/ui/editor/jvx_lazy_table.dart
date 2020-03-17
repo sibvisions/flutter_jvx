@@ -69,7 +69,7 @@ class JVxLazyTable extends JVxEditor {
 
   @override
   get preferredSize {
-    return Size(300,200);
+    return Size(300,300);
   }
 
   @override
