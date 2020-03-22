@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/select_record.dart';
 import '../../model/api/request/press_button.dart';
@@ -14,7 +15,7 @@ mixin DataScreen {
   BuildContext context;
   List<ComponentData> componentData = <ComponentData>[];
 
-  void updateData(Request request, List<JVxData> data, List<JVxMetaData> metaData) {
+  void updateData(Request request, List<JVxData> data, List<JVxMetaData> metaData, List<JVxDataproviderChanged> dataproviderChanged) {
 
     if(request is SelectRecord && request.requestType==RequestType.DAL_DELETE) {
       ComponentData cData = getComponentData(request.dataProvider);
@@ -30,6 +31,11 @@ mixin DataScreen {
       metaData?.forEach((m) {
         ComponentData cData = getComponentData(m.dataProvider);
         cData.updateMetaData(m);
+      });
+
+      dataproviderChanged?.forEach((d) {
+        ComponentData cData = getComponentData(d.dataProvider);
+        cData.updateDataProviderChanged(context, d);
       });
 
       componentData.forEach((d) {

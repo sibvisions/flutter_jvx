@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/fetch_data.dart';
 import '../../model/api/request/data/filter_data.dart';
@@ -91,6 +92,11 @@ class ComponentData {
 
     isFetching = false;
     _onDataChanged.forEach((d) => d());
+  }
+
+  void updateDataProviderChanged(BuildContext context, JVxDataproviderChanged pDataproviderChanged) {
+    _fetchData(context, pDataproviderChanged.reload, 0);
+    updateSelectedRow(pDataproviderChanged.selectedRow);
   }
 
   void updateSelectedRow(int selectedRow, [bool raiseSelectedRowChangeEvent = false]) {

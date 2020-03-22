@@ -21,7 +21,7 @@ class JVxScreen implements IScreen {
   
   @override
   void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, List<JVxDataproviderChanged> dataproviderChanged, ScreenGeneric genericScreen) {
-    componentScreen.updateData(request, data, metaData);
+    componentScreen.updateData(request, data, metaData, dataproviderChanged);
     if (genericScreen!=null)
       componentScreen.updateComponents(genericScreen.changedComponents);
   }
