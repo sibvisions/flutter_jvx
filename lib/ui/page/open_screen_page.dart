@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jvx_flutterclient/model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/api/request/device_Status.dart';
@@ -30,6 +31,7 @@ class OpenScreenPage extends StatefulWidget {
   final String title;
   final List<JVxData> data;
   final List<JVxMetaData> metaData;
+  final List<JVxDataproviderChanged> dataProviderChanged;
   final Key componentId;
   final List<MenuItem> items;
   final Request request;
@@ -41,6 +43,7 @@ class OpenScreenPage extends StatefulWidget {
       this.screenGeneric,
       this.data,
       this.metaData,
+      this.dataProviderChanged,
       this.request,
       this.componentId,
       this.title,
@@ -138,7 +141,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 }
 
                 screen.componentScreen.context = context;
-                screen.update(state.request, state.jVxData, state.jVxMetaData,
+                screen.update(state.request, state.jVxData, state.jVxMetaData, state.jVxDataproviderChanged,
                     state.screenGeneric);
                 this.setState(() {});
               }
@@ -248,7 +251,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId.toString());
     screen.componentScreen.context = context;
     screen.update(
-        widget.request, widget.data, widget.metaData, widget.screenGeneric);
+        widget.request, widget.data, widget.metaData, widget.dataProviderChanged, widget.screenGeneric);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

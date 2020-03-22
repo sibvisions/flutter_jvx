@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../ui/screen/component_creator.dart';
 import '../../ui/screen/component_screen.dart';
 import '../../ui/screen/screen.dart';
@@ -15,8 +16,8 @@ abstract class IScreen {
   factory IScreen(ComponentCreator componentCreator) => JVxScreen(componentCreator);
 
   /// Gets called when new components, metaData or data is comming from the server.
-  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData,
-      ScreenGeneric genericScreen);
+  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, 
+    List<JVxDataproviderChanged> dataproviderChanged, ScreenGeneric genericScreen);
 
   /// Returns a widget.
   /// 

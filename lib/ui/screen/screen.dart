@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/response/data/jvx_data.dart';
 import '../../model/api/response/meta_data/jvx_meta_data.dart';
@@ -19,7 +20,7 @@ class JVxScreen implements IScreen {
   JVxScreen(IComponentCreator componentCreator) : componentScreen = ComponentScreen(componentCreator);
   
   @override
-  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {
+  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, List<JVxDataproviderChanged> dataproviderChanged, ScreenGeneric genericScreen) {
     componentScreen.updateData(request, data, metaData);
     if (genericScreen!=null)
       componentScreen.updateComponents(genericScreen.changedComponents);

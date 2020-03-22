@@ -13,6 +13,7 @@ import '../../../model/api/response/upload_action.dart';
 import '../../../model/api/response/user_data.dart';
 
 import 'application_meta_data.dart';
+import 'data/jvx_dataprovider_changed.dart';
 import 'language.dart';
 import 'meta_data/jvx_meta_data.dart';
 import 'response_object.dart';
@@ -36,6 +37,7 @@ class Response {
   ScreenGeneric screenGeneric;
   List<JVxData> jVxData = <JVxData>[];
   List<JVxMetaData> jVxMetaData = <JVxMetaData>[];
+  List<JVxDataproviderChanged> jVxDataproviderChanged = <JVxDataproviderChanged>[];
   ApplicationStyleResponse applicationStyle;
   DownloadAction downloadAction;
   UploadAction uploadAction;
@@ -96,6 +98,9 @@ class Response {
           break;
         case ResponseObjectType.DAL_METADATA:
           jVxMetaData.add(JVxMetaData.fromJson(r));
+          break;
+        case ResponseObjectType.DAL_DATAPROVIDERCHANGED:
+          jVxDataproviderChanged.add(JVxDataproviderChanged.fromJson(r));
           break;
         case ResponseObjectType.DOWNLOAD:
           downloadAction = DownloadAction.fromJson(r);

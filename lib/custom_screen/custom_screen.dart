@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../model/api/response/data/jvx_dataprovider_changed.dart';
 import '../ui/screen/component_creator.dart';
 import '../ui/screen/i_screen.dart';
 
@@ -22,7 +23,7 @@ class CustomScreen implements IScreen {
   }
 
   @override
-  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {}
+  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, List<JVxDataproviderChanged> dataProviderChanged, ScreenGeneric genericScreen) {}
 
   @override
   bool withServer() {
