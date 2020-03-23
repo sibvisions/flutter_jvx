@@ -22,6 +22,7 @@ class Response {
   String downloadFileName;
   RequestType requestType;
   bool error;
+  bool errorHandled = false;
   String errorName;
   bool loading = false;
   String message;
@@ -48,6 +49,7 @@ class Response {
   Response.fromJsonForAppStyle(Map<String, dynamic> json) {
     checkForError(json);
     error = false;
+    errorHandled = false;
     if (json != null)
       applicationStyle = ApplicationStyleResponse.fromJson(json);
     else
@@ -67,6 +69,7 @@ class Response {
     }
 
     error = false;
+    errorHandled = false;
 
     json.forEach((r) {
       switch (getResponseObjectTypeEnum(r['name'])) {

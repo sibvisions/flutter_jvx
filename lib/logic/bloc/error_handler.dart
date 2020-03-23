@@ -74,8 +74,9 @@ Widget errorAndLoadingListener(Widget child) {
         hideProgress(context);
       }
 
-      if (state != null && !state.loading && state.error) {
+      if (state != null && !state.loading && state.error && !state.errorHandled) {
         handleError(state, context);
+        state.errorHandled = true;
       }
     },
     child: child,
