@@ -48,6 +48,12 @@ class JVxLabel extends JVxComponent implements IComponent {
 
   @override
   Widget getWidget() {
+    double labelBaseline = 30;
+
+    if (style!=null && style.fontSize!= null) {
+      labelBaseline = style.fontSize/2+22;
+    }
+
     return SizedBox(
       key: componentId,
       child: Container(
@@ -56,7 +62,7 @@ class JVxLabel extends JVxComponent implements IComponent {
           alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
           child:Baseline( 
             baselineType: TextBaseline.alphabetic,
-            baseline: 30.0,
+            baseline: labelBaseline,
             child: Text(text,
               style: style,
             )
