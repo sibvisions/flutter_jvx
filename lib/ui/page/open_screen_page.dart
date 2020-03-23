@@ -16,7 +16,6 @@ import '../../model/api/request/navigation.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/request/upload.dart';
 import '../../model/api/response/response.dart';
-import '../../model/api/response/screen_generic.dart';
 import '../../model/menu_item.dart';
 import '../../ui/screen/component_creator.dart';
 import '../../ui/screen/i_screen.dart';
@@ -31,12 +30,10 @@ class OpenScreenPage extends StatefulWidget {
   final Key componentId;
   final List<MenuItem> items;
   final Request request;
-  final ScreenGeneric screenGeneric;
   final String menuComponentId;
 
   OpenScreenPage(
       {Key key,
-      this.screenGeneric,
       this.responseData,
       this.request,
       this.componentId,
