@@ -12,7 +12,6 @@ import '../../model/api/response/data/jvx_data.dart';
 import '../../model/api/request/data/select_record.dart';
 import '../../model/api/response/meta_data/jvx_meta_data.dart';
 import '../../model/filter.dart';
-import '../../model/properties/properties.dart';
 
 
 class ComponentData {

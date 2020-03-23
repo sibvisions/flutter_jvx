@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:jvx_flutterclient/model/properties/properties.dart';
-
 import '../model/api/exceptions/api_exception.dart';
 import '../model/api/request/upload.dart';
 import '../model/api/response/response.dart';

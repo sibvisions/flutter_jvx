@@ -53,16 +53,15 @@ class _MenuGridViewState extends State<MenuGridView> {
           }
 
           if (state != null &&
-              state.screenGeneric != null &&
+              state.responseData.screenGeneric != null &&
               state.requestType == RequestType.OPEN_SCREEN ) {
-            Key componentID = new Key(state.screenGeneric.componentId);
+            Key componentID = new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.items;
 
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
-                      screenGeneric: state.screenGeneric,
-                      data: state.jVxData,
-                      metaData: state.jVxMetaData,
+                      screenGeneric: state.responseData.screenGeneric,
+                      responseData: state.responseData,
                       request: state.request,
                       componentId: componentID,
                       title: title,

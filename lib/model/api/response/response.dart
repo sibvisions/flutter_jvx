@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/model/api/response/response_data.dart';
+
 import '../../../model/action.dart';
 import '../../../model/api/exceptions/api_exception.dart';
 import '../../../model/api/request/request.dart';
@@ -34,10 +36,7 @@ class Response {
   LoginItem loginItem;
   Menu menu;
   AuthenticationData authenticationData;
-  ScreenGeneric screenGeneric;
-  List<JVxData> jVxData = <JVxData>[];
-  List<JVxMetaData> jVxMetaData = <JVxMetaData>[];
-  List<JVxDataproviderChanged> jVxDataproviderChanged = <JVxDataproviderChanged>[];
+  ResponseData responseData = ResponseData();
   ApplicationStyleResponse applicationStyle;
   DownloadAction downloadAction;
   UploadAction uploadAction;
@@ -89,18 +88,18 @@ class Response {
           break;
         case ResponseObjectType.SCREEN_GENERIC:
           if (r['changedComponents'] != null)
-            screenGeneric = ScreenGeneric.fromChangedComponentsJson(r);
+            responseData.screenGeneric = ScreenGeneric.fromChangedComponentsJson(r);
           else
-            screenGeneric = ScreenGeneric.fromUpdateComponentsJson(r);
+            responseData.screenGeneric = ScreenGeneric.fromUpdateComponentsJson(r);
           break;
         case ResponseObjectType.DAL_FETCH:
-          jVxData.add(JVxData.fromJson(r));
+          responseData.jVxData.add(JVxData.fromJson(r));
           break;
         case ResponseObjectType.DAL_METADATA:
-          jVxMetaData.add(JVxMetaData.fromJson(r));
+          responseData.jVxMetaData.add(JVxMetaData.fromJson(r));
           break;
         case ResponseObjectType.DAL_DATAPROVIDERCHANGED:
-          jVxDataproviderChanged.add(JVxDataproviderChanged.fromJson(r));
+          responseData.jVxDataproviderChanged.add(JVxDataproviderChanged.fromJson(r));
           break;
         case ResponseObjectType.DOWNLOAD:
           downloadAction = DownloadAction.fromJson(r);
