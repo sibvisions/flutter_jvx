@@ -171,8 +171,8 @@ class _LoginCardState extends State<LoginCard>
         action: 'Anmelden',
         clientId: globals.clientId,
         createAuthKey: rememberMe,
-        username: username,
-        password: password,
+        username: username?.trim(),
+        password: password?.trim(),
         requestType: RequestType.LOGIN
       );
 
