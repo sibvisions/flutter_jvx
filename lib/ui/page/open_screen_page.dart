@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/api/request/device_Status.dart';
@@ -14,9 +15,7 @@ import '../../model/api/request/download.dart';
 import '../../model/api/request/navigation.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/request/upload.dart';
-import '../../model/api/response/meta_data/jvx_meta_data.dart';
 import '../../model/api/response/response.dart';
-import '../../model/api/response/data/jvx_data.dart';
 import '../../model/api/response/screen_generic.dart';
 import '../../model/menu_item.dart';
 import '../../ui/screen/component_creator.dart';
@@ -28,8 +27,7 @@ import '../../utils/uidata.dart';
 
 class OpenScreenPage extends StatefulWidget {
   final String title;
-  final List<JVxData> data;
-  final List<JVxMetaData> metaData;
+  final ResponseData responseData;
   final Key componentId;
   final List<MenuItem> items;
   final Request request;
@@ -39,8 +37,7 @@ class OpenScreenPage extends StatefulWidget {
   OpenScreenPage(
       {Key key,
       this.screenGeneric,
-      this.data,
-      this.metaData,
+      this.responseData,
       this.request,
       this.componentId,
       this.title,
@@ -115,7 +112,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       }
                     });
                   } else if (state.closeScreenAction != null &&
-                      state.screenGeneric == null) {
+                      state.responseData.screenGeneric == null) {
                     Navigator.of(context).pop();
                   }
                 }
@@ -128,18 +125,17 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                         (_) => Navigator.of(context).pop());
                   screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId);
                   // title = state.action.label;
-                  componentId = state.screenGeneric.componentId;
+                  componentId = state.responseData.screenGeneric.componentId;
                 }
 
-                if (state.screenGeneric != null &&
-                    !state.screenGeneric.update) {
+                if (state.responseData.screenGeneric != null &&
+                    !state.responseData.screenGeneric.update) {
                   screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId);
-                  componentId = state.screenGeneric.componentId;
+                  componentId = state.responseData.screenGeneric.componentId;
                 }
 
                 screen.componentScreen.context = context;
-                screen.update(state.request, state.jVxData, state.jVxMetaData,
-                    state.screenGeneric);
+                screen.update(state.request, state.responseData);
                 this.setState(() {});
               }
             }
@@ -177,8 +173,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               }
               return true;
             }, builder: (context, state) {
-              if (state.screenGeneric != null && !state.screenGeneric.update) {
-                title = state.screenGeneric.screenTitle;
+              if (state.responseData.screenGeneric != null && !state.responseData.screenGeneric.update) {
+                title = state.responseData.screenGeneric.screenTitle;
               }
 
               Widget child;
@@ -247,8 +243,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   void initState() {
     screen = globals.customScreenManager == null ? IScreen(ComponentCreator()) : globals.customScreenManager.getScreen(widget.menuComponentId.toString());
     screen.componentScreen.context = context;
-    screen.update(
-        widget.request, widget.data, widget.metaData, widget.screenGeneric);
+    screen.update(widget.request, widget.responseData);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

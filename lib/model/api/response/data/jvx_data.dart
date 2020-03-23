@@ -36,7 +36,7 @@ class JVxData extends ResponseObject {
   }
 
   List<int> getColumnFlex(List<String> columnLabels, List<String> columnNames, TextStyle textStyle, [int calculateForRecordCount = 10]) {
-    List<int> maxLengthPerColumn = new List<int>(columnLabels.length);
+    List<int> maxLengthPerColumn = new List<int>(columnNames.length);
     columnLabels.asMap().forEach((i, l) {
       int textWidth = TextUtils.getTextWidth(l, textStyle);
       maxLengthPerColumn[i] = textWidth;

@@ -398,10 +398,10 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> navigation(Navigation request) async* {
     Response resp = await processRequest(request);
 
-    if ((resp.screenGeneric != null &&
-            resp.screenGeneric.changedComponents.isEmpty) &&
-        resp.jVxData.isEmpty &&
-        resp.jVxMetaData.isEmpty) {
+    if ((resp.responseData.screenGeneric != null &&
+            resp.responseData.screenGeneric.changedComponents.isEmpty) &&
+        resp.responseData.jVxData.isEmpty &&
+        resp.responseData.jVxMetaData.isEmpty) {
       print('CLOSE REQUEST: ' + request.componentId);
       CloseScreen closeScreen = CloseScreen(
           clientId: globals.clientId,

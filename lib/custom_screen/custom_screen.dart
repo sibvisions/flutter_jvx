@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import '../model/api/response/response_data.dart';
 import '../ui/screen/component_creator.dart';
 import '../ui/screen/i_screen.dart';
-
 import '../model/api/request/request.dart';
-import '../model/api/response/data/jvx_data.dart';
-import '../model/api/response/meta_data/jvx_meta_data.dart';
-import '../model/api/response/screen_generic.dart';
 import '../ui/screen/component_screen.dart';
 
 /// Implementation of [IScreen] for custom screens.
@@ -22,7 +19,7 @@ class CustomScreen implements IScreen {
   }
 
   @override
-  void update(Request request, List<JVxData> data, List<JVxMetaData> metaData, ScreenGeneric genericScreen) {}
+    void update(Request request, ResponseData data) {}
 
   @override
   bool withServer() {

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/fetch_data.dart';
 import '../../model/api/request/data/filter_data.dart';
@@ -11,7 +12,6 @@ import '../../model/api/response/data/jvx_data.dart';
 import '../../model/api/request/data/select_record.dart';
 import '../../model/api/response/meta_data/jvx_meta_data.dart';
 import '../../model/filter.dart';
-import '../../model/properties/properties.dart';
 
 
 class ComponentData {
@@ -93,6 +93,11 @@ class ComponentData {
     _onDataChanged.forEach((d) => d());
   }
 
+  void updateDataProviderChanged(BuildContext context, JVxDataproviderChanged pDataproviderChanged) {
+    _fetchData(context, pDataproviderChanged.reload, 0);
+    updateSelectedRow(pDataproviderChanged.selectedRow);
+  }
+
   void updateSelectedRow(int selectedRow, [bool raiseSelectedRowChangeEvent = false]) {
     if (data.selectedRow!=selectedRow) {
       data.selectedRow = selectedRow;
@@ -107,16 +112,8 @@ class ComponentData {
     _onMetaDataChanged.forEach((d) => d());
   }
 
-  dynamic getColumnData(BuildContext context, String columnName, int reload) {
-    if (isFetching==false && (data==null || reload!=null ||
-      (data.selectedRow >= data.records.length && !data.isAllFetched))) {
-      if (data==null || data.selectedRow==null || data.selectedRow<0) {
-        this._fetchData(context, reload, 0);
-      } else {
-        this._fetchData(context, reload, data.selectedRow);
-      }
-    } 
-    
+  dynamic getColumnData(BuildContext context, String columnName) {
+
     if (data!=null && data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
     }
@@ -124,14 +121,14 @@ class ComponentData {
     return "";
   }
 
-  JVxData getData(BuildContext context, int reload, int rowCountNeeded) {
+  JVxData getData(BuildContext context, int rowCountNeeded) {
 
-    if (reload!=null || (isFetching==false && (data==null || !data.isAllFetched))) {
-      if (reload==null && rowCountNeeded>=0 && data!=null && data.records != null && data.records.length>=rowCountNeeded) {
+    if (isFetching==false && (data==null || !data.isAllFetched)) {
+      if (rowCountNeeded>=0 && data!=null && data.records != null && data.records.length>=rowCountNeeded) {
         return data;
       }
       if (!this.isFetching)
-        this._fetchData(context, reload, rowCountNeeded);
+        this._fetchData(context, null, rowCountNeeded);
     }
       
     return data;

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../model/properties/properties.dart';
 import '../../ui/tools/restart.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';

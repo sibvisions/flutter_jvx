@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:jvx_flutterclient/utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/api/response/data/jvx_data.dart';
-import '../../../model/properties/properties.dart';
 import '../../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import '../../../ui/widgets/custom_dropdown_button.dart' as custom;
 import '../../../ui/widgets/lazy_dropdown.dart';
@@ -14,7 +13,6 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   String initialData;
   int pageIndex = 0;
   int pageSize = 100;
-  int reload;
 
   @override
   get preferredSize {
@@ -36,7 +34,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   }
 
   void onLazyDropDownValueChanged(dynamic pValue) {
-    JVxData data = this.data.getData(context, null, 0);
+    JVxData data = this.data.getData(context, 0);
     if (pValue!=null)
       this.value = pValue[this.getVisibleColumnIndex(data)[0]];
     else 
@@ -106,13 +104,12 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
 
   void onScrollToEnd() {
     print("Scrolled to end");
-    JVxData _data = data.getData(context, null, pageSize);
+    JVxData _data = data.getData(context, pageSize);
     if (_data != null && _data.records != null)
-      data.getData(context, null, this.pageSize + _data.records.length);
+      data.getData(context, this.pageSize + _data.records.length);
   }
 
   void onFilterDropDown(dynamic value) {
-    this.reload = -1;
     this.onFilter(value);
   }
 
@@ -138,8 +135,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
     if (false) {
       //(data != null && data.records.length < 20) {
       data = this.data.getData(
-          this.context, this.reload, (this.pageIndex + 1) * this.pageSize);
-      this.reload = null;
+          this.context, (this.pageIndex + 1) * this.pageSize);
       this._items = getItems(data);
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../model/api/response/data/jvx_data.dart';
-import '../../model/properties/properties.dart';
 import '../../ui/screen/component_data.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';

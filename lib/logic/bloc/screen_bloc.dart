@@ -15,7 +15,7 @@ class ScreenBloc extends Bloc<Response, Widget> {
   @override
   Stream<Widget> mapEventToState(Response event) async* {
     if (isScreenRequest(event.requestType)) {
-      ScreenGeneric screenGeneric = event.screenGeneric;
+      ScreenGeneric screenGeneric = event.responseData.screenGeneric;
       //List<JVxData> data = event.jVxData;
       //List<JVxMetaData> metaData = event.jVxMetaData;
       screen.componentScreen.updateComponents(screenGeneric.changedComponents);

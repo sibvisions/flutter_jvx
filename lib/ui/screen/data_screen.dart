@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/select_record.dart';
 import '../../model/api/request/press_button.dart';
 import '../../model/api/request/request.dart';
-import '../../model/api/response/data/jvx_data.dart';
-import '../../model/api/response/meta_data/jvx_meta_data.dart';
 import '../../ui/screen/component_data.dart';
 import '../../model/action.dart' as jvxAction;
 import '../../model/api/request/data/meta_data.dart' as dataModel;
@@ -14,7 +13,7 @@ mixin DataScreen {
   BuildContext context;
   List<ComponentData> componentData = <ComponentData>[];
 
-  void updateData(Request request, List<JVxData> data, List<JVxMetaData> metaData) {
+  void updateData(Request request, ResponseData pData) {
 
     if(request is SelectRecord && request.requestType==RequestType.DAL_DELETE) {
       ComponentData cData = getComponentData(request.dataProvider);
@@ -22,14 +21,19 @@ mixin DataScreen {
     }
 
     if (request==null || request?.requestType!=RequestType.DAL_SET_VALUE) {
-      data?.forEach((d) {
+      pData.jVxData?.forEach((d) {
         ComponentData cData = getComponentData(d.dataProvider);
         cData.updateData(d, request.reload);
       });
 
-      metaData?.forEach((m) {
+      pData.jVxMetaData?.forEach((m) {
         ComponentData cData = getComponentData(m.dataProvider);
         cData.updateMetaData(m);
+      });
+
+      pData.jVxDataproviderChanged?.forEach((d) {
+        ComponentData cData = getComponentData(d.dataProvider);
+        cData.updateDataProviderChanged(context, d);
       });
 
       componentData.forEach((d) {
