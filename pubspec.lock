@@ -247,7 +247,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "0e24622b126aa7fb9a36eaad1b4d35debd9b98bc"
+      resolved-ref: "884d50a6cd4b88d78a849dc7ccd70eaf23fd0cab"
       url: "https://github.com/btastic/flutter_native_image.git"
     source: git
     version: "0.0.5+2"
@@ -470,7 +470,7 @@ packages:
       name: package_config
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.1"
+    version: "1.9.2"
   package_info:
     dependency: "direct main"
     description:
