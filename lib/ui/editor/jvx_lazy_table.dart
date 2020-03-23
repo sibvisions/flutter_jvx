@@ -7,7 +7,6 @@ import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
 import '../../model/changed_component.dart';
 import '../../model/api/response/data/jvx_data.dart';
 import '../../model/properties/component_properties.dart';
-import '../../model/properties/properties.dart';
 import '../../ui/editor/celleditor/jvx_cell_editor.dart';
 import '../../ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
 import '../../ui/editor/celleditor/jvx_choice_cell_editor.dart';
@@ -103,11 +102,8 @@ class JVxLazyTable extends JVxEditor {
         ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
     columnNames = changedComponent.getProperty<List<String>>(
         ComponentProperty.COLUMN_NAMES, columnNames);
-    reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
     columnLabels = changedComponent.getProperty<List<String>>(
         ComponentProperty.COLUMN_LABELS, columnLabels);
-    reload =
-        changedComponent.getProperty<int>(ComponentProperty.RELOAD, reload);
 
     int newSelectedRow = changedComponent.getProperty<int>(
         ComponentProperty.SELECTED_ROW);
@@ -313,15 +309,14 @@ class JVxLazyTable extends JVxEditor {
 
     if (pos!=null && _data!=null && _data.records!=null && pos.index+fetchMoreItemOffset > _data.records.length) {
       data.getData(
-            context, this.reload, this.pageSize + _data.records.length);
+            context, this.pageSize + _data.records.length);
     }
   }
 
   @override
   Widget getWidget() {
     int itemCount = tableHeaderVisible ? 1 : 0;
-    _data = data.getData(context, reload, pageSize);
-    this.reload = null;
+    _data = data.getData(context, pageSize);
 
     this.columnFlex =
         _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle);

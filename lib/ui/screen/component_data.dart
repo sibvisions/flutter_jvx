@@ -113,16 +113,8 @@ class ComponentData {
     _onMetaDataChanged.forEach((d) => d());
   }
 
-  dynamic getColumnData(BuildContext context, String columnName, int reload) {
-    if (isFetching==false && (data==null || reload!=null ||
-      (data.selectedRow >= data.records.length && !data.isAllFetched))) {
-      if (data==null || data.selectedRow==null || data.selectedRow<0) {
-        this._fetchData(context, reload, 0);
-      } else {
-        this._fetchData(context, reload, data.selectedRow);
-      }
-    } 
-    
+  dynamic getColumnData(BuildContext context, String columnName) {
+
     if (data!=null && data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
     }
@@ -130,14 +122,14 @@ class ComponentData {
     return "";
   }
 
-  JVxData getData(BuildContext context, int reload, int rowCountNeeded) {
+  JVxData getData(BuildContext context, int rowCountNeeded) {
 
-    if (reload!=null || (isFetching==false && (data==null || !data.isAllFetched))) {
-      if (reload==null && rowCountNeeded>=0 && data!=null && data.records != null && data.records.length>=rowCountNeeded) {
+    if (isFetching==false && (data==null || !data.isAllFetched)) {
+      if (rowCountNeeded>=0 && data!=null && data.records != null && data.records.length>=rowCountNeeded) {
         return data;
       }
       if (!this.isFetching)
-        this._fetchData(context, reload, rowCountNeeded);
+        this._fetchData(context, null, rowCountNeeded);
     }
       
     return data;

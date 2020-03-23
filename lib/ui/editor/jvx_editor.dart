@@ -17,7 +17,6 @@ class JVxEditor extends JVxComponent implements IEditor {
   bool eventFocusGained = false;
   JVxCellEditor _cellEditor;
   ComponentData _data;
-  int reload;
   Color cellEditorBackground;
   bool cellEditorEditable;
   String cellEditorFont;
@@ -31,7 +30,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
 
-    this.cellEditor?.value = _data.getColumnData(context, columnName, null);
+    this.cellEditor?.value = _data.getColumnData(context, columnName);
   }
 
   get cellEditor => _cellEditor;
@@ -108,7 +107,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   void onEndEditing() {}
 
   void onServerDataChanged() {
-    this.cellEditor?.value = _data.getColumnData(context, columnName, null);
+    this.cellEditor?.value = _data.getColumnData(context, columnName);
   }
 
   @override
@@ -137,22 +136,10 @@ class JVxEditor extends JVxComponent implements IEditor {
         cellEditorHorizontalAlignment);
     cellEditorFont = changedComponent.getProperty<String>(
         ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
-    try {
-      this.reload = changedComponent.getProperty<int>(ComponentProperty.RELOAD);
-    } catch (e) {
-      bool rel = changedComponent.getProperty<bool>(ComponentProperty.RELOAD);
-      if (rel != null && rel) this.reload = -1;
-    }
   }
 
   @override
   Widget getWidget() {
-    if (reload != null) {
-      this.cellEditor?.value =
-          data.getColumnData(context, this.columnName, this.reload);
-      this.reload = null;
-    }
-
     return Container(
         height: super.preferredSize != null ? super.preferredSize.height : null,
         width: super.preferredSize != null ? super.preferredSize.width : null,
