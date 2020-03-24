@@ -27,9 +27,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
   String title;
 
   @override
-  Widget build(BuildContext context) {
-    globals.items = widget.menuItems;
-    
+  Widget build(BuildContext context) {    
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         listener: (context, state) {
@@ -44,6 +42,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
               state.responseData.screenGeneric != null &&
               state.requestType == RequestType.OPEN_SCREEN ) {
             Key componentID = new Key(state.responseData.screenGeneric.componentId);
+            globals.items = widget.menuItems;
 
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(

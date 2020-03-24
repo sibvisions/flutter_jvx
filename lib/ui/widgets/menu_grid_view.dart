@@ -37,8 +37,6 @@ class _MenuGridViewState extends State<MenuGridView> {
 
   @override
   Widget build(BuildContext context) {
-    globals.items = widget.items;
-
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         // condition: (previousState, state) {
@@ -58,6 +56,7 @@ class _MenuGridViewState extends State<MenuGridView> {
               state.responseData.screenGeneric != null &&
               state.requestType == RequestType.OPEN_SCREEN ) {
             Key componentID = new Key(state.responseData.screenGeneric.componentId);
+            globals.items = widget.items;
 
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(

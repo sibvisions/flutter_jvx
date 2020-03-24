@@ -45,6 +45,8 @@ class MenuPage extends StatelessWidget {
       backgroundColor = globals.applicationStyle.desktopColor;
     }
 
+    globals.items = this.menuItems;
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
