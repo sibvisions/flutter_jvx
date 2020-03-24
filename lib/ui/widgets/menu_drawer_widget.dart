@@ -120,20 +120,21 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                     size: 32,
                     color: Colors.grey[300],
                   )),
-          onTap: () {
+          onTap: () async {
             setState(() {
               title = item.action.label;
             });
 
             if (globals.customScreenManager != null && !globals.customScreenManager.getScreen(item.action.componentId).withServer()) {
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              bool result = await Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => globals.customScreenManager
                   .getScreen(item.action.componentId)
-                  .getWidget()));
+                  .getWidget())).then((value) { 
+                      setState(() {});
+                  });
             } else {
-
-                Navigator.of(context).pop();
+                bool result = await Navigator.of(context).pop();
                 prefix0.Action action = item.action;
 
                 OpenScreen openScreen = OpenScreen(
@@ -152,6 +153,10 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         if (i<(items.length-1))
           tiles.add(Divider(height: 1));
       }
+    }
+
+    Future popOldScreen(context) async {
+      bool result = await Navigator.of(context).pop();
     }
 
     return MediaQuery.removePadding(
