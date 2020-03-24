@@ -126,7 +126,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             });
 
             if (globals.customScreenManager != null && !globals.customScreenManager.getScreen(item.action.componentId).withServer()) {
-              //Navigator.of(context).pop();
+              Navigator.of(context).pop();
               Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (_) => globals.customScreenManager
                   .getScreen(item.action.componentId)
