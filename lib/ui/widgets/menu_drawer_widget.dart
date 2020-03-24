@@ -22,15 +22,13 @@ class MenuDrawerWidget extends StatefulWidget {
   final bool groupedMenuMode;
   final bool listMenuItems;
   final String currentTitle;
-  final Function(MenuItem) onItemSelected;
 
   MenuDrawerWidget(
       {Key key,
       @required this.menuItems,
       this.listMenuItems = false,
       this.currentTitle,
-      this.groupedMenuMode = true,
-      this.onItemSelected})
+      this.groupedMenuMode = true})
       : super(key: key);
 
   @override
@@ -128,9 +126,9 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             });
 
             if (globals.customScreenManager != null && !globals.customScreenManager.getScreen(item.action.componentId).withServer()) {
+              // close drawer
               Navigator.of(context).pop();
-              Navigator.of(context).pop();
-              //widget.onItemSelected(item);
+              // open screen
               Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (_) => globals.customScreenManager
                   .getScreen(item.action.componentId)
@@ -157,10 +155,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         if (i<(items.length-1))
           tiles.add(Divider(height: 1));
       }
-    }
-
-    Future popOldScreen(context) async {
-      bool result = await Navigator.of(context).pop();
     }
 
     return MediaQuery.removePadding(

@@ -198,12 +198,6 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     listMenuItems: true,
                     currentTitle: widget.title,
                     groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped'),
-                    onItemSelected: (MenuItem item) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => globals.customScreenManager
-                              .getScreen(item.action.componentId)
-                              .getWidget()));
-                    }
                   ),
                   key: _scaffoldKey,
                   appBar: AppBar(
