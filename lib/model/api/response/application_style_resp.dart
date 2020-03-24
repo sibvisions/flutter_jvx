@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import '../../../model/api/response/response_object.dart';
 import '../../../model/properties/hex_color.dart';
@@ -31,39 +34,43 @@ class ApplicationStyleResponse extends ResponseObject {
   Color desktopColor;
   String menuMode;
   Color themeColor;
+  String hash;
 
   ApplicationStyleResponse();
 
-  ApplicationStyleResponse.fromJson(Map<String, dynamic> json) {
-    loginTitle = json['login.title'];
-    loginInfotext = json['login.infotext'];
-    loginIcon = json['login.icon'];
-    loginLogo = json['login.logo'];
-    desktopIcon = json['desktop.icon'];
-    if (json['menu'] != null)
-      menuMode = json['menu']['mode'];
+  ApplicationStyleResponse.fromJson(Map<String, dynamic> jsonMap) {
+    loginTitle = jsonMap['login.title'];
+    loginInfotext = jsonMap['login.infotext'];
+    loginIcon = jsonMap['login.icon'];
+    loginLogo = jsonMap['login.logo'];
+    desktopIcon = jsonMap['desktop.icon'];
+    if (jsonMap['menu'] != null)
+      menuMode = jsonMap['menu']['mode'];
     else
       menuMode = null;
 
-    if (json['theme'] != null && HexColor.isHexColor(json['theme']['color']))
-      themeColor = HexColor(json['theme']['color']);
+    if (jsonMap['theme'] != null && HexColor.isHexColor(jsonMap['theme']['color']))
+      themeColor = HexColor(jsonMap['theme']['color']);
     else
       themeColor = null;
 
-    if (json['desktop.color'] != null && HexColor.isHexColor(json['desktop.color']))
-      desktopColor = HexColor(json['desktop.color']);
+    if (jsonMap['desktop.color'] != null && HexColor.isHexColor(jsonMap['desktop.color']))
+      desktopColor = HexColor(jsonMap['desktop.color']);
     else
       desktopColor = null;
 
-    if (json['login.background'] != null && HexColor.isHexColor(json['login.background']))
-      loginBackground = HexColor(json['login.background']);
+    if (jsonMap['login.background'] != null && HexColor.isHexColor(jsonMap['login.background']))
+      loginBackground = HexColor(jsonMap['login.background']);
     else
       loginBackground = null;
+
+    String jsonStr = json.encode(jsonMap);
+    var bytes = utf8.encode(jsonStr);
+    hash = sha256.convert(bytes).toString();
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'login.title': loginTitle,
-    'login.background': loginBackground,
     'login.infotext': loginInfotext,
     'login.icon': loginIcon,
     'login.logo': loginLogo,
@@ -73,6 +80,8 @@ class ApplicationStyleResponse extends ResponseObject {
     },
     'theme': {
       'color': themeColor.value
-    }
+    },
+    'desktop.color': desktopColor,
+    'login.background': loginBackground
   };
 }

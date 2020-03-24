@@ -53,6 +53,24 @@ class SharedPreferencesHelper {
     return "0.0.0";
   }
 
+  Future<String> getPrevAppVersion() async {
+    prefs = await SharedPreferences.getInstance();
+    String appVersion = prefs.getString('prevAppVersion');
+    if (appVersion != null)
+      return appVersion;
+    
+    return "";
+  }
+
+  Future<String> getApplicationStylingHash() async {
+    prefs = await SharedPreferences.getInstance();
+    String applicationStylingHash = prefs.getString('applicationStylingHash');
+    if (applicationStylingHash != null)
+      return applicationStylingHash;
+    
+    return "";
+  }
+
   Future<Map<String, String>> getTranslation() async {
     prefs = await SharedPreferences.getInstance();
     String jsonString = prefs.getString('translation');
@@ -134,6 +152,16 @@ class SharedPreferencesHelper {
   void setAppVersion(String appVersion) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('appVersion', appVersion);
+  }
+
+  void setPrevAppVersion(String appVersion) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('prevAppVersion', appVersion);
+  }
+
+  void setApplicationStylingHash(String applicationStylingHash) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('applicationStylingHash', applicationStylingHash);
   }
 
   void setTranslation(Map<String, String> translation) async {

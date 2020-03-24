@@ -44,6 +44,7 @@ class _StartupPageState extends State<StartupPage> {
           print('Startup Page Request Type: ${state.requestType}');
           _startupHandler(state);
           _navigationHandler(state);
+          _downloadHandler(state);
           _loginHandler(state);
         },
         child: Scaffold(
@@ -247,7 +248,54 @@ class _StartupPageState extends State<StartupPage> {
     }
   }
 
-  void _navigationHandler(Response state) {
+    void _downloadHandler(Response state) async {
+      if (state != null && state.requestType == RequestType.DOWNLOAD_IMAGES) {
+        _loginMenu(state);
+      }
+    }
+
+  void _loginMenu(Response state) {
+    Menu menu = state.menu;
+
+      if (state.menu == null &&
+          globals.username.isNotEmpty &&
+          globals.password.isNotEmpty) {
+        Login login = Login(
+            action: 'Anmelden',
+            clientId: globals.clientId,
+            createAuthKey: false,
+            username: globals.username,
+            password: globals.password,
+            requestType: RequestType.LOGIN);
+
+        BlocProvider.of<ApiBloc>(context).dispatch(login);
+      }
+
+      if (menu == null) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+      } else {
+        if (state.userData != null) {
+          if (state.userData.userName != null) {
+            globals.username = state.userData.userName;
+          }
+
+          if (state.userData.displayName != null) {
+            globals.displayName = state.userData.displayName;
+          }
+
+          if (state.userData.profileImage != null)
+            globals.profileImage = state.userData.profileImage;
+        }
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (_) => MenuPage(
+                  menuItems: menu.items,
+                )));
+      }
+  }
+
+  void _navigationHandler(Response state) async {
+    bool shouldDownloadRessources = false;
     if (state != null && state.requestType == RequestType.APP_STYLE) {
       if (state.applicationStyle != null &&
           state.applicationStyle.themeColor != null) {
@@ -315,45 +363,27 @@ class _StartupPageState extends State<StartupPage> {
           brightness: Brightness.light,
           fontFamily: 'Raleway'
         ));
-      }
 
-      Menu menu = state.menu;
-
-      if (state.menu == null &&
-          globals.username.isNotEmpty &&
-          globals.password.isNotEmpty) {
-        Login login = Login(
-            action: 'Anmelden',
-            clientId: globals.clientId,
-            createAuthKey: false,
-            username: globals.username,
-            password: globals.password,
-            requestType: RequestType.LOGIN);
-
-        BlocProvider.of<ApiBloc>(context).dispatch(login);
-      }
-
-      if (menu == null) {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
-      } else {
-        if (state.userData != null) {
-          if (state.userData.userName != null) {
-            globals.username = state.userData.userName;
-          }
-
-          if (state.userData.displayName != null) {
-            globals.displayName = state.userData.displayName;
-          }
-
-          if (state.userData.profileImage != null)
-            globals.profileImage = state.userData.profileImage;
+        String previousApplicationStylingHash = await SharedPreferencesHelper().getApplicationStylingHash();
+        bool shouddl = await Translations.shouldDownload();
+        if (state.applicationStyle.hash != previousApplicationStylingHash || shouddl) {
+          shouldDownloadRessources = true;
+          SharedPreferencesHelper().setApplicationStylingHash(state.applicationStyle.hash);
         }
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => MenuPage(
-                  menuItems: menu.items,
-                )));
+
+        String prevAppVersion = await SharedPreferencesHelper().getPrevAppVersion();
+        String appVersion = await SharedPreferencesHelper().getAppVersion();
+        if (prevAppVersion != appVersion) {
+          shouldDownloadRessources = true;
+          SharedPreferencesHelper().setPrevAppVersion(appVersion);
+        }
+
       }
+
+      if (shouldDownloadRessources)
+        _download();
+      else 
+        _loginMenu(state);          
     }
   }
 
@@ -384,8 +414,8 @@ class _StartupPageState extends State<StartupPage> {
         bool shouddl = await Translations.shouldDownload();
 
         if (appVersion != applicationMetaData.version || shouddl) {
+          SharedPreferencesHelper().setPrevAppVersion(appVersion);
           SharedPreferencesHelper().setAppVersion(applicationMetaData.version);
-          _download();
         }
 
         ApplicationStyle applicationStyle = ApplicationStyle(
