@@ -124,16 +124,26 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             setState(() {
               title = item.action.label;
             });
-            Navigator.of(context).pop();
-            prefix0.Action action = item.action;
+            
+            if (globals.customScreenManager != null && !globals.customScreenManager.getScreen(item.action.componentId).withServer()) {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => globals.customScreenManager
+                  .getScreen(item.action.componentId)
+                  .getWidget()));
+            } else {
 
-            OpenScreen openScreen = OpenScreen(
-                action: action,
-                clientId: globals.clientId,
-                manualClose: false,
-                requestType: RequestType.OPEN_SCREEN);
+                Navigator.of(context).pop();
+                prefix0.Action action = item.action;
 
-            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+                OpenScreen openScreen = OpenScreen(
+                    action: action,
+                    clientId: globals.clientId,
+                    manualClose: false,
+                    requestType: RequestType.OPEN_SCREEN);
+
+                BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+            }
           },
         );
         
