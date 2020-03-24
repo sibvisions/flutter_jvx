@@ -68,7 +68,7 @@ class MenuPage extends StatelessWidget {
         menuItems: this.menuItems,
         listMenuItems: drawerMenu,
         groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped'),
-        onItemSelected: (item) {
+        onItemSelected: (MenuItem item) {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => globals.customScreenManager
                   .getScreen(item.action.componentId)
