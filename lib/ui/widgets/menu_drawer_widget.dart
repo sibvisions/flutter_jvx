@@ -22,13 +22,15 @@ class MenuDrawerWidget extends StatefulWidget {
   final bool groupedMenuMode;
   final bool listMenuItems;
   final String currentTitle;
+  final Function(MenuItem) onItemSelected;
 
   MenuDrawerWidget(
       {Key key,
       @required this.menuItems,
       this.listMenuItems = false,
       this.currentTitle,
-      this.groupedMenuMode = true})
+      this.groupedMenuMode = true,
+      this.onItemSelected})
       : super(key: key);
 
   @override
@@ -126,15 +128,16 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             });
 
             if (globals.customScreenManager != null && !globals.customScreenManager.getScreen(item.action.componentId).withServer()) {
-              bool result = await Navigator.of(context).pop();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              Navigator.of(context).pop();
+              widget.onItemSelected(item);
+              /*Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (_) => globals.customScreenManager
                   .getScreen(item.action.componentId)
                   .getWidget())).then((value) { 
                       setState(() {});
-                  });
+                  });*/
             } else {
-                bool result = await Navigator.of(context).pop();
+                Navigator.of(context).pop();
                 prefix0.Action action = item.action;
 
                 OpenScreen openScreen = OpenScreen(
