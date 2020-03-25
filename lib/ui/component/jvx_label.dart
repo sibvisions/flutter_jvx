@@ -50,7 +50,7 @@ class JVxLabel extends JVxComponent implements IComponent {
     double labelBaseline = 30;
 
     if (style!=null && style.fontSize!= null) {
-      labelBaseline = style.fontSize/2+22;
+      labelBaseline = style.fontSize/2+21;
     }
 
     return labelBaseline;
@@ -61,6 +61,7 @@ class JVxLabel extends JVxComponent implements IComponent {
     return SizedBox(
       key: componentId,
       child: Container(
+        padding: EdgeInsets.only(top: 0.5),
         color: this.background,
         child: Align(
           alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
