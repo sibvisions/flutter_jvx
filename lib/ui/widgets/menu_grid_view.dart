@@ -157,7 +157,7 @@ class _MenuGridViewState extends State<MenuGridView> {
               ],
             ),
           ),
-          onTap: () => _onTap,
+          onTap: () => _onTap(menuItems[index]),
         );
       },
     );
@@ -240,7 +240,7 @@ class _MenuGridViewState extends State<MenuGridView> {
           ],
         ),
       ),
-      onTap: () => _onTap,
+      onTap: () => _onTap(menuItem),
     );
   }
 
