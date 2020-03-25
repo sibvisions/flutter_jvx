@@ -305,7 +305,7 @@ class JVxLazyTable extends JVxEditor {
   }
 
   _scrollListener() {
-    ItemPosition pos = this._scrollPositionListener.itemPositions.value.lastWhere((itemPosition) => itemPosition.itemTrailingEdge>0);
+    ItemPosition pos = this._scrollPositionListener.itemPositions.value.lastWhere((itemPosition) => itemPosition.itemTrailingEdge>0, orElse: () => null);
 
     if (pos!=null && _data!=null && _data.records!=null && pos.index+fetchMoreItemOffset > _data.records.length) {
       data.getData(
