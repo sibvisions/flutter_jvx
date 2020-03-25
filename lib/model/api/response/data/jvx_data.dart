@@ -39,7 +39,7 @@ class JVxData extends ResponseObject {
     List<int> maxLengthPerColumn = new List<int>(columnNames.length);
     columnLabels.asMap().forEach((i, l) {
       int textWidth = TextUtils.getTextWidth(l, textStyle);
-      maxLengthPerColumn[i] = textWidth;
+      maxLengthPerColumn[i] = textWidth+5;
     });
 
     if (this.records != null) {
