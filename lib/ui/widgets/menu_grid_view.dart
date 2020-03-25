@@ -92,6 +92,30 @@ class _MenuGridViewState extends State<MenuGridView> {
     return icon;
   }
 
+  void _onTap(MenuItem menuItem) {
+    
+    if (globals.customScreenManager != null &&
+        !globals.customScreenManager
+            .getScreen(menuItem.action.componentId).withServer()) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => globals.customScreenManager
+              .getScreen(menuItem.action.componentId)
+              .getWidget()));
+    } else {
+      prefix0.Action action = menuItem.action;
+
+      title = action.label;
+
+      OpenScreen openScreen = OpenScreen(
+          action: action,
+          clientId: globals.clientId,
+          manualClose: false,
+          requestType: RequestType.OPEN_SCREEN,);
+
+      BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+    }
+  }
+
   Widget _buildGridView(List<MenuItem> menuItems) {
     return GridView.builder(
       itemCount: menuItems.length,
@@ -133,19 +157,7 @@ class _MenuGridViewState extends State<MenuGridView> {
               ],
             ),
           ),
-          onTap: () {
-            prefix0.Action action = menuItems[index].action;
-
-            title = action.label;
-
-            OpenScreen openScreen = OpenScreen(
-                action: action,
-                clientId: globals.clientId,
-                manualClose: false,
-                requestType: RequestType.OPEN_SCREEN);
-
-            BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-          },
+          onTap: () => _onTap,
         );
       },
     );
@@ -228,28 +240,7 @@ class _MenuGridViewState extends State<MenuGridView> {
           ],
         ),
       ),
-      onTap: () {
-        if (globals.customScreenManager != null &&
-            !globals.customScreenManager
-                .getScreen(menuItem.action.componentId).withServer()) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => globals.customScreenManager
-                  .getScreen(menuItem.action.componentId)
-                  .getWidget()));
-        } else {
-          prefix0.Action action = menuItem.action;
-
-          title = action.label;
-
-          OpenScreen openScreen = OpenScreen(
-              action: action,
-              clientId: globals.clientId,
-              manualClose: false,
-              requestType: RequestType.OPEN_SCREEN,);
-
-          BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-        }
-      },
+      onTap: () => _onTap,
     );
   }
 
