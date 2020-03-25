@@ -31,11 +31,6 @@ mixin DataScreen {
         cData.updateMetaData(m);
       });
 
-      pData.jVxDataproviderChanged?.forEach((d) {
-        ComponentData cData = getComponentData(d.dataProvider);
-        cData.updateDataProviderChanged(context, d);
-      });
-
       componentData.forEach((d) {
         if (d.metaData==null && !d.isFetchingMetaData) {
           d.isFetchingMetaData = true;
@@ -44,6 +39,11 @@ mixin DataScreen {
         }
       });
     }
+
+    pData.jVxDataproviderChanged?.forEach((d) {
+      ComponentData cData = getComponentData(d.dataProvider);
+      cData.updateDataProviderChanged(context, d);
+    });
 
     if (request != null && request.requestType==RequestType.DAL_SELECT_RECORD && (request is SelectRecord)) {
       ComponentData cData = getComponentData(request.dataProvider);
