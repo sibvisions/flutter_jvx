@@ -7,6 +7,9 @@ import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 
 showGoToSettings(BuildContext context, String title, String message) {
+  if (title==null) title = "Missing title";
+  if (message==null) message = "";
+
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -27,6 +30,9 @@ showGoToSettings(BuildContext context, String title, String message) {
 }
 
 showError(BuildContext context, String title, String message) {
+  if (title==null) title = "Missing title";
+  if (message==null) message = "";
+
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -42,6 +48,9 @@ showError(BuildContext context, String title, String message) {
 }
 
 showSessionExpired(BuildContext context, String title, String message) async {
+  if (title==null) title = "Missing title";
+  if (message==null) message = "";
+
   await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -65,6 +74,7 @@ showSessionExpired(BuildContext context, String title, String message) async {
 }
 
 showSuccess(BuildContext context, String message, IconData icon) {
+  if (message==null) message = "";
   showDialog(
       context: context,
       builder: (context) => Center(
