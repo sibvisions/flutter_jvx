@@ -93,7 +93,7 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
         horizontalAlignment: horizontalAlignment);
     return Container(
       decoration: BoxDecoration(
-          color: background != null ? background : Colors.transparent,
+          color: background != null ? background : Colors.white70,
           borderRadius: BorderRadius.circular(5),
           border:
               borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),

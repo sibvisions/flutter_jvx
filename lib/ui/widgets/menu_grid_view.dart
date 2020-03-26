@@ -124,6 +124,7 @@ class _MenuGridViewState extends State<MenuGridView> {
       itemBuilder: (BuildContext context, int index) {
         return new GestureDetector(
           child: new Card(
+            color: Colors.white70,
             margin: EdgeInsets.all(6),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -145,7 +146,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                         child: Icon(
                           FontAwesomeIcons.clone,
                           size: 48,
-                          color: Colors.grey[300],
+                          color: Colors.grey[400],
                         )),
                 Container(
                     padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -181,7 +182,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
       widgets.add(StickyHeader(
         header: Container(
-            color: Colors.grey[200],
+            color: Colors.white70,
             child: _buildGroupHeader(v[0].group.toString())),
         content: group,
       ));
@@ -207,6 +208,7 @@ class _MenuGridViewState extends State<MenuGridView> {
   Widget _buildGroupItemCard(MenuItem menuItem) {
     return new GestureDetector(
       child: new Card(
+        color: Colors.white70,
         margin: EdgeInsets.all(5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 2.0,
@@ -227,7 +229,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                       child: Icon(
                         FontAwesomeIcons.clone,
                         size: 48,
-                        color: Colors.grey[300],
+                        color: Colors.grey[400],
                       )),
             ),
             Container(

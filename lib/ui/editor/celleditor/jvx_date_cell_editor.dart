@@ -83,7 +83,7 @@ class JVxDateCellEditor extends JVxCellEditor {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-          color: background != null ? background : Colors.transparent,
+          color: background != null ? background : Colors.white70,
           borderRadius: BorderRadius.circular(5),
           border: borderVisible
               ? (this.editable

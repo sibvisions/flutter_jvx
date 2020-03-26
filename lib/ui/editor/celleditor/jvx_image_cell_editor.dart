@@ -137,7 +137,7 @@ class JVxImageCellEditor extends JVxCellEditor {
     return Container(
       height: 200,
         decoration: BoxDecoration(
-            color: background != null ? background : Colors.transparent,
+            color: background != null ? background : Colors.white70,
             borderRadius: BorderRadius.circular(5),
             border: borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)

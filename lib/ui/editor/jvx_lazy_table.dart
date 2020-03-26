@@ -123,7 +123,7 @@ class JVxLazyTable extends JVxEditor {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-            color: UIData.ui_kit_color_2[500],
+            color: UIData.ui_kit_color_2[500].withOpacity(0.7),
           ),
           child: Row(children: children));
     } else {
@@ -134,14 +134,14 @@ class JVxLazyTable extends JVxEditor {
           ],
           color: isSelected
               ? UIData.ui_kit_color_2[100].withOpacity(0.1)
-              : Colors.white,
+              : Colors.white.withOpacity(0.1),
         ),
         child: Material(
             color: isSelected
                 ? UIData.ui_kit_color_2[100].withOpacity(0.1)
-                : Colors.white,
+                : Colors.white.withOpacity(0.1),
             child: InkWell(
-                highlightColor: UIData.ui_kit_color_2[500],
+                highlightColor: UIData.ui_kit_color_2[500].withOpacity(0.7),
                 onTap: () {
                   _onRowTapped(index);
                 },
@@ -263,13 +263,13 @@ class JVxLazyTable extends JVxEditor {
         return Slidable(
           actionExtentRatio: 0.25,
           child: Container(
-              color: Colors.white,
+              color: Colors.white.withOpacity(0.7),
               child: getTableRow(children, index, false, isSelected)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
             new IconSlideAction(
               caption: Translations.of(context).text2('Delete'),
-              color: Colors.red,
+              color: Colors.red.withOpacity(0.7),
               icon: Icons.delete,
               onTap: () => this.data.deleteRecord(context, index),
             ),
@@ -277,7 +277,7 @@ class JVxLazyTable extends JVxEditor {
         );
       } else {
         return Container(
-            color: Colors.white,
+            color: Colors.white.withOpacity(0.7),
             child: getTableRow(children, index, false, isSelected));
       }
     }
@@ -329,6 +329,9 @@ class JVxLazyTable extends JVxEditor {
         onTapDown: (details) => _tapPosition = details.globalPosition,
         onLongPress: () => showContextMenu(context),
         child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: UIData.ui_kit_color_2[500].withOpacity(0.7))
+          ),
           width: constraints.minWidth,
           height: constraints.minHeight,
           child: ScrollablePositionedList.builder(

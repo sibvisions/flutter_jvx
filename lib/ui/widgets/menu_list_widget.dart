@@ -88,7 +88,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
       tiles.add(heading);
 
       Widget card = Card(
-        color: Colors.white,
+        color: Colors.white70,
         elevation: 2.0,
         child: Column(children: _buildTiles(v)),
       );
@@ -139,7 +139,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                 child: Icon(
                   FontAwesomeIcons.clone,
                   size: 32,
-                  color: Colors.grey[300],
+                  color: Colors.grey[400],
                 )),
         trailing: Icon(FontAwesomeIcons.chevronRight, color: Colors.grey[300],),
       );
