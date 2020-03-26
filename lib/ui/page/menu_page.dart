@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/ui/widgets/menu_empty_widget.dart';
@@ -41,11 +43,28 @@ class MenuPage extends StatelessWidget {
           : Colors.grey.shade200;
     }
 
-    if (globals.applicationStyle != null && globals.applicationStyle.desktopColor != null) {
+    if (globals.applicationStyle != null &&
+        globals.applicationStyle.desktopColor != null) {
       backgroundColor = globals.applicationStyle.desktopColor;
     }
 
     globals.items = this.menuItems;
+
+    Widget body;
+
+    if ((globals.applicationStyle != null &&
+        globals.applicationStyle.menuMode == 'drawer' &&
+        globals.applicationStyle?.desktopIcon != null)) {
+      body = Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: FileImage(File(
+                      '${globals.dir}${globals.applicationStyle.desktopIcon}')),
+                  fit: BoxFit.cover)),
+          child: getMenuWidget());
+    } else {
+      body = getMenuWidget();
+    }
 
     return Scaffold(
       key: _scaffoldKey,
@@ -63,11 +82,12 @@ class MenuPage extends StatelessWidget {
           ),
         ],
       ),
-      body: getMenuWidget(),
+      body: body,
       endDrawer: MenuDrawerWidget(
         menuItems: this.menuItems,
         listMenuItems: drawerMenu,
-        groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped' || globals.applicationStyle.menuMode == 'list'),
+        groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped' ||
+            globals.applicationStyle.menuMode == 'list'),
       ),
     );
   }
@@ -79,20 +99,20 @@ class MenuPage extends StatelessWidget {
       } else if (globals.applicationStyle.menuMode == 'list') {
         return MenuListWidget(
           menuItems: this.menuItems,
-          );
+        );
       } else if (globals.applicationStyle.menuMode == 'drawer') {
         return MenuEmpty();
       } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
         return MenuGridView(
           items: this.menuItems,
           groupedMenuMode: true,
-          );
+        );
       }
     }
 
     return MenuGridView(
       items: this.menuItems,
       groupedMenuMode: true,
-      );
+    );
   }
 }
