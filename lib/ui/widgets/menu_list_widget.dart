@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/action.dart' as prefix0;
@@ -27,21 +28,24 @@ class _MenuListWidgetState extends State<MenuListWidget> {
   String title;
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
         listener: (context, state) {
           print("*** MenuListWidget - RequestType: " +
               state.requestType.toString());
 
-          if (state != null && state.userData != null && globals.customScreenManager != null) {
+          if (state != null &&
+              state.userData != null &&
+              globals.customScreenManager != null) {
             globals.customScreenManager.onUserData(state.userData);
           }
 
           if (state != null &&
               state.responseData.screenGeneric != null &&
-              state.requestType == RequestType.OPEN_SCREEN ) {
-            Key componentID = new Key(state.responseData.screenGeneric.componentId);
+              state.requestType == RequestType.OPEN_SCREEN) {
+            Key componentID =
+                new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.menuItems;
 
             Navigator.of(context).push(MaterialPageRoute(
@@ -51,7 +55,8 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                       componentId: componentID,
                       title: title,
                       items: globals.items,
-                      menuComponentId: (state.request as OpenScreen).action.componentId,
+                      menuComponentId:
+                          (state.request as OpenScreen).action.componentId,
                     )));
           }
         },
@@ -85,15 +90,21 @@ class _MenuListWidgetState extends State<MenuListWidget> {
             ),
           ));
 
-      tiles.add(heading);
-
       Widget card = Card(
         color: Colors.white70,
         elevation: 2.0,
         child: Column(children: _buildTiles(v)),
       );
 
-      tiles.add(card);
+      Widget sticky = StickyHeader(
+        header: Container(
+          color: Colors.white70,
+          child: heading,
+        ),
+        content: card,
+      );
+
+      tiles.add(sticky);
     });
 
     return tiles;
@@ -141,11 +152,18 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                   size: 32,
                   color: Colors.grey[400],
                 )),
-        trailing: Icon(FontAwesomeIcons.chevronRight, color: Colors.grey[300],),
+        trailing: Icon(
+          FontAwesomeIcons.chevronRight,
+          color: Colors.grey[300],
+        ),
       );
       widgets.add(tile);
       if (v.indexOf(mItem) < v.length - 1)
-        widgets.add(Divider(height: 2, indent: 15, endIndent: 15,));
+        widgets.add(Divider(
+          height: 2,
+          indent: 15,
+          endIndent: 15,
+        ));
     });
 
     return widgets;
