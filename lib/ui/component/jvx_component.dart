@@ -7,7 +7,7 @@ import 'i_component.dart';
 
 abstract class JVxComponent implements IComponent {
   String name;
-  Key componentId;
+  GlobalKey componentId;
   String rawComponentId;
   JVxComponentState state = JVxComponentState.Free;
   Color background = Colors.transparent;

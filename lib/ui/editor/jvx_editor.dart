@@ -78,7 +78,7 @@ class JVxEditor extends JVxComponent implements IEditor {
     return super.isMaximumSizeSet | this.cellEditor?.isMaximumSizeSet;
   }
 
-  JVxEditor(Key componentId, BuildContext context)
+  JVxEditor(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
 
   void onBeginEditing() {}
@@ -141,6 +141,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   Widget getWidget() {
     return Container(
+        key: this.componentId, 
         height: super.preferredSize != null ? super.preferredSize.height : null,
         width: super.preferredSize != null ? super.preferredSize.width : null,
         child: cellEditor.getWidget(

@@ -17,7 +17,6 @@ import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 
 class JVxLazyTable extends JVxEditor {
-  Key key = GlobalKey();
   // visible column names
   List<String> columnNames = <String>[];
 
@@ -83,7 +82,7 @@ class JVxLazyTable extends JVxEditor {
   @override
   bool get isMaximumSizeSet => maximumSize!=null;
 
-  JVxLazyTable(Key componentId, BuildContext context)
+  JVxLazyTable(GlobalKey componentId, BuildContext context)
       : super(componentId, context) {
     componentCreator = ComponentCreator(context);
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
@@ -333,7 +332,7 @@ class JVxLazyTable extends JVxEditor {
           width: constraints.minWidth,
           height: constraints.minHeight,
           child: ScrollablePositionedList.builder(
-            key: this.key,
+            key: this.componentId,
             itemScrollController: _scrollController,
             itemPositionsListener: _scrollPositionListener,
             itemCount: itemCount,

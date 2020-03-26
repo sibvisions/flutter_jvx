@@ -3,7 +3,7 @@ import 'i_container.dart';
 import 'jvx_container.dart';
 
 class JVxPanel extends JVxContainer implements IContainer {
-  JVxPanel(Key componentId, BuildContext context) : super(componentId, context);
+  JVxPanel(GlobalKey componentId, BuildContext context) : super(componentId, context);
 
   /*@override
   get preferredSize {
@@ -25,6 +25,7 @@ class JVxPanel extends JVxContainer implements IContainer {
 
     if (child!= null) {
       return Container(
+            key: componentId,
             color: this.background, 
             child: child
         );

@@ -18,7 +18,7 @@ class JVxSplitPanel extends JVxContainer implements IContainer {
   int dividerPosition;
   int dividerAlignment;
 
-  JVxSplitPanel(Key componentId, BuildContext context)
+  JVxSplitPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
 
   void updateProperties(ChangedComponent changedComponent) {

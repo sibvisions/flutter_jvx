@@ -15,7 +15,7 @@ abstract class JVxContainer extends JVxComponent implements IContainer {
   JVxLayout layout;
   List<IComponent> components = new List<IComponent>();
 
-  JVxContainer(Key componentId, BuildContext context) : super(componentId, context);
+  JVxContainer(GlobalKey componentId, BuildContext context) : super(componentId, context);
 
   void add(IComponent pComponent) {
     addWithContraintsAndIndex(pComponent, null, -1);

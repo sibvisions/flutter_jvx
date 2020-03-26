@@ -6,7 +6,7 @@ typedef ButtonPressedCallback = void Function(String componentId, String label);
 class JVxActionComponent extends JVxComponent {
   ButtonPressedCallback onButtonPressed; 
 
-  JVxActionComponent(Key componentId, BuildContext context) : super(componentId, context);
+  JVxActionComponent(GlobalKey componentId, BuildContext context) : super(componentId, context);
   
   @override
   Widget getWidget() {

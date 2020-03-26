@@ -37,13 +37,13 @@ class ComponentCreator implements IComponentCreator {
 
     if (changedComponent?.className?.isNotEmpty ?? true) {
       switch (changedComponent.className) {
-        case "Panel":         { component = new JVxPanel(Key(changedComponent.id), context); } break; 
-        case "GroupPanel":    { component = new JVxGroupPanel(Key(changedComponent.id), context); } break; 
-        case "ScrollPanel":   { component = new JVxScrollPanel(Key(changedComponent.id), context); } break; 
-        case "SplitPanel":    { component = new JVxSplitPanel(Key(changedComponent.id), context); } break; 
-        case "Label":         { component = new JVxLabel(Key(changedComponent.id), context); } break; 
-        case "Button":        { component = new JVxButton(Key(changedComponent.id), context); } break; 
-        case "Table":         { component = new JVxLazyTable(Key(changedComponent.id), context); } break;
+        case "Panel":         { component = new JVxPanel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
+        case "GroupPanel":    { component = new JVxGroupPanel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
+        case "ScrollPanel":   { component = new JVxScrollPanel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
+        case "SplitPanel":    { component = new JVxSplitPanel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
+        case "Label":         { component = new JVxLabel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
+        case "Button":        { component = new JVxButton(GlobalKey(debugLabel: changedComponent.id), context); } break; 
+        case "Table":         { component = new JVxLazyTable(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "Editor":        { component = _createEditor(changedComponent); } break;
         default:              { component = _createDefaultComponent(changedComponent); } break;
       }
@@ -96,13 +96,13 @@ class ComponentCreator implements IComponentCreator {
   }
 
   JVxEditor _createEditor(ChangedComponent changedComponent) {
-    JVxEditor editor = new JVxEditor(Key(changedComponent.id), context);
+    JVxEditor editor = new JVxEditor(GlobalKey(debugLabel: changedComponent.id), context);
     editor.cellEditor = createCellEditor(changedComponent.cellEditor);
     return editor;
   }
 
   IComponent _createDefaultComponent(ChangedComponent changedComponent) {
-    JVxLabel component = new JVxLabel(Key(changedComponent.id), context);
+    JVxLabel component = new JVxLabel(GlobalKey(debugLabel: changedComponent.id), context);
     component.text = "Undefined Component '" + (changedComponent.className!=null?changedComponent.className:"") + "'!";
     return component;
   }

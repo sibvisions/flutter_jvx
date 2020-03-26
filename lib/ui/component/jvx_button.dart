@@ -18,7 +18,7 @@ class JVxButton extends JVxActionComponent {
   String text = "";
   Widget icon;
 
-  JVxButton(Key componentId, BuildContext context) : super(componentId, context);
+  JVxButton(GlobalKey componentId, BuildContext context) : super(componentId, context);
 
   @override
   void updateProperties(ChangedComponent changedComponent) {

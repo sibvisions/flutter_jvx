@@ -203,6 +203,7 @@ class ComponentScreen with DataScreen {
   void debugPrintComponent(IComponent component, int level) {
     if (component != null) {
       String debugString = "--" * level;
+      Size size = _getSizes(component.componentId);
 
       debugString += " id: " +
           component.componentId.toString() +
@@ -213,7 +214,9 @@ class ComponentScreen with DataScreen {
           ", className: " +
           component.runtimeType.toString() +
           ", constraints: " +
-          (component.constraints != null ? component.constraints : "");
+          (component.constraints != null ? component.constraints : "") +
+          ", size:" + (size!=null?size.toString():"nosize");
+
 
       if (component is IContainer) {
         debugString += ", layout: " +
@@ -236,4 +239,15 @@ class ComponentScreen with DataScreen {
       }
     }
   }
+
+  Size _getSizes(GlobalKey key) {
+    if (key!=null && key.currentContext!=null) {
+      final RenderBox renderBox = key.currentContext.findRenderObject();
+      if (renderBox!=null && renderBox.hasSize) {
+        return renderBox.size;
+      }
+    }
+
+    return null;
+ }
 }

@@ -13,7 +13,7 @@ enum JVxComponentState {
 
 abstract class IComponent {
   String name;
-  Key componentId;
+  GlobalKey componentId;
   JVxComponentState state;
   Color background;
   Color foreground;

@@ -5,10 +5,9 @@ import '../../ui/container/i_container.dart';
 import '../../ui/container/jvx_container.dart';
 
 class JVxGroupPanel extends JVxContainer implements IContainer {
-  Key key = GlobalKey();
   String text = "";
 
-  JVxGroupPanel(Key componentId, BuildContext context)
+  JVxGroupPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
 
   void updateProperties(ChangedComponent changedcomponent) {
@@ -26,7 +25,7 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
 
     if (child != null) {
       return  SingleChildScrollView(
-          key: key,
+          key: componentId,
           child: Container(
         child:
         Column(

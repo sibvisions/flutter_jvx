@@ -9,7 +9,7 @@ class JVxLabel extends JVxComponent implements IComponent {
   int verticalAlignment = 1;
   int horizontalAlignment = 0;
 
-  JVxLabel(Key componentId, BuildContext context) : super(componentId, context);
+  JVxLabel(GlobalKey componentId, BuildContext context) : super(componentId, context);
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);
