@@ -197,7 +197,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     menuItems: widget.items,
                     listMenuItems: true,
                     currentTitle: widget.title,
-                    groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped'),
+                    groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped' || globals.applicationStyle.menuMode == 'list'),
                   ),
                   key: _scaffoldKey,
                   appBar: AppBar(
