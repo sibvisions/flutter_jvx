@@ -53,7 +53,6 @@ class MenuPage extends StatelessWidget {
     Widget body;
 
     if ((globals.applicationStyle != null &&
-        globals.applicationStyle.menuMode == 'drawer' &&
         globals.applicationStyle?.desktopIcon != null)) {
       body = Container(
           decoration: BoxDecoration(
