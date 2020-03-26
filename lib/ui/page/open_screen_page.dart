@@ -185,7 +185,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                                       fit: BoxFit.cover)),
                   child: screen.getWidget());           
               } else {
-                return screen.getWidget();
+                child = screen.getWidget();
               }
 
               return Scaffold(
