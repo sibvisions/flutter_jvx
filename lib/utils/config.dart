@@ -28,7 +28,7 @@ class Config {
   bool debug;
   String username;
   String password;
-  String appMode;
+  String appMode = "full";
   Widget startupWidget;
 
   Config(
@@ -37,7 +37,6 @@ class Config {
       this.debug,
       this.username,
       this.password,
-      this.appMode,
       this.startupWidget});
 
   Config.fromJson(Map<String, dynamic> json)
