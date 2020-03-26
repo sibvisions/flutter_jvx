@@ -33,7 +33,10 @@ class JVxScreen implements IScreen {
     IComponent component = this.componentScreen.getRootComponent();
 
     if (component != null) {
-      return component.getWidget();
+      return FractionallySizedBox(
+        widthFactor: 1,
+        heightFactor: 1,
+        child: component.getWidget());
     } else {
       return Container(
         alignment: Alignment.center,
