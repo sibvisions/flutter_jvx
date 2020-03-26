@@ -42,6 +42,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   @override
   Widget build(BuildContext context) {
     title = widget.currentTitle;
+
     return BlocBuilder<ApiBloc, Response>(builder: (context, state) {
       if (state.requestType == RequestType.LOGOUT &&
           (state.error == null || !state.error) &&
@@ -51,6 +52,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             () => Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => LoginPage())));
       }
+
       return Drawer(
           child: Column(
         children: <Widget>[
@@ -94,6 +96,20 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         ],
       ));
     });
+  }
+
+  bool hasMultipleGroups() {
+    int groupCount = 0;
+    String lastGroup = "";
+    if (widget.listMenuItems) {
+      widget?.menuItems?.forEach((m) {
+        if (m.group != lastGroup) {
+          groupCount++;
+          lastGroup = m.group;
+        }
+      });
+    }
+    return (groupCount > 1);
   }
 
   ListTile getGroupHeader(MenuItem item) {

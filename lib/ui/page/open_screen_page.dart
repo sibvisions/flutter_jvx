@@ -213,7 +213,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     currentTitle: widget.title,
                     groupedMenuMode:
                         (globals.applicationStyle.menuMode == 'grid_grouped' ||
-                            globals.applicationStyle.menuMode == 'list'),
+                            globals.applicationStyle.menuMode == 'list') & hasMultipleGroups(),
                   ),
                   key: _scaffoldKey,
                   appBar: AppBar(
@@ -272,6 +272,20 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   didChangeMetrics() {}
+
+  bool hasMultipleGroups() {
+    int groupCount = 0;
+    String lastGroup = "";
+    if (widget.items!=null) {
+      widget.items?.forEach((m) {
+        if (m.group != lastGroup) {
+          groupCount++;
+          lastGroup = m.group;
+        }
+      });
+    }
+    return (groupCount > 1);
+  }
 
   Future<File> openFilePicker(BuildContext context) async {
     File file;

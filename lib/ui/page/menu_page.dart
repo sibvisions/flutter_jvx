@@ -81,15 +81,33 @@ class MenuPage extends StatelessWidget {
           ),
         ],
       ),
-      body: body,
+      body: FractionallySizedBox(
+        widthFactor: 1,
+        heightFactor: 1,
+        child: body),
       endDrawer: MenuDrawerWidget(
         menuItems: this.menuItems,
         listMenuItems: drawerMenu,
         groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped' ||
-            globals.applicationStyle.menuMode == 'list'),
+            globals.applicationStyle.menuMode == 'list') & hasMultipleGroups(),
       ),
     );
   }
+
+  bool hasMultipleGroups() {
+    int groupCount = 0;
+    String lastGroup = "";
+    if (this.menuItems!=null) {
+      this.menuItems?.forEach((m) {
+        if (m.group != lastGroup) {
+          groupCount++;
+          lastGroup = m.group;
+        }
+      });
+    }
+    return (groupCount > 1);
+  }
+  
 
   Widget getMenuWidget() {
     if (globals.applicationStyle != null) {
@@ -98,20 +116,21 @@ class MenuPage extends StatelessWidget {
       } else if (globals.applicationStyle.menuMode == 'list') {
         return MenuListWidget(
           menuItems: this.menuItems,
+          groupedMenuMode: true & hasMultipleGroups()
         );
       } else if (globals.applicationStyle.menuMode == 'drawer') {
         return MenuEmpty();
       } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
         return MenuGridView(
           items: this.menuItems,
-          groupedMenuMode: true,
+          groupedMenuMode: true & hasMultipleGroups(),
         );
       }
     }
 
     return MenuGridView(
       items: this.menuItems,
-      groupedMenuMode: true,
+      groupedMenuMode: true & hasMultipleGroups(),
     );
   }
 }

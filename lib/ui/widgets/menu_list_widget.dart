@@ -17,8 +17,11 @@ import '../../utils/globals.dart' as globals;
 
 class MenuListWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
+  final bool groupedMenuMode;
 
-  MenuListWidget({Key key, @required this.menuItems}) : super(key: key);
+  MenuListWidget(
+      {Key key, @required this.menuItems, this.groupedMenuMode = true})
+      : super(key: key);
 
   @override
   _MenuListWidgetState createState() => _MenuListWidgetState();
@@ -96,15 +99,19 @@ class _MenuListWidgetState extends State<MenuListWidget> {
         child: Column(children: _buildTiles(v)),
       );
 
-      Widget sticky = StickyHeader(
-        header: Container(
-          color: Colors.white70,
-          child: heading,
-        ),
-        content: card,
-      );
+      if (widget.groupedMenuMode) {
+        Widget sticky = StickyHeader(
+          header: Container(
+            color: Colors.white70,
+            child: heading,
+          ),
+          content: card,
+        );
 
-      tiles.add(sticky);
+        tiles.add(sticky);
+      } else {
+        tiles..add(card);
+      }
     });
 
     return tiles;
