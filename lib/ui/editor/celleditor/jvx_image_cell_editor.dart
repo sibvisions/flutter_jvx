@@ -26,6 +26,16 @@ class JVxImageCellEditor extends JVxCellEditor {
   BoxFit fit = BoxFit.scaleDown;
   Alignment alignment = Alignment.center;
 
+  @override
+  get preferredSize {
+    return Size(150, 150);
+  }
+
+  @override
+  get minimumSize {
+    return Size(50, 50);
+  }
+
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
     defaultImageName = changedCellEditor
@@ -116,32 +126,41 @@ class JVxImageCellEditor extends JVxCellEditor {
       alignment = Alignment.centerRight;
     }
 
-    ImageProvider currImageProv;
-    Image showImg;
-    if (currentImage != null) {
-      currImageProv = currentImage.image;
-      showImg = Image(
-        alignment: alignment,
-        image: currImageProv,
-        fit: fit,
-      );
-    } else if (defaultImage != null) {
-      currImageProv = defaultImage.image;
-      showImg = Image(
-        alignment: alignment,
-        image: currImageProv,
-        fit: fit,
-      );
-    }
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+        double height = constraints.maxHeight!=double.infinity?constraints.maxHeight:null;
+      ImageProvider currImageProv;
+      Image showImg;
+      if (currentImage != null) {
+        currImageProv = currentImage.image;
+        showImg = Image(
+          height: height,
+          alignment: alignment,
+          image: currImageProv,
+          fit: fit,
+        );
+      } else if (defaultImage != null) {
+        currImageProv = defaultImage.image;
+        showImg = Image(
+          height: height,
+          alignment: alignment,
+          image: currImageProv,
+          fit: fit,
+        );
+      }
 
-    return Container(
-      height: 200,
-        decoration: BoxDecoration(
-            color: background != null ? background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
-            borderRadius: BorderRadius.circular(5),
-            border: borderVisible
-                ? Border.all(color: UIData.ui_kit_color_2)
-                : null),
-        child: showImg);
+      return Container(
+          height: height,
+          decoration: BoxDecoration(
+              color: background != null
+                  ? background
+                  : Colors.white
+                      .withOpacity(globals.applicationStyle.controlsOpacity),
+              borderRadius: BorderRadius.circular(5),
+              border: borderVisible
+                  ? Border.all(color: UIData.ui_kit_color_2)
+                  : null),
+          child: showImg);
+    });
   }
 }
