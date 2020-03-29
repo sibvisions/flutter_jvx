@@ -15,6 +15,7 @@ import '../../ui/screen/component_creator.dart';
 import '../../ui/screen/component_data.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
+import '../../utils/globals.dart' as globals;
 
 class JVxLazyTable extends JVxEditor {
   // visible column names
@@ -123,7 +124,7 @@ class JVxLazyTable extends JVxEditor {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-            color: UIData.ui_kit_color_2[500].withOpacity(0.7),
+            color: UIData.ui_kit_color_2[500].withOpacity(globals.applicationStyle.controlsOpacity),
           ),
           child: Row(children: children));
     } else {
@@ -141,7 +142,7 @@ class JVxLazyTable extends JVxEditor {
                 ? UIData.ui_kit_color_2[100].withOpacity(0.1)
                 : Colors.white.withOpacity(0.1),
             child: InkWell(
-                highlightColor: UIData.ui_kit_color_2[500].withOpacity(0.7),
+                highlightColor: UIData.ui_kit_color_2[500].withOpacity(globals.applicationStyle.controlsOpacity),
                 onTap: () {
                   _onRowTapped(index);
                 },
@@ -263,13 +264,13 @@ class JVxLazyTable extends JVxEditor {
         return Slidable(
           actionExtentRatio: 0.25,
           child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
               child: getTableRow(children, index, false, isSelected)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
             new IconSlideAction(
               caption: Translations.of(context).text2('Delete'),
-              color: Colors.red.withOpacity(0.7),
+              color: Colors.red.withOpacity(globals.applicationStyle.controlsOpacity),
               icon: Icons.delete,
               onTap: () => this.data.deleteRecord(context, index),
             ),
@@ -277,7 +278,7 @@ class JVxLazyTable extends JVxEditor {
         );
       } else {
         return Container(
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
             child: getTableRow(children, index, false, isSelected));
       }
     }
@@ -330,7 +331,8 @@ class JVxLazyTable extends JVxEditor {
         onLongPress: () => showContextMenu(context),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: UIData.ui_kit_color_2[500].withOpacity(0.7))
+            border: Border.all(color: UIData.ui_kit_color_2[500].withOpacity(globals.applicationStyle.controlsOpacity)),
+            color: Colors.white.withOpacity(globals.applicationStyle.controlsOpacity)
           ),
           width: constraints.minWidth,
           height: constraints.minHeight,

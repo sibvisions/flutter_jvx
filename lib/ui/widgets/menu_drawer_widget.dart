@@ -125,11 +125,11 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   StickyHeader getStickyHeaderGroup(Widget child, List<Widget> content) {
     return StickyHeader(
       header: Container(
-        color: Colors.white70,
+        color: Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
         child: child,
       ),
       content: Card(
-        color: Colors.white70,
+        color: Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
         elevation: 2.0,
         child: Column(children: content),
       ),

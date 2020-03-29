@@ -7,6 +7,7 @@ import '../../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import '../../../ui/widgets/custom_dropdown_button.dart' as custom;
 import '../../../ui/widgets/lazy_dropdown.dart';
 import '../../../utils/uidata.dart';
+import '../../../utils/globals.dart' as globals;
 
 class JVxLinkedCellEditor extends JVxReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
@@ -173,7 +174,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
       return Container(
         height: 50,
         decoration: BoxDecoration(
-            color: background != null ? background : Colors.white70,
+            color: background != null ? background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
             borderRadius: BorderRadius.circular(5),
             border: this.editable != null && this.editable ? (borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)

@@ -35,6 +35,10 @@ class ApplicationStyleResponse extends ResponseObject {
   String menuMode;
   Color themeColor;
   String hash;
+  double controlsOpacity = 1.0;
+  double menuOpacity = 1.0;
+  double sidemenuOpacity = 1.0;
+  
 
   ApplicationStyleResponse();
 
@@ -63,6 +67,15 @@ class ApplicationStyleResponse extends ResponseObject {
       loginBackground = HexColor(jsonMap['login.background']);
     else
       loginBackground = null;
+
+    menuOpacity = jsonMap['menuOpacity']!=null?double.tryParse(jsonMap['menuOpacity']):null;
+    if (menuOpacity==null || menuOpacity<0 || menuOpacity>1) menuOpacity = 1.0;
+
+    sidemenuOpacity = jsonMap['sidemenuOpacity']!=null?double.tryParse(jsonMap['sidemenuOpacity']):null;
+    if (sidemenuOpacity==null) sidemenuOpacity = 1.0;
+
+    controlsOpacity = jsonMap['controlsOpacity']!=null?double.tryParse(jsonMap['controlsOpacity']):null;
+    if (controlsOpacity==null) controlsOpacity = 1.0;
 
     String jsonStr = json.encode(jsonMap);
     var bytes = utf8.encode(jsonStr);

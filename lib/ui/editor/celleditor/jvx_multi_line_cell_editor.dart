@@ -3,6 +3,7 @@ import '../../../model/cell_editor.dart';
 import '../../../model/api/response/data/jvx_data.dart';
 import '../../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
 import '../../../utils/uidata.dart';
+import '../../../utils/globals.dart' as globals;
 
 class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
   List<ListTile> _items = <ListTile>[];
@@ -93,7 +94,7 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
         horizontalAlignment: horizontalAlignment);
     return Container(
       decoration: BoxDecoration(
-          color: background != null ? background : Colors.white70,
+          color: background != null ? background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
           borderRadius: BorderRadius.circular(5),
           border:
               borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),

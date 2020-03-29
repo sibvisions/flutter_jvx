@@ -6,6 +6,7 @@ import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
 import '../../../utils/jvx_text_align.dart';
 import '../../../utils/uidata.dart';
+import '../../../utils/globals.dart' as globals;
 
 class JVxTextCellEditor extends JVxCellEditor {
   TextEditingController _controller = TextEditingController();
@@ -85,7 +86,7 @@ class JVxTextCellEditor extends JVxCellEditor {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: this.background != null ? this.background : Colors.white70,
+          color: this.background != null ? this.background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
           borderRadius: BorderRadius.circular(5),
           border: borderVisible && this.editable != null && this.editable
               ? Border.all(color: UIData.ui_kit_color_2)
