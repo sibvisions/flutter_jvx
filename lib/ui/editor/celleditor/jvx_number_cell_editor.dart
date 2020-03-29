@@ -45,9 +45,9 @@ class JVxNumberCellEditor extends JVxCellEditor {
     /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
     if (numberFormat != null) {
       List<String> numberFormatParts = numberFormat.split(".");
-      if (numberFormatParts.length > 1 && numberFormatParts[1].length > 16) {
+      if (numberFormatParts.length > 1 && numberFormatParts[1].length > 14) {
         numberFormat =
-            numberFormatParts[0] + "." + numberFormatParts[1].substring(0, 16);
+            numberFormatParts[0] + "." + numberFormatParts[1].substring(0, 14);
       }
     }
 
@@ -66,7 +66,7 @@ class JVxNumberCellEditor extends JVxCellEditor {
       if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
         tempValue = tempValue.substring(0, tempValue.length - 1);
       this.value =
-          NumericTextFormatter.convertToNumber(tempValue, numberFormat);
+          NumericTextFormatter.convertToNumber(tempValue, numberFormat, format);
       super.onValueChanged(this.value);
       this.valueChanged = false;
     }

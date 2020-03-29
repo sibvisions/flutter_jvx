@@ -21,7 +21,7 @@ class NumericTextFormatter extends TextInputFormatter {
         if (newString.length>this.numberFormat.length) 
           newString = oldValue.text;
         else
-          numberFormatter.format(convertToNumber(newString, numberFormat));
+          numberFormatter.format(convertToNumber(newString, numberFormat, numberFormatter));
       } catch (e) {
         newString = oldValue.text;
       }
@@ -37,13 +37,13 @@ class NumericTextFormatter extends TextInputFormatter {
     }
   }
 
-  static dynamic convertToNumber(dynamic pValue, String numberFormat) {
+  static dynamic convertToNumber(dynamic pValue, String numberFormat, NumberFormat numberFormatter) {
     if (pValue is String) {
       dynamic numberValue;
-      if (numberFormat.contains("."))
-        numberValue = double.tryParse(pValue);
-      else
-        numberValue = int.tryParse(pValue);
+      //if (numberFormat.contains("."))
+        numberValue = numberFormatter.parse(pValue); // double.tryParse(pValue);
+      //else
+        //numberValue = int.tryParse(pValue);
         
       return numberValue;
     }
