@@ -290,7 +290,7 @@ class JVxLazyTable extends JVxEditor {
   void onServerDataChanged() {}
 
   void onSelectedRowChanged(dynamic selectedRow) {
-    if (_scrollController!=null && selectedRow is int && selectedRow >=0) {
+    if (_scrollController!=null && selectedRow is int && selectedRow >= 0 && _scrollController.isAttached) {
       _scrollController.scrollTo(index: selectedRow, duration: Duration(milliseconds: 500), curve: Curves.ease);
     }
   }

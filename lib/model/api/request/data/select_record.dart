@@ -17,6 +17,7 @@ class SelectRecord extends Request {
     'clientId': clientId,
     'dataProvider': dataProvider,
     'fetch': fetch,
-    'filter': filter?.toJson()
+    'filter': filter?.toJson(),
+    'selectedRow': selectedRow
   };
 }

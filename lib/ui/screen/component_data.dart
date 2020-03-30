@@ -94,7 +94,7 @@ class ComponentData {
   }
 
   void updateDataProviderChanged(BuildContext context, JVxDataproviderChanged pDataproviderChanged) {
-    _fetchData(context, pDataproviderChanged.reload, 0);
+    _fetchData(context, pDataproviderChanged.reload, -1);
     updateSelectedRow(pDataproviderChanged.selectedRow);
   }
 
