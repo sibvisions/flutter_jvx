@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/ui/editor/i_editor.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
@@ -217,6 +218,9 @@ class ComponentScreen with DataScreen {
           (component.constraints != null ? component.constraints : "") +
           ", size:" + (size!=null?size.toString():"nosize");
 
+      if (component is JVxEditor) {
+        debugString += ", dataProvider: " + component.dataProvider;
+      }
 
       if (component is IContainer) {
         debugString += ", layout: " +

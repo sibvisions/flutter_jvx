@@ -116,6 +116,8 @@ class ComponentData {
 
     if (data!=null && data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
+    } else {
+      this._fetchData(context, null, -1);
     }
 
     return "";
@@ -220,8 +222,10 @@ class ComponentData {
 
       fetch.reload = (reload==-1);
       
-      if (this.metaData==null)
+      if (this.metaData==null) {
         fetch.includeMetaData = true;
+        isFetchingMetaData = true;
+      }
 
       BlocProvider.of<ApiBloc>(context).dispatch(fetch);
   }
