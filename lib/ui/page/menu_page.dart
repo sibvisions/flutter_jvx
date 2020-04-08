@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/ui/widgets/menu_empty_widget.dart';
+import '../../ui/screen/menu_manager.dart';
+import '../../ui/widgets/menu_empty_widget.dart';
 import '../../model/menu_item.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
 import '../../ui/widgets/menu_grid_view.dart';
@@ -22,7 +23,9 @@ class MenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Custom Screen
     if (globals.customScreenManager != null) {
-      this.menuItems = globals.customScreenManager.onMenu(this.menuItems);
+      JVxMenuManager menuManager = JVxMenuManager(this.menuItems);
+      globals.customScreenManager.onMenu(menuManager);
+      this.menuItems = menuManager.menuItems;
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

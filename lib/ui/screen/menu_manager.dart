@@ -5,7 +5,7 @@ class JVxMenuManager {
 
   JVxMenuManager(this._menuItems);
 
-  get MenuItems {
+  get menuItems {
     return _menuItems;
   }
 
