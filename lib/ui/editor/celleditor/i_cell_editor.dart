@@ -4,6 +4,7 @@ import '../../../model/popup_size.dart';
 
 abstract class ICellEditor {
   BuildContext context;
+  bool isTableView;
   int horizontalAlignment;
   int verticalAlignment;
   int preferredEditorMode;

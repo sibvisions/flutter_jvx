@@ -9,6 +9,7 @@ import 'i_cell_editor.dart';
 class JVxCellEditor implements ICellEditor {
   Key key = GlobalKey<FormState>();
   BuildContext context;
+  bool isTableView = false;
   int horizontalAlignment;
   int verticalAlignment;
   int preferredEditorMode;

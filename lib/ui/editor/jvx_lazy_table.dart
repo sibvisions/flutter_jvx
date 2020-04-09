@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../ui/editor/celleditor/jvx_date_cell_editor.dart';
 import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
 import '../../model/changed_component.dart';
 import '../../model/api/response/data/jvx_data.dart';
@@ -192,6 +193,7 @@ class JVxLazyTable extends JVxEditor {
       // clEditor.onValueChanged = onValueChanged;
       clEditor.editable = false;
       clEditor.value = text;
+      clEditor.isTableView = true;
       return clEditor;
     }
     return null;
@@ -224,7 +226,7 @@ class JVxLazyTable extends JVxEditor {
             child: GestureDetector(
               child: Container(
                   // only for development
-                  child: (cellEditor is JVxChoiceCellEditor || cellEditor is JVxCheckboxCellEditor)
+                  child: (cellEditor is JVxChoiceCellEditor || cellEditor is JVxCheckboxCellEditor || cellEditor is JVxDateCellEditor)
                       ? cellEditor.getWidget()
                       : Text(text),
                   // child: Text(Properties.utf8convert(text),
