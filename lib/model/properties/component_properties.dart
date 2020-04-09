@@ -39,6 +39,7 @@ enum ComponentProperty {
   MAXIMUM_SIZE,
   READONLY,
   EVENT_FOCUS_GAINED,
+  EVENT_ACTION,
   $DESTROY,
   $REMOVE,
   SCREEN__TITLE,
@@ -53,7 +54,8 @@ enum ComponentProperty {
   DATA_TYPE_IDENTIFIER,
   NULLABLE,
   PREFERRED_SIZE,
-  IMAGE
+  IMAGE,
+  SELECTED
 }
 
 class ComponentProperties {

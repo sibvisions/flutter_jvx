@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import '../../model/api/request/set_component_value.dart';
 import '../../model/action.dart' as prefix0;
 import '../../model/api/request/change.dart';
 import '../../model/api/request/data/fetch_data.dart';
@@ -131,7 +132,8 @@ class ApiBloc extends Bloc<Request, Response> {
         event is FilterData ||
         event is InsertRecord ||
         event is SaveData ||
-        event is dataModel.MetaData) {
+        event is dataModel.MetaData ||
+        event is SetComponentValue) {
       yield* data(event);
     } else if (event is PressButton) {
       yield updateResponse(Response()
@@ -600,6 +602,14 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.CHANGE:
         response = await restClient.postAsync('/api/changes', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.SET_VALUE:
+        response =
+            await restClient.postAsync('/api/comp/setValue', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);

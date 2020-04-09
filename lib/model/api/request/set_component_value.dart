@@ -4,14 +4,14 @@ import '../../../utils/globals.dart' as globals;
 /// Model for [SetValues] request.
 class SetComponentValue extends Request {
   String componentId;
-  List<dynamic> values;
+  dynamic value;
 
-  SetComponentValue(this.componentId, this.values) : 
+  SetComponentValue(this.componentId, this.value) : 
       super(clientId: globals.clientId, requestType: RequestType.SET_VALUE);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'clientId': clientId,
     'componentId': componentId,
-    'values': values,
+    'value': value,
   };
 }
