@@ -25,6 +25,7 @@ enum RequestType {
   DOWNLOAD,
   UPLOAD,
   CHANGE,
+  SET_VALUE
 }
 
 bool isScreenRequest(RequestType type) {
@@ -45,7 +46,8 @@ bool isScreenRequest(RequestType type) {
     type == RequestType.RELOAD ||
     type == RequestType.DAL_INSERT ||
     type == RequestType.DAL_SAVE ||
-    type == RequestType.DAL_METADATA);
+    type == RequestType.DAL_METADATA) ||
+    type == RequestType.SET_VALUE;
 }
 
 abstract class Request extends Equatable {
