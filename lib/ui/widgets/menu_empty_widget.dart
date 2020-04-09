@@ -3,9 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../utils/uidata.dart';
-import '../../utils/translations.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/api/request/open_screen.dart';
@@ -65,14 +62,15 @@ class _MenuEmptyState extends State<MenuEmpty> {
   Widget getLogo() {
     Widget image;
     if (globals.applicationStyle == null ||
-        globals.applicationStyle?.desktopIcon == null) {
+        (globals.applicationStyle?.desktopIcon == null && 
+        globals.applicationStyle?.loginLogo == null)) {
       image = Image.asset(
           globals.package
               ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
               : 'assets/images/sibvisions.png',
           fit: BoxFit.fitHeight);
     } else if (globals.applicationStyle != null &&
-        globals.applicationStyle.desktopIcon != null &&
+        globals.applicationStyle.desktopIcon == null &&
         globals.applicationStyle.loginLogo != null) {
       image = Image.file(
           File('${globals.dir}${globals.applicationStyle.loginLogo}'),
