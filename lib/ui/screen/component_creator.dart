@@ -1,6 +1,9 @@
 
-import 'package:jvx_flutterclient/ui/component/jvx_radiobutton.dart';
+import 'package:jvx_flutterclient/ui/component/jvx_textarea.dart';
 
+import '../../ui/component/jvx_passwordfield.dart';
+import '../../ui/component/jvx_radiobutton.dart';
+import '../../ui/component/jvx_textfield.dart';
 import '../../model/cell_editor.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
@@ -50,6 +53,9 @@ class ComponentCreator implements IComponentCreator {
         case "Table":         { component = new JVxLazyTable(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "CheckBox":      { component = new JVxCheckbox(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "RadioButton":   { component = new JVxRadioButton(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "TextField":     { component = new JVxTextField(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "PasswordField": { component = new JVxPasswordField(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "TextArea":      { component = new JVxTextArea(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "Editor":        { component = _createEditor(changedComponent); } break;
         default:              { component = _createDefaultComponent(changedComponent); } break;
       }

@@ -19,4 +19,16 @@ class TextUtils {
     return tp.size;
   }
 
+  static String getCharactersWithLength(int length) {
+    String text = averageCharactersTextField; 
+    double count = length/text.length;
+
+    if (count > 1) {
+      int countInt = count.floor();
+      for(int i=1;i<countInt;i++) text += averageCharactersTextField;
+    }
+
+    return text.substring(0,length);
+  }
+
 }

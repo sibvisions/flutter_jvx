@@ -55,7 +55,9 @@ enum ComponentProperty {
   NULLABLE,
   PREFERRED_SIZE,
   IMAGE,
-  SELECTED
+  SELECTED,
+  BORDER,
+  COLUMNS
 }
 
 class ComponentProperties {
