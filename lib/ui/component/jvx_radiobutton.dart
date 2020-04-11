@@ -25,9 +25,8 @@ class JVxRadioButton extends JVxComponent implements IComponent {
   }
 
   void valueChanged(dynamic value) {
-  selected = value;
     SetComponentValue setComponentValue =
-        SetComponentValue(this.name, value);
+        SetComponentValue(this.name, true);
     BlocProvider.of<ApiBloc>(context).dispatch(setComponentValue);
   }
 
@@ -37,10 +36,10 @@ class JVxRadioButton extends JVxComponent implements IComponent {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Radio(
-            value: this.selected,
-            groupValue: this.selected,
-            onChanged: (bool change) =>
+          Radio<String>(
+            value: (this.selected?this.name:(this.name+"_value")),
+            groupValue: (this.selected?this.name:(this.name+"_groupValue")),
+            onChanged: (String change) =>
                 (this.eventAction != null && this.eventAction)
                     ? valueChanged(change)
                     : null,
