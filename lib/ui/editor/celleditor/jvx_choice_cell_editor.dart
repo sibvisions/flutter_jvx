@@ -53,7 +53,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
       selectedImage = defaultImage;
     }
 
-    if (imageNames.indexOf(path) > allowedValues.length - 1) {
+    if (path==null || imageNames.indexOf(path) > allowedValues.length - 1) {
       return defaultImage;
     } else {
       val = allowedValues[imageNames.indexOf(path)];
