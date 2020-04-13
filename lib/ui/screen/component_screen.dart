@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_flutterclient/ui/editor/i_editor.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
@@ -203,7 +202,7 @@ class ComponentScreen with DataScreen {
 
   void debugPrintComponent(IComponent component, int level) {
     if (component != null) {
-      String debugString = "--" * level;
+      String debugString = " |" * level;
       Size size = _getSizes(component.componentId);
 
       debugString += " id: " +
