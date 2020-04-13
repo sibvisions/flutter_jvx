@@ -45,6 +45,10 @@ convertFontAwesomeTextToIcon(String text, Color color) {
   if (arr.length>=3 && double.tryParse(arr[1])!=null && double.tryParse(arr[2])!=null) 
     size = Size(double.parse(arr[1]), double.parse(arr[2]));
 
+  if (icon.contains(";")) {
+    icon = icon.substring(0, icon.indexOf(";"));
+  }
+
   return new Icon(
     chooseIcon(convertToMethodName(icon)),
     size: size.width,
