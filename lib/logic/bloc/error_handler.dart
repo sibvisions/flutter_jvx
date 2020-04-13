@@ -10,7 +10,7 @@ import '../../utils/translations.dart';
 import '../../utils/globals.dart' as globals;
 
 bool handleError(Response response, BuildContext context) {
-  if (response.error && response.requestType != RequestType.LOGIN) {
+  if (response.error && (response.requestType != RequestType.LOGIN || response.errorName == 'message.sessionexpired')) {
     if (response.errorName == 'message.sessionexpired') {
       if (globals.handleSessionTimeout != null && globals.handleSessionTimeout) {
         showSessionExpired(context, response.title, 'App will restart.');

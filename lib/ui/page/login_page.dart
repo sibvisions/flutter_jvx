@@ -39,7 +39,7 @@ class LoginPageState extends State<LoginPage> {
   Widget loginBuilder() => errorAndLoadingListener(
         BlocListener<ApiBloc, Response>(
           listener: (context, state) {
-            if (state.error != null && state.error) {
+            if (state.error != null && state.error && !state.errorHandled) {
               showError(context, Translations.of(context).text2('Error'),
                   state.message);
             }
