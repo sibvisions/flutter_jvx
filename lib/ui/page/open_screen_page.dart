@@ -154,7 +154,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 currentFocus.unfocus();
               }
 
-              Future.delayed(const Duration(milliseconds: 10), () {
+              Future.delayed(const Duration(milliseconds: 100), () {
                 BlocProvider.of<ApiBloc>(context).dispatch(navigation);
               });
 
@@ -238,7 +238,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           currentFocus.unfocus();
                         }
 
-                        Future.delayed(const Duration(milliseconds: 10), () {
+                        Future.delayed(const Duration(milliseconds: 100), () {
                           BlocProvider.of<ApiBloc>(context)
                               .dispatch(navigation);
                         });

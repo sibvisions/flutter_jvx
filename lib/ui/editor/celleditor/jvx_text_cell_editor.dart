@@ -52,11 +52,7 @@ class JVxTextCellEditor extends JVxCellEditor {
   }
 
   void onTextFieldEndEditing() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
+    node.unfocus();
 
     if (this.valueChanged) {
       super.onValueChanged(this.value);

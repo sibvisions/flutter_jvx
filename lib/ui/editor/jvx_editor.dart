@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import '../../ui/editor/celleditor/jvx_number_cell_editor.dart';
+import '../../ui/editor/celleditor/jvx_text_cell_editor.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../model/properties/hex_color.dart';
@@ -84,6 +86,8 @@ class JVxEditor extends JVxComponent implements IEditor {
   void onBeginEditing() {}
 
   void onValueChanged(dynamic value) {
+    bool isTextEditor = (cellEditor is JVxTextCellEditor || cellEditor is JVxNumberCellEditor);
+
     if (cellEditor is JVxReferencedCellEditor) {
       data.setValues(
           context,
@@ -92,7 +96,7 @@ class JVxEditor extends JVxComponent implements IEditor {
               .linkReference
               .columnNames);
     } else {
-      data.setValues(context, (value is List) ? value : [value], [columnName]);
+      data.setValues(context, (value is List) ? value : [value], [columnName], null, isTextEditor);
     }
   }
 

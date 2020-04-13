@@ -56,7 +56,7 @@ class JVxButton extends JVxActionComponent {
       currentFocus.unfocus();
     }
 
-    Future.delayed(const Duration(milliseconds: 10), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       PressButton pressButton = PressButton(jvxAction.Action(componentId: this.name, label: this.text));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
