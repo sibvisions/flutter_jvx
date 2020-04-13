@@ -26,6 +26,7 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
 
   @override
   void updateLayoutString(String layoutString) {
+    super.updateLayoutString(layoutString);
     parseFromString(layoutString);  
   }
 

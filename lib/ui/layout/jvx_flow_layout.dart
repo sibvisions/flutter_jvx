@@ -34,6 +34,7 @@ class JVxFlowLayout extends JVxLayout<String> {
   }
 
   void updateLayoutString(String layoutString) {
+    super.updateLayoutString(layoutString);
     parseFromString(layoutString);
 
     List<String> parameter = layoutString?.split(",");

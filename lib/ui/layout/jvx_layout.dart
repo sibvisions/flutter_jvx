@@ -17,6 +17,9 @@ abstract class JVxLayout<E> implements ILayout<E> {
   Size minimumSize;
   Size maximumSize;
 
+  String rawLayoutData;
+  String rawLayoutString;
+
   bool get isPreferredSizeSet => preferredSize!=null;
   bool get isMinimumSizeSet => minimumSize!=null;
   bool get isMaximumSizeSet => maximumSize!=null;
@@ -44,11 +47,11 @@ abstract class JVxLayout<E> implements ILayout<E> {
   }
 
   void updateLayoutString(String layoutString) {
-    
+    this.rawLayoutString = layoutString;
   }
 
   void updateLayoutData(String layoutData) {
-
+    this.rawLayoutData = layoutData;
   }
 
 }

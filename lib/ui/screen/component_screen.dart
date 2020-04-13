@@ -204,9 +204,10 @@ class ComponentScreen with DataScreen {
     if (component != null) {
       String debugString = " |" * level;
       Size size = _getSizes(component.componentId);
+      String keyString = component.componentId.toString();
+      keyString = keyString.substring(keyString.indexOf(" ")+1, keyString.length-1);
 
-      debugString += " id: " +
-          component.componentId.toString() +
+      debugString += " id: " + keyString +
           ", parent: " +
           (component.parentComponentId != null
               ? component.parentComponentId
@@ -223,13 +224,14 @@ class ComponentScreen with DataScreen {
 
       if (component is IContainer) {
         debugString += ", layout: " +
-            (component.layout != null
-                ? component.layout.runtimeType.toString()
-                : "") +
-            ", childCount: " +
+            (component.layout!=null && component.layout.rawLayoutString!=null ? component.layout.rawLayoutString : "") + 
+            ", layoutData: " +
+            (component.layout!=null && component.layout.rawLayoutData!= null ? component.layout.rawLayoutData : "");
+/*             + ", childCount: " +
             (component.components != null
                 ? component.components.length.toString()
-                : "0");
+                : "0"
+            ); */
         print(debugString);
 
         if (component.components != null) {

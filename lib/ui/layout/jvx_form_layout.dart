@@ -74,6 +74,7 @@ class JVxFormLayout extends JVxLayout<String> {
 
   @override
   void updateLayoutString(String layoutString) {
+    super.updateLayoutString(layoutString);
     parseFromString(layoutString);
     List<String> parameter = layoutString?.split(",");
 
@@ -83,6 +84,7 @@ class JVxFormLayout extends JVxLayout<String> {
 
 @override
   void updateLayoutData(String layoutData) {
+    super.updateLayoutData(layoutData);
     this.anchors = Map<String, JVxAnchor>.from(defaultAnchors);
     
     List<String> anc = layoutData.split(";");
