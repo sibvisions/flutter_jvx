@@ -85,6 +85,9 @@ class JVxButton extends JVxActionComponent {
     }
 
     return 
+    ButtonTheme(
+  minWidth: 44,
+  child: 
       RaisedButton(
         key: this.componentId, 
         onPressed: this.enabled?buttonPressed:null,
@@ -92,6 +95,6 @@ class JVxButton extends JVxActionComponent {
         elevation: 10,
         child: child,
         splashColor: this.background,
-      );
+      ));
   }
 }

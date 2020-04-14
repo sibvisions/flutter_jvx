@@ -179,7 +179,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
   Icon _iconBuilder(Map data) {
     Icon icon = new Icon(
       data['icon'],
-      size: 48,
+      size: 32,
       color: UIData.ui_kit_color_2,
       key: data['key'],
       textDirection: data['textDirection'],
