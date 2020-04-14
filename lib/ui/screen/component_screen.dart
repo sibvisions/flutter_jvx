@@ -226,12 +226,12 @@ class ComponentScreen with DataScreen {
         debugString += ", layout: " +
             (component.layout!=null && component.layout.rawLayoutString!=null ? component.layout.rawLayoutString : "") + 
             ", layoutData: " +
-            (component.layout!=null && component.layout.rawLayoutData!= null ? component.layout.rawLayoutData : "");
-/*             + ", childCount: " +
+            (component.layout!=null && component.layout.rawLayoutData!= null ? component.layout.rawLayoutData : "") +
+            ", childCount: " +
             (component.components != null
                 ? component.components.length.toString()
                 : "0"
-            ); */
+            );
         print(debugString);
 
         if (component.components != null) {

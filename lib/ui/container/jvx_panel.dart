@@ -29,6 +29,13 @@ class JVxPanel extends JVxContainer implements IContainer {
             color: this.background, 
             child: child
         );
+
+/*         return Container(
+            key: componentId,
+            color: this.background, 
+            child: SingleChildScrollView(
+          child: child
+        ));   */
     } else {
       return new Container();
     }
