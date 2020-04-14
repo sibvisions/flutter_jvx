@@ -83,7 +83,7 @@ class _MenuGridViewState extends State<MenuGridView> {
   Icon _iconBuilder(Map data) {
     Icon icon = new Icon(
       data['icon'],
-      size: double.parse(data['size'] ?? '16'),
+      size: 48,
       color: UIData.ui_kit_color_2[300],
       key: data['key'],
       textDirection: data['textDirection'],

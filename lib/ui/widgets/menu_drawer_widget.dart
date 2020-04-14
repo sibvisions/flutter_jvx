@@ -314,7 +314,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   Icon _iconBuilder(Map data) {
     Icon icon = new Icon(
       data['icon'],
-      size: double.parse(data['size']),
+      size: 32,
       color: UIData.ui_kit_color_2,
       key: data['key'],
       textDirection: data['textDirection'],
