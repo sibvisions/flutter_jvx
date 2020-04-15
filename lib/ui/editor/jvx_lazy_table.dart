@@ -191,9 +191,9 @@ class JVxLazyTable extends JVxEditor {
     if (column != null) {
       JVxCellEditor clEditor = componentCreator.createCellEditor(column.cellEditor);
       // clEditor.onValueChanged = onValueChanged;
-      clEditor.editable = false;
-      clEditor.value = text;
-      clEditor.isTableView = true;
+      clEditor?.editable = false;
+      clEditor?.value = text;
+      clEditor?.isTableView = true;
       return clEditor;
     }
     return null;
