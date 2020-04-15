@@ -4,6 +4,7 @@ import '../../../model/cell_editor.dart';
 import '../../../model/choice_cell_editor_image.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
+import '../../../ui/layout/i_alignment_constants.dart';
 import '../../../utils/globals.dart' as globals;
 
 class JVxChoiceCellEditor extends JVxCellEditor {
@@ -53,7 +54,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
       selectedImage = defaultImage;
     }
 
-    if (path==null || imageNames.indexOf(path) > allowedValues.length - 1) {
+    if (path == null || imageNames.indexOf(path) > allowedValues.length - 1) {
       return defaultImage;
     } else {
       val = allowedValues[imageNames.indexOf(path)];
@@ -102,13 +103,24 @@ class JVxChoiceCellEditor extends JVxCellEditor {
       }
     }
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
-      child: FlatButton(
-        onPressed: () => this.editable ? changeImage() : null,
-        padding: EdgeInsets.all(0.0),
-        child: selectedImage.image,
-      ),
-    );
+    return Container(
+        // decoration: BoxDecoration(
+        //     color: background != null ? background : Colors.transparent,
+        //     borderRadius: BorderRadius.circular(5),
+        //     border:
+        //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
+        child: Row(
+            mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+                this.horizontalAlignment),
+            children: <Widget>[
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
+            child: FlatButton(
+              onPressed: () => this.editable ? changeImage() : null,
+              padding: EdgeInsets.all(0.0),
+              child: selectedImage.image,
+            ),
+          )
+        ]));
   }
 }

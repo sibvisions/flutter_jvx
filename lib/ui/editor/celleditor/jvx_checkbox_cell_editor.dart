@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../ui/layout/i_alignment_constants.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
@@ -55,7 +56,7 @@ class JVxCheckboxCellEditor extends JVxCellEditor {
       //     border:
       //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
         children: <Widget>[
           Checkbox(
             value: valueToBool(this.value),
