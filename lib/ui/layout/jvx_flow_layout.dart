@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import '../../ui/component/i_component.dart';
 import '../../ui/component/jvx_component.dart';
 import '../../ui/layout/widgets/jvx_flow_layout.dart';
+import '../../ui/container/i_container.dart';
 import 'i_alignment_constants.dart';
 import 'jvx_layout.dart';
 
@@ -27,9 +28,9 @@ class JVxFlowLayout extends JVxLayout<String> {
   /// stores all constraints. */
   Map<JVxComponent, String> _constraintMap= <JVxComponent, String>{};
 
-  JVxFlowLayout(this.key);
+  JVxFlowLayout(Key key) : super(key);
 
-  JVxFlowLayout.fromLayoutString(String layoutString, String layoutData) {
+  JVxFlowLayout.fromLayoutString(IContainer pContainer, String layoutString, String layoutData) : super.fromLayoutString(pContainer, layoutString, layoutData) {
     updateLayoutString(layoutString);
   }
 

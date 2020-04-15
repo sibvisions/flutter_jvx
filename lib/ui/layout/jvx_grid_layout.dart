@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import '../../ui/container/i_container.dart';
 import '../../ui/component/i_component.dart';
 import '../../ui/component/jvx_component.dart';
 import '../../ui/layout/widgets/jvx_grid_layout.dart';
@@ -6,7 +7,6 @@ import 'jvx_layout.dart';
 import 'widgets/jvx_grid_layout_constraint.dart';
 
 class JVxGridLayout extends JVxLayout<String> {
-  Key key = UniqueKey();
 
 	// The number of rows.
 	int rows = 1;
@@ -17,9 +17,10 @@ class JVxGridLayout extends JVxLayout<String> {
   /// stores all constraints. */
   Map<JVxComponent, String> _constraintMap= <JVxComponent, String>{};
 
-  JVxGridLayout(this.key);
+  JVxGridLayout(Key key) : super(key);
 
-  JVxGridLayout.fromLayoutString(String layoutString, String layoutData) {
+  @override
+  JVxGridLayout.fromLayoutString(IContainer pContainer, String layoutString, String layoutData) : super.fromLayoutString(pContainer, layoutString, layoutData) {
     updateLayoutString(layoutString);
   }
 

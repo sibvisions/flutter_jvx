@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
+import '../../../ui/container/jvx_container.dart';
 import 'jvx_form_layout_anchor.dart';
 import 'jvx_form_layout_contraint.dart';
 import 'dart:math';
@@ -40,9 +41,12 @@ class JVxFormLayoutWidget extends MultiChildRenderObjectWidget {
   /// The left margin border anchor. */
   final JVxAnchor bottomMarginAnchor;
 
+  final JVxContainer container;
+
   JVxFormLayoutWidget({
     Key key,
     List<JVxFormLayoutConstraintData> children: const [],
+    this.container,
     this.valid, this.horizontalAlignment, this.verticalAlignment, 
     this.hgap, this.vgap,
     this.leftAnchor, this.rightAnchor, this.topAnchor, this.bottomAnchor,
@@ -53,6 +57,7 @@ class JVxFormLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderJVxFormLayoutWidget(
+          this.container,
           this.valid, this.horizontalAlignment, this.verticalAlignment, 
           this.hgap, this.vgap,
           this.leftAnchor, this.rightAnchor, this.topAnchor, this.bottomAnchor,
@@ -91,6 +96,11 @@ class JVxFormLayoutWidget extends MultiChildRenderObjectWidget {
 
     if (renderObject.leftAnchor != this.leftAnchor) {
       renderObject.leftAnchor = this.leftAnchor;
+      renderObject.markNeedsLayout();
+    }
+
+    if (renderObject.container != this.container) {
+      renderObject.container = this.container;
       renderObject.markNeedsLayout();
     }
   }
@@ -177,7 +187,10 @@ class RenderJVxFormLayoutWidget extends RenderBox
   double layoutWidth = 0;
   double layoutHeight = 0;
 
+  JVxContainer container;
+
   RenderJVxFormLayoutWidget(
+        this.container,
         this.valid, this.horizontalAlignment, this.verticalAlignment, 
         this.hgap, this.vgap,
         this.leftAnchor, this.rightAnchor, this.topAnchor, this.bottomAnchor,
@@ -203,6 +216,46 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
     valid = false;
   }
+
+      /*
+     * {@inheritDoc}
+     */
+    Size minimumLayoutSize(JVxContainer pTarget) 
+    {
+    	if (pTarget.isMinimumSizeSet)
+    	{
+        	return pTarget.minimumSize;
+    	}
+    	else
+    	{
+        	return new Size(layoutWidth, layoutHeight);
+    	}
+    }
+
+    /*
+     * {@inheritDoc}
+     */
+    Size preferredLayoutSize(JVxContainer pTarget) 
+    {
+    	calculateAnchors(pTarget);
+
+    	return Size(layoutWidth, layoutHeight);
+    }
+
+    /*
+     * {@inheritDoc}
+     */
+    Size maximumLayoutSize(JVxContainer pTarget) 
+    {
+    	if (pTarget.isMinimumSizeSet)
+    	{
+        	return pTarget.maximumSize;
+    	}
+    	else
+    	{
+            return new Size(layoutWidth, layoutHeight);
+    	}
+    }
 
   @override
   void setupParentData(RenderBox child) {
@@ -232,7 +285,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    calculateAnchors();
+    calculateAnchors(container);
 
     layoutWidth = preferredWidth.toDouble();
     layoutHeight = preferredHeight.toDouble();
@@ -245,7 +298,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
       layoutHeight = this.constraints.maxHeight;
     }
 
-    doCalculateTargetDependentAnchors();
+    doCalculateTargetDependentAnchors(container);
     
     // set component bounds.
     for (int i = 0; i < layoutConstraints.length; i++)
@@ -560,7 +613,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
     }
   }
 
-  void calculateAnchors()
+  void calculateAnchors(JVxContainer pContainer)
   {
     if (!valid)
     {
@@ -842,12 +895,12 @@ class RenderJVxFormLayoutWidget extends RenderBox
   ///
   /// @param pTarget the target.
   ///
-  void doCalculateTargetDependentAnchors() {
+  void doCalculateTargetDependentAnchors(JVxContainer pTarget) {
     if (calculateTargetDependentAnchors) {
       // set border anchors
       Size size = Size(layoutWidth, layoutHeight);
-      Size minSize = Size(layoutWidth, layoutHeight);
-      Size maxSize = Size(layoutWidth, layoutHeight);
+      Size minSize = minimumLayoutSize(pTarget);
+      Size maxSize = maximumLayoutSize(pTarget);
       EdgeInsets ins = EdgeInsets.zero;
       size = Size(size.width-ins.left + ins.right, size.height - ins.top + ins.bottom);
       minSize = Size(minSize.width-ins.left + ins.right, minSize.height - ins.top + ins.bottom);

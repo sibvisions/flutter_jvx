@@ -61,26 +61,26 @@ class ComponentCreator implements IComponentCreator {
       }
     }
 
-    if (component is IContainer)
-      component.layout = _createLayout(changedComponent);
-
     component?.updateProperties(changedComponent);
+
+    if (component is IContainer)
+      component.layout = _createLayout(component, changedComponent);
 
     return component;
   }
 
 
 
-  ILayout _createLayout(ChangedComponent changedComponent) {
+  ILayout _createLayout(IContainer container, ChangedComponent changedComponent) {
     if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
       String layoutRaw = changedComponent.getProperty<String>(ComponentProperty.LAYOUT);
       String layoutData = changedComponent.getProperty<String>(ComponentProperty.LAYOUT_DATA);
 
       switch (changedComponent.layoutName) {
-        case "BorderLayout": { return JVxBorderLayout.fromLayoutString(layoutRaw, layoutData); } break; 
-        case "FormLayout": { return JVxFormLayout.fromLayoutString(layoutRaw, layoutData); } break; 
-        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(layoutRaw, layoutData); } break;
-        case "GridLayout": { return JVxGridLayout.fromLayoutString(layoutRaw, layoutData);} break;
+        case "BorderLayout": { return JVxBorderLayout.fromLayoutString(container, layoutRaw, layoutData); } break; 
+        case "FormLayout": { return JVxFormLayout.fromLayoutString(container, layoutRaw, layoutData); } break; 
+        case "FlowLayout": { return  JVxFlowLayout.fromLayoutString(container, layoutRaw, layoutData); } break;
+        case "GridLayout": { return JVxGridLayout.fromLayoutString(container, layoutRaw, layoutData);} break;
       }
     }
 

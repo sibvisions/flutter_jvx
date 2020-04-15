@@ -1,6 +1,7 @@
 
 import 'package:flutter/widgets.dart';
 import '../../ui/component/i_component.dart';
+import '../../ui/container/i_container.dart';
 import 'i_alignment_constants.dart';
 import 'jvx_layout.dart';
 
@@ -23,9 +24,9 @@ class JVxFlowLayoutOld extends JVxLayout<String> {
   /// the auto wrap.
 	bool autoWrap = false;
 
-  JVxFlowLayoutOld();
+  JVxFlowLayoutOld(Key key) : super(key);
 
-  JVxFlowLayoutOld.fromLayoutString(String layoutString, String layoutData) {
+  JVxFlowLayoutOld.fromLayoutString(IContainer pContainer, String layoutString, String layoutData) : super.fromLayoutString(pContainer, layoutString, layoutData)  {
     updateLayoutString(layoutString);
   }
 

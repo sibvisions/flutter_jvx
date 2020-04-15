@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../ui/layout/widgets/jvx_border_layout_constraint.dart';
+import '../../ui/container/i_container.dart';
 import '../component/jvx_component.dart';
 import '../component/i_component.dart';
 import 'widgets/jvx_border_layout.dart';
@@ -18,9 +19,9 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
   /// the center component. */
   JVxComponent _center;
 
-  JVxBorderLayout();
+  JVxBorderLayout(Key key) : super(key);
 
-  JVxBorderLayout.fromLayoutString(String layoutString, String layoutData) {
+  JVxBorderLayout.fromLayoutString(IContainer pContainer, String layoutString, String layoutData) : super.fromLayoutString(pContainer, layoutString, layoutData)  {
     updateLayoutString(layoutString);
   }
 

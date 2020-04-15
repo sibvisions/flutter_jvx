@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/container/i_container.dart';
+import 'package:jvx_flutterclient/ui/container/jvx_container.dart';
 import 'i_layout.dart';
 import '../component/i_component.dart';
 
 abstract class JVxLayout<E> implements ILayout<E> {
-  
+  Key key = UniqueKey();
   /// The constraints for all components used by this layout.
   Map<IComponent, E> layoutConstraints = <IComponent, E>{};
   /// the layout margins. */
@@ -12,6 +14,8 @@ abstract class JVxLayout<E> implements ILayout<E> {
   int	horizontalGap = 0;
   /// the vertical gap between components.
   int	verticalGap = 0;
+
+  JVxContainer container;
 
   Size preferredSize;
   Size minimumSize;
@@ -23,6 +27,12 @@ abstract class JVxLayout<E> implements ILayout<E> {
   bool get isPreferredSizeSet => preferredSize!=null;
   bool get isMinimumSizeSet => minimumSize!=null;
   bool get isMaximumSizeSet => maximumSize!=null;
+
+  JVxLayout(this.key);
+
+  JVxLayout.fromLayoutString(IContainer pContainer,  String layoutString, String layoutData) {
+    container = pContainer;
+  }
 
   void parseFromString(String layout) {
     List<String> parameter = layout?.split(",");

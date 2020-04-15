@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../ui/container/i_container.dart';
+import '../../ui/container/jvx_container.dart';
 import '../component/i_component.dart';
 
 abstract class ILayout<E>  {
@@ -11,6 +13,8 @@ abstract class ILayout<E>  {
   int	horizontalGap = 0;
   /// the vertical gap between components.
   int	verticalGap = 0;
+
+  JVxContainer container;
   
   Size preferredSize;
   Size minimumSize;
@@ -19,6 +23,8 @@ abstract class ILayout<E>  {
   bool get isPreferredSizeSet;
   bool get isMinimumSizeSet;
   bool get isMaximumSizeSet;
+
+  ILayout.fromLayoutString(IContainer container,  String layoutString, String layoutData);
 
   E getConstraints(IComponent comp);
   void addLayoutComponent(IComponent pComponent, E pConstraints);

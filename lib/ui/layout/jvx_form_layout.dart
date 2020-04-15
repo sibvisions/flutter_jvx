@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../ui/component/i_component.dart';
 import '../../ui/layout/i_alignment_constants.dart';
+import '../../ui/container/i_container.dart';
 import 'jvx_layout.dart';
 import 'widgets/jvx_form_layout.dart';
 import 'widgets/jvx_form_layout_contraint.dart';
@@ -22,45 +23,11 @@ class JVxFormLayout extends JVxLayout<String> {
   /// stores all constraints. */
   Map<JVxComponent, String> _layoutConstraints = <JVxComponent, String>{};
 
-  ///
-  /// Gets the margins.
-  /// 
-  /// @return the margins.
-  ///
-  /*EdgeInsets get margins
-  {
-    return new EdgeInsets.fromLTRB(anchors["lm"].position.toDouble(), anchors["tm"].position.toDouble(), 
-    -anchors["rm"].position.toDouble(), -anchors["bm"].position.toDouble());
-  }*/
-    
-  ///
-  /// Sets the margins.
-  /// 
-  /// @param pMargins the margins.
-  ///
-  /*set margins(EdgeInsets pMargins) 
-  {
-    if (pMargins == null)
-    {
-      defaultAnchors["tm"].position = 0;
-      defaultAnchors["lm"].position = 0;
-      defaultAnchors["bm"].position = 0;
-      defaultAnchors["rm"].position = 0;
-    }
-    else
-    {
-      defaultAnchors["tm"].position = pMargins.top.round();
-      defaultAnchors["lm"].position = pMargins.left.round();
-      defaultAnchors["bm"].position = -pMargins.bottom.round();
-      defaultAnchors["rm"].position = -pMargins.right.round();
-    }
-  }*/
-
-  JVxFormLayout(this.key) {
+  JVxFormLayout(Key key) : super(key) {
     init();
   }
 
-  JVxFormLayout.fromLayoutString(String layoutString, String layoutData) {
+  JVxFormLayout.fromLayoutString(IContainer pContainer, String layoutString, String layoutData) : super.fromLayoutString(pContainer, layoutString, layoutData) {
     init();
     updateLayoutString(layoutString);
     updateLayoutData(layoutData);
@@ -227,6 +194,7 @@ class JVxFormLayout extends JVxLayout<String> {
     return Container(
       child: JVxFormLayoutWidget(
         key: key,
+        container: container,
         valid: this._valid,
         children: children,
         hgap: this.horizontalGap,
