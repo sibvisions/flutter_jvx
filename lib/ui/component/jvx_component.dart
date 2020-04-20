@@ -20,6 +20,8 @@ abstract class JVxComponent implements IComponent {
   bool enabled = true;
   String constraints = "";
   BuildContext context;
+  int verticalAlignment = 1;
+  int horizontalAlignment = 0;
 
   String parentComponentId;
   List<Key> childComponentIds;
@@ -55,5 +57,7 @@ abstract class JVxComponent implements IComponent {
         ComponentProperty.PARENT, parentComponentId);
     constraints = changedComponent.getProperty<String>(
         ComponentProperty.CONSTRAINTS, constraints);
+    verticalAlignment = changedComponent.getProperty<int>(ComponentProperty.VERTICAL_ALIGNMENT, verticalAlignment);
+    horizontalAlignment = changedComponent.getProperty<int>(ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
   }
 }

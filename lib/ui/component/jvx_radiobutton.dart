@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../ui/layout/i_alignment_constants.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/set_component_value.dart';
 import '../../model/changed_component.dart';
@@ -34,7 +35,7 @@ class JVxRadioButton extends JVxComponent implements IComponent {
   Widget getWidget() {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
         children: <Widget>[
           Radio<String>(
             value: (this.selected?this.name:(this.name+"_value")),

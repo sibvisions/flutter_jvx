@@ -1,4 +1,5 @@
 
+import '../../ui/component/jvx_icon.dart';
 import '../../ui/component/jvx_popup_menu_button.dart';
 import '../../ui/component/jvx_textarea.dart';
 import '../../ui/component/jvx_passwordfield.dart';
@@ -57,6 +58,7 @@ class ComponentCreator implements IComponentCreator {
         case "TextField":     { component = new JVxTextField(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "PasswordField": { component = new JVxPasswordField(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "TextArea":      { component = new JVxTextArea(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "Icon":          { component = new JVxIcon(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "Editor":        { component = _createEditor(changedComponent); } break;
         default:              { component = _createDefaultComponent(changedComponent); } break;
       }

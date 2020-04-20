@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/action.dart' as prefix0;
@@ -168,9 +170,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           leading: item.image != null
               ? new CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: !item.image.startsWith('FontAwesome')
-                      ? new Image.asset('${globals.dir}${item.image}')
-                      : _iconBuilder(formatFontAwesomeText(item.image)))
+                  child: CustomIcon(image: item.image, size: Size(32,32)))
               : new CircleAvatar(
                   backgroundColor: Colors.transparent,
                   child: Icon(
@@ -309,17 +309,5 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             )
           ],
         ));
-  }
-
-  Icon _iconBuilder(Map data) {
-    Icon icon = new Icon(
-      data['icon'],
-      size: 32,
-      color: UIData.ui_kit_color_2,
-      key: data['key'],
-      textDirection: data['textDirection'],
-    );
-
-    return icon;
   }
 }

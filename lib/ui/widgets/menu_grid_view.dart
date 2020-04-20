@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../logic/bloc/api_bloc.dart';
@@ -135,12 +136,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                 menuItems[index].image != null
                     ? new CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        child: !menuItems[index].image.startsWith('FontAwesome')
-                            ? new Image.asset(
-                                '${globals.dir}${menuItems[index].image}',
-                              )
-                            : _iconBuilder(
-                                formatFontAwesomeText(menuItems[index].image)))
+                        child: CustomIcon(image: menuItems[index].image, size: Size(48,48))) 
                     : new CircleAvatar(
                         backgroundColor: Colors.transparent,
                         child: Icon(
@@ -221,9 +217,7 @@ class _MenuGridViewState extends State<MenuGridView> {
               child: menuItem.image != null
                   ? new CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      child: !menuItem.image.startsWith('FontAwesome')
-                          ? new Image.file(File('${globals.dir}${menuItem.image}'),)
-                          : _iconBuilder(formatFontAwesomeText(menuItem.image)))
+                      child: CustomIcon(image: menuItem.image, size: Size(48,48)))  
                   : new CircleAvatar(
                       backgroundColor: Colors.transparent,
                       child: Icon(
