@@ -7,12 +7,13 @@
             android:src="@mipmap/jvx_bg" />
     </item>
 
-    <item android:top="150dp">
-        <bitmap android:src="@mipmap/jvx_ss"
-            android:gravity="top" />
-    </item>
+    <item android:top="100dp"
+        android:width="138dp"
+        android:height="145dp"
+        android:drawable="@mipmap/jvx_ss"
+        android:gravity="center|top" />
 
-    <item android:bottom="20dp">
+    <item android:bottom="50dp">
         <bitmap
             android:gravity="bottom"
             android:src="@mipmap/sibvision_logo" />

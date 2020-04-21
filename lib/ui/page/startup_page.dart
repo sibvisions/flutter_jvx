@@ -55,14 +55,17 @@ class _StartupPageState extends State<StartupPage> {
             image: new DecorationImage(image: new AssetImage(globals.package ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png' : 'assets/images/jvx_bg.png'), fit: BoxFit.cover,),
           ),
         ),Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top: 100),
+                child:
               Center(
                 child: Image.asset(
                   globals.package ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png' : 'assets/images/jvx_ss.png',
-                  width: 150,
+                  width: 135,
                 ),
-              ),
+              )),
               CircularProgressIndicator(),
               Text('Loading...')
             ],
