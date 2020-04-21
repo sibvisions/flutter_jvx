@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:jvx_flutterclient/utils/text_utils.dart';
+import '../../../utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
@@ -139,11 +139,8 @@ class JVxDateCellEditor extends JVxCellEditor {
               ],
             ),
             onPressed: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
+              TextUtils.unfocusCurrentTextfield(context);
 
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
               return showDatePicker(
                 context: context,
                 locale: Locale(globals.language),

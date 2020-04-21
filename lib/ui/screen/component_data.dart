@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/model/api/response/data/jvx_dataprovider_changed.dart';
+import '../../model/api/response/data/jvx_dataprovider_changed.dart';
+import '../../utils/text_utils.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/fetch_data.dart';
 import '../../model/api/request/data/filter_data.dart';
@@ -231,11 +232,8 @@ class ComponentData {
     if (filter != null) setValues.filter = filter;
 
     if (!isTextfield) {
-      FocusScopeNode currentFocus = FocusScope.of(context);
+      TextUtils.unfocusCurrentTextfield(context);
 
-      if (!currentFocus.hasPrimaryFocus) {
-        currentFocus.unfocus();
-      }
       Future.delayed(const Duration(milliseconds: 100), () {
         BlocProvider.of<ApiBloc>(context).dispatch(setValues);
       });

@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/model/api/request/reload.dart';
-import 'package:jvx_flutterclient/model/api/request/request.dart';
-import 'package:jvx_flutterclient/ui/widgets/fontAwesomeChanger.dart';
-
+import '../../model/api/request/reload.dart';
+import '../../model/api/request/request.dart';
+import '../../ui/widgets/fontAwesomeChanger.dart';
+import '../../utils/text_utils.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/press_button.dart';
 import '../../model/changed_component.dart';
@@ -50,11 +50,7 @@ class JVxButton extends JVxActionComponent {
   }
 
   void buttonPressed() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
+    TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
       PressButton pressButton = PressButton(jvxAction.Action(componentId: this.name, label: this.text));

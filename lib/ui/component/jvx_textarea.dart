@@ -62,11 +62,7 @@ class JVxTextArea extends JVxComponent implements IComponent {
   }
 
   void onTextFieldEndEditing() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
+    TextUtils.unfocusCurrentTextfield(context);
 
     if (this.valueChanged) {
       SetComponentValue setComponentValue = SetComponentValue(this.name, text);

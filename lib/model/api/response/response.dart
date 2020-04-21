@@ -1,5 +1,4 @@
-import 'package:jvx_flutterclient/model/api/response/response_data.dart';
-
+import '../../../model/api/response/response_data.dart';
 import '../../../model/action.dart';
 import '../../../model/api/exceptions/api_exception.dart';
 import '../../../model/api/request/request.dart';

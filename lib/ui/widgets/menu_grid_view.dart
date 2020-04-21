@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../logic/bloc/api_bloc.dart';
@@ -18,7 +15,7 @@ import '../../model/menu_item.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/uidata.dart';
 import '../page/open_screen_page.dart';
-import 'fontAwesomeChanger.dart';
+import '../../ui/widgets/custom_icon.dart';
 
 class MenuGridView extends StatefulWidget {
   final List<MenuItem> items;

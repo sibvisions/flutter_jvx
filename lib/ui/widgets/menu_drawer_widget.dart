@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
 import 'package:sticky_headers/sticky_headers.dart';
+
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/action.dart' as prefix0;
 import '../../model/api/request/request.dart';
@@ -14,10 +13,10 @@ import '../../model/api/request/logout.dart';
 import '../../model/menu_item.dart';
 import '../../model/api/request/open_screen.dart';
 import '../../ui/page/login_page.dart';
-import '../../ui/widgets/fontAwesomeChanger.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
+import '../../ui/widgets/custom_icon.dart';
 
 /// the [Drawer] for the [AppBar] with dynamic [MenuItem]'s
 class MenuDrawerWidget extends StatefulWidget {

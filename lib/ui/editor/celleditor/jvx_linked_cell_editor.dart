@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_flutterclient/utils/text_utils.dart';
+import '../../../utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/api/response/data/jvx_data.dart';
 import '../../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
@@ -188,11 +188,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
           editable: this.editable != null ? this.editable : true,
           onOpen: () {
             this.onFilter(null);
-            FocusScopeNode currentFocus = FocusScope.of(context);
-
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
+            TextUtils.unfocusCurrentTextfield(context);
             showDialog(
                 context: context,
                 builder: (context) => LazyDropdown(
