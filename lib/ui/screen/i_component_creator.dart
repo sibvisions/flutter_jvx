@@ -6,5 +6,5 @@ abstract class IComponentCreator {
   BuildContext context;
 
   IComponentCreator([this.context]);
-  IComponent createComponent(ChangedComponent component);
+  IComponent createComponent(ChangedComponent changedComponent);
 }

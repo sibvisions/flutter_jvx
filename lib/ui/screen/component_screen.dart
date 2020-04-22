@@ -1,4 +1,7 @@
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/ui/component/jvx_menu_item.dart';
+import '../../ui/component/jvx_popup_menu.dart';
+import '../../ui/component/jvx_popup_menu_button.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
@@ -13,12 +16,14 @@ import '../../ui/screen/i_component_creator.dart';
 class ComponentScreen with DataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
+  Map<String, IComponent> additionalComponents = <String, IComponent>{};
   bool debug = false;
 
   set context(BuildContext context) {
-      super.context = context;
-      _componentCreator.context = context;
+    super.context = context;
+    _componentCreator.context = context;
   }
+
   get context {
     return _componentCreator.context;
   }
@@ -28,88 +33,125 @@ class ComponentScreen with DataScreen {
   void updateComponents(List<ChangedComponent> changedComponents) {
     if (debug) print("ComponentScreen updateComponents:");
     changedComponents?.forEach((changedComponent) {
-      if (components.containsKey(changedComponent.id)) {
-        IComponent component = components[changedComponent.id];
-
-        if (changedComponent.destroy) {
-          if (debug)
-            print("Destroy component (id:" + changedComponent.id + ")");
-          _destroyComponent(component);
-        } else if (changedComponent.remove) {
-          if (debug) print("Remove component (id:" + changedComponent.id + ")");
-          _removeComponent(component);
-        } else {
-          _moveComponent(component, changedComponent);
-
-          if (component.state != JVxComponentState.Added) {
-            _addComponent(changedComponent);
-          }
-
-          component?.updateProperties(changedComponent);
-
-          if (component?.parentComponentId != null) {
-            IComponent parentComponent =
-                components[component.parentComponentId];
-            if (parentComponent != null && parentComponent is IContainer) {
-              parentComponent.updateComponentProperties(
-                  component.componentId, changedComponent);
-            }
-          }
-        }
-      } else {
-        if (!changedComponent.destroy && !changedComponent.remove) {
-          if (debug) {
-            String parent = changedComponent.getProperty<String>(ComponentProperty.PARENT);
-            print("Add component (id:" + changedComponent.id + ",parent:" + (parent != null ? parent : "") +
-                ", className: " + (changedComponent.className != null ? changedComponent.className : "") +
-                ")");
-          }
-          this._addComponent(changedComponent);
-        } else {
-          print("Cannot remove or destroy component with id " +
-              changedComponent.id +
-              ", because its not in the components list.");
-        }
-      }
+      String parentComponentId =
+          changedComponent.getProperty<String>(ComponentProperty.PARENT, null);
+      if (changedComponent.additional ||
+          (parentComponentId != null &&
+              additionalComponents.containsKey(parentComponentId)) ||
+          additionalComponents.containsKey(changedComponent.id))
+        _updateComponent(changedComponent, additionalComponents);
+      else
+        _updateComponent(changedComponent, components);
     });
   }
 
-  void _addComponent(ChangedComponent component) {
+  void _updateComponent(
+      ChangedComponent changedComponent, Map<String, IComponent> container) {
+    if (container.containsKey(changedComponent.id)) {
+      IComponent component = container[changedComponent.id];
+
+      if (changedComponent.destroy) {
+        if (debug) print("Destroy component (id:" + changedComponent.id + ")");
+        _destroyComponent(component, container);
+      } else if (changedComponent.remove) {
+        if (debug) print("Remove component (id:" + changedComponent.id + ")");
+        _removeComponent(component, container);
+      } else {
+        _moveComponent(component, changedComponent, container);
+
+        if (component.state != JVxComponentState.Added) {
+          _addComponent(changedComponent, container);
+        }
+
+        component?.updateProperties(changedComponent);
+
+        if (component?.parentComponentId != null) {
+          IComponent parentComponent = container[component.parentComponentId];
+          if (parentComponent != null && parentComponent is IContainer) {
+            parentComponent.updateComponentProperties(
+                component.componentId, changedComponent);
+          }
+        }
+      }
+    } else {
+      if (!changedComponent.destroy && !changedComponent.remove) {
+        if (debug) {
+          String parent =
+              changedComponent.getProperty<String>(ComponentProperty.PARENT);
+          print("Add component (id:" +
+              changedComponent.id +
+              ",parent:" +
+              (parent != null ? parent : "") +
+              ", className: " +
+              (changedComponent.className != null
+                  ? changedComponent.className
+                  : "") +
+              ")");
+        }
+        this._addComponent(changedComponent, container);
+      } else {
+        print("Cannot remove or destroy component with id " +
+            changedComponent.id +
+            ", because its not in the components list.");
+      }
+    }
+  }
+
+  void _addComponent(
+      ChangedComponent component, Map<String, IComponent> container) {
     JVxComponent componentClass;
 
-    if (!components.containsKey(component.id)) {
+    if (!container.containsKey(component.id)) {
       componentClass = _componentCreator.createComponent(component);
+
       if (componentClass is JVxEditor) {
-        componentClass.data = this.getComponentData(componentClass.dataProvider);
+        componentClass.data =
+            this.getComponentData(componentClass.dataProvider);
         if (componentClass.cellEditor is JVxReferencedCellEditor) {
-          (componentClass.cellEditor as JVxReferencedCellEditor).data = 
-            this.getComponentData((componentClass.cellEditor as JVxReferencedCellEditor).linkReference.dataProvider);
+          (componentClass.cellEditor as JVxReferencedCellEditor).data = this
+              .getComponentData(
+                  (componentClass.cellEditor as JVxReferencedCellEditor)
+                      .linkReference
+                      .dataProvider);
         }
       } else if (componentClass is JVxActionComponent) {
         componentClass.onButtonPressed = this.onButtonPressed;
+      } else if (component.additional && componentClass is JVxPopupMenu) {
+        if (components.containsKey(componentClass.parentComponentId) &&
+            components[componentClass.parentComponentId]
+                is JVxPopupMenuButton) {
+          JVxPopupMenuButton btn = components[componentClass.parentComponentId];
+          btn.menu = componentClass;
+        }
+      } else if (componentClass is JVxMenuItem) {
+        if (container.containsKey(componentClass.parentComponentId) &&
+            container[componentClass.parentComponentId] is JVxPopupMenu) {
+          JVxPopupMenu menu = container[componentClass.parentComponentId];
+          menu.updateMenuItem(componentClass);
+        }
       }
-
     } else {
-      componentClass = components[component.id];
+      componentClass = container[component.id];
     }
 
     if (componentClass != null) {
       componentClass.state = JVxComponentState.Added;
-      components.putIfAbsent(component.id, () => componentClass);
-      _addToParent(componentClass);
+      container.putIfAbsent(component.id, () => componentClass);
+      _addToParent(componentClass, container);
     }
   }
 
-  void _addToParent(IComponent component) {
+  void _addToParent(IComponent component, Map<String, IComponent> container) {
     if (component.parentComponentId?.isNotEmpty ?? false) {
-      IComponent parentComponent = components[component.parentComponentId];
+      IComponent parentComponent = container[component.parentComponentId];
       if (parentComponent != null && parentComponent is IContainer) {
         parentComponent.addWithConstraints(component, component.constraints);
       }
     }
   }
 
-  void _removeComponent(IComponent component) {
+  void _removeComponent(
+      IComponent component, Map<String, IComponent> container) {
     _removeFromParent(component);
     component.state = JVxComponentState.Free;
   }
@@ -124,35 +166,47 @@ class ComponentScreen with DataScreen {
     }
   }
 
-  void _destroyComponent(IComponent component) {
-    _removeComponent(component);
-    components.remove(component.componentId);
+  void _destroyComponent(
+      IComponent component, Map<String, IComponent> container) {
+    _removeComponent(component, container);
+    container.remove(component.componentId);
     component.state = JVxComponentState.Destroyed;
   }
 
-  void _moveComponent(IComponent component, ChangedComponent newComponent) {
+  void _moveComponent(IComponent component, ChangedComponent newComponent,
+      Map<String, IComponent> container) {
     String parent = newComponent.getProperty(ComponentProperty.PARENT);
-    String constraints = newComponent.getProperty(ComponentProperty.CONSTRAINTS);
+    String constraints =
+        newComponent.getProperty(ComponentProperty.CONSTRAINTS);
     String layout = newComponent.getProperty(ComponentProperty.LAYOUT);
     String layoutData = newComponent.getProperty(ComponentProperty.LAYOUT_DATA);
 
-    if (newComponent.hasProperty(ComponentProperty.LAYOUT_DATA) && layoutData != null && layoutData.isNotEmpty) {
+    if (newComponent.hasProperty(ComponentProperty.LAYOUT_DATA) &&
+        layoutData != null &&
+        layoutData.isNotEmpty) {
       if (component is IContainer)
         component.layout?.updateLayoutData(layoutData);
     }
 
-    if (newComponent.hasProperty(ComponentProperty.LAYOUT) && layout != null && layout.isNotEmpty) {
-      if (component is IContainer)
-        component.layout?.updateLayoutString(layout);
+    if (newComponent.hasProperty(ComponentProperty.LAYOUT) &&
+        layout != null &&
+        layout.isNotEmpty) {
+      if (component is IContainer) component.layout?.updateLayoutString(layout);
     }
 
-
-    if (newComponent.hasProperty(ComponentProperty.PARENT) && component.parentComponentId != parent) {
+    if (newComponent.hasProperty(ComponentProperty.PARENT) &&
+        component.parentComponentId != parent) {
       if (debug)
-        print("Move component (id:" + newComponent.id +
-            ",oldParent:" + (component.parentComponentId != null ? component.parentComponentId : "") +
-            ",newParent:" + (parent != null ? parent : "") +
-            ", className: " + (newComponent.className != null ? newComponent.className : "") +
+        print("Move component (id:" +
+            newComponent.id +
+            ",oldParent:" +
+            (component.parentComponentId != null
+                ? component.parentComponentId
+                : "") +
+            ",newParent:" +
+            (parent != null ? parent : "") +
+            ", className: " +
+            (newComponent.className != null ? newComponent.className : "") +
             ")");
 
       if (component.parentComponentId != null) {
@@ -161,14 +215,19 @@ class ComponentScreen with DataScreen {
 
       if (parent != null) {
         component.parentComponentId = parent;
-        _addToParent(component);
+        _addToParent(component, container);
       }
-    } else if (newComponent.hasProperty(ComponentProperty.CONSTRAINTS) && component.constraints != constraints) {
+    } else if (newComponent.hasProperty(ComponentProperty.CONSTRAINTS) &&
+        component.constraints != constraints) {
       if (debug)
-        print("Update constraints (id:" + newComponent.id +
-            ",oldConstraints:" + (component.constraints != null ? component.constraints : "") +
-            ",newConstraints:" + (constraints != null ? constraints : "") +
-            ", className: " + (newComponent.className != null ? newComponent.className : "") +
+        print("Update constraints (id:" +
+            newComponent.id +
+            ",oldConstraints:" +
+            (component.constraints != null ? component.constraints : "") +
+            ",newConstraints:" +
+            (constraints != null ? constraints : "") +
+            ", className: " +
+            (newComponent.className != null ? newComponent.className : "") +
             ")");
 
       if (component.parentComponentId != null) {
@@ -177,16 +236,17 @@ class ComponentScreen with DataScreen {
 
       if (constraints != null) {
         component.constraints = constraints;
-        _addToParent(component);
+        _addToParent(component, container);
       }
     }
   }
 
   IComponent getRootComponent() {
-    return this.components.values.firstWhere((element) =>
-        element.parentComponentId == null &&
-        element.state == JVxComponentState.Added
-        , orElse: () => null);
+    return this.components.values.firstWhere(
+        (element) =>
+            element.parentComponentId == null &&
+            element.state == JVxComponentState.Added,
+        orElse: () => null);
   }
 
   void debugPrintCurrentWidgetTree() {
@@ -205,9 +265,11 @@ class ComponentScreen with DataScreen {
       String debugString = " |" * level;
       Size size = _getSizes(component.componentId);
       String keyString = component.componentId.toString();
-      keyString = keyString.substring(keyString.indexOf(" ")+1, keyString.length-1);
+      keyString =
+          keyString.substring(keyString.indexOf(" ") + 1, keyString.length - 1);
 
-      debugString += " id: " + keyString +
+      debugString += " id: " +
+          keyString +
           ", parent: " +
           (component.parentComponentId != null
               ? component.parentComponentId
@@ -216,7 +278,8 @@ class ComponentScreen with DataScreen {
           component.runtimeType.toString() +
           ", constraints: " +
           (component.constraints != null ? component.constraints : "") +
-          ", size:" + (size!=null?size.toString():"nosize");
+          ", size:" +
+          (size != null ? size.toString() : "nosize");
 
       if (component is JVxEditor) {
         debugString += ", dataProvider: " + component.dataProvider;
@@ -224,14 +287,18 @@ class ComponentScreen with DataScreen {
 
       if (component is IContainer) {
         debugString += ", layout: " +
-            (component.layout!=null && component.layout.rawLayoutString!=null ? component.layout.rawLayoutString : "") + 
+            (component.layout != null &&
+                    component.layout.rawLayoutString != null
+                ? component.layout.rawLayoutString
+                : "") +
             ", layoutData: " +
-            (component.layout!=null && component.layout.rawLayoutData!= null ? component.layout.rawLayoutData : "") +
+            (component.layout != null && component.layout.rawLayoutData != null
+                ? component.layout.rawLayoutData
+                : "") +
             ", childCount: " +
             (component.components != null
                 ? component.components.length.toString()
-                : "0"
-            );
+                : "0");
         print(debugString);
 
         if (component.components != null) {
@@ -246,13 +313,13 @@ class ComponentScreen with DataScreen {
   }
 
   Size _getSizes(GlobalKey key) {
-    if (key!=null && key.currentContext!=null) {
+    if (key != null && key.currentContext != null) {
       final RenderBox renderBox = key.currentContext.findRenderObject();
-      if (renderBox!=null && renderBox.hasSize) {
+      if (renderBox != null && renderBox.hasSize) {
         return renderBox.size;
       }
     }
 
     return null;
- }
+  }
 }

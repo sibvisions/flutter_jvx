@@ -44,6 +44,7 @@ enum ComponentProperty {
   EVENT_ACTION,
   $DESTROY,
   $REMOVE,
+  $ADDITIONAL,
   SCREEN__TITLE,
   CELL_EDITOR__EDITABLE,
   CELL_EDITOR__PLACEHOLDER,
@@ -58,7 +59,8 @@ enum ComponentProperty {
   IMAGE,
   SELECTED,
   BORDER,
-  COLUMNS
+  COLUMNS,
+  DEFAULT_MENU_ITEM
 }
 
 class ComponentProperties {

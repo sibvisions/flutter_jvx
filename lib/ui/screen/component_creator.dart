@@ -1,4 +1,6 @@
 
+import '../../ui/component/jvx_menu_item.dart';
+import '../../ui/component/jvx_popup_menu.dart';
 import '../../ui/component/jvx_icon.dart';
 import '../../ui/component/jvx_popup_menu_button.dart';
 import '../../ui/component/jvx_textarea.dart';
@@ -59,6 +61,8 @@ class ComponentCreator implements IComponentCreator {
         case "PasswordField": { component = new JVxPasswordField(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "TextArea":      { component = new JVxTextArea(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "Icon":          { component = new JVxIcon(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "PopupMenu":     { component = new JVxPopupMenu(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "MenuItem":      { component = new JVxMenuItem(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "Editor":        { component = _createEditor(changedComponent); } break;
         default:              { component = _createDefaultComponent(changedComponent); } break;
       }
@@ -71,8 +75,6 @@ class ComponentCreator implements IComponentCreator {
 
     return component;
   }
-
-
 
   ILayout _createLayout(IContainer container, ChangedComponent changedComponent) {
     if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
