@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -11,26 +12,22 @@
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Ydg-fD-yQy"/>
-                        <viewControllerLayoutGuide type="bottom" id="xbc-2k-c8Z"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_background" translatesAutoresizingMaskIntoConstraints="NO" id="Cxf-yv-N9a">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_logo" translatesAutoresizingMaskIntoConstraints="NO" id="rTb-VR-h7F">
-                                <rect key="frame" x="107" y="785.5" width="200" height="42"/>
+                                <rect key="frame" x="87.5" y="575" width="200" height="42"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="42" id="HGc-78-wWh"/>
                                     <constraint firstAttribute="width" constant="200" id="ifT-SU-nED"/>
                                 </constraints>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch_icon" translatesAutoresizingMaskIntoConstraints="NO" id="nna-WY-fdy">
-                                <rect key="frame" x="138" y="151.5" width="138" height="145"/>
+                                <rect key="frame" x="118.5" y="80" width="138" height="145"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="145" id="R0N-y7-V3e"/>
                                     <constraint firstAttribute="width" constant="138" id="kOg-Sr-n7F"/>
@@ -39,15 +36,16 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="nna-WY-fdy" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.5" id="1Wa-Vp-ZTO"/>
-                            <constraint firstItem="rTb-VR-h7F" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="3EE-yQ-fGh"/>
+                            <constraint firstItem="rTb-VR-h7F" firstAttribute="centerX" secondItem="5py-3A-uU3" secondAttribute="centerX" id="3EE-yQ-fGh"/>
+                            <constraint firstItem="5py-3A-uU3" firstAttribute="bottom" secondItem="rTb-VR-h7F" secondAttribute="bottom" constant="50" id="FgJ-Cu-Jqd"/>
                             <constraint firstAttribute="bottom" secondItem="Cxf-yv-N9a" secondAttribute="bottom" id="H43-0O-BI5"/>
-                            <constraint firstAttribute="trailing" secondItem="Cxf-yv-N9a" secondAttribute="trailing" id="Hq4-Ve-XaV"/>
-                            <constraint firstItem="rTb-VR-h7F" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="1.8" id="UrI-sr-Chu"/>
-                            <constraint firstItem="nna-WY-fdy" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="WPy-2b-XKi"/>
+                            <constraint firstItem="5py-3A-uU3" firstAttribute="trailing" secondItem="Cxf-yv-N9a" secondAttribute="trailing" id="Hq4-Ve-XaV"/>
+                            <constraint firstItem="nna-WY-fdy" firstAttribute="top" secondItem="5py-3A-uU3" secondAttribute="top" constant="80" id="SOO-k1-y7K"/>
+                            <constraint firstItem="nna-WY-fdy" firstAttribute="centerX" secondItem="5py-3A-uU3" secondAttribute="centerX" id="WPy-2b-XKi"/>
                             <constraint firstItem="Cxf-yv-N9a" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="adl-Lv-P6u"/>
-                            <constraint firstItem="Cxf-yv-N9a" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="j8q-v1-Gdn"/>
+                            <constraint firstItem="Cxf-yv-N9a" firstAttribute="leading" secondItem="5py-3A-uU3" secondAttribute="leading" id="j8q-v1-Gdn"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="5py-3A-uU3"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -58,6 +56,6 @@
     <resources>
         <image name="launch_background" width="3072" height="3072"/>
         <image name="launch_icon" width="138" height="145"/>
-        <image name="launch_logo" width="200" height="42"/>
+        <image name="launch_logo" width="200" height="42.5"/>
     </resources>
 </document>

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'utils/text_utils.dart';
 import 'ui/page/settings_page.dart';
 import 'ui/page/startup_page.dart';
 import 'utils/config.dart';
@@ -15,13 +16,7 @@ class JvxMobile extends StatelessWidget {
 
   GestureDetector materialApp(BuildContext context, ThemeData theme) =>
       GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
+          onTap: () => TextUtils.unfocusCurrentTextfield(context),
           child: MaterialApp(
             title: 'JVx Mobile',
             theme: theme,

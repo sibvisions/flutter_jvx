@@ -11,9 +11,9 @@ import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
 import '../../model/api/request/open_screen.dart';
 import '../../ui/page/open_screen_page.dart';
-import '../../ui/widgets/fontAwesomeChanger.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
+import '../../ui/widgets/custom_icon.dart';
 
 class MenuListWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
@@ -149,9 +149,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
         leading: mItem.image != null
             ? new CircleAvatar(
                 backgroundColor: Colors.transparent,
-                child: !mItem.image.startsWith('FontAwesome')
-                    ? new Image.asset('${globals.dir}${mItem.image}')
-                    : _iconBuilder(formatFontAwesomeText(mItem.image)))
+                child: CustomIcon(image: mItem.image, size: Size(32,32)))   
             : new CircleAvatar(
                 backgroundColor: Colors.transparent,
                 child: Icon(
@@ -174,17 +172,5 @@ class _MenuListWidgetState extends State<MenuListWidget> {
     });
 
     return widgets;
-  }
-
-  Icon _iconBuilder(Map data) {
-    Icon icon = new Icon(
-      data['icon'],
-      size: 32,
-      color: UIData.ui_kit_color_2,
-      key: data['key'],
-      textDirection: data['textDirection'],
-    );
-
-    return icon;
   }
 }

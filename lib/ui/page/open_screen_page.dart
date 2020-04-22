@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../utils/text_utils.dart';
 import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -148,11 +149,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               Navigation navigation = Navigation(
                   clientId: globals.clientId, componentId: componentId);
 
-              FocusScopeNode currentFocus = FocusScope.of(context);
-
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
+              TextUtils.unfocusCurrentTextfield(context);
 
               Future.delayed(const Duration(milliseconds: 100), () {
                 BlocProvider.of<ApiBloc>(context).dispatch(navigation);
@@ -232,11 +229,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                             clientId: globals.clientId,
                             componentId: componentId);
 
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
+                        TextUtils.unfocusCurrentTextfield(context);
 
                         Future.delayed(const Duration(milliseconds: 100), () {
                           BlocProvider.of<ApiBloc>(context)

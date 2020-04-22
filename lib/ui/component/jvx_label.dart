@@ -6,16 +6,12 @@ import '../../ui/component/jvx_component.dart';
 
 class JVxLabel extends JVxComponent implements IComponent {
   String text = "";
-  int verticalAlignment = 1;
-  int horizontalAlignment = 0;
 
   JVxLabel(GlobalKey componentId, BuildContext context) : super(componentId, context);
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);
     text = changedProperties.getProperty<String>(ComponentProperty.TEXT, text);
-    verticalAlignment = changedProperties.getProperty<int>(ComponentProperty.VERTICAL_ALIGNMENT, verticalAlignment);
-    horizontalAlignment = changedProperties.getProperty<int>(ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
   }
 
   static Alignment getLabelAlignment(int horizontalAlignment, int verticalAlignment) {

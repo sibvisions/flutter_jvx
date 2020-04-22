@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,7 +15,7 @@ import '../../model/menu_item.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/uidata.dart';
 import '../page/open_screen_page.dart';
-import 'fontAwesomeChanger.dart';
+import '../../ui/widgets/custom_icon.dart';
 
 class MenuGridView extends StatefulWidget {
   final List<MenuItem> items;
@@ -135,12 +133,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                 menuItems[index].image != null
                     ? new CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        child: !menuItems[index].image.startsWith('FontAwesome')
-                            ? new Image.asset(
-                                '${globals.dir}${menuItems[index].image}',
-                              )
-                            : _iconBuilder(
-                                formatFontAwesomeText(menuItems[index].image)))
+                        child: CustomIcon(image: menuItems[index].image, size: Size(48,48))) 
                     : new CircleAvatar(
                         backgroundColor: Colors.transparent,
                         child: Icon(
@@ -221,9 +214,7 @@ class _MenuGridViewState extends State<MenuGridView> {
               child: menuItem.image != null
                   ? new CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      child: !menuItem.image.startsWith('FontAwesome')
-                          ? new Image.file(File('${globals.dir}${menuItem.image}'),)
-                          : _iconBuilder(formatFontAwesomeText(menuItem.image)))
+                      child: CustomIcon(image: menuItem.image, size: Size(48,48)))  
                   : new CircleAvatar(
                       backgroundColor: Colors.transparent,
                       child: Icon(

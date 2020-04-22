@@ -29,6 +29,9 @@ abstract class IComponent {
   String parentComponentId;
   List<Key> childComponentIds;
 
+  int verticalAlignment;
+  int horizontalAlignment;
+
   bool get isForegroundSet;
   bool get isBackgroundSet;
   bool get isPreferredSizeSet;

@@ -48,26 +48,45 @@ class _StartupPageState extends State<StartupPage> {
           _loginHandler(state);
         },
         child: Scaffold(
-          body: widget.config!=null && widget.config.startupWidget!=null ? widget.config.startupWidget : new Stack(
-      children: <Widget>[
-        new Container(
-          decoration: new BoxDecoration(
-            image: new DecorationImage(image: new AssetImage(globals.package ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png' : 'assets/images/jvx_bg.png'), fit: BoxFit.cover,),
-          ),
-        ),Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Center(
-                child: Image.asset(
-                  globals.package ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png' : 'assets/images/jvx_ss.png',
-                  width: 150,
-                ),
-              ),
-              CircularProgressIndicator(),
-              Text('Loading...')
-            ],
-          )]
-          ),
+          body: widget.config != null && widget.config.startupWidget != null
+              ? widget.config.startupWidget
+              : new Stack(children: <Widget>[
+                  new Container(
+                    decoration: new BoxDecoration(
+                      image: new DecorationImage(
+                        image: new AssetImage(globals.package
+                            ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png'
+                            : 'assets/images/jvx_bg.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: Image.asset(
+                                globals.package
+                                    ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png'
+                                    : 'assets/images/jvx_ss.png',
+                                width: 135,
+                              ),
+                            ))
+                      ,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(top: 100),
+                          child: CircularProgressIndicator()),
+                      Padding(
+                          padding: EdgeInsets.only(top: 100),
+                          child: Text('Loading...'))
+                    ],
+                  )
+                ])]),
         ),
       ),
     );
@@ -248,50 +267,50 @@ class _StartupPageState extends State<StartupPage> {
     }
   }
 
-    void _downloadHandler(Response state) async {
-      if (state != null && state.requestType == RequestType.DOWNLOAD_IMAGES) {
-        _loginMenu(state);
-      }
+  void _downloadHandler(Response state) async {
+    if (state != null && state.requestType == RequestType.DOWNLOAD_IMAGES) {
+      _loginMenu(state);
     }
+  }
 
   void _loginMenu(Response state) {
     Menu menu = state.menu;
 
-      if (state.menu == null &&
-          globals.username.isNotEmpty &&
-          globals.password.isNotEmpty) {
-        Login login = Login(
-            action: 'Anmelden',
-            clientId: globals.clientId,
-            createAuthKey: false,
-            username: globals.username,
-            password: globals.password,
-            requestType: RequestType.LOGIN);
+    if (state.menu == null &&
+        globals.username.isNotEmpty &&
+        globals.password.isNotEmpty) {
+      Login login = Login(
+          action: 'Anmelden',
+          clientId: globals.clientId,
+          createAuthKey: false,
+          username: globals.username,
+          password: globals.password,
+          requestType: RequestType.LOGIN);
 
-        BlocProvider.of<ApiBloc>(context).dispatch(login);
-      }
+      BlocProvider.of<ApiBloc>(context).dispatch(login);
+    }
 
-      if (menu == null) {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
-      } else {
-        if (state.userData != null) {
-          if (state.userData.userName != null) {
-            globals.username = state.userData.userName;
-          }
-
-          if (state.userData.displayName != null) {
-            globals.displayName = state.userData.displayName;
-          }
-
-          if (state.userData.profileImage != null)
-            globals.profileImage = state.userData.profileImage;
+    if (menu == null) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+    } else {
+      if (state.userData != null) {
+        if (state.userData.userName != null) {
+          globals.username = state.userData.userName;
         }
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (_) => MenuPage(
-                  menuItems: menu.items,
-                )));
+
+        if (state.userData.displayName != null) {
+          globals.displayName = state.userData.displayName;
+        }
+
+        if (state.userData.profileImage != null)
+          globals.profileImage = state.userData.profileImage;
       }
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => MenuPage(
+                menuItems: menu.items,
+              )));
+    }
   }
 
   void _navigationHandler(Response state) async {
@@ -358,32 +377,34 @@ class _StartupPageState extends State<StartupPage> {
         UIData.ui_kit_color_2 = colorCustom;
 
         BlocProvider.of<ThemeBloc>(context).dispatch(ThemeData(
-          primaryColor: colorCustom,
-          primarySwatch: colorCustom,
-          brightness: Brightness.light,
-          fontFamily: 'Raleway'
-        ));
+            primaryColor: colorCustom,
+            primarySwatch: colorCustom,
+            brightness: Brightness.light,
+            fontFamily: 'Raleway'));
 
-        String previousApplicationStylingHash = await SharedPreferencesHelper().getApplicationStylingHash();
+        String previousApplicationStylingHash =
+            await SharedPreferencesHelper().getApplicationStylingHash();
         bool shouddl = await Translations.shouldDownload();
-        if (state.applicationStyle.hash != previousApplicationStylingHash || shouddl) {
+        if (state.applicationStyle.hash != previousApplicationStylingHash ||
+            shouddl) {
           shouldDownloadRessources = true;
-          SharedPreferencesHelper().setApplicationStylingHash(state.applicationStyle.hash);
+          SharedPreferencesHelper()
+              .setApplicationStylingHash(state.applicationStyle.hash);
         }
 
-        String prevAppVersion = await SharedPreferencesHelper().getPrevAppVersion();
+        String prevAppVersion =
+            await SharedPreferencesHelper().getPrevAppVersion();
         String appVersion = await SharedPreferencesHelper().getAppVersion();
         if (prevAppVersion != appVersion) {
           shouldDownloadRessources = true;
           SharedPreferencesHelper().setPrevAppVersion(appVersion);
         }
-
       }
 
       if (shouldDownloadRessources)
         _download();
-      else 
-        _loginMenu(state);          
+      else
+        _loginMenu(state);
     }
   }
 
