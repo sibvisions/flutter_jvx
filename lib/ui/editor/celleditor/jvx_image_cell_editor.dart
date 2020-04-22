@@ -26,6 +26,8 @@ class JVxImageCellEditor extends JVxCellEditor {
   double heigth = 100;
   BoxFit fit = BoxFit.scaleDown;
   Alignment alignment = Alignment.center;
+  //Size imageSize;
+
 
   @override
   get preferredSize {
@@ -36,6 +38,7 @@ class JVxImageCellEditor extends JVxCellEditor {
   get minimumSize {
     return Size(50, 50);
   }
+
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
@@ -115,6 +118,10 @@ class JVxImageCellEditor extends JVxCellEditor {
     ImageProvider currImageProv;
     if (currentImage != null) {
       currImageProv = currentImage.image;
+      /*_calculateImageDimension(currImageProv).then((size) {
+        print("size = $size");
+        imageSize = size;
+      });*/
       return DecorationImage(
         //height: height,
         alignment: alignment,
@@ -123,6 +130,10 @@ class JVxImageCellEditor extends JVxCellEditor {
       );
     } else if (defaultImage != null) {
       currImageProv = defaultImage.image;
+      /*_calculateImageDimension(currImageProv).then((size) {
+        print("size = $size");
+        imageSize = size;
+      });*/
       return DecorationImage(
         //height: height,
         alignment: alignment,
@@ -133,6 +144,21 @@ class JVxImageCellEditor extends JVxCellEditor {
 
     return null;
   }
+
+  Future<Size> _calculateImageDimension(ImageProvider provider) {
+  Completer<Size> completer = Completer();
+  provider.resolve(ImageConfiguration()).addListener(
+    ImageStreamListener(
+      (ImageInfo image, bool synchronousCall) {
+        var myImage = image.image;
+        Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
+        completer.complete(size);
+      },
+    ),
+  );
+  return completer.future;
+}
+
 
   @override
   Widget getWidget(
@@ -154,10 +180,10 @@ class JVxImageCellEditor extends JVxCellEditor {
         builder: (BuildContext context, BoxConstraints constraints) {
       double height = constraints.maxHeight != double.infinity
           ? constraints.maxHeight
-          : null;
+          : null; //imageSize?.height;
       double width = constraints.maxWidth != double.infinity
           ? constraints.maxWidth
-          : null;    
+          : null; //imageSize?.width;    
 
       return Container(
           child: Row(
