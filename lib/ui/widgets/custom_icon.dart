@@ -46,7 +46,7 @@ class CustomIcon extends StatelessWidget {
     List<String> arr = image.split(',');
     Size size = this.size;
     
-    if (size==null) getSize(image);
+    if (size==null) size=getSize(image);
 
     if (arr.length>0) 
       img = Image.file(File('${globals.dir}${arr[0]}'), width: size?.width, height: size?.height,);
