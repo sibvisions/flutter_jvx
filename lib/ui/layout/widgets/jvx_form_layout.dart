@@ -247,7 +247,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
      */
     Size maximumLayoutSize(JVxContainer pTarget) 
     {
-    	if (pTarget.isMinimumSizeSet)
+    	if (pTarget.isMaximumSizeSet)
     	{
         	return pTarget.maximumSize;
     	}
@@ -921,7 +921,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
             } else {
               leftAnchor.position = ((size.width - maxSize.width) / 2).round();
             }
-          rightAnchor.position = leftAnchor.position + maxSize.width;
+          rightAnchor.position = leftAnchor.position + maxSize.width.round();
         }
         else {
           leftAnchor.position = 0;

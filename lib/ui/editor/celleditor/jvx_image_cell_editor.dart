@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../ui/layout/i_alignment_constants.dart';
 import '../../../logic/bloc/api_bloc.dart';
 import '../../../model/api/request/reload.dart';
 import '../../../model/api/request/request.dart';
@@ -102,6 +103,37 @@ class JVxImageCellEditor extends JVxCellEditor {
     }
   }
 
+  DecorationImage getImage(double height, int horizontalAlignment) {
+    if (horizontalAlignment == 3) {
+      fit = BoxFit.fill;
+    } else if (horizontalAlignment == 0) {
+      alignment = Alignment.centerLeft;
+    } else if (horizontalAlignment == 2) {
+      alignment = Alignment.centerRight;
+    }
+
+    ImageProvider currImageProv;
+    if (currentImage != null) {
+      currImageProv = currentImage.image;
+      return DecorationImage(
+        //height: height,
+        alignment: alignment,
+        image: currImageProv,
+        fit: fit,
+      );
+    } else if (defaultImage != null) {
+      currImageProv = defaultImage.image;
+      return DecorationImage(
+        //height: height,
+        alignment: alignment,
+        image: currImageProv,
+        fit: fit,
+      );
+    }
+
+    return null;
+  }
+
   @override
   Widget getWidget(
       {bool editable,
@@ -118,49 +150,35 @@ class JVxImageCellEditor extends JVxCellEditor {
         font: font,
         horizontalAlignment: horizontalAlignment);
 
-    if (horizontalAlignment == 3) {
-      fit = BoxFit.fill;
-    } else if (horizontalAlignment == 0) {
-      alignment = Alignment.centerLeft;
-    } else if (horizontalAlignment == 2) {
-      alignment = Alignment.centerRight;
-    }
-
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-        double height = constraints.maxHeight!=double.infinity?constraints.maxHeight:null;
-      ImageProvider currImageProv;
-      Image showImg;
-      if (currentImage != null) {
-        currImageProv = currentImage.image;
-        showImg = Image(
-          height: height,
-          alignment: alignment,
-          image: currImageProv,
-          fit: fit,
-        );
-      } else if (defaultImage != null) {
-        currImageProv = defaultImage.image;
-        showImg = Image(
-          height: height,
-          alignment: alignment,
-          image: currImageProv,
-          fit: fit,
-        );
-      }
+      double height = constraints.maxHeight != double.infinity
+          ? constraints.maxHeight
+          : null;
+      double width = constraints.maxWidth != double.infinity
+          ? constraints.maxWidth
+          : null;    
 
       return Container(
-          height: height,
-          decoration: BoxDecoration(
-              color: background != null
-                  ? background
-                  : Colors.white
-                      .withOpacity(globals.applicationStyle.controlsOpacity),
-              borderRadius: BorderRadius.circular(5),
-              border: borderVisible
-                  ? Border.all(color: UIData.ui_kit_color_2)
-                  : null),
-          child: showImg);
+          child: Row(
+              mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+                  this.horizontalAlignment),
+              children: <Widget>[
+            Container(
+                height: height,
+                width: width,
+                decoration: BoxDecoration(
+                  image: this.getImage(height, horizontalAlignment),
+                    color: background != null
+                        ? background
+                        : Colors.white.withOpacity(
+                            globals.applicationStyle.controlsOpacity),
+                    borderRadius: BorderRadius.circular(5),
+                    border: borderVisible
+                        ? Border.all(color: UIData.ui_kit_color_2)
+                        : null),
+                )
+          ]));
     });
   }
 }
