@@ -1,6 +1,9 @@
+import 'package:flutter_picker/flutter_picker.dart';
+import 'package:package_info/package_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../logic/bloc/theme_bloc.dart';
 import '../../ui/tools/restart.dart';
 import '../../utils/shared_preferences_helper.dart';
@@ -9,8 +12,7 @@ import '../../ui/widgets/common_scaffold.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
-import 'package:flutter_picker/flutter_picker.dart';
-import 'package:package_info/package_info.dart';
+
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -230,35 +232,45 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget settingsLoader() {
-    return CommonScaffold(
-      centerDocked: true,
-      scaffoldKey: scaffoldState,
-      appTitle: Translations.of(context).text2('Settings', 'Settings'),
-      showBottomNav: true,
-      showFAB: true,
-      backGroundColor: (globals.applicationStyle != null &&
-                globals.applicationStyle.desktopColor != null)
-            ? globals.applicationStyle.desktopColor
-            : Colors.grey.shade300,
-      floatingIcon: FontAwesomeIcons.qrcode,
-      qrCallback: () => scanBarcode(),
-      bodyData: settingsBuilder(),
-      bottomButton1:
-          Translations.of(context).text2('Back', 'Back').toUpperCase(),
-      bottomButton2:
-          Translations.of(context).text2('Save', 'Save').toUpperCase(),
-      bottomButton1Function: () {
-        if (ModalRoute.of(context).settings.arguments is String && ModalRoute.of(context).settings.arguments=="error.dialog") {
-          RestartWidget.restartApp(context, loadConf: false);
-        } else {
-          Navigator.of(context).pop();
-        }
-      },
-      bottomButton2Function: () {
-        savePreferences();
-        RestartWidget.restartApp(context, loadConf: false);
-      },
-    );
+    return WillPopScope(
+        onWillPop: () async {
+          if (ModalRoute.of(context).settings.arguments is String &&
+              ModalRoute.of(context).settings.arguments == "error.dialog") {
+            RestartWidget.restartApp(context, loadConf: false);
+            return false;
+          }
+          return true;
+        },
+        child: CommonScaffold(
+          centerDocked: true,
+          scaffoldKey: scaffoldState,
+          appTitle: Translations.of(context).text2('Settings', 'Settings'),
+          showBottomNav: true,
+          showFAB: true,
+          backGroundColor: (globals.applicationStyle != null &&
+                  globals.applicationStyle.desktopColor != null)
+              ? globals.applicationStyle.desktopColor
+              : Colors.grey.shade300,
+          floatingIcon: FontAwesomeIcons.qrcode,
+          qrCallback: () => scanBarcode(),
+          bodyData: settingsBuilder(),
+          bottomButton1:
+              Translations.of(context).text2('Back', 'Back').toUpperCase(),
+          bottomButton2:
+              Translations.of(context).text2('Save', 'Save').toUpperCase(),
+          bottomButton1Function: () {
+            if (ModalRoute.of(context).settings.arguments is String &&
+                ModalRoute.of(context).settings.arguments == "error.dialog") {
+              RestartWidget.restartApp(context, loadConf: false);
+            } else {
+              Navigator.of(context).pop();
+            }
+          },
+          bottomButton2Function: () {
+            savePreferences();
+            RestartWidget.restartApp(context, loadConf: false);
+          },
+        ));
   }
 
   savePreferences() async {
@@ -308,12 +320,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeData>(
-      builder: (context, state) {
-        return Container(
-          child: settingsLoader(),
-        );
-      }
-    );
+    return BlocBuilder<ThemeBloc, ThemeData>(builder: (context, state) {
+      return Container(
+        child: settingsLoader(),
+      );
+    });
   }
 }
