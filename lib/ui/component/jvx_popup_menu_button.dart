@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/model/api/request/press_button.dart';
 import '../../model/api/request/reload.dart';
 import '../../model/api/request/request.dart';
 import '../../ui/widgets/fontAwesomeChanger.dart';
@@ -15,6 +16,8 @@ import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
 import '../../ui/component/jvx_component.dart';
 import '../../utils/globals.dart' as globals;
+import '../../model/action.dart' as jvxAction;
+
 
 class JVxPopupMenuButton extends JVxComponent implements IComponent {
   String text;
@@ -77,7 +80,7 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
 
   void buttonPressed() {
     if (defaultMenuItem != null) {
-      valueChanged(defaultMenuItem);
+      valueChanged(this.name);
     }
   }
 
@@ -85,8 +88,8 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
     TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
-      SetComponentValue setComponentValue = SetComponentValue(this.name, value);
-      BlocProvider.of<ApiBloc>(context).dispatch(setComponentValue);
+      PressButton pressButton = PressButton(jvxAction.Action(componentId: value, label: null));
+      BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
   }
 
@@ -132,7 +135,7 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
                           new List<PopupMenuItem<String>>();
                       menu.menuItems.forEach((i) {
                         menuItems.add(PopupMenuItem<String>(
-                            value: i.text, child: Text(i.text)));
+                            value: i.name, child: Text(i.text)));
                       });
                       return menuItems;
                     },
