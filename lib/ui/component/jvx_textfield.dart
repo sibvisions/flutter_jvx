@@ -62,7 +62,7 @@ class JVxTextField extends JVxComponent implements IComponent {
   }
 
   void onTextFieldEndEditing() {
-    TextUtils.unfocusCurrentTextfield(context);
+    node.unfocus();
 
     if (this.valueChanged) {
       SetComponentValue setComponentValue = SetComponentValue(this.name, text);
