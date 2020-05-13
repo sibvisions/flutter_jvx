@@ -24,6 +24,7 @@ abstract class ICellEditor {
   String dataProvider;
   dynamic value;
   String columnName;
+  bool editable;
 
   Size preferredSize;
   Size minimumSize;

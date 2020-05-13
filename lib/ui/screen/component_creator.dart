@@ -18,7 +18,7 @@ import '../../ui/container/jvx_split_panel.dart';
 import '../../ui/editor/celleditor/i_cell_editor.dart';
 import '../../ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
 import '../../ui/editor/celleditor/jvx_image_cell_editor.dart';
-import '../../ui/editor/jvx_lazy_table.dart';
+import '../../ui/editor/jvx_table.dart';
 import '../../ui/layout/jvx_flow_layout.dart';
 import '../../ui/layout/jvx_grid_layout.dart';
 import '../../ui/screen/i_component_creator.dart';
@@ -53,7 +53,7 @@ class ComponentCreator implements IComponentCreator {
         case "SplitPanel":    { component = new JVxSplitPanel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
         case "Label":         { component = new JVxLabel(GlobalKey(debugLabel: changedComponent.id), context); } break; 
         case "Button":        { component = new JVxButton(GlobalKey(debugLabel: changedComponent.id), context); } break; 
-        case "Table":         { component = new JVxLazyTable(GlobalKey(debugLabel: changedComponent.id), context); } break;
+        case "Table":         { component = new JVxTable(GlobalKey(debugLabel: changedComponent.id), context, this); } break;
         case "CheckBox":      { component = new JVxCheckbox(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "RadioButton":   { component = new JVxRadioButton(GlobalKey(debugLabel: changedComponent.id), context); } break;
         case "PopupMenuButton": { component = new JVxPopupMenuButton(GlobalKey(debugLabel: changedComponent.id), context); } break;
@@ -105,6 +105,19 @@ class ComponentCreator implements IComponentCreator {
       case "ChoiceCellEditor":   { cellEditor = JVxChoiceCellEditor(toCreatecellEditor, context); } break;
       case "CheckBoxCellEditor": { cellEditor = JVxCheckboxCellEditor(toCreatecellEditor, context); } break;
     }
+
+    return cellEditor;
+  }
+
+  ICellEditor createCellEditorForTable(CellEditor toCreatecellEditor) {
+    ICellEditor cellEditor;
+    switch (toCreatecellEditor.className) {
+      case "DateCellEditor":     { cellEditor = JVxDateCellEditor(toCreatecellEditor, context); } break; 
+      case "ChoiceCellEditor":   { cellEditor = JVxChoiceCellEditor(toCreatecellEditor, context); } break;
+      case "CheckBoxCellEditor": { cellEditor = JVxCheckboxCellEditor(toCreatecellEditor, context); } break;
+    }
+
+    cellEditor?.isTableView = true;
 
     return cellEditor;
   }

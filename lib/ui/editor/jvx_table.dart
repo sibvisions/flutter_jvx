@@ -18,7 +18,7 @@ import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 
-class JVxLazyTable extends JVxEditor {
+class JVxTable extends JVxEditor {
   // visible column names
   List<String> columnNames = <String>[];
 
@@ -39,13 +39,15 @@ class JVxLazyTable extends JVxEditor {
   Size maximumSize;
 
   ItemScrollController _scrollController = ItemScrollController();
-  ItemPositionsListener _scrollPositionListener = ItemPositionsListener.create();
+  ItemPositionsListener _scrollPositionListener =
+      ItemPositionsListener.create();
   int pageSize = 100;
   double fetchMoreItemOffset = 20;
   JVxData _data;
   List<int> columnFlex;
   var _tapPosition;
   ComponentCreator componentCreator;
+  bool autoResize = false;
 
   TextStyle get headerTextStyle {
     return TextStyle(
@@ -69,24 +71,26 @@ class JVxLazyTable extends JVxEditor {
 
   @override
   get preferredSize {
-    return Size(300,300);
+    return Size(300, 300);
   }
 
   @override
   get minimumSize {
-    return Size(50,100);
+    return Size(50, 100);
   }
 
   @override
-  bool get isPreferredSizeSet => preferredSize!=null;
+  bool get isPreferredSizeSet => preferredSize != null;
   @override
-  bool get isMinimumSizeSet => minimumSize!=null;
+  bool get isMinimumSizeSet => minimumSize != null;
   @override
-  bool get isMaximumSizeSet => maximumSize!=null;
+  bool get isMaximumSizeSet => maximumSize != null;
 
-  JVxLazyTable(GlobalKey componentId, BuildContext context)
+  JVxTable(GlobalKey componentId, BuildContext context, [this.componentCreator])
       : super(componentId, context) {
-    componentCreator = ComponentCreator(context);
+    
+    if (componentCreator==null)
+      componentCreator = ComponentCreator(context);
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
   }
 
@@ -105,12 +109,18 @@ class JVxLazyTable extends JVxEditor {
         ComponentProperty.COLUMN_NAMES, columnNames);
     columnLabels = changedComponent.getProperty<List<String>>(
         ComponentProperty.COLUMN_LABELS, columnLabels);
+    autoResize = changedComponent.getProperty<bool>(
+        ComponentProperty.AUTO_RESIZE, autoResize);
 
-    int newSelectedRow = changedComponent.getProperty<int>(
-        ComponentProperty.SELECTED_ROW);
-    if (newSelectedRow!=null && newSelectedRow>=0 && newSelectedRow!=selectedRow && this.data!=null && this.data.data!=null)
+    int newSelectedRow =
+        changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW);
+    if (newSelectedRow != null &&
+        newSelectedRow >= 0 &&
+        newSelectedRow != selectedRow &&
+        this.data != null &&
+        this.data.data != null)
       this.data.updateSelectedRow(newSelectedRow, true);
-    
+
     selectedRow = changedComponent.getProperty<int>(
         ComponentProperty.SELECTED_ROW, selectedRow);
   }
@@ -125,7 +135,8 @@ class JVxLazyTable extends JVxEditor {
       return Container(
           decoration: BoxDecoration(
             boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-            color: UIData.ui_kit_color_2[500].withOpacity(globals.applicationStyle.controlsOpacity),
+            color: UIData.ui_kit_color_2[500]
+                .withOpacity(globals.applicationStyle.controlsOpacity),
           ),
           child: Row(children: children));
     } else {
@@ -143,7 +154,8 @@ class JVxLazyTable extends JVxEditor {
                 ? UIData.ui_kit_color_2[100].withOpacity(0.1)
                 : Colors.white.withOpacity(0.1),
             child: InkWell(
-                highlightColor: UIData.ui_kit_color_2[500].withOpacity(globals.applicationStyle.controlsOpacity),
+                highlightColor: UIData.ui_kit_color_2[500]
+                    .withOpacity(globals.applicationStyle.controlsOpacity),
                 onTap: () {
                   _onRowTapped(index);
                 },
@@ -189,11 +201,11 @@ class JVxLazyTable extends JVxEditor {
         .firstWhere((col) => col.name == columnName, orElse: () => null);
 
     if (column != null) {
-      JVxCellEditor clEditor = componentCreator.createCellEditor(column.cellEditor);
+      JVxCellEditor clEditor =
+          componentCreator.createCellEditorForTable(column.cellEditor);
       // clEditor.onValueChanged = onValueChanged;
       clEditor?.editable = false;
       clEditor?.value = text;
-      clEditor?.isTableView = true;
       return clEditor;
     }
     return null;
@@ -213,8 +225,7 @@ class JVxLazyTable extends JVxEditor {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              child: Text(text,
-                  style: this.headerTextStyle),
+              child: Text(text, style: this.headerTextStyle),
               padding: EdgeInsets.all(5),
             ),
           ));
@@ -226,7 +237,7 @@ class JVxLazyTable extends JVxEditor {
             child: GestureDetector(
               child: Container(
                   // only for development
-                  child: (cellEditor is JVxChoiceCellEditor || cellEditor is JVxCheckboxCellEditor || cellEditor is JVxDateCellEditor)
+                  child: (cellEditor != null)
                       ? cellEditor.getWidget()
                       : Text(text),
                   // child: Text(Properties.utf8convert(text),
@@ -266,13 +277,15 @@ class JVxLazyTable extends JVxEditor {
         return Slidable(
           actionExtentRatio: 0.25,
           child: Container(
-              color: Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
+              color: Colors.white
+                  .withOpacity(globals.applicationStyle.controlsOpacity),
               child: getTableRow(children, index, false, isSelected)),
           actionPane: SlidableDrawerActionPane(),
           secondaryActions: <Widget>[
             new IconSlideAction(
               caption: Translations.of(context).text2('Delete'),
-              color: Colors.red.withOpacity(globals.applicationStyle.controlsOpacity),
+              color: Colors.red
+                  .withOpacity(globals.applicationStyle.controlsOpacity),
               icon: Icons.delete,
               onTap: () => this.data.deleteRecord(context, index),
             ),
@@ -280,7 +293,8 @@ class JVxLazyTable extends JVxEditor {
         );
       } else {
         return Container(
-            color: Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
+            color: Colors.white
+                .withOpacity(globals.applicationStyle.controlsOpacity),
             child: getTableRow(children, index, false, isSelected));
       }
     }
@@ -292,8 +306,14 @@ class JVxLazyTable extends JVxEditor {
   void onServerDataChanged() {}
 
   void onSelectedRowChanged(dynamic selectedRow) {
-    if (_scrollController!=null && selectedRow is int && selectedRow >= 0 && _scrollController.isAttached) {
-      _scrollController.scrollTo(index: selectedRow, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    if (_scrollController != null &&
+        selectedRow is int &&
+        selectedRow >= 0 &&
+        _scrollController.isAttached) {
+      _scrollController.scrollTo(
+          index: selectedRow,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.ease);
     }
   }
 
@@ -307,11 +327,18 @@ class JVxLazyTable extends JVxEditor {
   }
 
   _scrollListener() {
-    ItemPosition pos = this._scrollPositionListener.itemPositions.value.lastWhere((itemPosition) => itemPosition.itemTrailingEdge>0, orElse: () => null);
+    ItemPosition pos = this
+        ._scrollPositionListener
+        .itemPositions
+        .value
+        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 0,
+            orElse: () => null);
 
-    if (pos!=null && _data!=null && _data.records!=null && pos.index+fetchMoreItemOffset > _data.records.length) {
-      data.getData(
-            context, this.pageSize + _data.records.length);
+    if (pos != null &&
+        _data != null &&
+        _data.records != null &&
+        pos.index + fetchMoreItemOffset > _data.records.length) {
+      data.getData(context, this.pageSize + _data.records.length);
     }
   }
 
@@ -320,33 +347,37 @@ class JVxLazyTable extends JVxEditor {
     int itemCount = tableHeaderVisible ? 1 : 0;
     _data = data.getData(context, pageSize);
 
-    this.columnFlex =
-        _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle);
+
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) =>
-          GestureDetector(
-        onTapDown: (details) => _tapPosition = details.globalPosition,
-        onLongPress: () => showContextMenu(context),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: UIData.ui_kit_color_2[500].withOpacity(globals.applicationStyle.controlsOpacity)),
-            color: Colors.white.withOpacity(globals.applicationStyle.controlsOpacity)
+      builder: (BuildContext context, BoxConstraints constraints) {
+        this.columnFlex =
+            _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle, constraints.maxWidth);
+        return GestureDetector(
+          onTapDown: (details) => _tapPosition = details.globalPosition,
+          onLongPress: () => showContextMenu(context),
+          child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(
+                    color: UIData.ui_kit_color_2[500]
+                        .withOpacity(globals.applicationStyle.controlsOpacity)),
+                color: Colors.white
+                    .withOpacity(globals.applicationStyle.controlsOpacity)),
+            width: constraints.minWidth,
+            height: constraints.minHeight,
+            child: ScrollablePositionedList.builder(
+              key: this.componentId,
+              itemScrollController: _scrollController,
+              itemPositionsListener: _scrollPositionListener,
+              itemCount: itemCount,
+              itemBuilder: itemBuilder,
+            ),
           ),
-          width: constraints.minWidth,
-          height: constraints.minHeight,
-          child: ScrollablePositionedList.builder(
-            key: this.componentId,
-            itemScrollController: _scrollController,
-            itemPositionsListener: _scrollPositionListener,
-            itemCount: itemCount,
-            itemBuilder: itemBuilder,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

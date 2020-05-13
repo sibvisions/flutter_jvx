@@ -60,7 +60,8 @@ enum ComponentProperty {
   SELECTED,
   BORDER,
   COLUMNS,
-  DEFAULT_MENU_ITEM
+  DEFAULT_MENU_ITEM,
+  AUTO_RESIZE
 }
 
 class ComponentProperties {
