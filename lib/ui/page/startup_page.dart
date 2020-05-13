@@ -169,7 +169,10 @@ class _StartupPageState extends State<StartupPage> {
           appMode: globals.appMode.isNotEmpty ? globals.appMode : 'preview',
           readAheadLimit: 100,
           requestType: RequestType.STARTUP,
-          deviceId: await _getDeviceId());
+          deviceId: await _getDeviceId(),
+          userName: globals.username!=null && globals.username.isNotEmpty?globals.username: null, 
+          password: globals.password!=null && globals.password.isNotEmpty?globals.password: null
+      );
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);
     });

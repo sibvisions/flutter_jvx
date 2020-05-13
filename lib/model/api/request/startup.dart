@@ -10,8 +10,21 @@ class Startup extends Request {
   String appMode;
   int readAheadLimit;
   String deviceId;
+  String userName;
+  String password;
 
-  Startup({this.applicationName, this.authKey, this.layoutMode, this.screenWidth, this.screenHeight, this.appMode, this.readAheadLimit, this.deviceId, String clientId, RequestType requestType})
+  Startup({this.applicationName, 
+          this.authKey, 
+          this.layoutMode, 
+          this.screenWidth, 
+          this.screenHeight, 
+          this.appMode, 
+          this.readAheadLimit, 
+          this.deviceId, 
+          String clientId, 
+          this.userName, 
+          this.password, 
+          RequestType requestType})
     : super(clientId: clientId, requestType: requestType);
 
   Map<String, dynamic> toJson() => {
@@ -22,6 +35,8 @@ class Startup extends Request {
     'screenHeight': screenHeight,
     'appMode': appMode,
     'readAheadLimit': readAheadLimit,
-    'deviceId': deviceId
+    'deviceId': deviceId,
+    'userName': userName,
+    'password': password
   };
 }

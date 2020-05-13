@@ -196,6 +196,8 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if (authData['authKey'] != null) {
       request.authKey = authData['authKey'];
+      request.userName = null;
+      request.password = null;
     }
 
     Response resp = await processRequest(request);

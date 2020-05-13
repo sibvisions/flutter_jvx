@@ -54,7 +54,7 @@ class Config {
     Config config;
     try {
       String configString =
-          await rootBundle.loadString(path ?? "env/conf.json");
+          await rootBundle.loadString(path ?? "env/conf.json", cache: false);
 
       config = Config.fromJson(json.decode(configString));
     } catch (e) {
