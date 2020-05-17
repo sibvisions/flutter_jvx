@@ -46,6 +46,9 @@ class JVxCellEditor implements ICellEditor {
   bool get isMinimumSizeSet => minimumSize!=null;
   bool get isMaximumSizeSet => maximumSize!=null;
 
+  Size tableMinimumSize;
+  bool get isTableMinimumSizeSet => tableMinimumSize!=null;
+
   JVxCellEditor(CellEditor changedCellEditor, this.context) {
     horizontalAlignment = changedCellEditor
         .getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);

@@ -6,12 +6,11 @@ class TextUtils {
   static String averageCharactersTextField = "EARIOTNSLCaeiou";
   static String averageCharactersDateField = "31. November 2020 15:";
 
-  static int getTextWidth(dynamic text, TextStyle style,
+  static double getTextWidth(dynamic text, TextStyle style,
       [TextAlign align = TextAlign.left,
       TextDirection textDirection = TextDirection.ltr]) {
     return TextUtils.getTextSize(text, style, align, textDirection)
-        .width
-        .round();
+        .width;
   }
 
   static Size getTextSize(dynamic text, TextStyle style,

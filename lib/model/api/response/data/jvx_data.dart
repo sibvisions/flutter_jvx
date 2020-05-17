@@ -1,7 +1,5 @@
-import 'package:flutter/rendering.dart';
 import '../../../../model/api/response/response_object.dart';
 import '../../../../model/filter.dart';
-import '../../../../utils/text_utils.dart';
 
 /// Data holding Class for [JVxComponent]'s.
 class JVxData extends ResponseObject {
@@ -35,43 +33,7 @@ class JVxData extends ResponseObject {
     return row;
   }
 
-  List<int> getColumnFlex(List<String> columnLabels, List<String> columnNames, TextStyle textStyle, [double containerWidth, int calculateForRecordCount = 10]) {
-    List<int> maxLengthPerColumn = getHeaderWidths(columnLabels, textStyle);
-
-    if (this.records != null) {
-      if (this.records.length < calculateForRecordCount)
-        calculateForRecordCount = this.records.length;
-
-      for (int ii = 0; ii < calculateForRecordCount; ii++) {
-        this.getRow(ii, columnNames).asMap().forEach((i,c) {
-          String value = c != null ? c.toString() : "";
-          int textWidth = TextUtils.getTextWidth(value, textStyle);
-          if (maxLengthPerColumn[i] == null || maxLengthPerColumn[i] < textWidth) 
-            maxLengthPerColumn[i] = textWidth;
-        });
-      }
-    }
-
-    if (containerWidth!=null && containerWidth!=double.infinity) {
-      int singleCharacterWidth = TextUtils.getTextWidth("W", textStyle);
-      int columnWidths = 0;
-      maxLengthPerColumn.forEach((f) => columnWidths += f);
-      double factor = columnWidths/containerWidth;
-      
-    }
-
-    return maxLengthPerColumn;
-  }
-
-  List<int> getHeaderWidths(List<String> columnLabels, TextStyle textStyle) {
-    List<int> maxLengthPerColumn = new List<int>(columnLabels.length);
-    columnLabels.asMap().forEach((i, l) {
-      int textWidth = TextUtils.getTextWidth(l, textStyle);
-      maxLengthPerColumn[i] = textWidth+5;
-    });
-
-    return maxLengthPerColumn;
-  }
+  
 
   List<int> getColumnIndex(List<dynamic> columnNames) {
     List<int> visibleColumnsIndex = <int>[];

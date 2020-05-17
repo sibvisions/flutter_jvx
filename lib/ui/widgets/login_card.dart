@@ -18,7 +18,7 @@ class LoginCard extends StatefulWidget {
 
 class _LoginCardState extends State<LoginCard>
     with SingleTickerProviderStateMixin {
-  var deviceSize;
+  Size deviceSize;
   bool rememberMe = false;
   AnimationController controller;
   Animation<double> animation;

@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/response/meta_data/jvx_meta_data_column.dart';
+import 'package:jvx_flutterclient/ui/editor/celleditor/i_cell_editor.dart';
+import 'package:jvx_flutterclient/ui/screen/component_creator.dart';
 import '../../model/api/response/data/jvx_dataprovider_changed.dart';
 import '../../utils/text_utils.dart';
 import '../../logic/bloc/api_bloc.dart';
@@ -240,6 +243,13 @@ class ComponentData {
     } else {
       BlocProvider.of<ApiBloc>(context).dispatch(setValues);
     }
+  }
+
+  JVxMetaDataColumn getMetaDataColumn(String columnName) {
+        return this
+        .metaData
+        .columns
+        .firstWhere((col) => col.name == columnName, orElse: () => null);
   }
 
   void _fetchData(BuildContext context, int reload, int rowCountNeeded) {

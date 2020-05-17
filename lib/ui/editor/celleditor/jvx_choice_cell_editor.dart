@@ -14,6 +14,7 @@ class JVxChoiceCellEditor extends JVxCellEditor {
   List<String> allowedValues;
   List<String> imageNames;
   ChoiceCellEditorImage selectedImage;
+  Size tableMinimumSize = Size(50,40);
 
   JVxChoiceCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {

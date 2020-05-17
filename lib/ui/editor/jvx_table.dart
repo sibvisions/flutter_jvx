@@ -3,20 +3,20 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../ui/editor/celleditor/jvx_date_cell_editor.dart';
+import 'package:jvx_flutterclient/ui/editor/celleditor/i_cell_editor.dart';
+import 'package:jvx_flutterclient/ui/editor/jvx_table_column_calculator.dart';
 import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
 import '../../model/changed_component.dart';
 import '../../model/api/response/data/jvx_data.dart';
 import '../../model/properties/component_properties.dart';
-import '../../ui/editor/celleditor/jvx_cell_editor.dart';
-import '../../ui/editor/celleditor/jvx_checkbox_cell_editor.dart';
-import '../../ui/editor/celleditor/jvx_choice_cell_editor.dart';
 import '../../ui/editor/jvx_editor.dart';
 import '../../ui/screen/component_creator.dart';
 import '../../ui/screen/component_data.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
+
+enum ContextMenuCommand { INSERT, DELETE }
 
 class JVxTable extends JVxEditor {
   // visible column names
@@ -44,10 +44,11 @@ class JVxTable extends JVxEditor {
   int pageSize = 100;
   double fetchMoreItemOffset = 20;
   JVxData _data;
-  List<int> columnFlex;
+  List<JVxTableColumn> columnInfo;
   var _tapPosition;
   ComponentCreator componentCreator;
   bool autoResize = false;
+  bool _hasHorizontalScroller = false;
 
   TextStyle get headerTextStyle {
     return TextStyle(
@@ -88,9 +89,7 @@ class JVxTable extends JVxEditor {
 
   JVxTable(GlobalKey componentId, BuildContext context, [this.componentCreator])
       : super(componentId, context) {
-    
-    if (componentCreator==null)
-      componentCreator = ComponentCreator(context);
+    if (componentCreator == null) componentCreator = ComponentCreator(context);
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
   }
 
@@ -164,44 +163,60 @@ class JVxTable extends JVxEditor {
     }
   }
 
-  showContextMenu(BuildContext context) {
+  PopupMenuItem<ContextMenuModel> _getContextMenuItem(
+      IconData icon, String text, ContextMenuModel value) {
+    return PopupMenuItem<ContextMenuModel>(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Icon(
+            icon,
+            color: Colors.grey[600],
+          ),
+          Text(Translations.of(context).text2(text)),
+        ],
+      ),
+      enabled: true,
+      value: value,
+    );
+  }
+
+  showContextMenu(BuildContext context, int index) {
+    List<PopupMenuEntry<ContextMenuModel>> popupMenuEntries =
+        List<PopupMenuEntry<ContextMenuModel>>();
+
+    if (this.data.insertEnabled) {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare,
+          'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
+    }
+
+    if (this.data.deleteEnabled) {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
+          'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
+    }
+
     if (this.data.insertEnabled) {
       showMenu(
-          position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
-              Offset.zero & MediaQuery.of(context).size),
-          context: context,
-          items: <PopupMenuEntry<int>>[
-            PopupMenuItem(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.plusSquare,
-                    color: Colors.grey[600],
-                  ),
-                  Text(Translations.of(context).text2('Insert')),
-                ],
-              ),
-              enabled: true,
-              value: 1,
-            )
-          ]).then((val) {
+              position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
+                  Offset.zero & MediaQuery.of(context).size),
+              context: context,
+              items: popupMenuEntries)
+          .then((val) {
         if (val != null) {
-          this.data.insertRecord(context);
+          if (val.command == ContextMenuCommand.INSERT)
+            this.data.insertRecord(context);
+          else if (val.command == ContextMenuCommand.DELETE)
+            this.data.deleteRecord(context, val.index);
         }
       });
     }
   }
 
-  JVxCellEditor _getCellEditorForColumn(String text, String columnName) {
-    JVxMetaDataColumn column = this
-        .data
-        .metaData
-        .columns
-        .firstWhere((col) => col.name == columnName, orElse: () => null);
+  ICellEditor _getCellEditorForColumn(String text, String columnName) {
+    JVxMetaDataColumn column = this.data.getMetaDataColumn(columnName);
 
     if (column != null) {
-      JVxCellEditor clEditor =
+      ICellEditor clEditor =
           componentCreator.createCellEditorForTable(column.cellEditor);
       // clEditor.onValueChanged = onValueChanged;
       clEditor?.editable = false;
@@ -213,15 +228,15 @@ class JVxTable extends JVxEditor {
 
   Widget getTableColumn(
       String text, int rowIndex, int columnIndex, String columnName) {
-    JVxCellEditor cellEditor = _getCellEditorForColumn(text, columnName);
-    int flex = 1;
+    ICellEditor cellEditor = _getCellEditorForColumn(text, columnName);
+    double width = 1;
 
-    if (columnFlex != null && columnIndex < columnFlex.length)
-      flex = columnFlex[columnIndex];
+    if (columnInfo != null && columnIndex < columnInfo.length)
+      width = columnInfo[columnIndex].preferredWidth;
 
     if (rowIndex == -1) {
-      return Expanded(
-          flex: flex,
+      return Container(
+          width: width,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
@@ -230,8 +245,8 @@ class JVxTable extends JVxEditor {
             ),
           ));
     } else {
-      return Expanded(
-          flex: flex,
+      return Container(
+          width: width,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
@@ -273,29 +288,33 @@ class JVxTable extends JVxEditor {
       bool isSelected = index == data.selectedRow;
       if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
-      if (this.data.deleteEnabled) {
-        return Slidable(
-          actionExtentRatio: 0.25,
-          child: Container(
-              color: Colors.white
-                  .withOpacity(globals.applicationStyle.controlsOpacity),
-              child: getTableRow(children, index, false, isSelected)),
-          actionPane: SlidableDrawerActionPane(),
-          secondaryActions: <Widget>[
-            new IconSlideAction(
-              caption: Translations.of(context).text2('Delete'),
-              color: Colors.red
-                  .withOpacity(globals.applicationStyle.controlsOpacity),
-              icon: Icons.delete,
-              onTap: () => this.data.deleteRecord(context, index),
-            ),
-          ],
-        );
+      if (this.data.deleteEnabled && !_hasHorizontalScroller) {
+        return GestureDetector(
+            onLongPress: () => showContextMenu(context, index),
+            child: Slidable(
+              actionExtentRatio: 0.25,
+              child: Container(
+                  color: Colors.white
+                      .withOpacity(globals.applicationStyle.controlsOpacity),
+                  child: getTableRow(children, index, false, isSelected)),
+              actionPane: SlidableDrawerActionPane(),
+              secondaryActions: <Widget>[
+                new IconSlideAction(
+                  caption: Translations.of(context).text2('Delete'),
+                  color: Colors.red
+                      .withOpacity(globals.applicationStyle.controlsOpacity),
+                  icon: Icons.delete,
+                  onTap: () => this.data.deleteRecord(context, index),
+                ),
+              ],
+            ));
       } else {
-        return Container(
-            color: Colors.white
-                .withOpacity(globals.applicationStyle.controlsOpacity),
-            child: getTableRow(children, index, false, isSelected));
+        return GestureDetector(
+            onLongPress: () => showContextMenu(context, index),
+            child: Container(
+                color: Colors.white
+                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                child: getTableRow(children, index, false, isSelected)));
       }
     }
 
@@ -344,29 +363,38 @@ class JVxTable extends JVxEditor {
 
   @override
   Widget getWidget() {
+    double borderWidth = 1;
     int itemCount = tableHeaderVisible ? 1 : 0;
     _data = data.getData(context, pageSize);
-
-
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        this.columnFlex =
-            _data.getColumnFlex(this.columnLabels, this.columnNames, itemTextStyle, constraints.maxWidth);
-        return GestureDetector(
+        this.columnInfo = JVxTableColumnCalculator.getColumnFlex(
+            this.data,
+            this.columnLabels,
+            this.columnNames,
+            itemTextStyle,
+            componentCreator,
+            autoResize,
+            constraints.maxWidth,
+            26.0,
+            16.0);
+        double columnWidth =
+            JVxTableColumnCalculator.getColumnWidthSum(this.columnInfo);
+        Widget widget = GestureDetector(
           onTapDown: (details) => _tapPosition = details.globalPosition,
-          onLongPress: () => showContextMenu(context),
           child: Container(
             decoration: BoxDecoration(
                 border: Border.all(
+                    width: borderWidth,
                     color: UIData.ui_kit_color_2[500]
                         .withOpacity(globals.applicationStyle.controlsOpacity)),
                 color: Colors.white
                     .withOpacity(globals.applicationStyle.controlsOpacity)),
-            width: constraints.minWidth,
+            width: columnWidth + (2 * borderWidth),
             height: constraints.minHeight,
             child: ScrollablePositionedList.builder(
               key: this.componentId,
@@ -377,7 +405,23 @@ class JVxTable extends JVxEditor {
             ),
           ),
         );
+
+        if (columnWidth > constraints.maxWidth) {
+          _hasHorizontalScroller = true;
+          return SingleChildScrollView(
+              scrollDirection: Axis.horizontal, child: widget);
+        } else {
+          _hasHorizontalScroller = false;
+          return widget;
+        }
       },
     );
   }
+}
+
+class ContextMenuModel {
+  int index;
+  ContextMenuCommand command;
+
+  ContextMenuModel(this.index, this.command);
 }
