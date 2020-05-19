@@ -49,9 +49,11 @@ class LoginBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget widget;
+
     if ((globals.applicationStyle != null &&
         globals.applicationStyle?.loginIcon != null)) {
-      return Container(
+      widget = Container(
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: FileImage(File(
@@ -61,9 +63,18 @@ class LoginBackground extends StatelessWidget {
             children: <Widget>[topHalf(context), bottomHalf],
           ));
     } else {
-      return Column(
+      widget = Column(
         children: <Widget>[topHalf(context), bottomHalf],
       );
     }
+
+    return SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: MediaQuery.of(context).size.width,
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: IntrinsicHeight(child: widget)));
   }
 }

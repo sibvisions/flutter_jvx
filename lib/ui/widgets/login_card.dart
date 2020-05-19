@@ -22,112 +22,120 @@ class _LoginCardState extends State<LoginCard>
   bool rememberMe = false;
   AnimationController controller;
   Animation<double> animation;
-  String username = '',
-      password = '';
+  String username = '', password = '';
 
-  Widget loginBuilder() =>
-    Form(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-        child: SingleChildScrollView(
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              (globals.applicationStyle != null && globals.applicationStyle.loginTitle != null)
-                  ? new Text(
-                globals.applicationStyle.loginTitle,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+  Widget loginBuilder() => Form(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+          child: SingleChildScrollView(
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                (globals.applicationStyle != null &&
+                        globals.applicationStyle.loginTitle != null)
+                    ? new Text(
+                        globals.applicationStyle.loginTitle,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : AutoSizeText(
+                        globals.appName,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (v) {
+                        FocusScope.of(context).requestFocus(widget.focus);
+                      },
+                      autocorrect: false,
+                      onChanged: (username) => this.username = username,
+                      style: new TextStyle(fontSize: 15.0, color: Colors.black),
+                      decoration: new InputDecoration(
+                          labelText: Translations.of(context)
+                              .text2("Username:", 'Username:'),
+                          labelStyle: Theme.of(context).textTheme.body1),
+                    )),
+                new SizedBox(
+                  height: 10.0,
                 ),
-              )
-                  : AutoSizeText(
-                globals.appName,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              new TextFormField(
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (v){
-                  FocusScope.of(context).requestFocus(widget.focus);
-                },
-                autocorrect: false,
-                onChanged: (username) => this.username = username,
-                style: new TextStyle(
-                    fontSize: 15.0, color: Colors.black),
-                decoration: new InputDecoration(
-                  // hintText: Translations.of(context).text2("Username:"),
-                    labelText: Translations.of(context)
-                        .text2("Username:", 'Username:'),
-                    labelStyle: TextStyle(fontWeight: FontWeight.w700)),
-              ),
-              new SizedBox(
-                height: 10.0,
-              ),
-              new TextFormField(
-                onFieldSubmitted: (String value) {
-                  _login(context);
-                },
-                focusNode: widget.focus,
-                onChanged: (password) => this.password = password,
-                style: new TextStyle(
-                    fontSize: 15.0, color: Colors.black),
-                decoration: new InputDecoration(
-                    labelText: Translations.of(context)
-                        .text2('Password:', 'Password:'),
-                    labelStyle: TextStyle(fontWeight: FontWeight.w700)),
-                obscureText: true,
-              ),
-              SizedBox(height: 10,),
-              new CheckboxListTile(
-                onChanged: (bool val) {
-                  setState(() {
-                    rememberMe = val;
-                  });
-                },
-                value: rememberMe,
-                title: Text(Translations.of(context)
-                    .text2('Remember me?', 'Remember me?')),
-                controlAffinity: ListTileControlAffinity.leading,
-                activeColor: UIData.ui_kit_color_2,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                  child: new GradientButton(
-                      onPressed: () {
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: TextFormField(
+                      onFieldSubmitted: (String value) {
                         _login(context);
                       },
-                      text: Translations.of(context)
-                          .text2('Login', 'Login'))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.only(top: 10),
-                      child: new FlatButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/settings');
-                        },
-                        label: Text(Translations.of(context)
-                            .text2('Settings', 'Settings')),
-                        icon: Icon(
-                          FontAwesomeIcons.cog,
-                          color: UIData.ui_kit_color_2[300],
-                        ),
-                      )),
-                ],
-              ),
-            ],
+                      focusNode: widget.focus,
+                      onChanged: (password) => this.password = password,
+                      style: new TextStyle(fontSize: 15.0, color: Colors.black),
+                      decoration: new InputDecoration(
+                        labelText: Translations.of(context)
+                            .text2('Password:', 'Password:'),
+                        labelStyle: Theme.of(context).textTheme.body1,
+                      ),
+                      obscureText: true,
+                    )),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: <Widget>[
+                    Checkbox(
+                      value: rememberMe,
+                      activeColor: UIData.ui_kit_color_2,
+                      onChanged: (bool val) {
+                        setState(() {
+                          rememberMe = val;
+                        });
+                      },
+                    ),
+                    Text(Translations.of(context)
+                        .text2('Remember me?', 'Remember me?')),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Container(
+                        child: new GradientButton(
+                            onPressed: () {
+                              _login(context);
+                            },
+                            text: Translations.of(context)
+                                .text2('Login', 'Login')))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                        padding: EdgeInsets.only(top: 10),
+                        child: new FlatButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/settings');
+                          },
+                          label: Text(Translations.of(context)
+                              .text2('Settings', 'Settings')),
+                          icon: Icon(
+                            FontAwesomeIcons.cog,
+                            color: UIData.ui_kit_color_2[300],
+                          ),
+                        )),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 
   Widget loginCard() {
     return Opacity(
@@ -156,10 +164,10 @@ class _LoginCardState extends State<LoginCard>
     controller?.dispose();
     super.dispose();
   }
-  
+
   _login(BuildContext context) {
     // if (this.password.length > 0 && this.username.length > 0) {
-      /*
+    /*
       loginBloc.loginSink.add(
           new LoginViewModel.withPW(
               username: username,
@@ -167,16 +175,15 @@ class _LoginCardState extends State<LoginCard>
               rememberMe: rememberMe));
       */
 
-      Login login = Login(
+    Login login = Login(
         action: 'Anmelden',
         clientId: globals.clientId,
         createAuthKey: rememberMe,
         username: username?.trim(),
         password: password?.trim(),
-        requestType: RequestType.LOGIN
-      );
+        requestType: RequestType.LOGIN);
 
-      BlocProvider.of<ApiBloc>(context).dispatch(login);
+    BlocProvider.of<ApiBloc>(context).dispatch(login);
     // } else {
     //   showError(context, Translations.of(context).text2('Error', 'Error'), Translations.of(context).text2('Please enter your username and password.'));
     // }
@@ -184,9 +191,7 @@ class _LoginCardState extends State<LoginCard>
 
   @override
   Widget build(BuildContext context) {
-    deviceSize = MediaQuery
-        .of(context)
-        .size;
+    deviceSize = MediaQuery.of(context).size;
     return loginCard();
   }
 }
