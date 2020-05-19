@@ -58,11 +58,13 @@ class _LoginCardState extends State<LoginCard>
                       },
                       autocorrect: false,
                       onChanged: (username) => this.username = username,
-                      style: new TextStyle(fontSize: 15.0, color: Colors.black),
+                      style: new TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: new InputDecoration(
+                          hintStyle: TextStyle(color: Colors.green),
                           labelText: Translations.of(context)
                               .text2("Username:", 'Username:'),
-                          labelStyle: Theme.of(context).textTheme.body1),
+                          labelStyle: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.w600)),
                     )),
                 new SizedBox(
                   height: 10.0,
@@ -75,12 +77,12 @@ class _LoginCardState extends State<LoginCard>
                       },
                       focusNode: widget.focus,
                       onChanged: (password) => this.password = password,
-                      style: new TextStyle(fontSize: 15.0, color: Colors.black),
+                      style: new TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: new InputDecoration(
-                        labelText: Translations.of(context)
-                            .text2('Password:', 'Password:'),
-                        labelStyle: Theme.of(context).textTheme.body1,
-                      ),
+                          labelText: Translations.of(context)
+                              .text2('Password:', 'Password:'),
+                          labelStyle: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.w600)),
                       obscureText: true,
                     )),
                 SizedBox(
@@ -98,7 +100,9 @@ class _LoginCardState extends State<LoginCard>
                       },
                     ),
                     Text(Translations.of(context)
-                        .text2('Remember me?', 'Remember me?')),
+                        .text2('Remember me?', 'Remember me?'),
+                        style: Theme.of(context).textTheme.body2,
+                        ),
                   ],
                 ),
                 SizedBox(
@@ -112,7 +116,7 @@ class _LoginCardState extends State<LoginCard>
                               _login(context);
                             },
                             text: Translations.of(context)
-                                .text2('Login', 'Login')))),
+                                .text2('Login', 'Login').toUpperCase()))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
