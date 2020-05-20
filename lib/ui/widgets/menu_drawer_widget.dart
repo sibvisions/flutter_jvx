@@ -282,6 +282,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
   Widget _buildDrawerHeader() {
     return CustomDrawerHeader(
+      padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
         drawerHeaderHeight: 151,
         decoration: BoxDecoration(color: UIData.ui_kit_color_2),
         child: Row(
