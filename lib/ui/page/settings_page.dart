@@ -26,6 +26,14 @@ class _SettingsPageState extends State<SettingsPage> {
   String toSaveUsername;
   String toSavePwd;
 
+  String get versionText {
+    String v = 'App V $version';
+    if (globals.appVersion!=null && globals.appVersion.isNotEmpty)
+      v += ', Server V ${globals.appVersion}';
+
+      return v;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -173,7 +181,8 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'App info',
+                Translations.of(context)
+                                      .text2('Version info', 'Version info'),
                 style: TextStyle(
                     color: Colors.grey.shade700, fontWeight: FontWeight.bold),
               ),
@@ -186,7 +195,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     leading: Icon(
                       FontAwesomeIcons.codeBranch,
                     ),
-                    title: Text('Version: $version'),
+                    title: Text(versionText),
                   )
                 ]))
           ],

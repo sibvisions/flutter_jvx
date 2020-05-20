@@ -161,6 +161,8 @@ class _StartupPageState extends State<StartupPage> {
         return;
       }
 
+      globals.appVersion = "";
+
       Startup request = Startup(
           layoutMode: 'generic',
           applicationName: globals.appName,
