@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     title: Text(
                         Translations.of(context).text2('Language', 'Language')),
-                    trailing: Icon(FontAwesomeIcons.arrowDown),
+                    trailing: Icon(FontAwesomeIcons.arrowRight),
                     subtitle:
                         Text(globals.language != null ? globals.language : ''),
                     onTap: () {
@@ -141,7 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: DropdownButtonHideUnderline(
                       child: DropdownButton<int>(
                         icon: Icon(
-                          FontAwesomeIcons.chevronDown,
+                          FontAwesomeIcons.arrowRight,
                           color: Colors.grey[500],
                         ),
                         value: globals.uploadPicWidth,
@@ -257,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
           bottomButton1:
               Translations.of(context).text2('Back', 'Back').toUpperCase(),
           bottomButton2:
-              Translations.of(context).text2('Save', 'Save').toUpperCase(),
+              Translations.of(context).text2('Confirm', 'Confirm').toUpperCase(),
           bottomButton1Function: () {
             if (ModalRoute.of(context).settings.arguments is String &&
                 ModalRoute.of(context).settings.arguments == "error.dialog") {

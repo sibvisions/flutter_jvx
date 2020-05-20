@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +18,7 @@ import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 import '../../ui/widgets/custom_icon.dart';
+import '../../ui/widgets/custom_drawer_header.dart';
 
 /// the [Drawer] for the [AppBar] with dynamic [MenuItem]'s
 class MenuDrawerWidget extends StatefulWidget {
@@ -99,20 +101,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     });
   }
 
-  bool hasMultipleGroups() {
-    int groupCount = 0;
-    String lastGroup = "";
-    if (widget.listMenuItems) {
-      widget?.menuItems?.forEach((m) {
-        if (m.group != lastGroup) {
-          groupCount++;
-          lastGroup = m.group;
-        }
-      });
-    }
-    return (groupCount > 1);
-  }
-
   ListTile getGroupHeader(MenuItem item) {
     return ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
@@ -126,11 +114,13 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   StickyHeader getStickyHeaderGroup(Widget child, List<Widget> content) {
     return StickyHeader(
       header: Container(
-        color: Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
+        color:
+            Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
         child: child,
       ),
       content: Card(
-        color: Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
+        color:
+            Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
         elevation: 2.0,
         child: Column(children: content),
       ),
@@ -169,7 +159,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           leading: item.image != null
               ? new CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: CustomIcon(image: item.image, size: Size(32,32)))
+                  child: CustomIcon(image: item.image, size: Size(32, 32)))
               : new CircleAvatar(
                   backgroundColor: Colors.transparent,
                   child: Icon(
@@ -234,77 +224,97 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         ));
   }
 
+  Widget _getAppName() {
+    String appName = globals.appName;
+
+    if (globals.applicationStyle != null &&
+        globals.applicationStyle.loginTitle != null) {
+      appName = globals.applicationStyle.loginTitle;
+    }
+
+    //appName = "Langer Applikationsname";
+
+    return AutoSizeText(appName,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      minFontSize: 16,
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+          color: UIData.textColor,
+        ));
+  }
+
+  Widget _getUsername() {
+    String username = globals.username;
+    if (globals.displayName != null) username = globals.displayName;
+
+    //username = 'Max Mustermann Junior';
+
+    return AutoSizeText(
+      username,
+      maxLines: 2,
+      overflow: TextOverflow.clip,
+      style: TextStyle(color: UIData.textColor, fontSize: 23),
+      minFontSize: 18
+    );
+  }
+
+  Widget _getAvatar() {
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      backgroundImage: globals.profileImage.isNotEmpty
+          ? Image.memory(
+              base64Decode(globals.profileImage),
+              fit: BoxFit.cover,
+            ).image
+          : null,
+      child: globals.profileImage.isNotEmpty
+          ? null
+          : Icon(
+              FontAwesomeIcons.userTie,
+              color: UIData.ui_kit_color_2,
+              size: 60,
+            ),
+      radius: 55,
+    );
+  }
+
   Widget _buildDrawerHeader() {
-    return DrawerHeader(
+    return CustomDrawerHeader(
+        drawerHeaderHeight: 151,
         decoration: BoxDecoration(color: UIData.ui_kit_color_2),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                (globals.applicationStyle != null &&
-                        globals.applicationStyle.loginTitle != null)
-                    ? Text(globals.applicationStyle.loginTitle,
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                          color: UIData.textColor,
-                        ))
-                    : Text(
-                        globals.appName,
-                        style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: UIData.textColor),
-                      ),
-                SizedBox(
-                  height: 15,
-                ),
-                globals.username.isNotEmpty
-                    ? Text(
-                        Translations.of(context)
-                            .text2('Logged in as', 'Logged in as'),
-                        style: TextStyle(color: UIData.textColor, fontSize: 12),
-                      )
-                    : Container(),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  globals.displayName != null
-                      ? globals.displayName
-                      : globals.username,
-                  style: TextStyle(color: UIData.textColor, fontSize: 23),
-                )
-              ],
-            ),
+            SizedBox(
+                width: 160,
+                height: 130,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _getAppName(),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          globals.username.isNotEmpty
+                              ? Text(
+                                  Translations.of(context)
+                                      .text2('Logged in as', 'Logged in as'),
+                                  style: TextStyle(
+                                      color: UIData.textColor, fontSize: 12),
+                                )
+                              : Container(),
+                          _getUsername()
+                        ])
+                  ],
+                )),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: globals.profileImage.isNotEmpty
-                      ? Image.memory(
-                          base64Decode(globals.profileImage),
-                          fit: BoxFit.cover,
-                        ).image
-                      : null,
-                  child: globals.profileImage.isNotEmpty
-                      ? null
-                      : Icon(
-                          FontAwesomeIcons.userTie,
-                          color: UIData.ui_kit_color_2,
-                          size: 60,
-                        ),
-                  radius: 55,
-                ),
-                Text(
-                  'Version ${globals.appVersion}',
-                  style: TextStyle(color: UIData.textColor),
-                )
-              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[_getAvatar()],
             )
           ],
         ));

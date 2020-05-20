@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../ui/screen/menu_manager.dart';
 import '../../ui/widgets/menu_empty_widget.dart';
 import '../../model/menu_item.dart';
@@ -14,6 +14,42 @@ import '../../utils/uidata.dart';
 class MenuPage extends StatelessWidget {
   List<MenuItem> menuItems;
   final bool listMenuItemsInDrawer;
+
+  bool get hasMultipleGroups {
+    int groupCount = 0;
+    String lastGroup = "";
+    if (this.menuItems != null) {
+      this.menuItems?.forEach((m) {
+        if (m.group != lastGroup) {
+          groupCount++;
+          lastGroup = m.group;
+        }
+      });
+    }
+    return (groupCount > 1);
+  }
+
+  Color get backgroundColor {
+    if (globals.applicationStyle != null &&
+        globals.applicationStyle.desktopColor != null) {
+      return globals.applicationStyle.desktopColor;
+    }
+
+    return Colors.grey.shade200;
+  }
+
+  String get menuMode {
+    if (globals.applicationStyle != null &&
+        globals.applicationStyle.menuMode != null)
+      return globals.applicationStyle.menuMode;
+    else
+      return 'grid';
+  }
+
+  bool get groupedMenuMode {
+    return (menuMode == 'grid_grouped' || menuMode == 'list') &
+        hasMultipleGroups;
+  }
 
   MenuPage({Key key, List<MenuItem> menuItems, this.listMenuItemsInDrawer})
       : this.menuItems = menuItems,
@@ -29,28 +65,6 @@ class MenuPage extends StatelessWidget {
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-    bool drawerMenu;
-    if (globals.applicationStyle != null) {
-      drawerMenu = globals.applicationStyle.menuMode == 'drawer' ? true : false;
-    } else {
-      drawerMenu = false;
-    }
-
-    Color backgroundColor = Colors.white;
-
-    if (globals.applicationStyle != null &&
-        globals.applicationStyle.menuMode != null) {
-      backgroundColor = globals.applicationStyle.menuMode == 'list'
-          ? Colors.grey.shade200
-          : Colors.grey.shade200;
-    }
-
-    if (globals.applicationStyle != null &&
-        globals.applicationStyle.desktopColor != null) {
-      backgroundColor = globals.applicationStyle.desktopColor;
-    }
-
     globals.items = this.menuItems;
 
     Widget body;
@@ -84,56 +98,35 @@ class MenuPage extends StatelessWidget {
           ),
         ],
       ),
-      body: FractionallySizedBox(
-        widthFactor: 1,
-        heightFactor: 1,
-        child: body),
+      body: FractionallySizedBox(widthFactor: 1, heightFactor: 1, child: body),
       endDrawer: MenuDrawerWidget(
         menuItems: this.menuItems,
-        listMenuItems: drawerMenu,
-        groupedMenuMode: (globals.applicationStyle.menuMode == 'grid_grouped' ||
-            globals.applicationStyle.menuMode == 'list') & hasMultipleGroups(),
+        listMenuItems: true,
+        groupedMenuMode: groupedMenuMode,
       ),
     );
   }
 
-  bool hasMultipleGroups() {
-    int groupCount = 0;
-    String lastGroup = "";
-    if (this.menuItems!=null) {
-      this.menuItems?.forEach((m) {
-        if (m.group != lastGroup) {
-          groupCount++;
-          lastGroup = m.group;
-        }
-      });
-    }
-    return (groupCount > 1);
-  }
-  
-
   Widget getMenuWidget() {
-    if (globals.applicationStyle != null) {
-      if (globals.applicationStyle.menuMode == 'grid') {
+    switch (menuMode) {
+      case 'grid':
         return MenuGridView(items: this.menuItems, groupedMenuMode: false);
-      } else if (globals.applicationStyle.menuMode == 'list') {
+      case 'list':
         return MenuListWidget(
-          menuItems: this.menuItems,
-          groupedMenuMode: true & hasMultipleGroups()
-        );
-      } else if (globals.applicationStyle.menuMode == 'drawer') {
+            menuItems: this.menuItems,
+            groupedMenuMode: hasMultipleGroups);
+      case 'drawer':
         return MenuEmpty();
-      } else if (globals.applicationStyle.menuMode == 'grid_grouped') {
+      case 'grid_grouped':
         return MenuGridView(
           items: this.menuItems,
-          groupedMenuMode: true & hasMultipleGroups(),
+          groupedMenuMode: hasMultipleGroups,
         );
-      }
+      default:
+        return MenuGridView(
+          items: this.menuItems,
+          groupedMenuMode: hasMultipleGroups,
+        );
     }
-
-    return MenuGridView(
-      items: this.menuItems,
-      groupedMenuMode: true & hasMultipleGroups(),
-    );
   }
 }
