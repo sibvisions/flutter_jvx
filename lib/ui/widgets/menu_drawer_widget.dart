@@ -118,17 +118,18 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
         child: child,
       ),
-      content: Card(
-        color:
-            Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
-        elevation: 2.0,
-        child: Column(children: content),
-      ),
+      content: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 11),
+          child: Card(
+            color: Colors.white
+                .withOpacity(globals.applicationStyle.sidemenuOpacity),
+            elevation: 2.0,
+            child: Column(children: content),
+          )),
     );
   }
 
-  MediaQuery _buildListViewForDrawer(
-      BuildContext context, List<MenuItem> items) {
+  Widget _buildListViewForDrawer(BuildContext context, List<MenuItem> items) {
     List<Widget> tiles = <Widget>[];
     ListTile groupHeader;
     List<Widget> groupItems = <Widget>[];
@@ -155,7 +156,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
         groupItems.add(ListTile(
           title: Text(item.action.label),
-          //subtitle: Text('Group: ' + item.group),
           leading: item.image != null
               ? new CircleAvatar(
                   backgroundColor: Colors.transparent,
@@ -237,7 +237,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     return AutoSizeText(appName,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
-      minFontSize: 16,
+        minFontSize: 16,
         style: TextStyle(
           fontSize: 18.0,
           fontWeight: FontWeight.bold,
@@ -251,13 +251,11 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
     //username = 'Max Mustermann Junior';
 
-    return AutoSizeText(
-      username,
-      maxLines: 2,
-      overflow: TextOverflow.clip,
-      style: TextStyle(color: UIData.textColor, fontSize: 23),
-      minFontSize: 18
-    );
+    return AutoSizeText(username,
+        maxLines: 2,
+        overflow: TextOverflow.clip,
+        style: TextStyle(color: UIData.textColor, fontSize: 23),
+        minFontSize: 18);
   }
 
   Widget _getAvatar() {
@@ -282,7 +280,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
   Widget _buildDrawerHeader() {
     return CustomDrawerHeader(
-      padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+        padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
         drawerHeaderHeight: 151,
         decoration: BoxDecoration(color: UIData.ui_kit_color_2),
         child: Row(

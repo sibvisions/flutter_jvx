@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
+
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/action.dart' as prefix0;
@@ -11,7 +12,6 @@ import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
 import '../../model/api/request/open_screen.dart';
 import '../../ui/page/open_screen_page.dart';
-import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 import '../../ui/widgets/custom_icon.dart';
 
@@ -65,7 +65,6 @@ class _MenuListWidgetState extends State<MenuListWidget> {
         },
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 7),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,7 +83,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
 
     newMap.forEach((k, v) {
       Widget heading = Padding(
-          padding: EdgeInsets.symmetric(horizontal: 13),
+          padding: EdgeInsets.symmetric(horizontal: 2),
           child: ListTile(
             title: Text(
               k,
@@ -93,16 +92,20 @@ class _MenuListWidgetState extends State<MenuListWidget> {
             ),
           ));
 
-      Widget card = Card(
-        color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
-        elevation: 2.0,
-        child: Column(children: _buildTiles(v)),
-      );
+      Widget card = Padding(
+          padding: EdgeInsets.symmetric(horizontal: 13),
+          child: Card(
+            color:
+                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            elevation: 2.0,
+            child: Column(children: _buildTiles(v)),
+          ));
 
       if (widget.groupedMenuMode) {
         Widget sticky = StickyHeader(
           header: Container(
-            color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            color:
+                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
             child: heading,
           ),
           content: card,
@@ -110,7 +113,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
 
         tiles.add(sticky);
       } else {
-        tiles..add(card);
+        tiles.add(card);
       }
     });
 
@@ -125,16 +128,6 @@ class _MenuListWidgetState extends State<MenuListWidget> {
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         title: Text(mItem.action.label),
         onTap: () {
-          // CloseScreen closeScreen = CloseScreen(
-          //     clientId: globals.clientId,
-          //     componentId: this.menuItems[index].action.componentId
-          //         .toString()
-          //         .replaceAll("[<'", '')
-          //         .replaceAll("'>]", ''),
-          //     requestType: RequestType.CLOSE_SCREEN);
-
-          // BlocProvider.of<ApiBloc>(context).dispatch(closeScreen);
-
           prefix0.Action action = mItem.action;
           title = action.label;
 
@@ -149,7 +142,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
         leading: mItem.image != null
             ? new CircleAvatar(
                 backgroundColor: Colors.transparent,
-                child: CustomIcon(image: mItem.image, size: Size(32,32)))   
+                child: CustomIcon(image: mItem.image, size: Size(32, 32)))
             : new CircleAvatar(
                 backgroundColor: Colors.transparent,
                 child: Icon(

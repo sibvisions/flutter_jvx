@@ -46,14 +46,17 @@ class _MenuGridViewState extends State<MenuGridView> {
           print("*** MenuGridView - RequestType: " +
               state.requestType.toString());
 
-          if (state != null && state.userData != null && globals.customScreenManager != null) {
+          if (state != null &&
+              state.userData != null &&
+              globals.customScreenManager != null) {
             globals.customScreenManager.onUserData(state.userData);
           }
 
           if (state != null &&
               state.responseData.screenGeneric != null &&
-              state.requestType == RequestType.OPEN_SCREEN ) {
-            Key componentID = new Key(state.responseData.screenGeneric.componentId);
+              state.requestType == RequestType.OPEN_SCREEN) {
+            Key componentID =
+                new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.items;
 
             Navigator.of(context).push(MaterialPageRoute(
@@ -63,7 +66,8 @@ class _MenuGridViewState extends State<MenuGridView> {
                       componentId: componentID,
                       title: title,
                       items: globals.items,
-                      menuComponentId: (state.request as OpenScreen).action.componentId,
+                      menuComponentId:
+                          (state.request as OpenScreen).action.componentId,
                     )));
           }
         },
@@ -78,23 +82,11 @@ class _MenuGridViewState extends State<MenuGridView> {
     );
   }
 
-  Icon _iconBuilder(Map data) {
-    Icon icon = new Icon(
-      data['icon'],
-      size: 48,
-      color: UIData.ui_kit_color_2[300],
-      key: data['key'],
-      textDirection: data['textDirection'],
-    );
-
-    return icon;
-  }
-
   void _onTap(MenuItem menuItem) {
-    
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
-            .getScreen(menuItem.action.componentId).withServer()) {
+            .getScreen(menuItem.action.componentId)
+            .withServer()) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
               .getScreen(menuItem.action.componentId)
@@ -105,10 +97,11 @@ class _MenuGridViewState extends State<MenuGridView> {
       title = action.label;
 
       OpenScreen openScreen = OpenScreen(
-          action: action,
-          clientId: globals.clientId,
-          manualClose: false,
-          requestType: RequestType.OPEN_SCREEN,);
+        action: action,
+        clientId: globals.clientId,
+        manualClose: false,
+        requestType: RequestType.OPEN_SCREEN,
+      );
 
       BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
     }
@@ -122,7 +115,8 @@ class _MenuGridViewState extends State<MenuGridView> {
       itemBuilder: (BuildContext context, int index) {
         return new GestureDetector(
           child: new Card(
-            color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            color:
+                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
             margin: EdgeInsets.all(6),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -133,7 +127,8 @@ class _MenuGridViewState extends State<MenuGridView> {
                 menuItems[index].image != null
                     ? new CircleAvatar(
                         backgroundColor: Colors.transparent,
-                        child: CustomIcon(image: menuItems[index].image, size: Size(48,48))) 
+                        child: CustomIcon(
+                            image: menuItems[index].image, size: Size(48, 48)))
                     : new CircleAvatar(
                         backgroundColor: Colors.transparent,
                         child: Icon(
@@ -165,7 +160,7 @@ class _MenuGridViewState extends State<MenuGridView> {
 
     groupedMItems.forEach((k, v) {
       Widget group = GridView.count(
-        padding: EdgeInsets.symmetric(horizontal: 5),
+        padding: EdgeInsets.fromLTRB(14, 5, 14, 5),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: ScrollPhysics(),
@@ -175,7 +170,8 @@ class _MenuGridViewState extends State<MenuGridView> {
 
       widgets.add(StickyHeader(
         header: Container(
-            color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            color:
+                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
             child: _buildGroupHeader(v[0].group.toString())),
         content: group,
       ));
@@ -214,7 +210,8 @@ class _MenuGridViewState extends State<MenuGridView> {
               child: menuItem.image != null
                   ? new CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      child: CustomIcon(image: menuItem.image, size: Size(48,48)))  
+                      child:
+                          CustomIcon(image: menuItem.image, size: Size(48, 48)))
                   : new CircleAvatar(
                       backgroundColor: Colors.transparent,
                       child: Icon(

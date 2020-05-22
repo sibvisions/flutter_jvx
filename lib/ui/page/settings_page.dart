@@ -266,7 +266,7 @@ class _SettingsPageState extends State<SettingsPage> {
           bottomButton1:
               Translations.of(context).text2('Back', 'Back').toUpperCase(),
           bottomButton2:
-              Translations.of(context).text2('Confirm', 'Confirm').toUpperCase(),
+              Translations.of(context).text2('Restart', 'Restart').toUpperCase(),
           bottomButton1Function: () {
             if (ModalRoute.of(context).settings.arguments is String &&
                 ModalRoute.of(context).settings.arguments == "error.dialog") {
