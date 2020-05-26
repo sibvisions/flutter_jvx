@@ -51,10 +51,7 @@ class JVxTable extends JVxEditor {
   bool _hasHorizontalScroller = false;
 
   TextStyle get headerTextStyle {
-    return TextStyle(
-        fontSize: style.fontSize,
-        fontWeight: FontWeight.bold,
-        color: Colors.grey[700]);
+    return this.style;
   }
 
   TextStyle get itemTextStyle {
@@ -158,7 +155,7 @@ class JVxTable extends JVxEditor {
                 onTap: () {
                   _onRowTapped(index);
                 },
-                child: Container(height: 60, child: Row(children: children)))),
+                child: Row(children: children))),
       );
     }
   }
@@ -238,26 +235,22 @@ class JVxTable extends JVxEditor {
       return Container(
           width: width,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
             child: Container(
               child: Text(text, style: this.headerTextStyle),
-              padding: EdgeInsets.all(5),
             ),
           ));
     } else {
       return Container(
           width: width,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
             child: GestureDetector(
               child: Container(
-                  // only for development
-                  child: (cellEditor != null)
-                      ? cellEditor.getWidget()
-                      : Text(text),
-                  // child: Text(Properties.utf8convert(text),
-                  //     style: this.itemTextStyle),
-                  padding: EdgeInsets.all(5)),
+                child: (cellEditor != null)
+                    ? cellEditor.getWidget()
+                    : Text(text, style: this.itemTextStyle),
+              ),
               onTap: () => _onRowTapped(rowIndex),
             ),
           ));
@@ -380,20 +373,25 @@ class JVxTable extends JVxEditor {
             componentCreator,
             autoResize,
             constraints.maxWidth,
-            26.0,
+            16.0,
             16.0);
         double columnWidth =
             JVxTableColumnCalculator.getColumnWidthSum(this.columnInfo);
+
+        _hasHorizontalScroller = (columnWidth > constraints.maxWidth);
+
         Widget widget = GestureDetector(
           onTapDown: (details) => _tapPosition = details.globalPosition,
           child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(
-                    width: borderWidth,
-                    color: UIData.ui_kit_color_2[500]
+            decoration: _hasHorizontalScroller
+                ? null
+                : BoxDecoration(
+                    border: Border.all(
+                        width: borderWidth,
+                        color: UIData.ui_kit_color_2[500].withOpacity(
+                            globals.applicationStyle.controlsOpacity)),
+                    color: Colors.white
                         .withOpacity(globals.applicationStyle.controlsOpacity)),
-                color: Colors.white
-                    .withOpacity(globals.applicationStyle.controlsOpacity)),
             width: columnWidth + (2 * borderWidth),
             height: constraints.minHeight,
             child: ScrollablePositionedList.builder(
@@ -406,12 +404,18 @@ class JVxTable extends JVxEditor {
           ),
         );
 
-        if (columnWidth > constraints.maxWidth) {
-          _hasHorizontalScroller = true;
-          return SingleChildScrollView(
-              scrollDirection: Axis.horizontal, child: widget);
+        if (_hasHorizontalScroller) {
+          return Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      width: borderWidth,
+                      color: UIData.ui_kit_color_2[500].withOpacity(
+                          globals.applicationStyle.controlsOpacity)),
+                  color: Colors.white
+                      .withOpacity(globals.applicationStyle.controlsOpacity)),
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal, child: widget));
         } else {
-          _hasHorizontalScroller = false;
           return widget;
         }
       },
