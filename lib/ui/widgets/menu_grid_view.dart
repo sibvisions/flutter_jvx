@@ -117,8 +117,7 @@ class _MenuGridViewState extends State<MenuGridView> {
             color:
                 Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
             margin: EdgeInsets.all(6),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape: globals.applicationStyle.menuShape,
             elevation: 2.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -198,7 +197,7 @@ class _MenuGridViewState extends State<MenuGridView> {
       child: new Card(
         color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
         margin: EdgeInsets.all(5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: globals.applicationStyle.menuShape,
         elevation: 2.0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

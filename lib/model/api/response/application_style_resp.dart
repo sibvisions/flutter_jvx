@@ -39,6 +39,27 @@ class ApplicationStyleResponse extends ResponseObject {
   double menuOpacity = 1.0;
   double sidemenuOpacity = 1.0;
 
+  double cornerRadiusButtons = 5.0;
+  double cornerRadiusEditors = 5.0;
+  double cornerRadiusContainer = 5.0;
+  double cornerRadiusMenu = 5.0;
+
+  ShapeBorder get buttonShape {
+    return RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(cornerRadiusButtons)));
+  }
+
+  ShapeBorder get containerShape {
+    return RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(cornerRadiusContainer)));
+  }
+
+  ShapeBorder get editorsShape {
+    return RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(cornerRadiusEditors)));
+  }
+
+   ShapeBorder get menuShape {
+    return RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(cornerRadiusMenu)));
+  }
+
   ApplicationStyleResponse();
 
   ApplicationStyleResponse.fromJson(Map<String, dynamic> jsonMap) {

@@ -175,7 +175,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
         height: 50,
         decoration: BoxDecoration(
             color: background != null ? background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors),
             border: this.editable != null && this.editable ? (borderVisible
                 ? Border.all(color: UIData.ui_kit_color_2)
                 : null) : Border.all(color: Colors.grey)),

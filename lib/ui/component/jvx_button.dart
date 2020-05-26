@@ -95,6 +95,7 @@ class JVxButton extends JVxActionComponent {
     return ButtonTheme(
         minWidth: minWidth,
         padding: padding,
+          shape: globals.applicationStyle.buttonShape,
         child: RaisedButton(
           key: this.componentId,
           onPressed: this.enabled ? buttonPressed : null,

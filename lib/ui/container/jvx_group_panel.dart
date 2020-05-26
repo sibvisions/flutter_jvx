@@ -51,7 +51,8 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
                     .withOpacity(globals.applicationStyle.controlsOpacity),
                 margin: EdgeInsets.all(5),
                 elevation: 2.0,
-                child: child)
+                child: child,
+                shape: globals.applicationStyle.containerShape)
           ],
         )),
       );

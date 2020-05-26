@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/uidata.dart';
+import '../../utils/globals.dart' as globals;
 
 class GradientButton extends StatelessWidget {
   final GestureTapCallback onPressed;
@@ -12,14 +13,14 @@ class GradientButton extends StatelessWidget {
     return Material(
       elevation: 10.0,
       color: Colors.transparent,
-      shape: const StadiumBorder(),
+      shape: globals.applicationStyle.buttonShape,
       child: InkWell(
         onTap: onPressed,
         splashColor: UIData.ui_kit_color_2,
         child: Ink(
           height: 50.0,
           decoration: ShapeDecoration(
-            shape: const StadiumBorder(),
+            shape: globals.applicationStyle.buttonShape,
             gradient: LinearGradient(
               colors: UIData.kitGradients2,
             )

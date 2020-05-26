@@ -190,6 +190,7 @@ class JVxImageCellEditor extends JVxCellEditor {
                 color: Colors.white
                     .withOpacity(globals.applicationStyle.controlsOpacity),
                 elevation: 2.0,
+                shape: globals.applicationStyle.editorsShape,
                 child: Container(
                   height: height,
                   width: width - 10,

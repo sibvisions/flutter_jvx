@@ -108,7 +108,7 @@ class JVxDateCellEditor extends JVxCellEditor {
                 ? background
                 : Colors.white
                     .withOpacity(globals.applicationStyle.controlsOpacity),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors),
             border: borderVisible
                 ? (this.editable
                     ? Border.all(color: UIData.ui_kit_color_2)

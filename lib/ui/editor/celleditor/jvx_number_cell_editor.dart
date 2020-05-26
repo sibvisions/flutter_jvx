@@ -124,7 +124,7 @@ class JVxNumberCellEditor extends JVxCellEditor {
     return DecoratedBox(
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors),
           border: borderVisible && this.editable != null && this.editable
               ? Border.all(color: UIData.ui_kit_color_2)
               : Border.all(color: Colors.grey)),

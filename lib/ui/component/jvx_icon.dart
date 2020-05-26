@@ -48,7 +48,7 @@ class JVxIcon extends JVxComponent implements IComponent {
                       ? background
                       : Colors.white.withOpacity(
                           globals.applicationStyle.controlsOpacity),
-                  borderRadius: BorderRadius.circular(5)),
+                  borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors)),
               child: CustomIcon(
                 image: image,
               ))

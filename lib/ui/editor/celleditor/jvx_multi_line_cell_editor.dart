@@ -95,7 +95,7 @@ class JVxMultiLineCellEditor extends JVxReferencedCellEditor {
     return Container(
       decoration: BoxDecoration(
           color: background != null ? background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors),
           border:
               borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: ListView.builder(

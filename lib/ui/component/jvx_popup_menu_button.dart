@@ -124,6 +124,7 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
             onPressed: this.enabled ? buttonPressed : null,
             color: UIData.ui_kit_color_2[400],
             elevation: 10,
+            shape: globals.applicationStyle.buttonShape,
             child: Row(children: <Widget>[
               Expanded(child: Center(child: child)),
               PopupMenuButton<String>(

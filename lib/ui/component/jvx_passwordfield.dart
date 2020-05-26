@@ -84,7 +84,7 @@ class JVxPasswordField extends JVxComponent implements IComponent {
               ? this.background
               : Colors.white
                   .withOpacity(globals.applicationStyle.controlsOpacity),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors),
           border: border && this.eventAction != null && this.eventAction
               ? Border.all(color: UIData.ui_kit_color_2)
               : Border.all(color: Colors.grey)),
