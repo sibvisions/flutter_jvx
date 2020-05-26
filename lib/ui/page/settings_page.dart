@@ -1,3 +1,4 @@
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter/material.dart';
@@ -289,10 +290,19 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future scanBarcode() async {
+    var options = ScanOptions(
+      restrictFormat: [BarcodeFormat.qr],
+      strings: {
+        "cancel": Translations.of(context).text2("Cancel"),
+        "flash_on": Translations.of(context).text2("Flash on"),
+        "flash_off": Translations.of(context).text2("Flash off"),
+      }
+    );
+    var result = await BarcodeScanner.scan(options: options); 
     // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
     //     "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
 
-    Map<String, dynamic> properties = getProperties("");
+    Map<String, dynamic> properties = getProperties(result.rawContent);
 
     setState(() {
       if (properties['APPNAME'] != null) {
