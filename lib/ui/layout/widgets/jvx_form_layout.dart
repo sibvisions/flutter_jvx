@@ -1004,7 +1004,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
 
 }
 
-class JVxFormLayoutConstraintData extends ParentDataWidget<JVxFormLayoutWidget> {
+class JVxFormLayoutConstraintData extends ParentDataWidget<MultiChildLayoutParentData> {
   /// Marks a child with a layout identifier.
   ///
   /// Both the child and the id arguments must not be null.
@@ -1038,6 +1038,9 @@ class JVxFormLayoutConstraintData extends ParentDataWidget<JVxFormLayoutWidget> 
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Object>('id', id));
   }
+
+  @override
+  Type get debugTypicalAncestorWidgetClass => MultiChildLayoutParentData;
 
 }
 
