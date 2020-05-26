@@ -18,7 +18,6 @@ import '../../ui/component/jvx_component.dart';
 import '../../utils/globals.dart' as globals;
 import '../../model/action.dart' as jvxAction;
 
-
 class JVxPopupMenuButton extends JVxComponent implements IComponent {
   String text;
   bool eventAction = false;
@@ -88,13 +87,16 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
     TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton = PressButton(jvxAction.Action(componentId: value, label: null));
+      PressButton pressButton =
+          PressButton(jvxAction.Action(componentId: value, label: null));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
   }
 
   @override
   Widget getWidget() {
+    ThemeData theme = Theme.of(context);
+    ColorScheme colorScheme = theme.colorScheme;
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
         style: TextStyle(fontSize: style.fontSize, color: UIData.textColor));
@@ -122,27 +124,30 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
             onPressed: this.enabled ? buttonPressed : null,
             color: UIData.ui_kit_color_2[400],
             elevation: 10,
-            child: Row(
-                children: <Widget>[
-                  Expanded(child: Center(child: child)),
-                  VerticalDivider(color: UIData.textColor, indent: 5, endIndent: 5,),
-                  PopupMenuButton<String>(
-                    onSelected: (String item) {
-                      valueChanged(item);
-                    },
-                    itemBuilder: (BuildContext context) {
-                      List<PopupMenuItem<String>> menuItems =
-                          new List<PopupMenuItem<String>>();
-                      menu.menuItems.forEach((i) {
-                        menuItems.add(PopupMenuItem<String>(
-                            value: i.name, child: Text(i.text)));
-                      });
-                      return menuItems;
-                    },
-                    padding: EdgeInsets.only(bottom: 8, left: 8),
-                    icon: Icon(FontAwesomeIcons.sortDown),
-                  )
-                ]),
+            child: Row(children: <Widget>[
+              Expanded(child: Center(child: child)),
+              PopupMenuButton<String>(
+                onSelected: (String item) {
+                  valueChanged(item);
+                },
+                itemBuilder: (BuildContext context) {
+                  List<PopupMenuItem<String>> menuItems =
+                      new List<PopupMenuItem<String>>();
+                  menu.menuItems.forEach((i) {
+                    menuItems.add(PopupMenuItem<String>(
+                        value: i.name, child: Text(i.text)));
+                  });
+                  return menuItems;
+                },
+                padding: EdgeInsets.only(bottom: 8, left: 16),
+                icon: Icon(
+                  FontAwesomeIcons.sortDown,
+                  color: colorScheme.brightness == Brightness.light
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurface,
+                ),
+              )
+            ]),
             splashColor: this.background,
           )),
     );
