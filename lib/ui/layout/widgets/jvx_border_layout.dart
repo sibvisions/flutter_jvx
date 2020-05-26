@@ -301,7 +301,7 @@ class RenderJVxBorderLayoutWidget extends RenderBox
 }
 
 
-class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayoutWidget> {
+class JVxBorderLayoutId extends ParentDataWidget<MultiChildLayoutParentData> {
   /// Marks a child with an BorderLayoutConstraints layout position.
   ///
   /// The child must not be null.
@@ -332,4 +332,7 @@ class JVxBorderLayoutId extends ParentDataWidget<JVxBorderLayoutWidget> {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Object>('id', pConstraints));
   }
+
+  @override
+  Type get debugTypicalAncestorWidgetClass => MultiChildLayoutParentData;
 }

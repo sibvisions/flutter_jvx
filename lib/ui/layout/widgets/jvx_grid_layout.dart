@@ -304,7 +304,7 @@ class RenderJVxGridLayoutWidget extends RenderBox
 }
 
 
-class JVxGridLayoutConstraintData extends ParentDataWidget<JVxGridLayoutWidget> {
+class JVxGridLayoutConstraintData extends ParentDataWidget<MultiChildLayoutParentData> {
   /// Marks a child with a layout identifier.
   ///
   /// Both the child and the id arguments must not be null.
@@ -338,5 +338,8 @@ class JVxGridLayoutConstraintData extends ParentDataWidget<JVxGridLayoutWidget> 
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<Object>('id', id));
   }
+
+  @override
+  Type get debugTypicalAncestorWidgetClass => MultiChildLayoutParentData;
 
 }
