@@ -61,6 +61,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return "";
   }
 
+    int get imageSizeIndex {
+      return this.imageSizeItems.indexWhere((element) => element.value==globals.uploadPicWidth);
+    }
+
   @override
   void initState() {
     super.initState();
@@ -216,14 +220,16 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   showImageSizePicker(BuildContext context) {
+
+    List<int> selected;
+    if (this.imageSizeIndex>=0 && this.imageSizeIndex<this.imageSizeItems.length)
+      selected = [this.imageSizeIndex];
+
     new Picker(
         confirmText: Translations.of(context).text2('Confirm'),
         cancelText: Translations.of(context).text2('Cancel'),
-        adapter: PickerDataAdapter(data: [
-          PickerItem<int>(text: Text('Small (320 px)'), value: 320),
-          PickerItem<int>(text: Text('Medium (640 px)'), value: 640),
-          PickerItem<int>(text: Text('Big (1024 px)'), value: 1024),
-        ]),
+        adapter: PickerDataAdapter(data: this.imageSizeItems),
+        selecteds: selected,
         changeToFirst: true,
         textAlign: TextAlign.center,
         columnPadding: const EdgeInsets.all(8.0),
@@ -244,10 +250,17 @@ class _SettingsPageState extends State<SettingsPage> {
     if (languages != null && languages.isNotEmpty)
       languages[languages.indexOf('translation')] = 'en';
 
+    List<int> selected;
+    int selectedIndex =  languages.indexWhere((element) => element == globals.language);
+
+    if (selectedIndex>=0 && selectedIndex<languages.length)
+      selected = [selectedIndex];
+
     new Picker(
         confirmText: Translations.of(context).text2('Confirm'),
         cancelText: Translations.of(context).text2('Cancel'),
         adapter: PickerDataAdapter<String>(pickerdata: languages),
+        selecteds: selected,
         changeToFirst: true,
         textAlign: TextAlign.center,
         columnPadding: const EdgeInsets.all(8.0),
