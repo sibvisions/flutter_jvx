@@ -247,12 +247,12 @@ class JVxTable extends JVxEditor {
             padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
             child: GestureDetector(
               child: Container(
-                child: (cellEditor != null)
-                    ? cellEditor.getWidget()
-                    : Padding(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: Text(text, style: this.itemTextStyle),)
-              ),
+                  child: (cellEditor != null)
+                      ? cellEditor.getWidget()
+                      : Padding(
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: Text(text, style: this.itemTextStyle),
+                        )),
               onTap: () => _onRowTapped(rowIndex),
             ),
           ));

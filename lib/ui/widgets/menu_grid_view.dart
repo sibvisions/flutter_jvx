@@ -13,7 +13,6 @@ import '../../model/api/request/request.dart';
 import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
 import '../../utils/globals.dart' as globals;
-import '../../utils/uidata.dart';
 import '../page/open_screen_page.dart';
 import '../../ui/widgets/custom_icon.dart';
 

@@ -219,14 +219,12 @@ class _LazyDropdownState extends State<LazyDropdown> {
                     child: Text(
                         Translations.of(context).text2("Clear").toUpperCase()),
                     onPressed: _onDelete,
-                    //color: UIData.ui_kit_color_2[200],
                   ),
                   new FlatButton(
                     child: Text(
                       Translations.of(context).text2("Cancel").toUpperCase(),
                     ),
                     onPressed: _onCancel,
-                    //color: UIData.ui_kit_color_2,
                   ),
                 ]),
               ],
