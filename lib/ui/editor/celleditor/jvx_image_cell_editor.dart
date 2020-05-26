@@ -15,7 +15,6 @@ import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/jvx_cell_editor.dart';
 import '../../../utils/globals.dart' as globals;
-import '../../../utils/uidata.dart';
 
 class JVxImageCellEditor extends JVxCellEditor {
   String defaultImageName;
@@ -28,7 +27,6 @@ class JVxImageCellEditor extends JVxCellEditor {
   Alignment alignment = Alignment.center;
   //Size imageSize;
 
-
   @override
   get preferredSize {
     return Size(150, 150);
@@ -38,7 +36,6 @@ class JVxImageCellEditor extends JVxCellEditor {
   get minimumSize {
     return Size(50, 50);
   }
-
 
   JVxImageCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
@@ -146,19 +143,18 @@ class JVxImageCellEditor extends JVxCellEditor {
   }
 
   Future<Size> _calculateImageDimension(ImageProvider provider) {
-  Completer<Size> completer = Completer();
-  provider.resolve(ImageConfiguration()).addListener(
-    ImageStreamListener(
-      (ImageInfo image, bool synchronousCall) {
-        var myImage = image.image;
-        Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
-        completer.complete(size);
-      },
-    ),
-  );
-  return completer.future;
-}
-
+    Completer<Size> completer = Completer();
+    provider.resolve(ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (ImageInfo image, bool synchronousCall) {
+          var myImage = image.image;
+          Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
+          completer.complete(size);
+        },
+      ),
+    );
+    return completer.future;
+  }
 
   @override
   Widget getWidget(
@@ -183,27 +179,28 @@ class JVxImageCellEditor extends JVxCellEditor {
           : null; //imageSize?.height;
       double width = constraints.maxWidth != double.infinity
           ? constraints.maxWidth
-          : null; //imageSize?.width;    
+          : null; //imageSize?.width;
 
       return Container(
           child: Row(
               mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
                   this.horizontalAlignment),
               children: <Widget>[
-            Container(
-                height: height,
-                width: width,
-                decoration: BoxDecoration(
-                  image: this.getImage(height, horizontalAlignment),
+            Card(
+                color: Colors.white
+                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                elevation: 2.0,
+                child: Container(
+                  height: height,
+                  width: width - 10,
+                  decoration: BoxDecoration(
+                    image: this.getImage(height, horizontalAlignment),
                     color: background != null
                         ? background
                         : Colors.white.withOpacity(
                             globals.applicationStyle.controlsOpacity),
-                    borderRadius: BorderRadius.circular(5),
-                    border: borderVisible
-                        ? Border.all(color: UIData.ui_kit_color_2)
-                        : null),
-                )
+                  ),
+                ))
           ]));
     });
   }
