@@ -14,7 +14,6 @@ import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 
-
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
 
@@ -26,13 +25,40 @@ class _SettingsPageState extends State<SettingsPage> {
   String appName, baseUrl, language, version;
   String toSaveUsername;
   String toSavePwd;
+  List<PickerItem<int>> imageSizeItems;
 
   String get versionText {
     String v = 'App V $version';
-    if (globals.appVersion!=null && globals.appVersion.isNotEmpty)
+    if (globals.appVersion != null && globals.appVersion.isNotEmpty)
       v += ', Server V ${globals.appVersion}';
 
-      return v;
+    return v;
+  }
+
+  String get imageSizeTitle {
+    if (this.imageSizeItems == null) {
+      this.imageSizeItems = [
+        PickerItem<int>(
+            text: Text(Translations.of(context)
+                .text2('Small (320 px)', 'Small (320 px)')),
+            value: 320),
+        PickerItem<int>(
+            text: Text(Translations.of(context)
+                .text2('Medium (640 px)', 'Medium (640 px)')),
+            value: 640),
+        PickerItem<int>(
+            text: Text(Translations.of(context)
+                .text2('Big (1024 px)', 'Big (1024 px)')),
+            value: 1024),
+      ];
+    }
+
+    PickerItem<int> item = this
+        .imageSizeItems
+        .firstWhere((element) => element.value == globals.uploadPicWidth);
+    if (item != null) return (item.text as Text).data;
+
+    return "";
   }
 
   @override
@@ -147,34 +173,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       FontAwesomeIcons.image,
                       color: UIData.ui_kit_color_2,
                     ),
-                    title: DropdownButtonHideUnderline(
-                      child: DropdownButton<int>(
-                        icon: Icon(
-                          FontAwesomeIcons.arrowRight,
-                          color: Colors.grey[500],
-                        ),
-                        value: globals.uploadPicWidth,
-                        onChanged: (int size) {
-                          setState(() {
-                            globals.uploadPicWidth = size;
-                          });
-                        },
-                        items: <DropdownMenuItem<int>>[
-                          DropdownMenuItem(
-                            child: Text('Small (320 px)'),
-                            value: 320,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Medium (640 px)'),
-                            value: 640,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Big (1024 px)'),
-                            value: 1024,
-                          ),
-                        ],
-                      ),
-                    ),
+                    title: Text(this.imageSizeTitle),
+                    trailing: Icon(FontAwesomeIcons.arrowRight),
+                    onTap: () {
+                      showImageSizePicker(context);
+                    },
                   ),
                 ],
               ),
@@ -182,8 +185,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Text(
-                Translations.of(context)
-                                      .text2('Version info', 'Version info'),
+                Translations.of(context).text2('Version info', 'Version info'),
                 style: TextStyle(
                     color: Colors.grey.shade700, fontWeight: FontWeight.bold),
               ),
@@ -211,6 +213,27 @@ class _SettingsPageState extends State<SettingsPage> {
         version = val.version;
       });
     });
+  }
+
+  showImageSizePicker(BuildContext context) {
+    new Picker(
+        confirmText: Translations.of(context).text2('Confirm'),
+        cancelText: Translations.of(context).text2('Cancel'),
+        adapter: PickerDataAdapter(data: [
+          PickerItem<int>(text: Text('Small (320 px)'), value: 320),
+          PickerItem<int>(text: Text('Medium (640 px)'), value: 640),
+          PickerItem<int>(text: Text('Big (1024 px)'), value: 1024),
+        ]),
+        changeToFirst: true,
+        textAlign: TextAlign.center,
+        columnPadding: const EdgeInsets.all(8.0),
+        confirmTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+        cancelTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+        onConfirm: (Picker picker, List value) {
+          setState(() {
+            globals.uploadPicWidth = picker.getSelectedValues()[0];
+          });
+        }).show(scaffoldState.currentState);
   }
 
   showLanguagePicker(BuildContext context) {
@@ -266,8 +289,9 @@ class _SettingsPageState extends State<SettingsPage> {
           bodyData: settingsBuilder(),
           bottomButton1:
               Translations.of(context).text2('Back', 'Back').toUpperCase(),
-          bottomButton2:
-              Translations.of(context).text2('Restart', 'Restart').toUpperCase(),
+          bottomButton2: Translations.of(context)
+              .text2('Restart', 'Restart')
+              .toUpperCase(),
           bottomButton1Function: () {
             if (ModalRoute.of(context).settings.arguments is String &&
                 ModalRoute.of(context).settings.arguments == "error.dialog") {
@@ -290,15 +314,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future scanBarcode() async {
-    var options = ScanOptions(
-      restrictFormat: [BarcodeFormat.qr],
-      strings: {
-        "cancel": Translations.of(context).text2("Cancel"),
-        "flash_on": Translations.of(context).text2("Flash on"),
-        "flash_off": Translations.of(context).text2("Flash off"),
-      }
-    );
-    var result = await BarcodeScanner.scan(options: options); 
+    var options = ScanOptions(restrictFormat: [
+      BarcodeFormat.qr
+    ], strings: {
+      "cancel": Translations.of(context).text2("Cancel"),
+      "flash_on": Translations.of(context).text2("Flash on"),
+      "flash_off": Translations.of(context).text2("Flash off"),
+    });
+    var result = await BarcodeScanner.scan(options: options);
     // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
     //     "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
 
