@@ -42,7 +42,7 @@ class ApplicationStyleResponse extends ResponseObject {
   double cornerRadiusButtons = 5.0;
   double cornerRadiusEditors = 5.0;
   double cornerRadiusContainer = 5.0;
-  double cornerRadiusMenu = 5.0;
+  double cornerRadiusMenu = 15.0;
 
   ShapeBorder get buttonShape {
     return RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(cornerRadiusButtons)));
