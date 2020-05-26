@@ -24,8 +24,14 @@ class JVxDateCellEditor extends JVxCellEditor {
 
   @override
   get preferredSize {
-    double width = TextUtils.getTextWidth(TextUtils.averageCharactersDateField,
-            Theme.of(context).textTheme.title)
+    String text = DateFormat(this.dateFormat)
+                .format(DateTime.parse("2020-12-31 22:22:22Z"));
+
+    if (text.isEmpty)
+      text = TextUtils.averageCharactersDateField;
+
+    double width = TextUtils.getTextWidth(text,
+            Theme.of(context).textTheme.bodyText1)
         .toDouble();
     return Size(width + 16, 50);
   }

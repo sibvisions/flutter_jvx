@@ -47,6 +47,8 @@ class JVxTableColumnCalculator {
 
           if (editor != null && editor.isTableMinimumSizeSet) {
             columns[i].minWidth = editor.tableMinimumSize.width + itemPadding;
+          } else if (editor != null && editor.isPreferredSizeSet) {
+            columns[i].preferredWidth = editor.preferredSize.width;
           } else {
             String value = c != null ? c.toString() : "";
             columns[i].preferredWidth =
