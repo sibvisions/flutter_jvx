@@ -3,6 +3,7 @@ import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/container/i_container.dart';
 import '../../ui/container/jvx_container.dart';
+import '../../utils/globals.dart' as globals;
 
 class JVxGroupPanel extends JVxContainer implements IContainer {
   String text = "";
@@ -24,33 +25,35 @@ class JVxGroupPanel extends JVxContainer implements IContainer {
     }
 
     if (child != null) {
-      return  SingleChildScrollView(
-          key: componentId,
-          child: Container(
-        child:
-        Column(
+      return SingleChildScrollView(
+        key: componentId,
+        child: Container(
+            child: Column(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 8),
-              child:
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      text,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    text,
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-            child
+            Card(
+                color: Colors.white
+                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                margin: EdgeInsets.all(5),
+                elevation: 2.0,
+                child: child)
           ],
-        ),
-        ),
+        )),
       );
     } else {
       return new Container();
