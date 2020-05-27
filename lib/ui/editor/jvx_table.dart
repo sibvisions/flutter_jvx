@@ -187,7 +187,7 @@ class JVxTable extends JVxEditor {
           'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
     }
 
-    if (this.data.deleteEnabled) {
+    if (this.data.deleteEnabled && index>=0) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
           'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
     }
@@ -384,6 +384,7 @@ class JVxTable extends JVxEditor {
 
         Widget widget = GestureDetector(
           onTapDown: (details) => _tapPosition = details.globalPosition,
+          onLongPress: () => showContextMenu(context, -1),
           child: Container(
             decoration: _hasHorizontalScroller
                 ? null
