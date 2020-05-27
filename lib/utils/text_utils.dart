@@ -42,5 +42,7 @@ class TextUtils {
     if (currentFocus != null && !currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
+
+    FocusScope.of(context).requestFocus(new FocusNode());
   }
 }
