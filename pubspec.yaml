@@ -29,7 +29,7 @@ dependencies:
   gson: ^0.1.2
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
-  equatable: ^1.0.3
+  equatable: ^0.2.0
   keyboard_actions: ^2.1.2
   file_picker: ^1.4.2
   image_picker: ^0.6.1+11
