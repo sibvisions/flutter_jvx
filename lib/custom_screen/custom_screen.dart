@@ -7,8 +7,8 @@ import '../ui/screen/component_screen.dart';
 
 /// Implementation of [IScreen] for custom screens.
 class CustomScreen implements IScreen {
-
-  CustomScreen(ComponentCreator componentCreator) : componentScreen = ComponentScreen(componentCreator);
+  CustomScreen(ComponentCreator componentCreator)
+      : componentScreen = ComponentScreen(componentCreator);
 
   @override
   ComponentScreen componentScreen;
@@ -19,7 +19,11 @@ class CustomScreen implements IScreen {
   }
 
   @override
-    void update(Request request, ResponseData data) {}
+  void update(Request request, ResponseData data) {
+    componentScreen.updateData(request, data);
+    if (data.screenGeneric != null)
+      componentScreen.updateComponents(data.screenGeneric.changedComponents);
+  }
 
   @override
   bool withServer() {
