@@ -228,7 +228,8 @@ class RenderJVxFormLayoutWidget extends RenderBox
     	}
     	else
     	{
-        	return new Size(layoutWidth, layoutHeight);
+        // Martin H.: returning Size 0,0 isnt perfect.  
+        return new Size(0, 0);
     	}
     }
 
@@ -239,7 +240,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
     {
     	calculateAnchors(pTarget);
 
-    	return Size(layoutWidth, layoutHeight);
+    	return Size(preferredWidth.toDouble(), preferredHeight.toDouble());
     }
 
     /*
@@ -253,7 +254,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
     	}
     	else
     	{
-            return new Size(layoutWidth, layoutHeight);
+            return new Size(double.infinity, double.infinity);
     	}
     }
 
@@ -290,11 +291,11 @@ class RenderJVxFormLayoutWidget extends RenderBox
     layoutWidth = preferredWidth.toDouble();
     layoutHeight = preferredHeight.toDouble();
 
-    if (this.constraints.maxWidth!=double.infinity && this.constraints.maxWidth > layoutWidth) {
+    if (this.constraints.maxWidth!=double.infinity) {
       layoutWidth =  this.constraints.maxWidth;
     }
 
-    if (this.constraints.maxHeight!=double.infinity && this.constraints.maxHeight > layoutHeight) {
+    if (this.constraints.maxHeight!=double.infinity) {
       layoutHeight = this.constraints.maxHeight;
     }
 
@@ -327,7 +328,7 @@ class RenderJVxFormLayoutWidget extends RenderBox
     }
 
     this.valid = true;
-    this.size = this.constraints.constrain(Size(layoutWidth, layoutHeight));
+    this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
  }
   
 
