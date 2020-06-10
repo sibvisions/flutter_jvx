@@ -6,13 +6,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as prefHttp;
 import '../utils/globals.dart' as globals;
 import '../utils/log.dart';
+import '../utils/http_client.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 
 class RestClient {
   bool debug = false;
 
-  prefHttp.Client http;
+  HttpClient http;
 
   Map<String, String> headers = {
     'Content-Type': 'application/json',
@@ -20,7 +21,9 @@ class RestClient {
   };
 
   Future get(String resourcePath) async {
-    http = prefHttp.Client();
+    http = HttpClient();
+    http.setWithCredentials(true);
+    
     var response = await http.get(globals.baseUrl + resourcePath, headers: {
       'Content-Type': 'application/json',
       'cookie': globals.jsessionId
@@ -36,7 +39,9 @@ class RestClient {
   }
 
   Future post(String resourcePath, dynamic data) async {
-    http = prefHttp.Client();
+    http = HttpClient();
+    http.setWithCredentials(true);
+    
     var content = json.encode(data);
     var response;
 
@@ -62,7 +67,9 @@ class RestClient {
   }
 
   Future<Response> postAsync(String resourcePath, dynamic data) async {
-    http = prefHttp.Client();
+    http = HttpClient();
+    http.setWithCredentials(true);
+    
     var content = json.encode(data);
     var response;
 
@@ -144,7 +151,9 @@ class RestClient {
   }
 
   Future<Response> postAsyncDownload(String resourcePath, dynamic data) async {
-    http = prefHttp.Client();
+    http = HttpClient();
+    http.setWithCredentials(true);
+
     var content = json.encode(data);
     var response;
     Response resp = Response();

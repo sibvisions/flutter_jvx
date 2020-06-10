@@ -9,6 +9,7 @@ import '../model/api/request/request.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart' as xml;
 import '../utils/globals.dart' as globals;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class Translations {
   Translations(Locale locale) {
@@ -88,15 +89,23 @@ class Translations {
   static Future<bool> shouldDownload() async {
     var _dir;
 
-    if (Platform.isIOS) {
-      _dir = (await getApplicationSupportDirectory()).path;
-    } else {
-      _dir = (await getApplicationDocumentsDirectory()).path;
+    if (!kIsWeb) {
+      if (Platform.isIOS) {
+        _dir = (await getApplicationSupportDirectory()).path;
+      } else {
+        _dir = (await getApplicationDocumentsDirectory()).path;
+      }
+    }
+    else
+    {
+      _dir = 'TODO_WEB_STORAGE';
     }
 
     String trimmedUrl = globals.baseUrl.split('/')[2];
     Directory directory = Directory(
         '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}');
+
+        return false;
 
     if (directory.existsSync()) {
       return false;

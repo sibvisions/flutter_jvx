@@ -35,8 +35,8 @@ import 'package:connectivity/connectivity.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../model/api/request/data/meta_data.dart'
-    as dataModel;
+import '../../model/api/request/data/meta_data.dart' as dataModel;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -299,7 +299,7 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download request) async* {
     Response resp = await processRequest(request);
 
-    if (request.requestType == RequestType.DOWNLOAD) {
+    if (!kIsWeb && request.requestType == RequestType.DOWNLOAD) {
       final directory = Platform.isAndroid
           ? await getExternalStorageDirectory()
           : await getApplicationDocumentsDirectory();
@@ -312,15 +312,19 @@ class ApiBloc extends Bloc<Request, Response> {
     } else {
       var _dir;
 
-      if (Platform.isIOS) {
-        _dir = (await getApplicationSupportDirectory()).path;
+      if (!kIsWeb) {
+        if (Platform.isIOS) {
+          _dir = (await getApplicationSupportDirectory()).path;
+        } else {
+          _dir = (await getApplicationDocumentsDirectory()).path;
+        }
       } else {
-        _dir = (await getApplicationDocumentsDirectory()).path;
+        _dir = 'TODO_WEB_STORAGE';
       }
 
       globals.dir = _dir;
 
-      if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+      if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
         Directory directory = Directory('${globals.dir}/translations');
 
         if (directory.existsSync()) {
@@ -361,7 +365,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
         SharedPreferencesHelper().setTranslation(globals.translation);
         Translations.load(Locale(globals.language));
-      } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
+      } else if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_IMAGES) {
         var archive = resp.download;
 
         globals.images = List<String>();
@@ -384,10 +388,14 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
     var _dir;
 
-    if (Platform.isIOS) {
-      _dir = (await getApplicationSupportDirectory()).path;
+    if (!kIsWeb) {
+      if (Platform.isIOS) {
+        _dir = (await getApplicationSupportDirectory()).path;
+      } else {
+        _dir = (await getApplicationDocumentsDirectory()).path;
+      }
     } else {
-      _dir = (await getApplicationDocumentsDirectory()).path;
+      _dir = 'TODO_WEB_STORAGE';
     }
 
     globals.dir = _dir;
@@ -651,12 +659,16 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Future<bool> _checkConnectivity() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (kIsWeb) {
       return true;
+    } else {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        return true;
+      }
+      return false;
     }
-    return false;
   }
 }
