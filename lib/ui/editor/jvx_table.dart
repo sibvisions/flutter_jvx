@@ -380,7 +380,7 @@ class JVxTable extends JVxEditor {
             16.0);
         double columnWidth =
             JVxTableColumnCalculator.getColumnWidthSum(this.columnInfo);
-        double tableHeight = JVxTableColumnCalculator.getPreferredTableHeight(this.data, this.columnLabels, itemTextStyle, 30, 10);
+        double tableHeight = JVxTableColumnCalculator.getPreferredTableHeight(this.data, this.columnLabels, itemTextStyle, 30, 30);
 
         _hasHorizontalScroller = (columnWidth > constraints.maxWidth);
 

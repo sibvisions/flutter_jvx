@@ -77,10 +77,10 @@ class JVxTableColumnCalculator {
       [double headerPadding = 13,
       double itemPadding = 8,
       double borderWidth = 1,
-      int calculateForRecordCount = 10]) {
+      int calculateForRecordCount = 1]) {
     double headerHeight = 0;
     double itemHeight = 0;
-    int recordCount = 0;
+    int recordCount = calculateForRecordCount;
 
     if (columnLabels != null && columnLabels.length > 0) {
       double textHeight = TextUtils.getTextHeight(columnLabels[0], textStyle);
@@ -88,12 +88,11 @@ class JVxTableColumnCalculator {
       itemHeight = textHeight + itemPadding;
     }
 
-    if (componentData.data.records != null) {
-      recordCount = componentData.data.records.length;
+    if (componentData.data.records != null && componentData.data.records.length>calculateForRecordCount) {
+      recordCount = componentData.data.records.length+1;
     }
 
-    return headerHeight +
-        (itemHeight * max(calculateForRecordCount, recordCount));
+    return headerHeight + (itemHeight * recordCount);
   }
 
   static void _calculateAutoSizeColumnWidths(
