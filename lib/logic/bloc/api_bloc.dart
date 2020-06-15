@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
@@ -37,6 +37,8 @@ import '../../utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../model/api/request/data/meta_data.dart' as dataModel;
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:convert' show utf8;
+import 'dart:typed_data' show Uint8List, ByteBuffer;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -299,84 +301,135 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download request) async* {
     Response resp = await processRequest(request);
 
-    if (!kIsWeb && request.requestType == RequestType.DOWNLOAD) {
-      final directory = Platform.isAndroid
-          ? await getExternalStorageDirectory()
-          : await getApplicationDocumentsDirectory();
+    if (kIsWeb){
+      if (request.requestType == RequestType.DOWNLOAD) {
+        //TODO Speicherdialog aufrufen?
+      }
+      else{
+        if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+          var _dir = "";
+          globals.dir = _dir;
 
-      var filename = '${directory.path}/${resp.downloadFileName}';
+          var archive = resp.download;
 
-      var outFile = File(filename);
-      outFile = await outFile.create(recursive: true);
-      await outFile.writeAsBytes(resp.download);
-    } else {
-      var _dir;
+          globals.translation = <String, String>{};
 
-      if (!kIsWeb) {
+          String trimmedUrl = globals.baseUrl.split('/')[2];
+
+          for (var file in archive) {
+            var filename =
+                '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
+            if (file.isFile) {
+              globals.files.putIfAbsent(filename, () => utf8.decode((file.content)));
+              globals.translation[file.name] = '$filename';
+            }
+          }
+
+          SharedPreferencesHelper().setTranslation(globals.translation);
+          Translations.load(Locale(globals.language));
+        } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
+          var archive = resp.download;
+
+          globals.images = List<String>();
+
+          for (var file in archive) {
+            var _dir = "";
+            globals.dir = _dir;
+
+            var filename = '${globals.dir}/${file.name}';
+            if (file.isFile) {
+              print('vorlist');
+              print('length:' + (file as File).lengthSync().toString());
+              Uint8List bytes = file.readAsBytesSync();
+              print('nachlist');
+
+              String base64 = new String.fromCharCodes(bytes);
+              String image = "${base64}";
+              print('filename: ' + filename.toString());
+              // globals.files.putIfAbsent(filename, () => file.content);
+              print('content: ' + image);
+            }
+          }
+        }
+      }
+    }
+    else
+    {
+      if (!kIsWeb && request.requestType == RequestType.DOWNLOAD) {
+        final directory = Platform.isAndroid
+            ? await getExternalStorageDirectory()
+            : await getApplicationDocumentsDirectory();
+
+        var filename = '${directory.path}/${resp.downloadFileName}';
+
+        var outFile = File(filename);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(resp.download);
+      } else {
+        var _dir;
+
         if (Platform.isIOS) {
           _dir = (await getApplicationSupportDirectory()).path;
         } else {
           _dir = (await getApplicationDocumentsDirectory()).path;
         }
-      } else {
-        _dir = 'TODO_WEB_STORAGE';
-      }
 
-      globals.dir = _dir;
+        globals.dir = _dir;
 
-      if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-        Directory directory = Directory('${globals.dir}/translations');
+        if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+          Directory directory = Directory('${globals.dir}/translations');
 
-        if (directory.existsSync()) {
-          directory.listSync().forEach((entity) {
-            if (entity.path !=
-                '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-              Directory appNameDir = Directory(entity.path);
+          if (directory.existsSync()) {
+            directory.listSync().forEach((entity) {
+              if (entity.path !=
+                  '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+                Directory appNameDir = Directory(entity.path);
 
-              appNameDir.deleteSync(recursive: true);
+                appNameDir.deleteSync(recursive: true);
 
-              // appNameDir.listSync().forEach((appNameEntity) {
-              //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-              //     Directory appVersionDir = Directory(appNameEntity.path);
+                // appNameDir.listSync().forEach((appNameEntity) {
+                //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+                //     Directory appVersionDir = Directory(appNameEntity.path);
 
-              //     appVersionDir.deleteSync();
-              //   }
-              // });
-            }
-          });
-        }
-
-        var archive = resp.download;
-
-        globals.translation = <String, String>{};
-
-        String trimmedUrl = globals.baseUrl.split('/')[2];
-
-        for (var file in archive) {
-          var filename =
-              '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
-          if (file.isFile) {
-            var outFile = File(filename);
-            globals.translation[file.name] = '$filename';
-            outFile = await outFile.create(recursive: true);
-            await outFile.writeAsBytes(file.content);
+                //     appVersionDir.deleteSync();
+                //   }
+                // });
+              }
+            });
           }
-        }
 
-        SharedPreferencesHelper().setTranslation(globals.translation);
-        Translations.load(Locale(globals.language));
-      } else if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_IMAGES) {
-        var archive = resp.download;
+          var archive = resp.download;
 
-        globals.images = List<String>();
+          globals.translation = <String, String>{};
 
-        for (var file in archive) {
-          var filename = '${globals.dir}/${file.name}';
-          if (file.isFile) {
-            var outFile = File(filename);
-            globals.images.add(filename);
-            outFile = await outFile.create(recursive: true);
-            await outFile.writeAsBytes(file.content);
+          String trimmedUrl = globals.baseUrl.split('/')[2];
+
+          for (var file in archive) {
+            var filename =
+                '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
+            if (file.isFile) {
+              var outFile = File(filename);
+              globals.translation[file.name] = '$filename';
+              outFile = await outFile.create(recursive: true);
+              await outFile.writeAsBytes(file.content);
+            }
+          }
+
+          SharedPreferencesHelper().setTranslation(globals.translation);
+          Translations.load(Locale(globals.language));
+        } else if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_IMAGES) {
+          var archive = resp.download;
+
+          globals.images = List<String>();
+
+          for (var file in archive) {
+            var filename = '${globals.dir}/${file.name}';
+            if (file.isFile) {
+              var outFile = File(filename);
+              globals.images.add(filename);
+              outFile = await outFile.create(recursive: true);
+              await outFile.writeAsBytes(file.content);
+            }
           }
         }
       }
@@ -384,6 +437,13 @@ class ApiBloc extends Bloc<Request, Response> {
 
     yield resp;
   }
+
+  void readFile(File path) async {
+  var result = await path.readAsString();
+  print(result);
+  // return result;
+}
+  
 
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
     var _dir;
@@ -395,7 +455,7 @@ class ApiBloc extends Bloc<Request, Response> {
         _dir = (await getApplicationDocumentsDirectory()).path;
       }
     } else {
-      _dir = 'TODO_WEB_STORAGE';
+      _dir = '';
     }
 
     globals.dir = _dir;

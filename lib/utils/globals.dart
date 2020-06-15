@@ -30,3 +30,4 @@ String displayName;
 bool handleSessionTimeout = true;
 ICustomScreenManager customScreenManager;
 bool package = false;
+Map<String, String> files = Map<String, String>();

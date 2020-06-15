@@ -89,23 +89,19 @@ class Translations {
   static Future<bool> shouldDownload() async {
     var _dir;
 
-    if (!kIsWeb) {
-      if (Platform.isIOS) {
-        _dir = (await getApplicationSupportDirectory()).path;
-      } else {
-        _dir = (await getApplicationDocumentsDirectory()).path;
-      }
-    }
-    else
-    {
-      _dir = 'TODO_WEB_STORAGE';
+    if (kIsWeb) {
+      return true;
+    } 
+
+    if (Platform.isIOS) {
+      _dir = (await getApplicationSupportDirectory()).path;
+    } else {
+      _dir = (await getApplicationDocumentsDirectory()).path;
     }
 
     String trimmedUrl = globals.baseUrl.split('/')[2];
     Directory directory = Directory(
         '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}');
-
-        return false;
 
     if (directory.existsSync()) {
       return false;
@@ -158,21 +154,26 @@ class XmlLoader {
       File file;
       String contents;
 
-      if (globals.translation['translation.xml'] != null)
-        file = new File(globals.translation['translation.xml']);
+      if(kIsWeb){
+        contents = globals.files[globals.translation['translation_$lang.xml']];
+      }
+      else{
+        if (globals.translation['translation.xml'] != null)
+          file = new File(globals.translation['translation.xml']);
 
-      if (file.existsSync()) {
-        contents = file.readAsStringSync();
-      } else {
-        print('Error with Loading ${globals.translation["translation.xml"]}');
-        print('Starting download...');
-        if (context != null) {
-          BlocProvider.of(context).dispatch(Download(
-              name: 'translation',
-              applicationImages: false,
-              libraryImages: false,
-              clientId: globals.clientId,
-              requestType: RequestType.DOWNLOAD_TRANSLATION));
+        if (file.existsSync()) {
+          contents = file.readAsStringSync();
+        } else {
+          print('Error with Loading ${globals.translation["translation.xml"]}');
+          print('Starting download...');
+          if (context != null) {
+            BlocProvider.of(context).dispatch(Download(
+                name: 'translation',
+                applicationImages: false,
+                libraryImages: false,
+                clientId: globals.clientId,
+                requestType: RequestType.DOWNLOAD_TRANSLATION));
+          }
         }
       }
 
@@ -183,6 +184,7 @@ class XmlLoader {
 
         doc.findAllElements('entry').toList().forEach((e) {
           translations[e.attributes.first.value] = e.text;
+          print(e.text);
         });
 
         return translations;
@@ -192,22 +194,30 @@ class XmlLoader {
       File file;
       String contents;
 
-      file = new File(globals.translation['translation_$lang.xml']);
+      if(kIsWeb){
+        contents = globals.files[globals.translation['translation_$lang.xml']];
+      }
+      else{
+        file = new File(globals.translation['translation_$lang.xml']);
 
-      if (file.existsSync()) {
-        contents = file.readAsStringSync();
-      } else {
-        print(
-            'Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+        if (file.existsSync()) {
+          contents = file.readAsStringSync();
+        } else {
+          print(
+              'Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+        }
       }
 
       Map<String, String> translations = <String, String>{};
 
+      print('contents');
       if (contents != null && contents.length > 0) {
+        print('hascontents');
         xml.XmlDocument doc = xml.parse(contents);
 
         doc.findAllElements('entry').toList().forEach((e) {
           translations[e.attributes.first.value] = e.text;
+          print(e.text);
         });
       }
 
