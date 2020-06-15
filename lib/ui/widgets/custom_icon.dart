@@ -18,7 +18,16 @@ class CustomIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     if (image != null) {
       if (checkFontAwesome(image))
-        return _iconBuilder(formatFontAwesomeText(image));
+      {
+        if(!image.contains("size="))
+        {
+          return convertFontAwesomeTextToIcon(image, UIData.ui_kit_color_2);
+        }
+        else
+        {
+          return _iconBuilder(formatFontAwesomeText(image));
+        }
+      }
 
       return getImage(image);
     } else {
