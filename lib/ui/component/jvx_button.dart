@@ -67,7 +67,7 @@ class JVxButton extends JVxActionComponent {
   Widget getWidget() {
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
-        style: TextStyle(fontSize: style.fontSize, color: UIData.textColor));
+        style: TextStyle(fontSize: style.fontSize, color: this.foreground != null ? this.foreground : UIData.textColor));
 
     if (text?.isNotEmpty ?? true) {
       if (icon != null) {
@@ -99,7 +99,7 @@ class JVxButton extends JVxActionComponent {
         child: RaisedButton(
           key: this.componentId,
           onPressed: this.enabled ? buttonPressed : null,
-          color: UIData.ui_kit_color_2[400],
+          color: this.background != null ? this.background : UIData.ui_kit_color_2[400],
           elevation: 10,
           child: child,
           splashColor: this.background,

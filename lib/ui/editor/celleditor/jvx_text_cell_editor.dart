@@ -80,8 +80,6 @@ class JVxTextCellEditor extends JVxCellEditor {
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
-    print('Placeholdervisible ' + placeholderVisible.toString());
-
     return DecoratedBox(
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
