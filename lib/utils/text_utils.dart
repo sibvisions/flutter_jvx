@@ -9,8 +9,13 @@ class TextUtils {
   static double getTextWidth(dynamic text, TextStyle style,
       [TextAlign align = TextAlign.left,
       TextDirection textDirection = TextDirection.ltr]) {
-    return TextUtils.getTextSize(text, style, align, textDirection)
-        .width;
+    return TextUtils.getTextSize(text, style, align, textDirection).width;
+  }
+
+  static double getTextHeight(dynamic text, TextStyle style,
+      [TextAlign align = TextAlign.left,
+      TextDirection textDirection = TextDirection.ltr]) {
+    return TextUtils.getTextSize(text, style, align, textDirection).height;
   }
 
   static Size getTextSize(dynamic text, TextStyle style,

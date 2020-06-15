@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
 import '../../utils/text_utils.dart';
@@ -57,7 +59,7 @@ class JVxTableColumnCalculator {
         });
       }
 
-      // Autp resize columns 
+      // Autp resize columns
       if (containerWidth != null && containerWidth != double.infinity) {
         if (autoResize) {
           _calculateAutoSizeColumnWidths(columns, containerWidth);
@@ -68,6 +70,29 @@ class JVxTableColumnCalculator {
     }
 
     return columns;
+  }
+
+  static double getPreferredTableHeight(ComponentData componentData,
+      List<String> columnLabels, TextStyle textStyle,
+      [double headerPadding = 13,
+      double itemPadding = 8,
+      double borderWidth = 1,
+      int calculateForRecordCount = 1]) {
+    double headerHeight = 0;
+    double itemHeight = 0;
+    int recordCount = calculateForRecordCount;
+
+    if (columnLabels != null && columnLabels.length > 0) {
+      double textHeight = TextUtils.getTextHeight(columnLabels[0], textStyle);
+      headerHeight = textHeight + headerPadding;
+      itemHeight = textHeight + itemPadding;
+    }
+
+    if (componentData.data.records != null && componentData.data.records.length>calculateForRecordCount) {
+      recordCount = componentData.data.records.length+1;
+    }
+
+    return headerHeight + (itemHeight * recordCount);
   }
 
   static void _calculateAutoSizeColumnWidths(

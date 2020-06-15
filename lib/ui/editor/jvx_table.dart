@@ -36,8 +36,6 @@ class JVxTable extends JVxEditor {
 
   int selectedRow;
 
-  Size maximumSize;
-
   ItemScrollController _scrollController = ItemScrollController();
   ItemPositionsListener _scrollPositionListener =
       ItemPositionsListener.create();
@@ -67,23 +65,27 @@ class JVxTable extends JVxEditor {
     super.data?.registerSelectedRowChanged(onSelectedRowChanged);
   }
 
-  @override
+  /*@override
   get preferredSize {
+    if (super.preferredSize!=null) 
+      return super.preferredSize;
     return Size(300, 300);
   }
 
   @override
   get minimumSize {
-    return Size(50, 100);
-  }
+    if (super.minimumSize!=null) 
+      return super.minimumSize;
+    return Size(300, 100);
+  }*/
 
+  /*@override
+  bool get isPreferredSizeSet => true;
   @override
-  bool get isPreferredSizeSet => preferredSize != null;
-  @override
-  bool get isMinimumSizeSet => minimumSize != null;
+  bool get isMinimumSizeSet => true;
   @override
   bool get isMaximumSizeSet => maximumSize != null;
-
+*/
   JVxTable(GlobalKey componentId, BuildContext context, [this.componentCreator])
       : super(componentId, context) {
     if (componentCreator == null) componentCreator = ComponentCreator(context);
@@ -93,8 +95,6 @@ class JVxTable extends JVxEditor {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    maximumSize = changedComponent.getProperty<Size>(
-        ComponentProperty.MAXIMUM_SIZE, null);
     showVerticalLines = changedComponent.getProperty<bool>(
         ComponentProperty.SHOW_VERTICAL_LINES, showVerticalLines);
     showHorizontalLines = changedComponent.getProperty<bool>(
@@ -367,6 +367,7 @@ class JVxTable extends JVxEditor {
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
+        //print(this.rawComponentId + "- Constraints:" + constraints.toString());
         this.columnInfo = JVxTableColumnCalculator.getColumnFlex(
             this.data,
             this.columnLabels,
@@ -379,6 +380,7 @@ class JVxTable extends JVxEditor {
             16.0);
         double columnWidth =
             JVxTableColumnCalculator.getColumnWidthSum(this.columnInfo);
+        double tableHeight = JVxTableColumnCalculator.getPreferredTableHeight(this.data, this.columnLabels, itemTextStyle, 30, 30);
 
         _hasHorizontalScroller = (columnWidth > constraints.maxWidth);
 
@@ -396,7 +398,7 @@ class JVxTable extends JVxEditor {
                     color: Colors.white
                         .withOpacity(globals.applicationStyle.controlsOpacity)),
             width: columnWidth + (2 * borderWidth),
-            height: constraints.minHeight,
+            height: constraints.maxHeight==double.infinity?tableHeight:constraints.maxHeight,
             child: ScrollablePositionedList.builder(
               key: this.componentId,
               itemScrollController: _scrollController,

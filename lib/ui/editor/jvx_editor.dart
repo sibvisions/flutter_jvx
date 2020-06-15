@@ -47,27 +47,29 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   get preferredSize {
     if (super.preferredSize != null) return super.preferredSize;
-
-    return _cellEditor.preferredSize;
+    if (_cellEditor!=null) return _cellEditor.preferredSize;
+    return null;
   }
 
   @override
   get minimumSize {
     if (super.minimumSize != null) return super.minimumSize;
+    if (_cellEditor!=null) return _cellEditor.minimumSize;
 
-    return _cellEditor.minimumSize;
+    return null;
   }
 
   @override
   get maximumSize {
     if (super.maximumSize != null) return super.maximumSize;
+    if (_cellEditor!=null) return _cellEditor.maximumSize;
 
-    return _cellEditor.maximumSize;
+    return null;
   }
 
-  @override
+  /*@override
   get isPreferredSizeSet {
-    return super.isPreferredSizeSet | this.cellEditor?.isPreferredSizeSet;
+    return (preferredSize!=null) | (_cellEditor!=null && _cellEditor?.isPreferredSizeSet);
   }
 
   @override
@@ -78,7 +80,7 @@ class JVxEditor extends JVxComponent implements IEditor {
   @override
   bool get isMaximumSizeSet {
     return super.isMaximumSizeSet | this.cellEditor?.isMaximumSizeSet;
-  }
+  }*/
 
   JVxEditor(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
