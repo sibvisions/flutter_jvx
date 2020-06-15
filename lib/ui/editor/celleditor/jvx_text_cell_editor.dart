@@ -80,6 +80,8 @@ class JVxTextCellEditor extends JVxCellEditor {
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
+    print('Placeholdervisible ' + placeholderVisible.toString());
+
     return DecoratedBox(
       decoration: BoxDecoration(
           color: this.background != null ? this.background : Colors.white.withOpacity(globals.applicationStyle.controlsOpacity),
@@ -92,7 +94,8 @@ class JVxTextCellEditor extends JVxCellEditor {
         textAlign: JVxTextAlign.getTextAlignFromInt(this.horizontalAlignment),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(12),
-          border: InputBorder.none
+          border: InputBorder.none,
+          hintText: placeholderVisible ? placeholder : null,
         ),
         style: TextStyle(
             color: this.editable ? (this.foreground != null ? this.foreground : Colors.black) : Colors.grey[700]),
