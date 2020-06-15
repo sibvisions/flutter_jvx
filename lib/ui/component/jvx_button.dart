@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tinycolor/tinycolor.dart';
 import '../../model/api/request/reload.dart';
 import '../../model/api/request/request.dart';
 import '../../ui/widgets/fontAwesomeChanger.dart';
@@ -102,7 +103,7 @@ class JVxButton extends JVxActionComponent {
           color: this.background != null ? this.background : UIData.ui_kit_color_2[400],
           elevation: 10,
           child: child,
-          splashColor: this.background,
+          splashColor: this.background != null ? TinyColor(this.background).darken().color : UIData.ui_kit_color_2[700],
         ));
   }
 }
