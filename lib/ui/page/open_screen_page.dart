@@ -291,6 +291,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         builder: (BuildContext context) {
           return Container(
             height: 220,
+            width: double.infinity,
             child: Column(
               children: <Widget>[
                 Row(
@@ -312,6 +313,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   ],
                 ),
                 GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () => pick('camera').then((val) async {
                     ImageProperties properties =
                         await FlutterNativeImage.getImageProperties(val.path);
@@ -349,6 +351,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   ),
                 ),
                 GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () => pick('gallery').then((val) {
                     file = val;
                     Navigator.of(context).pop();
@@ -374,6 +377,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   ),
                 ),
                 GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () => pick('file system').then((val) {
                     file = val;
                     Navigator.of(context).pop();
