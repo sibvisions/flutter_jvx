@@ -100,7 +100,7 @@ class JVxButton extends JVxActionComponent {
         child: RaisedButton(
           key: this.componentId,
           onPressed: this.enabled ? buttonPressed : null,
-          color: this.background != null ? this.background : UIData.ui_kit_color_2[400],
+          color: this.background != null ? this.background : UIData.ui_kit_color_2[600],
           elevation: 10,
           child: child,
           splashColor: this.background != null ? TinyColor(this.background).darken().color : UIData.ui_kit_color_2[700],
