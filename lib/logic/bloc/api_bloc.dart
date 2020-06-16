@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'package:universal_io/io.dart';
+import 'package:universal_io/prefer_universal/io.dart' as uio;
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
@@ -38,7 +38,6 @@ import 'package:path_provider/path_provider.dart';
 import '../../model/api/request/data/meta_data.dart' as dataModel;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:convert' show utf8;
-import 'dart:typed_data' show Uint8List, ByteBuffer;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -338,16 +337,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
             var filename = '${globals.dir}/${file.name}';
             if (file.isFile) {
-              print('vorlist');
-              print('length:' + (file as File).lengthSync().toString());
-              Uint8List bytes = file.readAsBytesSync();
-              print('nachlist');
-
-              String base64 = new String.fromCharCodes(bytes);
-              String image = "${base64}";
-              print('filename: ' + filename.toString());
-              // globals.files.putIfAbsent(filename, () => file.content);
-              print('content: ' + image);
+              globals.files.putIfAbsent(filename, () => utf8.decode(file.content));
             }
           }
         }
@@ -356,19 +346,19 @@ class ApiBloc extends Bloc<Request, Response> {
     else
     {
       if (!kIsWeb && request.requestType == RequestType.DOWNLOAD) {
-        final directory = Platform.isAndroid
+        final directory = uio.Platform.isAndroid
             ? await getExternalStorageDirectory()
             : await getApplicationDocumentsDirectory();
 
         var filename = '${directory.path}/${resp.downloadFileName}';
 
-        var outFile = File(filename);
+        var outFile = uio.File(filename);
         outFile = await outFile.create(recursive: true);
         await outFile.writeAsBytes(resp.download);
       } else {
         var _dir;
 
-        if (Platform.isIOS) {
+        if (uio.Platform.isIOS) {
           _dir = (await getApplicationSupportDirectory()).path;
         } else {
           _dir = (await getApplicationDocumentsDirectory()).path;
@@ -377,13 +367,13 @@ class ApiBloc extends Bloc<Request, Response> {
         globals.dir = _dir;
 
         if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-          Directory directory = Directory('${globals.dir}/translations');
+          uio.Directory directory = uio.Directory('${globals.dir}/translations');
 
           if (directory.existsSync()) {
             directory.listSync().forEach((entity) {
               if (entity.path !=
                   '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-                Directory appNameDir = Directory(entity.path);
+                uio.Directory appNameDir = uio.Directory(entity.path);
 
                 appNameDir.deleteSync(recursive: true);
 
@@ -408,7 +398,7 @@ class ApiBloc extends Bloc<Request, Response> {
             var filename =
                 '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
             if (file.isFile) {
-              var outFile = File(filename);
+              var outFile = uio.File(filename);
               globals.translation[file.name] = '$filename';
               outFile = await outFile.create(recursive: true);
               await outFile.writeAsBytes(file.content);
@@ -425,7 +415,7 @@ class ApiBloc extends Bloc<Request, Response> {
           for (var file in archive) {
             var filename = '${globals.dir}/${file.name}';
             if (file.isFile) {
-              var outFile = File(filename);
+              var outFile = uio.File(filename);
               globals.images.add(filename);
               outFile = await outFile.create(recursive: true);
               await outFile.writeAsBytes(file.content);
@@ -438,7 +428,7 @@ class ApiBloc extends Bloc<Request, Response> {
     yield resp;
   }
 
-  void readFile(File path) async {
+  void readFile(uio.File path) async {
   var result = await path.readAsString();
   print(result);
   // return result;
@@ -449,7 +439,7 @@ class ApiBloc extends Bloc<Request, Response> {
     var _dir;
 
     if (!kIsWeb) {
-      if (Platform.isIOS) {
+      if (uio.Platform.isIOS) {
         _dir = (await getApplicationSupportDirectory()).path;
       } else {
         _dir = (await getApplicationDocumentsDirectory()).path;

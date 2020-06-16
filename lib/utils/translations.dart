@@ -184,7 +184,6 @@ class XmlLoader {
 
         doc.findAllElements('entry').toList().forEach((e) {
           translations[e.attributes.first.value] = e.text;
-          print(e.text);
         });
 
         return translations;
@@ -210,14 +209,11 @@ class XmlLoader {
 
       Map<String, String> translations = <String, String>{};
 
-      print('contents');
       if (contents != null && contents.length > 0) {
-        print('hascontents');
         xml.XmlDocument doc = xml.parse(contents);
 
         doc.findAllElements('entry').toList().forEach((e) {
           translations[e.attributes.first.value] = e.text;
-          print(e.text);
         });
       }
 
