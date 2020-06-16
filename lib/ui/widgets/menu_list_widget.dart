@@ -76,6 +76,31 @@ class _MenuListWidgetState extends State<MenuListWidget> {
     );
   }
 
+    void _onTap(MenuItem menuItem) {
+    if (globals.customScreenManager != null &&
+        !globals.customScreenManager
+            .getScreen(menuItem.action.componentId)
+            .withServer()) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => globals.customScreenManager
+              .getScreen(menuItem.action.componentId)
+              .getWidget()));
+    } else {
+      prefix0.Action action = menuItem.action;
+
+      title = action.label;
+
+      OpenScreen openScreen = OpenScreen(
+        action: action,
+        clientId: globals.clientId,
+        manualClose: false,
+        requestType: RequestType.OPEN_SCREEN,
+      );
+
+      BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
+    }
+  }
+
   List<Widget> _buildListTiles(BuildContext context) {
     var newMap = groupBy(this.widget.menuItems, (obj) => obj.group);
 
@@ -127,18 +152,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
       Widget tile = ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         title: Text(mItem.action.label),
-        onTap: () {
-          prefix0.Action action = mItem.action;
-          title = action.label;
-
-          OpenScreen openScreen = OpenScreen(
-              action: action,
-              clientId: globals.clientId,
-              manualClose: false,
-              requestType: RequestType.OPEN_SCREEN);
-
-          BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
-        },
+        onTap: () => _onTap(mItem),
         leading: mItem.image != null
             ? new CircleAvatar(
                 backgroundColor: Colors.transparent,
