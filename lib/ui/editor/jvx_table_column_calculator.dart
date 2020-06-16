@@ -73,7 +73,9 @@ class JVxTableColumnCalculator {
   }
 
   static double getPreferredTableHeight(ComponentData componentData,
-      List<String> columnLabels, TextStyle textStyle,
+      List<String> columnLabels,
+      TextStyle textStyle,
+      bool tableHeaderVisible,
       [double headerPadding = 13,
       double itemPadding = 8,
       double borderWidth = 1,
@@ -84,15 +86,16 @@ class JVxTableColumnCalculator {
 
     if (columnLabels != null && columnLabels.length > 0) {
       double textHeight = TextUtils.getTextHeight(columnLabels[0], textStyle);
-      headerHeight = textHeight + headerPadding;
+      if (tableHeaderVisible)
+        headerHeight = textHeight + headerPadding;
       itemHeight = textHeight + itemPadding;
     }
 
     if (componentData.data.records != null && componentData.data.records.length>calculateForRecordCount) {
-      recordCount = componentData.data.records.length+1;
+      recordCount = componentData.data.records.length;
     }
 
-    return headerHeight + (itemHeight * recordCount);
+    return headerHeight + (itemHeight * recordCount) + (borderWidth*2);
   }
 
   static void _calculateAutoSizeColumnWidths(
