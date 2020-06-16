@@ -6,12 +6,14 @@ class Download extends Request {
   bool libraryImages;
   bool applicationImages;
   String fileId;
+  String contentMode = "json";
 
   Download(
       {this.name,
       this.libraryImages,
       this.applicationImages,
       this.fileId,
+      this.contentMode,
       String clientId,
       RequestType requestType})
       : super(clientId: clientId, requestType: requestType);
@@ -21,6 +23,7 @@ class Download extends Request {
         'libraryImages': libraryImages,
         'applicationImages': applicationImages,
         'clientId': clientId,
-        'fileId': fileId
+        'fileId': fileId,
+        'contentMode': contentMode
       };
 }

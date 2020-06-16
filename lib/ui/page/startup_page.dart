@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../logic/bloc/theme_bloc.dart';
@@ -222,6 +223,7 @@ class _StartupPageState extends State<StartupPage> {
         applicationImages: true,
         libraryImages: true,
         clientId: globals.clientId,
+        contentMode: kIsWeb ? 'base64': null,
         name: 'images',
         requestType: RequestType.DOWNLOAD_IMAGES);
 
