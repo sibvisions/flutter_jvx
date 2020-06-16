@@ -25,14 +25,13 @@ class JVxDateCellEditor extends JVxCellEditor {
   @override
   get preferredSize {
     String text = DateFormat(this.dateFormat)
-                .format(DateTime.parse("2020-12-31 22:22:22Z"));
+        .format(DateTime.parse("2020-12-31 22:22:22Z"));
 
-    if (text.isEmpty)
-      text = TextUtils.averageCharactersDateField;
+    if (text.isEmpty) text = TextUtils.averageCharactersDateField;
 
-    double width = TextUtils.getTextWidth(text,
-            Theme.of(context).textTheme.bodyText1)
-        .toDouble();
+    double width =
+        TextUtils.getTextWidth(text, Theme.of(context).textTheme.bodyText1)
+            .toDouble();
     return Size(width + 16, 50);
   }
 
@@ -108,7 +107,8 @@ class JVxDateCellEditor extends JVxCellEditor {
                 ? background
                 : Colors.white
                     .withOpacity(globals.applicationStyle.controlsOpacity),
-            borderRadius: BorderRadius.circular(globals.applicationStyle.cornerRadiusEditors),
+            borderRadius: BorderRadius.circular(
+                globals.applicationStyle.cornerRadiusEditors),
             border: borderVisible
                 ? (this.editable
                     ? Border.all(color: UIData.ui_kit_color_2)
@@ -126,12 +126,17 @@ class JVxDateCellEditor extends JVxCellEditor {
                       (this.value != null && this.value is int)
                           ? DateFormat(this.dateFormat).format(
                               DateTime.fromMillisecondsSinceEpoch(this.value))
-                          : '',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: this.foreground == null
-                              ? Colors.grey[700]
-                              : this.foreground),
+                          : (placeholderVisible ? placeholder : ""),
+                      style: (this.value != null && this.value is int)
+                          ? TextStyle(
+                              fontSize: 16,
+                              color: this.foreground == null
+                                  ? Colors.grey[700]
+                                  : this.foreground)
+                          : TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.normal),
                     ),
                   ),
                 ),
@@ -182,14 +187,14 @@ class JVxDateCellEditor extends JVxCellEditor {
             }),
       );
     } else {
-      if (this.value is String && int.tryParse(this.value)!=null) {
+      if (this.value is String && int.tryParse(this.value) != null) {
         this.value = int.parse(this.value);
       }
 
       String text = (this.value != null && this.value is int)
-            ? DateFormat(this.dateFormat)
-                .format(DateTime.fromMillisecondsSinceEpoch(this.value))
-            : '';
+          ? DateFormat(this.dateFormat)
+              .format(DateTime.fromMillisecondsSinceEpoch(this.value))
+          : '';
       return Text(text);
     }
   }

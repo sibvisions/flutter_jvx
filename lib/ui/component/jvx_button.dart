@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tinycolor/tinycolor.dart';
 import '../../model/api/request/reload.dart';
 import '../../model/api/request/request.dart';
 import '../../ui/widgets/fontAwesomeChanger.dart';
@@ -67,7 +68,7 @@ class JVxButton extends JVxActionComponent {
   Widget getWidget() {
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
-        style: TextStyle(fontSize: style.fontSize, color: UIData.textColor));
+        style: TextStyle(fontSize: style.fontSize, color: this.foreground != null ? this.foreground : UIData.textColor));
 
     if (text?.isNotEmpty ?? true) {
       if (icon != null) {
@@ -99,10 +100,10 @@ class JVxButton extends JVxActionComponent {
         child: RaisedButton(
           key: this.componentId,
           onPressed: this.enabled ? buttonPressed : null,
-          color: UIData.ui_kit_color_2[400],
+          color: this.background != null ? this.background : UIData.ui_kit_color_2[600],
           elevation: 10,
           child: child,
-          splashColor: this.background,
+          splashColor: this.background != null ? TinyColor(this.background).darken().color : UIData.ui_kit_color_2[700],
         ));
   }
 }
