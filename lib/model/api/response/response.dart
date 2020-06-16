@@ -1,3 +1,4 @@
+import '../../../model/api/response/show_document.dart';
 import '../../../model/api/response/response_data.dart';
 import '../../../model/action.dart';
 import '../../../model/api/exceptions/api_exception.dart';
@@ -43,6 +44,7 @@ class Response {
   CloseScreenAction closeScreenAction;
   UserData userData;
   Request request;
+  ShowDocument showDocument;
 
   Response();
 
@@ -114,6 +116,9 @@ class Response {
           break;
         case ResponseObjectType.USERDATA:
           userData = UserData.fromJson(r);
+          break;
+        case ResponseObjectType.SHOWDOCUMENT:
+          showDocument = ShowDocument.fromJson(r);
           break;
       }
     });
