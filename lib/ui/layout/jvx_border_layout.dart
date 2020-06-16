@@ -134,6 +134,7 @@ class JVxBorderLayout extends JVxLayout<JVxBorderLayoutConstraints> {
       margin: this.margins,
       child: JVxBorderLayoutWidget(
         key: key,
+        container: container,
         insMargin: margins,
         iHorizontalGap: horizontalGap,
         iVerticalGap: verticalGap,

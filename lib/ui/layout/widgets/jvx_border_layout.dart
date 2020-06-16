@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
+import 'package:jvx_flutterclient/ui/container/jvx_container.dart';
 import '../../../ui/component/jvx_component.dart';
 import 'jvx_border_layout_constraint.dart';
 
@@ -20,17 +21,19 @@ class JVxBorderLayoutWidget extends MultiChildRenderObjectWidget {
   final int iHorizontalGap;
   final int iVerticalGap;
   final EdgeInsets insMargin;
+  final JVxContainer container;
 
   JVxBorderLayoutWidget({
     Key key,
     List<JVxBorderLayoutId> children: const [],
+    this.container,
     this.insMargin = EdgeInsets.zero,
     this.iHorizontalGap = 0,
     this.iVerticalGap = 0 }) : super (key: key, children: children);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderJVxBorderLayoutWidget(this.insMargin, this.iHorizontalGap, this.iVerticalGap);
+    return RenderJVxBorderLayoutWidget(this.container, this.insMargin, this.iHorizontalGap, this.iVerticalGap);
   }
 
   @override
@@ -78,8 +81,9 @@ class RenderJVxBorderLayoutWidget extends RenderBox
   EdgeInsets insMargin;
   int iHorizontalGap;
   int iVerticalGap;
+  JVxContainer container;
 
-  RenderJVxBorderLayoutWidget(this.insMargin, this.iHorizontalGap, this.iVerticalGap, { List<RenderBox> children }) {
+  RenderJVxBorderLayoutWidget(this.container, this.insMargin, this.iHorizontalGap, this.iVerticalGap, { List<RenderBox> children }) {
     addAll(children);
   }
 
@@ -126,6 +130,11 @@ class RenderJVxBorderLayoutWidget extends RenderBox
   void performLayout() {
 
     Size size = this.constraints.biggest;
+    if (size.width==double.infinity || size.height==double.infinity) {
+      if (container.isPreferredSizeSet)
+        size = this.container.preferredSize;
+    }
+    
     /*if (size.width==double.infinity || size.height==double.infinity) {
       print("Infinity height or width for BorderLayout");
       size = Size((size.width==double.infinity?double.maxFinite:size.width),
