@@ -100,10 +100,20 @@ class _LoginCardState extends State<LoginCard>
                         });
                       },
                     ),
-                    Text(Translations.of(context)
-                        .text2('Remember me?', 'Remember me?'),
-                        style: Theme.of(context).textTheme.body2,
-                        ),
+                    FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            rememberMe = !rememberMe;
+                          });
+                        },
+                        padding: EdgeInsets.zero,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Text(
+                          Translations.of(context)
+                              .text2('Remember me?', 'Remember me?'),
+                          style: Theme.of(context).textTheme.body2,
+                        )),
                   ],
                 ),
                 SizedBox(
@@ -118,7 +128,8 @@ class _LoginCardState extends State<LoginCard>
                               _login(context);
                             },
                             text: Translations.of(context)
-                                .text2('Login', 'Login').toUpperCase()))),
+                                .text2('Login', 'Login')
+                                .toUpperCase()))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
