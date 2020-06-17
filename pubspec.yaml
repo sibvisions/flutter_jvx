@@ -38,8 +38,6 @@ dependencies:
   package_info: ^0.4.0+13
   flutter_slidable: "^0.5.4"
   barcode_scan: ^3.0.1
-  # flutter_barcode_scanner: 
-  #   git: git://github.com/AmolGangadhare/flutter_barcode_scanner.git
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
   connectivity: ^0.4.6+1
