@@ -122,6 +122,23 @@ class ComponentCreator implements IComponentCreator {
     return cellEditor;
   }
 
+  JVxEditor createEditorForTable(CellEditor toCreatecellEditor) {
+    JVxEditor editor = JVxEditor(GlobalKey<FormState>(), context);
+    ICellEditor cellEditor;
+    switch (toCreatecellEditor.className) {
+      case "DateCellEditor":     { cellEditor = JVxDateCellEditor(toCreatecellEditor, context); } break; 
+      case "ChoiceCellEditor":   { cellEditor = JVxChoiceCellEditor(toCreatecellEditor, context); } break;
+      case "CheckBoxCellEditor": { cellEditor = JVxCheckboxCellEditor(toCreatecellEditor, context); } break;
+    }
+
+    if(cellEditor==null) return null;
+
+    cellEditor?.isTableView = true;
+    editor.cellEditor = cellEditor;
+
+    return editor;
+  }
+
   JVxEditor _createEditor(ChangedComponent changedComponent) {
     JVxEditor editor = new JVxEditor(GlobalKey(debugLabel: changedComponent.id), context);
     editor.cellEditor = createCellEditor(changedComponent.cellEditor);
