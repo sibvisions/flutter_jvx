@@ -1,4 +1,6 @@
 import 'dart:async';
+
+import '../utils/shared_preferences_helper.dart';
 import '../model/api/exceptions/api_exception.dart';
 import '../model/api/request/upload.dart';
 import '../model/api/response/response.dart';
@@ -9,6 +11,7 @@ import '../utils/log.dart';
 import '../utils/http_client.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class RestClient {
   bool debug = false;
@@ -23,7 +26,7 @@ class RestClient {
   Future get(String resourcePath) async {
     http = HttpClient();
     http.setWithCredentials(true);
-    
+
     var response = await http.get(globals.baseUrl + resourcePath, headers: {
       'Content-Type': 'application/json',
       'cookie': globals.jsessionId
@@ -41,7 +44,7 @@ class RestClient {
   Future post(String resourcePath, dynamic data) async {
     http = HttpClient();
     http.setWithCredentials(true);
-    
+
     var content = json.encode(data);
     var response;
 
@@ -69,7 +72,7 @@ class RestClient {
   Future<Response> postAsync(String resourcePath, dynamic data) async {
     http = HttpClient();
     http.setWithCredentials(true);
-    
+
     var content = json.encode(data);
     var response;
 
@@ -81,7 +84,7 @@ class RestClient {
             'Content-Type': 'application/json',
             'cookie': globals.jsessionId
           }).timeout(const Duration(seconds: 10));
-    
+
       if (debug) {
         Log.printLong("Response: ${response.body}");
       }
@@ -167,11 +170,17 @@ class RestClient {
     http.close();
     resp.download = response.bodyBytes;
     resp.error = false;
+
     if (data['name'] == 'file') {
-      resp.downloadFileName = (response as prefHttp.Response)
-          .headers['content-disposition']
-          .split(' ')[1]
-          .substring(9);
+      if (kIsWeb) {
+        resp.downloadFileName =
+            await SharedPreferencesHelper().getDownloadFileName();
+      } else {
+        resp.downloadFileName = (response as prefHttp.Response)
+            .headers['content-disposition']
+            .split(' ')[1]
+            .substring(9);
+      }
     }
     try {} catch (e) {
       return Response()

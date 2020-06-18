@@ -174,7 +174,8 @@ class _StartupPageState extends State<StartupPage> {
           requestType: RequestType.STARTUP,
           deviceId: await _getDeviceId(),
           userName: globals.username!=null && globals.username.isNotEmpty?globals.username: null, 
-          password: globals.password!=null && globals.password.isNotEmpty?globals.password: null
+          password: globals.password!=null && globals.password.isNotEmpty?globals.password: null,
+          url: globals.baseUrl,
       );
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);

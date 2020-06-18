@@ -38,6 +38,8 @@ import 'package:path_provider/path_provider.dart';
 import '../../model/api/request/data/meta_data.dart' as dataModel;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:convert' show utf8;
+import 'dart:convert';
+import 'package:universal_html/prefer_universal/html.dart' as html;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -302,7 +304,20 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if (kIsWeb){
       if (request.requestType == RequestType.DOWNLOAD) {
-        //TODO Speicherdialog aufrufen?
+        final blob = html.Blob([resp.download]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = resp.downloadFileName;
+        html.document.body.children.add(anchor);
+
+        // download
+        anchor.click();
+
+        // cleanup
+        html.document.body.children.remove(anchor);
+        html.Url.revokeObjectUrl(url);
       }
       else{
         if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {

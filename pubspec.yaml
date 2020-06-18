@@ -24,7 +24,7 @@ dependencies:
   shared_preferences_web: ^0.1.2+7
   flutter_picker: ^1.1.0
   path_provider: ^1.6.7
-  archive: ^2.0.10
+  archive: ^2.0.13
   xml: ^3.2.0 
   gson: ^0.1.2
   bloc: ^0.15.0

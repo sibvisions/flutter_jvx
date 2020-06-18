@@ -123,6 +123,11 @@ class SharedPreferencesHelper {
     return prefs.getString('deviceId');
   }
 
+  Future<String> getDownloadFileName() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getString('fileName');
+  }
+
   void setWelcome(bool welcome) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setBool('welcome', welcome);
@@ -184,4 +189,10 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('deviceId', deviceId);
   }
+
+  void setDownloadFileName(String fileName) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setString('fileName', fileName);
+  }
+  
 }

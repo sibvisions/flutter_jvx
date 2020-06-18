@@ -12,6 +12,7 @@ class Startup extends Request {
   String deviceId;
   String userName;
   String password;
+  String url;
 
   Startup({this.applicationName, 
           this.authKey, 
@@ -24,6 +25,7 @@ class Startup extends Request {
           String clientId, 
           this.userName, 
           this.password, 
+          this.url,
           RequestType requestType})
     : super(clientId: clientId, requestType: requestType);
 
@@ -37,6 +39,7 @@ class Startup extends Request {
     'readAheadLimit': readAheadLimit,
     'deviceId': deviceId,
     'userName': userName,
-    'password': password
+    'password': password,
+    'url': url
   };
 }

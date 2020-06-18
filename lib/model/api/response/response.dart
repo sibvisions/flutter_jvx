@@ -1,3 +1,4 @@
+import '../../../utils/shared_preferences_helper.dart';
 import '../../../model/api/response/response_data.dart';
 import '../../../model/action.dart';
 import '../../../model/api/exceptions/api_exception.dart';
@@ -105,6 +106,7 @@ class Response {
           break;
         case ResponseObjectType.DOWNLOAD:
           downloadAction = DownloadAction.fromJson(r);
+          SharedPreferencesHelper().setDownloadFileName(downloadAction?.fileName);
           break;
         case ResponseObjectType.UPLOAD:
           uploadAction = UploadAction.fromJson(r);
