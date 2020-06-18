@@ -223,9 +223,27 @@ class JVxTable extends JVxEditor {
     return null;
   }
 
+  JVxEditor _getEditorForColumn(String text, String columnName) {
+    JVxMetaDataColumn column = this.data.getMetaDataColumn(columnName);
+
+    if (column != null) {
+      JVxEditor clEditor =
+          componentCreator.createEditorForTable(column.cellEditor);
+      if (clEditor!=null) {
+        clEditor.columnName = columnName;
+        clEditor.data = this.data;
+        clEditor.cellEditor.value = text;
+        return clEditor;
+      }
+    }
+    return null;
+  }
+
   Widget getTableColumn(
       String text, int rowIndex, int columnIndex, String columnName) {
-    ICellEditor cellEditor = _getCellEditorForColumn(text, columnName);
+    ICellEditor editor = _getCellEditorForColumn(text, columnName);
+    //JVxEditor editor = _getEditorForColumn(text, columnName);
+    
     double width = 1;
 
     if (columnInfo != null && columnIndex < columnInfo.length)
@@ -247,8 +265,8 @@ class JVxTable extends JVxEditor {
             padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
             child: GestureDetector(
               child: Container(
-                  child: (cellEditor != null)
-                      ? cellEditor.getWidget()
+                  child: (editor != null)
+                      ? editor.getWidget()
                       : Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: Text(text, style: this.itemTextStyle),

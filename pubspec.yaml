@@ -4,6 +4,8 @@ homepage: https://www.sibvisions.com
 repository: https://github.com/sibvisions/flutterclient.git
 issue_tracker: https://github.com/sibvisions/flutterclient/issues
 
+# Format: version+buildNumber 
+# Increase Build number every AppStore build (even for testing like TestFlight)  
 version: 1.0.0+1
 
 environment:
@@ -36,8 +38,6 @@ dependencies:
   package_info: ^0.4.0+13
   flutter_slidable: "^0.5.4"
   barcode_scan: ^3.0.1
-  # flutter_barcode_scanner: 
-  #   git: git://github.com/AmolGangadhare/flutter_barcode_scanner.git
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
   connectivity: ^0.4.6+1
@@ -45,6 +45,7 @@ dependencies:
   sticky_headers: ^0.1.8+1
   auto_size_text: ^2.1.0
   tinycolor: ^1.0.2
+  url_launcher: ^5.4.10
 
 dev_dependencies:
   flutter_test:

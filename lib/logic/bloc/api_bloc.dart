@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../model/api/request/set_component_value.dart';
 import '../../model/action.dart' as prefix0;
 import '../../model/api/request/change.dart';
@@ -280,6 +281,14 @@ class ApiBloc extends Bloc<Request, Response> {
     Response resp = await processRequest(request);
 
     if (!resp.error) resp.action = action;
+
+    if (resp.showDocument!=null) {
+      if (await canLaunch(resp.showDocument.document)) {
+        await launch(resp.showDocument.document);
+      } else {
+        throw 'Could not launch $resp.showDocument.document';
+      }
+    }
 
     yield resp;
   }

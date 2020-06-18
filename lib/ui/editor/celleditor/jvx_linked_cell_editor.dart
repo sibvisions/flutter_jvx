@@ -181,7 +181,7 @@ class JVxLinkedCellEditor extends JVxReferencedCellEditor {
                 : null) : Border.all(color: Colors.grey)),
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
-          hint: Text(h == null ? (placeholderVisible ? placeholder : "") : h),
+          hint: Text(h == null ? (placeholderVisible && placeholder!=null ? placeholder : "") : h),
           value: v,
           items: this._items,
           onChanged: valueChanged,

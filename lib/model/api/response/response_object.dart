@@ -11,7 +11,8 @@ enum ResponseObjectType {
   DOWNLOAD,
   UPLOAD,
   CLOSESCREEN,
-  USERDATA
+  USERDATA,
+  SHOWDOCUMENT
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {

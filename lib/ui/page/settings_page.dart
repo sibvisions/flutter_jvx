@@ -22,13 +22,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl, language, version;
+  String appName, baseUrl, language, version, buildNumber;
   String toSaveUsername;
   String toSavePwd;
   List<PickerItem<int>> imageSizeItems;
 
   String get versionText {
-    String v = 'App V $version';
+    String v = 'App V $version Build $buildNumber';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
       v += ', Server V ${globals.appVersion}';
 
@@ -215,6 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
     PackageInfo.fromPlatform().then((val) {
       setState(() {
         version = val.version;
+        buildNumber = val.buildNumber;
       });
     });
   }

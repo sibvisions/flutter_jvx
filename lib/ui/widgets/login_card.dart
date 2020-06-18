@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../utils/text_utils.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/request/login.dart';
@@ -99,10 +100,20 @@ class _LoginCardState extends State<LoginCard>
                         });
                       },
                     ),
-                    Text(Translations.of(context)
-                        .text2('Remember me?', 'Remember me?'),
-                        style: Theme.of(context).textTheme.body2,
-                        ),
+                    FlatButton(
+                        onPressed: () {
+                          setState(() {
+                            rememberMe = !rememberMe;
+                          });
+                        },
+                        padding: EdgeInsets.zero,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Text(
+                          Translations.of(context)
+                              .text2('Remember me?', 'Remember me?'),
+                          style: Theme.of(context).textTheme.body2,
+                        )),
                   ],
                 ),
                 SizedBox(
@@ -113,10 +124,12 @@ class _LoginCardState extends State<LoginCard>
                     child: Container(
                         child: new GradientButton(
                             onPressed: () {
+                              TextUtils.unfocusCurrentTextfield(context);
                               _login(context);
                             },
                             text: Translations.of(context)
-                                .text2('Login', 'Login').toUpperCase()))),
+                                .text2('Login', 'Login')
+                                .toUpperCase()))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[

@@ -126,7 +126,7 @@ class JVxDateCellEditor extends JVxCellEditor {
                       (this.value != null && this.value is int)
                           ? DateFormat(this.dateFormat).format(
                               DateTime.fromMillisecondsSinceEpoch(this.value))
-                          : (placeholderVisible ? placeholder : ""),
+                          : (placeholderVisible && placeholder!=null ? placeholder : ""),
                       style: (this.value != null && this.value is int)
                           ? TextStyle(
                               fontSize: 16,

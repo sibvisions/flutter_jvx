@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/model/filter.dart';
 import '../../ui/editor/celleditor/jvx_number_cell_editor.dart';
 import '../../ui/editor/celleditor/jvx_text_cell_editor.dart';
 import '../../model/changed_component.dart';
@@ -98,6 +99,9 @@ class JVxEditor extends JVxComponent implements IEditor {
               .linkReference
               .columnNames);
     } else {
+      //Filter filter = Filter(
+      //        columnNames: this.data.primaryKeyColumns,
+      //        values: data.data.getRow(0, this.data.primaryKeyColumns));
       data.setValues(context, (value is List) ? value : [value], [columnName], null, isTextEditor);
     }
   }

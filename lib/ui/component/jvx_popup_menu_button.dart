@@ -134,7 +134,7 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
                 itemBuilder: (BuildContext context) {
                   List<PopupMenuItem<String>> menuItems =
                       new List<PopupMenuItem<String>>();
-                  menu.menuItems.forEach((i) {
+                  menu?.menuItems?.forEach((i) {
                     menuItems.add(PopupMenuItem<String>(
                         value: i.name, child: Text(i.text)));
                   });
