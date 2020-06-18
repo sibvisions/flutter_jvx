@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -280,16 +281,60 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     return (groupCount > 1);
   }
 
-  Future<File> openFilePicker(BuildContext context) async {
-    File file;
-
-    await showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
+  Widget _buildFileChooser(File file) {
+  if (kIsWeb) {
+    return Container(
+            height: 120,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        Translations.of(context)
+                            .text2('Choose file', 'Choose file'),
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    IconButton(
+                      color: Colors.grey[300],
+                      icon: Icon(FontAwesomeIcons.timesCircle),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  ],
+                ),
+                GestureDetector(
+                  onTap: () => pick('file system').then((val) {
+                    file = val;
+                    Navigator.of(context).pop();
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                          FontAwesomeIcons.folderOpen,
+                          color: UIData.ui_kit_color_2,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          Translations.of(context).text2('Filesystem'),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+  }
+  return Container(
             height: 220,
             child: Column(
               children: <Widget>[
@@ -401,6 +446,18 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               ],
             ),
           );
+}
+
+  Future<File> openFilePicker(BuildContext context) async {
+    File file;
+
+    await showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+        context: context,
+        builder: (BuildContext context) {
+          return _buildFileChooser(file);
         });
 
     return file;

@@ -1,4 +1,5 @@
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter/material.dart';
@@ -292,7 +293,7 @@ class _SettingsPageState extends State<SettingsPage> {
           scaffoldKey: scaffoldState,
           appTitle: Translations.of(context).text2('Settings', 'Settings'),
           showBottomNav: true,
-          showFAB: true,
+          showFAB: !kIsWeb,
           backGroundColor: (globals.applicationStyle != null &&
                   globals.applicationStyle.desktopColor != null)
               ? globals.applicationStyle.desktopColor
