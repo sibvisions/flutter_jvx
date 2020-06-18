@@ -73,9 +73,6 @@ class _LoginCardState extends State<LoginCard>
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: TextFormField(
-                      onFieldSubmitted: (String value) {
-                        _login(context);
-                      },
                       focusNode: widget.focus,
                       onChanged: (password) => this.password = password,
                       style: new TextStyle(fontSize: 14.0, color: Colors.black),
