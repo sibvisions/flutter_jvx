@@ -8,6 +8,8 @@ import '../../model/menu_item.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
 import '../../ui/widgets/menu_grid_view.dart';
 import '../../ui/widgets/menu_list_widget.dart';
+import '../../ui/widgets/menu_swiper_widget.dart';
+import '../../ui/widgets/menu_tabs_widget.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/uidata.dart';
 
@@ -122,6 +124,16 @@ class MenuPage extends StatelessWidget {
           items: this.menuItems,
           groupedMenuMode: hasMultipleGroups,
         );
+      case 'swiper':
+        return MenuSwiperWidget(
+          items: this.menuItems,
+          groupedMenuMode: hasMultipleGroups,
+        );
+      case 'tabs':
+        return MenuTabsWidget(
+          items: this.menuItems,
+          groupedMenuMode: hasMultipleGroups,
+        ); 
       default:
         return MenuGridView(
           items: this.menuItems,
