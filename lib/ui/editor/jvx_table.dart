@@ -49,6 +49,7 @@ class JVxTable extends JVxEditor {
   ComponentCreator componentCreator;
   bool autoResize = false;
   bool _hasHorizontalScroller = false;
+  TextStyle headerStyleMandatory = new TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.bold);
 
   TextStyle get headerTextStyle {
     return this.style;
@@ -224,7 +225,7 @@ class JVxTable extends JVxEditor {
   }
 
   Widget getTableColumn(
-      String text, int rowIndex, int columnIndex, String columnName) {
+      String text, int rowIndex, int columnIndex, String columnName, {bool nullable}) {
     ICellEditor cellEditor = _getCellEditorForColumn(text, columnName);
     double width = 1;
 
@@ -237,7 +238,13 @@ class JVxTable extends JVxEditor {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
             child: Container(
-              child: Text(text, style: this.headerTextStyle),
+              child: Row(
+                children: [
+                  Text(text, style: !nullable ? headerStyleMandatory : this.headerTextStyle),
+                  SizedBox(width: 2,),
+                  !nullable ? Container(child: Icon(FontAwesomeIcons.asterisk, size: 8,), alignment: Alignment.bottomRight,): Text(''),
+                ],
+              ),
             ),
           ));
     } else {
@@ -264,7 +271,12 @@ class JVxTable extends JVxEditor {
 
     if (this.columnLabels != null) {
       this.columnLabels.asMap().forEach((i, c) {
-        children.add(getTableColumn(c.toString(), -1, i, columnNames[i]));
+        JVxMetaDataColumn column = this.data.getMetaDataColumn(columnNames[i]);
+        if(column.nullable){
+          children.add(getTableColumn(c.toString(), -1, i, columnNames[i], nullable: column.nullable));
+        } else {
+          children.add(getTableColumn(c.toString(), -1, i, columnNames[i], nullable: column.nullable));
+        }
       });
     }
 
