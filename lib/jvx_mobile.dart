@@ -32,7 +32,8 @@ class JvxMobile extends StatelessWidget {
                 if (param.contains("appName=")) {
                   globals.appName = param.split("=")[1];
                 } else if (param.contains("baseUrl=")) {
-                  globals.baseUrl = param.split("=")[1];
+                  var baseUrl = param.split("=")[1];
+                  globals.baseUrl = Uri.decodeFull(baseUrl);
                 } else if (param.contains("language=")) {
                   globals.language = param.split("=")[1];
                 } else if (param.contains("username=")) {
