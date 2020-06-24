@@ -138,6 +138,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   componentId = state.responseData.screenGeneric.componentId;
                 }
 
+                if (state.requestType == RequestType.NAVIGATION &&
+                    state.responseData.screenGeneric == null) {
+                  Navigator.of(context).pop();
+                }
+
                 screen.componentScreen.context = context;
                 screen.update(state.request, state.responseData);
                 this.setState(() {});
@@ -210,7 +215,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     currentTitle: widget.title,
                     groupedMenuMode:
                         (globals.applicationStyle.menuMode == 'grid_grouped' ||
-                            globals.applicationStyle.menuMode == 'list') & hasMultipleGroups(),
+                                globals.applicationStyle.menuMode == 'list') &
+                            hasMultipleGroups(),
                   ),
                   key: _scaffoldKey,
                   appBar: AppBar(
@@ -269,7 +275,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   bool hasMultipleGroups() {
     int groupCount = 0;
     String lastGroup = "";
-    if (widget.items!=null) {
+    if (widget.items != null) {
       widget.items?.forEach((m) {
         if (m.group != lastGroup) {
           groupCount++;
