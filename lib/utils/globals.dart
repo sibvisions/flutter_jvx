@@ -1,5 +1,7 @@
 library jvx_flutterclient.globals;
 
+import '../utils/i_app_listener.dart';
+import '../custom_screen/i_socket_handler.dart';
 import '../custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
 import '../model/action.dart' as prefix0;
 import '../model/api/response/application_style_resp.dart';
@@ -29,4 +31,6 @@ int uploadPicWidth = 320;
 String displayName;
 bool handleSessionTimeout = true;
 ICustomScreenManager customScreenManager;
+ISocketHandler customSocketHandler;
+IAppListener appListener;
 bool package = false;

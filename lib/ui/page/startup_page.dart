@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../utils/app_api.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../logic/bloc/theme_bloc.dart';
@@ -280,6 +281,13 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   void _loginMenu(Response state) {
+    globals.appListener.fireAfterStartupListener(AppApi(context));
+
+    if (globals.customSocketHandler != null) {
+      // initialize the Websocket Communication
+      globals.customSocketHandler.initCommunication();
+    }
+
     Menu menu = state.menu;
 
     if (state.menu == null &&
