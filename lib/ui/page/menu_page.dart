@@ -67,7 +67,9 @@ class MenuPage extends StatelessWidget {
       this.menuItems = menuManager.menuItems;
     }
 
-    globals.appListener.fireAfterStartupListener(AppApi(context));
+    if(globals.appListener != null){
+      globals.appListener.fireAfterStartupListener(AppApi(context));
+    }
 
     if (globals.customSocketHandler != null) {
       // initialize the Websocket Communication
