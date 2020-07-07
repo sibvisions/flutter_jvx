@@ -281,13 +281,6 @@ class _StartupPageState extends State<StartupPage> {
   }
 
   void _loginMenu(Response state) {
-    globals.appListener.fireAfterStartupListener(AppApi(context));
-
-    if (globals.customSocketHandler != null) {
-      // initialize the Websocket Communication
-      globals.customSocketHandler.initCommunication();
-    }
-
     Menu menu = state.menu;
 
     if (state.menu == null &&

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/utils/app_api.dart';
 
 import '../../ui/screen/menu_manager.dart';
 import '../../ui/widgets/menu_empty_widget.dart';
@@ -64,6 +65,13 @@ class MenuPage extends StatelessWidget {
       JVxMenuManager menuManager = JVxMenuManager(this.menuItems);
       globals.customScreenManager.onMenu(menuManager);
       this.menuItems = menuManager.menuItems;
+    }
+
+    globals.appListener.fireAfterStartupListener(AppApi(context));
+
+    if (globals.customSocketHandler != null) {
+      // initialize the Websocket Communication
+      globals.customSocketHandler.initCommunication();
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
