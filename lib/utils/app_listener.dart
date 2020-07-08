@@ -1,4 +1,4 @@
-abstract class AppListener {
+class AppListener {
   List<Function> _afterStartupListeners = <Function>[];
 
   AppListener addAfterStartupListener(Function afterStartupListener){
