@@ -1,6 +1,6 @@
 library jvx_flutterclient.globals;
 
-import '../utils/i_app_listener.dart';
+import 'app_listener.dart';
 import '../custom_screen/i_socket_handler.dart';
 import '../custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
 import '../model/action.dart' as prefix0;
@@ -32,6 +32,6 @@ String displayName;
 bool handleSessionTimeout = true;
 ICustomScreenManager customScreenManager;
 ISocketHandler customSocketHandler;
-IAppListener appListener;
+AppListener appListener;
 bool package = false;
 Map<String, String> files = Map<String, String>();

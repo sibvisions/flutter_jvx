@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../application_widget.dart';
 import '../utils/config.dart';
 import '../utils/globals.dart' as globals;
-import '../utils/i_app_listener.dart';
+import '../utils/app_listener.dart';
 import 'custom_screen_manager/i_custom_screen_manager.dart';
 
 /// A widget returning the entire Application.
@@ -25,7 +25,7 @@ class CustomApplicationWidget extends ApplicationWidget {
   /// The default is `true`.
   final bool handleSessionTimeout;
   //The AppListener to react to certain events during app usage
-  final IAppListener appListener;
+  final AppListener appListener;
 
   CustomApplicationWidget(
       {this.screenManager,
