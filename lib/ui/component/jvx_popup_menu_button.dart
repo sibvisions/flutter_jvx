@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:convert' as utf8;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,7 +12,6 @@ import '../../ui/component/jvx_popup_menu.dart';
 import '../../utils/uidata.dart';
 import '../../utils/text_utils.dart';
 import '../../logic/bloc/api_bloc.dart';
-import '../../model/api/request/set_component_value.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
@@ -56,22 +57,41 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
         icon = convertFontAwesomeTextToIcon(image, UIData.textColor);
       } else {
         List strinArr = List<String>.from(image.split(','));
-        File file = File('${globals.dir}${strinArr[0]}');
-        if (file.existsSync()) {
-          Size size = Size(16, 16);
+        if (kIsWeb){
+          if (globals.files.containsKey(strinArr[0]))
+          {
+            Size size = Size(16, 16);
 
-          if (strinArr.length >= 3 &&
-              double.tryParse(strinArr[1]) != null &&
-              double.tryParse(strinArr[2]) != null)
-            size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
-          icon = Image.memory(
-            file.readAsBytesSync(),
-            width: size.width,
-            height: size.height,
-          );
+            if (strinArr.length >= 3 &&
+                double.tryParse(strinArr[1]) != null &&
+                double.tryParse(strinArr[2]) != null){
+                  size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+                }
+              icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]), width: size.width,
+              height: size.height);
 
-          BlocProvider.of<ApiBloc>(context)
-              .dispatch(Reload(requestType: RequestType.RELOAD));
+            BlocProvider.of<ApiBloc>(context)
+                .dispatch(Reload(requestType: RequestType.RELOAD));
+          }
+        }
+        else { 
+          File file = File('${globals.dir}${strinArr[0]}');
+          if (file.existsSync()) {
+            Size size = Size(16, 16);
+
+            if (strinArr.length >= 3 &&
+                double.tryParse(strinArr[1]) != null &&
+                double.tryParse(strinArr[2]) != null)
+              size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+            icon = Image.memory(
+              file.readAsBytesSync(),
+              width: size.width,
+              height: size.height,
+            );
+
+            BlocProvider.of<ApiBloc>(context)
+                .dispatch(Reload(requestType: RequestType.RELOAD));
+          }
         }
       }
     }

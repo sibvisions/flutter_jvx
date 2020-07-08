@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:convert' as utf8;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinycolor/tinycolor.dart';
@@ -33,22 +35,41 @@ class JVxButton extends JVxActionComponent {
         icon = convertFontAwesomeTextToIcon(image, UIData.textColor);
       } else {
         List strinArr = List<String>.from(image.split(','));
-        File file = File('${globals.dir}${strinArr[0]}');
-        if (file.existsSync()) {
-          Size size = Size(16, 16);
+        if (kIsWeb){
+          if (globals.files.containsKey(strinArr[0]))
+          {
+            Size size = Size(16, 16);
 
-          if (strinArr.length >= 3 &&
-              double.tryParse(strinArr[1]) != null &&
-              double.tryParse(strinArr[2]) != null)
-            size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
-          icon = Image.memory(
-            file.readAsBytesSync(),
-            width: size.width,
-            height: size.height,
-          );
+            if (strinArr.length >= 3 &&
+                double.tryParse(strinArr[1]) != null &&
+                double.tryParse(strinArr[2]) != null){
+                  size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+                }
+              icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]), width: size.width,
+              height: size.height);
 
-          BlocProvider.of<ApiBloc>(context)
-              .dispatch(Reload(requestType: RequestType.RELOAD));
+            BlocProvider.of<ApiBloc>(context)
+                .dispatch(Reload(requestType: RequestType.RELOAD));
+          }
+        }
+        else {        
+          File file = File('${globals.dir}${strinArr[0]}');
+          if (file.existsSync()) {
+            Size size = Size(16, 16);
+
+            if (strinArr.length >= 3 &&
+                double.tryParse(strinArr[1]) != null &&
+                double.tryParse(strinArr[2]) != null)
+              size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+            icon = Image.memory(
+              file.readAsBytesSync(),
+              width: size.width,
+              height: size.height,
+            );
+
+            BlocProvider.of<ApiBloc>(context)
+                .dispatch(Reload(requestType: RequestType.RELOAD));
+          }
         }
       }
     }

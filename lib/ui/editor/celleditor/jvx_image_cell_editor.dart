@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:convert' as utf8;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../ui/layout/i_alignment_constants.dart';
 import '../../../logic/bloc/api_bloc.dart';
 import '../../../model/api/request/reload.dart';
@@ -43,15 +45,28 @@ class JVxImageCellEditor extends JVxCellEditor {
         .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME);
 
     if (defaultImageName != null) {
-      file = File(defaultImageName != null
-          ? '${globals.dir}$defaultImageName'
-          : 'assets/images/sib_visions.jpg');
-      if (file.existsSync()) {
-        defaultImage = Image.memory(
-          file.readAsBytesSync(),
-        );
-        BlocProvider.of<ApiBloc>(context)
-            .dispatch(Reload(requestType: RequestType.RELOAD));
+      if(kIsWeb)
+      {
+        if (globals.files.containsKey(defaultImageName))
+        {
+          defaultImage = Image.memory(utf8.base64Decode(globals.files[defaultImageName]));
+
+          BlocProvider.of<ApiBloc>(context)
+              .dispatch(Reload(requestType: RequestType.RELOAD));
+        }
+      }
+      else
+      {
+        file = File(defaultImageName != null
+            ? '${globals.dir}$defaultImageName'
+            : 'assets/images/sib_visions.jpg');
+        if (file.existsSync()) {
+          defaultImage = Image.memory(
+            file.readAsBytesSync(),
+          );
+          BlocProvider.of<ApiBloc>(context)
+              .dispatch(Reload(requestType: RequestType.RELOAD));
+        }
       }
     }
   }
@@ -90,15 +105,28 @@ class JVxImageCellEditor extends JVxCellEditor {
     if (value == null && defaultImageName != null && defaultImage == null) {
       currentImage = null;
 
-      file = File(defaultImageName != null
-          ? '${globals.dir}$defaultImageName'
-          : 'assets/images/sib_visions.jpg');
-      if (file.existsSync()) {
-        defaultImage = Image.memory(
-          file.readAsBytesSync(),
-        );
-        BlocProvider.of<ApiBloc>(context)
-            .dispatch(Reload(requestType: RequestType.RELOAD));
+      if(kIsWeb)
+      {
+        if (globals.files.containsKey(defaultImageName))
+        {
+          defaultImage = Image.memory(utf8.base64Decode(globals.files[defaultImageName]));
+
+          BlocProvider.of<ApiBloc>(context)
+              .dispatch(Reload(requestType: RequestType.RELOAD));
+        }
+      }
+      else
+      {
+        file = File(defaultImageName != null
+            ? '${globals.dir}$defaultImageName'
+            : 'assets/images/sib_visions.jpg');
+        if (file.existsSync()) {
+          defaultImage = Image.memory(
+            file.readAsBytesSync(),
+          );
+          BlocProvider.of<ApiBloc>(context)
+              .dispatch(Reload(requestType: RequestType.RELOAD));
+        }
       }
     }
   }

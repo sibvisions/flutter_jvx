@@ -9,6 +9,7 @@ import '../model/api/request/request.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xml/xml.dart' as xml;
 import '../utils/globals.dart' as globals;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class Translations {
   Translations(Locale locale) {
@@ -88,6 +89,10 @@ class Translations {
   static Future<bool> shouldDownload() async {
     var _dir;
 
+    if (kIsWeb) {
+      return true;
+    } 
+
     if (Platform.isIOS) {
       _dir = (await getApplicationSupportDirectory()).path;
     } else {
@@ -149,21 +154,26 @@ class XmlLoader {
       File file;
       String contents;
 
-      if (globals.translation['translation.xml'] != null)
-        file = new File(globals.translation['translation.xml']);
+      if(kIsWeb){
+        contents = globals.files[globals.translation['translation_$lang.xml']];
+      }
+      else{
+        if (globals.translation['translation.xml'] != null)
+          file = new File(globals.translation['translation.xml']);
 
-      if (file.existsSync()) {
-        contents = file.readAsStringSync();
-      } else {
-        print('Error with Loading ${globals.translation["translation.xml"]}');
-        print('Starting download...');
-        if (context != null) {
-          BlocProvider.of(context).dispatch(Download(
-              name: 'translation',
-              applicationImages: false,
-              libraryImages: false,
-              clientId: globals.clientId,
-              requestType: RequestType.DOWNLOAD_TRANSLATION));
+        if (file.existsSync()) {
+          contents = file.readAsStringSync();
+        } else {
+          print('Error with Loading ${globals.translation["translation.xml"]}');
+          print('Starting download...');
+          if (context != null) {
+            BlocProvider.of(context).dispatch(Download(
+                name: 'translation',
+                applicationImages: false,
+                libraryImages: false,
+                clientId: globals.clientId,
+                requestType: RequestType.DOWNLOAD_TRANSLATION));
+          }
         }
       }
 
@@ -183,13 +193,18 @@ class XmlLoader {
       File file;
       String contents;
 
-      file = new File(globals.translation['translation_$lang.xml']);
+      if(kIsWeb){
+        contents = globals.files[globals.translation['translation_$lang.xml']];
+      }
+      else{
+        file = new File(globals.translation['translation_$lang.xml']);
 
-      if (file.existsSync()) {
-        contents = file.readAsStringSync();
-      } else {
-        print(
-            'Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+        if (file.existsSync()) {
+          contents = file.readAsStringSync();
+        } else {
+          print(
+              'Error with Loading ${globals.translation["translation_" + lang + ".xml"]}');
+        }
       }
 
       Map<String, String> translations = <String, String>{};

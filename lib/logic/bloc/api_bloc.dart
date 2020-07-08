@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'dart:io';
+import 'package:universal_io/prefer_universal/io.dart' as uio;
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
@@ -36,8 +36,11 @@ import 'package:connectivity/connectivity.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../model/api/request/data/meta_data.dart'
-    as dataModel;
+import '../../model/api/request/data/meta_data.dart' as dataModel;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:convert' show utf8;
+import 'dart:convert';
+import 'package:universal_html/prefer_universal/html.dart' as html;
 
 class ApiBloc extends Bloc<Request, Response> {
   Queue<Request> _queue = Queue<Request>();
@@ -308,95 +311,158 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download request) async* {
     Response resp = await processRequest(request);
 
-    if (request.requestType == RequestType.DOWNLOAD) {
-      final directory = Platform.isAndroid
-          ? await getExternalStorageDirectory()
-          : await getApplicationDocumentsDirectory();
+    if (kIsWeb){
+      if (request.requestType == RequestType.DOWNLOAD) {
+        final blob = html.Blob([resp.download]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = resp.downloadFileName;
+        html.document.body.children.add(anchor);
 
-      var filename = '${directory.path}/${resp.downloadFileName}';
+        // download
+        anchor.click();
 
-      var outFile = File(filename);
-      outFile = await outFile.create(recursive: true);
-      await outFile.writeAsBytes(resp.download);
-    } else {
-      var _dir;
-
-      if (Platform.isIOS) {
-        _dir = (await getApplicationSupportDirectory()).path;
-      } else {
-        _dir = (await getApplicationDocumentsDirectory()).path;
+        // cleanup
+        html.document.body.children.remove(anchor);
+        html.Url.revokeObjectUrl(url);
       }
+      else{
+        if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+          var _dir = "";
+          globals.dir = _dir;
 
-      globals.dir = _dir;
+          var archive = resp.download;
 
-      if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-        Directory directory = Directory('${globals.dir}/translations');
+          globals.translation = <String, String>{};
 
-        if (directory.existsSync()) {
-          directory.listSync().forEach((entity) {
-            if (entity.path !=
-                '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-              Directory appNameDir = Directory(entity.path);
+          String trimmedUrl = globals.baseUrl.split('/')[2];
 
-              appNameDir.deleteSync(recursive: true);
-
-              // appNameDir.listSync().forEach((appNameEntity) {
-              //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
-              //     Directory appVersionDir = Directory(appNameEntity.path);
-
-              //     appVersionDir.deleteSync();
-              //   }
-              // });
+          for (var file in archive) {
+            var filename =
+                '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
+            if (file.isFile) {
+              globals.files.putIfAbsent(filename, () => utf8.decode((file.content)));
+              globals.translation[file.name] = '$filename';
             }
-          });
-        }
+          }
 
-        var archive = resp.download;
+          SharedPreferencesHelper().setTranslation(globals.translation);
+          Translations.load(Locale(globals.language));
+        } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
+          var archive = resp.download;
 
-        globals.translation = <String, String>{};
+          globals.images = List<String>();
 
-        String trimmedUrl = globals.baseUrl.split('/')[2];
+          for (var file in archive) {
+            var _dir = "";
+            globals.dir = _dir;
 
-        for (var file in archive) {
-          var filename =
-              '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
-          if (file.isFile) {
-            var outFile = File(filename);
-            globals.translation[file.name] = '$filename';
-            outFile = await outFile.create(recursive: true);
-            await outFile.writeAsBytes(file.content);
+            var filename = '${globals.dir}/${file.name}';
+            if (file.isFile) {
+              globals.files.putIfAbsent(filename, () => utf8.decode(file.content));
+            }
           }
         }
+      }
+    }
+    else
+    {
+      if (!kIsWeb && request.requestType == RequestType.DOWNLOAD) {
+        final directory = uio.Platform.isAndroid
+            ? await getExternalStorageDirectory()
+            : await getApplicationDocumentsDirectory();
 
-        SharedPreferencesHelper().setTranslation(globals.translation);
-        Translations.load(Locale(globals.language));
-      } else if (request.requestType == RequestType.DOWNLOAD_IMAGES) {
-        var archive = resp.download;
+        var filename = '${directory.path}/${resp.downloadFileName}';
 
-        globals.images = List<String>();
+        var outFile = uio.File(filename);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(resp.download);
+      } else {
+        var _dir;
 
-        for (var file in archive) {
-          var filename = '${globals.dir}/${file.name}';
-          if (file.isFile) {
-            var outFile = File(filename);
-            globals.images.add(filename);
-            outFile = await outFile.create(recursive: true);
-            await outFile.writeAsBytes(file.content);
+        if (uio.Platform.isIOS) {
+          _dir = (await getApplicationSupportDirectory()).path;
+        } else {
+          _dir = (await getApplicationDocumentsDirectory()).path;
+        }
+
+        globals.dir = _dir;
+
+        if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+          uio.Directory directory = uio.Directory('${globals.dir}/translations');
+
+          if (directory.existsSync()) {
+            directory.listSync().forEach((entity) {
+              if (entity.path !=
+                  '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+                uio.Directory appNameDir = uio.Directory(entity.path);
+
+                appNameDir.deleteSync(recursive: true);
+
+                // appNameDir.listSync().forEach((appNameEntity) {
+                //   if (appNameEntity.path != '${globals.dir}/translations/${globals.baseUrl.split('/')[2]}') {
+                //     Directory appVersionDir = Directory(appNameEntity.path);
+
+                //     appVersionDir.deleteSync();
+                //   }
+                // });
+              }
+            });
+          }
+
+          var archive = resp.download;
+
+          globals.translation = <String, String>{};
+
+          String trimmedUrl = globals.baseUrl.split('/')[2];
+
+          for (var file in archive) {
+            var filename =
+                '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
+            if (file.isFile) {
+              var outFile = uio.File(filename);
+              globals.translation[file.name] = '$filename';
+              outFile = await outFile.create(recursive: true);
+              await outFile.writeAsBytes(file.content);
+            }
+          }
+
+          SharedPreferencesHelper().setTranslation(globals.translation);
+          Translations.load(Locale(globals.language));
+        } else if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_IMAGES) {
+          var archive = resp.download;
+
+          globals.images = List<String>();
+
+          for (var file in archive) {
+            var filename = '${globals.dir}/${file.name}';
+            if (file.isFile) {
+              var outFile = uio.File(filename);
+              globals.images.add(filename);
+              outFile = await outFile.create(recursive: true);
+              await outFile.writeAsBytes(file.content);
+            }
           }
         }
       }
     }
 
     yield resp;
-  }
+  }  
 
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
     var _dir;
 
-    if (Platform.isIOS) {
-      _dir = (await getApplicationSupportDirectory()).path;
+    if (!kIsWeb) {
+      if (uio.Platform.isIOS) {
+        _dir = (await getApplicationSupportDirectory()).path;
+      } else {
+        _dir = (await getApplicationDocumentsDirectory()).path;
+      }
     } else {
-      _dir = (await getApplicationDocumentsDirectory()).path;
+      _dir = '';
     }
 
     globals.dir = _dir;
@@ -660,12 +726,16 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Future<bool> _checkConnectivity() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (kIsWeb) {
       return true;
+    } else {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+
+      if (connectivityResult == ConnectivityResult.mobile ||
+          connectivityResult == ConnectivityResult.wifi) {
+        return true;
+      }
+      return false;
     }
-    return false;
   }
 }

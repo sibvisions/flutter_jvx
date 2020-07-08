@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../utils/app_api.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../logic/bloc/theme_bloc.dart';
@@ -115,8 +115,11 @@ class _StartupPageState extends State<StartupPage> {
         print("******************************************************");
 
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
-          globals.appName = val[0].appName;
-          SharedPreferencesHelper().setData(val[0].appName, null, null, null);
+          if(globals.appName == null)
+          {
+            globals.appName = val[0].appName;
+            SharedPreferencesHelper().setData(val[0].appName, null, null, null);
+          }
         } else {
           showError(context, 'Error in Config',
               'Please enter a valid application name in conf.json and restart the app.');
@@ -129,8 +132,11 @@ class _StartupPageState extends State<StartupPage> {
                 'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
             return;
           } else {
-            globals.baseUrl = val[0].baseUrl;
-            SharedPreferencesHelper().setData(null, val[0].baseUrl, null, null);
+            if(globals.baseUrl == null)
+            {
+              globals.baseUrl = val[0].baseUrl;
+              SharedPreferencesHelper().setData(null, val[0].baseUrl, null, null);
+            }
           }
         } else {
           showError(context, 'Error in Config',
@@ -191,12 +197,6 @@ class _StartupPageState extends State<StartupPage> {
       } else {
         globals.appName = prefData['appName'];
       }
-      if (prefData['baseUrl'] == 'null' ||
-          prefData['baseUrl'] == null ||
-          prefData['baseUrl'].isEmpty) {
-      } else {
-        globals.baseUrl = prefData['baseUrl'];
-      }
       if (prefData['language'] == 'null' ||
           prefData['language'] == null ||
           prefData['language'].isEmpty) {
@@ -224,6 +224,7 @@ class _StartupPageState extends State<StartupPage> {
         applicationImages: true,
         libraryImages: true,
         clientId: globals.clientId,
+        contentMode: kIsWeb ? 'base64': null,
         name: 'images',
         requestType: RequestType.DOWNLOAD_IMAGES);
 

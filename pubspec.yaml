@@ -19,14 +19,14 @@ dependencies:
   flutter_widgets: ^0.1.12
   flutter_cupertino_localizations: ^1.0.1
   cupertino_icons: ^0.1.2
-  http_middleware: ^1.0.0
-  http: ^0.11.3+16
+  http: ^0.12.1
   font_awesome_flutter: ^8.5.0
   json_annotation: ^2.4.0
-  shared_preferences: ^0.5.3+4
+  shared_preferences: ^0.5.7+3
+  shared_preferences_web: ^0.1.2+7
   flutter_picker: ^1.1.0
   path_provider: ^1.6.7
-  archive: ^2.0.10
+  archive: ^2.0.13
   xml: ^3.2.0 
   gson: ^0.1.2
   bloc: ^0.15.0
@@ -45,8 +45,10 @@ dependencies:
   sticky_headers: ^0.1.8+1
   auto_size_text: ^2.1.0
   tinycolor: ^1.0.2
-  url_launcher: ^5.4.10
   flutter_swiper : ^1.1.6
+  universal_io: ^1.0.1
+  universal_html: ^1.2.3
+  url_launcher: ^5.5.0
 
 dev_dependencies:
   flutter_test:

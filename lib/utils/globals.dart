@@ -34,3 +34,4 @@ ICustomScreenManager customScreenManager;
 ISocketHandler customSocketHandler;
 IAppListener appListener;
 bool package = false;
+Map<String, String> files = Map<String, String>();
