@@ -287,188 +287,192 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     return (groupCount > 1);
   }
 
-  Widget _buildFileChooser(File file) {
-  if (kIsWeb) {
-    return Container(
-            height: 120,
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(
-                        Translations.of(context)
-                            .text2('Choose file', 'Choose file'),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    IconButton(
-                      color: Colors.grey[300],
-                      icon: Icon(FontAwesomeIcons.timesCircle),
-                      onPressed: () => Navigator.of(context).pop(),
-                    )
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () => pick('file system').then((val) {
-                    file = val;
-                    Navigator.of(context).pop();
-                  }),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.folderOpen,
-                          color: UIData.ui_kit_color_2,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          Translations.of(context).text2('Filesystem'),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-  }
-  return Container(
-            height: 220,
-            width: double.infinity,
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(
-                        Translations.of(context)
-                            .text2('Choose file', 'Choose file'),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    IconButton(
-                      color: Colors.grey[300],
-                      icon: Icon(FontAwesomeIcons.timesCircle),
-                      onPressed: () => Navigator.of(context).pop(),
-                    )
-                  ],
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () => pick('camera').then((val) async {
-                    ImageProperties properties =
-                        await FlutterNativeImage.getImageProperties(val.path);
-                    File compressedImage =
-                        await FlutterNativeImage.compressImage(val.path,
-                            quality: 80,
-                            targetWidth: globals.uploadPicWidth,
-                            targetHeight: (properties.height *
-                                    globals.uploadPicWidth /
-                                    properties.width)
-                                .round());
-
-                    file = compressedImage;
-
-                    Navigator.of(context).pop();
-                  }),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.camera,
-                          color: UIData.ui_kit_color_2,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          Translations.of(context).text2('Camera', 'Camera'),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () => pick('gallery').then((val) {
-                    file = val;
-                    Navigator.of(context).pop();
-                  }),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.images,
-                          color: UIData.ui_kit_color_2,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          Translations.of(context).text2('Gallery', 'Gallery'),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () => pick('file system').then((val) {
-                    file = val;
-                    Navigator.of(context).pop();
-                  }),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.folderOpen,
-                          color: UIData.ui_kit_color_2,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Text(
-                          Translations.of(context).text2('Filesystem'),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-}
-
   Future<File> openFilePicker(BuildContext context) async {
     File file;
+    if (!kIsWeb) {
+      await showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              height: 220,
+              width: double.infinity,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Text(
+                          Translations.of(context)
+                              .text2('Choose file', 'Choose file'),
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      IconButton(
+                        color: Colors.grey[300],
+                        icon: Icon(FontAwesomeIcons.timesCircle),
+                        onPressed: () => Navigator.of(context).pop(),
+                      )
+                    ],
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => pick('camera').then((val) async {
+                      ImageProperties properties =
+                          await FlutterNativeImage.getImageProperties(val.path);
+                      File compressedImage =
+                          await FlutterNativeImage.compressImage(val.path,
+                              quality: 80,
+                              targetWidth: globals.uploadPicWidth,
+                              targetHeight: (properties.height *
+                                      globals.uploadPicWidth /
+                                      properties.width)
+                                  .round());
 
-    await showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-        context: context,
-        builder: (BuildContext context) {
-          return _buildFileChooser(file);
-        });
+                      file = compressedImage;
+
+                      Navigator.of(context).pop();
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.camera,
+                            color: UIData.ui_kit_color_2,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            Translations.of(context).text2('Camera', 'Camera'),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => pick('gallery').then((val) {
+                      file = val;
+                      Navigator.of(context).pop();
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.images,
+                            color: UIData.ui_kit_color_2,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            Translations.of(context)
+                                .text2('Gallery', 'Gallery'),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () => pick('file system').then((val) {
+                      file = val;
+                      Navigator.of(context).pop();
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.folderOpen,
+                            color: UIData.ui_kit_color_2,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            Translations.of(context).text2('Filesystem'),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    } else {
+      await showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              height: 120,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Text(
+                          Translations.of(context)
+                              .text2('Choose file', 'Choose file'),
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      IconButton(
+                        color: Colors.grey[300],
+                        icon: Icon(FontAwesomeIcons.timesCircle),
+                        onPressed: () => Navigator.of(context).pop(),
+                      )
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () => pick('file system').then((val) {
+                      file = val;
+                      Navigator.of(context).pop();
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                            FontAwesomeIcons.folderOpen,
+                            color: UIData.ui_kit_color_2,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            Translations.of(context).text2('Filesystem'),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          });
+    }
 
     return file;
   }
