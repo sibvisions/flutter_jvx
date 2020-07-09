@@ -7,10 +7,10 @@ import '../model/api/request/open_screen.dart';
 import '../model/action.dart' as act;
 import 'globals.dart' as globals;
 
-class AppApi {
+class ApplicationApi {
   BuildContext _context;
 
-  AppApi(this._context);
+  ApplicationApi(this._context);
 
   reload() {
     BlocProvider.of<ApiBloc>(_context)
