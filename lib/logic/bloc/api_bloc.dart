@@ -265,6 +265,8 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> openscreen(OpenScreen request) async* {
     prefix0.Action action = request.action;
 
+    globals.currentScreenComponentId = action.componentId;
+
     Response resp = await processRequest(request);
 
     if (!resp.error) resp.action = action;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/request/close_screen.dart';
 import '../logic/bloc/api_bloc.dart';
 import '../model/api/request/reload.dart';
 import '../model/api/request/request.dart';
@@ -27,6 +28,15 @@ class ApplicationApi {
         requestType: RequestType.OPEN_SCREEN);
 
     BlocProvider.of<ApiBloc>(_context).dispatch(openScreen);
+  }
+
+  closeScreen(String componentId) {
+    CloseScreen closeScreen = CloseScreen(
+          clientId: globals.clientId,
+          componentId: componentId,
+          requestType: RequestType.CLOSE_SCREEN);
+
+    BlocProvider.of<ApiBloc>(_context).dispatch(closeScreen);
   }
 
   dispatch(Request request){
