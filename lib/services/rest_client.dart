@@ -62,6 +62,7 @@ class RestClient {
     updateCookie(response);
 
     if (debug) {
+      Log.printLong("Request: $content");
       Log.printLong('Response: ${response.body}');
     }
 
@@ -86,6 +87,7 @@ class RestClient {
           }).timeout(const Duration(seconds: 10));
 
       if (debug) {
+        Log.printLong("Request: $content");
         Log.printLong("Response: ${response.body}");
       }
 
@@ -146,6 +148,7 @@ class RestClient {
     }
 
     if (debug) {
+      Log.printLong("Request: $content");
       Log.printLong('Response: ${response.body}');
     }
 

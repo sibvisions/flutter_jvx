@@ -61,7 +61,8 @@ enum ComponentProperty {
   BORDER,
   COLUMNS,
   DEFAULT_MENU_ITEM,
-  AUTO_RESIZE
+  AUTO_RESIZE,
+  EDITABLE
 }
 
 class ComponentProperties {

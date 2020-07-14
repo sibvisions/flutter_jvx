@@ -3,8 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/ui/editor/celleditor/i_cell_editor.dart';
-import 'package:jvx_flutterclient/ui/editor/jvx_table_column_calculator.dart';
+import '../../ui/editor/jvx_table_column_calculator.dart';
 import '../../model/api/response/meta_data/jvx_meta_data_column.dart';
 import '../../model/changed_component.dart';
 import '../../model/api/response/data/jvx_data.dart';
@@ -25,7 +24,7 @@ class JVxTable extends JVxEditor {
   // column labels for header
   List<String> columnLabels = <String>[];
 
-  // the show vertical lines flag.
+  // the show vertical lines flag. 
   bool showVerticalLines = false;
 
   // the show horizontal lines flag.
@@ -33,6 +32,9 @@ class JVxTable extends JVxEditor {
 
   // the show table header flag
   bool tableHeaderVisible = true;
+
+  // table editable
+  bool editable = true;
 
   int selectedRow;
 
@@ -108,6 +110,8 @@ class JVxTable extends JVxEditor {
         ComponentProperty.COLUMN_LABELS, columnLabels);
     autoResize = changedComponent.getProperty<bool>(
         ComponentProperty.AUTO_RESIZE, autoResize);
+    editable = changedComponent.getProperty<bool>(
+        ComponentProperty.AUTO_RESIZE, editable);
 
     int newSelectedRow =
         changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW);
@@ -210,20 +214,6 @@ class JVxTable extends JVxEditor {
     }
   }
 
-  ICellEditor _getCellEditorForColumn(String text, String columnName) {
-    JVxMetaDataColumn column = this.data.getMetaDataColumn(columnName);
-
-    if (column != null) {
-      ICellEditor clEditor =
-          componentCreator.createCellEditorForTable(column.cellEditor);
-      // clEditor.onValueChanged = onValueChanged;
-      clEditor?.editable = false;
-      clEditor?.value = text;
-      return clEditor;
-    }
-    return null;
-  }
-
   JVxEditor _getEditorForColumn(String text, String columnName) {
     JVxMetaDataColumn column = this.data.getMetaDataColumn(columnName);
 
@@ -234,6 +224,7 @@ class JVxTable extends JVxEditor {
         clEditor.columnName = columnName;
         clEditor.data = this.data;
         clEditor.cellEditor.value = text;
+        clEditor.cellEditor.editable = this.editable;
         return clEditor;
       }
     }
@@ -242,7 +233,7 @@ class JVxTable extends JVxEditor {
 
   Widget getTableColumn(
       String text, int rowIndex, int columnIndex, String columnName, {bool nullable}) {
-    ICellEditor cellEditor = _getCellEditorForColumn(text, columnName);
+    JVxEditor editor = _getEditorForColumn(text, columnName);
     double width = 1;
 
     if (columnInfo != null && columnIndex < columnInfo.length)
@@ -270,8 +261,8 @@ class JVxTable extends JVxEditor {
             padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
             child: GestureDetector(
               child: Container(
-                  child: (cellEditor != null)
-                      ? cellEditor.getWidget()
+                  child: (editor != null)
+                      ? editor.getWidget()
                       : Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: Text(text, style: this.itemTextStyle),
