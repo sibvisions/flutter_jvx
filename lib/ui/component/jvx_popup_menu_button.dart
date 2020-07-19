@@ -57,24 +57,22 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
         icon = convertFontAwesomeTextToIcon(image, UIData.textColor);
       } else {
         List strinArr = List<String>.from(image.split(','));
-        if (kIsWeb){
-          if (globals.files.containsKey(strinArr[0]))
-          {
+        if (kIsWeb) {
+          if (globals.files.containsKey(strinArr[0])) {
             Size size = Size(16, 16);
 
             if (strinArr.length >= 3 &&
                 double.tryParse(strinArr[1]) != null &&
-                double.tryParse(strinArr[2]) != null){
-                  size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
-                }
-              icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]), width: size.width,
-              height: size.height);
+                double.tryParse(strinArr[2]) != null) {
+              size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+            }
+            icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]),
+                width: size.width, height: size.height);
 
             BlocProvider.of<ApiBloc>(context)
                 .dispatch(Reload(requestType: RequestType.RELOAD));
           }
-        }
-        else { 
+        } else {
           File file = File('${globals.dir}${strinArr[0]}');
           if (file.existsSync()) {
             Size size = Size(16, 16);
@@ -100,6 +98,8 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
   void buttonPressed() {
     if (defaultMenuItem != null) {
       valueChanged(this.name);
+    } else {
+      _showPopupMenu();
     }
   }
 
@@ -110,6 +110,57 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
       PressButton pressButton =
           PressButton(jvxAction.Action(componentId: value, label: null));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
+    });
+  }
+
+  PopupMenuButton<String> _getPopupMenu(ColorScheme colorScheme) {
+    return PopupMenuButton<String>(
+      onSelected: (String item) {
+        valueChanged(item);
+      },
+      itemBuilder: (BuildContext context) {
+        List<PopupMenuItem<String>> menuItems =
+            new List<PopupMenuItem<String>>();
+        menu?.menuItems?.forEach((i) {
+          menuItems
+              .add(PopupMenuItem<String>(value: i.name, child: Text(i.text)));
+        });
+        return menuItems;
+      },
+      padding: EdgeInsets.only(bottom: 8, left: 16),
+      icon: Icon(
+        FontAwesomeIcons.sortDown,
+        color: colorScheme.brightness == Brightness.light
+            ? colorScheme.onPrimary
+            : colorScheme.onSurface,
+      ),
+    );
+  }
+
+  void _showPopupMenu() async {
+    List<PopupMenuItem<String>> menuItems = new List<PopupMenuItem<String>>();
+    menu?.menuItems?.forEach((i) {
+      menuItems.add(PopupMenuItem<String>(value: i.name, child: Text(i.text)));
+    });
+
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final RenderBox button = this.componentId.currentContext.findRenderObject();
+    Offset tabPosition = button.localToGlobal(Offset.zero);
+    final size = button.size;
+    tabPosition = Offset(
+        tabPosition.dx + size.width / 2, tabPosition.dy + size.height / 2);
+
+    await showMenu<String>(
+      context: context,
+      position: RelativeRect.fromRect(
+          tabPosition & Size(40, 40), // smaller rect, the touch area
+          Offset.zero & overlay.size // Bigger rect, the entire screen
+          ),
+      items: menuItems,
+    ).then<void>((String newValue) {
+      valueChanged(newValue);
     });
   }
 
@@ -138,8 +189,8 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
 
     return Container(
       child: ButtonTheme(
-          minWidth: 44,
-          child: RaisedButton(
+        minWidth: 44,
+        child: RaisedButton(
             key: this.componentId,
             onPressed: this.enabled ? buttonPressed : null,
             color: UIData.ui_kit_color_2[400],
@@ -147,30 +198,10 @@ class JVxPopupMenuButton extends JVxComponent implements IComponent {
             shape: globals.applicationStyle.buttonShape,
             child: Row(children: <Widget>[
               Expanded(child: Center(child: child)),
-              PopupMenuButton<String>(
-                onSelected: (String item) {
-                  valueChanged(item);
-                },
-                itemBuilder: (BuildContext context) {
-                  List<PopupMenuItem<String>> menuItems =
-                      new List<PopupMenuItem<String>>();
-                  menu?.menuItems?.forEach((i) {
-                    menuItems.add(PopupMenuItem<String>(
-                        value: i.name, child: Text(i.text)));
-                  });
-                  return menuItems;
-                },
-                padding: EdgeInsets.only(bottom: 8, left: 16),
-                icon: Icon(
-                  FontAwesomeIcons.sortDown,
-                  color: colorScheme.brightness == Brightness.light
-                      ? colorScheme.onPrimary
-                      : colorScheme.onSurface,
-                ),
-              )
-            ]),
-            splashColor: this.background,
-          )),
+              _getPopupMenu(colorScheme),
+            ])),
+        splashColor: this.background,
+      ),
     );
   }
 }
