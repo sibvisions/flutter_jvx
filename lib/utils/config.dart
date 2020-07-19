@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'globals.dart' as globals;
 
 /// Config for Developers:
@@ -52,13 +53,16 @@ class Config {
       return conf;
     }
     Config config;
-    try {
-      String configString =
-          await rootBundle.loadString(path ?? "env/conf.json", cache: false);
 
-      config = Config.fromJson(json.decode(configString));
-    } catch (e) {
-      print('Error: Config File not found');
+    if (!kReleaseMode) {
+      try {
+        String configString =
+            await rootBundle.loadString(path ?? "env/conf.json", cache: false);
+
+        config = Config.fromJson(json.decode(configString));
+      } catch (e) {
+        print('Error: Config File not found');
+      }
     }
 
     return config;
