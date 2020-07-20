@@ -24,7 +24,7 @@ class JVxTable extends JVxEditor {
   // column labels for header
   List<String> columnLabels = <String>[];
 
-  // the show vertical lines flag. 
+  // the show vertical lines flag.
   bool showVerticalLines = false;
 
   // the show horizontal lines flag.
@@ -49,10 +49,13 @@ class JVxTable extends JVxEditor {
   ComponentCreator componentCreator;
   bool autoResize = false;
   bool _hasHorizontalScroller = false;
-  TextStyle headerStyleMandatory = new TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.bold);
+
+  TextStyle get headerStyleMandatory {
+    return this.headerTextStyle;
+  }
 
   TextStyle get headerTextStyle {
-    return this.style;
+    return this.style.copyWith(fontWeight: FontWeight.bold);
   }
 
   TextStyle get itemTextStyle {
@@ -135,25 +138,34 @@ class JVxTable extends JVxEditor {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.grey[400], spreadRadius: 1)],
-            color: UIData.ui_kit_color_2[500]
+            border: Border(
+                bottom: BorderSide(
+                    color: Colors.grey[800],
+                    width: 1,
+                    style: BorderStyle.solid)),
+            color: Colors.white
                 .withOpacity(globals.applicationStyle.controlsOpacity),
           ),
           child: Row(children: children));
     } else {
+      Color backgroundColor =
+          Colors.white.withOpacity(globals.applicationStyle.controlsOpacity);
+
+      if (isSelected)
+        backgroundColor = UIData.ui_kit_color_2[100].withOpacity(0.1);
+      else if (index % 2 == 1) {
+        backgroundColor = Colors.grey[200]
+            .withOpacity(globals.applicationStyle.controlsOpacity);
+      }
       return Container(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(color: Colors.grey[400].withOpacity(0.5), spreadRadius: 1)
-          ],
-          color: isSelected
-              ? UIData.ui_kit_color_2[100].withOpacity(0.1)
-              : Colors.white.withOpacity(0.1),
+          border: Border(
+              bottom: BorderSide(
+                  color: Colors.grey[400], width: 1, style: BorderStyle.solid)),
+          color: backgroundColor,
         ),
         child: Material(
-            color: isSelected
-                ? UIData.ui_kit_color_2[100].withOpacity(0.1)
-                : Colors.white.withOpacity(0.1),
+            color: backgroundColor,
             child: InkWell(
                 highlightColor: UIData.ui_kit_color_2[500]
                     .withOpacity(globals.applicationStyle.controlsOpacity),
@@ -192,7 +204,7 @@ class JVxTable extends JVxEditor {
           'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
     }
 
-    if (this.data.deleteEnabled && index>=0) {
+    if (this.data.deleteEnabled && index >= 0) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
           'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
     }
@@ -220,7 +232,7 @@ class JVxTable extends JVxEditor {
     if (column != null) {
       JVxEditor clEditor =
           componentCreator.createEditorForTable(column.cellEditor);
-      if (clEditor!=null) {
+      if (clEditor != null) {
         clEditor.columnName = columnName;
         clEditor.data = this.data;
         clEditor.cellEditor.value = text;
@@ -232,7 +244,8 @@ class JVxTable extends JVxEditor {
   }
 
   Widget getTableColumn(
-      String text, int rowIndex, int columnIndex, String columnName, {bool nullable}) {
+      String text, int rowIndex, int columnIndex, String columnName,
+      {bool nullable}) {
     JVxEditor editor = _getEditorForColumn(text, columnName);
     double width = 1;
 
@@ -247,9 +260,22 @@ class JVxTable extends JVxEditor {
             child: Container(
               child: Row(
                 children: [
-                  Text(text, style: !nullable ? headerStyleMandatory : this.headerTextStyle),
-                  SizedBox(width: 2,),
-                  !nullable ? Container(child: Icon(FontAwesomeIcons.asterisk, size: 8,), alignment: Alignment.bottomRight,): Text(''),
+                  Text(text,
+                      style: !nullable
+                          ? headerStyleMandatory
+                          : this.headerTextStyle),
+                  SizedBox(
+                    width: 2,
+                  ),
+                  !nullable
+                      ? Container(
+                          child: Icon(
+                            FontAwesomeIcons.asterisk,
+                            size: 8,
+                          ),
+                          alignment: Alignment.bottomRight,
+                        )
+                      : Text(''),
                 ],
               ),
             ),
@@ -279,10 +305,12 @@ class JVxTable extends JVxEditor {
     if (this.columnLabels != null) {
       this.columnLabels.asMap().forEach((i, c) {
         JVxMetaDataColumn column = this.data.getMetaDataColumn(columnNames[i]);
-        if(column.nullable){
-          children.add(getTableColumn(c.toString(), -1, i, columnNames[i], nullable: column.nullable));
+        if (column.nullable) {
+          children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
+              nullable: column.nullable));
         } else {
-          children.add(getTableColumn(c.toString(), -1, i, columnNames[i], nullable: column.nullable));
+          children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
+              nullable: column.nullable));
         }
       });
     }
@@ -399,7 +427,13 @@ class JVxTable extends JVxEditor {
             16.0);
         double columnWidth =
             JVxTableColumnCalculator.getColumnWidthSum(this.columnInfo);
-        double tableHeight = JVxTableColumnCalculator.getPreferredTableHeight(this.data, this.columnLabels, itemTextStyle, tableHeaderVisible, 30, 30);
+        double tableHeight = JVxTableColumnCalculator.getPreferredTableHeight(
+            this.data,
+            this.columnLabels,
+            itemTextStyle,
+            tableHeaderVisible,
+            30,
+            30);
 
         _hasHorizontalScroller = (columnWidth > constraints.maxWidth);
 
@@ -417,7 +451,9 @@ class JVxTable extends JVxEditor {
                     color: Colors.white
                         .withOpacity(globals.applicationStyle.controlsOpacity)),
             width: columnWidth + (2 * borderWidth),
-            height: constraints.maxHeight==double.infinity?tableHeight:constraints.maxHeight,
+            height: constraints.maxHeight == double.infinity
+                ? tableHeight
+                : constraints.maxHeight,
             child: ScrollablePositionedList.builder(
               key: this.componentId,
               itemScrollController: _scrollController,
