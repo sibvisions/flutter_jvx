@@ -1,21 +1,21 @@
 import 'package:flutter/widgets.dart';
-import 'package:jvx_flutterclient/ui/component/jvx_menu_item.dart';
-import 'package:jvx_flutterclient/ui/container/jvx_panel.dart';
-import 'package:jvx_flutterclient/ui/layout/jvx_border_layout.dart';
-import '../../ui/component/jvx_popup_menu.dart';
-import '../../ui/component/jvx_popup_menu_button.dart';
+import '../../ui/component/co_menu_item.dart';
+import '../../ui/container/co_panel.dart';
+import '../../ui/layout/co_border_layout.dart';
+import '../../ui/component/co_popup_menu.dart';
+import '../../ui/component/co_popup_menu_button.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
-import '../../ui/component/jvx_action_component.dart';
-import '../../ui/component/jvx_component.dart';
+import '../../ui/component/co_action_component.dart';
+import '../../ui/component/component.dart';
 import '../../ui/container/i_container.dart';
-import '../../ui/editor/celleditor/jvx_referenced_cell_editor.dart';
-import '../../ui/editor/jvx_editor.dart';
-import '../../ui/screen/data_screen.dart';
+import '../../ui/editor/celleditor/co_referenced_cell_editor.dart';
+import '../../ui/editor/co_editor.dart';
+import '../../ui/screen/so_data_screen.dart';
 import '../../ui/screen/i_component_creator.dart';
 
-class ComponentScreen with DataScreen {
+class ComponentScreen with SoDataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
   Map<String, IComponent> additionalComponents = <String, IComponent>{};
@@ -63,7 +63,7 @@ class ComponentScreen with DataScreen {
       } else {
         _moveComponent(component, changedComponent, container);
 
-        if (component.state != JVxComponentState.Added) {
+        if (component.state != CoState.Added) {
           _addComponent(changedComponent, container);
         }
 
@@ -103,34 +103,33 @@ class ComponentScreen with DataScreen {
 
   void _addComponent(
       ChangedComponent component, Map<String, IComponent> container) {
-    JVxComponent componentClass;
+    Component componentClass;
 
     if (!container.containsKey(component.id)) {
       componentClass = _componentCreator.createComponent(component);
 
-      if (componentClass is JVxEditor) {
+      if (componentClass is CoEditor) {
         componentClass.data =
             this.getComponentData(componentClass.dataProvider);
-        if (componentClass.cellEditor is JVxReferencedCellEditor) {
-          (componentClass.cellEditor as JVxReferencedCellEditor).data = this
+        if (componentClass.cellEditor is CoReferencedCellEditor) {
+          (componentClass.cellEditor as CoReferencedCellEditor).data = this
               .getComponentData(
-                  (componentClass.cellEditor as JVxReferencedCellEditor)
+                  (componentClass.cellEditor as CoReferencedCellEditor)
                       .linkReference
                       .dataProvider);
         }
-      } else if (componentClass is JVxActionComponent) {
+      } else if (componentClass is CoActionComponent) {
         componentClass.onButtonPressed = this.onButtonPressed;
-      } else if (component.additional && componentClass is JVxPopupMenu) {
+      } else if (component.additional && componentClass is CoPopupMenu) {
         if (components.containsKey(componentClass.parentComponentId) &&
-            components[componentClass.parentComponentId]
-                is JVxPopupMenuButton) {
-          JVxPopupMenuButton btn = components[componentClass.parentComponentId];
+            components[componentClass.parentComponentId] is CoPopupMenuButton) {
+          CoPopupMenuButton btn = components[componentClass.parentComponentId];
           btn.menu = componentClass;
         }
-      } else if (componentClass is JVxMenuItem) {
+      } else if (componentClass is CoMenuItem) {
         if (container.containsKey(componentClass.parentComponentId) &&
-            container[componentClass.parentComponentId] is JVxPopupMenu) {
-          JVxPopupMenu menu = container[componentClass.parentComponentId];
+            container[componentClass.parentComponentId] is CoPopupMenu) {
+          CoPopupMenu menu = container[componentClass.parentComponentId];
           menu.updateMenuItem(componentClass);
         }
       }
@@ -139,7 +138,7 @@ class ComponentScreen with DataScreen {
     }
 
     if (componentClass != null) {
-      componentClass.state = JVxComponentState.Added;
+      componentClass.state = CoState.Added;
       container.putIfAbsent(component.id, () => componentClass);
       _addToParent(componentClass, container);
     }
@@ -157,7 +156,7 @@ class ComponentScreen with DataScreen {
   void _removeComponent(
       IComponent component, Map<String, IComponent> container) {
     _removeFromParent(component);
-    component.state = JVxComponentState.Free;
+    component.state = CoState.Free;
   }
 
   void _removeFromParent(IComponent component) {
@@ -174,7 +173,7 @@ class ComponentScreen with DataScreen {
       IComponent component, Map<String, IComponent> container) {
     _removeComponent(component, container);
     container.remove(component.componentId);
-    component.state = JVxComponentState.Destroyed;
+    component.state = CoState.Destroyed;
   }
 
   void _moveComponent(IComponent component, ChangedComponent newComponent,
@@ -248,14 +247,13 @@ class ComponentScreen with DataScreen {
   IComponent getRootComponent() {
     IComponent rootComponent = this.components.values.firstWhere(
         (element) =>
-            element.parentComponentId == null &&
-            element.state == JVxComponentState.Added,
+            element.parentComponentId == null && element.state == CoState.Added,
         orElse: () => null);
 
     if (headerComponent != null || footerComponent != null) {
-      JVxPanel headerFooterPanel =
-          new JVxPanel(GlobalKey(debugLabel: 'headerFooterPanel'), context);
-      headerFooterPanel.layout = JVxBorderLayout.fromLayoutString(
+      CoPanel headerFooterPanel =
+          new CoPanel(GlobalKey(debugLabel: 'headerFooterPanel'), context);
+      headerFooterPanel.layout = CoBorderLayout.fromLayoutString(
           headerFooterPanel, 'BorderLayout,0,0,0,0,0,0,', '');
       if (headerComponent != null) {
         headerFooterPanel.addWithConstraints(headerComponent, 'North');
@@ -294,8 +292,7 @@ class ComponentScreen with DataScreen {
   IComponent getComponentFromName(String componentName) {
     return this.components.values.firstWhere(
         (element) =>
-            element?.name == componentName &&
-            element?.state == JVxComponentState.Added,
+            element?.name == componentName && element?.state == CoState.Added,
         orElse: () => null);
   }
 
@@ -333,7 +330,7 @@ class ComponentScreen with DataScreen {
           ", size:" +
           (size != null ? size.toString() : "nosize");
 
-      if (component is JVxEditor) {
+      if (component is CoEditor) {
         debugString += ", dataProvider: " + component.dataProvider;
       }
 
