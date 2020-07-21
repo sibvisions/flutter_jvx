@@ -7,7 +7,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
-import '../../model/action.dart' as prefix0;
+import '../../model/so_action.dart' as prefix0;
 import '../../model/api/request/open_screen.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/response/response.dart';
@@ -108,7 +108,7 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
               .getScreen(menuItem.action.componentId)
               .getWidget()));
     } else {
-      prefix0.Action action = menuItem.action;
+      prefix0.SoAction action = menuItem.action;
 
       title = action.label;
 

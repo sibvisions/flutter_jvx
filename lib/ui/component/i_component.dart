@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import '../../model/changed_component.dart';
 
 /// Component state defines current state
-enum JVxComponentState {
+enum CoState {
   /// Component is added to the widget tree
   Added,
+
   /// Component is not added to the widget tree
   Free,
+
   /// Component was destroyed
   Destroyed
 }
@@ -14,7 +16,7 @@ enum JVxComponentState {
 abstract class IComponent {
   String name;
   GlobalKey componentId;
-  JVxComponentState state;
+  CoState state;
   Color background;
   Color foreground;
   TextStyle style;

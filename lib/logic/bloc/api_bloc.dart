@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/api/request/set_component_value.dart';
-import '../../model/action.dart' as prefix0;
+import '../../model/so_action.dart' as prefix0;
 import '../../model/api/request/change.dart';
 import '../../model/api/request/data/fetch_data.dart';
 import '../../model/api/request/data/filter_data.dart';
@@ -263,7 +263,7 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> openscreen(OpenScreen request) async* {
-    prefix0.Action action = request.action;
+    prefix0.SoAction action = request.action;
 
     globals.currentScreenComponentId = action.componentId;
 
@@ -281,13 +281,13 @@ class ApiBloc extends Bloc<Request, Response> {
   }
 
   Stream<Response> pressButton(PressButton request) async* {
-    prefix0.Action action = request.action;
+    prefix0.SoAction action = request.action;
 
     Response resp = await processRequest(request);
 
     if (!resp.error) resp.action = action;
 
-    if (resp.showDocument!=null) {
+    if (resp.showDocument != null) {
       if (await canLaunch(resp.showDocument.document)) {
         await launch(resp.showDocument.document);
       } else {
@@ -313,7 +313,7 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download request) async* {
     Response resp = await processRequest(request);
 
-    if (kIsWeb){
+    if (kIsWeb) {
       if (request.requestType == RequestType.DOWNLOAD) {
         final blob = html.Blob([resp.download]);
         final url = html.Url.createObjectUrlFromBlob(blob);
@@ -329,8 +329,7 @@ class ApiBloc extends Bloc<Request, Response> {
         // cleanup
         html.document.body.children.remove(anchor);
         html.Url.revokeObjectUrl(url);
-      }
-      else{
+      } else {
         if (request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
           var _dir = "";
           globals.dir = _dir;
@@ -345,7 +344,8 @@ class ApiBloc extends Bloc<Request, Response> {
             var filename =
                 '$_dir/translations/$trimmedUrl/${globals.appName}/${globals.appVersion}/${file.name}';
             if (file.isFile) {
-              globals.files.putIfAbsent(filename, () => utf8.decode((file.content)));
+              globals.files
+                  .putIfAbsent(filename, () => utf8.decode((file.content)));
               globals.translation[file.name] = '$filename';
             }
           }
@@ -363,14 +363,13 @@ class ApiBloc extends Bloc<Request, Response> {
 
             var filename = '${globals.dir}/${file.name}';
             if (file.isFile) {
-              globals.files.putIfAbsent(filename, () => utf8.decode(file.content));
+              globals.files
+                  .putIfAbsent(filename, () => utf8.decode(file.content));
             }
           }
         }
       }
-    }
-    else
-    {
+    } else {
       if (!kIsWeb && request.requestType == RequestType.DOWNLOAD) {
         final directory = uio.Platform.isAndroid
             ? await getExternalStorageDirectory()
@@ -392,8 +391,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
         globals.dir = _dir;
 
-        if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-          uio.Directory directory = uio.Directory('${globals.dir}/translations');
+        if (!kIsWeb &&
+            request.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+          uio.Directory directory =
+              uio.Directory('${globals.dir}/translations');
 
           if (directory.existsSync()) {
             directory.listSync().forEach((entity) {
@@ -433,7 +434,8 @@ class ApiBloc extends Bloc<Request, Response> {
 
           SharedPreferencesHelper().setTranslation(globals.translation);
           Translations.load(Locale(globals.language));
-        } else if (!kIsWeb && request.requestType == RequestType.DOWNLOAD_IMAGES) {
+        } else if (!kIsWeb &&
+            request.requestType == RequestType.DOWNLOAD_IMAGES) {
           var archive = resp.download;
 
           globals.images = List<String>();
@@ -452,7 +454,7 @@ class ApiBloc extends Bloc<Request, Response> {
     }
 
     yield resp;
-  }  
+  }
 
   Stream<Response> applicationStyle(ApplicationStyle request) async* {
     var _dir;
@@ -481,8 +483,8 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if ((resp.responseData.screenGeneric != null &&
             resp.responseData.screenGeneric.changedComponents.isEmpty) &&
-        resp.responseData.jVxData.isEmpty &&
-        resp.responseData.jVxMetaData.isEmpty) {
+        resp.responseData.databook.isEmpty &&
+        resp.responseData.dataBookMetaData.isEmpty) {
       print('CLOSE REQUEST: ' + request.componentId);
       CloseScreen closeScreen = CloseScreen(
           clientId: globals.clientId,
@@ -713,15 +715,9 @@ class ApiBloc extends Bloc<Request, Response> {
     if (toUpdate.authenticationData == null)
       toUpdate.authenticationData = currentResponse.authenticationData;
     if (toUpdate.language == null) toUpdate.language = currentResponse.language;
-    //if (toUpdate.jVxData == null)
-    //  toUpdate.jVxData = currentResponse.jVxData;
-    //if (toUpdate.jVxMetaData == null)
-    //  toUpdate.jVxMetaData = currentResponse.jVxMetaData;
     if (toUpdate.loginItem == null)
       toUpdate.loginItem = currentResponse.loginItem;
     if (toUpdate.menu == null) toUpdate.menu = currentResponse.menu;
-    //if (toUpdate.screenGeneric == null)
-    //  toUpdate.screenGeneric = currentResponse.screenGeneric;
     if (toUpdate.userData == null) toUpdate.userData = currentResponse.userData;
 
     return toUpdate;

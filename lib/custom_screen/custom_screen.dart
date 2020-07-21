@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import '../model/api/response/response_data.dart';
-import '../ui/screen/component_creator.dart';
+import '../ui/screen/so_component_creator.dart';
 import '../ui/screen/i_screen.dart';
 import '../model/api/request/request.dart';
-import '../ui/screen/component_screen.dart';
+import '../ui/screen/so_component_screen.dart';
 
 /// Implementation of [IScreen] for custom screens.
 class CustomScreen implements IScreen {
-  CustomScreen(ComponentCreator componentCreator)
-      : componentScreen = ComponentScreen(componentCreator);
+  CustomScreen(SoComponentCreator componentCreator)
+      : componentScreen = SoComponentScreen(componentCreator);
 
   @override
-  ComponentScreen componentScreen;
+  SoComponentScreen componentScreen;
 
   @override
   Widget getWidget() {

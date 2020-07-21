@@ -1,50 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../model/action.dart' as prefix1;
+import '../../model/so_action.dart' as prefix1;
 import '../../model/menu_item.dart';
 import '../../ui/widgets/fontAwesomeChanger.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/uidata.dart';
 
-showCustomBottomModalMenu(BuildContext context, List<MenuItem> items, Key currentComponentId) {
+showCustomBottomModalMenu(
+    BuildContext context, List<MenuItem> items, Key currentComponentId) {
   showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      return Container(
-        color: Color(0xFF737373),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(15),
-              topRight: const Radius.circular(15),
-            )
-          ),
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(items[index].action.label),
-                trailing: items[index].image != null 
+      context: context,
+      builder: (context) {
+        return Container(
+          color: Color(0xFF737373),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(15),
+                  topRight: const Radius.circular(15),
+                )),
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(items[index].action.label),
+                  trailing: items[index].image != null
                       ? new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: !items[index].image.startsWith('FontAwesome') 
-                                ? new Image.asset('${globals.dir}${items[index].image}')
-                                : _iconBuilder(formatFontAwesomeText(items[index].image))
-                      )
+                          backgroundColor: Colors.transparent,
+                          child: !items[index].image.startsWith('FontAwesome')
+                              ? new Image.asset(
+                                  '${globals.dir}${items[index].image}')
+                              : _iconBuilder(
+                                  formatFontAwesomeText(items[index].image)))
                       : new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(FontAwesomeIcons.clone, size: 32, color: Colors.grey[300],)),
-                onTap: () {
-                  changeScreen(context, currentComponentId, items[index].action);
-                },
-              );
-            },
+                          backgroundColor: Colors.transparent,
+                          child: Icon(
+                            FontAwesomeIcons.clone,
+                            size: 32,
+                            color: Colors.grey[300],
+                          )),
+                  onTap: () {
+                    changeScreen(
+                        context, currentComponentId, items[index].action);
+                  },
+                );
+              },
+            ),
           ),
-        ),
-      );
-    }
-  );
+        );
+      });
 }
 
 Icon _iconBuilder(Map data) {
@@ -59,7 +64,7 @@ Icon _iconBuilder(Map data) {
   return icon;
 }
 
-changeScreen(BuildContext context, Key componentId, prefix1.Action action) {
+changeScreen(BuildContext context, Key componentId, prefix1.SoAction action) {
   globals.changeScreen = action;
   /*
 

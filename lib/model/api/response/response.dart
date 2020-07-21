@@ -1,13 +1,13 @@
 import '../../../model/api/response/show_document.dart';
 import '../../../utils/shared_preferences_helper.dart';
 import '../../../model/api/response/response_data.dart';
-import '../../../model/action.dart';
+import '../../so_action.dart';
 import '../../../model/api/exceptions/api_exception.dart';
 import '../../../model/api/request/request.dart';
 import '../../../model/api/response/application_style_resp.dart';
 import '../../../model/api/response/auth_data.dart';
 import '../../../model/api/response/close_screen_action.dart';
-import '../../../model/api/response/data/jvx_data.dart';
+import 'data/data_book.dart';
 import '../../../model/api/response/download_action.dart';
 import '../../../model/api/response/login_item.dart';
 import '../../../model/api/response/menu.dart';
@@ -16,9 +16,9 @@ import '../../../model/api/response/upload_action.dart';
 import '../../../model/api/response/user_data.dart';
 
 import 'application_meta_data.dart';
-import 'data/jvx_dataprovider_changed.dart';
+import 'data/dataprovider_changed.dart';
 import 'language.dart';
-import 'meta_data/jvx_meta_data.dart';
+import 'meta_data/data_book_meta_data.dart';
 import 'response_object.dart';
 
 class Response {
@@ -31,7 +31,7 @@ class Response {
   bool loading = false;
   String message;
   String title;
-  Action action;
+  SoAction action;
   String details;
   ApplicationMetaData applicationMetaData;
   Language language;
@@ -60,9 +60,13 @@ class Response {
   }
 
   static checkForError(Map<String, dynamic> json) {
-    if (json != null && (json['title'] == 'Error' || json['title'] == 'Session Expired')) {
+    if (json != null &&
+        (json['title'] == 'Error' || json['title'] == 'Session Expired')) {
       throw new ApiException(
-          details: json['details'], title: json['title'], name: json['name'], message: json['message']);
+          details: json['details'],
+          title: json['title'],
+          name: json['name'],
+          message: json['message']);
     }
   }
 
@@ -93,22 +97,25 @@ class Response {
           break;
         case ResponseObjectType.SCREEN_GENERIC:
           if (r['changedComponents'] != null)
-            responseData.screenGeneric = ScreenGeneric.fromChangedComponentsJson(r);
+            responseData.screenGeneric =
+                ScreenGeneric.fromChangedComponentsJson(r);
           else
-            responseData.screenGeneric = ScreenGeneric.fromUpdateComponentsJson(r);
+            responseData.screenGeneric =
+                ScreenGeneric.fromUpdateComponentsJson(r);
           break;
         case ResponseObjectType.DAL_FETCH:
-          responseData.jVxData.add(JVxData.fromJson(r));
+          responseData.databook.add(DataBook.fromJson(r));
           break;
         case ResponseObjectType.DAL_METADATA:
-          responseData.jVxMetaData.add(JVxMetaData.fromJson(r));
+          responseData.dataBookMetaData.add(DataBookMetaData.fromJson(r));
           break;
         case ResponseObjectType.DAL_DATAPROVIDERCHANGED:
-          responseData.jVxDataproviderChanged.add(JVxDataproviderChanged.fromJson(r));
+          responseData.dataproviderChanged.add(DataproviderChanged.fromJson(r));
           break;
         case ResponseObjectType.DOWNLOAD:
           downloadAction = DownloadAction.fromJson(r);
-          SharedPreferencesHelper().setDownloadFileName(downloadAction?.fileName);
+          SharedPreferencesHelper()
+              .setDownloadFileName(downloadAction?.fileName);
           break;
         case ResponseObjectType.UPLOAD:
           uploadAction = UploadAction.fromJson(r);

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import '../../utils/jvx_alignment.dart';
-import '../../utils/jvx_text_align.dart';
+import '../../utils/so_alignment.dart';
+import '../../utils/so_text_align.dart';
 import 'hex_color.dart';
 
 class Properties {
@@ -44,9 +44,9 @@ class Properties {
       }
     } else if (value is int) {
       if (T == TextAlign) {
-        return JVxTextAlign.getTextAlignFromInt(value) as T;
+        return SoTextAlign.getTextAlignFromInt(value) as T;
       } else if (T == Alignment) {
-        return JVxAlignment.getAlignmentFromInt(value) as T;
+        return SoAlignment.getAlignmentFromInt(value) as T;
       }
     } else if (value is List<dynamic>) {
       if (T.toString() == 'List<String>') {
@@ -58,8 +58,8 @@ class Properties {
       }
     } else if (value is bool) {
       if (T == int) {
-        if (value) 
-          return 1 as T; 
+        if (value)
+          return 1 as T;
         else
           return 0 as T;
       }

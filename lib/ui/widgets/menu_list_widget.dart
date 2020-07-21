@@ -6,7 +6,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
-import '../../model/action.dart' as prefix0;
+import '../../model/so_action.dart' as prefix0;
 import '../../model/api/request/request.dart';
 import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
@@ -76,7 +76,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
     );
   }
 
-    void _onTap(MenuItem menuItem) {
+  void _onTap(MenuItem menuItem) {
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
             .getScreen(menuItem.action.componentId)
@@ -86,7 +86,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
               .getScreen(menuItem.action.componentId)
               .getWidget()));
     } else {
-      prefix0.Action action = menuItem.action;
+      prefix0.SoAction action = menuItem.action;
 
       title = action.label;
 

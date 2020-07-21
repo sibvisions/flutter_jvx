@@ -19,7 +19,7 @@ import '../../model/api/request/request.dart';
 import '../../model/api/request/upload.dart';
 import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
-import '../../ui/screen/component_creator.dart';
+import '../screen/so_component_creator.dart';
 import '../../ui/screen/i_screen.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
 import '../../utils/globals.dart' as globals;
@@ -123,7 +123,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
                   screen = globals.customScreenManager == null
-                      ? IScreen(ComponentCreator())
+                      ? IScreen(SoComponentCreator())
                       : globals.customScreenManager
                           .getScreen(widget.menuComponentId);
                   // title = state.action.label;
@@ -133,7 +133,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 if (state.responseData.screenGeneric != null &&
                     !state.responseData.screenGeneric.update) {
                   screen = globals.customScreenManager == null
-                      ? IScreen(ComponentCreator())
+                      ? IScreen(SoComponentCreator())
                       : globals.customScreenManager
                           .getScreen(widget.menuComponentId);
                   componentId = state.responseData.screenGeneric.componentId;
@@ -255,7 +255,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   @override
   void initState() {
     screen = globals.customScreenManager == null
-        ? IScreen(ComponentCreator())
+        ? IScreen(SoComponentCreator())
         : globals.customScreenManager
             .getScreen(widget.menuComponentId.toString());
     screen.componentScreen.context = context;

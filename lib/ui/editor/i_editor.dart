@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../ui/screen/component_data.dart';
+import '../screen/so_component_data.dart';
 
-import 'celleditor/jvx_cell_editor.dart';
+import 'celleditor/co_cell_editor.dart';
 
 abstract class IEditor {
   Size maximumSize;
@@ -16,8 +16,8 @@ abstract class IEditor {
   Color cellEditorForeground;
   int cellEditorHorizontalAlignment;
   String cellEditorFont;
-  JVxCellEditor cellEditor;
-  ComponentData data;
+  CoCellEditor cellEditor;
+  SoComponentData data;
 
   Widget getWidget();
 }

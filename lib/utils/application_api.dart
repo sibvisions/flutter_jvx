@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/model/api/request/close_screen.dart';
+import '../model/api/request/close_screen.dart';
 import '../logic/bloc/api_bloc.dart';
 import '../model/api/request/reload.dart';
 import '../model/api/request/request.dart';
 import '../model/api/request/open_screen.dart';
-import '../model/action.dart' as act;
+import '../model/so_action.dart' as act;
 import 'globals.dart' as globals;
 
 class ApplicationApi {
@@ -19,7 +19,7 @@ class ApplicationApi {
   }
 
   openScreen(String componentId, String label) {
-    act.Action action = act.Action(componentId: componentId, label: label);
+    act.SoAction action = act.SoAction(componentId: componentId, label: label);
 
     OpenScreen openScreen = OpenScreen(
         action: action,
@@ -32,18 +32,18 @@ class ApplicationApi {
 
   closeScreen(String componentId) {
     CloseScreen closeScreen = CloseScreen(
-          clientId: globals.clientId,
-          componentId: componentId,
-          requestType: RequestType.CLOSE_SCREEN);
+        clientId: globals.clientId,
+        componentId: componentId,
+        requestType: RequestType.CLOSE_SCREEN);
 
     BlocProvider.of<ApiBloc>(_context).dispatch(closeScreen);
   }
 
-  dispatch(Request request){
+  dispatch(Request request) {
     BlocProvider.of<ApiBloc>(_context).dispatch(request);
   }
 
-  BuildContext get context{
+  BuildContext get context {
     return _context;
   }
 }

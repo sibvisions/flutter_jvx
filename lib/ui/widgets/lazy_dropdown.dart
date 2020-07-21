@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../model/api/response/data/jvx_data.dart';
-import '../../ui/screen/component_data.dart';
+import '../../model/api/response/data/data_book.dart';
+import '../screen/so_component_data.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
@@ -15,7 +15,7 @@ class LazyDropdown extends StatefulWidget {
   final ValueChanged<String> onFilter;
   final BuildContext context;
   final double fetchMoreYOffset;
-  final ComponentData data;
+  final SoComponentData data;
   final List<String> displayColumnNames;
 
   LazyDropdown(
@@ -153,7 +153,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
     int itemCount = 0;
-    JVxData data = widget.data.data;
+    DataBook data = widget.data.data;
     if (data != null && data.records != null) itemCount = data.records.length;
 
     return Dialog(

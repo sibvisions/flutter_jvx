@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 import '../../logic/bloc/api_bloc.dart';
-import '../../model/action.dart' as prefix0;
+import '../../model/so_action.dart' as prefix0;
 import '../../model/api/request/request.dart';
 import '../../model/api/response/response.dart';
 import '../../model/api/request/logout.dart';
@@ -189,7 +189,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               });
             } else {
               Navigator.of(context).pop();
-              prefix0.Action action = item.action;
+              prefix0.SoAction action = item.action;
 
               OpenScreen openScreen = OpenScreen(
                   action: action,

@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/utils/application_api.dart';
 
-import '../../ui/screen/menu_manager.dart';
+import '../../utils/application_api.dart';
+import '../screen/so_menu_manager.dart';
 import '../../ui/widgets/menu_empty_widget.dart';
 import '../../model/menu_item.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
@@ -62,12 +62,12 @@ class MenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Custom Screen
     if (globals.customScreenManager != null) {
-      JVxMenuManager menuManager = JVxMenuManager(this.menuItems);
+      SoMenuManager menuManager = SoMenuManager(this.menuItems);
       globals.customScreenManager.onMenu(menuManager);
       this.menuItems = menuManager.menuItems;
     }
 
-    if(globals.appListener != null){
+    if (globals.appListener != null) {
       globals.appListener.fireAfterStartupListener(ApplicationApi(context));
     }
 
@@ -125,8 +125,7 @@ class MenuPage extends StatelessWidget {
         return MenuGridView(items: this.menuItems, groupedMenuMode: false);
       case 'list':
         return MenuListWidget(
-            menuItems: this.menuItems,
-            groupedMenuMode: hasMultipleGroups);
+            menuItems: this.menuItems, groupedMenuMode: hasMultipleGroups);
       case 'drawer':
         return MenuEmpty();
       case 'grid_grouped':
@@ -143,7 +142,7 @@ class MenuPage extends StatelessWidget {
         return MenuTabsWidget(
           items: this.menuItems,
           groupedMenuMode: hasMultipleGroups,
-        ); 
+        );
       default:
         return MenuGridView(
           items: this.menuItems,
