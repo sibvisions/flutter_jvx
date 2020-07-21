@@ -483,7 +483,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if ((resp.responseData.screenGeneric != null &&
             resp.responseData.screenGeneric.changedComponents.isEmpty) &&
-        resp.responseData.databook.isEmpty &&
+        resp.responseData.dataBooks.isEmpty &&
         resp.responseData.dataBookMetaData.isEmpty) {
       print('CLOSE REQUEST: ' + request.componentId);
       CloseScreen closeScreen = CloseScreen(

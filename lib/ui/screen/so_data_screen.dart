@@ -21,7 +21,7 @@ mixin SoDataScreen {
     }
 
     if (request == null || request?.requestType != RequestType.DAL_SET_VALUE) {
-      pData.databook?.forEach((d) {
+      pData.dataBooks?.forEach((d) {
         SoComponentData cData = getComponentData(d.dataProvider);
         cData.updateData(d, request.reload);
       });

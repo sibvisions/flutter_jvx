@@ -104,7 +104,7 @@ class Response {
                 ScreenGeneric.fromUpdateComponentsJson(r);
           break;
         case ResponseObjectType.DAL_FETCH:
-          responseData.databook.add(DataBook.fromJson(r));
+          responseData.dataBooks.add(DataBook.fromJson(r));
           break;
         case ResponseObjectType.DAL_METADATA:
           responseData.dataBookMetaData.add(DataBookMetaData.fromJson(r));

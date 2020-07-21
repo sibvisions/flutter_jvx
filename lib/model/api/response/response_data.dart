@@ -5,7 +5,7 @@ import 'screen_generic.dart';
 
 class ResponseData {
   ScreenGeneric screenGeneric;
-  List<DataBook> databook = <DataBook>[];
+  List<DataBook> dataBooks = <DataBook>[];
   List<DataBookMetaData> dataBookMetaData = <DataBookMetaData>[];
   List<DataproviderChanged> dataproviderChanged = <DataproviderChanged>[];
 }
