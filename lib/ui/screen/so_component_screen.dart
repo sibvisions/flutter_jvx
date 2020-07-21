@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import '../../ui/container/co_panel.dart';
+import '../../ui/layout/co_border_layout.dart';
 import '../component/co_menu_item.dart';
 import '../component/co_popup_menu.dart';
 import '../component/co_popup_menu_button.dart';
@@ -18,6 +20,8 @@ class SoComponentScreen with SoDataScreen {
   Map<String, IComponent> components = <String, IComponent>{};
   Map<String, IComponent> additionalComponents = <String, IComponent>{};
   bool debug = false;
+  IComponent headerComponent;
+  IComponent footerComponent;
 
   set context(BuildContext context) {
     super.context = context;
@@ -241,9 +245,54 @@ class SoComponentScreen with SoDataScreen {
   }
 
   IComponent getRootComponent() {
-    return this.components.values.firstWhere(
+    IComponent rootComponent = this.components.values.firstWhere(
         (element) =>
             element.parentComponentId == null && element.state == CoState.Added,
+        orElse: () => null);
+
+    if (headerComponent != null || footerComponent != null) {
+      CoPanel headerFooterPanel =
+          new CoPanel(GlobalKey(debugLabel: 'headerFooterPanel'), context);
+      headerFooterPanel.layout = CoBorderLayout.fromLayoutString(
+          headerFooterPanel, 'BorderLayout,0,0,0,0,0,0,', '');
+      if (headerComponent != null) {
+        headerFooterPanel.addWithConstraints(headerComponent, 'North');
+      }
+      headerFooterPanel.addWithConstraints(rootComponent, 'Center');
+      if (footerComponent != null) {
+        headerFooterPanel.addWithConstraints(footerComponent, 'South');
+      }
+
+      return headerFooterPanel;
+    }
+
+    return rootComponent;
+  }
+
+  setHeader(IComponent headerComponent) {
+    this.headerComponent = headerComponent;
+  }
+
+  setFooter(IComponent footerComponent) {
+    this.footerComponent = footerComponent;
+  }
+
+  replaceComponent(IComponent compToReplace, IComponent newComp) {
+    if (compToReplace != null) {
+      newComp.parentComponentId = compToReplace.parentComponentId;
+      newComp.constraints = compToReplace.constraints;
+      newComp.minimumSize = compToReplace.minimumSize;
+      newComp.maximumSize = compToReplace.maximumSize;
+      newComp.preferredSize = compToReplace.preferredSize;
+      _removeFromParent(compToReplace);
+      _addToParent(newComp, components);
+    }
+  }
+
+  IComponent getComponentFromName(String componentName) {
+    return this.components.values.firstWhere(
+        (element) =>
+            element?.name == componentName && element?.state == CoState.Added,
         orElse: () => null);
   }
 
@@ -268,6 +317,8 @@ class SoComponentScreen with SoDataScreen {
 
       debugString += " id: " +
           keyString +
+          ", Name: " +
+          component.name.toString() +
           ", parent: " +
           (component.parentComponentId != null
               ? component.parentComponentId
