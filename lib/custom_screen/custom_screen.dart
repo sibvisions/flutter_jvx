@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../ui/component/i_component.dart';
 import '../model/api/response/response_data.dart';
 import '../ui/screen/so_component_creator.dart';
 import '../ui/screen/i_screen.dart';
@@ -28,5 +29,13 @@ class CustomScreen implements IScreen {
   @override
   bool withServer() {
     return true;
+  }
+
+  void setHeader(IComponent headerComponent) {
+    componentScreen.setHeader(headerComponent);
+  }
+
+  void setFooter(IComponent footerComponent) {
+    componentScreen.setHeader(footerComponent);
   }
 }
