@@ -36,6 +36,6 @@ class CustomScreen implements IScreen {
   }
 
   void setFooter(IComponent footerComponent) {
-    componentScreen.setHeader(footerComponent);
+    componentScreen.setFooter(footerComponent);
   }
 }
