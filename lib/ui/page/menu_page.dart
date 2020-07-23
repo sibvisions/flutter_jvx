@@ -56,7 +56,13 @@ class MenuPage extends StatelessWidget {
 
   MenuPage({Key key, List<MenuItem> menuItems, this.listMenuItemsInDrawer})
       : this.menuItems = menuItems,
-        super(key: key);
+        super(key: key) {
+    if (globals.appMode == 'preview' &&
+        this.menuItems != null &&
+        this.menuItems.length > 1) {
+      this.menuItems = [this.menuItems[0]];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
