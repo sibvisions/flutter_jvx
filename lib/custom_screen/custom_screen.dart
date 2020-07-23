@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/application_api.dart';
 import '../utils/data_api.dart';
 import '../ui/component/i_component.dart';
 import '../model/api/response/response_data.dart';
@@ -34,6 +35,10 @@ class CustomScreen implements IScreen {
 
   DataApi getDataApi(String dataProvider){
     return DataApi(componentScreen.getComponentData(dataProvider), componentScreen.context);
+  }
+
+  ApplicationApi getApplicationApi(){
+    return ApplicationApi(componentScreen.context);
   }
 
   void setHeader(IComponent headerComponent) {
