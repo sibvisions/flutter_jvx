@@ -7,7 +7,7 @@ import '../../ui/screen/i_screen.dart';
 /// Implementation of the [ICustomScreenManager] interface.
 class CustomScreenManager extends ICustomScreenManager {
   @override
-  IScreen getScreen(String componentId) {
+  IScreen getScreen(String componentId, {String templateName}) {
     return IScreen(SoComponentCreator());
   }
 

@@ -33,6 +33,7 @@ class OpenScreenPage extends StatefulWidget {
   final List<MenuItem> items;
   final Request request;
   final String menuComponentId;
+  final String templateName;
 
   OpenScreenPage(
       {Key key,
@@ -41,7 +42,8 @@ class OpenScreenPage extends StatefulWidget {
       this.componentId,
       this.title,
       this.items,
-      this.menuComponentId})
+      this.menuComponentId,
+      this.templateName})
       : super(key: key);
 
   _OpenScreenPageState createState() => _OpenScreenPageState();
@@ -125,7 +127,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   screen = globals.customScreenManager == null
                       ? IScreen(SoComponentCreator())
                       : globals.customScreenManager
-                          .getScreen(widget.menuComponentId);
+                          .getScreen(widget.menuComponentId, templateName: widget.templateName);
                   // title = state.action.label;
                   componentId = state.responseData.screenGeneric.componentId;
                 }
@@ -135,7 +137,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   screen = globals.customScreenManager == null
                       ? IScreen(SoComponentCreator())
                       : globals.customScreenManager
-                          .getScreen(widget.menuComponentId);
+                          .getScreen(widget.menuComponentId, templateName: widget.templateName);
                   componentId = state.responseData.screenGeneric.componentId;
                 }
 
@@ -257,7 +259,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     screen = globals.customScreenManager == null
         ? IScreen(SoComponentCreator())
         : globals.customScreenManager
-            .getScreen(widget.menuComponentId.toString());
+            .getScreen(widget.menuComponentId.toString(), templateName: globals.currentTempalteName);
+    globals.currentTempalteName == null;
     screen.componentScreen.context = context;
     screen.update(widget.request, widget.responseData);
     super.initState();
