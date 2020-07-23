@@ -8,7 +8,7 @@ class DataApi {
   DataApi(this._componentData, this._context);
 
   dynamic getValue(String columnName) {
-    _componentData.getColumnData(_context, columnName);
+    return _componentData.getColumnData(_context, columnName);
   }
 
   List<dynamic> getValues(List<dynamic> columnNames) {
