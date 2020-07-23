@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/model/so_action.dart';
+
 import '../../model/menu_item.dart';
 
 class SoMenuManager {
@@ -19,5 +21,21 @@ class SoMenuManager {
     })) {
       _menuItems.add(item);
     }
+  }
+
+  void addItemToMenu(
+      {String id,
+      String group,
+      String text,
+      String image,
+      bool checkUnique = true,
+      String templateName}) {
+    MenuItem itemToAdd = MenuItem(
+        action: SoAction(componentId: id, label: text),
+        image: image,
+        group: group,
+        templateName: templateName);
+
+    addItem(itemToAdd, checkUnique: checkUnique);
   }
 }
