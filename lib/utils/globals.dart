@@ -36,3 +36,4 @@ AppListener appListener;
 bool package = false;
 Map<String, String> files = Map<String, String>();
 String currentScreenComponentId;
+String currentTempalteName;

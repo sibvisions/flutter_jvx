@@ -9,7 +9,7 @@ abstract class ICustomScreenManager {
   /// If null is returned an Error will be thrown.
   /// If you wish to not alter anything you can either return [IScreen(ComponentCreator())]
   /// or you can call [super.getScreen()] which returns the same [IScreen].
-  IScreen getScreen(String componentId);
+  IScreen getScreen(String componentId, {String templateName});
 
   /// If you do not whish to alter anything just return either the [super.onMenu(menuManager)] method
   /// or return the [menuManager] itself.
