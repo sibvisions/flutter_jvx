@@ -1,5 +1,7 @@
 library jvx_flutterclient.globals;
 
+import 'package:jvx_flutterclient/custom_screen/i_app_frame.dart';
+
 import 'app_listener.dart';
 import '../custom_screen/i_socket_handler.dart';
 import '../custom_screen/custom_screen_manager/i_custom_screen_manager.dart';
@@ -37,3 +39,4 @@ bool package = false;
 Map<String, String> files = Map<String, String>();
 String currentScreenComponentId;
 String currentTempalteName;
+IAppFrame appFrame;

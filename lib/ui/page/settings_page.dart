@@ -62,14 +62,18 @@ class _SettingsPageState extends State<SettingsPage> {
     return "";
   }
 
-    int get imageSizeIndex {
-      return this.imageSizeItems.indexWhere((element) => element.value==globals.uploadPicWidth);
-    }
+  int get imageSizeIndex {
+    return this
+        .imageSizeItems
+        .indexWhere((element) => element.value == globals.uploadPicWidth);
+  }
 
   @override
   void initState() {
     super.initState();
-    loadVersion();
+    if (!kIsWeb) {
+      loadVersion();
+    }
   }
 
   Widget settingsBuilder() {
@@ -222,9 +226,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   showImageSizePicker(BuildContext context) {
-
     List<int> selected;
-    if (this.imageSizeIndex>=0 && this.imageSizeIndex<this.imageSizeItems.length)
+    if (this.imageSizeIndex >= 0 &&
+        this.imageSizeIndex < this.imageSizeItems.length)
       selected = [this.imageSizeIndex];
 
     new Picker(
@@ -253,9 +257,10 @@ class _SettingsPageState extends State<SettingsPage> {
       languages[languages.indexOf('translation')] = 'en';
 
     List<int> selected;
-    int selectedIndex =  languages.indexWhere((element) => element == globals.language);
+    int selectedIndex =
+        languages.indexWhere((element) => element == globals.language);
 
-    if (selectedIndex>=0 && selectedIndex<languages.length)
+    if (selectedIndex >= 0 && selectedIndex < languages.length)
       selected = [selectedIndex];
 
     new Picker(
@@ -290,6 +295,7 @@ class _SettingsPageState extends State<SettingsPage> {
           return true;
         },
         child: CommonScaffold(
+          showAppBar: globals.appFrame == null || globals.appFrame.showScreenHeader,
           centerDocked: true,
           scaffoldKey: scaffoldState,
           appTitle: Translations.of(context).text2('Settings', 'Settings'),

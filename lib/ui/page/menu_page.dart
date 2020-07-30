@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/custom_screen/app_frame.dart';
+import 'package:jvx_flutterclient/ui/widgets/web_menu_list_widget.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../utils/application_api.dart';
 import '../screen/so_menu_manager.dart';
@@ -82,6 +85,11 @@ class MenuPage extends StatelessWidget {
       globals.customSocketHandler.initCommunication();
     }
 
+    //AppFrame
+    if (globals.appFrame is AppFrame || globals.appFrame == null) {
+      globals.appFrame = AppFrame(context);
+    }
+
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     globals.items = this.menuItems;
 
@@ -95,65 +103,86 @@ class MenuPage extends StatelessWidget {
                   image: FileImage(File(
                       '${globals.dir}${globals.applicationStyle.desktopIcon}')),
                   fit: BoxFit.cover)),
-          child: getMenuWidget());
+          child: getMenuWidget(context));
     } else {
-      body = getMenuWidget();
+      body = getMenuWidget(context);
     }
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: UIData.ui_kit_color_2,
-        title: Text('Menu'),
-        automaticallyImplyLeading: false,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              _scaffoldKey.currentState.openEndDrawer();
-            },
-            icon: Icon(FontAwesomeIcons.ellipsisV),
-          ),
-        ],
-      ),
+      appBar: globals.appFrame.showScreenHeader
+          ? AppBar(
+              backgroundColor: UIData.ui_kit_color_2,
+              title: Text('Menu'),
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                IconButton(
+                  onPressed: () {
+                    _scaffoldKey.currentState.openEndDrawer();
+                  },
+                  icon: Icon(FontAwesomeIcons.ellipsisV),
+                ),
+              ],
+            )
+          : null,
       body: FractionallySizedBox(widthFactor: 1, heightFactor: 1, child: body),
-      endDrawer: MenuDrawerWidget(
-        menuItems: this.menuItems,
-        listMenuItems: true,
-        groupedMenuMode: groupedMenuMode,
-      ),
+      endDrawer: globals.appFrame.showScreenHeader
+          ? MenuDrawerWidget(
+              menuItems: this.menuItems,
+              listMenuItems: true,
+              groupedMenuMode: groupedMenuMode,
+            )
+          : null,
     );
   }
 
-  Widget getMenuWidget() {
-    switch (menuMode) {
-      case 'grid':
-        return MenuGridView(items: this.menuItems, groupedMenuMode: false);
-      case 'list':
-        return MenuListWidget(
-            menuItems: this.menuItems, groupedMenuMode: hasMultipleGroups);
-      case 'drawer':
-        return MenuEmpty();
-      case 'grid_grouped':
-        return MenuGridView(
-          items: this.menuItems,
-          groupedMenuMode: hasMultipleGroups,
-        );
-      case 'swiper':
-        return MenuSwiperWidget(
-          items: this.menuItems,
-          groupedMenuMode: hasMultipleGroups,
-        );
-      case 'tabs':
-        return MenuTabsWidget(
-          items: this.menuItems,
-          groupedMenuMode: hasMultipleGroups,
-        );
-      default:
-        return MenuGridView(
-          items: this.menuItems,
-          groupedMenuMode: hasMultipleGroups,
-        );
+  Widget getMenuWidget(BuildContext context) {
+    globals.appFrame.screen = null;
+
+    var deviceType = getDeviceType(MediaQuery.of(context).size);
+    if (deviceType == DeviceScreenType.desktop) {
+      globals.appFrame.setMenu(WebMenuListWidget(
+          menuItems: this.menuItems, groupedMenuMode: hasMultipleGroups));
+    } else {
+      switch (menuMode) {
+        case 'grid':
+          globals.appFrame.setMenu(
+              MenuGridView(items: this.menuItems, groupedMenuMode: false));
+          break;
+        case 'list':
+          globals.appFrame.setMenu(MenuListWidget(
+              menuItems: this.menuItems, groupedMenuMode: hasMultipleGroups));
+          break;
+        case 'drawer':
+          globals.appFrame.setMenu(MenuEmpty());
+          break;
+        case 'grid_grouped':
+          globals.appFrame.setMenu(MenuGridView(
+            items: this.menuItems,
+            groupedMenuMode: hasMultipleGroups,
+          ));
+          break;
+        case 'swiper':
+          globals.appFrame.setMenu(MenuSwiperWidget(
+            items: this.menuItems,
+            groupedMenuMode: hasMultipleGroups,
+          ));
+          break;
+        case 'tabs':
+          globals.appFrame.setMenu(MenuTabsWidget(
+            items: this.menuItems,
+            groupedMenuMode: hasMultipleGroups,
+          ));
+          break;
+        default:
+          globals.appFrame.setMenu(MenuGridView(
+            items: this.menuItems,
+            groupedMenuMode: hasMultipleGroups,
+          ));
+          break;
+      }
     }
+    return globals.appFrame.getWidget();
   }
 }

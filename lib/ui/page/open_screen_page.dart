@@ -21,10 +21,10 @@ import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
 import '../screen/so_component_creator.dart';
 import '../../ui/screen/i_screen.dart';
-import '../../ui/widgets/menu_drawer_widget.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
+import '../../ui/widgets/menu_drawer_widget.dart';
 
 class OpenScreenPage extends StatefulWidget {
   final String title;
@@ -126,8 +126,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                         (_) => Navigator.of(context).pop());
                   screen = globals.customScreenManager == null
                       ? IScreen(SoComponentCreator())
-                      : globals.customScreenManager
-                          .getScreen(widget.menuComponentId, templateName: widget.templateName);
+                      : globals.customScreenManager.getScreen(
+                          widget.menuComponentId,
+                          templateName: widget.templateName);
                   // title = state.action.label;
                   componentId = state.responseData.screenGeneric.componentId;
                 }
@@ -136,8 +137,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     !state.responseData.screenGeneric.update) {
                   screen = globals.customScreenManager == null
                       ? IScreen(SoComponentCreator())
-                      : globals.customScreenManager
-                          .getScreen(widget.menuComponentId, templateName: widget.templateName);
+                      : globals.customScreenManager.getScreen(
+                          widget.menuComponentId,
+                          templateName: widget.templateName);
                   componentId = state.responseData.screenGeneric.componentId;
                 }
 
@@ -190,7 +192,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
               if ((globals.applicationStyle != null &&
                   globals.applicationStyle?.desktopIcon != null)) {
-                child = Container(
+                globals.appFrame.setScreen(Container(
                     decoration: BoxDecoration(
                         color: (globals.applicationStyle != null &&
                                 globals.applicationStyle.desktopColor != null)
@@ -200,54 +202,62 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                             image: FileImage(File(
                                 '${globals.dir}${globals.applicationStyle.desktopIcon}')),
                             fit: BoxFit.cover)),
-                    child: screen.getWidget());
+                    child: screen.getWidget()));
+                child = globals.appFrame.getWidget();
               } else if ((globals.applicationStyle != null &&
                   globals.applicationStyle?.desktopColor != null)) {
-                child = Container(
+                globals.appFrame.setScreen(Container(
                     decoration: BoxDecoration(
                         color: globals.applicationStyle.desktopColor),
-                    child: screen.getWidget());
+                    child: screen.getWidget()));
+                child = globals.appFrame.getWidget();
               } else {
-                child = screen.getWidget();
+                globals.appFrame.setScreen(screen.getWidget());
+                child = globals.appFrame.getWidget();
               }
 
               return Scaffold(
-                  endDrawer: MenuDrawerWidget(
-                    menuItems: widget.items,
-                    listMenuItems: true,
-                    currentTitle: widget.title,
-                    groupedMenuMode:
-                        (globals.applicationStyle.menuMode == 'grid_grouped' ||
-                                globals.applicationStyle.menuMode == 'list') &
-                            hasMultipleGroups(),
-                  ),
+                  endDrawer: globals.appFrame.showScreenHeader
+                      ? MenuDrawerWidget(
+                          menuItems: widget.items,
+                          listMenuItems: true,
+                          currentTitle: widget.title,
+                          groupedMenuMode: (globals.applicationStyle.menuMode ==
+                                      'grid_grouped' ||
+                                  globals.applicationStyle.menuMode == 'list') &
+                              hasMultipleGroups(),
+                        )
+                      : null,
                   key: _scaffoldKey,
-                  appBar: AppBar(
-                    backgroundColor: UIData.ui_kit_color_2,
-                    actions: <Widget>[
-                      IconButton(
-                        icon: Icon(FontAwesomeIcons.ellipsisV),
-                        onPressed: () =>
-                            _scaffoldKey.currentState.openEndDrawer(),
-                      )
-                    ],
-                    leading: IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigation navigation = Navigation(
-                            clientId: globals.clientId,
-                            componentId: componentId);
+                  appBar: globals.appFrame.showScreenHeader
+                      ? AppBar(
+                          backgroundColor: UIData.ui_kit_color_2,
+                          actions: <Widget>[
+                            IconButton(
+                              icon: Icon(FontAwesomeIcons.ellipsisV),
+                              onPressed: () =>
+                                  _scaffoldKey.currentState.openEndDrawer(),
+                            )
+                          ],
+                          leading: IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            onPressed: () {
+                              Navigation navigation = Navigation(
+                                  clientId: globals.clientId,
+                                  componentId: componentId);
 
-                        TextUtils.unfocusCurrentTextfield(context);
+                              TextUtils.unfocusCurrentTextfield(context);
 
-                        Future.delayed(const Duration(milliseconds: 100), () {
-                          BlocProvider.of<ApiBloc>(context)
-                              .dispatch(navigation);
-                        });
-                      },
-                    ),
-                    title: Text(title ?? ''),
-                  ),
+                              Future.delayed(const Duration(milliseconds: 100),
+                                  () {
+                                BlocProvider.of<ApiBloc>(context)
+                                    .dispatch(navigation);
+                              });
+                            },
+                          ),
+                          title: Text(title ?? ''),
+                        )
+                      : null,
                   body: child);
             }),
           )),
@@ -258,8 +268,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   void initState() {
     screen = globals.customScreenManager == null
         ? IScreen(SoComponentCreator())
-        : globals.customScreenManager
-            .getScreen(widget.menuComponentId.toString(), templateName: globals.currentTempalteName);
+        : globals.customScreenManager.getScreen(
+            widget.menuComponentId.toString(),
+            templateName: globals.currentTempalteName);
     globals.currentTempalteName == null;
     screen.componentScreen.context = context;
     screen.update(widget.request, widget.responseData);

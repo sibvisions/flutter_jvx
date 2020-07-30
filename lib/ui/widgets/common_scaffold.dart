@@ -25,6 +25,7 @@ class CommonScaffold extends StatelessWidget {
   final Function dropdownCallback;
   final Widget drawer;
   final Function qrCallback;
+  final showAppBar;
 
   CommonScaffold(
     {
@@ -48,7 +49,8 @@ class CommonScaffold extends StatelessWidget {
       this.dropdownCallback,
       this.showDrawer = false,
       this.drawer,
-      this.qrCallback
+      this.qrCallback,
+      this.showAppBar = true
     }
   );
 
@@ -114,7 +116,7 @@ class CommonScaffold extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey != null ? scaffoldKey : null,
       backgroundColor: backGroundColor != null ? backGroundColor : null,
-      appBar: AppBar(
+      appBar: showAppBar ? AppBar(
         elevation: elevation,
         backgroundColor: UIData.ui_kit_color_2,
         title: Text(appTitle),
@@ -139,7 +141,7 @@ class CommonScaffold extends StatelessWidget {
           : SizedBox(width: 5.0,),
           SizedBox(width: 10.0,)
         ],
-      ),
+      ) : null,
       drawer: showDrawer ? drawer : null,
       body: bodyData,
       floatingActionButton: showFAB

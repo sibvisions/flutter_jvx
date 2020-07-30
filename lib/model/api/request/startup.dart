@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:universal_io/prefer_universal/io.dart';
 
 import '../../../model/api/request/request.dart';
 

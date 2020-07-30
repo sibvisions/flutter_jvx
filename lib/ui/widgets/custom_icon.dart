@@ -8,23 +8,18 @@ import '../../utils/globals.dart' as globals;
 class CustomIcon extends StatelessWidget {
   final String image;
   final Size size;
+  final Color color;
 
-  CustomIcon({
-    @required this.image,
-    this.size
-  });
+  CustomIcon({@required this.image, this.size, this.color});
 
   @override
   Widget build(BuildContext context) {
     if (image != null) {
-      if (checkFontAwesome(image))
-      {
-        if(!image.contains("size="))
-        {
-          return convertFontAwesomeTextToIcon(image, UIData.ui_kit_color_2);
-        }
-        else
-        {
+      if (checkFontAwesome(image)) {
+        if (!image.contains("size=")) {
+          return convertFontAwesomeTextToIcon(
+              image, color != null ? color : UIData.ui_kit_color_2);
+        } else {
           return _iconBuilder(formatFontAwesomeText(image));
         }
       }
@@ -54,21 +49,25 @@ class CustomIcon extends StatelessWidget {
     Image img;
     List<String> arr = image.split(',');
     Size size = this.size;
-    
-    if (size==null) size=getSize(image);
 
-    if (arr.length>0) 
-      img = Image.file(File('${globals.dir}${arr[0]}'), width: size?.width, height: size?.height,);
+    if (size == null) size = getSize(image);
+
+    if (arr.length > 0)
+      img = Image.file(
+        File('${globals.dir}${arr[0]}'),
+        width: size?.width,
+        height: size?.height,
+      );
 
     return img;
   }
 
   Icon _iconBuilder(Map data) {
     double widgetSize;
-    if (data['size']!=null && size==null) {
+    if (data['size'] != null && size == null) {
       List<String> arr = data['size'].split(',');
-      if (arr.length>0 && double.tryParse(arr[0]) != null) 
-        widgetSize =  double.parse(arr[0]);
+      if (arr.length > 0 && double.tryParse(arr[0]) != null)
+        widgetSize = double.parse(arr[0]);
     } else {
       widgetSize = size?.height;
     }
@@ -76,7 +75,7 @@ class CustomIcon extends StatelessWidget {
     Icon icon = new Icon(
       data['icon'],
       size: widgetSize,
-      color: UIData.ui_kit_color_2,
+      color: color != null ?  color :UIData.ui_kit_color_2,
       key: data['key'],
       textDirection: data['textDirection'],
     );

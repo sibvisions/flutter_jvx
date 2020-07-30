@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:convert' as utf8;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../../ui/tools/arc_clipper.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
@@ -30,10 +32,13 @@ class LoginBackground extends StatelessWidget {
                             ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
                             : 'assets/images/sibvisions.png',
                         fit: BoxFit.fitHeight)
-                    : Image.file(
-                        File(
-                            '${globals.dir}${globals.applicationStyle.loginLogo}'),
-                        fit: BoxFit.fitHeight),
+                    : !kIsWeb
+                        ? Image.file(
+                            File(
+                                '${globals.dir}${globals.applicationStyle.loginLogo}'),
+                            fit: BoxFit.fitHeight)
+                        : Image.memory(utf8.base64Decode(
+                            globals.files[globals.applicationStyle.loginIcon])),
               ),
             )
           ],
@@ -56,8 +61,11 @@ class LoginBackground extends StatelessWidget {
       widget = Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: FileImage(File(
-                      '${globals.dir}${globals.applicationStyle.loginIcon}')),
+                  image: !kIsWeb
+                      ? FileImage(File(
+                          '${globals.dir}${globals.applicationStyle.loginIcon}'))
+                      : MemoryImage(utf8.base64Decode(
+                          globals.files[globals.applicationStyle.loginIcon])),
                   fit: BoxFit.cover)),
           child: Column(
             children: <Widget>[topHalf(context), bottomHalf],
