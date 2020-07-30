@@ -9,12 +9,15 @@ class DeviceInfoMobile implements DeviceInfo {
   String appVersion;
   String deviceType;
   String deviceTypeModel;
+  String technology;
 
   DeviceInfoMobile() {
     _setSystemInfo();
   }
 
   Future<void> _setSystemInfo() async {
+    this.technology = "FlutterMobile";
+
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       appVersion = '${packageInfo.version}.${packageInfo.buildNumber}';
     });

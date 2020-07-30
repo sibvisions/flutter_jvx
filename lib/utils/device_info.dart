@@ -8,6 +8,7 @@ abstract class DeviceInfo {
   String appVersion;
   String deviceType;
   String deviceTypeModel;
+  String technology;
 
   factory DeviceInfo() => getDeviceInfo();
 }
