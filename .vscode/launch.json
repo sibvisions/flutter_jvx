@@ -7,7 +7,12 @@
         {
             "name": "Flutter",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            // uncomment to run as web application in chrome 
+            //"args": [
+            //    "-d",
+            //    "chrome"
+            //],
         }
     ]
 }

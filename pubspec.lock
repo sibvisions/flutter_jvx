@@ -218,6 +218,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.10"
+  device_info:
+    dependency: "direct main"
+    description:
+      name: device_info
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2+4"
   equatable:
     dependency: "direct main"
     description:
@@ -598,7 +605,7 @@ packages:
     source: hosted
     version: "2.2.1"
   platform_detect:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: platform_detect
       url: "https://pub.dartlang.org"
