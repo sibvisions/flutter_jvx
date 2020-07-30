@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../utils/app_version_web.dart';
 import '../../logic/bloc/theme_bloc.dart';
 import '../../ui/tools/restart.dart';
 import '../../utils/shared_preferences_helper.dart';
@@ -71,9 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
-      loadVersion();
-    }
+    loadVersion();
   }
 
   Widget settingsBuilder() {
@@ -217,12 +216,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   loadVersion() {
-    PackageInfo.fromPlatform().then((val) {
-      setState(() {
-        version = val.version;
-        buildNumber = val.buildNumber;
+    if (kIsWeb) {
+      version = AppVersionWeb.version;
+      buildNumber = AppVersionWeb.build.toString();
+    } else {
+      PackageInfo.fromPlatform().then((val) {
+        setState(() {
+          version = val.version;
+          buildNumber = val.buildNumber;
+        });
       });
-    });
+    }
   }
 
   showImageSizePicker(BuildContext context) {
@@ -295,7 +299,8 @@ class _SettingsPageState extends State<SettingsPage> {
           return true;
         },
         child: CommonScaffold(
-          showAppBar: globals.appFrame == null || globals.appFrame.showScreenHeader,
+          showAppBar:
+              globals.appFrame == null || globals.appFrame.showScreenHeader,
           centerDocked: true,
           scaffoldKey: scaffoldState,
           appTitle: Translations.of(context).text2('Settings', 'Settings'),
