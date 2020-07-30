@@ -164,7 +164,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                                 child: CustomIcon(
                                     image: mItem.image,
                                     size: Size(16, 16),
-                                    color: Colors.grey[50]))
+                                    color: Colors.white))
                             : new CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 child: Icon(
@@ -177,7 +177,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                               BoxConstraints(minWidth: 100, maxWidth: 180),
                           child: Text(
                             mItem.action.label,
-                            style: TextStyle(color: Colors.grey[50]),
+                            style: TextStyle(color: Colors.white, fontSize: 14),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),

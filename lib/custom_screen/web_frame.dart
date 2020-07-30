@@ -82,7 +82,43 @@ class _WebFrameState extends State<WebFrame> {
                       ),
                     ],
                   ),
-                  _buildDrawerHeader(),
+                  Row(
+                    children: [
+                      IconButton(
+                        hoverColor: Colors.black,
+                        icon: Icon(
+                          FontAwesomeIcons.cog,
+                          color: Colors.white,
+                          size: 26,
+                        ),
+                        onPressed: () {
+                          _scaffoldKey.currentState.openEndDrawer();
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      IconButton(
+                        hoverColor: Colors.black,
+                        icon: Icon(
+                          FontAwesomeIcons.powerOff,
+                          color: Colors.white,
+                          size: 26,
+                        ),
+                        onPressed: () {
+                          Logout logout = Logout(
+                              clientId: globals.clientId,
+                              requestType: RequestType.LOGOUT);
+
+                          BlocProvider.of<ApiBloc>(context).dispatch(logout);
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      _buildDrawerHeader(),
+                    ],
+                  ),
                 ],
               ),
               decoration: BoxDecoration(
@@ -135,80 +171,67 @@ class _WebFrameState extends State<WebFrame> {
     String username = globals.username;
     if (globals.displayName != null) username = globals.displayName;
 
-    return mypopup.PopupMenuButton<int>(
-      itemBuilder: (context) => [
-        mypopup.PopupMenuItem(
-          enabled: false,
-          value: 0,
-          child: Container(
-            color: UIData.ui_kit_color_2,
-            child: Center(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    globals.username.isNotEmpty
-                        ? Text(
-                            Translations.of(context)
-                                .text2('Logged in as', 'Logged in as'),
-                            style: TextStyle(
-                                color: UIData.textColor, fontSize: 12),
-                          )
-                        : Container(),
-                    Text(username, style: TextStyle(color: UIData.textColor)),
-                  ]),
-            ),
-          ),
-        ),
-        mypopup.PopupMenuDivider(
-          height: 10,
-        ),
-        mypopup.PopupMenuItem(
-          value: 1,
-          child: Center(
-            child: Text(
-              Translations.of(context).text2('Logout', 'Logout'),
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ),
-        mypopup.PopupMenuItem(
-          value: 2,
-          child: Center(
-            child: Text(
-              Translations.of(context).text2('Settings', 'Settings'),
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ),
-      ],
-      icon: CircleAvatar(
-        backgroundImage: globals.profileImage.isNotEmpty
-            ? Image.memory(
-                base64Decode(globals.profileImage),
-                fit: BoxFit.fitHeight,
-              ).image
-            : null,
-        child: globals.profileImage.isNotEmpty
-            ? null
-            : Icon(
-                FontAwesomeIcons.userTie,
-                color: UIData.ui_kit_color_2,
-                size: 60,
+    return Theme(
+      data: Theme.of(context).copyWith(
+                  cardColor: UIData.ui_kit_color_2,
+                ),
+          child: mypopup.PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          mypopup.PopupMenuItem(
+            enabled: false,
+            value: 0,
+            child: Container(
+              color: UIData.ui_kit_color_2,
+              child: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      globals.username.isNotEmpty
+                          ? Text(
+                              Translations.of(context)
+                                  .text2('Logged in as', 'Logged in as'),
+                              style: TextStyle(
+                                  color: UIData.textColor, fontSize: 12),
+                            )
+                          : Container(),
+                      Text(username, style: TextStyle(color: UIData.textColor)),
+                    ]),
               ),
-        radius: 50,
-      ),
-      offset: Offset(0, 100),
-      onSelected: (result) {
-        if (result == 2) {
-          _scaffoldKey.currentState.openEndDrawer();
-        } else if (result == 1) {
-          Logout logout = Logout(
-              clientId: globals.clientId, requestType: RequestType.LOGOUT);
+            ),
+          ),
+          mypopup.PopupMenuDivider(
+            height: 10,
+          ),
+        ],
+        icon: CircleAvatar(
+          backgroundImage: globals.profileImage.isNotEmpty
+              ? Image.memory(
+                  base64Decode(globals.profileImage),
+                  fit: BoxFit.fitHeight,
+                ).image
+              : null,
+          child: globals.profileImage.isNotEmpty
+              ? null
+              : Icon(
+                  FontAwesomeIcons.userTie,
+                  color: UIData.ui_kit_color_2,
+                  size: 60,
+                ),
+          radius: 50,
+        ),
+        offset: Offset(0, 100),
+        onSelected: (result) {
+          if (result == 2) {
+            _scaffoldKey.currentState.openEndDrawer();
+          } else if (result == 1) {
+            Logout logout = Logout(
+                clientId: globals.clientId, requestType: RequestType.LOGOUT);
 
-          BlocProvider.of<ApiBloc>(context).dispatch(logout);
-        }
-      },
+            BlocProvider.of<ApiBloc>(context).dispatch(logout);
+          }
+        },
+      ),
     );
   }
 
