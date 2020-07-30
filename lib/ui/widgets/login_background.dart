@@ -38,7 +38,7 @@ class LoginBackground extends StatelessWidget {
                                 '${globals.dir}${globals.applicationStyle.loginLogo}'),
                             fit: BoxFit.fitHeight)
                         : Image.memory(utf8.base64Decode(
-                            globals.files[globals.applicationStyle.loginIcon])),
+                            globals.files[globals.applicationStyle.loginLogo])),
               ),
             )
           ],
