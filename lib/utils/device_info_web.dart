@@ -9,8 +9,10 @@ class DeviceInfoWeb implements DeviceInfo {
   String appVersion;
   String deviceType;
   String deviceTypeModel;
+  String technology;
 
   DeviceInfoWeb() {
+    this.technology = "FlutterWeb";
     this.deviceType = browser.name;
     this.deviceTypeModel = window.navigator.userAgent;
     this.osName = operatingSystem.name;

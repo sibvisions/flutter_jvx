@@ -46,6 +46,7 @@ class Startup extends Request {
         'userName': userName,
         'password': password,
         'url': url,
+        'technology': deviceInfo.technology,
         'osName': deviceInfo.osName,
         'osVersion': deviceInfo.osVersion,
         'appVersion': deviceInfo.appVersion,
