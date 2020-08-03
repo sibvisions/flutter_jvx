@@ -117,7 +117,7 @@ class CoButton extends CoActionComponent {
     return ButtonTheme(
         minWidth: minWidth,
         padding: padding,
-        shape: globals.applicationStyle.buttonShape,
+        shape: globals.applicationStyle?.buttonShape ?? null,
         child: RaisedButton(
           key: this.componentId,
           onPressed: this.enabled ? buttonPressed : null,

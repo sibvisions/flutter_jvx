@@ -130,7 +130,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           widget.menuComponentId,
                           templateName: widget.templateName);
                   // title = state.action.label;
-                  componentId = state.responseData.screenGeneric.componentId;
+                  componentId = state.responseData?.screenGeneric?.componentId;
                 }
 
                 if (state.responseData.screenGeneric != null &&
@@ -222,10 +222,12 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           menuItems: widget.items,
                           listMenuItems: true,
                           currentTitle: widget.title,
-                          groupedMenuMode: (globals.applicationStyle.menuMode ==
-                                      'grid_grouped' ||
-                                  globals.applicationStyle.menuMode == 'list') &
-                              hasMultipleGroups(),
+                          groupedMenuMode:
+                              (globals.applicationStyle?.menuMode ==
+                                          'grid_grouped' ||
+                                      globals.applicationStyle?.menuMode ==
+                                          'list') &
+                                  hasMultipleGroups(),
                         )
                       : null,
                   key: _scaffoldKey,

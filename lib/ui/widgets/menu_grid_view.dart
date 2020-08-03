@@ -84,11 +84,13 @@ class _MenuGridViewState extends State<MenuGridView> {
   void _onTap(MenuItem menuItem) {
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
-            .getScreen(menuItem.action.componentId, templateName: menuItem.templateName)
+            .getScreen(menuItem.action.componentId,
+                templateName: menuItem.templateName)
             .withServer()) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
-              .getScreen(menuItem.action.componentId, templateName: menuItem.templateName)
+              .getScreen(menuItem.action.componentId,
+                  templateName: menuItem.templateName)
               .getWidget()));
     } else {
       prefix0.SoAction action = menuItem.action;
@@ -114,10 +116,10 @@ class _MenuGridViewState extends State<MenuGridView> {
       itemBuilder: (BuildContext context, int index) {
         return new GestureDetector(
           child: new Card(
-            color:
-                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            color: Colors.white
+                .withOpacity(globals.applicationStyle?.menuOpacity ?? 1.0),
             margin: EdgeInsets.all(6),
-            shape: globals.applicationStyle.menuShape,
+            shape: globals.applicationStyle?.menuShape ?? null,
             elevation: 2.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
