@@ -141,7 +141,7 @@ class MenuPage extends StatelessWidget {
     globals.appFrame.screen = null;
 
     var deviceType = getDeviceType(MediaQuery.of(context).size);
-    if (deviceType == DeviceScreenType.desktop) {
+    if (deviceType == DeviceScreenType.desktop && !globals.mobileOnly) {
       globals.appFrame.setMenu(WebMenuListWidget(
           menuItems: this.menuItems, groupedMenuMode: hasMultipleGroups));
     } else {

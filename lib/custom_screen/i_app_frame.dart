@@ -34,7 +34,7 @@ abstract class IAppFrame {
 
   bool get showScreenHeader {
     var deviceType = getDeviceType(MediaQuery.of(context).size);
-    if (deviceType == DeviceScreenType.desktop) {
+    if (deviceType == DeviceScreenType.desktop && !globals.mobileOnly) {
       return false;
     }
     return true;
