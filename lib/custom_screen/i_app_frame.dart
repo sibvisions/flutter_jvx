@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import '../utils/globals.dart' as globals;
 
 abstract class IAppFrame {
   Widget menu;
@@ -12,7 +13,7 @@ abstract class IAppFrame {
 
   Widget getWidget() {
     var deviceType = getDeviceType(MediaQuery.of(context).size);
-    if (deviceType == DeviceScreenType.desktop) {
+    if (deviceType == DeviceScreenType.desktop && !globals.mobileOnly) {
       return getWebFrameWidget();
     } else {
       return getMobileFrameWidget();

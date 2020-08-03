@@ -40,6 +40,8 @@ class MobileApp extends StatelessWidget {
                   globals.username = param.split("=")[1];
                 } else if (param.contains("password=")) {
                   globals.password = param.split("=")[1];
+                } else if (param.contains("mobileOnly=")) {
+                  globals.mobileOnly = param.split("=")[1] == 'true';
                 }
               }
 
