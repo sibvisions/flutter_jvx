@@ -206,7 +206,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     leading: Icon(
                       FontAwesomeIcons.codeBranch,
                     ),
-                    title: Text(versionText),
+                    title: Text(
+                      versionText,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   )
                 ]))
           ],
