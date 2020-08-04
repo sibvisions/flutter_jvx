@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:convert' as utf8;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/custom_screen/app_frame.dart';
 import 'package:jvx_flutterclient/ui/widgets/web_menu_list_widget.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../../utils/application_api.dart';
 import '../screen/so_menu_manager.dart';
@@ -99,10 +101,19 @@ class MenuPage extends StatelessWidget {
         globals.applicationStyle?.desktopIcon != null)) {
       body = Container(
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: FileImage(File(
-                      '${globals.dir}${globals.applicationStyle.desktopIcon}')),
-                  fit: BoxFit.cover)),
+              image: !kIsWeb
+                  ? DecorationImage(
+                      image: FileImage(File(
+                          '${globals.dir}${globals.applicationStyle.desktopIcon}')),
+                      fit: BoxFit.cover)
+                  : DecorationImage(
+                      image: globals.files
+                              .containsKey(globals.applicationStyle.desktopIcon)
+                          ? MemoryImage(utf8.base64Decode(globals
+                              .files[globals.applicationStyle.desktopIcon]))
+                          : null,
+                      fit: BoxFit.cover,
+                    )),
           child: getMenuWidget(context));
     } else {
       body = getMenuWidget(context);

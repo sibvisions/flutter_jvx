@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert' as utf8;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '../../utils/text_utils.dart';
 import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
@@ -198,10 +201,20 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                                 globals.applicationStyle.desktopColor != null)
                             ? globals.applicationStyle.desktopColor
                             : null,
-                        image: DecorationImage(
-                            image: FileImage(File(
-                                '${globals.dir}${globals.applicationStyle.desktopIcon}')),
-                            fit: BoxFit.cover)),
+                        image: !kIsWeb
+                            ? DecorationImage(
+                                image: FileImage(File(
+                                    '${globals.dir}${globals.applicationStyle.desktopIcon}')),
+                                fit: BoxFit.cover)
+                            : DecorationImage(
+                                image: globals.files.containsKey(
+                                        globals.applicationStyle.desktopIcon)
+                                    ? MemoryImage(utf8.base64Decode(globals
+                                            .files[
+                                        globals.applicationStyle.desktopIcon]))
+                                    : null,
+                                fit: BoxFit.cover,
+                              )),
                     child: screen.getWidget()));
                 child = globals.appFrame.getWidget();
               } else if ((globals.applicationStyle != null &&
