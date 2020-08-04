@@ -118,7 +118,12 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
             title: Text(
               k,
               style: TextStyle(
-                  color: Colors.grey[500], fontWeight: FontWeight.bold),
+                  color: (globals.applicationStyle != null &&
+                          globals.applicationStyle.sideMenuGroupTextColor !=
+                              null)
+                      ? globals.applicationStyle.sideMenuGroupTextColor
+                      : null,
+                  fontWeight: FontWeight.bold),
             ),
           ));
 
@@ -164,7 +169,12 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                                 child: CustomIcon(
                                     image: mItem.image,
                                     size: Size(16, 16),
-                                    color: Colors.white))
+                                    color: (globals.applicationStyle != null &&
+                                            globals.applicationStyle
+                                                    .sideMenuTextColor !=
+                                                null)
+                                        ? globals.applicationStyle.sideMenuTextColor
+                                        : null))
                             : new CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 child: Icon(
@@ -177,7 +187,14 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                               BoxConstraints(minWidth: 100, maxWidth: 180),
                           child: Text(
                             mItem.action.label,
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: TextStyle(
+                                color: (globals.applicationStyle != null &&
+                                        globals.applicationStyle
+                                                .sideMenuTextColor !=
+                                            null)
+                                    ? globals.applicationStyle.sideMenuTextColor
+                                    : null,
+                                fontSize: 14),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),

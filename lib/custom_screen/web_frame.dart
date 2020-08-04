@@ -16,8 +16,6 @@ import '../ui/widgets/my_popup_menu.dart' as mypopup;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:convert';
 
-import 'package:auto_size_text/auto_size_text.dart';
-
 class WebFrame extends StatefulWidget {
   const WebFrame({
     Key key,
@@ -38,6 +36,7 @@ class _WebFrameState extends State<WebFrame> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(child: SettingsPage()),
@@ -54,7 +53,7 @@ class _WebFrameState extends State<WebFrame> {
                       Container(
                           width: 250,
                           child: (globals.applicationStyle == null ||
-                                  globals.applicationStyle?.loginLogo == null)
+                                  globals.applicationStyle?.topMenuLogo == null)
                               ? Image.asset(
                                   globals.package
                                       ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
@@ -62,7 +61,7 @@ class _WebFrameState extends State<WebFrame> {
                                   fit: BoxFit.fitHeight)
                               : Image.memory(
                                   utf8.base64Decode(globals.files[
-                                      globals.applicationStyle.loginLogo]),
+                                      globals.applicationStyle.topMenuLogo]),
                                   fit: BoxFit.fitHeight)),
                       SizedBox(
                         width: 15,
@@ -71,7 +70,11 @@ class _WebFrameState extends State<WebFrame> {
                         hoverColor: Colors.black,
                         icon: Icon(
                           FontAwesomeIcons.bars,
-                          color: Colors.white,
+                          color: (globals.applicationStyle != null &&
+                                  globals.applicationStyle.topMenuIconColor !=
+                                      null)
+                              ? globals.applicationStyle.topMenuIconColor
+                              : null,
                           size: 26,
                         ),
                         onPressed: () {
@@ -88,7 +91,11 @@ class _WebFrameState extends State<WebFrame> {
                         hoverColor: Colors.black,
                         icon: Icon(
                           FontAwesomeIcons.cog,
-                          color: Colors.white,
+                          color: (globals.applicationStyle != null &&
+                                  globals.applicationStyle.topMenuIconColor !=
+                                      null)
+                              ? globals.applicationStyle.topMenuIconColor
+                              : null,
                           size: 26,
                         ),
                         onPressed: () {
@@ -102,7 +109,11 @@ class _WebFrameState extends State<WebFrame> {
                         hoverColor: Colors.black,
                         icon: Icon(
                           FontAwesomeIcons.powerOff,
-                          color: Colors.white,
+                          color: (globals.applicationStyle != null &&
+                                  globals.applicationStyle.topMenuIconColor !=
+                                      null)
+                              ? globals.applicationStyle.topMenuIconColor
+                              : null,
                           size: 26,
                         ),
                         onPressed: () {
@@ -122,16 +133,18 @@ class _WebFrameState extends State<WebFrame> {
                 ],
               ),
               decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-                color: UIData.ui_kit_color_2.withOpacity(0.95),
-              ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  color: (globals.applicationStyle != null &&
+                          globals.applicationStyle.topMenuColor != null)
+                      ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+                      : null),
             ),
           ),
           isVisible
@@ -141,7 +154,12 @@ class _WebFrameState extends State<WebFrame> {
                     children: <Widget>[
                       Container(
                           width: 250,
-                          color: UIData.ui_kit_color_2.withOpacity(0.95),
+                          color: (globals.applicationStyle != null &&
+                                  globals.applicationStyle.sideMenuColor !=
+                                      null)
+                              ? globals.applicationStyle.sideMenuColor
+                                  .withOpacity(0.95)
+                              : null,
                           child: widget.menu),
                       Expanded(
                           child: widget.screen != null
@@ -149,7 +167,15 @@ class _WebFrameState extends State<WebFrame> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: widget.screen,
                                 )
-                              : Container()),
+                              : Container(
+                                  decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: globals.files.containsKey(globals.applicationStyle.desktopIcon) ? MemoryImage(utf8.base64Decode(globals
+                                            .files[
+                                        globals.applicationStyle.desktopIcon])): null,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ))),
                     ],
                   ),
                 )
@@ -160,7 +186,15 @@ class _WebFrameState extends State<WebFrame> {
                           padding: const EdgeInsets.all(8.0),
                           child: widget.screen,
                         )
-                      : Container(),
+                      : Container(
+                          decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: globals.files.containsKey(globals.applicationStyle.desktopIcon) ? MemoryImage(utf8.base64Decode(globals
+                                            .files[
+                                        globals.applicationStyle.desktopIcon])): null,
+                            fit: BoxFit.cover,
+                          ),
+                        )),
                 ),
         ],
       ),
@@ -173,15 +207,21 @@ class _WebFrameState extends State<WebFrame> {
 
     return Theme(
       data: Theme.of(context).copyWith(
-                  cardColor: UIData.ui_kit_color_2,
-                ),
-          child: mypopup.PopupMenuButton<int>(
+        cardColor: (globals.applicationStyle != null &&
+                globals.applicationStyle.topMenuColor != null)
+            ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+            : null,
+      ),
+      child: mypopup.PopupMenuButton<int>(
         itemBuilder: (context) => [
           mypopup.PopupMenuItem(
             enabled: false,
             value: 0,
             child: Container(
-              color: UIData.ui_kit_color_2,
+              color: (globals.applicationStyle != null &&
+                      globals.applicationStyle.topMenuColor != null)
+                  ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+                  : null,
               child: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -215,45 +255,17 @@ class _WebFrameState extends State<WebFrame> {
               ? null
               : Icon(
                   FontAwesomeIcons.userTie,
-                  color: UIData.ui_kit_color_2,
+                  color: (globals.applicationStyle != null &&
+                          globals.applicationStyle.topMenuIconColor != null)
+                      ? globals.applicationStyle.topMenuIconColor
+                      : null,
                   size: 60,
                 ),
           radius: 50,
         ),
         offset: Offset(0, 100),
-        onSelected: (result) {
-          if (result == 2) {
-            _scaffoldKey.currentState.openEndDrawer();
-          } else if (result == 1) {
-            Logout logout = Logout(
-                clientId: globals.clientId, requestType: RequestType.LOGOUT);
-
-            BlocProvider.of<ApiBloc>(context).dispatch(logout);
-          }
-        },
+        onSelected: (result) {},
       ),
-    );
-  }
-
-  Widget _getAppName() {
-    String appName = globals.appName;
-
-    if (globals.applicationStyle != null &&
-        globals.applicationStyle.loginTitle != null) {
-      appName = globals.applicationStyle.loginTitle;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: AutoSizeText(appName != null ? appName : '',
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          minFontSize: 16,
-          style: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            color: UIData.textColor,
-          )),
     );
   }
 
@@ -271,7 +283,6 @@ class _WebFrameState extends State<WebFrame> {
       return CustomDrawerHeader(
           padding: EdgeInsets.fromLTRB(0, 8.0, 25.0, 0),
           drawerHeaderHeight: 80,
-          // decoration: BoxDecoration(color: UIData.ui_kit_color_2.withOpacity(0.95)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[_getAvatar()],
