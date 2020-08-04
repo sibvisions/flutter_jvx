@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/model/api/response/device_status_resp.dart';
+
 import '../../../model/api/response/show_document.dart';
 import '../../../utils/shared_preferences_helper.dart';
 import '../../../model/api/response/response_data.dart';
@@ -46,6 +48,7 @@ class Response {
   UserData userData;
   Request request;
   ShowDocument showDocument;
+  DeviceStatus deviceStatus;
 
   Response();
 
@@ -128,6 +131,9 @@ class Response {
           break;
         case ResponseObjectType.SHOWDOCUMENT:
           showDocument = ShowDocument.fromJson(r);
+          break;
+        case ResponseObjectType.DEVICESTATUS:
+          deviceStatus = DeviceStatus.fromJson(r);
           break;
       }
     });

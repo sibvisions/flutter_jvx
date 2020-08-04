@@ -12,7 +12,8 @@ enum ResponseObjectType {
   UPLOAD,
   CLOSESCREEN,
   USERDATA,
-  SHOWDOCUMENT
+  SHOWDOCUMENT,
+  DEVICESTATUS,
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {
@@ -32,6 +33,6 @@ abstract class ResponseObject<T> {
   ResponseObject();
 
   ResponseObject.fromJson(Map<String, dynamic> json)
-    : componentId = json['componentId'],
-      name = json['name'];
+      : componentId = json['componentId'],
+        name = json['name'];
 }
