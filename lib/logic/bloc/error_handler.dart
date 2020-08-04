@@ -10,27 +10,38 @@ import '../../utils/translations.dart';
 import '../../utils/globals.dart' as globals;
 
 bool handleError(Response response, BuildContext context) {
-  if (response.error && (response.requestType != RequestType.LOGIN || response.errorName == 'message.sessionexpired')) {
+  if (response.error &&
+      (response.requestType != RequestType.LOGIN ||
+          response.errorName == 'message.sessionexpired')) {
     if (response.errorName == 'message.sessionexpired') {
-      if (globals.handleSessionTimeout != null && globals.handleSessionTimeout) {
+      if (globals.handleSessionTimeout != null &&
+          globals.handleSessionTimeout) {
         showSessionExpired(context, response.title, 'App will restart.');
       } else {
         RestartWidget.restartApp(context);
       }
-    } else if (response.errorName == 'message.error' && response.requestType == RequestType.STARTUP) {
-      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
+    } else if (response.errorName == 'message.error' &&
+        response.requestType == RequestType.STARTUP) {
+      showGoToSettings(
+          context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'message.error') {
-      showError(context, Translations.of(context).text2('Error'), response.message);
+      showError(
+          context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'server.error') {
-      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
+      showGoToSettings(
+          context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'connection.error') {
-      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
+      showGoToSettings(
+          context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'timeout.error') {
-      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
+      showGoToSettings(
+          context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'internet.error') {
-      showError(context, Translations.of(context).text2('Error'), response.message);
+      showError(
+          context, Translations.of(context).text2('Error'), response.message);
     } else {
-      showGoToSettings(context, Translations.of(context).text2('Error'), response.message);
+      showGoToSettings(
+          context, Translations.of(context).text2('Error'), response.message);
     }
     return true;
   }
@@ -51,12 +62,18 @@ Widget errorHandlerListener(Widget child) {
 Widget loadingListener(Widget child) {
   return BlocListener<ApiBloc, Response>(
     listener: (BuildContext context, Response state) {
-      if (state != null && state.loading && state.requestType == RequestType.LOADING) {
-        SchedulerBinding.instance.addPostFrameCallback((_) => showProgress(context));
+      if (state != null &&
+          state.loading &&
+          state.requestType == RequestType.LOADING) {
+        SchedulerBinding.instance
+            .addPostFrameCallback((_) => showProgress(context));
       }
 
-      if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
-        SchedulerBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+      if (state != null &&
+          !state.loading &&
+          state.requestType != RequestType.LOADING) {
+        SchedulerBinding.instance
+            .addPostFrameCallback((_) => hideProgress(context));
       }
     },
     child: child,
@@ -66,15 +83,22 @@ Widget loadingListener(Widget child) {
 Widget errorAndLoadingListener(Widget child) {
   return BlocListener<ApiBloc, Response>(
     listener: (BuildContext context, Response state) {
-      if (state != null && state.loading && state.requestType == RequestType.LOADING) {
+      if (state != null &&
+          state.loading &&
+          state.requestType == RequestType.LOADING) {
         showProgress(context);
       }
 
-      if (state != null && !state.loading && state.requestType != RequestType.LOADING) {
+      if (state != null &&
+          !state.loading &&
+          state.requestType != RequestType.LOADING) {
         hideProgress(context);
       }
 
-      if (state != null && !state.loading && state.error && !state.errorHandled) {
+      if (state != null &&
+          !state.loading &&
+          state.error &&
+          !state.errorHandled) {
         state.errorHandled = handleError(state, context);
       }
     },

@@ -89,7 +89,7 @@ class CoTextCellEditor extends CoCellEditor {
               : Colors.white
                   .withOpacity(globals.applicationStyle.controlsOpacity),
           borderRadius: BorderRadius.circular(
-              globals.applicationStyle.cornerRadiusEditors),
+              globals.applicationStyle?.cornerRadiusEditors ?? 10),
           border: borderVisible && this.editable != null && this.editable
               ? Border.all(color: UIData.ui_kit_color_2)
               : Border.all(color: Colors.grey)),

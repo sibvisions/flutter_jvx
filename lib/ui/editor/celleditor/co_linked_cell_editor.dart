@@ -181,10 +181,10 @@ class CoLinkedCellEditor extends CoReferencedCellEditor {
         decoration: BoxDecoration(
             color: background != null
                 ? background
-                : Colors.white
-                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                : Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
             borderRadius: BorderRadius.circular(
-                globals.applicationStyle.cornerRadiusEditors),
+                globals.applicationStyle?.cornerRadiusEditors ?? 10),
             border: this.editable != null && this.editable
                 ? (borderVisible
                     ? Border.all(color: UIData.ui_kit_color_2)

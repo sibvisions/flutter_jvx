@@ -209,10 +209,11 @@ class CoImageCellEditor extends CoCellEditor {
                   this.horizontalAlignment),
               children: <Widget>[
             Card(
-                color: Colors.white
-                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                color: Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
                 elevation: 2.0,
-                shape: globals.applicationStyle.editorsShape,
+                shape: globals.applicationStyle?.editorsShape ??
+                    RoundedRectangleBorder(),
                 child: Container(
                   height: height,
                   width: width - 10,
@@ -221,7 +222,7 @@ class CoImageCellEditor extends CoCellEditor {
                     color: background != null
                         ? background
                         : Colors.white.withOpacity(
-                            globals.applicationStyle.controlsOpacity),
+                            globals.applicationStyle?.controlsOpacity ?? 1.0),
                   ),
                 ))
           ]));
