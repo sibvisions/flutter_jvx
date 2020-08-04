@@ -60,6 +60,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   Orientation lastOrientation;
   String title = '';
   String componentId;
+  double width;
+  double height;
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +70,21 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         .replaceAll("[<'", '')
         .replaceAll("'>]", '');
 
-    if (lastOrientation == null)
+    if (lastOrientation == null) {
       lastOrientation = MediaQuery.of(context).orientation;
-    else if (lastOrientation != MediaQuery.of(context).orientation) {
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
+    } else if (lastOrientation != MediaQuery.of(context).orientation ||
+        width != MediaQuery.of(context).size.width ||
+        height != MediaQuery.of(context).size.height) {
       DeviceStatus status = DeviceStatus(
           screenSize: MediaQuery.of(context).size,
           timeZoneCode: "",
           langCode: "");
       BlocProvider.of<ApiBloc>(context).dispatch(status);
       lastOrientation = MediaQuery.of(context).orientation;
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
     }
 
     return errorAndLoadingListener(
