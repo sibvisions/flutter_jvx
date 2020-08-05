@@ -217,6 +217,7 @@ class CoTable extends CoEditor {
               context: context,
               items: popupMenuEntries)
           .then((val) {
+        WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
         if (val != null) {
           if (val.command == ContextMenuCommand.INSERT)
             this.data.insertRecord(context);
