@@ -123,42 +123,50 @@ class ApplicationStyleResponse extends ResponseObject {
 
     if (jsonMap['theme'] != null &&
         jsonMap['theme']['web'] != null &&
-        HexColor.isHexColor(jsonMap['theme']['web']['sidemenucolor']))
-      sideMenuColor = HexColor(jsonMap['theme']['web']['sidemenucolor']);
+        jsonMap['theme']['web']['sidemenu'] != null &&
+        HexColor.isHexColor(jsonMap['theme']['web']['sidemenu']['color']))
+      sideMenuColor = HexColor(jsonMap['theme']['web']['sidemenu']['color']);
     else
       sideMenuColor = null;
 
     if (jsonMap['theme'] != null &&
         jsonMap['theme']['web'] != null &&
-        HexColor.isHexColor(jsonMap['theme']['web']['topmenucolor']))
-      topMenuColor = HexColor(jsonMap['theme']['web']['topmenucolor']);
+        jsonMap['theme']['web']['topmenu'] != null &&
+        HexColor.isHexColor(jsonMap['theme']['web']['topmenu']['color']))
+      topMenuColor = HexColor(jsonMap['theme']['web']['topmenu']['color']);
     else
       topMenuColor = null;
 
     if (jsonMap['theme'] != null &&
         jsonMap['theme']['web'] != null &&
-        HexColor.isHexColor(jsonMap['theme']['web']['topmenuiconcolor']))
-      topMenuIconColor = HexColor(jsonMap['theme']['web']['topmenuiconcolor']);
+        jsonMap['theme']['web']['topmenu'] != null &&
+        HexColor.isHexColor(jsonMap['theme']['web']['topmenu']['iconColor']))
+      topMenuIconColor =
+          HexColor(jsonMap['theme']['web']['topmenu']['iconColor']);
     else
       topMenuIconColor = null;
 
     if (jsonMap['theme'] != null &&
         jsonMap['theme']['web'] != null &&
-        HexColor.isHexColor(jsonMap['theme']['web']['sidemenutextcolor']))
+        jsonMap['theme']['web']['sidemenu'] != null &&
+        HexColor.isHexColor(jsonMap['theme']['web']['sidemenu']['textColor']))
       sideMenuTextColor =
-          HexColor(jsonMap['theme']['web']['sidemenutextcolor']);
+          HexColor(jsonMap['theme']['web']['sidemenu']['textColor']);
     else
       sideMenuTextColor = null;
 
     if (jsonMap['theme'] != null &&
         jsonMap['theme']['web'] != null &&
-        HexColor.isHexColor(jsonMap['theme']['web']['sidemenugrouptextcolor']))
+        jsonMap['theme']['web']['sidemenu'] != null &&
+        HexColor.isHexColor(jsonMap['theme']['web']['sidemenu']['groupColor']))
       sideMenuGroupTextColor =
-          HexColor(jsonMap['theme']['web']['sidemenugrouptextcolor']);
+          HexColor(jsonMap['theme']['web']['sidemenu']['groupColor']);
     else
       sideMenuGroupTextColor = null;
 
-    if (jsonMap['theme'] != null && jsonMap['theme']['web'] != null)
+    if (jsonMap['theme'] != null &&
+        jsonMap['theme']['web'] != null &&
+        jsonMap['theme']['web']['topmenu'] != null)
       topMenuLogo = jsonMap['theme']['web']['topmenulogo'];
     else
       topMenuLogo = null;
