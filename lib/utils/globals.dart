@@ -41,3 +41,4 @@ String currentScreenComponentId;
 String currentTempalteName;
 IAppFrame appFrame;
 bool mobileOnly = false;
+String layoutMode = 'Mini';

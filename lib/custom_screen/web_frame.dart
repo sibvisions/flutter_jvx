@@ -36,7 +36,6 @@ class _WebFrameState extends State<WebFrame> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: Drawer(child: SettingsPage()),
@@ -167,15 +166,19 @@ class _WebFrameState extends State<WebFrame> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: widget.screen,
                                 )
-                              : Container(
-                                  decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: globals.files.containsKey(globals.applicationStyle.desktopIcon) ? MemoryImage(utf8.base64Decode(globals
-                                            .files[
-                                        globals.applicationStyle.desktopIcon])): null,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ))),
+                              : globals.files.containsKey(
+                                      globals.applicationStyle.desktopIcon)
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: MemoryImage(utf8.base64Decode(
+                                            globals.files[globals
+                                                .applicationStyle
+                                                .desktopIcon])),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ))
+                                  : Container()),
                     ],
                   ),
                 )
@@ -189,9 +192,11 @@ class _WebFrameState extends State<WebFrame> {
                       : Container(
                           decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: globals.files.containsKey(globals.applicationStyle.desktopIcon) ? MemoryImage(utf8.base64Decode(globals
-                                            .files[
-                                        globals.applicationStyle.desktopIcon])): null,
+                            image: globals.files.containsKey(
+                                    globals.applicationStyle.desktopIcon)
+                                ? MemoryImage(utf8.base64Decode(globals.files[
+                                    globals.applicationStyle.desktopIcon]))
+                                : null,
                             fit: BoxFit.cover,
                           ),
                         )),

@@ -1,10 +1,11 @@
-import 'package:jvx_flutterclient/model/api/response/response_object.dart';
+import 'response_object.dart';
 
-class DeviceStatus extends ResponseObject {
+class DeviceStatusResponse extends ResponseObject {
   String layoutMode;
 
-  DeviceStatus({this.layoutMode});
+  DeviceStatusResponse({this.layoutMode});
 
-  DeviceStatus.fromJson(Map<String, dynamic> json)
-      : layoutMode = json['layoutMode'];
+  DeviceStatusResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    layoutMode = json['layoutMode'];
+  }
 }

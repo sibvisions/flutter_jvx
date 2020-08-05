@@ -16,6 +16,7 @@ import '../../../model/api/response/menu.dart';
 import '../../../model/api/response/screen_generic.dart';
 import '../../../model/api/response/upload_action.dart';
 import '../../../model/api/response/user_data.dart';
+import '../../../utils/globals.dart' as globals;
 
 import 'application_meta_data.dart';
 import 'data/dataprovider_changed.dart';
@@ -48,7 +49,7 @@ class Response {
   UserData userData;
   Request request;
   ShowDocument showDocument;
-  DeviceStatus deviceStatus;
+  DeviceStatusResponse deviceStatus;
 
   Response();
 
@@ -133,7 +134,10 @@ class Response {
           showDocument = ShowDocument.fromJson(r);
           break;
         case ResponseObjectType.DEVICESTATUS:
-          deviceStatus = DeviceStatus.fromJson(r);
+          deviceStatus = DeviceStatusResponse.fromJson(r);
+          if (deviceStatus != null && deviceStatus.layoutMode != null) {
+            globals.layoutMode = deviceStatus.layoutMode;
+          }
           break;
       }
     });
