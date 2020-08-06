@@ -57,19 +57,20 @@ class LoginPageState extends State<LoginPage> {
                 }
                 if (state.userData.displayName != null) {
                   globals.displayName = state.userData.displayName;
-                }else {
+                } else {
                   globals.displayName = "";
                 }
 
                 if (state.userData.profileImage != null)
                   globals.profileImage = state.userData.profileImage;
-                else 
+                else
                   globals.profileImage = "";
               }
               Menu menu = state.menu;
 
               if (menu != null)
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    settings: RouteSettings(name: "/Menu"),
                     builder: (_) => MenuPage(
                           menuItems: menu.items,
                         )));
@@ -86,10 +87,8 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeData>(
-      builder: (context, state) {
-        return loginBuilder();
-      }
-    );
+    return BlocBuilder<ThemeBloc, ThemeData>(builder: (context, state) {
+      return loginBuilder();
+    });
   }
 }

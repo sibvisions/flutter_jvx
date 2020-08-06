@@ -174,21 +174,24 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
             if (globals.customScreenManager != null &&
                 !globals.customScreenManager
-                    .getScreen(item.action.componentId, templateName: item.templateName)
+                    .getScreen(item.action.componentId,
+                        templateName: item.templateName)
                     .withServer()) {
               // close drawer
-              Navigator.of(context).pop();
+              Navigator.of(context).popUntil(ModalRoute.withName("/OpenScreen"));
               // open screen
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(
                       builder: (_) => globals.customScreenManager
-                          .getScreen(item.action.componentId, templateName: item.templateName)
+                          .getScreen(item.action.componentId,
+                              templateName: item.templateName)
                           .getWidget()))
                   .then((value) {
                 setState(() {});
               });
             } else {
-              Navigator.of(context).pop();
+              Navigator.of(context).popUntil(ModalRoute.withName("/OpenScreen"));
+
               prefix0.SoAction action = item.action;
 
               OpenScreen openScreen = OpenScreen(
