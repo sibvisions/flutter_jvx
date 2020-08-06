@@ -40,7 +40,7 @@ dependencies:
   barcode_scan: ^3.0.1
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
-  connectivity: ^0.4.6+1
+  connectivity: ^0.4.9
   uuid: ^2.0.4
   sticky_headers: ^0.1.8+1
   auto_size_text: ^2.1.0
