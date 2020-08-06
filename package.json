@@ -8,18 +8,31 @@
     "test": "test"
   },
   "scripts": {
-    "increaseBuildNumberPubspecYaml": "perl -i -pe \"s/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e\" pubspec.yaml",
-    "increaseBuildNumberAppVersionWebDart": "perl -i -pe \"s/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e\" lib/utils/app_version_web.dart",
+    "increaseBuildNumberPubspecYaml": "perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e' pubspec.yaml",
+    "increaseBuildNumberPubspecYamlWin": "perl -i -pe \"s/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e\" pubspec.yaml",
+    "increaseBuildNumberAppVersionWebDart": "perl -i -pe 's/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e' lib/utils/app_version_web.dart",
+    "increaseBuildNumberAppVersionWebDartWin": "perl -i -pe \"s/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e\" lib/utils/app_version_web.dart",
     "removeWebBuildConfJson": "del build\\web\\assets\\env\\conf.json",
     "removeBuildConfJson": "del build\\flutter_assets\\env\\conf.json",
+
     "run": "flutter run",
     "runweb": "flutter run -d chrome",
+    
     "prebuild": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
     "build": "flutter build",
     "postbuild": "run-s removeBuildConfJson",
+    
     "prebuildweb": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
     "buildweb": "flutter build web",
-    "postbuildweb": "run-s removeWebBuildConfJson"
+    "postbuildweb": "run-s removeWebBuildConfJson",
+
+    "prebuildWin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin",
+    "buildWin": "flutter build",
+    "postbuildWin": "run-s removeBuildConfJson",
+    
+    "prebuildwebWin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin",
+    "buildwebWin": "flutter build web",
+    "postbuildwebWin": "run-s removeWebBuildConfJson"
   },
   "repository": {
     "type": "git",
