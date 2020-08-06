@@ -14,25 +14,23 @@
     "increaseBuildNumberAppVersionWebDartWin": "perl -i -pe \"s/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e\" lib/utils/app_version_web.dart",
     "removeWebBuildConfJson": "del build\\web\\assets\\env\\conf.json",
     "removeBuildConfJson": "del build\\flutter_assets\\env\\conf.json",
-
+    "cleanupDestFolder": "del deploy",
+    "copyWebBuild": "st-cp build/web/ deploy",
+    "copyBuild": "st-cp 'build/' 'deploy'",
     "run": "flutter run",
     "runweb": "flutter run -d chrome",
-    
-    "prebuild": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
+    "prebuild": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart & run-s cleanupDestFolder",
     "build": "flutter build",
-    "postbuild": "run-s removeBuildConfJson",
-    
-    "prebuildweb": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
+    "postbuild": "run-s removeBuildConfJson & run-s copyBuild",
+    "prebuildweb": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart & run-s cleanupDestFolder",
     "buildweb": "flutter build web",
-    "postbuildweb": "run-s removeWebBuildConfJson",
-
-    "prebuildWin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin",
+    "postbuildweb": "run-s removeWebBuildConfJson & run-s copyWebBuild",
+    "prebuildWin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin & run-s cleanupDestFolder",
     "buildWin": "flutter build",
-    "postbuildWin": "run-s removeBuildConfJson",
-    
-    "prebuildwebWin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin",
+    "postbuildWin": "run-s removeBuildConfJson & run-s copyBuild",
+    "prebuildwebWin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin & run-s cleanupDestFolder",
     "buildwebWin": "flutter build web",
-    "postbuildwebWin": "run-s removeWebBuildConfJson"
+    "postbuildwebWin": "run-s removeWebBuildConfJson & run-s copyWebBuild"
   },
   "repository": {
     "type": "git",
@@ -49,6 +47,7 @@
     "npm-run-all": "^4.1.5"
   },
   "dependencies": {
-    "del-cli": "^3.0.1"
+    "del-cli": "^3.0.1",
+    "st-cp": "^2.0.0-beta.2"
   }
 }
