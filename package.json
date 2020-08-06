@@ -16,7 +16,7 @@
     "runweb": "flutter run -d chrome",
     "prebuild": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
     "build": "flutter build",
-    "postbuild": "run-s removeWebBuildConfJson",
+    "postbuild": "run-s removeBuildConfJson",
     "prebuildweb": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
     "buildweb": "flutter build web",
     "postbuildweb": "run-s removeWebBuildConfJson"
