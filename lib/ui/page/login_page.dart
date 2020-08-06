@@ -68,8 +68,7 @@ class LoginPageState extends State<LoginPage> {
 
                 if (state.userData.roles != null) {
                   globals.roles = state.userData.roles;
-                }
-                else{
+                } else {
                   globals.roles = [];
                 }
               }
@@ -77,6 +76,7 @@ class LoginPageState extends State<LoginPage> {
 
               if (menu != null)
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    settings: RouteSettings(name: '/Menu'),
                     builder: (_) => MenuPage(
                           menuItems: menu.items,
                         )));
