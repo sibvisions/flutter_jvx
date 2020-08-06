@@ -43,6 +43,7 @@ class _MenuEmptyState extends State<MenuEmpty> {
                 new Key(state.responseData.screenGeneric.componentId);
 
             Navigator.of(context).push(MaterialPageRoute(
+                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
@@ -62,8 +63,8 @@ class _MenuEmptyState extends State<MenuEmpty> {
   Widget getLogo() {
     Widget image;
     if (globals.applicationStyle == null ||
-        (globals.applicationStyle?.desktopIcon == null && 
-        globals.applicationStyle?.loginLogo == null)) {
+        (globals.applicationStyle?.desktopIcon == null &&
+            globals.applicationStyle?.loginLogo == null)) {
       image = Image.asset(
           globals.package
               ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
@@ -79,10 +80,11 @@ class _MenuEmptyState extends State<MenuEmpty> {
 
     if (image != null) {
       image = Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
-        child: Container(
-                      alignment: Alignment.topCenter, child: image,
-      ));
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
+          child: Container(
+            alignment: Alignment.topCenter,
+            child: image,
+          ));
     }
 
     return image;

@@ -17,7 +17,7 @@ class SoMenuManager {
     if (!checkUnique)
       _menuItems.add(item);
     else if (!_menuItems.any((m) {
-      return (m.action.componentId == item.action.componentId);
+      return (m.action.componentId == item.action.componentId && m.templateName == item.templateName);
     })) {
       _menuItems.add(item);
     }

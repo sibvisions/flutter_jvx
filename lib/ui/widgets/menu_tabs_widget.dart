@@ -56,6 +56,7 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
             globals.items = widget.items;
 
             Navigator.of(context).push(MaterialPageRoute(
+                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
@@ -101,11 +102,13 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
   void _onTap(MenuItem menuItem) {
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
-            .getScreen(menuItem.action.componentId, templateName: menuItem.templateName)
+            .getScreen(menuItem.action.componentId,
+                templateName: menuItem.templateName)
             .withServer()) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
-              .getScreen(menuItem.action.componentId, templateName: menuItem.templateName)
+              .getScreen(menuItem.action.componentId,
+                  templateName: menuItem.templateName)
               .getWidget()));
     } else {
       prefix0.SoAction action = menuItem.action;

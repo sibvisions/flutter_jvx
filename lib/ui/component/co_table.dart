@@ -145,18 +145,18 @@ class CoTable extends CoEditor {
                     width: 1,
                     style: BorderStyle.solid)),
             color: Colors.white
-                .withOpacity(globals.applicationStyle.controlsOpacity),
+                .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0),
           ),
           child: Row(children: children));
     } else {
-      Color backgroundColor =
-          Colors.white.withOpacity(globals.applicationStyle.controlsOpacity);
+      Color backgroundColor = Colors.white
+          .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0);
 
       if (isSelected)
         backgroundColor = UIData.ui_kit_color_2[100].withOpacity(0.1);
       else if (index % 2 == 1) {
         backgroundColor = Colors.grey[200]
-            .withOpacity(globals.applicationStyle.controlsOpacity);
+            .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0);
       }
       return Container(
         decoration: BoxDecoration(
@@ -168,8 +168,8 @@ class CoTable extends CoEditor {
         child: Material(
             color: backgroundColor,
             child: InkWell(
-                highlightColor: UIData.ui_kit_color_2[500]
-                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                highlightColor: UIData.ui_kit_color_2[500].withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
                 onTap: () {
                   _onRowTapped(index);
                 },
@@ -217,6 +217,7 @@ class CoTable extends CoEditor {
               context: context,
               items: popupMenuEntries)
           .then((val) {
+        WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
         if (val != null) {
           if (val.command == ContextMenuCommand.INSERT)
             this.data.insertRecord(context);
@@ -338,15 +339,15 @@ class CoTable extends CoEditor {
             child: Slidable(
               actionExtentRatio: 0.25,
               child: Container(
-                  color: Colors.white
-                      .withOpacity(globals.applicationStyle.controlsOpacity),
+                  color: Colors.white.withOpacity(
+                      globals.applicationStyle?.controlsOpacity ?? 1.0),
                   child: getTableRow(children, index, false, isSelected)),
               actionPane: SlidableDrawerActionPane(),
               secondaryActions: <Widget>[
                 new IconSlideAction(
                   caption: Translations.of(context).text2('Delete'),
-                  color: Colors.red
-                      .withOpacity(globals.applicationStyle.controlsOpacity),
+                  color: Colors.red.withOpacity(
+                      globals.applicationStyle?.controlsOpacity ?? 1.0),
                   icon: Icons.delete,
                   onTap: () => this.data.deleteRecord(context, index),
                 ),
@@ -356,8 +357,8 @@ class CoTable extends CoEditor {
         return GestureDetector(
             onLongPress: () => showContextMenu(context, index),
             child: Container(
-                color: Colors.white
-                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                color: Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
                 child: getTableRow(children, index, false, isSelected)));
       }
     }
@@ -449,9 +450,9 @@ class CoTable extends CoEditor {
                     border: Border.all(
                         width: borderWidth,
                         color: UIData.ui_kit_color_2[500].withOpacity(
-                            globals.applicationStyle.controlsOpacity)),
-                    color: Colors.white
-                        .withOpacity(globals.applicationStyle.controlsOpacity)),
+                            globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                    color: Colors.white.withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0)),
             width: columnWidth + (2 * borderWidth),
             height: constraints.maxHeight == double.infinity
                 ? tableHeight
@@ -472,9 +473,9 @@ class CoTable extends CoEditor {
                   border: Border.all(
                       width: borderWidth,
                       color: UIData.ui_kit_color_2[500].withOpacity(
-                          globals.applicationStyle.controlsOpacity)),
-                  color: Colors.white
-                      .withOpacity(globals.applicationStyle.controlsOpacity)),
+                          globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                  color: Colors.white.withOpacity(
+                      globals.applicationStyle?.controlsOpacity ?? 1.0)),
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal, child: widget));
         } else {

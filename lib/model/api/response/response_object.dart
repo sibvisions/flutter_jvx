@@ -12,7 +12,8 @@ enum ResponseObjectType {
   UPLOAD,
   CLOSESCREEN,
   USERDATA,
-  SHOWDOCUMENT
+  SHOWDOCUMENT,
+  DEVICESTATUS
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {

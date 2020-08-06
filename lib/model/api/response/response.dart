@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/model/api/response/device_status_resp.dart';
+
 import '../../../model/api/response/show_document.dart';
 import '../../../utils/shared_preferences_helper.dart';
 import '../../../model/api/response/response_data.dart';
@@ -14,6 +16,7 @@ import '../../../model/api/response/menu.dart';
 import '../../../model/api/response/screen_generic.dart';
 import '../../../model/api/response/upload_action.dart';
 import '../../../model/api/response/user_data.dart';
+import '../../../utils/globals.dart' as globals;
 
 import 'application_meta_data.dart';
 import 'data/dataprovider_changed.dart';
@@ -46,6 +49,7 @@ class Response {
   UserData userData;
   Request request;
   ShowDocument showDocument;
+  DeviceStatusResponse deviceStatus;
 
   Response();
 
@@ -128,6 +132,12 @@ class Response {
           break;
         case ResponseObjectType.SHOWDOCUMENT:
           showDocument = ShowDocument.fromJson(r);
+          break;
+        case ResponseObjectType.DEVICESTATUS:
+          deviceStatus = DeviceStatusResponse.fromJson(r);
+          if (deviceStatus != null && deviceStatus.layoutMode != null) {
+            globals.layoutMode = deviceStatus.layoutMode;
+          }
           break;
       }
     });

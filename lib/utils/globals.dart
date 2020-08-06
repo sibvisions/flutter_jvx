@@ -40,3 +40,6 @@ Map<String, String> files = Map<String, String>();
 String currentScreenComponentId;
 String currentTempalteName;
 IAppFrame appFrame;
+bool mobileOnly = false;
+String layoutMode = 'Mini';
+List<dynamic> roles = [];

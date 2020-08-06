@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
+import '../utils/globals.dart' as globals;
 
 abstract class IAppFrame {
   Widget menu;
@@ -11,8 +11,7 @@ abstract class IAppFrame {
   }
 
   Widget getWidget() {
-    var deviceType = getDeviceType(MediaQuery.of(context).size);
-    if (deviceType == DeviceScreenType.desktop) {
+    if (globals.layoutMode == 'Full' && !globals.mobileOnly) {
       return getWebFrameWidget();
     } else {
       return getMobileFrameWidget();
@@ -32,8 +31,7 @@ abstract class IAppFrame {
   }
 
   bool get showScreenHeader {
-    var deviceType = getDeviceType(MediaQuery.of(context).size);
-    if (deviceType == DeviceScreenType.desktop) {
+    if (globals.layoutMode == 'Full' && !globals.mobileOnly) {
       return false;
     }
     return true;

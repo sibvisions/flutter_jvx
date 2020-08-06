@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert' as utf8;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '../../utils/text_utils.dart';
 import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
@@ -57,6 +60,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   Orientation lastOrientation;
   String title = '';
   String componentId;
+  double width;
+  double height;
 
   @override
   Widget build(BuildContext context) {
@@ -65,15 +70,21 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         .replaceAll("[<'", '')
         .replaceAll("'>]", '');
 
-    if (lastOrientation == null)
+    if (lastOrientation == null) {
       lastOrientation = MediaQuery.of(context).orientation;
-    else if (lastOrientation != MediaQuery.of(context).orientation) {
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
+    } else if (lastOrientation != MediaQuery.of(context).orientation ||
+        width != MediaQuery.of(context).size.width ||
+        height != MediaQuery.of(context).size.height) {
       DeviceStatus status = DeviceStatus(
           screenSize: MediaQuery.of(context).size,
           timeZoneCode: "",
           langCode: "");
       BlocProvider.of<ApiBloc>(context).dispatch(status);
       lastOrientation = MediaQuery.of(context).orientation;
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
     }
 
     return errorAndLoadingListener(
@@ -130,7 +141,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           widget.menuComponentId,
                           templateName: widget.templateName);
                   // title = state.action.label;
-                  componentId = state.responseData.screenGeneric.componentId;
+                  componentId = state.responseData?.screenGeneric?.componentId;
                 }
 
                 if (state.responseData.screenGeneric != null &&
@@ -198,10 +209,20 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                                 globals.applicationStyle.desktopColor != null)
                             ? globals.applicationStyle.desktopColor
                             : null,
-                        image: DecorationImage(
-                            image: FileImage(File(
-                                '${globals.dir}${globals.applicationStyle.desktopIcon}')),
-                            fit: BoxFit.cover)),
+                        image: !kIsWeb
+                            ? DecorationImage(
+                                image: FileImage(File(
+                                    '${globals.dir}${globals.applicationStyle.desktopIcon}')),
+                                fit: BoxFit.cover)
+                            : DecorationImage(
+                                image: globals.files.containsKey(
+                                        globals.applicationStyle.desktopIcon)
+                                    ? MemoryImage(utf8.base64Decode(globals
+                                            .files[
+                                        globals.applicationStyle.desktopIcon]))
+                                    : null,
+                                fit: BoxFit.cover,
+                              )),
                     child: screen.getWidget()));
                 child = globals.appFrame.getWidget();
               } else if ((globals.applicationStyle != null &&
@@ -222,10 +243,12 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           menuItems: widget.items,
                           listMenuItems: true,
                           currentTitle: widget.title,
-                          groupedMenuMode: (globals.applicationStyle.menuMode ==
-                                      'grid_grouped' ||
-                                  globals.applicationStyle.menuMode == 'list') &
-                              hasMultipleGroups(),
+                          groupedMenuMode:
+                              (globals.applicationStyle?.menuMode ==
+                                          'grid_grouped' ||
+                                      globals.applicationStyle?.menuMode ==
+                                          'list') &
+                                  hasMultipleGroups(),
                         )
                       : null,
                   key: _scaffoldKey,

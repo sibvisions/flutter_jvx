@@ -74,20 +74,20 @@ class _StartupPageState extends State<StartupPage> {
                                     : 'assets/images/jvx_ss.png',
                                 width: 135,
                               ),
-                            ))
-                      ,
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(top: 100),
-                          child: CircularProgressIndicator()),
-                      Padding(
-                          padding: EdgeInsets.only(top: 100),
-                          child: Text('Loading...'))
-                    ],
-                  )
-                ])]),
+                            )),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.only(top: 100),
+                                child: CircularProgressIndicator()),
+                            Padding(
+                                padding: EdgeInsets.only(top: 100),
+                                child: Text('Loading...'))
+                          ],
+                        )
+                      ])
+                ]),
         ),
       ),
     );
@@ -115,8 +115,7 @@ class _StartupPageState extends State<StartupPage> {
         print("******************************************************");
 
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
-          if(globals.appName == null)
-          {
+          if (globals.appName == null) {
             globals.appName = val[0].appName;
             SharedPreferencesHelper().setData(val[0].appName, null, null, null);
           }
@@ -132,10 +131,10 @@ class _StartupPageState extends State<StartupPage> {
                 'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
             return;
           } else {
-            if(globals.baseUrl == null)
-            {
+            if (globals.baseUrl == null) {
               globals.baseUrl = val[0].baseUrl;
-              SharedPreferencesHelper().setData(null, val[0].baseUrl, null, null);
+              SharedPreferencesHelper()
+                  .setData(null, val[0].baseUrl, null, null);
             }
           }
         } else {
@@ -171,17 +170,21 @@ class _StartupPageState extends State<StartupPage> {
       globals.appVersion = "";
 
       Startup request = Startup(
-          layoutMode: 'generic',
-          applicationName: globals.appName,
-          screenHeight: MediaQuery.of(context).size.height.toInt(),
-          screenWidth: MediaQuery.of(context).size.width.toInt(),
-          appMode: globals.appMode.isNotEmpty ? globals.appMode : 'preview',
-          readAheadLimit: 100,
-          requestType: RequestType.STARTUP,
-          deviceId: await _getDeviceId(),
-          userName: globals.username!=null && globals.username.isNotEmpty?globals.username: null, 
-          password: globals.password!=null && globals.password.isNotEmpty?globals.password: null,
-          url: globals.baseUrl,
+        layoutMode: 'generic',
+        applicationName: globals.appName,
+        screenHeight: MediaQuery.of(context).size.height.toInt(),
+        screenWidth: MediaQuery.of(context).size.width.toInt(),
+        appMode: globals.appMode.isNotEmpty ? globals.appMode : 'preview',
+        readAheadLimit: 100,
+        requestType: RequestType.STARTUP,
+        deviceId: await _getDeviceId(),
+        userName: globals.username != null && globals.username.isNotEmpty
+            ? globals.username
+            : null,
+        password: globals.password != null && globals.password.isNotEmpty
+            ? globals.password
+            : null,
+        url: globals.baseUrl,
       );
 
       BlocProvider.of<ApiBloc>(context).dispatch(request);
@@ -224,7 +227,7 @@ class _StartupPageState extends State<StartupPage> {
         applicationImages: true,
         libraryImages: true,
         clientId: globals.clientId,
-        contentMode: kIsWeb ? 'base64': null,
+        contentMode: kIsWeb ? 'base64' : null,
         name: 'images',
         requestType: RequestType.DOWNLOAD_IMAGES);
 
@@ -266,9 +269,14 @@ class _StartupPageState extends State<StartupPage> {
 
         if (state.userData.profileImage != null)
           globals.profileImage = state.userData.profileImage;
+
+        if (state.userData.roles != null) {
+          globals.roles = state.userData.roles;
+        }
       }
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
+          settings: RouteSettings(name: "/Menu"),
           builder: (_) => MenuPage(
                 menuItems: state.menu.items,
               )));
@@ -313,6 +321,10 @@ class _StartupPageState extends State<StartupPage> {
 
         if (state.userData.profileImage != null)
           globals.profileImage = state.userData.profileImage;
+
+        if (state.userData.roles != null) {
+          globals.roles = state.userData.roles;
+        }
       }
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => MenuPage(
@@ -433,6 +445,10 @@ class _StartupPageState extends State<StartupPage> {
 
           if (state.userData.profileImage != null)
             globals.profileImage = state.userData.profileImage;
+
+          if (state.userData.roles != null) {
+            globals.roles = state.userData.roles;
+          }
         }
         appVersion = val;
 
