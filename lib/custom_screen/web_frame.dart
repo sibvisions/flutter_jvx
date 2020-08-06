@@ -281,7 +281,7 @@ class _WebFrameState extends State<WebFrame> {
           !state.loading) {
         Future.delayed(
             Duration.zero,
-            () => Navigator.of(context).pushReplacement(
+            () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => LoginPage())));
       }
 

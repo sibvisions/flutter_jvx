@@ -37,6 +37,8 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
           print("*** WebMenuListWidget - RequestType: " +
               state.requestType.toString());
 
+          Navigator.of(context).popUntil((route) => route.isFirst);
+
           if (state != null &&
               state.userData != null &&
               globals.customScreenManager != null) {
