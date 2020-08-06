@@ -58,7 +58,6 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
             globals.items = widget.items;
 
             Navigator.of(context).push(MaterialPageRoute(
-                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,

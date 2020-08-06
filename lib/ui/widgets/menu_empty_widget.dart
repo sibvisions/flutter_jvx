@@ -43,7 +43,6 @@ class _MenuEmptyState extends State<MenuEmpty> {
                 new Key(state.responseData.screenGeneric.componentId);
 
             Navigator.of(context).push(MaterialPageRoute(
-                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,

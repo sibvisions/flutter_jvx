@@ -9,16 +9,15 @@
   },
   "scripts": {
     "increaseBuildNumberPubspecYaml": "perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e' pubspec.yaml",
-    "increaseBuildNumberPubspecYaml2": "rexreplace '(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)' '$1.(parseInt($2)+1)' pubspec.yaml",
     "increaseBuildNumberAppVersionWebDart": "perl -i -pe 's/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e' lib/utils/app_version_web.dart",
-    "removeWebBuildConfJson": "del build/web/assets/env/conf.json",
-    "removeBuildConfJson": "del build/flutter_assets/env/conf.json",
+    "removeWebBuildConfJson": "del build\\web\\assets\\env\\conf.json",
+    "removeBuildConfJson": "del build\\flutter_assets\\env\\conf.json",
     "run": "flutter run",
     "runweb": "flutter run -d chrome",
-    "prebuild": "run-s increaseBuildNumberPubspecYaml; run-s increaseBuildNumberAppVersionWebDart",
+    "prebuild": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
     "build": "flutter build",
-    "postbuil": "run-s removeWebBuildConfJson",
-    "prebuildweb": "run-s increaseBuildNumberPubspecYaml2; run-s increaseBuildNumberAppVersionWebDart",
+    "postbuild": "run-s removeBuildConfJson",
+    "prebuildweb": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
     "buildweb": "flutter build web",
     "postbuildweb": "run-s removeWebBuildConfJson"
   },
@@ -34,8 +33,7 @@
   },
   "homepage": "https://github.com/sibvisions/flutterclient#readme",
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
-    "rexreplace": "^6.0.2"
+    "npm-run-all": "^4.1.5"
   },
   "dependencies": {
     "del-cli": "^3.0.1"

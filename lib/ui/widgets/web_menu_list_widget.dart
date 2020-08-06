@@ -36,9 +36,8 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
         listener: (context, state) {
           print("*** WebMenuListWidget - RequestType: " +
               state.requestType.toString());
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop();
-          }
+
+          Navigator.of(context).popUntil((route) => route.isFirst);
 
           if (state != null &&
               state.userData != null &&
@@ -54,7 +53,6 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
             globals.items = widget.menuItems;
 
             Navigator.of(context).push(MaterialPageRoute(
-                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
