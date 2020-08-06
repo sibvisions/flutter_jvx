@@ -178,7 +178,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                         templateName: item.templateName)
                     .withServer()) {
               // close drawer
-              Navigator.of(context).popUntil(ModalRoute.withName("/OpenScreen"));
+              Navigator.of(context).pop();
               // open screen
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(
@@ -190,7 +190,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                 setState(() {});
               });
             } else {
-              Navigator.of(context).popUntil(ModalRoute.withName("/OpenScreen"));
+              Navigator.of(context).pop();
 
               prefix0.SoAction action = item.action;
 
