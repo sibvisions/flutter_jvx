@@ -178,7 +178,9 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                         templateName: item.templateName)
                     .withServer()) {
               // close drawer
-              Navigator.of(context).pop();
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
+              }
               // open screen
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(
