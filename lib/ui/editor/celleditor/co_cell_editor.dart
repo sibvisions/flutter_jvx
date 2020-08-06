@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../model/cell_editor.dart';
@@ -50,24 +51,26 @@ class CoCellEditor implements ICellEditor {
   bool get isTableMinimumSizeSet => tableMinimumSize != null;
 
   CoCellEditor(CellEditor changedCellEditor, this.context) {
-    horizontalAlignment = changedCellEditor
-        .getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);
-    verticalAlignment = changedCellEditor
-        .getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
-    preferredEditorMode = changedCellEditor
-        .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
-    contentType =
-        changedCellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE);
-    directCellEditor = changedCellEditor.getProperty<bool>(
-        CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
-    columnName = changedCellEditor.getProperty<String>(
-        CellEditorProperty.COLUMN_NAME, columnName);
-    dataProvider =
-        changedCellEditor.getProperty<String>(CellEditorProperty.DATA_PROVIDER);
-    borderVisible = changedCellEditor.getProperty<bool>(
-        CellEditorProperty.BORDER_VISIBLE, true);
-    placeholderVisible = changedCellEditor.getProperty<bool>(
-        CellEditorProperty.PLACEHOLDER_VISIBLE, true);
+    if (changedCellEditor != null) {
+      horizontalAlignment = changedCellEditor
+          .getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);
+      verticalAlignment = changedCellEditor
+          .getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
+      preferredEditorMode = changedCellEditor
+          .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
+      contentType = changedCellEditor
+          .getProperty<String>(CellEditorProperty.CONTENT_TYPE);
+      directCellEditor = changedCellEditor.getProperty<bool>(
+          CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
+      columnName = changedCellEditor.getProperty<String>(
+          CellEditorProperty.COLUMN_NAME, columnName);
+      dataProvider = changedCellEditor
+          .getProperty<String>(CellEditorProperty.DATA_PROVIDER);
+      borderVisible = changedCellEditor.getProperty<bool>(
+          CellEditorProperty.BORDER_VISIBLE, true);
+      placeholderVisible = changedCellEditor.getProperty<bool>(
+          CellEditorProperty.PLACEHOLDER_VISIBLE, true);
+    }
   }
 
   VoidCallback onBeginEditing;
@@ -83,7 +86,6 @@ class CoCellEditor implements ICellEditor {
       String placeholder,
       String font,
       int horizontalAlignment}) {
-    // ToDo: Implement getWidget
     return null;
   }
 

@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/ui/editor/celleditor/co_cell_editor.dart';
+
 import '../component/co_menu_item.dart';
 import '../component/co_popup_menu.dart';
 import '../component/co_icon.dart';
@@ -205,42 +207,46 @@ class SoComponentCreator implements IComponentCreator {
   ICellEditor createCellEditor(CellEditor toCreatecellEditor) {
     ICellEditor cellEditor;
 
-    switch (toCreatecellEditor.className) {
-      case "TextCellEditor":
-        {
-          cellEditor = CoTextCellEditor(toCreatecellEditor, context);
-        }
-        break;
-      case "NumberCellEditor":
-        {
-          cellEditor = CoNumberCellEditor(toCreatecellEditor, context);
-        }
-        break;
-      case "LinkedCellEditor":
-        {
-          cellEditor = CoLinkedCellEditor(toCreatecellEditor, context);
-        }
-        break;
-      case "DateCellEditor":
-        {
-          cellEditor = CoDateCellEditor(toCreatecellEditor, context);
-        }
-        break;
-      case "ImageViewer":
-        {
-          cellEditor = CoImageCellEditor(toCreatecellEditor, context);
-        }
-        break;
-      case "ChoiceCellEditor":
-        {
-          cellEditor = CoChoiceCellEditor(toCreatecellEditor, context);
-        }
-        break;
-      case "CheckBoxCellEditor":
-        {
-          cellEditor = CoCheckboxCellEditor(toCreatecellEditor, context);
-        }
-        break;
+    if (toCreatecellEditor == null) {
+      cellEditor = null;
+    } else {
+      switch (toCreatecellEditor.className) {
+        case "TextCellEditor":
+          {
+            cellEditor = CoTextCellEditor(toCreatecellEditor, context);
+          }
+          break;
+        case "NumberCellEditor":
+          {
+            cellEditor = CoNumberCellEditor(toCreatecellEditor, context);
+          }
+          break;
+        case "LinkedCellEditor":
+          {
+            cellEditor = CoLinkedCellEditor(toCreatecellEditor, context);
+          }
+          break;
+        case "DateCellEditor":
+          {
+            cellEditor = CoDateCellEditor(toCreatecellEditor, context);
+          }
+          break;
+        case "ImageViewer":
+          {
+            cellEditor = CoImageCellEditor(toCreatecellEditor, context);
+          }
+          break;
+        case "ChoiceCellEditor":
+          {
+            cellEditor = CoChoiceCellEditor(toCreatecellEditor, context);
+          }
+          break;
+        case "CheckBoxCellEditor":
+          {
+            cellEditor = CoCheckboxCellEditor(toCreatecellEditor, context);
+          }
+          break;
+      }
     }
 
     return cellEditor;

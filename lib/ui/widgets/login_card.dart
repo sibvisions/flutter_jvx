@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui/page/settings_page.dart';
 import '../../utils/text_utils.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/request.dart';
@@ -135,7 +137,10 @@ class _LoginCardState extends State<LoginCard>
                         padding: EdgeInsets.only(top: 10),
                         child: new FlatButton.icon(
                           onPressed: () {
-                            Navigator.of(context).pushNamed('/settings');
+                            SchedulerBinding.instance
+                                .addPostFrameCallback((timeStamp) {
+                              Navigator.of(context).pushNamed('/settings');
+                            });
                           },
                           label: Text(Translations.of(context)
                               .text2('Settings', 'Settings')),

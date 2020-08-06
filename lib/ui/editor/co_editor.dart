@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/utils/text_utils.dart';
 import 'celleditor/co_number_cell_editor.dart';
 import 'celleditor/co_text_cell_editor.dart';
 import '../../model/changed_component.dart';
@@ -38,10 +39,12 @@ class CoEditor extends Component implements IEditor {
   get cellEditor => _cellEditor;
   set cellEditor(CoCellEditor editor) {
     _cellEditor = editor;
-    _cellEditor.onBeginEditing = onBeginEditing;
-    _cellEditor.onEndEditing = onEndEditing;
-    _cellEditor.onValueChanged = onValueChanged;
-    _cellEditor.onFilter = onFilter;
+    if (_cellEditor != null) {
+      _cellEditor.onBeginEditing = onBeginEditing;
+      _cellEditor.onEndEditing = onEndEditing;
+      _cellEditor.onValueChanged = onValueChanged;
+      _cellEditor.onFilter = onFilter;
+    }
   }
 
   @override
@@ -151,6 +154,29 @@ class CoEditor extends Component implements IEditor {
 
   @override
   Widget getWidget() {
+    if (_cellEditor == null) {
+      return Container(
+        margin: EdgeInsets.only(top: 9, bottom: 9),
+        key: this.componentId,
+        width: TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
+            Theme.of(context).textTheme.button),
+        height: 50,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: Colors.grey)),
+          child: TextField(
+            readOnly: true,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(12),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(color: Colors.grey[700]),
+          ),
+        ),
+      );
+    }
     return Container(
         key: this.componentId,
         height: super.preferredSize != null ? super.preferredSize.height : null,
