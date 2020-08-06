@@ -84,3 +84,4 @@
 **/env/app.conf.json
 ios/Flutter/flutter_export_environment.sh
 .flutter-plugins-dependencies
+node_modules/
