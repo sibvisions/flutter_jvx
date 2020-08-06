@@ -52,7 +52,6 @@ class _MenuListWidgetState extends State<MenuListWidget> {
             globals.items = widget.menuItems;
 
             Navigator.of(context).push(MaterialPageRoute(
-                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
