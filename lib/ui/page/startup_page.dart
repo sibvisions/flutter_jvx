@@ -275,9 +275,14 @@ class _StartupPageState extends State<StartupPage> {
 
         if (state.userData.profileImage != null)
           globals.profileImage = state.userData.profileImage;
+
+        if (state.userData.roles != null) {
+          globals.roles = state.userData.roles;
+        }
       }
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
+          settings: RouteSettings(name: "/Menu"),
           builder: (_) => MenuPage(
                 menuItems: state.menu.items,
               )));
@@ -322,6 +327,10 @@ class _StartupPageState extends State<StartupPage> {
 
         if (state.userData.profileImage != null)
           globals.profileImage = state.userData.profileImage;
+
+        if (state.userData.roles != null) {
+          globals.roles = state.userData.roles;
+        }
       }
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => MenuPage(
@@ -442,6 +451,10 @@ class _StartupPageState extends State<StartupPage> {
 
           if (state.userData.profileImage != null)
             globals.profileImage = state.userData.profileImage;
+
+          if (state.userData.roles != null) {
+            globals.roles = state.userData.roles;
+          }
         }
         appVersion = val;
 

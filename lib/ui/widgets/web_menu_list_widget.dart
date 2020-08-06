@@ -36,6 +36,9 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
         listener: (context, state) {
           print("*** WebMenuListWidget - RequestType: " +
               state.requestType.toString());
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
 
           if (state != null &&
               state.userData != null &&
@@ -51,6 +54,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
             globals.items = widget.menuItems;
 
             Navigator.of(context).push(MaterialPageRoute(
+                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
@@ -173,7 +177,8 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                                             globals.applicationStyle
                                                     .sideMenuTextColor !=
                                                 null)
-                                        ? globals.applicationStyle.sideMenuTextColor
+                                        ? globals
+                                            .applicationStyle.sideMenuTextColor
                                         : null))
                             : new CircleAvatar(
                                 backgroundColor: Colors.transparent,
