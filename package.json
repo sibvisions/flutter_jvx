@@ -14,10 +14,10 @@
     "removeBuildConfJson": "node_modules\\.bin\\del build\\flutter_assets\\env\\conf.json",
     "run": "flutter run",
     "runweb": "flutter run -d chrome",
-    "prebuild": "node_modules\\.bin\\run-s increaseBuildNumberPubspecYaml && node_modules\\.bin\\run-s increaseBuildNumberAppVersionWebDart",
+    "prebuild": "node_modules\\.bin\\run-s increaseBuildNumberPubspecYaml & node_modules\\.bin\\run-s increaseBuildNumberAppVersionWebDart",
     "build": "flutter build",
     "postbuild": "node_modules\\.bin\\run-s removeWebBuildConfJson",
-    "prebuildweb": "node_modules\\.bin\\run-s increaseBuildNumberPubspecYaml && node_modules\\.bin\\run-s increaseBuildNumberAppVersionWebDart",
+    "prebuildweb": "node_modules\\.bin\\run-s increaseBuildNumberPubspecYaml & node_modules\\.bin\\run-s increaseBuildNumberAppVersionWebDart",
     "buildweb": "flutter build web",
     "postbuildweb": "node_modules\\.bin\\run-s removeWebBuildConfJson"
   },
