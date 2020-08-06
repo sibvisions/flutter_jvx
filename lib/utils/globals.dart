@@ -42,3 +42,4 @@ String currentTempalteName;
 IAppFrame appFrame;
 bool mobileOnly = false;
 String layoutMode = 'Mini';
+List<dynamic> roles = [];

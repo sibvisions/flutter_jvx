@@ -64,6 +64,7 @@ showSessionExpired(BuildContext context, String title, String message) async {
                   globals.password = '';
                   globals.profileImage = '';
                   globals.displayName = ''; 
+                  globals.roles = [];
                   Navigator.of(context).pop();
                 }
               )

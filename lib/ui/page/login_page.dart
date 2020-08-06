@@ -65,6 +65,13 @@ class LoginPageState extends State<LoginPage> {
                   globals.profileImage = state.userData.profileImage;
                 else
                   globals.profileImage = "";
+
+                if (state.userData.roles != null) {
+                  globals.roles = state.userData.roles;
+                }
+                else{
+                  globals.roles = [];
+                }
               }
               Menu menu = state.menu;
 
