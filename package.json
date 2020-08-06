@@ -8,8 +8,8 @@
     "test": "test"
   },
   "scripts": {
-    "increaseBuildNumberPubspecYaml": "perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e' pubspec.yaml",
-    "increaseBuildNumberAppVersionWebDart": "perl -i -pe 's/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e' lib/utils/app_version_web.dart",
+    "increaseBuildNumberPubspecYaml": "perl -i -pe \"s/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e\" pubspec.yaml",
+    "increaseBuildNumberAppVersionWebDart": "perl -i -pe \"s/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e\" lib/utils/app_version_web.dart",
     "removeWebBuildConfJson": "del build\\web\\assets\\env\\conf.json",
     "removeBuildConfJson": "del build\\flutter_assets\\env\\conf.json",
     "run": "flutter run",
