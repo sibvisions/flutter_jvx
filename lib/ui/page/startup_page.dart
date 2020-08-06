@@ -282,7 +282,6 @@ class _StartupPageState extends State<StartupPage> {
       }
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          settings: RouteSettings(name: "/Menu"),
           builder: (_) => MenuPage(
                 menuItems: state.menu.items,
               )));

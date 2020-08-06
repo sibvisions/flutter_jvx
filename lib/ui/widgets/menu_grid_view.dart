@@ -59,7 +59,6 @@ class _MenuGridViewState extends State<MenuGridView> {
             globals.items = widget.items;
 
             Navigator.of(context).push(MaterialPageRoute(
-                settings: RouteSettings(name: "/OpenScreen"),
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
