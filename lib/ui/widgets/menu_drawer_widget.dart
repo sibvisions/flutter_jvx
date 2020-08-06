@@ -190,8 +190,9 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                 setState(() {});
               });
             } else {
-              Navigator.of(context).pop();
-
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
+              }
               prefix0.SoAction action = item.action;
 
               OpenScreen openScreen = OpenScreen(
