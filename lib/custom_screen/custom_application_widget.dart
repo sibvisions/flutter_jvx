@@ -38,6 +38,7 @@ class CustomApplicationWidget extends ApplicationWidget {
   Widget build(BuildContext context) {
     if (screenManager != null) {
       globals.customScreenManager = this.screenManager;
+      globals.customScreenManager.initScreenManager();
     }
     if (appListener != null) {
       globals.appListener = this.appListener;
