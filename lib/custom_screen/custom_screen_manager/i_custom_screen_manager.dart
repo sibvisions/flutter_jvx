@@ -1,9 +1,16 @@
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
+
 import '../../ui/screen/so_menu_manager.dart';
 import '../../model/api/response/user_data.dart';
 import '../../ui/screen/i_screen.dart';
 
 /// Interface for the [CustomScreenManager] class.
 abstract class ICustomScreenManager {
+  /// Will be called before [getScreen] is called.
+  ///
+  /// The method is for registering all kinds of screens
+  void initScreenManager();
+
   /// Returns an [IScreen] with the given [componentId].
   ///
   /// If null is returned an Error will be thrown.
@@ -16,5 +23,12 @@ abstract class ICustomScreenManager {
   void onMenu(SoMenuManager menuManager);
 
   /// Will be called after a successful login with the current [UserData].
-  onUserData(UserData userData);
+  void onUserData(UserData userData);
+
+  // Used to register a screen for the Screen Manager
+  void registerScreen(String name, CustomScreen screen);
+
+  CustomScreen findScreen(String name);
+
+  void removeScreen(String name);
 }
