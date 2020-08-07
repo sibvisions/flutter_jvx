@@ -55,4 +55,8 @@ class CustomScreen implements IScreen {
   void setTemplateName(String templateName) {
     _templateName = templateName;
   }
+
+  String getTemplateName() {
+    return _templateName;
+  }
 }
