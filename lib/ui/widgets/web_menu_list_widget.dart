@@ -37,8 +37,6 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
           print("*** WebMenuListWidget - RequestType: " +
               state.requestType.toString());
 
-          Navigator.of(context).popUntil((route) => route.isFirst);
-
           if (state != null &&
               state.userData != null &&
               globals.customScreenManager != null) {
@@ -51,6 +49,10 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
             Key componentID =
                 new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.menuItems;
+
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
+            }
 
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
@@ -86,6 +88,9 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
             .getScreen(menuItem.action.componentId,
                 templateName: menuItem.templateName)
             .withServer()) {
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
+      }
       Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
               .getScreen(menuItem.action.componentId,
