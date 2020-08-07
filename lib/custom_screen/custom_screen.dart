@@ -10,6 +10,8 @@ import '../ui/screen/so_component_screen.dart';
 
 /// Implementation of [IScreen] for custom screens.
 class CustomScreen implements IScreen {
+  String _templateName;
+
   CustomScreen(SoComponentCreator componentCreator)
       : componentScreen = SoComponentScreen(componentCreator);
 
@@ -33,11 +35,12 @@ class CustomScreen implements IScreen {
     return true;
   }
 
-  DataApi getDataApi(String dataProvider){
-    return DataApi(componentScreen.getComponentData(dataProvider), componentScreen.context);
+  DataApi getDataApi(String dataProvider) {
+    return DataApi(componentScreen.getComponentData(dataProvider),
+        componentScreen.context);
   }
 
-  ApplicationApi getApplicationApi(){
+  ApplicationApi getApplicationApi() {
     return ApplicationApi(componentScreen.context);
   }
 
@@ -47,5 +50,9 @@ class CustomScreen implements IScreen {
 
   void setFooter(IComponent footerComponent) {
     componentScreen.setFooter(footerComponent);
+  }
+
+  void setTemplateName(String templateName) {
+    _templateName = templateName;
   }
 }

@@ -294,7 +294,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         : globals.customScreenManager.getScreen(
             widget.menuComponentId.toString(),
             templateName: globals.currentTempalteName);
-    globals.currentTempalteName == null;
+    globals.currentTempalteName = null;
     screen.componentScreen.context = context;
     screen.update(widget.request, widget.responseData);
     super.initState();
