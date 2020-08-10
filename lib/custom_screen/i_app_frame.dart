@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import '../utils/globals.dart' as globals;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 abstract class IAppFrame {
   Widget menu;
   Widget screen;
   BuildContext context;
+  bool forceWeb = false;
 
   IAppFrame(BuildContext context) {
     this.context = context;
   }
 
   Widget getWidget() {
-    if (globals.layoutMode == 'Full' && !globals.mobileOnly) {
+    if ((kIsWeb || forceWeb) &&
+        globals.layoutMode == 'Full' &&
+        !globals.mobileOnly) {
       return getWebFrameWidget();
     } else {
       return getMobileFrameWidget();
@@ -31,9 +35,15 @@ abstract class IAppFrame {
   }
 
   bool get showScreenHeader {
-    if (globals.layoutMode == 'Full' && !globals.mobileOnly) {
+    if ((kIsWeb || forceWeb) &&
+        globals.layoutMode == 'Full' &&
+        !globals.mobileOnly) {
       return false;
     }
     return true;
+  }
+
+  void setForceWeb(bool forceWeb) {
+    this.forceWeb = forceWeb;
   }
 }

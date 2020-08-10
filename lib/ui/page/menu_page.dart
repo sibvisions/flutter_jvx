@@ -196,18 +196,22 @@ class _MenuPageState extends State<MenuPage> {
   Widget getMenuWidget(BuildContext context) {
     globals.appFrame.screen = null;
 
-    if (globals.layoutMode == 'Full' && !globals.mobileOnly) {
+    if ((kIsWeb || globals.appFrame.forceWeb) &&
+        globals.layoutMode == 'Full' &&
+        !globals.mobileOnly) {
       globals.appFrame.setMenu(WebMenuListWidget(
-          menuItems: this.widget.menuItems, groupedMenuMode: hasMultipleGroups));
+          menuItems: this.widget.menuItems,
+          groupedMenuMode: hasMultipleGroups));
     } else {
       switch (menuMode) {
         case 'grid':
-          globals.appFrame.setMenu(
-              MenuGridView(items: this.widget.menuItems, groupedMenuMode: false));
+          globals.appFrame.setMenu(MenuGridView(
+              items: this.widget.menuItems, groupedMenuMode: false));
           break;
         case 'list':
           globals.appFrame.setMenu(MenuListWidget(
-              menuItems: this.widget.menuItems, groupedMenuMode: hasMultipleGroups));
+              menuItems: this.widget.menuItems,
+              groupedMenuMode: hasMultipleGroups));
           break;
         case 'drawer':
           globals.appFrame.setMenu(MenuEmpty());

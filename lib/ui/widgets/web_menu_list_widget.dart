@@ -2,6 +2,7 @@ import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui/screen/i_screen.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -91,11 +92,14 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
       }
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => globals.customScreenManager
-              .getScreen(menuItem.action.componentId,
-                  templateName: menuItem.templateName)
-              .getWidget()));
+      IScreen screen = globals.customScreenManager.getScreen(
+          menuItem.action.componentId,
+          templateName: menuItem.templateName);
+
+      globals.appFrame.setScreen(screen.getWidget());
+
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => globals.appFrame.getWidget()));
     } else {
       prefix0.SoAction action = menuItem.action;
 
