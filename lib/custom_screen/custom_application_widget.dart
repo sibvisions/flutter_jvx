@@ -24,7 +24,8 @@ class CustomApplicationWidget extends ApplicationWidget {
   ///
   /// The default is `true`.
   final bool handleSessionTimeout;
-  //The AppListener to react to certain events during app usage
+
+  /// The AppListener to react to certain events during app usage
   final AppListener appListener;
 
   CustomApplicationWidget(

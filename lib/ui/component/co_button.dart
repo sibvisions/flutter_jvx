@@ -43,8 +43,12 @@ class CoButton extends CoActionComponent {
                 double.tryParse(strinArr[2]) != null) {
               size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
             }
-            icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]),
-                width: size.width, height: size.height);
+            icon = Image.memory(
+              utf8.base64Decode(globals.files[strinArr[0]]),
+              width: size.width,
+              height: size.height,
+              color: !this.enabled ? Colors.grey.shade500 : null,
+            );
 
             BlocProvider.of<ApiBloc>(context)
                 .dispatch(Reload(requestType: RequestType.RELOAD));
@@ -62,6 +66,7 @@ class CoButton extends CoActionComponent {
               file.readAsBytesSync(),
               width: size.width,
               height: size.height,
+              color: !this.enabled ? Colors.grey.shade500 : null,
             );
 
             BlocProvider.of<ApiBloc>(context)
@@ -88,8 +93,11 @@ class CoButton extends CoActionComponent {
     Widget textWidget = new Text(text != null ? text : "",
         style: TextStyle(
             fontSize: style.fontSize,
-            color:
-                this.foreground != null ? this.foreground : UIData.textColor));
+            color: !this.enabled
+                ? Colors.grey.shade500
+                : this.foreground != null
+                    ? this.foreground
+                    : UIData.textColor));
 
     if (text?.isNotEmpty ?? true) {
       if (icon != null) {
@@ -125,6 +133,7 @@ class CoButton extends CoActionComponent {
               ? this.background
               : UIData.ui_kit_color_2[600],
           elevation: 10,
+          disabledColor: Colors.grey.shade300,
           child: child,
           splashColor: this.background != null
               ? TinyColor(this.background).darken().color

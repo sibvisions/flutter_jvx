@@ -25,10 +25,12 @@ abstract class ICustomScreenManager {
   /// Will be called after a successful login with the current [UserData].
   void onUserData(UserData userData);
 
-  // Used to register a screen for the Screen Manager
+  /// Used to register a screen for the Screen Manager
   void registerScreen(String name, CustomScreen screen);
 
+  /// Method for finding a regsitered Screen
   CustomScreen findScreen(String name);
 
+  /// Method for removing a registered Screen
   void removeScreen(String name);
 }
