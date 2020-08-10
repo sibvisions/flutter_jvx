@@ -41,5 +41,6 @@ String currentScreenComponentId;
 String currentTempalteName;
 IAppFrame appFrame;
 bool mobileOnly = false;
+bool webOnly = false;
 String layoutMode = 'Mini';
 List<dynamic> roles = [];

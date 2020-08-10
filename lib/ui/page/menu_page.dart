@@ -196,9 +196,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget getMenuWidget(BuildContext context) {
     globals.appFrame.screen = null;
 
-    if ((kIsWeb || globals.appFrame.forceWeb) &&
-        globals.layoutMode == 'Full' &&
-        !globals.mobileOnly) {
+    if (globals.appFrame.isWeb) {
       globals.appFrame.setMenu(WebMenuListWidget(
           menuItems: this.widget.menuItems,
           groupedMenuMode: hasMultipleGroups));
