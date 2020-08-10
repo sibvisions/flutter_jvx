@@ -6,16 +6,13 @@ abstract class IAppFrame {
   Widget menu;
   Widget screen;
   BuildContext context;
-  bool forceWeb = false;
 
   IAppFrame(BuildContext context) {
     this.context = context;
   }
 
   Widget getWidget() {
-    if ((kIsWeb || forceWeb) &&
-        globals.layoutMode == 'Full' &&
-        !globals.mobileOnly) {
+    if (isWeb) {
       return getWebFrameWidget();
     } else {
       return getMobileFrameWidget();
@@ -34,16 +31,29 @@ abstract class IAppFrame {
     this.screen = screen;
   }
 
-  bool get showScreenHeader {
-    if ((kIsWeb || forceWeb) &&
-        globals.layoutMode == 'Full' &&
-        !globals.mobileOnly) {
-      return false;
-    }
-    return true;
+  void setWebOnly(bool webOnly) {
+    globals.webOnly = webOnly;
   }
 
-  void setForceWeb(bool forceWeb) {
-    this.forceWeb = forceWeb;
+  void setMobileOnly(bool mobileOnly) {
+    globals.mobileOnly = mobileOnly;
+  }
+
+  bool get isWeb {
+    if (globals.webOnly && !globals.mobileOnly) {
+      return true;
+    } else if (globals.mobileOnly && !globals.webOnly) {
+      return false;
+    } else {
+      if (kIsWeb) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  bool get showScreenHeader {
+    return !isWeb;
   }
 }
