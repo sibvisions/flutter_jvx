@@ -58,7 +58,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                 new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.items;
 
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
@@ -87,7 +87,7 @@ class _MenuGridViewState extends State<MenuGridView> {
             .getScreen(menuItem.action.componentId,
                 templateName: menuItem.templateName)
             .withServer()) {
-      Navigator.of(context).push(MaterialPageRoute(
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
               .getScreen(menuItem.action.componentId,
                   templateName: menuItem.templateName)

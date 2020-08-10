@@ -10,6 +10,7 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:jvx_flutterclient/ui/page/menu_page.dart';
 
 import '../../utils/text_utils.dart';
 import '../../model/api/response/response_data.dart';
@@ -91,10 +92,19 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
             if (state.requestType == RequestType.CLOSE_SCREEN) {
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  settings: RouteSettings(name: '/Menu'),
+                  builder: (_) => MenuPage(
+                        menuItems: globals.items,
+                      )));
             } else {
               print("*** OpenScreenPage - RequestType: " +
                   state.requestType.toString());
+
+              if (state.requestType == RequestType.DEVICE_STATUS) {
+                globals.layoutMode = state.deviceStatus.layoutMode;
+                this.setState(() {});
+              }
 
               if (isScreenRequest(state.requestType) &&
                       //state.screenGeneric != null &&
@@ -125,7 +135,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     });
                   } else if (state.closeScreenAction != null &&
                       state.responseData.screenGeneric == null) {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        settings: RouteSettings(name: '/Menu'),
+                        builder: (_) => MenuPage(
+                              menuItems: globals.items,
+                            )));
                   }
                 }
 
@@ -156,7 +170,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
                 if (state.requestType == RequestType.NAVIGATION &&
                     state.responseData.screenGeneric == null) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      settings: RouteSettings(name: '/Menu'),
+                      builder: (_) => MenuPage(
+                            menuItems: globals.items,
+                          )));
                 }
 
                 screen.componentScreen.context = context;

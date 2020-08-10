@@ -51,7 +51,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                 new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.menuItems;
 
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
@@ -82,7 +82,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
             .getScreen(menuItem.action.componentId,
                 templateName: menuItem.templateName)
             .withServer()) {
-      Navigator.of(context).push(MaterialPageRoute(
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
               .getScreen(menuItem.action.componentId,
                   templateName: menuItem.templateName)

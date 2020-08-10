@@ -51,11 +51,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                 new Key(state.responseData.screenGeneric.componentId);
             globals.items = widget.menuItems;
 
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
-            }
-
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => new OpenScreenPage(
                       responseData: state.responseData,
                       request: state.request,
@@ -89,16 +85,13 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
             .getScreen(menuItem.action.componentId,
                 templateName: menuItem.templateName)
             .withServer()) {
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).popUntil(ModalRoute.withName('/Menu'));
-      }
       IScreen screen = globals.customScreenManager.getScreen(
           menuItem.action.componentId,
           templateName: menuItem.templateName);
 
       globals.appFrame.setScreen(screen.getWidget());
 
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => globals.appFrame.getWidget()));
     } else {
       prefix0.SoAction action = menuItem.action;
