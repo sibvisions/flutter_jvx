@@ -11,6 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:jvx_flutterclient/ui/page/menu_page.dart';
+import 'package:jvx_flutterclient/utils/application_api.dart';
 
 import '../../utils/text_utils.dart';
 import '../../model/api/response/response_data.dart';
@@ -70,6 +71,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         .toString()
         .replaceAll("[<'", '')
         .replaceAll("'>]", '');
+
+    //update listener context
+    if (globals.appListener != null) {
+      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+    }
 
     if (lastOrientation == null) {
       lastOrientation = MediaQuery.of(context).orientation;
