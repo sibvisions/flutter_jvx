@@ -159,7 +159,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
     return Dialog(
         insetPadding: EdgeInsets.fromLTRB(25, 25, 25, 25),
         elevation: 0.0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
         child: Container(
           child: Container(
             decoration: new BoxDecoration(
@@ -168,7 +169,12 @@ class _LazyDropdownState extends State<LazyDropdown> {
             child: Column(
               children: <Widget>[
                 Container(
-                    color: UIData.ui_kit_color_2,
+                    decoration: new BoxDecoration(
+                        color: UIData.ui_kit_color_2,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5.0),
+                            topRight: Radius.circular(5.0))),
+                    // color: UIData.ui_kit_color_2,
                     child: Row(
                       children: <Widget>[
                         Padding(
