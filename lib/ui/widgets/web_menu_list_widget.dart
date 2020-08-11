@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/ui/screen/i_screen.dart';
+import 'package:tinycolor/tinycolor.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -116,27 +117,26 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
 
     newMap.forEach((k, v) {
       Widget heading = Container(
-          height: 40,
-          child: ListTile(
-            dense: true,
-            title: Text(
-              k,
-              style: TextStyle(
-                  color: (globals.applicationStyle != null &&
-                          globals.applicationStyle.sideMenuGroupTextColor !=
-                              null)
-                      ? globals.applicationStyle.sideMenuGroupTextColor
-                      : null,
-                  fontWeight: FontWeight.bold),
-            ),
-          ));
+        alignment: Alignment.centerLeft,
+        margin: new EdgeInsets.symmetric(horizontal: 8.0),
+        height: 25,
+        child: Text(
+          k,
+          style: TextStyle(
+              color: (globals.applicationStyle != null &&
+                      globals.applicationStyle.sideMenuGroupTextColor != null)
+                  ? globals.applicationStyle.sideMenuGroupTextColor
+                  : null,
+              fontWeight: FontWeight.bold),
+        ),
+      );
 
       Widget card = Container(
           child: Column(
         children: _buildTiles(v),
       ));
 
-      if (widget.groupedMenuMode) {
+      if (true) {
         tiles.add(Column(
           children: [
             heading,
@@ -159,55 +159,66 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
           child: Tooltip(
               waitDuration: Duration(milliseconds: 500),
               message: mItem.action.label,
-              child: ListTile(
-                hoverColor: Colors.black,
-                contentPadding: EdgeInsets.only(left: 5.0),
-                dense: true,
-                title: Container(
-                  child: Center(
-                    child: Row(
-                      children: [
-                        mItem.image != null
-                            ? new CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: CustomIcon(
-                                    image: mItem.image,
-                                    size: Size(16, 16),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  hoverColor: TinyColor((globals.applicationStyle != null &&
+                                    globals.applicationStyle.sideMenuColor !=
+                                        null)
+                                ? globals.applicationStyle.sideMenuColor
+                                    .withOpacity(0.95)
+                                : Colors.grey[600]).darken().color,
+                  onTap: () => _onTap(mItem),
+                  child: Column(children: <Widget>[
+                    Container(
+                      height:32,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            mItem.image != null
+                                ? new CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: CustomIcon(
+                                        image: mItem.image,
+                                        size: Size(16, 16),
+                                        color: (globals.applicationStyle !=
+                                                    null &&
+                                                globals.applicationStyle
+                                                        .sideMenuTextColor !=
+                                                    null)
+                                            ? globals.applicationStyle
+                                                .sideMenuTextColor
+                                            : null))
+                                : new CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(
+                                      FontAwesomeIcons.clone,
+                                      size: 16,
+                                      color: Colors.grey[400],
+                                    )),
+                            Container(
+                              constraints:
+                                  BoxConstraints(minWidth: 100, maxWidth: 180),
+                              child: Text(
+                                mItem.action.label,
+                                style: TextStyle(
                                     color: (globals.applicationStyle != null &&
                                             globals.applicationStyle
                                                     .sideMenuTextColor !=
                                                 null)
                                         ? globals
                                             .applicationStyle.sideMenuTextColor
-                                        : null))
-                            : new CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: Icon(
-                                  FontAwesomeIcons.clone,
-                                  size: 16,
-                                  color: Colors.grey[400],
-                                )),
-                        Container(
-                          constraints:
-                              BoxConstraints(minWidth: 100, maxWidth: 180),
-                          child: Text(
-                            mItem.action.label,
-                            style: TextStyle(
-                                color: (globals.applicationStyle != null &&
-                                        globals.applicationStyle
-                                                .sideMenuTextColor !=
-                                            null)
-                                    ? globals.applicationStyle.sideMenuTextColor
-                                    : null,
-                                fontSize: 14),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                                        : null,
+                                    fontSize: 14),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ]),
                 ),
-                onTap: () => _onTap(mItem),
               )));
       widgets.add(tile);
       if (v.indexOf(mItem) < v.length - 1)
