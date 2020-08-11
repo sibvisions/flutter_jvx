@@ -244,6 +244,7 @@ class SoComponentScreen with SoDataScreen {
     }
   }
 
+  /// Method for getting the first component in the list (root component)
   IComponent getRootComponent() {
     IComponent rootComponent = this.components.values.firstWhere(
         (element) =>
@@ -277,6 +278,9 @@ class SoComponentScreen with SoDataScreen {
     this.footerComponent = footerComponent;
   }
 
+  /// Method for replacing a component with another component.
+  ///
+  /// Can be used for Custom Screens
   replaceComponent(IComponent compToReplace, IComponent newComp) {
     if (compToReplace != null) {
       newComp.parentComponentId = compToReplace.parentComponentId;
@@ -289,6 +293,7 @@ class SoComponentScreen with SoDataScreen {
     }
   }
 
+  /// Method for getting a component by name
   IComponent getComponentFromName(String componentName) {
     return this.components.values.firstWhere(
         (element) =>
