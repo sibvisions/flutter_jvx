@@ -41,119 +41,85 @@ import '../component/co_label.dart';
 class SoComponentCreator implements IComponentCreator {
   BuildContext context;
 
+  Map<String, Object Function(GlobalKey globalKey, BuildContext context)>
+      standardComponents = {
+    'Panel': (GlobalKey globalKey, BuildContext context) =>
+        CoPanel(globalKey, context),
+    'GroupPanel': (GlobalKey globalKey, BuildContext context) =>
+        CoGroupPanel(globalKey, context),
+    'ScrollPanel': (GlobalKey globalKey, BuildContext context) =>
+        CoScrollPanel(globalKey, context),
+    'SplitPanel': (GlobalKey globalKey, BuildContext context) =>
+        CoSplitPanel(globalKey, context),
+    'Label': (GlobalKey globalKey, BuildContext context) =>
+        CoLabel(globalKey, context),
+    'Button': (GlobalKey globalKey, BuildContext context) =>
+        CoButton(globalKey, context),
+    'Table': (GlobalKey globalKey, BuildContext context) =>
+        CoTable(globalKey, context),
+    'CheckBox': (GlobalKey globalKey, BuildContext context) =>
+        CoCheckbox(globalKey, context),
+    'RadioButton': (GlobalKey globalKey, BuildContext context) =>
+        CoRadioButton(globalKey, context),
+    'PopupMenuButton': (GlobalKey globalKey, BuildContext context) =>
+        CoPopupMenuButton(globalKey, context),
+    'TextField': (GlobalKey globalKey, BuildContext context) =>
+        CoTextField(globalKey, context),
+    'PasswordField': (GlobalKey globalKey, BuildContext context) =>
+        CoPasswordField(globalKey, context),
+    'TextArea': (GlobalKey globalKey, BuildContext context) =>
+        CoTextArea(globalKey, context),
+    'Icon': (GlobalKey globalKey, BuildContext context) =>
+        CoIcon(globalKey, context),
+    'PopupMenu': (GlobalKey globalKey, BuildContext context) =>
+        CoPopupMenu(globalKey, context),
+    'MenuItem': (GlobalKey globalKey, BuildContext context) =>
+        CoMenuItem(globalKey, context),
+  };
+
+  Map<String, Object Function(CellEditor cellEditor, BuildContext context)>
+      standardCellEditors = {
+    'TextCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoTextCellEditor(cellEditor, context),
+    'NumberCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoNumberCellEditor(cellEditor, context),
+    'LinkedCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoLinkedCellEditor(cellEditor, context),
+    'DateCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoDateCellEditor(cellEditor, context),
+    'ImageViewer': (CellEditor cellEditor, BuildContext context) =>
+        CoImageCellEditor(cellEditor, context),
+    'ChoiceCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoChoiceCellEditor(cellEditor, context),
+    'CheckBoxCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoCheckboxCellEditor(cellEditor, context),
+  };
+
   SoComponentCreator([this.context]);
+
+  /// Method for setting the standard component for the respective jvx component
+  setStandardComponent(String key, Object value) {
+    this.standardComponents[key] = value;
+  }
+
+  /// Method for setting the standard celleditor for the respective jvx celleditor
+  setStandardCellEditors(String key, Object value) {
+    this.standardCellEditors[key] = value;
+  }
 
   IComponent createComponent(ChangedComponent changedComponent) {
     IComponent component;
 
     if (changedComponent?.className?.isNotEmpty ?? true) {
-      switch (changedComponent.className) {
-        case "Panel":
-          {
-            component = new CoPanel(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "GroupPanel":
-          {
-            component = new CoGroupPanel(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "ScrollPanel":
-          {
-            component = new CoScrollPanel(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "SplitPanel":
-          {
-            component = new CoSplitPanel(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "Label":
-          {
-            component = new CoLabel(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "Button":
-          {
-            component = new CoButton(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "Table":
-          {
-            component = new CoTable(
-                GlobalKey(debugLabel: changedComponent.id), context, this);
-          }
-          break;
-        case "CheckBox":
-          {
-            component = new CoCheckbox(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "RadioButton":
-          {
-            component = new CoRadioButton(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "PopupMenuButton":
-          {
-            component = new CoPopupMenuButton(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "TextField":
-          {
-            component = new CoTextField(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "PasswordField":
-          {
-            component = new CoPasswordField(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "TextArea":
-          {
-            component = new CoTextArea(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "Icon":
-          {
-            component =
-                new CoIcon(GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "PopupMenu":
-          {
-            component = new CoPopupMenu(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "MenuItem":
-          {
-            component = new CoMenuItem(
-                GlobalKey(debugLabel: changedComponent.id), context);
-          }
-          break;
-        case "Editor":
-          {
-            component = _createEditor(changedComponent);
-          }
-          break;
-        default:
-          {
-            component = _createDefaultComponent(changedComponent);
-          }
-          break;
+      if (changedComponent.className == 'Editor') {
+        component = _createEditor(changedComponent);
+      } else {
+        component = this.standardComponents[changedComponent.className](
+            GlobalKey(debugLabel: changedComponent.id), context);
+      }
+
+      if (component == null) {
+        component = _createDefaultComponent(changedComponent);
       }
     }
 
@@ -210,43 +176,8 @@ class SoComponentCreator implements IComponentCreator {
     if (toCreatecellEditor == null) {
       cellEditor = null;
     } else {
-      switch (toCreatecellEditor.className) {
-        case "TextCellEditor":
-          {
-            cellEditor = CoTextCellEditor(toCreatecellEditor, context);
-          }
-          break;
-        case "NumberCellEditor":
-          {
-            cellEditor = CoNumberCellEditor(toCreatecellEditor, context);
-          }
-          break;
-        case "LinkedCellEditor":
-          {
-            cellEditor = CoLinkedCellEditor(toCreatecellEditor, context);
-          }
-          break;
-        case "DateCellEditor":
-          {
-            cellEditor = CoDateCellEditor(toCreatecellEditor, context);
-          }
-          break;
-        case "ImageViewer":
-          {
-            cellEditor = CoImageCellEditor(toCreatecellEditor, context);
-          }
-          break;
-        case "ChoiceCellEditor":
-          {
-            cellEditor = CoChoiceCellEditor(toCreatecellEditor, context);
-          }
-          break;
-        case "CheckBoxCellEditor":
-          {
-            cellEditor = CoCheckboxCellEditor(toCreatecellEditor, context);
-          }
-          break;
-      }
+      cellEditor = this.standardCellEditors[toCreatecellEditor.className](
+          toCreatecellEditor, context);
     }
 
     return cellEditor;
