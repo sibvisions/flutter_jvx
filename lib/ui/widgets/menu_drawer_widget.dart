@@ -52,8 +52,10 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           !state.loading) {
         Future.delayed(
             Duration.zero,
-            () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => LoginPage())));
+            () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (_) => LoginPage(
+                      lastUsername: globals.username,
+                    ))));
       }
 
       return Drawer(

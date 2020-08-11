@@ -15,7 +15,12 @@ import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 
 class LoginCard extends StatefulWidget {
+  final String username;
+
   final focus = FocusNode();
+
+  LoginCard({Key key, this.username}) : super(key: key);
+
   @override
   _LoginCardState createState() => new _LoginCardState();
 }
@@ -56,6 +61,7 @@ class _LoginCardState extends State<LoginCard>
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: TextFormField(
+                      controller: TextEditingController(text: username ?? ''),
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (v) {
                         FocusScope.of(context).requestFocus(widget.focus);
@@ -171,6 +177,7 @@ class _LoginCardState extends State<LoginCard>
   @override
   initState() {
     super.initState();
+    username = widget.username;
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 1500));
     animation = new Tween(begin: 0.0, end: 1.0).animate(

@@ -14,6 +14,10 @@ import '../../utils/translations.dart';
 import 'menu_page.dart';
 
 class LoginPage extends StatefulWidget {
+  final String lastUsername;
+
+  const LoginPage({Key key, this.lastUsername}) : super(key: key);
+
   @override
   LoginPageState createState() {
     return LoginPageState();
@@ -32,7 +36,12 @@ class LoginPageState extends State<LoginPage> {
             : null,
         body: Stack(
           fit: StackFit.expand,
-          children: <Widget>[LoginBackground(), LoginWidgets()],
+          children: <Widget>[
+            LoginBackground(),
+            LoginWidgets(
+              username: widget.lastUsername,
+            )
+          ],
         ),
       );
 
