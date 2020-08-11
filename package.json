@@ -23,7 +23,7 @@
     "copyBuildIos": "del-cli deploy/ios && st-cp ios deploy/ios",
     "buildios": "flutter clean && run-s excludeconfigjson && flutter build ios",
     "buildandroid": "flutter clean && flutter build apk",
-    "postbuildandroid": "run-s removeBuildConfJson && run-s copyBuildAndroid",
+    "postbuildandroid": "run-s copyBuildAndroid && run-s includeconfigjson",
     "buildweb": "flutter clean && run-s excludeconfigjson && flutter build web",
     "postbuildweb": "run-s copyBuildWeb && run-s includeconfigjson"
   },
