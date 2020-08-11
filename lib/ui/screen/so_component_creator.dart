@@ -98,12 +98,14 @@ class SoComponentCreator implements IComponentCreator {
   SoComponentCreator([this.context]);
 
   /// Method for setting the standard component for the respective jvx component
-  setStandardComponent(String key, Object value) {
+  setStandardComponent(String key,
+      Object Function(GlobalKey globalKey, BuildContext context) value) {
     this.standardComponents[key] = value;
   }
 
   /// Method for setting the standard celleditor for the respective jvx celleditor
-  setStandardCellEditors(String key, Object value) {
+  setStandardCellEditors(String key,
+      Object Function(CellEditor cellEditor, BuildContext context) value) {
     this.standardCellEditors[key] = value;
   }
 
