@@ -36,174 +36,183 @@ class _WebFrameState extends State<WebFrame> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      endDrawer: Drawer(child: SettingsPage()),
-      body: Column(
-        children: [
-          Flexible(
-            flex: 1,
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                          width: 250,
-                          child: (globals.applicationStyle == null ||
-                                  globals.applicationStyle?.topMenuLogo == null)
-                              ? Image.asset(
-                                  globals.package
-                                      ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
-                                      : 'assets/images/sibvisions.png',
-                                  fit: BoxFit.fitHeight)
-                              : Image.memory(
-                                  utf8.base64Decode(globals.files[
-                                      globals.applicationStyle.topMenuLogo]),
-                                  fit: BoxFit.fitHeight)),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      IconButton(
-                        hoverColor: Colors.black,
-                        icon: Icon(
-                          FontAwesomeIcons.bars,
-                          color: (globals.applicationStyle != null &&
-                                  globals.applicationStyle.topMenuIconColor !=
-                                      null)
-                              ? globals.applicationStyle.topMenuIconColor
-                              : null,
-                          size: 26,
+    if (globals.layoutMode == 'Full') {
+      return Scaffold(
+        key: _scaffoldKey,
+        endDrawer: Drawer(child: SettingsPage()),
+        body: Column(
+          children: [
+            Flexible(
+              flex: 1,
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Container(
+                            width: 250,
+                            child: (globals.applicationStyle == null ||
+                                    globals.applicationStyle?.topMenuLogo ==
+                                        null)
+                                ? Image.asset(
+                                    globals.package
+                                        ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
+                                        : 'assets/images/sibvisions.png',
+                                    fit: BoxFit.fitHeight)
+                                : Image.memory(
+                                    utf8.base64Decode(globals.files[
+                                        globals.applicationStyle.topMenuLogo]),
+                                    fit: BoxFit.fitHeight)),
+                        SizedBox(
+                          width: 15,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            isVisible = !isVisible;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        hoverColor: Colors.black,
-                        icon: Icon(
-                          FontAwesomeIcons.cog,
-                          color: (globals.applicationStyle != null &&
-                                  globals.applicationStyle.topMenuIconColor !=
-                                      null)
-                              ? globals.applicationStyle.topMenuIconColor
-                              : null,
-                          size: 26,
+                        IconButton(
+                          hoverColor: Colors.black,
+                          icon: Icon(
+                            FontAwesomeIcons.bars,
+                            color: (globals.applicationStyle != null &&
+                                    globals.applicationStyle.topMenuIconColor !=
+                                        null)
+                                ? globals.applicationStyle.topMenuIconColor
+                                : null,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isVisible = !isVisible;
+                            });
+                          },
                         ),
-                        onPressed: () {
-                          _scaffoldKey.currentState.openEndDrawer();
-                        },
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      IconButton(
-                        hoverColor: Colors.black,
-                        icon: Icon(
-                          FontAwesomeIcons.powerOff,
-                          color: (globals.applicationStyle != null &&
-                                  globals.applicationStyle.topMenuIconColor !=
-                                      null)
-                              ? globals.applicationStyle.topMenuIconColor
-                              : null,
-                          size: 26,
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          hoverColor: Colors.black,
+                          icon: Icon(
+                            FontAwesomeIcons.cog,
+                            color: (globals.applicationStyle != null &&
+                                    globals.applicationStyle.topMenuIconColor !=
+                                        null)
+                                ? globals.applicationStyle.topMenuIconColor
+                                : null,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            _scaffoldKey.currentState.openEndDrawer();
+                          },
                         ),
-                        onPressed: () {
-                          Logout logout = Logout(
-                              clientId: globals.clientId,
-                              requestType: RequestType.LOGOUT);
+                        SizedBox(
+                          width: 20,
+                        ),
+                        IconButton(
+                          hoverColor: Colors.black,
+                          icon: Icon(
+                            FontAwesomeIcons.powerOff,
+                            color: (globals.applicationStyle != null &&
+                                    globals.applicationStyle.topMenuIconColor !=
+                                        null)
+                                ? globals.applicationStyle.topMenuIconColor
+                                : null,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Logout logout = Logout(
+                                clientId: globals.clientId,
+                                requestType: RequestType.LOGOUT);
 
-                          BlocProvider.of<ApiBloc>(context).dispatch(logout);
-                        },
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      _buildDrawerHeader(),
-                    ],
-                  ),
-                ],
-              ),
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
+                            BlocProvider.of<ApiBloc>(context).dispatch(logout);
+                          },
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        _buildDrawerHeader(),
+                      ],
                     ),
                   ],
-                  color: (globals.applicationStyle != null &&
-                          globals.applicationStyle.topMenuColor != null)
-                      ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-                      : null),
-            ),
-          ),
-          isVisible
-              ? Flexible(
-                  flex: 12,
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                          width: 250,
-                          color: (globals.applicationStyle != null &&
-                                  globals.applicationStyle.sideMenuColor !=
-                                      null)
-                              ? globals.applicationStyle.sideMenuColor
-                                  .withOpacity(0.95)
-                              : null,
-                          child: widget.menu),
-                      Expanded(
-                          child: widget.screen != null
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: widget.screen,
-                                )
-                              : globals.files.containsKey(
-                                      globals.applicationStyle.desktopIcon)
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: MemoryImage(utf8.base64Decode(
-                                            globals.files[globals
-                                                .applicationStyle
-                                                .desktopIcon])),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ))
-                                  : Container()),
-                    ],
-                  ),
-                )
-              : Flexible(
-                  flex: 12,
-                  child: widget.screen != null
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: widget.screen,
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: globals.files.containsKey(
-                                    globals.applicationStyle.desktopIcon)
-                                ? MemoryImage(utf8.base64Decode(globals.files[
-                                    globals.applicationStyle.desktopIcon]))
-                                : null,
-                            fit: BoxFit.cover,
-                          ),
-                        )),
                 ),
-        ],
-      ),
-    );
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                    color: (globals.applicationStyle != null &&
+                            globals.applicationStyle.topMenuColor != null)
+                        ? globals.applicationStyle.topMenuColor
+                            .withOpacity(0.95)
+                        : null),
+              ),
+            ),
+            isVisible
+                ? Flexible(
+                    flex: 12,
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                            width: 250,
+                            color: (globals.applicationStyle != null &&
+                                    globals.applicationStyle.sideMenuColor !=
+                                        null)
+                                ? globals.applicationStyle.sideMenuColor
+                                    .withOpacity(0.95)
+                                : null,
+                            child: widget.menu),
+                        Expanded(
+                            child: widget.screen != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: widget.screen,
+                                  )
+                                : globals.files.containsKey(
+                                        globals.applicationStyle.desktopIcon)
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: MemoryImage(utf8.base64Decode(
+                                              globals.files[globals
+                                                  .applicationStyle
+                                                  .desktopIcon])),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ))
+                                    : Container()),
+                      ],
+                    ),
+                  )
+                : Flexible(
+                    flex: 12,
+                    child: widget.screen != null
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: widget.screen,
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: globals.files.containsKey(
+                                      globals.applicationStyle.desktopIcon)
+                                  ? MemoryImage(utf8.base64Decode(globals.files[
+                                      globals.applicationStyle.desktopIcon]))
+                                  : null,
+                              fit: BoxFit.cover,
+                            ),
+                          )),
+                  ),
+          ],
+        ),
+      );
+    } else {
+      if (widget.screen != null) {
+        return widget.screen;
+      }
+      return widget.menu;
+    }
   }
 
   Widget _getAvatar() {

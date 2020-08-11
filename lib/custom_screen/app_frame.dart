@@ -21,18 +21,18 @@ class AppFrame extends IAppFrame {
     return WebFrame(menu: menu, screen: screen);
   }
 
-  bool get isWeb {
+  bool get showScreenHeader {
     if (globals.webOnly &&
         !globals.mobileOnly &&
         globals.layoutMode == 'Full') {
-      return true;
-    } else if (globals.mobileOnly && !globals.webOnly) {
       return false;
+    } else if (globals.mobileOnly && !globals.webOnly) {
+      return true;
     } else {
       if (kIsWeb && globals.layoutMode == 'Full') {
-        return true;
-      } else {
         return false;
+      } else {
+        return true;
       }
     }
   }
