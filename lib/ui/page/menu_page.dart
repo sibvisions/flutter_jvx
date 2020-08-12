@@ -157,7 +157,8 @@ class _MenuPageState extends State<MenuPage> {
         if (state != null &&
             state.deviceStatus != null &&
             state.deviceStatus.layoutMode != null &&
-            state.requestType == RequestType.DEVICE_STATUS) {
+            state.requestType == RequestType.DEVICE_STATUS &&
+            state.deviceStatus != null) {
           globals.layoutMode = state.deviceStatus.layoutMode;
           this.setState(() {});
         }

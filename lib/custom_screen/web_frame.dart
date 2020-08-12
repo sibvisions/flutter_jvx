@@ -291,7 +291,6 @@ class _WebFrameState extends State<WebFrame> {
                           globals.applicationStyle.topMenuIconColor != null)
                       ? globals.applicationStyle.topMenuIconColor
                       : Color(0xffffffff),
-                  size: 60,
                 ),
           radius: 50,
         ),

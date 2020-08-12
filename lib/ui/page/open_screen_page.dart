@@ -107,7 +107,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               print("*** OpenScreenPage - RequestType: " +
                   state.requestType.toString());
 
-              if (state.requestType == RequestType.DEVICE_STATUS) {
+              if (state.requestType == RequestType.DEVICE_STATUS &&
+                  state.deviceStatus != null) {
                 globals.layoutMode = state.deviceStatus.layoutMode;
                 this.setState(() {});
               }
