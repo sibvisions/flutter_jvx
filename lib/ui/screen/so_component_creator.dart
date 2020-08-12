@@ -102,16 +102,7 @@ class SoComponentCreator implements IComponentCreator {
 
   /// Method for setting the standard component for the respective jvx component
   setStandardComponent(
-      String key, Object Function(ComponentContext context) value) {
-    bool comp = true;
-    try {
-      IComponent tryComp = value.call(ComponentContext(
-          context: context, globalKey: GlobalKey(debugLabel: "test")));
-    } catch (e) {
-      comp = false;
-      throw Exception(
-          "You are trying to create a cell Editor with the Data to create a Component");
-    }
+      String key, Object Function(ComponentContext componentContext) value) {
     this.standardComponents[key] = value;
   }
 
