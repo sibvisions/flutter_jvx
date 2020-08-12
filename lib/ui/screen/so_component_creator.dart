@@ -41,72 +41,78 @@ import '../component/co_label.dart';
 class SoComponentCreator implements IComponentCreator {
   BuildContext context;
 
-  Map<String, Object Function(GlobalKey globalKey, BuildContext context)>
+  Map<String, Object Function(ComponentContext componentContext)>
       standardComponents = {
-    'Panel': (GlobalKey globalKey, BuildContext context) =>
-        CoPanel(globalKey, context),
-    'GroupPanel': (GlobalKey globalKey, BuildContext context) =>
-        CoGroupPanel(globalKey, context),
-    'ScrollPanel': (GlobalKey globalKey, BuildContext context) =>
-        CoScrollPanel(globalKey, context),
-    'SplitPanel': (GlobalKey globalKey, BuildContext context) =>
-        CoSplitPanel(globalKey, context),
-    'Label': (GlobalKey globalKey, BuildContext context) =>
-        CoLabel(globalKey, context),
-    'Button': (GlobalKey globalKey, BuildContext context) =>
-        CoButton(globalKey, context),
-    'Table': (GlobalKey globalKey, BuildContext context) =>
-        CoTable(globalKey, context),
-    'CheckBox': (GlobalKey globalKey, BuildContext context) =>
-        CoCheckbox(globalKey, context),
-    'RadioButton': (GlobalKey globalKey, BuildContext context) =>
-        CoRadioButton(globalKey, context),
-    'PopupMenuButton': (GlobalKey globalKey, BuildContext context) =>
-        CoPopupMenuButton(globalKey, context),
-    'TextField': (GlobalKey globalKey, BuildContext context) =>
-        CoTextField(globalKey, context),
-    'PasswordField': (GlobalKey globalKey, BuildContext context) =>
-        CoPasswordField(globalKey, context),
-    'TextArea': (GlobalKey globalKey, BuildContext context) =>
-        CoTextArea(globalKey, context),
-    'Icon': (GlobalKey globalKey, BuildContext context) =>
-        CoIcon(globalKey, context),
-    'PopupMenu': (GlobalKey globalKey, BuildContext context) =>
-        CoPopupMenu(globalKey, context),
-    'MenuItem': (GlobalKey globalKey, BuildContext context) =>
-        CoMenuItem(globalKey, context),
+    'Panel': (ComponentContext componentContext) =>
+        CoPanel(componentContext.globalKey, componentContext.context),
+    'GroupPanel': (ComponentContext componentContext) =>
+        CoGroupPanel(componentContext.globalKey, componentContext.context),
+    'ScrollPanel': (ComponentContext componentContext) =>
+        CoScrollPanel(componentContext.globalKey, componentContext.context),
+    'SplitPanel': (ComponentContext componentContext) =>
+        CoSplitPanel(componentContext.globalKey, componentContext.context),
+    'Label': (ComponentContext componentContext) =>
+        CoLabel(componentContext.globalKey, componentContext.context),
+    'Button': (ComponentContext componentContext) =>
+        CoButton(componentContext.globalKey, componentContext.context),
+    'Table': (ComponentContext componentContext) =>
+        CoTable(componentContext.globalKey, componentContext.context),
+    'CheckBox': (ComponentContext componentContext) =>
+        CoCheckbox(componentContext.globalKey, componentContext.context),
+    'RadioButton': (ComponentContext componentContext) =>
+        CoRadioButton(componentContext.globalKey, componentContext.context),
+    'PopupMenuButton': (ComponentContext componentContext) =>
+        CoPopupMenuButton(componentContext.globalKey, componentContext.context),
+    'TextField': (ComponentContext componentContext) =>
+        CoTextField(componentContext.globalKey, componentContext.context),
+    'PasswordField': (ComponentContext componentContext) =>
+        CoPasswordField(componentContext.globalKey, componentContext.context),
+    'TextArea': (ComponentContext componentContext) =>
+        CoTextArea(componentContext.globalKey, componentContext.context),
+    'Icon': (ComponentContext componentContext) =>
+        CoIcon(componentContext.globalKey, componentContext.context),
+    'PopupMenu': (ComponentContext componentContext) =>
+        CoPopupMenu(componentContext.globalKey, componentContext.context),
+    'MenuItem': (ComponentContext componentContext) =>
+        CoMenuItem(componentContext.globalKey, componentContext.context),
+    'TextCellEditor': (ComponentContext componentContext) =>
+        CoTextCellEditor(componentContext.cellEditor, componentContext.context),
+    'NumberCellEditor': (ComponentContext componentContext) =>
+        CoNumberCellEditor(
+            componentContext.cellEditor, componentContext.context),
+    'LinkedCellEditor': (ComponentContext componentContext) =>
+        CoLinkedCellEditor(
+            componentContext.cellEditor, componentContext.context),
+    'DateCellEditor': (ComponentContext componentContext) =>
+        CoDateCellEditor(componentContext.cellEditor, componentContext.context),
+    'ImageViewer': (ComponentContext componentContext) => CoImageCellEditor(
+        componentContext.cellEditor, componentContext.context),
+    'ChoiceCellEditor': (ComponentContext componentContext) =>
+        CoChoiceCellEditor(
+            componentContext.cellEditor, componentContext.context),
+    'CheckBoxCellEditor': (ComponentContext componentContext) =>
+        CoCheckboxCellEditor(
+            componentContext.cellEditor, componentContext.context),
   };
 
   Map<String, Object Function(CellEditor cellEditor, BuildContext context)>
-      standardCellEditors = {
-    'TextCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoTextCellEditor(cellEditor, context),
-    'NumberCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoNumberCellEditor(cellEditor, context),
-    'LinkedCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoLinkedCellEditor(cellEditor, context),
-    'DateCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoDateCellEditor(cellEditor, context),
-    'ImageViewer': (CellEditor cellEditor, BuildContext context) =>
-        CoImageCellEditor(cellEditor, context),
-    'ChoiceCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoChoiceCellEditor(cellEditor, context),
-    'CheckBoxCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoCheckboxCellEditor(cellEditor, context),
-  };
+      standardCellEditors = {};
 
   SoComponentCreator([this.context]);
 
   /// Method for setting the standard component for the respective jvx component
-  setStandardComponent(String key,
-      Object Function(GlobalKey globalKey, BuildContext context) value) {
+  setStandardComponent(
+      String key, Object Function(ComponentContext context) value) {
+    bool comp = true;
+    try {
+      IComponent tryComp = value.call(ComponentContext(
+          context: context, globalKey: GlobalKey(debugLabel: "test")));
+    } catch (e) {
+      comp = false;
+      throw Exception(
+          "You are trying to create a cell Editor with the Data to create a Component");
+    }
     this.standardComponents[key] = value;
-  }
-
-  /// Method for setting the standard celleditor for the respective jvx celleditor
-  setStandardCellEditors(String key,
-      Object Function(CellEditor cellEditor, BuildContext context) value) {
-    this.standardCellEditors[key] = value;
   }
 
   IComponent createComponent(ChangedComponent changedComponent) {
@@ -117,7 +123,9 @@ class SoComponentCreator implements IComponentCreator {
         component = _createEditor(changedComponent);
       } else {
         component = this.standardComponents[changedComponent.className](
-            GlobalKey(debugLabel: changedComponent.id), context);
+            ComponentContext(
+                globalKey: GlobalKey(debugLabel: changedComponent.id),
+                context: context));
       }
 
       if (component == null) {
@@ -178,8 +186,8 @@ class SoComponentCreator implements IComponentCreator {
     if (toCreatecellEditor == null) {
       cellEditor = null;
     } else {
-      cellEditor = this.standardCellEditors[toCreatecellEditor.className](
-          toCreatecellEditor, context);
+      cellEditor = this.standardComponents[toCreatecellEditor.className](
+          ComponentContext(cellEditor: toCreatecellEditor, context: context));
     }
 
     return cellEditor;
@@ -254,4 +262,12 @@ class SoComponentCreator implements IComponentCreator {
         "'!";
     return component;
   }
+}
+
+class ComponentContext {
+  final CellEditor cellEditor;
+  final GlobalKey globalKey;
+  final BuildContext context;
+
+  ComponentContext({@required this.context, this.globalKey, this.cellEditor});
 }
