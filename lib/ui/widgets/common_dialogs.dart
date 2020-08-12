@@ -7,8 +7,8 @@ import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
 
 showGoToSettings(BuildContext context, String title, String message) {
-  if (title==null) title = "Missing title";
-  if (message==null) message = "";
+  if (title == null) title = "Missing title";
+  if (message == null) message = "";
 
   showDialog(
       context: context,
@@ -22,16 +22,17 @@ showGoToSettings(BuildContext context, String title, String message) {
               ),
               FlatButton(
                 child: Text(Translations.of(context).text2('To Settings')),
-                onPressed: () =>
-                    Navigator.of(context).pushReplacementNamed('/settings', arguments: "error.dialog"),
+                onPressed: () => Navigator.of(context).pushReplacementNamed(
+                    '/settings',
+                    arguments: "error.dialog"),
               )
             ],
           ));
 }
 
 showError(BuildContext context, String title, String message) {
-  if (title==null) title = "Missing title";
-  if (message==null) message = "";
+  if (title == null) title = "Missing title";
+  if (message == null) message = "";
 
   showDialog(
       context: context,
@@ -48,8 +49,8 @@ showError(BuildContext context, String title, String message) {
 }
 
 showSessionExpired(BuildContext context, String title, String message) async {
-  if (title==null) title = "Missing title";
-  if (message==null) message = "";
+  if (title == null) title = "Missing title";
+  if (message == null) message = "";
 
   await showDialog(
       context: context,
@@ -58,16 +59,15 @@ showSessionExpired(BuildContext context, String title, String message) async {
             content: Text(message),
             actions: <Widget>[
               FlatButton(
-                child: Text(Translations.of(context).text2('OK', 'OK')),
-                onPressed: () {
-                  globals.username = '';
-                  globals.password = '';
-                  globals.profileImage = '';
-                  globals.displayName = ''; 
-                  globals.roles = [];
-                  Navigator.of(context).pop();
-                }
-              )
+                  child: Text(Translations.of(context).text2('OK', 'OK')),
+                  onPressed: () {
+                    globals.username = '';
+                    globals.password = '';
+                    globals.profileImage = '';
+                    globals.displayName = '';
+                    globals.roles = [];
+                    Navigator.of(context).pop();
+                  })
             ],
           )).then((val) {
     RestartWidget.restartApp(context);
@@ -75,7 +75,7 @@ showSessionExpired(BuildContext context, String title, String message) async {
 }
 
 showSuccess(BuildContext context, String message, IconData icon) {
-  if (message==null) message = "";
+  if (message == null) message = "";
   showDialog(
       context: context,
       builder: (context) => Center(
@@ -113,8 +113,8 @@ showProgress(BuildContext context, [String loadingText]) {
         context: context,
         barrierDismissible: false,
         builder: (context) => Opacity(
-          opacity: 0.7,
-                  child: Container(
+              opacity: 0.7,
+              child: Container(
                 child: Center(
                     child: Container(
                   width: 100,
@@ -123,15 +123,15 @@ showProgress(BuildContext context, [String loadingText]) {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          CircularProgressIndicator(backgroundColor: Colors.white),
-                        ],
-                      ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      CircularProgressIndicator(backgroundColor: Colors.white),
+                    ],
+                  ),
                 )),
               ),
-        ));
+            ));
 
     // showDialog(
     //     context: context,
