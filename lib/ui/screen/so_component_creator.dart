@@ -95,9 +95,6 @@ class SoComponentCreator implements IComponentCreator {
             componentContext.cellEditor, componentContext.context),
   };
 
-  Map<String, Object Function(CellEditor cellEditor, BuildContext context)>
-      standardCellEditors = {};
-
   SoComponentCreator([this.context]);
 
   /// Method for setting the standard component for the respective jvx component

@@ -447,6 +447,7 @@ class CoTable extends CoEditor {
             decoration: _hasHorizontalScroller
                 ? null
                 : BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                         width: borderWidth,
                         color: UIData.ui_kit_color_2[500].withOpacity(
@@ -470,6 +471,7 @@ class CoTable extends CoEditor {
         if (_hasHorizontalScroller) {
           return Container(
               decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
                   border: Border.all(
                       width: borderWidth,
                       color: UIData.ui_kit_color_2[500].withOpacity(
