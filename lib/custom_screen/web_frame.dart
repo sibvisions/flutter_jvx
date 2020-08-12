@@ -203,7 +203,7 @@ class _WebFrameState extends State<WebFrame> {
                     ),
                   )
                 : Flexible(
-                    flex: 12,
+                    flex: 23,
                     child: widget.screen != null
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
