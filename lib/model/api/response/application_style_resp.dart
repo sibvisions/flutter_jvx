@@ -48,6 +48,7 @@ class ApplicationStyleResponse extends ResponseObject {
   Color sideMenuColor;
   Color sideMenuTextColor;
   Color sideMenuGroupTextColor;
+  Color sideMenuSelectionColor;
   Color topMenuColor;
   Color topMenuIconColor;
   String topMenuLogo;
@@ -163,6 +164,16 @@ class ApplicationStyleResponse extends ResponseObject {
           HexColor(jsonMap['theme']['web']['sidemenu']['groupColor']);
     else
       sideMenuGroupTextColor = null;
+
+    if (jsonMap['theme'] != null &&
+        jsonMap['theme']['web'] != null &&
+        jsonMap['theme']['web']['sidemenu'] != null &&
+        HexColor.isHexColor(
+            jsonMap['theme']['web']['sidemenu']['selectionColor']))
+      sideMenuSelectionColor =
+          HexColor(jsonMap['theme']['web']['sidemenu']['selectionColor']);
+    else
+      sideMenuSelectionColor = null;
 
     if (jsonMap['theme'] != null &&
         jsonMap['theme']['web'] != null &&

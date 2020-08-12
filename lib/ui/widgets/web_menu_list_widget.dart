@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/ui/screen/i_screen.dart';
+import 'package:tinycolor/tinycolor.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -18,6 +19,7 @@ import '../../ui/widgets/custom_icon.dart';
 class WebMenuListWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
   final bool groupedMenuMode;
+  MenuItem selectedMenuItem = null;
 
   WebMenuListWidget(
       {Key key, @required this.menuItems, this.groupedMenuMode = true})
@@ -107,6 +109,9 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
 
       BlocProvider.of<ApiBloc>(context).dispatch(openScreen);
     }
+    setState(() {
+      widget.selectedMenuItem = menuItem;
+    });
   }
 
   List<Widget> _buildListTiles(BuildContext context) {
@@ -116,20 +121,19 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
 
     newMap.forEach((k, v) {
       Widget heading = Container(
-          height: 40,
-          child: ListTile(
-            dense: true,
-            title: Text(
-              k,
-              style: TextStyle(
-                  color: (globals.applicationStyle != null &&
-                          globals.applicationStyle.sideMenuGroupTextColor !=
-                              null)
-                      ? globals.applicationStyle.sideMenuGroupTextColor
-                      : null,
-                  fontWeight: FontWeight.bold),
-            ),
-          ));
+        alignment: Alignment.centerLeft,
+        margin: new EdgeInsets.only(left: 12.0, top: 10.0),
+        height: 25,
+        child: Text(
+          k,
+          style: TextStyle(
+              color: (globals.applicationStyle != null &&
+                      globals.applicationStyle.sideMenuGroupTextColor != null)
+                  ? globals.applicationStyle.sideMenuGroupTextColor
+                  : Color(0xff6a6a6a),
+              fontWeight: FontWeight.w500),
+        ),
+      );
 
       Widget card = Container(
           child: Column(
@@ -156,58 +160,89 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
 
     v.forEach((mItem) {
       Widget tile = Container(
+          margin: EdgeInsets.only(left: 5),
           child: Tooltip(
               waitDuration: Duration(milliseconds: 500),
               message: mItem.action.label,
-              child: ListTile(
-                hoverColor: Colors.black,
-                contentPadding: EdgeInsets.only(left: 5.0),
-                dense: true,
-                title: Container(
-                  child: Center(
-                    child: Row(
-                      children: [
-                        mItem.image != null
-                            ? new CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: CustomIcon(
-                                    image: mItem.image,
-                                    size: Size(16, 16),
-                                    color: (globals.applicationStyle != null &&
-                                            globals.applicationStyle
-                                                    .sideMenuTextColor !=
-                                                null)
-                                        ? globals
-                                            .applicationStyle.sideMenuTextColor
-                                        : null))
-                            : new CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: Icon(
-                                  FontAwesomeIcons.clone,
-                                  size: 16,
-                                  color: Colors.grey[400],
-                                )),
-                        Container(
-                          constraints:
-                              BoxConstraints(minWidth: 100, maxWidth: 180),
-                          child: Text(
-                            mItem.action.label,
-                            style: TextStyle(
-                                color: (globals.applicationStyle != null &&
-                                        globals.applicationStyle
-                                                .sideMenuTextColor !=
-                                            null)
-                                    ? globals.applicationStyle.sideMenuTextColor
-                                    : null,
-                                fontSize: 14),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  hoverColor: TinyColor((globals.applicationStyle != null &&
+                              globals.applicationStyle.sideMenuColor != null)
+                          ? globals.applicationStyle.sideMenuColor
+                              .withOpacity(0.95)
+                          : Color(0xff171717).withOpacity(0.95),)
+                      .lighten()
+                      .color,
+                  onTap: () => _onTap(mItem),
+                  child: Column(children: <Widget>[
+                    Container(
+                      height: 34,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            mItem.image != null
+                                ? new CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: CustomIcon(
+                                      image: mItem.image,
+                                      size: Size(16, 16),
+                                      color: mItem == widget.selectedMenuItem
+                                          ? (globals.applicationStyle != null &&
+                                                  globals.applicationStyle
+                                                          .sideMenuSelectionColor !=
+                                                      null)
+                                              ? globals.applicationStyle
+                                                  .sideMenuSelectionColor
+                                              : Color(0xFF2196F3)
+                                          : (globals.applicationStyle != null &&
+                                                  globals.applicationStyle
+                                                          .sideMenuTextColor !=
+                                                      null)
+                                              ? globals.applicationStyle
+                                                  .sideMenuTextColor
+                                              : Color(0xFFd9d9d9),
+                                    ),
+                                  )
+                                : new CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(
+                                      FontAwesomeIcons.clone,
+                                      size: 16,
+                                      color: Colors.grey[400],
+                                    )),
+                            Container(
+                              constraints:
+                                  BoxConstraints(minWidth: 100, maxWidth: 180),
+                              child: Text(
+                                mItem.action.label,
+                                style: TextStyle(
+                                    color: mItem == widget.selectedMenuItem
+                                        ? (globals.applicationStyle != null &&
+                                                globals.applicationStyle
+                                                        .sideMenuSelectionColor !=
+                                                    null)
+                                            ? globals.applicationStyle
+                                                .sideMenuSelectionColor
+                                            : Color(0xFF2196F3)
+                                        : (globals.applicationStyle != null &&
+                                                globals.applicationStyle
+                                                        .sideMenuTextColor !=
+                                                    null)
+                                            ? globals.applicationStyle
+                                                .sideMenuTextColor
+                                            : Color(0xFFd9d9d9),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ]),
                 ),
-                onTap: () => _onTap(mItem),
               )));
       widgets.add(tile);
       if (v.indexOf(mItem) < v.length - 1)
