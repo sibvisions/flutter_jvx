@@ -28,6 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String toSaveUsername;
   String toSavePwd;
   List<PickerItem<int>> imageSizeItems;
+  bool isDialogOpen = false;
 
   String get versionText {
     String v = 'App V $version Build $buildNumber';
@@ -238,21 +239,31 @@ class _SettingsPageState extends State<SettingsPage> {
         this.imageSizeIndex < this.imageSizeItems.length)
       selected = [this.imageSizeIndex];
 
+    setState(() {
+      isDialogOpen = true;
+    });
+
     new Picker(
-        confirmText: Translations.of(context).text2('Confirm'),
-        cancelText: Translations.of(context).text2('Cancel'),
-        adapter: PickerDataAdapter(data: this.imageSizeItems),
-        selecteds: selected,
-        changeToFirst: true,
-        textAlign: TextAlign.center,
-        columnPadding: const EdgeInsets.all(8.0),
-        confirmTextStyle: TextStyle(color: UIData.ui_kit_color_2),
-        cancelTextStyle: TextStyle(color: UIData.ui_kit_color_2),
-        onConfirm: (Picker picker, List value) {
-          setState(() {
-            globals.uploadPicWidth = picker.getSelectedValues()[0];
-          });
-        }).show(scaffoldState.currentState);
+      confirmText: Translations.of(context).text2('Confirm'),
+      cancelText: Translations.of(context).text2('Cancel'),
+      adapter: PickerDataAdapter(data: this.imageSizeItems),
+      selecteds: selected,
+      changeToFirst: true,
+      textAlign: TextAlign.center,
+      columnPadding: const EdgeInsets.all(8.0),
+      confirmTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+      cancelTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+      onConfirm: (Picker picker, List value) {
+        setState(() {
+          isDialogOpen = false;
+
+          globals.uploadPicWidth = picker.getSelectedValues()[0];
+        });
+      },
+      onCancel: () => setState(() => isDialogOpen = false),
+      onSelect: (picker, index, selecteds) =>
+          setState(() => isDialogOpen = false),
+    ).show(scaffoldState.currentState);
   }
 
   showLanguagePicker(BuildContext context) {
@@ -270,25 +281,35 @@ class _SettingsPageState extends State<SettingsPage> {
     if (selectedIndex >= 0 && selectedIndex < languages.length)
       selected = [selectedIndex];
 
+    setState(() {
+      isDialogOpen = true;
+    });
+
     new Picker(
-        confirmText: Translations.of(context).text2('Confirm'),
-        cancelText: Translations.of(context).text2('Cancel'),
-        adapter: PickerDataAdapter<String>(pickerdata: languages),
-        selecteds: selected,
-        changeToFirst: true,
-        textAlign: TextAlign.center,
-        columnPadding: const EdgeInsets.all(8.0),
-        confirmTextStyle: TextStyle(color: UIData.ui_kit_color_2),
-        cancelTextStyle: TextStyle(color: UIData.ui_kit_color_2),
-        onConfirm: (Picker picker, List value) {
-          String newLang =
-              picker.getSelectedValues()[0].toString().toLowerCase();
-          setState(() {
-            globals.language = newLang;
-            this.language = newLang;
-            Translations.load(new Locale(newLang));
-          });
-        }).show(scaffoldState.currentState);
+            confirmText: Translations.of(context).text2('Confirm'),
+            cancelText: Translations.of(context).text2('Cancel'),
+            adapter: PickerDataAdapter<String>(pickerdata: languages),
+            selecteds: selected,
+            changeToFirst: true,
+            textAlign: TextAlign.center,
+            columnPadding: const EdgeInsets.all(8.0),
+            confirmTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+            cancelTextStyle: TextStyle(color: UIData.ui_kit_color_2),
+            onConfirm: (Picker picker, List value) {
+              String newLang =
+                  picker.getSelectedValues()[0].toString().toLowerCase();
+              setState(() {
+                isDialogOpen = false;
+
+                globals.language = newLang;
+                this.language = newLang;
+                Translations.load(new Locale(newLang));
+              });
+            },
+            onCancel: () => setState(() => isDialogOpen = false),
+            onSelect: (Picker picker, int index, List<int> selected) =>
+                setState(() => isDialogOpen = false))
+        .show(scaffoldState.currentState);
   }
 
   Widget settingsLoader() {
@@ -308,7 +329,7 @@ class _SettingsPageState extends State<SettingsPage> {
           scaffoldKey: scaffoldState,
           appTitle: Translations.of(context).text2('Settings', 'Settings'),
           showBottomNav: true,
-          showFAB: !kIsWeb,
+          showFAB: (!kIsWeb && !isDialogOpen),
           backGroundColor: (globals.applicationStyle != null &&
                   globals.applicationStyle.desktopColor != null)
               ? globals.applicationStyle.desktopColor
