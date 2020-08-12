@@ -10,6 +10,7 @@ import 'package:jvx_flutterclient/ui/page/login_page.dart';
 import 'package:jvx_flutterclient/ui/page/settings_page.dart';
 import 'package:jvx_flutterclient/ui/widgets/custom_drawer_header.dart';
 import 'package:jvx_flutterclient/utils/translations.dart';
+import 'package:tinycolor/tinycolor.dart';
 import '../utils/uidata.dart';
 import '../utils/globals.dart' as globals;
 import '../ui/widgets/my_popup_menu.dart' as mypopup;
@@ -50,20 +51,36 @@ class _WebFrameState extends State<WebFrame> {
                   children: <Widget>[
                     Row(
                       children: [
-                        Container(
-                            width: 250,
-                            child: (globals.applicationStyle == null ||
-                                    globals.applicationStyle?.topMenuLogo ==
-                                        null)
-                                ? Image.asset(
-                                    globals.package
-                                        ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
-                                        : 'assets/images/sibvisions.png',
-                                    fit: BoxFit.fitHeight)
-                                : Image.memory(
-                                    utf8.base64Decode(globals.files[
-                                        globals.applicationStyle.topMenuLogo]),
-                                    fit: BoxFit.fitHeight)),
+                        isVisible
+                            ? Container(
+                                width: 250,
+                                height: double.infinity,
+                                color: (globals.applicationStyle != null &&
+                                        globals.applicationStyle.topMenuColor !=
+                                            null)
+                                    ? TinyColor(globals
+                                            .applicationStyle.topMenuColor)
+                                        .lighten()
+                                        .color
+                                    : null,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  child: (globals.applicationStyle == null ||
+                                          globals.applicationStyle
+                                                  ?.topMenuLogo ==
+                                              null)
+                                      ? Image.asset(
+                                          globals.package
+                                              ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
+                                              : 'assets/images/sibvisions.png',
+                                          fit: BoxFit.contain)
+                                      : Image.memory(
+                                          utf8.base64Decode(globals.files[
+                                              globals.applicationStyle
+                                                  .topMenuLogo]),
+                                          fit: BoxFit.contain),
+                                ))
+                            : Container(),
                         SizedBox(
                           width: 15,
                         ),
@@ -193,16 +210,17 @@ class _WebFrameState extends State<WebFrame> {
                             child: widget.screen,
                           )
                         : Container(
-                            decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: globals.files.containsKey(
-                                      globals.applicationStyle.desktopIcon)
-                                  ? MemoryImage(utf8.base64Decode(globals.files[
-                                      globals.applicationStyle.desktopIcon]))
-                                  : null,
-                              fit: BoxFit.cover,
-                            ),
-                          )),
+                            decoration: globals.files.containsKey(
+                                    globals.applicationStyle.desktopIcon)
+                                ? BoxDecoration(
+                                    image: DecorationImage(
+                                      image: MemoryImage(utf8.base64Decode(
+                                          globals.files[globals
+                                              .applicationStyle.desktopIcon])),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : null),
                   ),
           ],
         ),
