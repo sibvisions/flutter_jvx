@@ -44,7 +44,7 @@ class _WebFrameState extends State<WebFrame> {
         body: Column(
           children: [
             Flexible(
-              flex: 1,
+              flex: 2,
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,7 +62,7 @@ class _WebFrameState extends State<WebFrame> {
                                             .applicationStyle.topMenuColor)
                                         .lighten()
                                         .color
-                                    : null,
+                                    : TinyColor(Color(0xff2196f3)).lighten().color,
                                 child: Container(
                                   margin: EdgeInsets.symmetric(horizontal: 10),
                                   child: (globals.applicationStyle == null ||
@@ -92,7 +92,7 @@ class _WebFrameState extends State<WebFrame> {
                                     globals.applicationStyle.topMenuIconColor !=
                                         null)
                                 ? globals.applicationStyle.topMenuIconColor
-                                : null,
+                                : Color(0xffffffff),
                             size: 26,
                           ),
                           onPressed: () {
@@ -113,7 +113,7 @@ class _WebFrameState extends State<WebFrame> {
                                     globals.applicationStyle.topMenuIconColor !=
                                         null)
                                 ? globals.applicationStyle.topMenuIconColor
-                                : null,
+                                : Color(0xffffffff),
                             size: 26,
                           ),
                           onPressed: () {
@@ -131,7 +131,7 @@ class _WebFrameState extends State<WebFrame> {
                                     globals.applicationStyle.topMenuIconColor !=
                                         null)
                                 ? globals.applicationStyle.topMenuIconColor
-                                : null,
+                                : Color(0xffffffff),
                             size: 26,
                           ),
                           onPressed: () {
@@ -163,12 +163,12 @@ class _WebFrameState extends State<WebFrame> {
                             globals.applicationStyle.topMenuColor != null)
                         ? globals.applicationStyle.topMenuColor
                             .withOpacity(0.95)
-                        : null),
+                        : Color(0xff2196f3).withOpacity(0.95)),
               ),
             ),
             isVisible
                 ? Flexible(
-                    flex: 12,
+                    flex: 23,
                     child: Row(
                       children: <Widget>[
                         Container(
@@ -178,7 +178,7 @@ class _WebFrameState extends State<WebFrame> {
                                         null)
                                 ? globals.applicationStyle.sideMenuColor
                                     .withOpacity(0.95)
-                                : null,
+                                : Color(0xff171717).withOpacity(0.95),
                             child: widget.menu),
                         Expanded(
                             child: widget.screen != null
@@ -242,7 +242,7 @@ class _WebFrameState extends State<WebFrame> {
         cardColor: (globals.applicationStyle != null &&
                 globals.applicationStyle.topMenuColor != null)
             ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-            : null,
+            : Color(0xff2196f3).withOpacity(0.95),
       ),
       child: mypopup.PopupMenuButton<int>(
         itemBuilder: (context) => [
@@ -253,7 +253,7 @@ class _WebFrameState extends State<WebFrame> {
               color: (globals.applicationStyle != null &&
                       globals.applicationStyle.topMenuColor != null)
                   ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-                  : null,
+                  : Color(0xff2196f3).withOpacity(0.95),
               child: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -290,7 +290,7 @@ class _WebFrameState extends State<WebFrame> {
                   color: (globals.applicationStyle != null &&
                           globals.applicationStyle.topMenuIconColor != null)
                       ? globals.applicationStyle.topMenuIconColor
-                      : null,
+                      : Color(0xffffffff),
                   size: 60,
                 ),
           radius: 50,

@@ -130,7 +130,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
               color: (globals.applicationStyle != null &&
                       globals.applicationStyle.sideMenuGroupTextColor != null)
                   ? globals.applicationStyle.sideMenuGroupTextColor
-                  : null,
+                  : Color(0xff6a6a6a),
               fontWeight: FontWeight.w500),
         ),
       );
@@ -171,7 +171,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                               globals.applicationStyle.sideMenuColor != null)
                           ? globals.applicationStyle.sideMenuColor
                               .withOpacity(0.95)
-                          : Colors.grey[600])
+                          : Color(0xff171717).withOpacity(0.95),)
                       .lighten()
                       .color,
                   onTap: () => _onTap(mItem),
@@ -194,14 +194,14 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                                                       null)
                                               ? globals.applicationStyle
                                                   .sideMenuSelectionColor
-                                              : null
+                                              : Color(0xFF2196F3)
                                           : (globals.applicationStyle != null &&
                                                   globals.applicationStyle
                                                           .sideMenuTextColor !=
                                                       null)
                                               ? globals.applicationStyle
                                                   .sideMenuTextColor
-                                              : null,
+                                              : Color(0xFFd9d9d9),
                                     ),
                                   )
                                 : new CircleAvatar(
@@ -224,14 +224,14 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                                                     null)
                                             ? globals.applicationStyle
                                                 .sideMenuSelectionColor
-                                            : null
+                                            : Color(0xFF2196F3)
                                         : (globals.applicationStyle != null &&
                                                 globals.applicationStyle
                                                         .sideMenuTextColor !=
                                                     null)
                                             ? globals.applicationStyle
                                                 .sideMenuTextColor
-                                            : null,
+                                            : Color(0xFFd9d9d9),
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500),
                                 overflow: TextOverflow.ellipsis,
