@@ -11,6 +11,7 @@ class SplitView extends StatefulWidget {
   final double gripSize;
   final double initialWeight;
   final Color gripColor;
+  final Color handleColor;
   final double positionLimit;
   final ValueChanged<double> onWeightChanged;
 
@@ -21,6 +22,7 @@ class SplitView extends StatefulWidget {
     this.gripSize = 12.0,
     this.initialWeight = 0.5,
     this.gripColor = Colors.grey,
+    this.handleColor = Colors.white,
     this.positionLimit = 20.0,
     this.onWeightChanged,
   });
@@ -102,7 +104,12 @@ class _SplitViewState extends State<SplitView> {
                 weight.value = pos.dy / container.size.height;
               }
             },
-            child: Container(color: widget.gripColor),
+            child: Container(
+              color: widget.gripColor,
+              child: Center(
+                child: Icon(Icons.drag_handle, color: widget.handleColor),
+              ),
+            ),
           ),
         ),
       ],
@@ -150,7 +157,7 @@ class _SplitViewState extends State<SplitView> {
                   color: widget.gripColor,
                   child: Center(
                     child: RotationTransition(
-                      child: Icon(Icons.drag_handle, color: Colors.white),
+                      child: Icon(Icons.drag_handle, color: widget.handleColor),
                       turns: AlwaysStoppedAnimation(0.25),
                     ),
                   ))),
