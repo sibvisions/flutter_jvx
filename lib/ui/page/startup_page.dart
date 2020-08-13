@@ -115,10 +115,8 @@ class _StartupPageState extends State<StartupPage> {
         print("******************************************************");
 
         if (val[0].appName != null && val[0].appName.isNotEmpty) {
-          if (globals.appName == null) {
-            globals.appName = val[0].appName;
-            SharedPreferencesHelper().setData(val[0].appName, null, null, null);
-          }
+          globals.appName = val[0].appName;
+          SharedPreferencesHelper().setData(val[0].appName, null, null, null);
         } else {
           showError(context, 'Error in Config',
               'Please enter a valid application name in conf.json and restart the app.');
