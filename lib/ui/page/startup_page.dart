@@ -131,11 +131,8 @@ class _StartupPageState extends State<StartupPage> {
                 'Please delete the "/" at the end of your base url in the conf.json file and restart the app.');
             return;
           } else {
-            if (globals.baseUrl == null) {
-              globals.baseUrl = val[0].baseUrl;
-              SharedPreferencesHelper()
-                  .setData(null, val[0].baseUrl, null, null);
-            }
+            globals.baseUrl = val[0].baseUrl;
+            SharedPreferencesHelper().setData(null, val[0].baseUrl, null, null);
           }
         } else {
           showError(context, 'Error in Config',

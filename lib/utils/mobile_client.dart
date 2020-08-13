@@ -5,8 +5,7 @@ import 'package:http/http.dart' as prefHttp;
 
 import '../utils/http_client.dart';
 
-class MobileClient implements HttpClient
-{
+class MobileClient implements HttpClient {
   prefHttp.Client client = prefHttp.Client();
 
   @override
@@ -25,10 +24,9 @@ class MobileClient implements HttpClient
     return client.get(url, headers: headers);
   }
 
-  void setWithCredentials(bool withCredentials){
+  void setWithCredentials(bool withCredentials) {
     // not needed, also not possible
   }
-
 }
 
 HttpClient getHttpClient() => MobileClient();

@@ -139,15 +139,19 @@ class CoTable extends CoEditor {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-                    color: Colors.grey[800],
-                    width: 1,
-                    style: BorderStyle.solid)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(5), topRight: Radius.circular(5)),
             color: Colors.white
                 .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0),
           ),
-          child: Row(children: children));
+          child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          width: 1,
+                          color: Colors.grey[800],
+                          style: BorderStyle.solid))),
+              child: Row(children: children)));
     } else {
       Color backgroundColor = Colors.white
           .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0);
@@ -471,7 +475,6 @@ class CoTable extends CoEditor {
         if (_hasHorizontalScroller) {
           return Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
                   border: Border.all(
                       width: borderWidth,
                       color: UIData.ui_kit_color_2[500].withOpacity(
