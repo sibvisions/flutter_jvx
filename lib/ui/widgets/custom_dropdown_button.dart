@@ -574,25 +574,26 @@ class CustomDropdownButton<T> extends StatefulWidget {
   /// The [elevation] and [iconSize] arguments must not be null (they both have
   /// defaults, so do not need to be specified). The boolean [isDense] and
   /// [isExpanded] arguments must not be null.
-  CustomDropdownButton({
-    Key key,
-    @required this.items,
-    this.value,
-    this.hint,
-    this.disabledHint,
-    @required this.onChanged,
-    this.onOpen,
-    this.elevation = 8,
-    this.style,
-    this.underline,
-    this.icon,
-    this.iconDisabledColor,
-    this.iconEnabledColor,
-    this.iconSize = 24.0,
-    this.isDense = false,
-    this.isExpanded = false,
-    this.editable
-  })  : assert(items == null ||
+  CustomDropdownButton(
+      {Key key,
+      @required this.items,
+      @required this.onDelete,
+      this.value,
+      this.hint,
+      this.disabledHint,
+      @required this.onChanged,
+      this.onOpen,
+      this.elevation = 8,
+      this.style,
+      this.underline,
+      this.icon,
+      this.iconDisabledColor,
+      this.iconEnabledColor,
+      this.iconSize = 24.0,
+      this.isDense = false,
+      this.isExpanded = false,
+      this.editable})
+      : assert(items == null ||
             items.isEmpty ||
             value == null ||
             items
@@ -604,6 +605,8 @@ class CustomDropdownButton<T> extends StatefulWidget {
         assert(isDense != null),
         assert(isExpanded != null),
         super(key: key);
+
+  final void Function() onDelete;
 
   /// The list of items the user can select.
   ///
@@ -899,16 +902,31 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
                     ),
                   ),
                   Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: IconTheme(
-                        data: IconThemeData(
-                          color: _iconColor,
-                          size: widget.iconSize,
+                    flex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: IconTheme(
+                            data: IconThemeData(
+                              color: _iconColor,
+                              size: widget.iconSize,
+                            ),
+                            child: widget.icon ?? defaultIcon,
+                          ),
                         ),
-                        child: widget.icon ?? defaultIcon,
-                      ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        GestureDetector(
+                          onTap: widget.onDelete,
+                          child: IconTheme(
+                            data: IconThemeData(color: Colors.grey, size: 24),
+                            child: Icon(FontAwesomeIcons.timesCircle),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -980,6 +998,7 @@ class DropdownButtonFormField<T> extends FormField<T> {
                     items: items,
                     hint: hint,
                     onChanged: field.didChange,
+                    onDelete: () {},
                   ),
                 ),
               );

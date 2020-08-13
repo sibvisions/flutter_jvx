@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 import '../../model/api/response/data/data_book.dart';
 import '../screen/so_component_data.dart';
 import '../../utils/translations.dart';
@@ -214,25 +215,23 @@ class _LazyDropdownState extends State<LazyDropdown> {
                     padding:
                         const EdgeInsets.only(left: 16, right: 16, top: 10),
                     child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount: itemCount,
-                      itemBuilder: itemBuilder,
-                    ),
+                        controller: _scrollController,
+                        itemCount: itemCount,
+                        itemBuilder: itemBuilder),
                   ),
                 ),
-                ButtonBar(alignment: MainAxisAlignment.end, children: <Widget>[
-                  new FlatButton(
-                    child: Text(
-                        Translations.of(context).text2("Clear").toUpperCase()),
-                    onPressed: _onDelete,
-                  ),
-                  new FlatButton(
-                    child: Text(
-                      Translations.of(context).text2("Cancel").toUpperCase(),
-                    ),
-                    onPressed: _onCancel,
-                  ),
-                ]),
+                ButtonBar(
+                    alignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new FlatButton(
+                        child: Text(
+                          Translations.of(context)
+                              .text2("Cancel")
+                              .toUpperCase(),
+                        ),
+                        onPressed: _onCancel,
+                      ),
+                    ]),
               ],
             ),
           ),

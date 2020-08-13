@@ -155,6 +155,10 @@ class CoLinkedCellEditor extends CoReferencedCellEditor {
                 : Border.all(color: Colors.grey)),
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
+          onDelete: () {
+            this.value = null;
+            onLazyDropDownValueChanged(null);
+          },
           hint: Text(h == null ? "" : h),
           value: v,
           items: this._items,
@@ -199,6 +203,10 @@ class CoLinkedCellEditor extends CoReferencedCellEditor {
           items: this._items,
           onChanged: valueChanged,
           editable: this.editable != null ? this.editable : true,
+          onDelete: () {
+            this.value = null;
+            onLazyDropDownValueChanged(null);
+          },
           onOpen: () {
             this.onFilter(null);
             TextUtils.unfocusCurrentTextfield(context);

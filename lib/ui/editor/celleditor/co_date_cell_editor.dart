@@ -143,10 +143,29 @@ class CoDateCellEditor extends CoCellEditor {
                   ),
                 ),
                 Flexible(
-                  flex: 1,
-                  child: Icon(
-                    FontAwesomeIcons.calendarAlt,
-                    color: Colors.grey[600],
+                  flex: 2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.calendarAlt,
+                        color: Colors.grey[600],
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        child: Icon(
+                          FontAwesomeIcons.timesCircle,
+                          size: 24,
+                          color: Colors.grey,
+                        ),
+                        onTap: () {
+                          this.value = null;
+                          this.onDateValueChanged(this.value);
+                        },
+                      )
+                    ],
                   ),
                 )
               ],

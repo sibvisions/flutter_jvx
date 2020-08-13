@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart' as intl;
 import '../../../utils/so_text_align.dart';
 import '../../../utils/text_utils.dart';
@@ -137,10 +138,26 @@ class CoNumberCellEditor extends CoCellEditor {
       child: TextField(
         textAlign: SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(12),
-          border: InputBorder.none,
-          hintText: placeholderVisible ? placeholder : null,
-        ),
+            contentPadding: EdgeInsets.all(12),
+            border: InputBorder.none,
+            hintText: placeholderVisible ? placeholder : null,
+            suffixIcon: this.editable
+                ? Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (this.value != null) {
+                          this.value = null;
+                          this.valueChanged = true;
+                          super.onValueChanged(this.value);
+                          this.valueChanged = false;
+                        }
+                      },
+                      child: Icon(FontAwesomeIcons.timesCircle,
+                          size: 24, color: Colors.grey),
+                    ),
+                  )
+                : null),
         style: TextStyle(
             color: this.editable
                 ? (this.foreground != null ? this.foreground : Colors.black)
