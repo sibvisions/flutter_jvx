@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../ui/widgets/split_view.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../component/component.dart';
@@ -17,6 +19,8 @@ class CoSplitPanel extends CoContainer implements IContainer {
 
   int dividerPosition;
   int dividerAlignment;
+
+  double currentSplitviewWeight = 0.5;
 
   CoSplitPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
@@ -49,14 +53,30 @@ class CoSplitPanel extends CoContainer implements IContainer {
       widgets.add(Container());
     }
 
-    if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
-      return SingleChildScrollView(
-          child: Wrap(key: componentId, children: widgets));
-    } else {
-      return Column(
-        key: componentId,
-        children: widgets,
+    if (kIsWeb) {
+      return SplitView(
+        initialWeight: currentSplitviewWeight,
+        gripColor: Colors.black,
+        view1: widgets[0],
+        view2: widgets[1],
+        viewMode:
+            (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)
+                ? SplitViewMode.Horizontal
+                : SplitViewMode.Vertical,
+        onWeightChanged: (value) {
+          currentSplitviewWeight = value;
+        },
       );
+    } else {
+      if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
+        return SingleChildScrollView(
+            child: Wrap(key: componentId, children: widgets));
+      } else {
+        return Column(
+          key: componentId,
+          children: widgets,
+        );
+      }
     }
   }
 }
