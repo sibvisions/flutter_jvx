@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import 'i_component.dart';
@@ -9,6 +10,10 @@ class CoLabel extends Component implements IComponent {
 
   CoLabel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoLabel.withCompContext(ComponentContext componentContext) {
+    return CoLabel(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);

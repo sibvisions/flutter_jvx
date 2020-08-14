@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/set_component_value.dart';
 import '../../utils/so_text_align.dart';
@@ -37,6 +38,10 @@ class CoTextArea extends Component implements IComponent {
 
   CoTextArea(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoTextArea.withCompContext(ComponentContext componentContext) {
+    return CoTextArea(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);

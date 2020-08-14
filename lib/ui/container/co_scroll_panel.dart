@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import 'i_container.dart';
 import 'co_container.dart';
 
@@ -16,6 +17,10 @@ class CoScrollPanel extends CoContainer implements IContainer {
   CoScrollPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context) {
     _scrollController.addListener(_scrollListener);
+  }
+
+  factory CoScrollPanel.withCompContext(ComponentContext componentContext) {
+    return CoScrollPanel(componentContext.globalKey, componentContext.context);
   }
 
   _scrollListener() {

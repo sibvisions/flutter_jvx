@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../../utils/text_utils.dart';
-import '../../../model/cell_editor.dart';
+
+import '../../../jvx_flutterclient.dart';
 import '../../../model/api/response/data/data_book.dart';
-import 'co_referenced_cell_editor.dart';
+import '../../../model/cell_editor.dart';
+import '../../../utils/globals.dart' as globals;
+import '../../../utils/text_utils.dart';
+import '../../../utils/uidata.dart';
 import '../../widgets/custom_dropdown_button.dart' as custom;
 import '../../widgets/lazy_dropdown.dart';
-import '../../../utils/uidata.dart';
-import '../../../utils/globals.dart' as globals;
+import 'co_referenced_cell_editor.dart';
 
 class CoLinkedCellEditor extends CoReferencedCellEditor {
   List<DropdownMenuItem> _items = <DropdownMenuItem>[];
@@ -30,6 +32,12 @@ class CoLinkedCellEditor extends CoReferencedCellEditor {
 
   CoLinkedCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context);
+
+  factory CoLinkedCellEditor.withCompContext(
+      ComponentContext componentContext) {
+    return CoLinkedCellEditor(
+        componentContext.cellEditor, componentContext.context);
+  }
 
   void valueChanged(dynamic value) {
     this.value = value;

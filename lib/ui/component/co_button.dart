@@ -3,6 +3,7 @@ import 'dart:convert' as utf8;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import 'package:tinycolor/tinycolor.dart';
 import '../../model/api/request/reload.dart';
 import '../../model/api/request/request.dart';
@@ -22,6 +23,10 @@ class CoButton extends CoActionComponent {
   Widget icon;
 
   CoButton(Key componentId, BuildContext context) : super(componentId, context);
+
+  factory CoButton.withCompContext(ComponentContext componentContext) {
+    return CoButton(componentContext.globalKey, componentContext.context);
+  }
 
   @override
   void updateProperties(ChangedComponent changedComponent) {

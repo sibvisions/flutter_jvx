@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import 'i_container.dart';
 import 'co_container.dart';
 
 class CoPanel extends CoContainer implements IContainer {
   CoPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoPanel.withCompContext(ComponentContext componentContext) {
+    return CoPanel(componentContext.globalKey, componentContext.context);
+  }
 
   /*@override
   get preferredSize {

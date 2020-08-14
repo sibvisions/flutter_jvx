@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../layout/i_alignment_constants.dart';
 import '../../../logic/bloc/api_bloc.dart';
 import '../../../model/api/request/reload.dart';
@@ -66,6 +67,11 @@ class CoImageCellEditor extends CoCellEditor {
         }
       }
     }
+  }
+
+  factory CoImageCellEditor.withCompContext(ComponentContext componentContext) {
+    return CoImageCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   @override

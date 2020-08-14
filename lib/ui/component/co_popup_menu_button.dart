@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../model/api/request/press_button.dart';
 import '../../model/api/request/reload.dart';
 import '../../model/api/request/request.dart';
@@ -41,6 +42,11 @@ class CoPopupMenuButton extends Component implements IComponent {
 
   CoPopupMenuButton(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoPopupMenuButton.withCompContext(ComponentContext componentContext) {
+    return CoPopupMenuButton(
+        componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);

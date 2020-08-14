@@ -99,6 +99,10 @@ class CoTable extends CoEditor {
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
   }
 
+  factory CoTable.withCompContext(ComponentContext componentContext) {
+    return CoTable(componentContext.globalKey, componentContext.context);
+  }
+
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../../utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
@@ -45,6 +46,11 @@ class CoTextCellEditor extends CoCellEditor {
     node.addListener(() {
       if (!node.hasFocus) onTextFieldEndEditing();
     });
+  }
+
+  factory CoTextCellEditor.withCompContext(ComponentContext componentContext) {
+    return CoTextCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   void onTextFieldValueChanged(dynamic newValue) {

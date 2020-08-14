@@ -118,15 +118,21 @@ class _LazyDropdownState extends State<LazyDropdown> {
           child: ListTile(title: Row(children: children)));
     } else {
       return Container(
-          child: Card(
-              color: Colors.white
-                  .withOpacity(globals.applicationStyle.menuOpacity),
-              elevation: 2.0,
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Row(children: children),
-                onTap: () => _onRowTapped(index),
-              )));
+          child: Column(
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Row(children: children),
+            onTap: () => _onRowTapped(index),
+          ),
+          Divider(
+            color: Colors.grey,
+            indent: 10,
+            endIndent: 10,
+            thickness: 0.5,
+          )
+        ],
+      ));
     }
   }
 

@@ -49,5 +49,5 @@ class CustomScreenManager extends ICustomScreenManager {
   }
 
   @override
-  void initScreenManager() {}
+  void init() {}
 }
