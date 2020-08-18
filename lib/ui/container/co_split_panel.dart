@@ -6,6 +6,7 @@ import '../../model/properties/component_properties.dart';
 import '../component/component.dart';
 import 'i_container.dart';
 import 'co_container.dart';
+import '../../utils/globals.dart' as globals;
 
 class CoSplitPanel extends CoContainer implements IContainer {
   /// Constant for horizontal anchors.
@@ -53,7 +54,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
       widgets.add(Container());
     }
 
-    if (kIsWeb) {
+    if (kIsWeb && globals.layoutMode == 'Full') {
       return SplitView(
         initialWeight: currentSplitviewWeight,
         gripColor: Colors.black,
