@@ -1,11 +1,11 @@
 import '../../model/properties/properties.dart';
 
 /// ComponentProperty.SCREEN__TITLE_NEW = screen.titleNew
-/// 
+///
 /// ComponentProperty.SCREEN__TITLE = screen.title
-/// 
+///
 /// ComponentProperty.SCREEN_TITLE = screenTitle
-/// 
+///
 /// ComponentProperty.SCREENTITLE = screentitle
 
 enum ComponentProperty {
@@ -62,7 +62,8 @@ enum ComponentProperty {
   COLUMNS,
   DEFAULT_MENU_ITEM,
   AUTO_RESIZE,
-  EDITABLE
+  EDITABLE,
+  STYLE
 }
 
 class ComponentProperties {
@@ -73,14 +74,17 @@ class ComponentProperties {
   }
 
   bool hasProperty(ComponentProperty property) {
-    return _properties.hasProperty(_properties.propertyAsString(property.toString()));
+    return _properties
+        .hasProperty(_properties.propertyAsString(property.toString()));
   }
 
   void removeProperty(ComponentProperty property) {
-    _properties.removeProperty(_properties.propertyAsString(property.toString()));
+    _properties
+        .removeProperty(_properties.propertyAsString(property.toString()));
   }
 
   T getProperty<T>(ComponentProperty property, [T defaultValue]) {
-    return _properties.getProperty<T>(_properties.propertyAsString(property.toString()), defaultValue);
+    return _properties.getProperty<T>(
+        _properties.propertyAsString(property.toString()), defaultValue);
   }
 }
