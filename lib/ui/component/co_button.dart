@@ -21,6 +21,7 @@ import '../../utils/globals.dart' as globals;
 class CoButton extends CoActionComponent {
   String text = "";
   Widget icon;
+  String textStyle;
 
   CoButton(Key componentId, BuildContext context) : super(componentId, context);
 
@@ -32,6 +33,9 @@ class CoButton extends CoActionComponent {
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
     text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    textStyle = changedComponent.getProperty<String>(
+        ComponentProperty.STYLE, textStyle);
+
     String image =
         changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
@@ -97,6 +101,9 @@ class CoButton extends CoActionComponent {
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
         style: TextStyle(
+            decoration: textStyle == 'hyperlink'
+                ? TextDecoration.underline
+                : TextDecoration.none,
             fontSize: style.fontSize,
             color: !this.enabled
                 ? Colors.grey.shade500
