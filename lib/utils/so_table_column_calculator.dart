@@ -116,8 +116,10 @@ class SoTableColumnCalculator {
         sumFlexColumnWidth / (containerWidth - sumFixedColumnWidth);
 
     while (moreFlexAvailable &&
-        containerWidth < getColumnWidthSum(columns) &&
-        flexReduceFactor > 1.0) {
+        ((containerWidth < getColumnWidthSum(columns) &&
+                flexReduceFactor > 1.0) ||
+            (containerWidth > getColumnWidthSum(columns) &&
+                flexReduceFactor > 0.0))) {
       moreFlexAvailable = false;
 
       for (int i = 0; i < columns.length; i++) {
