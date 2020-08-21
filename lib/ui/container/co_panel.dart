@@ -31,7 +31,10 @@ class CoPanel extends CoContainer implements IContainer {
 
     if (child != null) {
       return Container(key: componentId, color: this.background, child: child);
-
+      // return Container(
+      //   color: this.background,
+      //   child: child,
+      // );
 /*         return Container(
             key: componentId,
             color: this.background, 

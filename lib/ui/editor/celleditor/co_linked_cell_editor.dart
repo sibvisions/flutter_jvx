@@ -221,6 +221,7 @@ class CoLinkedCellEditor extends CoReferencedCellEditor {
             showDialog(
                 context: context,
                 builder: (context) => LazyDropdown(
+                    editable: this.editable,
                     data: this.data,
                     context: context,
                     displayColumnNames: dropDownColumnNames,

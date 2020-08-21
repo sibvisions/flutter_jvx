@@ -19,11 +19,13 @@ class LazyDropdown extends StatefulWidget {
   final double fetchMoreYOffset;
   final SoComponentData data;
   final List<String> displayColumnNames;
+  final bool editable;
 
   LazyDropdown(
       {@required this.allowNull,
       @required this.context,
       @required this.data,
+      this.editable,
       this.displayColumnNames,
       this.onSave,
       this.onCancel,
@@ -170,7 +172,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
         CoTable(GlobalKey(debugLabel: "LinkedCellEditorTable"), widget.context);
     table.data = widget.data;
     table.tableHeaderVisible = false;
-    table.editable = false;
+    table.editable = widget.editable ?? false;
     table.autoResize = true;
     table.columnNames = widget.displayColumnNames;
     table.onRowTapped = _onRowTapped;

@@ -41,10 +41,9 @@ class CoScrollPanel extends CoContainer implements IContainer {
         builder: (BuildContext context, BoxConstraints constraints) {
       this.constr = constraints;
 
-      /*return SingleChildScrollView(
-          key: this.componentId,
-          child: Container(color: this.background, child: child));
-*/
+      // return SingleChildScrollView(
+      //     key: this.componentId,
+      //     child: Container(color: this.background, child: child));
       return Container(
           color: this.background,
           child: SingleChildScrollView(

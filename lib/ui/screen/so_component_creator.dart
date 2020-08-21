@@ -106,7 +106,8 @@ class SoComponentCreator implements IComponentCreator {
     if (changedComponent?.className?.isNotEmpty ?? true) {
       if (changedComponent.className == 'Editor') {
         component = _createEditor(changedComponent);
-      } else if (changedComponent.className == null) {
+      } else if (changedComponent.className == null ||
+          this.standardComponents[changedComponent.className] == null) {
         component = _createDefaultComponent(changedComponent);
       } else {
         component = this.standardComponents[changedComponent.className](
