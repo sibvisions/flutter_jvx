@@ -11,6 +11,7 @@ import '../../ui/widgets/login_background.dart';
 import '../../ui/widgets/login_widget.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
+import 'menu_arguments.dart';
 import 'menu_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -84,11 +85,8 @@ class LoginPageState extends State<LoginPage> {
               Menu menu = state.menu;
 
               if (menu != null)
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    settings: RouteSettings(name: '/Menu'),
-                    builder: (_) => MenuPage(
-                          menuItems: menu.items,
-                        )));
+                Navigator.of(context).pushReplacementNamed('/menu',
+                    arguments: MenuArguments(menu.items, true));
             }
           },
           child: loginScaffold(),

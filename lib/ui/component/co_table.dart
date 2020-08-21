@@ -49,6 +49,7 @@ class CoTable extends CoEditor {
   SoComponentCreator componentCreator;
   bool autoResize = false;
   bool _hasHorizontalScroller = false;
+  Function(int index) onRowTapped;
 
   TextStyle get headerStyleMandatory {
     return this.headerTextStyle;
@@ -135,7 +136,11 @@ class CoTable extends CoEditor {
   }
 
   void _onRowTapped(int index) {
-    data.selectRecord(context, index);
+    if (this.onRowTapped == null) {
+      data.selectRecord(context, index);
+    } else {
+      this.onRowTapped(index);
+    }
   }
 
   Widget getTableRow(
