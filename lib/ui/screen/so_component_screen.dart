@@ -19,7 +19,7 @@ class SoComponentScreen with SoDataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
   Map<String, IComponent> additionalComponents = <String, IComponent>{};
-  bool debug = false;
+  bool debug = true;
   IComponent headerComponent;
   IComponent footerComponent;
 

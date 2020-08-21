@@ -53,7 +53,9 @@ class CoScrollPanel extends CoContainer implements IContainer {
                 parentConstraints: constraints,
                 children: [
                   CoScrollPanelLayoutId(
-                      parentConstraints: constraints, child: child)
+                      key: ValueKey(this.key),
+                      parentConstraints: constraints,
+                      child: child)
                 ],
               )));
     });
