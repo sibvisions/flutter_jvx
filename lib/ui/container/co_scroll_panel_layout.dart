@@ -73,13 +73,13 @@ class RenderScrollPanelLayout extends RenderBox
           parentConstraints.maxHeight != double.infinity) {
         double maxHeight = parentConstraints.maxHeight;
 
-        /*child.layout(
+        child.layout(
             BoxConstraints(
                 minWidth: this.parentConstraints.minWidth,
                 maxWidth: this.parentConstraints.maxWidth,
                 minHeight: maxHeight,
                 maxHeight: maxHeight),
-            parentUsesSize: true);*/
+            parentUsesSize: true);
       }
 
       final MultiChildLayoutParentData childParentData = child.parentData;
