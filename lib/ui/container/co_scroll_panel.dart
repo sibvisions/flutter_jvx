@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/container/co_scroll_panel_layout.dart';
 import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import 'i_container.dart';
 import 'co_container.dart';
 
 class CoScrollPanel extends CoContainer implements IContainer {
+  Key key = GlobalKey();
   ScrollController _scrollController = ScrollController();
   double _scrollOffset = 0;
   BoxConstraints constr;
@@ -38,9 +40,23 @@ class CoScrollPanel extends CoContainer implements IContainer {
     Widget widget = new LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       this.constr = constraints;
-      return SingleChildScrollView(
+
+      /*return SingleChildScrollView(
           key: this.componentId,
           child: Container(color: this.background, child: child));
+*/
+      return Container(
+          color: this.background,
+          child: SingleChildScrollView(
+              key: this.componentId,
+              child: CoScrollPanelLayout(
+                key: this.key,
+                parentConstraints: constraints,
+                children: [
+                  CoScrollPanelLayoutId(
+                      parentConstraints: constraints, child: child)
+                ],
+              )));
     });
 
     if (child != null) {
