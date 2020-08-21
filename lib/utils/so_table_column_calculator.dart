@@ -27,13 +27,24 @@ class SoTableColumnCalculator {
     if (containerWidth != null) containerWidth -= (borderWidth * 2);
 
     // get preferred header widths
-    columnLabels.forEach((l) {
-      double textWidth = TextUtils.getTextWidth(l, textStyle) + headerPadding;
-      columns.add(SoTableColumn(textWidth + headerPadding, defaultMinWidh));
-    });
+
+    if (columnLabels.length > 0) {
+      columnLabels.forEach((l) {
+        double textWidth = TextUtils.getTextWidth(l, textStyle) + headerPadding;
+        columns.add(SoTableColumn(textWidth + headerPadding, defaultMinWidh));
+      });
+    } else {
+      columns.add(SoTableColumn(
+          TextUtils.getTextWidth('User', textStyle) + headerPadding,
+          defaultMinWidh));
+
+      columns.add(SoTableColumn(
+          TextUtils.getTextWidth('Active', textStyle) + headerPadding,
+          defaultMinWidh));
+    }
 
     // get preferred data widths
-    if (componentData.data.records != null) {
+    if (componentData?.data?.records != null) {
       if (componentData.data.records.length < calculateForRecordCount)
         calculateForRecordCount = componentData.data.records.length;
 
@@ -88,7 +99,7 @@ class SoTableColumnCalculator {
       itemHeight = textHeight + itemPadding;
     }
 
-    if (componentData.data.records != null &&
+    if (componentData?.data?.records != null &&
         componentData.data.records.length > calculateForRecordCount) {
       recordCount = componentData.data.records.length;
     }

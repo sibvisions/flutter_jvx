@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 import '../../model/api/response/data/data_book.dart';
 import '../screen/so_component_data.dart';
@@ -120,10 +121,12 @@ class _LazyDropdownState extends State<LazyDropdown> {
       return Container(
           child: Column(
         children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Row(children: children),
+          GestureDetector(
             onTap: () => _onRowTapped(index),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Row(children: children),
+            ),
           ),
           Divider(
             color: Colors.grey,
@@ -162,6 +165,15 @@ class _LazyDropdownState extends State<LazyDropdown> {
     int itemCount = 0;
     DataBook data = widget.data.data;
     if (data != null && data.records != null) itemCount = data.records.length;
+
+    CoTable table =
+        CoTable(GlobalKey(debugLabel: "LinkedCellEditorTable"), widget.context);
+    table.data = widget.data;
+    table.tableHeaderVisible = false;
+    table.editable = false;
+    table.autoResize = true;
+    table.columnNames = widget.displayColumnNames;
+    table.onRowTapped = _onRowTapped;
 
     return Dialog(
         insetPadding: EdgeInsets.fromLTRB(25, 25, 25, 25),
@@ -218,13 +230,14 @@ class _LazyDropdownState extends State<LazyDropdown> {
                         ))),
                 Expanded(
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 10),
-                    child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: itemCount,
-                        itemBuilder: itemBuilder),
-                  ),
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 10),
+                      // child: ListView.builder(
+                      //   controller: _scrollController,
+                      //   itemCount: itemCount,
+                      //   itemBuilder: itemBuilder,
+                      // ),
+                      child: table.getWidget()),
                 ),
                 ButtonBar(
                     alignment: MainAxisAlignment.center,

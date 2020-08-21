@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/page/menu_arguments.dart';
+import 'package:jvx_flutterclient/ui/page/open_screen_page.dart';
+import 'package:jvx_flutterclient/ui/page/screen_arguments.dart';
+import 'ui/page/menu_page.dart';
 import 'utils/shared_preferences_helper.dart';
 import 'utils/text_utils.dart';
 import 'ui/page/settings_page.dart';
@@ -52,6 +56,29 @@ class MobileApp extends StatelessWidget {
                     globals.baseUrl, globals.language, globals.uploadPicWidth);
                 SharedPreferencesHelper()
                     .setLoginData(globals.username, globals.password);
+              }
+
+              switch (settings.name) {
+                case '/menu':
+                  MenuArguments menuArguments = settings.arguments;
+                  return MaterialPageRoute(
+                      builder: (_) => MenuPage(
+                            listMenuItemsInDrawer:
+                                menuArguments.listMenuItemsInDrawer,
+                            menuItems: menuArguments.menuItems,
+                          ));
+                case '/screen':
+                  ScreenArguments screenArguments = settings.arguments;
+                  return MaterialPageRoute(
+                      builder: (_) => OpenScreenPage(
+                            componentId: screenArguments.componentId,
+                            items: screenArguments.items,
+                            menuComponentId: screenArguments.menuComponentId,
+                            request: screenArguments.request,
+                            responseData: screenArguments.responseData,
+                            templateName: screenArguments.templateName,
+                            title: screenArguments.title,
+                          ));
               }
 
               return null;

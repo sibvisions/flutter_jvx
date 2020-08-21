@@ -1,3 +1,4 @@
+import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
 import 'package:jvx_flutterclient/ui/editor/celleditor/co_cell_editor.dart';
 
 import '../component/co_menu_item.dart';
@@ -105,6 +106,8 @@ class SoComponentCreator implements IComponentCreator {
     if (changedComponent?.className?.isNotEmpty ?? true) {
       if (changedComponent.className == 'Editor') {
         component = _createEditor(changedComponent);
+      } else if (changedComponent.className == null) {
+        component = _createDefaultComponent(changedComponent);
       } else {
         component = this.standardComponents[changedComponent.className](
             ComponentContext(
