@@ -135,23 +135,26 @@ class CoButton extends CoActionComponent {
     }
 
     return Container(
-        margin: EdgeInsets.fromLTRB(15, 15, 15, 20),
+        margin: EdgeInsets.all(4),
         child: ButtonTheme(
             minWidth: minWidth,
             padding: padding,
+            layoutBehavior: ButtonBarLayoutBehavior.constrained,
             shape: globals.applicationStyle?.buttonShape ?? null,
-            child: RaisedButton(
-              key: this.componentId,
-              onPressed: this.enabled ? buttonPressed : null,
-              color: this.background != null
-                  ? this.background
-                  : UIData.ui_kit_color_2[600],
-              elevation: 10,
-              disabledColor: Colors.grey.shade300,
-              child: child,
-              splashColor: this.background != null
-                  ? TinyColor(this.background).darken().color
-                  : UIData.ui_kit_color_2[700],
-            )));
+            child: SizedBox(
+                height: 40,
+                child: RaisedButton(
+                  key: this.componentId,
+                  onPressed: this.enabled ? buttonPressed : null,
+                  color: this.background != null
+                      ? this.background
+                      : UIData.ui_kit_color_2[600],
+                  elevation: 2,
+                  disabledColor: Colors.grey.shade300,
+                  child: child,
+                  splashColor: this.background != null
+                      ? TinyColor(this.background).darken().color
+                      : UIData.ui_kit_color_2[700],
+                ))));
   }
 }
