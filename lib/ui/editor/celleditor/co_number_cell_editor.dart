@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../../utils/so_text_align.dart';
 import '../../../utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
@@ -56,6 +57,12 @@ class CoNumberCellEditor extends CoCellEditor {
 
     textInputFormatter = this.getImputFormatter();
     textInputType = this.getKeyboardType();
+  }
+
+  factory CoNumberCellEditor.withCompContext(
+      ComponentContext componentContext) {
+    return CoNumberCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   void onTextFieldValueChanged(dynamic newValue) {

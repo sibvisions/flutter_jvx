@@ -26,6 +26,10 @@ class CoSplitPanel extends CoContainer implements IContainer {
   CoSplitPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
 
+  factory CoSplitPanel.withCompContext(ComponentContext componentContext) {
+    return CoSplitPanel(componentContext.globalKey, componentContext.context);
+  }
+
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
     dividerPosition =

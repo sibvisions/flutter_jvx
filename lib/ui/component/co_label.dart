@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import 'i_component.dart';
@@ -9,6 +10,10 @@ class CoLabel extends Component implements IComponent {
 
   CoLabel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoLabel.withCompContext(ComponentContext componentContext) {
+    return CoLabel(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);
@@ -65,22 +70,32 @@ class CoLabel extends Component implements IComponent {
 
   @override
   Widget getWidget() {
-    return SizedBox(
-        key: componentId,
-        child: Container(
-          padding: EdgeInsets.only(top: 0.5),
-          color: this.background,
-          child: Align(
-            alignment:
-                getLabelAlignment(horizontalAlignment, verticalAlignment),
-            child: Baseline(
-                baselineType: TextBaseline.alphabetic,
-                baseline: getBaseline(),
-                child: Text(
-                  text,
-                  style: style,
-                )),
-          ),
-        ));
+    TextOverflow overflow;
+
+    if (this.isMaximumSizeSet) overflow = TextOverflow.ellipsis;
+
+    Widget child = Container(
+      padding: EdgeInsets.only(top: 0.5),
+      color: this.background,
+      child: Align(
+        alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
+        child: Baseline(
+            baselineType: TextBaseline.alphabetic,
+            baseline: getBaseline(),
+            child: Text(
+              text,
+              style: style,
+              overflow: overflow,
+            )),
+      ),
+    );
+
+    if (this.isMaximumSizeSet) {
+      return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: this.maximumSize.width),
+          child: child);
+    } else {
+      return SizedBox(key: componentId, child: child);
+    }
   }
 }

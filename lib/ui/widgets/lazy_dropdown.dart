@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 import '../../model/api/response/data/data_book.dart';
 import '../screen/so_component_data.dart';
@@ -18,11 +19,13 @@ class LazyDropdown extends StatefulWidget {
   final double fetchMoreYOffset;
   final SoComponentData data;
   final List<String> displayColumnNames;
+  final bool editable;
 
   LazyDropdown(
       {@required this.allowNull,
       @required this.context,
       @required this.data,
+      this.editable,
       this.displayColumnNames,
       this.onSave,
       this.onCancel,
@@ -118,15 +121,23 @@ class _LazyDropdownState extends State<LazyDropdown> {
           child: ListTile(title: Row(children: children)));
     } else {
       return Container(
-          child: Card(
-              color: Colors.white
-                  .withOpacity(globals.applicationStyle.menuOpacity),
-              elevation: 2.0,
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Row(children: children),
-                onTap: () => _onRowTapped(index),
-              )));
+          child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => _onRowTapped(index),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Row(children: children),
+            ),
+          ),
+          Divider(
+            color: Colors.grey,
+            indent: 10,
+            endIndent: 10,
+            thickness: 0.5,
+          )
+        ],
+      ));
     }
   }
 
@@ -156,6 +167,15 @@ class _LazyDropdownState extends State<LazyDropdown> {
     int itemCount = 0;
     DataBook data = widget.data.data;
     if (data != null && data.records != null) itemCount = data.records.length;
+
+    CoTable table =
+        CoTable(GlobalKey(debugLabel: "LinkedCellEditorTable"), widget.context);
+    table.data = widget.data;
+    table.tableHeaderVisible = false;
+    table.editable = widget.editable ?? false;
+    table.autoResize = true;
+    table.columnNames = widget.displayColumnNames;
+    table.onRowTapped = _onRowTapped;
 
     return Dialog(
         insetPadding: EdgeInsets.fromLTRB(25, 25, 25, 25),
@@ -212,13 +232,14 @@ class _LazyDropdownState extends State<LazyDropdown> {
                         ))),
                 Expanded(
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 10),
-                    child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: itemCount,
-                        itemBuilder: itemBuilder),
-                  ),
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, top: 10),
+                      // child: ListView.builder(
+                      //   controller: _scrollController,
+                      //   itemCount: itemCount,
+                      //   itemBuilder: itemBuilder,
+                      // ),
+                      child: table.getWidget()),
                 ),
                 ButtonBar(
                     alignment: MainAxisAlignment.center,

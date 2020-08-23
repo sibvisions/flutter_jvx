@@ -9,7 +9,7 @@ abstract class ICustomScreenManager {
   /// Will be called before [getScreen] is called.
   ///
   /// The method is for registering all kinds of screens
-  void initScreenManager();
+  void init();
 
   /// Returns an [IScreen] with the given [componentId].
   ///

@@ -3,6 +3,7 @@ import 'dart:convert' as utf8;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import 'package:tinycolor/tinycolor.dart';
 import '../../model/api/request/reload.dart';
 import '../../model/api/request/request.dart';
@@ -20,13 +21,21 @@ import '../../utils/globals.dart' as globals;
 class CoButton extends CoActionComponent {
   String text = "";
   Widget icon;
+  String textStyle;
 
   CoButton(Key componentId, BuildContext context) : super(componentId, context);
+
+  factory CoButton.withCompContext(ComponentContext componentContext) {
+    return CoButton(componentContext.globalKey, componentContext.context);
+  }
 
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
     text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    textStyle = changedComponent.getProperty<String>(
+        ComponentProperty.STYLE, textStyle);
+
     String image =
         changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
@@ -92,6 +101,9 @@ class CoButton extends CoActionComponent {
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
         style: TextStyle(
+            decoration: textStyle == 'hyperlink'
+                ? TextDecoration.underline
+                : TextDecoration.none,
             fontSize: style.fontSize,
             color: !this.enabled
                 ? Colors.grey.shade500
@@ -122,22 +134,27 @@ class CoButton extends CoActionComponent {
       minWidth = this.preferredSize.width;
     }
 
-    return ButtonTheme(
-        minWidth: minWidth,
-        padding: padding,
-        shape: globals.applicationStyle?.buttonShape ?? null,
-        child: RaisedButton(
-          key: this.componentId,
-          onPressed: this.enabled ? buttonPressed : null,
-          color: this.background != null
-              ? this.background
-              : UIData.ui_kit_color_2[600],
-          elevation: 10,
-          disabledColor: Colors.grey.shade300,
-          child: child,
-          splashColor: this.background != null
-              ? TinyColor(this.background).darken().color
-              : UIData.ui_kit_color_2[700],
-        ));
+    return Container(
+        margin: EdgeInsets.all(4),
+        child: ButtonTheme(
+            minWidth: minWidth,
+            padding: padding,
+            layoutBehavior: ButtonBarLayoutBehavior.constrained,
+            shape: globals.applicationStyle?.buttonShape ?? null,
+            child: SizedBox(
+                height: 40,
+                child: RaisedButton(
+                  key: this.componentId,
+                  onPressed: this.enabled ? buttonPressed : null,
+                  color: this.background != null
+                      ? this.background
+                      : UIData.ui_kit_color_2[600],
+                  elevation: 2,
+                  disabledColor: Colors.grey.shade300,
+                  child: child,
+                  splashColor: this.background != null
+                      ? TinyColor(this.background).darken().color
+                      : UIData.ui_kit_color_2[700],
+                ))));
   }
 }

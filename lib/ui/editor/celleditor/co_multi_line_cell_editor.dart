@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/api/response/data/data_book.dart';
 import 'co_referenced_cell_editor.dart';
@@ -11,6 +12,12 @@ class CoMultiLineCellEditor extends CoReferencedCellEditor {
 
   CoMultiLineCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context);
+
+  factory CoMultiLineCellEditor.withCompContext(
+      ComponentContext componentContext) {
+    return CoMultiLineCellEditor(
+        componentContext.cellEditor, componentContext.context);
+  }
 
   void valueChanged(dynamic value) {
     this.value = value;

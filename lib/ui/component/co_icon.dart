@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../layout/i_alignment_constants.dart';
 import '../widgets/custom_icon.dart';
 import '../../logic/bloc/api_bloc.dart';
@@ -18,6 +19,10 @@ class CoIcon extends Component implements IComponent {
 
   CoIcon(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoIcon.withCompContext(ComponentContext componentContext) {
+    return CoIcon(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);

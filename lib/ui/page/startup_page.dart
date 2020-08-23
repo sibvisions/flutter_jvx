@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:jvx_flutterclient/ui/page/menu_arguments.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../logic/bloc/theme_bloc.dart';
@@ -276,11 +277,8 @@ class _StartupPageState extends State<StartupPage> {
         }
       }
 
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          settings: RouteSettings(name: '/Menu'),
-          builder: (_) => MenuPage(
-                menuItems: state.menu.items,
-              )));
+      Navigator.of(context).pushReplacementNamed('/menu',
+          arguments: MenuArguments(state.menu.items, true));
     }
   }
 
@@ -327,11 +325,8 @@ class _StartupPageState extends State<StartupPage> {
           globals.roles = state.userData.roles;
         }
       }
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          settings: RouteSettings(name: '/Menu'),
-          builder: (_) => MenuPage(
-                menuItems: menu.items,
-              )));
+      Navigator.of(context).pushReplacementNamed('/menu',
+          arguments: MenuArguments(menu.items, true));
     }
   }
 

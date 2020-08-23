@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import 'i_component.dart';
@@ -10,6 +11,10 @@ class CoMenuItem extends Component implements IComponent {
 
   CoMenuItem(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoMenuItem.withCompContext(ComponentContext componentContext) {
+    return CoMenuItem(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);

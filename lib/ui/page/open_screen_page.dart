@@ -30,6 +30,7 @@ import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
+import 'menu_arguments.dart';
 
 class OpenScreenPage extends StatefulWidget {
   final String title;
@@ -98,11 +99,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
             if (state.requestType == RequestType.CLOSE_SCREEN) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  settings: RouteSettings(name: '/Menu'),
-                  builder: (_) => MenuPage(
-                        menuItems: globals.items,
-                      )));
+              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //     settings: RouteSettings(name: '/Menu'),
+              //     builder: (_) => MenuPage(
+              //           menuItems: globals.items,
+              //         )));
+
+              Navigator.of(context).pushReplacementNamed('/menu',
+                  arguments: MenuArguments(globals.items, true));
             } else {
               print("*** OpenScreenPage - RequestType: " +
                   state.requestType.toString());
@@ -142,11 +146,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     });
                   } else if (state.closeScreenAction != null &&
                       state.responseData.screenGeneric == null) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        settings: RouteSettings(name: '/Menu'),
-                        builder: (_) => MenuPage(
-                              menuItems: globals.items,
-                            )));
+                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //     settings: RouteSettings(name: '/Menu'),
+                    //     builder: (_) => MenuPage(
+                    //           menuItems: globals.items,
+                    //         )));
+
+                    Navigator.of(context).pushReplacementNamed('/menu',
+                        arguments: MenuArguments(globals.items, true));
                   }
                 }
 
@@ -177,11 +184,14 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
                 if (state.requestType == RequestType.NAVIGATION &&
                     state.responseData.screenGeneric == null) {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      settings: RouteSettings(name: '/Menu'),
-                      builder: (_) => MenuPage(
-                            menuItems: globals.items,
-                          )));
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //     settings: RouteSettings(name: '/Menu'),
+                  //     builder: (_) => MenuPage(
+                  //           menuItems: globals.items,
+                  //         )));
+
+                  Navigator.of(context).pushReplacementNamed('/menu',
+                      arguments: MenuArguments(globals.items, true));
                 }
 
                 screen.componentScreen.context = context;

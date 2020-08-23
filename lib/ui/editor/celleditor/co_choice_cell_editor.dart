@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/choice_cell_editor_image.dart';
 import '../../../model/properties/cell_editor_properties.dart';
@@ -35,6 +36,12 @@ class CoChoiceCellEditor extends CoCellEditor {
 
     defaultImage = loadImage(defaultImageName);
     loadImages();
+  }
+
+  factory CoChoiceCellEditor.withCompContext(
+      ComponentContext componentContext) {
+    return CoChoiceCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   void valueChanged(dynamic value) {

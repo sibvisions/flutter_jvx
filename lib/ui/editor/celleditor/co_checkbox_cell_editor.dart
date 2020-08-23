@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../layout/i_alignment_constants.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
@@ -16,6 +17,12 @@ class CoCheckboxCellEditor extends CoCellEditor {
     deselectedValue = changedCellEditor.getProperty<dynamic>(
         CellEditorProperty.DESELECTED_VALUE, deselectedValue);
     text = changedCellEditor.getProperty<String>(CellEditorProperty.TEXT, text);
+  }
+
+  factory CoCheckboxCellEditor.withCompContext(
+      ComponentContext componentContext) {
+    return CoCheckboxCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   void valueChanged(dynamic value) {

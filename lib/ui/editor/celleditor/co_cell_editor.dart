@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 
 import '../../../model/cell_editor.dart';
 import '../../../model/popup_size.dart';

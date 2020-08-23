@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/column_view.dart';
 import '../../../model/link_reference.dart';
@@ -14,6 +15,12 @@ class CoReferencedCellEditor extends CoCellEditor {
       : super(changedCellEditor, context) {
     linkReference = changedCellEditor.linkReference;
     columnView = changedCellEditor.columnView;
+  }
+
+  factory CoReferencedCellEditor.withCompContext(
+      ComponentContext componentContext) {
+    return CoReferencedCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   SoComponentData get data => _data;

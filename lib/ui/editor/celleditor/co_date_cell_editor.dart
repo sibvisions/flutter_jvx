@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../../utils/text_utils.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
@@ -44,6 +45,11 @@ class CoDateCellEditor extends CoCellEditor {
       : super(changedCellEditor, context) {
     dateFormat =
         changedCellEditor.getProperty<String>(CellEditorProperty.DATE_FORMAT);
+  }
+
+  factory CoDateCellEditor.withCompContext(ComponentContext componentContext) {
+    return CoDateCellEditor(
+        componentContext.cellEditor, componentContext.context);
   }
 
   void onDateValueChanged(dynamic value) {

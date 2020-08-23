@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import 'i_container.dart';
@@ -10,6 +11,10 @@ class CoGroupPanel extends CoContainer implements IContainer {
 
   CoGroupPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoGroupPanel.withCompContext(ComponentContext componentContext) {
+    return CoGroupPanel(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedcomponent) {
     super.updateProperties(changedcomponent);

@@ -1,3 +1,4 @@
+import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
 import 'package:jvx_flutterclient/ui/editor/celleditor/co_cell_editor.dart';
 
 import '../component/co_menu_item.dart';
@@ -44,55 +45,51 @@ class SoComponentCreator implements IComponentCreator {
   Map<String, Object Function(ComponentContext componentContext)>
       standardComponents = {
     'Panel': (ComponentContext componentContext) =>
-        CoPanel(componentContext.globalKey, componentContext.context),
+        CoPanel.withCompContext(componentContext),
     'GroupPanel': (ComponentContext componentContext) =>
-        CoGroupPanel(componentContext.globalKey, componentContext.context),
+        CoGroupPanel.withCompContext(componentContext),
     'ScrollPanel': (ComponentContext componentContext) =>
-        CoScrollPanel(componentContext.globalKey, componentContext.context),
+        CoScrollPanel.withCompContext(componentContext),
     'SplitPanel': (ComponentContext componentContext) =>
-        CoSplitPanel(componentContext.globalKey, componentContext.context),
+        CoSplitPanel.withCompContext(componentContext),
     'Label': (ComponentContext componentContext) =>
-        CoLabel(componentContext.globalKey, componentContext.context),
+        CoLabel.withCompContext(componentContext),
     'Button': (ComponentContext componentContext) =>
-        CoButton(componentContext.globalKey, componentContext.context),
+        CoButton.withCompContext(componentContext),
     'Table': (ComponentContext componentContext) =>
-        CoTable(componentContext.globalKey, componentContext.context),
+        CoTable.withCompContext(componentContext),
     'CheckBox': (ComponentContext componentContext) =>
-        CoCheckbox(componentContext.globalKey, componentContext.context),
+        CoCheckbox.withCompContext(componentContext),
     'RadioButton': (ComponentContext componentContext) =>
-        CoRadioButton(componentContext.globalKey, componentContext.context),
+        CoRadioButton.withCompContext(componentContext),
     'PopupMenuButton': (ComponentContext componentContext) =>
-        CoPopupMenuButton(componentContext.globalKey, componentContext.context),
+        CoPopupMenuButton.withCompContext(componentContext),
     'TextField': (ComponentContext componentContext) =>
-        CoTextField(componentContext.globalKey, componentContext.context),
+        CoTextField.withCompContext(componentContext),
     'PasswordField': (ComponentContext componentContext) =>
-        CoPasswordField(componentContext.globalKey, componentContext.context),
+        CoPasswordField.withCompContext(componentContext),
     'TextArea': (ComponentContext componentContext) =>
-        CoTextArea(componentContext.globalKey, componentContext.context),
+        CoTextArea.withCompContext(componentContext),
     'Icon': (ComponentContext componentContext) =>
-        CoIcon(componentContext.globalKey, componentContext.context),
+        CoIcon.withCompContext(componentContext),
     'PopupMenu': (ComponentContext componentContext) =>
-        CoPopupMenu(componentContext.globalKey, componentContext.context),
+        CoPopupMenu.withCompContext(componentContext),
     'MenuItem': (ComponentContext componentContext) =>
-        CoMenuItem(componentContext.globalKey, componentContext.context),
+        CoMenuItem.withCompContext(componentContext),
     'TextCellEditor': (ComponentContext componentContext) =>
-        CoTextCellEditor(componentContext.cellEditor, componentContext.context),
+        CoTextCellEditor.withCompContext(componentContext),
     'NumberCellEditor': (ComponentContext componentContext) =>
-        CoNumberCellEditor(
-            componentContext.cellEditor, componentContext.context),
+        CoNumberCellEditor.withCompContext(componentContext),
     'LinkedCellEditor': (ComponentContext componentContext) =>
-        CoLinkedCellEditor(
-            componentContext.cellEditor, componentContext.context),
+        CoLinkedCellEditor.withCompContext(componentContext),
     'DateCellEditor': (ComponentContext componentContext) =>
-        CoDateCellEditor(componentContext.cellEditor, componentContext.context),
-    'ImageViewer': (ComponentContext componentContext) => CoImageCellEditor(
-        componentContext.cellEditor, componentContext.context),
+        CoDateCellEditor.withCompContext(componentContext),
+    'ImageViewer': (ComponentContext componentContext) =>
+        CoImageCellEditor.withCompContext(componentContext),
     'ChoiceCellEditor': (ComponentContext componentContext) =>
-        CoChoiceCellEditor(
-            componentContext.cellEditor, componentContext.context),
+        CoChoiceCellEditor.withCompContext(componentContext),
     'CheckBoxCellEditor': (ComponentContext componentContext) =>
-        CoCheckboxCellEditor(
-            componentContext.cellEditor, componentContext.context),
+        CoCheckboxCellEditor.withCompContext(componentContext),
   };
 
   SoComponentCreator([this.context]);
@@ -109,6 +106,9 @@ class SoComponentCreator implements IComponentCreator {
     if (changedComponent?.className?.isNotEmpty ?? true) {
       if (changedComponent.className == 'Editor') {
         component = _createEditor(changedComponent);
+      } else if (changedComponent.className == null ||
+          this.standardComponents[changedComponent.className] == null) {
+        component = _createDefaultComponent(changedComponent);
       } else {
         component = this.standardComponents[changedComponent.className](
             ComponentContext(

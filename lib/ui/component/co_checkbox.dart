@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../layout/i_alignment_constants.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/set_component_value.dart';
@@ -15,6 +16,10 @@ class CoCheckbox extends Component implements IComponent {
 
   CoCheckbox(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
+
+  factory CoCheckbox.withCompContext(ComponentContext componentContext) {
+    return CoCheckbox(componentContext.globalKey, componentContext.context);
+  }
 
   void updateProperties(ChangedComponent changedProperties) {
     super.updateProperties(changedProperties);
