@@ -70,22 +70,32 @@ class CoLabel extends Component implements IComponent {
 
   @override
   Widget getWidget() {
-    return SizedBox(
-        key: componentId,
-        child: Container(
-          padding: EdgeInsets.only(top: 0.5),
-          color: this.background,
-          child: Align(
-            alignment:
-                getLabelAlignment(horizontalAlignment, verticalAlignment),
-            child: Baseline(
-                baselineType: TextBaseline.alphabetic,
-                baseline: getBaseline(),
-                child: Text(
-                  text,
-                  style: style,
-                )),
-          ),
-        ));
+    TextOverflow overflow;
+
+    if (this.isMaximumSizeSet) overflow = TextOverflow.ellipsis;
+
+    Widget child = Container(
+      padding: EdgeInsets.only(top: 0.5),
+      color: this.background,
+      child: Align(
+        alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
+        child: Baseline(
+            baselineType: TextBaseline.alphabetic,
+            baseline: getBaseline(),
+            child: Text(
+              text,
+              style: style,
+              overflow: overflow,
+            )),
+      ),
+    );
+
+    if (this.isMaximumSizeSet) {
+      return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: this.maximumSize.width),
+          child: child);
+    } else {
+      return SizedBox(key: componentId, child: child);
+    }
   }
 }
