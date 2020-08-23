@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../ui/screen/so_component_creator.dart';
 import '../../ui/widgets/split_view.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
@@ -21,7 +22,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
   int dividerPosition;
   int dividerAlignment;
 
-  double currentSplitviewWeight = 0.5;
+  double currentSplitviewWeight;
 
   CoSplitPanel(GlobalKey componentId, BuildContext context)
       : super(componentId, context);
@@ -59,19 +60,39 @@ class CoSplitPanel extends CoContainer implements IContainer {
     }
 
     if (kIsWeb && globals.layoutMode == 'Full') {
-      return SplitView(
-        initialWeight: currentSplitviewWeight,
-        gripColor: Colors.black,
-        view1: widgets[0],
-        view2: widgets[1],
-        viewMode:
-            (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)
-                ? SplitViewMode.Horizontal
-                : SplitViewMode.Vertical,
-        onWeightChanged: (value) {
-          currentSplitviewWeight = value;
-        },
-      );
+      return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        if (this.currentSplitviewWeight == null) {
+          if (this.dividerPosition != null &&
+              constraints.maxWidth != null &&
+              (dividerAlignment == HORIZONTAL ||
+                  dividerAlignment == RELATIVE)) {
+            this.currentSplitviewWeight =
+                this.dividerPosition / constraints.maxWidth;
+          } else if (this.dividerPosition != null &&
+              constraints.maxHeight != null &&
+              (dividerAlignment == VERTICAL)) {
+            this.currentSplitviewWeight =
+                this.dividerPosition / constraints.maxHeight;
+          } else {
+            this.currentSplitviewWeight = 0.5;
+          }
+        }
+
+        return SplitView(
+          initialWeight: currentSplitviewWeight,
+          gripColor: Colors.black,
+          view1: widgets[0],
+          view2: widgets[1],
+          viewMode:
+              (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)
+                  ? SplitViewMode.Horizontal
+                  : SplitViewMode.Vertical,
+          onWeightChanged: (value) {
+            currentSplitviewWeight = value;
+          },
+        );
+      });
     } else {
       if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
         return SingleChildScrollView(
