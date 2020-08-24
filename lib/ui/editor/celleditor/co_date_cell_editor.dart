@@ -125,7 +125,6 @@ class CoDateCellEditor extends CoCellEditor {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(
-                  flex: 6,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
@@ -148,8 +147,8 @@ class CoDateCellEditor extends CoCellEditor {
                     ),
                   ),
                 ),
-                Flexible(
-                  flex: 2,
+                SizedBox(
+                  width: 58,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

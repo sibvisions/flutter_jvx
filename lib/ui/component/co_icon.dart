@@ -12,6 +12,10 @@ import 'component.dart';
 import '../../utils/globals.dart' as globals;
 
 class CoIcon extends Component implements IComponent {
+  @override
+  int verticalAlignment = 1;
+  @override
+  int horizontalAlignment = 1;
   String text;
   bool selected = false;
   bool eventAction = false;

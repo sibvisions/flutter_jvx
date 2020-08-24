@@ -23,6 +23,20 @@ class CoGroupPanel extends CoContainer implements IContainer {
     text = changedcomponent.getProperty<String>(ComponentProperty.TEXT, text);
   }
 
+  BoxConstraints _calculateConstraints(BoxConstraints constraints) {
+    return BoxConstraints(
+        minWidth: constraints.minWidth,
+        maxWidth: constraints.maxWidth,
+        minHeight: constraints.minHeight == constraints.maxHeight
+            ? ((constraints.maxHeight - 31) < 0
+                ? 0
+                : (constraints.maxHeight - 31))
+            : constraints.minHeight,
+        maxHeight: (constraints.maxHeight - 31) < 0
+            ? 0
+            : (constraints.maxHeight - 31));
+  }
+
   Widget getWidget() {
     Widget child;
     if (this.layout != null) {
@@ -35,13 +49,7 @@ class CoGroupPanel extends CoContainer implements IContainer {
       return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxHeight != double.infinity) {
-          constraints = BoxConstraints(
-              minWidth: constraints.minWidth,
-              maxWidth: constraints.maxWidth,
-              minHeight: constraints.minHeight == constraints.maxHeight
-                  ? constraints.maxHeight - 31
-                  : constraints.minHeight,
-              maxHeight: constraints.maxHeight - 31);
+          constraints = _calculateConstraints(constraints);
         }
         return SingleChildScrollView(
           key: componentId,

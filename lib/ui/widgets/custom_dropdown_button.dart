@@ -895,14 +895,14 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Flexible(
-                    flex: 6,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: innerItemsWidget,
                     ),
                   ),
-                  Flexible(
-                    flex: 2,
+                  SizedBox(
+                    width: 58,
+                    //flex: 3,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
