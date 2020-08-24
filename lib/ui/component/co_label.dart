@@ -6,6 +6,10 @@ import 'i_component.dart';
 import 'component.dart';
 
 class CoLabel extends Component implements IComponent {
+  @override
+  int verticalAlignment = 0;
+  @override
+  int horizontalAlignment = 0;
   String text = "";
 
   CoLabel(GlobalKey componentId, BuildContext context)
