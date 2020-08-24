@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
-import 'co_scroll_panel_layout.dart';
 import 'i_container.dart';
 import 'co_container.dart';
 import '../../utils/globals.dart' as globals;
 
 class CoGroupPanel extends CoContainer implements IContainer {
-  Key key = GlobalKey();
   String text = "";
 
   CoGroupPanel(GlobalKey componentId, BuildContext context)
@@ -32,49 +30,37 @@ class CoGroupPanel extends CoContainer implements IContainer {
     }
 
     if (child != null) {
-      return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-        return SingleChildScrollView(
-          key: componentId,
-          child: Container(
-              child: Column(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      text,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              CoScrollPanelLayout(
-                key: this.key,
-                parentConstraints: constraints,
-                children: [
-                  CoScrollPanelLayoutId(
-                      key: ValueKey(this.key),
-                      parentConstraints: constraints,
-                      child: Card(
-                          color: Colors.white.withOpacity(
-                              globals.applicationStyle.controlsOpacity),
-                          margin: EdgeInsets.all(5),
-                          elevation: 2.0,
-                          child: child,
-                          shape: globals.applicationStyle.containerShape))
+      return SingleChildScrollView(
+        key: componentId,
+        child: Container(
+            child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    text,
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
                 ],
-              )
-            ],
-          )),
-        );
-      });
+              ),
+            ),
+            Card(
+                color: Colors.white
+                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                margin: EdgeInsets.all(5),
+                elevation: 2.0,
+                child: child,
+                shape: globals.applicationStyle.containerShape)
+          ],
+        )),
+      );
     } else {
       return new Container();
     }

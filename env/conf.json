@@ -1,8 +1,8 @@
 {
-  "appName": "Industrie40v4layoutgaps",
-  "baseUrl": "http://192.168.0.103:8080/services/mobile",
+  "appName": "demo",
+  "baseUrl": "http://192.168.1.42:8080/JVx.mobile/services/mobile",
   "debug": true,
-  "username": "admin",
-  "password": "admin",
+  "username": "features",
+  "password": "features",
   "appMode": "full"
 }
