@@ -77,7 +77,8 @@ class CoSplitPanel extends CoContainer implements IContainer {
       widgets.add(Container());
     }
 
-    if (kIsWeb) {
+    if (kIsWeb &&
+        (globals.layoutMode == 'Full' || globals.layoutMode == 'Small')) {
       return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
         _calculateDividerPosition(constraints);
