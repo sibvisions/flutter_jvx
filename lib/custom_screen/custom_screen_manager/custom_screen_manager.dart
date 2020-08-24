@@ -14,15 +14,15 @@ class CustomScreenManager extends ICustomScreenManager {
   IScreen getScreen(String componentId, {String templateName}) {
     globals.currentTempalteName = templateName;
 
-    CustomScreen customerScreen = this.findScreen(componentId);
+    CustomScreen screen = this.findScreen(componentId);
 
-    if (customerScreen == null) {
+    if (screen == null) {
       return IScreen(SoComponentCreator());
     }
 
-    customerScreen.setTemplateName(templateName);
+    screen.setTemplateName(templateName);
 
-    return customerScreen;
+    return screen;
   }
 
   @override
