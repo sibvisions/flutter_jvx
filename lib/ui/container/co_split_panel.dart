@@ -39,6 +39,24 @@ class CoSplitPanel extends CoContainer implements IContainer {
         ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
   }
 
+  void _calculateDividerPosition(BoxConstraints constraints) {
+    if (this.currentSplitviewWeight == null) {
+      if (this.dividerPosition != null &&
+          constraints.maxWidth != null &&
+          (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)) {
+        this.currentSplitviewWeight =
+            this.dividerPosition / constraints.maxWidth;
+      } else if (this.dividerPosition != null &&
+          constraints.maxHeight != null &&
+          (dividerAlignment == VERTICAL)) {
+        this.currentSplitviewWeight =
+            this.dividerPosition / constraints.maxHeight;
+      } else {
+        this.currentSplitviewWeight = 0.5;
+      }
+    }
+  }
+
   Widget getWidget() {
     Component firstComponent = getComponentWithContraint("FIRST_COMPONENT");
     Component secondComponent = getComponentWithContraint("SECOND_COMPONENT");
@@ -62,22 +80,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
     if (kIsWeb && globals.layoutMode == 'Full') {
       return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-        if (this.currentSplitviewWeight == null) {
-          if (this.dividerPosition != null &&
-              constraints.maxWidth != null &&
-              (dividerAlignment == HORIZONTAL ||
-                  dividerAlignment == RELATIVE)) {
-            this.currentSplitviewWeight =
-                this.dividerPosition / constraints.maxWidth;
-          } else if (this.dividerPosition != null &&
-              constraints.maxHeight != null &&
-              (dividerAlignment == VERTICAL)) {
-            this.currentSplitviewWeight =
-                this.dividerPosition / constraints.maxHeight;
-          } else {
-            this.currentSplitviewWeight = 0.5;
-          }
-        }
+        _calculateDividerPosition(constraints);
 
         return SplitView(
           initialWeight: currentSplitviewWeight,
