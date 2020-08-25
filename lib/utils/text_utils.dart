@@ -46,7 +46,8 @@ class TextUtils {
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     if (currentFocus != null && !currentFocus.hasPrimaryFocus) {
-      hasListeners = currentFocus.focusedChild.hasListeners;
+      if (currentFocus.focusedChild != null)
+        hasListeners = currentFocus.focusedChild.hasListeners;
       currentFocus.unfocus();
     }
 

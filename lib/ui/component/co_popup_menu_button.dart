@@ -128,8 +128,8 @@ class CoPopupMenuButton extends Component implements IComponent {
         List<PopupMenuItem<String>> menuItems =
             new List<PopupMenuItem<String>>();
         menu?.menuItems?.forEach((i) {
-          menuItems
-              .add(PopupMenuItem<String>(value: i.name, child: Text(i.text)));
+          menuItems.add(PopupMenuItem<String>(
+              value: i.name, child: Text(i.text), enabled: i.enabled));
         });
         return menuItems;
       },
@@ -146,7 +146,11 @@ class CoPopupMenuButton extends Component implements IComponent {
   void _showPopupMenu() async {
     List<PopupMenuItem<String>> menuItems = new List<PopupMenuItem<String>>();
     menu?.menuItems?.forEach((i) {
-      menuItems.add(PopupMenuItem<String>(value: i.name, child: Text(i.text)));
+      menuItems.add(PopupMenuItem<String>(
+        value: i.name,
+        child: Text(i.text),
+        enabled: i.enabled,
+      ));
     });
 
     final RenderBox overlay =
