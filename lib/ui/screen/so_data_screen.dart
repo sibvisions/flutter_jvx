@@ -12,6 +12,7 @@ import '../../model/api/request/data/meta_data.dart' as dataModel;
 mixin SoDataScreen {
   BuildContext context;
   List<SoComponentData> componentData = <SoComponentData>[];
+  List<Request> requestQueue = <Request>[];
 
   void updateData(Request request, ResponseData pData) {
     if (request is SelectRecord &&
@@ -38,6 +39,16 @@ mixin SoDataScreen {
           BlocProvider.of<ApiBloc>(context).dispatch(meta);
         }
       });
+
+      if (requestQueue.length > 0) {
+        if (requestQueue.first is SelectRecord) {
+          SelectRecord selectRecord = (requestQueue.first as SelectRecord);
+          requestQueue.removeAt(0);
+          selectRecord = selectRecord.soComponentData.getSelectRecordRequest(
+              context, selectRecord.selectedRow, selectRecord.fetch);
+          BlocProvider.of<ApiBloc>(context).dispatch(selectRecord);
+        }
+      }
     }
 
     pData.dataproviderChanged?.forEach((d) {
@@ -60,7 +71,7 @@ mixin SoDataScreen {
           orElse: () => null);
 
     if (data == null) {
-      data = SoComponentData(dataProvider);
+      data = SoComponentData(dataProvider, this);
       //data.addToRequestQueue = this._addToRequestQueue;
       componentData.add(data);
     }
@@ -75,5 +86,12 @@ mixin SoDataScreen {
           PressButton(SoAction(componentId: componentId, label: label));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
+  }
+
+  void requestNext() {
+    if (requestQueue.length > 0) {
+      BlocProvider.of<ApiBloc>(context).dispatch(requestQueue.first);
+      requestQueue.removeAt(0);
+    }
   }
 }

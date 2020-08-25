@@ -19,7 +19,7 @@ class SoComponentScreen with SoDataScreen {
   IComponentCreator _componentCreator;
   Map<String, IComponent> components = <String, IComponent>{};
   Map<String, IComponent> additionalComponents = <String, IComponent>{};
-  bool debug = true;
+  bool debug = false;
   IComponent headerComponent;
   IComponent footerComponent;
 
@@ -107,6 +107,7 @@ class SoComponentScreen with SoDataScreen {
 
     if (!container.containsKey(component.id)) {
       componentClass = _componentCreator.createComponent(component);
+      componentClass.soComponentScreen = this;
 
       if (componentClass is CoEditor) {
         componentClass.data =
