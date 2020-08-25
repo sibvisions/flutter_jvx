@@ -39,14 +39,30 @@ mixin SoDataScreen {
           BlocProvider.of<ApiBloc>(context).dispatch(meta);
         }
       });
+    }
 
-      if (requestQueue.length > 0) {
-        if (requestQueue.first is SelectRecord) {
-          SelectRecord selectRecord = (requestQueue.first as SelectRecord);
+    // execute delayed select after reload data
+    if (requestQueue.length > 0) {
+      if (requestQueue.first is SelectRecord &&
+          (requestQueue.first as SelectRecord).soComponentData != null) {
+        SelectRecord selectRecord = (requestQueue.first as SelectRecord);
+        bool allowDelayedSelect = true;
+
+        pData.dataproviderChanged.forEach((d) {
+          if (selectRecord.soComponentData.dataProvider == d.dataProvider) {
+            allowDelayedSelect = false;
+          }
+        });
+        if (allowDelayedSelect) {
           requestQueue.removeAt(0);
-          selectRecord = selectRecord.soComponentData.getSelectRecordRequest(
-              context, selectRecord.selectedRow, selectRecord.fetch);
-          BlocProvider.of<ApiBloc>(context).dispatch(selectRecord);
+          if (selectRecord.soComponentData.data != null &&
+              selectRecord.soComponentData.data.records != null &&
+              selectRecord.soComponentData.data.records.length >
+                  selectRecord.selectedRow) {
+            selectRecord = selectRecord.soComponentData.getSelectRecordRequest(
+                context, selectRecord.selectedRow, selectRecord.fetch);
+            BlocProvider.of<ApiBloc>(context).dispatch(selectRecord);
+          }
         }
       }
     }
