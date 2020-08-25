@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/request/data/fetch_data.dart';
 import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/select_record.dart';
@@ -12,6 +13,7 @@ import '../../model/api/request/data/meta_data.dart' as dataModel;
 mixin SoDataScreen {
   BuildContext context;
   List<SoComponentData> componentData = <SoComponentData>[];
+  List<Request> requestQueue = <Request>[];
 
   void updateData(Request request, ResponseData pData) {
     if (request is SelectRecord &&
@@ -40,6 +42,39 @@ mixin SoDataScreen {
       });
     }
 
+    // execute delayed select after reload data
+    if (requestQueue.length > 0) {
+      if (requestQueue.first is SelectRecord &&
+          (requestQueue.first as SelectRecord).soComponentData != null) {
+        SelectRecord selectRecord = (requestQueue.first as SelectRecord);
+        bool allowDelayedSelect = true;
+
+        pData.dataproviderChanged.forEach((d) {
+          if (selectRecord.soComponentData.dataProvider == d.dataProvider) {
+            allowDelayedSelect = false;
+          }
+        });
+
+        if (request.requestType == RequestType.DAL_FETCH &&
+            (request is FetchData) &&
+            request.dataProvider != selectRecord.dataProvider) {
+          allowDelayedSelect = false;
+        }
+
+        if (allowDelayedSelect) {
+          requestQueue.removeAt(0);
+          if (selectRecord.soComponentData.data != null &&
+              selectRecord.soComponentData.data.records != null &&
+              selectRecord.soComponentData.data.records.length >
+                  selectRecord.selectedRow) {
+            selectRecord = selectRecord.soComponentData.getSelectRecordRequest(
+                context, selectRecord.selectedRow, selectRecord.fetch);
+            BlocProvider.of<ApiBloc>(context).dispatch(selectRecord);
+          }
+        }
+      }
+    }
+
     pData.dataproviderChanged?.forEach((d) {
       SoComponentData cData = getComponentData(d.dataProvider);
       cData.updateDataProviderChanged(context, d);
@@ -60,7 +95,7 @@ mixin SoDataScreen {
           orElse: () => null);
 
     if (data == null) {
-      data = SoComponentData(dataProvider);
+      data = SoComponentData(dataProvider, this);
       //data.addToRequestQueue = this._addToRequestQueue;
       componentData.add(data);
     }
@@ -75,5 +110,12 @@ mixin SoDataScreen {
           PressButton(SoAction(componentId: componentId, label: label));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
+  }
+
+  void requestNext() {
+    if (requestQueue.length > 0) {
+      BlocProvider.of<ApiBloc>(context).dispatch(requestQueue.first);
+      requestQueue.removeAt(0);
+    }
   }
 }

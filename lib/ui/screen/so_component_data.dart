@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../ui/screen/so_data_screen.dart';
 import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../model/api/response/data/dataprovider_changed.dart';
 import '../../utils/text_utils.dart';
@@ -23,12 +23,13 @@ class SoComponentData {
 
   DataBook data;
   DataBookMetaData metaData;
+  SoDataScreen soDataScreen;
 
   List<VoidCallback> _onDataChanged = [];
   List<VoidCallback> _onMetaDataChanged = [];
   List<ValueChanged<dynamic>> _onSelectedRowChanged = [];
 
-  SoComponentData(this.dataProvider);
+  SoComponentData(this.dataProvider, this.soDataScreen);
 
   bool get deleteEnabled {
     if (metaData != null && metaData.deleteEnabled != null)
@@ -162,23 +163,34 @@ class SoComponentData {
 
   void selectRecord(BuildContext context, int index, [bool fetch = false]) {
     if (index < data.records.length) {
-      SelectRecord select = SelectRecord(
-          dataProvider,
-          Filter(
-              columnNames: this.primaryKeyColumns,
-              values: data.getRow(index, this.primaryKeyColumns)),
-          index,
-          RequestType.DAL_SELECT_RECORD);
+      SelectRecord select = getSelectRecordRequest(context, index, fetch);
 
       if (fetch != null) select.fetch = fetch;
 
-      //_data.selectedRow = index;
-      //_onDataChanged.forEach((d) => d());
-      BlocProvider.of<ApiBloc>(context).dispatch(select);
+      if (TextUtils.unfocusCurrentTextfield(context)) {
+        select.soComponentData = this;
+        this.soDataScreen.requestQueue.add(select);
+      } else {
+        BlocProvider.of<ApiBloc>(context).dispatch(select);
+      }
     } else {
       IndexError(index, data.records, "Select Record",
           "Select record failed. Index out of bounds!");
     }
+  }
+
+  SelectRecord getSelectRecordRequest(BuildContext context, int index,
+      [bool fetch = false]) {
+    SelectRecord select = SelectRecord(
+        dataProvider,
+        Filter(
+            columnNames: this.primaryKeyColumns,
+            values: data.getRow(index, this.primaryKeyColumns)),
+        index,
+        RequestType.DAL_SELECT_RECORD);
+
+    if (fetch != null) select.fetch = fetch;
+    return select;
   }
 
   void deleteRecord(BuildContext context, int index) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../ui/screen/so_component_screen.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../model/properties/hex_color.dart';
@@ -25,6 +26,7 @@ abstract class Component implements IComponent {
 
   String parentComponentId;
   List<Key> childComponentIds;
+  SoComponentScreen soComponentScreen;
 
   bool get isForegroundSet => foreground != null;
   bool get isBackgroundSet => background != null;

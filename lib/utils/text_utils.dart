@@ -41,13 +41,16 @@ class TextUtils {
     return text.substring(0, length);
   }
 
-  static void unfocusCurrentTextfield(BuildContext context) {
+  static bool unfocusCurrentTextfield(BuildContext context) {
+    bool hasListeners = false;
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     if (currentFocus != null && !currentFocus.hasPrimaryFocus) {
+      hasListeners = currentFocus.focusedChild.hasListeners;
       currentFocus.unfocus();
     }
 
     FocusScope.of(context).requestFocus(new FocusNode());
+    return hasListeners;
   }
 }

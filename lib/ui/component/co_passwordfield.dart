@@ -65,6 +65,8 @@ class CoPasswordField extends Component implements IComponent {
     if (text != newValue) {
       text = newValue;
       this.valueChanged = true;
+    } else {
+      this.soComponentScreen.requestNext();
     }
   }
 

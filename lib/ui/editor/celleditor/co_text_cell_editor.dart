@@ -66,6 +66,8 @@ class CoTextCellEditor extends CoCellEditor {
     if (this.valueChanged) {
       super.onValueChanged(this.value);
       this.valueChanged = false;
+    } else if (super.onEndEditing != null) {
+      super.onEndEditing();
     }
   }
 
