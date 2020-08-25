@@ -118,7 +118,9 @@ class CoEditor extends Component implements IEditor {
     }
   }
 
-  void onEndEditing() {}
+  void onEndEditing() {
+    this.soComponentScreen.requestNext();
+  }
 
   void onServerDataChanged() {
     this.cellEditor?.value = _data.getColumnData(context, columnName);

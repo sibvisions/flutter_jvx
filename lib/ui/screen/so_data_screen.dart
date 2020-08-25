@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/request/data/fetch_data.dart';
 import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/select_record.dart';
@@ -53,6 +54,13 @@ mixin SoDataScreen {
             allowDelayedSelect = false;
           }
         });
+
+        if (request.requestType == RequestType.DAL_FETCH &&
+            (request is FetchData) &&
+            request.dataProvider != selectRecord.dataProvider) {
+          allowDelayedSelect = false;
+        }
+
         if (allowDelayedSelect) {
           requestQueue.removeAt(0);
           if (selectRecord.soComponentData.data != null &&
