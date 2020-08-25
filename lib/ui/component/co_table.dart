@@ -451,7 +451,8 @@ class CoTable extends CoEditor {
             30,
             30);
 
-        _hasHorizontalScroller = (columnWidth > constraints.maxWidth);
+        _hasHorizontalScroller =
+            (columnWidth + (2 * borderWidth) > constraints.maxWidth);
 
         Widget widget = GestureDetector(
           onTapDown: (details) => _tapPosition = details.globalPosition,
