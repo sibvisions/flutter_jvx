@@ -348,8 +348,10 @@ class CoTable extends CoEditor {
 
       if (this.data.deleteEnabled && !_hasHorizontalScroller) {
         return GestureDetector(
-            onLongPress: () => showContextMenu(context, index),
+            onLongPress: () =>
+                this.editable ? showContextMenu(context, index) : null,
             child: Slidable(
+              enabled: this.editable,
               actionExtentRatio: 0.25,
               child: Container(
                   color: Colors.white.withOpacity(
@@ -368,7 +370,8 @@ class CoTable extends CoEditor {
             ));
       } else {
         return GestureDetector(
-            onLongPress: () => showContextMenu(context, index),
+            onLongPress: () =>
+                this.editable ? showContextMenu(context, index) : null,
             child: Container(
                 color: Colors.white.withOpacity(
                     globals.applicationStyle?.controlsOpacity ?? 1.0),
@@ -456,7 +459,8 @@ class CoTable extends CoEditor {
 
         Widget widget = GestureDetector(
           onTapDown: (details) => _tapPosition = details.globalPosition,
-          onLongPress: () => showContextMenu(context, -1),
+          onLongPress: () =>
+              this.editable ? showContextMenu(context, -1) : null,
           child: Container(
             decoration: _hasHorizontalScroller
                 ? null

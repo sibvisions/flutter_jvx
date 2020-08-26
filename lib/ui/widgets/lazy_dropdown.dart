@@ -172,7 +172,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
         CoTable(GlobalKey(debugLabel: "LinkedCellEditorTable"), widget.context);
     table.data = widget.data;
     table.tableHeaderVisible = false;
-    table.editable = widget.editable ?? false;
+    table.editable = false;
     table.autoResize = true;
     table.columnNames = widget.displayColumnNames;
     table.onRowTapped = _onRowTapped;
