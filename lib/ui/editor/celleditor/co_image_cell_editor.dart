@@ -224,12 +224,12 @@ class CoImageCellEditor extends CoCellEditor {
                   height: height,
                   width: width - 10,
                   decoration: BoxDecoration(
-                    image: this.getImage(height, horizontalAlignment),
-                    color: background != null
-                        ? background
-                        : Colors.white.withOpacity(
-                            globals.applicationStyle?.controlsOpacity ?? 1.0),
-                  ),
+                      image: this.getImage(height, horizontalAlignment),
+                      color:
+                          background != null ? background : Colors.transparent
+                      // : Colors.white.withOpacity(
+                      //     globals.applicationStyle?.controlsOpacity ?? 1.0),
+                      ),
                 ))
           ]));
     });
