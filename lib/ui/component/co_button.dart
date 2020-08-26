@@ -101,9 +101,6 @@ class CoButton extends CoActionComponent {
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
         style: TextStyle(
-            decoration: textStyle == 'hyperlink'
-                ? TextDecoration.underline
-                : TextDecoration.none,
             fontSize: style.fontSize,
             color: !this.enabled
                 ? Colors.grey.shade500
@@ -134,6 +131,33 @@ class CoButton extends CoActionComponent {
       minWidth = this.preferredSize.width;
     }
 
+    if (textStyle == 'hyperlink') {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        margin: EdgeInsets.all(4),
+        child: GestureDetector(
+          onTap: this.enabled ? buttonPressed : null,
+          child: SizedBox(
+            height: 40,
+            child: Center(
+              child: Text(
+                text != null ? text : '',
+                style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: style.fontSize,
+                    color: !this.enabled
+                        ? Colors.grey.shade500
+                        : this.foreground != null
+                            ? this.foreground
+                            : Colors.blue),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return Container(
         margin: EdgeInsets.all(4),
         child: ButtonTheme(
