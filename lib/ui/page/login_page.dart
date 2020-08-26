@@ -50,8 +50,12 @@ class LoginPageState extends State<LoginPage> {
         BlocListener<ApiBloc, Response>(
           listener: (context, state) {
             if (state.error != null && state.error && !state.errorHandled) {
-              showError(context, Translations.of(context).text2('Error'),
-                  state.message);
+              if (state.errorName == 'timeout.error') {
+                showSessionExpired(context, 'App Restart:', state.message);
+              } else {
+                showError(context, Translations.of(context).text2('Error'),
+                    state.message);
+              }
             }
 
             if (state != null &&
