@@ -2,7 +2,7 @@
   "appName": "demo",
   "baseUrl": "http://172.16.0.67:8080/JVx.mobile/services/mobile",
   "debug": true,
-  "username": "features",
-  "password": "features",
+  "username": "admin",
+  "password": "admin",
   "appMode": "full"
 }
