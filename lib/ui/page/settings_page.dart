@@ -364,27 +364,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future scanBarcode() async {
-    var options = ScanOptions(restrictFormat: [
-      BarcodeFormat.qr
-    ], strings: {
-      "cancel": Translations.of(context).text2("Cancel"),
-      "flash_on": Translations.of(context).text2("Flash on"),
-      "flash_off": Translations.of(context).text2("Flash off"),
-    });
-    var result = await BarcodeScanner.scan(options: options);
+    var result = await BarcodeScanner.scan();
     // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
     //     "#ff6666", Translations.of(context).text2("Cancel"), true, ScanMode.QR);
 
-    Map<String, dynamic> properties = getProperties(result.rawContent);
+    Map<String, dynamic> properties = getProperties(result);
 
     setState(() {
       if (properties['APPNAME'] != null) {
         globals.appName = properties['APPNAME'];
         appName = properties['APPNAME'];
+      } else {
+        showError(context, 'QR Code Error',
+            "Please scan a valid QR Code for the Settings");
       }
       if (properties['URL'] != null) {
         globals.baseUrl = properties['URL'];
         baseUrl = properties['URL'];
+      } else {
+        showError(context, 'QR Code Error',
+            "Please scan a valid QR Code for the Settings");
       }
       if (properties['USER'] != null && properties['PWD'] != null) {
         toSaveUsername = properties['USER'];
