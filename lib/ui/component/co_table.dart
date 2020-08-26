@@ -148,8 +148,8 @@ class CoTable extends CoEditor {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+            // borderRadius: BorderRadius.only(
+            //     topLeft: Radius.circular(5), topRight: Radius.circular(5)),
             color: Colors.white
                 .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0),
           ),
@@ -354,8 +354,11 @@ class CoTable extends CoEditor {
               enabled: this.editable,
               actionExtentRatio: 0.25,
               child: Container(
-                  color: Colors.white.withOpacity(
-                      globals.applicationStyle?.controlsOpacity ?? 1.0),
+                  decoration: BoxDecoration(
+                    // borderRadius: BorderRadius.circular(5),
+                    color: Colors.white.withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0),
+                  ),
                   child: getTableRow(children, index, false, isSelected)),
               actionPane: SlidableDrawerActionPane(),
               secondaryActions: <Widget>[
@@ -471,7 +474,33 @@ class CoTable extends CoEditor {
                         color: UIData.ui_kit_color_2[500].withOpacity(
                             globals.applicationStyle?.controlsOpacity ?? 1.0)),
                     color: Colors.white.withOpacity(
-                        globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                        globals.applicationStyle?.controlsOpacity ?? 1.0),
+                    boxShadow: [
+                        BoxShadow(
+                            color: UIData.ui_kit_color_2[500].withOpacity(
+                                globals.applicationStyle?.controlsOpacity ??
+                                    1.0),
+                            spreadRadius:
+                                this.onRowTapped != null ? 0.5 : borderWidth),
+                        BoxShadow(
+                            color: UIData.ui_kit_color_2[500].withOpacity(
+                                globals.applicationStyle?.controlsOpacity ??
+                                    1.0),
+                            spreadRadius:
+                                this.onRowTapped != null ? 0.5 : borderWidth),
+                        BoxShadow(
+                            color: UIData.ui_kit_color_2[500].withOpacity(
+                                globals.applicationStyle?.controlsOpacity ??
+                                    1.0),
+                            spreadRadius:
+                                this.onRowTapped != null ? 0.5 : borderWidth),
+                        BoxShadow(
+                            color: UIData.ui_kit_color_2[500].withOpacity(
+                                globals.applicationStyle?.controlsOpacity ??
+                                    1.0),
+                            spreadRadius:
+                                this.onRowTapped != null ? 0.5 : borderWidth),
+                      ]),
             width: columnWidth + (2 * borderWidth),
             height: constraints.maxHeight == double.infinity
                 ? tableHeight
@@ -489,10 +518,13 @@ class CoTable extends CoEditor {
         if (_hasHorizontalScroller) {
           return Container(
               decoration: BoxDecoration(
-                  border: Border.all(
-                      width: borderWidth,
-                      color: UIData.ui_kit_color_2[500].withOpacity(
-                          globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                  // borderRadius: BorderRadius.only(
+                  //     topLeft: Radius.circular(5),
+                  //     topRight: Radius.circular(5)),
+                  // border: Border.all(
+                  //     width: borderWidth,
+                  //     color: UIData.ui_kit_color_2[500].withOpacity(
+                  //         globals.applicationStyle?.controlsOpacity ?? 1.0)),
                   color: Colors.white.withOpacity(
                       globals.applicationStyle?.controlsOpacity ?? 1.0)),
               child: SingleChildScrollView(
