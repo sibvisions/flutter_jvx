@@ -1,6 +1,6 @@
 {
-  "appName": "demo",
-  "baseUrl": "http://172.16.0.67:8080/JVx.mobile/services/mobile",
+  "appName": "MobileTester",
+  "baseUrl": "http://172.16.0.67/services/mobile",
   "debug": true,
   "username": "admin",
   "password": "admin",

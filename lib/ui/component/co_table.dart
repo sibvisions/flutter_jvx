@@ -480,26 +480,22 @@ class CoTable extends CoEditor {
                             color: UIData.ui_kit_color_2[500].withOpacity(
                                 globals.applicationStyle?.controlsOpacity ??
                                     1.0),
-                            spreadRadius:
-                                this.onRowTapped != null ? 0.5 : borderWidth),
+                            spreadRadius: 0.1),
                         BoxShadow(
                             color: UIData.ui_kit_color_2[500].withOpacity(
                                 globals.applicationStyle?.controlsOpacity ??
                                     1.0),
-                            spreadRadius:
-                                this.onRowTapped != null ? 0.5 : borderWidth),
+                            spreadRadius: 0.1),
                         BoxShadow(
                             color: UIData.ui_kit_color_2[500].withOpacity(
                                 globals.applicationStyle?.controlsOpacity ??
                                     1.0),
-                            spreadRadius:
-                                this.onRowTapped != null ? 0.5 : borderWidth),
+                            spreadRadius: 0.1),
                         BoxShadow(
                             color: UIData.ui_kit_color_2[500].withOpacity(
                                 globals.applicationStyle?.controlsOpacity ??
                                     1.0),
-                            spreadRadius:
-                                this.onRowTapped != null ? 0.5 : borderWidth),
+                            spreadRadius: 0.1),
                       ]),
             width: columnWidth + (2 * borderWidth),
             height: constraints.maxHeight == double.infinity

@@ -25,8 +25,13 @@ bool handleError(Response response, BuildContext context) {
       showGoToSettings(
           context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'message.error') {
-      showError(
-          context, Translations.of(context).text2('Error'), response.message);
+      if (response.message == 'Invalid application!') {
+        showSessionExpired(
+            context, Translations.of(context).text2('Error'), response.message);
+      } else {
+        showError(
+            context, Translations.of(context).text2('Error'), response.message);
+      }
     } else if (response.errorName == 'server.error') {
       showGoToSettings(
           context, Translations.of(context).text2('Error'), response.message);

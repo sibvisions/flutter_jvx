@@ -95,8 +95,8 @@ class CoTextCellEditor extends CoCellEditor {
       decoration: BoxDecoration(
           color: this.background != null
               ? this.background
-              : Colors.white
-                  .withOpacity(globals.applicationStyle.controlsOpacity),
+              : Colors.white.withOpacity(
+                  globals.applicationStyle?.controlsOpacity ?? 1.0),
           borderRadius: BorderRadius.circular(
               globals.applicationStyle?.cornerRadiusEditors ?? 10),
           border: borderVisible && this.editable != null && this.editable

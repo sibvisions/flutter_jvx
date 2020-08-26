@@ -111,8 +111,8 @@ class CoDateCellEditor extends CoCellEditor {
         decoration: BoxDecoration(
             color: background != null
                 ? background
-                : Colors.white
-                    .withOpacity(globals.applicationStyle.controlsOpacity),
+                : Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
             borderRadius: BorderRadius.circular(
                 globals.applicationStyle.cornerRadiusEditors),
             border: borderVisible
