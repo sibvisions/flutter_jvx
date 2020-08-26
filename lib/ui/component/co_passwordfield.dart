@@ -95,7 +95,7 @@ class CoPasswordField extends Component implements IComponent {
                   .withOpacity(globals.applicationStyle.controlsOpacity),
           borderRadius: BorderRadius.circular(
               globals.applicationStyle.cornerRadiusEditors),
-          border: border && this.eventAction != null && this.eventAction
+          border: border && this.enabled != null && this.enabled
               ? Border.all(color: UIData.ui_kit_color_2)
               : Border.all(color: Colors.grey)),
       child: TextField(
@@ -103,7 +103,7 @@ class CoPasswordField extends Component implements IComponent {
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(12), border: InputBorder.none),
           style: TextStyle(
-              color: this.eventAction
+              color: this.enabled
                   ? (this.foreground != null ? this.foreground : Colors.black)
                   : Colors.grey[700]),
           key: this.componentId,
@@ -114,7 +114,7 @@ class CoPasswordField extends Component implements IComponent {
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,
           focusNode: node,
-          readOnly: !this.eventAction,
+          readOnly: !this.enabled,
           obscureText: true),
     );
   }
