@@ -161,9 +161,9 @@ class CoDateCellEditor extends CoCellEditor {
                       ),
                       GestureDetector(
                         child: Icon(
-                          FontAwesomeIcons.timesCircle,
+                          Icons.clear,
                           size: 24,
-                          color: Colors.grey,
+                          color: Colors.grey[400],
                         ),
                         onTap: () {
                           this.value = null;

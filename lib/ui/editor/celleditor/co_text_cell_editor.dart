@@ -121,8 +121,8 @@ class CoTextCellEditor extends CoCellEditor {
                             node.unfocus();
                           }
                         },
-                        child: Icon(FontAwesomeIcons.timesCircle,
-                            size: 24, color: Colors.grey),
+                        child: Icon(Icons.clear,
+                            size: 24, color: Colors.grey[400]),
                       ),
                     )
                   : null),
