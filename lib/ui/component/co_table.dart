@@ -148,8 +148,7 @@ class CoTable extends CoEditor {
     if (isHeader) {
       return Container(
           decoration: BoxDecoration(
-            // borderRadius: BorderRadius.only(
-            //     topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+            borderRadius: BorderRadius.circular(5),
             color: Colors.white
                 .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0),
           ),
@@ -173,20 +172,27 @@ class CoTable extends CoEditor {
       }
       return Container(
         decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  color: Colors.grey[400], width: 1, style: BorderStyle.solid)),
-          color: backgroundColor,
+            borderRadius: BorderRadius.circular(5), color: backgroundColor),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+                    color: Colors.grey[400],
+                    width: 1,
+                    style: BorderStyle.solid)),
+          ),
+          child: Material(
+              borderRadius: BorderRadius.circular(5),
+              color: backgroundColor,
+              child: InkWell(
+                  borderRadius: BorderRadius.circular(5),
+                  highlightColor: UIData.ui_kit_color_2[500].withOpacity(
+                      globals.applicationStyle?.controlsOpacity ?? 1.0),
+                  onTap: () {
+                    _onRowTapped(index);
+                  },
+                  child: Row(children: children))),
         ),
-        child: Material(
-            color: backgroundColor,
-            child: InkWell(
-                highlightColor: UIData.ui_kit_color_2[500].withOpacity(
-                    globals.applicationStyle?.controlsOpacity ?? 1.0),
-                onTap: () {
-                  _onRowTapped(index);
-                },
-                child: Row(children: children))),
       );
     }
   }
@@ -269,6 +275,7 @@ class CoTable extends CoEditor {
 
     if (rowIndex == -1) {
       return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
           width: width,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
@@ -297,11 +304,14 @@ class CoTable extends CoEditor {
           ));
     } else {
       return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
           width: width,
           child: Padding(
             padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
             child: GestureDetector(
               child: Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
                   child: (editor != null)
                       ? editor.getWidget()
                       : Padding(
@@ -347,35 +357,43 @@ class CoTable extends CoEditor {
       if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
       if (this.data.deleteEnabled && !_hasHorizontalScroller) {
-        return GestureDetector(
-            onLongPress: () =>
-                this.editable ? showContextMenu(context, index) : null,
-            child: Slidable(
-              enabled: this.editable,
-              actionExtentRatio: 0.25,
-              child: Container(
-                  decoration: BoxDecoration(
-                    // borderRadius: BorderRadius.circular(5),
-                    color: Colors.white.withOpacity(
-                        globals.applicationStyle?.controlsOpacity ?? 1.0),
-                  ),
-                  child: getTableRow(children, index, false, isSelected)),
-              actionPane: SlidableDrawerActionPane(),
-              secondaryActions: <Widget>[
-                new IconSlideAction(
-                  caption: Translations.of(context).text2('Delete'),
-                  color: Colors.red.withOpacity(
+        return this.editable
+            ? GestureDetector(
+                onLongPress: () => showContextMenu(context, index),
+                child: Slidable(
+                  actionExtentRatio: 0.25,
+                  child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.white.withOpacity(
+                            globals.applicationStyle?.controlsOpacity ?? 1.0),
+                      ),
+                      child: getTableRow(children, index, false, isSelected)),
+                  actionPane: SlidableDrawerActionPane(),
+                  secondaryActions: <Widget>[
+                    new IconSlideAction(
+                      caption: Translations.of(context).text2('Delete'),
+                      color: Colors.red.withOpacity(
+                          globals.applicationStyle?.controlsOpacity ?? 1.0),
+                      icon: Icons.delete,
+                      onTap: () => this.data.deleteRecord(context, index),
+                    ),
+                  ],
+                ))
+            : Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.white.withOpacity(
                       globals.applicationStyle?.controlsOpacity ?? 1.0),
-                  icon: Icons.delete,
-                  onTap: () => this.data.deleteRecord(context, index),
                 ),
-              ],
-            ));
+                child: getTableRow(children, index, false, isSelected));
       } else {
         return GestureDetector(
             onLongPress: () =>
                 this.editable ? showContextMenu(context, index) : null,
             child: Container(
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(5)),
                 color: Colors.white.withOpacity(
                     globals.applicationStyle?.controlsOpacity ?? 1.0),
                 child: getTableRow(children, index, false, isSelected)));
@@ -475,28 +493,7 @@ class CoTable extends CoEditor {
                             globals.applicationStyle?.controlsOpacity ?? 1.0)),
                     color: Colors.white.withOpacity(
                         globals.applicationStyle?.controlsOpacity ?? 1.0),
-                    boxShadow: [
-                        BoxShadow(
-                            color: UIData.ui_kit_color_2[500].withOpacity(
-                                globals.applicationStyle?.controlsOpacity ??
-                                    1.0),
-                            spreadRadius: 0.1),
-                        BoxShadow(
-                            color: UIData.ui_kit_color_2[500].withOpacity(
-                                globals.applicationStyle?.controlsOpacity ??
-                                    1.0),
-                            spreadRadius: 0.1),
-                        BoxShadow(
-                            color: UIData.ui_kit_color_2[500].withOpacity(
-                                globals.applicationStyle?.controlsOpacity ??
-                                    1.0),
-                            spreadRadius: 0.1),
-                        BoxShadow(
-                            color: UIData.ui_kit_color_2[500].withOpacity(
-                                globals.applicationStyle?.controlsOpacity ??
-                                    1.0),
-                            spreadRadius: 0.1),
-                      ]),
+                  ),
             width: columnWidth + (2 * borderWidth),
             height: constraints.maxHeight == double.infinity
                 ? tableHeight
