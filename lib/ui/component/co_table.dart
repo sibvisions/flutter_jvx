@@ -392,10 +392,10 @@ class CoTable extends CoEditor {
             onLongPress: () =>
                 this.editable ? showContextMenu(context, index) : null,
             child: Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                color: Colors.white.withOpacity(
-                    globals.applicationStyle?.controlsOpacity ?? 1.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white.withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0)),
                 child: getTableRow(children, index, false, isSelected)));
       }
     }
