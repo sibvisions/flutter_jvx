@@ -27,7 +27,7 @@ dependencies:
   flutter_picker: ^1.1.0
   path_provider: ^1.6.7
   archive: ^2.0.13
-  xml: ^3.2.0 
+  xml: ^4.1.0
   gson: ^0.1.2
   bloc: ^0.15.0
   flutter_bloc: ^0.21.0
@@ -52,6 +52,7 @@ dependencies:
   platform_detect: ^1.4.0
   device_info: ^0.4.2+4
   responsive_builder: ^0.2.0+2
+  flutter_html: ^1.0.2
 
 dev_dependencies:
   flutter_test:

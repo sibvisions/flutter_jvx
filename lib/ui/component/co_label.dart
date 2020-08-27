@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:jvx_flutterclient/ui/screen/so_component_creator.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
@@ -86,11 +87,13 @@ class CoLabel extends Component implements IComponent {
         child: Baseline(
             baselineType: TextBaseline.alphabetic,
             baseline: getBaseline(),
-            child: Text(
-              text,
-              style: style,
-              overflow: overflow,
-            )),
+            child: text.trim().startsWith('<html>')
+                ? Html(data: text)
+                : Text(
+                    text,
+                    style: style,
+                    overflow: overflow,
+                  )),
       ),
     );
 
