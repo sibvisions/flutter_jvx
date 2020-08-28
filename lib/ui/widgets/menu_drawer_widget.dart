@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,6 +42,15 @@ class MenuDrawerWidget extends StatefulWidget {
 
 class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   String title;
+  Uint8List decodedImage;
+
+  @override
+  void initState() {
+    if (globals.profileImage != null) {
+      this.decodedImage = base64Decode(globals.profileImage);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -259,15 +269,21 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         minFontSize: 18);
   }
 
+  ImageProvider getProfileImage() {
+    Image img = Image.memory(
+      this.decodedImage,
+      fit: BoxFit.cover,
+      gaplessPlayback: true,
+    );
+
+    return img.image;
+  }
+
   Widget _getAvatar() {
     return CircleAvatar(
       backgroundColor: Colors.white,
-      backgroundImage: globals.profileImage.isNotEmpty
-          ? Image.memory(
-              base64Decode(globals.profileImage),
-              fit: BoxFit.cover,
-            ).image
-          : null,
+      backgroundImage:
+          globals.profileImage.isNotEmpty ? getProfileImage() : null,
       child: globals.profileImage.isNotEmpty
           ? null
           : Icon(
