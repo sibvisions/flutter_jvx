@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tinycolor/tinycolor.dart';
 import '../../ui/screen/so_component_creator.dart';
 import '../../ui/widgets/split_view.dart';
 import '../../model/changed_component.dart';
@@ -87,7 +88,10 @@ class CoSplitPanel extends CoContainer implements IContainer {
 
         return SplitView(
           initialWeight: currentSplitviewWeight,
-          gripColor: Colors.black,
+          gripColor: (globals.applicationStyle != null &&
+                  globals.applicationStyle.topMenuColor != null)
+              ? TinyColor(globals.applicationStyle.topMenuColor).lighten().color
+              : TinyColor(Color(0xff2196f3)).lighten().color,
           view1: widgets[0],
           view2: widgets[1],
           viewMode:
