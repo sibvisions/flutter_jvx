@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert' as utf8;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/custom_screen/app_frame.dart';
@@ -82,6 +83,15 @@ class _MenuPageState extends State<MenuPage> {
   bool get groupedMenuMode {
     return (menuMode == 'grid_grouped' || menuMode == 'list') &
         hasMultipleGroups;
+  }
+
+  @override
+  void initState() {
+    SystemChrome.setApplicationSwitcherDescription(
+        ApplicationSwitcherDescription(
+            primaryColor: UIData.ui_kit_color_2.value,
+            label: globals.appName + ' - ' + globals.username));
+    super.initState();
   }
 
   @override

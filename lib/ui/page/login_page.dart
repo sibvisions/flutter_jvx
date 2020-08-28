@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -88,9 +89,10 @@ class LoginPageState extends State<LoginPage> {
               }
               Menu menu = state.menu;
 
-              if (menu != null)
+              if (menu != null) {
                 Navigator.of(context).pushReplacementNamed('/menu',
                     arguments: MenuArguments(menu.items, true));
+              }
             }
           },
           child: loginScaffold(),

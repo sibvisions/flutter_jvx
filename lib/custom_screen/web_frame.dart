@@ -1,6 +1,7 @@
 import 'dart:convert' as utf8;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/logic/bloc/api_bloc.dart';
 import 'package:jvx_flutterclient/model/api/request/logout.dart';
@@ -62,7 +63,9 @@ class _WebFrameState extends State<WebFrame> {
                                             .applicationStyle.topMenuColor)
                                         .lighten()
                                         .color
-                                    : TinyColor(Color(0xff2196f3)).lighten().color,
+                                    : TinyColor(Color(0xff2196f3))
+                                        .lighten()
+                                        .color,
                                 child: Container(
                                   margin: EdgeInsets.symmetric(horizontal: 10),
                                   child: (globals.applicationStyle == null ||
@@ -140,6 +143,9 @@ class _WebFrameState extends State<WebFrame> {
                                 requestType: RequestType.LOGOUT);
 
                             BlocProvider.of<ApiBloc>(context).dispatch(logout);
+                            SystemChrome.setApplicationSwitcherDescription(
+                                ApplicationSwitcherDescription(
+                                    label: globals.appName));
                           },
                         ),
                         SizedBox(

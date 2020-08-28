@@ -83,7 +83,7 @@ class MobileApp extends StatelessWidget {
 
               return null;
             },
-            title: 'JVx Mobile',
+            title: globals.appName ?? 'JVx Mobile',
             theme: theme,
             debugShowCheckedModeBanner: false,
             showPerformanceOverlay: false,
