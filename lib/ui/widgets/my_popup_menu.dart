@@ -834,6 +834,7 @@ class PopupMenuButton<T> extends StatefulWidget {
     Key key,
     @required this.itemBuilder,
     this.initialValue,
+    this.hoverColor,
     this.onSelected,
     this.onCanceled,
     this.tooltip,
@@ -872,6 +873,8 @@ class PopupMenuButton<T> extends StatefulWidget {
   /// This text is displayed when the user long-presses on the button and is
   /// used for accessibility.
   final String tooltip;
+
+  final Color hoverColor;
 
   /// The z-coordinate at which to place the menu when open. This controls the
   /// size of the shadow below the menu.
@@ -970,7 +973,7 @@ class _PopupMenuButtonState<T> extends State<PopupMenuButton<T>> {
             child: widget.child,
           )
         : IconButton(
-          hoverColor: Colors.black,
+            hoverColor: widget.hoverColor ?? Colors.black,
             icon: widget.icon ?? _getIcon(Theme.of(context).platform),
             padding: widget.padding,
             tooltip: widget.tooltip ??

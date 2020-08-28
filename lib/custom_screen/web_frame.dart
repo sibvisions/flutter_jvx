@@ -87,66 +87,79 @@ class _WebFrameState extends State<WebFrame> {
                         SizedBox(
                           width: 15,
                         ),
-                        IconButton(
-                          hoverColor: Colors.black,
-                          icon: Icon(
-                            FontAwesomeIcons.bars,
-                            color: (globals.applicationStyle != null &&
-                                    globals.applicationStyle.topMenuIconColor !=
-                                        null)
-                                ? globals.applicationStyle.topMenuIconColor
-                                : Color(0xffffffff),
-                            size: 26,
+                        Material(
+                          color: Colors.blue,
+                          child: IconButton(
+                            hoverColor: Colors.black.withOpacity(0.3),
+                            icon: Icon(
+                              FontAwesomeIcons.bars,
+                              color: (globals.applicationStyle != null &&
+                                      globals.applicationStyle
+                                              .topMenuIconColor !=
+                                          null)
+                                  ? globals.applicationStyle.topMenuIconColor
+                                  : Color(0xffffffff),
+                              size: 26,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isVisible = !isVisible;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              isVisible = !isVisible;
-                            });
-                          },
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        IconButton(
-                          hoverColor: Colors.black,
-                          icon: Icon(
-                            FontAwesomeIcons.cog,
-                            color: (globals.applicationStyle != null &&
-                                    globals.applicationStyle.topMenuIconColor !=
-                                        null)
-                                ? globals.applicationStyle.topMenuIconColor
-                                : Color(0xffffffff),
-                            size: 26,
+                        Material(
+                          color: Colors.blue,
+                          child: IconButton(
+                            hoverColor: Colors.black.withOpacity(0.3),
+                            icon: Icon(
+                              FontAwesomeIcons.cog,
+                              color: (globals.applicationStyle != null &&
+                                      globals.applicationStyle
+                                              .topMenuIconColor !=
+                                          null)
+                                  ? globals.applicationStyle.topMenuIconColor
+                                  : Color(0xffffffff),
+                              size: 26,
+                            ),
+                            onPressed: () {
+                              _scaffoldKey.currentState.openEndDrawer();
+                            },
                           ),
-                          onPressed: () {
-                            _scaffoldKey.currentState.openEndDrawer();
-                          },
                         ),
                         SizedBox(
                           width: 20,
                         ),
-                        IconButton(
-                          hoverColor: Colors.black,
-                          icon: Icon(
-                            FontAwesomeIcons.powerOff,
-                            color: (globals.applicationStyle != null &&
-                                    globals.applicationStyle.topMenuIconColor !=
-                                        null)
-                                ? globals.applicationStyle.topMenuIconColor
-                                : Color(0xffffffff),
-                            size: 26,
-                          ),
-                          onPressed: () {
-                            Logout logout = Logout(
-                                clientId: globals.clientId,
-                                requestType: RequestType.LOGOUT);
+                        Material(
+                          color: Colors.blue,
+                          child: IconButton(
+                            hoverColor: Colors.black.withOpacity(0.3),
+                            icon: Icon(
+                              FontAwesomeIcons.powerOff,
+                              color: (globals.applicationStyle != null &&
+                                      globals.applicationStyle
+                                              .topMenuIconColor !=
+                                          null)
+                                  ? globals.applicationStyle.topMenuIconColor
+                                  : Color(0xffffffff),
+                              size: 26,
+                            ),
+                            onPressed: () {
+                              Logout logout = Logout(
+                                  clientId: globals.clientId,
+                                  requestType: RequestType.LOGOUT);
 
-                            BlocProvider.of<ApiBloc>(context).dispatch(logout);
-                            SystemChrome.setApplicationSwitcherDescription(
-                                ApplicationSwitcherDescription(
-                                    label: globals.appName));
-                          },
+                              BlocProvider.of<ApiBloc>(context)
+                                  .dispatch(logout);
+                              SystemChrome.setApplicationSwitcherDescription(
+                                  ApplicationSwitcherDescription(
+                                      label: globals.appName));
+                            },
+                          ),
                         ),
                         SizedBox(
                           width: 20,
@@ -250,58 +263,63 @@ class _WebFrameState extends State<WebFrame> {
             ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
             : Color(0xff2196f3).withOpacity(0.95),
       ),
-      child: mypopup.PopupMenuButton<int>(
-        itemBuilder: (context) => [
-          mypopup.PopupMenuItem(
-            enabled: false,
-            value: 0,
-            child: Container(
-              color: (globals.applicationStyle != null &&
-                      globals.applicationStyle.topMenuColor != null)
-                  ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-                  : Color(0xff2196f3).withOpacity(0.95),
-              child: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      globals.username.isNotEmpty
-                          ? Text(
-                              Translations.of(context)
-                                  .text2('Logged in as', 'Logged in as'),
-                              style: TextStyle(
-                                  color: UIData.textColor, fontSize: 12),
-                            )
-                          : Container(),
-                      Text(username, style: TextStyle(color: UIData.textColor)),
-                    ]),
+      child: Material(
+        color: Colors.blue,
+        child: mypopup.PopupMenuButton<int>(
+          hoverColor: Colors.black.withOpacity(0.3),
+          itemBuilder: (context) => [
+            mypopup.PopupMenuItem(
+              enabled: false,
+              value: 0,
+              child: Container(
+                color: (globals.applicationStyle != null &&
+                        globals.applicationStyle.topMenuColor != null)
+                    ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+                    : Color(0xff2196f3).withOpacity(0.95),
+                child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        globals.username.isNotEmpty
+                            ? Text(
+                                Translations.of(context)
+                                    .text2('Logged in as', 'Logged in as'),
+                                style: TextStyle(
+                                    color: UIData.textColor, fontSize: 12),
+                              )
+                            : Container(),
+                        Text(username,
+                            style: TextStyle(color: UIData.textColor)),
+                      ]),
+                ),
               ),
             ),
+            mypopup.PopupMenuDivider(
+              height: 10,
+            ),
+          ],
+          icon: CircleAvatar(
+            backgroundImage: globals.profileImage.isNotEmpty
+                ? Image.memory(
+                    base64Decode(globals.profileImage),
+                    fit: BoxFit.fitHeight,
+                  ).image
+                : null,
+            child: globals.profileImage.isNotEmpty
+                ? null
+                : Icon(
+                    FontAwesomeIcons.userTie,
+                    color: (globals.applicationStyle != null &&
+                            globals.applicationStyle.topMenuIconColor != null)
+                        ? globals.applicationStyle.topMenuIconColor
+                        : Color(0xffffffff),
+                  ),
+            radius: 50,
           ),
-          mypopup.PopupMenuDivider(
-            height: 10,
-          ),
-        ],
-        icon: CircleAvatar(
-          backgroundImage: globals.profileImage.isNotEmpty
-              ? Image.memory(
-                  base64Decode(globals.profileImage),
-                  fit: BoxFit.fitHeight,
-                ).image
-              : null,
-          child: globals.profileImage.isNotEmpty
-              ? null
-              : Icon(
-                  FontAwesomeIcons.userTie,
-                  color: (globals.applicationStyle != null &&
-                          globals.applicationStyle.topMenuIconColor != null)
-                      ? globals.applicationStyle.topMenuIconColor
-                      : Color(0xffffffff),
-                ),
-          radius: 50,
+          offset: Offset(0, 100),
+          onSelected: (result) {},
         ),
-        offset: Offset(0, 100),
-        onSelected: (result) {},
       ),
     );
   }
