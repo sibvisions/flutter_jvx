@@ -213,6 +213,10 @@ class _StartupPageState extends State<StartupPage> {
         globals.uploadPicWidth = prefData['picSize'];
       }
     });
+    bool mobOnly = await SharedPreferencesHelper().getMobileOnly();
+    if (mobOnly != null) {
+      globals.mobileOnly = mobOnly;
+    }
   }
 
   _download() {

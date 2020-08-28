@@ -56,6 +56,9 @@ class MobileApp extends StatelessWidget {
                     globals.baseUrl, globals.language, globals.uploadPicWidth);
                 SharedPreferencesHelper()
                     .setLoginData(globals.username, globals.password);
+                if (globals.mobileOnly != null) {
+                  SharedPreferencesHelper().setMobileOnly(globals.mobileOnly);
+                }
               }
 
               switch (settings.name) {

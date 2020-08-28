@@ -10,8 +10,7 @@ class SharedPreferencesHelper {
 
   Future<bool> getWelcome() async {
     prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('welcome') == null)
-      return true;
+    if (prefs.getBool('welcome') == null) return true;
     return false;
   }
 
@@ -30,7 +29,7 @@ class SharedPreferencesHelper {
 
   Future<Map<String, String>> getLoginData() async {
     prefs = await SharedPreferences.getInstance();
-    
+
     Map<String, String> prefLoginData = <String, String>{};
 
     prefLoginData['authKey'] = prefs.getString('authKey');
@@ -47,27 +46,24 @@ class SharedPreferencesHelper {
   Future<String> getAppVersion() async {
     prefs = await SharedPreferences.getInstance();
     String appVersion = prefs.getString('appVersion');
-    if (appVersion != null)
-      return appVersion;
-    
+    if (appVersion != null) return appVersion;
+
     return "0.0.0";
   }
 
   Future<String> getPrevAppVersion() async {
     prefs = await SharedPreferences.getInstance();
     String appVersion = prefs.getString('prevAppVersion');
-    if (appVersion != null)
-      return appVersion;
-    
+    if (appVersion != null) return appVersion;
+
     return "";
   }
 
   Future<String> getApplicationStylingHash() async {
     prefs = await SharedPreferences.getInstance();
     String applicationStylingHash = prefs.getString('applicationStylingHash');
-    if (applicationStylingHash != null)
-      return applicationStylingHash;
-    
+    if (applicationStylingHash != null) return applicationStylingHash;
+
     return "";
   }
 
@@ -79,10 +75,7 @@ class SharedPreferencesHelper {
 
     if (jsonString != null)
       result = Map.from(json.decode(jsonString).map((key, val) {
-        return MapEntry(
-          key.toString(),
-          val.toString()
-        );
+        return MapEntry(key.toString(), val.toString());
       }));
     return result;
   }
@@ -96,20 +89,11 @@ class SharedPreferencesHelper {
     if (jsonString != null)
       result = Map.from(json.decode(jsonString).map((key, val) {
         if (key.toString() == 'menu')
-          return MapEntry(
-            key.toString(),
-            Map.from(val.map((k, v) {
-              return MapEntry(
-                k.toString(),
-                v.toString()
-              );
-            }))
-          );
+          return MapEntry(key.toString(), Map.from(val.map((k, v) {
+            return MapEntry(k.toString(), v.toString());
+          })));
 
-        return MapEntry(
-          key.toString(),
-          val.toString()
-        );
+        return MapEntry(key.toString(), val.toString());
       }));
     else
       return null;
@@ -128,19 +112,29 @@ class SharedPreferencesHelper {
     return prefs.getString('fileName');
   }
 
+  Future<bool> getMobileOnly() async {
+    prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('mobileOnly');
+  }
+
   void setWelcome(bool welcome) async {
     prefs = await SharedPreferences.getInstance();
     prefs.setBool('welcome', welcome);
   }
 
-  void setData(String appName, String baseUrl, String language, int picSize) async {
+  void setData(
+      String appName, String baseUrl, String language, int picSize) async {
     prefs = await SharedPreferences.getInstance();
-    if (appName != null && appName.isNotEmpty) prefs.setString('appName', appName);
+    if (appName != null && appName.isNotEmpty)
+      prefs.setString('appName', appName);
     if (baseUrl != null && baseUrl.isNotEmpty) {
       prefs.setString('baseUrl', baseUrl);
     }
-    if (language != null && language.isNotEmpty) prefs.setString('language', language);
-    if (picSize != null && (picSize == 320 || picSize == 640 || picSize == 1024)) prefs.setInt('picSize', picSize);
+    if (language != null && language.isNotEmpty)
+      prefs.setString('language', language);
+    if (picSize != null &&
+        (picSize == 320 || picSize == 640 || picSize == 1024))
+      prefs.setInt('picSize', picSize);
   }
 
   void setLoginData(String username, String password) async {
@@ -194,5 +188,9 @@ class SharedPreferencesHelper {
     prefs = await SharedPreferences.getInstance();
     prefs.setString('fileName', fileName);
   }
-  
+
+  void setMobileOnly(bool mobileOnly) async {
+    prefs = await SharedPreferences.getInstance();
+    prefs.setBool('mobileOnly', mobileOnly);
+  }
 }
