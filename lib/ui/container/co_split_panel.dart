@@ -42,11 +42,13 @@ class CoSplitPanel extends CoContainer implements IContainer {
   void _calculateDividerPosition(BoxConstraints constraints) {
     if (this.currentSplitviewWeight == null) {
       if (this.dividerPosition != null &&
+          this.dividerPosition >= 0 &&
           constraints.maxWidth != null &&
           (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)) {
         this.currentSplitviewWeight =
             this.dividerPosition / constraints.maxWidth;
       } else if (this.dividerPosition != null &&
+          this.dividerPosition >= 0 &&
           constraints.maxHeight != null &&
           (dividerAlignment == VERTICAL)) {
         this.currentSplitviewWeight =
