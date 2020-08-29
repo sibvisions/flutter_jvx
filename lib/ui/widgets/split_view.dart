@@ -19,7 +19,7 @@ class SplitView extends StatefulWidget {
     @required this.view1,
     @required this.view2,
     @required this.viewMode,
-    this.gripSize = 12.0,
+    this.gripSize = 7.0,
     this.initialWeight = 0.5,
     this.gripColor = Colors.grey,
     this.handleColor = Colors.white,
@@ -107,7 +107,7 @@ class _SplitViewState extends State<SplitView> {
             child: Container(
               color: widget.gripColor,
               child: Center(
-                child: Icon(Icons.drag_handle, color: widget.handleColor),
+                child: Icon(Icons.horizontal_rule, color: widget.handleColor),
               ),
             ),
           ),
@@ -156,11 +156,13 @@ class _SplitViewState extends State<SplitView> {
               child: Container(
                   color: widget.gripColor,
                   child: Center(
-                    child: RotationTransition(
-                      child: Icon(Icons.drag_handle, color: widget.handleColor),
-                      turns: AlwaysStoppedAnimation(0.25),
-                    ),
-                  ))),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5.0),
+                          child: Container(
+                            height: 25,
+                            color: widget.handleColor,
+                            width: 4,
+                          ))))),
         ),
       ],
     );
