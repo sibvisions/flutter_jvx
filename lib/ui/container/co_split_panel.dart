@@ -5,11 +5,15 @@ import '../../ui/widgets/split_view.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../component/component.dart';
+import 'co_scroll_panel_layout.dart';
 import 'i_container.dart';
 import 'co_container.dart';
 import '../../utils/globals.dart' as globals;
 
 class CoSplitPanel extends CoContainer implements IContainer {
+  Key keyFirst = GlobalKey();
+  Key keySecond = GlobalKey();
+
   /// Constant for horizontal anchors.
   static const HORIZONTAL = 0;
 
@@ -64,25 +68,44 @@ class CoSplitPanel extends CoContainer implements IContainer {
     Component secondComponent = getComponentWithContraint("SECOND_COMPONENT");
     List<Widget> widgets = new List<Widget>();
 
-    if (firstComponent != null) {
-      widgets.add(SingleChildScrollView(
-          scrollDirection: Axis.horizontal, child: firstComponent.getWidget()));
-    } else {
-      widgets.add(Container());
-    }
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (firstComponent != null) {
+        widgets.add(SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: CoScrollPanelLayout(
+              key: this.keyFirst,
+              parentConstraints: constraints,
+              children: [
+                CoScrollPanelLayoutId(
+                    key: ValueKey(this.keyFirst),
+                    parentConstraints: constraints,
+                    child: firstComponent.getWidget())
+              ],
+            )));
+      } else {
+        widgets.add(Container());
+      }
 
-    if (secondComponent != null) {
-      widgets.add(SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: secondComponent.getWidget()));
-    } else {
-      widgets.add(Container());
-    }
+      if (secondComponent != null) {
+        widgets.add(SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: CoScrollPanelLayout(
+              key: this.keySecond,
+              parentConstraints: constraints,
+              children: [
+                CoScrollPanelLayoutId(
+                    key: ValueKey(this.keySecond),
+                    parentConstraints: constraints,
+                    child: secondComponent.getWidget())
+              ],
+            )));
+      } else {
+        widgets.add(Container());
+      }
 
-    if (kIsWeb &&
-        (globals.layoutMode == 'Full' || globals.layoutMode == 'Small')) {
-      return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
+      if (kIsWeb &&
+          (globals.layoutMode == 'Full' || globals.layoutMode == 'Small')) {
         _calculateDividerPosition(constraints);
 
         return SplitView(
@@ -99,17 +122,17 @@ class CoSplitPanel extends CoContainer implements IContainer {
             currentSplitviewWeight = value;
           },
         );
-      });
-    } else {
-      if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
-        return SingleChildScrollView(
-            child: Wrap(key: componentId, children: widgets));
       } else {
-        return Column(
-          key: componentId,
-          children: widgets,
-        );
+        if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
+          return SingleChildScrollView(
+              child: Wrap(key: componentId, children: widgets));
+        } else {
+          return Column(
+            key: componentId,
+            children: widgets,
+          );
+        }
       }
-    }
+    });
   }
 }
