@@ -105,11 +105,15 @@ class _SplitViewState extends State<SplitView> {
               }
             },
             child: Container(
-              color: widget.gripColor,
-              child: Center(
-                child: Icon(Icons.horizontal_rule, color: widget.handleColor),
-              ),
-            ),
+                color: widget.gripColor,
+                child: Center(
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: Container(
+                          height: 4,
+                          color: widget.handleColor,
+                          width: 25,
+                        )))),
           ),
         ),
       ],
@@ -120,6 +124,11 @@ class _SplitViewState extends State<SplitView> {
       BuildContext context, BoxConstraints constraints, double w) {
     final double left = constraints.maxWidth * w;
     final double right = constraints.maxWidth * (1.0 - w);
+    BoxConstraints view1Constraints = BoxConstraints(
+        minHeight: constraints.maxHeight,
+        maxHeight: constraints.maxHeight,
+        minWidth: 0,
+        maxWidth: constraints.maxWidth);
 
     return Stack(
       children: <Widget>[
@@ -128,14 +137,16 @@ class _SplitViewState extends State<SplitView> {
           left: 0,
           right: right,
           bottom: 0,
-          child: widget.view1,
+          child: ConstrainedBox(
+              constraints: view1Constraints, child: widget.view1),
         ),
         Positioned(
           top: 0,
           left: left,
           right: 0,
           bottom: 0,
-          child: widget.view2,
+          child: ConstrainedBox(
+              constraints: view1Constraints, child: widget.view2),
         ),
         Positioned(
           top: 0,
