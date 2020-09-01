@@ -21,6 +21,7 @@ enum CellEditorProperty {
   PLACEHOLDER_VISIBLE,
   DEFAULT_IMAGE,
   IMAGES,
+  BOOLEAN,
 }
 
 class CellEditorProperties {

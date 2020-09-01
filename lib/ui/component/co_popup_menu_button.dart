@@ -26,6 +26,7 @@ class CoPopupMenuButton extends Component implements IComponent {
   CoPopupMenu menu;
   String defaultMenuItem;
   Widget icon;
+  bool network = false;
 
   @override
   get preferredSize {
@@ -71,9 +72,21 @@ class CoPopupMenuButton extends Component implements IComponent {
                 double.tryParse(strinArr[1]) != null &&
                 double.tryParse(strinArr[2]) != null) {
               size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+
+              if (strinArr[3] != null) {
+                network = strinArr[3].toLowerCase() == 'true';
+              }
             }
-            icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]),
-                width: size.width, height: size.height);
+            if (network) {
+              icon = Image.network(
+                globals.baseUrl + strinArr[0],
+                width: size.width,
+                height: size.height,
+              );
+            } else {
+              icon = Image.memory(utf8.base64Decode(globals.files[strinArr[0]]),
+                  width: size.width, height: size.height);
+            }
 
             BlocProvider.of<ApiBloc>(context)
                 .dispatch(Reload(requestType: RequestType.RELOAD));
