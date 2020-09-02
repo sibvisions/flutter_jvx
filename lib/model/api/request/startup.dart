@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../utils/device_info.dart';
 import '../../../model/api/request/request.dart';
 
@@ -15,6 +17,7 @@ class Startup extends Request {
   String password;
   String url;
   DeviceInfo deviceInfo;
+  String deviceMode = "mobile";
 
   Startup(
       {this.applicationName,
@@ -32,6 +35,7 @@ class Startup extends Request {
       RequestType requestType})
       : super(clientId: clientId, requestType: requestType) {
     this.deviceInfo = DeviceInfo();
+    if (kIsWeb) this.deviceMode = "desktop";
   }
 
   Map<String, dynamic> toJson() => {
@@ -51,6 +55,7 @@ class Startup extends Request {
         'osVersion': deviceInfo.osVersion,
         'appVersion': deviceInfo.appVersion,
         'deviceType': deviceInfo.deviceType,
-        'deviceTypeModel': deviceInfo.deviceTypeModel
+        'deviceTypeModel': deviceInfo.deviceTypeModel,
+        'deviceMode': this.deviceMode
       };
 }
