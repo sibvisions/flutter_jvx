@@ -91,6 +91,10 @@ class _MenuPageState extends State<MenuPage> {
         ApplicationSwitcherDescription(
             primaryColor: UIData.ui_kit_color_2.value,
             label: globals.appName + ' - ' + globals.username));
+    if (globals.customSocketHandler != null) {
+      // initialize the Websocket Communication
+      globals.customSocketHandler.initCommunication();
+    }
     super.initState();
   }
 
@@ -122,11 +126,6 @@ class _MenuPageState extends State<MenuPage> {
 
     if (globals.appListener != null) {
       globals.appListener.fireAfterStartupListener(ApplicationApi(context));
-    }
-
-    if (globals.customSocketHandler != null) {
-      // initialize the Websocket Communication
-      globals.customSocketHandler.initCommunication();
     }
 
     //AppFrame

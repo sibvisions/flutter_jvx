@@ -22,6 +22,7 @@ class CoButton extends CoActionComponent {
   String text = "";
   Widget icon;
   String textStyle;
+  bool network = false;
 
   CoButton(Key componentId, BuildContext context) : super(componentId, context);
 
@@ -51,13 +52,25 @@ class CoButton extends CoActionComponent {
                 double.tryParse(strinArr[1]) != null &&
                 double.tryParse(strinArr[2]) != null) {
               size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+              if (strinArr[3] != null) {
+                network = strinArr[3].toLowerCase() == 'true';
+              }
             }
-            icon = Image.memory(
-              utf8.base64Decode(globals.files[strinArr[0]]),
-              width: size.width,
-              height: size.height,
-              color: !this.enabled ? Colors.grey.shade500 : null,
-            );
+            if (network) {
+              icon = Image.network(
+                globals.baseUrl + strinArr[0],
+                width: size.width,
+                height: size.height,
+                color: !this.enabled ? Colors.grey.shade500 : null,
+              );
+            } else {
+              icon = Image.memory(
+                utf8.base64Decode(globals.files[strinArr[0]]),
+                width: size.width,
+                height: size.height,
+                color: !this.enabled ? Colors.grey.shade500 : null,
+              );
+            }
 
             BlocProvider.of<ApiBloc>(context)
                 .dispatch(Reload(requestType: RequestType.RELOAD));

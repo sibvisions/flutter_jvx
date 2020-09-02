@@ -1,4 +1,5 @@
 import 'dart:convert' as utf8;
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +35,17 @@ class WebFrame extends StatefulWidget {
 
 class _WebFrameState extends State<WebFrame> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   bool isVisible = true;
+  Image profileImg;
+
+  @override
+  void initState() {
+    if (globals.profileImage != null || globals.profileImage.isNotEmpty) {
+      profileImg = Image.memory(base64Decode(globals.profileImage));
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -300,12 +311,8 @@ class _WebFrameState extends State<WebFrame> {
             ),
           ],
           icon: CircleAvatar(
-            backgroundImage: globals.profileImage.isNotEmpty
-                ? Image.memory(
-                    base64Decode(globals.profileImage),
-                    fit: BoxFit.fitHeight,
-                  ).image
-                : null,
+            backgroundImage:
+                globals.profileImage.isNotEmpty ? profileImg.image : null,
             child: globals.profileImage.isNotEmpty
                 ? null
                 : Icon(
