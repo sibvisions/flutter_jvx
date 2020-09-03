@@ -60,8 +60,14 @@ class CoDateCellEditor extends CoCellEditor {
     DateTime timePart;
     if (this.value == null)
       timePart = DateTime(1970);
-    else
-      timePart = DateTime.fromMillisecondsSinceEpoch(this.value);
+    else {
+      if (this.value is int)
+        timePart = DateTime.fromMillisecondsSinceEpoch(this.value);
+      else if (this.value is String && int.tryParse(this.value) != null)
+        timePart = DateTime.fromMillisecondsSinceEpoch(int.parse(this.value));
+      else
+        timePart = DateTime(1970);
+    }
 
     timePart = DateTime(
         date.year,
@@ -105,6 +111,8 @@ class CoDateCellEditor extends CoCellEditor {
         font: font,
         horizontalAlignment: horizontalAlignment);
 
+    this.isTableView = false;
+
     if (!this.isTableView) {
       return Container(
         height: 50,
@@ -128,9 +136,14 @@ class CoDateCellEditor extends CoCellEditor {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Text(
-                      (this.value != null && this.value is int)
+                      (this.value != null &&
+                              (this.value is int ||
+                                  int.tryParse(this.value) != null))
                           ? DateFormat(this.dateFormat).format(
-                              DateTime.fromMillisecondsSinceEpoch(this.value))
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  this.value is String
+                                      ? int.parse(this.value)
+                                      : this.value))
                           : (placeholderVisible && placeholder != null
                               ? placeholder
                               : ""),
