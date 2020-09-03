@@ -41,7 +41,7 @@ class _WebFrameState extends State<WebFrame> {
 
   @override
   void initState() {
-    if (globals.profileImage != null || globals.profileImage.isNotEmpty) {
+    if (globals.profileImage != null && globals.profileImage.isNotEmpty) {
       profileImg = Image.memory(base64Decode(globals.profileImage));
     }
     super.initState();
@@ -312,8 +312,11 @@ class _WebFrameState extends State<WebFrame> {
           ],
           icon: CircleAvatar(
             backgroundImage:
-                globals.profileImage.isNotEmpty ? profileImg.image : null,
-            child: globals.profileImage.isNotEmpty
+                globals.profileImage != null && globals.profileImage.isNotEmpty
+                    ? profileImg.image
+                    : null,
+            child: globals.profileImage != null &&
+                    globals.profileImage.isNotEmpty
                 ? null
                 : Icon(
                     FontAwesomeIcons.userTie,
