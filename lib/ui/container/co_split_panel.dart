@@ -89,17 +89,17 @@ class CoSplitPanel extends CoContainer implements IContainer {
 
       if (secondComponent != null) {
         widgets.add(SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            //scrollDirection: Axis.horizontal,
             child: CoScrollPanelLayout(
-              key: this.keySecond,
-              parentConstraints: constraints,
-              children: [
-                CoScrollPanelLayoutId(
-                    key: ValueKey(this.keySecond),
-                    parentConstraints: constraints,
-                    child: secondComponent.getWidget())
-              ],
-            )));
+          key: this.keySecond,
+          parentConstraints: constraints,
+          children: [
+            CoScrollPanelLayoutId(
+                key: ValueKey(this.keySecond),
+                parentConstraints: constraints,
+                child: secondComponent.getWidget())
+          ],
+        )));
       } else {
         widgets.add(Container());
       }
@@ -110,7 +110,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
 
         return SplitView(
           initialWeight: currentSplitviewWeight,
-          gripColor: Colors.grey[400].withOpacity(0.5),
+          gripColor: Colors.grey.withOpacity(0.3),
           handleColor: Colors.grey[800].withOpacity(0.5),
           view1: widgets[0],
           view2: widgets[1],
