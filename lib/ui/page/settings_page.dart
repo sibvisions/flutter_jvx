@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter/material.dart';
@@ -24,14 +27,14 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl, language, version, buildNumber;
+  String appName, baseUrl, language, version, buildNumber, buildDate;
   String toSaveUsername;
   String toSavePwd;
   List<PickerItem<int>> imageSizeItems;
   bool isDialogOpen = false;
 
   String get versionText {
-    String v = 'App V $version Build $buildNumber';
+    String v = 'App V $version Build $buildDate';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
       v += ', Server V ${globals.appVersion}';
 
@@ -219,10 +222,15 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  loadVersion() {
+  loadVersion() async {
     if (kIsWeb) {
-      version = AppVersionWeb.version;
-      buildNumber = AppVersionWeb.build.toString();
+      Map<String, dynamic> buildversion =
+          json.decode(await rootBundle.loadString('env/app_version.json'));
+      setState(() {
+        version = buildversion['version'];
+        buildDate = buildversion['build_date'];
+      });
+      print(versionText);
     } else {
       PackageInfo.fromPlatform().then((val) {
         setState(() {
