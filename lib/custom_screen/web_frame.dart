@@ -11,6 +11,7 @@ import 'package:jvx_flutterclient/model/api/response/response.dart';
 import 'package:jvx_flutterclient/ui/page/login_page.dart';
 import 'package:jvx_flutterclient/ui/page/settings_page.dart';
 import 'package:jvx_flutterclient/ui/widgets/custom_drawer_header.dart';
+import 'package:jvx_flutterclient/ui/widgets/web_menu_list_widget.dart';
 import 'package:jvx_flutterclient/utils/translations.dart';
 import 'package:tinycolor/tinycolor.dart';
 import '../utils/uidata.dart';
@@ -39,6 +40,20 @@ class _WebFrameState extends State<WebFrame> {
   bool isVisible = true;
   Image profileImg;
 
+  bool get hasMultipleGroups {
+    int groupCount = 0;
+    String lastGroup = "";
+    if (globals.items != null) {
+      globals.items?.forEach((m) {
+        if (m.group != lastGroup) {
+          groupCount++;
+          lastGroup = m.group;
+        }
+      });
+    }
+    return (groupCount > 1);
+  }
+
   @override
   void initState() {
     if (globals.profileImage != null && globals.profileImage.isNotEmpty) {
@@ -49,6 +64,8 @@ class _WebFrameState extends State<WebFrame> {
 
   @override
   Widget build(BuildContext context) {
+    globals.appFrame.setMenu(WebMenuListWidget(
+        menuItems: globals.items, groupedMenuMode: hasMultipleGroups));
     if (globals.layoutMode == 'Full') {
       return Scaffold(
         key: _scaffoldKey,
