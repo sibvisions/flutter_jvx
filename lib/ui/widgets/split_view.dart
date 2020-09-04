@@ -72,6 +72,18 @@ class _SplitViewState extends State<SplitView> {
     double top = constraints.maxHeight * w;
     double bottom = constraints.maxHeight * (1.0 - w);
 
+    BoxConstraints view1Constraints = BoxConstraints(
+        minHeight: 0,
+        maxHeight: top,
+        minWidth: constraints.maxWidth,
+        maxWidth: constraints.maxWidth);
+
+    BoxConstraints view2Constraints = BoxConstraints(
+        minHeight: 0,
+        maxHeight: bottom,
+        minWidth: constraints.maxWidth,
+        maxWidth: constraints.maxWidth);
+
     return Stack(
       children: <Widget>[
         Positioned(
@@ -79,20 +91,22 @@ class _SplitViewState extends State<SplitView> {
           left: 0,
           right: 0,
           bottom: bottom,
-          child: widget.view1,
+          child: ConstrainedBox(
+              constraints: view1Constraints, child: widget.view1),
         ),
         Positioned(
           top: top,
           left: 0,
           right: 0,
           bottom: 0,
-          child: widget.view2,
+          child: ConstrainedBox(
+              constraints: view2Constraints, child: widget.view2),
         ),
         Positioned(
-          top: top - widget.gripSize / 2.0,
+          top: top - widget.gripSize,
           left: 0,
           right: 0,
-          bottom: bottom - widget.gripSize / 2.0,
+          bottom: bottom,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onVerticalDragUpdate: (detail) {
@@ -112,7 +126,7 @@ class _SplitViewState extends State<SplitView> {
                         child: Container(
                           height: 4,
                           color: widget.handleColor,
-                          width: 25,
+                          width: 40,
                         )))),
           ),
         ),
@@ -128,7 +142,13 @@ class _SplitViewState extends State<SplitView> {
         minHeight: constraints.maxHeight,
         maxHeight: constraints.maxHeight,
         minWidth: 0,
-        maxWidth: constraints.maxWidth);
+        maxWidth: left);
+
+    BoxConstraints view2Constraints = BoxConstraints(
+        minHeight: constraints.maxHeight,
+        maxHeight: constraints.maxHeight,
+        minWidth: 0,
+        maxWidth: right);
 
     return Stack(
       children: <Widget>[
@@ -146,12 +166,12 @@ class _SplitViewState extends State<SplitView> {
           right: 0,
           bottom: 0,
           child: ConstrainedBox(
-              constraints: view1Constraints, child: widget.view2),
+              constraints: view2Constraints, child: widget.view2),
         ),
         Positioned(
           top: 0,
-          left: left - widget.gripSize / 2.0,
-          right: right - widget.gripSize / 2.0,
+          left: left - widget.gripSize,
+          right: right,
           bottom: 0,
           child: GestureDetector(
               behavior: HitTestBehavior.translucent,
@@ -170,7 +190,7 @@ class _SplitViewState extends State<SplitView> {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(5.0),
                           child: Container(
-                            height: 25,
+                            height: 40,
                             color: widget.handleColor,
                             width: 4,
                           ))))),

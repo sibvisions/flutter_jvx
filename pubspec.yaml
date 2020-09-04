@@ -63,6 +63,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - env/app_version.json
     - env/app.conf.json
     # conf.json is commented out during the deploy process
     - env/conf.json

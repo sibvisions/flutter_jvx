@@ -84,9 +84,13 @@ class RenderScrollPanelLayout extends RenderBox
 
       final MultiChildLayoutParentData childParentData = child.parentData;
       childParentData.offset = Offset(0, 0);
-      this.size = child.size;
+      this.size = this
+          .constraints
+          .constrainDimensions(child.size.width, child.size.height);
     } else {
-      this.size = this.parentConstraints.biggest;
+      this.size = this.constraints.constrainDimensions(
+          this.parentConstraints.biggest.width,
+          this.parentConstraints.biggest.height);
     }
   }
 
