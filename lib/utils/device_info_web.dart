@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:html';
-import 'package:jvx_flutterclient/utils/app_version_web.dart';
+import 'package:flutter/services.dart';
 import 'package:jvx_flutterclient/utils/device_info.dart';
 import 'package:platform_detect/platform_detect.dart';
 
@@ -16,9 +17,15 @@ class DeviceInfoWeb implements DeviceInfo {
     this.deviceType = browser.name;
     this.deviceTypeModel = window.navigator.userAgent;
     this.osName = operatingSystem.name;
-    this.appVersion = AppVersionWeb.versionAndBuild;
+    this.appVersion = getAppVersion();
     print(
         'Running on: ${this.osName} (SDK ${this.osVersion}), ${this.deviceType} ${this.deviceTypeModel}');
+  }
+
+  getAppVersion() async {
+    Map<String, dynamic> buildversion =
+        json.decode(await rootBundle.loadString('env/app_version.json'));
+    return buildversion['version'];
   }
 }
 

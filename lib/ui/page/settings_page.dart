@@ -4,12 +4,12 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:package_info/package_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-import '../../utils/app_version_web.dart';
 import '../../logic/bloc/theme_bloc.dart';
 import '../../ui/tools/restart.dart';
 import '../../utils/shared_preferences_helper.dart';
@@ -34,9 +34,9 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isDialogOpen = false;
 
   String get versionText {
-    String v = 'App V $version Build $buildDate';
+    String v = 'App V $version Build $buildNumber ($buildDate)';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
-      v += ', Server V ${globals.appVersion}';
+      v += '\nServer V ${globals.appVersion}';
 
     return v;
   }
@@ -223,22 +223,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   loadVersion() async {
-    if (kIsWeb) {
-      Map<String, dynamic> buildversion =
-          json.decode(await rootBundle.loadString('env/app_version.json'));
-      setState(() {
-        version = buildversion['version'];
-        buildDate = buildversion['build_date'];
-      });
-      print(versionText);
-    } else {
-      PackageInfo.fromPlatform().then((val) {
-        setState(() {
-          version = val.version;
-          buildNumber = val.buildNumber;
-        });
-      });
-    }
+    Map<String, dynamic> buildversion =
+        json.decode(await rootBundle.loadString('env/app_version.json'));
+    setState(() {
+      version = buildversion['version'];
+      if (version != null) {
+        List<String> splittedVersion = version.split("+");
+        if (splittedVersion.length == 2) {
+          version = splittedVersion[0];
+          buildNumber = splittedVersion[1];
+        }
+      }
+      buildDate = buildversion['build_date'];
+
+      if (buildDate != null) {
+        DateTime date = DateTime.parse(buildDate);
+        DateFormat formatter = DateFormat.yMd();
+        if (date != null) buildDate = formatter.format(date);
+      }
+    });
+    print(versionText);
   }
 
   showImageSizePicker(BuildContext context) {
