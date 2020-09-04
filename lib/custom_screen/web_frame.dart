@@ -217,14 +217,14 @@ class _WebFrameState extends State<WebFrame> {
                                     child: widget.screen,
                                   )
                                 : globals.files.containsKey(
-                                        globals.applicationStyle.desktopIcon)
+                                        globals.applicationStyle?.desktopIcon)
                                     ? Container(
                                         decoration: BoxDecoration(
                                         image: DecorationImage(
                                           image: MemoryImage(utf8.base64Decode(
                                               globals.files[globals
                                                   .applicationStyle
-                                                  .desktopIcon])),
+                                                  ?.desktopIcon])),
                                           fit: BoxFit.cover,
                                         ),
                                       ))

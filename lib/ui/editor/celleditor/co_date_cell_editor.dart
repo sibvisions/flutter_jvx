@@ -95,6 +95,42 @@ class CoDateCellEditor extends CoCellEditor {
     this.value = date.millisecondsSinceEpoch;
   }
 
+  _getDateTimePopUp() {
+    TextUtils.unfocusCurrentTextfield(context);
+
+    return showDatePicker(
+      context: context,
+      locale: Locale(globals.language),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2050),
+      initialDate: (this.value != null && this.value is int)
+          ? DateTime.fromMillisecondsSinceEpoch(this.value)
+          : DateTime.now().subtract(Duration(seconds: 1)),
+    ).then((date) {
+      if (date != null && isTimeFormat) {
+        this.setDatePart(date);
+        return showTimePicker(
+                context: context,
+                initialTime: (this.value != null && this.value is int)
+                    ? TimeOfDay.fromDateTime(
+                        DateTime.fromMillisecondsSinceEpoch(this.value))
+                    : TimeOfDay.fromDateTime(
+                        DateTime.now().subtract(Duration(seconds: 1))))
+            .then((time) {
+          if (time != null) {
+            this.setTimePart(time);
+            this.onDateValueChanged(this.value);
+          }
+        });
+      } else {
+        if (date != null) {
+          this.setDatePart(date);
+          this.onDateValueChanged(this.value);
+        }
+      }
+    });
+  }
+
   @override
   Widget getWidget(
       {bool editable,
@@ -111,7 +147,7 @@ class CoDateCellEditor extends CoCellEditor {
         font: font,
         horizontalAlignment: horizontalAlignment);
 
-    this.isTableView = false;
+    // this.isTableView = false;
 
     if (!this.isTableView) {
       return Container(
@@ -188,42 +224,7 @@ class CoDateCellEditor extends CoCellEditor {
                 )
               ],
             ),
-            onPressed: () {
-              TextUtils.unfocusCurrentTextfield(context);
-
-              return showDatePicker(
-                context: context,
-                locale: Locale(globals.language),
-                firstDate: DateTime(1900),
-                lastDate: DateTime(2050),
-                initialDate: (this.value != null && this.value is int)
-                    ? DateTime.fromMillisecondsSinceEpoch(this.value)
-                    : DateTime.now().subtract(Duration(seconds: 1)),
-              ).then((date) {
-                if (date != null && isTimeFormat) {
-                  this.setDatePart(date);
-                  return showTimePicker(
-                          context: context,
-                          initialTime: (this.value != null && this.value is int)
-                              ? TimeOfDay.fromDateTime(
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      this.value))
-                              : TimeOfDay.fromDateTime(DateTime.now()
-                                  .subtract(Duration(seconds: 1))))
-                      .then((time) {
-                    if (time != null) {
-                      this.setTimePart(time);
-                      this.onDateValueChanged(this.value);
-                    }
-                  });
-                } else {
-                  if (date != null) {
-                    this.setDatePart(date);
-                    this.onDateValueChanged(this.value);
-                  }
-                }
-              });
-            }),
+            onPressed: () => _getDateTimePopUp()),
       );
     } else {
       if (this.value is String && int.tryParse(this.value) != null) {
@@ -234,7 +235,70 @@ class CoDateCellEditor extends CoCellEditor {
           ? DateFormat(this.dateFormat)
               .format(DateTime.fromMillisecondsSinceEpoch(this.value))
           : '';
-      return Text(text);
+
+      return GestureDetector(
+        onTap: () => _getDateTimePopUp(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Flexible(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  (this.value != null &&
+                          (this.value is int ||
+                              int.tryParse(this.value) != null))
+                      ? DateFormat(this.dateFormat).format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                              this.value is String
+                                  ? int.parse(this.value)
+                                  : this.value))
+                      : (placeholderVisible && placeholder != null
+                          ? placeholder
+                          : ""),
+                  style: (this.value != null && this.value is int)
+                      ? TextStyle(
+                          fontSize: 16,
+                          color: this.foreground == null
+                              ? Colors.grey[700]
+                              : this.foreground)
+                      : TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.normal),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 58,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    FontAwesomeIcons.calendarAlt,
+                    color: Colors.grey[600],
+                    size: 16,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    child: Icon(
+                      Icons.clear,
+                      size: 16,
+                      color: Colors.grey[400],
+                    ),
+                    onTap: () {
+                      this.value = null;
+                      this.onDateValueChanged(this.value);
+                    },
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      );
     }
   }
 }

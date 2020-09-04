@@ -13,18 +13,20 @@ class GradientButton extends StatelessWidget {
     return Material(
       elevation: 10.0,
       color: Colors.transparent,
-      shape: globals.applicationStyle.buttonShape,
+      shape: globals.applicationStyle?.buttonShape ??
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         onTap: onPressed,
         splashColor: UIData.ui_kit_color_2,
         child: Ink(
           height: 50.0,
           decoration: ShapeDecoration(
-            shape: globals.applicationStyle.buttonShape,
-            gradient: LinearGradient(
-              colors: UIData.kitGradients2,
-            )
-          ),
+              shape: globals.applicationStyle?.buttonShape ??
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+              gradient: LinearGradient(
+                colors: UIData.kitGradients2,
+              )),
           child: Center(
             child: Text(
               text,
