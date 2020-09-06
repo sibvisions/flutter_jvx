@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../utils/uidata.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
+import '../../utils/uidata.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/so_action.dart' as prefix0;
@@ -143,8 +143,6 @@ class _MenuGridViewState extends State<MenuGridView> {
             child: _buildGroupHeader(v[0].group.toString())),
         content: group,
       ));
-
-      // widgets.add(group);
     });
 
     return widgets;
@@ -181,7 +179,7 @@ class _MenuGridViewState extends State<MenuGridView> {
     return GestureDetector(
       child: new Container(
         margin: EdgeInsets.fromLTRB(0, 1, 0, 0),
-        color: UIData.ui_kit_color_2[500]
+        color: UIData.ui_kit_color_2
             .withOpacity(globals.applicationStyle.menuOpacity),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,24 +188,28 @@ class _MenuGridViewState extends State<MenuGridView> {
             Expanded(
                 flex: 25,
                 child: Container(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(0.2),
                     padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                     child: Center(
                         child: Text(
                       item.action.label,
                       style: TextStyle(fontSize: 16, color: Colors.white),
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     )))),
             Expanded(
                 flex: 75,
                 child: Container(
+                  color: Colors.black.withOpacity(0.1),
                   child: item.image != null
                       ? new CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Center(
                               child: CustomIcon(
-                                  image: item.image, size: Size(72, 72))))
+                                  image: item.image,
+                                  size: Size(72, 72),
+                                  color: Colors.white)))
                       : new CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Center(
