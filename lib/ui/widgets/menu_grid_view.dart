@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../utils/uidata.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../logic/bloc/api_bloc.dart';
@@ -111,43 +112,10 @@ class _MenuGridViewState extends State<MenuGridView> {
   Widget _buildGridView(List<MenuItem> menuItems) {
     return GridView.builder(
       itemCount: menuItems.length,
-      gridDelegate:
-          new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 210, crossAxisSpacing: 1),
       itemBuilder: (BuildContext context, int index) {
-        return new GestureDetector(
-          child: new Card(
-            color: Colors.white
-                .withOpacity(globals.applicationStyle?.menuOpacity ?? 1.0),
-            margin: EdgeInsets.all(6),
-            shape: globals.applicationStyle?.menuShape ?? null,
-            elevation: 2.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                menuItems[index].image != null
-                    ? new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: CustomIcon(
-                            image: menuItems[index].image, size: Size(48, 48)))
-                    : new CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: Icon(
-                          FontAwesomeIcons.clone,
-                          size: 48,
-                          color: Colors.grey[400],
-                        )),
-                Container(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                    child: Text(
-                      menuItems[index].action.label,
-                      style: TextStyle(fontSize: 20),
-                      textAlign: TextAlign.center,
-                    )),
-              ],
-            ),
-          ),
-          onTap: () => _onTap(menuItems[index]),
-        );
+        return _getMenuItem(menuItems[index]);
       },
     );
   }
@@ -159,12 +127,12 @@ class _MenuGridViewState extends State<MenuGridView> {
     List<Widget> widgets = <Widget>[];
 
     groupedMItems.forEach((k, v) {
-      Widget group = GridView.count(
-        padding: EdgeInsets.fromLTRB(14, 5, 14, 5),
+      Widget group = GridView(
+        gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 210, crossAxisSpacing: 1),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        crossAxisCount: 2,
         children: _buildGroupGridViewCards(v),
       );
 
@@ -186,52 +154,12 @@ class _MenuGridViewState extends State<MenuGridView> {
     List<Widget> widgets = <Widget>[];
 
     menuItems.forEach((mItem) {
-      Widget menuItemCard = _buildGroupItemCard(mItem);
+      Widget menuItemCard = _getMenuItem(mItem);
 
       widgets.add(menuItemCard);
     });
 
     return widgets;
-  }
-
-  Widget _buildGroupItemCard(MenuItem menuItem) {
-    return new GestureDetector(
-      child: new Card(
-        color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
-        margin: EdgeInsets.all(5),
-        shape: globals.applicationStyle.menuShape,
-        elevation: 2.0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: menuItem.image != null
-                  ? new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child:
-                          CustomIcon(image: menuItem.image, size: Size(48, 48)))
-                  : new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child: Icon(
-                        FontAwesomeIcons.clone,
-                        size: 48,
-                        color: Colors.grey[400],
-                      )),
-            ),
-            Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                child: Text(
-                  menuItem.action.label,
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                )),
-          ],
-        ),
-      ),
-      onTap: () => _onTap(menuItem),
-    );
   }
 
   Widget _buildGroupHeader(String groupName) {
@@ -241,12 +169,55 @@ class _MenuGridViewState extends State<MenuGridView> {
           title: Text(
             groupName,
             textAlign: TextAlign.left,
-            // textAlign: TextAlign.center,
             style: TextStyle(
                 color: Colors.grey.shade700,
                 fontWeight: FontWeight.bold,
                 fontSize: 18),
           ),
         ));
+  }
+
+  GestureDetector _getMenuItem(MenuItem item) {
+    return GestureDetector(
+      child: new Container(
+        margin: EdgeInsets.fromLTRB(0, 1, 0, 0),
+        color: UIData.ui_kit_color_2[500]
+            .withOpacity(globals.applicationStyle.menuOpacity),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+                flex: 25,
+                child: Container(
+                    color: Colors.black.withOpacity(0.1),
+                    padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                    child: Center(
+                        child: Text(
+                      item.action.label,
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                    )))),
+            Expanded(
+                flex: 75,
+                child: Container(
+                  child: item.image != null
+                      ? new CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Center(
+                              child: CustomIcon(
+                                  image: item.image, size: Size(72, 72))))
+                      : new CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Center(
+                              child: Icon(FontAwesomeIcons.clone,
+                                  size: 72, color: Colors.white))),
+                )),
+          ],
+        ),
+      ),
+      onTap: () => _onTap(item),
+    );
   }
 }
