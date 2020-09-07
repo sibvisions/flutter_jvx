@@ -175,7 +175,6 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                                 size: 32, color: Colors.white))),
               ),
               Expanded(
-                  flex: 1,
                   child: Container(
                       color: Colors.black.withOpacity(0.2),
                       padding: EdgeInsets.fromLTRB(15, 3, 5, 3),

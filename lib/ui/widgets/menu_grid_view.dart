@@ -138,10 +138,12 @@ class _MenuGridViewState extends State<MenuGridView> {
 
       widgets.add(StickyHeader(
         header: Container(
+            color: Colors.white,
+            child: _buildGroupHeader(v[0].group.toString())),
+        content: Container(
             color:
                 Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
-            child: _buildGroupHeader(v[0].group.toString())),
-        content: group,
+            child: group),
       ));
     });
 
