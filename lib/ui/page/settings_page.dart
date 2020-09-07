@@ -34,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isDialogOpen = false;
 
   String get versionText {
-    String v = 'App V $version Build $buildDate';
+    String v = 'App V ${version ?? "1.0.0"} Build ${buildDate ?? "2020/09/01"}';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
       v += ', Server V ${globals.appVersion}';
 
@@ -224,12 +224,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   loadVersion() async {
     if (kIsWeb) {
-      Map<String, dynamic> buildversion =
-          json.decode(await rootBundle.loadString('env/app_version.json'));
-      setState(() {
-        version = buildversion['version'];
-        buildDate = buildversion['build_date'];
-      });
+      try {
+        Map<String, dynamic> buildversion =
+            json.decode(await rootBundle.loadString('env/app_version.json'));
+        setState(() {
+          version = buildversion['version'];
+          buildDate = buildversion['build_date'];
+        });
+      } catch (e) {
+        print('Couldn\'t load App Version File');
+      }
       print(versionText);
     } else {
       PackageInfo.fromPlatform().then((val) {
