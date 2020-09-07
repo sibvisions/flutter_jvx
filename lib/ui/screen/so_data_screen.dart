@@ -45,12 +45,12 @@ mixin SoDataScreen {
 
     if (request != null &&
         request.requestType == RequestType.DAL_SET_VALUE &&
-        request is SetValues &&
-        request.filter != null) {
+        request is SetValues) {
       pData.dataBooks?.forEach((element) {
         SoComponentData cData = getComponentData(element.dataProvider);
         cData.updateData(pData.dataBooks[0]);
-        cData.updateSelectedRow(request.filter.values[0]);
+        if (request.filter != null)
+          cData.updateSelectedRow(request.filter.values[0]);
       });
     }
 

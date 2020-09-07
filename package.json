@@ -8,12 +8,14 @@
     "test": "test"
   },
   "scripts": {
-    "increasebuildnumber": "run-s increaseBuildNumberPubspecYaml & run-s increaseBuildNumberAppVersionWebDart",
-    "increasebuildnumberwin": "run-s increaseBuildNumberPubspecYamlWin & run-s increaseBuildNumberAppVersionWebDartWin",
+    "increasebuildnumber": "run-s increaseBuildNumberPubspecYaml && run-s setBuildDate && run-s increaseBuildNumberAppVersionJson",
+    "increasebuildnumberwin": "run-s increaseBuildNumberPubspecYamlWin & run-s setBuildDateWin & run-s increaseBuildNumberAppVersionJsonWin",
     "increaseBuildNumberPubspecYaml": "perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e' pubspec.yaml",
     "increaseBuildNumberPubspecYamlWin": "perl -i -pe \"s/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e\" pubspec.yaml",
-    "increaseBuildNumberAppVersionWebDart": "perl -i -pe 's/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e' lib/utils/app_version_web.dart",
-    "increaseBuildNumberAppVersionWebDartWin": "perl -i -pe \"s/(build\\s+\\=\\s)(\\d+)/$1.($2+1)/e\" lib/utils/app_version_web.dart",
+    "increaseBuildNumberAppVersionJson": "perl -i -pe 's/(\"version\"\\:\\s+\"\\d+\\.\\d+\\.\\d+\\+)(\\d+)/$1.($2+1)/e' env/app_version.json",
+    "increaseBuildNumberAppVersionJsonWin": "perl -i -pe \"s/(\"version\"\\:\\s+\"\\d+\\.\\d+\\.\\d+\\+)(\\d+)/$1.($2+1)/e\" env/app_version.json",
+    "setBuildDate": "perl -MPOSIX -i -pe 's/(\"build_date\"\\:\\s\")(\\X+)(\")/strftime(\"$1%Y-%m-%d$3\", localtime)/e' env/app_version.json",
+    "setBuildDateWin": "perl -MPOSIX -i -pe \"s/(\"build_date\"\\:\\s\")(\\X+)(\")/strftime(\"$1%Y-%m-%d$3\", localtime)/e\" env/app_version.json",
     "excludeconfigjson": "replace-in-files --string=' - env/conf.json' --replacement=' #- env/conf.json' pubspec.yaml",
     "includeconfigjson": "replace-in-files --string='#- env/conf.json' --replacement='- env/conf.json' pubspec.yaml",
     "copyBuildWeb": "del-cli deploy/web && st-cp build/web deploy/",
