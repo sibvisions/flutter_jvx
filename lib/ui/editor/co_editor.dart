@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/model/filter.dart';
 import 'package:jvx_flutterclient/utils/text_utils.dart';
 import 'celleditor/co_number_cell_editor.dart';
 import 'celleditor/co_text_cell_editor.dart';
@@ -90,7 +91,7 @@ class CoEditor extends Component implements IEditor {
 
   void onBeginEditing() {}
 
-  void onValueChanged(dynamic value) {
+  void onValueChanged(dynamic value, [int index]) {
     bool isTextEditor =
         (cellEditor is CoTextCellEditor || cellEditor is CoNumberCellEditor);
 
@@ -105,8 +106,20 @@ class CoEditor extends Component implements IEditor {
       //Filter filter = Filter(
       //        columnNames: this.data.primaryKeyColumns,
       //        values: data.data.getRow(0, this.data.primaryKeyColumns));
-      data.setValues(context, (value is List) ? value : [value], [columnName],
-          null, isTextEditor);
+
+      data.setValues(
+          context,
+          (value is List) ? value : [value],
+          [columnName],
+          index != null
+              ? Filter(
+                  columnNames: this.data.primaryKeyColumns,
+                  values: this
+                      .data
+                      .data
+                      .getRow(index, this.data.metaData.primaryKeyColumns))
+              : null,
+          isTextEditor);
     }
   }
 

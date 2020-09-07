@@ -69,7 +69,7 @@ class SoComponentData {
           data.selectedRow != pData.selectedRow)
         _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data = pData;
-    } else if (data.isAllFetched) {
+    } else if (true /*data.isAllFetched*/) {
       if (pData.records.length > 0) {
         for (int i = pData.from; i <= pData.to; i++) {
           if ((i - pData.from) < data.records.length &&
@@ -238,7 +238,10 @@ class SoComponentData {
 
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {
-        if (i < values.length) this._setColumnValue(f, values[i]);
+        if (i < values.length &&
+            (filter == null || data.selectedRow == filter?.values[0])) {
+          this._setColumnValue(f, values[i]);
+        }
       });
       setValues.columnNames = columnNames;
     }

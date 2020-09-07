@@ -12,6 +12,7 @@ import '../../../utils/uidata.dart';
 
 class CoDateCellEditor extends CoCellEditor {
   String dateFormat;
+  dynamic toUpdate;
 
   get isTimeFormat {
     return dateFormat.contains("H") || dateFormat.contains("m");
@@ -43,6 +44,8 @@ class CoDateCellEditor extends CoCellEditor {
 
   CoDateCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
+    preferredEditorMode = changedCellEditor
+        .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
     dateFormat =
         changedCellEditor.getProperty<String>(CellEditorProperty.DATE_FORMAT);
   }
@@ -53,18 +56,20 @@ class CoDateCellEditor extends CoCellEditor {
   }
 
   void onDateValueChanged(dynamic value) {
-    super.onValueChanged(value);
+    this.toUpdate = null;
+    super.onValueChanged(value, indexInTable);
   }
 
   void setDatePart(DateTime date) {
     DateTime timePart;
-    if (this.value == null)
+    if (this.toUpdate == null)
       timePart = DateTime(1970);
     else {
-      if (this.value is int)
-        timePart = DateTime.fromMillisecondsSinceEpoch(this.value);
-      else if (this.value is String && int.tryParse(this.value) != null)
-        timePart = DateTime.fromMillisecondsSinceEpoch(int.parse(this.value));
+      if (this.toUpdate is int)
+        timePart = DateTime.fromMillisecondsSinceEpoch(this.toUpdate);
+      else if (this.toUpdate is String && int.tryParse(this.toUpdate) != null)
+        timePart =
+            DateTime.fromMillisecondsSinceEpoch(int.parse(this.toUpdate));
       else
         timePart = DateTime(1970);
     }
@@ -79,20 +84,20 @@ class CoDateCellEditor extends CoCellEditor {
         timePart.millisecond,
         timePart.microsecond);
 
-    this.value = date.millisecondsSinceEpoch;
+    this.toUpdate = date.millisecondsSinceEpoch;
   }
 
   void setTimePart(TimeOfDay time) {
     DateTime date;
-    if (this.value == null)
+    if (this.toUpdate == null)
       date = DateTime(1970);
     else
-      date = DateTime.fromMillisecondsSinceEpoch(this.value);
+      date = DateTime.fromMillisecondsSinceEpoch(this.toUpdate);
 
     date = DateTime(
         date.year, date.month, date.day, time.hour, time.minute, 0, 0, 0);
 
-    this.value = date.millisecondsSinceEpoch;
+    this.toUpdate = date.millisecondsSinceEpoch;
   }
 
   _getDateTimePopUp() {
@@ -119,13 +124,13 @@ class CoDateCellEditor extends CoCellEditor {
             .then((time) {
           if (time != null) {
             this.setTimePart(time);
-            this.onDateValueChanged(this.value);
+            this.onDateValueChanged(this.toUpdate);
           }
         });
       } else {
         if (date != null) {
           this.setDatePart(date);
-          this.onDateValueChanged(this.value);
+          this.onDateValueChanged(this.toUpdate);
         }
       }
     });
@@ -215,8 +220,8 @@ class CoDateCellEditor extends CoCellEditor {
                           color: Colors.grey[400],
                         ),
                         onTap: () {
-                          this.value = null;
-                          this.onDateValueChanged(this.value);
+                          this.toUpdate = null;
+                          this.onDateValueChanged(this.toUpdate);
                         },
                       )
                     ],
@@ -227,78 +232,86 @@ class CoDateCellEditor extends CoCellEditor {
             onPressed: () => _getDateTimePopUp()),
       );
     } else {
-      if (this.value is String && int.tryParse(this.value) != null) {
-        this.value = int.parse(this.value);
-      }
+      // Pref Editor Mode
+      // 1 = Single Click
+      // 0 = Double Click
 
-      String text = (this.value != null && this.value is int)
-          ? DateFormat(this.dateFormat)
-              .format(DateTime.fromMillisecondsSinceEpoch(this.value))
-          : '';
-
-      return GestureDetector(
-        onTap: () => _getDateTimePopUp(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Text(
-                  (this.value != null &&
-                          (this.value is int ||
-                              int.tryParse(this.value) != null))
-                      ? DateFormat(this.dateFormat).format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              this.value is String
-                                  ? int.parse(this.value)
-                                  : this.value))
-                      : (placeholderVisible && placeholder != null
-                          ? placeholder
-                          : ""),
-                  style: (this.value != null && this.value is int)
-                      ? TextStyle(
-                          fontSize: 16,
-                          color: this.foreground == null
-                              ? Colors.grey[700]
-                              : this.foreground)
-                      : TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                          fontWeight: FontWeight.normal),
+      if (this.editable && this.preferredEditorMode == 0) {
+        return GestureDetector(
+          onTap: () => _getDateTimePopUp(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Flexible(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    (this.value != null &&
+                            (this.value is int ||
+                                int.tryParse(this.value) != null))
+                        ? DateFormat(this.dateFormat).format(
+                            DateTime.fromMillisecondsSinceEpoch(
+                                this.value is String
+                                    ? int.parse(this.value)
+                                    : this.value))
+                        : (placeholderVisible && placeholder != null
+                            ? placeholder
+                            : ""),
+                    style: (this.value != null && this.value is int)
+                        ? TextStyle(
+                            fontSize: 16,
+                            color: this.foreground == null
+                                ? Colors.grey[700]
+                                : this.foreground)
+                        : TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.normal),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: 58,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    FontAwesomeIcons.calendarAlt,
-                    color: Colors.grey[600],
-                    size: 16,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  GestureDetector(
-                    child: Icon(
-                      Icons.clear,
+              SizedBox(
+                width: 58,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.calendarAlt,
+                      color: Colors.grey[600],
                       size: 16,
-                      color: Colors.grey[400],
                     ),
-                    onTap: () {
-                      this.value = null;
-                      this.onDateValueChanged(this.value);
-                    },
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      );
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      child: Icon(
+                        Icons.clear,
+                        size: 16,
+                        color: Colors.grey[400],
+                      ),
+                      onTap: () {
+                        this.toUpdate = null;
+                        this.onDateValueChanged(this.toUpdate);
+                      },
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      } else {
+        if (this.value is String && int.tryParse(this.value) != null) {
+          this.value = int.parse(this.value);
+        }
+
+        String text = (this.value != null && this.value is int)
+            ? DateFormat(this.dateFormat)
+                .format(DateTime.fromMillisecondsSinceEpoch(this.value))
+            : '';
+
+        return Text(text);
+      }
     }
   }
 }

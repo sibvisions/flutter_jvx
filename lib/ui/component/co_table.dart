@@ -247,7 +247,7 @@ class CoTable extends CoEditor {
     }
   }
 
-  CoEditor _getEditorForColumn(String text, String columnName) {
+  CoEditor _getEditorForColumn(String text, String columnName, int index) {
     DataBookMetaDataColumn column = this.data.getMetaDataColumn(columnName);
 
     if (column != null) {
@@ -258,6 +258,7 @@ class CoTable extends CoEditor {
         clEditor.data = this.data;
         clEditor.cellEditor.value = text;
         clEditor.cellEditor.editable = this.editable;
+        clEditor.cellEditor.indexInTable = index;
         return clEditor;
       }
     }
@@ -267,7 +268,7 @@ class CoTable extends CoEditor {
   Widget getTableColumn(
       String text, int rowIndex, int columnIndex, String columnName,
       {bool nullable}) {
-    CoEditor editor = _getEditorForColumn(text, columnName);
+    CoEditor editor = _getEditorForColumn(text, columnName, rowIndex);
     double width = 1;
 
     if (columnInfo != null && columnIndex < columnInfo.length)

@@ -39,6 +39,7 @@ class CoCellEditor implements ICellEditor {
   bool editable = true;
   bool borderVisible;
   bool placeholderVisible;
+  int indexInTable;
 
   Size preferredSize;
   Size minimumSize;
@@ -76,7 +77,7 @@ class CoCellEditor implements ICellEditor {
 
   VoidCallback onBeginEditing;
   VoidCallback onEndEditing;
-  ValueChanged<dynamic> onValueChanged;
+  Function(dynamic value, [int index]) onValueChanged;
   ValueChanged<dynamic> onFilter;
 
   @override

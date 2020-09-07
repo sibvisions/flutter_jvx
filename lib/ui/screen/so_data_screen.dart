@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/model/api/request/data/fetch_data.dart';
+import 'package:jvx_flutterclient/model/api/request/data/set_values.dart';
 import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/data/select_record.dart';
@@ -39,6 +40,17 @@ mixin SoDataScreen {
           dataModel.MetaData meta = dataModel.MetaData(d.dataProvider);
           BlocProvider.of<ApiBloc>(context).dispatch(meta);
         }
+      });
+    }
+
+    if (request != null &&
+        request.requestType == RequestType.DAL_SET_VALUE &&
+        request is SetValues &&
+        request.filter != null) {
+      pData.dataBooks?.forEach((element) {
+        SoComponentData cData = getComponentData(element.dataProvider);
+        cData.updateData(pData.dataBooks[0]);
+        cData.updateSelectedRow(request.filter.values[0]);
       });
     }
 
