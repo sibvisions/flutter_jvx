@@ -27,7 +27,7 @@ class CoCheckboxCellEditor extends CoCellEditor {
 
   void valueChanged(dynamic value) {
     this.value = boolToValue(value);
-    this.onValueChanged(this.value);
+    this.onValueChanged(this.value, indexInTable);
   }
 
   dynamic boolToValue(bool value) {

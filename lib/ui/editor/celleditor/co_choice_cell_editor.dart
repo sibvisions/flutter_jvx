@@ -80,7 +80,7 @@ class CoChoiceCellEditor extends CoCellEditor {
       selectedImage = _items[0];
 
     this.value = selectedImage.value;
-    onValueChanged(selectedImage.value);
+    onValueChanged(selectedImage.value, indexInTable);
   }
 
   @override
