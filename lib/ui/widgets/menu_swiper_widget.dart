@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
+import '../../utils/uidata.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/so_action.dart' as prefix0;
@@ -37,6 +38,10 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> widgetList = _buildGroupedGridView(this.widget.items);
+    int index = 0;
+
+    if (globals.menuCurrentPageIndex != null)
+      index = globals.menuCurrentPageIndex;
 
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
@@ -70,8 +75,14 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
           }
         },
         child: Swiper(
+          index: index,
           indicatorLayout: PageIndicatorLayout.SCALE,
-          pagination: new SwiperPagination(),
+          pagination: new SwiperPagination(
+              builder: DotSwiperPaginationBuilder(
+                  color: Colors.grey[400], activeColor: Colors.grey.shade700)),
+          onIndexChanged: (index) {
+            globals.menuCurrentPageIndex = index;
+          },
           itemCount: widgetList.length,
           itemBuilder: (BuildContext context, int index) {
             return widgetList[index];
@@ -115,22 +126,23 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
     List<Widget> widgets = <Widget>[];
 
     groupedMItems.forEach((k, v) {
-      Widget group = GridView.count(
-        padding: EdgeInsets.fromLTRB(14, 5, 14, 5),
+      Widget group = GridView(
+        gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 210, crossAxisSpacing: 1),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        crossAxisCount: 2,
         children: _buildGroupGridViewCards(v),
       );
 
-      widgets.add(StickyHeader(
+      widgets.add(SingleChildScrollView(
+          child: StickyHeader(
         header: Container(
             color:
                 Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
             child: _buildGroupHeader(v[0].group.toString())),
         content: group,
-      ));
+      )));
     });
 
     return widgets;
@@ -140,7 +152,7 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
     List<Widget> widgets = <Widget>[];
 
     menuItems.forEach((mItem) {
-      Widget menuItemCard = _buildGroupItemCard(mItem);
+      Widget menuItemCard = _getMenuItem(mItem);
 
       widgets.add(menuItemCard);
     });
@@ -148,43 +160,51 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
     return widgets;
   }
 
-  Widget _buildGroupItemCard(MenuItem menuItem) {
-    return new GestureDetector(
-      child: new Card(
-        color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
-        margin: EdgeInsets.all(5),
-        shape: globals.applicationStyle.menuShape,
-        elevation: 2.0,
+  GestureDetector _getMenuItem(MenuItem item) {
+    return GestureDetector(
+      child: new Container(
+        margin: EdgeInsets.fromLTRB(0, 1, 0, 0),
+        color: UIData.ui_kit_color_2
+            .withOpacity(globals.applicationStyle.menuOpacity),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: menuItem.image != null
-                  ? new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child:
-                          CustomIcon(image: menuItem.image, size: Size(48, 48)))
-                  : new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child: Icon(
-                        FontAwesomeIcons.clone,
-                        size: 48,
-                        color: Colors.grey[400],
-                      )),
-            ),
-            Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                child: Text(
-                  menuItem.action.label,
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
+            Expanded(
+                flex: 25,
+                child: Container(
+                    color: Colors.black.withOpacity(0.2),
+                    padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                    child: Center(
+                        child: Text(
+                      item.action.label,
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    )))),
+            Expanded(
+                flex: 75,
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
+                  child: item.image != null
+                      ? new CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Center(
+                              child: CustomIcon(
+                                  image: item.image,
+                                  size: Size(72, 72),
+                                  color: Colors.white)))
+                      : new CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Center(
+                              child: Icon(FontAwesomeIcons.clone,
+                                  size: 72, color: Colors.white))),
                 )),
           ],
         ),
       ),
-      onTap: () => _onTap(menuItem),
+      onTap: () => _onTap(item),
     );
   }
 
@@ -194,6 +214,7 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
         child: ListTile(
           title: Text(
             groupName,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey.shade700,
