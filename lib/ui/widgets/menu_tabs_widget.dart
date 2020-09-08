@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
 
+import '../../utils/uidata.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/so_action.dart' as prefix0;
@@ -27,10 +27,30 @@ class MenuTabsWidget extends StatefulWidget {
   _MenuTabsWidgetState createState() => _MenuTabsWidgetState();
 }
 
-class _MenuTabsWidgetState extends State<MenuTabsWidget> {
+class _MenuTabsWidgetState extends State<MenuTabsWidget>
+    with SingleTickerProviderStateMixin {
   String title;
 
   bool errorMsgShown = false;
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    var newMap = groupBy(widget.items, (obj) => obj.group);
+    int index = 0;
+    if (globals.menuCurrentTabIndex != null &&
+        globals.menuCurrentTabIndex < newMap.length)
+      index = globals.menuCurrentTabIndex;
+    _tabController = new TabController(
+        initialIndex: index, vsync: this, length: newMap.length);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,21 +93,27 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
             appBar: AppBar(
               title: Center(
                 child: TabBar(
+                  controller: _tabController,
                   indicatorColor: Colors.white,
                   isScrollable: true,
                   labelStyle: TextStyle(
+                    color: Colors.grey.shade700,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 18,
                   ),
                   tabs: widgetList.map((Widget choice) {
                     return Tab(
                       text: choice.key.toString().split('\'')[1],
                     );
                   }).toList(),
+                  onTap: (index) {
+                    globals.menuCurrentTabIndex = index;
+                  },
                 ),
               ),
             ),
             body: TabBarView(
+              controller: _tabController,
               children: widgetList.map((Widget choice) {
                 return choice;
               }).toList(),
@@ -133,13 +159,13 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
 
     groupedMItems.forEach((k, v) {
       print(v[0].group.toString());
-      Widget group = GridView.count(
+      Widget group = GridView(
         key: new Key(v[0].group.toString()),
-        padding: EdgeInsets.fromLTRB(14, 5, 14, 5),
+        gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 210, crossAxisSpacing: 1),
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: ScrollPhysics(),
-        crossAxisCount: 2,
         children: _buildGroupGridViewCards(v),
       );
 
@@ -153,7 +179,7 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
     List<Widget> widgets = <Widget>[];
 
     menuItems.forEach((mItem) {
-      Widget menuItemCard = _buildGroupItemCard(mItem);
+      Widget menuItemCard = _getMenuItem(mItem);
 
       widgets.add(menuItemCard);
     });
@@ -161,43 +187,51 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget> {
     return widgets;
   }
 
-  Widget _buildGroupItemCard(MenuItem menuItem) {
-    return new GestureDetector(
-      child: new Card(
-        color: Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
-        margin: EdgeInsets.all(5),
-        shape: globals.applicationStyle.menuShape,
-        elevation: 2.0,
+  GestureDetector _getMenuItem(MenuItem item) {
+    return GestureDetector(
+      child: new Container(
+        margin: EdgeInsets.fromLTRB(0, 1, 0, 0),
+        color: UIData.ui_kit_color_2
+            .withOpacity(globals.applicationStyle.menuOpacity),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: menuItem.image != null
-                  ? new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child:
-                          CustomIcon(image: menuItem.image, size: Size(48, 48)))
-                  : new CircleAvatar(
-                      backgroundColor: Colors.transparent,
-                      child: Icon(
-                        FontAwesomeIcons.clone,
-                        size: 48,
-                        color: Colors.grey[400],
-                      )),
-            ),
-            Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
-                child: Text(
-                  menuItem.action.label,
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
+            Expanded(
+                flex: 25,
+                child: Container(
+                    color: Colors.black.withOpacity(0.2),
+                    padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
+                    child: Center(
+                        child: Text(
+                      item.action.label,
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    )))),
+            Expanded(
+                flex: 75,
+                child: Container(
+                  color: Colors.black.withOpacity(0.1),
+                  child: item.image != null
+                      ? new CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Center(
+                              child: CustomIcon(
+                                  image: item.image,
+                                  size: Size(72, 72),
+                                  color: Colors.white)))
+                      : new CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: Center(
+                              child: Icon(FontAwesomeIcons.clone,
+                                  size: 72, color: Colors.white))),
                 )),
           ],
         ),
       ),
-      onTap: () => _onTap(menuItem),
+      onTap: () => _onTap(item),
     );
   }
 }
