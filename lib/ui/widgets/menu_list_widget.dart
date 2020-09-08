@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
+import '../../utils/uidata.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/so_action.dart' as prefix0;
@@ -114,25 +115,20 @@ class _MenuListWidgetState extends State<MenuListWidget> {
           child: ListTile(
             title: Text(
               k,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: Colors.grey.shade700, fontWeight: FontWeight.bold),
             ),
           ));
 
-      Widget card = Padding(
-          padding: EdgeInsets.symmetric(horizontal: 13),
-          child: Card(
-            color:
-                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
-            elevation: 2.0,
-            child: Column(children: _buildTiles(v)),
-          ));
+      Widget card = Container(
+        child: Column(children: _buildTiles(v)),
+      );
 
       if (widget.groupedMenuMode) {
         Widget sticky = StickyHeader(
           header: Container(
-            color:
-                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            color: Colors.white,
             child: heading,
           ),
           content: card,
@@ -151,33 +147,58 @@ class _MenuListWidgetState extends State<MenuListWidget> {
     List<Widget> widgets = <Widget>[];
 
     v.forEach((mItem) {
-      Widget tile = ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        title: Text(mItem.action.label),
-        onTap: () => _onTap(mItem),
-        leading: mItem.image != null
-            ? new CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: CustomIcon(image: mItem.image, size: Size(32, 32)))
-            : new CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  FontAwesomeIcons.clone,
-                  size: 32,
-                  color: Colors.grey[400],
-                )),
-        trailing: Icon(
-          FontAwesomeIcons.chevronRight,
-          color: Colors.grey[300],
+      widgets.add(GestureDetector(
+        child: Container(
+          height: 76,
+          margin: EdgeInsets.fromLTRB(0, 1, 0, 0),
+          color: UIData.ui_kit_color_2
+              .withOpacity(globals.applicationStyle.menuOpacity),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                width: 75,
+                color: Colors.black.withOpacity(0.1),
+                child: mItem.image != null
+                    ? new CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Center(
+                            child: CustomIcon(
+                                image: mItem.image,
+                                size: Size(32, 32),
+                                color: Colors.white)))
+                    : new CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Center(
+                            child: Icon(FontAwesomeIcons.clone,
+                                size: 32, color: Colors.white))),
+              ),
+              Expanded(
+                  child: Container(
+                      color: Colors.black.withOpacity(0.2),
+                      padding: EdgeInsets.fromLTRB(15, 3, 5, 3),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            mItem.action.label,
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          )))),
+              Container(
+                  width: 75,
+                  color: Colors.black.withOpacity(0.2),
+                  child: Icon(
+                    FontAwesomeIcons.chevronRight,
+                    color: Colors.white,
+                  )),
+            ],
+          ),
         ),
-      );
-      widgets.add(tile);
-      if (v.indexOf(mItem) < v.length - 1)
-        widgets.add(Divider(
-          height: 2,
-          indent: 15,
-          endIndent: 15,
-        ));
+        onTap: () => _onTap(mItem),
+      ));
     });
 
     return widgets;

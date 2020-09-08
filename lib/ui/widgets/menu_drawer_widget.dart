@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -127,18 +126,12 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   StickyHeader getStickyHeaderGroup(Widget child, List<Widget> content) {
     return StickyHeader(
       header: Container(
-        color:
-            Colors.white.withOpacity(globals.applicationStyle.sidemenuOpacity),
+        color: Colors.white,
         child: child,
       ),
-      content: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 11),
-          child: Card(
-            color: Colors.white
-                .withOpacity(globals.applicationStyle.sidemenuOpacity),
-            elevation: 2.0,
-            child: Column(children: content),
-          )),
+      content: Container(
+        child: Column(children: content),
+      ),
     );
   }
 
@@ -168,7 +161,10 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
         }
 
         groupItems.add(ListTile(
-          title: Text(item.action.label),
+          title: Text(
+            item.action.label,
+            overflow: TextOverflow.ellipsis,
+          ),
           leading: item.image != null
               ? new CircleAvatar(
                   backgroundColor: Colors.transparent,
