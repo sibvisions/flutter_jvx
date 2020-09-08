@@ -77,7 +77,9 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
         child: Swiper(
           index: index,
           indicatorLayout: PageIndicatorLayout.SCALE,
-          pagination: new SwiperPagination(),
+          pagination: new SwiperPagination(
+              builder: DotSwiperPaginationBuilder(
+                  color: Colors.grey[400], activeColor: Colors.grey.shade700)),
           onIndexChanged: (index) {
             globals.menuCurrentPageIndex = index;
           },
