@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:jvx_flutterclient/ui/page/menu_page.dart';
 import 'package:jvx_flutterclient/utils/application_api.dart';
+import 'package:async/async.dart';
 
 import '../../utils/text_utils.dart';
 import '../../model/api/response/response_data.dart';
@@ -65,6 +66,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
   String componentId;
   double width;
   double height;
+  RestartableTimer _deviceStatusTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +87,24 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     } else if (lastOrientation != MediaQuery.of(context).orientation ||
         width != MediaQuery.of(context).size.width ||
         height != MediaQuery.of(context).size.height) {
-      DeviceStatus status = DeviceStatus(
-          screenSize: MediaQuery.of(context).size,
-          timeZoneCode: "",
-          langCode: "");
-      BlocProvider.of<ApiBloc>(context).dispatch(status);
-      lastOrientation = MediaQuery.of(context).orientation;
-      width = MediaQuery.of(context).size.width;
-      height = MediaQuery.of(context).size.height;
+      if (_deviceStatusTimer == null) {
+        _deviceStatusTimer =
+            RestartableTimer(const Duration(milliseconds: 50), () {
+          DeviceStatus status = DeviceStatus(
+              screenSize: MediaQuery.of(context).size,
+              timeZoneCode: "",
+              langCode: "");
+          BlocProvider.of<ApiBloc>(context).dispatch(status);
+          lastOrientation = MediaQuery.of(context).orientation;
+          width = MediaQuery.of(context).size.width;
+          height = MediaQuery.of(context).size.height;
+
+          _deviceStatusTimer.cancel();
+          _deviceStatusTimer = null;
+        });
+      } else {
+        _deviceStatusTimer.reset();
+      }
     }
 
     return errorAndLoadingListener(

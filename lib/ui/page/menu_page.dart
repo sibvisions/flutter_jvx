@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert' as utf8;
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:jvx_flutterclient/model/api/request/request.dart';
 import 'package:jvx_flutterclient/model/api/response/response.dart';
 import 'package:jvx_flutterclient/ui/widgets/web_menu_list_widget.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:async/async.dart';
 
 import '../../logic/bloc/error_handler.dart';
 import '../../utils/application_api.dart';
@@ -48,6 +50,8 @@ class _MenuPageState extends State<MenuPage> {
   double height;
 
   Orientation lastOrientation;
+
+  RestartableTimer _deviceStatusTimer;
 
   bool get hasMultipleGroups {
     int groupCount = 0;
@@ -95,6 +99,7 @@ class _MenuPageState extends State<MenuPage> {
       // initialize the Websocket Communication
       globals.customSocketHandler.initCommunication();
     }
+
     super.initState();
   }
 
@@ -107,14 +112,24 @@ class _MenuPageState extends State<MenuPage> {
     } else if (lastOrientation != MediaQuery.of(context).orientation ||
         width != MediaQuery.of(context).size.width ||
         height != MediaQuery.of(context).size.height) {
-      DeviceStatus status = DeviceStatus(
-          screenSize: MediaQuery.of(context).size,
-          timeZoneCode: "",
-          langCode: "");
-      BlocProvider.of<ApiBloc>(context).dispatch(status);
-      lastOrientation = MediaQuery.of(context).orientation;
-      width = MediaQuery.of(context).size.width;
-      height = MediaQuery.of(context).size.height;
+      if (_deviceStatusTimer == null) {
+        _deviceStatusTimer =
+            RestartableTimer(const Duration(milliseconds: 50), () {
+          DeviceStatus status = DeviceStatus(
+              screenSize: MediaQuery.of(context).size,
+              timeZoneCode: "",
+              langCode: "");
+          BlocProvider.of<ApiBloc>(context).dispatch(status);
+          lastOrientation = MediaQuery.of(context).orientation;
+          width = MediaQuery.of(context).size.width;
+          height = MediaQuery.of(context).size.height;
+
+          _deviceStatusTimer.cancel();
+          _deviceStatusTimer = null;
+        });
+      } else {
+        _deviceStatusTimer.reset();
+      }
     }
 
     // Custom Screen
