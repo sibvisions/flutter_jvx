@@ -39,9 +39,9 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget>
     super.initState();
     var newMap = groupBy(widget.items, (obj) => obj.group);
     int index = 0;
-    if (globals.menuCurrentTabIndex != null &&
-        globals.menuCurrentTabIndex < newMap.length)
-      index = globals.menuCurrentTabIndex;
+    if (globals.menuCurrentPageIndex != null &&
+        globals.menuCurrentPageIndex < newMap.length)
+      index = globals.menuCurrentPageIndex;
     _tabController = new TabController(
         initialIndex: index, vsync: this, length: newMap.length);
   }
@@ -107,7 +107,7 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget>
                     );
                   }).toList(),
                   onTap: (index) {
-                    globals.menuCurrentTabIndex = index;
+                    globals.menuCurrentPageIndex = index;
                   },
                 ),
               ),

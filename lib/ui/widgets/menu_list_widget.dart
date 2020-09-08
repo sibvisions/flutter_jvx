@@ -127,8 +127,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
       if (widget.groupedMenuMode) {
         Widget sticky = StickyHeader(
           header: Container(
-            color:
-                Colors.white.withOpacity(globals.applicationStyle.menuOpacity),
+            color: Colors.white,
             child: heading,
           ),
           content: card,

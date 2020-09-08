@@ -44,4 +44,4 @@ bool mobileOnly = false;
 bool webOnly = false;
 String layoutMode = 'Mini';
 List<dynamic> roles = [];
-int menuCurrentTabIndex = 0;
+int menuCurrentPageIndex = 0;
