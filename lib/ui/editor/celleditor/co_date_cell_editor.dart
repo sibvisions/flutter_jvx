@@ -44,10 +44,13 @@ class CoDateCellEditor extends CoCellEditor {
 
   CoDateCellEditor(CellEditor changedCellEditor, BuildContext context)
       : super(changedCellEditor, context) {
-    preferredEditorMode = changedCellEditor
-        .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
     dateFormat =
         changedCellEditor.getProperty<String>(CellEditorProperty.DATE_FORMAT);
+
+    if (dateFormat.contains('Y')) dateFormat = dateFormat.replaceAll('Y', 'y');
+
+    preferredEditorMode = changedCellEditor
+        .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
   }
 
   factory CoDateCellEditor.withCompContext(ComponentContext componentContext) {

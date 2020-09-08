@@ -17,7 +17,7 @@ class DeviceInfoWeb implements DeviceInfo {
     this.deviceType = browser.name;
     this.deviceTypeModel = window.navigator.userAgent;
     this.osName = operatingSystem.name;
-    this.appVersion = getAppVersion();
+    getAppVersion().then((val) => this.appVersion = val);
     print(
         'Running on: ${this.osName} (SDK ${this.osVersion}), ${this.deviceType} ${this.deviceTypeModel}');
   }

@@ -296,36 +296,70 @@ class _WebFrameState extends State<WebFrame> {
         child: mypopup.PopupMenuButton<int>(
           hoverColor: Colors.black.withOpacity(0.3),
           itemBuilder: (context) => [
-            mypopup.PopupMenuItem(
-              enabled: false,
-              value: 0,
-              child: Container(
-                color: (globals.applicationStyle != null &&
-                        globals.applicationStyle.topMenuColor != null)
-                    ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-                    : Color(0xff2196f3).withOpacity(0.95),
-                child: Center(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        globals.username.isNotEmpty
-                            ? Text(
-                                Translations.of(context)
-                                    .text2('Logged in as', 'Logged in as'),
-                                style: TextStyle(
-                                    color: UIData.textColor, fontSize: 12),
-                              )
-                            : Container(),
-                        Text(username,
-                            style: TextStyle(color: UIData.textColor)),
-                      ]),
+            // mypopup.PopupMenuItem(
+            //   enabled: false,
+            //   value: 0,
+            //   child: SizedBox(
+            //     height: 60,
+            //     child: Container(
+            //       color: (globals.applicationStyle != null &&
+            //               globals.applicationStyle.topMenuColor != null)
+            //           ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+            //           : Color(0xff2196f3).withOpacity(0.95),
+            //       child: Center(
+            //         child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: <Widget>[
+            //               globals.username.isNotEmpty
+            //                   ? Text(
+            //                       Translations.of(context)
+            //                           .text2('Logged in as', 'Logged in as'),
+            //                       style: TextStyle(
+            //                           color: UIData.textColor, fontSize: 12),
+            //                     )
+            //                   : Container(),
+            //               SizedBox(
+            //                 height: 5,
+            //               ),
+            //               Text(username ?? '',
+            //                   style: TextStyle(color: UIData.textColor)),
+            //             ]),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            mypopup.PopupMenuStack(
+              children: [
+                Container(
+                  color: (globals.applicationStyle != null &&
+                          globals.applicationStyle.topMenuColor != null)
+                      ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+                      : Color(0xff2196f3).withOpacity(0.95),
+                  child: Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          globals.username.isNotEmpty
+                              ? Text(
+                                  Translations.of(context)
+                                      .text2('Logged in as', 'Logged in as'),
+                                  style: TextStyle(
+                                      color: Colors.grey.shade800,
+                                      fontSize: 12),
+                                )
+                              : Container(),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(username ?? '',
+                              style: TextStyle(color: UIData.textColor)),
+                        ]),
+                  ),
                 ),
-              ),
-            ),
-            mypopup.PopupMenuDivider(
-              height: 10,
-            ),
+              ],
+            )
           ],
           icon: CircleAvatar(
             backgroundImage:

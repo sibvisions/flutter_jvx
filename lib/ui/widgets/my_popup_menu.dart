@@ -91,7 +91,11 @@ class PopupMenuDivider extends PopupMenuEntry<Null> {
   /// Creates a horizontal divider for a popup menu.
   ///
   /// By default, the divider has a height of 16 logical pixels.
-  const PopupMenuDivider({Key key, this.height = _kMenuDividerHeight})
+  const PopupMenuDivider(
+      {Key key,
+      this.height = _kMenuDividerHeight,
+      this.invisible,
+      this.background})
       : super(key: key);
 
   /// The height of the divider entry.
@@ -99,6 +103,10 @@ class PopupMenuDivider extends PopupMenuEntry<Null> {
   /// Defaults to 16 pixels.
   @override
   final double height;
+
+  final bool invisible;
+
+  final Color background;
 
   @override
   bool represents(void value) => false;
@@ -109,7 +117,41 @@ class PopupMenuDivider extends PopupMenuEntry<Null> {
 
 class _PopupMenuDividerState extends State<PopupMenuDivider> {
   @override
-  Widget build(BuildContext context) => Divider(height: widget.height);
+  Widget build(BuildContext context) => !widget.invisible
+      ? Divider(height: widget.height)
+      : SizedBox(
+          child: Container(
+            decoration: BoxDecoration(color: widget.background),
+          ),
+          height: widget.height,
+        );
+}
+
+class PopupMenuStack extends PopupMenuEntry<Null> {
+  PopupMenuStack({this.height = 50, this.children});
+
+  @override
+  final double height;
+
+  final List<Widget> children;
+
+  @override
+  State<StatefulWidget> createState() => _PopupMenuStackState();
+
+  @override
+  bool represents(Null value) => false;
+}
+
+class _PopupMenuStackState extends State<PopupMenuStack> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: widget.height,
+      child: Stack(
+        children: widget.children,
+      ),
+    );
+  }
 }
 
 /// An item in a material design popup menu.

@@ -34,7 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isDialogOpen = false;
 
   String get versionText {
-    String v = 'App V $version Build $buildNumber ($buildDate)';
+    String v = 'App V $version Build $buildNumber';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
       v += '\nServer V ${globals.appVersion}';
 
@@ -214,6 +214,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       versionText,
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
+                  ),
+                  ListTile(
+                    leading: Icon(FontAwesomeIcons.calendar),
+                    title: Text(
+                      buildDate ?? '',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   )
                 ]))
           ],
@@ -238,7 +245,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
       if (buildDate != null) {
         DateTime date = DateTime.parse(buildDate);
-        DateFormat formatter = DateFormat.yMd();
+        DateFormat formatter = DateFormat('dd.MM.yyyy');
         if (date != null) buildDate = formatter.format(date);
       }
     });
