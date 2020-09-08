@@ -214,6 +214,7 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
         child: ListTile(
           title: Text(
             groupName,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey.shade700,

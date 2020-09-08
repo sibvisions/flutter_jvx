@@ -115,6 +115,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
           child: ListTile(
             title: Text(
               k,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: Colors.grey.shade700, fontWeight: FontWeight.bold),
             ),
