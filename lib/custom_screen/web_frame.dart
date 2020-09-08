@@ -108,7 +108,7 @@ class _WebFrameState extends State<WebFrame> {
                                       : Image.memory(
                                           utf8.base64Decode(globals.files[
                                               globals.applicationStyle
-                                                  .topMenuLogo]),
+                                                  ?.topMenuLogo]),
                                           fit: BoxFit.contain),
                                 ))
                             : Container(),
@@ -116,6 +116,7 @@ class _WebFrameState extends State<WebFrame> {
                           width: 15,
                         ),
                         Material(
+                          shape: CircleBorder(),
                           color: Colors.blue,
                           child: IconButton(
                             hoverColor: Colors.black.withOpacity(0.3),
@@ -141,6 +142,7 @@ class _WebFrameState extends State<WebFrame> {
                     Row(
                       children: [
                         Material(
+                          shape: CircleBorder(),
                           color: Colors.blue,
                           child: IconButton(
                             hoverColor: Colors.black.withOpacity(0.3),
@@ -163,6 +165,7 @@ class _WebFrameState extends State<WebFrame> {
                           width: 20,
                         ),
                         Material(
+                          shape: CircleBorder(),
                           color: Colors.blue,
                           child: IconButton(
                             hoverColor: Colors.black.withOpacity(0.3),
@@ -292,94 +295,99 @@ class _WebFrameState extends State<WebFrame> {
             : Color(0xff2196f3).withOpacity(0.95),
       ),
       child: Material(
+        shape: CircleBorder(),
         color: Colors.blue,
-        child: mypopup.PopupMenuButton<int>(
-          hoverColor: Colors.black.withOpacity(0.3),
-          itemBuilder: (context) => [
-            // mypopup.PopupMenuItem(
-            //   enabled: false,
-            //   value: 0,
-            //   child: SizedBox(
-            //     height: 60,
-            //     child: Container(
-            //       color: (globals.applicationStyle != null &&
-            //               globals.applicationStyle.topMenuColor != null)
-            //           ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-            //           : Color(0xff2196f3).withOpacity(0.95),
-            //       child: Center(
-            //         child: Column(
-            //             mainAxisAlignment: MainAxisAlignment.center,
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: <Widget>[
-            //               globals.username.isNotEmpty
-            //                   ? Text(
-            //                       Translations.of(context)
-            //                           .text2('Logged in as', 'Logged in as'),
-            //                       style: TextStyle(
-            //                           color: UIData.textColor, fontSize: 12),
-            //                     )
-            //                   : Container(),
-            //               SizedBox(
-            //                 height: 5,
-            //               ),
-            //               Text(username ?? '',
-            //                   style: TextStyle(color: UIData.textColor)),
-            //             ]),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            mypopup.PopupMenuStack(
-              children: [
-                Container(
-                  color: (globals.applicationStyle != null &&
-                          globals.applicationStyle.topMenuColor != null)
-                      ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
-                      : Color(0xff2196f3).withOpacity(0.95),
-                  child: Center(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          globals.username.isNotEmpty
-                              ? Text(
-                                  Translations.of(context)
-                                      .text2('Logged in as', 'Logged in as'),
-                                  style: TextStyle(
-                                      color: Colors.grey.shade800,
-                                      fontSize: 12),
-                                )
-                              : Container(),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Text(username ?? '',
-                              style: TextStyle(color: UIData.textColor)),
-                        ]),
-                  ),
-                ),
-              ],
-            )
-          ],
-          icon: CircleAvatar(
-            backgroundImage:
-                globals.profileImage != null && globals.profileImage.isNotEmpty
-                    ? profileImg.image
-                    : null,
-            child: globals.profileImage != null &&
-                    globals.profileImage.isNotEmpty
-                ? null
-                : Icon(
-                    FontAwesomeIcons.userTie,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: mypopup.PopupMenuButton<int>(
+            hoverColor: Colors.black.withOpacity(0.3),
+            itemBuilder: (context) => [
+              // mypopup.PopupMenuItem(
+              //   enabled: false,
+              //   value: 0,
+              //   child: SizedBox(
+              //     height: 60,
+              //     child: Container(
+              //       color: (globals.applicationStyle != null &&
+              //               globals.applicationStyle.topMenuColor != null)
+              //           ? globals.applicationStyle.topMenuColor.withOpacity(0.95)
+              //           : Color(0xff2196f3).withOpacity(0.95),
+              //       child: Center(
+              //         child: Column(
+              //             mainAxisAlignment: MainAxisAlignment.center,
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: <Widget>[
+              //               globals.username.isNotEmpty
+              //                   ? Text(
+              //                       Translations.of(context)
+              //                           .text2('Logged in as', 'Logged in as'),
+              //                       style: TextStyle(
+              //                           color: UIData.textColor, fontSize: 12),
+              //                     )
+              //                   : Container(),
+              //               SizedBox(
+              //                 height: 5,
+              //               ),
+              //               Text(username ?? '',
+              //                   style: TextStyle(color: UIData.textColor)),
+              //             ]),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              mypopup.PopupMenuStack(
+                children: [
+                  Container(
                     color: (globals.applicationStyle != null &&
-                            globals.applicationStyle.topMenuIconColor != null)
-                        ? globals.applicationStyle.topMenuIconColor
-                        : Color(0xffffffff),
+                            globals.applicationStyle.topMenuColor != null)
+                        ? globals.applicationStyle.topMenuColor
+                            .withOpacity(0.95)
+                        : Color(0xff2196f3).withOpacity(0.95),
+                    child: Center(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            globals.username.isNotEmpty
+                                ? Text(
+                                    Translations.of(context)
+                                        .text2('Logged in as', 'Logged in as'),
+                                    style: TextStyle(
+                                        color: Colors.grey.shade800,
+                                        fontSize: 12),
+                                  )
+                                : Container(),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text(username ?? '',
+                                style: TextStyle(color: UIData.textColor)),
+                          ]),
+                    ),
                   ),
-            radius: 50,
+                ],
+              )
+            ],
+            icon: CircleAvatar(
+              backgroundImage: globals.profileImage != null &&
+                      globals.profileImage.isNotEmpty
+                  ? profileImg.image
+                  : null,
+              child: globals.profileImage != null &&
+                      globals.profileImage.isNotEmpty
+                  ? null
+                  : Icon(
+                      FontAwesomeIcons.userTie,
+                      color: (globals.applicationStyle != null &&
+                              globals.applicationStyle.topMenuIconColor != null)
+                          ? globals.applicationStyle.topMenuIconColor
+                          : Color(0xffffffff),
+                    ),
+              radius: 50,
+            ),
+            offset: Offset(0, 100),
+            onSelected: (result) {},
           ),
-          offset: Offset(0, 100),
-          onSelected: (result) {},
         ),
       ),
     );
