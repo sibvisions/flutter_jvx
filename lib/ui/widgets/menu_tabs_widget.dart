@@ -225,7 +225,7 @@ class _MenuTabsWidgetState extends State<MenuTabsWidget>
                       : new CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Center(
-                              child: Icon(FontAwesomeIcons.clone,
+                              child: FaIcon(FontAwesomeIcons.clone,
                                   size: 72, color: Colors.white))),
                 )),
           ],

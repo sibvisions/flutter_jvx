@@ -28,8 +28,7 @@ class CommonScaffold extends StatelessWidget {
   final showAppBar;
 
   CommonScaffold(
-    {
-      this.appTitle,
+      {this.appTitle,
       this.bodyData,
       this.showFAB = false,
       this.backGroundColor,
@@ -50,9 +49,7 @@ class CommonScaffold extends StatelessWidget {
       this.showDrawer = false,
       this.drawer,
       this.qrCallback,
-      this.showAppBar = true
-    }
-  );
+      this.showAppBar = true});
 
   Widget myBottomBar() => BottomAppBar(
         clipBehavior: Clip.antiAlias,
@@ -70,18 +67,19 @@ class CommonScaffold extends StatelessWidget {
                 child: new InkWell(
                   radius: 10.0,
                   splashColor: Colors.yellow,
-                  onTap: () { this.bottomButton1Function(); },
+                  onTap: () {
+                    this.bottomButton1Function();
+                  },
                   child: Center(
-                    child: this.bottomButton1 != null
-                    ? Text(
-                      this.bottomButton1,
-                      style: new TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    )
-                    : Text('')
-                  ),
+                      child: this.bottomButton1 != null
+                          ? Text(
+                              this.bottomButton1,
+                              style: new TextStyle(
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            )
+                          : Text('')),
                 ),
               ),
               new SizedBox(
@@ -90,20 +88,21 @@ class CommonScaffold extends StatelessWidget {
               SizedBox(
                 height: double.infinity,
                 child: new InkWell(
-                  onTap: () { this.bottomButton2Function(); },
+                  onTap: () {
+                    this.bottomButton2Function();
+                  },
                   radius: 10.0,
                   splashColor: Colors.yellow,
                   child: Center(
-                    child: this.bottomButton2 != null
-                    ? Text(
-                      this.bottomButton2,
-                      style: new TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    )
-                    : Text('')
-                  ),
+                      child: this.bottomButton2 != null
+                          ? Text(
+                              this.bottomButton2,
+                              style: new TextStyle(
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            )
+                          : Text('')),
                 ),
               ),
             ],
@@ -116,32 +115,46 @@ class CommonScaffold extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey != null ? scaffoldKey : null,
       backgroundColor: backGroundColor != null ? backGroundColor : null,
-      appBar: showAppBar ? AppBar(
-        elevation: elevation,
-        backgroundColor: UIData.ui_kit_color_2,
-        title: Text(appTitle),
-        actions: <Widget>[
-          SizedBox(
-            width: 5.0,
-          ),
-          showSearchButton 
-          ? actionFirstIcon
-          : SizedBox(width: 5.0,),
-          showDropdownButton
-          ? DropdownButton(
-            icon: Icon(FontAwesomeIcons.ellipsisV, color: Colors.black,),
-            onChanged: (String value) {
-              this.dropdownCallback(value);
-            },
-            items: this.dropdownItems.map((value) => DropdownMenuItem(
-              child: Text(value),
-              value: value,
-            )).toList(),
-          )
-          : SizedBox(width: 5.0,),
-          SizedBox(width: 10.0,)
-        ],
-      ) : null,
+      appBar: showAppBar
+          ? AppBar(
+              elevation: elevation,
+              backgroundColor: UIData.ui_kit_color_2,
+              title: Text(appTitle),
+              actions: <Widget>[
+                SizedBox(
+                  width: 5.0,
+                ),
+                showSearchButton
+                    ? actionFirstIcon
+                    : SizedBox(
+                        width: 5.0,
+                      ),
+                showDropdownButton
+                    ? DropdownButton(
+                        icon: FaIcon(
+                          FontAwesomeIcons.ellipsisV,
+                          color: Colors.black,
+                        ),
+                        onChanged: (String value) {
+                          this.dropdownCallback(value);
+                        },
+                        items: this
+                            .dropdownItems
+                            .map((value) => DropdownMenuItem(
+                                  child: Text(value),
+                                  value: value,
+                                ))
+                            .toList(),
+                      )
+                    : SizedBox(
+                        width: 5.0,
+                      ),
+                SizedBox(
+                  width: 10.0,
+                )
+              ],
+            )
+          : null,
       drawer: showDrawer ? drawer : null,
       body: bodyData,
       floatingActionButton: showFAB

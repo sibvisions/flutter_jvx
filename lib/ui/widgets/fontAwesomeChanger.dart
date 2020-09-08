@@ -9,9 +9,8 @@ bool checkFontAwesome(String text) {
 }
 
 formatFontAwesomeText(String text) {
-  if (!checkFontAwesome(text)) 
-    return "This is no fontawesome string";
-  
+  if (!checkFontAwesome(text)) return "This is no fontawesome string";
+
   List<String> arr = text.split(';');
 
   String icon = arr[0];
@@ -27,28 +26,28 @@ formatFontAwesomeText(String text) {
 
   IconData data = chooseIcon(convertToMethodName(icon));
   keyValue['icon'] = data;
-  
 
   return keyValue;
 }
 
 convertFontAwesomeTextToIcon(String text, Color color) {
-  if (!checkFontAwesome(text)) 
-    return "This is no fontawesome string";
-  
+  if (!checkFontAwesome(text)) return "This is no fontawesome string";
+
   List<String> arr = text.split(',');
 
   String icon = arr[0];
-  Size size = Size(16,16);
+  Size size = Size(16, 16);
 
-  if (arr.length>=3 && double.tryParse(arr[1])!=null && double.tryParse(arr[2])!=null) 
+  if (arr.length >= 3 &&
+      double.tryParse(arr[1]) != null &&
+      double.tryParse(arr[2]) != null)
     size = Size(double.parse(arr[1]), double.parse(arr[2]));
 
   if (icon.contains(";")) {
     icon = icon.substring(0, icon.indexOf(";"));
   }
 
-  return new Icon(
+  return new FaIcon(
     chooseIcon(convertToMethodName(icon)),
     size: size.width,
     color: color,

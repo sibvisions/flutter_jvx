@@ -171,7 +171,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                     : new CircleAvatar(
                         backgroundColor: Colors.transparent,
                         child: Center(
-                            child: Icon(FontAwesomeIcons.clone,
+                            child: FaIcon(FontAwesomeIcons.clone,
                                 size: 32, color: Colors.white))),
               ),
               Expanded(
@@ -190,7 +190,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
               Container(
                   width: 75,
                   color: Colors.black.withOpacity(0.2),
-                  child: Icon(
+                  child: FaIcon(
                     FontAwesomeIcons.chevronRight,
                     color: Colors.white,
                   )),

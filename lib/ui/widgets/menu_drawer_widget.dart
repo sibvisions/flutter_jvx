@@ -86,7 +86,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                       style: TextStyle(color: UIData.textColor),
                     ),
                     leading:
-                        Icon(FontAwesomeIcons.cog, color: UIData.textColor),
+                        FaIcon(FontAwesomeIcons.cog, color: UIData.textColor),
                     onTap: () {
                       Navigator.of(context).pushNamed('/settings');
                     },
@@ -96,7 +96,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                     title: Text(
                         Translations.of(context).text2('Logout', 'Logout'),
                         style: TextStyle(color: UIData.textColor)),
-                    leading: Icon(FontAwesomeIcons.signOutAlt,
+                    leading: FaIcon(FontAwesomeIcons.signOutAlt,
                         color: UIData.textColor),
                     onTap: () {
                       Logout logout = Logout(
@@ -171,7 +171,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   child: CustomIcon(image: item.image, size: Size(32, 32)))
               : new CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: Icon(
+                  child: FaIcon(
                     FontAwesomeIcons.clone,
                     size: 32,
                     color: Colors.grey[400],
@@ -283,7 +283,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           globals.profileImage.isNotEmpty ? getProfileImage() : null,
       child: globals.profileImage.isNotEmpty
           ? null
-          : Icon(
+          : FaIcon(
               FontAwesomeIcons.userTie,
               color: UIData.ui_kit_color_2,
               size: 60,

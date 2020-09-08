@@ -102,13 +102,13 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    leading: Icon(
+                    leading: FaIcon(
                       FontAwesomeIcons.server,
                       color: UIData.ui_kit_color_2,
                     ),
                     title: Text(
                         Translations.of(context).text2('App name', 'App name')),
-                    trailing: Icon(FontAwesomeIcons.arrowRight),
+                    trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     subtitle:
                         Text(globals.appName != null ? globals.appName : ''),
                     onTap: () {
@@ -133,13 +133,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: FaIcon(
                       FontAwesomeIcons.keyboard,
                       color: UIData.ui_kit_color_2,
                     ),
                     title: Text(
                         Translations.of(context).text2('Base Url', 'Base Url')),
-                    trailing: Icon(FontAwesomeIcons.arrowRight),
+                    trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     subtitle:
                         Text(globals.baseUrl != null ? globals.baseUrl : ''),
                     onTap: () {
@@ -167,13 +167,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: FaIcon(
                       FontAwesomeIcons.language,
                       color: UIData.ui_kit_color_2,
                     ),
                     title: Text(
                         Translations.of(context).text2('Language', 'Language')),
-                    trailing: Icon(FontAwesomeIcons.arrowRight),
+                    trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     subtitle:
                         Text(globals.language != null ? globals.language : ''),
                     onTap: () {
@@ -181,12 +181,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(
+                    leading: FaIcon(
                       FontAwesomeIcons.image,
                       color: UIData.ui_kit_color_2,
                     ),
                     title: Text(this.imageSizeTitle),
-                    trailing: Icon(FontAwesomeIcons.arrowRight),
+                    trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     onTap: () {
                       showImageSizePicker(context);
                     },
@@ -207,7 +207,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 elevation: 2.0,
                 child: Column(children: <Widget>[
                   ListTile(
-                    leading: Icon(
+                    leading: FaIcon(
                       FontAwesomeIcons.codeBranch,
                     ),
                     title: Text(
@@ -216,7 +216,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   ListTile(
-                    leading: Icon(FontAwesomeIcons.calendar),
+                    leading: FaIcon(FontAwesomeIcons.calendar),
                     title: Text(
                       buildDate ?? '',
                       style: TextStyle(color: Colors.grey.shade600),

@@ -209,7 +209,7 @@ class CoDateCellEditor extends CoCellEditor {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Icon(
+                      FaIcon(
                         FontAwesomeIcons.calendarAlt,
                         color: Colors.grey[600],
                       ),
@@ -278,7 +278,7 @@ class CoDateCellEditor extends CoCellEditor {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Icon(
+                    FaIcon(
                       FontAwesomeIcons.calendarAlt,
                       color: Colors.grey[600],
                       size: 16,

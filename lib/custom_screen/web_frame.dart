@@ -120,7 +120,7 @@ class _WebFrameState extends State<WebFrame> {
                           color: Colors.blue,
                           child: IconButton(
                             hoverColor: Colors.black.withOpacity(0.3),
-                            icon: Icon(
+                            icon: FaIcon(
                               FontAwesomeIcons.bars,
                               color: (globals.applicationStyle != null &&
                                       globals.applicationStyle
@@ -146,7 +146,7 @@ class _WebFrameState extends State<WebFrame> {
                           color: Colors.blue,
                           child: IconButton(
                             hoverColor: Colors.black.withOpacity(0.3),
-                            icon: Icon(
+                            icon: FaIcon(
                               FontAwesomeIcons.cog,
                               color: (globals.applicationStyle != null &&
                                       globals.applicationStyle
@@ -169,7 +169,7 @@ class _WebFrameState extends State<WebFrame> {
                           color: Colors.blue,
                           child: IconButton(
                             hoverColor: Colors.black.withOpacity(0.3),
-                            icon: Icon(
+                            icon: FaIcon(
                               FontAwesomeIcons.powerOff,
                               color: (globals.applicationStyle != null &&
                                       globals.applicationStyle
@@ -376,7 +376,7 @@ class _WebFrameState extends State<WebFrame> {
               child: globals.profileImage != null &&
                       globals.profileImage.isNotEmpty
                   ? null
-                  : Icon(
+                  : FaIcon(
                       FontAwesomeIcons.userTie,
                       color: (globals.applicationStyle != null &&
                               globals.applicationStyle.topMenuIconColor != null)

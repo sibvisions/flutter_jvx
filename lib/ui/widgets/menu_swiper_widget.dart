@@ -198,7 +198,7 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
                       : new CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Center(
-                              child: Icon(FontAwesomeIcons.clone,
+                              child: FaIcon(FontAwesomeIcons.clone,
                                   size: 72, color: Colors.white))),
                 )),
           ],

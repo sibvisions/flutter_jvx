@@ -35,7 +35,7 @@ showCustomBottomModalMenu(
                                   formatFontAwesomeText(items[index].image)))
                       : new CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          child: Icon(
+                          child: FaIcon(
                             FontAwesomeIcons.clone,
                             size: 32,
                             color: Colors.grey[300],

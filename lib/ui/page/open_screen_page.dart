@@ -304,7 +304,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                           backgroundColor: UIData.ui_kit_color_2,
                           actions: <Widget>[
                             IconButton(
-                              icon: Icon(FontAwesomeIcons.ellipsisV),
+                              icon: FaIcon(FontAwesomeIcons.ellipsisV),
                               onPressed: () =>
                                   _scaffoldKey.currentState.openEndDrawer(),
                             )
@@ -398,7 +398,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       ),
                       IconButton(
                         color: Colors.grey[300],
-                        icon: Icon(FontAwesomeIcons.timesCircle),
+                        icon: FaIcon(FontAwesomeIcons.timesCircle),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -426,7 +426,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
+                          FaIcon(
                             FontAwesomeIcons.camera,
                             color: UIData.ui_kit_color_2,
                           ),
@@ -452,7 +452,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
+                          FaIcon(
                             FontAwesomeIcons.images,
                             color: UIData.ui_kit_color_2,
                           ),
@@ -479,7 +479,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
+                          FaIcon(
                             FontAwesomeIcons.folderOpen,
                             color: UIData.ui_kit_color_2,
                           ),
@@ -522,7 +522,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       ),
                       IconButton(
                         color: Colors.grey[300],
-                        icon: Icon(FontAwesomeIcons.timesCircle),
+                        icon: FaIcon(FontAwesomeIcons.timesCircle),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -537,7 +537,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
+                          FaIcon(
                             FontAwesomeIcons.folderOpen,
                             color: UIData.ui_kit_color_2,
                           ),

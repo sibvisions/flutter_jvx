@@ -167,13 +167,13 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  hoverColor: TinyColor((globals.applicationStyle != null &&
-                              globals.applicationStyle.sideMenuColor != null)
-                          ? globals.applicationStyle.sideMenuColor
-                              .withOpacity(0.95)
-                          : Color(0xff171717).withOpacity(0.95),)
-                      .lighten()
-                      .color,
+                  hoverColor: TinyColor(
+                    (globals.applicationStyle != null &&
+                            globals.applicationStyle.sideMenuColor != null)
+                        ? globals.applicationStyle.sideMenuColor
+                            .withOpacity(0.95)
+                        : Color(0xff171717).withOpacity(0.95),
+                  ).lighten().color,
                   onTap: () => _onTap(mItem),
                   child: Column(children: <Widget>[
                     Container(
@@ -206,7 +206,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                                   )
                                 : new CircleAvatar(
                                     backgroundColor: Colors.transparent,
-                                    child: Icon(
+                                    child: FaIcon(
                                       FontAwesomeIcons.clone,
                                       size: 16,
                                       color: Colors.grey[400],

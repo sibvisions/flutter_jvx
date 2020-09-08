@@ -147,7 +147,7 @@ class CoPopupMenuButton extends Component implements IComponent {
         return menuItems;
       },
       padding: EdgeInsets.only(bottom: 8, left: 16),
-      icon: Icon(
+      icon: FaIcon(
         FontAwesomeIcons.sortDown,
         color: colorScheme.brightness == Brightness.light
             ? colorScheme.onPrimary

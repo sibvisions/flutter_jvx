@@ -200,7 +200,7 @@ class _MenuPageState extends State<MenuPage> {
                     onPressed: () {
                       _scaffoldKey.currentState.openEndDrawer();
                     },
-                    icon: Icon(FontAwesomeIcons.ellipsisV),
+                    icon: FaIcon(FontAwesomeIcons.ellipsisV),
                   ),
                 ],
               )

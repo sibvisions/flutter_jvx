@@ -150,7 +150,7 @@ class _LoginCardState extends State<LoginCard>
                           },
                           label: Text(Translations.of(context)
                               .text2('Settings', 'Settings')),
-                          icon: Icon(
+                          icon: FaIcon(
                             FontAwesomeIcons.cog,
                             color: UIData.ui_kit_color_2[300],
                           ),

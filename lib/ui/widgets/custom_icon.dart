@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../ui/widgets/fontAwesomeChanger.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
@@ -62,7 +63,7 @@ class CustomIcon extends StatelessWidget {
     return img;
   }
 
-  Icon _iconBuilder(Map data) {
+  FaIcon _iconBuilder(Map data) {
     double widgetSize;
     if (data['size'] != null && size == null) {
       List<String> arr = data['size'].split(',');
@@ -72,10 +73,10 @@ class CustomIcon extends StatelessWidget {
       widgetSize = size?.height;
     }
 
-    Icon icon = new Icon(
+    FaIcon icon = new FaIcon(
       data['icon'],
       size: widgetSize,
-      color: color != null ?  color :UIData.ui_kit_color_2,
+      color: color != null ? color : UIData.ui_kit_color_2,
       key: data['key'],
       textDirection: data['textDirection'],
     );

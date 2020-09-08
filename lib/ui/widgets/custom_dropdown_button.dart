@@ -882,7 +882,7 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
       );
     }
 
-    const Icon defaultIcon = Icon(FontAwesomeIcons.sortDown);
+    const FaIcon defaultIcon = FaIcon(FontAwesomeIcons.sortDown);
 
     Widget result = DefaultTextStyle(
       style: _textStyle,

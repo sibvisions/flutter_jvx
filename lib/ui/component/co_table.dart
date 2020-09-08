@@ -292,7 +292,7 @@ class CoTable extends CoEditor {
                   ),
                   !nullable
                       ? Container(
-                          child: Icon(
+                          child: FaIcon(
                             FontAwesomeIcons.asterisk,
                             size: 8,
                           ),

@@ -213,7 +213,7 @@ class _MenuGridViewState extends State<MenuGridView> {
                       : new CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Center(
-                              child: Icon(FontAwesomeIcons.clone,
+                              child: FaIcon(FontAwesomeIcons.clone,
                                   size: 72, color: Colors.white))),
                 )),
           ],
