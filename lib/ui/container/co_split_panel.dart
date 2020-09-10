@@ -15,8 +15,10 @@ class CoSplitPanel extends CoContainer implements IContainer {
   Key key = GlobalKey();
   Key keyFirst = GlobalKey();
   Key keySecond = GlobalKey();
-  ScrollController scrollControllerView1 = ScrollController();
-  ScrollController scrollControllerView2 = ScrollController();
+  ScrollController scrollControllerView1 =
+      ScrollController(keepScrollOffset: true);
+  ScrollController scrollControllerView2 =
+      ScrollController(keepScrollOffset: true);
 
   /// Constant for horizontal anchors.
   static const HORIZONTAL = 0;
@@ -135,7 +137,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
         _calculateDividerPosition(constraints, this.splitViewMode);
 
         return SplitView(
-          //key: key,
+          key: key,
           initialWeight: currentSplitviewWeight,
           gripColor: Colors.grey.withOpacity(0.3),
           handleColor: Colors.grey[800].withOpacity(0.5),
@@ -150,7 +152,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
         );
       } else {
         return SplitView(
-          //key: key,
+          key: key,
           initialWeight: 0.5,
           showHandle: false,
           view1: widgets[0],
