@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 /// SplitView
 class SplitView extends StatefulWidget {
+  final key;
   final Widget view1;
   final Widget view2;
   final SplitViewMode viewMode;
@@ -19,7 +20,8 @@ class SplitView extends StatefulWidget {
   final ScrollController scrollControllerView2;
 
   SplitView(
-      {@required this.view1,
+      {@required this.key,
+      @required this.view1,
       @required this.view2,
       @required this.viewMode,
       this.gripSize = 7.0,
