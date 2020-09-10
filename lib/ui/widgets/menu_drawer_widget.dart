@@ -174,7 +174,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   child: FaIcon(
                     FontAwesomeIcons.clone,
                     size: 32,
-                    color: Colors.grey[400],
+                    color: UIData.ui_kit_color_2,
                   )),
           onTap: () async {
             setState(() {

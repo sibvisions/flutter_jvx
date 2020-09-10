@@ -18,6 +18,7 @@ enum ComponentProperty {
   LAYOUT_DATA,
   DATA_PROVIDER,
   DATA_ROW,
+  DATA_BOOK,
   COLUMN_NAME,
   TEXT,
   BACKGROUND,

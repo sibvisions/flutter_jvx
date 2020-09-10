@@ -145,6 +145,9 @@ class CoEditor extends Component implements IEditor {
     dataProvider = changedComponent.getProperty<String>(
         ComponentProperty.DATA_PROVIDER, dataProvider);
     dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
+
+    if (dataProvider == null) dataProvider = dataRow;
+
     columnName = changedComponent.getProperty<String>(
         ComponentProperty.COLUMN_NAME, columnName);
     readonly = changedComponent.getProperty<bool>(

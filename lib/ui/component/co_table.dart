@@ -122,6 +122,10 @@ class CoTable extends CoEditor {
     editable = changedComponent.getProperty<bool>(
         ComponentProperty.AUTO_RESIZE, editable);
 
+    if (dataProvider == null)
+      dataProvider = changedComponent.getProperty<String>(
+          ComponentProperty.DATA_BOOK, dataProvider);
+
     int newSelectedRow =
         changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW);
     if (newSelectedRow != null &&

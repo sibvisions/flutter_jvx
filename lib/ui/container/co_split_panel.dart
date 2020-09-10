@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../ui/screen/so_component_creator.dart';
 import '../../ui/widgets/split_view.dart';
 import '../../model/changed_component.dart';
@@ -43,24 +44,47 @@ class CoSplitPanel extends CoContainer implements IContainer {
         ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
   }
 
-  void _calculateDividerPosition(BoxConstraints constraints) {
+  void _calculateDividerPosition(
+      BoxConstraints constraints, SplitViewMode splitViewMode) {
     if (this.currentSplitviewWeight == null) {
       if (this.dividerPosition != null &&
           this.dividerPosition >= 0 &&
           constraints.maxWidth != null &&
-          (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)) {
+          splitViewMode == SplitViewMode.Horizontal) {
         this.currentSplitviewWeight =
             this.dividerPosition / constraints.maxWidth;
       } else if (this.dividerPosition != null &&
           this.dividerPosition >= 0 &&
           constraints.maxHeight != null &&
-          (dividerAlignment == VERTICAL)) {
+          (splitViewMode == SplitViewMode.Vertical)) {
         this.currentSplitviewWeight =
             this.dividerPosition / constraints.maxHeight;
       } else {
         this.currentSplitviewWeight = 0.5;
       }
     }
+  }
+
+  SplitViewMode get defaultSplitViewMode {
+    return (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)
+        ? SplitViewMode.Horizontal
+        : SplitViewMode.Vertical;
+  }
+
+  SplitViewMode get splitViewMode {
+    if (kIsWeb &&
+        (globals.layoutMode == 'Full' || globals.layoutMode == 'Small')) {
+      return defaultSplitViewMode;
+    }
+
+    if (defaultSplitViewMode == SplitViewMode.Horizontal) {
+      if (MediaQuery.of(context).size.width >= 667) return defaultSplitViewMode;
+    } else {
+      if (MediaQuery.of(context).size.height >= 667)
+        return defaultSplitViewMode;
+    }
+
+    return null;
   }
 
   Widget getWidget() {
@@ -104,9 +128,8 @@ class CoSplitPanel extends CoContainer implements IContainer {
         widgets.add(Container());
       }
 
-      if (kIsWeb &&
-          (globals.layoutMode == 'Full' || globals.layoutMode == 'Small')) {
-        _calculateDividerPosition(constraints);
+      if (this.splitViewMode != null) {
+        _calculateDividerPosition(constraints, this.splitViewMode);
 
         return SplitView(
           initialWeight: currentSplitviewWeight,

@@ -31,6 +31,10 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   final int horizontalComponentAlignment;
   final int verticalComponentAlignment;
 
+  // the mark to wrap the layout if there is not enough space to show
+  // all components (FlowLayout mode).
+  final bool autoWrap;
+
   CoFlowLayoutWidget(
       {Key key,
       List<CoFlowLayoutConstraintData> children: const [],
@@ -41,7 +45,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
       this.verticalAlignment = 1,
       this.orientation = 0,
       this.horizontalComponentAlignment = 1,
-      this.verticalComponentAlignment})
+      this.verticalComponentAlignment,
+      this.autoWrap = false})
       : super(key: key, children: children);
 
   @override
@@ -54,7 +59,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
         this.verticalComponentAlignment,
         this.insMargin,
         this.horizontalGap,
-        this.verticalGap);
+        this.verticalGap,
+        this.autoWrap);
   }
 
   @override
@@ -102,6 +108,11 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
 
     if (renderObject.insMargins != this.insMargin) {
       renderObject.insMargins = this.insMargin;
+      renderObject.markNeedsLayout();
+    }
+
+    if (renderObject.bAutoWrap != this.autoWrap) {
+      renderObject.bAutoWrap = this.autoWrap;
       renderObject.markNeedsLayout();
     }
   }
@@ -165,6 +176,7 @@ class RenderFlowLayoutWidget extends RenderBox
       this.insMargins,
       this.iHorizontalGap,
       this.iVerticalGap,
+      this.bAutoWrap,
       {List<RenderBox> children}) {
     addAll(children);
   }
