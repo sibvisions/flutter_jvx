@@ -39,20 +39,18 @@ class SplitView extends StatefulWidget {
 }
 
 class _SplitViewState extends State<SplitView> {
-  double defaultWeight;
   ValueNotifier<double> weight;
   double _prevWeight;
 
   @override
   void initState() {
     super.initState();
-    this.defaultWeight = widget.initialWeight;
   }
 
   @override
   Widget build(BuildContext context) {
-    weight = ValueNotifier(defaultWeight);
-    _prevWeight = defaultWeight;
+    weight = ValueNotifier(widget.initialWeight);
+    _prevWeight = widget.initialWeight;
 
     return LayoutBuilder(
       //key: widget.key,
