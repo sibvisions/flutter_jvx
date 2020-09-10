@@ -25,29 +25,31 @@ enum RequestType {
   DOWNLOAD,
   UPLOAD,
   CHANGE,
-  SET_VALUE
+  SET_VALUE,
+  TAB_SELECT,
+  TAB_CLOSE,
 }
 
 bool isScreenRequest(RequestType type) {
   return (type == RequestType.OPEN_SCREEN ||
-    type == RequestType.DAL_FETCH ||
-    type == RequestType.DAL_SELECT_RECORD ||
-    type == RequestType.DAL_SET_VALUE ||
-    type == RequestType.PRESS_BUTTON ||
-    // type == RequestType.CLOSE_SCREEN ||
-    type == RequestType.NAVIGATION ||
-    type == RequestType.DEVICE_STATUS ||
-    type == RequestType.UPLOAD ||
-    type == RequestType.DOWNLOAD ||
-    type == RequestType.CHANGE ||
-    type == RequestType.UPLOAD ||
-    type == RequestType.DAL_FILTER ||
-    type == RequestType.DAL_DELETE ||
-    type == RequestType.RELOAD ||
-    type == RequestType.DAL_INSERT ||
-    type == RequestType.DAL_SAVE ||
-    type == RequestType.DAL_METADATA) ||
-    type == RequestType.SET_VALUE;
+          type == RequestType.DAL_FETCH ||
+          type == RequestType.DAL_SELECT_RECORD ||
+          type == RequestType.DAL_SET_VALUE ||
+          type == RequestType.PRESS_BUTTON ||
+          // type == RequestType.CLOSE_SCREEN ||
+          type == RequestType.NAVIGATION ||
+          type == RequestType.DEVICE_STATUS ||
+          type == RequestType.UPLOAD ||
+          type == RequestType.DOWNLOAD ||
+          type == RequestType.CHANGE ||
+          type == RequestType.UPLOAD ||
+          type == RequestType.DAL_FILTER ||
+          type == RequestType.DAL_DELETE ||
+          type == RequestType.RELOAD ||
+          type == RequestType.DAL_INSERT ||
+          type == RequestType.DAL_SAVE ||
+          type == RequestType.DAL_METADATA) ||
+      type == RequestType.SET_VALUE;
 }
 
 abstract class Request extends Equatable {

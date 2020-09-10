@@ -64,7 +64,11 @@ enum ComponentProperty {
   DEFAULT_MENU_ITEM,
   AUTO_RESIZE,
   EDITABLE,
-  STYLE
+  STYLE,
+  EVENT_TAB_CLOSED,
+  EVENT_TAB_MOVED,
+  EVENT_TAB_ACTIVATED,
+  SELECTED_INDEX
 }
 
 class ComponentProperties {

@@ -16,6 +16,7 @@ enum CoState {
 abstract class IComponent {
   String name;
   GlobalKey componentId;
+  String rawComponentId;
   CoState state;
   Color background;
   Color foreground;

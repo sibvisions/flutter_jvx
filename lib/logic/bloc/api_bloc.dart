@@ -1,4 +1,6 @@
 import 'dart:collection';
+import 'package:jvx_flutterclient/model/api/request/tab_close.dart';
+import 'package:jvx_flutterclient/model/api/request/tab_select.dart';
 import 'package:universal_io/prefer_universal/io.dart' as uio;
 import 'package:archive/archive.dart';
 import 'package:bloc/bloc.dart';
@@ -175,6 +177,18 @@ class ApiBloc extends Bloc<Request, Response> {
         ..error = false
         ..requestType = RequestType.LOADING);
       yield* change(event);
+    } else if (event is TabSelect) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* tabSelect(event);
+    } else if (event is TabClose) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* tabClose(event);
     } else if (event is Loading) {
       yield Response()
         ..loading = true
@@ -507,6 +521,14 @@ class ApiBloc extends Bloc<Request, Response> {
     yield await processRequest(request);
   }
 
+  Stream<Response> tabSelect(TabSelect request) async* {
+    yield await processRequest(request);
+  }
+
+  Stream<Response> tabClose(TabClose request) async* {
+    yield await processRequest(request);
+  }
+
   Future<Response> processRequest(Request request) async {
     RestClient restClient = RestClient();
     Response response;
@@ -698,6 +720,22 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.RELOAD:
         // TODO: Handle this case.
+        break;
+      case RequestType.TAB_SELECT:
+        response =
+            await restClient.postAsync('/api/comp/selectTab', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.TAB_CLOSE:
+        response =
+            await restClient.postAsync('/api/comp/closeTab', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
         break;
     }
 
