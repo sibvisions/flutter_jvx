@@ -25,6 +25,8 @@ class CoFlowLayout extends CoLayout<String> {
   int horizontalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
   int verticalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
 
+  bool autoWrap = false;
+
   /// stores all constraints. */
   Map<Component, String> _constraintMap = <Component, String>{};
 
@@ -46,6 +48,7 @@ class CoFlowLayout extends CoLayout<String> {
     horizontalAlignment = int.parse(parameter[8]);
     verticalAlignment = int.parse(parameter[9]);
     horizontalComponentAlignment = int.parse(parameter[10]);
+    autoWrap = bool.fromEnvironment(parameter[11], defaultValue: autoWrap);
     verticalComponentAlignment = horizontalComponentAlignment;
   }
 
@@ -86,6 +89,7 @@ class CoFlowLayout extends CoLayout<String> {
       orientation: orientation,
       horizontalComponentAlignment: horizontalComponentAlignment,
       verticalComponentAlignment: verticalComponentAlignment,
+      autoWrap: autoWrap,
     ));
   }
 }
