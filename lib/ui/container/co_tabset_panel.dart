@@ -53,7 +53,7 @@ class CoTabsetPanel extends CoContainer implements IContainer {
   Widget getWidget() {
     if (this.components.isNotEmpty) {
       return CustomTabSet(
-        componentId: componentId,
+        key: componentId,
         components: components,
         currentIndex: selectedIndex,
         onTabChanged: _onTabChanged,
@@ -67,7 +67,6 @@ class CoTabsetPanel extends CoContainer implements IContainer {
 
 class CustomTabSet extends StatefulWidget {
   final List<IComponent> components;
-  final GlobalKey componentId;
   final int currentIndex;
   final Function(int index) onTabChanged;
   final Function(int index) onTabClosed;
@@ -75,7 +74,6 @@ class CustomTabSet extends StatefulWidget {
   CustomTabSet({
     Key key,
     @required this.components,
-    @required this.componentId,
     @required this.currentIndex,
     @required this.onTabChanged,
     @required this.onTabClosed,
@@ -136,9 +134,8 @@ class _CustomTabSetState extends State<CustomTabSet>
             child: TabBar(
               controller: _tabController,
               indicatorColor: Colors.black,
-              key: widget.componentId,
               tabs: _getTabs(widget.components),
-              onTap: _onTap(),
+              onTap: (index) => _onTap(),
             ),
           ),
           Flexible(
