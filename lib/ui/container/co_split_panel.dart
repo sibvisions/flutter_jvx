@@ -12,8 +12,11 @@ import 'co_container.dart';
 import '../../utils/globals.dart' as globals;
 
 class CoSplitPanel extends CoContainer implements IContainer {
+  Key key = GlobalKey();
   Key keyFirst = GlobalKey();
   Key keySecond = GlobalKey();
+  ScrollController scrollControllerView1 = ScrollController();
+  ScrollController scrollControllerView2 = ScrollController();
 
   /// Constant for horizontal anchors.
   static const HORIZONTAL = 0;
@@ -132,29 +135,30 @@ class CoSplitPanel extends CoContainer implements IContainer {
         _calculateDividerPosition(constraints, this.splitViewMode);
 
         return SplitView(
+          //key: key,
           initialWeight: currentSplitviewWeight,
           gripColor: Colors.grey.withOpacity(0.3),
           handleColor: Colors.grey[800].withOpacity(0.5),
           view1: widgets[0],
           view2: widgets[1],
-          viewMode:
-              (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)
-                  ? SplitViewMode.Horizontal
-                  : SplitViewMode.Vertical,
+          viewMode: this.splitViewMode,
           onWeightChanged: (value) {
             currentSplitviewWeight = value;
           },
+          scrollControllerView1: scrollControllerView1,
+          scrollControllerView2: scrollControllerView2,
         );
       } else {
-        if (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE) {
-          return SingleChildScrollView(
-              child: Wrap(key: componentId, children: widgets));
-        } else {
-          return Column(
-            key: componentId,
-            children: widgets,
-          );
-        }
+        return SplitView(
+          //key: key,
+          initialWeight: 0.5,
+          showHandle: false,
+          view1: widgets[0],
+          view2: widgets[1],
+          viewMode: SplitViewMode.Vertical,
+          scrollControllerView1: scrollControllerView1,
+          scrollControllerView2: scrollControllerView2,
+        );
       }
     });
   }

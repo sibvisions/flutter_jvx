@@ -13,19 +13,24 @@ class SplitView extends StatefulWidget {
   final Color gripColor;
   final Color handleColor;
   final double positionLimit;
+  final bool showHandle;
   final ValueChanged<double> onWeightChanged;
+  final ScrollController scrollControllerView1;
+  final ScrollController scrollControllerView2;
 
-  SplitView({
-    @required this.view1,
-    @required this.view2,
-    @required this.viewMode,
-    this.gripSize = 7.0,
-    this.initialWeight = 0.5,
-    this.gripColor = Colors.grey,
-    this.handleColor = Colors.white,
-    this.positionLimit = 20.0,
-    this.onWeightChanged,
-  });
+  SplitView(
+      {@required this.view1,
+      @required this.view2,
+      @required this.viewMode,
+      this.gripSize = 7.0,
+      this.initialWeight = 0.5,
+      this.gripColor = Colors.grey,
+      this.handleColor = Colors.white,
+      this.positionLimit = 20.0,
+      this.showHandle = true,
+      this.onWeightChanged,
+      this.scrollControllerView1,
+      this.scrollControllerView2});
 
   @override
   State createState() => _SplitViewState();
@@ -48,6 +53,7 @@ class _SplitViewState extends State<SplitView> {
     _prevWeight = defaultWeight;
 
     return LayoutBuilder(
+      //key: widget.key,
       builder: (context, constraints) {
         return ValueListenableBuilder<double>(
           valueListenable: weight,
@@ -74,63 +80,87 @@ class _SplitViewState extends State<SplitView> {
 
     BoxConstraints view1Constraints = BoxConstraints(
         minHeight: 0,
-        maxHeight: top,
+        maxHeight: double.infinity,
         minWidth: constraints.maxWidth,
         maxWidth: constraints.maxWidth);
 
     BoxConstraints view2Constraints = BoxConstraints(
         minHeight: 0,
-        maxHeight: bottom,
+        maxHeight: double.infinity,
         minWidth: constraints.maxWidth,
         maxWidth: constraints.maxWidth);
 
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: bottom,
+    List<Widget> children = List<Widget>();
+
+    children.add(Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      //bottom: bottom,
+      height: bottom,
+      child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          controller: widget.scrollControllerView1,
           child: ConstrainedBox(
-              constraints: view1Constraints, child: widget.view1),
-        ),
-        Positioned(
-          top: top,
-          left: 0,
-          right: 0,
-          bottom: 0,
+              constraints: view1Constraints, child: widget.view1)),
+    ));
+
+    children.add(Positioned(
+      top: top,
+      left: 0,
+      right: 0,
+      height: bottom,
+      child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          controller: widget.scrollControllerView2,
           child: ConstrainedBox(
-              constraints: view2Constraints, child: widget.view2),
+              constraints: view2Constraints, child: widget.view2)),
+    ));
+
+    if (widget.showHandle) {
+      children.add(Positioned(
+        top: top - widget.gripSize,
+        left: 0,
+        right: 0,
+        bottom: bottom,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onVerticalDragUpdate: (detail) {
+            final RenderBox container = context.findRenderObject() as RenderBox;
+            final pos = container.globalToLocal(detail.globalPosition);
+            if (pos.dy > widget.positionLimit &&
+                pos.dy < (container.size.height - widget.positionLimit)) {
+              weight.value = pos.dy / container.size.height;
+            }
+          },
+          child: Container(
+              color: widget.gripColor,
+              child: Center(
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5.0),
+                      child: Container(
+                        height: 4,
+                        color: widget.handleColor,
+                        width: 40,
+                      )))),
         ),
+      ));
+    } else {
+      children.add(
         Positioned(
           top: top - widget.gripSize,
           left: 0,
           right: 0,
           bottom: bottom,
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onVerticalDragUpdate: (detail) {
-              final RenderBox container =
-                  context.findRenderObject() as RenderBox;
-              final pos = container.globalToLocal(detail.globalPosition);
-              if (pos.dy > widget.positionLimit &&
-                  pos.dy < (container.size.height - widget.positionLimit)) {
-                weight.value = pos.dy / container.size.height;
-              }
-            },
-            child: Container(
-                color: widget.gripColor,
-                child: Center(
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: Container(
-                          height: 4,
-                          color: widget.handleColor,
-                          width: 40,
-                        )))),
+          child: Container(
+            color: widget.gripColor,
           ),
         ),
-      ],
+      );
+    }
+
+    return Stack(
+      children: children,
     );
   }
 
@@ -150,52 +180,72 @@ class _SplitViewState extends State<SplitView> {
         minWidth: 0,
         maxWidth: right);
 
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: 0,
-          left: 0,
-          right: right,
-          bottom: 0,
+    List<Widget> children = List<Widget>();
+
+    children.add(Positioned(
+      top: 0,
+      left: 0,
+      right: right,
+      bottom: 0,
+      child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          controller: widget.scrollControllerView1,
           child: ConstrainedBox(
-              constraints: view1Constraints, child: widget.view1),
-        ),
-        Positioned(
-          top: 0,
-          left: left,
-          right: 0,
-          bottom: 0,
+              constraints: view1Constraints, child: widget.view1)),
+    ));
+
+    children.add(Positioned(
+      top: 0,
+      left: left,
+      right: 0,
+      bottom: 0,
+      child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          controller: widget.scrollControllerView2,
           child: ConstrainedBox(
-              constraints: view2Constraints, child: widget.view2),
-        ),
-        Positioned(
+              constraints: view2Constraints, child: widget.view2)),
+    ));
+
+    if (widget.showHandle) {
+      children.add(Positioned(
+        top: 0,
+        left: left - widget.gripSize,
+        right: right,
+        bottom: 0,
+        child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onVerticalDragUpdate: (detail) {
+              final RenderBox container =
+                  context.findRenderObject() as RenderBox;
+              final pos = container.globalToLocal(detail.globalPosition);
+              if (pos.dx > widget.positionLimit &&
+                  pos.dx < (container.size.width - widget.positionLimit)) {
+                weight.value = pos.dx / container.size.width;
+              }
+            },
+            child: Container(
+                color: widget.gripColor,
+                child: Center(
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: Container(
+                          height: 40,
+                          color: widget.handleColor,
+                          width: 4,
+                        ))))),
+      ));
+    } else {
+      children.add(Positioned(
           top: 0,
           left: left - widget.gripSize,
           right: right,
           bottom: 0,
-          child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onVerticalDragUpdate: (detail) {
-                final RenderBox container =
-                    context.findRenderObject() as RenderBox;
-                final pos = container.globalToLocal(detail.globalPosition);
-                if (pos.dx > widget.positionLimit &&
-                    pos.dx < (container.size.width - widget.positionLimit)) {
-                  weight.value = pos.dx / container.size.width;
-                }
-              },
-              child: Container(
-                  color: widget.gripColor,
-                  child: Center(
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5.0),
-                          child: Container(
-                            height: 40,
-                            color: widget.handleColor,
-                            width: 4,
-                          ))))),
-        ),
-      ],
+          child: Container(
+            color: widget.gripColor,
+          )));
+    }
+    return Stack(
+      children: children,
     );
   }
 }
