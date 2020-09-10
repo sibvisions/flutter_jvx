@@ -15,6 +15,9 @@ class CoReferencedCellEditor extends CoCellEditor {
       : super(changedCellEditor, context) {
     linkReference = changedCellEditor.linkReference;
     columnView = changedCellEditor.columnView;
+    if (linkReference?.dataProvider == null)
+      linkReference?.dataProvider = linkReference?.referencedDataBook;
+    if (dataProvider == null) dataProvider = linkReference?.dataProvider;
   }
 
   factory CoReferencedCellEditor.withCompContext(

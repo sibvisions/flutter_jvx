@@ -29,7 +29,8 @@ class SoComponentData {
   List<VoidCallback> _onMetaDataChanged = [];
   List<ValueChanged<dynamic>> _onSelectedRowChanged = [];
 
-  SoComponentData(this.dataProvider, this.soDataScreen);
+  SoComponentData(this.dataProvider, this.soDataScreen)
+      : assert(dataProvider != null);
 
   bool get deleteEnabled {
     if (metaData != null && metaData.deleteEnabled != null)
