@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,6 +8,7 @@ import 'package:jvx_flutterclient/model/api/request/tab_close.dart';
 import 'package:jvx_flutterclient/model/api/request/tab_select.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
+import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
 import 'package:jvx_flutterclient/utils/globals.dart' as globals;
 
 class CoTabsetPanel extends CoContainer implements IContainer {
@@ -52,12 +54,17 @@ class CoTabsetPanel extends CoContainer implements IContainer {
   @override
   Widget getWidget() {
     if (this.components.isNotEmpty) {
-      return CustomTabSet(
+      return DefaultTabController(
+        length: this.components.length,
+        initialIndex:
+            this.components.length > selectedIndex ? selectedIndex : 0,
         key: componentId,
-        components: components,
-        currentIndex: selectedIndex,
-        onTabChanged: _onTabChanged,
-        onTabClosed: _onTabClosed,
+        child: CustomTabSet(
+          components: components,
+          currentIndex: selectedIndex,
+          onTabChanged: _onTabChanged,
+          onTabClosed: _onTabClosed,
+        ),
       );
     } else {
       return Container();
@@ -84,55 +91,44 @@ class CustomTabSet extends StatefulWidget {
 }
 
 class _CustomTabSetState extends State<CustomTabSet>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
+    with TickerProviderStateMixin {
   List<bool> _isEnabled = <bool>[];
   List<bool> _isClosable = <bool>[];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      length: widget.components.length,
-      vsync: this,
-      initialIndex: widget.currentIndex,
-    );
-    _tabController.addListener(_onTap);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
   _onTap() {
-    if (!_isEnabled[_tabController.index]) {
-      int index = _tabController.previousIndex;
+    if (!_isEnabled[DefaultTabController.of(context).index]) {
+      int index = DefaultTabController.of(context).previousIndex;
       setState(() {
-        _tabController.index = index;
+        DefaultTabController.of(context).index = index;
       });
-    } else if (_isEnabled[_tabController.previousIndex]) {
-      widget.onTabChanged(_tabController.index);
+    } else if (_isEnabled[DefaultTabController.of(context).previousIndex]) {
+      widget.onTabChanged(DefaultTabController.of(context).index);
     }
   }
 
-  _onTabClosed() {
-    widget.onTabClosed(_tabController.index);
+  _onTabClosed(int index) {
+    widget.onTabClosed(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    _tabController.index = widget.currentIndex;
-
     return Container(
       child: Column(
         children: [
           Flexible(
-            flex: 1,
+            flex: 2,
             child: TabBar(
               isScrollable: true,
-              controller: _tabController,
               indicatorColor: Colors.black,
               tabs: _getTabs(widget.components),
               onTap: (indx) => _onTap(),
@@ -141,7 +137,6 @@ class _CustomTabSetState extends State<CustomTabSet>
           Flexible(
             flex: 10,
             child: TabBarView(
-              controller: _tabController,
               children: _getChildren(widget.components),
             ),
           ),
@@ -162,29 +157,50 @@ class _CustomTabSetState extends State<CustomTabSet>
       String text = splittedConstr[2];
       String img = splittedConstr.length >= 4 ? splittedConstr[3] : '';
 
+      double iconSize = 15;
+
       Tab tab = new Tab(
-        child: !closable
-            ? Text(
-                text ?? '',
-                style: !enabled ? TextStyle(color: Colors.grey) : null,
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(text ?? '',
-                      style: !enabled ? TextStyle(color: Colors.grey) : null),
-                  SizedBox(
-                    width: 20,
+        child: Column(
+          children: [
+            img != null && img.isNotEmpty
+                ? CustomIcon(
+                    image: img,
+                    size: Size(iconSize, iconSize),
+                    color: Colors.grey.shade700,
+                  )
+                : Container(
+                    height: iconSize,
                   ),
-                  GestureDetector(
-                    child: Icon(
-                      Icons.clear,
-                      size: 20,
-                    ),
-                    onTap: _onTabClosed,
+            SizedBox(
+              height: 5,
+            ),
+            !closable
+                ? Text(
+                    text ?? '',
+                    style: !enabled ? TextStyle(color: Colors.grey) : null,
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(text ?? '',
+                          style:
+                              !enabled ? TextStyle(color: Colors.grey) : null),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        child: Icon(
+                          Icons.clear,
+                          size: 20,
+                        ),
+                        onTap: () {
+                          _onTabClosed(components.indexOf(comp));
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+          ],
+        ),
       );
 
       _isEnabled.add(enabled);
