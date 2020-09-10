@@ -88,7 +88,6 @@ class _CustomTabSetState extends State<CustomTabSet>
   TabController _tabController;
   List<bool> _isEnabled = <bool>[];
   List<bool> _isClosable = <bool>[];
-  bool locked = false;
 
   @override
   void initState() {
@@ -98,7 +97,6 @@ class _CustomTabSetState extends State<CustomTabSet>
       vsync: this,
       initialIndex: widget.currentIndex,
     );
-    locked = true;
     _tabController.addListener(_onTap);
   }
 
@@ -114,28 +112,30 @@ class _CustomTabSetState extends State<CustomTabSet>
       setState(() {
         _tabController.index = index;
       });
-    } else if (!locked && _isEnabled[_tabController.previousIndex]) {
+    } else if (_isEnabled[_tabController.previousIndex]) {
       widget.onTabChanged(_tabController.index);
     }
-    locked = false;
   }
 
   _onTabClosed() {
-    if (!locked) widget.onTabClosed(_tabController.index);
+    widget.onTabClosed(_tabController.index);
   }
 
   @override
   Widget build(BuildContext context) {
+    _tabController.index = widget.currentIndex;
+
     return Container(
       child: Column(
         children: [
           Flexible(
-            flex: 2,
+            flex: 1,
             child: TabBar(
+              isScrollable: true,
               controller: _tabController,
               indicatorColor: Colors.black,
               tabs: _getTabs(widget.components),
-              onTap: (index) => _onTap(),
+              onTap: (indx) => _onTap(),
             ),
           ),
           Flexible(
@@ -171,21 +171,17 @@ class _CustomTabSetState extends State<CustomTabSet>
             : Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    flex: 2,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Text(text ?? '',
-                          style:
-                              !enabled ? TextStyle(color: Colors.grey) : null),
-                    ),
+                  Text(text ?? '',
+                      style: !enabled ? TextStyle(color: Colors.grey) : null),
+                  SizedBox(
+                    width: 20,
                   ),
-                  Flexible(
-                    flex: 1,
-                    child: GestureDetector(
-                      child: Icon(Icons.clear),
-                      onTap: _onTabClosed,
+                  GestureDetector(
+                    child: Icon(
+                      Icons.clear,
+                      size: 20,
                     ),
+                    onTap: _onTabClosed,
                   ),
                 ],
               ),
