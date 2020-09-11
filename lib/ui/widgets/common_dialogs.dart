@@ -74,6 +74,32 @@ showSessionExpired(BuildContext context, String title, String message) async {
   });
 }
 
+showRestart(BuildContext context, String title, String message) async {
+  if (title == null) title = "Missing title";
+  if (message == null) message = "";
+
+  await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text(Translations.of(context).text2('OK', 'OK')),
+                  onPressed: () {
+                    globals.username = '';
+                    globals.password = '';
+                    globals.profileImage = '';
+                    globals.displayName = '';
+                    globals.roles = [];
+                    Navigator.of(context).pop();
+                  })
+            ],
+          )).then((val) {
+    RestartWidget.restartApp(context);
+  });
+}
+
 showSuccess(BuildContext context, String message, IconData icon) {
   if (message == null) message = "";
   showDialog(

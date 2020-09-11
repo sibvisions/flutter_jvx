@@ -101,6 +101,11 @@ class _CustomTabSetState extends State<CustomTabSet>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -122,6 +127,20 @@ class _CustomTabSetState extends State<CustomTabSet>
 
   @override
   Widget build(BuildContext context) {
+    _getEnabledAndClosable(widget.components);
+    if (_isEnabled.length > DefaultTabController.of(context).index &&
+        !_isEnabled[DefaultTabController.of(context).index]) {
+      setState(() {
+        DefaultTabController.of(context).index = 0;
+      });
+    } else if (widget.currentIndex != DefaultTabController.of(context).index &&
+        _isEnabled.length > widget.currentIndex &&
+        _isEnabled[widget.currentIndex]) {
+      setState(() {
+        DefaultTabController.of(context).index = widget.currentIndex;
+      });
+    }
+
     return Container(
       child: Column(
         children: [
@@ -145,10 +164,21 @@ class _CustomTabSetState extends State<CustomTabSet>
     );
   }
 
-  List<Tab> _getTabs(List<IComponent> components) {
-    List<Tab> tablist = <Tab>[];
+  _getEnabledAndClosable(List<IComponent> components) {
     _isEnabled = <bool>[];
     _isClosable = <bool>[];
+
+    components.forEach((comp) {
+      List splittedConstr = comp.constraints?.split(';');
+      bool enabled = (splittedConstr[0]?.toLowerCase() == 'true');
+      bool closable = (splittedConstr[1]?.toLowerCase() == 'true');
+      _isEnabled.add(enabled);
+      _isClosable.add(closable);
+    });
+  }
+
+  List<Tab> _getTabs(List<IComponent> components) {
+    List<Tab> tablist = <Tab>[];
 
     components.forEach((comp) {
       List splittedConstr = comp.constraints?.split(';');
@@ -202,9 +232,6 @@ class _CustomTabSetState extends State<CustomTabSet>
           ],
         ),
       );
-
-      _isEnabled.add(enabled);
-      _isClosable.add(closable);
       tablist.add(tab);
     });
 

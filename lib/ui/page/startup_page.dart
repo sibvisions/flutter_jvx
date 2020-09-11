@@ -44,6 +44,10 @@ class _StartupPageState extends State<StartupPage> {
       BlocListener<ApiBloc, Response>(
         listener: (context, state) {
           print('Startup Page Request Type: ${state.requestType}');
+          if (state.restart != null) {
+            showRestart(context, 'App will restart', state.restart.info);
+          }
+
           _startupHandler(state);
           _navigationHandler(state);
           _downloadHandler(state);

@@ -1,4 +1,5 @@
 import 'package:jvx_flutterclient/model/api/response/device_status_resp.dart';
+import 'package:jvx_flutterclient/model/api/response/restart.dart';
 
 import '../../../model/api/response/show_document.dart';
 import '../../../utils/shared_preferences_helper.dart';
@@ -50,6 +51,7 @@ class Response {
   Request request;
   ShowDocument showDocument;
   DeviceStatusResponse deviceStatus;
+  Restart restart;
 
   Response();
 
@@ -138,6 +140,9 @@ class Response {
           if (deviceStatus != null && deviceStatus.layoutMode != null) {
             globals.layoutMode = deviceStatus.layoutMode;
           }
+          break;
+        case ResponseObjectType.RESTART:
+          restart = Restart.fromJson(r);
           break;
       }
     });

@@ -25,13 +25,8 @@ bool handleError(Response response, BuildContext context) {
       showGoToSettings(
           context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'message.error') {
-      if (response.message == 'Invalid application!') {
-        showSessionExpired(
-            context, Translations.of(context).text2('Error'), response.message);
-      } else {
-        showError(
-            context, Translations.of(context).text2('Error'), response.message);
-      }
+      showError(
+          context, Translations.of(context).text2('Error'), response.message);
     } else if (response.errorName == 'server.error') {
       showGoToSettings(
           context, Translations.of(context).text2('Error'), response.message);
@@ -88,6 +83,10 @@ Widget loadingListener(Widget child) {
 Widget errorAndLoadingListener(Widget child) {
   return BlocListener<ApiBloc, Response>(
     listener: (BuildContext context, Response state) {
+      if (state.restart != null) {
+        showRestart(context, 'App will restart', state.restart.info);
+      }
+
       if (state != null &&
           state.loading &&
           state.requestType == RequestType.LOADING) {
