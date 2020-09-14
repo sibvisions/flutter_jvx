@@ -1,7 +1,7 @@
 {
   "appName": "demo",
   "baseUrl": "http://192.168.1.42:8080/JVx.mobile/services/mobile",
-  "debug": true,
+  "debug": false,
   "username": "features",
   "password": "features",
   "appMode": "full"

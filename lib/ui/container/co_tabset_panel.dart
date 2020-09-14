@@ -90,8 +90,7 @@ class CustomTabSet extends StatefulWidget {
   _CustomTabSetState createState() => _CustomTabSetState();
 }
 
-class _CustomTabSetState extends State<CustomTabSet>
-    with TickerProviderStateMixin {
+class _CustomTabSetState extends State<CustomTabSet> {
   List<bool> _isEnabled = <bool>[];
   List<bool> _isClosable = <bool>[];
 
