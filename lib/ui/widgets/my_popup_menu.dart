@@ -428,7 +428,7 @@ class _CheckedPopupMenuItemState<T>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: _fadeDuration, vsync: this)
+    _controller = AnimationController(duration: _fadeDuration)
       ..value = widget.checked ? 1.0 : 0.0
       ..addListener(() => setState(() {/* animation changed */}));
   }
