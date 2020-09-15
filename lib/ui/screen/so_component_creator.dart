@@ -1,4 +1,5 @@
 import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
+import 'package:jvx_flutterclient/ui/component/component.dart';
 import 'package:jvx_flutterclient/ui/container/co_tabset_panel.dart';
 import 'package:jvx_flutterclient/ui/editor/celleditor/co_cell_editor.dart';
 

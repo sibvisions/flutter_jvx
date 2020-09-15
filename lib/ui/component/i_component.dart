@@ -45,3 +45,37 @@ abstract class IComponent {
 
   Widget getWidget();
 }
+
+abstract class IComponentWidget extends StatefulWidget {}
+
+abstract class IComponentWidgetState<T extends StatefulWidget>
+    extends State<T> {
+  String name;
+  GlobalKey componentId;
+  String rawComponentId;
+  CoState state;
+  Color background;
+  Color foreground;
+  TextStyle style;
+  Size preferredSize;
+  Size minimumSize;
+  Size maximumSize;
+  bool isVisible;
+  bool enabled;
+  String constraints;
+  BuildContext context;
+
+  String parentComponentId;
+  List<Key> childComponentIds;
+
+  int verticalAlignment;
+  int horizontalAlignment;
+
+  bool get isForegroundSet;
+  bool get isBackgroundSet;
+  bool get isPreferredSizeSet;
+  bool get isMinimumSizeSet;
+  bool get isMaximumSizeSet;
+
+  void updateProperties(ChangedComponent changedComponent);
+}

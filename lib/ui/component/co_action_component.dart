@@ -3,7 +3,7 @@ import 'component.dart';
 
 typedef ButtonPressedCallback = void Function(String componentId, String label);
 
-class CoActionComponent extends Component {
+abstract class CoActionComponent extends Component {
   ButtonPressedCallback onButtonPressed;
 
   CoActionComponent(GlobalKey componentId, BuildContext context)

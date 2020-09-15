@@ -11,7 +11,7 @@ class ChangedComponent extends ComponentProperties {
   bool remove;
   bool additional;
   String screenTitle;
-  
+
   ChangedComponent({
     this.id,
     this.name,
