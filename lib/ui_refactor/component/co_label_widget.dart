@@ -9,6 +9,8 @@ import 'package:jvx_flutterclient/utils/so_text_style.dart';
 import 'component_widget.dart';
 
 class CoLabelWidget extends StatefulWidget {
+  const CoLabelWidget({Key key}) : super(key: key);
+
   @override
   _CoLabelWidgetState createState() => _CoLabelWidgetState();
 }
@@ -16,10 +18,21 @@ class CoLabelWidget extends StatefulWidget {
 class _CoLabelWidgetState extends State<CoLabelWidget> with ComponentState {
   String text = "";
 
+  ComponentModel componentModel;
+
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
     text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    componentModel = ComponentWidget.of(context).widget.componentModel;
+
+    componentModel.addListener(
+        () => updateProperties(componentModel.currentChangedComponent));
   }
 
   static Alignment getLabelAlignment(

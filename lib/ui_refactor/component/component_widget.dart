@@ -6,6 +6,7 @@ import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui_refactor/component/component_state.dart';
 import 'package:jvx_flutterclient/utils/so_text_style.dart';
+import 'package:universal_html/prefer_universal/js.dart';
 
 enum CoState {
   /// Component is added to the widget tree
@@ -28,21 +29,18 @@ class ComponentWidget extends StatefulWidget {
     @required this.child,
   }) : super(key: key);
 
+  static ComponentWidgetState of(BuildContext context) {
+    return context.findAncestorStateOfType<ComponentWidgetState>();
+  }
+
   @override
   ComponentWidgetState createState() => ComponentWidgetState();
 }
 
 class ComponentWidgetState extends State<ComponentWidget> with ComponentState {
   @override
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-  }
-
-  @override
   void initState() {
     super.initState();
-    widget.componentModel.addListener(
-        () => updateProperties(widget.componentModel.currentChangedComponent));
   }
 
   @override
