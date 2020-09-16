@@ -89,7 +89,7 @@ class CoTextCellEditor extends CoCellEditor {
     String controllerValue = (this.value != null ? this.value.toString() : "");
     _controller.value = _controller.value.copyWith(
         text: controllerValue,
-        selection: TextSelection.collapsed(int: controllerValue.length));
+        selection: TextSelection.collapsed(offset: controllerValue.length));
 
     return DecoratedBox(
       decoration: BoxDecoration(

@@ -11,8 +11,6 @@ import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
 import 'package:jvx_flutterclient/utils/globals.dart' as globals;
 
-import 'package:jvx_flutterclient/utils/widget_extension.dart';
-
 class CoTabsetPanel extends CoContainer implements IContainer {
   bool eventTabClosed;
   bool eventTabActivated;
