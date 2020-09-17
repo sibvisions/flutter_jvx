@@ -56,12 +56,13 @@ class CoTabsetPanel extends CoContainer implements IContainer {
     if (this.components.isNotEmpty) {
       return DefaultTabController(
         length: this.components.length,
-        initialIndex:
-            this.components.length > selectedIndex ? selectedIndex : 0,
+        initialIndex: this.components.length > selectedIndex
+            ? (selectedIndex == -1 ? 0 : selectedIndex)
+            : 0,
         key: componentId,
         child: CustomTabSet(
           components: components,
-          currentIndex: selectedIndex,
+          currentIndex: selectedIndex == -1 ? 0 : selectedIndex,
           onTabChanged: _onTabChanged,
           onTabClosed: _onTabClosed,
         ),
