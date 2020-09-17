@@ -1,34 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui/layout/co_border_layout.dart';
 import 'package:jvx_flutterclient/ui/layout/co_flow_layout.dart';
 import 'package:jvx_flutterclient/ui/layout/co_form_layout.dart';
 import 'package:jvx_flutterclient/ui/layout/co_grid_layout.dart';
 import 'package:jvx_flutterclient/ui/layout/co_layout.dart';
 import 'package:jvx_flutterclient/ui/layout/widgets/co_border_layout_constraint.dart';
-import 'package:jvx_flutterclient/ui_refactor/component/component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor/component/component_state.dart';
-import 'package:jvx_flutterclient/utils/so_text_style.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 
 import '../../jvx_flutterclient.dart';
 
-class CoContainerWidget extends StatefulWidget {
-  final Widget child;
-
-  const CoContainerWidget({Key key, @required this.child}) : super(key: key);
-
-  static ContainerWidgetState of(BuildContext context) {
-    return context.findAncestorStateOfType<ContainerWidgetState>();
-  }
+class CoContainerWidget extends ComponentWidget {
+  CoContainerWidget({Key key, ComponentModel componentModel})
+      : super(key: key, componentModel: componentModel);
 
   @override
-  ContainerWidgetState createState() => ContainerWidgetState();
+  State<StatefulWidget> createState() => CoContainerWidgetState();
 }
 
-class ContainerWidgetState extends State<CoContainerWidget>
-    with ComponentState {
+class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   CoLayout layout;
   List<ComponentWidget> components = new List<ComponentWidget>();
 
@@ -118,10 +110,5 @@ class ContainerWidgetState extends State<CoContainerWidget>
         (layout as CoBorderLayout).addLayoutComponent(pComponent, contraints);
       }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
   }
 }

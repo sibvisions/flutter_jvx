@@ -3,22 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 
 import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui_refactor/component/component_state.dart';
-import 'package:jvx_flutterclient/utils/so_text_style.dart';
-import 'package:universal_html/prefer_universal/js.dart';
-
-enum CoState {
-  /// Component is added to the widget tree
-  Added,
-
-  /// Component is not added to the widget tree
-  Free,
-
-  /// Component was destroyed
-  Destroyed
-}
 
 class ComponentWidget extends StatefulWidget {
   final ComponentModel componentModel;

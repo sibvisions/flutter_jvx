@@ -5,8 +5,20 @@ import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/utils/so_text_style.dart';
 
 import '../../jvx_flutterclient.dart';
+import 'component_model.dart';
 
-mixin ComponentState {
+class ComponentWidget extends StatefulWidget {
+  final ComponentModel componentModel;
+
+  const ComponentWidget({Key key, @required this.componentModel})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() =>
+      ComponentWidgetState<ComponentWidget>();
+}
+
+class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   String name;
   GlobalKey componentId;
   String rawComponentId;
@@ -68,5 +80,10 @@ mixin ComponentState {
         ComponentProperty.VERTICAL_ALIGNMENT, verticalAlignment);
     horizontalAlignment = changedComponent.getProperty<int>(
         ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

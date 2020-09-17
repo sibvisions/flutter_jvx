@@ -3,6 +3,8 @@ import 'package:jvx_flutterclient/ui_refactor/component/co_label_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor/component/component_widget.dart';
 
 import 'package:jvx_flutterclient/model/changed_component.dart';
+import 'package:jvx_flutterclient/ui_refactor/container/co_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor/container/container_widget.dart';
 
 import 'i_component_creator.dart';
 
@@ -13,9 +15,10 @@ class SoComponentCreator implements IComponentCreator {
       standardComponents = {
     'Label': (ChangedComponent changedComponent) => ComponentWidget(
         componentModel: ComponentModel(changedComponent.id),
-        child: CoLabelWidget(
-          key: Key(changedComponent.id),
-        ))
+        child: CoLabelWidget()),
+    'Panel': (ChangedComponent changedComponent) => ComponentWidget(
+        componentModel: ComponentModel(changedComponent.id),
+        child: CoContainerWidget(child: CoPanelWidget()))
   };
 
   SoComponentCreator();
@@ -35,6 +38,12 @@ class SoComponentCreator implements IComponentCreator {
             .standardComponents[changedComponent.className](changedComponent);
       }
     }
+
+    componentWidget.componentModel.changedComponent = changedComponent;
+
+    if (componentWidget.componentModel.componentState is ContainerWidgetState)
+      (componentWidget.componentModel.componentState as ContainerWidgetState)
+          .layout = _createLayout(componentWidget, changedComponent);
 
     return componentWidget;
   }
