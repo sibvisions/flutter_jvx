@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
@@ -37,7 +38,7 @@ class ComponentWidget extends StatefulWidget {
   ComponentWidgetState createState() => ComponentWidgetState();
 }
 
-class ComponentWidgetState extends State<ComponentWidget> with ComponentState {
+class ComponentWidgetState extends State<ComponentWidget> {
   @override
   void initState() {
     super.initState();
@@ -57,8 +58,10 @@ class ComponentModel extends ValueNotifier {
   String componentId;
   ChangedComponent currentChangedComponent;
   ComponentState componentState;
+  SoComponentData data;
+  String dataProvider;
 
-  ComponentModel() : super(null);
+  ComponentModel(this.componentId) : super(null);
 
   set compId(String componentId) {
     componentId = componentId;

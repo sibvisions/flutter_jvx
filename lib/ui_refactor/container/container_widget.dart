@@ -13,6 +13,14 @@ import 'package:jvx_flutterclient/ui_refactor/component/component_state.dart';
 import 'package:jvx_flutterclient/utils/so_text_style.dart';
 
 class CoContainerWidget extends StatefulWidget {
+  final Widget child;
+
+  const CoContainerWidget({Key key, @required this.child}) : super(key: key);
+
+  static ContainerWidgetState of(BuildContext context) {
+    return context.findAncestorStateOfType<ContainerWidgetState>();
+  }
+
   @override
   ContainerWidgetState createState() => ContainerWidgetState();
 }
@@ -112,6 +120,6 @@ class ContainerWidgetState extends State<CoContainerWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return widget.child;
   }
 }

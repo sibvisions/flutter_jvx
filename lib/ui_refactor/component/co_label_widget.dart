@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
@@ -9,7 +10,12 @@ import 'package:jvx_flutterclient/utils/so_text_style.dart';
 import 'component_widget.dart';
 
 class CoLabelWidget extends StatefulWidget {
-  const CoLabelWidget({Key key}) : super(key: key);
+  final String text;
+
+  const CoLabelWidget({
+    Key key,
+    this.text,
+  }) : super(key: key);
 
   @override
   _CoLabelWidgetState createState() => _CoLabelWidgetState();
@@ -29,7 +35,13 @@ class _CoLabelWidgetState extends State<CoLabelWidget> with ComponentState {
   @override
   void initState() {
     super.initState();
+    if (widget.text != null) {
+      this.text = widget.text;
+    }
+
     componentModel = ComponentWidget.of(context).widget.componentModel;
+
+    componentModel.componentState = this;
 
     componentModel.addListener(
         () => updateProperties(componentModel.currentChangedComponent));

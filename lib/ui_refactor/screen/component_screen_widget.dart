@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/ui/layout/co_border_layout.dart';
-import 'package:jvx_flutterclient/ui/screen/i_component_creator.dart';
+import 'package:jvx_flutterclient/ui/screen/so_data_screen.dart';
 import 'package:jvx_flutterclient/ui_refactor/component/component_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor/container/co_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor/container/container_widget.dart';
+
+import 'i_component_creator.dart';
 
 class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
@@ -12,11 +15,17 @@ class ComponentScreenWidget extends StatefulWidget {
   const ComponentScreenWidget({Key key, this.componentCreator})
       : super(key: key);
 
+  _ComponentScreenWidgetState of() {
+    return componentCreator.context
+        .findAncestorStateOfType<_ComponentScreenWidgetState>();
+  }
+
   @override
   _ComponentScreenWidgetState createState() => _ComponentScreenWidgetState();
 }
 
-class _ComponentScreenWidgetState extends State<ComponentScreenWidget> {
+class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
+    with SoDataScreen {
   Map<String, ComponentWidget> components = <String, ComponentWidget>{};
   Map<String, ComponentWidget> additionalComponents =
       <String, ComponentWidget>{};
@@ -109,12 +118,11 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget> {
     ComponentWidget componentClass;
 
     if (!container.containsKey(component.id)) {
-      componentClass = _componentCreator.createComponent(component);
+      componentClass = widget.componentCreator.createComponent(component);
 
       if (componentClass.componentModel.componentState is CoEditor) {
-        componentClass.componentModel.componentState.data = this
-            .getComponentData(
-                componentClass.componentModel.componentState.dataProvider);
+        componentClass.componentModel.data =
+            this.getComponentData(componentClass.componentModel.dataProvider);
         if (componentClass.componentModel.componentState.cellEditor
             is CoReferencedCellEditor) {
           (componentClass.componentModel.componentState.cellEditor
@@ -283,8 +291,9 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget> {
         orElse: () => null);
 
     if (headerComponent != null || footerComponent != null) {
-      CoPanel headerFooterPanel =
-          new CoPanel(GlobalKey(debugLabel: 'headerFooterPanel'), context);
+      ComponentWidget headerFooterPanel = ComponentWidget(
+          componentModel: ComponentModel('headerFooterPanel'),
+          child: CoPanelWidget());
       headerFooterPanel.layout = CoBorderLayout.fromLayoutString(
           headerFooterPanel, 'BorderLayout,0,0,0,0,0,0,', '');
       if (headerComponent != null) {
@@ -393,6 +402,17 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget> {
       } else {
         print(debugString);
       }
+    }
+  }
+
+  void debugPrintCurrentWidgetTree() {
+    if (debug) {
+      ComponentWidget component = getRootComponent();
+      print("--------------------");
+      print("Current widget tree:");
+      print("--------------------");
+      debugPrintComponent(component, 0);
+      print("--------------------");
     }
   }
 
