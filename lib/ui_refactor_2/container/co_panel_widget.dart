@@ -35,4 +35,12 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       return new Container();
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.componentModel.componentState = this;
+    widget.componentModel.addListener(
+        () => updateProperties(widget.componentModel.currentChangedComponent));
+  }
 }

@@ -66,6 +66,10 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   void initState() {
     super.initState();
 
+    CoEditorWidget.of(context).cellEditor = this;
+    CoEditorWidget.of(context).cellEditorWidget =
+        (widget as CoCellEditorWidget);
+
     if ((widget as CoCellEditorWidget).changedCellEditor != null) {
       horizontalAlignment = (widget as CoCellEditorWidget)
           .changedCellEditor
@@ -98,9 +102,8 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    CoEditorState editorState = CoEditorWidget.of(context);
+  setEditorProperties(BuildContext context) {
+    CoEditorWidgetState editorState = CoEditorWidget.of(context);
 
     onValueChanged = editorState.onValueChanged;
     onEndEditing = editorState.onEndEditing;
@@ -112,7 +115,11 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
     placeholder = editorState.cellEditorPlaceholder;
     horizontalAlignment = editorState.cellEditorHorizontalAlignment;
     font = editorState.cellEditorFont;
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    setEditorProperties(context);
     return Container();
   }
 }

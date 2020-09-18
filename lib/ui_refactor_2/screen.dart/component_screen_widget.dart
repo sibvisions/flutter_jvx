@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
+import 'package:jvx_flutterclient/ui/component/i_component.dart';
 import 'package:jvx_flutterclient/ui/layout/co_border_layout.dart';
 import 'package:jvx_flutterclient/ui/screen/so_data_screen.dart';
-import 'package:jvx_flutterclient/ui_refactor/screen/i_component_creator.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/co_action_component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 
-import '../../jvx_flutterclient.dart';
+import 'i_component_creator.dart';
 
 class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
@@ -122,21 +124,24 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (!container.containsKey(component.id)) {
       componentClass = widget.componentCreator.createComponent(component);
 
-      if (componentClass.componentModel.componentState is CoEditor) {
+      if (componentClass.componentModel.componentState is CoEditorWidgetState) {
+        CoEditorWidgetState editorWidgetState =
+            componentClass.componentModel.componentState;
+
         componentClass.componentModel.data =
             this.getComponentData(componentClass.componentModel.dataProvider);
-        if (componentClass.componentModel.componentState.cellEditor
-            is CoReferencedCellEditor) {
-          (componentClass.componentModel.componentState.cellEditor
-                  as CoReferencedCellEditor)
-              .data = this.getComponentData((componentClass.componentModel
-                  .componentState.cellEditor as CoReferencedCellEditor)
-              .linkReference
-              .dataProvider);
+        if (editorWidgetState.cellEditor is CoReferencedCellEditor) {
+          (editorWidgetState.cellEditor as CoReferencedCellEditor).data = this
+              .getComponentData(
+                  (editorWidgetState.cellEditor as CoReferencedCellEditor)
+                      .linkReference
+                      .dataProvider);
         }
-      } else if (componentClass is CoActionComponent) {
-        componentClass.componentModel.componentState.onButtonPressed =
-            this.onButtonPressed;
+      } else if (componentClass.componentModel.componentState
+          is CoActionComponentWidgetState) {
+        (componentClass.componentModel.componentState
+                as CoActionComponentWidgetState)
+            .onButtonPressed = this.onButtonPressed;
       } else if (component.additional && componentClass is CoPopupMenu) {
         if (components.containsKey(componentClass
                 .componentModel.componentState.parentComponentId) &&
@@ -378,9 +383,10 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
           ", size:" +
           (size != null ? size.toString() : "nosize");
 
-      if (component is CoEditor) {
+      if (component.componentModel.componentState is CoEditorWidgetState) {
         debugString += ", dataProvider: " +
-            component.componentModel.componentState.dataProvider;
+            (component.componentModel.componentState as CoEditorWidgetState)
+                .dataProvider;
       }
 
       if (component.componentModel.componentState is CoContainerWidgetState) {

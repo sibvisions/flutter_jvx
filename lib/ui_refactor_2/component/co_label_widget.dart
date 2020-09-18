@@ -9,7 +9,7 @@ import 'component_model.dart';
 class CoLabelWidget extends ComponentWidget {
   final String text;
 
-  CoLabelWidget(this.text, Key key, ComponentModel componentModel)
+  CoLabelWidget({this.text, Key key, ComponentModel componentModel})
       : super(componentModel: componentModel, key: key);
 
   @override
@@ -77,6 +77,8 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   void initState() {
     super.initState();
     widget.componentModel.componentState = this;
+    widget.componentModel.addListener(
+        () => updateProperties(widget.componentModel.currentChangedComponent));
   }
 
   @override

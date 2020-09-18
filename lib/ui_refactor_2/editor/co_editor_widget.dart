@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/model/cell_editor.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
+import 'package:jvx_flutterclient/model/filter.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/utils/text_utils.dart';
 
 import '../../jvx_flutterclient.dart';
 
@@ -12,19 +15,20 @@ class CoEditorWidget extends ComponentWidget {
   CoEditorWidget({Key key, ComponentModel componentModel})
       : super(key: key, componentModel: componentModel);
 
-  State<StatefulWidget> createState() => CoEditorState();
+  State<StatefulWidget> createState() => CoEditorWidgetState();
 
-  static CoEditorState of(BuildContext context) =>
-      context.findAncestorStateOfType<CoEditorState>();
+  static CoEditorWidgetState of(BuildContext context) =>
+      context.findAncestorStateOfType<CoEditorWidgetState>();
 }
 
-class CoEditorState extends ComponentWidgetState<CoEditorWidget> {
+class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
   String dataProvider;
   String dataRow;
   String columnName;
   bool readonly = false;
   bool eventFocusGained = false;
-  CoCellEditorWidget _cellEditor;
+  CoCellEditorWidgetState _cellEditor;
+  CoCellEditorWidget _cellEditorWidget;
   SoComponentData _data;
   Color cellEditorBackground;
   bool cellEditorEditable;
@@ -43,13 +47,20 @@ class CoEditorState extends ComponentWidgetState<CoEditorWidget> {
   }
 
   get cellEditor => _cellEditor;
-  set cellEditor(CoCellEditorWidget editor) {
+  set cellEditor(CoCellEditorWidgetState editor) {
     _cellEditor = editor;
-    if (_cellEditor != null) {
+    if (editor != null) {
       _cellEditor.onBeginEditing = onBeginEditing;
       _cellEditor.onEndEditing = onEndEditing;
       _cellEditor.onValueChanged = onValueChanged;
       _cellEditor.onFilter = onFilter;
+    }
+  }
+
+  get cellEditorWidget => _cellEditorWidget;
+  set cellEditorWidget(CoCellEditorWidget cellEditorWidget) {
+    if (cellEditorWidget != null) {
+      _cellEditorWidget = cellEditorWidget;
     }
   }
 
@@ -168,5 +179,46 @@ class CoEditorState extends ComponentWidgetState<CoEditorWidget> {
         cellEditorHorizontalAlignment);
     cellEditorFont = changedComponent.getProperty<String>(
         ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.componentModel.componentState = this;
+    widget.componentModel.addListener(
+        () => updateProperties(widget.componentModel.currentChangedComponent));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_cellEditor == null) {
+      return Container(
+        margin: EdgeInsets.only(top: 9, bottom: 9),
+        key: this.componentId,
+        width: TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
+            Theme.of(context).textTheme.button),
+        height: 50,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: Colors.grey)),
+          child: TextField(
+            readOnly: true,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(12),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(color: Colors.grey[700]),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+        key: this.componentId,
+        height: super.preferredSize != null ? super.preferredSize.height : null,
+        width: super.preferredSize != null ? super.preferredSize.width : null,
+        child: cellEditorWidget);
   }
 }
