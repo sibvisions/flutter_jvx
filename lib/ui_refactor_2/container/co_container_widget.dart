@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui/layout/co_border_layout.dart';
-import 'package:jvx_flutterclient/ui/layout/co_flow_layout.dart';
-import 'package:jvx_flutterclient/ui/layout/co_form_layout.dart';
-import 'package:jvx_flutterclient/ui/layout/co_grid_layout.dart';
-import 'package:jvx_flutterclient/ui/layout/co_layout.dart';
-import 'package:jvx_flutterclient/ui/layout/widgets/co_border_layout_constraint.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_border_layout_constraint.dart';
 
 import '../../jvx_flutterclient.dart';
 
@@ -51,13 +48,15 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(pConstraints);
         layout.addLayoutComponent(pComponent, contraints);
-      } else if (layout is CoFormLayout) {
+      }
+      /* else if (layout is CoFormLayout) {
         layout.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is CoFlowLayout) {
         layout.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is CoGridLayout) {
         layout.addLayoutComponent(pComponent, pConstraints);
       }
+      */
     }
   }
 
@@ -94,7 +93,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   void updateComponentProperties(
       Key componentId, ChangedComponent changedComponent) {
     ComponentWidget pComponent = components.firstWhere(
-        (c) => c.componentModel.componentState.componentId == componentId);
+        (c) => c.componentModel.componentState.componentId == componentId,
+        orElse: () => null);
 
     pComponent.componentModel.changedComponent = changedComponent;
 

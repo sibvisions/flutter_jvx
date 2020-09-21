@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
-import 'package:universal_html/prefer_sdk/html.dart';
 
 class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
   final BoxConstraints parentConstraints;

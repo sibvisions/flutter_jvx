@@ -11,6 +11,15 @@ class CoPanelWidget extends CoContainerWidget {
 
 class CoPanelWidgetState extends CoContainerWidgetState {
   @override
+  void initState() {
+    super.initState();
+    this.updateProperties(widget.componentModel.currentChangedComponent);
+    widget.componentModel.componentState = this;
+    widget.componentModel.addListener(() =>
+        this.updateProperties(widget.componentModel.currentChangedComponent));
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child;
     if (this.layout != null) {
@@ -34,13 +43,5 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     } else {
       return new Container();
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.componentModel.componentState = this;
-    widget.componentModel.addListener(
-        () => updateProperties(widget.componentModel.currentChangedComponent));
   }
 }

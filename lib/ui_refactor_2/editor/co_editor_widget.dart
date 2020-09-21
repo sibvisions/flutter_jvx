@@ -7,6 +7,8 @@ import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/utils/text_utils.dart';
 
 import '../../jvx_flutterclient.dart';
@@ -107,9 +109,10 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
   void onEndEditing() {}
 
   void onValueChanged(dynamic value, [int index]) {
-    bool isTextEditor =
-        (cellEditor is CoTextCellEditor || cellEditor is CoNumberCellEditor);
+    bool isTextEditor = (cellEditor is CoTextCellEditorWidgetState ||
+        cellEditor is CoNumberCellEditorWidgetState);
 
+    /*
     if (cellEditor is CoReferencedCellEditor) {
       data.setValues(
           context,
@@ -136,14 +139,17 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
               : null,
           isTextEditor);
     }
+    */
   }
 
   void onFilter(dynamic value) {
+    /*
     if (cellEditor is CoReferencedCellEditor) {
       (cellEditor as CoReferencedCellEditor)
           .data
           .filterData(context, value, this.name);
     }
+    */
   }
 
   void onServerDataChanged() {
@@ -184,9 +190,10 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
   @override
   void initState() {
     super.initState();
+    this.updateProperties(widget.componentModel.currentChangedComponent);
     widget.componentModel.componentState = this;
-    widget.componentModel.addListener(
-        () => updateProperties(widget.componentModel.currentChangedComponent));
+    widget.componentModel.addListener(() =>
+        this.updateProperties(widget.componentModel.currentChangedComponent));
   }
 
   @override

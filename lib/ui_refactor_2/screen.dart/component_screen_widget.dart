@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/model/api/request/request.dart';
+import 'package:jvx_flutterclient/model/api/response/response_data.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/ui/component/i_component.dart';
@@ -10,25 +12,24 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart'
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
 
 import 'i_component_creator.dart';
 
 class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
+  final Request request;
+  final ResponseData responseData;
 
-  const ComponentScreenWidget({Key key, this.componentCreator})
+  const ComponentScreenWidget(
+      {Key key, this.componentCreator, this.request, this.responseData})
       : super(key: key);
 
-  _ComponentScreenWidgetState of() {
-    return componentCreator.context
-        .findAncestorStateOfType<_ComponentScreenWidgetState>();
-  }
-
   @override
-  _ComponentScreenWidgetState createState() => _ComponentScreenWidgetState();
+  ComponentScreenWidgetState createState() => ComponentScreenWidgetState();
 }
 
-class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
+class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     with SoDataScreen {
   Map<String, ComponentWidget> components = <String, ComponentWidget>{};
   Map<String, ComponentWidget> additionalComponents =
@@ -40,6 +41,16 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   @override
   Widget build(BuildContext context) {
+    this.updateData(widget.request, widget.responseData);
+    if (widget.responseData.screenGeneric != null)
+      this.updateComponents(
+          widget.responseData.screenGeneric.changedComponents);
+
+    ComponentWidget componentWidget = this.getRootComponent();
+
+    if (componentWidget != null) {
+      return componentWidget;
+    }
     return Container();
   }
 
@@ -122,14 +133,16 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
     ComponentWidget componentClass;
 
     if (!container.containsKey(component.id)) {
-      componentClass = widget.componentCreator.createComponent(component);
+      componentClass = widget?.componentCreator?.createComponent(component);
 
-      if (componentClass.componentModel.componentState is CoEditorWidgetState) {
+      if (componentClass?.componentModel?.componentState
+          is CoEditorWidgetState) {
         CoEditorWidgetState editorWidgetState =
-            componentClass.componentModel.componentState;
+            componentClass?.componentModel?.componentState;
 
-        componentClass.componentModel.data =
-            this.getComponentData(componentClass.componentModel.dataProvider);
+        componentClass?.componentModel?.data =
+            this.getComponentData(componentClass?.componentModel?.dataProvider);
+        /*
         if (editorWidgetState.cellEditor is CoReferencedCellEditor) {
           (editorWidgetState.cellEditor as CoReferencedCellEditor).data = this
               .getComponentData(
@@ -137,12 +150,14 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
                       .linkReference
                       .dataProvider);
         }
-      } else if (componentClass.componentModel.componentState
+        */
+      } else if (componentClass?.componentModel?.componentState
           is CoActionComponentWidgetState) {
-        (componentClass.componentModel.componentState
+        (componentClass?.componentModel?.componentState
                 as CoActionComponentWidgetState)
             .onButtonPressed = this.onButtonPressed;
-      } else if (component.additional && componentClass is CoPopupMenu) {
+      }
+      /* else if (component.additional && componentClass is CoPopupMenu) {
         if (components.containsKey(componentClass
                 .componentModel.componentState.parentComponentId) &&
             components[componentClass.componentModel.componentState
@@ -160,13 +175,13 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
               componentClass.componentModel.componentState.parentComponentId];
           menu.updateMenuItem(componentClass);
         }
-      }
+      } */
     } else {
       componentClass = container[component.id];
     }
 
     if (componentClass != null) {
-      componentClass.componentModel.componentState.state = CoState.Added;
+      componentClass?.componentModel?.componentState?.state = CoState.Added;
       container.putIfAbsent(component.id, () => componentClass);
       _addToParent(componentClass, container);
     }
@@ -299,6 +314,7 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
             element.componentModel.componentState.state == CoState.Added,
         orElse: () => null);
 
+    /*
     if (headerComponent != null || footerComponent != null) {
       ComponentWidget headerFooterPanel =
           CoPanelWidget(componentModel: ComponentModel('headerFooterPanel'));
@@ -319,6 +335,7 @@ class _ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
       return headerFooterPanel;
     }
+    */
 
     return rootComponent;
   }

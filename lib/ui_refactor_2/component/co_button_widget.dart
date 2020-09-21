@@ -34,14 +34,6 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
   bool network = false;
 
   @override
-  void initState() {
-    super.initState();
-    widget.componentModel.componentState = this;
-    widget.componentModel.addListener(
-        () => updateProperties(widget.componentModel.currentChangedComponent));
-  }
-
-  @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
     text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
@@ -118,6 +110,15 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
           PressButton(SoAction(componentId: this.name, label: this.text));
       BlocProvider.of<ApiBloc>(context).dispatch(pressButton);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.updateProperties(widget.componentModel.currentChangedComponent);
+    widget.componentModel.componentState = this;
+    widget.componentModel.addListener(() =>
+        this.updateProperties(widget.componentModel.currentChangedComponent));
   }
 
   @override

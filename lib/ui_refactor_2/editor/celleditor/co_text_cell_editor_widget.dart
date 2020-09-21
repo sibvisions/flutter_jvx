@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/jvx_flutterclient.dart';
-import '../../../utils/text_utils.dart';
-import '../../../model/cell_editor.dart';
-import '../../../model/properties/cell_editor_properties.dart';
-import 'co_cell_editor.dart';
-import '../../../utils/so_text_align.dart';
-import '../../../utils/uidata.dart';
-import '../../../utils/globals.dart' as globals;
+import 'package:jvx_flutterclient/model/cell_editor.dart';
+import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/utils/so_text_align.dart';
+import 'package:jvx_flutterclient/utils/text_utils.dart';
+import 'package:jvx_flutterclient/utils/uidata.dart';
 
-class CoTextCellEditor extends CoCellEditor {
+import 'package:jvx_flutterclient/utils/globals.dart' as globals;
+
+import '../co_editor_widget.dart';
+
+class CoTextCellEditorWidget extends CoCellEditorWidget {
+  CoTextCellEditorWidget({Key key, CellEditor changedCellEditor})
+      : super(changedCellEditor: changedCellEditor, key: key);
+
+  @override
+  State<StatefulWidget> createState() => CoTextCellEditorWidgetState();
+}
+
+class CoTextCellEditorWidgetState
+    extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
   bool password = false;
   bool valueChanged = false;
-  FocusNode node = FocusNode();
 
   @override
   get preferredSize {
@@ -33,24 +41,21 @@ class CoTextCellEditor extends CoCellEditor {
     return Size(10, 50);
   }
 
-  CoTextCellEditor(CellEditor changedCellEditor, BuildContext context)
-      : super(changedCellEditor, context) {
-    multiLine = (changedCellEditor
+  @override
+  void initState() {
+    super.initState();
+
+    CoEditorWidget.of(context).cellEditor = this;
+    CoEditorWidget.of(context).cellEditorWidget = widget;
+
+    multiLine = (widget.changedCellEditor
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('multiline') ??
         false);
-    password = (changedCellEditor
+    password = (widget.changedCellEditor
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('password') ??
         false);
-    node.addListener(() {
-      if (!node.hasFocus) onTextFieldEndEditing();
-    });
-  }
-
-  factory CoTextCellEditor.withCompContext(ComponentContext componentContext) {
-    return CoTextCellEditor(
-        componentContext.cellEditor, componentContext.context);
   }
 
   void onTextFieldValueChanged(dynamic newValue) {
@@ -61,8 +66,6 @@ class CoTextCellEditor extends CoCellEditor {
   }
 
   void onTextFieldEndEditing() {
-    node.unfocus();
-
     if (this.valueChanged) {
       super.onValueChanged(this.value);
       this.valueChanged = false;
@@ -72,20 +75,9 @@ class CoTextCellEditor extends CoCellEditor {
   }
 
   @override
-  Widget getWidget(
-      {bool editable,
-      Color background,
-      Color foreground,
-      String placeholder,
-      String font,
-      int horizontalAlignment}) {
-    setEditorProperties(
-        editable: editable,
-        background: background,
-        foreground: foreground,
-        placeholder: placeholder,
-        font: font,
-        horizontalAlignment: horizontalAlignment);
+  Widget build(BuildContext context) {
+    setEditorProperties(context);
+
     String controllerValue = (this.value != null ? this.value.toString() : "");
     _controller.value = _controller.value.copyWith(
         text: controllerValue,
@@ -118,7 +110,6 @@ class CoTextCellEditor extends CoCellEditor {
                             this.valueChanged = true;
                             super.onValueChanged(this.value);
                             this.valueChanged = false;
-                            node.unfocus();
                           }
                         },
                         child: Icon(Icons.clear,
@@ -130,7 +121,6 @@ class CoTextCellEditor extends CoCellEditor {
               color: this.editable
                   ? (this.foreground != null ? this.foreground : Colors.black)
                   : Colors.grey[700]),
-          key: this.key,
           controller: _controller,
           minLines: null,
           maxLines: multiLine ? null : 1,
@@ -138,7 +128,6 @@ class CoTextCellEditor extends CoCellEditor {
               multiLine ? TextInputType.multiline : TextInputType.text,
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,
-          focusNode: node,
           readOnly: !this.editable,
           obscureText: this.password
           //expands: this.verticalAlignment==1 && multiLine ? true : false,
