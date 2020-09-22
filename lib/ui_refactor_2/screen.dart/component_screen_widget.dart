@@ -11,6 +11,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
 
@@ -83,24 +84,19 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       } else {
         _moveComponent(component, changedComponent, container);
 
-        if (component.componentModel.componentState.state != CoState.Added) {
+        if (component.componentModel.coState != CoState.Added) {
           _addComponent(changedComponent, container);
         }
 
         component.componentModel.changedComponent = changedComponent;
 
-        if (component.componentModel?.componentState?.parentComponentId !=
-            null) {
-          ComponentWidget parentComponent = container[
-              component.componentModel.componentState.parentComponentId];
-          if (parentComponent != null &&
-              parentComponent.componentModel.componentState
-                  is CoContainerWidgetState) {
-            (parentComponent.componentModel.componentState
-                    as CoContainerWidgetState)
+        if (component.componentModel?.parentComponentId != null) {
+          ComponentWidget parentComponent =
+              container[component.componentModel.parentComponentId];
+          if (parentComponent != null && parentComponent is CoContainerWidget) {
+            (parentComponent.componentModel as ContainerComponentModel)
                 .updateComponentProperties(
-                    component.componentModel.componentState.componentId,
-                    changedComponent);
+                    component.componentModel.componentId, changedComponent);
           }
         }
       }
@@ -181,7 +177,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     }
 
     if (componentClass != null) {
-      componentClass?.componentModel?.componentState?.state = CoState.Added;
+      componentClass?.componentModel?.coState = CoState.Added;
       container.putIfAbsent(component.id, () => componentClass);
       _addToParent(componentClass, container);
     }
@@ -189,17 +185,13 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   void _addToParent(
       ComponentWidget component, Map<String, ComponentWidget> container) {
-    if (component.componentModel.componentState.parentComponentId?.isNotEmpty ??
-        false) {
+    if (component.componentModel.parentComponentId?.isNotEmpty ?? false) {
       ComponentWidget parentComponent =
-          container[component.componentModel.componentState.parentComponentId];
-      if (parentComponent != null &&
-          parentComponent.componentModel.componentState
-              is CoContainerWidgetState) {
-        (parentComponent.componentModel.componentState
-                as CoContainerWidgetState)
+          container[component.componentModel.parentComponentId];
+      if (parentComponent != null && parentComponent is CoContainerWidget) {
+        (parentComponent.componentModel as ContainerComponentModel)
             .addWithConstraints(
-                component, component.componentModel.componentState.constraints);
+                component, component.componentModel.constraints);
       }
     }
   }
@@ -211,15 +203,12 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   }
 
   void _removeFromParent(ComponentWidget component) {
-    if (component.componentModel.componentState.parentComponentId != null &&
-        component.componentModel.componentState.parentComponentId.isNotEmpty) {
+    if (component.componentModel.parentComponentId != null &&
+        component.componentModel.parentComponentId.isNotEmpty) {
       ComponentWidget parentComponent =
-          components[component.componentModel.componentState.parentComponentId];
-      if (parentComponent != null &&
-          parentComponent.componentModel.componentState
-              is CoContainerWidgetState) {
-        (parentComponent.componentModel.componentState
-                as CoContainerWidgetState)
+          components[component.componentModel.parentComponentId];
+      if (parentComponent != null && parentComponent is CoContainerWidget) {
+        (parentComponent.componentModel as ContainerComponentModel)
             ?.removeWithComponent(component);
       }
     }
@@ -243,8 +232,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (newComponent.hasProperty(ComponentProperty.LAYOUT_DATA) &&
         layoutData != null &&
         layoutData.isNotEmpty) {
-      if (component.componentModel.componentState is CoContainerWidgetState)
-        (component.componentModel.componentState as CoContainerWidgetState)
+      if (component is CoContainerWidget)
+        (component.componentModel as ContainerComponentModel)
             .layout
             ?.updateLayoutData(layoutData);
     }
@@ -252,20 +241,20 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (newComponent.hasProperty(ComponentProperty.LAYOUT) &&
         layout != null &&
         layout.isNotEmpty) {
-      if (component is CoContainerWidgetState)
-        (component.componentModel.componentState as CoContainerWidgetState)
+      if (component is CoContainerWidget)
+        (component.componentModel as ContainerComponentModel)
             .layout
             ?.updateLayoutData(layoutData);
     }
 
     if (newComponent.hasProperty(ComponentProperty.PARENT) &&
-        component.componentModel.componentState.parentComponentId != parent) {
+        component.componentModel.parentComponentId != parent) {
       if (debug)
         print("Move component (id:" +
             newComponent.id +
             ",oldParent:" +
-            (component.componentModel.componentState.parentComponentId != null
-                ? component.componentModel.componentState.parentComponentId
+            (component.componentModel.parentComponentId != null
+                ? component.componentModel.parentComponentId
                 : "") +
             ",newParent:" +
             (parent != null ? parent : "") +
@@ -273,22 +262,26 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             (newComponent.className != null ? newComponent.className : "") +
             ")");
 
-      if (component.componentModel.componentState.parentComponentId != null) {
+      if (component.componentModel.parentComponentId != null) {
         _removeFromParent(component);
       }
 
       if (parent != null) {
-        component.componentModel.componentState.parentComponentId = parent;
+        component.componentModel.parentComponentId = parent;
         _addToParent(component, container);
       }
     } else if (newComponent.hasProperty(ComponentProperty.CONSTRAINTS) &&
-        component.componentModel.componentState.constraints != constraints) {
+        (component.componentModel as ContainerComponentModel).constraints !=
+            constraints) {
       if (debug)
         print("Update constraints (id:" +
             newComponent.id +
             ",oldConstraints:" +
-            (component.componentModel.componentState.constraints != null
-                ? component.componentModel.componentState.constraints
+            ((component.componentModel as ContainerComponentModel)
+                        .constraints !=
+                    null
+                ? (component.componentModel as ContainerComponentModel)
+                    .constraints
                 : "") +
             ",newConstraints:" +
             (constraints != null ? constraints : "") +
@@ -296,12 +289,13 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             (newComponent.className != null ? newComponent.className : "") +
             ")");
 
-      if (component.componentModel.componentState.parentComponentId != null) {
+      if (component.componentModel.parentComponentId != null) {
         _removeFromParent(component);
       }
 
       if (constraints != null) {
-        component.componentModel.componentState.constraints = constraints;
+        (component.componentModel as ContainerComponentModel).constraints =
+            constraints;
         _addToParent(component, container);
       }
     }
@@ -310,8 +304,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentWidget getRootComponent() {
     ComponentWidget rootComponent = this.components.values.firstWhere(
         (element) =>
-            element.componentModel.componentState.parentComponentId == null &&
-            element.componentModel.componentState.state == CoState.Added,
+            element.componentModel.parentComponentId == null &&
+            element.componentModel.coState == CoState.Added,
         orElse: () => null);
 
     /*
@@ -369,7 +363,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     return this.components.values.firstWhere(
         (element) =>
             element?.componentModel?.componentState?.name == componentName &&
-            element?.componentModel?.componentState?.state == CoState.Added,
+            element?.componentModel?.coState == CoState.Added,
         orElse: () => null);
   }
 
@@ -406,27 +400,23 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                 .dataProvider;
       }
 
-      if (component.componentModel.componentState is CoContainerWidgetState) {
-        CoContainerWidgetState compState =
-            component.componentModel.componentState;
+      if (component is CoContainerWidget) {
+        ContainerComponentModel comp = component.componentModel;
 
         debugString += ", layout: " +
-            (compState.layout != null &&
-                    compState.layout.rawLayoutString != null
-                ? compState.layout.rawLayoutString
+            (comp.layout != null && comp.layout.rawLayoutString != null
+                ? comp.layout.rawLayoutString
                 : "") +
             ", layoutData: " +
-            (compState.layout != null && compState.layout.rawLayoutData != null
-                ? compState.layout.rawLayoutData
+            (comp.layout != null && comp.layout.rawLayoutData != null
+                ? comp.layout.rawLayoutData
                 : "") +
             ", childCount: " +
-            (compState.components != null
-                ? compState.components.length.toString()
-                : "0");
+            (comp.components != null ? comp.components.length.toString() : "0");
         print(debugString);
 
-        if (compState.components != null) {
-          compState.components.forEach((c) {
+        if (comp.components != null) {
+          comp.components.forEach((c) {
             debugPrintComponent(c, (level + 1));
           });
         }

@@ -104,35 +104,35 @@ class CoBorderLayout extends CoLayout<CoBorderLayoutConstraints> {
   Widget getWidget() {
     List<CoBorderLayoutId> children = new List<CoBorderLayoutId>();
 
-    if (_center != null && _center.componentModel.componentState.isVisible) {
+    if (_center != null && _center.componentModel.isVisible) {
       children.add(new CoBorderLayoutId(
           child: _center,
           pConstraints: CoBorderLayoutConstraintData(
               CoBorderLayoutConstraints.Center, _center)));
     }
 
-    if (_north != null && _north.componentModel.componentState.isVisible) {
+    if (_north != null && _north.componentModel.isVisible) {
       children.add(new CoBorderLayoutId(
           child: _north,
           pConstraints: CoBorderLayoutConstraintData(
               CoBorderLayoutConstraints.North, _north)));
     }
 
-    if (_south != null && _south.componentModel.componentState.isVisible) {
+    if (_south != null && _south.componentModel.isVisible) {
       children.add(new CoBorderLayoutId(
           child: _south,
           pConstraints: CoBorderLayoutConstraintData(
               CoBorderLayoutConstraints.South, _south)));
     }
 
-    if (_west != null && _west.componentModel.componentState.isVisible) {
+    if (_west != null && _west.componentModel.isVisible) {
       children.add(new CoBorderLayoutId(
           child: _west,
           pConstraints: CoBorderLayoutConstraintData(
               CoBorderLayoutConstraints.West, _west)));
     }
 
-    if (_east != null && _east.componentModel.componentState.isVisible) {
+    if (_east != null && _east.componentModel.isVisible) {
       children.add(new CoBorderLayoutId(
           child: _east,
           pConstraints: CoBorderLayoutConstraintData(

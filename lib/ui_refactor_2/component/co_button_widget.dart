@@ -103,7 +103,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
   }
 
   void buttonPressed() {
-    TextUtils.unfocusCurrentTextfield(context);
+    // TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
       PressButton pressButton =
@@ -115,10 +115,6 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
   @override
   void initState() {
     super.initState();
-    this.updateProperties(widget.componentModel.currentChangedComponent);
-    widget.componentModel.componentState = this;
-    widget.componentModel.addListener(() =>
-        this.updateProperties(widget.componentModel.currentChangedComponent));
   }
 
   @override

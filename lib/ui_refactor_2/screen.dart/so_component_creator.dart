@@ -8,6 +8,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_checkbox_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
@@ -25,14 +26,20 @@ class SoComponentCreator implements IComponentCreator {
   Map<String, ComponentWidget Function(ChangedComponent changedComponent)>
       standardComponents = {
     'Label': (ChangedComponent changedComponent) => CoLabelWidget(
-          text: null,
-          componentModel: ComponentModel(changedComponent.id),
+          key: GlobalKey(debugLabel: changedComponent.id),
+          text: '',
+          componentModel:
+              ComponentModel(currentChangedComponent: changedComponent),
         ),
     'Panel': (ChangedComponent changedComponent) => CoPanelWidget(
-          componentModel: ComponentModel(changedComponent.id),
+          key: GlobalKey(debugLabel: changedComponent.id),
+          componentModel: ContainerComponentModel(
+              currentChangedComponent: changedComponent),
         ),
     'Button': (ChangedComponent changedComponent) => CoButtonWidget(
-          componentModel: ComponentModel(changedComponent.id),
+          key: GlobalKey(debugLabel: changedComponent.id),
+          componentModel:
+              ComponentModel(currentChangedComponent: changedComponent),
         ),
   };
 
@@ -65,13 +72,12 @@ class SoComponentCreator implements IComponentCreator {
       }
     }
 
-    // componentWidget.createState();
+    componentWidget.componentModel.parentComponentId =
+        changedComponent.getProperty<String>(ComponentProperty.PARENT);
 
-    componentWidget.componentModel.changedComponent = changedComponent;
-
-    if (componentWidget.componentModel.componentState is CoContainerWidgetState)
-      (componentWidget.componentModel.componentState as CoContainerWidgetState)
-          .layout = _createLayout(componentWidget, changedComponent);
+    if (componentWidget is CoContainerWidget)
+      (componentWidget.componentModel as ContainerComponentModel).layout =
+          _createLayout(componentWidget, changedComponent);
 
     return componentWidget;
   }
@@ -83,7 +89,7 @@ class SoComponentCreator implements IComponentCreator {
               ? changedComponent.className
               : "") +
           "'!",
-      componentModel: ComponentModel(changedComponent.id),
+      componentModel: ComponentModel(currentChangedComponent: changedComponent),
     );
 
     return componentWidget;

@@ -76,10 +76,6 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   @override
   void initState() {
     super.initState();
-    this.updateProperties(widget.componentModel.currentChangedComponent);
-    widget.componentModel.componentState = this;
-    widget.componentModel.addListener(() =>
-        this.updateProperties(widget.componentModel.currentChangedComponent));
   }
 
   @override

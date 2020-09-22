@@ -32,7 +32,6 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   bool isVisible = true;
   bool enabled = true;
   String constraints = "";
-  BuildContext context;
   int verticalAlignment = 1;
   int horizontalAlignment = 0;
 
@@ -52,6 +51,10 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   set maximumSize(Size size) => _maximumSize = size;
 
   void updateProperties(ChangedComponent changedComponent) {
+    (widget as ComponentWidget)
+        .componentModel
+        .updateProperties(changedComponent);
+
     preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, _preferredSize);
     maximumSize = changedComponent.getProperty<Size>(
@@ -80,6 +83,18 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
         ComponentProperty.VERTICAL_ALIGNMENT, verticalAlignment);
     horizontalAlignment = changedComponent.getProperty<int>(
         ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.updateProperties(
+        (widget as ComponentWidget).componentModel.currentChangedComponent);
+    (widget as ComponentWidget).componentModel.componentState = this;
+    (widget as ComponentWidget).componentModel.addListener(() => this
+        .updateProperties((widget as ComponentWidget)
+            .componentModel
+            .currentChangedComponent));
   }
 
   @override
