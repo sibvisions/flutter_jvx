@@ -40,17 +40,20 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentWidget headerComponent;
   ComponentWidget footerComponent;
 
+  ComponentWidget rootComponent;
+
   @override
   Widget build(BuildContext context) {
-    this.updateData(widget.request, widget.responseData);
-    if (widget.responseData.screenGeneric != null)
+    if (widget.request != null && widget.responseData != null)
+      this.updateData(widget.request, widget.responseData);
+    if (widget.responseData?.screenGeneric != null) {
       this.updateComponents(
           widget.responseData.screenGeneric.changedComponents);
+      rootComponent = this.getRootComponent();
+    }
 
-    ComponentWidget componentWidget = this.getRootComponent();
-
-    if (componentWidget != null) {
-      return componentWidget;
+    if (rootComponent != null) {
+      return rootComponent;
     }
     return Container();
   }
@@ -271,8 +274,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         _addToParent(component, container);
       }
     } else if (newComponent.hasProperty(ComponentProperty.CONSTRAINTS) &&
-        (component.componentModel as ContainerComponentModel).constraints !=
-            constraints) {
+        component.componentModel.constraints != constraints) {
       if (debug)
         print("Update constraints (id:" +
             newComponent.id +

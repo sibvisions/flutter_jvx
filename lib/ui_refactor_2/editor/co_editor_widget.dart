@@ -14,8 +14,13 @@ import 'package:jvx_flutterclient/utils/text_utils.dart';
 import '../../jvx_flutterclient.dart';
 
 class CoEditorWidget extends ComponentWidget {
-  CoEditorWidget({Key key, ComponentModel componentModel})
-      : super(key: key, componentModel: componentModel);
+  final CoCellEditorWidget cellEditor;
+
+  CoEditorWidget({
+    Key key,
+    this.cellEditor,
+    ComponentModel componentModel,
+  }) : super(key: key, componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
 
@@ -190,11 +195,12 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
   @override
   void initState() {
     super.initState();
+    _cellEditorWidget = widget.cellEditor;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_cellEditor == null) {
+    if (_cellEditorWidget == null) {
       return Container(
         margin: EdgeInsets.only(top: 9, bottom: 9),
         key: this.componentId,

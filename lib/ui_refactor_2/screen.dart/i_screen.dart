@@ -12,8 +12,9 @@ abstract class IScreen {
   // ComponentScreenWidget componentScreen;
 
   /// Constructor for returning the default Implementation of this interface.
-  factory IScreen(SoComponentCreator componentCreator) =>
-      SoScreen(componentCreator);
+  factory IScreen(SoComponentCreator componentCreator) => SoScreen(
+        componentCreator: componentCreator,
+      );
 
   /// Gets called when new components, metaData or data is comming from the server.
   void update(Request request, ResponseData responseData);
@@ -21,7 +22,7 @@ abstract class IScreen {
   /// Returns a widget.
   ///
   /// As default this widget comes from the [componentScreen] but you can return any widget you like.
-  Widget getWidget(Request request, ResponseData responseData);
+  // Widget getWidget(Request request, ResponseData responseData);
 
   /// Returns `true` when the server should be called when the user opens a screen.
   ///

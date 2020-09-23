@@ -23,8 +23,6 @@ class CoCheckboxCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-    CoEditorWidget.of(context).cellEditor = this;
-    CoEditorWidget.of(context).cellEditorWidget = widget;
 
     selectedValue = widget.changedCellEditor
         .getProperty<dynamic>(CellEditorProperty.SELECTED_VALUE, selectedValue);

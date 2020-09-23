@@ -67,8 +67,6 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
     super.initState();
 
     CoEditorWidget.of(context).cellEditor = this;
-    CoEditorWidget.of(context).cellEditorWidget =
-        (widget as CoCellEditorWidget);
 
     if ((widget as CoCellEditorWidget).changedCellEditor != null) {
       horizontalAlignment = (widget as CoCellEditorWidget)

@@ -7,7 +7,7 @@ import 'component_screen_widget.dart';
 import 'i_component_creator.dart';
 import 'i_screen.dart';
 
-class SoScreen implements IScreen {
+class SoScreen extends StatelessWidget implements IScreen {
   String title = "OpenScreen";
   Key componentId;
   List<DataBook> data = <DataBook>[];
@@ -17,11 +17,17 @@ class SoScreen implements IScreen {
 
   IComponentCreator componentCreator;
 
-  SoScreen(IComponentCreator componentCreator)
-      : componentCreator = componentCreator;
+  Request currentRequest;
+  ResponseData currentResponseData;
+
+  SoScreen({Key key, IComponentCreator componentCreator})
+      : componentCreator = componentCreator,
+        super(key: key);
 
   @override
   void update(Request request, ResponseData responseData) {
+    if (request != null) currentRequest = request;
+    if (responseData != null) currentResponseData = responseData;
     // componentScreen.state?.updateData(request, responseData);
     // if (responseData.screenGeneric != null)
     //   componentScreen.state
@@ -29,29 +35,20 @@ class SoScreen implements IScreen {
   }
 
   @override
-  Widget getWidget(Request request, ResponseData responseData) {
-    // if (componentScreen.state != null && componentScreen.state.debug)
-    //   componentScreen.state?.debugPrintCurrentWidgetTree();
+  bool withServer() {
+    return true;
+  }
 
-    // if (componentScreen != null) {
+  @override
+  Widget build(BuildContext context) {
     return FractionallySizedBox(
         widthFactor: 1,
         heightFactor: 1,
         child: ComponentScreenWidget(
+          key: this.componentId,
           componentCreator: this.componentCreator,
-          request: request,
-          responseData: responseData,
+          request: currentRequest,
+          responseData: currentResponseData,
         ));
-    // } else {
-    //   return Container(
-    //     alignment: Alignment.center,
-    //     child: Text('No root component defined!'),
-    //   );
-    // }
-  }
-
-  @override
-  bool withServer() {
-    return true;
   }
 }

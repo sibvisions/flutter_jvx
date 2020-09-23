@@ -98,9 +98,6 @@ class CoNumberCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-    CoEditorWidget.of(context).cellEditor = this;
-    CoEditorWidget.of(context).cellEditorWidget = widget;
-
     numberFormat = widget.changedCellEditor
         .getProperty<String>(CellEditorProperty.NUMBER_FORMAT);
 

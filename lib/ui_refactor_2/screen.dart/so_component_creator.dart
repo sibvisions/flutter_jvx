@@ -13,6 +13,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_checkbox_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
 
@@ -62,7 +63,7 @@ class SoComponentCreator implements IComponentCreator {
 
     if (changedComponent?.className?.isNotEmpty ?? true) {
       if (changedComponent.className == 'Editor') {
-        print('CREATING EDITOR');
+        componentWidget = _createEditor(changedComponent);
       } else if (changedComponent.className == null ||
           this.standardComponents[changedComponent.className] == null) {
         componentWidget = _createDefaultComponent(changedComponent);
@@ -134,6 +135,15 @@ class SoComponentCreator implements IComponentCreator {
     }
 
     return null;
+  }
+
+  CoEditorWidget _createEditor(ChangedComponent changedComponent) {
+    CoEditorWidget editor = CoEditorWidget(
+      cellEditor: createCellEditor(changedComponent.cellEditor),
+      key: GlobalKey(debugLabel: changedComponent.id),
+      componentModel: ComponentModel(currentChangedComponent: changedComponent),
+    );
+    return editor;
   }
 
   CoCellEditorWidget createCellEditor(CellEditor toCreatecellEditor) {

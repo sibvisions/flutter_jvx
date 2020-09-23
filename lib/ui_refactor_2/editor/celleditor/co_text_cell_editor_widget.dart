@@ -8,8 +8,6 @@ import 'package:jvx_flutterclient/utils/uidata.dart';
 
 import 'package:jvx_flutterclient/utils/globals.dart' as globals;
 
-import '../co_editor_widget.dart';
-
 class CoTextCellEditorWidget extends CoCellEditorWidget {
   CoTextCellEditorWidget({Key key, CellEditor changedCellEditor})
       : super(changedCellEditor: changedCellEditor, key: key);
@@ -44,10 +42,6 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-
-    CoEditorWidget.of(context).cellEditor = this;
-    CoEditorWidget.of(context).cellEditorWidget = widget;
-
     multiLine = (widget.changedCellEditor
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('multiline') ??

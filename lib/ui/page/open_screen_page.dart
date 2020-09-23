@@ -17,6 +17,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/component_screen_wid
 import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/i_screen.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_component_creator.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_screen.dart';
 import 'package:jvx_flutterclient/utils/application_api.dart';
 import 'package:async/async.dart';
 
@@ -63,7 +64,7 @@ class OpenScreenPage extends StatefulWidget {
 class _OpenScreenPageState extends State<OpenScreenPage>
     with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  IScreen screen;
+  SoScreen screen;
   bool errorMsgShown = false;
   Orientation lastOrientation;
   String title = '';
@@ -179,22 +180,22 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       _scaffoldKey.currentState.isEndDrawerOpen)
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
-                  screen = globals.customScreenManager == null
-                      ? IScreen(SoComponentCreator(context))
-                      : globals.customScreenManager.getScreen(
-                          widget.menuComponentId,
-                          templateName: widget.templateName);
+                  // screen = globals.customScreenManager == null
+                  //     ? IScreen(SoComponentCreator(context))
+                  //     : globals.customScreenManager.getScreen(
+                  //         widget.menuComponentId,
+                  //         templateName: widget.templateName);
                   // title = state.action.label;
                   componentId = state.responseData?.screenGeneric?.componentId;
                 }
 
                 if (state.responseData.screenGeneric != null &&
                     !state.responseData.screenGeneric.update) {
-                  screen = globals.customScreenManager == null
-                      ? IScreen(SoComponentCreator(context))
-                      : globals.customScreenManager.getScreen(
-                          widget.menuComponentId,
-                          templateName: widget.templateName);
+                  // screen = globals.customScreenManager == null
+                  //     ? IScreen(SoComponentCreator(context))
+                  //     : globals.customScreenManager.getScreen(
+                  //         widget.menuComponentId,
+                  //         templateName: widget.templateName);
                   componentId = state.responseData.screenGeneric.componentId;
                 }
 
@@ -250,6 +251,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
               Widget child;
 
+              screen.update(state.request, state.responseData);
+
               if ((globals.applicationStyle != null &&
                   globals.applicationStyle?.desktopIcon != null)) {
                 globals.appFrame.setScreen(Container(
@@ -272,20 +275,17 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                                     : null,
                                 fit: BoxFit.cover,
                               )),
-                    child:
-                        screen.getWidget(state.request, state.responseData)));
+                    child: screen));
                 child = globals.appFrame.getWidget();
               } else if ((globals.applicationStyle != null &&
                   globals.applicationStyle?.desktopColor != null)) {
                 globals.appFrame.setScreen(Container(
                     decoration: BoxDecoration(
                         color: globals.applicationStyle.desktopColor),
-                    child:
-                        screen.getWidget(state.request, state.responseData)));
+                    child: screen));
                 child = globals.appFrame.getWidget();
               } else {
-                globals.appFrame.setScreen(
-                    screen.getWidget(state.request, state.responseData));
+                globals.appFrame.setScreen(screen);
                 child = globals.appFrame.getWidget();
               }
 
@@ -341,11 +341,16 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
-    screen = globals.customScreenManager == null
-        ? IScreen(SoComponentCreator(context))
-        : globals.customScreenManager.getScreen(
-            widget.menuComponentId.toString(),
-            templateName: globals.currentTempalteName);
+    // screen = globals.customScreenManager == null
+    //     ? IScreen(SoComponentCreator(context))
+    //     : globals.customScreenManager.getScreen(
+    //         widget.menuComponentId.toString(),
+    //         templateName: globals.currentTempalteName);
+
+    screen = SoScreen(
+      componentCreator: SoComponentCreator(),
+    );
+
     globals.currentTempalteName = null;
     super.initState();
     WidgetsBinding.instance.addObserver(this);
