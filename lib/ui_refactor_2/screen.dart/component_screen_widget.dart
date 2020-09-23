@@ -150,9 +150,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         }
         */
       } else if (componentClass is CoActionComponentWidget) {
-        (componentClass?.componentModel?.componentState
-                as CoActionComponentWidgetState)
-            .onButtonPressed = this.onButtonPressed;
+        componentClass?.componentModel?.onButtonPressed = this.onButtonPressed;
       }
       /* else if (component.additional && componentClass is CoPopupMenu) {
         if (components.containsKey(componentClass

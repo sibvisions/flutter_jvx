@@ -211,7 +211,6 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       arguments: MenuArguments(globals.items, true));
                 }
                 screen.update(state.request, state.responseData);
-                this.setState(() {});
               }
             }
           },

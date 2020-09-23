@@ -96,6 +96,7 @@ class SoComponentCreator implements IComponentCreator {
 
   ComponentWidget _createDefaultComponent(ChangedComponent changedComponent) {
     ComponentWidget componentWidget = CoLabelWidget(
+      key: GlobalKey(debugLabel: changedComponent.id),
       text: "Undefined Component '" +
           (changedComponent.className != null
               ? changedComponent.className
@@ -225,6 +226,7 @@ class SoComponentCreator implements IComponentCreator {
     if (cellEditor == null) return null;
 
     CoEditorWidget editor = CoEditorWidget(
+      key: UniqueKey(),
       cellEditor: cellEditor,
       componentModel: ComponentModel(),
     );

@@ -6,6 +6,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_border_layout_constraint.dart';
 
@@ -44,10 +45,10 @@ class ContainerComponentModel extends ComponentModel {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(pConstraints);
         layout.addLayoutComponent(pComponent, contraints);
-      }
-      /* else if (layout is CoFormLayout) {
+      } else if (layout is CoFormLayout) {
         layout.addLayoutComponent(pComponent, pConstraints);
-      } else if (layout is CoFlowLayout) {
+      }
+      /* else if (layout is CoFlowLayout) {
         layout.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is CoGridLayout) {
         layout.addLayoutComponent(pComponent, pConstraints);

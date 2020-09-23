@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/ui/component/i_component.dart';
@@ -20,6 +21,7 @@ class ComponentModel extends ValueNotifier {
   Size _maximumSize;
   String columnName;
   String dataRow;
+  ButtonPressedCallback onButtonPressed;
 
   bool get isPreferredSizeSet => preferredSize != null;
   bool get isMinimumSizeSet => minimumSize != null;

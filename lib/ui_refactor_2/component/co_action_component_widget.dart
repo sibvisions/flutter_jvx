@@ -14,6 +14,12 @@ abstract class CoActionComponentWidgetState<T extends CoActionComponentWidget>
   ButtonPressedCallback onButtonPressed;
 
   @override
+  void initState() {
+    super.initState();
+    this.onButtonPressed = widget.componentModel.onButtonPressed;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container();
   }
