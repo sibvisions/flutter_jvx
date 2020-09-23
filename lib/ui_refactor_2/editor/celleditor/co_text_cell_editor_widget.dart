@@ -8,9 +8,15 @@ import 'package:jvx_flutterclient/utils/uidata.dart';
 
 import 'package:jvx_flutterclient/utils/globals.dart' as globals;
 
+import 'cell_editor_model.dart';
+
 class CoTextCellEditorWidget extends CoCellEditorWidget {
-  CoTextCellEditorWidget({Key key, CellEditor changedCellEditor})
-      : super(changedCellEditor: changedCellEditor, key: key);
+  CoTextCellEditorWidget(
+      {Key key, CellEditor changedCellEditor, CellEditorModel cellEditorModel})
+      : super(
+            changedCellEditor: changedCellEditor,
+            cellEditorModel: cellEditorModel,
+            key: key);
 
   @override
   State<StatefulWidget> createState() => CoTextCellEditorWidgetState();

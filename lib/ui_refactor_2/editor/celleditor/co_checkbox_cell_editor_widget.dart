@@ -5,10 +5,18 @@ import 'package:jvx_flutterclient/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
 
 import '../co_editor_widget.dart';
+import 'cell_editor_model.dart';
 
 class CoCheckboxCellEditorWidget extends CoCellEditorWidget {
-  CoCheckboxCellEditorWidget({CellEditor changedCellEditor, Key key})
-      : super(changedCellEditor: changedCellEditor, key: key);
+  CoCheckboxCellEditorWidget({
+    CellEditor changedCellEditor,
+    CellEditorModel cellEditorModel,
+    Key key,
+  }) : super(
+          changedCellEditor: changedCellEditor,
+          cellEditorModel: cellEditorModel,
+          key: key,
+        );
 
   @override
   State<StatefulWidget> createState() => CoCheckboxCellEditorWidgetState();

@@ -15,6 +15,21 @@ class ComponentModel extends ValueNotifier {
   CoState coState;
   String constraints;
   bool isVisible = true;
+  Size _preferredSize;
+  Size _minimumSize;
+  Size _maximumSize;
+  String columnName;
+  String dataRow;
+
+  bool get isPreferredSizeSet => preferredSize != null;
+  bool get isMinimumSizeSet => minimumSize != null;
+  bool get isMaximumSizeSet => maximumSize != null;
+  Size get preferredSize => _preferredSize;
+  set preferredSize(Size size) => _preferredSize = size;
+  Size get minimumSize => _minimumSize;
+  set minimumSize(Size size) => _minimumSize = size;
+  Size get maximumSize => _maximumSize;
+  set maximumSize(Size size) => _maximumSize = size;
 
   ComponentModel({this.currentChangedComponent}) : super(null) {
     this.compId = currentChangedComponent.id;
@@ -28,6 +43,20 @@ class ComponentModel extends ValueNotifier {
         ComponentProperty.VISIBLE, isVisible);
     constraints = changedComponent.getProperty<String>(
         ComponentProperty.CONSTRAINTS, constraints);
+    preferredSize = changedComponent.getProperty<Size>(
+        ComponentProperty.PREFERRED_SIZE, _preferredSize);
+    maximumSize = changedComponent.getProperty<Size>(
+        ComponentProperty.MAXIMUM_SIZE, _maximumSize);
+    minimumSize = changedComponent.getProperty<Size>(
+        ComponentProperty.MINIMUM_SIZE, _minimumSize);
+
+    if (dataProvider == null)
+      dataProvider = changedComponent.getProperty<String>(
+          ComponentProperty.DATA_BOOK, dataProvider);
+
+    dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
+
+    if (dataProvider == null) dataProvider = dataRow;
   }
 
   set compId(String newComponentId) {

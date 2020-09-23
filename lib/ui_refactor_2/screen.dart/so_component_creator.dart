@@ -4,17 +4,20 @@ import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_button_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_label_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/co_table_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_checkbox_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
 
 import 'i_component_creator.dart';
@@ -42,18 +45,26 @@ class SoComponentCreator implements IComponentCreator {
           componentModel:
               ComponentModel(currentChangedComponent: changedComponent),
         ),
+    'Table': (ChangedComponent changedComponent) => CoTableWidget(
+          componentModel:
+              ComponentModel(currentChangedComponent: changedComponent),
+          key: GlobalKey(debugLabel: changedComponent.id),
+        )
   };
 
   Map<String, CoCellEditorWidget Function(CellEditor cellEditor)>
       standardCellEditors = {
     'CheckBoxCellEditor': (CellEditor cellEditor) => CoCheckboxCellEditorWidget(
           changedCellEditor: cellEditor,
+          cellEditorModel: CellEditorModel(cellEditor),
         ),
     'TextCellEditor': (CellEditor cellEditor) => CoTextCellEditorWidget(
           changedCellEditor: cellEditor,
+          cellEditorModel: CellEditorModel(cellEditor),
         ),
     'NumberCellEditor': (CellEditor cellEditor) => CoNumberCellEditorWidget(
           changedCellEditor: cellEditor,
+          cellEditorModel: CellEditorModel(cellEditor),
         )
   };
 
@@ -111,13 +122,13 @@ class SoComponentCreator implements IComponentCreator {
                 container, layoutRaw, layoutData);
           }
           break;
-        /*
         case "FormLayout":
           {
             return CoFormLayout.fromLayoutString(
                 container, layoutRaw, layoutData);
           }
           break;
+        /*
         case "FlowLayout":
           {
             return CoFlowLayout.fromLayoutString(
@@ -176,8 +187,9 @@ class SoComponentCreator implements IComponentCreator {
         */
       case "CheckBoxCellEditor":
         {
-          cellEditor =
-              CoCheckboxCellEditorWidget(changedCellEditor: toCreatecellEditor);
+          cellEditor = CoCheckboxCellEditorWidget(
+              changedCellEditor: toCreatecellEditor,
+              cellEditorModel: CellEditorModel(toCreatecellEditor));
         }
         break;
     }
@@ -185,5 +197,38 @@ class SoComponentCreator implements IComponentCreator {
     // cellEditor?.isTableView = true;
 
     return cellEditor;
+  }
+
+  CoEditorWidget createEditorForTable(CellEditor toCreatecellEditor,
+      dynamic value, bool editable, int indexInTable) {
+    CoCellEditorWidget cellEditor;
+    switch (toCreatecellEditor.className) {
+      // case "DateCellEditor":
+      //   {
+      //     cellEditor = CoDateCellEditor(toCreatecellEditor, context);
+      //   }
+      //   break;
+      // case "ChoiceCellEditor":
+      //   {
+      //     cellEditor = CoChoiceCellEditor(toCreatecellEditor, context);
+      //   }
+      //   break;
+      case "CheckBoxCellEditor":
+        {
+          cellEditor = CoCheckboxCellEditorWidget(
+            changedCellEditor: toCreatecellEditor,
+          );
+        }
+        break;
+    }
+
+    if (cellEditor == null) return null;
+
+    CoEditorWidget editor = CoEditorWidget(
+      cellEditor: cellEditor,
+      componentModel: ComponentModel(),
+    );
+
+    return editor;
   }
 }

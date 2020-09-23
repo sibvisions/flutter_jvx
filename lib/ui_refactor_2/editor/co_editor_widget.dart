@@ -28,7 +28,8 @@ class CoEditorWidget extends ComponentWidget {
       context.findAncestorStateOfType<CoEditorWidgetState>();
 }
 
-class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
+class CoEditorWidgetState<T extends StatefulWidget>
+    extends ComponentWidgetState<T> {
   String dataProvider;
   String dataRow;
   String columnName;
@@ -195,7 +196,7 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
   @override
   void initState() {
     super.initState();
-    _cellEditorWidget = widget.cellEditor;
+    _cellEditorWidget = (widget as CoEditorWidget).cellEditor;
   }
 
   @override

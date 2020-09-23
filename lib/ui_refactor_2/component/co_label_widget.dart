@@ -76,6 +76,7 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   @override
   void initState() {
     super.initState();
+    text = widget.text;
   }
 
   @override

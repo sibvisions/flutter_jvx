@@ -134,10 +134,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (!container.containsKey(component.id)) {
       componentClass = widget?.componentCreator?.createComponent(component);
 
-      if (componentClass?.componentModel?.componentState
-          is CoEditorWidgetState) {
-        CoEditorWidgetState editorWidgetState =
-            componentClass?.componentModel?.componentState;
+      if (componentClass is CoEditorWidget) {
+        // CoEditorWidgetState editorWidgetState =
+        //     componentClass?.componentModel?.componentState;
 
         componentClass?.componentModel?.data =
             this.getComponentData(componentClass?.componentModel?.dataProvider);
@@ -150,8 +149,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                       .dataProvider);
         }
         */
-      } else if (componentClass?.componentModel?.componentState
-          is CoActionComponentWidgetState) {
+      } else if (componentClass is CoActionComponentWidget) {
         (componentClass?.componentModel?.componentState
                 as CoActionComponentWidgetState)
             .onButtonPressed = this.onButtonPressed;

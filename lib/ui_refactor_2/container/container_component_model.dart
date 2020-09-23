@@ -109,4 +109,9 @@ class ContainerComponentModel extends ComponentModel {
     }
     notifyListeners();
   }
+
+  @override
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+  }
 }
