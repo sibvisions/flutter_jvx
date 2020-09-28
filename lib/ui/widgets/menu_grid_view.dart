@@ -180,7 +180,7 @@ class _MenuGridViewState extends State<MenuGridView> {
       child: new Container(
         margin: EdgeInsets.fromLTRB(0, 1, 0, 0),
         color: UIData.ui_kit_color_2
-            .withOpacity(globals.applicationStyle.menuOpacity),
+            .withOpacity(globals.applicationStyle?.menuOpacity ?? 1.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
