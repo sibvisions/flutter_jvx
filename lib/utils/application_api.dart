@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/request/menu.dart';
 import '../model/api/request/close_screen.dart';
 import '../logic/bloc/api_bloc.dart';
 import '../model/api/request/reload.dart';
@@ -37,6 +38,12 @@ class ApplicationApi {
         requestType: RequestType.CLOSE_SCREEN);
 
     BlocProvider.of<ApiBloc>(_context).dispatch(closeScreen);
+  }
+
+  menu() {
+    Menu menu = Menu(globals.clientId);
+
+    BlocProvider.of<ApiBloc>(_context).dispatch(menu);
   }
 
   dispatch(Request request) {
