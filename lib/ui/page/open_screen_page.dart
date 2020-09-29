@@ -210,7 +210,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                   Navigator.of(context).pushReplacementNamed('/menu',
                       arguments: MenuArguments(globals.items, true));
                 }
-                screen.update(state.request, state.responseData);
+                if (screen.globalKey.currentState != null)
+                  screen.globalKey.currentState
+                      .update(state.request, state.responseData);
+                else
+                  screen.update(state.request, state.responseData);
               }
             }
           },
@@ -249,8 +253,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               }
 
               Widget child;
-
-              screen.update(state.request, state.responseData);
+              if (screen.globalKey.currentState != null)
+                screen.globalKey.currentState
+                    .update(state.request, state.responseData);
+              else
+                screen.update(state.request, state.responseData);
 
               if ((globals.applicationStyle != null &&
                   globals.applicationStyle?.desktopIcon != null)) {
@@ -347,6 +354,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     //         templateName: globals.currentTempalteName);
 
     screen = SoScreen(
+      globalKey: GlobalKey<SoScreenState>(),
       componentCreator: SoComponentCreator(),
     );
 
