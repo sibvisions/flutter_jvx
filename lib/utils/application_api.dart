@@ -11,12 +11,20 @@ import '../model/so_action.dart' as act;
 import 'globals.dart' as globals;
 
 class ApplicationApi {
+  List<void Function(Response response)> listeners =
+      <void Function(Response response)>[];
+
   BuildContext _context;
 
   ApplicationApi(this._context);
 
   addListener(void Function(Response response) onState) {
-    BlocProvider.of<ApiBloc>(context).state.listen(onState);
+    if (!listeners.contains(onState)) {
+      listeners.add(onState);
+      BlocProvider.of<ApiBloc>(_context)
+          .state
+          .listen((Response response) => onState(response));
+    }
   }
 
   reload() {
