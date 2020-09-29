@@ -70,9 +70,12 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    setState(() {
-      text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
-    });
+    if (this.mounted) {
+      setState(() {
+        text =
+            changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+      });
+    }
   }
 
   @override

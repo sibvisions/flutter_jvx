@@ -27,8 +27,12 @@ class SoScreen extends StatefulWidget implements IScreen {
 
   @override
   void update(Request request, ResponseData responseData) {
-    this.currentRequest = request;
-    this.currentResponseData = responseData;
+    if (globalKey.currentState != null) {
+      globalKey.currentState.update(request, responseData);
+    } else {
+      this.currentRequest = request;
+      this.currentResponseData = responseData;
+    }
   }
 
   @override
