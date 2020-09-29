@@ -737,6 +737,13 @@ class ApiBloc extends Bloc<Request, Response> {
         updateResponse(response);
         return response;
         break;
+      case RequestType.MENU:
+        response = await restClient.postAsync('/api/menu', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
     }
 
     return null;

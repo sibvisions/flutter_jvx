@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/model/api/request/menu.dart';
+import 'package:jvx_flutterclient/model/api/response/response.dart';
 import '../model/api/request/close_screen.dart';
 import '../logic/bloc/api_bloc.dart';
 import '../model/api/request/reload.dart';
@@ -13,6 +14,10 @@ class ApplicationApi {
   BuildContext _context;
 
   ApplicationApi(this._context);
+
+  addListener(void Function(Response response) onState) {
+    BlocProvider.of<ApiBloc>(context).state.listen(onState);
+  }
 
   reload() {
     BlocProvider.of<ApiBloc>(_context)
