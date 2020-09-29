@@ -19,7 +19,7 @@
     "excludeconfigjson": "replace-in-files --string=' - env/conf.json' --replacement=' #- env/conf.json' pubspec.yaml",
     "includeconfigjson": "replace-in-files --string='#- env/conf.json' --replacement='- env/conf.json' pubspec.yaml",
     "copyBuildWeb": "del-cli deploy/web && st-cp build/web deploy/",
-    "copyBuildAndroid": "del-cli deploy/android && st-cp build/app/outputs/apk/release/*.* deploy/android/",
+    "copyBuildAndroid": "del-cli deploy/android && st-cp build/app/outputs/apk/release/ deploy/android/",
     "copyBuildIos": "del-cli deploy/ios && st-cp ios deploy/ios",
     "xcodeBuildStep1": "xcodebuild -workspace ios/runner.xcworkspace -scheme Runner -destination generic/platform=iOS build",
     "xcodeBuildStep2": "xcodebuild -workspace ios/runner.xcworkspace -scheme Runner -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/deploy/ios/Runner.xcarchive",
@@ -28,7 +28,7 @@
     "buildios": "flutter clean && rm ios/Podfile && run-s excludeconfigjson && flutter build ios && run-s xcodeBuildStep1 && run-s xcodeBuildStep2 && run-s xcodeBuildStep3",
     "postbuildios": "run-s includeconfigjson && del-cli deploy/ios/Runner.xcarchive",
     "uploadios": "xcrun altool --upload-app -f deploy/ios/Runner.ipa -u ",
-    "buildandroid": "flutter clean && flutter build apk",
+    "buildandroid": "flutter clean && run-s excludeconfigjson && flutter build apk",
     "postbuildandroid": "run-s copyBuildAndroid && run-s includeconfigjson",
     "buildweb": "flutter clean && run-s excludeconfigjson && flutter build web",
     "postbuildweb": "run-s copyBuildWeb && run-s includeconfigjson"
