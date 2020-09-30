@@ -1,8 +1,0 @@
-{
-  "appName": "Industrie40v2",
-  "baseUrl": "http://192.168.1.42/services/mobile",
-  "debug": true,
-  "username": "admin",
-  "password": "admin",
-  "appMode": "full"
-}
