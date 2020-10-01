@@ -205,13 +205,15 @@ class CoTable extends CoEditor {
       IconData icon, String text, ContextMenuModel value) {
     return PopupMenuItem<ContextMenuModel>(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Icon(
             icon,
             color: Colors.grey[600],
           ),
-          Text(Translations.of(context).text2(text)),
+          Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(Translations.of(context).text2(text))),
         ],
       ),
       enabled: true,
