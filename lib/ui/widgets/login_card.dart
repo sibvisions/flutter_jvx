@@ -178,8 +178,8 @@ class _LoginCardState extends State<LoginCard>
   initState() {
     super.initState();
     username = widget.username;
-    controller =
-        new AnimationController(duration: new Duration(milliseconds: 1500));
+    controller = new AnimationController(
+        vsync: this, duration: new Duration(milliseconds: 1500));
     animation = new Tween(begin: 0.0, end: 1.0).animate(
         new CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn));
     animation.addListener(() => this.setState(() {}));
