@@ -137,9 +137,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
               constraints.maxHeight);
         }
 
-        widgets.add(SingleChildScrollView(
-            //scrollDirection: Axis.horizontal,
-            child: CoScrollPanelLayout(
+        widgets.add(CoScrollPanelLayout(
           key: this.keySecond,
           preferredConstraints:
               CoScrollPanelConstraints(constraints, preferredSize),
@@ -150,7 +148,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
                     CoScrollPanelConstraints(constraints, preferredSize),
                 child: secondComponent.getWidget())
           ],
-        )));
+        ));
       } else {
         widgets.add(Container());
       }
