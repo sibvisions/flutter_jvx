@@ -171,13 +171,13 @@ class _SplitViewState extends State<SplitView> {
     BoxConstraints view1Constraints = BoxConstraints(
         minHeight: constraints.maxHeight,
         maxHeight: constraints.maxHeight,
-        minWidth: 0,
+        minWidth: left,
         maxWidth: left);
 
     BoxConstraints view2Constraints = BoxConstraints(
         minHeight: constraints.maxHeight,
         maxHeight: constraints.maxHeight,
-        minWidth: 0,
+        minWidth: right,
         maxWidth: right);
 
     List<Widget> children = List<Widget>();
@@ -190,8 +190,10 @@ class _SplitViewState extends State<SplitView> {
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView1,
-          child: ConstrainedBox(
-              constraints: view1Constraints, child: widget.view1)),
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                  constraints: view1Constraints, child: widget.view1))),
     ));
 
     children.add(Positioned(
