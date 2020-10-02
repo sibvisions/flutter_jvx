@@ -157,7 +157,7 @@ class CoSplitPanel extends CoContainer implements IContainer {
         return SplitView(
           key: key,
           initialWeight: currentSplitviewWeight,
-          gripColor: Colors.grey.withOpacity(0.3),
+          gripColor: Colors.grey[300],
           handleColor: Colors.grey[800].withOpacity(0.5),
           view1: widgets[0],
           view2: widgets[1],
