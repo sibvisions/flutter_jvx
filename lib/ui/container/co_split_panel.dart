@@ -99,16 +99,29 @@ class CoSplitPanel extends CoContainer implements IContainer {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      _calculateDividerPosition(constraints, this.splitViewMode);
+
       if (firstComponent != null) {
+        Size preferredSize;
+
+        if (constraints.maxWidth != double.infinity &&
+            this.currentSplitviewWeight != null) {
+          preferredSize = Size(
+              constraints.maxWidth * this.currentSplitviewWeight,
+              constraints.maxHeight);
+        }
+
         widgets.add(SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: CoScrollPanelLayout(
               key: this.keyFirst,
-              parentConstraints: constraints,
+              preferredConstraints:
+                  CoScrollPanelConstraints(constraints, preferredSize),
               children: [
                 CoScrollPanelLayoutId(
                     key: ValueKey(this.keyFirst),
-                    parentConstraints: constraints,
+                    constraints:
+                        CoScrollPanelConstraints(constraints, preferredSize),
                     child: firstComponent.getWidget())
               ],
             )));
@@ -117,15 +130,26 @@ class CoSplitPanel extends CoContainer implements IContainer {
       }
 
       if (secondComponent != null) {
+        Size preferredSize;
+        if (constraints.maxWidth != double.infinity &&
+            this.currentSplitviewWeight != null) {
+          preferredSize = Size(
+              constraints.maxWidth -
+                  (constraints.maxWidth * this.currentSplitviewWeight),
+              constraints.maxHeight);
+        }
+
         widgets.add(SingleChildScrollView(
             //scrollDirection: Axis.horizontal,
             child: CoScrollPanelLayout(
           key: this.keySecond,
-          parentConstraints: constraints,
+          preferredConstraints:
+              CoScrollPanelConstraints(constraints, preferredSize),
           children: [
             CoScrollPanelLayoutId(
                 key: ValueKey(this.keySecond),
-                parentConstraints: constraints,
+                constraints:
+                    CoScrollPanelConstraints(constraints, preferredSize),
                 child: secondComponent.getWidget())
           ],
         )));
@@ -134,8 +158,6 @@ class CoSplitPanel extends CoContainer implements IContainer {
       }
 
       if (this.splitViewMode != null) {
-        _calculateDividerPosition(constraints, this.splitViewMode);
-
         return SplitView(
           key: key,
           initialWeight: currentSplitviewWeight,

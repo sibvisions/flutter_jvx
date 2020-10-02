@@ -4,12 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:universal_html/prefer_sdk/html.dart';
 
 class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
-  final BoxConstraints parentConstraints;
+  final CoScrollPanelConstraints preferredConstraints;
 
   CoScrollPanelLayout(
       {Key key,
       List<CoScrollPanelLayoutId> children: const [],
-      this.parentConstraints})
+      this.preferredConstraints})
       : super(key: key, children: children);
 
   @override
@@ -21,8 +21,8 @@ class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
   void updateRenderObject(
       BuildContext context, RenderScrollPanelLayout renderObject) {
     /// Force Layout, if some of the settings have changed
-    if (renderObject.parentConstraints != this.parentConstraints) {
-      renderObject.parentConstraints = this.parentConstraints;
+    if (renderObject.preferredConstraints != this.preferredConstraints) {
+      renderObject.preferredConstraints = this.preferredConstraints;
       renderObject.markNeedsLayout();
     }
   }
@@ -38,7 +38,7 @@ class RenderScrollPanelLayout extends RenderBox
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   RenderBox child;
-  BoxConstraints parentConstraints;
+  CoScrollPanelConstraints preferredConstraints;
 
   RenderScrollPanelLayout({List<RenderBox> children}) {
     addAll(children);
@@ -56,7 +56,7 @@ class RenderScrollPanelLayout extends RenderBox
     while (renderBox != null) {
       final MultiChildLayoutParentData childParentData = renderBox.parentData;
       this.child = renderBox;
-      this.parentConstraints = childParentData.id;
+      this.preferredConstraints = childParentData.id;
       renderBox = childParentData.nextSibling;
     }
 
@@ -69,16 +69,27 @@ class RenderScrollPanelLayout extends RenderBox
               maxHeight: this.constraints.maxHeight),
           parentUsesSize: true);
 
-      if (child.size.height < parentConstraints.maxHeight &&
-          parentConstraints.maxHeight != double.infinity) {
-        double maxHeight = parentConstraints.maxHeight;
+      if (child.size.height <
+              preferredConstraints.parentConstraints.maxHeight &&
+          preferredConstraints.parentConstraints.maxHeight != double.infinity) {
+        double maxHeight = preferredConstraints.parentConstraints.maxHeight;
 
         child.layout(
             BoxConstraints(
-                minWidth: this.parentConstraints.minWidth,
-                maxWidth: this.parentConstraints.maxWidth,
+                minWidth: this.preferredConstraints.parentConstraints.minWidth,
+                maxWidth: this.preferredConstraints.parentConstraints.maxWidth,
                 minHeight: maxHeight,
                 maxHeight: maxHeight),
+            parentUsesSize: true);
+      } else if (this.preferredConstraints.preferredSize != null &&
+          child.size.width < this.preferredConstraints.preferredSize.width) {
+        child.layout(
+            BoxConstraints(
+                minWidth: this.preferredConstraints.preferredSize.width,
+                maxWidth: this.preferredConstraints.preferredSize.width,
+                minHeight:
+                    this.preferredConstraints.parentConstraints.minHeight,
+                maxHeight: child.size.height),
             parentUsesSize: true);
       }
 
@@ -89,8 +100,8 @@ class RenderScrollPanelLayout extends RenderBox
           .constrainDimensions(child.size.width, child.size.height);
     } else {
       this.size = this.constraints.constrainDimensions(
-          this.parentConstraints.biggest.width,
-          this.parentConstraints.biggest.height);
+          this.preferredConstraints.parentConstraints.biggest.width,
+          this.preferredConstraints.parentConstraints.biggest.height);
     }
   }
 
@@ -107,19 +118,18 @@ class RenderScrollPanelLayout extends RenderBox
 
 class CoScrollPanelLayoutId
     extends ParentDataWidget<MultiChildLayoutParentData> {
-  CoScrollPanelLayoutId(
-      {Key key, this.parentConstraints, @required Widget child})
+  CoScrollPanelLayoutId({Key key, this.constraints, @required Widget child})
       : assert(child != null),
-        super(key: key ?? ValueKey<Object>(parentConstraints), child: child);
+        super(key: key ?? ValueKey<Object>(constraints), child: child);
 
-  final BoxConstraints parentConstraints;
+  final CoScrollPanelConstraints constraints;
 
   @override
   void applyParentData(RenderObject renderObject) {
     assert(renderObject.parentData is MultiChildLayoutParentData);
     final MultiChildLayoutParentData parentData = renderObject.parentData;
-    if (parentData.id != parentConstraints) {
-      parentData.id = parentConstraints;
+    if (parentData.id != constraints) {
+      parentData.id = constraints;
       final AbstractNode targetParent = renderObject.parent;
       if (targetParent is RenderObject) targetParent.markNeedsLayout();
     }
@@ -128,9 +138,16 @@ class CoScrollPanelLayoutId
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Object>('id', parentConstraints));
+    properties.add(DiagnosticsProperty<Object>('id', constraints));
   }
 
   @override
   Type get debugTypicalAncestorWidgetClass => MultiChildLayoutParentData;
+}
+
+class CoScrollPanelConstraints {
+  BoxConstraints parentConstraints;
+  Size preferredSize;
+
+  CoScrollPanelConstraints(this.parentConstraints, [this.preferredSize]);
 }

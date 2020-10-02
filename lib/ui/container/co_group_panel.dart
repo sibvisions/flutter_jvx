@@ -74,11 +74,11 @@ class CoGroupPanel extends CoContainer implements IContainer {
               ),
               CoScrollPanelLayout(
                 key: this.key,
-                parentConstraints: constraints,
+                preferredConstraints: CoScrollPanelConstraints(constraints),
                 children: [
                   CoScrollPanelLayoutId(
                       key: ValueKey(this.key),
-                      parentConstraints: constraints,
+                      constraints: CoScrollPanelConstraints(constraints),
                       child: Card(
                           color: Colors.white.withOpacity(
                               globals.applicationStyle.controlsOpacity),
