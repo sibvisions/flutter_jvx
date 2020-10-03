@@ -27,7 +27,7 @@ class TextUtils {
         text: span,
         textAlign: align,
         textDirection: textDirection,
-        textScaleFactor: kIsWeb ? 1.2 : 1.05);
+        textScaleFactor: kIsWeb ? 1.15 : 1.05);
     tp.layout();
 
     //print('ColumnSize: ' + tp.size.toString() + ':' + text);
