@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../ui/tools/restart.dart';
 import '../../utils/translations.dart';
@@ -10,23 +11,26 @@ showGoToSettings(BuildContext context, String title, String message) {
   if (title == null) title = "Missing title";
   if (message == null) message = "";
 
+  List<Widget> buttons = <Widget>[];
+
+  if (!kIsWeb)
+    buttons.add(FlatButton(
+      child: Text(Translations.of(context).text2('Close')),
+      onPressed: () => exit(0),
+    ));
+
+  buttons.add(FlatButton(
+    child: Text(Translations.of(context).text2('To Settings')),
+    onPressed: () => Navigator.of(context)
+        .pushReplacementNamed('/settings', arguments: "error.dialog"),
+  ));
+
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
             title: Text(title),
             content: Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(Translations.of(context).text2('Close')),
-                onPressed: () => exit(0),
-              ),
-              FlatButton(
-                child: Text(Translations.of(context).text2('To Settings')),
-                onPressed: () => Navigator.of(context).pushReplacementNamed(
-                    '/settings',
-                    arguments: "error.dialog"),
-              )
-            ],
+            actions: buttons,
           ));
 }
 
