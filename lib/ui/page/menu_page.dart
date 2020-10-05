@@ -95,9 +95,6 @@ class _MenuPageState extends State<MenuPage> {
         ApplicationSwitcherDescription(
             primaryColor: UIData.ui_kit_color_2.value,
             label: globals.appName + ' - ' + globals.username));
-    if (globals.appListener != null) {
-      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
-    }
 
     if (globals.customSocketHandler != null &&
         !globals.customSocketHandler.isOn) {
@@ -147,6 +144,10 @@ class _MenuPageState extends State<MenuPage> {
     //AppFrame
     if (globals.appFrame is AppFrame || globals.appFrame == null) {
       globals.appFrame = AppFrame(context);
+    }
+
+    if (globals.appListener != null) {
+      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
