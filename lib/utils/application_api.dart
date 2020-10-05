@@ -65,6 +65,12 @@ class ApplicationApi {
     return _context;
   }
 
+  set context(BuildContext context) {
+    if (context != null) {
+      _context = context;
+    }
+  }
+
   Stream<Response> get state {
     return BlocProvider.of<ApiBloc>(_context).state;
   }

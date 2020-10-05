@@ -96,6 +96,10 @@ class _MenuPageState extends State<MenuPage> {
             primaryColor: UIData.ui_kit_color_2.value,
             label: globals.appName + ' - ' + globals.username));
 
+    if (globals.appListener != null) {
+      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+    }
+
     if (globals.customSocketHandler != null &&
         !globals.customSocketHandler.isOn) {
       // initialize the Websocket Communication
