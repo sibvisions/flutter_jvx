@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/api/request/request.dart';
+import '../../model/api/request/request.dart';
+import '../../model/api/response/data/data_book.dart';
 import 'package:jvx_flutterclient/model/api/response/response_data.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
@@ -15,6 +16,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_mo
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
 
+import '../../jvx_flutterclient.dart';
 import 'i_component_creator.dart';
 
 class ComponentScreenWidget extends StatefulWidget {
@@ -62,7 +64,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   void dataChanged(String dataProvider) {
     components.forEach((key, value) {
-      if (value.componentModel.dataProvider == dataProvider) {
+      if (value.componentModel?.data?.dataProvider == dataProvider) {
         value.componentModel.onDataChanged();
       }
     });

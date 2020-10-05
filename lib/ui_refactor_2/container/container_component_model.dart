@@ -98,9 +98,10 @@ class ContainerComponentModel extends ComponentModel {
 
     pComponent.componentModel.changedComponent = changedComponent;
 
-    (this.componentState as CoContainerWidgetState).updateComponentProperties(
-        pComponent.componentModel.componentId, changedComponent);
-
+    if (this.componentState != null) {
+      (this.componentState as CoContainerWidgetState).updateComponentProperties(
+          pComponent.componentModel.componentId, changedComponent);
+    }
     if (layout != null) {
       if (layout is CoBorderLayout) {
         CoBorderLayoutConstraints contraints =

@@ -138,45 +138,44 @@ class CoImageCellEditorWidgetState
   Widget build(BuildContext context) {
     setEditorProperties(context);
 
-    return ValueListenableBuilder(
-      valueListenable: widget.cellEditorModel,
-      builder: (context, value, child) {
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            double height = constraints.maxHeight != double.infinity
-                ? constraints.maxHeight
-                : null;
-            double width = constraints.maxWidth != double.infinity
-                ? constraints.maxWidth
-                : null;
+    // return ValueListenableBuilder(
+    //   valueListenable: widget.cellEditorModel,
+    //   builder: (context, value, child) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double height = constraints.maxHeight != double.infinity
+            ? constraints.maxHeight
+            : null;
+        double width = constraints.maxWidth != double.infinity
+            ? constraints.maxWidth
+            : null;
 
-            return Container(
-              child: Row(
-                mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-                    this.horizontalAlignment),
-                children: [
-                  Card(
-                    color: Colors.white.withOpacity(
-                        globals.applicationStyle?.controlsOpacity ?? 1.0),
-                    elevation: 2.0,
-                    shape: globals.applicationStyle?.editorsShape ??
-                        RoundedRectangleBorder(),
-                    child: Container(
-                      height: height,
-                      width: width - 10,
-                      decoration: BoxDecoration(
-                          image: _getImage(height, horizontalAlignment),
-                          color: background != null
-                              ? background
-                              : Colors.transparent),
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
+        return Container(
+          child: Row(
+            mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+                this.horizontalAlignment),
+            children: [
+              Card(
+                color: Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
+                elevation: 2.0,
+                shape: globals.applicationStyle?.editorsShape ??
+                    RoundedRectangleBorder(),
+                child: Container(
+                  height: height,
+                  width: width - 10,
+                  decoration: BoxDecoration(
+                      image: _getImage(height, horizontalAlignment),
+                      color:
+                          background != null ? background : Colors.transparent),
+                ),
+              )
+            ],
+          ),
         );
       },
     );
+    //   },
+    // );
   }
 }
