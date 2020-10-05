@@ -99,7 +99,8 @@ class _MenuPageState extends State<MenuPage> {
       globals.appListener.fireAfterStartupListener(ApplicationApi(context));
     }
 
-    if (globals.customSocketHandler != null) {
+    if (globals.customSocketHandler != null &&
+        !globals.customSocketHandler.isOn) {
       // initialize the Websocket Communication
       globals.customSocketHandler.initCommunication();
     }
