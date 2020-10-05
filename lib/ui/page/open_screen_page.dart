@@ -79,7 +79,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
     //update listener context
     if (globals.appListener != null) {
-      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+      globals.appListener.fireOnUpdateListener(context);
     }
 
     if (lastOrientation == null) {
@@ -350,6 +350,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     globals.currentTempalteName = null;
     screen.componentScreen.context = context;
     screen.update(widget.request, widget.responseData);
+
+    if (globals.appListener != null) {
+      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+    }
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

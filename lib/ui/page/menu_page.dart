@@ -151,7 +151,7 @@ class _MenuPageState extends State<MenuPage> {
     }
 
     if (globals.appListener != null) {
-      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+      globals.appListener.fireOnUpdateListener(context);
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
