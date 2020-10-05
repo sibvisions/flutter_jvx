@@ -21,9 +21,7 @@ class ApplicationApi {
   addListener(void Function(Response response) onState) {
     if (!listeners.contains(onState)) {
       listeners.add(onState);
-      BlocProvider.of<ApiBloc>(_context)
-          .state
-          .listen((Response response) => onState(response));
+      state.listen((Response response) => onState(response));
     }
   }
 
@@ -65,5 +63,9 @@ class ApplicationApi {
 
   BuildContext get context {
     return _context;
+  }
+
+  Stream<Response> get state {
+    return BlocProvider.of<ApiBloc>(_context).state;
   }
 }

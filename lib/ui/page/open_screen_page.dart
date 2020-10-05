@@ -112,6 +112,10 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
+            if (state.requestType == RequestType.MENU) {
+              globals.items = state.menu.items;
+            }
+
             if (state.requestType == RequestType.CLOSE_SCREEN) {
               // Navigator.of(context).pushReplacement(MaterialPageRoute(
               //     settings: RouteSettings(name: '/Menu'),

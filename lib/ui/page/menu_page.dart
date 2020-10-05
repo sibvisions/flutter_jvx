@@ -187,6 +187,13 @@ class _MenuPageState extends State<MenuPage> {
           globals.layoutMode = state.deviceStatus.layoutMode;
           this.setState(() {});
         }
+
+        if (state.requestType == RequestType.MENU) {
+          setState(() {
+            globals.items = state.menu.items;
+            this.widget.menuItems = state.menu.items;
+          });
+        }
       },
       child: Scaffold(
         key: _scaffoldKey,
