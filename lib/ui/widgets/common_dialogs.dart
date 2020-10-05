@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../ui/tools/restart.dart';
 import '../../utils/translations.dart';
@@ -16,10 +17,12 @@ showGoToSettings(BuildContext context, String title, String message) {
             title: Text(title),
             content: Text(message),
             actions: <Widget>[
-              FlatButton(
-                child: Text(Translations.of(context).text2('Close')),
-                onPressed: () => exit(0),
-              ),
+              !kIsWeb
+                  ? FlatButton(
+                      child: Text(Translations.of(context).text2('Close')),
+                      onPressed: () => exit(0),
+                    )
+                  : Container(),
               FlatButton(
                 child: Text(Translations.of(context).text2('To Settings')),
                 onPressed: () => Navigator.of(context).pushReplacementNamed(
