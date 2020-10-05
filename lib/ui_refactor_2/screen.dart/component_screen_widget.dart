@@ -44,6 +44,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
+
     if (widget.request != null && widget.responseData != null)
       this.updateData(widget.request, widget.responseData);
     if (widget.responseData?.screenGeneric != null) {
@@ -56,6 +58,14 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       return rootComponent;
     }
     return Container();
+  }
+
+  void dataChanged(String dataProvider) {
+    components.forEach((key, value) {
+      if (value.componentModel.dataProvider == dataProvider) {
+        value.componentModel.onDataChanged();
+      }
+    });
   }
 
   void updateComponents(List<ChangedComponent> changedComponents) {

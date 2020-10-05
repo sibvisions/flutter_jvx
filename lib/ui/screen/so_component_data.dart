@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/component_screen_widget.dart';
 import '../../ui/screen/so_data_screen.dart';
 import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../model/api/response/data/dataprovider_changed.dart';
@@ -107,6 +108,8 @@ class SoComponentData {
 
     isFetching = false;
     _onDataChanged.forEach((d) => d());
+
+    (soDataScreen as ComponentScreenWidgetState).dataChanged(dataProvider);
   }
 
   void updateDataProviderChanged(

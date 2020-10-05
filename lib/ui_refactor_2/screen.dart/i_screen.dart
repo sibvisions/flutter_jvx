@@ -12,7 +12,9 @@ abstract class IScreen {
   // ComponentScreenWidget componentScreen;
 
   /// Constructor for returning the default Implementation of this interface.
-  factory IScreen(SoComponentCreator componentCreator) => SoScreen(
+  factory IScreen(SoComponentCreator componentCreator, GlobalKey globalKey) =>
+      SoScreen(
+        globalKey: globalKey,
         componentCreator: componentCreator,
       );
 

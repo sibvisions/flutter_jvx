@@ -13,6 +13,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_mo
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_checkbox_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_image_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
@@ -63,6 +64,10 @@ class SoComponentCreator implements IComponentCreator {
           cellEditorModel: CellEditorModel(cellEditor),
         ),
     'NumberCellEditor': (CellEditor cellEditor) => CoNumberCellEditorWidget(
+          changedCellEditor: cellEditor,
+          cellEditorModel: CellEditorModel(cellEditor),
+        ),
+    'ImageViewer': (CellEditor cellEditor) => CoImageCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         )

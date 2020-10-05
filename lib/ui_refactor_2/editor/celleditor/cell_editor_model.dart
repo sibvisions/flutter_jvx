@@ -7,35 +7,6 @@ import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 class CellEditorModel extends ValueNotifier {
   final CellEditor currentCellEditor;
 
-  CellEditorModel(this.currentCellEditor) : super(null) {
-    horizontalAlignment = this
-        .currentCellEditor
-        .getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);
-    verticalAlignment = this
-        .currentCellEditor
-        .getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
-    preferredEditorMode = this
-        .currentCellEditor
-        .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
-    contentType = this
-        .currentCellEditor
-        .getProperty<String>(CellEditorProperty.CONTENT_TYPE);
-    directCellEditor = this.currentCellEditor.getProperty<bool>(
-        CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
-    columnName = this
-        .currentCellEditor
-        .getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
-    dataProvider = this
-        .currentCellEditor
-        .getProperty<String>(CellEditorProperty.DATA_PROVIDER);
-    borderVisible = this
-        .currentCellEditor
-        .getProperty<bool>(CellEditorProperty.BORDER_VISIBLE, true);
-    placeholderVisible = this
-        .currentCellEditor
-        .getProperty<bool>(CellEditorProperty.PLACEHOLDER_VISIBLE, true);
-  }
-
   bool isTableView = false;
   int horizontalAlignment;
   int verticalAlignment;
@@ -81,4 +52,33 @@ class CellEditorModel extends ValueNotifier {
   VoidCallback onEndEditing;
   Function(dynamic value, [int index]) onValueChanged;
   ValueChanged<dynamic> onFilter;
+
+  CellEditorModel(this.currentCellEditor) : super(null) {
+    horizontalAlignment = this
+        .currentCellEditor
+        .getProperty<int>(CellEditorProperty.HORIZONTAL_ALIGNMENT);
+    verticalAlignment = this
+        .currentCellEditor
+        .getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
+    preferredEditorMode = this
+        .currentCellEditor
+        .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
+    contentType = this
+        .currentCellEditor
+        .getProperty<String>(CellEditorProperty.CONTENT_TYPE);
+    directCellEditor = this.currentCellEditor.getProperty<bool>(
+        CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
+    columnName = this
+        .currentCellEditor
+        .getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
+    dataProvider = this
+        .currentCellEditor
+        .getProperty<String>(CellEditorProperty.DATA_PROVIDER);
+    borderVisible = this
+        .currentCellEditor
+        .getProperty<bool>(CellEditorProperty.BORDER_VISIBLE, true);
+    placeholderVisible = this
+        .currentCellEditor
+        .getProperty<bool>(CellEditorProperty.PLACEHOLDER_VISIBLE, true);
+  }
 }

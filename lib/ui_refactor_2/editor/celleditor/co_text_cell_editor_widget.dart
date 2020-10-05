@@ -83,59 +83,66 @@ class CoTextCellEditorWidgetState
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-          color: this.background != null
-              ? this.background
-              : Colors.white.withOpacity(
-                  globals.applicationStyle?.controlsOpacity ?? 1.0),
-          borderRadius: BorderRadius.circular(
-              globals.applicationStyle?.cornerRadiusEditors ?? 10),
-          border: borderVisible && this.editable != null && this.editable
-              ? Border.all(color: UIData.ui_kit_color_2)
-              : Border.all(color: Colors.grey)),
-      child: Container(
-        width: 100,
-        child: TextField(
-            textAlign:
-                SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(12),
-                border: InputBorder.none,
-                hintText: placeholderVisible ? placeholder : null,
-                suffixIcon: this.editable
-                    ? Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (this.value != null) {
-                              this.value = null;
-                              this.valueChanged = true;
-                              super.onValueChanged(this.value);
-                              this.valueChanged = false;
-                            }
-                          },
-                          child: Icon(Icons.clear,
-                              size: 24, color: Colors.grey[400]),
-                        ),
-                      )
-                    : null),
-            style: TextStyle(
-                color: this.editable
-                    ? (this.foreground != null ? this.foreground : Colors.black)
-                    : Colors.grey[700]),
-            controller: _controller,
-            minLines: null,
-            maxLines: multiLine ? null : 1,
-            keyboardType:
-                multiLine ? TextInputType.multiline : TextInputType.text,
-            onEditingComplete: onTextFieldEndEditing,
-            onChanged: onTextFieldValueChanged,
-            readOnly: !this.editable,
-            obscureText: this.password
-            //expands: this.verticalAlignment==1 && multiLine ? true : false,
-            ),
-      ),
+    return ValueListenableBuilder(
+      valueListenable: widget.cellEditorModel,
+      builder: (context, value, child) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+              color: this.background != null
+                  ? this.background
+                  : Colors.white.withOpacity(
+                      globals.applicationStyle?.controlsOpacity ?? 1.0),
+              borderRadius: BorderRadius.circular(
+                  globals.applicationStyle?.cornerRadiusEditors ?? 10),
+              border: borderVisible && this.editable != null && this.editable
+                  ? Border.all(color: UIData.ui_kit_color_2)
+                  : Border.all(color: Colors.grey)),
+          child: Container(
+            width: 100,
+            child: TextField(
+                textAlign:
+                    SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(12),
+                    border: InputBorder.none,
+                    hintText: placeholderVisible ? placeholder : null,
+                    suffixIcon: this.editable
+                        ? Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (this.value != null) {
+                                  this.value = null;
+                                  this.valueChanged = true;
+                                  super.onValueChanged(this.value);
+                                  this.valueChanged = false;
+                                }
+                              },
+                              child: Icon(Icons.clear,
+                                  size: 24, color: Colors.grey[400]),
+                            ),
+                          )
+                        : null),
+                style: TextStyle(
+                    color: this.editable
+                        ? (this.foreground != null
+                            ? this.foreground
+                            : Colors.black)
+                        : Colors.grey[700]),
+                controller: _controller,
+                minLines: null,
+                maxLines: multiLine ? null : 1,
+                keyboardType:
+                    multiLine ? TextInputType.multiline : TextInputType.text,
+                onEditingComplete: onTextFieldEndEditing,
+                onChanged: onTextFieldValueChanged,
+                readOnly: !this.editable,
+                obscureText: this.password
+                //expands: this.verticalAlignment==1 && multiLine ? true : false,
+                ),
+          ),
+        );
+      },
     );
   }
 }

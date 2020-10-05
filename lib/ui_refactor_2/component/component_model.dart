@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/jvx_flutterclient.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui/component/i_component.dart';
-import 'package:jvx_flutterclient/ui/screen/so_component_data.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
+
+import '../../jvx_flutterclient.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/screen/so_component_data.dart';
+import '../editor/co_editor_widget.dart';
+import 'component_widget.dart';
 
 class ComponentModel extends ValueNotifier {
   String componentId;
   String parentComponentId;
   ChangedComponent currentChangedComponent;
   ComponentWidgetState componentState;
-  SoComponentData data;
+  SoComponentData _data;
   String dataProvider;
   CoState coState;
   String constraints;
@@ -32,6 +34,15 @@ class ComponentModel extends ValueNotifier {
   set minimumSize(Size size) => _minimumSize = size;
   Size get maximumSize => _maximumSize;
   set maximumSize(Size size) => _maximumSize = size;
+
+  set data(SoComponentData data) {
+    _data = data;
+    if (componentState != null) {
+      (componentState as CoEditorWidgetState).data = data;
+    }
+  }
+
+  SoComponentData get data => _data;
 
   ComponentModel({this.currentChangedComponent}) : super(null) {
     this.compId = currentChangedComponent.id;
@@ -69,5 +80,12 @@ class ComponentModel extends ValueNotifier {
     currentChangedComponent = changedComponent;
     compId = changedComponent.id;
     notifyListeners();
+  }
+
+  void onDataChanged() {
+    if (componentState != null && componentState is CoEditorWidgetState) {
+      (componentState as CoEditorWidgetState).onDataChanged();
+      notifyListeners();
+    }
   }
 }

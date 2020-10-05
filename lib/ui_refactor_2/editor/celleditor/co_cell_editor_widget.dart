@@ -42,7 +42,7 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   bool autoOpenPopup;
   String contentType;
   String dataProvider;
-  dynamic value;
+  dynamic _value;
   String columnName;
   HexColor background;
   HexColor foreground;
@@ -63,6 +63,14 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
 
   Size tableMinimumSize;
   bool get isTableMinimumSizeSet => tableMinimumSize != null;
+
+  set value(dynamic value) {
+    setState(() {
+      _value = value;
+    });
+  }
+
+  dynamic get value => _value;
 
   VoidCallback onBeginEditing;
   VoidCallback onEndEditing;

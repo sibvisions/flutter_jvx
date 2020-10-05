@@ -114,6 +114,14 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   void onEndEditing() {}
 
+  void onDataChanged() {
+    _data?.unregisterDataChanged(onServerDataChanged);
+    _data = (widget as CoEditorWidget).componentModel.data;
+    _data?.registerDataChanged(onServerDataChanged);
+
+    this.cellEditor?.value = _data.getColumnData(context, columnName);
+  }
+
   void onValueChanged(dynamic value, [int index]) {
     bool isTextEditor = (cellEditor is CoTextCellEditorWidgetState ||
         cellEditor is CoNumberCellEditorWidgetState);
@@ -146,6 +154,19 @@ class CoEditorWidgetState<T extends StatefulWidget>
           isTextEditor);
     }
     */
+    (widget as CoEditorWidget).componentModel.data.setValues(
+        context,
+        (value is List) ? value : [value],
+        [columnName],
+        index != null
+            ? Filter(
+                columnNames: this.data.primaryKeyColumns,
+                values: this
+                    .data
+                    .data
+                    .getRow(index, this.data.metaData.primaryKeyColumns))
+            : null,
+        isTextEditor);
   }
 
   void onFilter(dynamic value) {
@@ -196,6 +217,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
   @override
   void initState() {
     super.initState();
+
     _cellEditorWidget = (widget as CoEditorWidget).cellEditor;
   }
 
