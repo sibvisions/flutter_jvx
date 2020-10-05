@@ -188,6 +188,7 @@ class _MenuListWidgetState extends State<MenuListWidget> {
                             maxLines: 2,
                           )))),
               Container(
+                  alignment: Alignment.center,
                   width: 75,
                   color: Colors.black.withOpacity(0.2),
                   child: FaIcon(

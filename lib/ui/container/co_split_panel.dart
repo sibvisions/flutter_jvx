@@ -99,47 +99,65 @@ class CoSplitPanel extends CoContainer implements IContainer {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      _calculateDividerPosition(constraints, this.splitViewMode);
+
       if (firstComponent != null) {
-        widgets.add(SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: CoScrollPanelLayout(
-              key: this.keyFirst,
-              parentConstraints: constraints,
-              children: [
-                CoScrollPanelLayoutId(
-                    key: ValueKey(this.keyFirst),
-                    parentConstraints: constraints,
-                    child: firstComponent.getWidget())
-              ],
-            )));
+        Size preferredSize;
+
+        if (constraints.maxWidth != double.infinity &&
+            this.currentSplitviewWeight != null) {
+          preferredSize = Size(
+              constraints.maxWidth * this.currentSplitviewWeight,
+              constraints.maxHeight);
+        }
+
+        widgets.add(CoScrollPanelLayout(
+          key: this.keyFirst,
+          preferredConstraints:
+              CoScrollPanelConstraints(constraints, preferredSize),
+          children: [
+            CoScrollPanelLayoutId(
+                key: ValueKey(this.keyFirst),
+                constraints:
+                    CoScrollPanelConstraints(constraints, preferredSize),
+                child: firstComponent.getWidget())
+          ],
+        ));
       } else {
         widgets.add(Container());
       }
 
       if (secondComponent != null) {
-        widgets.add(SingleChildScrollView(
-            //scrollDirection: Axis.horizontal,
-            child: CoScrollPanelLayout(
+        Size preferredSize;
+        if (constraints.maxWidth != double.infinity &&
+            this.currentSplitviewWeight != null) {
+          preferredSize = Size(
+              constraints.maxWidth -
+                  (constraints.maxWidth * this.currentSplitviewWeight),
+              constraints.maxHeight);
+        }
+
+        widgets.add(CoScrollPanelLayout(
           key: this.keySecond,
-          parentConstraints: constraints,
+          preferredConstraints:
+              CoScrollPanelConstraints(constraints, preferredSize),
           children: [
             CoScrollPanelLayoutId(
                 key: ValueKey(this.keySecond),
-                parentConstraints: constraints,
+                constraints:
+                    CoScrollPanelConstraints(constraints, preferredSize),
                 child: secondComponent.getWidget())
           ],
-        )));
+        ));
       } else {
         widgets.add(Container());
       }
 
       if (this.splitViewMode != null) {
-        _calculateDividerPosition(constraints, this.splitViewMode);
-
         return SplitView(
           key: key,
           initialWeight: currentSplitviewWeight,
-          gripColor: Colors.grey.withOpacity(0.3),
+          gripColor: Colors.grey[300],
           handleColor: Colors.grey[800].withOpacity(0.5),
           view1: widgets[0],
           view2: widgets[1],
