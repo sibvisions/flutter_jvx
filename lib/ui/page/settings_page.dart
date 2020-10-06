@@ -34,9 +34,9 @@ class _SettingsPageState extends State<SettingsPage> {
   bool isDialogOpen = false;
 
   String get versionText {
-    String v = 'App V $version Build $buildNumber';
+    String v = 'App v$version Build $buildNumber';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
-      v += '\nServer V ${globals.appVersion}';
+      v += '\nServer v${globals.appVersion}';
 
     return v;
   }

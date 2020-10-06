@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:jvx_flutterclient/model/api/response/response_data.dart';
 import 'package:jvx_flutterclient/ui/page/menu_arguments.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -38,6 +39,7 @@ class StartupPage extends StatefulWidget {
 
 class _StartupPageState extends State<StartupPage> {
   bool errorMsgShown = false;
+  Response welcomeScreen;
 
   Widget newStartupBuilder() {
     return errorHandlerListener(
@@ -286,7 +288,8 @@ class _StartupPageState extends State<StartupPage> {
       }
 
       Navigator.of(context).pushReplacementNamed('/menu',
-          arguments: MenuArguments(state.menu.items, true));
+          arguments: MenuArguments(state.menu.items, true,
+              this.welcomeScreen != null ? this.welcomeScreen : null));
     }
   }
 
@@ -334,7 +337,8 @@ class _StartupPageState extends State<StartupPage> {
         }
       }
       Navigator.of(context).pushReplacementNamed('/menu',
-          arguments: MenuArguments(menu.items, true));
+          arguments: MenuArguments(menu.items, true,
+              this.welcomeScreen != null ? this.welcomeScreen : null));
     }
   }
 
@@ -438,6 +442,10 @@ class _StartupPageState extends State<StartupPage> {
         state.requestType == RequestType.STARTUP &&
         state.applicationMetaData != null &&
         state.language != null) {
+      if (state.responseData.screenGeneric != null) {
+        this.welcomeScreen = state;
+      }
+
       String appVersion;
       SharedPreferencesHelper().getAppVersion().then((val) async {
         if (state.userData != null) {

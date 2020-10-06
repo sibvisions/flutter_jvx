@@ -342,6 +342,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
+    title = widget.title;
+
     screen = globals.customScreenManager == null
         ? IScreen(SoComponentCreator())
         : globals.customScreenManager.getScreen(
