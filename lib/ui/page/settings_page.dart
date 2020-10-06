@@ -27,7 +27,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl, language, version, buildNumber, buildDate;
+  String appName,
+      baseUrl,
+      language,
+      version,
+      buildNumber,
+      buildDate,
+      commitHash;
   String toSaveUsername;
   String toSavePwd;
   List<PickerItem<int>> imageSizeItems;
@@ -221,6 +227,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       buildDate ?? '',
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
+                  ),
+                  ListTile(
+                    leading: FaIcon(FontAwesomeIcons.github),
+                    title: Text(
+                      commitHash ?? '',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   )
                 ]))
           ],
@@ -244,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
         }
       }
       buildDate = buildversion['build_date'];
-
+      commitHash = buildversion['commit'];
       if (buildDate != null) {
         DateTime date = DateTime.parse(buildDate);
         DateFormat formatter = DateFormat('dd.MM.yyyy');
