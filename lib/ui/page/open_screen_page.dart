@@ -78,9 +78,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         .replaceAll("'>]", '');
 
     //update listener context
-    if (globals.appListener != null) {
-      globals.appListener.fireOnUpdateListener(context);
-    }
+    // if (globals.appListener != null) {
+    //   globals.appListener.fireOnUpdateListener(context);
+    // }
 
     if (lastOrientation == null) {
       lastOrientation = MediaQuery.of(context).orientation;
