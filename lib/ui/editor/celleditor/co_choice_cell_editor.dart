@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import '../../../model/cell_editor.dart';
@@ -56,7 +59,9 @@ class CoChoiceCellEditor extends CoCellEditor {
   }
 
   ChoiceCellEditorImage loadImage(String path) {
-    Image image = Image.file(File('${globals.dir}$path'));
+    Image image = kIsWeb
+        ? Image.memory(base64Decode(globals.files[path]))
+        : Image.file(File('${globals.dir}$path'));
     String val;
     try {} catch (e) {
       selectedImage = defaultImage;

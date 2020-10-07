@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:html' as html;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:convert' as utf8;
