@@ -209,20 +209,24 @@ class CoPopupMenuButton extends Component implements IComponent {
     }
 
     return Container(
+      margin: EdgeInsets.all(4),
       child: ButtonTheme(
         minWidth: 44,
-        child: RaisedButton(
-            key: this.componentId,
-            onPressed: this.enabled ? buttonPressed : null,
-            color: this.background != null
-                ? this.background
-                : UIData.ui_kit_color_2[600],
-            elevation: 2,
-            shape: globals.applicationStyle.buttonShape,
-            child: Row(children: <Widget>[
-              Expanded(child: Center(child: child)),
-              _getPopupMenu(colorScheme),
-            ])),
+        child: SizedBox(
+          height: 40,
+          child: RaisedButton(
+              key: this.componentId,
+              onPressed: this.enabled ? buttonPressed : null,
+              color: this.background != null
+                  ? this.background
+                  : UIData.ui_kit_color_2[600],
+              elevation: 2,
+              shape: globals.applicationStyle.buttonShape,
+              child: Row(children: <Widget>[
+                Expanded(child: Center(child: child)),
+                _getPopupMenu(colorScheme),
+              ])),
+        ),
         splashColor: this.background,
       ),
     );
