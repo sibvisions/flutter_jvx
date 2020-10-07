@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:html' as html;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'dart:convert' as utf8;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:jvx_flutterclient/jvx_flutterclient.dart';
+import '../../../jvx_flutterclient.dart';
+import '../../../utils/image_loader.dart';
 import '../../layout/i_alignment_constants.dart';
 import '../../../logic/bloc/api_bloc.dart';
 import '../../../model/api/request/reload.dart';
@@ -48,13 +46,10 @@ class CoImageCellEditor extends CoCellEditor {
 
     if (defaultImageName != null) {
       if (kIsWeb) {
-        if (globals.files.containsKey(defaultImageName)) {
-          defaultImage =
-              Image.memory(utf8.base64Decode(globals.files[defaultImageName]));
-
+        defaultImage = ImageLoader().loadImage(defaultImageName);
+        if (defaultImage != null)
           BlocProvider.of<ApiBloc>(context)
               .dispatch(Reload(requestType: RequestType.RELOAD));
-        }
       } else {
         file = File(defaultImageName != null
             ? '${globals.dir}$defaultImageName'
@@ -110,13 +105,10 @@ class CoImageCellEditor extends CoCellEditor {
       currentImage = null;
 
       if (kIsWeb) {
-        if (globals.files.containsKey(defaultImageName)) {
-          defaultImage =
-              Image.memory(utf8.base64Decode(globals.files[defaultImageName]));
-
+        defaultImage = ImageLoader().loadImage(defaultImageName);
+        if (defaultImage != null)
           BlocProvider.of<ApiBloc>(context)
               .dispatch(Reload(requestType: RequestType.RELOAD));
-        }
       } else {
         file = File(defaultImageName != null
             ? '${globals.dir}$defaultImageName'

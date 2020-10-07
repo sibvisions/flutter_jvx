@@ -1,15 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:html' as html;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/jvx_flutterclient.dart';
+import 'package:jvx_flutterclient/utils/image_loader.dart';
 import '../../../model/cell_editor.dart';
 import '../../../model/choice_cell_editor_image.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import 'co_cell_editor.dart';
 import '../../layout/i_alignment_constants.dart';
-import '../../../utils/globals.dart' as globals;
 
 class CoChoiceCellEditor extends CoCellEditor {
   List<ChoiceCellEditorImage> _items = <ChoiceCellEditorImage>[];
@@ -59,9 +55,7 @@ class CoChoiceCellEditor extends CoCellEditor {
   }
 
   ChoiceCellEditorImage loadImage(String path) {
-    Image image = kIsWeb
-        ? Image.memory(base64Decode(globals.files[path]))
-        : Image.file(File('${globals.dir}$path'));
+    Image image = ImageLoader().loadImage(path);
     String val;
     try {} catch (e) {
       selectedImage = defaultImage;
