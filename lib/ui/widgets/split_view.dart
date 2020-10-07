@@ -2,6 +2,7 @@ library split_view;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/ui/container/co_scroll_panel_layout.dart';
 
 /// SplitView
 class SplitView extends StatefulWidget {
@@ -73,6 +74,18 @@ class _SplitViewState extends State<SplitView> {
     );
   }
 
+  void updatePreferredSize(Widget view, Size size) {
+    if (view is CoScrollPanelLayout) {
+      List<CoScrollPanelLayoutId> children = view.children;
+      if (children != null && children.length > 0) {
+        CoScrollPanelConstraints viewConstraints = children[0].constraints;
+        if (viewConstraints != null && viewConstraints.preferredSize != null) {
+          viewConstraints.preferredSize = size;
+        }
+      }
+    }
+  }
+
   Stack _buildVerticalView(
       BuildContext context, BoxConstraints constraints, double w) {
     double top = constraints.maxHeight * w;
@@ -91,6 +104,11 @@ class _SplitViewState extends State<SplitView> {
         maxWidth: constraints.maxWidth);
 
     List<Widget> children = List<Widget>();
+
+    this.updatePreferredSize(
+        widget.view1, Size(constraints.maxWidth, constraints.maxHeight));
+    this.updatePreferredSize(
+        widget.view2, Size(constraints.maxWidth, constraints.maxHeight));
 
     children.add(Positioned(
       top: 0,
@@ -185,6 +203,9 @@ class _SplitViewState extends State<SplitView> {
         maxWidth: right);
 
     List<Widget> children = List<Widget>();
+
+    this.updatePreferredSize(widget.view1, Size(left, constraints.maxHeight));
+    this.updatePreferredSize(widget.view2, Size(right, constraints.maxHeight));
 
     children.add(Positioned(
       top: 0,
