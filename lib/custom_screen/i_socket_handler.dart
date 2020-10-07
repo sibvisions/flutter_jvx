@@ -1,4 +1,9 @@
 abstract class ISocketHandler {
+  /// ---------------------------------------------------------
+  /// True when connection is established
+  /// ---------------------------------------------------------
+  bool isOn;
+
   /// ----------------------------------------------------------
   /// Initialization the WebSockets connection with the server
   /// ----------------------------------------------------------

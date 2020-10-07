@@ -78,9 +78,9 @@ class _OpenScreenPageState extends State<OpenScreenPage>
         .replaceAll("'>]", '');
 
     //update listener context
-    if (globals.appListener != null) {
-      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
-    }
+    // if (globals.appListener != null) {
+    //   globals.appListener.fireOnUpdateListener(context);
+    // }
 
     if (lastOrientation == null) {
       lastOrientation = MediaQuery.of(context).orientation;
@@ -112,6 +112,10 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     return errorAndLoadingListener(
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
+            if (state.requestType == RequestType.MENU) {
+              globals.items = state.menu.items;
+            }
+
             if (state.requestType == RequestType.CLOSE_SCREEN) {
               // Navigator.of(context).pushReplacement(MaterialPageRoute(
               //     settings: RouteSettings(name: '/Menu'),
@@ -338,6 +342,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
   @override
   void initState() {
+    title = widget.title;
+
     screen = globals.customScreenManager == null
         ? IScreen(SoComponentCreator())
         : globals.customScreenManager.getScreen(
@@ -346,6 +352,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     globals.currentTempalteName = null;
     screen.componentScreen.context = context;
     screen.update(widget.request, widget.responseData);
+
+    if (globals.appListener != null) {
+      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+    }
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
