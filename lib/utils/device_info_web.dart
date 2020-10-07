@@ -3,6 +3,7 @@ import 'dart:html';
 import 'package:flutter/services.dart';
 import 'package:jvx_flutterclient/utils/device_info.dart';
 import 'package:platform_detect/platform_detect.dart';
+import '../utils/globals.dart' as globals;
 
 class DeviceInfoWeb implements DeviceInfo {
   String osName;
@@ -23,8 +24,10 @@ class DeviceInfoWeb implements DeviceInfo {
   }
 
   getAppVersion() async {
-    Map<String, dynamic> buildversion =
-        json.decode(await rootBundle.loadString('env/app_version.json'));
+    Map<String, dynamic> buildversion = json.decode(await rootBundle.loadString(
+        globals.package
+            ? 'packages/jvx_flutterclient/env/app_version.json'
+            : 'env/app_version.json'));
     return buildversion['version'];
   }
 }
