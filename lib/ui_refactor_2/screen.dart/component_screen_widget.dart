@@ -147,9 +147,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       componentClass = widget?.componentCreator?.createComponent(component);
 
       if (componentClass is CoEditorWidget) {
-        // CoEditorWidgetState editorWidgetState =
-        //     componentClass?.componentModel?.componentState;
-
         componentClass?.componentModel?.data =
             this.getComponentData(componentClass?.componentModel?.dataProvider);
         /*
