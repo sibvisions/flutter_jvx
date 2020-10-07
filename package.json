@@ -27,7 +27,7 @@
     "buildios": "flutter clean && rm ios/Podfile && flutter build ios && run-s xcodeBuildStep1 && run-s xcodeBuildStep2 && run-s xcodeBuildStep3",
     "postbuildios": "el-cli deploy/ios/Runner.xcarchive",
     "uploadios": "xcrun altool --upload-app -f deploy/ios/Runner.ipa -u ",
-    "buildandroid": "flutter clean && flutter build apk",
+    "buildandroid": "flutter clean && run-s setBuildDate && run-s updateCommitAppVersionJson && run-s increasebuildnumber && flutter build apk --release",
     "postbuildandroid": "run-s copyBuildAndroid",
     "buildweb": "flutter clean && flutter build web",
     "postbuildweb": "run-s copyBuildWeb"
