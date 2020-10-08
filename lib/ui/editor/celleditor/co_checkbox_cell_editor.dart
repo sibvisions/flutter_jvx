@@ -63,8 +63,8 @@ class CoCheckboxCellEditor extends CoCellEditor {
       //     border:
       //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: Row(
-        mainAxisAlignment:
-            IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
+        mainAxisAlignment: MainAxisAlignment
+            .spaceBetween, // IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
         children: <Widget>[
           Checkbox(
             value: valueToBool(this.value),
