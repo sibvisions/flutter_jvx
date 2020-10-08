@@ -348,7 +348,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
     screen = SoScreen(
       globalKey: GlobalKey<SoScreenState>(),
-      componentCreator: SoComponentCreator(),
+      componentCreator: SoComponentCreator(context),
     );
 
     globals.currentTempalteName = null;

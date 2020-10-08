@@ -6,7 +6,8 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_border_layout_constraint.dart';
 
@@ -41,11 +42,11 @@ class ContainerComponentModel extends ComponentModel {
     pComponent.componentModel.coState = CoState.Added;
 
     if (layout != null) {
-      if (layout is CoBorderLayout) {
+      if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(pConstraints);
         layout.addLayoutComponent(pComponent, contraints);
-      } else if (layout is CoFormLayout) {
+      } else if (layout is CoFormLayoutContainerWidget) {
         layout.addLayoutComponent(pComponent, pConstraints);
       }
       /* else if (layout is CoFlowLayout) {
@@ -96,17 +97,19 @@ class ContainerComponentModel extends ComponentModel {
         (c) => c.componentModel.componentId == componentId,
         orElse: () => null);
 
-    pComponent.componentModel.changedComponent = changedComponent;
+    if (pComponent != null)
+      pComponent.componentModel.changedComponent = changedComponent;
 
     if (this.componentState != null) {
       (this.componentState as CoContainerWidgetState).updateComponentProperties(
           pComponent.componentModel.componentId, changedComponent);
     }
     if (layout != null) {
-      if (layout is CoBorderLayout) {
+      if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             layout.getConstraints(pComponent);
-        (layout as CoBorderLayout).addLayoutComponent(pComponent, contraints);
+        (layout as CoBorderLayoutContainerWidget)
+            .addLayoutComponent(pComponent, contraints);
       }
     }
     notifyListeners();

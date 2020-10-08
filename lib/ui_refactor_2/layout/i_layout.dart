@@ -33,5 +33,4 @@ abstract class ILayout<E> {
   void removeLayoutComponent(ComponentWidget pComponent);
   void updateLayoutData(String layoutData);
   void updateLayoutString(String layoutString);
-  Widget getWidget();
 }

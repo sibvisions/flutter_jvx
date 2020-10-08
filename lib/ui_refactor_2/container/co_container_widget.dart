@@ -14,6 +14,9 @@ class CoContainerWidget extends ComponentWidget {
   CoContainerWidget({Key key, ComponentModel componentModel})
       : super(key: key, componentModel: componentModel);
 
+  static CoContainerWidgetState of(BuildContext context) =>
+      context.findAncestorStateOfType<CoContainerWidgetState>();
+
   @override
   State<StatefulWidget> createState() => CoContainerWidgetState();
 }

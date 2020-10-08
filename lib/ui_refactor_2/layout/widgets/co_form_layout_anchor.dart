@@ -2,7 +2,7 @@
 // Subclass definition
 //****************************************************************
 
-import '../co_form_layout.dart';
+import '../co_form_layout_container_widget.dart';
 
 ///
 /// The Anchor gives the possible horizontal and vertical positions.
@@ -21,7 +21,7 @@ class CoFormLayoutAnchor {
   String name;
 
   /// The layout for this anchor.
-  CoFormLayout layout;
+  CoFormLayoutContainerWidget layout;
 
   /// The orientation of this anchor.
   int orientation = 0;

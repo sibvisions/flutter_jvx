@@ -18,7 +18,8 @@ import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
 
 import 'i_component_creator.dart';
@@ -124,13 +125,13 @@ class SoComponentCreator implements IComponentCreator {
       switch (changedComponent.layoutName) {
         case "BorderLayout":
           {
-            return CoBorderLayout.fromLayoutString(
+            return CoBorderLayoutContainerWidget.fromLayoutString(
                 container, layoutRaw, layoutData);
           }
           break;
         case "FormLayout":
           {
-            return CoFormLayout.fromLayoutString(
+            return CoFormLayoutContainerWidget.fromLayoutString(
                 container, layoutRaw, layoutData);
           }
           break;

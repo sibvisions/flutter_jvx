@@ -24,9 +24,8 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       builder: (context, value, child) {
         Widget child;
         if ((widget.componentModel as ContainerComponentModel).layout != null) {
-          child = (widget.componentModel as ContainerComponentModel)
-              .layout
-              .getWidget();
+          child = (widget.componentModel as ContainerComponentModel).layout
+              as Widget;
         } else if ((widget.componentModel as ContainerComponentModel)
             .components
             .isNotEmpty) {

@@ -10,8 +10,7 @@ import 'component_model.dart';
 class ComponentWidget extends StatefulWidget {
   final ComponentModel componentModel;
 
-  const ComponentWidget({Key key, @required this.componentModel})
-      : super(key: key);
+  ComponentWidget({Key key, @required this.componentModel}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() =>
@@ -51,10 +50,6 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   set maximumSize(Size size) => _maximumSize = size;
 
   void updateProperties(ChangedComponent changedComponent) {
-    (widget as ComponentWidget)
-        .componentModel
-        .updateProperties(changedComponent);
-
     preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, _preferredSize);
     maximumSize = changedComponent.getProperty<Size>(

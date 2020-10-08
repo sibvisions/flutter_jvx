@@ -14,6 +14,7 @@ import 'package:jvx_flutterclient/model/so_action.dart';
 import 'package:jvx_flutterclient/ui/widgets/fontAwesomeChanger.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_action_component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/utils/text_utils.dart';
 import 'package:jvx_flutterclient/utils/uidata.dart';
 import 'package:jvx_flutterclient/utils/globals.dart' as globals;
@@ -119,87 +120,92 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Widget child;
-    Widget textWidget = new Text(text != null ? text : "",
-        style: TextStyle(
-            fontSize: style.fontSize,
-            color: !this.enabled
-                ? Colors.grey.shade500
-                : this.foreground != null
-                    ? this.foreground
-                    : UIData.textColor));
+    return ValueListenableBuilder(
+      valueListenable: widget.componentModel,
+      builder: (context, value, child) {
+        Widget child;
+        Widget textWidget = new Text(text != null ? text : "",
+            style: TextStyle(
+                fontSize: style.fontSize,
+                color: !this.enabled
+                    ? Colors.grey.shade500
+                    : this.foreground != null
+                        ? this.foreground
+                        : UIData.textColor));
 
-    if (text?.isNotEmpty ?? true) {
-      if (icon != null) {
-        child = Row(
-          children: <Widget>[icon, SizedBox(width: 10), textWidget],
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
-      } else {
-        child = textWidget;
-      }
-    } else if (icon != null) {
-      child = icon;
-    } else {
-      child = textWidget;
-    }
+        if (text?.isNotEmpty ?? true) {
+          if (icon != null) {
+            child = Row(
+              children: <Widget>[icon, SizedBox(width: 10), textWidget],
+              mainAxisAlignment: MainAxisAlignment.center,
+            );
+          } else {
+            child = textWidget;
+          }
+        } else if (icon != null) {
+          child = icon;
+        } else {
+          child = textWidget;
+        }
 
-    double minWidth = 44;
-    EdgeInsets padding;
+        double minWidth = 44;
+        EdgeInsets padding;
 
-    if (this.isPreferredSizeSet && this.preferredSize.width < minWidth) {
-      padding = EdgeInsets.symmetric(horizontal: 0);
-      minWidth = this.preferredSize.width;
-    }
+        if (this.isPreferredSizeSet && this.preferredSize.width < minWidth) {
+          padding = EdgeInsets.symmetric(horizontal: 0);
+          minWidth = this.preferredSize.width;
+        }
 
-    if (textStyle == 'hyperlink') {
-      return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        margin: EdgeInsets.all(4),
-        child: GestureDetector(
-          onTap: this.enabled ? buttonPressed : null,
-          child: SizedBox(
-            height: 40,
-            child: Center(
-              child: Text(
-                text != null ? text : '',
-                style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: style.fontSize,
-                    color: !this.enabled
-                        ? Colors.grey.shade500
-                        : this.foreground != null
-                            ? this.foreground
-                            : Colors.blue),
+        if (textStyle == 'hyperlink') {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            margin: EdgeInsets.all(4),
+            child: GestureDetector(
+              onTap: this.enabled ? buttonPressed : null,
+              child: SizedBox(
+                height: 40,
+                child: Center(
+                  child: Text(
+                    text != null ? text : '',
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontSize: style.fontSize,
+                        color: !this.enabled
+                            ? Colors.grey.shade500
+                            : this.foreground != null
+                                ? this.foreground
+                                : Colors.blue),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      );
-    }
-    return Container(
-        margin: EdgeInsets.all(4),
-        child: ButtonTheme(
-            minWidth: minWidth,
-            padding: padding,
-            layoutBehavior: ButtonBarLayoutBehavior.constrained,
-            shape: globals.applicationStyle?.buttonShape ?? null,
-            child: SizedBox(
-                height: 40,
-                child: RaisedButton(
-                  key: this.componentId,
-                  onPressed: this.enabled ? buttonPressed : null,
-                  color: this.background != null
-                      ? this.background
-                      : UIData.ui_kit_color_2[600],
-                  elevation: 2,
-                  disabledColor: Colors.grey.shade300,
-                  child: child,
-                  splashColor: this.background != null
-                      ? TinyColor(this.background).darken().color
-                      : UIData.ui_kit_color_2[700],
-                ))));
+          );
+        }
+        return Container(
+            margin: EdgeInsets.all(4),
+            child: ButtonTheme(
+                minWidth: minWidth,
+                padding: padding,
+                layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                shape: globals.applicationStyle?.buttonShape ?? null,
+                child: SizedBox(
+                    height: 40,
+                    child: RaisedButton(
+                      key: this.componentId,
+                      onPressed: this.enabled ? buttonPressed : null,
+                      color: this.background != null
+                          ? this.background
+                          : UIData.ui_kit_color_2[600],
+                      elevation: 2,
+                      disabledColor: Colors.grey.shade300,
+                      child: child,
+                      splashColor: this.background != null
+                          ? TinyColor(this.background).darken().color
+                          : UIData.ui_kit_color_2[700],
+                    ))));
+      },
+    );
   }
 }

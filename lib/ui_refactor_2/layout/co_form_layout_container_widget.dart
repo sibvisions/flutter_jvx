@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_form_layout_anchor.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_form_layout_constraint.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_form_layout_widget.dart';
 
 import 'co_layout.dart';
+import 'widgets/co_form_layout_anchor.dart';
+import 'widgets/co_form_layout_constraint.dart';
+import 'widgets/co_form_layout_widget.dart';
 
-class CoFormLayout extends CoLayout<String> {
+class CoFormLayoutContainerWidget extends StatelessWidget
+    with CoLayout<String> {
   Key key = UniqueKey();
 
   /// The valid state of anchor calculation. */
@@ -27,16 +28,17 @@ class CoFormLayout extends CoLayout<String> {
   /// stores all constraints. */
   Map<ComponentWidget, String> _layoutConstraints = <ComponentWidget, String>{};
 
-  CoFormLayout(Key key) : super(key) {
+  CoFormLayoutContainerWidget(Key key) {
     init();
+    super.key = key;
   }
 
-  CoFormLayout.fromLayoutString(
-      CoContainerWidget pContainer, String layoutString, String layoutData)
-      : super.fromLayoutString(pContainer, layoutString, layoutData) {
+  CoFormLayoutContainerWidget.fromLayoutString(
+      CoContainerWidget pContainer, String layoutString, String layoutData) {
     init();
     updateLayoutString(layoutString);
     updateLayoutData(layoutData);
+    super.container = pContainer;
   }
 
   void init() {
@@ -164,16 +166,25 @@ class CoFormLayout extends CoLayout<String> {
       throw new ArgumentError(
           "Constraint " + pConstraint.toString() + " is not allowed!");
     } else {
-      _layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
+      if (setState != null)
+        setState(() =>
+            _layoutConstraints.putIfAbsent(pComponent, () => pConstraint));
+      else
+        _layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
     }
 
     _valid = false;
   }
 
   void removeLayoutComponent(ComponentWidget pComponent) {
-    _layoutConstraints.removeWhere((c, s) =>
-        pComponent.componentModel.componentId.toString() ==
-        pComponent.componentModel.componentId.toString());
+    if (setState != null)
+      setState(() => _layoutConstraints.removeWhere((c, s) =>
+          pComponent.componentModel.componentId.toString() ==
+          pComponent.componentModel.componentId.toString()));
+    else
+      _layoutConstraints.removeWhere((c, s) =>
+          pComponent.componentModel.componentId.toString() ==
+          pComponent.componentModel.componentId.toString());
     _valid = false;
   }
 
@@ -203,39 +214,47 @@ class CoFormLayout extends CoLayout<String> {
     return null;
   }
 
-  Widget getWidget() {
-    List<CoFormLayoutConstraintData> children =
-        new List<CoFormLayoutConstraintData>();
+  @override
+  Widget build(BuildContext context) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        super.setState = setState;
 
-    this._layoutConstraints.forEach((k, v) {
-      if (k.componentModel.isVisible) {
-        CoFormLayoutConstraint constraint = this.getConstraintsFromString(v);
+        List<CoFormLayoutConstraintData> children =
+            new List<CoFormLayoutConstraintData>();
 
-        if (constraint != null) {
-          constraint.comp = k;
-          children
-              .add(new CoFormLayoutConstraintData(child: k, id: constraint));
-        }
-      }
-    });
+        this._layoutConstraints.forEach((k, v) {
+          if (k.componentModel.isVisible) {
+            CoFormLayoutConstraint constraint =
+                this.getConstraintsFromString(v);
 
-    return Container(
-        child: CoFormLayoutWidget(
-            key: key,
-            container: container,
-            valid: this._valid,
-            children: children,
-            hgap: this.horizontalGap,
-            vgap: this.verticalGap,
-            horizontalAlignment: this.horizontalAlignment,
-            verticalAlignment: this.verticalAlignment,
-            leftAnchor: anchors["l"],
-            rightAnchor: anchors["r"],
-            topAnchor: anchors["t"],
-            bottomAnchor: anchors["b"],
-            leftMarginAnchor: anchors["lm"],
-            rightMarginAnchor: anchors["rm"],
-            topMarginAnchor: anchors["tm"],
-            bottomMarginAnchor: anchors["bm"]));
+            if (constraint != null) {
+              constraint.comp = k;
+              children.add(
+                  new CoFormLayoutConstraintData(child: k, id: constraint));
+            }
+          }
+        });
+
+        return Container(
+            child: CoFormLayoutWidget(
+                key: key,
+                container: container,
+                valid: this._valid,
+                children: children,
+                hgap: this.horizontalGap,
+                vgap: this.verticalGap,
+                horizontalAlignment: this.horizontalAlignment,
+                verticalAlignment: this.verticalAlignment,
+                leftAnchor: anchors["l"],
+                rightAnchor: anchors["r"],
+                topAnchor: anchors["t"],
+                bottomAnchor: anchors["b"],
+                leftMarginAnchor: anchors["lm"],
+                rightMarginAnchor: anchors["rm"],
+                topMarginAnchor: anchors["tm"],
+                bottomMarginAnchor: anchors["bm"]));
+      },
+    );
   }
 }

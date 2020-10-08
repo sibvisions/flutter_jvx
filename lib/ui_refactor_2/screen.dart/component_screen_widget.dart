@@ -200,6 +200,10 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         (parentComponent.componentModel as ContainerComponentModel)
             .addWithConstraints(
                 component, component.componentModel.constraints);
+
+        (parentComponent.componentModel as ContainerComponentModel)
+            .updateComponentProperties(component.componentModel.componentId,
+                component.componentModel.currentChangedComponent);
       }
     }
   }

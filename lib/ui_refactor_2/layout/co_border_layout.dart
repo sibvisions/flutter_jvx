@@ -6,7 +6,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_border_layout_
 import 'package:universal_html/prefer_sdk/html.dart';
 import 'co_layout.dart';
 
-class CoBorderLayout extends CoLayout<CoBorderLayoutConstraints> {
+class CoBorderLayout with CoLayout<CoBorderLayoutConstraints> {
   Key key = UniqueKey();
 
   /// the north component.
@@ -24,12 +24,14 @@ class CoBorderLayout extends CoLayout<CoBorderLayoutConstraints> {
   /// the center component. */
   ComponentWidget _center;
 
-  CoBorderLayout(Key key) : super(key);
+  CoBorderLayout(Key key) {
+    super.key = key;
+  }
 
   CoBorderLayout.fromLayoutString(
-      CoContainerWidget pContainer, String layoutString, String layoutData)
-      : super.fromLayoutString(pContainer, layoutString, layoutData) {
+      CoContainerWidget pContainer, String layoutString, String layoutData) {
     updateLayoutString(layoutString);
+    super.container = pContainer;
   }
 
   @override

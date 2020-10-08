@@ -70,6 +70,8 @@ class ComponentModel extends ValueNotifier {
     dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
 
     if (dataProvider == null) dataProvider = dataRow;
+
+    notifyListeners();
   }
 
   set compId(String newComponentId) {
@@ -79,6 +81,7 @@ class ComponentModel extends ValueNotifier {
   set changedComponent(ChangedComponent changedComponent) {
     currentChangedComponent = changedComponent;
     compId = changedComponent.id;
+    this.updateProperties(changedComponent);
     notifyListeners();
   }
 

@@ -3,8 +3,10 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart'
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
 
-abstract class CoLayout<E> implements ILayout<E> {
+mixin CoLayout<E> implements ILayout<E> {
   Key key = UniqueKey();
+
+  StateSetter setState;
 
   /// The constraints for all components used by this layout.
   Map<ComponentWidget, E> layoutConstraints = <ComponentWidget, E>{};
@@ -30,13 +32,6 @@ abstract class CoLayout<E> implements ILayout<E> {
   bool get isPreferredSizeSet => preferredSize != null;
   bool get isMinimumSizeSet => minimumSize != null;
   bool get isMaximumSizeSet => maximumSize != null;
-
-  CoLayout(this.key);
-
-  CoLayout.fromLayoutString(
-      CoContainerWidget pContainer, String layoutString, String layoutData) {
-    container = pContainer;
-  }
 
   void parseFromString(String layout) {
     List<String> parameter = layout?.split(",");
