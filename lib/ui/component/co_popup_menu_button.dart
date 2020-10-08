@@ -181,7 +181,9 @@ class CoPopupMenuButton extends Component implements IComponent {
           ),
       items: menuItems,
     ).then<void>((String newValue) {
-      valueChanged(newValue);
+      if (newValue != null) {
+        valueChanged(newValue);
+      }
     });
   }
 
