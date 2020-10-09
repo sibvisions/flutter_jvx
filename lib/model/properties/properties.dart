@@ -71,7 +71,21 @@ class Properties {
   String propertyAsString(String property) {
     String result = property.split('.').last.toLowerCase();
 
-    if (result.contains('__')) {
+    if (result.contains('___')) {
+      result = result.replaceAll('___', '?');
+
+      result = result.replaceAll('__', '.');
+
+      result.split('_').asMap().forEach((i, p) {
+        p = p.replaceAll('\$', '~');
+        if (i == 0)
+          result = p;
+        else
+          result += '${p[0].toUpperCase()}${p.substring(1)}';
+      });
+
+      result = result.replaceAll('?', '_');
+    } else if (result.contains('__')) {
       result.split('__').asMap().forEach((i, p) {
         p = p.replaceAll('\$', '~');
         if (i == 0)
@@ -84,7 +98,7 @@ class Properties {
         p = p.replaceAll('\$', '~');
         if (i == 0)
           result = p;
-        else
+        else if (p.isNotEmpty)
           result += '${p[0].toUpperCase()}${p.substring(1)}';
       });
     } else if (result.contains('_')) {

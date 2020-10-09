@@ -7,6 +7,8 @@ import '../../model/properties/properties.dart';
 /// ComponentProperty.SCREEN_TITLE = screenTitle
 ///
 /// ComponentProperty.SCREENTITLE = screentitle
+///
+/// ComponentProperty.SCREEN___TITLE = screen.title
 
 enum ComponentProperty {
   ID,
@@ -47,12 +49,12 @@ enum ComponentProperty {
   $REMOVE,
   $ADDITIONAL,
   SCREEN__TITLE,
-  CELL_EDITOR__EDITABLE,
-  CELL_EDITOR__PLACEHOLDER,
-  CELL_EDITOR__BACKGROUND,
-  CELL_EDITOR__FOREGROUND,
-  CELL_EDITOR__HORIZONTAL_ALIGNMENT,
-  CELL_EDITOR__FONT,
+  CELL_EDITOR___EDITABLE___,
+  CELL_EDITOR___PLACEHOLDER___,
+  CELL_EDITOR___BACKGROUND___,
+  CELL_EDITOR___FOREGROUND___,
+  CELL_EDITOR___HORIZONTAL_ALIGNMENT___,
+  CELL_EDITOR___FONT___,
   SELECTED_ROW,
   LABEL,
   DATA_TYPE_IDENTIFIER,
