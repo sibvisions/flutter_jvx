@@ -72,7 +72,7 @@ class ComponentModel extends ValueNotifier {
   }
 
   ChangedComponent get changedComponent =>
-      _toUpdateComponents.last.changedComponent;
+      _toUpdateComponents?.last?.changedComponent;
 
   void update() {
     notifyListeners();

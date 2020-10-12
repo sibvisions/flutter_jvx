@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/model/changed_component.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout_container_widget.dart';
 
 import '../component/component_model.dart';
 import 'co_container_widget.dart';
@@ -24,6 +26,9 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       builder: (context, value, child) {
         Widget child;
         if (this.layout != null) {
+          if (this.layout.setState != null) {
+            this.layout.setState(() {});
+          }
           child = this.layout as Widget;
         } else if (this.components.isNotEmpty) {
           child = this.components[0];

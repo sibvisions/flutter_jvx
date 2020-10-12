@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
-import '../../model/api/request/request.dart';
-import '../../model/api/response/data/data_book.dart';
-import 'package:jvx_flutterclient/model/api/response/response_data.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui/component/i_component.dart';
-import 'package:jvx_flutterclient/ui/layout/co_border_layout.dart';
-import 'package:jvx_flutterclient/ui/screen/so_data_screen.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_action_component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
 
 import '../../jvx_flutterclient.dart';
+import '../../model/api/request/request.dart';
+import '../../model/api/response/response_data.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/component/i_component.dart';
+import '../../ui/screen/so_data_screen.dart';
+import '../component/co_action_component_widget.dart';
+import '../component/component_widget.dart';
+import '../container/co_container_widget.dart';
+import '../container/container_component_model.dart';
+import '../editor/co_editor_widget.dart';
+import '../editor/editor_component_model.dart';
 import 'i_component_creator.dart';
 
 class ComponentScreenWidget extends StatefulWidget {

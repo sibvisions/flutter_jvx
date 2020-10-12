@@ -88,10 +88,6 @@ class SoComponentCreator implements IComponentCreator {
       }
     }
 
-    // if (componentWidget is CoContainerWidget)
-    //   (componentWidget.componentModel as ContainerComponentModel).layout =
-    //       _createLayout(componentWidget, changedComponent);
-
     return componentWidget;
   }
 

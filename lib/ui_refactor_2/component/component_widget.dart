@@ -87,6 +87,9 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
         .toUpdateComponents
         .forEach((toUpdateComponent) {
       this.updateProperties(toUpdateComponent.changedComponent);
+      (widget as ComponentWidget)
+          .componentModel
+          .updateProperties(toUpdateComponent.changedComponent);
     });
 
     constraints = (widget as ComponentWidget).componentModel.constraints;
@@ -98,9 +101,12 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
     this._update();
 
     (widget as ComponentWidget).componentModel.componentState = this;
-    (widget as ComponentWidget)
-        .componentModel
-        .addListener(() => setState(() => this._update()));
+    (widget as ComponentWidget).componentModel.addListener(() {
+      if (mounted)
+        setState(() => this._update());
+      else
+        this._update();
+    });
   }
 
   @override
