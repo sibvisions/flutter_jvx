@@ -156,18 +156,18 @@ class CoEditor extends Component implements IEditor {
         ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
 
     cellEditorEditable = changedComponent.getProperty<bool>(
-        ComponentProperty.CELL_EDITOR__EDITABLE, cellEditorEditable);
+        ComponentProperty.CELL_EDITOR___EDITABLE___, cellEditorEditable);
     cellEditorPlaceholder = changedComponent.getProperty<String>(
-        ComponentProperty.CELL_EDITOR__PLACEHOLDER, cellEditorPlaceholder);
+        ComponentProperty.CELL_EDITOR___PLACEHOLDER___, cellEditorPlaceholder);
     cellEditorBackground = changedComponent.getProperty<HexColor>(
-        ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
+        ComponentProperty.CELL_EDITOR___BACKGROUND___, cellEditorBackground);
     cellEditorForeground = changedComponent.getProperty<HexColor>(
-        ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
+        ComponentProperty.CELL_EDITOR___FOREGROUND___, cellEditorForeground);
     cellEditorHorizontalAlignment = changedComponent.getProperty<int>(
-        ComponentProperty.CELL_EDITOR__HORIZONTAL_ALIGNMENT,
+        ComponentProperty.CELL_EDITOR___HORIZONTAL_ALIGNMENT___,
         cellEditorHorizontalAlignment);
     cellEditorFont = changedComponent.getProperty<String>(
-        ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
+        ComponentProperty.CELL_EDITOR___FONT___, cellEditorFont);
   }
 
   @override

@@ -3,24 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/model/api/response/data/data_book.dart';
-import 'package:jvx_flutterclient/model/api/response/meta_data/data_book_meta_data_column.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui/screen/so_component_data.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/so_table_column_calculator.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_component_creator.dart';
-import 'package:jvx_flutterclient/utils/translations.dart';
-import 'package:jvx_flutterclient/utils/uidata.dart';
-import 'package:jvx_flutterclient/utils/globals.dart' as globals;
+import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
+
+import '../../model/api/response/data/data_book.dart';
+import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../ui/screen/so_component_data.dart';
+import '../../utils/globals.dart' as globals;
+import '../../utils/translations.dart';
+import '../../utils/uidata.dart';
+import '../editor/co_editor_widget.dart';
+import '../screen.dart/so_component_creator.dart';
+import 'component_model.dart';
+import 'so_table_column_calculator.dart';
 
 enum ContextMenuCommand { INSERT, DELETE }
 
 class CoTableWidget extends CoEditorWidget {
-  CoTableWidget({Key key, ComponentModel componentModel})
+  CoTableWidget({Key key, EditorComponentModel componentModel})
       : super(key: key, componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoTableWidgetState();
@@ -74,13 +75,11 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   @override
   set data(SoComponentData data) {
-    widget.componentModel.data?.unregisterDataChanged(onServerDataChanged);
-    widget.componentModel.data
-        ?.unregisterSelectedRowChanged(onSelectedRowChanged);
-    widget.componentModel.data = data;
-    widget.componentModel.data?.registerDataChanged(onServerDataChanged);
-    widget.componentModel.data
-        ?.registerSelectedRowChanged(onSelectedRowChanged);
+    super.data?.unregisterDataChanged(onServerDataChanged);
+    super.data?.unregisterSelectedRowChanged(onSelectedRowChanged);
+    super.data = data;
+    super.data?.registerDataChanged(onServerDataChanged);
+    super.data?.registerSelectedRowChanged(onSelectedRowChanged);
   }
 
   /*@override
@@ -122,18 +121,18 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     editable = changedComponent.getProperty<bool>(
         ComponentProperty.AUTO_RESIZE, editable);
 
-    if (widget.componentModel.dataProvider == null)
-      widget.componentModel.dataProvider = changedComponent.getProperty<String>(
-          ComponentProperty.DATA_BOOK, widget.componentModel.dataProvider);
+    if (this.dataProvider == null)
+      this.dataProvider = changedComponent.getProperty<String>(
+          ComponentProperty.DATA_BOOK, this.dataProvider);
 
     int newSelectedRow =
         changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW);
     if (newSelectedRow != null &&
         newSelectedRow >= 0 &&
         newSelectedRow != selectedRow &&
-        widget.componentModel.data != null &&
-        widget.componentModel.data.data != null)
-      widget.componentModel.data.updateSelectedRow(newSelectedRow, true);
+        this.data != null &&
+        this.data.data != null)
+      this.data.updateSelectedRow(newSelectedRow, true);
 
     selectedRow = changedComponent.getProperty<int>(
         ComponentProperty.SELECTED_ROW, selectedRow);
@@ -141,7 +140,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   void _onRowTapped(int index) {
     if (this.onRowTapped == null) {
-      widget.componentModel.data.selectRecord(context, index);
+      this.data.selectRecord(context, index);
     } else {
       this.onRowTapped(index);
     }
@@ -223,17 +222,17 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     List<PopupMenuEntry<ContextMenuModel>> popupMenuEntries =
         List<PopupMenuEntry<ContextMenuModel>>();
 
-    if (widget.componentModel.data.insertEnabled) {
+    if (this.data.insertEnabled) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare,
           'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
     }
 
-    if (widget.componentModel.data.deleteEnabled && index >= 0) {
+    if (this.data.deleteEnabled && index >= 0) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
           'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
     }
 
-    if (widget.componentModel.data.insertEnabled) {
+    if (this.data.insertEnabled) {
       showMenu(
               position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
                   Offset.zero & MediaQuery.of(context).size),
@@ -243,9 +242,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
         if (val != null) {
           if (val.command == ContextMenuCommand.INSERT)
-            widget.componentModel.data.insertRecord(context);
+            this.data.insertRecord(context);
           else if (val.command == ContextMenuCommand.DELETE)
-            widget.componentModel.data.deleteRecord(context, val.index);
+            this.data.deleteRecord(context, val.index);
         }
       });
     }
@@ -253,15 +252,18 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   CoEditorWidget _getEditorForColumn(
       String text, String columnName, int index) {
-    DataBookMetaDataColumn column =
-        widget.componentModel.data.getMetaDataColumn(columnName);
+    DataBookMetaDataColumn column = this.data.getMetaDataColumn(columnName);
 
     if (column != null) {
       CoEditorWidget clEditor = componentCreator.createEditorForTable(
           column.cellEditor, text, editable, index);
       if (clEditor != null) {
-        clEditor.componentModel.columnName = columnName;
-        clEditor.componentModel.data = widget.componentModel.data;
+        (clEditor.componentModel as EditorComponentModel).columnName =
+            columnName;
+        (clEditor.componentModel as EditorComponentModel)
+            .toUpdateData
+            .add(this.data);
+        (clEditor.componentModel as EditorComponentModel).update();
         return clEditor;
       }
     }
@@ -334,7 +336,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     if (this.columnLabels != null) {
       this.columnLabels.asMap().forEach((i, c) {
         DataBookMetaDataColumn column =
-            widget.componentModel.data.getMetaDataColumn(columnNames[i]);
+            this.data.getMetaDataColumn(columnNames[i]);
         if (column.nullable) {
           children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
               nullable: column.nullable));
@@ -360,7 +362,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       bool isSelected = index == data.selectedRow;
       if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
-      if (widget.componentModel.data.deleteEnabled && !_hasHorizontalScroller) {
+      if (this.data.deleteEnabled && !_hasHorizontalScroller) {
         return this.editable
             ? GestureDetector(
                 onLongPress: () => showContextMenu(context, index),
@@ -380,8 +382,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       color: Colors.red.withOpacity(
                           globals.applicationStyle?.controlsOpacity ?? 1.0),
                       icon: Icons.delete,
-                      onTap: () => widget.componentModel.data
-                          .deleteRecord(context, index),
+                      onTap: () => this.data.deleteRecord(context, index),
                     ),
                   ],
                 ))
@@ -409,7 +410,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   }
 
   @override
-  void onServerDataChanged() {}
+  void onServerDataChanged() {
+    setState(() {});
+  }
 
   void onSelectedRowChanged(dynamic selectedRow) {
     if (_scrollController != null &&
@@ -444,8 +447,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         _data != null &&
         _data.records != null &&
         pos.index + fetchMoreItemOffset > _data.records.length) {
-      widget.componentModel.data
-          .getData(context, this.pageSize + _data.records.length);
+      this.data.getData(context, this.pageSize + _data.records.length);
     }
   }
 
@@ -461,7 +463,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   Widget build(BuildContext context) {
     double borderWidth = 1;
     int itemCount = tableHeaderVisible ? 1 : 0;
-    _data = widget.componentModel.data.getData(context, pageSize);
+    _data = this.data.getData(context, pageSize);
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;
@@ -473,7 +475,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
           builder: (BuildContext context, BoxConstraints constraints) {
             //print(this.rawComponentId + "- Constraints:" + constraints.toString());
             this.columnInfo = SoTableColumnCalculator.getColumnFlex(
-                widget.componentModel.data,
+                this.data,
                 this.columnLabels,
                 this.columnNames,
                 itemTextStyle,
@@ -486,7 +488,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 SoTableColumnCalculator.getColumnWidthSum(this.columnInfo);
             double tableHeight =
                 SoTableColumnCalculator.getPreferredTableHeight(
-                    widget.componentModel.data,
+                    this.data,
                     this.columnLabels,
                     itemTextStyle,
                     tableHeaderVisible,

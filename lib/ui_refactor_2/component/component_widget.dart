@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/component_screen_widget.dart';
 import 'package:jvx_flutterclient/utils/so_text_style.dart';
 
 import '../../jvx_flutterclient.dart';
@@ -80,16 +81,26 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
         ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
   }
 
+  void _update() {
+    (widget as ComponentWidget)
+        .componentModel
+        .toUpdateComponents
+        .forEach((toUpdateComponent) {
+      this.updateProperties(toUpdateComponent.changedComponent);
+    });
+
+    constraints = (widget as ComponentWidget).componentModel.constraints;
+  }
+
   @override
   void initState() {
     super.initState();
-    this.updateProperties(
-        (widget as ComponentWidget).componentModel.currentChangedComponent);
+    this._update();
+
     (widget as ComponentWidget).componentModel.componentState = this;
-    (widget as ComponentWidget).componentModel.addListener(() => this
-        .updateProperties((widget as ComponentWidget)
-            .componentModel
-            .currentChangedComponent));
+    (widget as ComponentWidget)
+        .componentModel
+        .addListener(() => setState(() => this._update()));
   }
 
   @override

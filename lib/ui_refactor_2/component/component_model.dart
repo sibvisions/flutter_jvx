@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 
 import '../../jvx_flutterclient.dart';
@@ -5,25 +7,29 @@ import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
 import '../../ui/screen/so_component_data.dart';
+import '../container/container_component_model.dart';
 import '../editor/co_editor_widget.dart';
 import 'component_widget.dart';
 
 class ComponentModel extends ValueNotifier {
+  Queue<ToUpdateComponent> _toUpdateComponents = Queue<ToUpdateComponent>();
+
   String componentId;
   String parentComponentId;
-  ChangedComponent currentChangedComponent;
+  ChangedComponent _changedComponent;
   ComponentWidgetState componentState;
-  SoComponentData _data;
-  String dataProvider;
   CoState coState;
   String constraints;
   bool isVisible = true;
   Size _preferredSize;
   Size _minimumSize;
   Size _maximumSize;
-  String columnName;
-  String dataRow;
   ButtonPressedCallback onButtonPressed;
+
+  Queue<ToUpdateComponent> get toUpdateComponents => _toUpdateComponents;
+
+  set toUpdateComponents(Queue<ToUpdateComponent> toUpdateComponents) =>
+      _toUpdateComponents = toUpdateComponents;
 
   bool get isPreferredSizeSet => preferredSize != null;
   bool get isMinimumSizeSet => minimumSize != null;
@@ -35,18 +41,15 @@ class ComponentModel extends ValueNotifier {
   Size get maximumSize => _maximumSize;
   set maximumSize(Size size) => _maximumSize = size;
 
-  set data(SoComponentData data) {
-    _data = data;
-    if (componentState != null) {
-      (componentState as CoEditorWidgetState).data = data;
+  ComponentModel(this._changedComponent) : super(_changedComponent) {
+    if (this._changedComponent != null) {
+      this.compId = this._changedComponent.id;
+      this.toUpdateComponents.add(ToUpdateComponent(
+          changedComponent: this._changedComponent,
+          componentId: this._changedComponent.id));
+
+      this.updateProperties(changedComponent);
     }
-  }
-
-  SoComponentData get data => _data;
-
-  ComponentModel({this.currentChangedComponent}) : super(null) {
-    this.compId = currentChangedComponent.id;
-    this.updateProperties(this.currentChangedComponent);
   }
 
   void updateProperties(ChangedComponent changedComponent) {
@@ -62,33 +65,16 @@ class ComponentModel extends ValueNotifier {
         ComponentProperty.MAXIMUM_SIZE, _maximumSize);
     minimumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MINIMUM_SIZE, _minimumSize);
-
-    if (dataProvider == null)
-      dataProvider = changedComponent.getProperty<String>(
-          ComponentProperty.DATA_BOOK, dataProvider);
-
-    dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
-
-    if (dataProvider == null) dataProvider = dataRow;
-
-    notifyListeners();
   }
 
   set compId(String newComponentId) {
     componentId = newComponentId;
   }
 
-  set changedComponent(ChangedComponent changedComponent) {
-    currentChangedComponent = changedComponent;
-    compId = changedComponent.id;
-    this.updateProperties(changedComponent);
-    notifyListeners();
-  }
+  ChangedComponent get changedComponent =>
+      _toUpdateComponents.last.changedComponent;
 
-  void onDataChanged() {
-    if (componentState != null && componentState is CoEditorWidgetState) {
-      (componentState as CoEditorWidgetState).onDataChanged();
-      notifyListeners();
-    }
+  void update() {
+    notifyListeners();
   }
 }

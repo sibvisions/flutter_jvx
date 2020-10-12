@@ -106,7 +106,7 @@ class CoTextCellEditorWidgetState
                     contentPadding: EdgeInsets.all(12),
                     border: InputBorder.none,
                     hintText: placeholderVisible ? placeholder : null,
-                    suffixIcon: this.editable
+                    suffixIcon: this.editable != null && this.editable
                         ? Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: GestureDetector(
@@ -124,7 +124,7 @@ class CoTextCellEditorWidgetState
                           )
                         : null),
                 style: TextStyle(
-                    color: this.editable
+                    color: this.editable != null && this.editable
                         ? (this.foreground != null
                             ? this.foreground
                             : Colors.black)
@@ -136,7 +136,7 @@ class CoTextCellEditorWidgetState
                     multiLine ? TextInputType.multiline : TextInputType.text,
                 onEditingComplete: onTextFieldEndEditing,
                 onChanged: onTextFieldValueChanged,
-                readOnly: !this.editable,
+                readOnly: !this.editable ?? false,
                 obscureText: this.password
                 //expands: this.verticalAlignment==1 && multiLine ? true : false,
                 ),

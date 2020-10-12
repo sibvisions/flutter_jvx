@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/response/data/data_book.dart';
 import 'package:jvx_flutterclient/model/api/response/response_data.dart';
@@ -62,14 +63,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     return Container();
   }
 
-  void dataChanged(String dataProvider) {
-    components.forEach((key, value) {
-      if (value.componentModel?.data?.dataProvider == dataProvider) {
-        value.componentModel.onDataChanged();
-      }
-    });
-  }
-
   void updateComponents(List<ChangedComponent> changedComponents) {
     if (debug) print("ComponentScreen updateComponents:");
     changedComponents?.forEach((changedComponent) {
@@ -103,15 +96,22 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
           _addComponent(changedComponent, container);
         }
 
-        component.componentModel.changedComponent = changedComponent;
+        component.componentModel.toUpdateComponents.add(ToUpdateComponent(
+            changedComponent: changedComponent,
+            componentId: changedComponent.id));
+        component.componentModel.update();
 
         if (component.componentModel?.parentComponentId != null) {
           ComponentWidget parentComponent =
               container[component.componentModel.parentComponentId];
           if (parentComponent != null && parentComponent is CoContainerWidget) {
             (parentComponent.componentModel as ContainerComponentModel)
-                .updateComponentProperties(
-                    component.componentModel.componentId, changedComponent);
+                .toUpdateComponentProperties
+                .add(ToUpdateComponent(
+                    changedComponent: changedComponent,
+                    componentId: component.componentModel.componentId));
+            (parentComponent.componentModel as ContainerComponentModel)
+                .update();
           }
         }
       }
@@ -147,8 +147,11 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       componentClass = widget?.componentCreator?.createComponent(component);
 
       if (componentClass is CoEditorWidget) {
-        componentClass?.componentModel?.data =
-            this.getComponentData(componentClass?.componentModel?.dataProvider);
+        (componentClass.componentModel as EditorComponentModel)
+            .toUpdateData
+            .add(this.getComponentData(
+                (componentClass.componentModel as EditorComponentModel)
+                    ?.dataProvider));
         /*
         if (editorWidgetState.cellEditor is CoReferencedCellEditor) {
           (editorWidgetState.cellEditor as CoReferencedCellEditor).data = this
@@ -198,12 +201,18 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
           container[component.componentModel.parentComponentId];
       if (parentComponent != null && parentComponent is CoContainerWidget) {
         (parentComponent.componentModel as ContainerComponentModel)
-            .addWithConstraints(
-                component, component.componentModel.constraints);
+            .toAddComponents
+            .add(ToAddComponent(
+                constraints: component.componentModel.constraints,
+                componentWidget: component));
 
         (parentComponent.componentModel as ContainerComponentModel)
-            .updateComponentProperties(component.componentModel.componentId,
-                component.componentModel.currentChangedComponent);
+            .toUpdateComponentProperties
+            .add(ToUpdateComponent(
+                changedComponent: component.componentModel.changedComponent,
+                componentId: component.componentModel.componentId));
+
+        (parentComponent.componentModel as ContainerComponentModel).update();
       }
     }
   }
@@ -220,7 +229,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget parentComponent =
           components[component.componentModel.parentComponentId];
       if (parentComponent != null && parentComponent is CoContainerWidget) {
-        (parentComponent.componentModel as ContainerComponentModel)
+        (component.componentModel.componentState as CoContainerWidgetState)
             ?.removeWithComponent(component);
       }
     }
@@ -244,19 +253,25 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (newComponent.hasProperty(ComponentProperty.LAYOUT_DATA) &&
         layoutData != null &&
         layoutData.isNotEmpty) {
-      if (component is CoContainerWidget)
+      if (component is CoContainerWidget) {
         (component.componentModel as ContainerComponentModel)
-            .layout
-            ?.updateLayoutData(layoutData);
+            .toUpdateLayout
+            .add(layoutData);
+
+        (component.componentModel as ContainerComponentModel).update();
+      }
     }
 
     if (newComponent.hasProperty(ComponentProperty.LAYOUT) &&
         layout != null &&
         layout.isNotEmpty) {
-      if (component is CoContainerWidget)
+      if (component is CoContainerWidget) {
         (component.componentModel as ContainerComponentModel)
-            .layout
-            ?.updateLayoutData(layoutData);
+            .toUpdateLayout
+            .add(layoutData);
+
+        (component.componentModel as ContainerComponentModel).update();
+      }
     }
 
     if (newComponent.hasProperty(ComponentProperty.PARENT) &&
@@ -307,6 +322,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       if (constraints != null) {
         (component.componentModel as ContainerComponentModel).constraints =
             constraints;
+
+        (component.componentModel as ContainerComponentModel).update();
         _addToParent(component, container);
       }
     }
@@ -381,10 +398,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   void debugPrintComponent(ComponentWidget component, int level) {
     if (component != null) {
       String debugString = " |" * level;
-      Size size =
-          _getSizes(component.componentModel.componentState.componentId);
-      String keyString =
-          component.componentModel.componentState.componentId.toString();
+      Size size = _getSizes(component.key);
+      String keyString = component.key.toString();
       keyString =
           keyString.substring(keyString.indexOf(" ") + 1, keyString.length - 1);
 
@@ -412,22 +427,42 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       }
 
       if (component is CoContainerWidget) {
-        ContainerComponentModel comp = component.componentModel;
-
         debugString += ", layout: " +
-            (comp.layout != null && comp.layout.rawLayoutString != null
-                ? comp.layout.rawLayoutString
+            ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
+                    (component.componentModel.componentState as CoContainerWidgetState)
+                            .layout
+                            .rawLayoutString !=
+                        null
+                ? (component.componentModel.componentState as CoContainerWidgetState)
+                    .layout
+                    .rawLayoutString
                 : "") +
             ", layoutData: " +
-            (comp.layout != null && comp.layout.rawLayoutData != null
-                ? comp.layout.rawLayoutData
+            ((component.componentModel.componentState as CoContainerWidgetState).layout !=
+                        null &&
+                    (component.componentModel.componentState as CoContainerWidgetState)
+                            .layout
+                            .rawLayoutData !=
+                        null
+                ? (component.componentModel.componentState as CoContainerWidgetState)
+                    .layout
+                    .rawLayoutData
                 : "") +
             ", childCount: " +
-            (comp.components != null ? comp.components.length.toString() : "0");
+            ((component.componentModel.componentState as CoContainerWidgetState).components != null
+                ? (component.componentModel.componentState as CoContainerWidgetState)
+                    .components
+                    .length
+                    .toString()
+                : "0");
         print(debugString);
 
-        if (comp.components != null) {
-          comp.components.forEach((c) {
+        if ((component.componentModel.componentState as CoContainerWidgetState)
+                .components !=
+            null) {
+          (component.componentModel.componentState as CoContainerWidgetState)
+              .components
+              .forEach((c) {
             debugPrintComponent(c, (level + 1));
           });
         }

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
+
+import '../component/component_model.dart';
+import 'co_container_widget.dart';
 
 class CoPanelWidget extends CoContainerWidget {
   CoPanelWidget({Key key, @required ComponentModel componentModel})
@@ -23,14 +23,10 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       valueListenable: widget.componentModel,
       builder: (context, value, child) {
         Widget child;
-        if ((widget.componentModel as ContainerComponentModel).layout != null) {
-          child = (widget.componentModel as ContainerComponentModel).layout
-              as Widget;
-        } else if ((widget.componentModel as ContainerComponentModel)
-            .components
-            .isNotEmpty) {
-          child =
-              (widget.componentModel as ContainerComponentModel).components[0];
+        if (this.layout != null) {
+          child = this.layout as Widget;
+        } else if (this.components.isNotEmpty) {
+          child = this.components[0];
         }
 
         if (child != null) {

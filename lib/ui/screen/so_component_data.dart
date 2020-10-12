@@ -108,8 +108,6 @@ class SoComponentData {
 
     isFetching = false;
     _onDataChanged.forEach((d) => d());
-
-    (soDataScreen as ComponentScreenWidgetState).dataChanged(dataProvider);
   }
 
   void updateDataProviderChanged(

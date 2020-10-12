@@ -1,17 +1,19 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/cell_editor.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/filter.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/model/properties/hex_color.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/utils/text_utils.dart';
 
 import '../../jvx_flutterclient.dart';
+import '../../model/changed_component.dart';
+import '../../model/filter.dart';
+import '../../model/properties/component_properties.dart';
+import '../../model/properties/hex_color.dart';
+import '../../utils/text_utils.dart';
+import '../component/component_model.dart';
+import '../component/component_widget.dart';
+import 'celleditor/co_cell_editor_widget.dart';
+import 'celleditor/co_number_cell_editor_widget.dart';
+import 'celleditor/co_text_cell_editor_widget.dart';
+import 'editor_component_model.dart';
 
 class CoEditorWidget extends ComponentWidget {
   final CoCellEditorWidget cellEditor;
@@ -19,7 +21,7 @@ class CoEditorWidget extends ComponentWidget {
   CoEditorWidget({
     Key key,
     this.cellEditor,
-    ComponentModel componentModel,
+    EditorComponentModel componentModel,
   }) : super(key: key, componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
@@ -116,7 +118,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   void onDataChanged() {
     _data?.unregisterDataChanged(onServerDataChanged);
-    _data = (widget as CoEditorWidget).componentModel.data;
+    _data = this.data;
     _data?.registerDataChanged(onServerDataChanged);
 
     this.cellEditor?.value = _data.getColumnData(context, columnName);
@@ -154,7 +156,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
           isTextEditor);
     }
     */
-    (widget as CoEditorWidget).componentModel.data.setValues(
+    this.data.setValues(
         context,
         (value is List) ? value : [value],
         [columnName],
@@ -186,11 +188,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    dataProvider = changedComponent.getProperty<String>(
-        ComponentProperty.DATA_PROVIDER, dataProvider);
-    dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
-
-    if (dataProvider == null) dataProvider = dataRow;
 
     columnName = changedComponent.getProperty<String>(
         ComponentProperty.COLUMN_NAME, columnName);
@@ -200,23 +197,55 @@ class CoEditorWidgetState<T extends StatefulWidget>
         ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
 
     cellEditorEditable = changedComponent.getProperty<bool>(
-        ComponentProperty.CELL_EDITOR__EDITABLE, cellEditorEditable);
+        ComponentProperty.CELL_EDITOR___EDITABLE___, cellEditorEditable);
     cellEditorPlaceholder = changedComponent.getProperty<String>(
-        ComponentProperty.CELL_EDITOR__PLACEHOLDER, cellEditorPlaceholder);
+        ComponentProperty.CELL_EDITOR___PLACEHOLDER___, cellEditorPlaceholder);
     cellEditorBackground = changedComponent.getProperty<HexColor>(
-        ComponentProperty.CELL_EDITOR__BACKGROUND, cellEditorBackground);
+        ComponentProperty.CELL_EDITOR___BACKGROUND___, cellEditorBackground);
     cellEditorForeground = changedComponent.getProperty<HexColor>(
-        ComponentProperty.CELL_EDITOR__FOREGROUND, cellEditorForeground);
+        ComponentProperty.CELL_EDITOR___FOREGROUND___, cellEditorForeground);
     cellEditorHorizontalAlignment = changedComponent.getProperty<int>(
-        ComponentProperty.CELL_EDITOR__HORIZONTAL_ALIGNMENT,
+        ComponentProperty.CELL_EDITOR___HORIZONTAL_ALIGNMENT___,
         cellEditorHorizontalAlignment);
     cellEditorFont = changedComponent.getProperty<String>(
-        ComponentProperty.CELL_EDITOR__FONT, cellEditorFont);
+        ComponentProperty.CELL_EDITOR___FONT___, cellEditorFont);
+
+    if (dataProvider == null)
+      dataProvider = changedComponent.getProperty<String>(
+          ComponentProperty.DATA_BOOK, dataProvider);
+
+    dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
+
+    if (dataProvider == null) dataProvider = dataRow;
+  }
+
+  void updateData() {
+    String newColName =
+        ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+            .columnName;
+
+    if (newColName != null) this.columnName = newColName;
+
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .toUpdateData
+        .forEach((updateData) {
+      data = updateData;
+    });
+
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .toUpdateData = Queue<SoComponentData>();
+
+    this.onDataChanged();
   }
 
   @override
   void initState() {
     super.initState();
+    this.updateData();
+
+    (widget as CoEditorWidget)
+        .componentModel
+        .addListener(() => setState(() => this.updateData()));
 
     _cellEditorWidget = (widget as CoEditorWidget).cellEditor;
   }

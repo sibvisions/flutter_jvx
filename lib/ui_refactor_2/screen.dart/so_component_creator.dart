@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/cell_editor.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_button_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_label_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_table_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/co_panel_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/cell_editor_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_checkbox_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_image_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_number_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_text_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
 
+import '../../model/cell_editor.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../component/co_button_widget.dart';
+import '../component/co_label_widget.dart';
+import '../component/co_table_widget.dart';
+import '../component/component_model.dart';
+import '../component/component_widget.dart';
+import '../container/co_container_widget.dart';
+import '../container/co_panel_widget.dart';
+import '../container/container_component_model.dart';
+import '../editor/celleditor/cell_editor_model.dart';
+import '../editor/celleditor/co_cell_editor_widget.dart';
+import '../editor/celleditor/co_checkbox_cell_editor_widget.dart';
+import '../editor/celleditor/co_image_cell_editor_widget.dart';
+import '../editor/celleditor/co_number_cell_editor_widget.dart';
+import '../editor/celleditor/co_text_cell_editor_widget.dart';
+import '../editor/co_editor_widget.dart';
+import '../layout/co_border_layout_container_widget.dart';
+import '../layout/co_form_layout_container_widget.dart';
+import '../layout/i_layout.dart';
 import 'i_component_creator.dart';
 
 class SoComponentCreator implements IComponentCreator {
@@ -34,22 +34,20 @@ class SoComponentCreator implements IComponentCreator {
     'Label': (ChangedComponent changedComponent) => CoLabelWidget(
           key: GlobalKey(debugLabel: changedComponent.id),
           text: '',
-          componentModel:
-              ComponentModel(currentChangedComponent: changedComponent),
+          componentModel: ComponentModel(changedComponent),
         ),
     'Panel': (ChangedComponent changedComponent) => CoPanelWidget(
           key: GlobalKey(debugLabel: changedComponent.id),
           componentModel: ContainerComponentModel(
-              currentChangedComponent: changedComponent),
+              changedComponent: changedComponent,
+              componentId: changedComponent.id),
         ),
     'Button': (ChangedComponent changedComponent) => CoButtonWidget(
           key: GlobalKey(debugLabel: changedComponent.id),
-          componentModel:
-              ComponentModel(currentChangedComponent: changedComponent),
+          componentModel: ComponentModel(changedComponent),
         ),
     'Table': (ChangedComponent changedComponent) => CoTableWidget(
-          componentModel:
-              ComponentModel(currentChangedComponent: changedComponent),
+          componentModel: EditorComponentModel(changedComponent),
           key: GlobalKey(debugLabel: changedComponent.id),
         )
   };
@@ -90,12 +88,9 @@ class SoComponentCreator implements IComponentCreator {
       }
     }
 
-    componentWidget.componentModel.parentComponentId =
-        changedComponent.getProperty<String>(ComponentProperty.PARENT);
-
-    if (componentWidget is CoContainerWidget)
-      (componentWidget.componentModel as ContainerComponentModel).layout =
-          _createLayout(componentWidget, changedComponent);
+    // if (componentWidget is CoContainerWidget)
+    //   (componentWidget.componentModel as ContainerComponentModel).layout =
+    //       _createLayout(componentWidget, changedComponent);
 
     return componentWidget;
   }
@@ -108,58 +103,17 @@ class SoComponentCreator implements IComponentCreator {
               ? changedComponent.className
               : "") +
           "'!",
-      componentModel: ComponentModel(currentChangedComponent: changedComponent),
+      componentModel: ComponentModel(changedComponent),
     );
 
     return componentWidget;
-  }
-
-  ILayout _createLayout(
-      CoContainerWidget container, ChangedComponent changedComponent) {
-    if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
-      String layoutRaw =
-          changedComponent.getProperty<String>(ComponentProperty.LAYOUT);
-      String layoutData =
-          changedComponent.getProperty<String>(ComponentProperty.LAYOUT_DATA);
-
-      switch (changedComponent.layoutName) {
-        case "BorderLayout":
-          {
-            return CoBorderLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw, layoutData);
-          }
-          break;
-        case "FormLayout":
-          {
-            return CoFormLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw, layoutData);
-          }
-          break;
-        /*
-        case "FlowLayout":
-          {
-            return CoFlowLayout.fromLayoutString(
-                container, layoutRaw, layoutData);
-          }
-          break;
-        case "GridLayout":
-          {
-            return CoGridLayout.fromLayoutString(
-                container, layoutRaw, layoutData);
-          }
-          break;
-        */
-      }
-    }
-
-    return null;
   }
 
   CoEditorWidget _createEditor(ChangedComponent changedComponent) {
     CoEditorWidget editor = CoEditorWidget(
       cellEditor: createCellEditor(changedComponent.cellEditor),
       key: GlobalKey(debugLabel: changedComponent.id),
-      componentModel: ComponentModel(currentChangedComponent: changedComponent),
+      componentModel: EditorComponentModel(changedComponent),
     );
     return editor;
   }
@@ -234,7 +188,7 @@ class SoComponentCreator implements IComponentCreator {
     CoEditorWidget editor = CoEditorWidget(
       key: UniqueKey(),
       cellEditor: cellEditor,
-      componentModel: ComponentModel(),
+      componentModel: EditorComponentModel(null),
     );
 
     return editor;
