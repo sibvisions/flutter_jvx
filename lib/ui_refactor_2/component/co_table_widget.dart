@@ -21,8 +21,8 @@ import 'so_table_column_calculator.dart';
 enum ContextMenuCommand { INSERT, DELETE }
 
 class CoTableWidget extends CoEditorWidget {
-  CoTableWidget({Key key, EditorComponentModel componentModel})
-      : super(key: key, componentModel: componentModel);
+  CoTableWidget({EditorComponentModel componentModel})
+      : super(componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoTableWidgetState();
 }
@@ -520,7 +520,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                     ? tableHeight
                     : constraints.maxHeight,
                 child: ScrollablePositionedList.builder(
-                  key: this.componentId,
                   itemScrollController: _scrollController,
                   itemPositionsListener: _scrollPositionListener,
                   itemCount: itemCount,

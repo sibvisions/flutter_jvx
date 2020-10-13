@@ -1,28 +1,17 @@
-import 'dart:io';
 import 'dart:convert' as utf8;
+import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:jvx_flutterclient/ui/page/menu_page.dart';
-import 'package:jvx_flutterclient/ui/tools/restart.dart';
-import 'package:jvx_flutterclient/ui/widgets/common_dialogs.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/component_screen_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/i_screen.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_component_creator.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_screen.dart';
-import 'package:jvx_flutterclient/utils/application_api.dart';
-import 'package:async/async.dart';
 
-import '../../utils/text_utils.dart';
-import '../../model/api/response/response_data.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
 import '../../model/api/request/device_Status.dart';
@@ -31,11 +20,16 @@ import '../../model/api/request/navigation.dart';
 import '../../model/api/request/request.dart';
 import '../../model/api/request/upload.dart';
 import '../../model/api/response/response.dart';
+import '../../model/api/response/response_data.dart';
 import '../../model/menu_item.dart';
+import '../../ui/widgets/menu_drawer_widget.dart';
+import '../../ui_refactor_2/screen.dart/so_component_creator.dart';
+import '../../ui_refactor_2/screen.dart/so_screen.dart';
+import '../../utils/application_api.dart';
 import '../../utils/globals.dart' as globals;
+import '../../utils/text_utils.dart';
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
-import '../../ui/widgets/menu_drawer_widget.dart';
 import 'menu_arguments.dart';
 
 class OpenScreenPage extends StatefulWidget {
@@ -138,6 +132,15 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       //state.screenGeneric != null &&
                       !state.loading //&& !state.error
                   ) {
+                if (state?.responseData?.screenGeneric?.screenTitle != null &&
+                    this.title !=
+                        state?.responseData?.screenGeneric?.screenTitle) {
+                  screen = SoScreen(
+                    globalKey: GlobalKey<SoScreenState>(),
+                    componentCreator: SoComponentCreator(context),
+                  );
+                }
+
                 if (state.requestType == RequestType.PRESS_BUTTON) {
                   if (state.downloadAction != null) {
                     Download download = Download(
@@ -209,9 +212,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
                   Navigator.of(context).pushReplacementNamed('/menu',
                       arguments: MenuArguments(globals.items, true));
-                }
-
-                screen.update(state.request, state.responseData);
+                } else
+                  screen.update(state.request, state.responseData);
               }
             }
           },

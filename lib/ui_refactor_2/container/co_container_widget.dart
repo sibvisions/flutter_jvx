@@ -6,7 +6,6 @@ import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_layout.dart';
@@ -16,8 +15,8 @@ import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_border_layout_
 import '../../jvx_flutterclient.dart';
 
 class CoContainerWidget extends ComponentWidget {
-  CoContainerWidget({Key key, ContainerComponentModel componentModel})
-      : super(key: key, componentModel: componentModel);
+  CoContainerWidget({ContainerComponentModel componentModel})
+      : super(componentModel: componentModel);
 
   static CoContainerWidgetState of(BuildContext context) =>
       context.findAncestorStateOfType<CoContainerWidgetState>();
@@ -51,7 +50,6 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
 
     pComponent.componentModel.coState = CoState.Added;
-
     if (layout != null) {
       if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
@@ -79,7 +77,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   void removeWithComponent(ComponentWidget pComponent) {
     int index = components.indexWhere((c) =>
-        c.componentModel.componentState.componentId.toString() ==
+        c.componentModel.componentId.toString() ==
         pComponent.componentModel.componentId.toString());
 
     if (index >= 0) {
@@ -211,7 +209,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   void _updateLayoutData(Queue<String> toUpdateLayout) {
     toUpdateLayout.forEach((layoutData) {
-      this.layout.updateLayoutData(layoutData);
+      this.layout?.updateLayoutData(layoutData);
     });
   }
 

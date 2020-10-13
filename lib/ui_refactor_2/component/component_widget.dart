@@ -11,7 +11,7 @@ import 'component_model.dart';
 class ComponentWidget extends StatefulWidget {
   final ComponentModel componentModel;
 
-  ComponentWidget({Key key, @required this.componentModel}) : super(key: key);
+  ComponentWidget({@required this.componentModel});
 
   @override
   State<StatefulWidget> createState() =>
@@ -20,7 +20,6 @@ class ComponentWidget extends StatefulWidget {
 
 class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   String name;
-  GlobalKey componentId;
   String rawComponentId;
   CoState state = CoState.Free;
   Color background = Colors.transparent;
@@ -99,7 +98,6 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   void initState() {
     super.initState();
     this._update();
-
     (widget as ComponentWidget).componentModel.componentState = this;
     (widget as ComponentWidget).componentModel.addListener(() {
       if (mounted)

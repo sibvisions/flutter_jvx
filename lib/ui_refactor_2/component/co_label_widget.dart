@@ -9,8 +9,8 @@ import 'component_model.dart';
 class CoLabelWidget extends ComponentWidget {
   final String text;
 
-  CoLabelWidget({this.text, Key key, ComponentModel componentModel})
-      : super(componentModel: componentModel, key: key);
+  CoLabelWidget({this.text, ComponentModel componentModel})
+      : super(componentModel: componentModel);
 
   @override
   State<StatefulWidget> createState() => CoLabelWidgetState();
@@ -116,7 +116,7 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
               constraints: BoxConstraints(maxWidth: this.maximumSize.width),
               child: child);
         } else {
-          return SizedBox(key: componentId, child: child);
+          return SizedBox(child: child);
         }
       },
     );

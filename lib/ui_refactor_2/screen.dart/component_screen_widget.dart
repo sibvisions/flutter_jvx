@@ -215,7 +215,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   void _removeComponent(
       ComponentWidget component, Map<String, ComponentWidget> container) {
     _removeFromParent(component);
-    component.componentModel.componentState.state = CoState.Free;
+    component.componentModel.coState = CoState.Free;
+    if (component.componentModel.componentState != null)
+      component.componentModel.componentState.state = CoState.Free;
   }
 
   void _removeFromParent(ComponentWidget component) {
@@ -224,7 +226,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget parentComponent =
           components[component.componentModel.parentComponentId];
       if (parentComponent != null && parentComponent is CoContainerWidget) {
-        (component.componentModel.componentState as CoContainerWidgetState)
+        (parentComponent.componentModel.componentState
+                as CoContainerWidgetState)
             ?.removeWithComponent(component);
       }
     }
@@ -423,29 +426,32 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
       if (component is CoContainerWidget) {
         debugString += ", layout: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
-                    (component.componentModel.componentState as CoContainerWidgetState)
-                            .layout
-                            .rawLayoutString !=
-                        null
-                ? (component.componentModel.componentState as CoContainerWidgetState)
-                    .layout
-                    .rawLayoutString
-                : "") +
+            // ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
+            //         (component.componentModel.componentState as CoContainerWidgetState)
+            //                 .layout
+            //                 .rawLayoutString !=
+            //             null
+            //     ? (component.componentModel.componentState as CoContainerWidgetState)
+            //         .layout
+            //         .rawLayoutString
+            //     : "") +
             ", layoutData: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).layout !=
-                        null &&
-                    (component.componentModel.componentState as CoContainerWidgetState)
-                            .layout
-                            .rawLayoutData !=
-                        null
-                ? (component.componentModel.componentState as CoContainerWidgetState)
-                    .layout
-                    .rawLayoutData
-                : "") +
+            // ((component.componentModel.componentState as CoContainerWidgetState).layout !=
+            //             null &&
+            //         (component.componentModel.componentState as CoContainerWidgetState)
+            //                 .layout
+            //                 .rawLayoutData !=
+            //             null
+            //     ? (component.componentModel.componentState as CoContainerWidgetState)
+            //         .layout
+            //         .rawLayoutData
+            //     : "") +
             ", childCount: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).components != null
-                ? (component.componentModel.componentState as CoContainerWidgetState)
+            ((component.componentModel.componentState as CoContainerWidgetState)
+                        .components !=
+                    null
+                ? (component.componentModel.componentState
+                        as CoContainerWidgetState)
                     .components
                     .length
                     .toString()

@@ -5,8 +5,8 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart'
 typedef ButtonPressedCallback = void Function(String componentId, String label);
 
 abstract class CoActionComponentWidget extends ComponentWidget {
-  CoActionComponentWidget({Key key, ComponentModel componentModel})
-      : super(key: key, componentModel: componentModel);
+  CoActionComponentWidget({ComponentModel componentModel})
+      : super(componentModel: componentModel);
 }
 
 abstract class CoActionComponentWidgetState<T extends CoActionComponentWidget>

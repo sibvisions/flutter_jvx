@@ -19,10 +19,9 @@ class CoEditorWidget extends ComponentWidget {
   final CoCellEditorWidget cellEditor;
 
   CoEditorWidget({
-    Key key,
     this.cellEditor,
     EditorComponentModel componentModel,
-  }) : super(key: key, componentModel: componentModel);
+  }) : super(componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
 
@@ -255,7 +254,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
     if (_cellEditorWidget == null) {
       return Container(
         margin: EdgeInsets.only(top: 9, bottom: 9),
-        key: this.componentId,
         width: TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
             Theme.of(context).textTheme.button),
         height: 50,
@@ -277,7 +275,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
     }
 
     return Container(
-        key: this.componentId,
         height: super.preferredSize != null ? super.preferredSize.height : null,
         width: super.preferredSize != null ? super.preferredSize.width : null,
         child: cellEditorWidget);

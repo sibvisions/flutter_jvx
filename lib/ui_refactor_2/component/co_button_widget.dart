@@ -21,8 +21,8 @@ import 'package:jvx_flutterclient/utils/globals.dart' as globals;
 import 'package:tinycolor/tinycolor.dart';
 
 class CoButtonWidget extends CoActionComponentWidget {
-  CoButtonWidget({ComponentModel componentModel, Key key})
-      : super(componentModel: componentModel, key: key);
+  CoButtonWidget({ComponentModel componentModel})
+      : super(componentModel: componentModel);
 
   @override
   State<StatefulWidget> createState() => CoButtonWidgetState();
@@ -193,7 +193,6 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 child: SizedBox(
                     height: 40,
                     child: RaisedButton(
-                      key: this.componentId,
                       onPressed: this.enabled ? buttonPressed : null,
                       color: this.background != null
                           ? this.background
