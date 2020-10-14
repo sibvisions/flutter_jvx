@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/cell_editor.dart';
-import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/utils/so_text_align.dart';
-import 'package:jvx_flutterclient/utils/text_utils.dart';
-import 'package:jvx_flutterclient/utils/uidata.dart';
 
-import 'package:jvx_flutterclient/utils/globals.dart' as globals;
-
+import '../../../model/cell_editor.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../utils/globals.dart' as globals;
+import '../../../utils/so_text_align.dart';
+import '../../../utils/text_utils.dart';
+import '../../../utils/uidata.dart';
 import 'cell_editor_model.dart';
+import 'co_cell_editor_widget.dart';
 
 class CoTextCellEditorWidget extends CoCellEditorWidget {
   CoTextCellEditorWidget(
@@ -24,6 +23,7 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
+  final GlobalKey<FormState> globalKeyFormState = GlobalKey<FormState>();
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
   bool password = false;
@@ -86,60 +86,63 @@ class CoTextCellEditorWidgetState
     return ValueListenableBuilder(
       valueListenable: widget.cellEditorModel,
       builder: (context, value, child) {
-        return DecoratedBox(
-          decoration: BoxDecoration(
-              color: this.background != null
-                  ? this.background
-                  : Colors.white.withOpacity(
-                      globals.applicationStyle?.controlsOpacity ?? 1.0),
-              borderRadius: BorderRadius.circular(
-                  globals.applicationStyle?.cornerRadiusEditors ?? 10),
-              border: borderVisible && this.editable != null && this.editable
-                  ? Border.all(color: UIData.ui_kit_color_2)
-                  : Border.all(color: Colors.grey)),
-          child: Container(
-            width: 100,
-            child: TextField(
-                textAlign:
-                    SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
-                decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(12),
-                    border: InputBorder.none,
-                    hintText: placeholderVisible ? placeholder : null,
-                    suffixIcon: this.editable != null && this.editable
-                        ? Padding(
-                            padding: EdgeInsets.only(right: 8),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (this.value != null) {
-                                  this.value = null;
-                                  this.valueChanged = true;
-                                  super.onValueChanged(this.value);
-                                  this.valueChanged = false;
-                                }
-                              },
-                              child: Icon(Icons.clear,
-                                  size: 24, color: Colors.grey[400]),
-                            ),
-                          )
-                        : null),
-                style: TextStyle(
-                    color: this.editable != null && this.editable
-                        ? (this.foreground != null
-                            ? this.foreground
-                            : Colors.black)
-                        : Colors.grey[700]),
-                controller: _controller,
-                minLines: null,
-                maxLines: multiLine ? null : 1,
-                keyboardType:
-                    multiLine ? TextInputType.multiline : TextInputType.text,
-                onEditingComplete: onTextFieldEndEditing,
-                onChanged: onTextFieldValueChanged,
-                readOnly: !this.editable ?? false,
-                obscureText: this.password
-                //expands: this.verticalAlignment==1 && multiLine ? true : false,
-                ),
+        return Form(
+          key: this.globalKeyFormState,
+                  child: DecoratedBox(
+            decoration: BoxDecoration(
+                color: this.background != null
+                    ? this.background
+                    : Colors.white.withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0),
+                borderRadius: BorderRadius.circular(
+                    globals.applicationStyle?.cornerRadiusEditors ?? 10),
+                border: borderVisible && this.editable != null && this.editable
+                    ? Border.all(color: UIData.ui_kit_color_2)
+                    : Border.all(color: Colors.grey)),
+            child: Container(
+              width: 100,
+              child: TextField(
+                  textAlign:
+                      SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(12),
+                      border: InputBorder.none,
+                      hintText: placeholderVisible ? placeholder : null,
+                      suffixIcon: this.editable != null && this.editable
+                          ? Padding(
+                              padding: EdgeInsets.only(right: 8),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (this.value != null) {
+                                    this.value = null;
+                                    this.valueChanged = true;
+                                    super.onValueChanged(this.value);
+                                    this.valueChanged = false;
+                                  }
+                                },
+                                child: Icon(Icons.clear,
+                                    size: 24, color: Colors.grey[400]),
+                              ),
+                            )
+                          : null),
+                  style: TextStyle(
+                      color: this.editable != null && this.editable
+                          ? (this.foreground != null
+                              ? this.foreground
+                              : Colors.black)
+                          : Colors.grey[700]),
+                  controller: _controller,
+                  minLines: null,
+                  maxLines: multiLine ? null : 1,
+                  keyboardType:
+                      multiLine ? TextInputType.multiline : TextInputType.text,
+                  onEditingComplete: onTextFieldEndEditing,
+                  onChanged: onTextFieldValueChanged,
+                  readOnly: !this.editable ?? false,
+                  obscureText: this.password
+                  //expands: this.verticalAlignment==1 && multiLine ? true : false,
+                  ),
+            ),
           ),
         );
       },

@@ -21,6 +21,7 @@ class CoTextFieldWidget extends ComponentWidget {
 }
 
 class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
+  final GlobalKey<FormState> globalKeyFormState = GlobalKey<FormState>();
   TextEditingController _controller = TextEditingController();
   bool valueChanged = false;
   String text;
@@ -79,35 +80,39 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-          color: this.background != null
-              ? this.background
-              : Colors.white
-                  .withOpacity(globals.applicationStyle.controlsOpacity),
-          borderRadius: BorderRadius.circular(
-              globals.applicationStyle.cornerRadiusEditors),
-          border: border && this.enabled != null && this.enabled
-              ? Border.all(color: UIData.ui_kit_color_2)
-              : Border.all(color: Colors.grey)),
-      child: Container(
-        width: 100,
-        child: TextField(
-          textAlign: SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(12), border: InputBorder.none),
-          style: TextStyle(
-              color: this.enabled
-                  ? (this.foreground != null ? this.foreground : Colors.black)
-                  : Colors.grey[700]),
-          // key: this.componentId,
-          controller: _controller,
-          minLines: null,
-          maxLines: 1,
-          keyboardType: TextInputType.text,
-          onEditingComplete: onTextFieldEndEditing,
-          onChanged: onTextFieldValueChanged,
-          readOnly: !this.enabled,
+    return Form(
+      key: this.globalKeyFormState,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+            color: this.background != null
+                ? this.background
+                : Colors.white
+                    .withOpacity(globals.applicationStyle.controlsOpacity),
+            borderRadius: BorderRadius.circular(
+                globals.applicationStyle.cornerRadiusEditors),
+            border: border && this.enabled != null && this.enabled
+                ? Border.all(color: UIData.ui_kit_color_2)
+                : Border.all(color: Colors.grey)),
+        child: Container(
+          width: 100,
+          child: TextField(
+            textAlign:
+                SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
+            decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(12), border: InputBorder.none),
+            style: TextStyle(
+                color: this.enabled
+                    ? (this.foreground != null ? this.foreground : Colors.black)
+                    : Colors.grey[700]),
+            // key: this.componentId,
+            controller: _controller,
+            minLines: null,
+            maxLines: 1,
+            keyboardType: TextInputType.text,
+            onEditingComplete: onTextFieldEndEditing,
+            onChanged: onTextFieldValueChanged,
+            readOnly: !this.enabled,
+          ),
         ),
       ),
     );
