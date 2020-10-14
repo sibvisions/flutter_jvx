@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart' as intl;
+
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../ui/editor/celleditor/formatter/numeric_text_formatter.dart';
-import 'co_cell_editor_widget.dart';
+import '../../../utils/globals.dart' as globals;
 import '../../../utils/so_text_align.dart';
 import '../../../utils/text_utils.dart';
-import 'package:intl/intl.dart' as intl;
-import '../../../utils/globals.dart' as globals;
 import '../../../utils/uidata.dart';
-
-import '../co_editor_widget.dart';
 import 'cell_editor_model.dart';
+import 'co_cell_editor_widget.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
   CoNumberCellEditorWidget(

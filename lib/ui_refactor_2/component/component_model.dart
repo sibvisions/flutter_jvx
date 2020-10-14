@@ -6,9 +6,7 @@ import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
-import '../../ui/screen/so_component_data.dart';
 import '../container/container_component_model.dart';
-import '../editor/co_editor_widget.dart';
 import 'component_widget.dart';
 
 class ComponentModel extends ValueNotifier {
@@ -41,6 +39,17 @@ class ComponentModel extends ValueNotifier {
   Size get maximumSize => _maximumSize;
   set maximumSize(Size size) => _maximumSize = size;
 
+  set compId(String newComponentId) {
+    componentId = newComponentId;
+  }
+
+  ChangedComponent get changedComponent {
+    if (_toUpdateComponents != null && _toUpdateComponents.length > 0) {
+      return _toUpdateComponents.last.changedComponent;
+    }
+    return null;
+  }
+
   ComponentModel(this._changedComponent) : super(_changedComponent) {
     if (this._changedComponent != null) {
       this.compId = this._changedComponent.id;
@@ -66,13 +75,6 @@ class ComponentModel extends ValueNotifier {
     minimumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MINIMUM_SIZE, _minimumSize);
   }
-
-  set compId(String newComponentId) {
-    componentId = newComponentId;
-  }
-
-  ChangedComponent get changedComponent =>
-      _toUpdateComponents?.last?.changedComponent;
 
   void update() {
     notifyListeners();

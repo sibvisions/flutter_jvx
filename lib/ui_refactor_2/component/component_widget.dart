@@ -95,16 +95,18 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     this._update();
     (widget as ComponentWidget).componentModel.componentState = this;
-    (widget as ComponentWidget).componentModel.addListener(() {
-      if (mounted)
-        setState(() => this._update());
-      else
-        this._update();
-    });
+    (widget as ComponentWidget).componentModel.addListener(() => setState(() => this._update()));
   }
 
   @override
