@@ -479,19 +479,16 @@ class CoTable extends CoEditor {
             onLongPress: () =>
                 this.editable ? showContextMenu(context, -1) : null,
             child: Container(
-              decoration: _hasHorizontalScroller
-                  ? null
-                  : BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                          width: borderWidth,
-                          color: UIData.ui_kit_color_2[500].withOpacity(
-                              globals.applicationStyle?.controlsOpacity ??
-                                  1.0)),
-                      color: Colors.white.withOpacity(
-                          globals.applicationStyle?.controlsOpacity ?? 1.0),
-                    ),
-              width: columnWidth + (2 * borderWidth),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                    width: borderWidth,
+                    color: UIData.ui_kit_color_2[500].withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                color: Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
+              ),
+              width: columnWidth + (2 * borderWidth) + 100,
               height: constraints.maxHeight == double.infinity
                   ? tableHeight
                   : constraints.maxHeight,
