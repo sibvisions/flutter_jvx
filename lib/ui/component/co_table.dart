@@ -261,6 +261,7 @@ class CoTable extends CoEditor {
         clEditor.cellEditor.value = text;
         clEditor.cellEditor.editable = this.editable;
         clEditor.cellEditor.indexInTable = index;
+        clEditor.cellEditor.horizontalAlignment = 1;
         return clEditor;
       }
     }
