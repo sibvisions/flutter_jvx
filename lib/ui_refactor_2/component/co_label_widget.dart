@@ -70,12 +70,9 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    if (this.mounted) {
-      setState(() {
-        text =
-            changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
-      });
-    }
+    setState(() {
+      text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    });
   }
 
   @override
@@ -85,40 +82,34 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.componentModel,
-      builder: (context, value, child) {
-        TextOverflow overflow;
+    TextOverflow overflow;
 
-        if (this.isMaximumSizeSet) overflow = TextOverflow.ellipsis;
+    if (this.isMaximumSizeSet) overflow = TextOverflow.ellipsis;
 
-        Widget child = Container(
-          padding: EdgeInsets.only(top: 0.5),
-          color: this.background,
-          child: Align(
-            alignment:
-                getLabelAlignment(horizontalAlignment, verticalAlignment),
-            child: Baseline(
-                baselineType: TextBaseline.alphabetic,
-                baseline: getBaseline(),
-                child: text.trim().startsWith('<html>')
-                    ? Html(data: text)
-                    : Text(
-                        text,
-                        style: style,
-                        overflow: overflow,
-                      )),
-          ),
-        );
-
-        if (this.isMaximumSizeSet) {
-          return ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: this.maximumSize.width),
-              child: child);
-        } else {
-          return SizedBox(child: child);
-        }
-      },
+    Widget child = Container(
+      padding: EdgeInsets.only(top: 0.5),
+      color: this.background,
+      child: Align(
+        alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
+        child: Baseline(
+            baselineType: TextBaseline.alphabetic,
+            baseline: getBaseline(),
+            child: text.trim().startsWith('<html>')
+                ? Html(data: text)
+                : Text(
+                    text,
+                    style: style,
+                    overflow: overflow,
+                  )),
+      ),
     );
+
+    if (this.isMaximumSizeSet) {
+      return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: this.maximumSize.width),
+          child: child);
+    } else {
+      return SizedBox(child: child);
+    }
   }
 }

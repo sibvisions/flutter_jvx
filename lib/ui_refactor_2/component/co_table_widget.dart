@@ -467,86 +467,78 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        //print(this.rawComponentId + "- Constraints:" + constraints.toString());
+        this.columnInfo = SoTableColumnCalculator.getColumnFlex(
+            this.data,
+            this.columnLabels,
+            this.columnNames,
+            itemTextStyle,
+            componentCreator,
+            autoResize,
+            constraints.maxWidth,
+            16.0,
+            16.0);
+        double columnWidth =
+            SoTableColumnCalculator.getColumnWidthSum(this.columnInfo);
+        double tableHeight = SoTableColumnCalculator.getPreferredTableHeight(
+            this.data,
+            this.columnLabels,
+            itemTextStyle,
+            tableHeaderVisible,
+            30,
+            30);
 
-    return ValueListenableBuilder(
-      valueListenable: widget.componentModel,
-      builder: (context, value, child) {
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            //print(this.rawComponentId + "- Constraints:" + constraints.toString());
-            this.columnInfo = SoTableColumnCalculator.getColumnFlex(
-                this.data,
-                this.columnLabels,
-                this.columnNames,
-                itemTextStyle,
-                componentCreator,
-                autoResize,
-                constraints.maxWidth,
-                16.0,
-                16.0);
-            double columnWidth =
-                SoTableColumnCalculator.getColumnWidthSum(this.columnInfo);
-            double tableHeight =
-                SoTableColumnCalculator.getPreferredTableHeight(
-                    this.data,
-                    this.columnLabels,
-                    itemTextStyle,
-                    tableHeaderVisible,
-                    30,
-                    30);
+        _hasHorizontalScroller =
+            (columnWidth + (2 * borderWidth) > constraints.maxWidth);
 
-            _hasHorizontalScroller =
-                (columnWidth + (2 * borderWidth) > constraints.maxWidth);
-
-            Widget child = GestureDetector(
-              onTapDown: (details) => _tapPosition = details.globalPosition,
-              onLongPress: () =>
-                  this.editable ? showContextMenu(context, -1) : null,
-              child: Container(
-                decoration: _hasHorizontalScroller
-                    ? null
-                    : BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                            width: borderWidth,
-                            color: UIData.ui_kit_color_2[500].withOpacity(
-                                globals.applicationStyle?.controlsOpacity ??
-                                    1.0)),
-                        color: Colors.white.withOpacity(
-                            globals.applicationStyle?.controlsOpacity ?? 1.0),
-                      ),
-                width: columnWidth + (2 * borderWidth),
-                height: constraints.maxHeight == double.infinity
-                    ? tableHeight
-                    : constraints.maxHeight,
-                child: ScrollablePositionedList.builder(
-                  itemScrollController: _scrollController,
-                  itemPositionsListener: _scrollPositionListener,
-                  itemCount: itemCount,
-                  itemBuilder: itemBuilder,
-                ),
-              ),
-            );
-
-            if (_hasHorizontalScroller) {
-              return Container(
-                  decoration: BoxDecoration(
-                      // borderRadius: BorderRadius.only(
-                      //     topLeft: Radius.circular(5),
-                      //     topRight: Radius.circular(5)),
-                      // border: Border.all(
-                      //     width: borderWidth,
-                      //     color: UIData.ui_kit_color_2[500].withOpacity(
-                      //         globals.applicationStyle?.controlsOpacity ?? 1.0)),
-                      color: Colors.white.withOpacity(
-                          globals.applicationStyle?.controlsOpacity ?? 1.0)),
-                  child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal, child: child));
-            } else {
-              return child;
-            }
-          },
+        Widget child = GestureDetector(
+          onTapDown: (details) => _tapPosition = details.globalPosition,
+          onLongPress: () =>
+              this.editable ? showContextMenu(context, -1) : null,
+          child: Container(
+            decoration: _hasHorizontalScroller
+                ? null
+                : BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                        width: borderWidth,
+                        color: UIData.ui_kit_color_2[500].withOpacity(
+                            globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                    color: Colors.white.withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0),
+                  ),
+            width: columnWidth + (2 * borderWidth),
+            height: constraints.maxHeight == double.infinity
+                ? tableHeight
+                : constraints.maxHeight,
+            child: ScrollablePositionedList.builder(
+              itemScrollController: _scrollController,
+              itemPositionsListener: _scrollPositionListener,
+              itemCount: itemCount,
+              itemBuilder: itemBuilder,
+            ),
+          ),
         );
+
+        if (_hasHorizontalScroller) {
+          return Container(
+              decoration: BoxDecoration(
+                  // borderRadius: BorderRadius.only(
+                  //     topLeft: Radius.circular(5),
+                  //     topRight: Radius.circular(5)),
+                  // border: Border.all(
+                  //     width: borderWidth,
+                  //     color: UIData.ui_kit_color_2[500].withOpacity(
+                  //         globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                  color: Colors.white.withOpacity(
+                      globals.applicationStyle?.controlsOpacity ?? 1.0)),
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal, child: child));
+        } else {
+          return child;
+        }
       },
     );
   }

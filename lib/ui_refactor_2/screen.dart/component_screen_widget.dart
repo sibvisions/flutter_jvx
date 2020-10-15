@@ -318,10 +318,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       }
 
       if (constraints != null) {
-        (component.componentModel as ContainerComponentModel).constraints =
-            constraints;
+        component.componentModel.constraints = constraints;
 
-        (component.componentModel as ContainerComponentModel).update();
+        component.componentModel.update();
         _addToParent(component, container);
       }
     }

@@ -6,6 +6,7 @@ import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
+import 'package:uuid/uuid.dart';
 
 class CoCellEditorWidget extends StatefulWidget {
   final CellEditor changedCellEditor;
@@ -76,6 +77,11 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   VoidCallback onEndEditing;
   Function(dynamic value, [int index]) onValueChanged;
   ValueChanged<dynamic> onFilter;
+
+  @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
 
   @override
   void initState() {

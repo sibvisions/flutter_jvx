@@ -143,35 +143,40 @@ class CoBorderLayoutContainerWidget extends StatelessWidget
         List<CoBorderLayoutId> children = new List<CoBorderLayoutId>();
 
         if (_center != null && _center.componentModel.isVisible) {
-          children.add(new CoBorderLayoutId(
+          children.add(CoBorderLayoutId(
+              key: ValueKey(_center.componentModel.componentId),
               child: _center,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.Center, _center)));
         }
 
         if (_north != null && _north.componentModel.isVisible) {
-          children.add(new CoBorderLayoutId(
+          children.add(CoBorderLayoutId(
+              key: ValueKey(_north.componentModel.componentId),
               child: _north,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.North, _north)));
         }
 
         if (_south != null && _south.componentModel.isVisible) {
-          children.add(new CoBorderLayoutId(
+          children.add(CoBorderLayoutId(
+              key: ValueKey(_south.componentModel.componentId),
               child: _south,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.South, _south)));
         }
 
         if (_west != null && _west.componentModel.isVisible) {
-          children.add(new CoBorderLayoutId(
+          children.add(CoBorderLayoutId(
+              key: ValueKey(_west.componentModel.componentId),
               child: _west,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.West, _west)));
         }
 
         if (_east != null && _east.componentModel.isVisible) {
-          children.add(new CoBorderLayoutId(
+          children.add(CoBorderLayoutId(
+              key: ValueKey(_east.componentModel.componentId),
               child: _east,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.East, _east)));

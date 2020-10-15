@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/component_screen_widget.dart';
 import 'package:jvx_flutterclient/utils/so_text_style.dart';
 
 import '../../jvx_flutterclient.dart';
@@ -11,7 +10,7 @@ import 'component_model.dart';
 class ComponentWidget extends StatefulWidget {
   final ComponentModel componentModel;
 
-  ComponentWidget({@required this.componentModel});
+  ComponentWidget({Key key, @required this.componentModel}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() =>
@@ -106,7 +105,9 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
     super.initState();
     this._update();
     (widget as ComponentWidget).componentModel.componentState = this;
-    (widget as ComponentWidget).componentModel.addListener(() => setState(() => this._update()));
+    (widget as ComponentWidget)
+        .componentModel
+        .addListener(() => setState(() => this._update()));
   }
 
   @override

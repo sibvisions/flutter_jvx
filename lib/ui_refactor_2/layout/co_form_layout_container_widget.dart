@@ -230,8 +230,10 @@ class CoFormLayoutContainerWidget extends StatelessWidget
 
             if (constraint != null) {
               constraint.comp = k;
-              children.add(
-                  new CoFormLayoutConstraintData(child: k, id: constraint));
+              children.add(CoFormLayoutConstraintData(
+                  key: ValueKey(k.componentModel.componentId),
+                  child: k,
+                  id: constraint));
             }
           }
         });

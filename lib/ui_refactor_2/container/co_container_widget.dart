@@ -216,7 +216,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   @override
   void initState() {
     super.initState();
-    layout = _createLayout(widget, widget.componentModel.changedComponent);
+    if (widget.componentModel.changedComponent != null)
+      layout = _createLayout(widget, widget.componentModel.changedComponent);
     this._update();
 
     widget.componentModel.addListener(() => setState(() => this._update()));

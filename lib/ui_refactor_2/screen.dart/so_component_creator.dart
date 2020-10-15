@@ -3,6 +3,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/co_checkbox_widget.dar
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_radio_button_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_text_area_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_text_field_widget.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../model/cell_editor.dart';
 import '../../model/changed_component.dart';
@@ -26,6 +27,8 @@ import 'i_component_creator.dart';
 
 class SoComponentCreator implements IComponentCreator {
   BuildContext context;
+
+  static final Uuid uuid = Uuid();
 
   SoComponentCreator([this.context]);
 
@@ -147,8 +150,8 @@ class SoComponentCreator implements IComponentCreator {
 
   CoEditorWidget _createEditor(ChangedComponent changedComponent) {
     CoEditorWidget editor = CoEditorWidget(
+      key: GlobalKey(debugLabel: changedComponent.id),
       cellEditor: createCellEditor(changedComponent.cellEditor),
-      // key: GlobalKey(debugLabel: changedComponent.id),
       componentModel: EditorComponentModel(changedComponent),
     );
     return editor;

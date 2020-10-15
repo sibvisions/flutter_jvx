@@ -26,7 +26,6 @@ class CoNumberCellEditorWidget extends CoCellEditorWidget {
 
 class CoNumberCellEditorWidgetState
     extends CoCellEditorWidgetState<CoNumberCellEditorWidget> {
-  final GlobalKey<FormState> globalKeyFormState = GlobalKey<FormState>();
   TextEditingController _controller = TextEditingController();
   bool valueChanged = false;
   String numberFormat;
@@ -124,57 +123,53 @@ class CoNumberCellEditorWidgetState
     setEditorProperties(context);
     TextDirection direction = TextDirection.ltr;
 
-    return Form(
-      key: this.globalKeyFormState,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-            color: this.background != null
-                ? this.background
-                : Colors.white
-                    .withOpacity(globals.applicationStyle.controlsOpacity),
-            borderRadius: BorderRadius.circular(
-                globals.applicationStyle.cornerRadiusEditors),
-            border: borderVisible && this.editable != null && this.editable
-                ? Border.all(color: UIData.ui_kit_color_2)
-                : Border.all(color: Colors.grey)),
-        child: Container(
-          width: 100,
-          child: TextField(
-            textAlign:
-                SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(12),
-                border: InputBorder.none,
-                hintText: placeholderVisible ? placeholder : null,
-                suffixIcon: this.editable
-                    ? Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (this.value != null) {
-                              this.value = null;
-                              this.valueChanged = true;
-                              super.onValueChanged(this.value);
-                              this.valueChanged = false;
-                            }
-                          },
-                          child: Icon(Icons.clear,
-                              size: 24, color: Colors.grey[400]),
-                        ),
-                      )
-                    : null),
-            style: TextStyle(
-                color: this.editable
-                    ? (this.foreground != null ? this.foreground : Colors.black)
-                    : Colors.grey[700]),
-            controller: _controller,
-            keyboardType: textInputType,
-            onEditingComplete: onTextFieldEndEditing,
-            onChanged: onTextFieldValueChanged,
-            textDirection: direction,
-            inputFormatters: textInputFormatter,
-            enabled: this.editable,
-          ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+          color: this.background != null
+              ? this.background
+              : Colors.white
+                  .withOpacity(globals.applicationStyle.controlsOpacity),
+          borderRadius: BorderRadius.circular(
+              globals.applicationStyle.cornerRadiusEditors),
+          border: borderVisible && this.editable != null && this.editable
+              ? Border.all(color: UIData.ui_kit_color_2)
+              : Border.all(color: Colors.grey)),
+      child: Container(
+        width: 100,
+        child: TextFormField(
+          textAlign: SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.all(12),
+              border: InputBorder.none,
+              hintText: placeholderVisible ? placeholder : null,
+              suffixIcon: this.editable
+                  ? Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (this.value != null) {
+                            this.value = null;
+                            this.valueChanged = true;
+                            super.onValueChanged(this.value);
+                            this.valueChanged = false;
+                          }
+                        },
+                        child: Icon(Icons.clear,
+                            size: 24, color: Colors.grey[400]),
+                      ),
+                    )
+                  : null),
+          style: TextStyle(
+              color: this.editable
+                  ? (this.foreground != null ? this.foreground : Colors.black)
+                  : Colors.grey[700]),
+          controller: _controller,
+          keyboardType: textInputType,
+          onEditingComplete: onTextFieldEndEditing,
+          onChanged: onTextFieldValueChanged,
+          textDirection: direction,
+          inputFormatters: textInputFormatter,
+          enabled: this.editable,
         ),
       ),
     );

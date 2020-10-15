@@ -19,9 +19,10 @@ class CoEditorWidget extends ComponentWidget {
   final CoCellEditorWidget cellEditor;
 
   CoEditorWidget({
+    Key key,
     this.cellEditor,
     EditorComponentModel componentModel,
-  }) : super(componentModel: componentModel);
+  }) : super(key: key, componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
 
@@ -234,7 +235,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
     ((widget as CoEditorWidget).componentModel as EditorComponentModel)
         .toUpdateData = Queue<SoComponentData>();
 
-    this.onDataChanged();
+    if (this.data != null) this.onDataChanged();
   }
 
   @override
