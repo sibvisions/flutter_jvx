@@ -19,9 +19,14 @@ class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
   final Request request;
   final ResponseData responseData;
+  final bool closeCurrentScreen;
 
   const ComponentScreenWidget(
-      {Key key, this.componentCreator, this.request, this.responseData})
+      {Key key,
+      this.componentCreator,
+      this.request,
+      this.responseData,
+      this.closeCurrentScreen})
       : super(key: key);
 
   @override
@@ -42,6 +47,10 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.closeCurrentScreen) {
+      components = <String, ComponentWidget>{};
+    }
+
     this.context = context;
 
     if (widget.request != null && widget.responseData != null)

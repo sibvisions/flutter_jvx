@@ -132,15 +132,6 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                       //state.screenGeneric != null &&
                       !state.loading //&& !state.error
                   ) {
-                if (state?.responseData?.screenGeneric?.screenTitle != null &&
-                    this.title !=
-                        state?.responseData?.screenGeneric?.screenTitle) {
-                  screen = SoScreen(
-                    globalKey: GlobalKey<SoScreenState>(),
-                    componentCreator: SoComponentCreator(context),
-                  );
-                }
-
                 if (state.requestType == RequestType.PRESS_BUTTON) {
                   if (state.downloadAction != null) {
                     Download download = Download(
@@ -348,10 +339,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
     //         widget.menuComponentId.toString(),
     //         templateName: globals.currentTempalteName);
 
-    screen = SoScreen(
-      globalKey: GlobalKey<SoScreenState>(),
-      componentCreator: SoComponentCreator(context),
-    );
+    screen = SoScreen();
 
     globals.currentTempalteName = null;
     super.initState();

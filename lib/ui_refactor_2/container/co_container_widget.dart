@@ -124,7 +124,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
   }
 
-  ILayout _createLayout(
+  ILayout createLayout(
       CoContainerWidget container, ChangedComponent changedComponent) {
     if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
       String layoutRaw =
@@ -165,7 +165,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     return null;
   }
 
-  void _update() {
+  void update() {
     this._updateComponents(
         (widget.componentModel as ContainerComponentModel).toAddComponents);
 
@@ -204,6 +204,20 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
             .add(toUpdateComponent);
         componentWidget.componentModel.update();
       }
+
+      preferredSize = widget.componentModel.changedComponent
+          .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
+      maximumSize = widget.componentModel.changedComponent
+          .getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
+
+      if (layout != null) {
+        if (layout is CoBorderLayoutContainerWidget) {
+          CoBorderLayoutConstraints contraints =
+              layout.getConstraints(componentWidget);
+          (layout as CoBorderLayoutContainerWidget)
+              .addLayoutComponent(componentWidget, contraints);
+        }
+      }
     });
   }
 
@@ -216,11 +230,12 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.componentModel.changedComponent != null)
-      layout = _createLayout(widget, widget.componentModel.changedComponent);
-    this._update();
+    if (widget.componentModel.changedComponent != null) {
+      layout = createLayout(widget, widget.componentModel.changedComponent);
+    }
+    this.update();
 
-    widget.componentModel.addListener(() => setState(() => this._update()));
+    widget.componentModel.addListener(() => setState(() => this.update()));
   }
 
   @override

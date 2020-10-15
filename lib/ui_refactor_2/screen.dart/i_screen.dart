@@ -13,10 +13,7 @@ abstract class IScreen {
 
   /// Constructor for returning the default Implementation of this interface.
   factory IScreen(SoComponentCreator componentCreator, GlobalKey globalKey) =>
-      SoScreen(
-        globalKey: globalKey,
-        componentCreator: componentCreator,
-      );
+      SoScreen();
 
   /// Gets called when new components, metaData or data is comming from the server.
   void update(Request request, ResponseData responseData);

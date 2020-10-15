@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/ui/screen/i_screen.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/page/open_screen_page.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../logic/bloc/api_bloc.dart';
@@ -12,7 +13,6 @@ import '../../model/api/request/request.dart';
 import '../../model/api/response/response.dart';
 import '../../model/menu_item.dart';
 import '../../model/api/request/open_screen.dart';
-import '../../ui/page/open_screen_page.dart';
 import '../../utils/globals.dart' as globals;
 import '../../ui/widgets/custom_icon.dart';
 

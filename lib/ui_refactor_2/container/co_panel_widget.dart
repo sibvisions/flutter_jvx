@@ -18,10 +18,30 @@ class CoPanelWidgetState extends CoContainerWidgetState {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(CoContainerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.componentModel.changedComponent != null) {
+      layout = createLayout(widget, widget.componentModel.changedComponent);
+    }
+    this.update();
+
+    widget.componentModel.addListener(() => setState(() => this.update()));
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget child;
     if (this.layout != null) {
+      // if (this.layout.setState != null) {
+      //   this.layout.setState(() => child = this.layout as Widget);
+      // } else {
       child = this.layout as Widget;
+      // }
     } else if (this.components.isNotEmpty) {
       child = this.components[0];
     }

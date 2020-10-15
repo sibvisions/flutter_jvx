@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui/page/menu_arguments.dart';
-import 'package:jvx_flutterclient/ui/page/open_screen_page.dart';
 import 'package:jvx_flutterclient/ui/page/screen_arguments.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/page/open_screen_page.dart';
 import 'ui/page/menu_page.dart';
 import 'utils/shared_preferences_helper.dart';
 import 'utils/text_utils.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
 import 'component_model.dart';
+import 'component_widget.dart';
 
 class CoLabelWidget extends ComponentWidget {
   final String text;
@@ -70,14 +70,13 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    setState(() {
-      text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
-    });
+    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
   }
 
   @override
   void initState() {
     super.initState();
+    if (text.isEmpty) this.text = widget.text;
   }
 
   @override

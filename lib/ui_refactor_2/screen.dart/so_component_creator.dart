@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_checkbox_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_radio_button_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_text_area_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_text_field_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/co_icon_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../model/cell_editor.dart';
 import '../../model/changed_component.dart';
 import '../component/co_button_widget.dart';
+import '../component/co_checkbox_widget.dart';
 import '../component/co_label_widget.dart';
+import '../component/co_password_field_widget.dart';
+import '../component/co_radio_button_widget.dart';
 import '../component/co_table_widget.dart';
+import '../component/co_text_area_widget.dart';
+import '../component/co_text_field_widget.dart';
 import '../component/component_model.dart';
 import '../component/component_widget.dart';
 import '../container/co_panel_widget.dart';
@@ -92,6 +94,13 @@ class SoComponentCreator implements IComponentCreator {
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
           componentModel: ComponentModel(changedComponent),
+        ),
+    'PasswordField': (ChangedComponent changedComponent) =>
+        CoPasswordFieldWidget(
+          componentModel: ComponentModel(changedComponent),
+        ),
+    'Icon': (ChangedComponent changedComponent) => CoIconWidget(
+          componentModel: ComponentModel(changedComponent),
         )
   };
 
@@ -136,7 +145,6 @@ class SoComponentCreator implements IComponentCreator {
 
   ComponentWidget _createDefaultComponent(ChangedComponent changedComponent) {
     ComponentWidget componentWidget = CoLabelWidget(
-      // key: GlobalKey(debugLabel: changedComponent.id),
       text: "Undefined Component '" +
           (changedComponent.className != null
               ? changedComponent.className
