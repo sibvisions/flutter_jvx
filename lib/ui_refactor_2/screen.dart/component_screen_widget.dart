@@ -225,8 +225,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget component, Map<String, ComponentWidget> container) {
     _removeFromParent(component);
     component.componentModel.coState = CoState.Free;
-    if (component.componentModel.componentState != null)
-      component.componentModel.componentState.state = CoState.Free;
+    component.componentModel.update();
   }
 
   void _removeFromParent(ComponentWidget component) {

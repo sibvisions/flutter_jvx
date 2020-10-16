@@ -40,7 +40,7 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
     if (this.layout != null) {
       child = this.layout as Widget;
     } else if (this.components.isNotEmpty) {
-      child = this.components[0];
+      child = Column(children: this.components);
     }
 
     Widget scrollWidget = new LayoutBuilder(

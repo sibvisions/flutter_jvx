@@ -1,18 +1,17 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_border_layout_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_form_layout_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/co_layout.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_border_layout_constraint.dart';
 
 import '../../jvx_flutterclient.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../component/component_widget.dart';
+import '../layout/co_border_layout_container_widget.dart';
+import '../layout/co_form_layout_container_widget.dart';
+import '../layout/co_layout.dart';
+import '../layout/i_layout.dart';
+import '../layout/widgets/co_border_layout_constraint.dart';
+import 'container_component_model.dart';
 
 class CoContainerWidget extends ComponentWidget {
   CoContainerWidget({ContainerComponentModel componentModel})
@@ -82,8 +81,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
     if (index >= 0) {
       remove(index);
-      pComponent.componentModel.componentState.state = CoState.Free;
       pComponent.componentModel.coState = CoState.Free;
+      pComponent.componentModel.update();
     }
   }
 
@@ -124,7 +123,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
   }
 
-  ILayout createLayout(
+  ILayout _createLayout(
       CoContainerWidget container, ChangedComponent changedComponent) {
     if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
       String layoutRaw =
@@ -169,8 +168,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     this._updateComponents(
         (widget.componentModel as ContainerComponentModel).toAddComponents);
 
-    (widget.componentModel as ContainerComponentModel).toAddComponents =
-        Queue<ToAddComponent>();
+    // (widget.componentModel as ContainerComponentModel).toAddComponents =
+    //     Queue<ToAddComponent>();
 
     this._updateComponentProperties(
         (widget.componentModel as ContainerComponentModel).toUpdateComponents);
@@ -186,10 +185,19 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void _updateComponents(Queue<ToAddComponent> toAddComponents) {
-    toAddComponents.forEach((toAddComponent) {
-      this.addWithConstraints(
-          toAddComponent.componentWidget, toAddComponent.constraints);
-    });
+    if (this.layout?.setState != null) {
+      toAddComponents.forEach((toAddComponent) {
+        if (!this.components.contains(toAddComponent.componentWidget))
+          this.addWithConstraints(
+              toAddComponent.componentWidget, toAddComponent.constraints);
+      });
+    } else {
+      toAddComponents.forEach((toAddComponent) {
+        if (!this.components.contains(toAddComponent.componentWidget))
+          this.addWithConstraints(
+              toAddComponent.componentWidget, toAddComponent.constraints);
+      });
+    }
   }
 
   void _updateComponentProperties(Queue<ToUpdateComponent> toUpdateComponents) {
@@ -222,16 +230,33 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void _updateLayoutData(Queue<String> toUpdateLayout) {
-    toUpdateLayout.forEach((layoutData) {
-      this.layout?.updateLayoutData(layoutData);
-    });
+    if (this.layout?.setState != null) {
+      toUpdateLayout.forEach((layoutData) {
+        this.layout?.updateLayoutData(layoutData);
+      });
+    } else {
+      toUpdateLayout.forEach((layoutData) {
+        this.layout?.updateLayoutData(layoutData);
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(CoContainerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.componentModel.changedComponent != null) {
+      layout = _createLayout(widget, widget.componentModel.changedComponent);
+    }
+    this.update();
+
+    widget.componentModel.addListener(() => setState(() => this.update()));
   }
 
   @override
   void initState() {
     super.initState();
     if (widget.componentModel.changedComponent != null) {
-      layout = createLayout(widget, widget.componentModel.changedComponent);
+      layout = _createLayout(widget, widget.componentModel.changedComponent);
     }
     this.update();
 

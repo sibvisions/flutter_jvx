@@ -102,7 +102,9 @@ class CoTextCellEditorWidgetState
                 contentPadding: EdgeInsets.all(12),
                 border: InputBorder.none,
                 hintText: placeholderVisible ? placeholder : null,
-                suffixIcon: this.editable != null && this.editable
+                suffixIcon: this.editable != null &&
+                        this.editable &&
+                        this._controller.text.isNotEmpty
                     ? Padding(
                         padding: EdgeInsets.only(right: 8),
                         child: GestureDetector(

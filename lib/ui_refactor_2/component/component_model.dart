@@ -47,7 +47,7 @@ class ComponentModel extends ValueNotifier {
     if (_toUpdateComponents != null && _toUpdateComponents.length > 0) {
       return _toUpdateComponents.last.changedComponent;
     }
-    return null;
+    return _changedComponent;
   }
 
   ComponentModel(this._changedComponent) : super(_changedComponent) {

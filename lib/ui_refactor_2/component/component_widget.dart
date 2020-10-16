@@ -90,6 +90,7 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
           .updateProperties(toUpdateComponent.changedComponent);
     });
 
+    state = (widget as ComponentWidget).componentModel.coState;
     constraints = (widget as ComponentWidget).componentModel.constraints;
   }
 

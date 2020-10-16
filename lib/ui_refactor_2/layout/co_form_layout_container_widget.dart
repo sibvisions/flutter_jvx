@@ -28,6 +28,10 @@ class CoFormLayoutContainerWidget extends StatelessWidget
   /// stores all constraints. */
   Map<ComponentWidget, String> _layoutConstraints = <ComponentWidget, String>{};
 
+  /// Stores all Widgets
+  List<CoFormLayoutConstraintData> children =
+      new List<CoFormLayoutConstraintData>();
+
   CoFormLayoutContainerWidget(Key key) {
     init();
     super.key = key;
@@ -166,25 +170,19 @@ class CoFormLayoutContainerWidget extends StatelessWidget
       throw new ArgumentError(
           "Constraint " + pConstraint.toString() + " is not allowed!");
     } else {
-      if (setState != null)
-        setState(() =>
-            _layoutConstraints.putIfAbsent(pComponent, () => pConstraint));
-      else
-        _layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
+      _layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
     }
 
     _valid = false;
   }
 
   void removeLayoutComponent(ComponentWidget pComponent) {
-    if (setState != null)
-      setState(() => _layoutConstraints.removeWhere((c, s) =>
-          pComponent.componentModel.componentId.toString() ==
-          pComponent.componentModel.componentId.toString()));
-    else
-      _layoutConstraints.removeWhere((c, s) =>
-          pComponent.componentModel.componentId.toString() ==
-          pComponent.componentModel.componentId.toString());
+    _layoutConstraints.removeWhere((c, s) =>
+        pComponent.componentModel.componentId.toString() ==
+        pComponent.componentModel.componentId.toString());
+    children.removeWhere((element) =>
+        (element.child as ComponentWidget).componentModel.componentId ==
+        pComponent.componentModel.componentId);
     _valid = false;
   }
 
@@ -216,27 +214,31 @@ class CoFormLayoutContainerWidget extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    this._layoutConstraints.forEach((k, v) {
+      if (k.componentModel.isVisible &&
+          children.firstWhere(
+                  (constraintData) =>
+                      (constraintData.child as ComponentWidget)
+                          .componentModel
+                          .componentId ==
+                      k.componentModel.componentId,
+                  orElse: () => null) ==
+              null) {
+        CoFormLayoutConstraint constraint = this.getConstraintsFromString(v);
+
+        if (constraint != null) {
+          constraint.comp = k;
+          children.add(CoFormLayoutConstraintData(
+              key: ValueKey(k.componentModel.componentId),
+              child: k,
+              id: constraint));
+        }
+      }
+    });
+
     return StatefulBuilder(
       builder: (context, setState) {
         super.setState = setState;
-
-        List<CoFormLayoutConstraintData> children =
-            new List<CoFormLayoutConstraintData>();
-
-        this._layoutConstraints.forEach((k, v) {
-          if (k.componentModel.isVisible) {
-            CoFormLayoutConstraint constraint =
-                this.getConstraintsFromString(v);
-
-            if (constraint != null) {
-              constraint.comp = k;
-              children.add(CoFormLayoutConstraintData(
-                  key: ValueKey(k.componentModel.componentId),
-                  child: k,
-                  id: constraint));
-            }
-          }
-        });
 
         return Container(
             child: CoFormLayoutWidget(

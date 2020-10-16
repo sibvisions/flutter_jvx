@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import '../component/component_model.dart';
 import 'co_container_widget.dart';
 
@@ -22,15 +23,16 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     super.didChangeDependencies();
   }
 
-  @override
-  void didUpdateWidget(CoContainerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.componentModel.changedComponent != null) {
-      layout = createLayout(widget, widget.componentModel.changedComponent);
-    }
-    this.update();
+  List<Widget> _getNullLayout(List<ComponentWidget> components) {
+    List<Widget> children = <Widget>[];
 
-    widget.componentModel.addListener(() => setState(() => this.update()));
+    components.forEach((element) {
+      if (element.componentModel.isVisible) {
+        children.add(element);
+      }
+    });
+
+    return children;
   }
 
   @override
@@ -43,7 +45,7 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       child = this.layout as Widget;
       // }
     } else if (this.components.isNotEmpty) {
-      child = this.components[0];
+      child = Column(children: _getNullLayout(this.components));
     }
 
     if (child != null) {
