@@ -1,12 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/api/request/request.dart';
-import 'package:jvx_flutterclient/model/api/response/data/data_book.dart';
-import 'package:jvx_flutterclient/model/api/response/response_data.dart';
-import 'package:uuid/uuid.dart';
 
-import 'component_screen_widget.dart';
-import 'i_component_creator.dart';
 import 'i_screen.dart';
 
 class SoScreen extends StatelessWidget implements IScreen {
@@ -21,14 +15,8 @@ class SoScreen extends StatelessWidget implements IScreen {
   }
 
   @override
-  void update(Request request, ResponseData responseData) {
-    // TODO: implement update
-  }
-
-  @override
   bool withServer() {
-    // TODO: implement withServer
-    throw UnimplementedError();
+    return true;
   }
 }
 

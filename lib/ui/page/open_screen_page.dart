@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_screen.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -23,8 +24,6 @@ import '../../model/api/response/response.dart';
 import '../../model/api/response/response_data.dart';
 import '../../model/menu_item.dart';
 import '../../ui/widgets/menu_drawer_widget.dart';
-import '../../ui_refactor_2/screen.dart/so_component_creator.dart';
-import '../../ui_refactor_2/screen.dart/so_screen.dart';
 import '../../utils/application_api.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/text_utils.dart';
@@ -203,8 +202,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
 
                   Navigator.of(context).pushReplacementNamed('/menu',
                       arguments: MenuArguments(globals.items, true));
-                } else
-                  screen.update(state.request, state.responseData);
+                } else {}
+                  // screen.update(state.request, state.responseData);
               }
             }
           },
@@ -243,7 +242,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               }
 
               Widget child;
-              screen.update(state.request, state.responseData);
+              // screen.update(state.request, state.responseData);
 
               if ((globals.applicationStyle != null &&
                   globals.applicationStyle?.desktopIcon != null)) {

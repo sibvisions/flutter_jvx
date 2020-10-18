@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/api/request/request.dart';
-import 'package:jvx_flutterclient/model/api/response/response_data.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/screen_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_component_creator.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_screen.dart';
-
-import 'component_screen_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_creator.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_screen.dart';
 
 abstract class IScreen {
   /// The component screen is used for building the layout and widgets of the application.
@@ -14,9 +9,6 @@ abstract class IScreen {
   /// Constructor for returning the default Implementation of this interface.
   factory IScreen(SoComponentCreator componentCreator, GlobalKey globalKey) =>
       SoScreen();
-
-  /// Gets called when new components, metaData or data is comming from the server.
-  void update(Request request, ResponseData responseData);
 
   /// Returns a widget.
   ///

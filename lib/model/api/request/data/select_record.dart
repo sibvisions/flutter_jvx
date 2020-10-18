@@ -1,6 +1,6 @@
-import '../../../../ui/screen/so_component_data.dart';
 import '../../../../model/api/request/request.dart';
 import '../../../../model/filter.dart';
+import '../../../../ui_refactor_2/screen/so_component_data.dart';
 import '../../../../utils/globals.dart' as globals;
 
 /// Model for the [SelectRecord] request.

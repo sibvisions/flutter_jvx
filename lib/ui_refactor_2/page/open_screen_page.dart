@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/component_screen_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_creator.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_screen.dart';
 
 import '../../logic/bloc/api_bloc.dart';
 import '../../logic/bloc/error_handler.dart';
@@ -23,9 +26,6 @@ import '../../ui/widgets/menu_drawer_widget.dart';
 import '../../utils/application_api.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/uidata.dart';
-import '../screen.dart/component_screen_widget.dart';
-import '../screen.dart/so_component_creator.dart' as creator;
-import '../screen.dart/so_screen.dart';
 import '../widgets/dialogs/upload_file_picker.dart';
 
 class OpenScreenPage extends StatefulWidget {
@@ -159,60 +159,58 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                 endDrawer: _endDrawer(),
                 key: _scaffoldKey,
                 appBar: _appBar(this.title),
-                body: _getScreen(this.currentResponseData, this.currentRequest,
-                    this.closeCurrentScreen))),
+                body: Builder(builder: (BuildContext context) {
+                  SoScreen screen = SoScreen(
+                    componentId: _getRawCompId(),
+                    child: ComponentScreenWidget(
+                      closeCurrentScreen: closeCurrentScreen,
+                      componentCreator: SoComponentCreator(context),
+                      request: this.currentRequest,
+                      responseData: this.currentResponseData,
+                    ),
+                  );
+
+                  if (globals.applicationStyle != null &&
+                      globals.applicationStyle?.desktopIcon != null) {
+                    globals.appFrame.setScreen(Container(
+                        decoration: BoxDecoration(
+                            color: (globals.applicationStyle != null &&
+                                    globals.applicationStyle.desktopColor !=
+                                        null)
+                                ? globals.applicationStyle.desktopColor
+                                : null,
+                            image: !kIsWeb
+                                ? DecorationImage(
+                                    image: FileImage(File(
+                                        '${globals.dir}${globals.applicationStyle.desktopIcon}')),
+                                    fit: BoxFit.cover)
+                                : DecorationImage(
+                                    image: globals.files.containsKey(globals
+                                            .applicationStyle.desktopIcon)
+                                        ? MemoryImage(base64Decode(
+                                            globals.files[globals
+                                                .applicationStyle.desktopIcon]))
+                                        : null,
+                                    fit: BoxFit.cover,
+                                  )),
+                        child: screen));
+
+                    return globals.appFrame.getWidget();
+                  } else if (globals.applicationStyle != null &&
+                      globals.applicationStyle?.desktopColor != null) {
+                    globals.appFrame.setScreen(Container(
+                        decoration: BoxDecoration(
+                            color: globals.applicationStyle.desktopColor),
+                        child: screen));
+
+                    return globals.appFrame.getWidget();
+                  } else {
+                    globals.appFrame.setScreen(screen);
+                    return screen;
+                  }
+                }))),
       ));
-
-  Widget _getScreen(
-      ResponseData responseData, Request request, bool closeCurrentScreen) {
-    SoScreen screen = SoScreen(
-      componentId: _getRawCompId(),
-      child: ComponentScreenWidget(
-        closeCurrentScreen: closeCurrentScreen,
-        componentCreator: creator.SoComponentCreator(context),
-        request: this.currentRequest,
-        responseData: this.currentResponseData,
-      ),
-    );
-
-    if (globals.applicationStyle != null &&
-        globals.applicationStyle?.desktopIcon != null) {
-      globals.appFrame.setScreen(Container(
-          decoration: BoxDecoration(
-              color: (globals.applicationStyle != null &&
-                      globals.applicationStyle.desktopColor != null)
-                  ? globals.applicationStyle.desktopColor
-                  : null,
-              image: !kIsWeb
-                  ? DecorationImage(
-                      image: FileImage(File(
-                          '${globals.dir}${globals.applicationStyle.desktopIcon}')),
-                      fit: BoxFit.cover)
-                  : DecorationImage(
-                      image: globals.files
-                              .containsKey(globals.applicationStyle.desktopIcon)
-                          ? MemoryImage(base64Decode(globals
-                              .files[globals.applicationStyle.desktopIcon]))
-                          : null,
-                      fit: BoxFit.cover,
-                    )),
-          child: screen));
-
-      return globals.appFrame.getWidget();
-    } else if (globals.applicationStyle != null &&
-        globals.applicationStyle?.desktopColor != null) {
-      globals.appFrame.setScreen(Container(
-          decoration:
-              BoxDecoration(color: globals.applicationStyle.desktopColor),
-          child: screen));
-
-      return globals.appFrame.getWidget();
-    } else {
-      globals.appFrame.setScreen(screen);
-      return screen;
-    }
-  }
-
+      
   AppBar _appBar(String title) {
     return globals.appFrame.showScreenHeader
         ? AppBar(

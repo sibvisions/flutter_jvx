@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/api/response/meta_data/data_book_meta_data_column.dart';
-import 'package:jvx_flutterclient/ui/screen/so_component_data.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen.dart/so_component_creator.dart';
-import 'package:jvx_flutterclient/utils/text_utils.dart';
+
+import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
+import '../../ui/screen/so_component_data.dart';
+import '../../utils/text_utils.dart';
+import '../editor/celleditor/co_cell_editor_widget.dart';
+import '../screen/so_component_creator.dart';
 
 class SoTableColumnCalculator {
   static double defaultMinWidh = 15;

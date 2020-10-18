@@ -14,8 +14,7 @@ import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../editor/co_editor_widget.dart';
-import '../screen.dart/so_component_creator.dart';
-import 'component_model.dart';
+import '../screen/so_component_creator.dart';
 import 'so_table_column_calculator.dart';
 
 enum ContextMenuCommand { INSERT, DELETE }

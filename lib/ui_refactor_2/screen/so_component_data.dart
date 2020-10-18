@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../ui/screen/so_data_screen.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_data_screen.dart';
 import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../model/api/response/data/dataprovider_changed.dart';
 import '../../utils/text_utils.dart';
@@ -169,7 +169,7 @@ class SoComponentData {
       if (fetch != null) select.fetch = fetch;
 
       if (TextUtils.unfocusCurrentTextfield(context)) {
-        // select.soComponentData = this;
+        select.soComponentData = this;
         this.soDataScreen.requestQueue.add(select);
       } else {
         BlocProvider.of<ApiBloc>(context).dispatch(select);
