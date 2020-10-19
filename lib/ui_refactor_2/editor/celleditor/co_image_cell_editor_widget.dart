@@ -162,8 +162,8 @@ class CoImageCellEditorWidgetState
                 shape: globals.applicationStyle?.editorsShape ??
                     RoundedRectangleBorder(),
                 child: Container(
-                  height: height,
-                  width: width - 10,
+                  height: height ?? 100,
+                  width: width != null ? width - 10.0 : null,
                   decoration: BoxDecoration(
                       image: _getImage(height, horizontalAlignment),
                       color:

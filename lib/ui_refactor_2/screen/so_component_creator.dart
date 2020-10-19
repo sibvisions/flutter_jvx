@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/container/co_group_panel_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../model/cell_editor.dart';
@@ -55,6 +57,10 @@ class SoComponentCreator implements IComponentCreator {
               changedComponent: changedComponent,
               componentId: changedComponent.id),
         ),
+    'GroupPanel': (ChangedComponent changedComponent) => CoGroupPanelWidget(
+        componentModel: ContainerComponentModel(
+            changedComponent: changedComponent,
+            componentId: changedComponent.id)),
     'Label': (ChangedComponent changedComponent) => CoLabelWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
@@ -110,6 +116,7 @@ class SoComponentCreator implements IComponentCreator {
   Map<String, CoCellEditorWidget Function(CellEditor cellEditor)>
       standardCellEditors = {
     'CheckBoxCellEditor': (CellEditor cellEditor) => CoCheckboxCellEditorWidget(
+          // key: GlobalKey(),
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
@@ -173,7 +180,7 @@ class SoComponentCreator implements IComponentCreator {
 
   CoEditorWidget _createEditor(ChangedComponent changedComponent) {
     CoEditorWidget editor = CoEditorWidget(
-      key: GlobalKey(debugLabel: changedComponent.id),
+      // key: GlobalKey(debugLabel: changedComponent.id),
       cellEditor: createCellEditor(changedComponent.cellEditor),
       componentModel: EditorComponentModel(changedComponent),
     );
@@ -257,7 +264,7 @@ class SoComponentCreator implements IComponentCreator {
 
     CoEditorWidget editor = CoEditorWidget(
       // key: GlobalKey(debugLabel: uuid.v4()),
-      key: ValueKey(cellEditor),
+      key: ValueKey(uuid.v4()),
       cellEditor: cellEditor,
       componentModel: EditorComponentModel.withoutChangedComponent(
           false, editable, false, null, null, indexInTable, value),

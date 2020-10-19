@@ -124,19 +124,15 @@ class CoDateCellEditorWidgetState
                           DateTime.now().subtract(Duration(seconds: 1))))
               .then((time) {
             if (time != null) {
-              setState(() {
-                this.setTimePart(time);
-                this.onDateValueChanged(this.toUpdate);
-              });
+              this.setTimePart(time);
+              this.onDateValueChanged(this.toUpdate);
             }
           });
         });
       } else {
         if (date != null) {
-          setState(() {
-            this.setDatePart(date);
-            this.onDateValueChanged(this.toUpdate);
-          });
+          this.setDatePart(date);
+          this.onDateValueChanged(this.toUpdate);
         }
       }
     });
@@ -161,6 +157,7 @@ class CoDateCellEditorWidgetState
 
     if (!this.isTableView) {
       return Container(
+        width: 100,
         height: 50,
         decoration: BoxDecoration(
             color: background != null
@@ -206,39 +203,28 @@ class CoDateCellEditorWidgetState
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 58,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: FaIcon(
-                          FontAwesomeIcons.calendarAlt,
-                          color: Colors.grey[600],
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.calendarAlt,
+                      color: Colors.grey[600],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      child: Icon(
+                        Icons.clear,
+                        size: 24,
+                        color: Colors.grey[400],
                       ),
-                      value.toString().isNotEmpty
-                          ? SizedBox(
-                              width: 10,
-                            )
-                          : Container(),
-                      value.toString().isNotEmpty
-                          ? Flexible(
-                              child: GestureDetector(
-                                child: Icon(
-                                  Icons.clear,
-                                  size: 24,
-                                  color: Colors.grey[400],
-                                ),
-                                onTap: () {
-                                  this.toUpdate = null;
-                                  this.onDateValueChanged(this.toUpdate);
-                                },
-                              ),
-                            )
-                          : Container()
-                    ],
-                  ),
+                      onTap: () {
+                        this.toUpdate = null;
+                        this.onDateValueChanged(this.toUpdate);
+                      },
+                    )
+                  ],
                 )
               ],
             ),
@@ -303,10 +289,8 @@ class CoDateCellEditorWidgetState
                         color: Colors.grey[400],
                       ),
                       onTap: () {
-                        setState(() {
-                          this.toUpdate = null;
-                          this.onDateValueChanged(this.toUpdate);
-                        });
+                        this.toUpdate = null;
+                        this.onDateValueChanged(this.toUpdate);
                       },
                     )
                   ],

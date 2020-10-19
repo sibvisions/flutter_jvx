@@ -207,11 +207,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
               component.componentModel.componentId ==
               toUpdateComponent.componentId,
           orElse: () => null);
-      if (componentWidget != null) {
-        componentWidget.componentModel.toUpdateComponents
-            .add(toUpdateComponent);
-        componentWidget.componentModel.update();
-      }
+      // if (componentWidget != null) {
+      //   componentWidget.componentModel.toUpdateComponents
+      //       .add(toUpdateComponent);
+      //   componentWidget.componentModel.update();
+      // }
 
       preferredSize = widget.componentModel.changedComponent
           .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);

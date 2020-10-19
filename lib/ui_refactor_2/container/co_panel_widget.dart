@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import '../component/component_model.dart';
+import '../../model/changed_component.dart';
 import '../component/component_widget.dart';
+import '../component/component_model.dart';
 import 'co_container_widget.dart';
 
 class CoPanelWidget extends CoContainerWidget {
@@ -43,6 +43,9 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       //   this.layout.setState(() => child = this.layout as Widget);
       // } else {
       child = this.layout as Widget;
+      if (this.layout.setState != null) {
+        this.layout.setState(() {});
+      }
       // }
     } else if (this.components.isNotEmpty) {
       child = Column(children: _getNullLayout(this.components));

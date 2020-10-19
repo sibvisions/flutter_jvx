@@ -88,6 +88,14 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   void initState() {
     super.initState();
 
+    var newVal = CoEditorWidget.of(context)
+        .data
+        ?.getColumnData(context, CoEditorWidget.of(context).columnName);
+
+    if (!(newVal is int)) {
+      this.value = newVal;
+    }
+
     CoEditorWidget.of(context).cellEditor = this;
 
     if ((widget as CoCellEditorWidget).changedCellEditor != null) {
