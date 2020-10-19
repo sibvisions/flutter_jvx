@@ -3,9 +3,12 @@ import 'package:jvx_flutterclient/model/cell_editor.dart';
 import 'package:jvx_flutterclient/model/popup_size.dart';
 import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 
 class CellEditorModel extends ValueNotifier {
   final CellEditor currentCellEditor;
+
+  SoComponentData data;
 
   bool isTableView = false;
   int horizontalAlignment;

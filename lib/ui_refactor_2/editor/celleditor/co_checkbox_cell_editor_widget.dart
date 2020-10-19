@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/cell_editor.dart';
-import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
-import 'package:jvx_flutterclient/ui/layout/i_alignment_constants.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_cell_editor_widget.dart';
 
-import '../co_editor_widget.dart';
+import '../../../model/cell_editor.dart';
+import '../../../model/properties/cell_editor_properties.dart';
+import '../../../ui/layout/i_alignment_constants.dart';
 import 'cell_editor_model.dart';
+import 'co_cell_editor_widget.dart';
 
 class CoCheckboxCellEditorWidget extends CoCellEditorWidget {
   CoCheckboxCellEditorWidget({

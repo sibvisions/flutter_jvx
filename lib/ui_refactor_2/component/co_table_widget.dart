@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
 
 import '../../model/api/response/data/data_book.dart';
 import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
-import '../../ui/screen/so_component_data.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../editor/co_editor_widget.dart';
+import '../editor/editor_component_model.dart';
 import '../screen/so_component_creator.dart';
+import '../screen/so_component_data.dart';
 import 'so_table_column_calculator.dart';
 
 enum ContextMenuCommand { INSERT, DELETE }
@@ -456,6 +456,18 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     if (componentCreator == null)
       componentCreator = SoComponentCreator(context);
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
+
+    if (!(widget.componentModel as EditorComponentModel).withChangedComponent) {
+      this.onRowTapped =
+          (widget.componentModel as EditorComponentModel).onRowTapped;
+      this.tableHeaderVisible =
+          (widget.componentModel as EditorComponentModel).tableHeaderVisible;
+      this.editable = (widget.componentModel as EditorComponentModel).editable;
+      this.autoResize =
+          (widget.componentModel as EditorComponentModel).autoResize;
+      this.columnNames =
+          (widget.componentModel as EditorComponentModel).columnNames;
+    }
   }
 
   @override

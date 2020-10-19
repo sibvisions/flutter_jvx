@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 
-import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
 import '../../model/filter.dart';
 import '../../model/properties/component_properties.dart';
@@ -56,7 +56,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
     this.cellEditor?.value = _data.getColumnData(context, columnName);
   }
 
-  get cellEditor => _cellEditor;
+  CoCellEditorWidgetState get cellEditor => _cellEditor;
   set cellEditor(CoCellEditorWidgetState editor) {
     _cellEditor = editor;
     if (editor != null) {
@@ -67,7 +67,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
     }
   }
 
-  get cellEditorWidget => _cellEditorWidget;
+  CoCellEditorWidget get cellEditorWidget => _cellEditorWidget;
   set cellEditorWidget(CoCellEditorWidget cellEditorWidget) {
     if (cellEditorWidget != null) {
       _cellEditorWidget = cellEditorWidget;
@@ -248,6 +248,17 @@ class CoEditorWidgetState<T extends StatefulWidget>
         .addListener(() => setState(() => this.updateData()));
 
     _cellEditorWidget = (widget as CoEditorWidget).cellEditor;
+
+    EditorComponentModel editorComponentModel =
+        (widget as CoEditorWidget).componentModel as EditorComponentModel;
+
+    if (!editorComponentModel.withChangedComponent) {
+      this.cellEditorEditable = editorComponentModel.editable;
+      this.cellEditorWidget?.cellEditorModel?.value =
+          editorComponentModel.value;
+      this.cellEditorWidget?.cellEditorModel?.indexInTable =
+          editorComponentModel.indexInTable;
+    }
   }
 
   @override

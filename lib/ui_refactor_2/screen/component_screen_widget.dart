@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui/editor/celleditor/co_referenced_cell_editor.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_referenced_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_data_screen.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/api/request/request.dart';
@@ -6,7 +9,6 @@ import '../../model/api/response/response_data.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
-import '../../ui/screen/so_data_screen.dart';
 import '../component/co_action_component_widget.dart';
 import '../component/component_widget.dart';
 import '../container/co_container_widget.dart';
@@ -156,15 +158,15 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             .add(this.getComponentData(
                 (componentClass.componentModel as EditorComponentModel)
                     ?.dataProvider));
-        /*
-        if (editorWidgetState.cellEditor is CoReferencedCellEditor) {
-          (editorWidgetState.cellEditor as CoReferencedCellEditor).data = this
-              .getComponentData(
-                  (editorWidgetState.cellEditor as CoReferencedCellEditor)
-                      .linkReference
-                      .dataProvider);
+        if (componentClass.cellEditor is CoReferencedCellEditorWidget) {
+          (componentClass.cellEditor as CoReferencedCellEditorWidget)
+              .cellEditorModel
+              .data = this.getComponentData((componentClass.cellEditor
+                  as CoReferencedCellEditorWidget)
+              .changedCellEditor
+              .linkReference
+              .dataProvider);
         }
-        */
       } else if (componentClass is CoActionComponentWidget) {
         componentClass?.componentModel?.onButtonPressed = this.onButtonPressed;
       }

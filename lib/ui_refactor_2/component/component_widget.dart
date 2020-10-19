@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
@@ -96,9 +97,11 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
 
   @override
   void setState(fn) {
-    if (mounted) {
-      super.setState(fn);
-    }
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) {
+        super.setState(fn);
+      }
+    });
   }
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
+
 import '../component/component_model.dart';
+import '../component/component_widget.dart';
 import 'co_container_widget.dart';
 
 class CoPanelWidget extends CoContainerWidget {
