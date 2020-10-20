@@ -55,7 +55,8 @@ class ApiBloc extends Bloc<Request, Response> {
   void onEvent(Request event) {
     if (event.requestType != RequestType.RELOAD) {
       event.sequenceNo = seqNo++;
-      print("~~~ Outgoing Request id: ${event.sequenceNo}");
+      print(
+          "~~~ Outgoing Request id: ${event.sequenceNo} (${event.requestType.toString()})");
     }
     _queue.add(event);
     super.onEvent(event);
@@ -68,7 +69,8 @@ class ApiBloc extends Bloc<Request, Response> {
         await for (Response response in makeRequest(_queue.removeFirst())) {
           if (response.requestType != RequestType.LOADING &&
               response.requestType != RequestType.RELOAD) {
-            print("~~~ Incoming Response id: ${response.request.sequenceNo}");
+            print(
+                "~~~ Incoming Response id: ${response.request.sequenceNo} (${event.requestType.toString()})");
           }
 
           if (response.request?.subsequentRequest != null) {
