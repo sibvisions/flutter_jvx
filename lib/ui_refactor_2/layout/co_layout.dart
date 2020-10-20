@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/i_layout.dart';
 
 mixin CoLayout<E> implements ILayout<E> {
