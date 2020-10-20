@@ -1,8 +1,11 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
 import 'package:jvx_flutterclient/model/properties/component_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
 import 'package:jvx_flutterclient/utils/so_text_style.dart';
 
 import '../../jvx_flutterclient.dart';
@@ -86,10 +89,10 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
         .toUpdateComponents
         .forEach((toUpdateComponent) {
       this.updateProperties(toUpdateComponent.changedComponent);
-      (widget as ComponentWidget)
-          .componentModel
-          .updateProperties(toUpdateComponent.changedComponent);
     });
+
+    (widget as ComponentWidget).componentModel.toUpdateComponents =
+        Queue<ToUpdateComponent>();
 
     state = (widget as ComponentWidget).componentModel.coState;
     constraints = (widget as ComponentWidget).componentModel.constraints;
@@ -109,9 +112,9 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
     super.initState();
     this._update();
     (widget as ComponentWidget).componentModel.componentState = this;
-    (widget as ComponentWidget)
-        .componentModel
-        .addListener(() => setState(() => this._update()));
+    (widget as ComponentWidget).componentModel.addListener(() {
+      setState(() => this._update());
+    });
   }
 
   @override

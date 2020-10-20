@@ -185,19 +185,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void _updateComponents(Queue<ToAddComponent> toAddComponents) {
-    if (this.layout?.setState != null) {
-      toAddComponents.forEach((toAddComponent) {
-        if (!this.components.contains(toAddComponent.componentWidget))
-          this.addWithConstraints(
-              toAddComponent.componentWidget, toAddComponent.constraints);
-      });
-    } else {
-      toAddComponents.forEach((toAddComponent) {
-        if (!this.components.contains(toAddComponent.componentWidget))
-          this.addWithConstraints(
-              toAddComponent.componentWidget, toAddComponent.constraints);
-      });
-    }
+    toAddComponents.forEach((toAddComponent) {
+      if (!this.components.contains(toAddComponent.componentWidget))
+        this.addWithConstraints(
+            toAddComponent.componentWidget, toAddComponent.constraints);
+    });
   }
 
   void _updateComponentProperties(Queue<ToUpdateComponent> toUpdateComponents) {

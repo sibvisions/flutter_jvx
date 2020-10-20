@@ -29,9 +29,22 @@ mixin CoLayout<E> implements ILayout<E> {
   String rawLayoutData;
   String rawLayoutString;
 
+  Map<String, Key> keys = <String, Key>{};
+
   bool get isPreferredSizeSet => preferredSize != null;
   bool get isMinimumSizeSet => minimumSize != null;
   bool get isMaximumSizeSet => maximumSize != null;
+
+  Key getKeyByComponentId(String componentId) {
+    return keys[componentId];
+  }
+
+  Key createKey(String componentId) {
+    if (keys[componentId] == null) {
+      keys[componentId] = GlobalKey(debugLabel: componentId);
+    }
+    return keys[componentId];
+  }
 
   void parseFromString(String layout) {
     List<String> parameter = layout?.split(",");

@@ -77,6 +77,7 @@ class ComponentModel extends ValueNotifier {
   }
 
   void update() {
+    if (changedComponent != null) this.updateProperties(changedComponent);
     notifyListeners();
   }
 }

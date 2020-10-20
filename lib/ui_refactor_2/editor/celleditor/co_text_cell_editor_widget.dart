@@ -23,11 +23,11 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  FocusNode _focusNode;
   TextEditingController _controller = TextEditingController();
   bool multiLine = false;
   bool password = false;
   bool valueChanged = false;
+  final GlobalKey textfieldKey = GlobalKey<CoTextCellEditorWidgetState>();
 
   @override
   get preferredSize {
@@ -64,8 +64,6 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-
     multiLine = (widget.changedCellEditor
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('multiline') ??
@@ -78,12 +76,12 @@ class CoTextCellEditorWidgetState
 
   @override
   void dispose() {
-    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     setEditorProperties(context);
 
     String controllerValue = (this.value != null ? this.value.toString() : "");
@@ -105,7 +103,6 @@ class CoTextCellEditorWidgetState
       child: Container(
         width: 100,
         child: TextField(
-            focusNode: _focusNode,
             textAlign:
                 SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
             decoration: InputDecoration(
