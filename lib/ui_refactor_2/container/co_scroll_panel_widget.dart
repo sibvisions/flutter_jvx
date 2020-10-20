@@ -39,6 +39,9 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
     Widget child;
     if (this.layout != null) {
       child = this.layout as Widget;
+      if (this.layout.setState != null) {
+        this.layout.setState(() {});
+      }
     } else if (this.components.isNotEmpty) {
       child = Column(children: this.components);
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
 
 import 'co_layout.dart';
 import 'widgets/co_form_layout_anchor.dart';
@@ -226,12 +227,17 @@ class CoFormLayoutContainerWidget extends StatelessWidget
               null) {
         CoFormLayoutConstraint constraint = this.getConstraintsFromString(v);
 
+        Key key = this.getKeyByComponentId(k.componentModel.componentId);
+
+        if (key == null) {
+          key = createKey(k.componentModel.componentId);
+          this.keys[k.componentModel.componentId] = key;
+        }
+
         if (constraint != null) {
           constraint.comp = k;
-          children.add(CoFormLayoutConstraintData(
-              key: ValueKey(k.componentModel.componentId),
-              child: k,
-              id: constraint));
+          children.add(
+              CoFormLayoutConstraintData(key: key, child: k, id: constraint));
         }
       }
     });

@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
 
 import '../../model/api/response/data/data_book.dart';
 import '../../model/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
-import '../../ui/screen/so_component_data.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/translations.dart';
 import '../../utils/uidata.dart';
 import '../editor/co_editor_widget.dart';
+import '../editor/editor_component_model.dart';
 import '../screen/so_component_creator.dart';
+import '../screen/so_component_data.dart';
 import 'so_table_column_calculator.dart';
 
 enum ContextMenuCommand { INSERT, DELETE }
@@ -130,8 +130,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         newSelectedRow >= 0 &&
         newSelectedRow != selectedRow &&
         this.data != null &&
-        this.data.data != null)
-      this.data.updateSelectedRow(newSelectedRow, true);
+        this.data?.data != null)
+      this.data?.updateSelectedRow(newSelectedRow, true);
 
     selectedRow = changedComponent.getProperty<int>(
         ComponentProperty.SELECTED_ROW, selectedRow);
@@ -139,7 +139,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   void _onRowTapped(int index) {
     if (this.onRowTapped == null) {
-      this.data.selectRecord(context, index);
+      this.data?.selectRecord(context, index);
     } else {
       this.onRowTapped(index);
     }
@@ -221,17 +221,17 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     List<PopupMenuEntry<ContextMenuModel>> popupMenuEntries =
         List<PopupMenuEntry<ContextMenuModel>>();
 
-    if (this.data.insertEnabled) {
+    if (this.data?.insertEnabled) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare,
           'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
     }
 
-    if (this.data.deleteEnabled && index >= 0) {
+    if (this.data?.deleteEnabled && index >= 0) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
           'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
     }
 
-    if (this.data.insertEnabled) {
+    if (this.data?.insertEnabled) {
       showMenu(
               position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
                   Offset.zero & MediaQuery.of(context).size),
@@ -241,9 +241,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
         if (val != null) {
           if (val.command == ContextMenuCommand.INSERT)
-            this.data.insertRecord(context);
+            this.data?.insertRecord(context);
           else if (val.command == ContextMenuCommand.DELETE)
-            this.data.deleteRecord(context, val.index);
+            this.data?.deleteRecord(context, val.index);
         }
       });
     }
@@ -251,11 +251,11 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   CoEditorWidget _getEditorForColumn(
       String text, String columnName, int index) {
-    DataBookMetaDataColumn column = this.data.getMetaDataColumn(columnName);
+    DataBookMetaDataColumn column = this.data?.getMetaDataColumn(columnName);
 
     if (column != null) {
       CoEditorWidget clEditor = componentCreator.createEditorForTable(
-          column.cellEditor, text, editable, index);
+          column?.cellEditor, text, editable, index);
       if (clEditor != null) {
         (clEditor.componentModel as EditorComponentModel).columnName =
             columnName;
@@ -335,13 +335,13 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     if (this.columnLabels != null) {
       this.columnLabels.asMap().forEach((i, c) {
         DataBookMetaDataColumn column =
-            this.data.getMetaDataColumn(columnNames[i]);
-        if (column.nullable) {
+            this.data?.getMetaDataColumn(columnNames[i]);
+        if (column != null && column.nullable) {
           children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
-              nullable: column.nullable));
+              nullable: column?.nullable ?? false));
         } else {
           children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
-              nullable: column.nullable));
+              nullable: column?.nullable ?? false));
         }
       });
     }
@@ -361,7 +361,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       bool isSelected = index == data.selectedRow;
       if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
-      if (this.data.deleteEnabled && !_hasHorizontalScroller) {
+      if (this.data?.deleteEnabled && !_hasHorizontalScroller) {
         return this.editable
             ? GestureDetector(
                 onLongPress: () => showContextMenu(context, index),
@@ -381,7 +381,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       color: Colors.red.withOpacity(
                           globals.applicationStyle?.controlsOpacity ?? 1.0),
                       icon: Icons.delete,
-                      onTap: () => this.data.deleteRecord(context, index),
+                      onTap: () => this.data?.deleteRecord(context, index),
                     ),
                   ],
                 ))
@@ -446,7 +446,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         _data != null &&
         _data.records != null &&
         pos.index + fetchMoreItemOffset > _data.records.length) {
-      this.data.getData(context, this.pageSize + _data.records.length);
+      this.data?.getData(context, this.pageSize + _data.records.length);
     }
   }
 
@@ -456,13 +456,25 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     if (componentCreator == null)
       componentCreator = SoComponentCreator(context);
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
+
+    if (!(widget.componentModel as EditorComponentModel).withChangedComponent) {
+      this.onRowTapped =
+          (widget.componentModel as EditorComponentModel).onRowTapped;
+      this.tableHeaderVisible =
+          (widget.componentModel as EditorComponentModel).tableHeaderVisible;
+      this.editable = (widget.componentModel as EditorComponentModel).editable;
+      this.autoResize =
+          (widget.componentModel as EditorComponentModel).autoResize;
+      this.columnNames =
+          (widget.componentModel as EditorComponentModel).columnNames;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     double borderWidth = 1;
     int itemCount = tableHeaderVisible ? 1 : 0;
-    _data = this.data.getData(context, pageSize);
+    _data = this.data?.getData(context, pageSize);
 
     if (_data != null && _data.records != null)
       itemCount += _data.records.length;

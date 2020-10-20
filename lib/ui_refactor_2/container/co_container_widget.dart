@@ -185,19 +185,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void _updateComponents(Queue<ToAddComponent> toAddComponents) {
-    if (this.layout?.setState != null) {
-      toAddComponents.forEach((toAddComponent) {
-        if (!this.components.contains(toAddComponent.componentWidget))
-          this.addWithConstraints(
-              toAddComponent.componentWidget, toAddComponent.constraints);
-      });
-    } else {
-      toAddComponents.forEach((toAddComponent) {
-        if (!this.components.contains(toAddComponent.componentWidget))
-          this.addWithConstraints(
-              toAddComponent.componentWidget, toAddComponent.constraints);
-      });
-    }
+    toAddComponents.forEach((toAddComponent) {
+      if (!this.components.contains(toAddComponent.componentWidget))
+        this.addWithConstraints(
+            toAddComponent.componentWidget, toAddComponent.constraints);
+    });
   }
 
   void _updateComponentProperties(Queue<ToUpdateComponent> toUpdateComponents) {
@@ -207,11 +199,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
               component.componentModel.componentId ==
               toUpdateComponent.componentId,
           orElse: () => null);
-      if (componentWidget != null) {
-        componentWidget.componentModel.toUpdateComponents
-            .add(toUpdateComponent);
-        componentWidget.componentModel.update();
-      }
+      // if (componentWidget != null) {
+      //   componentWidget.componentModel.toUpdateComponents
+      //       .add(toUpdateComponent);
+      //   componentWidget.componentModel.update();
+      // }
 
       preferredSize = widget.componentModel.changedComponent
           .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);

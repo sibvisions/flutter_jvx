@@ -6,6 +6,7 @@ import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
 import 'package:jvx_flutterclient/model/properties/hex_color.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/editor_component_model.dart';
 import 'package:uuid/uuid.dart';
 
 class CoCellEditorWidget extends StatefulWidget {
@@ -87,6 +88,14 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   void initState() {
     super.initState();
 
+    var newVal = CoEditorWidget.of(context)
+        .data
+        ?.getColumnData(context, CoEditorWidget.of(context).columnName);
+
+    if (!(newVal is int)) {
+      this.value = newVal;
+    }
+
     CoEditorWidget.of(context).cellEditor = this;
 
     if ((widget as CoCellEditorWidget).changedCellEditor != null) {
@@ -134,6 +143,15 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
     placeholder = editorState.cellEditorPlaceholder;
     horizontalAlignment = editorState.cellEditorHorizontalAlignment;
     font = editorState.cellEditorFont;
+    indexInTable = ((editorState.widget as CoEditorWidget).componentModel
+            as EditorComponentModel)
+        .indexInTable;
+    var newVal = ((editorState.widget as CoEditorWidget).componentModel
+            as EditorComponentModel)
+        .value;
+    if (newVal != null) {
+      value = newVal;
+    }
   }
 
   @override

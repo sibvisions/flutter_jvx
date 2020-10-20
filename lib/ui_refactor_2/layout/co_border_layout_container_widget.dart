@@ -143,40 +143,72 @@ class CoBorderLayoutContainerWidget extends StatelessWidget
         List<CoBorderLayoutId> children = new List<CoBorderLayoutId>();
 
         if (_center != null && _center.componentModel.isVisible) {
+          Key key =
+              this.getKeyByComponentId(_center.componentModel.componentId);
+
+          if (key == null) {
+            key = createKey(_center.componentModel.componentId);
+            this.keys[_center.componentModel.componentId] = key;
+          }
+
           children.add(CoBorderLayoutId(
-              key: ValueKey(_center.componentModel.componentId),
+              key: key,
               child: _center,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.Center, _center)));
         }
 
         if (_north != null && _north.componentModel.isVisible) {
+          Key key = this.getKeyByComponentId(_north.componentModel.componentId);
+
+          if (key == null) {
+            key = createKey(_north.componentModel.componentId);
+            this.keys[_north.componentModel.componentId] = key;
+          }
           children.add(CoBorderLayoutId(
-              key: ValueKey(_north.componentModel.componentId),
+              key: key,
               child: _north,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.North, _north)));
         }
 
         if (_south != null && _south.componentModel.isVisible) {
+          Key key = this.getKeyByComponentId(_south.componentModel.componentId);
+
+          if (key == null) {
+            key = createKey(_south.componentModel.componentId);
+            this.keys[_south.componentModel.componentId] = key;
+          }
           children.add(CoBorderLayoutId(
-              key: ValueKey(_south.componentModel.componentId),
+              key: key,
               child: _south,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.South, _south)));
         }
 
         if (_west != null && _west.componentModel.isVisible) {
+          Key key = this.getKeyByComponentId(_west.componentModel.componentId);
+
+          if (key == null) {
+            key = createKey(_west.componentModel.componentId);
+            this.keys[_west.componentModel.componentId] = key;
+          }
           children.add(CoBorderLayoutId(
-              key: ValueKey(_west.componentModel.componentId),
+              key: key,
               child: _west,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.West, _west)));
         }
 
         if (_east != null && _east.componentModel.isVisible) {
+          Key key = this.getKeyByComponentId(_east.componentModel.componentId);
+
+          if (key == null) {
+            key = createKey(_east.componentModel.componentId);
+            this.keys[_east.componentModel.componentId] = key;
+          }
           children.add(CoBorderLayoutId(
-              key: ValueKey(_east.componentModel.componentId),
+              key: key,
               child: _east,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.East, _east)));

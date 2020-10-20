@@ -27,6 +27,7 @@ class CoTextCellEditorWidgetState
   bool multiLine = false;
   bool password = false;
   bool valueChanged = false;
+  final GlobalKey textfieldKey = GlobalKey<CoTextCellEditorWidgetState>();
 
   @override
   get preferredSize {
@@ -74,7 +75,13 @@ class CoTextCellEditorWidgetState
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     setEditorProperties(context);
 
     String controllerValue = (this.value != null ? this.value.toString() : "");
