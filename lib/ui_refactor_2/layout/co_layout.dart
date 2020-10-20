@@ -41,9 +41,7 @@ mixin CoLayout<E> implements ILayout<E> {
   }
 
   Key createKey(String componentId) {
-    if (keys[componentId] == null) {
-      keys[componentId] = GlobalKey(debugLabel: componentId);
-    }
+    keys[componentId] = GlobalKey(debugLabel: componentId);
     return keys[componentId];
   }
 

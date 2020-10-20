@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui/editor/celleditor/co_referenced_cell_editor.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_referenced_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/component_model_manager.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_data_screen.dart';
 
 import '../../jvx_flutterclient.dart';
@@ -31,6 +33,9 @@ class ComponentScreenWidget extends StatefulWidget {
       this.closeCurrentScreen})
       : super(key: key);
 
+  static ComponentScreenWidgetState of(BuildContext context) =>
+      context.findAncestorStateOfType<ComponentScreenWidgetState>();
+
   @override
   ComponentScreenWidgetState createState() => ComponentScreenWidgetState();
 }
@@ -41,7 +46,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   Map<String, ComponentWidget> additionalComponents =
       <String, ComponentWidget>{};
 
-  bool debug = false;
+  ComponentModelManager _componentModelManager = ComponentModelManager();
+
+  bool debug = true;
   ComponentWidget headerComponent;
   ComponentWidget footerComponent;
 
@@ -98,9 +105,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       } else {
         _moveComponent(component, changedComponent, container);
 
-        if (component.componentModel.coState != CoState.Added) {
-          _addComponent(changedComponent, container);
-        }
+        // if (component.componentModel.coState != CoState.Added) {
+        _addComponent(changedComponent, container);
+        // }
 
         component.componentModel.toUpdateComponents.add(ToUpdateComponent(
             changedComponent: changedComponent,
@@ -150,7 +157,11 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     ComponentWidget componentClass;
 
     if (!container.containsKey(component.id)) {
-      componentClass = widget?.componentCreator?.createComponent(component);
+      ComponentModel componentModel =
+          _componentModelManager.addComponentModel(component.id, component);
+
+      componentClass =
+          widget?.componentCreator?.createComponent(componentModel);
 
       if (componentClass is CoEditorWidget) {
         (componentClass.componentModel as EditorComponentModel)
@@ -158,6 +169,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             .add(this.getComponentData(
                 (componentClass.componentModel as EditorComponentModel)
                     ?.dataProvider));
+
+        (componentClass.componentModel as EditorComponentModel).update();
         if (componentClass.cellEditor is CoReferencedCellEditorWidget) {
           (componentClass.cellEditor as CoReferencedCellEditorWidget)
               .cellEditorModel
@@ -191,6 +204,23 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       } */
     } else {
       componentClass = container[component.id];
+
+      if (componentClass is CoEditorWidget) {
+        (componentClass.componentModel as EditorComponentModel)
+            .toUpdateData
+            .add(this.getComponentData(
+                (componentClass.componentModel as EditorComponentModel)
+                    ?.dataProvider));
+        if (componentClass.cellEditor is CoReferencedCellEditorWidget) {
+          (componentClass.cellEditor as CoReferencedCellEditorWidget)
+              .cellEditorModel
+              .data = this.getComponentData((componentClass.cellEditor
+                  as CoReferencedCellEditorWidget)
+              .changedCellEditor
+              .linkReference
+              .dataProvider);
+        }
+      }
     }
 
     if (componentClass != null) {
@@ -206,19 +236,26 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget parentComponent =
           container[component.componentModel.parentComponentId];
       if (parentComponent != null && parentComponent is CoContainerWidget) {
-        (parentComponent.componentModel as ContainerComponentModel)
-            .toAddComponents
-            .add(ToAddComponent(
-                constraints: component.componentModel.constraints,
-                componentWidget: component));
+        if (parentComponent.componentModel.componentState != null) {
+          (parentComponent.componentModel.componentState
+                  as CoContainerWidgetState)
+              .addWithConstraints(
+                  component, component.componentModel.constraints);
+        } else {
+          (parentComponent.componentModel as ContainerComponentModel)
+              .toAddComponents
+              .add(ToAddComponent(
+                  constraints: component.componentModel.constraints,
+                  componentWidget: component));
 
-        (parentComponent.componentModel as ContainerComponentModel)
-            .toUpdateComponentProperties
-            .add(ToUpdateComponent(
-                changedComponent: component.componentModel.changedComponent,
-                componentId: component.componentModel.componentId));
+          (parentComponent.componentModel as ContainerComponentModel)
+              .toUpdateComponentProperties
+              .add(ToUpdateComponent(
+                  changedComponent: component.componentModel.changedComponent,
+                  componentId: component.componentModel.componentId));
 
-        (parentComponent.componentModel as ContainerComponentModel).update();
+          (parentComponent.componentModel as ContainerComponentModel).update();
+        }
       }
     }
   }
@@ -311,11 +348,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         print("Update constraints (id:" +
             newComponent.id +
             ",oldConstraints:" +
-            ((component.componentModel as ContainerComponentModel)
-                        .constraints !=
-                    null
-                ? (component.componentModel as ContainerComponentModel)
-                    .constraints
+            (component.componentModel.constraints != null
+                ? component.componentModel.constraints
                 : "") +
             ",newConstraints:" +
             (constraints != null ? constraints : "") +
@@ -435,32 +469,29 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
       if (component is CoContainerWidget) {
         debugString += ", layout: " +
-            // ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
-            //         (component.componentModel.componentState as CoContainerWidgetState)
-            //                 .layout
-            //                 .rawLayoutString !=
-            //             null
-            //     ? (component.componentModel.componentState as CoContainerWidgetState)
-            //         .layout
-            //         .rawLayoutString
-            //     : "") +
+            ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
+                    (component.componentModel.componentState as CoContainerWidgetState)
+                            .layout
+                            .rawLayoutString !=
+                        null
+                ? (component.componentModel.componentState as CoContainerWidgetState)
+                    .layout
+                    .rawLayoutString
+                : "") +
             ", layoutData: " +
-            // ((component.componentModel.componentState as CoContainerWidgetState).layout !=
-            //             null &&
-            //         (component.componentModel.componentState as CoContainerWidgetState)
-            //                 .layout
-            //                 .rawLayoutData !=
-            //             null
-            //     ? (component.componentModel.componentState as CoContainerWidgetState)
-            //         .layout
-            //         .rawLayoutData
-            //     : "") +
+            ((component.componentModel.componentState as CoContainerWidgetState).layout !=
+                        null &&
+                    (component.componentModel.componentState as CoContainerWidgetState)
+                            .layout
+                            .rawLayoutData !=
+                        null
+                ? (component.componentModel.componentState as CoContainerWidgetState)
+                    .layout
+                    .rawLayoutData
+                : "") +
             ", childCount: " +
-            ((component.componentModel.componentState as CoContainerWidgetState)
-                        .components !=
-                    null
-                ? (component.componentModel.componentState
-                        as CoContainerWidgetState)
+            ((component.componentModel.componentState as CoContainerWidgetState).components != null
+                ? (component.componentModel.componentState as CoContainerWidgetState)
                     .components
                     .length
                     .toString()

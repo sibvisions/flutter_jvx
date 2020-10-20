@@ -20,8 +20,8 @@ import 'so_table_column_calculator.dart';
 enum ContextMenuCommand { INSERT, DELETE }
 
 class CoTableWidget extends CoEditorWidget {
-  CoTableWidget({EditorComponentModel componentModel})
-      : super(componentModel: componentModel);
+  CoTableWidget({EditorComponentModel componentModel, SoComponentData data})
+      : super(componentModel: componentModel, data: data);
 
   State<StatefulWidget> createState() => CoTableWidgetState();
 }
@@ -221,17 +221,17 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     List<PopupMenuEntry<ContextMenuModel>> popupMenuEntries =
         List<PopupMenuEntry<ContextMenuModel>>();
 
-    if (this.data?.insertEnabled) {
+    if (this.data?.insertEnabled ?? false) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare,
           'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
     }
 
-    if (this.data?.deleteEnabled && index >= 0) {
+    if (index >= 0 && (this.data != null && this.data.deleteEnabled)) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
           'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
     }
 
-    if (this.data?.insertEnabled) {
+    if (this.data?.insertEnabled ?? false) {
       showMenu(
               position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
                   Offset.zero & MediaQuery.of(context).size),

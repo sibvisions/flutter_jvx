@@ -146,7 +146,7 @@ class CoTextCellEditorWidgetState
                 multiLine ? TextInputType.multiline : TextInputType.text,
             onEditingComplete: onTextFieldEndEditing,
             onChanged: onTextFieldValueChanged,
-            readOnly: !this.editable ?? false,
+            readOnly: this.editable != null && !this.editable ?? false,
             obscureText: this.password
             //expands: this.verticalAlignment==1 && multiLine ? true : false,
             ),

@@ -50,6 +50,10 @@ class ComponentModel extends ValueNotifier {
     return _changedComponent;
   }
 
+  ChangedComponent get firstChangedComponent {
+    return _changedComponent;
+  }
+
   ComponentModel(this._changedComponent) : super(_changedComponent) {
     if (this._changedComponent != null) {
       this.compId = this._changedComponent.id;

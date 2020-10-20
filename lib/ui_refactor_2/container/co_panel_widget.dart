@@ -43,7 +43,7 @@ class CoPanelWidgetState extends CoContainerWidgetState {
       //   this.layout.setState(() => child = this.layout as Widget);
       // } else {
       child = this.layout as Widget;
-      if (this.layout.setState != null) {
+      if (mounted && this.layout.setState != null) {
         this.layout.setState(() {});
       }
       // }
