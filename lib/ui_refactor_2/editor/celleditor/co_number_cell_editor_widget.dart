@@ -32,6 +32,7 @@ class CoNumberCellEditorWidgetState
   List<TextInputFormatter> textInputFormatter;
   TextInputType textInputType;
   String tempValue;
+  FocusNode node = FocusNode();
 
   @override
   get preferredSize {
@@ -72,13 +73,15 @@ class CoNumberCellEditorWidgetState
   }
 
   void onTextFieldEndEditing() {
+    node.unfocus();
+
     if (this.valueChanged) {
-      intl.NumberFormat format = intl.NumberFormat(numberFormat);
-      if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
-        tempValue = tempValue.substring(0, tempValue.length - 1);
-      this.value =
-          NumericTextFormatter.convertToNumber(tempValue, numberFormat, format);
-      super.onValueChanged(this.value);
+      //intl.NumberFormat format = intl.NumberFormat(numberFormat);
+      //if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
+      //  tempValue = tempValue.substring(0, tempValue.length - 1);
+      //this.value =
+      //    NumericTextFormatter.convertToNumber(tempValue, numberFormat, format);
+      super.onValueChanged(this.tempValue);
       this.valueChanged = false;
     }
   }
@@ -116,6 +119,10 @@ class CoNumberCellEditorWidgetState
 
     textInputFormatter = this.getImputFormatter();
     textInputType = this.getKeyboardType();
+
+    this.node.addListener(() {
+      if (!node.hasFocus) onTextFieldEndEditing();
+    });
   }
 
   @override
@@ -164,6 +171,7 @@ class CoNumberCellEditorWidgetState
                   ? (this.foreground != null ? this.foreground : Colors.black)
                   : Colors.grey[700]),
           controller: _controller,
+          focusNode: node,
           keyboardType: textInputType,
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,

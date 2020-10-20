@@ -28,6 +28,7 @@ class CoTextCellEditorWidgetState
   bool password = false;
   bool valueChanged = false;
   final GlobalKey textfieldKey = GlobalKey<CoTextCellEditorWidgetState>();
+  FocusNode node = FocusNode();
 
   @override
   get preferredSize {
@@ -53,6 +54,8 @@ class CoTextCellEditorWidgetState
   }
 
   void onTextFieldEndEditing() {
+    node.unfocus();
+
     if (this.valueChanged) {
       super.onValueChanged(this.value);
       this.valueChanged = false;
@@ -72,6 +75,9 @@ class CoTextCellEditorWidgetState
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('password') ??
         false);
+    this.node.addListener(() {
+      if (!node.hasFocus) onTextFieldEndEditing();
+    });
   }
 
   @override
@@ -133,6 +139,7 @@ class CoTextCellEditorWidgetState
                     ? (this.foreground != null ? this.foreground : Colors.black)
                     : Colors.grey[700]),
             controller: _controller,
+            focusNode: node,
             minLines: null,
             maxLines: multiLine ? null : 1,
             keyboardType:

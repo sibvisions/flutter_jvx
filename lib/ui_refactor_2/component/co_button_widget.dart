@@ -104,7 +104,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
   }
 
   void buttonPressed() {
-    // TextUtils.unfocusCurrentTextfield(context);
+    TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
       PressButton pressButton =
