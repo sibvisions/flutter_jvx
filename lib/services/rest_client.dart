@@ -86,11 +86,6 @@ class RestClient {
             'cookie': globals.jsessionId
           }).timeout(const Duration(seconds: 10));
 
-      if (debug) {
-        Log.printLong("Request: $content");
-        Log.printLong("Response: ${response.body}");
-      }
-
       http.close();
     } catch (e) {
       http.close();
