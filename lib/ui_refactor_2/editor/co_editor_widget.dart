@@ -14,6 +14,7 @@ import '../component/component_widget.dart';
 import 'celleditor/co_cell_editor_widget.dart';
 import 'celleditor/co_number_cell_editor_widget.dart';
 import 'celleditor/co_text_cell_editor_widget.dart';
+import 'celleditor/co_referenced_cell_editor_widget.dart';
 import 'editor_component_model.dart';
 
 class CoEditorWidget extends ComponentWidget {
@@ -131,19 +132,14 @@ class CoEditorWidgetState<T extends StatefulWidget>
     bool isTextEditor = (cellEditor is CoTextCellEditorWidgetState ||
         cellEditor is CoNumberCellEditorWidgetState);
 
-    /*
-    if (cellEditor is CoReferencedCellEditor) {
+    if (cellEditor is CoReferencedCellEditorWidgetState) {
       data.setValues(
           context,
           (value is List) ? value : [value],
-          (this.cellEditor as CoReferencedCellEditor)
+          (this.cellEditor as CoReferencedCellEditorWidgetState)
               .linkReference
               .columnNames);
     } else {
-      //Filter filter = Filter(
-      //        columnNames: this.data.primaryKeyColumns,
-      //        values: data.data.getRow(0, this.data.primaryKeyColumns));
-
       data.setValues(
           context,
           (value is List) ? value : [value],
@@ -158,20 +154,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
               : null,
           isTextEditor);
     }
-    */
-    this.data.setValues(
-        context,
-        (value is List) ? value : [value],
-        [columnName],
-        index != null
-            ? Filter(
-                columnNames: this.data.primaryKeyColumns,
-                values: this
-                    .data
-                    .data
-                    .getRow(index, this.data.metaData.primaryKeyColumns))
-            : null,
-        isTextEditor);
   }
 
   void onFilter(dynamic value) {
