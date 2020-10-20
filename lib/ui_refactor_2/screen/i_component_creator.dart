@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/changed_component.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 
 abstract class IComponentCreator {
@@ -7,5 +8,5 @@ abstract class IComponentCreator {
 
   IComponentCreator([this.context]);
 
-  ComponentWidget createComponent(ChangedComponent changedComponent);
+  ComponentWidget createComponent(ComponentModel componentModel);
 }

@@ -2,13 +2,13 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/model/properties/hex_color.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/container_component_model.dart';
-import 'package:jvx_flutterclient/utils/so_text_style.dart';
 
-import '../../jvx_flutterclient.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../model/properties/hex_color.dart';
+import '../../ui/component/i_component.dart';
+import '../../utils/so_text_style.dart';
+import '../container/container_component_model.dart';
 import 'component_model.dart';
 
 class ComponentWidget extends StatefulWidget {
@@ -84,6 +84,11 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   }
 
   void _update() {
+    if ((widget as ComponentWidget).componentModel.firstChangedComponent !=
+        null)
+      this.updateProperties(
+          (widget as ComponentWidget).componentModel.firstChangedComponent);
+
     (widget as ComponentWidget)
         .componentModel
         .toUpdateComponents

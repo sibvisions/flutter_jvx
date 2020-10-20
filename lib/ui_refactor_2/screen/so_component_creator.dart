@@ -39,77 +39,69 @@ class SoComponentCreator implements IComponentCreator {
 
   SoComponentCreator([this.context]);
 
-  Map<String, ComponentWidget Function(ChangedComponent changedComponent)>
+  Map<String, ComponentWidget Function(ComponentModel componentModel)>
       standardComponents = {
-    'Panel': (ChangedComponent changedComponent) => CoPanelWidget(
+    'Panel': (ComponentModel componentModel) => CoPanelWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: ContainerComponentModel(
-              changedComponent: changedComponent,
-              componentId: changedComponent.id),
+          componentModel: componentModel,
         ),
-    'ScrollPanel': (ChangedComponent changedComponent) => CoScrollPanelWidget(
-          // key: GlobalKey(debugLabel: changedComponent.id),
-          // key: Key(changedComponent.id),
-          // key: ValueKey(changedComponent.id),
-          componentModel: ContainerComponentModel(
-              changedComponent: changedComponent,
-              componentId: changedComponent.id),
-        ),
-    'GroupPanel': (ChangedComponent changedComponent) => CoGroupPanelWidget(
-        componentModel: ContainerComponentModel(
-            changedComponent: changedComponent,
-            componentId: changedComponent.id)),
-    'Label': (ChangedComponent changedComponent) => CoLabelWidget(
+    'ScrollPanel': (ComponentModel componentModel) => CoScrollPanelWidget(
+        // key: GlobalKey(debugLabel: changedComponent.id),
+        // key: Key(changedComponent.id),
+        // key: ValueKey(changedComponent.id),
+        componentModel: componentModel),
+    'GroupPanel': (ComponentModel componentModel) =>
+        CoGroupPanelWidget(componentModel: componentModel),
+    'Label': (ComponentModel componentModel) => CoLabelWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
           text: '',
-          componentModel: ComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'Button': (ChangedComponent changedComponent) => CoButtonWidget(
+    'Button': (ComponentModel componentModel) => CoButtonWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: ComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'Table': (ChangedComponent changedComponent) => CoTableWidget(
+    'Table': (ComponentModel componentModel) => CoTableWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: EditorComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'CheckBox': (ChangedComponent changedComponent) => CoCheckBoxWidget(
+    'CheckBox': (ComponentModel componentModel) => CoCheckBoxWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: ComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'RadioButton': (ChangedComponent changedComponent) => CoRadioButtonWidget(
+    'RadioButton': (ComponentModel componentModel) => CoRadioButtonWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: ComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'TextArea': (ChangedComponent changedComponent) => CoTextAreaWidget(
+    'TextArea': (ComponentModel componentModel) => CoTextAreaWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: ComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'TextField': (ChangedComponent changedComponent) => CoTextFieldWidget(
+    'TextField': (ComponentModel componentModel) => CoTextFieldWidget(
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          componentModel: ComponentModel(changedComponent),
+          componentModel: componentModel,
         ),
-    'PasswordField': (ChangedComponent changedComponent) =>
-        CoPasswordFieldWidget(
-          componentModel: ComponentModel(changedComponent),
+    'PasswordField': (ComponentModel componentModel) => CoPasswordFieldWidget(
+          componentModel: componentModel,
         ),
-    'Icon': (ChangedComponent changedComponent) => CoIconWidget(
-          componentModel: ComponentModel(changedComponent),
+    'Icon': (ComponentModel componentModel) => CoIconWidget(
+          componentModel: componentModel,
         )
   };
 
@@ -147,18 +139,21 @@ class SoComponentCreator implements IComponentCreator {
   };
 
   @override
-  ComponentWidget createComponent(ChangedComponent changedComponent) {
+  ComponentWidget createComponent(ComponentModel componentModel) {
     ComponentWidget componentWidget;
 
-    if (changedComponent?.className?.isNotEmpty ?? true) {
-      if (changedComponent.className == 'Editor') {
-        componentWidget = _createEditor(changedComponent);
-      } else if (changedComponent.className == null ||
-          this.standardComponents[changedComponent.className] == null) {
-        componentWidget = _createDefaultComponent(changedComponent);
+    if (componentModel.changedComponent?.className?.isNotEmpty ?? true) {
+      if (componentModel.changedComponent?.className == 'Editor') {
+        componentWidget = _createEditor(componentModel);
+      } else if (componentModel.changedComponent.className == null ||
+          this.standardComponents[componentModel.changedComponent.className] ==
+              null) {
+        componentWidget =
+            _createDefaultComponent(componentModel.changedComponent);
       } else {
-        componentWidget = this
-            .standardComponents[changedComponent.className](changedComponent);
+        componentWidget =
+            this.standardComponents[componentModel.changedComponent.className](
+                componentModel);
       }
     }
 
@@ -178,11 +173,11 @@ class SoComponentCreator implements IComponentCreator {
     return componentWidget;
   }
 
-  CoEditorWidget _createEditor(ChangedComponent changedComponent) {
+  CoEditorWidget _createEditor(ComponentModel componentModel) {
     CoEditorWidget editor = CoEditorWidget(
       // key: GlobalKey(debugLabel: changedComponent.id),
-      cellEditor: createCellEditor(changedComponent.cellEditor),
-      componentModel: EditorComponentModel(changedComponent),
+      cellEditor: createCellEditor(componentModel.changedComponent.cellEditor),
+      componentModel: componentModel,
     );
     return editor;
   }

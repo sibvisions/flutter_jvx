@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/component_screen_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 
 import '../../model/changed_component.dart';
@@ -17,10 +18,12 @@ import 'editor_component_model.dart';
 
 class CoEditorWidget extends ComponentWidget {
   final CoCellEditorWidget cellEditor;
+  final SoComponentData data;
 
   CoEditorWidget({
     Key key,
     this.cellEditor,
+    this.data,
     EditorComponentModel componentModel,
   }) : super(key: key, componentModel: componentModel);
 
@@ -195,6 +198,8 @@ class CoEditorWidgetState<T extends StatefulWidget>
         ComponentProperty.READONLY, readonly);
     eventFocusGained = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_FOCUS_GAINED, eventFocusGained);
+    dataProvider =
+        changedComponent.getProperty<String>(ComponentProperty.DATA_PROVIDER);
 
     cellEditorEditable = changedComponent.getProperty<bool>(
         ComponentProperty.CELL_EDITOR___EDITABLE___, cellEditorEditable);
@@ -235,17 +240,35 @@ class CoEditorWidgetState<T extends StatefulWidget>
     ((widget as CoEditorWidget).componentModel as EditorComponentModel)
         .toUpdateData = Queue<SoComponentData>();
 
+    if (this.data == null)
+      this.data = ComponentScreenWidget.of(context).getComponentData(
+          ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+              .dataProvider);
+
     if (this.data != null) this.onDataChanged();
   }
 
   @override
   void initState() {
     super.initState();
-    this.updateData();
 
-    (widget as CoEditorWidget)
-        .componentModel
-        .addListener(() => setState(() => this.updateData()));
+    if ((widget as CoEditorWidget).data != null) {
+      this.data = (widget as CoEditorWidget).data;
+    } else {
+      dataProvider =
+          ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+              .dataProvider;
+
+      if (dataProvider != null)
+        this.data =
+            ComponentScreenWidget.of(context).getComponentData(dataProvider);
+    }
+
+    // this.updateData();
+
+    // (widget as CoEditorWidget)
+    //     .componentModel
+    //     .addListener(() => setState(() => this.updateData()));
 
     _cellEditorWidget = (widget as CoEditorWidget).cellEditor;
 

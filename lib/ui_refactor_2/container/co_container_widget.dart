@@ -42,6 +42,9 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   void addWithContraintsAndIndex(
       ComponentWidget pComponent, String pConstraints, int pIndex) {
+    if (components.contains(pComponent)) {
+      components.remove(pComponent);
+    }
     if (pIndex < 0) {
       components.add(pComponent);
     } else {
@@ -49,7 +52,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
 
     pComponent.componentModel.coState = CoState.Added;
-    if (layout != null) {
+    if (mounted && layout != null) {
       if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(pConstraints);
@@ -71,6 +74,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     if (layout != null) {
       layout.removeLayoutComponent(pComponent);
     }
+    (widget.componentModel as ContainerComponentModel)
+        .toAddComponents
+        .removeWhere((element) =>
+            element.componentWidget.componentModel.componentId ==
+            pComponent.componentModel.componentId);
     components.removeAt(pIndex);
   }
 
@@ -241,7 +249,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
     this.update();
 
-    widget.componentModel.addListener(() => setState(() => this.update()));
+    widget.componentModel.addListener(() => this.update());
   }
 
   @override

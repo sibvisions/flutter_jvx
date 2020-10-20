@@ -41,39 +41,40 @@ class CoBorderLayoutContainerWidget extends StatelessWidget
     parseFromString(layoutString);
   }
 
-  void removeLayoutComponent(ComponentWidget pComponent) {
+  void removeLayoutComponent(ComponentWidget pComponent,
+      [bool withSetState = false]) {
     if (_center != null &&
         pComponent.componentModel.componentId ==
             _center.componentModel.componentId) {
-      if (setState != null)
+      if (setState != null && withSetState)
         setState(() => _center = null);
       else
         _center = null;
     } else if (_north != null &&
         pComponent.componentModel.componentId ==
             _north.componentModel.componentId) {
-      if (setState != null)
+      if (setState != null && withSetState)
         setState(() => _north = null);
       else
         _north = null;
     } else if (_south != null &&
         pComponent.componentModel.componentId ==
             _south.componentModel.componentId) {
-      if (setState != null)
+      if (setState != null && withSetState)
         setState(() => _south = null);
       else
         _south = null;
     } else if (_east != null &&
         pComponent.componentModel.componentId ==
             _east.componentModel.componentId) {
-      if (setState != null)
+      if (setState != null && withSetState)
         setState(() => _east = null);
       else
         _east = null;
     } else if (_west != null &&
         pComponent.componentModel.componentId ==
             _west.componentModel.componentId) {
-      if (setState != null)
+      if (setState != null && withSetState)
         setState(() => _west = null);
       else
         _west = null;
@@ -212,6 +213,14 @@ class CoBorderLayoutContainerWidget extends StatelessWidget
               child: _east,
               pConstraints: CoBorderLayoutConstraintData(
                   CoBorderLayoutConstraints.East, _east)));
+        }
+
+        if (children.isEmpty) {
+          return Container(
+            child: Center(
+              child: Text('No Layout Components found'),
+            ),
+          );
         }
 
         return Container(
