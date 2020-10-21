@@ -76,12 +76,12 @@ class CoNumberCellEditorWidgetState
     node.unfocus();
 
     if (this.valueChanged) {
-      //intl.NumberFormat format = intl.NumberFormat(numberFormat);
-      //if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
-      //  tempValue = tempValue.substring(0, tempValue.length - 1);
-      //this.value =
-      //    NumericTextFormatter.convertToNumber(tempValue, numberFormat, format);
-      super.onValueChanged(this.tempValue);
+      intl.NumberFormat format = intl.NumberFormat(numberFormat);
+      if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
+        tempValue = tempValue.substring(0, tempValue.length - 1);
+      this.value =
+          NumericTextFormatter.convertToNumber(tempValue, numberFormat, format);
+      super.onValueChanged(this.value);
       this.valueChanged = false;
     }
   }
@@ -181,5 +181,12 @@ class CoNumberCellEditorWidgetState
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    node.dispose();
+
+    super.dispose();
   }
 }

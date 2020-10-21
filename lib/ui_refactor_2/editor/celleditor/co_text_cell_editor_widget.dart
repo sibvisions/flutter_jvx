@@ -82,6 +82,8 @@ class CoTextCellEditorWidgetState
 
   @override
   void dispose() {
+    node.dispose();
+
     super.dispose();
   }
 
