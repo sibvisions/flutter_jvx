@@ -231,7 +231,6 @@ class CoFormLayoutContainerWidget extends StatelessWidget
 
         if (key == null) {
           key = createKey(k.componentModel.componentId);
-          this.keys[k.componentModel.componentId] = key;
         }
 
         if (constraint != null) {

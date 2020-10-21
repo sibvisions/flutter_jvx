@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_group_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../model/cell_editor.dart';
@@ -229,7 +230,7 @@ class SoComponentCreator implements IComponentCreator {
   }
 
   CoEditorWidget createEditorForTable(CellEditor toCreatecellEditor,
-      dynamic value, bool editable, int indexInTable) {
+      dynamic value, bool editable, int indexInTable, SoComponentData data) {
     CoCellEditorWidget cellEditor;
     switch (toCreatecellEditor.className) {
       case "DateCellEditor":
@@ -259,6 +260,7 @@ class SoComponentCreator implements IComponentCreator {
 
     CoEditorWidget editor = CoEditorWidget(
       // key: GlobalKey(debugLabel: uuid.v4()),
+      data: data,
       key: ValueKey(uuid.v4()),
       cellEditor: cellEditor,
       componentModel: EditorComponentModel.withoutChangedComponent(

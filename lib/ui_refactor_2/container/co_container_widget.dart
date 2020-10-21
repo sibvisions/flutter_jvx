@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_flow_layout_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_grid_layout_container_widget.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
@@ -59,13 +61,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         layout.addLayoutComponent(pComponent, contraints);
       } else if (layout is CoFormLayoutContainerWidget) {
         layout.addLayoutComponent(pComponent, pConstraints);
-      }
-      /* else if (layout is CoFlowLayout) {
+      } else if (layout is CoFlowLayoutContainerWidget) {
         layout.addLayoutComponent(pComponent, pConstraints);
-      } else if (layout is CoGridLayout) {
+      } else if (layout is CoGridLayoutContainerWidget) {
         layout.addLayoutComponent(pComponent, pConstraints);
       }
-      */
     }
   }
 
@@ -152,20 +152,18 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
                 container, layoutRaw, layoutData);
           }
           break;
-        /*
         case "FlowLayout":
           {
-            return CoFlowLayout.fromLayoutString(
+            return CoFlowLayoutContainerWidget.fromLayoutString(
                 container, layoutRaw, layoutData);
           }
           break;
         case "GridLayout":
           {
-            return CoGridLayout.fromLayoutString(
+            return CoGridLayoutContainerWidget.fromLayoutString(
                 container, layoutRaw, layoutData);
           }
           break;
-        */
       }
     }
 
