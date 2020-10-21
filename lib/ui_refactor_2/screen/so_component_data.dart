@@ -295,7 +295,7 @@ class SoComponentData {
   dynamic _getColumnValue(String columnName) {
     int columnIndex = _getColumnIndex(columnName);
     if (columnIndex != null &&
-        columnIndex > 0 &&
+        columnIndex >= 0 &&
         data.selectedRow >= 0 &&
         data.selectedRow < data.records.length) {
       dynamic value = data.records[data.selectedRow][columnIndex];
