@@ -64,6 +64,11 @@ class ComponentModelManager {
             changedComponent: changedComponent,
             componentId: changedComponent.id);
         break;
+      case 'TabsetPanel':
+        componentModel = ContainerComponentModel(
+            changedComponent: changedComponent,
+            componentId: changedComponent.id);
+        break;
       case 'PopupMenu':
         componentModel = PopupComponentModel(changedComponent);
         break;
