@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui/editor/celleditor/co_referenced_cell_editor.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_menu_item_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_menu_button_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_menu_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/popup_button_component_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/popup_component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_referenced_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/component_model_manager.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_data_screen.dart';
@@ -182,26 +187,27 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         }
       } else if (componentClass is CoActionComponentWidget) {
         componentClass?.componentModel?.onButtonPressed = this.onButtonPressed;
+      } else if (component.additional && componentClass is CoPopupMenuWidget) {
+        if (components
+                .containsKey(componentClass.componentModel.parentComponentId) &&
+            components[componentClass.componentModel.parentComponentId]
+                is CoPopupMenuButtonWidget) {
+          CoPopupMenuButtonWidget btn =
+              components[componentClass.componentModel.parentComponentId];
+          (btn.componentModel as PopupButtonComponentModel).menu =
+              componentClass;
+        }
+      } else if (componentClass is CoMenuItemWidget) {
+        if (container
+                .containsKey(componentClass.componentModel.parentComponentId) &&
+            container[componentClass.componentModel.parentComponentId]
+                is CoPopupMenuWidget) {
+          CoPopupMenuWidget menu =
+              container[componentClass.componentModel.parentComponentId];
+          (menu.componentModel as PopupComponentModel)
+              .updateMenuItem(componentClass);
+        }
       }
-      /* else if (component.additional && componentClass is CoPopupMenu) {
-        if (components.containsKey(componentClass
-                .componentModel.componentState.parentComponentId) &&
-            components[componentClass.componentModel.componentState
-                .parentComponentId] is CoPopupMenuButton) {
-          CoPopupMenuButton btn = components[
-              componentClass.componentModel.componentState.parentComponentId];
-          btn.menu = componentClass;
-        }
-      } else if (componentClass is CoMenuItem) {
-        if (container.containsKey(componentClass
-                .componentModel.componentState.parentComponentId) &&
-            container[componentClass.componentModel.componentState
-                .parentComponentId] is CoPopupMenu) {
-          CoPopupMenu menu = container[
-              componentClass.componentModel.componentState.parentComponentId];
-          menu.updateMenuItem(componentClass);
-        }
-      } */
     } else {
       componentClass = container[component.id];
 

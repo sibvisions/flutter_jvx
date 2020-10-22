@@ -14,6 +14,8 @@ class ComponentModel extends ValueNotifier {
 
   String componentId;
   String parentComponentId;
+  String name;
+  bool enabled = true;
   ChangedComponent _changedComponent;
   ComponentWidgetState componentState;
   CoState coState;
@@ -22,7 +24,10 @@ class ComponentModel extends ValueNotifier {
   Size _preferredSize;
   Size _minimumSize;
   Size _maximumSize;
+
   ButtonPressedCallback onButtonPressed;
+
+  String text;
 
   Queue<ToUpdateComponent> get toUpdateComponents => _toUpdateComponents;
 
@@ -78,6 +83,10 @@ class ComponentModel extends ValueNotifier {
         ComponentProperty.MAXIMUM_SIZE, _maximumSize);
     minimumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MINIMUM_SIZE, _minimumSize);
+    enabled =
+        changedComponent.getProperty<bool>(ComponentProperty.ENABLED, enabled);
+    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
   }
 
   void update() {
