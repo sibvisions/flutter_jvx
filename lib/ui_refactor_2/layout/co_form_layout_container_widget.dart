@@ -3,6 +3,7 @@ import 'package:jvx_flutterclient/ui/layout/i_alignment_constants.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/co_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/widgets/builder/custom_stateful_builder.dart';
 
 import 'co_layout.dart';
 import 'widgets/co_form_layout_anchor.dart';
@@ -241,7 +242,8 @@ class CoFormLayoutContainerWidget extends StatelessWidget
       }
     });
 
-    return StatefulBuilder(
+    return CustomStatefulBuilder(
+      dispose: () => super.setState = null,
       builder: (context, setState) {
         super.setState = setState;
 

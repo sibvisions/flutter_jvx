@@ -4,6 +4,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart'
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_layout.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/widgets/co_flow_layout_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/widgets/builder/custom_stateful_builder.dart';
 
 class CoFlowLayoutContainerWidget extends StatelessWidget
     with CoLayout<String> {
@@ -124,7 +125,8 @@ class CoFlowLayoutContainerWidget extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
+    return CustomStatefulBuilder(
+      dispose: () => super.setState = null,
       builder: (context, setState) {
         this.children = <CoFlowLayoutConstraintData>[];
 

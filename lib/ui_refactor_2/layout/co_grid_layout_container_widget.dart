@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/widgets/builder/custom_stateful_builder.dart';
 
 import '../component/component_widget.dart';
 import '../container/co_container_widget.dart';
@@ -128,7 +129,8 @@ class CoGridLayoutContainerWidget extends StatelessWidget
       }
     });
 
-    return StatefulBuilder(
+    return CustomStatefulBuilder(
+      dispose: () => super.setState,
       builder: (context, setState) {
         super.setState = setState;
 
