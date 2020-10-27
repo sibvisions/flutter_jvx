@@ -36,7 +36,13 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = getLayout(widget, widget.componentModel.changedComponent);
+    Widget child = getLayout(
+      widget,
+      widget.componentModel.changedComponent,
+      this.keyManager,
+      this.valid,
+      this.layoutConstraints,
+    );
     // if (this.layout != null) {
     //   child = this.layout as Widget;
     //   if (this.layout.setState != null) {

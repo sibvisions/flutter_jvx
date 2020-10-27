@@ -474,29 +474,33 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
       if (component is CoContainerWidget) {
         debugString += ", layout: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
-                    (component.componentModel.componentState as CoContainerWidgetState)
-                            .layout
-                            .rawLayoutString !=
-                        null
-                ? (component.componentModel.componentState as CoContainerWidgetState)
-                    .layout
-                    .rawLayoutString
-                : "") +
-            ", layoutData: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).layout !=
-                        null &&
-                    (component.componentModel.componentState as CoContainerWidgetState)
-                            .layout
-                            .rawLayoutData !=
-                        null
-                ? (component.componentModel.componentState as CoContainerWidgetState)
-                    .layout
-                    .rawLayoutData
-                : "") +
+            // ((component.componentModel.componentState as CoContainerWidgetState).layout != null &&
+            //         (component.componentModel.componentState as CoContainerWidgetState)
+            //                 .layout
+            //                 .rawLayoutString !=
+            //             null
+            //     ? (component.componentModel.componentState as CoContainerWidgetState)
+            //         .layout
+            //         .rawLayoutString
+            //     : "") +
+            // ", layoutData: " +
+            // ((component.componentModel.componentState as CoContainerWidgetState).layout !=
+            //             null &&
+            //         (component.componentModel.componentState as CoContainerWidgetState)
+            //                 .layout
+            //                 .rawLayoutData !=
+            //             null
+            //     ? (component.componentModel.componentState as CoContainerWidgetState)
+            //         .layout
+            //         .rawLayoutData
+            //     : "") +
             ", childCount: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).layoutConstraints.keys != null
-                ? (component.componentModel.componentState as CoContainerWidgetState)
+            ((component.componentModel.componentState as CoContainerWidgetState)
+                        .layoutConstraints
+                        .keys !=
+                    null
+                ? (component.componentModel.componentState
+                        as CoContainerWidgetState)
                     .layoutConstraints
                     .keys
                     .length

@@ -38,7 +38,8 @@ class CoPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = getLayout(widget, widget.componentModel.changedComponent);
+    Widget child = getLayout(widget, widget.componentModel.changedComponent,
+        this.keyManager, this.valid, this.layoutConstraints);
 
     // if (this.layout != null) {
     //   // if (this.layout.setState != null) {
