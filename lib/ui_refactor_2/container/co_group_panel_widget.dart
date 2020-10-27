@@ -39,17 +39,17 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    Widget child;
-    if (this.layout != null) {
-      child = this.layout as Widget;
-      if (this.layout.setState != null) {
-        this.layout.setState(() {});
-      }
-    } else if (this.components.isNotEmpty) {
-      child = Column(
-        children: this.components,
-      );
-    }
+    Widget child = getLayout(widget, widget.componentModel.changedComponent);
+    // if (this.layout != null) {
+    //   child = this.layout as Widget;
+    //   if (this.layout.setState != null) {
+    //     this.layout.setState(() {});
+    //   }
+    // } else if (this.components.isNotEmpty) {
+    //   child = Column(
+    //     children: this.components,
+    //   );
+    // }
 
     if (child != null) {
       return LayoutBuilder(

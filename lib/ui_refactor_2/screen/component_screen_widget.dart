@@ -494,19 +494,20 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                     .rawLayoutData
                 : "") +
             ", childCount: " +
-            ((component.componentModel.componentState as CoContainerWidgetState).components != null
+            ((component.componentModel.componentState as CoContainerWidgetState).layoutConstraints.keys != null
                 ? (component.componentModel.componentState as CoContainerWidgetState)
-                    .components
+                    .layoutConstraints
+                    .keys
                     .length
                     .toString()
                 : "0");
         print(debugString);
 
         if ((component.componentModel.componentState as CoContainerWidgetState)
-                .components !=
+                .layoutConstraints.keys !=
             null) {
           (component.componentModel.componentState as CoContainerWidgetState)
-              .components
+              .layoutConstraints.keys
               .forEach((c) {
             debugPrintComponent(c, (level + 1));
           });
