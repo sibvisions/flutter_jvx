@@ -55,7 +55,43 @@ class CoFlowLayoutContainerWidget extends StatelessWidget
 
   @override
   void addLayoutComponent(ComponentWidget pComponent, String pConstraint) {
-    _constraintMap.putIfAbsent(pComponent, () => pConstraint);
+    if (this.setState != null) {
+      this.setState(() {
+        _constraintMap.putIfAbsent(pComponent, () => pConstraint);
+
+        // if (pComponent.componentModel.isVisible) {
+        //   Key key =
+        //       this.getKeyByComponentId(pComponent.componentModel.componentId);
+
+        //   if (key == null) {
+        //     key = this.createKey(pComponent.componentModel.componentId);
+        //   }
+
+        //   children.add(new CoFlowLayoutConstraintData(
+        //     key: key,
+        //     child: pComponent,
+        //     id: pComponent,
+        //   ));
+        // }
+      });
+    } else {
+      _constraintMap.putIfAbsent(pComponent, () => pConstraint);
+
+      // if (pComponent.componentModel.isVisible) {
+      //   Key key =
+      //       this.getKeyByComponentId(pComponent.componentModel.componentId);
+
+      //   if (key == null) {
+      //     key = this.createKey(pComponent.componentModel.componentId);
+      //   }
+
+      //   children.add(new CoFlowLayoutConstraintData(
+      //     key: key,
+      //     child: pComponent,
+      //     id: pComponent,
+      //   ));
+      // }
+    }
   }
 
   @override
@@ -65,31 +101,49 @@ class CoFlowLayoutContainerWidget extends StatelessWidget
 
   @override
   void removeLayoutComponent(ComponentWidget pComponent) {
-    _constraintMap.removeWhere((c, s) =>
-        c.componentModel.componentId.toString() ==
-        pComponent.componentModel.componentId.toString());
+    if (this.setState != null) {
+      this.setState(() {
+        _constraintMap.removeWhere((c, s) =>
+            c.componentModel.componentId.toString() ==
+            pComponent.componentModel.componentId.toString());
+
+        // children.removeWhere((element) =>
+        //     (element.child as ComponentWidget).componentModel.componentId ==
+        //     pComponent.componentModel.componentId);
+      });
+    } else {
+      _constraintMap.removeWhere((c, s) =>
+          c.componentModel.componentId.toString() ==
+          pComponent.componentModel.componentId.toString());
+
+      // children.removeWhere((element) =>
+      //     (element.child as ComponentWidget).componentModel.componentId ==
+      //     pComponent.componentModel.componentId);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    this._constraintMap.forEach((k, v) {
-      if (k.componentModel.isVisible) {
-        Key key = this.getKeyByComponentId(k.componentModel.componentId);
-
-        if (key == null) {
-          key = this.createKey(k.componentModel.componentId);
-        }
-
-        children.add(new CoFlowLayoutConstraintData(
-          key: key,
-          child: k,
-          id: k,
-        ));
-      }
-    });
-
     return StatefulBuilder(
       builder: (context, setState) {
+        this.children = <CoFlowLayoutConstraintData>[];
+
+        this._constraintMap.forEach((k, v) {
+          if (k.componentModel.isVisible) {
+            Key key = this.getKeyByComponentId(k.componentModel.componentId);
+
+            if (key == null) {
+              key = this.createKey(k.componentModel.componentId);
+            }
+
+            children.add(new CoFlowLayoutConstraintData(
+              key: key,
+              child: k,
+              id: k,
+            ));
+          }
+        });
+
         super.setState = setState;
 
         return Container(
