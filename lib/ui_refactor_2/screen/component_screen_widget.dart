@@ -1,14 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/ui/editor/celleditor/co_referenced_cell_editor.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_menu_item_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_menu_button_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_menu_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/popup_button_component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/popup_component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_referenced_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen/component_model_manager.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen/so_data_screen.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/api/request/request.dart';
@@ -17,12 +7,21 @@ import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../ui/component/i_component.dart';
 import '../component/co_action_component_widget.dart';
+import '../component/component_model.dart';
 import '../component/component_widget.dart';
+import '../component/popup_menu/co_menu_item_widget.dart';
+import '../component/popup_menu/co_popup_menu_button_widget.dart';
+import '../component/popup_menu/co_popup_menu_widget.dart';
+import '../component/popup_menu/popup_button_component_model.dart';
+import '../component/popup_menu/popup_component_model.dart';
 import '../container/co_container_widget.dart';
 import '../container/container_component_model.dart';
+import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
 import '../editor/co_editor_widget.dart';
 import '../editor/editor_component_model.dart';
+import 'component_model_manager.dart';
 import 'i_component_creator.dart';
+import 'so_data_screen.dart';
 
 class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
@@ -58,6 +57,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentWidget footerComponent;
 
   ComponentWidget rootComponent;
+
+  bool get update => widget.closeCurrentScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -504,10 +505,12 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         print(debugString);
 
         if ((component.componentModel.componentState as CoContainerWidgetState)
-                .layoutConstraints.keys !=
+                .layoutConstraints
+                .keys !=
             null) {
           (component.componentModel.componentState as CoContainerWidgetState)
-              .layoutConstraints.keys
+              .layoutConstraints
+              .keys
               .forEach((c) {
             debugPrintComponent(c, (level + 1));
           });

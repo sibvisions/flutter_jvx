@@ -5,6 +5,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/co_border_layo
 import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/co_form_layout_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/layout_helper.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/layout_key_manager.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/component_screen_widget.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
@@ -69,7 +70,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         .removeWhere((element) =>
             element.componentWidget.componentModel.componentId ==
             component.componentModel.componentId);
-    _layoutConstraints.remove(component);
+    setState(() => _layoutConstraints.remove(component));
 
     _valid = false;
   }
@@ -116,6 +117,15 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void update() {
+    bool update = ComponentScreenWidget.of(context)
+        ?.widget
+        ?.responseData
+        ?.screenGeneric
+        ?.update;
+    if (update != null && !update) {
+      this.removeAll();
+    }
+
     this._updateComponents(
         (widget.componentModel as ContainerComponentModel).toAddComponents);
 
@@ -195,6 +205,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   Widget getBorderLayout(String layoutString) {
     return CoBorderLayoutContainerWidget(
+      key: UniqueKey(),
       center: getCompByConstraint(CoBorderLayoutConstraints.Center),
       north: getCompByConstraint(CoBorderLayoutConstraints.North),
       south: getCompByConstraint(CoBorderLayoutConstraints.South),
@@ -208,6 +219,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   Widget getFormLayout(String layoutString, String layoutData) {
     return CoFormLayoutContainerWidget(
+      key: UniqueKey(),
       container: widget,
       keyManager: _keyManager,
       layoutString: layoutString,
@@ -228,7 +240,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     super.didUpdateWidget(oldWidget);
     this.update();
 
-    widget.componentModel.addListener(() => this.update());
+    widget.componentModel.addListener(() {
+      setState(() {
+        this.update();
+      });
+    });
   }
 
   @override
@@ -236,7 +252,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     super.initState();
     this.update();
 
-    widget.componentModel.addListener(() => setState(() => this.update()));
+    widget.componentModel.addListener(() {
+      setState(() {
+        this.update();
+      });
+    });
   }
 
   @override

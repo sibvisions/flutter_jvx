@@ -184,8 +184,8 @@ class CoFormLayoutContainerWidget extends StatelessWidget {
     });
 
     return Container(
-      margin: this.margins,
       child: CoFormLayoutWidget(
+        key: key,
         container: this.container,
         valid: this.valid,
         children: children,

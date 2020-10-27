@@ -129,6 +129,7 @@ class CoBorderLayoutContainerWidget extends StatelessWidget {
     return Container(
       margin: this.margins,
       child: CoBorderLayoutWidget(
+        key: key,
         container: this.container,
         insMargin: this.margins,
         iHorizontalGap: this.horizontalGap,
