@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/tabset_panel/custom_tabset.dart';
@@ -20,14 +21,18 @@ class CoTabsetPanelWidget extends CoContainerWidget {
   State<StatefulWidget> createState() => CoTabsetPanelWidgetState();
 }
 
-class CoTabsetPanelWidgetState extends CoContainerWidgetState {
+class CoTabsetPanelWidgetState extends CoContainerWidgetState
+    with TickerProviderStateMixin {
   bool eventTabClosed;
   bool eventTabActivated;
   bool eventTabMoved;
-  int selectedIndex = 0;
 
   List<bool> _isEnabled = <bool>[];
   List<bool> _isClosable = <bool>[];
+
+  TabController tabController;
+  List<Tab> tabs = <Tab>[];
+  List<int> pendingDeletes = <int>[];
 
   @override
   void updateProperties(ChangedComponent changedComponent) {
@@ -40,42 +45,134 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState {
         changedComponent.getProperty<bool>(ComponentProperty.EVENT_TAB_MOVED);
     int indx =
         changedComponent.getProperty<int>(ComponentProperty.SELECTED_INDEX);
-    selectedIndex = indx != null && indx >= 0 ? indx : 0;
-  }
-
-  void onTap(int index) {
     setState(() {
-      this.selectedIndex = index;
+      tabController.animateTo(indx != null && indx >= 0 ? indx : 0);
     });
-    BlocProvider.of<ApiBloc>(context).dispatch(TabSelect(
-        clientId: globals.clientId,
-        componentId: this.name,
-        index: this.selectedIndex));
   }
 
-  void onClose(int index) {
-    if (eventTabClosed != null && eventTabClosed) {
-      BlocProvider.of<ApiBloc>(context).dispatch(TabClose(
-          clientId: globals.clientId, componentId: this.name, index: index));
+  List<Tab> createTabs() {
+    List<Tab> tablist = <Tab>[];
+    _isEnabled = <bool>[];
+    _isClosable = <bool>[];
+
+    components.forEach((comp) {
+      List splittedConstr = comp.componentModel.constraints?.split(';');
+      bool enabled = (splittedConstr[0]?.toLowerCase() == 'true');
+      bool closable = (splittedConstr[1]?.toLowerCase() == 'true');
+      String text = splittedConstr[2];
+      String img = splittedConstr.length >= 4 ? splittedConstr[3] : '';
+
+      _isEnabled.add(enabled);
+      _isClosable.add(closable);
+
+      double iconSize = 15;
+
+      Tab tab = new Tab(
+        child: Column(
+          children: [
+            img != null && img.isNotEmpty
+                ? CustomIcon(
+                    image: img,
+                    size: Size(iconSize, iconSize),
+                    color: Colors.grey.shade700,
+                  )
+                : Container(height: iconSize),
+            SizedBox(
+              height: 5,
+            ),
+            !closable
+                ? Text(
+                    text ?? '',
+                    style: !enabled ? TextStyle(color: Colors.grey) : null,
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(text ?? '',
+                          style:
+                              !enabled ? TextStyle(color: Colors.grey) : null),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        child: Icon(
+                          Icons.clear,
+                          size: 20,
+                        ),
+                        onTap: () {
+                          closeTab(components.indexOf(comp));
+                        },
+                      ),
+                    ],
+                  ),
+          ],
+        ),
+      );
+      tablist.add(tab);
+    });
+
+    return tablist;
+  }
+
+  void _initTabController(int index) {
+    tabs = createTabs();
+    tabController =
+        TabController(initialIndex: index, length: tabs.length, vsync: this)
+          ..addListener(_handleTabAnimation);
+  }
+
+  void _handleTabAnimation() {
+    if (!tabController.indexIsChanging) {
+      if (pendingDeletes.isNotEmpty) {
+        setState(() {
+          for (int index in pendingDeletes) {
+            this.components.removeAt(index);
+            BlocProvider.of<ApiBloc>(context).dispatch(TabClose(
+                clientId: globals.clientId,
+                componentId: this.name,
+                index: index));
+          }
+          _initTabController(0);
+          pendingDeletes.clear();
+        });
+      }
+
+      BlocProvider.of<ApiBloc>(context).dispatch(TabSelect(
+          clientId: globals.clientId,
+          componentId: this.name,
+          index: tabController.index));
     }
+  }
 
-    setState(() {
-      this.components.removeAt(index);
-    });
+  void closeTab(int index) {
+    if (index > 0) {
+      setState(() {
+        pendingDeletes.add(index);
+        tabController.animateTo(0);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initTabController(0);
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: this.components.length,
-      initialIndex: this.selectedIndex,
-      child: CustomTabset(
-          components: this.components,
-          onTap: this.onTap,
-          onClose: this.onClose,
-          index: this.selectedIndex,
-          isEnabled: this._isEnabled,
-          isClosable: this._isClosable),
+    return Scaffold(
+      appBar: TabBar(
+          isScrollable: true,
+          controller: tabController,
+          tabs: tabs.map((tab) => tab).toList()),
+      body: TabBarView(controller: tabController, children: this.components),
     );
   }
 }
