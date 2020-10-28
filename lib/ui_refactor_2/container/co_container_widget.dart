@@ -1,16 +1,17 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_flow_layout_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/layout/co_grid_layout_container_widget.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../component/component_widget.dart';
-import '../layout/new_layout/co_border_layout_container_widget.dart';
-import '../layout/new_layout/co_form_layout_container_widget.dart';
-import '../layout/new_layout/layout_helper.dart';
-import '../layout/new_layout/layout_key_manager.dart';
+import '../layout/co_border_layout_container_widget.dart';
+import '../layout/co_form_layout_container_widget.dart';
+import '../layout/co_layout.dart';
+import '../layout/i_layout.dart';
 import '../layout/widgets/co_border_layout_constraint.dart';
 import 'container_component_model.dart';
 
@@ -26,19 +27,8 @@ class CoContainerWidget extends ComponentWidget {
 }
 
 class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
-  Map<ComponentWidget, String> _layoutConstraints = <ComponentWidget, String>{};
-
-  bool _valid = false;
-
-  LayoutKeyManager _keyManager = LayoutKeyManager();
-
-  bool rebuilt = false;
-
-  Map<ComponentWidget, String> get layoutConstraints => _layoutConstraints;
-
-  LayoutKeyManager get keyManager => _keyManager;
-
-  bool get valid => _valid;
+  CoLayout layout;
+  List<ComponentWidget> components = new List<ComponentWidget>();
 
   void add(ComponentWidget pComponent) {
     addWithContraintsAndIndex(pComponent, null, -1);
@@ -54,47 +44,70 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   void addWithContraintsAndIndex(
       ComponentWidget pComponent, String pConstraints, int pIndex) {
-    if (_layoutConstraints[pComponent] != null) {
-      _layoutConstraints.remove(pComponent);
+    if (components.contains(pComponent)) {
+      components.remove(pComponent);
     }
-    setState(() => _layoutConstraints[pComponent] = pConstraints);
+    if (pIndex < 0) {
+      components.add(pComponent);
+    } else {
+      components.insert(pIndex, pComponent);
+    }
 
     pComponent.componentModel.coState = CoState.Added;
-
-    _valid = false;
+    if (mounted && layout != null) {
+      if (layout is CoBorderLayoutContainerWidget) {
+        CoBorderLayoutConstraints contraints =
+            getBorderLayoutConstraintsFromString(pConstraints);
+        layout.addLayoutComponent(pComponent, contraints);
+      } else if (layout is CoFormLayoutContainerWidget) {
+        layout.addLayoutComponent(pComponent, pConstraints);
+      } else if (layout is CoFlowLayoutContainerWidget) {
+        layout.addLayoutComponent(pComponent, pConstraints);
+      } else if (layout is CoGridLayoutContainerWidget) {
+        layout.addLayoutComponent(pComponent, pConstraints);
+      }
+    }
   }
 
-  void remove(ComponentWidget component) {
+  void remove(int pIndex) {
+    ComponentWidget pComponent = components[pIndex];
+    if (layout != null) {
+      layout.removeLayoutComponent(pComponent);
+    }
     (widget.componentModel as ContainerComponentModel)
         .toAddComponents
         .removeWhere((element) =>
             element.componentWidget.componentModel.componentId ==
-            component.componentModel.componentId);
-    _layoutConstraints.remove(component);
-
-    _valid = false;
+            pComponent.componentModel.componentId);
+    components.removeAt(pIndex);
   }
 
   void removeWithComponent(ComponentWidget pComponent) {
-    setState(() {
-      remove(pComponent);
+    int index = components.indexWhere((c) =>
+        c.componentModel.componentId.toString() ==
+        pComponent.componentModel.componentId.toString());
+
+    if (index >= 0) {
+      remove(index);
       pComponent.componentModel.coState = CoState.Free;
       pComponent.componentModel.update();
-    });
+    }
   }
 
   void removeAll() {
-    this._layoutConstraints = <ComponentWidget, String>{};
+    while (components.length > 0) {
+      remove(components.length - 1);
+    }
   }
 
   ComponentWidget getComponentWithContraint(String constraint) {
-    return this._layoutConstraints?.keys?.firstWhere((component) =>
+    return components?.firstWhere((component) =>
         component.componentModel.componentState.constraints == constraint);
   }
 
   void updateComponentProperties(
       String componentId, ChangedComponent changedComponent) {
-    ComponentWidget pComponent = this._layoutConstraints?.keys?.firstWhere(
+    ComponentWidget pComponent = this.components.firstWhere(
         (c) => c.componentModel.componentId == componentId,
         orElse: () => null);
 
@@ -108,26 +121,56 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     maximumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MAXIMUM_SIZE, null);
 
-    // if (layout != null) {
-    //   if (layout is CoBorderLayoutContainerWidget) {
-    //     CoBorderLayoutConstraints contraints =
-    //         layout.getConstraints(pComponent);
-    //     (layout as CoBorderLayoutContainerWidget)
-    //         .addLayoutComponent(pComponent, contraints);
-    //   }
-    // }
+    if (layout != null) {
+      if (layout is CoBorderLayoutContainerWidget) {
+        CoBorderLayoutConstraints contraints =
+            layout.getConstraints(pComponent);
+        (layout as CoBorderLayoutContainerWidget)
+            .addLayoutComponent(pComponent, contraints);
+      }
+    }
+  }
+
+  ILayout _createLayout(
+      CoContainerWidget container, ChangedComponent changedComponent) {
+    if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
+      String layoutRaw =
+          changedComponent.getProperty<String>(ComponentProperty.LAYOUT);
+      String layoutData =
+          changedComponent.getProperty<String>(ComponentProperty.LAYOUT_DATA);
+
+      switch (changedComponent.layoutName) {
+        case "BorderLayout":
+          {
+            return CoBorderLayoutContainerWidget.fromLayoutString(
+                container, layoutRaw, layoutData);
+          }
+          break;
+        case "FormLayout":
+          {
+            return CoFormLayoutContainerWidget.fromLayoutString(
+                container, layoutRaw, layoutData);
+          }
+          break;
+        case "FlowLayout":
+          {
+            return CoFlowLayoutContainerWidget.fromLayoutString(
+                container, layoutRaw, layoutData);
+          }
+          break;
+        case "GridLayout":
+          {
+            return CoGridLayoutContainerWidget.fromLayoutString(
+                container, layoutRaw, layoutData);
+          }
+          break;
+      }
+    }
+
+    return null;
   }
 
   void update() {
-    // bool update = ComponentScreenWidget.of(context)
-    //     ?.widget
-    //     ?.responseData
-    //     ?.screenGeneric
-    //     ?.update;
-    // if (update != null && !update) {
-    //   this.removeAll();
-    // }
-
     this._updateComponents(
         (widget.componentModel as ContainerComponentModel).toAddComponents);
 
@@ -149,132 +192,73 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   void _updateComponents(Queue<ToAddComponent> toAddComponents) {
     toAddComponents.forEach((toAddComponent) {
-      if (!this._layoutConstraints.containsKey(toAddComponent.componentWidget))
-        setState(() => this.addWithConstraints(
-            toAddComponent.componentWidget, toAddComponent.constraints));
+      if (!this.components.contains(toAddComponent.componentWidget))
+        this.addWithConstraints(
+            toAddComponent.componentWidget, toAddComponent.constraints);
     });
   }
 
   void _updateComponentProperties(Queue<ToUpdateComponent> toUpdateComponents) {
     toUpdateComponents.forEach((toUpdateComponent) {
-      ComponentWidget componentWidget = this._layoutConstraints.keys.firstWhere(
+      ComponentWidget componentWidget = this.components.firstWhere(
           (component) =>
               component.componentModel.componentId ==
               toUpdateComponent.componentId,
           orElse: () => null);
-      if (componentWidget != null) {
-        componentWidget.componentModel.toUpdateComponents
-            .add(toUpdateComponent);
-        componentWidget.componentModel.update();
-      }
+      // if (componentWidget != null) {
+      //   componentWidget.componentModel.toUpdateComponents
+      //       .add(toUpdateComponent);
+      //   componentWidget.componentModel.update();
+      // }
 
-      setState(() {
-        preferredSize = widget.componentModel.changedComponent
-            .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
-        maximumSize = widget.componentModel.changedComponent
-            .getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
-      });
+      preferredSize = widget.componentModel.changedComponent
+          .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
+      maximumSize = widget.componentModel.changedComponent
+          .getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
+
+      if (layout != null) {
+        if (layout is CoBorderLayoutContainerWidget) {
+          CoBorderLayoutConstraints contraints =
+              layout.getConstraints(componentWidget);
+          (layout as CoBorderLayoutContainerWidget)
+              .addLayoutComponent(componentWidget, contraints);
+        }
+      }
     });
   }
 
-  ComponentWidget getCompByConstraint(CoBorderLayoutConstraints constraints) {
-    return this._layoutConstraints.keys.firstWhere(
-        (component) =>
-            LayoutHelper.getBorderLayoutConstraint(
-                component.componentModel.constraints) ==
-            constraints,
-        orElse: () => null);
-  }
-
-  Widget getLayout(
-      CoContainerWidget container,
-      ChangedComponent changedComponent,
-      LayoutKeyManager keyManager,
-      bool valid,
-      Map layoutConstraints) {
-    if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
-      String layoutRaw =
-          changedComponent.getProperty<String>(ComponentProperty.LAYOUT);
-      String layoutData =
-          changedComponent.getProperty<String>(ComponentProperty.LAYOUT_DATA);
-
-      switch (changedComponent.layoutName) {
-        case 'BorderLayout':
-          return getBorderLayout(layoutRaw);
-          break;
-        case 'FormLayout':
-          return getFormLayout(layoutRaw, layoutData, container, keyManager,
-              valid, layoutConstraints);
-          break;
-      }
-    }
-
-    return null;
-  }
-
-  Widget getBorderLayout(String layoutString) {
-    return CoBorderLayoutContainerWidget(
-      key: UniqueKey(),
-      center: getCompByConstraint(CoBorderLayoutConstraints.Center),
-      north: getCompByConstraint(CoBorderLayoutConstraints.North),
-      south: getCompByConstraint(CoBorderLayoutConstraints.South),
-      east: getCompByConstraint(CoBorderLayoutConstraints.East),
-      west: getCompByConstraint(CoBorderLayoutConstraints.West),
-      container: widget,
-      keyManager: _keyManager,
-      layoutString: layoutString,
-    );
-  }
-
-  Widget getFormLayout(
-      String layoutString,
-      String layoutData,
-      CoContainerWidget container,
-      LayoutKeyManager keyManager,
-      bool valid,
-      Map layoutConstraints) {
-    return CoFormLayoutContainerWidget(
-      key: UniqueKey(),
-      container: widget,
-      keyManager: keyManager,
-      layoutString: layoutString,
-      layoutData: layoutData,
-      valid: valid,
-      layoutConstraints: layoutConstraints,
-    );
-  }
-
   void _updateLayoutData(Queue<String> toUpdateLayout) {
-    toUpdateLayout.forEach((layoutData) {});
+    if (this.layout?.setState != null) {
+      toUpdateLayout.forEach((layoutData) {
+        this.layout?.updateLayoutData(layoutData);
+      });
+    } else {
+      toUpdateLayout.forEach((layoutData) {
+        this.layout?.updateLayoutData(layoutData);
+      });
+    }
   }
 
   @override
   void didUpdateWidget(CoContainerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    this._layoutConstraints = <ComponentWidget, String>{};
+    if (widget.componentModel.changedComponent != null) {
+      layout = _createLayout(widget, widget.componentModel.changedComponent);
+    }
     this.update();
 
-    widget.componentModel.addListener(() {
-      this.update();
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+    widget.componentModel.addListener(() => this.update());
   }
 
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance
-        .addPostFrameCallback((timeStamp) => setState(() {}));
+    if (widget.componentModel.changedComponent != null) {
+      layout = _createLayout(widget, widget.componentModel.changedComponent);
+    }
     this.update();
 
-    widget.componentModel.addListener(() {
-      this.update();
-    });
+    widget.componentModel.addListener(() => setState(() => this.update()));
   }
 
   @override

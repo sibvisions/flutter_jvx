@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 
 import 'co_container_widget.dart';
@@ -38,18 +37,14 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    if (this.layoutConstraints != null && this.layoutConstraints.isNotEmpty) {
-      child = getLayout(widget, widget.componentModel.changedComponent,
-          this.keyManager, this.valid, this.layoutConstraints);
+    if (this.layout != null) {
+      child = this.layout as Widget;
+      if (this.layout.setState != null) {
+        this.layout.setState(() {});
+      }
+    } else if (this.components.isNotEmpty) {
+      child = Column(children: this.components);
     }
-    // if (this.layout != null) {
-    //   child = this.layout as Widget;
-    //   if (this.layout.setState != null) {
-    //     this.layout.setState(() {});
-    //   }
-    // } else if (this.components.isNotEmpty) {
-    //   child = Column(children: this.components);
-    // }
 
     Widget scrollWidget = new LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -61,17 +56,17 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
       return Container(
           color: this.background,
           child: SingleChildScrollView(
-            controller: _scrollController,
-            child: CoScrollPanelLayout(
-              parentConstraints: constraints,
-              children: [
-                CoScrollPanelLayoutId(
-                    // key: ValueKey(widget.key),
-                    parentConstraints: constraints,
-                    child: child)
-              ],
-            ),
-          ));
+              controller: _scrollController,
+              // key: this.componentId,
+              child: CoScrollPanelLayout(
+                parentConstraints: constraints,
+                children: [
+                  CoScrollPanelLayoutId(
+                      // key: ValueKey(widget.key),
+                      parentConstraints: constraints,
+                      child: child)
+                ],
+              )));
     });
 
     if (child != null) {

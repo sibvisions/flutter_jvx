@@ -60,19 +60,17 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState {
     }
 
     setState(() {
-      this
-          .layoutConstraints
-          .remove(this.layoutConstraints.keys.toList()[index]);
+      this.components.removeAt(index);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: this.layoutConstraints.keys.length,
+      length: this.components.length,
       initialIndex: this.selectedIndex,
       child: CustomTabset(
-          components: this.layoutConstraints.keys,
+          components: this.components,
           onTap: this.onTap,
           onClose: this.onClose,
           index: this.selectedIndex,
