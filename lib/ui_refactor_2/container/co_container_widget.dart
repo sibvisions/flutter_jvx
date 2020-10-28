@@ -1,20 +1,16 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/co_border_layout_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/co_form_layout_container_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/layout_helper.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/layout/new_layout/layout_key_manager.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/screen/component_screen_widget.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../component/component_widget.dart';
-import '../layout/co_flow_layout_container_widget.dart';
-import '../layout/co_grid_layout_container_widget.dart';
-import '../layout/co_layout.dart';
-import '../layout/i_layout.dart';
+import '../layout/new_layout/co_border_layout_container_widget.dart';
+import '../layout/new_layout/co_form_layout_container_widget.dart';
+import '../layout/new_layout/layout_helper.dart';
+import '../layout/new_layout/layout_key_manager.dart';
 import '../layout/widgets/co_border_layout_constraint.dart';
 import 'container_component_model.dart';
 
@@ -35,6 +31,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   bool _valid = false;
 
   LayoutKeyManager _keyManager = LayoutKeyManager();
+
+  bool rebuilt = false;
 
   Map<ComponentWidget, String> get layoutConstraints => _layoutConstraints;
 
@@ -72,15 +70,17 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         .removeWhere((element) =>
             element.componentWidget.componentModel.componentId ==
             component.componentModel.componentId);
-    setState(() => _layoutConstraints.remove(component));
+    _layoutConstraints.remove(component);
 
     _valid = false;
   }
 
   void removeWithComponent(ComponentWidget pComponent) {
-    remove(pComponent);
-    pComponent.componentModel.coState = CoState.Free;
-    pComponent.componentModel.update();
+    setState(() {
+      remove(pComponent);
+      pComponent.componentModel.coState = CoState.Free;
+      pComponent.componentModel.update();
+    });
   }
 
   void removeAll() {
@@ -134,8 +134,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     // (widget.componentModel as ContainerComponentModel).toAddComponents =
     //     Queue<ToAddComponent>();
 
-    setState(() => this._updateComponentProperties(
-        (widget.componentModel as ContainerComponentModel).toUpdateComponents));
+    this._updateComponentProperties(
+        (widget.componentModel as ContainerComponentModel).toUpdateComponents);
 
     (widget.componentModel as ContainerComponentModel).toUpdateComponents =
         Queue<ToUpdateComponent>();
@@ -168,10 +168,12 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         componentWidget.componentModel.update();
       }
 
-      preferredSize = widget.componentModel.changedComponent
-          .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
-      maximumSize = widget.componentModel.changedComponent
-          .getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
+      setState(() {
+        preferredSize = widget.componentModel.changedComponent
+            .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
+        maximumSize = widget.componentModel.changedComponent
+            .getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
+      });
     });
   }
 
@@ -258,8 +260,16 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => setState(() {}));
     this.update();
 
     widget.componentModel.addListener(() {

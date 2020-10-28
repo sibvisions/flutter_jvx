@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_icon_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/co_label_widget.dart';
 import '../component/component_widget.dart';
@@ -38,8 +39,11 @@ class CoPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = getLayout(widget, widget.componentModel.changedComponent,
-        this.keyManager, this.valid, this.layoutConstraints);
+    Widget child;
+    if (this.layoutConstraints != null && this.layoutConstraints.isNotEmpty) {
+      child = getLayout(widget, widget.componentModel.changedComponent,
+          this.keyManager, this.valid, this.layoutConstraints);
+    }
 
     // if (this.layout != null) {
     //   // if (this.layout.setState != null) {
