@@ -5,18 +5,14 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/component_widget.dart';
 
 class ContainerComponentModel extends ComponentModel {
-  Queue<ToAddComponent> _toAddComponents = Queue<ToAddComponent>();
   Queue<String> _toUpdateLayout = Queue<String>();
   Queue<ToUpdateComponent> _toUpdateComponentProperties =
       Queue<ToUpdateComponent>();
 
-  Queue<ToAddComponent> get toAddComponents => _toAddComponents;
   Queue<String> get toUpdateLayout => _toUpdateLayout;
   Queue<ToUpdateComponent> get toUpdateComponentProperties =>
       _toUpdateComponentProperties;
 
-  set toAddComponents(Queue<ToAddComponent> newToAddComponents) =>
-      _toAddComponents = newToAddComponents;
   set toUpdateLayout(Queue<String> toUpdateLayout) =>
       _toUpdateLayout = toUpdateLayout;
   set toUpdateComponentProperties(

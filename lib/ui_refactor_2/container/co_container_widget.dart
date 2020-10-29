@@ -75,11 +75,6 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     if (layout != null) {
       layout.removeLayoutComponent(pComponent);
     }
-    (widget.componentModel as ContainerComponentModel)
-        .toAddComponents
-        .removeWhere((element) =>
-            element.componentWidget.componentModel.componentId ==
-            pComponent.componentModel.componentId);
     components.removeAt(pIndex);
   }
 
@@ -174,12 +169,6 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   void update() {
     this.getAndAddChildren();
 
-    // this._updateComponents(
-    //     (widget.componentModel as ContainerComponentModel).toAddComponents);
-
-    // (widget.componentModel as ContainerComponentModel).toAddComponents =
-    //     Queue<ToAddComponent>();
-
     this._updateComponentProperties(
         (widget.componentModel as ContainerComponentModel).toUpdateComponents);
 
@@ -194,8 +183,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void getAndAddChildren() {
-    List<ComponentWidget> children =
-        ComponentScreenWidget.of(context).getChildren(this.rawComponentId);
+    List<ComponentWidget> children = ComponentScreenWidget.of(context)
+        .getChildren(widget.componentModel.componentId);
 
     if (children != null && children.isNotEmpty) {
       children.forEach((component) {
@@ -205,14 +194,6 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         }
       });
     }
-  }
-
-  void _updateComponents(Queue<ToAddComponent> toAddComponents) {
-    toAddComponents.forEach((toAddComponent) {
-      if (!this.components.contains(toAddComponent.componentWidget))
-        this.addWithConstraints(
-            toAddComponent.componentWidget, toAddComponent.constraints);
-    });
   }
 
   void _updateComponentProperties(Queue<ToUpdateComponent> toUpdateComponents) {

@@ -249,12 +249,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                   component, component.componentModel.constraints);
         } else {
           (parentComponent.componentModel as ContainerComponentModel)
-              .toAddComponents
-              .add(ToAddComponent(
-                  constraints: component.componentModel.constraints,
-                  componentWidget: component));
-
-          (parentComponent.componentModel as ContainerComponentModel)
               .toUpdateComponentProperties
               .add(ToUpdateComponent(
                   changedComponent: component.componentModel.changedComponent,
