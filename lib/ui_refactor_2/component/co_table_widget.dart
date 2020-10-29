@@ -81,27 +81,25 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     super.data?.registerSelectedRowChanged(onSelectedRowChanged);
   }
 
-  /*@override
+  @override
   get preferredSize {
-    if (super.preferredSize!=null) 
-      return super.preferredSize;
+    if (super.preferredSize != null) return super.preferredSize;
     return Size(300, 300);
   }
 
   @override
   get minimumSize {
-    if (super.minimumSize!=null) 
-      return super.minimumSize;
+    if (super.minimumSize != null) return super.minimumSize;
     return Size(300, 100);
-  }*/
+  }
 
-  /*@override
+  @override
   bool get isPreferredSizeSet => true;
   @override
   bool get isMinimumSizeSet => true;
   @override
   bool get isMaximumSizeSet => maximumSize != null;
-*/
+
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);

@@ -137,10 +137,14 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
         });
       }
 
-      BlocProvider.of<ApiBloc>(context).dispatch(TabSelect(
-          clientId: globals.clientId,
-          componentId: this.name,
-          index: tabController.index));
+      if (!_isEnabled[tabController.index]) {
+        tabController.animateTo(tabController.previousIndex);
+      } else {
+        BlocProvider.of<ApiBloc>(context).dispatch(TabSelect(
+            clientId: globals.clientId,
+            componentId: this.name,
+            index: tabController.index));
+      }
     }
   }
 

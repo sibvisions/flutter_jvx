@@ -123,6 +123,11 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container();
   }
