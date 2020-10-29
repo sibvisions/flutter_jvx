@@ -110,9 +110,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       } else {
         _moveComponent(component, changedComponent, container);
 
-        // if (component.componentModel.coState != CoState.Added) {
-        _addComponent(changedComponent, container);
-        // }
+        if (component.componentModel.coState != CoState.Added) {
+          _addComponent(changedComponent, container);
+        }
 
         component.componentModel.toUpdateComponents.add(ToUpdateComponent(
             changedComponent: changedComponent,
@@ -537,5 +537,22 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     }
 
     return null;
+  }
+
+  List<ComponentWidget> getChildren(String componentId) {
+    if (!this.components.containsKey(componentId)) {
+      return null;
+    }
+
+    List<ComponentWidget> children = <ComponentWidget>[];
+
+    this.components.forEach((key, value) {
+      if (value.componentModel.parentComponentId == componentId &&
+          value.componentModel.coState == CoState.Added) {
+        children.add(value);
+      }
+    });
+
+    return children;
   }
 }

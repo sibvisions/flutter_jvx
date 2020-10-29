@@ -69,6 +69,12 @@ class ComponentModelManager {
             changedComponent: changedComponent,
             componentId: changedComponent.id);
         break;
+      case 'SplitPanel':
+        componentModel = ContainerComponentModel(
+          changedComponent: changedComponent,
+          componentId: changedComponent.id,
+        );
+        break;
       case 'PopupMenu':
         componentModel = PopupComponentModel(changedComponent);
         break;

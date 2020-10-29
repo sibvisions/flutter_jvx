@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_flow_layout_container_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/layout/co_grid_layout_container_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/screen/component_screen_widget.dart';
 
 import '../../jvx_flutterclient.dart';
 import '../../model/changed_component.dart';
@@ -54,7 +55,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
 
     pComponent.componentModel.coState = CoState.Added;
-    if (mounted && layout != null) {
+    if (layout != null) {
       if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(pConstraints);
@@ -171,8 +172,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   void update() {
-    this._updateComponents(
-        (widget.componentModel as ContainerComponentModel).toAddComponents);
+    this.getAndAddChildren();
+
+    // this._updateComponents(
+    //     (widget.componentModel as ContainerComponentModel).toAddComponents);
 
     // (widget.componentModel as ContainerComponentModel).toAddComponents =
     //     Queue<ToAddComponent>();
@@ -188,6 +191,20 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
     (widget.componentModel as ContainerComponentModel).toUpdateLayout =
         Queue<String>();
+  }
+
+  void getAndAddChildren() {
+    List<ComponentWidget> children =
+        ComponentScreenWidget.of(context).getChildren(this.rawComponentId);
+
+    if (children != null && children.isNotEmpty) {
+      children.forEach((component) {
+        if (!this.components.contains(component)) {
+          this.addWithConstraints(
+              component, component.componentModel.constraints);
+        }
+      });
+    }
   }
 
   void _updateComponents(Queue<ToAddComponent> toAddComponents) {
@@ -229,8 +246,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
 
   void _updateLayoutData(Queue<String> toUpdateLayout) {
     if (this.layout?.setState != null) {
-      toUpdateLayout.forEach((layoutData) {
-        this.layout?.updateLayoutData(layoutData);
+      this.layout.setState(() {
+        toUpdateLayout.forEach((layoutData) {
+          this.layout?.updateLayoutData(layoutData);
+        });
       });
     } else {
       toUpdateLayout.forEach((layoutData) {

@@ -4,6 +4,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_menu_ite
 import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_menu_button_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_menu_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_group_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/container/co_split_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/tabset_panel/co_tabset_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 import 'package:uuid/uuid.dart';
@@ -60,6 +61,9 @@ class SoComponentCreator implements IComponentCreator {
     'GroupPanel': (ComponentModel componentModel) =>
         CoGroupPanelWidget(componentModel: componentModel),
     'TabsetPanel': (ComponentModel componentModel) => CoTabsetPanelWidget(
+          componentModel: componentModel,
+        ),
+    'SplitPanel': (ComponentModel componentModel) => CoSplitPanelWidget(
           componentModel: componentModel,
         ),
     'Label': (ComponentModel componentModel) => CoLabelWidget(
