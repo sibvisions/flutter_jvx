@@ -27,9 +27,9 @@ class EditorComponentModel extends ComponentModel {
 
   bool get withChangedComponent => _withChangedComponent;
 
-  Queue<SoComponentData> get toUpdateData => _toUpdateData;
-  set toUpdateData(Queue<SoComponentData> toUpdateData) =>
-      _toUpdateData = toUpdateData;
+  // Queue<SoComponentData> get toUpdateData => _toUpdateData;
+  // set toUpdateData(Queue<SoComponentData> toUpdateData) =>
+  //     _toUpdateData = toUpdateData;
 
   EditorComponentModel(ChangedComponent changedComponent)
       : super(changedComponent) {
@@ -52,7 +52,8 @@ class EditorComponentModel extends ComponentModel {
       List<String> columnNames,
       Function onRowTapped,
       int indexInTable,
-      dynamic value)
+      dynamic value,
+      String columnName)
       : super(null) {
     this._withChangedComponent = false;
     this.tableHeaderVisible = tableHeaderVisible;
@@ -62,5 +63,6 @@ class EditorComponentModel extends ComponentModel {
     this.onRowTapped = onRowTapped;
     this.indexInTable = indexInTable;
     this.value = value;
+    this.columnName = columnName;
   }
 }

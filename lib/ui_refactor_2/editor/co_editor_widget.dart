@@ -143,7 +143,10 @@ class CoEditorWidgetState<T extends StatefulWidget>
       data.setValues(
           context,
           (value is List) ? value : [value],
-          [columnName],
+          [
+            ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+                .columnName
+          ],
           index != null
               ? Filter(
                   columnNames: this.data.primaryKeyColumns,
@@ -204,30 +207,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
     dataRow = changedComponent.getProperty<String>(ComponentProperty.DATA_ROW);
 
     if (dataProvider == null) dataProvider = dataRow;
-  }
-
-  void updateData() {
-    String newColName =
-        ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-            .columnName;
-
-    if (newColName != null) this.columnName = newColName;
-
-    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .toUpdateData
-        .forEach((updateData) {
-      data = updateData;
-    });
-
-    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .toUpdateData = Queue<SoComponentData>();
-
-    if (this.data == null)
-      this.data = ComponentScreenWidget.of(context).getComponentData(
-          ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-              .dataProvider);
-
-    if (this.data != null) this.onDataChanged();
   }
 
   @override

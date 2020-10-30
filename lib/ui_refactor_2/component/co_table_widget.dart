@@ -253,7 +253,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
     if (column != null) {
       CoEditorWidget clEditor = componentCreator.createEditorForTable(
-          column?.cellEditor, text, editable, index, this.data);
+          column?.cellEditor, text, editable, index, this.data, columnName);
       if (clEditor != null) {
         return clEditor;
       }

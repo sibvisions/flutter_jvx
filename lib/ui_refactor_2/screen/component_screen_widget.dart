@@ -169,13 +169,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
           widget?.componentCreator?.createComponent(componentModel);
 
       if (componentClass is CoEditorWidget) {
-        (componentClass.componentModel as EditorComponentModel)
-            .toUpdateData
-            .add(this.getComponentData(
-                (componentClass.componentModel as EditorComponentModel)
-                    ?.dataProvider));
-
-        (componentClass.componentModel as EditorComponentModel).update();
         if (componentClass.cellEditor is CoReferencedCellEditorWidget) {
           (componentClass.cellEditor as CoReferencedCellEditorWidget)
               .cellEditorModel
@@ -212,11 +205,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       componentClass = container[component.id];
 
       if (componentClass is CoEditorWidget) {
-        (componentClass.componentModel as EditorComponentModel)
-            .toUpdateData
-            .add(this.getComponentData(
-                (componentClass.componentModel as EditorComponentModel)
-                    ?.dataProvider));
         if (componentClass.cellEditor is CoReferencedCellEditorWidget) {
           (componentClass.cellEditor as CoReferencedCellEditorWidget)
               .cellEditorModel

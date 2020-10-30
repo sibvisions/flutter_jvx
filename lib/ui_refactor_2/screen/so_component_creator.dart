@@ -250,8 +250,13 @@ class SoComponentCreator implements IComponentCreator {
     return cellEditor;
   }
 
-  CoEditorWidget createEditorForTable(CellEditor toCreatecellEditor,
-      dynamic value, bool editable, int indexInTable, SoComponentData data) {
+  CoEditorWidget createEditorForTable(
+      CellEditor toCreatecellEditor,
+      dynamic value,
+      bool editable,
+      int indexInTable,
+      SoComponentData data,
+      String columnName) {
     CoCellEditorWidget cellEditor;
     switch (toCreatecellEditor.className) {
       case "DateCellEditor":
@@ -285,7 +290,7 @@ class SoComponentCreator implements IComponentCreator {
       key: ValueKey(uuid.v4()),
       cellEditor: cellEditor,
       componentModel: EditorComponentModel.withoutChangedComponent(
-          false, editable, false, null, null, indexInTable, value),
+          false, editable, false, null, null, indexInTable, value, columnName),
     );
 
     return editor;
