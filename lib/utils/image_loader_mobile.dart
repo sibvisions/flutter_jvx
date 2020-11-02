@@ -13,8 +13,9 @@ class ImageLoaderMobile implements ImageLoader {
 
   ImageLoaderMobile();
 
-  Image loadImage(String path) {
-    return Image.file(File('${globals.dir}$path'));
+  Image loadImage(String path, [double width, double height]) {
+    return Image.file(File('${globals.dir}$path'),
+        width: width, height: height);
   }
 }
 

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/utils/image_loader.dart';
 import '../../ui/widgets/fontAwesomeChanger.dart';
 import '../../utils/uidata.dart';
 import '../../utils/globals.dart' as globals;
@@ -54,11 +53,8 @@ class CustomIcon extends StatelessWidget {
     if (size == null) size = getSize(image);
 
     if (arr.length > 0)
-      img = Image.file(
-        File('${globals.dir}${arr[0]}'),
-        width: size?.width,
-        height: size?.height,
-      );
+      img = ImageLoader()
+          .loadImage('${globals.dir}${arr[0]}', size?.width, size?.height);
 
     return img;
   }

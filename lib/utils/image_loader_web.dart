@@ -14,9 +14,10 @@ class ImageLoaderWeb implements ImageLoader {
 
   ImageLoaderWeb();
 
-  Image loadImage(String path) {
+  Image loadImage(String path, [double width, double height]) {
     if (globals.files.containsKey(path))
-      return Image.memory(base64Decode(globals.files[path]));
+      return Image.memory(base64Decode(globals.files[path]),
+          height: height, width: width);
 
     return null;
   }
