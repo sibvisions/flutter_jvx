@@ -53,8 +53,7 @@ class CustomIcon extends StatelessWidget {
     if (size == null) size = getSize(image);
 
     if (arr.length > 0)
-      img = ImageLoader()
-          .loadImage('${globals.dir}${arr[0]}', size?.width, size?.height);
+      img = ImageLoader().loadImage('${arr[0]}', size?.width, size?.height);
 
     return img;
   }
