@@ -42,7 +42,7 @@ class CoChoiceCellEditorWidgetState
   }
 
   ChoiceCellEditorImage loadImage(String path) {
-    Image image = ImageLoader().loadImage('${globals.dir}$path');
+    Image image = ImageLoader().loadImage('$path');
     String val;
     try {} catch (e) {
       selectedImage = defaultImage;
@@ -121,7 +121,8 @@ class CoChoiceCellEditorWidgetState
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
             child: FlatButton(
-              onPressed: () => this.editable ? changeImage() : null,
+              onPressed: () =>
+                  this.editable ? setState(() => changeImage()) : null,
               padding: EdgeInsets.all(0.0),
               child: selectedImage.image,
             ),
