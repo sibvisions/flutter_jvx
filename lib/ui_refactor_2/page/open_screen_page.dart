@@ -206,11 +206,11 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     return globals.appFrame.getWidget();
                   } else {
                     globals.appFrame.setScreen(screen);
-                    return screen;
+                    return globals.appFrame.getWidget();
                   }
                 }))),
       ));
-      
+
   AppBar _appBar(String title) {
     return globals.appFrame.showScreenHeader
         ? AppBar(

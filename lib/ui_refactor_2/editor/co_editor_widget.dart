@@ -145,7 +145,8 @@ class CoEditorWidgetState<T extends StatefulWidget>
           (value is List) ? value : [value],
           [
             ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-                .columnName
+                    .columnName ??
+                this.columnName
           ],
           index != null
               ? Filter(

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/cell_editor.dart';
@@ -42,7 +44,12 @@ class CoChoiceCellEditorWidgetState
   }
 
   ChoiceCellEditorImage loadImage(String path) {
-    Image image = Image.file(File('${globals.dir}$path'));
+    Image image;
+    if (kIsWeb) {
+      image = Image.memory(base64Decode(globals.files['${globals.dir}$path']));
+    } else {
+      image = Image.file(File('${globals.dir}$path'));
+    }
     String val;
     try {} catch (e) {
       selectedImage = defaultImage;

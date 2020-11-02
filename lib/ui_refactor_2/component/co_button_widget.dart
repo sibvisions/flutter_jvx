@@ -1,24 +1,24 @@
-import 'dart:io';
 import 'dart:convert' as utf8;
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/logic/bloc/api_bloc.dart';
-import 'package:jvx_flutterclient/model/api/request/press_button.dart';
-import 'package:jvx_flutterclient/model/api/request/reload.dart';
-import 'package:jvx_flutterclient/model/api/request/request.dart';
-import 'package:jvx_flutterclient/model/changed_component.dart';
-import 'package:jvx_flutterclient/model/properties/component_properties.dart';
-import 'package:jvx_flutterclient/model/so_action.dart';
-import 'package:jvx_flutterclient/ui/widgets/fontAwesomeChanger.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/co_action_component_widget.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/component/component_model.dart';
-import 'package:jvx_flutterclient/ui_refactor_2/container/co_container_widget.dart';
-import 'package:jvx_flutterclient/utils/text_utils.dart';
-import 'package:jvx_flutterclient/utils/uidata.dart';
-import 'package:jvx_flutterclient/utils/globals.dart' as globals;
 import 'package:tinycolor/tinycolor.dart';
+
+import '../../logic/bloc/api_bloc.dart';
+import '../../model/api/request/press_button.dart';
+import '../../model/api/request/reload.dart';
+import '../../model/api/request/request.dart';
+import '../../model/changed_component.dart';
+import '../../model/properties/component_properties.dart';
+import '../../model/so_action.dart';
+import '../../ui/widgets/fontAwesomeChanger.dart';
+import '../../utils/globals.dart' as globals;
+import '../../utils/text_utils.dart';
+import '../../utils/uidata.dart';
+import 'co_action_component_widget.dart';
+import 'component_model.dart';
 
 class CoButtonWidget extends CoActionComponentWidget {
   CoButtonWidget({ComponentModel componentModel})

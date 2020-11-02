@@ -50,7 +50,7 @@ class CoFlowLayoutContainerWidget extends StatelessWidget
     horizontalAlignment = int.parse(parameter[8]);
     verticalAlignment = int.parse(parameter[9]);
     horizontalComponentAlignment = int.parse(parameter[10]);
-    autoWrap = bool.fromEnvironment(parameter[11], defaultValue: autoWrap);
+    autoWrap = (parameter[11] == 'true') ? true : false;
     verticalComponentAlignment = horizontalComponentAlignment;
   }
 
