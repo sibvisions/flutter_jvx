@@ -33,6 +33,8 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
   Widget icon;
   String textStyle;
   bool network = false;
+  Size size = Size(16, 16);
+  String image;
 
   @override
   void updateProperties(ChangedComponent changedComponent) {
@@ -41,43 +43,36 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     textStyle = changedComponent.getProperty<String>(
         ComponentProperty.STYLE, textStyle);
 
-    String image =
-        changedComponent.getProperty<String>(ComponentProperty.IMAGE);
+    image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
       if (checkFontAwesome(image)) {
         icon = convertFontAwesomeTextToIcon(image, UIData.textColor);
       } else {
         List strinArr = List<String>.from(image.split(','));
         if (kIsWeb) {
-          if (globals.files.containsKey(strinArr[0])) {
-            Size size = Size(16, 16);
-
-            if (strinArr.length >= 3 &&
-                double.tryParse(strinArr[1]) != null &&
-                double.tryParse(strinArr[2]) != null) {
-              size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
-              if (strinArr[3] != null) {
-                network = strinArr[3].toLowerCase() == 'true';
-              }
-            }
-            if (network) {
-              icon = Image.network(
-                globals.baseUrl + strinArr[0],
-                width: size.width,
-                height: size.height,
-                color: !this.enabled ? Colors.grey.shade500 : null,
-              );
-            } else {
-              icon = Image.memory(
-                utf8.base64Decode(globals.files[strinArr[0]]),
-                width: size.width,
-                height: size.height,
-                color: !this.enabled ? Colors.grey.shade500 : null,
-              );
+          if (strinArr.length >= 3 &&
+              double.tryParse(strinArr[1]) != null &&
+              double.tryParse(strinArr[2]) != null) {
+            size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
+            if (strinArr[3] != null) {
+              network = strinArr[3].toLowerCase() == 'true';
             }
 
-            BlocProvider.of<ApiBloc>(context)
-                .dispatch(Reload(requestType: RequestType.RELOAD));
+            if (globals.files.containsKey(strinArr[0])) {
+              setState(() => icon = Image.memory(
+                    utf8.base64Decode(globals.files[strinArr[0]]),
+                    width: size.width,
+                    height: size.height,
+                    color: !this.enabled ? Colors.grey.shade500 : null,
+                  ));
+            } else if (network) {
+              setState(() => icon = Image.network(
+                    globals.baseUrl + strinArr[0],
+                    width: size.width,
+                    height: size.height,
+                    color: !this.enabled ? Colors.grey.shade500 : null,
+                  ));
+            }
           }
         } else {
           File file = File('${globals.dir}${strinArr[0]}');
@@ -88,15 +83,12 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 double.tryParse(strinArr[1]) != null &&
                 double.tryParse(strinArr[2]) != null)
               size = Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
-            icon = Image.memory(
-              file.readAsBytesSync(),
-              width: size.width,
-              height: size.height,
-              color: !this.enabled ? Colors.grey.shade500 : null,
-            );
-
-            BlocProvider.of<ApiBloc>(context)
-                .dispatch(Reload(requestType: RequestType.RELOAD));
+            setState(() => icon = Image.memory(
+                  file.readAsBytesSync(),
+                  width: size.width,
+                  height: size.height,
+                  color: !this.enabled ? Colors.grey.shade500 : null,
+                ));
           }
         }
       }
@@ -131,9 +123,15 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                     : UIData.textColor));
 
     if (text?.isNotEmpty ?? true) {
-      if (icon != null) {
+      if (image != null) {
         child = Row(
-          children: <Widget>[icon, SizedBox(width: 10), textWidget],
+          children: <Widget>[
+            icon != null
+                ? icon
+                : SizedBox(width: size.width, height: size.height),
+            SizedBox(width: 10),
+            textWidget
+          ],
           mainAxisAlignment: MainAxisAlignment.center,
         );
       } else {
