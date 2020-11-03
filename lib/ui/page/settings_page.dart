@@ -373,15 +373,14 @@ class _SettingsPageState extends State<SettingsPage> {
           bodyData: settingsBuilder(),
           bottomButton1:
               Translations.of(context).text2('Back', 'Back').toUpperCase(),
-          bottomButton2: Translations.of(context)
-              .text2('Restart', 'Restart')
-              .toUpperCase(),
+          bottomButton2:
+              Translations.of(context).text2('Save', 'Save').toUpperCase(),
           bottomButton1Function: () {
             if (ModalRoute.of(context).settings.arguments is String &&
                 ModalRoute.of(context).settings.arguments == "error.dialog") {
               RestartWidget.restartApp(context, loadConf: false);
             } else {
-              Navigator.of(context).pop();
+              if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             }
           },
           bottomButton2Function: () {
