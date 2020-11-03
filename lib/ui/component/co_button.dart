@@ -172,14 +172,13 @@ class CoButton extends CoActionComponent {
       );
     }
     return Container(
-        margin: EdgeInsets.all(4),
         child: ButtonTheme(
             minWidth: minWidth,
             padding: padding,
             layoutBehavior: ButtonBarLayoutBehavior.constrained,
             shape: globals.applicationStyle?.buttonShape ?? null,
             child: SizedBox(
-                height: 40,
+                height: 50,
                 child: RaisedButton(
                   key: this.componentId,
                   onPressed: this.enabled ? buttonPressed : null,

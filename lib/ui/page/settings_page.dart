@@ -27,16 +27,22 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  String appName, baseUrl, language, version, buildNumber, buildDate;
+  String appName,
+      baseUrl,
+      language,
+      version,
+      buildNumber,
+      buildDate,
+      commitHash;
   String toSaveUsername;
   String toSavePwd;
   List<PickerItem<int>> imageSizeItems;
   bool isDialogOpen = false;
 
   String get versionText {
-    String v = 'App V $version Build $buildNumber';
+    String v = 'App v$version Build $buildNumber';
     if (globals.appVersion != null && globals.appVersion.isNotEmpty)
-      v += '\nServer V ${globals.appVersion}';
+      v += '\nServer v${globals.appVersion}';
 
     return v;
   }
@@ -221,6 +227,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       buildDate ?? '',
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
+                  ),
+                  ListTile(
+                    leading: FaIcon(FontAwesomeIcons.github),
+                    title: Text(
+                      commitHash ?? '',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   )
                 ]))
           ],
@@ -230,8 +243,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   loadVersion() async {
-    Map<String, dynamic> buildversion =
-        json.decode(await rootBundle.loadString('env/app_version.json'));
+    Map<String, dynamic> buildversion = json.decode(await rootBundle.loadString(
+        globals.package
+            ? 'packages/jvx_flutterclient/env/app_version.json'
+            : 'env/app_version.json'));
     setState(() {
       version = buildversion['version'];
       if (version != null) {
@@ -242,7 +257,7 @@ class _SettingsPageState extends State<SettingsPage> {
         }
       }
       buildDate = buildversion['build_date'];
-
+      commitHash = buildversion['commit'];
       if (buildDate != null) {
         DateTime date = DateTime.parse(buildDate);
         DateFormat formatter = DateFormat('dd.MM.yyyy');
@@ -358,15 +373,14 @@ class _SettingsPageState extends State<SettingsPage> {
           bodyData: settingsBuilder(),
           bottomButton1:
               Translations.of(context).text2('Back', 'Back').toUpperCase(),
-          bottomButton2: Translations.of(context)
-              .text2('Restart', 'Restart')
-              .toUpperCase(),
+          bottomButton2:
+              Translations.of(context).text2('Save', 'Save').toUpperCase(),
           bottomButton1Function: () {
             if (ModalRoute.of(context).settings.arguments is String &&
                 ModalRoute.of(context).settings.arguments == "error.dialog") {
               RestartWidget.restartApp(context, loadConf: false);
             } else {
-              Navigator.of(context).pop();
+              if (Navigator.of(context).canPop()) Navigator.of(context).pop();
             }
           },
           bottomButton2Function: () {

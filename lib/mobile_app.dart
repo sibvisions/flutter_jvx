@@ -69,6 +69,7 @@ class MobileApp extends StatelessWidget {
                             listMenuItemsInDrawer:
                                 menuArguments.listMenuItemsInDrawer,
                             menuItems: menuArguments.menuItems,
+                            welcomeResponse: menuArguments.welcomeResponse,
                           ));
                 case '/screen':
                   ScreenArguments screenArguments = settings.arguments;

@@ -28,6 +28,7 @@ enum RequestType {
   SET_VALUE,
   TAB_SELECT,
   TAB_CLOSE,
+  MENU,
 }
 
 bool isScreenRequest(RequestType type) {

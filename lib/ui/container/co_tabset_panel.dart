@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+<<<<<<< HEAD
 import '../../jvx_flutterclient.dart';
 import '../../logic/bloc/api_bloc.dart';
 import '../../model/api/request/tab_close.dart';
@@ -9,6 +10,16 @@ import '../../model/changed_component.dart';
 import '../../model/properties/component_properties.dart';
 import '../../utils/globals.dart' as globals;
 import '../widgets/custom_icon.dart';
+=======
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
+import 'package:jvx_flutterclient/logic/bloc/api_bloc.dart';
+import 'package:jvx_flutterclient/model/api/request/tab_close.dart';
+import 'package:jvx_flutterclient/model/api/request/tab_select.dart';
+import 'package:jvx_flutterclient/model/changed_component.dart';
+import 'package:jvx_flutterclient/model/properties/component_properties.dart';
+import 'package:jvx_flutterclient/ui/widgets/custom_icon.dart';
+import 'package:jvx_flutterclient/utils/globals.dart' as globals;
+>>>>>>> master
 
 class CoTabsetPanel extends CoContainer implements IContainer {
   bool eventTabClosed;
@@ -55,12 +66,13 @@ class CoTabsetPanel extends CoContainer implements IContainer {
     if (this.components.isNotEmpty) {
       return DefaultTabController(
         length: this.components.length,
-        initialIndex:
-            this.components.length > selectedIndex ? selectedIndex : 0,
+        initialIndex: this.components.length > selectedIndex
+            ? (selectedIndex == -1 ? 0 : selectedIndex)
+            : 0,
         key: componentId,
         child: CustomTabSet(
           components: components,
-          currentIndex: selectedIndex,
+          currentIndex: selectedIndex == -1 ? 0 : selectedIndex,
           onTabChanged: _onTabChanged,
           onTabClosed: _onTabClosed,
         ),

@@ -149,9 +149,7 @@ class CoPopupMenuButton extends Component implements IComponent {
       padding: EdgeInsets.only(bottom: 8, left: 16),
       icon: FaIcon(
         FontAwesomeIcons.sortDown,
-        color: colorScheme.brightness == Brightness.light
-            ? colorScheme.onPrimary
-            : colorScheme.onSurface,
+        color: UIData.textColor,
       ),
     );
   }
@@ -183,7 +181,9 @@ class CoPopupMenuButton extends Component implements IComponent {
           ),
       items: menuItems,
     ).then<void>((String newValue) {
-      valueChanged(newValue);
+      if (newValue != null) {
+        valueChanged(newValue);
+      }
     });
   }
 
@@ -213,16 +213,21 @@ class CoPopupMenuButton extends Component implements IComponent {
     return Container(
       child: ButtonTheme(
         minWidth: 44,
-        child: RaisedButton(
-            key: this.componentId,
-            onPressed: this.enabled ? buttonPressed : null,
-            color: UIData.ui_kit_color_2[400],
-            elevation: 10,
-            shape: globals.applicationStyle.buttonShape,
-            child: Row(children: <Widget>[
-              Expanded(child: Center(child: child)),
-              _getPopupMenu(colorScheme),
-            ])),
+        child: SizedBox(
+          height: 50,
+          child: RaisedButton(
+              key: this.componentId,
+              onPressed: this.enabled ? buttonPressed : null,
+              color: this.background != null
+                  ? this.background
+                  : UIData.ui_kit_color_2[600],
+              elevation: 2,
+              shape: globals.applicationStyle.buttonShape,
+              child: Row(children: <Widget>[
+                Expanded(child: Center(child: child)),
+                _getPopupMenu(colorScheme),
+              ])),
+        ),
         splashColor: this.background,
       ),
     );

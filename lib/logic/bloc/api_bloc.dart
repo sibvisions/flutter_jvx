@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:jvx_flutterclient/model/api/request/menu.dart';
 import 'package:jvx_flutterclient/model/api/request/tab_close.dart';
 import 'package:jvx_flutterclient/model/api/request/tab_select.dart';
 import 'package:universal_io/prefer_universal/io.dart' as uio;
@@ -201,6 +202,12 @@ class ApiBloc extends Bloc<Request, Response> {
         ..loading = false
         ..error = false
         ..requestType = RequestType.RELOAD;
+    } else if (event.requestType == RequestType.MENU) {
+      yield updateResponse(Response()
+        ..loading = true
+        ..error = false
+        ..requestType = RequestType.LOADING);
+      yield* menu(event);
     }
   }
 
@@ -531,6 +538,10 @@ class ApiBloc extends Bloc<Request, Response> {
     yield await processRequest(request);
   }
 
+  Stream<Response> menu(Menu request) async* {
+    yield await processRequest(request);
+  }
+
   Future<Response> processRequest(Request request) async {
     RestClient restClient = RestClient();
     Response response;
@@ -734,6 +745,13 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.TAB_CLOSE:
         response =
             await restClient.postAsync('/api/comp/closeTab', request.toJson());
+        response.requestType = request.requestType;
+        response.request = request;
+        updateResponse(response);
+        return response;
+        break;
+      case RequestType.MENU:
+        response = await restClient.postAsync('/api/menu', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);

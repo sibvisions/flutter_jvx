@@ -7,6 +7,8 @@ import '../../model/properties/properties.dart';
 /// ComponentProperty.SCREEN_TITLE = screenTitle
 ///
 /// ComponentProperty.SCREENTITLE = screentitle
+///
+/// ComponentProperty.SCREEN___TITLE = screen.title
 
 enum ComponentProperty {
   ID,

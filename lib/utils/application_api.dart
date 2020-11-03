@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/model/api/request/menu.dart';
+import 'package:jvx_flutterclient/model/api/response/response.dart';
 import '../model/api/request/close_screen.dart';
 import '../logic/bloc/api_bloc.dart';
 import '../model/api/request/reload.dart';
@@ -9,9 +11,19 @@ import '../model/so_action.dart' as act;
 import 'globals.dart' as globals;
 
 class ApplicationApi {
+  List<void Function(Response response)> listeners =
+      <void Function(Response response)>[];
+
   BuildContext _context;
 
   ApplicationApi(this._context);
+
+  addListener(void Function(Response response) onState) {
+    if (!listeners.contains(onState)) {
+      listeners.add(onState);
+      state.listen((Response response) => onState(response));
+    }
+  }
 
   reload() {
     BlocProvider.of<ApiBloc>(_context)
@@ -39,11 +51,27 @@ class ApplicationApi {
     BlocProvider.of<ApiBloc>(_context).dispatch(closeScreen);
   }
 
+  menu() {
+    Menu menu = Menu(globals.clientId);
+
+    BlocProvider.of<ApiBloc>(_context).dispatch(menu);
+  }
+
   dispatch(Request request) {
     BlocProvider.of<ApiBloc>(_context).dispatch(request);
   }
 
   BuildContext get context {
     return _context;
+  }
+
+  set context(BuildContext context) {
+    if (context != null) {
+      _context = context;
+    }
+  }
+
+  Stream<Response> get state {
+    return BlocProvider.of<ApiBloc>(_context).state;
   }
 }

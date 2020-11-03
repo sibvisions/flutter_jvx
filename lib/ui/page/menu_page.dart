@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert' as utf8;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/custom_screen/app_frame.dart';
+import 'package:jvx_flutterclient/jvx_flutterclient.dart';
 import 'package:jvx_flutterclient/logic/bloc/api_bloc.dart';
 import 'package:jvx_flutterclient/model/api/request/device_Status.dart';
 import 'package:jvx_flutterclient/model/api/request/request.dart';
@@ -26,12 +28,19 @@ import '../../ui/widgets/menu_swiper_widget.dart';
 import '../../ui/widgets/menu_tabs_widget.dart';
 import '../../utils/globals.dart' as globals;
 import '../../utils/uidata.dart';
+import 'open_screen_page.dart';
 
 class MenuPage extends StatefulWidget {
   List<MenuItem> menuItems;
   final bool listMenuItemsInDrawer;
-  MenuPage({Key key, List<MenuItem> menuItems, this.listMenuItemsInDrawer})
-      : this.menuItems = menuItems,
+  final Response welcomeResponse;
+
+  MenuPage({
+    Key key,
+    List<MenuItem> menuItems,
+    this.listMenuItemsInDrawer,
+    this.welcomeResponse,
+  })  : this.menuItems = menuItems,
         super(key: key) {
     if (globals.appMode == 'preview' &&
         this.menuItems != null &&
@@ -95,9 +104,43 @@ class _MenuPageState extends State<MenuPage> {
         ApplicationSwitcherDescription(
             primaryColor: UIData.ui_kit_color_2.value,
             label: globals.appName + ' - ' + globals.username));
-    if (globals.customSocketHandler != null) {
+
+    if (globals.appListener != null) {
+      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+    }
+
+    if (globals.customSocketHandler != null &&
+        !globals.customSocketHandler.isOn) {
       // initialize the Websocket Communication
       globals.customSocketHandler.initCommunication();
+    }
+
+    if (widget.welcomeResponse != null) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Key componentID = new Key(
+            widget.welcomeResponse.responseData.screenGeneric.componentId);
+        globals.items = widget.menuItems;
+
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => new OpenScreenPage(
+                  responseData: widget.welcomeResponse.responseData,
+                  request: widget.welcomeResponse.request,
+                  componentId: componentID,
+                  title: widget
+                      .welcomeResponse.responseData.screenGeneric.screenTitle,
+                  items: globals.items,
+                  menuComponentId: widget.menuItems
+                      .firstWhere(
+                          (item) => item.action.label.contains(widget
+                              .welcomeResponse
+                              .responseData
+                              .screenGeneric
+                              .screenTitle),
+                          orElse: () => null)
+                      ?.action
+                      ?.componentId,
+                )));
+      });
     }
 
     super.initState();
@@ -139,13 +182,13 @@ class _MenuPageState extends State<MenuPage> {
       this.widget.menuItems = menuManager.menuItems;
     }
 
-    if (globals.appListener != null) {
-      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
-    }
-
     //AppFrame
     if (globals.appFrame is AppFrame || globals.appFrame == null) {
       globals.appFrame = AppFrame(context);
+    }
+
+    if (globals.appListener != null) {
+      globals.appListener.fireOnUpdateListener(context);
     }
 
     GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -185,6 +228,13 @@ class _MenuPageState extends State<MenuPage> {
             state.deviceStatus != null) {
           globals.layoutMode = state.deviceStatus.layoutMode;
           this.setState(() {});
+        }
+
+        if (state.requestType == RequestType.MENU) {
+          setState(() {
+            globals.items = state.menu.items;
+            this.widget.menuItems = state.menu.items;
+          });
         }
       },
       child: Scaffold(

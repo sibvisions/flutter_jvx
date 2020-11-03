@@ -2,6 +2,7 @@ library split_view;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/ui/container/co_scroll_panel_layout.dart';
 
 /// SplitView
 class SplitView extends StatefulWidget {
@@ -73,6 +74,18 @@ class _SplitViewState extends State<SplitView> {
     );
   }
 
+  void updatePreferredSize(Widget view, Size size) {
+    if (view is CoScrollPanelLayout) {
+      List<CoScrollPanelLayoutId> children = view.children;
+      if (children != null && children.length > 0) {
+        CoScrollPanelConstraints viewConstraints = children[0].constraints;
+        if (viewConstraints != null && viewConstraints.preferredSize != null) {
+          viewConstraints.preferredSize = size;
+        }
+      }
+    }
+  }
+
   Stack _buildVerticalView(
       BuildContext context, BoxConstraints constraints, double w) {
     double top = constraints.maxHeight * w;
@@ -92,6 +105,11 @@ class _SplitViewState extends State<SplitView> {
 
     List<Widget> children = List<Widget>();
 
+    this.updatePreferredSize(
+        widget.view1, Size(constraints.maxWidth, constraints.maxHeight));
+    this.updatePreferredSize(
+        widget.view2, Size(constraints.maxWidth, constraints.maxHeight));
+
     children.add(Positioned(
       top: 0,
       left: 0,
@@ -101,8 +119,10 @@ class _SplitViewState extends State<SplitView> {
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView1,
-          child: ConstrainedBox(
-              constraints: view1Constraints, child: widget.view1)),
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                  constraints: view1Constraints, child: widget.view1))),
     ));
 
     children.add(Positioned(
@@ -113,8 +133,10 @@ class _SplitViewState extends State<SplitView> {
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView2,
-          child: ConstrainedBox(
-              constraints: view2Constraints, child: widget.view2)),
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                  constraints: view2Constraints, child: widget.view2))),
     ));
 
     if (widget.showHandle) {
@@ -171,16 +193,19 @@ class _SplitViewState extends State<SplitView> {
     BoxConstraints view1Constraints = BoxConstraints(
         minHeight: constraints.maxHeight,
         maxHeight: constraints.maxHeight,
-        minWidth: 0,
+        minWidth: left,
         maxWidth: left);
 
     BoxConstraints view2Constraints = BoxConstraints(
         minHeight: constraints.maxHeight,
         maxHeight: constraints.maxHeight,
-        minWidth: 0,
+        minWidth: right,
         maxWidth: right);
 
     List<Widget> children = List<Widget>();
+
+    this.updatePreferredSize(widget.view1, Size(left, constraints.maxHeight));
+    this.updatePreferredSize(widget.view2, Size(right, constraints.maxHeight));
 
     children.add(Positioned(
       top: 0,
@@ -190,8 +215,10 @@ class _SplitViewState extends State<SplitView> {
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView1,
-          child: ConstrainedBox(
-              constraints: view1Constraints, child: widget.view1)),
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                  constraints: view1Constraints, child: widget.view1))),
     ));
 
     children.add(Positioned(
@@ -202,8 +229,10 @@ class _SplitViewState extends State<SplitView> {
       child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView2,
-          child: ConstrainedBox(
-              constraints: view2Constraints, child: widget.view2)),
+          child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                  constraints: view2Constraints, child: widget.view2))),
     ));
 
     if (widget.showHandle) {
