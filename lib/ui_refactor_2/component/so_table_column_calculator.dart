@@ -50,11 +50,13 @@ class SoTableColumnCalculator {
       for (int ii = 0; ii < calculateForRecordCount; ii++) {
         componentData.data.getRow(ii, columnNames).asMap().forEach((i, c) {
           CoCellEditorWidget editor;
-          DataBookMetaDataColumn metaDataColumn =
-              componentData.getMetaDataColumn(columnNames[i]);
-          if (metaDataColumn != null && metaDataColumn.cellEditor != null) {
-            editor = componentCreator
-                .createCellEditorForTable(metaDataColumn.cellEditor);
+          if (columnNames != null) {
+            DataBookMetaDataColumn metaDataColumn =
+                componentData.getMetaDataColumn(columnNames[i]);
+            if (metaDataColumn != null && metaDataColumn.cellEditor != null) {
+              editor = componentCreator
+                  .createCellEditorForTable(metaDataColumn.cellEditor);
+            }
           }
 
           if (editor != null && editor.cellEditorModel.isTableMinimumSizeSet) {

@@ -489,7 +489,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             (columnWidth + (2 * borderWidth) > constraints.maxWidth);
 
         Widget child = GestureDetector(
-          onTapDown: (details) => _tapPosition = details.globalPosition,
+            onTapDown: (details) => _tapPosition = details.globalPosition,
             onLongPress: () =>
                 this.editable ? showContextMenu(context, -1) : null,
             child: Container(

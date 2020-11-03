@@ -185,7 +185,8 @@ class CoLinkedCellEditorWidgetState
       if (this.columnView != null)
         dropDownColumnNames = this.columnView.columnNames;
       else if (this.data?.metaData != null)
-        dropDownColumnNames = this.data.metaData.tableColumnView;
+        dropDownColumnNames = this.data.metaData.tableColumnView ??
+            this.linkReference.referencedColumnNames;
 
       return Container(
         height: 50,

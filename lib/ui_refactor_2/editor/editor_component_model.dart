@@ -21,6 +21,7 @@ class EditorComponentModel extends ComponentModel {
   bool editable;
   bool autoResize;
   List<String> columnNames;
+  List<String> columnLabels;
   Function onRowTapped;
   int indexInTable;
   dynamic value;
@@ -53,7 +54,8 @@ class EditorComponentModel extends ComponentModel {
       Function onRowTapped,
       int indexInTable,
       dynamic value,
-      String columnName)
+      String columnName,
+      List<String> columnLabels)
       : super(null) {
     this._withChangedComponent = false;
     this.tableHeaderVisible = tableHeaderVisible;
@@ -64,5 +66,6 @@ class EditorComponentModel extends ComponentModel {
     this.indexInTable = indexInTable;
     this.value = value;
     this.columnName = columnName;
+    this.columnLabels = columnLabels;
   }
 }

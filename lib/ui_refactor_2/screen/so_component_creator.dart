@@ -289,8 +289,8 @@ class SoComponentCreator implements IComponentCreator {
       data: data,
       key: ValueKey(uuid.v4()),
       cellEditor: cellEditor,
-      componentModel: EditorComponentModel.withoutChangedComponent(
-          false, editable, false, null, null, indexInTable, value, columnName),
+      componentModel: EditorComponentModel.withoutChangedComponent(false,
+          editable, false, null, null, indexInTable, value, columnName, null),
     );
 
     return editor;
