@@ -114,7 +114,7 @@ class CoTextCellEditorWidgetState
             textAlign:
                 SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
             decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(12),
+                contentPadding: EdgeInsets.fromLTRB(12, 15, 12, 5),
                 border: InputBorder.none,
                 hintText: placeholderVisible ? placeholder : null,
                 suffixIcon: this.editable != null &&

@@ -78,10 +78,10 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
                 ),
               ),
               CoScrollPanelLayout(
-                parentConstraints: constraints,
+                preferredConstraints: CoScrollPanelConstraints(constraints),
                 children: [
                   CoScrollPanelLayoutId(
-                      parentConstraints: constraints,
+                      constraints: CoScrollPanelConstraints(constraints),
                       child: Card(
                           color: Colors.white.withOpacity(
                               globals.applicationStyle.controlsOpacity),

@@ -21,6 +21,9 @@ class CoSplitPanelWidget extends CoContainerWidget {
 class CoSplitPanelWidgetState extends CoContainerWidgetState {
   final splitViewKey = GlobalKey();
 
+  final keyFirst = GlobalKey();
+  final keySecond = GlobalKey();
+
   ScrollController scrollControllerView1 =
       ScrollController(keepScrollOffset: true);
   ScrollController scrollControllerView2 =
@@ -55,12 +58,14 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
       if (this.dividerPosition != null &&
           this.dividerPosition >= 0 &&
           constraints.maxWidth != null &&
+          this.dividerPosition < constraints.maxWidth &&
           splitViewMode == SplitViewMode.Horizontal) {
         this.currentSplitviewWeight =
             this.dividerPosition / constraints.maxWidth;
       } else if (this.dividerPosition != null &&
           this.dividerPosition >= 0 &&
           constraints.maxHeight != null &&
+          this.dividerPosition < constraints.maxHeight &&
           (splitViewMode == SplitViewMode.Vertical)) {
         this.currentSplitviewWeight =
             this.dividerPosition / constraints.maxHeight;
@@ -102,41 +107,65 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      _calculateDividerPosition(constraints, this.splitViewMode);
+
       if (firstComponent != null) {
-        widgets.add(SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: CoScrollPanelLayout(
-              parentConstraints: constraints,
-              children: [
-                CoScrollPanelLayoutId(
-                    parentConstraints: constraints, child: firstComponent)
-              ],
-            )));
+        Size preferredSize;
+
+        if (constraints.maxWidth != double.infinity &&
+            this.currentSplitviewWeight != null) {
+          preferredSize = Size(
+              constraints.maxWidth * this.currentSplitviewWeight,
+              constraints.maxHeight);
+        }
+
+        widgets.add(CoScrollPanelLayout(
+          key: this.keyFirst,
+          preferredConstraints:
+              CoScrollPanelConstraints(constraints, preferredSize),
+          children: [
+            CoScrollPanelLayoutId(
+                key: ValueKey(this.keyFirst),
+                constraints:
+                    CoScrollPanelConstraints(constraints, preferredSize),
+                child: firstComponent)
+          ],
+        ));
       } else {
         widgets.add(Container());
       }
 
       if (secondComponent != null) {
-        widgets.add(SingleChildScrollView(
-            //scrollDirection: Axis.horizontal,
-            child: CoScrollPanelLayout(
-          parentConstraints: constraints,
+        Size preferredSize;
+        if (constraints.maxWidth != double.infinity &&
+            this.currentSplitviewWeight != null) {
+          preferredSize = Size(
+              constraints.maxWidth -
+                  (constraints.maxWidth * this.currentSplitviewWeight),
+              constraints.maxHeight);
+        }
+
+        widgets.add(CoScrollPanelLayout(
+          key: this.keySecond,
+          preferredConstraints:
+              CoScrollPanelConstraints(constraints, preferredSize),
           children: [
             CoScrollPanelLayoutId(
-                parentConstraints: constraints, child: secondComponent)
+                key: ValueKey(this.keySecond),
+                constraints:
+                    CoScrollPanelConstraints(constraints, preferredSize),
+                child: secondComponent)
           ],
-        )));
+           ));
       } else {
         widgets.add(Container());
       }
 
       if (this.splitViewMode != null) {
-        _calculateDividerPosition(constraints, this.splitViewMode);
-
         return SplitView(
           key: splitViewKey,
           initialWeight: currentSplitviewWeight,
-          gripColor: Colors.grey.withOpacity(0.3),
+          gripColor: Colors.grey[300],
           handleColor: Colors.grey[800].withOpacity(0.5),
           view1: widgets[0],
           view2: widgets[1],

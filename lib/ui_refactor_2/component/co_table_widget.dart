@@ -171,8 +171,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             .withOpacity(globals.applicationStyle?.controlsOpacity ?? 1.0);
       }
       return Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5), color: backgroundColor),
+        decoration: BoxDecoration(color: backgroundColor),
         child: Container(
           decoration: BoxDecoration(
             border: Border(
@@ -182,10 +181,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                     style: BorderStyle.solid)),
           ),
           child: Material(
-              borderRadius: BorderRadius.circular(5),
               color: backgroundColor,
               child: InkWell(
-                  borderRadius: BorderRadius.circular(5),
                   highlightColor: UIData.ui_kit_color_2[500].withOpacity(
                       globals.applicationStyle?.controlsOpacity ?? 1.0),
                   onTap: () {
@@ -201,13 +198,15 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       IconData icon, String text, ContextMenuModel value) {
     return PopupMenuItem<ContextMenuModel>(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Icon(
             icon,
             color: Colors.grey[600],
           ),
-          Text(Translations.of(context).text2(text)),
+          Padding(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(Translations.of(context).text2(text))),
         ],
       ),
       enabled: true,
@@ -272,7 +271,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
     if (rowIndex == -1) {
       return Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
           width: width,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
@@ -301,14 +299,11 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
           ));
     } else {
       return Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
           width: width,
           child: Padding(
             padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
             child: GestureDetector(
               child: Container(
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
                   child: (editor != null)
                       ? editor
                       : Padding(
@@ -361,7 +356,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                   actionExtentRatio: 0.25,
                   child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
                         color: Colors.white.withOpacity(
                             globals.applicationStyle?.controlsOpacity ?? 1.0),
                       ),
@@ -379,7 +373,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 ))
             : Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
                   color: Colors.white.withOpacity(
                       globals.applicationStyle?.controlsOpacity ?? 1.0),
                 ),
@@ -390,7 +383,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 this.editable ? showContextMenu(context, index) : null,
             child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
                     color: Colors.white.withOpacity(
                         globals.applicationStyle?.controlsOpacity ?? 1.0)),
                 child: getTableRow(children, index, false, isSelected)));
@@ -498,43 +490,36 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
         Widget child = GestureDetector(
           onTapDown: (details) => _tapPosition = details.globalPosition,
-          onLongPress: () =>
-              this.editable ? showContextMenu(context, -1) : null,
-          child: Container(
-            decoration: _hasHorizontalScroller
-                ? null
-                : BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                        width: borderWidth,
-                        color: UIData.ui_kit_color_2[500].withOpacity(
-                            globals.applicationStyle?.controlsOpacity ?? 1.0)),
-                    color: Colors.white.withOpacity(
-                        globals.applicationStyle?.controlsOpacity ?? 1.0),
-                  ),
-            width: columnWidth + (2 * borderWidth),
-            height: constraints.maxHeight == double.infinity
-                ? tableHeight
-                : constraints.maxHeight,
-            child: ScrollablePositionedList.builder(
-              itemScrollController: _scrollController,
-              itemPositionsListener: _scrollPositionListener,
-              itemCount: itemCount,
-              itemBuilder: itemBuilder,
-            ),
-          ),
-        );
+            onLongPress: () =>
+                this.editable ? showContextMenu(context, -1) : null,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                    width: borderWidth,
+                    color: UIData.ui_kit_color_2[500].withOpacity(
+                        globals.applicationStyle?.controlsOpacity ?? 1.0)),
+                color: Colors.white.withOpacity(
+                    globals.applicationStyle?.controlsOpacity ?? 1.0),
+              ),
+              width: columnWidth + (2 * borderWidth) + 100,
+              height: constraints.maxHeight == double.infinity
+                  ? tableHeight
+                  : constraints.maxHeight,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: ScrollablePositionedList.builder(
+                  itemScrollController: _scrollController,
+                  itemPositionsListener: _scrollPositionListener,
+                  itemCount: itemCount,
+                  itemBuilder: itemBuilder,
+                ),
+              ),
+            ));
 
         if (_hasHorizontalScroller) {
           return Container(
               decoration: BoxDecoration(
-                  // borderRadius: BorderRadius.only(
-                  //     topLeft: Radius.circular(5),
-                  //     topRight: Radius.circular(5)),
-                  // border: Border.all(
-                  //     width: borderWidth,
-                  //     color: UIData.ui_kit_color_2[500].withOpacity(
-                  //         globals.applicationStyle?.controlsOpacity ?? 1.0)),
                   color: Colors.white.withOpacity(
                       globals.applicationStyle?.controlsOpacity ?? 1.0)),
               child: SingleChildScrollView(

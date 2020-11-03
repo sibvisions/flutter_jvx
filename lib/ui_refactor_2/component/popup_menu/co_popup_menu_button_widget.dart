@@ -150,9 +150,7 @@ class CoPopupMenuButtonWidgetState
       padding: EdgeInsets.only(bottom: 8, left: 16),
       icon: FaIcon(
         FontAwesomeIcons.sortDown,
-        color: colorScheme.brightness == Brightness.light
-            ? colorScheme.onPrimary
-            : colorScheme.onSurface,
+        color: UIData.textColor,
       ),
     );
   }
@@ -181,7 +179,8 @@ class CoPopupMenuButtonWidgetState
           ),
       items: menuItems,
     ).then<void>((String newValue) {
-      valueChanged(newValue);
+      if (newValue != null)
+        valueChanged(newValue);
     });
   }
 
@@ -212,7 +211,8 @@ class CoPopupMenuButtonWidgetState
       height: 50,
       child: ButtonTheme(
         minWidth: 44,
-        child: RaisedButton(
+        child: SizedBox(
+          child: RaisedButton(
             onPressed: () => this.enabled ? buttonPressed(context) : null,
             color: UIData.ui_kit_color_2[400],
             elevation: 10,
@@ -224,8 +224,10 @@ class CoPopupMenuButtonWidgetState
                   fit: FlexFit.loose,
                   flex: 2,
                   child: _getPopupMenu(colorScheme)),
-            ])),
+            ]),
         splashColor: this.background,
+          )
+      )
       ),
     );
   }

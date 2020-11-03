@@ -186,7 +186,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             layoutBehavior: ButtonBarLayoutBehavior.constrained,
             shape: globals.applicationStyle?.buttonShape ?? null,
             child: SizedBox(
-                height: 40,
+                height: 50,
                 child: RaisedButton(
                   onPressed: this.enabled ? buttonPressed : null,
                   color: this.background != null

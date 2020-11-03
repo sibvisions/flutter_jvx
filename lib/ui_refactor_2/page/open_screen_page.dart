@@ -70,8 +70,8 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       widget.componentId.toString().replaceAll("[<'", '').replaceAll("'>]", '');
 
   void _firePreviewerListener() {
-    if (globals.appListener != null)
-      globals.appListener.fireAfterStartupListener(ApplicationApi(context));
+    // if (globals.appListener != null)
+    //   globals.appListener.fireOnUpdateListener(ApplicationApi(context));
   }
 
   void _createDeviceStatusTimer() {
@@ -115,6 +115,10 @@ class _OpenScreenPageState extends State<OpenScreenPage>
               this.closeCurrentScreen = false;
             }
           });
+
+          if (state.requestType == RequestType.MENU) {
+            globals.items = state.menu.items;
+          }
 
           if (state.requestType == RequestType.CLOSE_SCREEN) {
             Navigator.of(context).pushReplacementNamed('/menu',
