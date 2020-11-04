@@ -47,9 +47,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   int selectedRow;
 
-  ItemScrollController _scrollController = ItemScrollController();
-  ItemPositionsListener _scrollPositionListener =
-      ItemPositionsListener.create();
+  ItemScrollController _scrollController;
+  ItemPositionsListener _scrollPositionListener;
   int pageSize = 100;
   double fetchMoreItemOffset = 20;
   DataBook _data;
@@ -437,6 +436,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   @override
   void initState() {
     super.initState();
+    _scrollController = ItemScrollController();
+    _scrollPositionListener = ItemPositionsListener.create();
     if (componentCreator == null)
       componentCreator = SoComponentCreator(context);
     _scrollPositionListener.itemPositions.addListener(_scrollListener);
