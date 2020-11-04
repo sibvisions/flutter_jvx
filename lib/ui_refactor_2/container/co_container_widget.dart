@@ -97,8 +97,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   ComponentWidget getComponentWithContraint(String constraint) {
-    return components?.firstWhere((component) =>
-        component.componentModel.componentState.constraints == constraint);
+    return components?.firstWhere(
+        (component) => component.componentModel.constraints == constraint);
   }
 
   void updateComponentProperties(
