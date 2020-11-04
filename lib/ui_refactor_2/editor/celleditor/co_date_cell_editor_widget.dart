@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/date_cell_editor_model.dart';
 
 import '../../../model/cell_editor.dart';
 import '../../../model/properties/cell_editor_properties.dart';
 import '../../../utils/globals.dart' as globals;
 import '../../../utils/text_utils.dart';
 import '../../../utils/uidata.dart';
-import 'cell_editor_model.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
   CoDateCellEditorWidget(
-      {CellEditor changedCellEditor, CellEditorModel cellEditorModel})
+      {CellEditor changedCellEditor, DateCellEditorModel cellEditorModel})
       : super(
             changedCellEditor: changedCellEditor,
             cellEditorModel: cellEditorModel);
@@ -53,6 +53,11 @@ class CoDateCellEditorWidgetState
   @override
   get minimumSize {
     return Size(50, 50);
+  }
+
+  @override
+  get tableMinimumSize {
+    return Size(200, 50); // this.preferredSize;
   }
 
   void onDateValueChanged(dynamic value) {

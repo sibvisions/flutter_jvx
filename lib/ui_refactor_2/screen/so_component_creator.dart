@@ -6,6 +6,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/component/popup_menu/co_popup_me
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_group_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_split_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/tabset_panel/co_tabset_panel_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/date_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 import 'package:uuid/uuid.dart';
 
@@ -152,7 +153,7 @@ class SoComponentCreator implements IComponentCreator {
         ),
     'DateCellEditor': (CellEditor cellEditor) => CoDateCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: CellEditorModel(cellEditor),
+          cellEditorModel: DateCellEditorModel(null, cellEditor),
         ),
     'LinkedCellEditor': (CellEditor cellEditor) => CoLinkedCellEditorWidget(
           changedCellEditor: cellEditor,
@@ -224,7 +225,8 @@ class SoComponentCreator implements IComponentCreator {
         {
           cellEditor = CoDateCellEditorWidget(
             changedCellEditor: toCreatecellEditor,
-            cellEditorModel: CellEditorModel(toCreatecellEditor),
+            cellEditorModel:
+                DateCellEditorModel(this.context, toCreatecellEditor),
           );
         }
         break;
@@ -262,7 +264,8 @@ class SoComponentCreator implements IComponentCreator {
       case "DateCellEditor":
         {
           cellEditor = CoDateCellEditorWidget(
-              cellEditorModel: CellEditorModel(toCreatecellEditor),
+              cellEditorModel:
+                  DateCellEditorModel(this.context, toCreatecellEditor),
               changedCellEditor: toCreatecellEditor);
         }
         break;
