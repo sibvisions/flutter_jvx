@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/cell_editor.dart';
+import 'package:jvx_flutterclient/model/properties/cell_editor_properties.dart';
 import 'package:jvx_flutterclient/utils/text_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -10,7 +11,13 @@ class DateCellEditorModel extends CellEditorModel {
   BuildContext context;
 
   DateCellEditorModel(this.context, CellEditor currentCellEditor)
-      : super(currentCellEditor);
+      : super(currentCellEditor) {
+    dateFormat = this
+        .currentCellEditor
+        .getProperty<String>(CellEditorProperty.DATE_FORMAT);
+
+    if (dateFormat.contains('Y')) dateFormat = dateFormat.replaceAll('Y', 'y');
+  }
 
   @override
   get preferredSize {
@@ -22,7 +29,7 @@ class DateCellEditorModel extends CellEditorModel {
     double width =
         TextUtils.getTextWidth(text, Theme.of(context).textTheme.bodyText1)
             .toDouble();
-    return Size(width + 16, 50);
+    return Size(width + 105, 50);
   }
 
   @override
@@ -32,6 +39,6 @@ class DateCellEditorModel extends CellEditorModel {
 
   @override
   get tableMinimumSize {
-    return Size(200, 50); // this.preferredSize;
+    return this.preferredSize;
   }
 }

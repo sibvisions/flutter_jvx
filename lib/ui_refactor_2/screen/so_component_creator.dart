@@ -7,6 +7,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/container/co_group_panel_widget.
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_split_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/tabset_panel/co_tabset_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/date_cell_editor_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/text_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 import 'package:uuid/uuid.dart';
 
@@ -128,34 +129,43 @@ class SoComponentCreator implements IComponentCreator {
         )
   };
 
-  Map<String, CoCellEditorWidget Function(CellEditor cellEditor)>
-      standardCellEditors = {
-    'CheckBoxCellEditor': (CellEditor cellEditor) => CoCheckboxCellEditorWidget(
+  Map<
+      String,
+      CoCellEditorWidget Function(
+          CellEditor cellEditor, BuildContext context)> standardCellEditors = {
+    'CheckBoxCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoCheckboxCellEditorWidget(
           // key: GlobalKey(),
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'TextCellEditor': (CellEditor cellEditor) => CoTextCellEditorWidget(
+    'TextCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoTextCellEditorWidget(
+          changedCellEditor: cellEditor,
+          cellEditorModel: TextCellEditorModel(context, cellEditor),
+        ),
+    'NumberCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoNumberCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'NumberCellEditor': (CellEditor cellEditor) => CoNumberCellEditorWidget(
+    'ImageViewer': (CellEditor cellEditor, BuildContext context) =>
+        CoImageCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'ImageViewer': (CellEditor cellEditor) => CoImageCellEditorWidget(
+    'ChoiceCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoChoiceCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'ChoiceCellEditor': (CellEditor cellEditor) => CoChoiceCellEditorWidget(
+    'DateCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoDateCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: CellEditorModel(cellEditor),
+          textCellEditorModel: DateCellEditorModel(context, cellEditor),
         ),
-    'DateCellEditor': (CellEditor cellEditor) => CoDateCellEditorWidget(
-          changedCellEditor: cellEditor,
-          cellEditorModel: DateCellEditorModel(null, cellEditor),
-        ),
-    'LinkedCellEditor': (CellEditor cellEditor) => CoLinkedCellEditorWidget(
+    'LinkedCellEditor': (CellEditor cellEditor, BuildContext context) =>
+        CoLinkedCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         )
@@ -212,7 +222,7 @@ class SoComponentCreator implements IComponentCreator {
       cellEditor = null;
     } else {
       cellEditor = this.standardCellEditors[toCreatecellEditor.className](
-          toCreatecellEditor);
+          toCreatecellEditor, this.context);
     }
 
     return cellEditor;
@@ -225,7 +235,7 @@ class SoComponentCreator implements IComponentCreator {
         {
           cellEditor = CoDateCellEditorWidget(
             changedCellEditor: toCreatecellEditor,
-            cellEditorModel:
+            textCellEditorModel:
                 DateCellEditorModel(this.context, toCreatecellEditor),
           );
         }
@@ -264,7 +274,7 @@ class SoComponentCreator implements IComponentCreator {
       case "DateCellEditor":
         {
           cellEditor = CoDateCellEditorWidget(
-              cellEditorModel:
+              textCellEditorModel:
                   DateCellEditorModel(this.context, toCreatecellEditor),
               changedCellEditor: toCreatecellEditor);
         }

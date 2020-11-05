@@ -12,11 +12,12 @@ import '../../../utils/uidata.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
+  DateCellEditorModel textCellEditorModel;
   CoDateCellEditorWidget(
-      {CellEditor changedCellEditor, DateCellEditorModel cellEditorModel})
+      {CellEditor changedCellEditor, this.textCellEditorModel})
       : super(
             changedCellEditor: changedCellEditor,
-            cellEditorModel: cellEditorModel);
+            cellEditorModel: textCellEditorModel);
 
   @override
   State<StatefulWidget> createState() => CoDateCellEditorWidgetState();
@@ -24,40 +25,17 @@ class CoDateCellEditorWidget extends CoCellEditorWidget {
 
 class CoDateCellEditorWidgetState
     extends CoCellEditorWidgetState<CoDateCellEditorWidget> {
-  String dateFormat;
   dynamic toUpdate;
 
   get isTimeFormat {
-    return dateFormat.contains("H") || dateFormat.contains("m");
+    return widget.textCellEditorModel.dateFormat.contains("H") ||
+        widget.textCellEditorModel.dateFormat.contains("m");
   }
 
   get isDateFormat {
-    return dateFormat.contains("d") ||
-        dateFormat.contains("M") ||
-        dateFormat.contains("y");
-  }
-
-  @override
-  get preferredSize {
-    String text = DateFormat(this.dateFormat)
-        .format(DateTime.parse("2020-12-31 22:22:22Z"));
-
-    if (text.isEmpty) text = TextUtils.averageCharactersDateField;
-
-    double width =
-        TextUtils.getTextWidth(text, Theme.of(context).textTheme.bodyText1)
-            .toDouble();
-    return Size(width + 16, 50);
-  }
-
-  @override
-  get minimumSize {
-    return Size(50, 50);
-  }
-
-  @override
-  get tableMinimumSize {
-    return Size(200, 50); // this.preferredSize;
+    return widget.textCellEditorModel.dateFormat.contains("d") ||
+        widget.textCellEditorModel.dateFormat.contains("M") ||
+        widget.textCellEditorModel.dateFormat.contains("y");
   }
 
   void onDateValueChanged(dynamic value) {
@@ -147,11 +125,6 @@ class CoDateCellEditorWidgetState
   void initState() {
     super.initState();
 
-    dateFormat = widget.changedCellEditor
-        .getProperty<String>(CellEditorProperty.DATE_FORMAT);
-
-    if (dateFormat.contains('Y')) dateFormat = dateFormat.replaceAll('Y', 'y');
-
     preferredEditorMode = widget.changedCellEditor
         .getProperty<int>(CellEditorProperty.PREFERRED_EDITOR_MODE);
   }
@@ -187,8 +160,8 @@ class CoDateCellEditorWidgetState
                       (this.value != null &&
                               (this.value is int ||
                                   int.tryParse(this.value) != null))
-                          ? DateFormat(this.dateFormat).format(
-                              DateTime.fromMillisecondsSinceEpoch(
+                          ? DateFormat(widget.textCellEditorModel.dateFormat)
+                              .format(DateTime.fromMillisecondsSinceEpoch(
                                   this.value is String
                                       ? int.parse(this.value)
                                       : this.value))
@@ -253,8 +226,8 @@ class CoDateCellEditorWidgetState
                     (this.value != null &&
                             (this.value is int ||
                                 int.tryParse(this.value) != null))
-                        ? DateFormat(this.dateFormat).format(
-                            DateTime.fromMillisecondsSinceEpoch(
+                        ? DateFormat(widget.textCellEditorModel.dateFormat)
+                            .format(DateTime.fromMillisecondsSinceEpoch(
                                 this.value is String
                                     ? int.parse(this.value)
                                     : this.value))
@@ -310,7 +283,7 @@ class CoDateCellEditorWidgetState
         }
 
         String text = (this.value != null && this.value is int)
-            ? DateFormat(this.dateFormat)
+            ? DateFormat(widget.textCellEditorModel.dateFormat)
                 .format(DateTime.fromMillisecondsSinceEpoch(this.value))
             : '';
 

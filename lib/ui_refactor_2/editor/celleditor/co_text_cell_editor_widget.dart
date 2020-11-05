@@ -6,12 +6,14 @@ import '../../../utils/globals.dart' as globals;
 import '../../../utils/so_text_align.dart';
 import '../../../utils/text_utils.dart';
 import '../../../utils/uidata.dart';
-import 'cell_editor_model.dart';
+import 'text_cell_editor_model.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoTextCellEditorWidget extends CoCellEditorWidget {
+  final TextCellEditorModel cellEditorModel;
+
   CoTextCellEditorWidget(
-      {Key key, CellEditor changedCellEditor, CellEditorModel cellEditorModel})
+      {Key key, CellEditor changedCellEditor, this.cellEditorModel})
       : super(
             changedCellEditor: changedCellEditor,
             cellEditorModel: cellEditorModel,
@@ -24,27 +26,10 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
   TextEditingController _controller = TextEditingController();
-  bool multiLine = false;
   bool password = false;
   bool valueChanged = false;
   final GlobalKey textfieldKey = GlobalKey<CoTextCellEditorWidgetState>();
   FocusNode node = FocusNode();
-
-  @override
-  get preferredSize {
-    double width = TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
-            Theme.of(context).textTheme.button)
-        .toDouble();
-    if (multiLine)
-      return Size(width, 100);
-    else
-      return Size(width, 50);
-  }
-
-  @override
-  get minimumSize {
-    return Size(10, 50);
-  }
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (this.value != newValue) {
@@ -67,7 +52,7 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-    multiLine = (widget.changedCellEditor
+    widget.cellEditorModel.multiLine = (widget.changedCellEditor
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('multiline') ??
         false);
@@ -143,9 +128,10 @@ class CoTextCellEditorWidgetState
             controller: _controller,
             focusNode: node,
             minLines: null,
-            maxLines: multiLine ? null : 1,
-            keyboardType:
-                multiLine ? TextInputType.multiline : TextInputType.text,
+            maxLines: widget.cellEditorModel.multiLine ? null : 1,
+            keyboardType: widget.cellEditorModel.multiLine
+                ? TextInputType.multiline
+                : TextInputType.text,
             onEditingComplete: onTextFieldEndEditing,
             onChanged: onTextFieldValueChanged,
             readOnly: this.editable != null && !this.editable ?? false,

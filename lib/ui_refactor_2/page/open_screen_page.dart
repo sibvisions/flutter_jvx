@@ -168,7 +168,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
                     componentId: _getRawCompId(),
                     child: ComponentScreenWidget(
                       closeCurrentScreen: closeCurrentScreen,
-                      componentCreator: SoComponentCreator(context),
+                      componentCreator: SoComponentCreator(this.context),
                       request: this.currentRequest,
                       responseData: this.currentResponseData,
                     ),
