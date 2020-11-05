@@ -80,16 +80,16 @@ class _MenuListWidgetState extends State<MenuListWidget> {
   void _onTap(MenuItem menuItem) {
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
-            .getScreen(menuItem.action.componentId,
-                templateName: menuItem.templateName)
+            .getScreen(menuItem.componentId,
+                templateName: menuItem.text)
             .withServer()) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
-              .getScreen(menuItem.action.componentId,
-                  templateName: menuItem.templateName)
+              .getScreen(menuItem.componentId,
+                  templateName: menuItem.text)
               .getWidget()));
     } else {
-      prefix0.SoAction action = menuItem.action;
+      prefix0.SoAction action = prefix0.SoAction(componentId: menuItem.componentId, label: menuItem.text);
 
       title = action.label;
 

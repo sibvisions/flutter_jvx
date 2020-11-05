@@ -2,14 +2,14 @@ import '../../../model/api/response/response_object.dart';
 import '../../../model/menu_item.dart';
 
 class Menu extends ResponseObject {
-  List<MenuItem> items;
+  List<MenuItem> entries;
   String name;
   String componentId;
 
-  Menu({this.items});
+  Menu({this.entries});
 
   Menu.fromJson(Map<String, dynamic> json)
-    : items = readMenuItemListFromJson(json['items']),
+    : entries = readMenuItemListFromJson(json['entries']),
       name = json['name'],
       componentId = json['componentId'];
   

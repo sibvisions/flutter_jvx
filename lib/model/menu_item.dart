@@ -1,16 +1,14 @@
-import 'so_action.dart';
-
 class MenuItem {
-  SoAction action;
+  String componentId;
   String group;
   String image;
-  String templateName;
+  String text;
 
-  MenuItem({this.action, this.group, this.image, this.templateName});
+  MenuItem({this.componentId, this.group, this.image, this.text});
 
   MenuItem.fromJson(Map<String, dynamic> json)
-      : action = SoAction.fromJson(json['action']),
+      : componentId = json['componentId'],
         group = json['group'],
         image = json['image'],
-        templateName = json['templateName'];
+        text = json['text'];
 }

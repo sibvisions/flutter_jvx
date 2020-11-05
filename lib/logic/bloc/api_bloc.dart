@@ -555,7 +555,7 @@ class ApiBloc extends Bloc<Request, Response> {
         return response;
         break;
       case RequestType.LOGIN:
-        response = await restClient.postAsync('/api/login', request.toJson());
+        response = await restClient.postAsync('/api/v2/login', request.toJson());
         response.requestType = request.requestType;
         response.request = request;
         updateResponse(response);

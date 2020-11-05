@@ -17,7 +17,7 @@ class SoMenuManager {
     if (!checkUnique)
       _menuItems.add(item);
     else if (!_menuItems.any((m) {
-      return (m.action.componentId == item.action.componentId && m.templateName == item.templateName);
+      return (m.componentId == item.componentId && m.text == item.text);
     })) {
       _menuItems.add(item);
     }
@@ -31,10 +31,10 @@ class SoMenuManager {
       bool checkUnique = true,
       String templateName}) {
     MenuItem itemToAdd = MenuItem(
-        action: SoAction(componentId: id, label: text),
+        componentId: id,
         image: image,
         group: group,
-        templateName: templateName);
+        text: templateName);
 
     addItem(itemToAdd, checkUnique: checkUnique);
   }

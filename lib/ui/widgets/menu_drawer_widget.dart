@@ -162,7 +162,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
         groupItems.add(ListTile(
           title: Text(
-            item.action.label,
+            item.text,
             overflow: TextOverflow.ellipsis,
           ),
           leading: item.image != null
@@ -178,26 +178,26 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   )),
           onTap: () async {
             setState(() {
-              title = item.action.label;
+              title = item.text;
             });
 
             if (globals.customScreenManager != null &&
                 !globals.customScreenManager
-                    .getScreen(item.action.componentId,
-                        templateName: item.templateName)
+                    .getScreen(item.componentId,
+                        templateName: item.text)
                     .withServer()) {
               // open screen
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(
                       builder: (_) => globals.customScreenManager
-                          .getScreen(item.action.componentId,
-                              templateName: item.templateName)
+                          .getScreen(item.componentId,
+                              templateName: item.text)
                           .getWidget()))
                   .then((value) {
                 setState(() {});
               });
             } else {
-              prefix0.SoAction action = item.action;
+              prefix0.SoAction action = prefix0.SoAction(componentId: item.componentId, label: item.text);
 
               OpenScreen openScreen = OpenScreen(
                   action: action,
