@@ -9,12 +9,14 @@ import '../../../utils/globals.dart' as globals;
 import '../../../utils/so_text_align.dart';
 import '../../../utils/text_utils.dart';
 import '../../../utils/uidata.dart';
-import 'cell_editor_model.dart';
+import 'number_cell_editor_model.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
   CoNumberCellEditorWidget(
-      {Key key, CellEditor changedCellEditor, CellEditorModel cellEditorModel})
+      {Key key,
+      CellEditor changedCellEditor,
+      NumberCellEditorModel cellEditorModel})
       : super(
             key: key,
             changedCellEditor: changedCellEditor,
@@ -33,19 +35,6 @@ class CoNumberCellEditorWidgetState
   TextInputType textInputType;
   String tempValue;
   FocusNode node = FocusNode();
-
-  @override
-  get preferredSize {
-    double width = TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
-            Theme.of(context).textTheme.button)
-        .toDouble();
-    return Size(width, 50);
-  }
-
-  @override
-  get minimumSize {
-    return Size(50, 50);
-  }
 
   @override
   set value(dynamic pValue) {

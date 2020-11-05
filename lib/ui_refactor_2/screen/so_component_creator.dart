@@ -8,6 +8,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/container/co_split_panel_widget.
 import 'package:jvx_flutterclient/ui_refactor_2/container/tabset_panel/co_tabset_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/date_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/linked_cell_editor_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/number_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/text_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 import 'package:uuid/uuid.dart';
@@ -148,7 +149,7 @@ class SoComponentCreator implements IComponentCreator {
     'NumberCellEditor': (CellEditor cellEditor, BuildContext context) =>
         CoNumberCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: CellEditorModel(cellEditor),
+          cellEditorModel: NumberCellEditorModel(context, cellEditor),
         ),
     'ImageViewer': (CellEditor cellEditor, BuildContext context) =>
         CoImageCellEditorWidget(

@@ -29,12 +29,12 @@ class DateCellEditorModel extends CellEditorModel {
     double width =
         TextUtils.getTextWidth(text, Theme.of(context).textTheme.bodyText1)
             .toDouble();
-    return Size(width + 105, 50);
+    return Size(width + 110, 50);
   }
 
   @override
   get minimumSize {
-    return Size(103, 50);
+    return Size(110, 50);
   }
 
   @override
