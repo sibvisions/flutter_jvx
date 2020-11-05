@@ -1,14 +1,13 @@
 import '../../../model/api/response/response_object.dart';
-import '../../../model/login_data.dart';
 
 class LoginItem extends ResponseObject {
   String componentId;
-  LoginData loginData;
+  String username;
 
-  LoginItem({this.componentId, this.loginData});
+  LoginItem({this.componentId, this.username});
 
   LoginItem.fromJson(Map<String, dynamic> json)
     : componentId = json['componentId'],
-      loginData = LoginData.fromJson(json['loginData']),
+      username = json['username'],
       super.fromJson(json);
 }

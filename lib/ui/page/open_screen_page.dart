@@ -109,7 +109,7 @@ class _OpenScreenPageState extends State<OpenScreenPage>
       BlocListener<ApiBloc, Response>(
           listener: (BuildContext context, Response state) {
             if (state.requestType == RequestType.MENU) {
-              globals.items = state.menu.items;
+              globals.items = state.menu.entries;
             }
 
             if (state.requestType == RequestType.CLOSE_SCREEN) {

@@ -203,7 +203,6 @@ class _LoginCardState extends State<LoginCard>
       */
 
     Login login = Login(
-        action: 'Anmelden',
         clientId: globals.clientId,
         createAuthKey: rememberMe,
         username: username?.trim(),

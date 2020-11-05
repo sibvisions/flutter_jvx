@@ -288,7 +288,7 @@ class _StartupPageState extends State<StartupPage> {
       }
 
       Navigator.of(context).pushReplacementNamed('/menu',
-          arguments: MenuArguments(state.menu.items, true,
+          arguments: MenuArguments(state.menu.entries, true,
               this.welcomeScreen != null ? this.welcomeScreen : null));
     }
   }
@@ -306,7 +306,6 @@ class _StartupPageState extends State<StartupPage> {
         globals.username.isNotEmpty &&
         globals.password.isNotEmpty) {
       Login login = Login(
-          action: 'Anmelden',
           clientId: globals.clientId,
           createAuthKey: false,
           username: globals.username,
@@ -337,7 +336,7 @@ class _StartupPageState extends State<StartupPage> {
         }
       }
       Navigator.of(context).pushReplacementNamed('/menu',
-          arguments: MenuArguments(menu.items, true,
+          arguments: MenuArguments(menu.entries, true,
               this.welcomeScreen != null ? this.welcomeScreen : null));
     }
   }

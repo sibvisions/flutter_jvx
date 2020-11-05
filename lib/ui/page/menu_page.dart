@@ -131,13 +131,12 @@ class _MenuPageState extends State<MenuPage> {
                   items: globals.items,
                   menuComponentId: widget.menuItems
                       .firstWhere(
-                          (item) => item.action.label.contains(widget
+                          (item) => item.text.contains(widget
                               .welcomeResponse
                               .responseData
                               .screenGeneric
                               .screenTitle),
                           orElse: () => null)
-                      ?.action
                       ?.componentId,
                 )));
       });
@@ -232,8 +231,8 @@ class _MenuPageState extends State<MenuPage> {
 
         if (state.requestType == RequestType.MENU) {
           setState(() {
-            globals.items = state.menu.items;
-            this.widget.menuItems = state.menu.items;
+            globals.items = state.menu.entries;
+            this.widget.menuItems = state.menu.entries;
           });
         }
       },
