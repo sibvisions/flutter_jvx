@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/model/api/response/data/data_book.dart';
 import 'package:jvx_flutterclient/model/cell_editor.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/co_referenced_cell_editor_widget.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/linked_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/widgets/dropdown/lazy_dropdown.dart';
 import 'package:jvx_flutterclient/utils/text_utils.dart';
 import 'package:jvx_flutterclient/utils/uidata.dart';
@@ -13,7 +14,7 @@ import 'cell_editor_model.dart';
 class CoLinkedCellEditorWidget extends CoReferencedCellEditorWidget {
   CoLinkedCellEditorWidget({
     CellEditor changedCellEditor,
-    CellEditorModel cellEditorModel,
+    LinkedCellEditorModel cellEditorModel,
   }) : super(
             changedCellEditor: changedCellEditor,
             cellEditorModel: cellEditorModel);
@@ -28,19 +29,6 @@ class CoLinkedCellEditorWidgetState
   String initialData;
   int pageIndex = 0;
   int pageSize = 100;
-
-  @override
-  get preferredSize {
-    double width = TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
-            Theme.of(context).textTheme.button)
-        .toDouble();
-    return Size(width, 50);
-  }
-
-  @override
-  get minimumSize {
-    return Size(50, 50);
-  }
 
   void valueChanged(dynamic value) {
     this.value = value;

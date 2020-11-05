@@ -12,12 +12,11 @@ import '../../../utils/uidata.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
-  DateCellEditorModel textCellEditorModel;
-  CoDateCellEditorWidget(
-      {CellEditor changedCellEditor, this.textCellEditorModel})
+  DateCellEditorModel cellEditorModel;
+  CoDateCellEditorWidget({CellEditor changedCellEditor, this.cellEditorModel})
       : super(
             changedCellEditor: changedCellEditor,
-            cellEditorModel: textCellEditorModel);
+            cellEditorModel: cellEditorModel);
 
   @override
   State<StatefulWidget> createState() => CoDateCellEditorWidgetState();
@@ -28,14 +27,14 @@ class CoDateCellEditorWidgetState
   dynamic toUpdate;
 
   get isTimeFormat {
-    return widget.textCellEditorModel.dateFormat.contains("H") ||
-        widget.textCellEditorModel.dateFormat.contains("m");
+    return widget.cellEditorModel.dateFormat.contains("H") ||
+        widget.cellEditorModel.dateFormat.contains("m");
   }
 
   get isDateFormat {
-    return widget.textCellEditorModel.dateFormat.contains("d") ||
-        widget.textCellEditorModel.dateFormat.contains("M") ||
-        widget.textCellEditorModel.dateFormat.contains("y");
+    return widget.cellEditorModel.dateFormat.contains("d") ||
+        widget.cellEditorModel.dateFormat.contains("M") ||
+        widget.cellEditorModel.dateFormat.contains("y");
   }
 
   void onDateValueChanged(dynamic value) {
@@ -160,7 +159,7 @@ class CoDateCellEditorWidgetState
                       (this.value != null &&
                               (this.value is int ||
                                   int.tryParse(this.value) != null))
-                          ? DateFormat(widget.textCellEditorModel.dateFormat)
+                          ? DateFormat(widget.cellEditorModel.dateFormat)
                               .format(DateTime.fromMillisecondsSinceEpoch(
                                   this.value is String
                                       ? int.parse(this.value)
@@ -226,8 +225,8 @@ class CoDateCellEditorWidgetState
                     (this.value != null &&
                             (this.value is int ||
                                 int.tryParse(this.value) != null))
-                        ? DateFormat(widget.textCellEditorModel.dateFormat)
-                            .format(DateTime.fromMillisecondsSinceEpoch(
+                        ? DateFormat(widget.cellEditorModel.dateFormat).format(
+                            DateTime.fromMillisecondsSinceEpoch(
                                 this.value is String
                                     ? int.parse(this.value)
                                     : this.value))
@@ -283,7 +282,7 @@ class CoDateCellEditorWidgetState
         }
 
         String text = (this.value != null && this.value is int)
-            ? DateFormat(widget.textCellEditorModel.dateFormat)
+            ? DateFormat(widget.cellEditorModel.dateFormat)
                 .format(DateTime.fromMillisecondsSinceEpoch(this.value))
             : '';
 

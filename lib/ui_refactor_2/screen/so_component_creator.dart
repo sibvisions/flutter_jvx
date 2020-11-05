@@ -7,6 +7,7 @@ import 'package:jvx_flutterclient/ui_refactor_2/container/co_group_panel_widget.
 import 'package:jvx_flutterclient/ui_refactor_2/container/co_split_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/container/tabset_panel/co_tabset_panel_widget.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/date_cell_editor_model.dart';
+import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/linked_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/editor/celleditor/text_cell_editor_model.dart';
 import 'package:jvx_flutterclient/ui_refactor_2/screen/so_component_data.dart';
 import 'package:uuid/uuid.dart';
@@ -162,12 +163,12 @@ class SoComponentCreator implements IComponentCreator {
     'DateCellEditor': (CellEditor cellEditor, BuildContext context) =>
         CoDateCellEditorWidget(
           changedCellEditor: cellEditor,
-          textCellEditorModel: DateCellEditorModel(context, cellEditor),
+          cellEditorModel: DateCellEditorModel(context, cellEditor),
         ),
     'LinkedCellEditor': (CellEditor cellEditor, BuildContext context) =>
         CoLinkedCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: CellEditorModel(cellEditor),
+          cellEditorModel: LinkedCellEditorModel(context, cellEditor),
         )
   };
 
@@ -235,7 +236,7 @@ class SoComponentCreator implements IComponentCreator {
         {
           cellEditor = CoDateCellEditorWidget(
             changedCellEditor: toCreatecellEditor,
-            textCellEditorModel:
+            cellEditorModel:
                 DateCellEditorModel(this.context, toCreatecellEditor),
           );
         }
@@ -274,7 +275,7 @@ class SoComponentCreator implements IComponentCreator {
       case "DateCellEditor":
         {
           cellEditor = CoDateCellEditorWidget(
-              textCellEditorModel:
+              cellEditorModel:
                   DateCellEditorModel(this.context, toCreatecellEditor),
               changedCellEditor: toCreatecellEditor);
         }

@@ -34,7 +34,7 @@ class DateCellEditorModel extends CellEditorModel {
 
   @override
   get minimumSize {
-    return Size(50, 50);
+    return Size(103, 50);
   }
 
   @override
