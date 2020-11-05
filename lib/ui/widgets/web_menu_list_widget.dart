@@ -84,19 +84,19 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
   void _onTap(MenuItem menuItem) {
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
-            .getScreen(menuItem.action.componentId,
-                templateName: menuItem.templateName)
+            .getScreen(menuItem.componentId,
+                templateName: menuItem.text)
             .withServer()) {
       IScreen screen = globals.customScreenManager.getScreen(
-          menuItem.action.componentId,
-          templateName: menuItem.templateName);
+          menuItem.componentId,
+          templateName: menuItem.text);
 
       globals.appFrame.setScreen(screen.getWidget());
 
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => globals.appFrame.getWidget()));
     } else {
-      prefix0.SoAction action = menuItem.action;
+      prefix0.SoAction action = prefix0.SoAction(componentId: menuItem.componentId, label: menuItem.text);
 
       title = action.label;
 

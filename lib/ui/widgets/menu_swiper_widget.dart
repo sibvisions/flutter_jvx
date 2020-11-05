@@ -95,16 +95,16 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
   void _onTap(MenuItem menuItem) {
     if (globals.customScreenManager != null &&
         !globals.customScreenManager
-            .getScreen(menuItem.action.componentId,
-                templateName: menuItem.templateName)
+            .getScreen(menuItem.componentId,
+                templateName: menuItem.text)
             .withServer()) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => globals.customScreenManager
-              .getScreen(menuItem.action.componentId,
-                  templateName: menuItem.templateName)
+              .getScreen(menuItem.componentId,
+                  templateName: menuItem.text)
               .getWidget()));
     } else {
-      prefix0.SoAction action = menuItem.action;
+      prefix0.SoAction action = prefix0.SoAction(componentId: menuItem.componentId, label: menuItem.text);
 
       title = action.label;
 
@@ -177,7 +177,7 @@ class _MenuSwiperWidgetState extends State<MenuSwiperWidget> {
                     padding: EdgeInsets.fromLTRB(5, 3, 5, 3),
                     child: Center(
                         child: Text(
-                      item.action.label,
+                      item.text,
                       style: TextStyle(fontSize: 16, color: Colors.white),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,

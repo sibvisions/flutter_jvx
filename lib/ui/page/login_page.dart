@@ -92,7 +92,7 @@ class LoginPageState extends State<LoginPage> {
               if (menu != null) {
                 Navigator.of(context).pushReplacementNamed('/menu',
                     arguments: MenuArguments(
-                        menu.items,
+                        menu.entries,
                         true,
                         state.responseData.screenGeneric != null
                             ? state
