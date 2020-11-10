@@ -363,48 +363,42 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.STARTUP:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/startup',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson());
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.LOGIN:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/v2/login',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.LOGOUT:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/logout',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.OPEN_SCREEN:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/v2/openScreen',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.CLOSE_SCREEN:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/closeScreen',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DOWNLOAD_TRANSLATION:
         response = await this.restClient.download(
             this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.downloadResponse?.download =
             ZipDecoder().decodeBytes(response.downloadResponse?.download);
         response.request = event;
@@ -413,8 +407,7 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DOWNLOAD_IMAGES:
         response = await this.restClient.download(
             this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.downloadResponse?.download =
             ZipDecoder().decodeBytes(response.downloadResponse?.download);
         response.request = event;
@@ -423,88 +416,77 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.APP_STYLE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_SELECT_RECORD:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/selectRecord',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_SET_VALUE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/setValues',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_FETCH:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/fetch',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_DELETE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/deleteRecord',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_FILTER:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/filter',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_INSERT:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/insertRecord',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_SAVE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/save',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_METADATA:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/dal/metaData',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.PRESS_BUTTON:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/v2/pressButton',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.NAVIGATION:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/navigation',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
@@ -517,69 +499,60 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DEVICE_STATUS:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/deviceStatus',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DOWNLOAD:
         response = await this.restClient.download(
             this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.UPLOAD:
         response = await this.restClient.upload(
-            this.appState.baseUrl + '/upload', event, this.appState.jsessionId);
+            this.appState.baseUrl + '/upload', event);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.CHANGE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/changes',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.SET_VALUE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/comp/setValue',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.TAB_SELECT:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/comp/selectTab',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.TAB_CLOSE:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/comp/closeTab',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.MENU:
         response = await this.restClient.post(
             this.appState.baseUrl + '/api/menu',
-            event.toJson(),
-            this.appState.jsessionId);
+            event.toJson(),);
         response.request = event;
         updateResponse(response);
         break;
     }
 
-    if (response.sessionId != null)
-      this.appState.jsessionId = response.sessionId;
     return response;
   }
 

@@ -16,11 +16,15 @@ import 'http_client.dart';
 class RestClient {
   final HttpClient _client;
 
+  final Map<String, String> headers = <String, String>{
+    'Content-Type': 'application/json',
+  };
+
   RestClient(this._client) {
     this._client.setWithCredentials(true);
   }
 
-  Future<Response> post(String path, dynamic data, String sessionId) async {
+  Future<Response> post(String path, dynamic data) async {
     final content = json.encode(data);
 
     var response;
@@ -28,19 +32,6 @@ class RestClient {
     Response finalResponse;
 
     try {
-      var headers;
-      if (kIsWeb) {
-        headers = <String, String>{
-          'Content-Type': 'application/json',
-        };
-        document.cookie = sessionId;
-      } else {
-        headers = <String, String>{
-          'Content-Type': 'application/json',
-          'cookie': sessionId,
-        };
-      }
-
       response = await this
           ._client
           .post(path, body: content, headers: headers)
@@ -77,31 +68,16 @@ class RestClient {
       }
     }
 
-    if (response != null) {
-      finalResponse.sessionId = updateCookie(response);
-    }
+    updateCookie(response);
     return finalResponse;
   }
 
   Future<Response> download(
-      String path, dynamic data, String jsessionId) async {
+      String path, dynamic data) async {
     var content = json.encode(data);
     var response;
 
     Response returnResponse = Response();
-
-    var headers;
-    if (kIsWeb) {
-      headers = <String, String>{
-        'Content-Type': 'application/json',
-      };
-      document.cookie = jsessionId;
-    } else {
-      headers = <String, String>{
-        'Content-Type': 'application/json',
-        'cookie': jsessionId,
-      };
-    }
 
     response = await http.post(path, body: content, headers: headers);
 
@@ -126,10 +102,11 @@ class RestClient {
             'server.error');
     }
 
+    updateCookie(response);
     return returnResponse;
   }
 
-  Future<Response> upload(String path, Upload upload, String jsessionId) async {
+  Future<Response> upload(String path, Upload upload) async {
     var response;
     Response resp = Response();
 
@@ -141,17 +118,6 @@ class RestClient {
       var uri = Uri.parse(path);
 
       var request = new http.MultipartRequest("POST", uri);
-
-      var headers;
-      if (kIsWeb) {
-        headers = null;
-        document.cookie = jsessionId;
-      } else {
-        headers = <String, String>{
-          'Content-Type': 'application/json',
-          'cookie': jsessionId,
-        };
-      }
 
       request.headers.addAll(headers);
 
@@ -202,7 +168,7 @@ class RestClient {
       }
     }
 
-    resp.sessionId = updateCookie(response);
+    updateCookie(response);
     return resp;
   }
 
@@ -220,8 +186,7 @@ class RestClient {
     String rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
-      return (index == -1) ? rawCookie : rawCookie.substring(0, index);
+      headers['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
     }
-    return null;
   }
 }

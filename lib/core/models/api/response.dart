@@ -41,8 +41,6 @@ class Response {
   DownloadResponse downloadResponse;
   ShowDocument showDocument;
 
-  String sessionId;
-
   bool get hasError => error != null;
 
   Response();
