@@ -45,11 +45,11 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     Config config = await configFuture;
 
     if (config?.debug != null && config.debug) {
-      if (config.appName == null || config.appName.isNotEmpty) {
+      if (config.appName == null || !config.appName.isNotEmpty) {
         await showError(context, 'Error in Config',
             'Please enter a valid application name in conf.json and restart the app.');
       }
-      if (config.baseUrl == null || config.baseUrl.isNotEmpty) {
+      if (config.baseUrl == null || !config.baseUrl.isNotEmpty) {
         await showError(context, 'Error in Config',
             'Please enter a valid base url in conf.json and restart the app.');
       } else if (config.baseUrl.endsWith('/'))
