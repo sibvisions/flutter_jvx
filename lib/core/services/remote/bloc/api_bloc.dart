@@ -158,7 +158,7 @@ class ApiBloc extends Bloc<Request, Response> {
     response.downloadResponse.fileName = this.manager.downloadFileName;
 
     if (event.requestType == RequestType.DOWNLOAD) {
-      final blob = html.Blob([response.downloadResponse.download]);
+      final blob = html.Blob([response.downloadResponse?.download]);
       final url = html.Url.createObjectUrlFromBlob(blob);
       final anchor = html.document.createElement('a') as html.AnchorElement
         ..href = url
@@ -173,7 +173,7 @@ class ApiBloc extends Bloc<Request, Response> {
       html.document.body.children.remove(anchor);
       html.Url.revokeObjectUrl(url);
     } else if (event.requestType == RequestType.DOWNLOAD_TRANSLATION) {
-      for (var file in response.downloadResponse.download) {
+      for (var file in response.downloadResponse?.download) {
         String filename = getLocalFilePath(this.appState.baseUrl, '',
                 this.appState.appName, this.appState.appVersion) +
             '/' +
@@ -191,7 +191,7 @@ class ApiBloc extends Bloc<Request, Response> {
       if (appState.language != null && appState.language.isNotEmpty)
         AppLocalizations.load(Locale(appState.language));
     } else if (event.requestType == RequestType.DOWNLOAD_IMAGES) {
-      for (var file in response.downloadResponse.download) {
+      for (var file in response.downloadResponse?.download) {
         String filename = '/${file.name}';
         if (file.isFile) {
           this
@@ -214,7 +214,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
       File outFile = File(filename);
       outFile = await outFile.create(recursive: true);
-      await outFile.writeAsBytes(response.downloadResponse.download);
+      await outFile.writeAsBytes(response.downloadResponse?.download);
     } else {
       String _baseDir = Platform.isIOS
           ? (await getApplicationSupportDirectory()).path
@@ -237,7 +237,7 @@ class ApiBloc extends Bloc<Request, Response> {
           });
         }
 
-        for (var file in response.downloadResponse.download) {
+        for (var file in response.downloadResponse?.download) {
           var filename = getLocalFilePath(this.appState.baseUrl, _baseDir,
                   this.appState.appName, this.appState.appVersion) +
               '/' +
@@ -255,7 +255,7 @@ class ApiBloc extends Bloc<Request, Response> {
         if (appState.language != null && appState.language.isNotEmpty)
           AppLocalizations.load(Locale(this.appState.language));
       } else if (event.requestType == RequestType.DOWNLOAD_IMAGES) {
-        for (var file in response.downloadResponse.download) {
+        for (var file in response.downloadResponse?.download) {
           var filename = '$_baseDir/${file.name}';
           if (file.isFile) {
             var outFile = File(filename);
@@ -405,8 +405,8 @@ class ApiBloc extends Bloc<Request, Response> {
             this.appState.baseUrl + '/download',
             event.toJson(),
             this.appState.jsessionId);
-        response.downloadResponse.download =
-            ZipDecoder().decodeBytes(response.downloadResponse.download);
+        response.downloadResponse?.download =
+            ZipDecoder().decodeBytes(response.downloadResponse?.download);
         response.request = event;
         updateResponse(response);
         break;
@@ -415,8 +415,8 @@ class ApiBloc extends Bloc<Request, Response> {
             this.appState.baseUrl + '/download',
             event.toJson(),
             this.appState.jsessionId);
-        response.downloadResponse.download =
-            ZipDecoder().decodeBytes(response.downloadResponse.download);
+        response.downloadResponse?.download =
+            ZipDecoder().decodeBytes(response.downloadResponse?.download);
         response.request = event;
         updateResponse(response);
         break;
