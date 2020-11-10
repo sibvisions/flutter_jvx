@@ -31,7 +31,7 @@ class SharedPreferencesManager {
 
   String get deviceId => this.sharedPreferences.getString('deviceId');
 
-  String get downloadFileName => this.sharedPreferences.getString('fileName');
+  String get downloadFileName => this.sharedPreferences.getString('fileName') ?? '';
 
   bool get mobileOnly => this.sharedPreferences.getBool('mobileOnly');
 

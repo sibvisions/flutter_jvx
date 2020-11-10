@@ -398,7 +398,8 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DOWNLOAD_TRANSLATION:
         response = await this.restClient.download(
             this.appState.baseUrl + '/download',
-            event.toJson(),);
+            event.toJson(),
+            this.manager.downloadFileName);
         response.downloadResponse?.download =
             ZipDecoder().decodeBytes(response.downloadResponse?.download);
         response.request = event;
@@ -407,7 +408,8 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DOWNLOAD_IMAGES:
         response = await this.restClient.download(
             this.appState.baseUrl + '/download',
-            event.toJson(),);
+            event.toJson(),
+            this.manager.downloadFileName);
         response.downloadResponse?.download =
             ZipDecoder().decodeBytes(response.downloadResponse?.download);
         response.request = event;
@@ -506,7 +508,8 @@ class ApiBloc extends Bloc<Request, Response> {
       case RequestType.DOWNLOAD:
         response = await this.restClient.download(
             this.appState.baseUrl + '/download',
-            event.toJson(),);
+            event.toJson(),
+            this.manager.downloadFileName);
         response.request = event;
         updateResponse(response);
         break;
