@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/app/screen_arguments.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../models/api/request.dart';
@@ -31,9 +32,9 @@ class MenuDrawerWidget extends StatefulWidget {
       {Key key,
       @required this.menuItems,
       this.listMenuItems = false,
-      this.currentTitle,
+      @required this.currentTitle,
       this.groupedMenuMode = true,
-      this.appState})
+      @required this.appState})
       : super(key: key);
 
   @override
@@ -57,7 +58,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     title = widget.currentTitle;
 
     return BlocBuilder<ApiBloc, Response>(builder: (context, state) {
-      if (state.request != null && state.request.requestType == RequestType.LOGOUT &&
+      if (state.request != null &&
+          state.request.requestType == RequestType.LOGOUT &&
           (state.error == null || !state.hasError)) {
         Future.delayed(
             Duration.zero,
@@ -203,6 +205,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   .then((value) {
                 setState(() {});
               });
+
+              Navigator.of(context).pop();
             } else {
               SoAction action =
                   SoAction(componentId: item.componentId, label: item.text);
@@ -271,7 +275,9 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     return AutoSizeText(username,
         maxLines: 2,
         overflow: TextOverflow.clip,
-        style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1.color, fontSize: 23),
+        style: TextStyle(
+            color: Theme.of(context).primaryTextTheme.bodyText1.color,
+            fontSize: 23),
         minFontSize: 18);
   }
 

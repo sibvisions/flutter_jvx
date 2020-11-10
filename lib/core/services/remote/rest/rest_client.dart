@@ -48,9 +48,10 @@ class RestClient {
 
     if (response == null || (response as http.Response).statusCode != 200) {
       // print((response as http.Response).body);
+      String body = this.utf8convert(response.body);
       finalResponse = Response()
         ..error = ErrorResponse(
-            'Error', 'An Error occured', 'An Error occured', 'message.error');
+            'Error', body, 'An Error occured', 'message.error');
     } else {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
@@ -78,7 +79,14 @@ class RestClient {
 
     Response returnResponse = Response();
 
-    response = await http.post(path, body: content, headers: headers);
+    try {
+      response = await this
+          ._client
+          .post(path, body: content, headers: headers)
+          .timeout(const Duration(seconds: 10));
+    } catch (e) {
+      print(e);
+    }
 
     returnResponse.downloadResponse = DownloadResponse('', response.bodyBytes);
 
@@ -134,7 +142,7 @@ class RestClient {
 
       final streamedResponse = await request.send();
 
-      response = await http.Response.fromStream(streamedResponse);
+      response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 10));
     } catch (e) {
       print('EXCEPTION: $e');
 
@@ -186,14 +194,11 @@ class RestClient {
     String rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
-      headers['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+      headers['cookie'] =
+          (index == -1) ? rawCookie : rawCookie.substring(0, index);
     }
   }
 }
-
-
-
-
 
 // import 'dart:async';
 

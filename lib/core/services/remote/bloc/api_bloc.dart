@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -48,15 +49,34 @@ class ApiBloc extends Bloc<Request, Response> {
   final AppState appState;
   final SharedPreferencesManager manager;
 
+  Queue<Request> _requestQueue = Queue<Request>();
+  int _seqNo = 0;
+
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
       this.appState, this.manager)
       : super(initialState);
 
   @override
+  void onEvent(Request event) {
+    if (event.requestType != RequestType.RELOAD) {
+      event.id = _seqNo++;
+      print('******* Outgoing Request ID: ${event.id}, RequestType: ${event.requestType.toString()}');
+    }
+    _requestQueue.add(event);
+    super.onEvent(event);
+  }
+
+  @override
   Stream<Response> mapEventToState(Request event) async* {
     yield updateResponse(Response()..request = Loading());
     if (await this.networkInfo.isConnected) {
-      yield* makeRequest(event);
+      await for (Response response in makeRequest(_requestQueue.removeFirst())) {
+        if (response.request.requestType != RequestType.LOADING && response.request.requestType != RequestType.RELOAD) {
+          print('******* Incoming Request ID: ${response.request.id}, RequestType: ${response.request.requestType.toString()}');
+        }
+
+        yield response;
+      }
     }
   }
 

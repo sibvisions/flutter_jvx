@@ -248,6 +248,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   MenuDrawerWidget _endDrawer() => widget.appState.appFrame.showScreenHeader
       ? MenuDrawerWidget(
+          appState: widget.appState,
           menuItems: widget.items,
           listMenuItems: true,
           currentTitle: widget.title,

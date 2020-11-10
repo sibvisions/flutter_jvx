@@ -379,7 +379,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                   response: response,
                   menuComponentId:
                       (response.request as OpenScreen).action.componentId,
-                  title: title,
+                  title: response.responseData.screenGeneric.screenTitle,
                   items: this.items,
                 ));
           }
@@ -407,6 +407,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                     listMenuItems: true,
                     groupedMenuMode: groupedMenuMode,
                     appState: widget.appState,
+                    currentTitle: title,
                   )
                 : null,
             body: FractionallySizedBox(
