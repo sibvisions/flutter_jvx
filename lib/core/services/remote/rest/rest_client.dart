@@ -43,6 +43,7 @@ class RestClient {
     }
 
     if (response == null || (response as http.Response).statusCode != 200) {
+      // print((response as http.Response).body);
       finalResponse = Response()
         ..error = ErrorResponse(
             'Error', 'An Error occured', 'An Error occured', 'message.error');
