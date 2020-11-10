@@ -28,12 +28,23 @@ class RestClient {
     Response finalResponse;
 
     try {
-      if (kIsWeb) document.cookie = sessionId;
+      var headers;
+      if (kIsWeb) {
+        headers = <String, String>{
+          'Content-Type': 'application/json',
+        };
+        document.cookie = sessionId;
+      } else {
+        headers = <String, String>{
+          'Content-Type': 'application/json',
+          'cookie': sessionId,
+        };
+      }
 
-      response = await this._client.post(path, body: content, headers: {
-        'Content-Type': 'application/json',
-        !kIsWeb ? 'cookie' : sessionId : null
-      }).timeout(const Duration(seconds: 10));
+      response = await this
+          ._client
+          .post(path, body: content, headers: headers)
+          .timeout(const Duration(seconds: 10));
     } on TimeoutException {
       finalResponse = Response()
         ..error = ErrorResponse(
@@ -79,12 +90,20 @@ class RestClient {
 
     Response returnResponse = Response();
 
-    if (kIsWeb) document.cookie = jsessionId;
+    var headers;
+    if (kIsWeb) {
+      headers = <String, String>{
+        'Content-Type': 'application/json',
+      };
+      document.cookie = jsessionId;
+    } else {
+      headers = <String, String>{
+        'Content-Type': 'application/json',
+        'cookie': jsessionId,
+      };
+    }
 
-    response = await http.post(path, body: content, headers: {
-      'Content-Type': 'application/json',
-      !kIsWeb ? 'cookie' : jsessionId : null
-    });
+    response = await http.post(path, body: content, headers: headers);
 
     returnResponse.downloadResponse = DownloadResponse('', response.bodyBytes);
 
@@ -123,9 +142,18 @@ class RestClient {
 
       var request = new http.MultipartRequest("POST", uri);
 
-      if (kIsWeb) document.cookie = jsessionId;
+      var headers;
+      if (kIsWeb) {
+        headers = null;
+        document.cookie = jsessionId;
+      } else {
+        headers = <String, String>{
+          'Content-Type': 'application/json',
+          'cookie': jsessionId,
+        };
+      }
 
-      request.headers.addAll({!kIsWeb ? 'cookie' : jsessionId : null});
+      request.headers.addAll(headers);
 
       Map<String, String> formFields = {
         'clientId': upload.clientId,
