@@ -88,3 +88,4 @@ node_modules/
 
 # For deploying
 deploy/
+env/conf.json
