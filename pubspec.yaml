@@ -9,55 +9,52 @@ issue_tracker: https://github.com/sibvisions/flutterclient/issues
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_widgets: ^0.1.12
-  flutter_cupertino_localizations: ^1.0.1
-  cupertino_icons: ^0.1.2
-  http: ^0.12.1
-  font_awesome_flutter: ^8.5.0
-  json_annotation: ^2.4.0
-  shared_preferences: ^0.5.7+3
-  shared_preferences_web: ^0.1.2+7
-  flutter_picker: ^1.1.0
-  path_provider: ^1.6.7
-  archive: ^2.0.13
-  xml: ^4.1.0
-  gson: ^0.1.2
-  bloc: ^0.15.0
-  flutter_bloc: ^0.21.0
-  equatable: ^0.2.0
-  keyboard_actions: ^2.1.2
-  file_picker: ^1.4.2
-  image_picker: ^0.6.1+11
-  package_info: ^0.4.0+13
-  flutter_slidable: "^0.5.4"
-  barcode_scan: ^2.0.0
-  flutter_native_image:
-    git: https://github.com/btastic/flutter_native_image.git
-  connectivity: ^0.4.9
-  uuid: ^2.0.4
-  sticky_headers: ^0.1.8+1
-  auto_size_text: ^2.1.0
-  tinycolor: ^1.0.2
-  flutter_swiper : ^1.1.6
-  universal_io: ^1.0.1
-  universal_html: ^1.2.3
-  url_launcher: ^5.5.0
+  get_it: ^5.0.1
+  xml: ^4.5.1
+  flutter_bloc: ^6.0.6
+  bloc: ^6.1.0
   platform_detect: ^1.4.0
+  package_info: ^0.4.3+2
   device_info: ^0.4.2+4
-  responsive_builder: ^0.2.0+2
+  data_connection_checker: ^0.3.4
+  http: ^0.12.2
+  shared_preferences: ^0.5.12+4
+  uuid: ^2.2.2
+  flutter_picker: ^1.1.5
+  font_awesome_flutter: ^8.10.0
+  intl: ^0.16.1
+  crypto: ^2.1.5
+  barcode_scan: ^2.0.0
+  path_provider: ^1.6.24
+  universal_html: ^1.2.3
+  archive: ^2.0.13
+  auto_size_text: ^2.1.0
+  async: ^2.4.2
+  tinycolor: ^1.0.2
+  cupertino_icons: ^0.1.3
+  collection: ^1.14.13
+  sticky_headers: ^0.1.8+1
+  flutter_swiper: ^1.1.6
+  flutter_native_image: ^0.0.5+3
+  image_picker: ^0.6.7+12
+  # file_picker: ^2.0.12
   flutter_html: ^1.0.2
+  flutter_slidable: ^0.5.7
+  flutter_widgets: ^0.1.12
+  # flutter_barcode_scanner: ^1.0.1
+  url_launcher: ^5.5.0
+  path: ^1.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  json_serializable: ^3.0.0
 
 flutter:
   uses-material-design: true
@@ -66,7 +63,7 @@ flutter:
     - env/
     - assets/images/
     - locale/
-
+  
   fonts:
     - family: Quicksand
       fonts:

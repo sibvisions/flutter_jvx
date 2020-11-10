@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/custom_img_cache.dart';
-
 import 'application_widget.dart';
+import 'injection_container.dart' as di;
 
-void main() {
-  //CustomImageCache imageCache = CustomImageCache();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   runApp(ApplicationWidget());
 }
