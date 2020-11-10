@@ -5,6 +5,7 @@ import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:universal_html/html.dart';
 
 import '../../../models/api/request/upload.dart';
 import '../../../models/api/response.dart';
@@ -27,9 +28,11 @@ class RestClient {
     Response finalResponse;
 
     try {
+      if (kIsWeb) document.cookie = sessionId;
+
       response = await this._client.post(path, body: content, headers: {
         'Content-Type': 'application/json',
-        'cookie': sessionId
+        !kIsWeb ? 'cookie' : sessionId : null
       }).timeout(const Duration(seconds: 10));
     } on TimeoutException {
       finalResponse = Response()
@@ -76,9 +79,12 @@ class RestClient {
 
     Response returnResponse = Response();
 
-    response = await http.post(path,
-        body: content,
-        headers: {'Content-Type': 'application/json', 'cookie': jsessionId});
+    if (kIsWeb) document.cookie = jsessionId;
+
+    response = await http.post(path, body: content, headers: {
+      'Content-Type': 'application/json',
+      !kIsWeb ? 'cookie' : jsessionId : null
+    });
 
     returnResponse.downloadResponse = DownloadResponse('', response.bodyBytes);
 
@@ -117,7 +123,9 @@ class RestClient {
 
       var request = new http.MultipartRequest("POST", uri);
 
-      request.headers.addAll({'cookie': jsessionId});
+      if (kIsWeb) document.cookie = jsessionId;
+
+      request.headers.addAll({!kIsWeb ? 'cookie' : jsessionId : null});
 
       Map<String, String> formFields = {
         'clientId': upload.clientId,

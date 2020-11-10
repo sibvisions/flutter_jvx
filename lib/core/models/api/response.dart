@@ -51,6 +51,7 @@ class Response {
     if (json != null && json['title'] == 'Error' || json['title'] == 'Session Expired') {
       return ErrorResponse(json['title'], json['details'], json['message'], json['name']);
     }
+    return null;
   }
 
   Response.fromJson(List<dynamic> json) {

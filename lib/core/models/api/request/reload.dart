@@ -6,7 +6,6 @@ class Reload extends Request {
 
   @override
   Map<String, dynamic> toJson() {
-    // TODO: implement toJson
     return null;
   }
 }

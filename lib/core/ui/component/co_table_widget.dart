@@ -345,7 +345,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       bool isSelected = index == data.selectedRow;
       if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
-      if (this.data?.deleteEnabled && !_hasHorizontalScroller) {
+      if (this.data != null && this.data.deleteEnabled && !_hasHorizontalScroller) {
         return this.editable
             ? GestureDetector(
                 onLongPress: () => showContextMenu(context, index),
