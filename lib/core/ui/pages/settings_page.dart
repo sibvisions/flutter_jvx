@@ -339,7 +339,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 widget.appState.language = newLang;
                 this.language = newLang;
-                AppLocalizations.load(new Locale(newLang));
+                if (newLang != null && newLang.isNotEmpty)
+                  AppLocalizations.load(new Locale(newLang));
               });
             },
             onCancel: () => setState(() => isDialogOpen = false),

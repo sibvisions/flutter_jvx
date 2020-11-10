@@ -98,7 +98,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (this.manager.mobileOnly != null) {
       appState.mobileOnly = this.manager.mobileOnly;
     }
-    
+
     appState.translation = this.manager.translation;
   }
 
@@ -144,7 +144,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       this.appState.clientId = response.applicationMetaData.clientId;
       this.appState.language = response.applicationMetaData.langCode;
       this.appState.appVersion = response.applicationMetaData.version;
-      AppLocalizations.load(Locale(this.appState.language));
+
+      if (appState.language != null && appState.language.isNotEmpty)
+        AppLocalizations.load(Locale(this.appState.language));
 
       ApplicationStyle applicationStyle = ApplicationStyle(
           clientId: response.applicationMetaData.clientId,
@@ -208,7 +210,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    Navigator.of(context).pushReplacementNamed('/login', arguments: LoginArguments(response.loginItem.username));
+    Navigator.of(context).pushReplacementNamed('/login',
+        arguments: LoginArguments(response.loginItem.username));
   }
 
   void _menu(Response response) {
@@ -251,21 +254,20 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     }
 
     Startup startup = Startup(
-      url: appState.baseUrl,
-      applicationName: appState.appName,
-      screenHeight: MediaQuery.of(context).size.height.toInt(),
-      screenWidth: MediaQuery.of(context).size.width.toInt(),
-      appMode: appState.appMode != null && appState.appMode.isNotEmpty
-          ? appState.appMode
-          : 'preview',
-      readAheadLimit: appState.readAheadLimit,
-      requestType: RequestType.STARTUP,
-      deviceId: _getDeviceId(),
-      userName: appState.username,
-      password: appState.password,
-      authKey: this.manager.authKey,
-      layoutMode: 'generic'  
-    );
+        url: appState.baseUrl,
+        applicationName: appState.appName,
+        screenHeight: MediaQuery.of(context).size.height.toInt(),
+        screenWidth: MediaQuery.of(context).size.width.toInt(),
+        appMode: appState.appMode != null && appState.appMode.isNotEmpty
+            ? appState.appMode
+            : 'preview',
+        readAheadLimit: appState.readAheadLimit,
+        requestType: RequestType.STARTUP,
+        deviceId: _getDeviceId(),
+        userName: appState.username,
+        password: appState.password,
+        authKey: this.manager.authKey,
+        layoutMode: 'generic');
 
     BlocProvider.of<ApiBloc>(context).add(startup);
   }

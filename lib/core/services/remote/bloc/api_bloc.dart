@@ -188,7 +188,8 @@ class ApiBloc extends Bloc<Request, Response> {
       }
 
       this.manager.setTranslation(appState.translation);
-      AppLocalizations.load(Locale(appState.language));
+      if (appState.language != null && appState.language.isNotEmpty)
+        AppLocalizations.load(Locale(appState.language));
     } else if (event.requestType == RequestType.DOWNLOAD_IMAGES) {
       for (var file in response.downloadResponse.download) {
         String filename = '/${file.name}';
@@ -251,7 +252,8 @@ class ApiBloc extends Bloc<Request, Response> {
         }
 
         this.manager.setTranslation(this.appState.translation);
-        AppLocalizations.load(Locale(this.appState.language));
+        if (appState.language != null && appState.language.isNotEmpty)
+          AppLocalizations.load(Locale(this.appState.language));
       } else if (event.requestType == RequestType.DOWNLOAD_IMAGES) {
         for (var file in response.downloadResponse.download) {
           var filename = '$_baseDir/${file.name}';
