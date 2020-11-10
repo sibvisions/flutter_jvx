@@ -146,10 +146,12 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> download(Download event) async* {
     Response response = await processRequest(event);
 
-    if (kIsWeb)
-      _downloadWeb(event, response);
-    else
-      await _downloadMobile(event, response);
+    if (!response.hasError) {
+      if (kIsWeb)
+        _downloadWeb(event, response);
+      else
+        await _downloadMobile(event, response);
+    }
 
     yield response;
   }
@@ -361,37 +363,41 @@ class ApiBloc extends Bloc<Request, Response> {
 
     switch (event.requestType) {
       case RequestType.STARTUP:
-        response = await this.restClient.post(
-            this.appState.baseUrl + '/api/startup',
-            event.toJson());
+        response = await this
+            .restClient
+            .post(this.appState.baseUrl + '/api/startup', event.toJson());
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.LOGIN:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/v2/login',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/v2/login',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.LOGOUT:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/logout',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/logout',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.OPEN_SCREEN:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/v2/openScreen',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/v2/openScreen',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.CLOSE_SCREEN:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/closeScreen',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/closeScreen',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
@@ -417,78 +423,89 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.APP_STYLE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/download',
-            event.toJson(),);
+              this.appState.baseUrl + '/download',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_SELECT_RECORD:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/selectRecord',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/selectRecord',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_SET_VALUE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/setValues',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/setValues',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_FETCH:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/fetch',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/fetch',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_DELETE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/deleteRecord',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/deleteRecord',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_FILTER:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/filter',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/filter',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_INSERT:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/insertRecord',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/insertRecord',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_SAVE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/save',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/save',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.DAL_METADATA:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/dal/metaData',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/dal/metaData',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.PRESS_BUTTON:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/v2/pressButton',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/v2/pressButton',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.NAVIGATION:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/navigation',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/navigation',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
@@ -500,8 +517,9 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
       case RequestType.DEVICE_STATUS:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/deviceStatus',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/deviceStatus',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
@@ -514,43 +532,49 @@ class ApiBloc extends Bloc<Request, Response> {
         updateResponse(response);
         break;
       case RequestType.UPLOAD:
-        response = await this.restClient.upload(
-            this.appState.baseUrl + '/upload', event);
+        response = await this
+            .restClient
+            .upload(this.appState.baseUrl + '/upload', event);
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.CHANGE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/changes',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/changes',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.SET_VALUE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/comp/setValue',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/comp/setValue',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.TAB_SELECT:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/comp/selectTab',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/comp/selectTab',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.TAB_CLOSE:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/comp/closeTab',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/comp/closeTab',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
       case RequestType.MENU:
         response = await this.restClient.post(
-            this.appState.baseUrl + '/api/menu',
-            event.toJson(),);
+              this.appState.baseUrl + '/api/menu',
+              event.toJson(),
+            );
         response.request = event;
         updateResponse(response);
         break;
