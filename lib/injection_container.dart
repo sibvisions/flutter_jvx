@@ -1,4 +1,4 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,16 +14,16 @@ import 'core/utils/theme/theme_manager.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  sl.registerFactory(() => ApiBloc(Response(), sl(), sl(), sl(), sl()));
+  sl.registerFactory(() => ApiBloc(Response(), sl<NetworkInfo>(), sl<RestClient>(), sl<AppState>(), sl<SharedPreferencesManager>()));
 
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
-  sl.registerLazySingleton(() => RestClient(sl()));
-  sl.registerLazySingleton(() => ThemeManager());
-  sl.registerLazySingleton(() => SharedPreferencesManager(sl()));
-  sl.registerLazySingleton(() => AppState());
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl<Connectivity>()));
+  sl.registerLazySingleton<RestClient>(() => RestClient(sl<HttpClient>()));
+  sl.registerLazySingleton<ThemeManager>(() => ThemeManager());
+  sl.registerLazySingleton<SharedPreferencesManager>(() => SharedPreferencesManager(sl<SharedPreferences>()));
+  sl.registerLazySingleton<AppState>(() => AppState());
 
-  sl.registerLazySingleton(() => DataConnectionChecker());
-  sl.registerLazySingleton(() => HttpClient());
+  sl.registerLazySingleton<Connectivity>(() => Connectivity());
+  sl.registerLazySingleton<HttpClient>(() => HttpClient());
   final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 }
