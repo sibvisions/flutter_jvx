@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
-import 'component_model.dart';
 import 'component_widget.dart';
+import 'label_component_model.dart';
 
 class CoLabelWidget extends ComponentWidget {
   final String text;
 
-  CoLabelWidget({this.text, ComponentModel componentModel})
+  CoLabelWidget({this.text, LabelComponentModel componentModel})
       : super(componentModel: componentModel);
 
   @override
