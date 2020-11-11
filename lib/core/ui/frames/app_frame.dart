@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../injection_container.dart';
+import '../../models/api/response/menu_item.dart';
 import '../../models/app/app_state.dart';
-import '../widgets/util/app_state_provider.dart';
 import 'i_app_frame.dart';
 import 'web_frame.dart';
 
@@ -20,7 +20,10 @@ class AppFrame extends IAppFrame {
 
   @override
   Widget getWebFrameWidget() {
-    return WebFrame(menu: menu, screen: screen);
+    return WebFrame(
+      menu: menu,
+      screen: screen,
+    );
   }
 
   bool get showScreenHeader {

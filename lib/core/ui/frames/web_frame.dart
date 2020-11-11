@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/request/open_screen.dart';
+import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
+import 'package:jvx_flutterclient/core/models/api/so_action.dart';
+import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
@@ -22,14 +26,14 @@ import '../widgets/web/web_menu_list_widget.dart';
 import '../widgets/custom/popup_menu.dart' as mypopup;
 
 class WebFrame extends StatefulWidget {
+  final Widget menu;
+  final Widget screen;
+
   const WebFrame({
     Key key,
     @required this.menu,
     @required this.screen,
   }) : super(key: key);
-
-  final Widget menu;
-  final Widget screen;
 
   @override
   _WebFrameState createState() => _WebFrameState();
@@ -57,6 +61,35 @@ class _WebFrameState extends State<WebFrame> {
     return (groupCount > 1);
   }
 
+  _onPressed(MenuItem menuItem) {
+    AppState appState = sl<AppState>();
+
+    if (appState.screenManager != null &&
+        !appState.screenManager
+            .getScreen(menuItem.componentId, templateName: menuItem.text)
+            .withServer()) {
+      IScreen screen = appState.screenManager
+          .getScreen(menuItem.componentId, templateName: menuItem.text);
+
+      appState.appFrame.setScreen(screen);
+
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => appState.appFrame.getWidget()));
+    } else {
+      SoAction action =
+          SoAction(componentId: menuItem.componentId, label: menuItem.text);
+
+      OpenScreen openScreen = OpenScreen(
+        action: action,
+        clientId: appState.clientId,
+        manualClose: false,
+        requestType: RequestType.OPEN_SCREEN,
+      );
+
+      BlocProvider.of<ApiBloc>(context).add(openScreen);
+    }
+  }
+
   @override
   void initState() {
     this.appState = sl<AppState>();
@@ -76,6 +109,7 @@ class _WebFrameState extends State<WebFrame> {
   @override
   Widget build(BuildContext context) {
     this.appState.appFrame.setMenu(WebMenuListWidget(
+        onPressed: _onPressed,
         appState: this.appState,
         menuItems: this.appState.items,
         groupedMenuMode: hasMultipleGroups));
@@ -457,7 +491,9 @@ class _WebFrameState extends State<WebFrame> {
 
   Widget _buildDrawerHeader() {
     return BlocBuilder<ApiBloc, Response>(builder: (context, state) {
-      if (state.request.requestType == RequestType.LOGOUT &&
+      if (state != null &&
+          state.request != null &&
+          state.request.requestType == RequestType.LOGOUT &&
           (state.error == null || !state.hasError)) {
         Future.delayed(
             Duration.zero,

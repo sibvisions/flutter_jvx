@@ -18,7 +18,7 @@ class WebMenuListWidget extends StatefulWidget {
       @required this.menuItems,
       this.groupedMenuMode = true,
       @required this.appState,
-      this.onPressed})
+      @required this.onPressed})
       : super(key: key);
 
   @override
@@ -94,15 +94,15 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
     return tiles;
   }
 
-  List<Widget> _buildTiles(List v) {
+  List<Widget> _buildTiles(List<MenuItem> v) {
     List<Widget> widgets = <Widget>[];
 
-    v.forEach((mItem) {
+    v.forEach((MenuItem mItem) {
       Widget tile = Container(
           margin: EdgeInsets.only(left: 5),
           child: Tooltip(
               waitDuration: Duration(milliseconds: 500),
-              message: mItem.action.label,
+              message: mItem.text,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -110,8 +110,8 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                     (widget.appState.applicationStyle != null &&
                             widget.appState.applicationStyle?.sideMenuColor !=
                                 null)
-                        ? widget.appState.applicationStyle?.sideMenuColor
-                            .withOpacity(0.95)
+                        ? widget.appState?.applicationStyle?.sideMenuColor
+                            ?.withOpacity(0.95)
                         : Color(0xff171717).withOpacity(0.95),
                   ).lighten().color,
                   onTap: () => _onTap(mItem),
@@ -161,7 +161,7 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
                               constraints:
                                   BoxConstraints(minWidth: 100, maxWidth: 180),
                               child: Text(
-                                mItem.action.label,
+                                mItem.text,
                                 style: TextStyle(
                                     color: mItem == this.selectedMenuItem
                                         ? (widget.appState.applicationStyle !=

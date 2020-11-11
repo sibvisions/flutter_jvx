@@ -323,6 +323,10 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> deviceStatus(DeviceStatus request) async* {
     Response resp = await processRequest(request);
 
+    if (resp.deviceStatusResponse?.layoutMode != null) {
+      this.appState.layoutMode = resp.deviceStatusResponse.layoutMode;
+    }
+
     yield resp;
   }
 

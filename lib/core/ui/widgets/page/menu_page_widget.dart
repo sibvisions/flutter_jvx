@@ -153,25 +153,36 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     } else if (lastOrientation != MediaQuery.of(context).orientation ||
         width != MediaQuery.of(context).size.width ||
         height != MediaQuery.of(context).size.height) {
-      if (_deviceStatusTimer == null) {
-        _deviceStatusTimer = RestartableTimer(const Duration(seconds: 50), () {
-          DeviceStatus deviceStatus = DeviceStatus(
-            screenSize: MediaQuery.of(context).size,
-            timeZoneCode: '',
-            langCode: '',
-          );
+      DeviceStatus deviceStatus = DeviceStatus(
+          screenSize: MediaQuery.of(context).size,
+          timeZoneCode: '',
+          langCode: '',
+          clientId: widget.appState.clientId);
 
-          BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-          lastOrientation = MediaQuery.of(context).orientation;
-          width = MediaQuery.of(context).size.width;
-          height = MediaQuery.of(context).size.height;
+      BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+      lastOrientation = MediaQuery.of(context).orientation;
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
 
-          _deviceStatusTimer.cancel();
-          _deviceStatusTimer = null;
-        });
-      } else {
-        _deviceStatusTimer.reset();
-      }
+      // if (_deviceStatusTimer == null) {
+      //   _deviceStatusTimer = RestartableTimer(const Duration(seconds: 50), () {
+      //     DeviceStatus deviceStatus = DeviceStatus(
+      //         screenSize: MediaQuery.of(context).size,
+      //         timeZoneCode: '',
+      //         langCode: '',
+      //         clientId: widget.appState.clientId);
+
+      //     BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+      //     lastOrientation = MediaQuery.of(context).orientation;
+      //     width = MediaQuery.of(context).size.width;
+      //     height = MediaQuery.of(context).size.height;
+
+      //     _deviceStatusTimer.cancel();
+      //     _deviceStatusTimer = null;
+      //   });
+      // } else {
+      //   _deviceStatusTimer.reset();
+      // }
     }
   }
 
@@ -292,6 +303,19 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   @override
   void initState() {
     super.initState();
+
+    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    //   DeviceStatus deviceStatus = DeviceStatus(
+    //       screenSize: MediaQuery.of(context).size,
+    //       timeZoneCode: '',
+    //       langCode: '',
+    //       clientId: widget.appState.clientId);
+
+    //   BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+    //   lastOrientation = MediaQuery.of(context).orientation;
+    //   width = MediaQuery.of(context).size.width;
+    //   height = MediaQuery.of(context).size.height;
+    // });
   }
 
   @override

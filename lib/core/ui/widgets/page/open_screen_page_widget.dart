@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/request/open_screen.dart';
+import 'package:jvx_flutterclient/core/models/api/so_action.dart';
+import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/device_status.dart';
@@ -70,42 +73,41 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     } else if (lastOrientation != MediaQuery.of(context).orientation ||
         width != MediaQuery.of(context).size.width ||
         height != MediaQuery.of(context).size.height) {
-      if (_deviceStatusTimer == null) {
-        _deviceStatusTimer =
-            RestartableTimer(const Duration(milliseconds: 50), () {
-          DeviceStatus status = DeviceStatus(
-              screenSize: MediaQuery.of(context).size,
-              timeZoneCode: "",
-              langCode: "");
-          BlocProvider.of<ApiBloc>(context).add(status);
-          lastOrientation = MediaQuery.of(context).orientation;
-          width = MediaQuery.of(context).size.width;
-          height = MediaQuery.of(context).size.height;
+      DeviceStatus deviceStatus = DeviceStatus(
+          screenSize: MediaQuery.of(context).size,
+          timeZoneCode: '',
+          langCode: '',
+          clientId: widget.appState.clientId);
 
-          _deviceStatusTimer.cancel();
-          _deviceStatusTimer = null;
-        });
-      } else {
-        _deviceStatusTimer.reset();
-      }
+      BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+      lastOrientation = MediaQuery.of(context).orientation;
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
+      // if (_deviceStatusTimer == null) {
+      //   _deviceStatusTimer =
+      //       RestartableTimer(const Duration(milliseconds: 50), () {
+      //     DeviceStatus status = DeviceStatus(
+      //         screenSize: MediaQuery.of(context).size,
+      //         timeZoneCode: "",
+      //         langCode: "");
+      //     BlocProvider.of<ApiBloc>(context).add(status);
+      //     lastOrientation = MediaQuery.of(context).orientation;
+      //     width = MediaQuery.of(context).size.width;
+      //     height = MediaQuery.of(context).size.height;
+
+      //     _deviceStatusTimer.cancel();
+      //     _deviceStatusTimer = null;
+      //   });
+      // } else {
+      //   _deviceStatusTimer.reset();
+      // }
     }
   }
 
   _blocListener() => BlocListener<ApiBloc, Response>(
         listener: (BuildContext context, Response state) {
-          if (state.request.requestType != RequestType.LOADING) {
-            setState(() {
-              if (state.request != null)
-                widget.response.request = state.request;
-              if (state.responseData != null)
-                widget.response.responseData = state.responseData;
-              if (state.closeScreenAction != null) {
-                this.closeCurrentScreen = true;
-              } else {
-                this.closeCurrentScreen = false;
-              }
-            });
-
+          if (state.request.requestType != RequestType.LOADING &&
+              state.request.requestType != RequestType.DEVICE_STATUS) {
             if (state.request.requestType == RequestType.MENU) {
               widget.appState.items = state.menu.entries;
             }
@@ -125,6 +127,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 setState(() {
                   widget.response.responseData = state.responseData;
                   widget.response.request = state.request;
+
+                  if (state.closeScreenAction != null) {
+                    this.closeCurrentScreen = true;
+                  } else {
+                    this.closeCurrentScreen = false;
+                  }
                 });
 
                 _checkForButtonAction(state);
@@ -152,6 +160,11 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               }
             }
+          } else if (state.request.requestType == RequestType.DEVICE_STATUS) {
+            setState(() {
+              widget.appState?.layoutMode =
+                  state.deviceStatusResponse?.layoutMode;
+            });
           }
         },
         child: WillPopScope(
@@ -162,6 +175,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 appBar: _appBar(this.title),
                 body: Builder(builder: (BuildContext context) {
                   SoScreen screen = SoScreen(
+                    componentId: rawComponentId,
                     child: ComponentScreenWidget(
                       closeCurrentScreen: closeCurrentScreen,
                       componentCreator: SoComponentCreator(context),
