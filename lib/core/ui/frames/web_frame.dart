@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinycolor/tinycolor.dart';
 
+import '../../../injection_container.dart';
 import '../../models/api/request.dart';
 import '../../models/api/request/logout.dart';
 import '../../models/api/response.dart';
@@ -58,6 +59,8 @@ class _WebFrameState extends State<WebFrame> {
 
   @override
   void initState() {
+    this.appState = sl<AppState>();
+
     if (this.appState.profileImage != null &&
         this.appState.profileImage.isNotEmpty) {
       profileImg = Image.memory(base64Decode(this.appState.profileImage));
@@ -68,14 +71,14 @@ class _WebFrameState extends State<WebFrame> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    this.appState = AppStateProvider.of(context).appState;
   }
 
   @override
   Widget build(BuildContext context) {
     this.appState.appFrame.setMenu(WebMenuListWidget(
-        menuItems: this.appState.items, groupedMenuMode: hasMultipleGroups));
+        appState: this.appState,
+        menuItems: this.appState.items,
+        groupedMenuMode: hasMultipleGroups));
     if (this.appState.layoutMode == 'Full') {
       return Scaffold(
         key: _scaffoldKey,
@@ -116,8 +119,7 @@ class _WebFrameState extends State<WebFrame> {
                                             .color,
                                 child: Container(
                                   margin: EdgeInsets.symmetric(horizontal: 10),
-                                  child: (appState.applicationStyle==
-                                              null ||
+                                  child: (appState.applicationStyle == null ||
                                           this
                                                   .appState
                                                   .applicationStyle
@@ -144,7 +146,7 @@ class _WebFrameState extends State<WebFrame> {
                             hoverColor: Colors.black.withOpacity(0.3),
                             icon: FaIcon(
                               FontAwesomeIcons.bars,
-                              color: (appState.applicationStyle!= null &&
+                              color: (appState.applicationStyle != null &&
                                       this
                                               .appState
                                               .applicationStyle
@@ -175,7 +177,7 @@ class _WebFrameState extends State<WebFrame> {
                             hoverColor: Colors.black.withOpacity(0.3),
                             icon: FaIcon(
                               FontAwesomeIcons.cog,
-                              color: (appState.applicationStyle!= null &&
+                              color: (appState.applicationStyle != null &&
                                       this
                                               .appState
                                               .applicationStyle
@@ -203,7 +205,7 @@ class _WebFrameState extends State<WebFrame> {
                             hoverColor: Colors.black.withOpacity(0.3),
                             icon: FaIcon(
                               FontAwesomeIcons.powerOff,
-                              color: (appState.applicationStyle!= null &&
+                              color: (appState.applicationStyle != null &&
                                       this
                                               .appState
                                               .applicationStyle
@@ -245,8 +247,9 @@ class _WebFrameState extends State<WebFrame> {
                         offset: Offset(0, 3), // changes position of shadow
                       ),
                     ],
-                    color: (appState.applicationStyle!= null &&
-                            this.appState.applicationStyle?.topMenuColor != null)
+                    color: (appState.applicationStyle != null &&
+                            this.appState.applicationStyle?.topMenuColor !=
+                                null)
                         ? this
                             .appState
                             .applicationStyle
@@ -262,7 +265,7 @@ class _WebFrameState extends State<WebFrame> {
                       children: <Widget>[
                         Container(
                             width: 250,
-                            color: (appState.applicationStyle!= null &&
+                            color: (appState.applicationStyle != null &&
                                     this
                                             .appState
                                             .applicationStyle
@@ -339,7 +342,7 @@ class _WebFrameState extends State<WebFrame> {
 
     return Theme(
       data: Theme.of(context).copyWith(
-        cardColor: (appState.applicationStyle!= null &&
+        cardColor: (appState.applicationStyle != null &&
                 this.appState.applicationStyle?.topMenuColor != null)
             ? this.appState.applicationStyle?.topMenuColor.withOpacity(0.95)
             : Color(0xff2196f3).withOpacity(0.95),
@@ -388,8 +391,9 @@ class _WebFrameState extends State<WebFrame> {
               mypopup.PopupMenuStack(
                 children: [
                   Container(
-                    color: (appState.applicationStyle!= null &&
-                            this.appState.applicationStyle?.topMenuColor != null)
+                    color: (appState.applicationStyle != null &&
+                            this.appState.applicationStyle?.topMenuColor !=
+                                null)
                         ? this
                             .appState
                             .applicationStyle
@@ -432,8 +436,11 @@ class _WebFrameState extends State<WebFrame> {
                   ? null
                   : FaIcon(
                       FontAwesomeIcons.userTie,
-                      color: (appState.applicationStyle!= null &&
-                              this.appState.applicationStyle?.topMenuIconColor !=
+                      color: (appState.applicationStyle != null &&
+                              this
+                                      .appState
+                                      .applicationStyle
+                                      ?.topMenuIconColor !=
                                   null)
                           ? this.appState.applicationStyle?.topMenuIconColor
                           : Color(0xffffffff),

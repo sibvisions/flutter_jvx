@@ -17,7 +17,7 @@ class WebMenuListWidget extends StatefulWidget {
       {Key key,
       @required this.menuItems,
       this.groupedMenuMode = true,
-      this.appState,
+      @required this.appState,
       this.onPressed})
       : super(key: key);
 
@@ -65,7 +65,8 @@ class _WebMenuListWidgetState extends State<WebMenuListWidget> {
           k,
           style: TextStyle(
               color: (widget.appState.applicationStyle != null &&
-                      widget.appState.applicationStyle?.sideMenuGroupTextColor !=
+                      widget.appState.applicationStyle
+                              ?.sideMenuGroupTextColor !=
                           null)
                   ? widget.appState.applicationStyle?.sideMenuGroupTextColor
                   : Color(0xff6a6a6a),

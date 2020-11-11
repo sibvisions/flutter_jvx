@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/models/app/screen_arguments.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../models/api/request.dart';
@@ -47,7 +46,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
   @override
   void initState() {
-    if (widget.appState.profileImage != null) {
+    if (widget.appState?.profileImage != null) {
       this.decodedImage = base64Decode(widget.appState.profileImage);
     }
     super.initState();

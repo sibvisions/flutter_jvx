@@ -60,7 +60,8 @@ class ApiBloc extends Bloc<Request, Response> {
   void onEvent(Request event) {
     if (event.requestType != RequestType.RELOAD) {
       event.id = _seqNo++;
-      print('******* Outgoing Request ID: ${event.id}, RequestType: ${event.requestType.toString()}');
+      print(
+          '******* Outgoing Request ID: ${event.id}, RequestType: ${event.requestType.toString()}');
     }
     _requestQueue.add(event);
     super.onEvent(event);
@@ -70,9 +71,12 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> mapEventToState(Request event) async* {
     yield updateResponse(Response()..request = Loading());
     if (await this.networkInfo.isConnected) {
-      await for (Response response in makeRequest(_requestQueue.removeFirst())) {
-        if (response.request.requestType != RequestType.LOADING && response.request.requestType != RequestType.RELOAD) {
-          print('******* Incoming Request ID: ${response.request.id}, RequestType: ${response.request.requestType.toString()}');
+      await for (Response response
+          in makeRequest(_requestQueue.removeFirst())) {
+        if (response.request.requestType != RequestType.LOADING &&
+            response.request.requestType != RequestType.RELOAD) {
+          print(
+              '******* Incoming Request ID: ${response.request.id}, RequestType: ${response.request.requestType.toString()}');
         }
 
         yield response;
@@ -168,15 +172,13 @@ class ApiBloc extends Bloc<Request, Response> {
 
     if (!response.hasError) {
       if (kIsWeb)
-        _downloadWeb(event, response);
+        yield* _downloadWeb(event, response);
       else
-        await _downloadMobile(event, response);
+        yield* await _downloadMobile(event, response);
     }
-
-    yield response;
   }
 
-  _downloadWeb(Download event, Response response) {
+  Stream<Response> _downloadWeb(Download event, Response response) async* {
     response.downloadResponse.fileName = this.manager.downloadFileName;
 
     if (event.requestType == RequestType.DOWNLOAD) {
@@ -195,11 +197,15 @@ class ApiBloc extends Bloc<Request, Response> {
       html.document.body.children.remove(anchor);
       html.Url.revokeObjectUrl(url);
     } else if (event.requestType == RequestType.DOWNLOAD_TRANSLATION) {
+      this.appState.translation = <String, dynamic>{};
+      this.appState.files = <String, String>{};
+
       for (var file in response.downloadResponse?.download) {
         String filename = getLocalFilePath(this.appState.baseUrl, '',
                 this.appState.appName, this.appState.appVersion) +
             '/' +
             file.name;
+
         if (file.isFile) {
           this
               .appState
@@ -210,8 +216,7 @@ class ApiBloc extends Bloc<Request, Response> {
       }
 
       this.manager.setTranslation(appState.translation);
-      if (appState.language != null && appState.language.isNotEmpty)
-        AppLocalizations.load(Locale(appState.language));
+      AppLocalizations.load(Locale(appState.language));
     } else if (event.requestType == RequestType.DOWNLOAD_IMAGES) {
       for (var file in response.downloadResponse?.download) {
         String filename = '/${file.name}';
@@ -223,9 +228,11 @@ class ApiBloc extends Bloc<Request, Response> {
         }
       }
     }
+
+    yield response;
   }
 
-  _downloadMobile(Download event, Response response) async {
+  Stream<Response> _downloadMobile(Download event, Response response) async* {
     if (event.requestType == RequestType.DOWNLOAD) {
       final directory = Platform.isAndroid
           ? await getExternalStorageDirectory()
@@ -288,6 +295,8 @@ class ApiBloc extends Bloc<Request, Response> {
         }
       }
     }
+
+    yield response;
   }
 
   Stream<Response> logout(Logout event) async* {

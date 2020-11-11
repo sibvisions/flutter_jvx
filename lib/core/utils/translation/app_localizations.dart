@@ -26,41 +26,43 @@ class AppLocalizations {
     File file;
 
     try {
-    if (!kIsWeb) {
-      if (locale.languageCode == 'en' &&
-          appState.translation['translation.xml'] != null) {
-        file = File(appState.translation['translation.xml']);
-        if (file.existsSync()) {
-          contents = file.readAsStringSync();
-        }
-      } else if (locale.languageCode != 'en' &&
-          appState.translation['translation_${locale.languageCode}.xml'] !=
-              null) {
-        file = File(
-            appState.translation['translation_${locale.languageCode}.xml']);
+      if (!kIsWeb) {
+        if (locale.languageCode == 'en' &&
+            appState.translation['translation.xml'] != null) {
+          file = File(appState.translation['translation.xml']);
+          if (file.existsSync()) {
+            contents = file.readAsStringSync();
+          }
+        } else if (locale.languageCode != 'en' &&
+            appState.translation['translation_${locale.languageCode}.xml'] !=
+                null) {
+          file = File(
+              appState.translation['translation_${locale.languageCode}.xml']);
 
-        if (file.existsSync()) {
-          contents = file.readAsStringSync();
+          if (file.existsSync()) {
+            contents = file.readAsStringSync();
+          }
+        } else {
+          try {
+            String jsonContent =
+                await rootBundle.loadString('locale/i18n_de.json');
+            _localizedValues = json.decode(jsonContent);
+          } catch (e) {
+            throw new Error();
+          }
         }
       } else {
-        try {
-          String jsonContent = await rootBundle.loadString('locale/i18n_de.json');
-          _localizedValues = json.decode(jsonContent);
-        } catch (e) {
-          throw new Error();
-        }
+        contents = appState.files[appState.translation[
+            locale.languageCode == 'en'
+                ? 'translation.xml'
+                : 'translation_${locale.languageCode}.xml']];
       }
-    } else {
-      contents = appState.files[appState.translation[locale.languageCode == 'en'
-          ? 'translation.xml'
-          : 'translation_${locale.languageCode}.xml']];
-    }
     } catch (e) {
       AppLocalizations translations = new AppLocalizations(const Locale('en'));
-        String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
-        _localizedValues = json.decode(jsonContent);
+      String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
+      _localizedValues = json.decode(jsonContent);
 
-        return translations;
+      return translations;
     }
 
     if (contents != null && contents.length > 0) {

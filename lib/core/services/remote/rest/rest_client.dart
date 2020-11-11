@@ -43,15 +43,19 @@ class RestClient {
             'Timeout error',
             'timeout.error');
     } on Exception {
-      finalResponse = Response();
+      finalResponse = Response()
+        ..error = ErrorResponse(
+            'Error',
+            'An Error while sending the Request occured',
+            'An Error occured',
+            'message.error');
     }
 
     if (response == null || (response as http.Response).statusCode != 200) {
-      // print((response as http.Response).body);
       String body = this.utf8convert(response.body);
       finalResponse = Response()
-        ..error = ErrorResponse(
-            'Error', body, 'An Error occured', 'message.error');
+        ..error =
+            ErrorResponse('Error', body, 'An Error occured', 'message.error');
     } else {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
@@ -142,7 +146,8 @@ class RestClient {
 
       final streamedResponse = await request.send();
 
-      response = await http.Response.fromStream(streamedResponse).timeout(const Duration(seconds: 10));
+      response = await http.Response.fromStream(streamedResponse)
+          .timeout(const Duration(seconds: 10));
     } catch (e) {
       print('EXCEPTION: $e');
 

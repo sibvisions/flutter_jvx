@@ -31,7 +31,8 @@ class SharedPreferencesManager {
 
   String get deviceId => this.sharedPreferences.getString('deviceId');
 
-  String get downloadFileName => this.sharedPreferences.getString('fileName') ?? '';
+  String get downloadFileName =>
+      this.sharedPreferences.getString('fileName') ?? '';
 
   bool get mobileOnly => this.sharedPreferences.getBool('mobileOnly');
 
@@ -110,7 +111,7 @@ class SharedPreferencesManager {
       .sharedPreferences
       .setString('applicationStylingHash', applicationStylingHash);
 
-  void setTranslation(Map<String, String> translation) {
+  void setTranslation(Map<String, dynamic> translation) {
     String jsonString = json.encode(translation);
 
     this.sharedPreferences.setString('translation', jsonString);
