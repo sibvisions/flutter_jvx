@@ -41,7 +41,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   SharedPreferencesManager manager;
   AppState appState;
 
-  _updateDataFromConfig(Future<Config> configFuture) async {
+  Future<void> _updateDataFromConfig(Future<Config> configFuture) async {
     Config config = await configFuture;
 
     if (config?.debug != null && config.debug) {
@@ -244,8 +244,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     _updateDataFromSystem();
 
     if (widget.shouldLoadConfig)
-      _updateDataFromConfig(Config.loadFile(conf: widget.config));
+      _updateDataFromConfig(Config.loadFile(conf: widget.config))
+          .then((value) => _requestStartup());
+    else
+      _requestStartup();
+  }
 
+  void _requestStartup() {
     if (appState.appName == null || appState.baseUrl == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed('/settings');

@@ -1,6 +1,6 @@
-
 import '../../models/api/component/changed_component.dart';
 import '../component/component_model.dart';
+import '../component/label_component_model.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
 import '../component/popup_menu/popup_component_model.dart';
 import '../container/container_component_model.dart';
@@ -81,6 +81,9 @@ class ComponentModelManager {
         break;
       case 'PopupMenuButton':
         componentModel = PopupButtonComponentModel(changedComponent);
+        break;
+      case 'Label':
+        componentModel = LabelComponentModel(changedComponent);
         break;
       default:
         componentModel = ComponentModel(changedComponent);

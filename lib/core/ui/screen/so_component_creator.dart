@@ -18,6 +18,7 @@ import '../component/component_widget.dart';
 import '../component/popup_menu/co_menu_item_widget.dart';
 import '../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../component/popup_menu/co_popup_menu_widget.dart';
+import '../component/label_component_model.dart';
 import '../container/co_group_panel_widget.dart';
 import '../container/co_panel_widget.dart';
 import '../container/co_scroll_panel_widget.dart';
@@ -201,7 +202,7 @@ class SoComponentCreator implements IComponentCreator {
               ? changedComponent.className
               : "") +
           "'!",
-      componentModel: ComponentModel(changedComponent),
+      componentModel: LabelComponentModel(changedComponent),
     );
 
     return componentWidget;

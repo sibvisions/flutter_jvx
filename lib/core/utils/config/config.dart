@@ -43,7 +43,7 @@ class Config {
 
         config = Config.fromJson(json.decode(configString));
       } catch (e) {
-        print('Error: Config File not found');
+        print('Warning: Config file not found!');
       }
     }
 
