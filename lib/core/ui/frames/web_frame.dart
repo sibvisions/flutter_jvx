@@ -160,7 +160,9 @@ class _WebFrameState extends State<WebFrame> {
                                                   ?.topMenuLogo ==
                                               null)
                                       ? Image.asset(
-                                          'assets/images/sibvisions.png',
+                                          appState.package
+                                              ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg'
+                                              : 'assets/images/sib_visions.jpg',
                                           fit: BoxFit.contain)
                                       : Image.memory(
                                           base64Decode(this.appState.files[this
