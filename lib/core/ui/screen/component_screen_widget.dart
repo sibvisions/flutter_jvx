@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/api/response.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -33,16 +34,11 @@ enum CoState {
 
 class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
-  final Request request;
-  final ResponseData responseData;
+  final Response response;
   final bool closeCurrentScreen;
 
   const ComponentScreenWidget(
-      {Key key,
-      this.componentCreator,
-      this.request,
-      this.responseData,
-      this.closeCurrentScreen})
+      {Key key, this.componentCreator, this.response, this.closeCurrentScreen})
       : super(key: key);
 
   static ComponentScreenWidgetState of(BuildContext context) =>
@@ -74,11 +70,14 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
     this.context = context;
 
-    if (widget.request != null && widget.responseData != null)
-      this.updateData(widget.request, widget.responseData);
-    if (widget.responseData?.screenGeneric != null) {
+    ResponseData responseData = widget.response.responseData;
+    Request request = widget.response.request;
+
+    if (request != null && responseData != null)
+      this.updateData(request, responseData);
+    if (responseData.screenGeneric != null) {
       this.updateComponents(
-          widget.responseData.screenGeneric.changedComponents);
+          responseData.screenGeneric.changedComponents);
       rootComponent = this.getRootComponent();
     }
 

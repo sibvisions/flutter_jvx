@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/utils/app/get_menu_widget.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/device_status.dart';
@@ -236,70 +237,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     }
   }
 
-  Widget _getMenuWidget(BuildContext context) {
-    widget.appState.appFrame.screen = null;
-
-    if (!widget.appState.appFrame.showScreenHeader) {
-      widget.appState.appFrame.setMenu(WebMenuListWidget(
-        menuItems: this.widget.menuItems,
-        groupedMenuMode: hasMultipleGroups,
-        onPressed: _onPressed,
-        appState: widget.appState,
-      ));
-    } else {
-      switch (menuMode) {
-        case 'grid':
-          widget.appState.appFrame.setMenu(MenuGridView(
-            items: this.widget.menuItems,
-            groupedMenuMode: false,
-            onPressed: _onPressed,
-            appState: widget.appState,
-          ));
-          break;
-        case 'list':
-          widget.appState.appFrame.setMenu(MenuListWidget(
-            menuItems: this.widget.menuItems,
-            groupedMenuMode: hasMultipleGroups,
-            onPressed: _onPressed,
-            appState: widget.appState,
-          ));
-          break;
-        case 'drawer':
-          widget.appState.appFrame.setMenu(MenuEmpty());
-          break;
-        case 'grid_grouped':
-          widget.appState.appFrame.setMenu(MenuGridView(
-              items: this.widget.menuItems,
-              groupedMenuMode: hasMultipleGroups,
-              onPressed: _onPressed,
-              appState: widget.appState));
-          break;
-        case 'swiper':
-          widget.appState.appFrame.setMenu(MenuSwiperWidget(
-              items: this.widget.menuItems,
-              groupedMenuMode: hasMultipleGroups,
-              onPressed: _onPressed,
-              appState: widget.appState));
-          break;
-        case 'tabs':
-          widget.appState.appFrame.setMenu(MenuTabsWidget(
-              items: this.widget.menuItems,
-              groupedMenuMode: hasMultipleGroups,
-              onPressed: _onPressed,
-              appState: widget.appState));
-          break;
-        default:
-          widget.appState.appFrame.setMenu(MenuGridView(
-              items: this.widget.menuItems,
-              groupedMenuMode: hasMultipleGroups,
-              onPressed: _onPressed,
-              appState: widget.appState));
-          break;
-      }
-    }
-    return widget.appState.appFrame.getWidget();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -350,9 +287,11 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                           : null,
                       fit: BoxFit.cover,
                     )),
-          child: _getMenuWidget(context));
+          child: getMenuWidget(context, widget.appState, hasMultipleGroups,
+              _onPressed, menuMode));
     } else {
-      body = _getMenuWidget(context);
+      body = getMenuWidget(
+          context, widget.appState, hasMultipleGroups, _onPressed, menuMode);
     }
 
     return WillPopScope(

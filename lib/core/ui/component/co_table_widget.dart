@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -146,8 +146,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Colors.white
-                .withOpacity(this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+            color: Colors.white.withOpacity(
+                this.appState.applicationStyle?.controlsOpacity ?? 1.0),
           ),
           child: Container(
               decoration: BoxDecoration(
@@ -164,8 +164,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       if (isSelected)
         backgroundColor = Theme.of(context).primaryColor.withOpacity(0.1);
       else if (index % 2 == 1) {
-        backgroundColor = Colors.grey[200]
-            .withOpacity(this.appState.applicationStyle?.controlsOpacity ?? 1.0);
+        backgroundColor = Colors.grey[200].withOpacity(
+            this.appState.applicationStyle?.controlsOpacity ?? 1.0);
       }
       return Container(
         decoration: BoxDecoration(color: backgroundColor),
@@ -345,7 +345,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       bool isSelected = index == data.selectedRow;
       if (this.selectedRow != null) isSelected = index == this.selectedRow;
 
-      if (this.data != null && this.data.deleteEnabled && !_hasHorizontalScroller) {
+      if (this.data != null &&
+          this.data.deleteEnabled &&
+          !_hasHorizontalScroller) {
         return this.editable
             ? GestureDetector(
                 onLongPress: () => showContextMenu(context, index),
@@ -354,7 +356,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                   child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(
-                            this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+                            this.appState.applicationStyle?.controlsOpacity ??
+                                1.0),
                       ),
                       child: getTableRow(children, index, false, isSelected)),
                   actionPane: SlidableDrawerActionPane(),
@@ -362,7 +365,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                     new IconSlideAction(
                       caption: AppLocalizations.of(context).text('Delete'),
                       color: Colors.red.withOpacity(
-                          this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+                          this.appState.applicationStyle?.controlsOpacity ??
+                              1.0),
                       icon: Icons.delete,
                       onTap: () => this.data?.deleteRecord(context, index),
                     ),
@@ -381,7 +385,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             child: Container(
                 decoration: BoxDecoration(
                     color: Colors.white.withOpacity(
-                        this.appState.applicationStyle?.controlsOpacity ?? 1.0)),
+                        this.appState.applicationStyle?.controlsOpacity ??
+                            1.0)),
                 child: getTableRow(children, index, false, isSelected)));
       }
     }
@@ -497,7 +502,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 border: Border.all(
                     width: borderWidth,
                     color: Theme.of(context).primaryColor.withOpacity(
-                        this.appState.applicationStyle?.controlsOpacity ?? 1.0)),
+                        this.appState.applicationStyle?.controlsOpacity ??
+                            1.0)),
                 color: Colors.white.withOpacity(
                     this.appState.applicationStyle?.controlsOpacity ?? 1.0),
               ),

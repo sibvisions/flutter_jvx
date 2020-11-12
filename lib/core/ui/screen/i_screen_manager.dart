@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
+
 import '../../models/api/response/user_data.dart';
 import 'i_screen.dart';
 import 'so_menu_manager.dart';
@@ -31,4 +33,7 @@ abstract class IScreenManager {
 
   /// Method for removing a registered Screen
   void removeScreen(String name);
+
+  /// Method for updating and/or replacing
+  void updateScreen(SoScreen screen);
 }

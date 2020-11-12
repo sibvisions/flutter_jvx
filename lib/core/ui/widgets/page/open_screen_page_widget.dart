@@ -7,21 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/models/api/request/open_screen.dart';
-import 'package:jvx_flutterclient/core/models/api/so_action.dart';
-import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
+import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/device_status.dart';
 import '../../../models/api/request/download.dart';
 import '../../../models/api/request/navigation.dart';
+import '../../../models/api/request/open_screen.dart';
 import '../../../models/api/request/upload.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/menu_item.dart';
+import '../../../models/api/so_action.dart';
 import '../../../models/app/app_state.dart';
 import '../../../models/app/menu_arguments.dart';
 import '../../../services/remote/bloc/api_bloc.dart';
-import '../../screen/component_screen_widget.dart';
+import '../../../utils/app/get_menu_widget.dart';
+import '../../frames/app_frame.dart';
+import '../../screen/i_screen.dart';
 import '../../screen/so_component_creator.dart';
 import '../../screen/so_screen.dart';
 import '../dialogs/upload_file_picker.dart';
@@ -59,6 +61,18 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   String rawComponentId;
   String title;
   bool closeCurrentScreen;
+
+  Response currentResponse;
+
+  GlobalKey screenKey;
+
+  String get menuMode {
+    if (widget.appState.applicationStyle != null &&
+        widget.appState.applicationStyle?.menuMode != null)
+      return widget.appState.applicationStyle?.menuMode;
+    else
+      return 'grid';
+  }
 
   void _firePreviewerListener() {
     // if (widget.appState.appListener != null)
@@ -106,8 +120,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   _blocListener() => BlocListener<ApiBloc, Response>(
         listener: (BuildContext context, Response state) {
-          if (state.request.requestType != RequestType.LOADING &&
-              state.request.requestType != RequestType.DEVICE_STATUS) {
+          if (state.request.requestType != RequestType.LOADING) {
             if (state.request.requestType == RequestType.MENU) {
               widget.appState.items = state.menu.entries;
             }
@@ -125,15 +138,25 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
 
                 setState(() {
-                  widget.response.responseData = state.responseData;
-                  widget.response.request = state.request;
-
-                  if (state.closeScreenAction != null) {
-                    this.closeCurrentScreen = true;
-                  } else {
-                    this.closeCurrentScreen = false;
-                  }
+                  currentResponse = state;
                 });
+
+                if (state.closeScreenAction != null) {
+                  setState(() {
+                    this.closeCurrentScreen = true;
+                  });
+                } else {
+                  setState(() {
+                    this.closeCurrentScreen = false;
+                  });
+                }
+
+                if (state.request.requestType == RequestType.DEVICE_STATUS) {
+                  setState(() {
+                    widget.appState.layoutMode =
+                        state.deviceStatusResponse.layoutMode;
+                  });
+                }
 
                 _checkForButtonAction(state);
 
@@ -144,12 +167,18 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                     SchedulerBinding.instance.addPostFrameCallback(
                         (_) => Navigator.of(context).pop());
 
+                  widget.response.request = state.request;
+                  widget.response.responseData = state.responseData;
+
                   rawComponentId =
                       state.responseData?.screenGeneric?.componentId;
                 }
 
                 if (state.responseData.screenGeneric != null &&
                     !state.responseData.screenGeneric.update) {
+                  widget.response.request = state.request;
+                  widget.response.responseData = state.responseData;
+
                   rawComponentId = state.responseData.screenGeneric.componentId;
                 }
 
@@ -160,11 +189,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               }
             }
-          } else if (state.request.requestType == RequestType.DEVICE_STATUS) {
-            setState(() {
-              widget.appState?.layoutMode =
-                  state.deviceStatusResponse?.layoutMode;
-            });
           }
         },
         child: WillPopScope(
@@ -174,18 +198,17 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 key: _scaffoldKey,
                 appBar: _appBar(this.title),
                 body: Builder(builder: (BuildContext context) {
-                  SoScreen screen = SoScreen(
-                    componentId: rawComponentId,
-                    child: ComponentScreenWidget(
-                      closeCurrentScreen: closeCurrentScreen,
-                      componentCreator: SoComponentCreator(context),
-                      request: widget.response.request,
-                      responseData: widget.response.responseData,
-                    ),
-                  );
+                  SoScreen screen;
 
-                  screen.update(
-                      widget.response.request, widget.response.responseData);
+                  if (this.currentResponse.request.requestType !=
+                      RequestType.DEVICE_STATUS) {
+                    screen = SoScreen(
+                        screenKey: this.screenKey,
+                        componentId: rawComponentId,
+                        closeCurrentScreen: this.closeCurrentScreen,
+                        componentCreator: SoComponentCreator(context),
+                        response: this.currentResponse);
+                  }
 
                   if (widget.appState.applicationStyle != null &&
                       widget.appState.applicationStyle?.desktopIcon != null) {
@@ -214,7 +237,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                                         : null,
                                     fit: BoxFit.cover,
                                   )),
-                        child: screen));
+                        child: this.currentResponse.request.requestType !=
+                                RequestType.DEVICE_STATUS
+                            ? screen
+                            : widget.appState.appFrame.screen));
 
                     return widget.appState.appFrame.getWidget();
                   } else if (widget.appState.applicationStyle != null &&
@@ -223,11 +249,18 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         decoration: BoxDecoration(
                             color:
                                 widget.appState.applicationStyle?.desktopColor),
-                        child: screen));
+                        child: this.currentResponse.request.requestType !=
+                                RequestType.DEVICE_STATUS
+                            ? screen
+                            : widget.appState.appFrame.screen));
 
                     return widget.appState.appFrame.getWidget();
                   } else {
-                    widget.appState.appFrame.setScreen(screen);
+                    widget.appState.appFrame.setScreen(
+                        this.currentResponse.request.requestType !=
+                                RequestType.DEVICE_STATUS
+                            ? screen
+                            : widget.appState.appFrame.screen);
                     return widget.appState.appFrame.getWidget();
                   }
                 }))),
@@ -336,13 +369,59 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
   }
 
+  _onPressed(MenuItem menuItem) {
+    if (widget.appState.screenManager != null &&
+        !widget.appState.screenManager
+            .getScreen(menuItem.componentId, templateName: menuItem.text)
+            .withServer()) {
+      IScreen screen = widget.appState.screenManager
+          .getScreen(menuItem.componentId, templateName: menuItem.text);
+
+      widget.appState.appFrame.setScreen(screen);
+
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => widget.appState.appFrame.getWidget()));
+    } else {
+      SoAction action =
+          SoAction(componentId: menuItem.componentId, label: menuItem.text);
+
+      this.title = action.label;
+
+      OpenScreen openScreen = OpenScreen(
+        action: action,
+        clientId: widget.appState.clientId,
+        manualClose: false,
+        requestType: RequestType.OPEN_SCREEN,
+      );
+
+      BlocProvider.of<ApiBloc>(context).add(openScreen);
+    }
+  }
+
+  _appFrame() {
+    if (widget.appState.appFrame is AppFrame) {
+      widget.appState.appFrame = AppFrame(context);
+    }
+
+    getMenuWidget(
+        context, widget.appState, hasMultipleGroups(), _onPressed, menuMode);
+  }
+
   @override
   void initState() {
     super.initState();
 
+    this.currentResponse = widget.response;
+
     this.title = widget.title;
 
+    _appFrame();
+
     rawComponentId = widget.response.responseData.screenGeneric.componentId;
+
+    this.screenKey =
+        GlobalKey<ComponentScreenWidgetState>(debugLabel: rawComponentId);
+
     WidgetsBinding.instance.addObserver(this);
   }
 

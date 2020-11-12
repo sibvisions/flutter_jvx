@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../injection_container.dart';
-import '../../models/api/response/menu_item.dart';
 import '../../models/app/app_state.dart';
 import 'i_app_frame.dart';
 import 'web_frame.dart';

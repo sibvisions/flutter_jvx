@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 
 import '../../../injection_container.dart';
 import '../../models/app/app_state.dart';

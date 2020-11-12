@@ -43,4 +43,11 @@ class ScreenManager extends IScreenManager {
 
   @override
   void init() {}
+
+  @override
+  void updateScreen(SoScreen screen) {
+    if (_screens.containsKey(screen.componentId)) {
+      _screens[screen.componentId] = screen;
+    }
+  }
 }
