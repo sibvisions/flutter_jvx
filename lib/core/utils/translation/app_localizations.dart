@@ -59,7 +59,9 @@ class AppLocalizations {
       }
     } catch (e) {
       AppLocalizations translations = new AppLocalizations(const Locale('en'));
-      String jsonContent = await rootBundle.loadString("locale/i18n_de.json");
+      String jsonContent = await rootBundle.loadString(appState.package
+          ? "packages/jvx_flutterclient/locale/i18n_de.json"
+          : "locale/i18n_de.json");
       _localizedValues = json.decode(jsonContent);
 
       return translations;

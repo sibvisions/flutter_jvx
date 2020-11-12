@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 
 class AppConfig {
   bool handleSessionTimeout;
@@ -11,10 +13,13 @@ class AppConfig {
       : handleSessionTimeout = json['handleSessionTimeout'];
 
   static Future<AppConfig> loadFile({String path}) async {
+    AppState appState = sl<AppState>();
+
     AppConfig config;
     try {
-      String configString =
-          await rootBundle.loadString(path ?? "env/app.conf.json");
+      String configString = await rootBundle.loadString(path ?? appState.package
+          ? "packages/jvx_flutterclient/env/app.conf.json"
+          : "env/app.conf.json");
 
       config = AppConfig.fromJson(json.decode(configString));
     } catch (e) {

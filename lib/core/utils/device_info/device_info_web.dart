@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:platform_detect/platform_detect.dart';
 import 'dart:html';
 
+import '../../../injection_container.dart';
 import 'device_info.dart';
 
 class DeviceInfoWeb implements DeviceInfo {
@@ -24,7 +26,11 @@ class DeviceInfoWeb implements DeviceInfo {
   }
 
   getAppVersion() async {
-    Map<String, dynamic> buildversion = json.decode(await rootBundle.loadString('env/app_version.json'));
+    AppState appState = sl<AppState>();
+    Map<String, dynamic> buildversion = json.decode(await rootBundle.loadString(
+        appState.package
+            ? "packages/jvx_flutterclient/env/app.conf.json"
+            : "env/app.conf.json"));
     return buildversion['version'];
   }
 }
