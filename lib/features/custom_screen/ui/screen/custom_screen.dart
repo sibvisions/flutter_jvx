@@ -7,15 +7,13 @@ import '../../../../core/utils/app/listener/application_api.dart';
 import '../../../../core/utils/app/listener/data_api.dart';
 
 /// Implementation of [IScreen] for custom screens.
-class CustomScreen implements IScreen {
+abstract class CustomScreen implements IScreen {
   String _templateName;
 
   CustomScreen();
-  
-  @override
-  void update(Request request, ResponseData data) {
 
-  }
+  @override
+  void update(Request request, ResponseData data) {}
 
   @override
   bool withServer() {
