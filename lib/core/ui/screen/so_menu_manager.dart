@@ -28,11 +28,8 @@ class SoMenuManager {
       String image,
       bool checkUnique = true,
       String templateName}) {
-    MenuItem itemToAdd = MenuItem(
-        componentId: id,
-        image: image,
-        group: group,
-        text: templateName);
+    MenuItem itemToAdd =
+        MenuItem(componentId: id, image: image, group: group, text: text);
 
     addItem(itemToAdd, checkUnique: checkUnique);
   }
