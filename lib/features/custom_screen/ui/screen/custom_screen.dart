@@ -9,10 +9,11 @@ import '../../../../core/utils/app/listener/data_api.dart';
 
 /// Implementation of [IScreen] for custom screens.
 class CustomScreen extends StatelessWidget implements IScreen {
+  final String componentId;
   final String _templateName;
   final Response currentResponse = Response();
 
-  CustomScreen(this._templateName);
+  CustomScreen(this.componentId, this._templateName);
 
   @override
   void update(Response response) {
@@ -55,5 +56,10 @@ class CustomScreen extends StatelessWidget implements IScreen {
       closeCurrentScreen: false,
       componentCreator: SoComponentCreator(),
     );
+  }
+
+  @override
+  set componentId(String _componentId) {
+    
   }
 }

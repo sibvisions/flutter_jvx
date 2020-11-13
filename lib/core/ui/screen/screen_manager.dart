@@ -2,14 +2,13 @@ import '../../models/api/response/user_data.dart';
 import 'i_screen.dart';
 import 'i_screen_manager.dart';
 import 'so_menu_manager.dart';
-import 'so_screen.dart';
 
 class ScreenManager extends IScreenManager {
-  Map<String, SoScreen> _screens = <String, SoScreen>{};
+  Map<String, IScreen> _screens = <String, IScreen>{};
 
   @override
   IScreen getScreen(String componentId, {String templateName}) {
-    SoScreen screen = this.findScreen(componentId);
+    IScreen screen = this.findScreen(componentId);
 
     if (screen == null) {
       return IScreen();
@@ -45,7 +44,7 @@ class ScreenManager extends IScreenManager {
   void init() {}
 
   @override
-  void updateScreen(SoScreen screen) {
+  void updateScreen(IScreen screen) {
     if (_screens.containsKey(screen.componentId)) {
       _screens[screen.componentId] = screen;
     }

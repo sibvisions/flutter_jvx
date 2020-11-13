@@ -2,7 +2,7 @@ import '../../models/api/response.dart';
 import 'so_screen.dart';
 
 abstract class IScreen {
-  /// Context for making various requests
+  String componentId;
 
   /// Constructor for returning the default Implementation of this interface.
   factory IScreen() =>
