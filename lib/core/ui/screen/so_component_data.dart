@@ -297,7 +297,7 @@ class SoComponentData {
       isFetchingMetaData = true;
     }
 
-    BlocProvider.of<ApiBloc>(context).add(fetch);
+    sl<ApiBloc>().add(fetch);
   }
 
   dynamic _getColumnValue(String columnName) {

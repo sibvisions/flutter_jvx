@@ -312,7 +312,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                       image: DecorationImage(
                           image: AssetImage(appState.package
                               ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png'
-                              : 'assets/images/jvx_ss.png'),
+                              : 'assets/images/jvx_bg.png'),
                           fit: BoxFit.cover)),
                 ),
                 Column(
@@ -324,7 +324,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                             child: Image.asset(
                               appState.package
                                   ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png'
-                                  : 'assets/images/jvx_bg.png',
+                                  : 'assets/images/jvx_ss.png',
                               width: 135,
                             ),
                           )),

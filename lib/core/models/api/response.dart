@@ -46,7 +46,7 @@ class Response {
   Response();
 
   static ErrorResponse checkForError(Map<String, dynamic> json) {
-    if (json != null && json['title'] == 'Error' || json['title'] == 'Session Expired') {
+    if (json != null && (json['title'] == 'Error' || json['title'] == 'Session Expired' || json['name'] == 'message.information')) {
       return ErrorResponse(json['title'], json['details'], json['message'], json['name']);
     }
     return null;
