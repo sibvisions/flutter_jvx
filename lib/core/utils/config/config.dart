@@ -44,8 +44,8 @@ class Config {
       try {
         String configString = await rootBundle.loadString(
             path ?? appState.package
-                ? "packages/jvx_flutterclient/env/app.conf.json"
-                : "env/app.conf.json",
+                ? "packages/jvx_flutterclient/env/conf.json"
+                : "env/conf.json",
             cache: false);
 
         config = Config.fromJson(json.decode(configString));
