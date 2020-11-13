@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../models/api/component/changed_component.dart';
@@ -42,7 +44,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
       if (checkFontAwesome(image)) {
-        icon = convertFontAwesomeTextToIcon(image, Theme.of(context).primaryTextTheme.bodyText1.color);
+        icon = convertFontAwesomeTextToIcon(image, sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
       } else {
         List strinArr = List<String>.from(image.split(','));
         if (kIsWeb) {
