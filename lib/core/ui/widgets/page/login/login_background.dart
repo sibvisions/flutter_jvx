@@ -22,24 +22,30 @@ class LoginBackground extends StatelessWidget {
             new Container(
               decoration: new BoxDecoration(
                   gradient: new LinearGradient(
-                colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor
+                ],
               )),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: (appState.applicationStyle== null ||
+                child: (appState.applicationStyle == null ||
                         this.appState.applicationStyle?.loginLogo == null)
                     ? Image.asset(
-                        'assets/images/sibvisions.png',
+                        appState.package
+                            ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg'
+                            : 'assets/images/sib_visions.jpg',
                         fit: BoxFit.fitHeight)
                     : !kIsWeb
                         ? Image.file(
                             File(
                                 '${this.appState.dir}${this.appState.applicationStyle?.loginLogo}'),
                             fit: BoxFit.fitHeight)
-                        : Image.memory(utf8.base64Decode(
-                            this.appState.files[this.appState.applicationStyle?.loginLogo])),
+                        : Image.memory(utf8.base64Decode(this
+                            .appState
+                            .files[this.appState.applicationStyle?.loginLogo])),
               ),
             )
           ],
@@ -57,7 +63,7 @@ class LoginBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget widget;
 
-    if ((appState.applicationStyle!= null &&
+    if ((appState.applicationStyle != null &&
         this.appState.applicationStyle?.loginIcon != null)) {
       widget = Container(
           decoration: BoxDecoration(
@@ -65,8 +71,9 @@ class LoginBackground extends StatelessWidget {
                   image: !kIsWeb
                       ? FileImage(File(
                           '${this.appState.dir}${this.appState.applicationStyle?.loginIcon}'))
-                      : MemoryImage(utf8.base64Decode(
-                          this.appState.files[this.appState.applicationStyle?.loginIcon])),
+                      : MemoryImage(utf8.base64Decode(this
+                          .appState
+                          .files[this.appState.applicationStyle?.loginIcon])),
                   fit: BoxFit.cover)),
           child: Column(
             children: <Widget>[topHalf(context), bottomHalf],

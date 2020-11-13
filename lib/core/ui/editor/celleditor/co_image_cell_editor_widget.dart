@@ -47,7 +47,6 @@ class CoImageCellEditorWidgetState
 
     defaultImageName = widget.changedCellEditor
         .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME);
-
   }
 
   @override
@@ -89,14 +88,16 @@ class CoImageCellEditorWidgetState
 
         if (kIsWeb && this.appState.files.containsKey(defaultImageName)) {
           setState(() {
-            defaultImage =
-                (Image.memory(base64Decode(this.appState.files[defaultImageName])));
+            defaultImage = (Image.memory(
+                base64Decode(this.appState.files[defaultImageName])));
           });
         } else {
           if (file == null) {
             file = File(defaultImageName != null
                 ? '${this.appState.dir}$defaultImageName'
-                : 'assets/images/sib_visions.jpg');
+                : appState.package
+                    ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg'
+                    : 'assets/images/sib_visions.jpg');
 
             if (file.existsSync()) {
               setState(() {

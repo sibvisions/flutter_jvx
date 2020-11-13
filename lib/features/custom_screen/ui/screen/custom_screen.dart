@@ -7,15 +7,13 @@ import '../../../../core/utils/app/listener/application_api.dart';
 import '../../../../core/utils/app/listener/data_api.dart';
 
 /// Implementation of [IScreen] for custom screens.
-class CustomScreen implements IScreen {
-  String _templateName;
+class CustomScreen extends StatelessWidget implements IScreen {
+  final String _templateName;
 
-  CustomScreen();
-  
+  CustomScreen(this._templateName);
+
   @override
-  void update(Request request, ResponseData data) {
-
-  }
+  void update(Request request, ResponseData data) {}
 
   @override
   bool withServer() {
@@ -39,11 +37,12 @@ class CustomScreen implements IScreen {
   //   componentScreen.setFooter(footerComponent);
   // }
 
-  void setTemplateName(String templateName) {
-    _templateName = templateName;
-  }
-
   String getTemplateName() {
     return _templateName;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text('No custom screen returned'));
   }
 }

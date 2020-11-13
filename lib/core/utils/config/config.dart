@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 
 class Config {
   String baseUrl;
@@ -31,6 +33,8 @@ class Config {
         appMode = json['appMode'];
 
   static Future<Config> loadFile({String path, Config conf}) async {
+    AppState appState = sl<AppState>();
+
     if (conf != null) {
       return conf;
     }
@@ -38,8 +42,11 @@ class Config {
 
     if (!kReleaseMode) {
       try {
-        String configString =
-            await rootBundle.loadString(path ?? "env/conf.json", cache: false);
+        String configString = await rootBundle.loadString(
+            path ?? appState.package
+                ? "packages/jvx_flutterclient/env/conf.json"
+                : "env/conf.json",
+            cache: false);
 
         config = Config.fromJson(json.decode(configString));
       } catch (e) {
