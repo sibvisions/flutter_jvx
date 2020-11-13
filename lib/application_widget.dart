@@ -28,6 +28,9 @@ class ApplicationWidget extends StatelessWidget {
     AppState appState = sl<AppState>();
 
     appState.screenManager = this.screenManager ?? ScreenManager();
+
+    appState.screenManager.init();
+
     appState.handleSessionTimeout = handleSessionTimeout ?? true;
     appState.appListener = this.appListener;
     appState.package = this.package;
