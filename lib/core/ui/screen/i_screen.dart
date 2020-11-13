@@ -1,5 +1,4 @@
-import '../../models/api/request.dart';
-import '../../models/api/response/response_data.dart';
+import '../../models/api/response.dart';
 import 'so_screen.dart';
 
 abstract class IScreen {
@@ -10,7 +9,7 @@ abstract class IScreen {
       SoScreen();
 
   /// Gets called when new components, metaData or data is comming from the server.
-  void update(Request request, ResponseData responseData);
+  void update(Response response);
 
   /// Returns `true` when the server should be called when the user opens a screen.
   ///

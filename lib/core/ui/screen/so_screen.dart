@@ -42,8 +42,8 @@ class SoScreen extends StatelessWidget implements IScreen {
   }
 
   @override
-  void update(Request request, ResponseData responseData) {
-    this.response.request = request;
-    this.response.responseData = responseData;
+  void update(Response response) {
+    this.response.request = response.request;
+    this.response.responseData = response.responseData;
   }
 }

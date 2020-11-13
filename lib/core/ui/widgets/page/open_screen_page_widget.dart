@@ -372,10 +372,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   _onPressed(MenuItem menuItem) {
     if (widget.appState.screenManager != null &&
         !widget.appState.screenManager
-            .getScreen(menuItem.componentId, templateName: menuItem.text)
+            .getScreen(menuItem.componentId)
             .withServer()) {
       IScreen screen = widget.appState.screenManager
-          .getScreen(menuItem.componentId, templateName: menuItem.text);
+          .getScreen(menuItem.componentId);
 
       widget.appState.appFrame.setScreen(screen);
 

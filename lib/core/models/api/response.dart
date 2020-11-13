@@ -125,4 +125,24 @@ class Response {
       });
     }
   }
+
+  copyFrom(Response response) {
+    this.applicationMetaData = response.applicationMetaData;
+    this.applicationStyle = response.applicationStyle;
+    this.authenticationData = response.authenticationData;
+    this.closeScreenAction = response.closeScreenAction;
+    this.deviceStatusResponse = response.deviceStatusResponse;
+    this.downloadAction = response.downloadAction;
+    this.downloadResponse = response.downloadResponse;
+    this.error = response.error;
+    this.language = response.language;
+    this.loginItem = response.loginItem;
+    this.menu = response.menu;
+    this.request = response.request;
+    this.responseData = response.responseData;
+    this.restart = response.restart;
+    this.showDocument = response.showDocument;
+    this.uploadAction = response.uploadAction;
+    this.userData = response.userData;
+  }
 }

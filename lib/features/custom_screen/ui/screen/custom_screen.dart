@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/models/api/request.dart';
-import '../../../../core/models/api/response/response_data.dart';
+import '../../../../core/models/api/response.dart';
+import '../../../../core/ui/screen/component_screen_widget.dart';
 import '../../../../core/ui/screen/i_screen.dart';
+import '../../../../core/ui/screen/so_component_creator.dart';
 import '../../../../core/utils/app/listener/application_api.dart';
 import '../../../../core/utils/app/listener/data_api.dart';
 
 /// Implementation of [IScreen] for custom screens.
 class CustomScreen extends StatelessWidget implements IScreen {
   final String _templateName;
+  final Response currentResponse = Response();
 
   CustomScreen(this._templateName);
 
   @override
-  void update(Request request, ResponseData data) {}
+  void update(Response response) {
+    this.currentResponse.copyFrom(response);
+  }
 
   @override
   bool withServer() {
@@ -43,6 +47,13 @@ class CustomScreen extends StatelessWidget implements IScreen {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('No custom screen returned'));
+    // If you want to use the Layout Components from us you need to return a ComponentScreenWidget.
+    // This widget handles all rendering, layouting and data.
+    // You can wrap it with whatever you like but it has to be in the widget tree.
+    return ComponentScreenWidget(
+      response: this.currentResponse,
+      closeCurrentScreen: false,
+      componentCreator: SoComponentCreator(),
+    );
   }
 }
