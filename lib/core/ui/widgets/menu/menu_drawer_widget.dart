@@ -210,8 +210,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                             child: widget.appState.appFrame.getWidget()),
                       )));
             } else {
-              SoAction action = SoAction(
-                  componentId: item.componentId, label: item.text);
+              SoAction action =
+                  SoAction(componentId: item.componentId, label: item.text);
 
               this.title = action.label;
 
@@ -299,9 +299,12 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   Widget _getAvatar() {
     return CircleAvatar(
       backgroundColor: Colors.white,
-      backgroundImage:
-          widget.appState.profileImage.isNotEmpty ? getProfileImage() : null,
-      child: widget.appState.profileImage.isNotEmpty
+      backgroundImage: widget.appState.profileImage != null &&
+              widget.appState.profileImage.isNotEmpty
+          ? getProfileImage()
+          : null,
+      child: widget.appState.profileImage != null &&
+              widget.appState.profileImage.isNotEmpty
           ? null
           : FaIcon(
               FontAwesomeIcons.userTie,
