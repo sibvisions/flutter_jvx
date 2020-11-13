@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/device_status.dart';
@@ -207,13 +208,19 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
         !widget.appState.screenManager
             .getScreen(menuItem.componentId)
             .withServer()) {
-      IScreen screen = widget.appState.screenManager
-          .getScreen(menuItem.componentId);
+      IScreen screen =
+          widget.appState.screenManager.getScreen(menuItem.componentId);
 
       widget.appState.appFrame.setScreen(screen);
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => widget.appState.appFrame.getWidget()));
+          builder: (_) => Theme(
+                data: Theme.of(context),
+                child: BlocProvider<ApiBloc>(
+                  create: (_) => sl<ApiBloc>(),
+                  child: widget.appState.appFrame.getWidget()
+                ),
+              )));
     } else {
       SoAction action =
           SoAction(componentId: menuItem.componentId, label: menuItem.text);

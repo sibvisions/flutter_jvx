@@ -311,7 +311,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage(appState.package
-                              ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png'
+                              ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png'
                               : 'assets/images/jvx_ss.png'),
                           fit: BoxFit.cover)),
                 ),
@@ -323,7 +323,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                           child: Center(
                             child: Image.asset(
                               appState.package
-                                  ? 'packages/jvx_flutterclient/assets/images/jvx_bg.png'
+                                  ? 'packages/jvx_flutterclient/assets/images/jvx_ss.png'
                                   : 'assets/images/jvx_bg.png',
                               width: 135,
                             ),
