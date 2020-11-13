@@ -5,8 +5,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
+import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
 import '../../../models/api/request/logout.dart';
 import '../../../models/api/request/open_screen.dart';
@@ -193,28 +195,32 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
             if (widget.appState.screenManager != null &&
                 !widget.appState.screenManager
-                    .getScreen(item.componentId, templateName: item.text)
+                    .getScreen(item.componentId)
                     .withServer()) {
-              // open screen
-              Navigator.of(context)
-                  .pushReplacement(MaterialPageRoute(
-                      builder: (_) => widget.appState.screenManager.getScreen(
-                          item.componentId,
-                          templateName: item.text) as Widget))
-                  .then((value) {
-                setState(() {});
-              });
+              IScreen screen =
+                  widget.appState.screenManager.getScreen(item.componentId);
 
-              Navigator.of(context).pop();
+              widget.appState.appFrame.setScreen(screen);
+
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (_) => Theme(
+                        data: Theme.of(context),
+                        child: BlocProvider<ApiBloc>(
+                            create: (_) => sl<ApiBloc>(),
+                            child: widget.appState.appFrame.getWidget()),
+                      )));
             } else {
-              SoAction action =
-                  SoAction(componentId: item.componentId, label: item.text);
+              SoAction action = SoAction(
+                  componentId: item.componentId, label: item.text);
+
+              this.title = action.label;
 
               OpenScreen openScreen = OpenScreen(
-                  action: action,
-                  clientId: widget.appState.clientId,
-                  manualClose: false,
-                  requestType: RequestType.OPEN_SCREEN);
+                action: action,
+                clientId: widget.appState.clientId,
+                manualClose: false,
+                requestType: RequestType.OPEN_SCREEN,
+              );
 
               BlocProvider.of<ApiBloc>(context).add(openScreen);
             }
