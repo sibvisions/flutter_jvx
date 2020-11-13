@@ -46,4 +46,9 @@ class SoScreen extends StatelessWidget implements IScreen {
     this.response.request = response.request;
     this.response.responseData = response.responseData;
   }
+
+  @override
+  set componentId(String _componentId) {
+    
+  }
 }
