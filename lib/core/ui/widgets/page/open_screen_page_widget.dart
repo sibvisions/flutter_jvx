@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -23,7 +22,9 @@ import '../../../models/app/app_state.dart';
 import '../../../models/app/menu_arguments.dart';
 import '../../../services/remote/bloc/api_bloc.dart';
 import '../../../utils/app/get_menu_widget.dart';
+import '../../../utils/app/listener/application_api.dart';
 import '../../frames/app_frame.dart';
+import '../../screen/component_screen_widget.dart';
 import '../../screen/i_screen.dart';
 import '../../screen/so_component_creator.dart';
 import '../../screen/so_screen.dart';
@@ -415,6 +416,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   @override
   void initState() {
+    if (widget.appState.appListener != null) {
+      widget.appState.appListener.fireAfterStartupListener(ApplicationApi(context));
+    }
+
     super.initState();
 
     this.currentResponse = widget.response;
