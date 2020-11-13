@@ -8,7 +8,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/utils/app/get_menu_widget.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/device_status.dart';
@@ -19,19 +18,14 @@ import '../../../models/api/so_action.dart';
 import '../../../models/app/app_state.dart';
 import '../../../models/app/screen_arguments.dart';
 import '../../../services/remote/bloc/api_bloc.dart';
+import '../../../utils/app/get_menu_widget.dart';
 import '../../../utils/app/listener/application_api.dart';
 import '../../frames/app_frame.dart';
 import '../../screen/i_screen.dart';
 import '../../screen/so_menu_manager.dart';
 import '../dialogs/dialogs.dart';
 import '../menu/menu_drawer_widget.dart';
-import '../menu/menu_empty.dart';
-import '../menu/menu_grid_view.dart';
-import '../menu/menu_list_widget.dart';
-import '../menu/menu_swiper_right.dart';
-import '../menu/menu_tabs_widget.dart';
 import '../util/error_handling.dart';
-import '../web/web_menu_list_widget.dart';
 
 class MenuPageWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
@@ -211,10 +205,10 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   _onPressed(MenuItem menuItem) {
     if (widget.appState.screenManager != null &&
         !widget.appState.screenManager
-            .getScreen(menuItem.componentId, templateName: menuItem.text)
+            .getScreen(menuItem.componentId)
             .withServer()) {
       IScreen screen = widget.appState.screenManager
-          .getScreen(menuItem.componentId, templateName: menuItem.text);
+          .getScreen(menuItem.componentId);
 
       widget.appState.appFrame.setScreen(screen);
 
