@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
 
+import '../../../../injection_container.dart';
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
 import '../../../models/api/request.dart';
@@ -63,8 +65,8 @@ class CoPopupMenuButtonWidgetState
         changedProperties.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
       if (checkFontAwesome(image)) {
-        icon = convertFontAwesomeTextToIcon(
-            image, Theme.of(context).primaryTextTheme.bodyText1.color);
+        icon = convertFontAwesomeTextToIcon(image,
+            sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
       } else {
         List strinArr = List<String>.from(image.split(','));
         if (kIsWeb) {
@@ -93,8 +95,8 @@ class CoPopupMenuButtonWidgetState
                   height: size.height);
             }
 
-            BlocProvider.of<ApiBloc>(context)
-                .add(Reload(requestType: RequestType.RELOAD));
+            // BlocProvider.of<ApiBloc>(context)
+            //     .add(Reload(requestType: RequestType.RELOAD));
           }
         } else {
           File file = File('${this.appState.dir}${strinArr[0]}');
@@ -111,8 +113,8 @@ class CoPopupMenuButtonWidgetState
               height: size.height,
             );
 
-            BlocProvider.of<ApiBloc>(context)
-                .add(Reload(requestType: RequestType.RELOAD));
+            // BlocProvider.of<ApiBloc>(context)
+            //     .add(Reload(requestType: RequestType.RELOAD));
           }
         }
       }
@@ -131,8 +133,8 @@ class CoPopupMenuButtonWidgetState
     TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton =
-          PressButton(SoAction(componentId: value, label: null), this.appState.clientId);
+      PressButton pressButton = PressButton(
+          SoAction(componentId: value, label: null), this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
   }
@@ -190,7 +192,9 @@ class CoPopupMenuButtonWidgetState
     ColorScheme colorScheme = theme.colorScheme;
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
-        style: TextStyle(fontSize: style.fontSize, color: Theme.of(context).primaryTextTheme.bodyText1.color));
+        style: TextStyle(
+            fontSize: style.fontSize,
+            color: Theme.of(context).primaryTextTheme.bodyText1.color));
 
     if (text?.isNotEmpty ?? true) {
       if (icon != null) {
