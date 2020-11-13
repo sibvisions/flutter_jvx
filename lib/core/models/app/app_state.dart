@@ -36,6 +36,7 @@ class AppState {
   IScreenManager screenManager;
   int menuCurrentPageIndex;
   bool package;
+  String currentScreenComponentId;
 
   AppState();
 

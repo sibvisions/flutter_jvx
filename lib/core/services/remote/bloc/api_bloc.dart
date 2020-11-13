@@ -311,6 +311,10 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> openScreen(OpenScreen event) async* {
     Response response = await processRequest(event);
 
+    if (!response.hasError) {
+      this.appState.currentScreenComponentId = event.action.componentId; 
+    }
+    
     yield response;
   }
 
