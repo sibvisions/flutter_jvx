@@ -26,7 +26,7 @@ abstract class IScreenManager {
   void onUserData(UserData userData);
 
   /// Used to register a screen for the Screen Manager
-  void registerScreen(String name, IScreen screen);
+  void registerScreen(IScreen screen);
 
   /// Method for finding a regsitered Screen
   IScreen findScreen(String name);

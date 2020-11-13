@@ -24,8 +24,8 @@ class ScreenManager extends IScreenManager {
   onUserData(UserData userData) {}
 
   @override
-  void registerScreen(String name, IScreen screen) {
-    _screens.addAll({name: screen});
+  void registerScreen(IScreen screen) {
+    _screens.addAll({screen.componentId: screen});
   }
 
   @override
