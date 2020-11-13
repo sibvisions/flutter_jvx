@@ -24,11 +24,9 @@ class ApplicationApi {
   addListener(void Function(Response response) onState) {
     if (!listeners.contains(onState)) {
       listeners.add(onState);
-      state(
-          onListen: (StreamSubscription<Response> response) =>
-              response.onData((data) {
-                onState(data);
-              }));
+      state.listen((response) {
+        onState(response);
+      });
     }
   }
 
@@ -78,10 +76,7 @@ class ApplicationApi {
     }
   }
 
-  Response state(
-      {void Function(StreamSubscription<Response>) onListen,
-      void Function(StreamSubscription<Response>) onCancel}) {
-    BlocProvider.of<ApiBloc>(_context)
-        .asBroadcastStream(onListen: onListen, onCancel: onCancel);
+  Stream<Response> get state {
+    return BlocProvider.of<ApiBloc>(_context).cast<Response>();
   }
 }
