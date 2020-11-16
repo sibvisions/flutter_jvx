@@ -53,8 +53,11 @@ class RestClient {
 
     if (response == null || (response as http.Response).statusCode != 200) {
       finalResponse = Response()
-        ..error =
-            ErrorResponse('Error', response != null ? this.utf8convert(response.body) : '', 'An Error occured', 'message.error');
+        ..error = ErrorResponse(
+            'Error',
+            response != null ? this.utf8convert(response.body) : '',
+            'An Error occured',
+            'message.error');
     } else {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
@@ -195,11 +198,13 @@ class RestClient {
   }
 
   updateCookie(http.Response response) {
-    String rawCookie = response.headers['set-cookie'];
-    if (rawCookie != null) {
-      int index = rawCookie.indexOf(';');
-      headers['cookie'] =
-          (index == -1) ? rawCookie : rawCookie.substring(0, index);
+    if (response != null) {
+      String rawCookie = response.headers['set-cookie'];
+      if (rawCookie != null) {
+        int index = rawCookie.indexOf(';');
+        headers['cookie'] =
+            (index == -1) ? rawCookie : rawCookie.substring(0, index);
+      }
     }
   }
 }
