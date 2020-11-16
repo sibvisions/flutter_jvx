@@ -177,7 +177,9 @@ class CoDateCellEditorWidgetState
                     : Border.all(color: Colors.grey))
                 : null),
         child: FlatButton(
+          padding: EdgeInsets.fromLTRB(10, 8, 10, 10),
             child: Row(
+              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(

@@ -111,13 +111,6 @@ class MobileApp extends StatelessWidget {
                         manager: manager,
                       ));
               break;
-            case '/startup':
-              return MaterialPageRoute(
-                builder: (_) => StartupPage(
-                  shouldLoadConfig: this.shouldLoadConfig,
-                  config: this.config,
-                ),
-              );
             case '/':
               return MaterialPageRoute(
                 builder: (_) => StartupPage(
@@ -128,6 +121,14 @@ class MobileApp extends StatelessWidget {
           }
 
           return null;
+        },
+        onUnknownRoute: (RouteSettings settings) {
+          return MaterialPageRoute(
+            builder: (_) => StartupPage(
+              shouldLoadConfig: this.shouldLoadConfig,
+              config: this.config,
+            ),
+          );
         },
         localizationsDelegates: [
           const AppLocalizationsDelegate(),
@@ -140,7 +141,7 @@ class MobileApp extends StatelessWidget {
         theme: this.themeData,
         debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
-        initialRoute: '/startup',
+        initialRoute: '/',
       ),
     );
   }

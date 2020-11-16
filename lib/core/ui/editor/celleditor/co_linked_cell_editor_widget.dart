@@ -43,7 +43,7 @@ class CoLinkedCellEditorWidgetState
       this.value = pValue;
     if (this.linkReference != null &&
         this.linkReference.columnNames.length == 1)
-      this.onValueChanged(this.value);
+      this.onValueChanged(this.value, pValue[0]);
     else
       this.onValueChanged(pValue);
   }
@@ -127,7 +127,9 @@ class CoLinkedCellEditorWidgetState
   Widget build(BuildContext context) {
     setEditorProperties(context);
 
-    this.data.getData(context, -1);
+    if (this.data.data == null) {
+      this.data.getData(context, -1);
+    }
 
     String h = this.value == null ? null : this.value.toString();
     String v = this.value == null ? null : this.value.toString();
