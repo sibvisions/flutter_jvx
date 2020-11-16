@@ -52,10 +52,9 @@ class RestClient {
     }
 
     if (response == null || (response as http.Response).statusCode != 200) {
-      String body = this.utf8convert(response.body);
       finalResponse = Response()
         ..error =
-            ErrorResponse('Error', body, 'An Error occured', 'message.error');
+            ErrorResponse('Error', response != null ? this.utf8convert(response.body) : '', 'An Error occured', 'message.error');
     } else {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
