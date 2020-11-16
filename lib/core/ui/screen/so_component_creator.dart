@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/component/co_toggle_button_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/api/component/changed_component.dart';
@@ -128,7 +129,10 @@ class SoComponentCreator implements IComponentCreator {
     'PopupMenuButton': (ComponentModel componentModel) =>
         CoPopupMenuButtonWidget(
           componentModel: componentModel,
-        )
+        ),
+    'ToggleButton': (ComponentModel componentModel) => CoToggleButtonWidget(
+      componentModel: componentModel,
+    )
   };
 
   Map<

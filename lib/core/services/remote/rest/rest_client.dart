@@ -62,6 +62,8 @@ class RestClient {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
 
+      print(body);
+
       try {
         if (decodedBody is List) {
           finalResponse = Response.fromJson(decodedBody);
