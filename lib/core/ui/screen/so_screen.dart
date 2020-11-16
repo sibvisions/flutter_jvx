@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response.dart';
-import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_component_creator.dart';
 
-import '../../models/api/request.dart';
-import '../../models/api/response/response_data.dart';
+import '../../models/api/response.dart';
+import 'component_screen_widget.dart';
 import 'i_screen.dart';
+import 'so_component_creator.dart';
 
 class SoScreen extends StatelessWidget implements IScreen {
   final String componentId;

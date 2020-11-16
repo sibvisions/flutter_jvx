@@ -175,7 +175,8 @@ class CoEditorWidgetState<T extends StatefulWidget>
   }
 
   void onServerDataChanged() {
-    this.cellEditor?.value = _data.getColumnData(context, columnName);
+    if (context != null)
+      this.cellEditor?.value = _data.getColumnData(context, columnName);
   }
 
   @override
