@@ -44,6 +44,8 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     textStyle = changedComponent.getProperty<String>(
         ComponentProperty.STYLE, textStyle);
 
+    _selected = changedComponent.getProperty<bool>(ComponentProperty.SELECTED);
+
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
       if (checkFontAwesome(image)) {
