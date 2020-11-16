@@ -70,6 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
         orElse: () => null);
     if (item != null) return (item.text as Text).data;
 
+    widget.appState.picSize = this.imageSizeItems[0].value;
     return (this.imageSizeItems[0].text as Text).data;
   }
 
@@ -82,6 +83,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.appState.language == null || widget.appState.language.isEmpty) {
+      widget.appState.language = 'en';
+    }
+
     loadVersion();
   }
 
@@ -176,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     subtitle: Text(widget.appState.language != null
                         ? widget.appState.language
-                        : 'en'),
+                        : ''),
                     onTap: () {
                       showLanguagePicker(context);
                     },

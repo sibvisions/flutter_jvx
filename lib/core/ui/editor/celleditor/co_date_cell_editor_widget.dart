@@ -25,14 +25,24 @@ class CoDateCellEditorWidgetState
   dynamic toUpdate;
 
   get isTimeFormat {
-    return (widget.cellEditorModel as DateCellEditorModel).dateFormat.contains("H") ||
-        (widget.cellEditorModel as DateCellEditorModel).dateFormat.contains("m");
+    return (widget.cellEditorModel as DateCellEditorModel)
+            .dateFormat
+            .contains("H") ||
+        (widget.cellEditorModel as DateCellEditorModel)
+            .dateFormat
+            .contains("m");
   }
 
   get isDateFormat {
-    return (widget.cellEditorModel as DateCellEditorModel).dateFormat.contains("d") ||
-        (widget.cellEditorModel as DateCellEditorModel).dateFormat.contains("M") ||
-        (widget.cellEditorModel as DateCellEditorModel).dateFormat.contains("y");
+    return (widget.cellEditorModel as DateCellEditorModel)
+            .dateFormat
+            .contains("d") ||
+        (widget.cellEditorModel as DateCellEditorModel)
+            .dateFormat
+            .contains("M") ||
+        (widget.cellEditorModel as DateCellEditorModel)
+            .dateFormat
+            .contains("y");
   }
 
   void onDateValueChanged(dynamic value) {
@@ -78,6 +88,24 @@ class CoDateCellEditorWidgetState
         date.year, date.month, date.day, time.hour, time.minute, 0, 0, 0);
 
     this.toUpdate = date.millisecondsSinceEpoch;
+  }
+
+  _getTimePopUp(BuildContext context) {
+    TextUtils.unfocusCurrentTextfield(context);
+
+    return showTimePicker(
+            context: context,
+            initialTime: (this.value != null && this.value is int)
+                ? TimeOfDay.fromDateTime(
+                    DateTime.fromMillisecondsSinceEpoch(this.value))
+                : TimeOfDay.fromDateTime(
+                    DateTime.now().subtract(Duration(seconds: 1))))
+        .then((time) {
+      if (time != null) {
+        this.setTimePart(time);
+        this.onDateValueChanged(this.toUpdate);
+      }
+    });
   }
 
   _getDateTimePopUp(BuildContext context) {
@@ -139,8 +167,10 @@ class CoDateCellEditorWidgetState
                 ? background
                 : Colors.white.withOpacity(
                     this.appState.applicationStyle?.controlsOpacity ?? 1.0),
-            borderRadius: this.appState.applicationStyle != null ? BorderRadius.circular(
-                this.appState.applicationStyle?.cornerRadiusEditors) : null,
+            borderRadius: this.appState.applicationStyle != null
+                ? BorderRadius.circular(
+                    this.appState.applicationStyle?.cornerRadiusEditors)
+                : null,
             border: borderVisible
                 ? (this.editable != null && this.editable
                     ? Border.all(color: Theme.of(context).primaryColor)
@@ -157,7 +187,9 @@ class CoDateCellEditorWidgetState
                       (this.value != null &&
                               (this.value is int ||
                                   int.tryParse(this.value) != null))
-                          ? DateFormat((widget.cellEditorModel as DateCellEditorModel).dateFormat)
+                          ? DateFormat((widget.cellEditorModel
+                                      as DateCellEditorModel)
+                                  .dateFormat)
                               .format(DateTime.fromMillisecondsSinceEpoch(
                                   this.value is String
                                       ? int.parse(this.value)
@@ -203,7 +235,7 @@ class CoDateCellEditorWidgetState
                 )
               ],
             ),
-            onPressed: () => _getDateTimePopUp(context)),
+            onPressed: () => isTimeFormat && !isDateFormat ? _getTimePopUp(context) : _getDateTimePopUp(context)),
       );
     } else {
       // Pref Editor Mode
@@ -212,7 +244,7 @@ class CoDateCellEditorWidgetState
 
       if (this.editable && this.preferredEditorMode == 0) {
         return GestureDetector(
-          onTap: () => _getDateTimePopUp(context),
+          onTap: () => isTimeFormat && !isDateFormat ? _getTimePopUp(context) : _getDateTimePopUp(context),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -223,8 +255,10 @@ class CoDateCellEditorWidgetState
                     (this.value != null &&
                             (this.value is int ||
                                 int.tryParse(this.value) != null))
-                        ? DateFormat((widget.cellEditorModel as DateCellEditorModel).dateFormat).format(
-                            DateTime.fromMillisecondsSinceEpoch(
+                        ? DateFormat(
+                                (widget.cellEditorModel as DateCellEditorModel)
+                                    .dateFormat)
+                            .format(DateTime.fromMillisecondsSinceEpoch(
                                 this.value is String
                                     ? int.parse(this.value)
                                     : this.value))
@@ -280,7 +314,8 @@ class CoDateCellEditorWidgetState
         }
 
         String text = (this.value != null && this.value is int)
-            ? DateFormat((widget.cellEditorModel as DateCellEditorModel).dateFormat)
+            ? DateFormat(
+                    (widget.cellEditorModel as DateCellEditorModel).dateFormat)
                 .format(DateTime.fromMillisecondsSinceEpoch(this.value))
             : '';
 
