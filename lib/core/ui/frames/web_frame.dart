@@ -161,8 +161,8 @@ class _WebFrameState extends State<WebFrame> {
                                               null)
                                       ? Image.asset(
                                           appState.package
-                                              ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg'
-                                              : 'assets/images/sib_visions.jpg',
+                                              ? 'packages/jvx_flutterclient/assets/images/sibvisions.jpg'
+                                              : 'assets/images/sibvisions.jpg',
                                           fit: BoxFit.contain)
                                       : Image.memory(
                                           base64Decode(this.appState.files[this
