@@ -35,9 +35,9 @@ class MobileApp extends StatelessWidget {
       child: MaterialApp(
         onGenerateRoute: (RouteSettings settings) {
           List<String> params = settings.name.replaceAll('/?', '').split('&');
-          SharedPreferencesManager manager = SharedPrefProvider.of(context).manager;
+          SharedPreferencesManager manager =
+              SharedPrefProvider.of(context).manager;
           AppState appState = AppStateProvider.of(context).appState;
-
 
           if (params.length > 0) {
             for (final param in params) {
@@ -59,9 +59,14 @@ class MobileApp extends StatelessWidget {
               }
             }
 
-            manager.setAppData(appName: appState.appName, baseUrl: appState.baseUrl, language: appState.language, picSize: appState.picSize);
+            manager.setAppData(
+                appName: appState.appName,
+                baseUrl: appState.baseUrl,
+                language: appState.language,
+                picSize: appState.picSize);
 
-            manager.setLoginData(username: appState.username, password: appState.password);
+            manager.setLoginData(
+                username: appState.username, password: appState.password);
 
             if (appState.mobileOnly != null) {
               manager.setMobileOnly(appState.mobileOnly);
@@ -82,33 +87,38 @@ class MobileApp extends StatelessWidget {
               break;
             case '/screen':
               ScreenArguments arguments = settings.arguments;
-              
+
               return MaterialPageRoute(
-                builder: (_) => OpenScreenPage(
-                  items: arguments.items,
-                  menuComponentId: arguments.menuComponentId,
-                  response: arguments.response,
-                  templateName: arguments.templateName,
-                  title: arguments.title, 
-                )
-              );
+                  builder: (_) => OpenScreenPage(
+                        items: arguments.items,
+                        menuComponentId: arguments.menuComponentId,
+                        response: arguments.response,
+                        templateName: arguments.templateName,
+                        title: arguments.title,
+                      ));
               break;
             case '/login':
               return MaterialPageRoute(
-                builder: (_) => LoginPage(
-                  lastUsername: (settings.arguments as LoginArguments).lastUsername,
-                )
-              );
+                  builder: (_) => LoginPage(
+                        lastUsername:
+                            (settings.arguments as LoginArguments).lastUsername,
+                      ));
               break;
             case '/settings':
               return MaterialPageRoute(
-                builder: (_) => SettingsPage(
-                  appState: appState,
-                  manager: manager,
-                ) 
-              );
+                  builder: (_) => SettingsPage(
+                        appState: appState,
+                        manager: manager,
+                      ));
               break;
             case '/startup':
+              return MaterialPageRoute(
+                builder: (_) => StartupPage(
+                  shouldLoadConfig: this.shouldLoadConfig,
+                  config: this.config,
+                ),
+              );
+            case '/':
               return MaterialPageRoute(
                 builder: (_) => StartupPage(
                   shouldLoadConfig: this.shouldLoadConfig,
