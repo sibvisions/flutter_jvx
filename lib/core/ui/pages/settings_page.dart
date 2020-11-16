@@ -70,7 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
         orElse: () => null);
     if (item != null) return (item.text as Text).data;
 
-    return "";
+    return (this.imageSizeItems[0].text as Text).data;
   }
 
   int get imageSizeIndex {
@@ -176,7 +176,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     subtitle: Text(widget.appState.language != null
                         ? widget.appState.language
-                        : ''),
+                        : 'en'),
                     onTap: () {
                       showLanguagePicker(context);
                     },
