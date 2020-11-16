@@ -35,8 +35,8 @@ class LoginBackground extends StatelessWidget {
                         this.appState.applicationStyle?.loginLogo == null)
                     ? Image.asset(
                         appState.package
-                            ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg'
-                            : 'assets/images/sib_visions.jpg',
+                            ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
+                            : 'assets/images/sibvisions.png',
                         fit: BoxFit.fitHeight)
                     : !kIsWeb
                         ? Image.file(
