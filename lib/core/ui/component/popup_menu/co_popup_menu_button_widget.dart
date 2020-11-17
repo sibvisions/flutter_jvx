@@ -219,7 +219,6 @@ class CoPopupMenuButtonWidgetState
               child: RaisedButton(
             onPressed: () => this.enabled ? buttonPressed(context) : null,
             color: Theme.of(context).primaryColor,
-            elevation: 10,
             shape: this.appState.applicationStyle?.buttonShape,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Flexible(
