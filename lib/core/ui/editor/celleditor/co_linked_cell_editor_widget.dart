@@ -12,9 +12,10 @@ import 'co_referenced_cell_editor_widget.dart';
 import 'linked_cell_editor_model.dart';
 
 class CoLinkedCellEditorWidget extends CoReferencedCellEditorWidget {
+  final LinkedCellEditorModel cellEditorModel;
   CoLinkedCellEditorWidget({
     CellEditor changedCellEditor,
-    LinkedCellEditorModel cellEditorModel,
+    this.cellEditorModel,
   }) : super(
             changedCellEditor: changedCellEditor,
             cellEditorModel: cellEditorModel);
@@ -36,13 +37,13 @@ class CoLinkedCellEditorWidgetState
   }
 
   void onLazyDropDownValueChanged(dynamic pValue) {
-    DataBook data = this.data.getData(context, 0);
+    DataBook data = this.referencedData.getData(context, 0);
     if (pValue != null)
       this.value = pValue[this.getVisibleColumnIndex(data)[0]];
     else
       this.value = pValue;
-    if (this.linkReference != null &&
-        this.linkReference.columnNames.length == 1)
+    if (widget.cellEditorModel.linkReference != null &&
+        widget.cellEditorModel.linkReference.columnNames.length == 1)
       this.onValueChanged(this.value, pValue[0]);
     else
       this.onValueChanged(pValue);
@@ -52,13 +53,16 @@ class CoLinkedCellEditorWidgetState
     List<int> visibleColumnsIndex = <int>[];
     if (data != null && data.records.isNotEmpty) {
       data.columnNames.asMap().forEach((i, v) {
-        if (this.columnView != null && this.columnView.columnNames != null) {
-          if (this.columnView.columnNames.contains(v)) {
+        if (widget.cellEditorModel.columnView != null &&
+            widget.cellEditorModel.columnView.columnNames != null) {
+          if (widget.cellEditorModel.columnView.columnNames.contains(v)) {
             visibleColumnsIndex.add(i);
           }
-        } else if (this.linkReference != null &&
-            this.linkReference.referencedColumnNames != null &&
-            this.linkReference.referencedColumnNames.contains(v)) {
+        } else if (widget.cellEditorModel.linkReference != null &&
+            widget.cellEditorModel.linkReference.referencedColumnNames !=
+                null &&
+            widget.cellEditorModel.linkReference.referencedColumnNames
+                .contains(v)) {
           visibleColumnsIndex.add(i);
         }
       });
@@ -109,9 +113,9 @@ class CoLinkedCellEditorWidgetState
 
   void onScrollToEnd() {
     print("Scrolled to end");
-    DataBook _data = data.getData(context, pageSize);
+    DataBook _data = referencedData.getData(context, pageSize);
     if (_data != null && _data.records != null)
-      data.getData(context, this.pageSize + _data.records.length);
+      referencedData.getData(context, this.pageSize + _data.records.length);
   }
 
   void onFilterDropDown(dynamic value) {
@@ -127,8 +131,8 @@ class CoLinkedCellEditorWidgetState
   Widget build(BuildContext context) {
     setEditorProperties(context);
 
-    if (this.data.data == null) {
-      this.data.getData(context, -1);
+    if (this.referencedData.data == null) {
+      this.referencedData.getData(context, -1);
     }
 
     String h = this.value == null ? null : this.value.toString();
@@ -137,8 +141,9 @@ class CoLinkedCellEditorWidgetState
 
     if (false) {
       //(data != null && data.records.length < 20) {
-      data =
-          this.data.getData(this.context, (this.pageIndex + 1) * this.pageSize);
+      data = this
+          .referencedData
+          .getData(this.context, (this.pageIndex + 1) * this.pageSize);
       this._items = getItems(data);
       if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
         v = null;
@@ -174,11 +179,11 @@ class CoLinkedCellEditorWidgetState
 
       List<String> dropDownColumnNames;
 
-      if (this.columnView != null)
-        dropDownColumnNames = this.columnView.columnNames;
-      else if (this.data?.metaData != null)
-        dropDownColumnNames = this.data.metaData.tableColumnView ??
-            this.linkReference.referencedColumnNames;
+      if (widget.cellEditorModel.columnView != null)
+        dropDownColumnNames = widget.cellEditorModel.columnView.columnNames;
+      else if (this.referencedData?.metaData != null)
+        dropDownColumnNames = this.referencedData.metaData.tableColumnView ??
+            widget.cellEditorModel.linkReference.referencedColumnNames;
 
       return Container(
         height: 50,
@@ -215,10 +220,10 @@ class CoLinkedCellEditorWidgetState
               showDialog(
                   context: context,
                   builder: (context) => BlocProvider<ApiBloc>(
-                    create: (_) => sl<ApiBloc>(),
+                        create: (_) => sl<ApiBloc>(),
                         child: LazyDropdown(
                             editable: this.editable,
-                            data: this.data,
+                            data: this.referencedData,
                             context: context,
                             displayColumnNames: dropDownColumnNames,
                             fetchMoreYOffset:

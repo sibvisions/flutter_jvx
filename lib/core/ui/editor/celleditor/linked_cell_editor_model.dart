@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../utils/app/text_utils.dart';
-import '../../editor/celleditor/cell_editor_model.dart';
+import 'referenced_cell_editor_model.dart';
 
-class LinkedCellEditorModel extends CellEditorModel {
+class LinkedCellEditorModel extends ReferencedCellEditorModel {
   BuildContext context;
 
   LinkedCellEditorModel(this.context, CellEditor currentCellEditor)

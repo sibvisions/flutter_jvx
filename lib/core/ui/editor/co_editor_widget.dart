@@ -133,13 +133,15 @@ class CoEditorWidgetState<T extends StatefulWidget>
       data.setValues(
           context,
           (value is List) ? value : [value],
-          (this.cellEditor as CoReferencedCellEditorWidgetState)
+          (this.cellEditorWidget as CoReferencedCellEditorWidget)
+              .cellEditorModel
               .linkReference
               .columnNames);
 
       ComponentScreenWidget.of(context)
           .getComponentData(
-              (this.cellEditor as CoReferencedCellEditorWidgetState)
+              (this.cellEditorWidget as CoReferencedCellEditorWidget)
+                  .cellEditorModel
                   .linkReference
                   .dataProvider)
           .selectRecord(context, index);
