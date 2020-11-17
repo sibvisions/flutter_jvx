@@ -62,8 +62,6 @@ class RestClient {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
 
-      print(body);
-
       try {
         if (decodedBody is List) {
           finalResponse = Response.fromJson(decodedBody);
@@ -169,8 +167,6 @@ class RestClient {
             'server.error');
     } else {
       dynamic decodedBody = json.decode(response.body);
-
-      print(decodedBody.toString());
 
       try {
         if (decodedBody is List) {

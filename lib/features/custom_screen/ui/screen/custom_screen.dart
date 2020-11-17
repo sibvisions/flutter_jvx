@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
 
 import '../../../../core/models/api/response.dart';
 import '../../../../core/ui/screen/component_screen_widget.dart';
@@ -12,6 +13,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
   final String componentId;
   final String _templateName;
   final Response currentResponse = Response();
+  final CustomHeaderAndFooter customHeaderAndFooter = CustomHeaderAndFooter();
 
   CustomScreen(this.componentId, this._templateName);
 
@@ -34,13 +36,13 @@ class CustomScreen extends StatelessWidget implements IScreen {
     return ApplicationApi(context);
   }
 
-  // void setHeader(ComponentWidget headerComponent) {
-  //   componentScreen.setHeader(headerComponent);
-  // }
+  void setHeader(ComponentWidget headerComponent) {
+    customHeaderAndFooter.headerComponent = headerComponent;
+  }
 
-  // void setFooter(ComponentWidget footerComponent) {
-  //   componentScreen.setFooter(footerComponent);
-  // }
+  void setFooter(ComponentWidget footerComponent) {
+    customHeaderAndFooter.footerComponent = footerComponent;
+  }
 
   String getTemplateName() {
     return _templateName;
@@ -62,4 +64,11 @@ class CustomScreen extends StatelessWidget implements IScreen {
   set componentId(String _componentId) {
     
   }
+}
+
+class CustomHeaderAndFooter {
+  ComponentWidget headerComponent;
+  ComponentWidget footerComponent;
+
+  CustomHeaderAndFooter();
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
+import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
+import 'package:jvx_flutterclient/core/ui/layout/co_border_layout.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -36,9 +38,11 @@ class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
   final Response response;
   final bool closeCurrentScreen;
+  final ComponentWidget headerComponent;
+  final ComponentWidget footerComponent;
 
   const ComponentScreenWidget(
-      {Key key, this.componentCreator, this.response, this.closeCurrentScreen})
+      {Key key, this.componentCreator, this.response, this.closeCurrentScreen, this.headerComponent, this.footerComponent})
       : super(key: key);
 
   static ComponentScreenWidgetState of(BuildContext context) =>
@@ -369,28 +373,23 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             element.componentModel.coState == CoState.Added,
         orElse: () => null);
 
-    /*
     if (headerComponent != null || footerComponent != null) {
       ComponentWidget headerFooterPanel =
-          CoPanelWidget(componentModel: ComponentModel('headerFooterPanel'));
-      (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-              .layout =
-          CoBorderLayout.fromLayoutString(
-              headerFooterPanel, 'BorderLayout,0,0,0,0,0,0,', '');
+          CoPanelWidget(componentModel: ComponentModel(ChangedComponent(id: 'headerFooterPanel')));
+      (headerFooterPanel.componentModel as ContainerComponentModel).toUpdateLayout.add('BorderLayout,0,0,0,0,0,0,');
       if (headerComponent != null) {
-        (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-            .addWithConstraints(headerComponent, 'North');
+        headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
+        headerComponent.componentModel.constraints = 'North';
       }
-      (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-          .addWithConstraints(rootComponent, 'Center');
+      rootComponent.componentModel.parentComponentId = 'headerFooterPanel';
+      rootComponent.componentModel.constraints = 'Center';
       if (footerComponent != null) {
-        (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-            .addWithConstraints(footerComponent, 'South');
+        footerComponent.componentModel.parentComponentId = 'headerFooterPanel';
+        footerComponent.componentModel.constraints = 'South';
       }
 
       return headerFooterPanel;
     }
-    */
 
     return rootComponent;
   }
