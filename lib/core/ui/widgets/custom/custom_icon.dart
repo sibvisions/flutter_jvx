@@ -23,8 +23,10 @@ class CustomIcon extends StatelessWidget {
           return _iconBuilder(formatFontAwesomeText(image), context);
         }
       }
-
-      return getImage(image);
+      Image imgWidget = getImage(image);
+      if (imgWidget != null) {
+        return imgWidget;
+      }
     } else {
       return Container();
     }

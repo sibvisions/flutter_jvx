@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../../injection_container.dart';
@@ -21,8 +22,22 @@ class ImageLoaderWeb implements ImageLoader {
     if (appState.files.containsKey(path))
       return Image.memory(base64Decode(appState.files[path]),
           height: height, width: width);
-
-    return null;
+    else
+      return Image.network(
+        '${appState.baseUrl}$path',
+        height: height,
+        width: width,
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+              child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes
+                      : null));
+        },
+      );
   }
 }
 
