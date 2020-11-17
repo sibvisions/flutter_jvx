@@ -24,7 +24,7 @@ class ImageLoaderWeb implements ImageLoader {
           height: height, width: width);
     else
       return Image.network(
-        '${appState.baseUrl}$path',
+        '${appState.baseUrl}/resource/${appState.appName}$path',
         height: height,
         width: width,
         loadingBuilder: (BuildContext context, Widget child,
@@ -36,6 +36,10 @@ class ImageLoaderWeb implements ImageLoader {
                       ? loadingProgress.cumulativeBytesLoaded /
                           loadingProgress.expectedTotalBytes
                       : null));
+        },
+        errorBuilder:
+            (BuildContext context, Object exception, StackTrace stackTrace) {
+          return Text('Couldn\'t load image with given url');
         },
       );
   }
