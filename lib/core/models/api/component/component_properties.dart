@@ -1,4 +1,3 @@
-
 import 'properties.dart';
 
 /// ComponentProperty.SCREEN__TITLE_NEW = screen.titleNew

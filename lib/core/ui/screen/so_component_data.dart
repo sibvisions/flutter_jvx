@@ -242,8 +242,8 @@ class SoComponentData {
 
   void setValues(BuildContext context, List<dynamic> values,
       [List<dynamic> columnNames, Filter filter, bool isTextfield = false]) {
-    SetValues setValues =
-        SetValues(this.dataProvider, data?.columnNames, values, AppStateProvider.of(context).appState.clientId);
+    SetValues setValues = SetValues(this.dataProvider, data?.columnNames,
+        values, AppStateProvider.of(context).appState.clientId);
 
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {

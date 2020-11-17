@@ -64,7 +64,8 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
 
   void onTextFieldEndEditing() {
     if (this.valueChanged) {
-      SetComponentValue setComponentValue = SetComponentValue(this.name, text, this.appState.clientId);
+      SetComponentValue setComponentValue =
+          SetComponentValue(this.name, text, this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(setComponentValue);
       this.valueChanged = false;
     }

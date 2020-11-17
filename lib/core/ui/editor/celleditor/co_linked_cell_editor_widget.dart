@@ -215,7 +215,7 @@ class CoLinkedCellEditorWidgetState
               showDialog(
                   context: context,
                   builder: (context) => BlocProvider<ApiBloc>(
-                    create: (_) => sl<ApiBloc>(),
+                        create: (_) => sl<ApiBloc>(),
                         child: LazyDropdown(
                             editable: this.editable,
                             data: this.data,

@@ -417,7 +417,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   @override
   void initState() {
     if (widget.appState.appListener != null) {
-      widget.appState.appListener.fireAfterStartupListener(ApplicationApi(context));
+      widget.appState.appListener
+          .fireAfterStartupListener(ApplicationApi(context));
     }
 
     super.initState();

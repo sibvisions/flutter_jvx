@@ -7,10 +7,7 @@ class ApplicationMetaData extends ResponseObject {
   String version;
 
   ApplicationMetaData(
-      {this.langCode,
-      this.languageResource,
-      this.clientId,
-      this.version});
+      {this.langCode, this.languageResource, this.clientId, this.version});
 
   ApplicationMetaData.fromJson(Map<String, dynamic> json)
       : langCode = json['langCode'],

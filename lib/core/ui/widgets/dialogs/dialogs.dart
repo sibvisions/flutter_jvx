@@ -44,8 +44,7 @@ showError(BuildContext context, String title, String message) async {
             content: Text(message),
             actions: <Widget>[
               FlatButton(
-                child:
-                    Text(AppLocalizations.of(context).text('Close')),
+                child: Text(AppLocalizations.of(context).text('Close')),
                 onPressed: () => Navigator.of(context).pop(),
               )
             ],

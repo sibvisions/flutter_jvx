@@ -71,7 +71,8 @@ class CoPasswordFieldWidgetState extends ComponentWidgetState {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (this.valueChanged) {
-      SetComponentValue setComponentValue = SetComponentValue(this.name, text, this.appState.clientId);
+      SetComponentValue setComponentValue =
+          SetComponentValue(this.name, text, this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(setComponentValue);
       this.valueChanged = false;
     }

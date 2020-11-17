@@ -33,7 +33,8 @@ class CustomToggleButton extends StatelessWidget {
             child: SizedBox(
                 height: 50,
                 child: RaisedButton(
-                  onPressed: this.enabled != null && this.enabled ? onPressed : null,
+                  onPressed:
+                      this.enabled != null && this.enabled ? onPressed : null,
                   color: this.background != null
                       ? this.background
                       : Theme.of(context).primaryColor,

@@ -229,8 +229,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
                               fontSize: 14.0, color: Colors.black),
                           decoration: new InputDecoration(
                               hintStyle: TextStyle(color: Colors.green),
-                              labelText: AppLocalizations.of(context)
-                                  .text("Search"),
+                              labelText:
+                                  AppLocalizations.of(context).text("Search"),
                               labelStyle: TextStyle(
                                   fontSize: 14.0, fontWeight: FontWeight.w600)),
                         ))),

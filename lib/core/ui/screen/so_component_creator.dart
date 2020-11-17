@@ -131,8 +131,8 @@ class SoComponentCreator implements IComponentCreator {
           componentModel: componentModel,
         ),
     'ToggleButton': (ComponentModel componentModel) => CoToggleButtonWidget(
-      componentModel: componentModel,
-    )
+          componentModel: componentModel,
+        )
   };
 
   Map<

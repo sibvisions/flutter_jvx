@@ -120,8 +120,10 @@ class CoNumberCellEditorWidgetState
       decoration: BoxDecoration(
           color: this.background != null
               ? this.background
-              : this.appState.applicationStyle != null ? Colors.white
-                  .withOpacity(this.appState.applicationStyle?.controlsOpacity) : null,
+              : this.appState.applicationStyle != null
+                  ? Colors.white.withOpacity(
+                      this.appState.applicationStyle?.controlsOpacity)
+                  : null,
           borderRadius: BorderRadius.circular(
               this.appState.applicationStyle?.cornerRadiusEditors),
           border: borderVisible && this.editable != null && this.editable

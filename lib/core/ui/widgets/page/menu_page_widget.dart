@@ -217,9 +217,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
           builder: (_) => Theme(
                 data: Theme.of(context),
                 child: BlocProvider<ApiBloc>(
-                  create: (_) => sl<ApiBloc>(),
-                  child: widget.appState.appFrame.getWidget()
-                ),
+                    create: (_) => sl<ApiBloc>(),
+                    child: widget.appState.appFrame.getWidget()),
               )));
     } else {
       SoAction action =

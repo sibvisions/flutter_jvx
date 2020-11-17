@@ -98,8 +98,9 @@ class CoMultiLineCellEditorWidgetState
                   .withOpacity(this.appState.applicationStyle?.controlsOpacity),
           borderRadius: BorderRadius.circular(
               this.appState.applicationStyle?.cornerRadiusEditors),
-          border:
-              borderVisible ? Border.all(color: Theme.of(context).primaryColor) : null),
+          border: borderVisible
+              ? Border.all(color: Theme.of(context).primaryColor)
+              : null),
       child: ListView.builder(
         itemCount: _items.length,
         itemBuilder: (context, index) {

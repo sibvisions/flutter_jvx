@@ -107,8 +107,9 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton =
-          PressButton(SoAction(componentId: this.name, label: this.text), this.appState.clientId);
+      PressButton pressButton = PressButton(
+          SoAction(componentId: this.name, label: this.text),
+          this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
   }

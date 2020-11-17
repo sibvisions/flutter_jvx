@@ -7,6 +7,6 @@ class AuthenticationData extends ResponseObject {
   AuthenticationData({this.authKey, this.name});
 
   AuthenticationData.fromJson(Map<String, dynamic> json)
-    : authKey = json['authKey'],
-      name = json['name'];
+      : authKey = json['authKey'],
+        name = json['name'];
 }

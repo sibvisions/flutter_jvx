@@ -7,7 +7,8 @@ class GradientButton extends StatelessWidget {
   final String text;
   final AppState appState;
 
-  GradientButton({@required this.onPressed, @required this.text, this.appState});
+  GradientButton(
+      {@required this.onPressed, @required this.text, this.appState});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,10 @@ class GradientButton extends StatelessWidget {
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20)),
               gradient: LinearGradient(
-                colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor],
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor
+                ],
               )),
           child: Center(
             child: Text(

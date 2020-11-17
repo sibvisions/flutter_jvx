@@ -46,8 +46,12 @@ class Response {
   Response();
 
   static ErrorResponse checkForError(Map<String, dynamic> json) {
-    if (json != null && (json['title'] == 'Error' || json['title'] == 'Session Expired' || json['name'] == 'message.information')) {
-      return ErrorResponse(json['title'], json['details'], json['message'], json['name']);
+    if (json != null &&
+        (json['title'] == 'Error' ||
+            json['title'] == 'Session Expired' ||
+            json['name'] == 'message.information')) {
+      return ErrorResponse(
+          json['title'], json['details'], json['message'], json['name']);
     }
     return null;
   }
@@ -72,18 +76,22 @@ class Response {
             break;
           case ResponseObjectType.SCREEN_GENERIC:
             if (responseObject['changedComponents'] != null)
-              responseData.screenGeneric = ScreenGeneric.fromChangedComponentsJson(responseObject);
+              responseData.screenGeneric =
+                  ScreenGeneric.fromChangedComponentsJson(responseObject);
             else
-              responseData.screenGeneric = ScreenGeneric.fromUpdateComponentsJson(responseObject);
+              responseData.screenGeneric =
+                  ScreenGeneric.fromUpdateComponentsJson(responseObject);
             break;
           case ResponseObjectType.DAL_FETCH:
             responseData.dataBooks.add(DataBook.fromJson(responseObject));
             break;
           case ResponseObjectType.DAL_METADATA:
-            responseData.dataBookMetaData.add(DataBookMetaData.fromJson(responseObject));
+            responseData.dataBookMetaData
+                .add(DataBookMetaData.fromJson(responseObject));
             break;
           case ResponseObjectType.DAL_DATAPROVIDERCHANGED:
-            responseData.dataproviderChanged.add(DataproviderChanged.fromJson(responseObject));
+            responseData.dataproviderChanged
+                .add(DataproviderChanged.fromJson(responseObject));
             break;
           case ResponseObjectType.LOGIN:
             loginItem = LoginItem.fromJson(responseObject);
@@ -110,7 +118,8 @@ class Response {
             showDocument = ShowDocument.fromJson(responseObject);
             break;
           case ResponseObjectType.DEVICESTATUS:
-            deviceStatusResponse = DeviceStatusResponse.fromJson(responseObject);
+            deviceStatusResponse =
+                DeviceStatusResponse.fromJson(responseObject);
             break;
           case ResponseObjectType.RESTART:
             restart = Restart.fromJson(responseObject);
@@ -119,7 +128,8 @@ class Response {
             error = ErrorResponse.fromJson(responseObject);
             break;
           case ResponseObjectType.APPLICATION_STYLE:
-            applicationStyle = ApplicationStyleResponse.fromJson(responseObject);
+            applicationStyle =
+                ApplicationStyleResponse.fromJson(responseObject);
             break;
         }
       });

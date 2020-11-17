@@ -27,7 +27,13 @@ class CustomApplicationWidget extends StatelessWidget {
   /// The AppListener to react to certain events during app usage
   final AppListener appListener;
 
-  const CustomApplicationWidget({Key key, this.screenManager, this.config, this.handleSessionTimeout, this.appListener}) : super(key: key);
+  const CustomApplicationWidget(
+      {Key key,
+      this.screenManager,
+      this.config,
+      this.handleSessionTimeout,
+      this.appListener})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

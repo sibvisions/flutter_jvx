@@ -19,7 +19,8 @@ Future<bool> shouldDownload(AppState appState) async {
     _baseDirectory = (await getApplicationDocumentsDirectory()).path;
   }
 
-  Directory dir = Directory(getLocalFilePath(appState.baseUrl, _baseDirectory, appState.appName, appState.appVersion));
+  Directory dir = Directory(getLocalFilePath(
+      appState.baseUrl, _baseDirectory, appState.appName, appState.appVersion));
 
   if (dir.existsSync()) {
     return false;

@@ -42,7 +42,12 @@ class ComponentScreenWidget extends StatefulWidget {
   final ComponentWidget footerComponent;
 
   const ComponentScreenWidget(
-      {Key key, this.componentCreator, this.response, this.closeCurrentScreen, this.headerComponent, this.footerComponent})
+      {Key key,
+      this.componentCreator,
+      this.response,
+      this.closeCurrentScreen,
+      this.headerComponent,
+      this.footerComponent})
       : super(key: key);
 
   static ComponentScreenWidgetState of(BuildContext context) =>
@@ -80,8 +85,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (request != null && responseData != null)
       this.updateData(request, responseData);
     if (responseData.screenGeneric != null) {
-      this.updateComponents(
-          responseData.screenGeneric.changedComponents);
+      this.updateComponents(responseData.screenGeneric.changedComponents);
       rootComponent = this.getRootComponent();
     }
 
@@ -374,9 +378,12 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         orElse: () => null);
 
     if (headerComponent != null || footerComponent != null) {
-      ComponentWidget headerFooterPanel =
-          CoPanelWidget(componentModel: ComponentModel(ChangedComponent(id: 'headerFooterPanel')));
-      (headerFooterPanel.componentModel as ContainerComponentModel).toUpdateLayout.add('BorderLayout,0,0,0,0,0,0,');
+      ComponentWidget headerFooterPanel = CoPanelWidget(
+          componentModel:
+              ComponentModel(ChangedComponent(id: 'headerFooterPanel')));
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .toUpdateLayout
+          .add('BorderLayout,0,0,0,0,0,0,');
       if (headerComponent != null) {
         headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
         headerComponent.componentModel.constraints = 'North';

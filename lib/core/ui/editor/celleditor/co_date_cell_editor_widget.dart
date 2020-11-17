@@ -177,7 +177,7 @@ class CoDateCellEditorWidgetState
                     : Border.all(color: Colors.grey))
                 : null),
         child: FlatButton(
-          padding: EdgeInsets.fromLTRB(10, 8, 10, 10),
+            padding: EdgeInsets.fromLTRB(10, 8, 10, 10),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +237,9 @@ class CoDateCellEditorWidgetState
                 )
               ],
             ),
-            onPressed: () => isTimeFormat && !isDateFormat ? _getTimePopUp(context) : _getDateTimePopUp(context)),
+            onPressed: () => isTimeFormat && !isDateFormat
+                ? _getTimePopUp(context)
+                : _getDateTimePopUp(context)),
       );
     } else {
       // Pref Editor Mode
@@ -246,7 +248,9 @@ class CoDateCellEditorWidgetState
 
       if (this.editable && this.preferredEditorMode == 0) {
         return GestureDetector(
-          onTap: () => isTimeFormat && !isDateFormat ? _getTimePopUp(context) : _getDateTimePopUp(context),
+          onTap: () => isTimeFormat && !isDateFormat
+              ? _getTimePopUp(context)
+              : _getDateTimePopUp(context),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

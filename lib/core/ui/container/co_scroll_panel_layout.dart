@@ -117,8 +117,7 @@ class RenderScrollPanelLayout extends RenderBox
 
 class CoScrollPanelLayoutId
     extends ParentDataWidget<MultiChildLayoutParentData> {
-  CoScrollPanelLayoutId(
-      {Key key, this.constraints, @required Widget child})
+  CoScrollPanelLayoutId({Key key, this.constraints, @required Widget child})
       : assert(child != null),
         super(key: key ?? ValueKey<Object>(constraints), child: child);
 

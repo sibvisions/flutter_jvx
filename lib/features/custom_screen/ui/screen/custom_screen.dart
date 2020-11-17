@@ -61,9 +61,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
   }
 
   @override
-  set componentId(String _componentId) {
-    
-  }
+  set componentId(String _componentId) {}
 }
 
 class CustomHeaderAndFooter {

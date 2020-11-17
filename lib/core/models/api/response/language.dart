@@ -7,7 +7,7 @@ class Language extends ResponseObject {
   Language({this.langCode, this.languageResource});
 
   Language.fromJson(Map<String, dynamic> json)
-    : langCode = json['langCode'],
-      languageResource = json['languageResource'],
-      super.fromJson(json);
+      : langCode = json['langCode'],
+        languageResource = json['languageResource'],
+        super.fromJson(json);
 }

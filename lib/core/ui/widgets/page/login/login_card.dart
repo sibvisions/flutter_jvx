@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +71,8 @@ class _LoginCardState extends State<LoginCard>
                       style: new TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: new InputDecoration(
                           hintStyle: TextStyle(color: Colors.green),
-                          labelText: AppLocalizations.of(context)
-                              .text("Username:"),
+                          labelText:
+                              AppLocalizations.of(context).text("Username:"),
                           labelStyle: TextStyle(
                               fontSize: 14.0, fontWeight: FontWeight.w600)),
                     )),
@@ -87,8 +86,8 @@ class _LoginCardState extends State<LoginCard>
                       onChanged: (password) => this.password = password,
                       style: new TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: new InputDecoration(
-                          labelText: AppLocalizations.of(context)
-                              .text('Password:'),
+                          labelText:
+                              AppLocalizations.of(context).text('Password:'),
                           labelStyle: TextStyle(
                               fontSize: 14.0, fontWeight: FontWeight.w600)),
                       obscureText: true,
@@ -117,8 +116,7 @@ class _LoginCardState extends State<LoginCard>
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         child: Text(
-                          AppLocalizations.of(context)
-                              .text('Remember me?'),
+                          AppLocalizations.of(context).text('Remember me?'),
                           style: Theme.of(context).textTheme.body2,
                         )),
                   ],
@@ -130,7 +128,7 @@ class _LoginCardState extends State<LoginCard>
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: Container(
                         child: new GradientButton(
-                          appState: widget.appState,
+                            appState: widget.appState,
                             onPressed: () {
                               TextUtils.unfocusCurrentTextfield(context);
                               _login(context);
@@ -150,8 +148,8 @@ class _LoginCardState extends State<LoginCard>
                               Navigator.of(context).pushNamed('/settings');
                             });
                           },
-                          label: Text(AppLocalizations.of(context)
-                              .text('Settings')),
+                          label: Text(
+                              AppLocalizations.of(context).text('Settings')),
                           icon: FaIcon(
                             FontAwesomeIcons.cog,
                             color: Theme.of(context).primaryColor,

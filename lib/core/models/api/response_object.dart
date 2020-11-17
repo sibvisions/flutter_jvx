@@ -35,6 +35,6 @@ abstract class ResponseObject {
   ResponseObject({this.name});
 
   ResponseObject.fromJson(Map<String, dynamic> json)
-    : name = json['name'],
-      componentId = json['componentId']; 
+      : name = json['name'],
+        componentId = json['componentId'];
 }

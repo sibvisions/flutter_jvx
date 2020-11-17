@@ -312,9 +312,9 @@ class ApiBloc extends Bloc<Request, Response> {
     Response response = await processRequest(event);
 
     if (!response.hasError) {
-      this.appState.currentScreenComponentId = event.action.componentId; 
+      this.appState.currentScreenComponentId = event.action.componentId;
     }
-    
+
     yield response;
   }
 

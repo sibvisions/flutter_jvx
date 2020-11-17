@@ -7,7 +7,7 @@ class DownloadAction extends ResponseObject {
   DownloadAction({this.fileId});
 
   DownloadAction.fromJson(Map<String, dynamic> json)
-    : fileId = json['fileId'],
-      fileName = json['fileName'],
-      super.fromJson(json);
+      : fileId = json['fileId'],
+        fileName = json['fileName'],
+        super.fromJson(json);
 }

@@ -57,7 +57,8 @@ class ApplicationStyleResponse extends ResponseObject {
 
   ApplicationStyleResponse();
 
-  ApplicationStyleResponse.fromJson(Map<String, dynamic> jsonMap) : super.fromJson(jsonMap) {
+  ApplicationStyleResponse.fromJson(Map<String, dynamic> jsonMap)
+      : super.fromJson(jsonMap) {
     loginTitle = jsonMap['login.title'];
     loginInfotext = jsonMap['login.infotext'];
     loginIcon = jsonMap['login.icon'];

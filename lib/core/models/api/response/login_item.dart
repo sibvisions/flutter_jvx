@@ -7,7 +7,7 @@ class LoginItem extends ResponseObject {
   LoginItem({this.componentId, this.username});
 
   LoginItem.fromJson(Map<String, dynamic> json)
-    : componentId = json['componentId'],
-      username = json['username'],
-      super.fromJson(json);
+      : componentId = json['componentId'],
+        username = json['username'],
+        super.fromJson(json);
 }

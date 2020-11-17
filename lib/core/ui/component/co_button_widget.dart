@@ -44,7 +44,8 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
       if (checkFontAwesome(image)) {
-        icon = convertFontAwesomeTextToIcon(image, sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
+        icon = convertFontAwesomeTextToIcon(image,
+            sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
       } else {
         List strinArr = List<String>.from(image.split(','));
         if (kIsWeb) {
@@ -97,8 +98,9 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton =
-          PressButton(SoAction(componentId: this.name, label: this.text), this.appState.clientId);
+      PressButton pressButton = PressButton(
+          SoAction(componentId: this.name, label: this.text),
+          this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
   }

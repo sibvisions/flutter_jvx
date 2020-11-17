@@ -33,7 +33,8 @@ class CoCheckBoxWidgetState extends ComponentWidgetState<CoCheckBoxWidget> {
   }
 
   void valueChanged(dynamic value) {
-    SetComponentValue setComponentValue = SetComponentValue(this.name, value, this.appState.clientId);
+    SetComponentValue setComponentValue =
+        SetComponentValue(this.name, value, this.appState.clientId);
     BlocProvider.of<ApiBloc>(context).add(setComponentValue);
   }
 

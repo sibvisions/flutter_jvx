@@ -5,8 +5,7 @@ abstract class IScreen {
   String componentId;
 
   /// Constructor for returning the default Implementation of this interface.
-  factory IScreen() =>
-      SoScreen();
+  factory IScreen() => SoScreen();
 
   /// Gets called when new components, metaData or data is comming from the server.
   void update(Response response);

@@ -59,7 +59,10 @@ class CommonScaffold extends StatelessWidget {
         child: Ink(
           height: 50.0,
           decoration: new BoxDecoration(
-              gradient: new LinearGradient(colors: [sl<ThemeManager>().themeData.primaryColor, sl<ThemeManager>().themeData.primaryColor])),
+              gradient: new LinearGradient(colors: [
+            sl<ThemeManager>().themeData.primaryColor,
+            sl<ThemeManager>().themeData.primaryColor
+          ])),
           child: new Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,

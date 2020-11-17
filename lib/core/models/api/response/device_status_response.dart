@@ -5,7 +5,8 @@ class DeviceStatusResponse extends ResponseObject {
 
   DeviceStatusResponse({this.layoutMode});
 
-  DeviceStatusResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  DeviceStatusResponse.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json) {
     layoutMode = json['layoutMode'];
   }
 }

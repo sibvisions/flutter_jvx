@@ -12,5 +12,7 @@ class ThemeManager extends ValueNotifier<ThemeData> {
 
   static ThemeData defaultTheme = ThemeData(fontFamily: 'Raleway');
 
-  ThemeManager([ThemeData initialTheme]) : _themeData = initialTheme ?? defaultTheme, super(defaultTheme);
+  ThemeManager([ThemeData initialTheme])
+      : _themeData = initialTheme ?? defaultTheme,
+        super(defaultTheme);
 }

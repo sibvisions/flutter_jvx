@@ -1,4 +1,6 @@
-String getLocalFilePath(String baseUrl, String baseDir, String appName, String appVersion, [bool translationPath = true]) {
+String getLocalFilePath(
+    String baseUrl, String baseDir, String appName, String appVersion,
+    [bool translationPath = true]) {
   String trimmedBaseUrl = baseUrl.split('/')[2];
 
   if (translationPath)

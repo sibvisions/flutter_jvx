@@ -34,7 +34,8 @@ class CoRadioButtonWidgetState
   }
 
   void valueChanged(dynamic value) {
-    SetComponentValue setComponentValue = SetComponentValue(this.name, true, this.appState.clientId);
+    SetComponentValue setComponentValue =
+        SetComponentValue(this.name, true, this.appState.clientId);
     BlocProvider.of<ApiBloc>(context).add(setComponentValue);
   }
 

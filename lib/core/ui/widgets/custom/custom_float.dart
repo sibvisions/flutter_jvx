@@ -19,7 +19,10 @@ class CustomFloat extends StatelessWidget {
       onPressed: qrCallback,
       child: Ink(
         decoration: new BoxDecoration(
-            gradient: new LinearGradient(colors: [sl<ThemeManager>().themeData.primaryColor, sl<ThemeManager>().themeData.primaryColor])),
+            gradient: new LinearGradient(colors: [
+          sl<ThemeManager>().themeData.primaryColor,
+          sl<ThemeManager>().themeData.primaryColor
+        ])),
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[

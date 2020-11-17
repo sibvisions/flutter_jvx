@@ -5,8 +5,7 @@ import 'package:http/http.dart';
 
 import 'http_client.dart';
 
-class BrowserClient implements HttpClient
-{
+class BrowserClient implements HttpClient {
   bc.BrowserClient client = bc.BrowserClient();
 
   @override
@@ -25,7 +24,7 @@ class BrowserClient implements HttpClient
     return client.get(url, headers: headers);
   }
 
-  void setWithCredentials(bool withCredentials){
+  void setWithCredentials(bool withCredentials) {
     client.withCredentials = withCredentials;
   }
 }

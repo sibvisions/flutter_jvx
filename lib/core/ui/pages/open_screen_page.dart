@@ -17,7 +17,14 @@ class OpenScreenPage extends StatelessWidget {
   final String templateName;
   final List<MenuItem> items;
 
-  const OpenScreenPage({Key key, this.title, this.response, this.menuComponentId, this.templateName, this.items}) : super(key: key);
+  const OpenScreenPage(
+      {Key key,
+      this.title,
+      this.response,
+      this.menuComponentId,
+      this.templateName,
+      this.items})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +35,12 @@ class OpenScreenPage extends StatelessWidget {
       child: BlocProvider<ApiBloc>(
         create: (_) => sl<ApiBloc>(),
         child: OpenScreenPageWidget(
-          title: this.title,
-          response: this.response,
-          menuComponentId: this.menuComponentId,
-          templateName: this.templateName,
-          items: this.items,
-          appState: appState
-        ),
+            title: this.title,
+            response: this.response,
+            menuComponentId: this.menuComponentId,
+            templateName: this.templateName,
+            items: this.items,
+            appState: appState),
       ),
     );
   }
