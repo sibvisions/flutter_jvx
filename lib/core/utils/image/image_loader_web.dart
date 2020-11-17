@@ -37,6 +37,10 @@ class ImageLoaderWeb implements ImageLoader {
                           loadingProgress.expectedTotalBytes
                       : null));
         },
+        errorBuilder:
+            (BuildContext context, Object exception, StackTrace stackTrace) {
+          return Text('Couldn\'t load image with given url');
+        },
       );
   }
 }
