@@ -24,7 +24,7 @@ class ImageLoaderWeb implements ImageLoader {
           height: height, width: width);
     else
       return Image.network(
-        '${appState.baseUrl}$path',
+        '${appState.baseUrl}/resource/${appState.appName}$path',
         height: height,
         width: width,
         loadingBuilder: (BuildContext context, Widget child,
