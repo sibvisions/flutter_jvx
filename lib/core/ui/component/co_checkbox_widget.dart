@@ -5,7 +5,7 @@ import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/request/set_component_value.dart';
 import '../../services/remote/bloc/api_bloc.dart';
-import '../layout/I_alignment_constants.dart';
+import '../layout/i_alignment_constants.dart';
 import 'component_model.dart';
 import 'component_widget.dart';
 
