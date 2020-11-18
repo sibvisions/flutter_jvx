@@ -11,10 +11,13 @@ import 'date_cell_editor_model.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
   CoDateCellEditorWidget(
-      {CellEditor changedCellEditor, DateCellEditorModel cellEditorModel})
+      {CellEditor changedCellEditor,
+      DateCellEditorModel cellEditorModel,
+      bool isTableView = false})
       : super(
             changedCellEditor: changedCellEditor,
-            cellEditorModel: cellEditorModel);
+            cellEditorModel: cellEditorModel,
+            isTableView: isTableView);
 
   @override
   State<StatefulWidget> createState() => CoDateCellEditorWidgetState();
@@ -158,7 +161,7 @@ class CoDateCellEditorWidgetState
   Widget build(BuildContext context) {
     setEditorProperties(context);
 
-    if (!this.isTableView) {
+    if (!widget.isTableView) {
       return Container(
         width: 100,
         height: 50,
