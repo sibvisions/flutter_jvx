@@ -219,12 +219,12 @@ class CoPopupMenuButtonWidgetState
                 onPressed: () => this.enabled ? buttonPressed(context) : null,
                 color: Theme.of(context).primaryColor,
                 shape: this.appState.applicationStyle?.buttonShape,
-                child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
                   Flexible(
-                      fit: FlexFit.loose, flex: 8, child: Center(child: child)),
+                      fit: FlexFit.loose, flex: 5, child: Center(child: child)),
                   Flexible(
                       fit: FlexFit.loose,
-                      flex: 2,
+                      flex: 5,
                       child: _getPopupMenu(colorScheme)),
                 ]),
                 splashColor: this.background,
