@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/referenced_cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/column_view.dart';
@@ -30,8 +31,14 @@ class CoReferencedCellEditorWidgetState<T extends StatefulWidget>
   set referencedData(SoComponentData data) {
     (widget as CoReferencedCellEditorWidget).cellEditorModel.referencedData =
         data;
-    data?.unregisterDataChanged(onServerDataChanged);
-    data?.registerDataChanged(onServerDataChanged);
+    (widget as CoReferencedCellEditorWidget)
+        .cellEditorModel
+        .referencedData
+        ?.unregisterDataChanged(onServerDataChanged);
+    (widget as CoReferencedCellEditorWidget)
+        .cellEditorModel
+        .referencedData
+        ?.registerDataChanged(onServerDataChanged);
   }
 
   void onServerDataChanged() {

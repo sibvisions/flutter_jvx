@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/cell_editor_model.dart';
+
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../component/component_model.dart';
@@ -8,6 +10,7 @@ import '../screen/so_component_data.dart';
 class EditorComponentModel extends ComponentModel {
   Queue<SoComponentData> _toUpdateData = Queue<SoComponentData>();
 
+  CellEditorModel cellEditorModel;
   String dataProvider;
   String dataRow;
   String columnName;
@@ -29,6 +32,29 @@ class EditorComponentModel extends ComponentModel {
   // Queue<SoComponentData> get toUpdateData => _toUpdateData;
   // set toUpdateData(Queue<SoComponentData> toUpdateData) =>
   //     _toUpdateData = toUpdateData;
+
+  @override
+  get preferredSize {
+    if (super.preferredSize != null) return super.preferredSize;
+    if (cellEditorModel != null) return cellEditorModel.preferredSize;
+    return null;
+  }
+
+  @override
+  get minimumSize {
+    if (super.minimumSize != null) return super.minimumSize;
+    if (cellEditorModel != null) return cellEditorModel.minimumSize;
+
+    return null;
+  }
+
+  @override
+  get maximumSize {
+    if (super.maximumSize != null) return super.maximumSize;
+    if (cellEditorModel != null) return cellEditorModel.maximumSize;
+
+    return null;
+  }
 
   EditorComponentModel(ChangedComponent changedComponent)
       : super(changedComponent) {

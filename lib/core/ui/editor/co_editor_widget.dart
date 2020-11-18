@@ -23,7 +23,9 @@ class CoEditorWidget extends ComponentWidget {
     this.cellEditor,
     this.data,
     EditorComponentModel componentModel,
-  }) : super(key: key, componentModel: componentModel);
+  }) : super(key: key, componentModel: componentModel) {
+    componentModel.cellEditorModel = cellEditor?.cellEditorModel;
+  }
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
 

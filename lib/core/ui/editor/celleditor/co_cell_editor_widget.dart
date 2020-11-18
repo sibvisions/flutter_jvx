@@ -71,11 +71,12 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
 
   set value(dynamic value) {
     setState(() {
-      _value = value;
+      (widget as CoCellEditorWidget).cellEditorModel.value = value;
+      //_value = value;
     });
   }
 
-  dynamic get value => _value;
+  dynamic get value => (widget as CoCellEditorWidget).cellEditorModel.value;
 
   VoidCallback onBeginEditing;
   VoidCallback onEndEditing;
