@@ -20,7 +20,6 @@ import '../../utils/translation/app_localizations.dart';
 import '../pages/login_page.dart';
 import '../pages/settings_page.dart';
 import '../widgets/custom/custom_drawer_header.dart';
-import '../widgets/util/app_state_provider.dart';
 import '../widgets/util/shared_pref_provider.dart';
 import '../widgets/web/web_menu_list_widget.dart';
 import '../widgets/custom/popup_menu.dart' as mypopup;
@@ -380,7 +379,7 @@ class _WebFrameState extends State<WebFrame> {
       data: Theme.of(context).copyWith(
         cardColor: (appState.applicationStyle != null &&
                 this.appState.applicationStyle?.topMenuColor != null)
-            ? this.appState.applicationStyle?.topMenuColor.withOpacity(0.95)
+            ? this.appState.applicationStyle?.topMenuColor?.withOpacity(0.95)
             : Color(0xff2196f3).withOpacity(0.95),
       ),
       child: Material(

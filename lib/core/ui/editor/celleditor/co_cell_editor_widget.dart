@@ -13,11 +13,13 @@ import 'cell_editor_model.dart';
 class CoCellEditorWidget extends StatefulWidget {
   final CellEditor changedCellEditor;
   final CellEditorModel cellEditorModel;
+  final bool isTableView;
 
   const CoCellEditorWidget({
     Key key,
     this.changedCellEditor,
     this.cellEditorModel,
+    this.isTableView = false,
   }) : super(key: key);
 
   @override

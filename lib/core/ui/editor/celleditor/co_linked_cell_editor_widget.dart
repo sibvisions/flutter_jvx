@@ -133,39 +133,39 @@ class CoLinkedCellEditorWidgetState
 
     String h = this.value == null ? null : this.value.toString();
     String v = this.value == null ? null : this.value.toString();
-    DataBook data;
+    // DataBook data;
 
-    if (false) {
-      //(data != null && data.records.length < 20) {
-      data =
-          this.data.getData(this.context, (this.pageIndex + 1) * this.pageSize);
-      this._items = getItems(data);
-      if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
-        v = null;
+    // if (false) {
+    //   //(data != null && data.records.length < 20) {
+    //   data =
+    //       this.data.getData(this.context, (this.pageIndex + 1) * this.pageSize);
+    //   this._items = getItems(data);
+    //   if (!this._items.contains((i) => (i as DropdownMenuItem).value == v))
+    //     v = null;
 
-      return Container(
-        decoration: BoxDecoration(
-            color: background != null ? background : Colors.transparent,
-            borderRadius: BorderRadius.circular(5),
-            border: this.editable != null && this.editable
-                ? (borderVisible
-                    ? Border.all(color: Theme.of(context).primaryColor)
-                    : null)
-                : Border.all(color: Colors.grey)),
-        child: DropdownButtonHideUnderline(
-            child: custom.CustomDropdownButton(
-          onDelete: () {
-            this.value = null;
-            onLazyDropDownValueChanged(null);
-          },
-          hint: Text(h == null ? "" : h),
-          value: v,
-          items: this._items,
-          onChanged: valueChanged,
-          editable: this.editable != null ? this.editable : null,
-        )),
-      );
-    } else {
+    //   return Container(
+    //     decoration: BoxDecoration(
+    //         color: background != null ? background : Colors.transparent,
+    //         borderRadius: BorderRadius.circular(5),
+    //         border: this.editable != null && this.editable
+    //             ? (borderVisible
+    //                 ? Border.all(color: Theme.of(context).primaryColor)
+    //                 : null)
+    //             : Border.all(color: Colors.grey)),
+    //     child: DropdownButtonHideUnderline(
+    //         child: custom.CustomDropdownButton(
+    //       onDelete: () {
+    //         this.value = null;
+    //         onLazyDropDownValueChanged(null);
+    //       },
+    //       hint: Text(h == null ? "" : h),
+    //       value: v,
+    //       items: this._items,
+    //       onChanged: valueChanged,
+    //       editable: this.editable != null ? this.editable : null,
+    //     )),
+    //   );
+    // } else {
       this._items = List<DropdownMenuItem<dynamic>>();
       if (v == null)
         this._items.add(this.getItem("", ""));
@@ -235,6 +235,6 @@ class CoLinkedCellEditorWidgetState
           )),
         ),
       );
-    }
+    // }
   }
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response.dart';
-import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
-import 'package:jvx_flutterclient/core/ui/layout/co_border_layout.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/request.dart';
+import '../../models/api/response.dart';
 import '../../models/api/response/response_data.dart';
 import '../component/co_action_component_widget.dart';
 import '../component/component_model.dart';
@@ -16,6 +14,7 @@ import '../component/popup_menu/co_popup_menu_widget.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
 import '../component/popup_menu/popup_component_model.dart';
 import '../container/co_container_widget.dart';
+import '../container/co_panel_widget.dart';
 import '../container/container_component_model.dart';
 import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
 import '../editor/co_editor_widget.dart';
