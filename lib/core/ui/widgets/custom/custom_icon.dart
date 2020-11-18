@@ -30,6 +30,7 @@ class CustomIcon extends StatelessWidget {
     } else {
       return Container();
     }
+    return Container();
   }
 
   Size getSize(String image) {

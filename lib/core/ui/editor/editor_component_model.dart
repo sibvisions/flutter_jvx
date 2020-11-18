@@ -1,13 +1,8 @@
-import 'dart:collection';
-
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../component/component_model.dart';
-import '../screen/so_component_data.dart';
 
 class EditorComponentModel extends ComponentModel {
-  Queue<SoComponentData> _toUpdateData = Queue<SoComponentData>();
-
   String dataProvider;
   String dataRow;
   String columnName;
@@ -25,10 +20,6 @@ class EditorComponentModel extends ComponentModel {
   dynamic value;
 
   bool get withChangedComponent => _withChangedComponent;
-
-  // Queue<SoComponentData> get toUpdateData => _toUpdateData;
-  // set toUpdateData(Queue<SoComponentData> toUpdateData) =>
-  //     _toUpdateData = toUpdateData;
 
   EditorComponentModel(ChangedComponent changedComponent)
       : super(changedComponent) {
