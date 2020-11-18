@@ -243,6 +243,7 @@ class SoComponentCreator implements IComponentCreator {
             changedCellEditor: toCreatecellEditor,
             cellEditorModel:
                 DateCellEditorModel(this.context, toCreatecellEditor),
+            isTableView: true,
           );
         }
         break;
@@ -263,8 +264,6 @@ class SoComponentCreator implements IComponentCreator {
         break;
     }
 
-    // cellEditor?.isTableView = true;
-
     return cellEditor;
   }
 
@@ -280,9 +279,11 @@ class SoComponentCreator implements IComponentCreator {
       case "DateCellEditor":
         {
           cellEditor = CoDateCellEditorWidget(
-              cellEditorModel:
-                  DateCellEditorModel(this.context, toCreatecellEditor),
-              changedCellEditor: toCreatecellEditor);
+            cellEditorModel:
+                DateCellEditorModel(this.context, toCreatecellEditor),
+            changedCellEditor: toCreatecellEditor,
+            isTableView: true,
+          );
         }
         break;
       case "ChoiceCellEditor":
