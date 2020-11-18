@@ -99,13 +99,14 @@ class SoComponentData {
       if (data.selectedRow != pData.selectedRow)
         _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data.selectedRow = pData.selectedRow;
-    } else {
-      data.records.addAll(pData.records);
-      if (data.selectedRow != pData.selectedRow)
-        _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
-      data.selectedRow = pData.selectedRow;
-      data.isAllFetched = pData.isAllFetched;
-    }
+    } 
+    // else {
+    //   data.records.addAll(pData.records);
+    //   if (data.selectedRow != pData.selectedRow)
+    //     _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
+    //   data.selectedRow = pData.selectedRow;
+    //   data.isAllFetched = pData.isAllFetched;
+    // }
 
     if (data.selectedRow == null) data.selectedRow = 0;
 

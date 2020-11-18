@@ -507,31 +507,43 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 color: Colors.white.withOpacity(
                     this.appState.applicationStyle?.controlsOpacity ?? 1.0),
               ),
-              width: columnWidth + (2 * borderWidth) + 100,
-              height: constraints.maxHeight == double.infinity
-                  ? tableHeight
-                  : constraints.maxHeight,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: ScrollablePositionedList.builder(
-                  itemScrollController: _scrollController,
-                  itemPositionsListener: _scrollPositionListener,
-                  itemCount: itemCount,
-                  itemBuilder: itemBuilder,
-                ),
-              ),
+              child: _hasHorizontalScroller
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        width: columnWidth + (2 * borderWidth) + 100,
+                        height: constraints.maxHeight == double.infinity
+                            ? tableHeight
+                            : constraints.maxHeight,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: ScrollablePositionedList.builder(
+                            itemScrollController: _scrollController,
+                            itemPositionsListener: _scrollPositionListener,
+                            itemCount: itemCount,
+                            itemBuilder: itemBuilder,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: (columnWidth + (2 * borderWidth) + 100) - borderWidth,
+                      height: constraints.maxHeight == double.infinity
+                          ? tableHeight - borderWidth
+                          : constraints.maxHeight - borderWidth,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: ScrollablePositionedList.builder(
+                          itemScrollController: _scrollController,
+                          itemPositionsListener: _scrollPositionListener,
+                          itemCount: itemCount,
+                          itemBuilder: itemBuilder,
+                        ),
+                      ),
+                    ),
             ));
 
-        if (_hasHorizontalScroller) {
-          return Container(
-              decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(
-                      this.appState.applicationStyle?.controlsOpacity ?? 1.0)),
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal, child: child));
-        } else {
-          return child;
-        }
+        return child;
       },
     );
   }
