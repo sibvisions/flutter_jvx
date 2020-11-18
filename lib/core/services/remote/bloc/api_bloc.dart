@@ -36,7 +36,7 @@ import '../../../models/api/request/tab_close.dart';
 import '../../../models/api/request/tab_select.dart';
 import '../../../models/api/request/upload.dart';
 import '../../../models/api/response.dart';
-import '../../../models/app/app_state.dart';
+import '../../../models/app/i_app_state.dart';
 import '../../../utils/app/get_local_file_path.dart';
 import '../../../utils/network/network_info.dart';
 import '../../../utils/translation/app_localizations.dart';
@@ -46,7 +46,7 @@ import '../rest/rest_client.dart';
 class ApiBloc extends Bloc<Request, Response> {
   final NetworkInfo networkInfo;
   final RestClient restClient;
-  final AppState appState;
+  final IAppState appState;
   final SharedPreferencesManager manager;
 
   Queue<Request> _requestQueue = Queue<Request>();

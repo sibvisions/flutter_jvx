@@ -1,0 +1,17 @@
+{
+    "login.title": "ERP System",
+    "login.background": "#770000",
+    "login.infotext": null,
+    "login.icon": "/com/sibvisions/apps/mobile/demo/images/sibvisions.png",
+    "menu": {
+        "mode": "grid_grouped"
+    },
+    "theme": {
+        "color": "#ffc800"
+    },
+    "opacity": {
+        "menu": "1",
+        "sidemenu": "1",
+        "controls": "1"
+    }
+}

@@ -20,7 +20,12 @@ enum ResponseObjectType {
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {
-  responseObjectType = 'ResponseObjectType.${responseObjectType.toUpperCase()}';
+  try {
+    responseObjectType =
+        'ResponseObjectType.${responseObjectType.toUpperCase()}';
+  } on NoSuchMethodError {
+    return null;
+  }
 
   return ResponseObjectType.values.firstWhere(
       (f) => f.toString() == responseObjectType.replaceFirst('.', '_', 19),

@@ -4,8 +4,9 @@ import '../../ui/screen/i_screen_manager.dart';
 import '../../utils/app/listener/app_listener.dart';
 import '../api/response/application_style_response.dart';
 import '../api/response/menu_item.dart';
+import 'i_app_state.dart';
 
-class AppState {
+class AppState implements IAppState {
   String username;
   String password;
   String baseUrl;
@@ -40,7 +41,8 @@ class AppState {
 
   AppState();
 
-  copyFromOther(AppState state) {
+  @override
+  copyFromOther(IAppState state) {
     this.username = state.username;
     this.password = state.password;
     this.baseUrl = state.baseUrl;
