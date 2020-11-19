@@ -139,14 +139,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
               .cellEditorModel
               .linkReference
               .columnNames);
-
-      ComponentScreenWidget.of(context)
-          .getComponentData(
-              (this.cellEditorWidget as CoReferencedCellEditorWidget)
-                  .cellEditorModel
-                  .linkReference
-                  .dataProvider)
-          .selectRecord(context, index);
     } else {
       data.setValues(
           context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 import '../../../../injection_container.dart';
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/response/data/data_book.dart';
@@ -35,18 +36,24 @@ class CoLinkedCellEditorWidgetState
     this.onValueChanged(value);
   }
 
-  void onLazyDropDownValueChanged(dynamic pValue) {
+  void onLazyDropDownValueChanged(MapEntry<int, dynamic> pValue) {
+    if (pValue.key >= 0) {
+      ComponentScreenWidget.of(context)
+          .getComponentData(widget.cellEditorModel.linkReference.dataProvider)
+          .selectRecord(context, pValue.key);
+    }
+
     DataBook data = widget.cellEditorModel.referencedData.getData(context, 0);
-    if (pValue != null)
+    if (pValue.value != null)
       this.value =
-          pValue[widget.cellEditorModel.getVisibleColumnIndex(data)[0]];
+          pValue.value[widget.cellEditorModel.getVisibleColumnIndex(data)[0]];
     else
-      this.value = pValue;
+      this.value = pValue.value;
     if (widget.cellEditorModel.linkReference != null &&
         widget.cellEditorModel.linkReference.columnNames.length == 1)
-      this.onValueChanged(this.value, pValue[0]);
+      this.onValueChanged(this.value, pValue.value[0]);
     else
-      this.onValueChanged(pValue);
+      this.onValueChanged(pValue.value);
   }
 
   List<DropdownMenuItem> getItems(DataBook data) {
@@ -161,7 +168,7 @@ class CoLinkedCellEditorWidgetState
           editable: this.editable != null ? this.editable : true,
           onDelete: () {
             this.value = null;
-            onLazyDropDownValueChanged(null);
+            onLazyDropDownValueChanged(MapEntry<int, dynamic>(-1, null));
           },
           onOpen: () {
             this.onFilter(null);
@@ -178,7 +185,7 @@ class CoLinkedCellEditorWidgetState
                           fetchMoreYOffset:
                               MediaQuery.of(context).size.height * 4,
                           onSave: (value) {
-                            this.value = value;
+                            this.value = value.value;
                             onLazyDropDownValueChanged(value);
                           },
                           onFilter: onFilterDropDown,

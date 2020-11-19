@@ -12,7 +12,7 @@ import '../../screen/so_component_data.dart';
 
 class LazyDropdown extends StatefulWidget {
   final allowNull;
-  final ValueChanged<dynamic> onSave;
+  final ValueChanged<MapEntry<int, dynamic>> onSave;
   final VoidCallback onCancel;
   final VoidCallback onScrollToEnd;
   final ValueChanged<String> onFilter;
@@ -74,14 +74,15 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   void _onDelete() {
     Navigator.of(this.widget.context).pop();
-    if (this.widget.onSave != null) this.widget.onSave(null);
+    if (this.widget.onSave != null)
+      this.widget.onSave(new MapEntry<int, dynamic>(-1, null));
   }
 
   void _onRowTapped(int index) {
     Navigator.of(this.widget.context).pop();
     if (this.widget.onSave != null) {
       dynamic value = widget.data.data.getRow(index);
-      this.widget.onSave(value);
+      this.widget.onSave(new MapEntry<int, dynamic>(index, value));
       this.updateData();
     }
   }
@@ -229,8 +230,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
                               fontSize: 14.0, color: Colors.black),
                           decoration: new InputDecoration(
                               hintStyle: TextStyle(color: Colors.green),
-                              labelText: AppLocalizations.of(context)
-                                  .text("Search"),
+                              labelText:
+                                  AppLocalizations.of(context).text("Search"),
                               labelStyle: TextStyle(
                                   fontSize: 14.0, fontWeight: FontWeight.w600)),
                         ))),
