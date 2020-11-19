@@ -8,14 +8,27 @@ class DeviceStatus extends Request {
   String timeZoneCode;
   String langCode;
 
-  DeviceStatus({this.screenSize, this.timeZoneCode, this.langCode, String clientId})
-    : super(RequestType.DEVICE_STATUS, clientId);
+  @override
+  String get debugInfo {
+    return "Width: " +
+        screenSize.width.round().toString() +
+        ", Height: " +
+        screenSize.height.round().toString() +
+        ", timeZoneCode: " +
+        timeZoneCode +
+        ", langCode: " +
+        langCode;
+  }
+
+  DeviceStatus(
+      {this.screenSize, this.timeZoneCode, this.langCode, String clientId})
+      : super(RequestType.DEVICE_STATUS, clientId);
 
   Map<String, dynamic> toJson() => {
-    'clientId': clientId,
-    'screenWidth': screenSize.width.round(),
-    'screenHeight': screenSize.height.round(),
-    'timeZoneCode': timeZoneCode,
-    'langCode': langCode
-  };
+        'clientId': clientId,
+        'screenWidth': screenSize.width.round(),
+        'screenHeight': screenSize.height.round(),
+        'timeZoneCode': timeZoneCode,
+        'langCode': langCode
+      };
 }

@@ -27,13 +27,11 @@ mixin SoDataScreen {
 
     if (request == null || request?.requestType != RequestType.DAL_SET_VALUE) {
       pData.dataBooks?.forEach((d) {
-        print("Updateting data for " + d.dataProvider);
         SoComponentData cData = getComponentData(d.dataProvider);
         cData.updateData(d, request.reload);
       });
 
       pData.dataBookMetaData?.forEach((m) {
-        print("Updateting metaData for " + m.dataProvider);
         SoComponentData cData = getComponentData(m.dataProvider);
         cData.updateMetaData(m);
       });
