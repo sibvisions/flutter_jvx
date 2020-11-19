@@ -246,14 +246,22 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (widget.shouldLoadConfig)
       _updateDataFromConfig(Config.loadFile(conf: widget.config))
           .then((value) => _requestStartup());
-    else
+    else if (widget.config != null) {
+      appState.appName = widget.config.appName;
+      appState.baseUrl = widget.config.baseUrl;
+      appState.username = widget.config.username;
+      appState.password = widget.config.password;
+      appState.appMode = widget.config.appMode;
+      _requestStartup();
+    } else
       _requestStartup();
   }
 
   void _requestStartup() {
-    if (appState.appName == null || appState.baseUrl == null) {
+    if ((appState.appName == null || appState.appName.isEmpty) ||
+        (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed('/settings');
+        if (mounted) Navigator.of(context).pushReplacementNamed('/settings');
       });
       return;
     }
