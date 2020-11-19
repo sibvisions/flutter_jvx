@@ -27,11 +27,13 @@ mixin SoDataScreen {
 
     if (request == null || request?.requestType != RequestType.DAL_SET_VALUE) {
       pData.dataBooks?.forEach((d) {
+        print("Updateting data for " + d.dataProvider);
         SoComponentData cData = getComponentData(d.dataProvider);
         cData.updateData(d, request.reload);
       });
 
       pData.dataBookMetaData?.forEach((m) {
+        print("Updateting metaData for " + m.dataProvider);
         SoComponentData cData = getComponentData(m.dataProvider);
         cData.updateMetaData(m);
       });
@@ -39,7 +41,8 @@ mixin SoDataScreen {
       componentData.forEach((d) {
         if (d.metaData == null && !d.isFetchingMetaData) {
           d.isFetchingMetaData = true;
-          dataModel.MetaData meta = dataModel.MetaData(d.dataProvider, AppStateProvider.of(context).appState.clientId);
+          dataModel.MetaData meta = dataModel.MetaData(
+              d.dataProvider, AppStateProvider.of(context).appState.clientId);
           BlocProvider.of<ApiBloc>(context).add(meta);
         }
       });
@@ -120,8 +123,9 @@ mixin SoDataScreen {
   void onButtonPressed(String componentId, String label) {
     // wait until textfields focus lost. 10 millis should do it.
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton =
-          PressButton(SoAction(componentId: componentId, label: label), AppStateProvider.of(context).appState.clientId);
+      PressButton pressButton = PressButton(
+          SoAction(componentId: componentId, label: label),
+          AppStateProvider.of(context).appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
   }

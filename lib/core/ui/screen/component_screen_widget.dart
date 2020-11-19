@@ -76,8 +76,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (request != null && responseData != null)
       this.updateData(request, responseData);
     if (responseData.screenGeneric != null) {
-      this.updateComponents(
-          responseData.screenGeneric.changedComponents);
+      this.updateComponents(responseData.screenGeneric.changedComponents);
       rootComponent = this.getRootComponent();
     }
 
@@ -178,7 +177,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         if (componentClass.cellEditor is CoReferencedCellEditorWidget) {
           (componentClass.cellEditor as CoReferencedCellEditorWidget)
               .cellEditorModel
-              .data = this.getComponentData((componentClass.cellEditor
+              .referencedData = this.getComponentData((componentClass.cellEditor
                   as CoReferencedCellEditorWidget)
               .changedCellEditor
               .linkReference

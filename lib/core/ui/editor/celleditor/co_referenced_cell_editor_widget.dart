@@ -26,15 +26,10 @@ class CoReferencedCellEditorWidget extends CoCellEditorWidget {
 
 class CoReferencedCellEditorWidgetState<T extends StatefulWidget>
     extends CoCellEditorWidgetState<T> {
-  SoComponentData get referencedData =>
-      (widget as CoReferencedCellEditorWidget).cellEditorModel.referencedData;
-  set referencedData(SoComponentData data) {
-    (widget as CoReferencedCellEditorWidget).cellEditorModel.referencedData =
-        data;
-    (widget as CoReferencedCellEditorWidget)
-        .cellEditorModel
-        .referencedData
-        ?.unregisterDataChanged(onServerDataChanged);
+  @override
+  void initState() {
+    super.initState();
+
     (widget as CoReferencedCellEditorWidget)
         .cellEditorModel
         .referencedData
@@ -46,24 +41,11 @@ class CoReferencedCellEditorWidgetState<T extends StatefulWidget>
   }
 
   @override
-  void initState() {
-    super.initState();
-    CoReferencedCellEditorWidget referencedCellEditorWidget =
-        (widget as CoReferencedCellEditorWidget);
-    this.referencedData = referencedCellEditorWidget.cellEditorModel.data;
-
-    referencedCellEditorWidget.cellEditorModel.linkReference =
-        referencedCellEditorWidget.changedCellEditor.linkReference;
-    referencedCellEditorWidget.cellEditorModel.columnView =
-        referencedCellEditorWidget.changedCellEditor.columnView;
-    if (referencedCellEditorWidget
-            .cellEditorModel.linkReference?.dataProvider ==
-        null)
-      referencedCellEditorWidget.cellEditorModel.linkReference?.dataProvider =
-          referencedCellEditorWidget
-              .cellEditorModel.linkReference?.referencedDataBook;
-    if (dataProvider == null)
-      dataProvider = referencedCellEditorWidget
-          .cellEditorModel.linkReference?.dataProvider;
+  void dispose() {
+    (widget as CoReferencedCellEditorWidget)
+        .cellEditorModel
+        .referencedData
+        ?.unregisterDataChanged(onServerDataChanged);
+    super.dispose();
   }
 }

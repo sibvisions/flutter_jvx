@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:universal_html/prefer_universal/html.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../utils/app/text_utils.dart';

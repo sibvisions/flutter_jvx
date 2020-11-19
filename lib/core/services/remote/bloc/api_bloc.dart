@@ -61,7 +61,7 @@ class ApiBloc extends Bloc<Request, Response> {
     if (event.requestType != RequestType.RELOAD) {
       event.id = _seqNo++;
       print(
-          '******* Outgoing Request ID: ${event.id}, RequestType: ${event.requestType.toString()}');
+          '******* Outgoing Request ID: ${event.id}, RequestType: ${event.requestType.toString()}, DebugInfo: ${event.debugInfo}');
     }
     _requestQueue.add(event);
     super.onEvent(event);
@@ -76,7 +76,7 @@ class ApiBloc extends Bloc<Request, Response> {
         if (response.request.requestType != RequestType.LOADING &&
             response.request.requestType != RequestType.RELOAD) {
           print(
-              '******* Incoming Request ID: ${response.request.id}, RequestType: ${response.request.requestType.toString()}');
+              '******* Incoming Request ID: ${response.request.id}, RequestType: ${response.request.requestType.toString()}, DebugInfo: ${response.request.debugInfo}');
         }
 
         yield response;
@@ -312,9 +312,9 @@ class ApiBloc extends Bloc<Request, Response> {
     Response response = await processRequest(event);
 
     if (!response.hasError) {
-      this.appState.currentScreenComponentId = event.action.componentId; 
+      this.appState.currentScreenComponentId = event.action.componentId;
     }
-    
+
     yield response;
   }
 

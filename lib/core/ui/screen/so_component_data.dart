@@ -242,8 +242,8 @@ class SoComponentData {
 
   void setValues(BuildContext context, List<dynamic> values,
       [List<dynamic> columnNames, Filter filter, bool isTextfield = false]) {
-    SetValues setValues =
-        SetValues(this.dataProvider, data?.columnNames, values, AppStateProvider.of(context).appState.clientId);
+    SetValues setValues = SetValues(this.dataProvider, data?.columnNames,
+        values, AppStateProvider.of(context).appState.clientId);
 
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {
@@ -339,7 +339,7 @@ class SoComponentData {
   }
 
   void registerDataChanged(VoidCallback callback) {
-    _onDataChanged.add(callback);
+    if (!_onDataChanged.contains(callback)) _onDataChanged.add(callback);
   }
 
   void unregisterDataChanged(VoidCallback callback) {
@@ -347,7 +347,8 @@ class SoComponentData {
   }
 
   void registerMetaDataChanged(VoidCallback callback) {
-    _onMetaDataChanged.add(callback);
+    if (!_onMetaDataChanged.contains(callback))
+      _onMetaDataChanged.add(callback);
   }
 
   void unregisterMetaDataChanged(VoidCallback callback) {
