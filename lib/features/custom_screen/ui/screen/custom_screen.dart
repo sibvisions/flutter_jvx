@@ -20,7 +20,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
   final List<SoComponentData> componentData = <SoComponentData>[];
   final SoComponentCreator componentCreator;
 
-  CustomScreen(this.componentId, this._templateName, this.componentCreator);
+  CustomScreen(this.componentId, this._templateName, this.componentCreator, {Key key}) : super(key: key);
 
   @override
   void update(Response response) {
