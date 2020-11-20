@@ -67,70 +67,79 @@ class Response {
 
     if (json.isNotEmpty) {
       json.forEach((responseObject) {
-        switch (getResponseObjectTypeEnum(responseObject['name'])) {
-          case ResponseObjectType.APPLICATIONMETADATA:
-            applicationMetaData = ApplicationMetaData.fromJson(responseObject);
-            break;
-          case ResponseObjectType.LANGUAGE:
-            language = Language.fromJson(responseObject);
-            break;
-          case ResponseObjectType.SCREEN_GENERIC:
-            if (responseObject['changedComponents'] != null)
-              responseData.screenGeneric =
-                  ScreenGeneric.fromChangedComponentsJson(responseObject);
-            else
-              responseData.screenGeneric =
-                  ScreenGeneric.fromUpdateComponentsJson(responseObject);
-            break;
-          case ResponseObjectType.DAL_FETCH:
-            responseData.dataBooks.add(DataBook.fromJson(responseObject));
-            break;
-          case ResponseObjectType.DAL_METADATA:
-            responseData.dataBookMetaData
-                .add(DataBookMetaData.fromJson(responseObject));
-            break;
-          case ResponseObjectType.DAL_DATAPROVIDERCHANGED:
-            responseData.dataproviderChanged
-                .add(DataproviderChanged.fromJson(responseObject));
-            break;
-          case ResponseObjectType.LOGIN:
-            loginItem = LoginItem.fromJson(responseObject);
-            break;
-          case ResponseObjectType.MENU:
-            menu = Menu.fromJson(responseObject);
-            break;
-          case ResponseObjectType.AUTHENTICATIONDATA:
-            authenticationData = AuthenticationData.fromJson(responseObject);
-            break;
-          case ResponseObjectType.DOWNLOAD:
-            downloadAction = DownloadAction.fromJson(responseObject);
-            break;
-          case ResponseObjectType.UPLOAD:
-            uploadAction = UploadAction.fromJson(responseObject);
-            break;
-          case ResponseObjectType.CLOSESCREEN:
-            closeScreenAction = CloseScreenAction.fromJson(responseObject);
-            break;
-          case ResponseObjectType.USERDATA:
-            userData = UserData.fromJson(responseObject);
-            break;
-          case ResponseObjectType.SHOWDOCUMENT:
-            showDocument = ShowDocument.fromJson(responseObject);
-            break;
-          case ResponseObjectType.DEVICESTATUS:
-            deviceStatusResponse =
-                DeviceStatusResponse.fromJson(responseObject);
-            break;
-          case ResponseObjectType.RESTART:
-            restart = Restart.fromJson(responseObject);
-            break;
-          case ResponseObjectType.ERROR:
-            error = ErrorResponse.fromJson(responseObject);
-            break;
-          case ResponseObjectType.APPLICATION_STYLE:
-            applicationStyle =
-                ApplicationStyleResponse.fromJson(responseObject);
-            break;
+        ResponseObjectType type =
+            getResponseObjectTypeEnum(responseObject['name']);
+
+        if (type != null) {
+          switch (type) {
+            case ResponseObjectType.APPLICATIONMETADATA:
+              applicationMetaData =
+                  ApplicationMetaData.fromJson(responseObject);
+              break;
+            case ResponseObjectType.LANGUAGE:
+              language = Language.fromJson(responseObject);
+              break;
+            case ResponseObjectType.SCREEN_GENERIC:
+              if (responseObject['changedComponents'] != null)
+                responseData.screenGeneric =
+                    ScreenGeneric.fromChangedComponentsJson(responseObject);
+              else
+                responseData.screenGeneric =
+                    ScreenGeneric.fromUpdateComponentsJson(responseObject);
+              break;
+            case ResponseObjectType.DAL_FETCH:
+              responseData.dataBooks.add(DataBook.fromJson(responseObject));
+              break;
+            case ResponseObjectType.DAL_METADATA:
+              responseData.dataBookMetaData
+                  .add(DataBookMetaData.fromJson(responseObject));
+              break;
+            case ResponseObjectType.DAL_DATAPROVIDERCHANGED:
+              responseData.dataproviderChanged
+                  .add(DataproviderChanged.fromJson(responseObject));
+              break;
+            case ResponseObjectType.LOGIN:
+              loginItem = LoginItem.fromJson(responseObject);
+              break;
+            case ResponseObjectType.MENU:
+              menu = Menu.fromJson(responseObject);
+              break;
+            case ResponseObjectType.AUTHENTICATIONDATA:
+              authenticationData = AuthenticationData.fromJson(responseObject);
+              break;
+            case ResponseObjectType.DOWNLOAD:
+              downloadAction = DownloadAction.fromJson(responseObject);
+              break;
+            case ResponseObjectType.UPLOAD:
+              uploadAction = UploadAction.fromJson(responseObject);
+              break;
+            case ResponseObjectType.CLOSESCREEN:
+              closeScreenAction = CloseScreenAction.fromJson(responseObject);
+              break;
+            case ResponseObjectType.USERDATA:
+              userData = UserData.fromJson(responseObject);
+              break;
+            case ResponseObjectType.SHOWDOCUMENT:
+              showDocument = ShowDocument.fromJson(responseObject);
+              break;
+            case ResponseObjectType.DEVICESTATUS:
+              deviceStatusResponse =
+                  DeviceStatusResponse.fromJson(responseObject);
+              break;
+            case ResponseObjectType.RESTART:
+              restart = Restart.fromJson(responseObject);
+              break;
+            case ResponseObjectType.ERROR:
+              error = ErrorResponse.fromJson(responseObject);
+              break;
+            case ResponseObjectType.APPLICATION_STYLE:
+              applicationStyle =
+                  ApplicationStyleResponse.fromJson(responseObject);
+              break;
+          }
+        } else {
+          error = ErrorResponse('Error', 'Couldn\'t parse Response',
+              'An Error occured', 'message.error');
         }
       });
     }

@@ -70,7 +70,9 @@ class RestClient {
           finalResponse = Response.fromJson([decodedBody]);
         }
       } on Exception {
-        finalResponse = Response();
+        finalResponse = Response()
+          ..error = ErrorResponse('Error', 'Couldn\t decode response body',
+              'An Error occured', 'message.error');
       }
     }
 

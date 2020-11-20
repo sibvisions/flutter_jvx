@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -39,6 +40,7 @@ class ComponentScreenWidget extends StatefulWidget {
   final bool closeCurrentScreen;
   final ComponentWidget headerComponent;
   final ComponentWidget footerComponent;
+  final Function(List<SoComponentData>) onData;
 
   const ComponentScreenWidget(
       {Key key,
@@ -46,7 +48,8 @@ class ComponentScreenWidget extends StatefulWidget {
       this.response,
       this.closeCurrentScreen,
       this.headerComponent,
-      this.footerComponent})
+      this.footerComponent,
+      this.onData})
       : super(key: key);
 
   static ComponentScreenWidgetState of(BuildContext context) =>
@@ -86,6 +89,10 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (responseData.screenGeneric != null) {
       this.updateComponents(responseData.screenGeneric.changedComponents);
       rootComponent = this.getRootComponent();
+    }
+
+    if (widget.onData != null) {
+      widget.onData(this.componentData);
     }
 
     if (rootComponent != null) {
