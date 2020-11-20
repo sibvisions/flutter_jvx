@@ -26,18 +26,22 @@ class CustomScreen extends StatelessWidget implements IScreen {
     this.currentResponse.copyFrom(response);
   }
 
+  getComponentData(String dataProvider) {
+    SoComponentData data;
+    if (componentData.length > 0)
+      data = componentData.firstWhere((d) => d.dataProvider == dataProvider,
+          orElse: () => null);
+    
+    return data;
+  }
+
   @override
   bool withServer() {
     return true;
   }
 
   DataApi getDataApi(String dataProvider, BuildContext context) {
-    SoComponentData data;
-    if (componentData.length > 0)
-      data = componentData.firstWhere((d) => d.dataProvider == dataProvider,
-          orElse: () => null);
-
-    return DataApi(data, context);
+    return DataApi(getComponentData(dataProvider), context);
   }
 
   ApplicationApi getApplicationApi(BuildContext context) {
