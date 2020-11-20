@@ -200,16 +200,25 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 key: _scaffoldKey,
                 appBar: _appBar(this.title),
                 body: Builder(builder: (BuildContext context) {
-                  SoScreen screen;
+                  IScreen screen;
 
                   if (this.currentResponse.request.requestType !=
                       RequestType.DEVICE_STATUS) {
-                    screen = SoScreen(
-                        screenKey: this.screenKey,
-                        componentId: rawComponentId,
-                        closeCurrentScreen: this.closeCurrentScreen,
-                        componentCreator: SoComponentCreator(context),
-                        response: this.currentResponse);
+                    if (widget.appState.screenManager
+                            .findScreen(rawComponentId) !=
+                        null) {
+                      screen = widget.appState.screenManager
+                          .findScreen(rawComponentId);
+                    } else {
+                      screen = SoScreen(
+                          screenKey: this.screenKey,
+                          componentId: rawComponentId,
+                          closeCurrentScreen: this.closeCurrentScreen,
+                          componentCreator: SoComponentCreator(context),
+                          response: this.currentResponse);
+                    }
+
+                    screen.update(this.currentResponse);
                   }
 
                   if (widget.appState.applicationStyle != null &&

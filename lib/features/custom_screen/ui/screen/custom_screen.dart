@@ -32,7 +32,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
     if (componentData.length > 0)
       data = componentData.firstWhere((d) => d.dataProvider == dataProvider,
           orElse: () => null);
-    
+
     return data;
   }
 
@@ -66,16 +66,20 @@ class CustomScreen extends StatelessWidget implements IScreen {
     // If you want to use the Layout Components from us you need to return a ComponentScreenWidget.
     // This widget handles all rendering, layouting and data.
     // You can wrap it with whatever you like but it has to be in the widget tree.
-    return ComponentScreenWidget(
-      response: this.currentResponse,
-      closeCurrentScreen: false,
-      componentCreator: this.componentCreator,
-      footerComponent: customHeaderAndFooter.footerComponent,
-      headerComponent: customHeaderAndFooter.headerComponent,
-      onData: (List<SoComponentData> data) {
-        this.componentData.clear();
-        this.componentData.addAll(data);
-      },
+    return FractionallySizedBox(
+      widthFactor: 1,
+      heightFactor: 1,
+      child: ComponentScreenWidget(
+        response: this.currentResponse,
+        closeCurrentScreen: false,
+        componentCreator: this.componentCreator,
+        footerComponent: customHeaderAndFooter.footerComponent,
+        headerComponent: customHeaderAndFooter.headerComponent,
+        onData: (List<SoComponentData> data) {
+          this.componentData.clear();
+          this.componentData.addAll(data);
+        },
+      ),
     );
   }
 
