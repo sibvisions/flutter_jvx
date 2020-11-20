@@ -155,7 +155,7 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
       minWidth = this.preferredSize.width;
     }
 
-    _disabledColor = Colors.grey;
+    _disabledColor = Colors.orange;
 
     return CustomToggleButton(
       background: this._selected ? this.background : _disabledColor,
