@@ -24,16 +24,17 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
       }
     }
 
-    if (text == "") text = TextUtils.averageCharactersTextField;
+    if (text == "" || text.length < TextUtils.averageCharactersTextField.length)
+      text = TextUtils.averageCharactersTextField;
 
-    double width =
-        TextUtils.getTextWidth(text, Theme.of(screenContext).textTheme.button)
-            .toDouble();
-    return Size(width, 50);
+    double width = TextUtils.getTextWidth(
+            text, Theme.of(screenContext).textTheme.subtitle1)
+        .toDouble();
+    return Size(width + 100, 50);
   }
 
   @override
   get minimumSize {
-    return Size(50, 50);
+    return Size(100, 50);
   }
 }

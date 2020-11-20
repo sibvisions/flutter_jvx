@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response/data/data_book.dart';
-import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/column_view.dart';
 import '../../../models/api/editor/link_reference.dart';
+import '../../../models/api/response/data/data_book.dart';
 import '../../editor/celleditor/cell_editor_model.dart';
 import '../../screen/so_component_data.dart';
 
@@ -22,9 +21,6 @@ class ReferencedCellEditorModel extends CellEditorModel {
     if (linkReference?.dataProvider == null)
       linkReference?.dataProvider = linkReference?.referencedDataBook;
     if (dataProvider == null) dataProvider = linkReference?.dataProvider;
-
-    //referencedData = ComponentScreenWidget.of(screenContext)
-    //    .getComponentData(linkReference?.referencedDataBook);
   }
 
   List<String> getItems() {

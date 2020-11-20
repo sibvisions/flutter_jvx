@@ -156,7 +156,6 @@ class CoLinkedCellEditorWidgetState
                   : null)
               : Border.all(color: Colors.grey)),
       child: Container(
-        width: 100,
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
           hint: Text(h == null

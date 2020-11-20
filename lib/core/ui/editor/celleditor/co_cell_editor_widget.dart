@@ -45,7 +45,6 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   bool autoOpenPopup;
   String contentType;
   String dataProvider;
-  dynamic _value;
   String columnName;
   HexColor background;
   HexColor foreground;
@@ -72,7 +71,6 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   set value(dynamic value) {
     setState(() {
       (widget as CoCellEditorWidget).cellEditorModel.value = value;
-      //_value = value;
     });
   }
 
