@@ -18,8 +18,9 @@ class CustomScreen extends StatelessWidget implements IScreen {
   final Response currentResponse = Response();
   final CustomHeaderAndFooter customHeaderAndFooter = CustomHeaderAndFooter();
   final List<SoComponentData> componentData = <SoComponentData>[];
+  final SoComponentCreator componentCreator;
 
-  CustomScreen(this.componentId, this._templateName);
+  CustomScreen(this.componentId, this._templateName, this.componentCreator);
 
   @override
   void update(Response response) {
@@ -68,7 +69,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
     return ComponentScreenWidget(
       response: this.currentResponse,
       closeCurrentScreen: false,
-      componentCreator: SoComponentCreator(),
+      componentCreator: this.componentCreator,
       footerComponent: customHeaderAndFooter.footerComponent,
       headerComponent: customHeaderAndFooter.headerComponent,
       onData: (List<SoComponentData> data) {
