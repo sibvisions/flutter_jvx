@@ -218,7 +218,9 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                           response: this.currentResponse);
                     }
 
-                    screen.update(this.currentResponse);
+                    setState(() {
+                      screen.update(this.currentResponse);
+                    });
                   }
 
                   if (widget.appState.applicationStyle != null &&
