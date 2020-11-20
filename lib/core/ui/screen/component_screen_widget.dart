@@ -91,7 +91,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       rootComponent = this.getRootComponent();
     }
 
-    widget.onData(this.componentData);
+    if (widget.onData != null) {
+      widget.onData(this.componentData);
+    }
 
     if (rootComponent != null) {
       return rootComponent;
