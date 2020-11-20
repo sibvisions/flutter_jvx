@@ -178,9 +178,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
-    int itemCount = 0;
-    DataBook data = widget.data.data;
-    if (data != null && data.records != null) itemCount = data.records.length;
 
     return Dialog(
         insetPadding: EdgeInsets.fromLTRB(25, 25, 25, 25),
@@ -200,7 +197,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(5.0),
                             topRight: Radius.circular(5.0))),
-                    // color: UIData.ui_kit_color_2,
                     child: Row(
                       children: <Widget>[
                         Padding(
@@ -239,11 +235,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
                   child: Padding(
                       padding:
                           const EdgeInsets.only(left: 16, right: 16, top: 10),
-                      // child: ListView.builder(
-                      //   controller: _scrollController,
-                      //   itemCount: itemCount,
-                      //   itemBuilder: itemBuilder,
-                      // ),
                       child: table),
                 ),
                 ButtonBar(

@@ -5,6 +5,9 @@ import '../../../utils/app/text_utils.dart';
 import 'referenced_cell_editor_model.dart';
 
 class LinkedCellEditorModel extends ReferencedCellEditorModel {
+  int pageIndex = 0;
+  int pageSize = 100;
+
   LinkedCellEditorModel(
       BuildContext screenContext, CellEditor currentCellEditor)
       : super(screenContext, currentCellEditor);

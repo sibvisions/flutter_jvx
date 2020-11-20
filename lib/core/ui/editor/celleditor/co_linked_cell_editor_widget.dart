@@ -26,13 +26,8 @@ class CoLinkedCellEditorWidget extends CoReferencedCellEditorWidget {
 
 class CoLinkedCellEditorWidgetState
     extends CoReferencedCellEditorWidgetState<CoLinkedCellEditorWidget> {
-  List<DropdownMenuItem> _items = <DropdownMenuItem>[];
-  String initialData;
-  int pageIndex = 0;
-  int pageSize = 100;
-
   void valueChanged(dynamic value) {
-    this.value = value;
+    widget.cellEditorModel.value = value;
     this.onValueChanged(value);
   }
 
@@ -45,13 +40,13 @@ class CoLinkedCellEditorWidgetState
 
     DataBook data = widget.cellEditorModel.referencedData.getData(context, 0);
     if (pValue.value != null)
-      this.value =
+      widget.cellEditorModel.value =
           pValue.value[widget.cellEditorModel.getVisibleColumnIndex(data)[0]];
     else
-      this.value = pValue.value;
+      widget.cellEditorModel.value = pValue.value;
     if (widget.cellEditorModel.linkReference != null &&
         widget.cellEditorModel.linkReference.columnNames.length == 1)
-      this.onValueChanged(this.value, pValue.value[0]);
+      this.onValueChanged(widget.cellEditorModel.value, pValue.value[0]);
     else
       this.onValueChanged(pValue.value);
   }
@@ -63,7 +58,12 @@ class CoLinkedCellEditorWidgetState
 
     if (data != null && data.records.isNotEmpty) {
       data.records.asMap().forEach((j, record) {
-        if (j >= pageIndex * pageSize && j < (pageIndex + 1) * pageSize) {
+        if (j >=
+                widget.cellEditorModel.pageIndex *
+                    widget.cellEditorModel.pageSize &&
+            j <
+                (widget.cellEditorModel.pageIndex + 1) *
+                    widget.cellEditorModel.pageSize) {
           record.asMap().forEach((i, c) {
             if (visibleColumnsIndex.contains(i)) {
               items.add(getItem(c.toString(), c.toString()));
@@ -99,11 +99,11 @@ class CoLinkedCellEditorWidgetState
 
   void onScrollToEnd() {
     print("Scrolled to end");
-    DataBook _data =
-        widget.cellEditorModel.referencedData.getData(context, pageSize);
+    DataBook _data = widget.cellEditorModel.referencedData
+        .getData(context, widget.cellEditorModel.pageSize);
     if (_data != null && _data.records != null)
-      widget.cellEditorModel.referencedData
-          .getData(context, this.pageSize + _data.records.length);
+      widget.cellEditorModel.referencedData.getData(
+          context, widget.cellEditorModel.pageSize + _data.records.length);
   }
 
   void onFilterDropDown(dynamic value) {
@@ -123,14 +123,18 @@ class CoLinkedCellEditorWidgetState
       widget.cellEditorModel.referencedData.getData(context, -1);
     }
 
-    String h = this.value == null ? null : this.value.toString();
-    String v = this.value == null ? null : this.value.toString();
+    String h = widget.cellEditorModel.value == null
+        ? null
+        : widget.cellEditorModel.value.toString();
+    String v = widget.cellEditorModel.value == null
+        ? null
+        : widget.cellEditorModel.value.toString();
 
-    this._items = List<DropdownMenuItem<dynamic>>();
+    List<DropdownMenuItem> items = List<DropdownMenuItem<dynamic>>();
     if (v == null)
-      this._items.add(this.getItem("", ""));
+      items.add(this.getItem("", ""));
     else
-      this._items.add(this.getItem(v, v));
+      items.add(this.getItem(v, v));
 
     List<String> dropDownColumnNames;
 
@@ -162,7 +166,7 @@ class CoLinkedCellEditorWidgetState
               ? (placeholderVisible && placeholder != null ? placeholder : "")
               : h),
           value: v,
-          items: this._items,
+          items: items,
           onChanged: valueChanged,
           editable: this.editable != null ? this.editable : true,
           onDelete: () {
