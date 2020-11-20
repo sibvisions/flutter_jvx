@@ -205,10 +205,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                   if (this.currentResponse.request.requestType !=
                       RequestType.DEVICE_STATUS) {
                     if (widget.appState.screenManager
-                            .findScreen(rawComponentId) !=
+                            .findScreen(widget.menuComponentId) !=
                         null) {
                       screen = widget.appState.screenManager
-                          .findScreen(rawComponentId);
+                          .findScreen(widget.menuComponentId);
                     } else {
                       screen = SoScreen(
                           screenKey: this.screenKey,
