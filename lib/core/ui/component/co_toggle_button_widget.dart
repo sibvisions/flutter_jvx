@@ -44,7 +44,10 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     textStyle = changedComponent.getProperty<String>(
         ComponentProperty.STYLE, textStyle);
 
-    _selected = changedComponent.getProperty<bool>(ComponentProperty.SELECTED);
+    bool newSelected = changedComponent.getProperty<bool>(ComponentProperty.SELECTED);
+    if (newSelected != null) {
+      _selected = newSelected;
+    }
 
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
     if (image != null) {
@@ -158,7 +161,7 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     _disabledColor = Colors.orange;
 
     return CustomToggleButton(
-      background: this._selected ? this.background : _disabledColor,
+      background: this._selected != null && this._selected ? this.background : _disabledColor,
       child: child,
       enabled: this.enabled,
       minWidth: minWidth,
