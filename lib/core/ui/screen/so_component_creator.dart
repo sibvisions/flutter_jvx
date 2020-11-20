@@ -315,4 +315,14 @@ class SoComponentCreator implements IComponentCreator {
 
     return editor;
   }
+
+  void replaceComponent(
+      String className, ComponentWidget Function(ComponentModel) closure) {
+    this.standardComponents[className] = closure;
+  }
+
+  void replaceCellEditor(String className,
+      CoCellEditorWidget Function(CellEditor, BuildContext) closure) {
+    this.standardCellEditors[className] = closure;
+  }
 }

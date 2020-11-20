@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/component/component_model.dart';
 import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
+import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../../../core/models/api/response.dart';
 import '../../../../core/ui/screen/component_screen_widget.dart';
@@ -14,6 +17,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
   final String _templateName;
   final Response currentResponse = Response();
   final CustomHeaderAndFooter customHeaderAndFooter = CustomHeaderAndFooter();
+  final List<SoComponentData> componentData = <SoComponentData>[];
 
   CustomScreen(this.componentId, this._templateName);
 
@@ -27,9 +31,13 @@ class CustomScreen extends StatelessWidget implements IScreen {
     return true;
   }
 
-  DataApi getDataApi(String dataProvider) {
-    // return DataApi(componentScreen.getComponentData(dataProvider),
-    //     componentScreen.context);
+  DataApi getDataApi(String dataProvider, BuildContext context) {
+    SoComponentData data;
+    if (componentData.length > 0)
+      data = componentData.firstWhere((d) => d.dataProvider == dataProvider,
+          orElse: () => null);
+
+    return DataApi(data, context);
   }
 
   ApplicationApi getApplicationApi(BuildContext context) {
@@ -57,6 +65,12 @@ class CustomScreen extends StatelessWidget implements IScreen {
       response: this.currentResponse,
       closeCurrentScreen: false,
       componentCreator: SoComponentCreator(),
+      footerComponent: customHeaderAndFooter.footerComponent,
+      headerComponent: customHeaderAndFooter.headerComponent,
+      onData: (List<SoComponentData> data) {
+        this.componentData.clear();
+        this.componentData.addAll(data);
+      },
     );
   }
 

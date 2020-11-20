@@ -4,14 +4,13 @@ import '../../ui/screen/i_screen_manager.dart';
 import '../../utils/app/listener/app_listener.dart';
 import '../api/response/application_style_response.dart';
 import '../api/response/menu_item.dart';
-import 'i_app_state.dart';
 
-class AppState implements IAppState {
+class AppState {
   String username;
   String password;
   String baseUrl;
   String appName;
-  String appMode;
+  String appMode ;
   String language;
   int picSize;
   String appVersion;
@@ -41,8 +40,7 @@ class AppState implements IAppState {
 
   AppState();
 
-  @override
-  copyFromOther(IAppState state) {
+  copyFromOther(AppState state) {
     this.username = state.username;
     this.password = state.password;
     this.baseUrl = state.baseUrl;
