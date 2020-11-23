@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../utils/app/so_text_align.dart';
 import 'component_widget.dart';
-import 'text_field_component_model.dart';
+import 'models/text_field_component_model.dart';
 
 class CoTextFieldWidget extends ComponentWidget {
   final TextFieldComponentModel componentModel;

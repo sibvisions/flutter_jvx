@@ -5,14 +5,14 @@ import '../../models/api/component/component_properties.dart';
 import '../../utils/app/text_utils.dart';
 import 'editable_component_model.dart';
 
-class TextFieldComponentModel extends EditableComponentModel {
+class TextComponentModel extends EditableComponentModel {
   bool eventAction = false;
   bool border;
   int horizontalAlignment;
   int columns;
   bool valueChanged = false;
 
-  TextFieldComponentModel(ChangedComponent changedComponent)
+  TextComponentModel(ChangedComponent changedComponent)
       : super(changedComponent) {
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction);

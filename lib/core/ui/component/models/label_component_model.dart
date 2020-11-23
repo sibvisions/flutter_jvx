@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/api/component/changed_component.dart';
-import '../../utils/app/text_utils.dart';
+import '../../../models/api/component/changed_component.dart';
+import '../../../utils/app/text_utils.dart';
 import 'component_model.dart';
 
 class LabelComponentModel extends ComponentModel {
