@@ -1,9 +1,9 @@
 import '../../models/api/component/changed_component.dart';
 import '../component/models/button_component_model.dart';
-import '../component/models/checkbox_component_model.dart';
 import '../component/models/component_model.dart';
 import '../component/models/icon_component_model.dart';
 import '../component/models/label_component_model.dart';
+import '../component/models/selected_component_model.dart';
 import '../component/models/text_area_component_model.dart';
 import '../component/models/text_field_component_model.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
@@ -94,7 +94,10 @@ class ComponentModelManager {
         componentModel = ButtonComponentModel(changedComponent);
         break;
       case 'CheckBox':
-        componentModel = CheckBoxComponentModel(changedComponent);
+        componentModel = SelectedComponentModel(changedComponent);
+        break;
+      case 'RadioButton':
+        componentModel = SelectedComponentModel(changedComponent);
         break;
       case 'Icon':
         componentModel = IconComponentModel(changedComponent);

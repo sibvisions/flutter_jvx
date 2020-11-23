@@ -5,11 +5,11 @@ import '../../../models/api/component/component_properties.dart';
 import '../../../utils/app/text_utils.dart';
 import 'editable_component_model.dart';
 
-class CheckBoxComponentModel extends EditableComponentModel {
+class SelectedComponentModel extends EditableComponentModel {
   bool selected = false;
   bool eventAction = false;
 
-  CheckBoxComponentModel(ChangedComponent changedComponent)
+  SelectedComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
   @override

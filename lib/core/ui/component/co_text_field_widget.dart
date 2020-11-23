@@ -15,12 +15,14 @@ class CoTextFieldWidget extends ComponentWidget {
 }
 
 class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
-  TextEditingController _controller;
+  TextEditingController textController;
+  FocusNode focusNode;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    textController = TextEditingController();
+    focusNode = FocusNode();
   }
 
   @override
@@ -28,7 +30,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
     String controllerValue = (widget.componentModel.text != null
         ? widget.componentModel.text.toString()
         : "");
-    _controller.value = _controller.value.copyWith(
+    textController.value = textController.value.copyWith(
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
@@ -58,7 +60,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
                       ? widget.componentModel.foreground
                       : Colors.black)
                   : Colors.grey[700]),
-          controller: _controller,
+          controller: textController,
           minLines: null,
           maxLines: 1,
           keyboardType: TextInputType.text,
@@ -66,6 +68,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
             widget.componentModel.onTextFieldEndEditing();
           },
           onChanged: widget.componentModel.onTextFieldValueChanged,
+          focusNode: focusNode,
           readOnly: !widget.componentModel.enabled,
         ),
       ),
@@ -74,7 +77,8 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    textController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 }
