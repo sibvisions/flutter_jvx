@@ -133,9 +133,14 @@ mixin SoDataScreen {
   }
 
   void onComponetValueChanged(String componentId, dynamic value) {
-    SetComponentValue setComponentValue = SetComponentValue(
-        componentId, value, AppStateProvider.of(context).appState.clientId);
-    BlocProvider.of<ApiBloc>(context).add(setComponentValue);
+    TextUtils.unfocusCurrentTextfield(context);
+
+    // wait until textfields focus lost. 10 millis should do it.
+    Future.delayed(const Duration(milliseconds: 100), () {
+      SetComponentValue setComponentValue = SetComponentValue(
+          componentId, value, AppStateProvider.of(context).appState.clientId);
+      BlocProvider.of<ApiBloc>(context).add(setComponentValue);
+    });
   }
 
   void requestNext() {

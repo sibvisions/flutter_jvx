@@ -108,6 +108,9 @@ class ComponentModelManager {
       case 'TextArea':
         componentModel = TextAreaComponentModel(changedComponent);
         break;
+      case 'PasswordField':
+        componentModel = TextFieldComponentModel(changedComponent);
+        break;
 
       default:
         componentModel = ComponentModel(changedComponent);
