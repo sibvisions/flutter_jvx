@@ -49,8 +49,6 @@ class ComponentModel extends ValueNotifier {
   Size get maximumSize => _maximumSize;
   set maximumSize(Size size) => _maximumSize = size;
 
-  ButtonPressedCallback onButtonPressed;
-
   Queue<ToUpdateComponent> get toUpdateComponents => _toUpdateComponents;
 
   set toUpdateComponents(Queue<ToUpdateComponent> toUpdateComponents) =>

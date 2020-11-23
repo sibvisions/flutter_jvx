@@ -3,14 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
-import '../../models/api/request/press_button.dart';
-import '../../services/remote/bloc/api_bloc.dart';
-import '../../utils/app/text_utils.dart';
 import '../../utils/theme/theme_manager.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
 import 'button_component_model.dart';
@@ -85,16 +81,6 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     }
   }
 
-  void buttonPressed() {
-    TextUtils.unfocusCurrentTextfield(context);
-
-    Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton =
-          PressButton(widget.componentModel.action, this.appState.clientId);
-      BlocProvider.of<ApiBloc>(context).add(pressButton);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -151,7 +137,11 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         ),
         margin: EdgeInsets.all(4),
         child: GestureDetector(
-          onTap: this.enabled ? buttonPressed : null,
+          onTap: () {
+            this.enabled
+                ? widget.componentModel.onAction(widget.componentModel.action)
+                : null;
+          },
           child: SizedBox(
             height: 40,
             child: Center(
@@ -183,7 +173,12 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             child: SizedBox(
                 height: 50,
                 child: RaisedButton(
-                  onPressed: this.enabled ? buttonPressed : null,
+                  onPressed: () {
+                    this.enabled
+                        ? widget.componentModel
+                            .onAction(widget.componentModel.action)
+                        : null;
+                  },
                   color: this.background != null
                       ? this.background
                       : Theme.of(context).primaryColor,

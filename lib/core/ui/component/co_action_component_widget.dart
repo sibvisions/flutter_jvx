@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/api/so_action.dart';
 
-import 'component_model.dart';
+import 'action_component_model.dart';
 import 'component_widget.dart';
 
-typedef ButtonPressedCallback = void Function(String componentId, String label);
+typedef ActionCallback = void Function(SoAction action);
 
 abstract class CoActionComponentWidget extends ComponentWidget {
-  CoActionComponentWidget({ComponentModel componentModel})
+  final ActionComponentModel componentModel;
+  CoActionComponentWidget({this.componentModel})
       : super(componentModel: componentModel);
 }
 
 abstract class CoActionComponentWidgetState<T extends CoActionComponentWidget>
     extends ComponentWidgetState<T> {
-  ButtonPressedCallback onButtonPressed;
+  ActionCallback onAction;
 
   @override
   void initState() {
     super.initState();
-    this.onButtonPressed = widget.componentModel.onButtonPressed;
+    this.onAction = widget.componentModel.onAction;
   }
 
   @override

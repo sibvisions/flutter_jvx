@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
+import 'package:jvx_flutterclient/core/ui/component/action_component_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -183,8 +184,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
               .linkReference
               .dataProvider);
         }
-      } else if (componentClass is CoActionComponentWidget) {
-        componentClass?.componentModel?.onButtonPressed = this.onButtonPressed;
+      } else if (componentClass?.componentModel is ActionComponentModel) {
+        (componentClass?.componentModel as ActionComponentModel).onAction =
+            this.onAction;
       } else if (component.additional && componentClass is CoPopupMenuWidget) {
         if (components
                 .containsKey(componentClass.componentModel.parentComponentId) &&
