@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/api/so_action.dart';
 
-import 'action_component_model.dart';
+import 'models/action_component_model.dart';
 import 'component_widget.dart';
 
 typedef ActionCallback = void Function(SoAction action);

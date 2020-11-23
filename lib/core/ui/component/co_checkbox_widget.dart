@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../layout/I_alignment_constants.dart';
-import 'checkbox_component_model.dart';
+import 'models/checkbox_component_model.dart';
 import 'component_widget.dart';
 
 class CoCheckBoxWidget extends ComponentWidget {

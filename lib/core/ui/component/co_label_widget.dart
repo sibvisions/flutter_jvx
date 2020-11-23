@@ -3,7 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import 'component_widget.dart';
-import 'label_component_model.dart';
+import 'models/label_component_model.dart';
 
 class CoLabelWidget extends ComponentWidget {
   final LabelComponentModel componentModel;

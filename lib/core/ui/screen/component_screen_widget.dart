@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response.dart';
-import 'package:jvx_flutterclient/core/ui/component/action_component_model.dart';
-import 'package:jvx_flutterclient/core/ui/component/editable_component_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/request.dart';
+import '../../models/api/response.dart';
 import '../../models/api/response/response_data.dart';
-import '../component/co_action_component_widget.dart';
-import '../component/component_model.dart';
 import '../component/component_widget.dart';
+import '../component/models/action_component_model.dart';
+import '../component/models/component_model.dart';
+import '../component/models/editable_component_model.dart';
 import '../component/popup_menu/co_menu_item_widget.dart';
 import '../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../component/popup_menu/co_popup_menu_widget.dart';

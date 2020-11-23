@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../models/api/component/changed_component.dart';
-import '../../models/api/component/component_properties.dart';
-import '../../utils/app/text_utils.dart';
+import '../../../models/api/component/changed_component.dart';
+import '../../../models/api/component/component_properties.dart';
+import '../../../utils/app/text_utils.dart';
 import 'action_component_model.dart';
 
 class ButtonComponentModel extends ActionComponentModel {

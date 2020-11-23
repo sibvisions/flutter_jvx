@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/component/component_properties.dart';
-import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
-
-import '../../models/api/component/changed_component.dart';
+import '../../../models/api/component/changed_component.dart';
+import '../../../models/api/component/component_properties.dart';
 import 'component_model.dart';
 
 class IconComponentModel extends ComponentModel {

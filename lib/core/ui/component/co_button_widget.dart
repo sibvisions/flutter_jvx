@@ -9,7 +9,7 @@ import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../utils/theme/theme_manager.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
-import 'button_component_model.dart';
+import 'models/button_component_model.dart';
 import 'co_action_component_widget.dart';
 
 class CoButtonWidget extends CoActionComponentWidget {

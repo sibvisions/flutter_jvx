@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../component/component_model.dart';
+import '../component/models/component_model.dart';
 import '../component/component_widget.dart';
 import 'co_container_widget.dart';
 

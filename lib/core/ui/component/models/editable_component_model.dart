@@ -1,4 +1,4 @@
-import '../../models/api/component/changed_component.dart';
+import '../../../models/api/component/changed_component.dart';
 import 'component_model.dart';
 
 typedef ComponentValueChangedCallback = void Function(

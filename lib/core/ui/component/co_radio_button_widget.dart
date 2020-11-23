@@ -6,7 +6,7 @@ import '../../models/api/component/component_properties.dart';
 import '../../models/api/request/set_component_value.dart';
 import '../../services/remote/bloc/api_bloc.dart';
 import '../../ui/layout/i_alignment_constants.dart';
-import 'component_model.dart';
+import 'models/component_model.dart';
 import 'component_widget.dart';
 
 class CoRadioButtonWidget extends ComponentWidget {
@@ -34,7 +34,8 @@ class CoRadioButtonWidgetState
   }
 
   void valueChanged(dynamic value) {
-    SetComponentValue setComponentValue = SetComponentValue(this.name, true, this.appState.clientId);
+    SetComponentValue setComponentValue =
+        SetComponentValue(this.name, true, this.appState.clientId);
     BlocProvider.of<ApiBloc>(context).add(setComponentValue);
   }
 

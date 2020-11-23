@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
-import '../component_model.dart';
+import '../models/component_model.dart';
 import '../component_widget.dart';
 
 class CoMenuItemWidget extends ComponentWidget {

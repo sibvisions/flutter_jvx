@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/api/component/changed_component.dart';
-import '../component_model.dart';
+import '../models/component_model.dart';
 import 'co_menu_item_widget.dart';
 
 class PopupComponentModel extends ComponentModel {

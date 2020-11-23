@@ -4,7 +4,7 @@ import 'package:jvx_flutterclient/core/ui/editor/celleditor/cell_editor_model.da
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
-import '../component/component_model.dart';
+import '../component/models/component_model.dart';
 import '../screen/so_component_data.dart';
 
 class EditorComponentModel extends ComponentModel {

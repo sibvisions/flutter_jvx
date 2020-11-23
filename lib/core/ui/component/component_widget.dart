@@ -11,7 +11,7 @@ import '../../utils/app/so_text_style.dart';
 import '../../utils/theme/hex_color.dart';
 import '../container/container_component_model.dart';
 import '../screen/component_screen_widget.dart';
-import 'component_model.dart';
+import 'models/component_model.dart';
 
 class ComponentWidget extends StatefulWidget {
   final ComponentModel componentModel;

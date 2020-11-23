@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/component/text_component_model.dart';
 
-import '../../models/api/component/changed_component.dart';
-import '../../models/api/component/component_properties.dart';
-import '../../utils/app/text_utils.dart';
-import 'editable_component_model.dart';
+import '../../../models/api/component/changed_component.dart';
+import '../../../utils/app/text_utils.dart';
+import 'text_component_model.dart';
 
 class TextFieldComponentModel extends TextComponentModel {
   TextFieldComponentModel(ChangedComponent changedComponent)

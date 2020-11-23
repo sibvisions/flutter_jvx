@@ -7,7 +7,7 @@ import '../../models/api/request/set_component_value.dart';
 import '../../services/remote/bloc/api_bloc.dart';
 import '../../utils/app/so_text_align.dart';
 import '../../utils/app/text_utils.dart';
-import 'component_model.dart';
+import 'models/component_model.dart';
 import 'component_widget.dart';
 
 class CoPasswordFieldWidget extends ComponentWidget {
@@ -71,7 +71,8 @@ class CoPasswordFieldWidgetState extends ComponentWidgetState {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (this.valueChanged) {
-      SetComponentValue setComponentValue = SetComponentValue(this.name, text, this.appState.clientId);
+      SetComponentValue setComponentValue =
+          SetComponentValue(this.name, text, this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(setComponentValue);
       this.valueChanged = false;
     }

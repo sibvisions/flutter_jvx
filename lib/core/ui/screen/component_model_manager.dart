@@ -1,12 +1,12 @@
 import '../../models/api/component/changed_component.dart';
-import '../component/button_component_model.dart';
-import '../component/checkbox_component_model.dart';
-import '../component/component_model.dart';
-import '../component/icon_component_model.dart';
-import '../component/label_component_model.dart';
+import '../component/models/button_component_model.dart';
+import '../component/models/checkbox_component_model.dart';
+import '../component/models/component_model.dart';
+import '../component/models/icon_component_model.dart';
+import '../component/models/label_component_model.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
 import '../component/popup_menu/popup_component_model.dart';
-import '../component/text_field_component_model.dart';
+import '../component/models/text_field_component_model.dart';
 import '../container/container_component_model.dart';
 import '../editor/editor_component_model.dart';
 
