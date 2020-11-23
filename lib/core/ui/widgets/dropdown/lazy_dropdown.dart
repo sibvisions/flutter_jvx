@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../models/api/response/data/data_book.dart';
 import '../../../utils/translation/app_localizations.dart';
 import '../../component/co_table_widget.dart';
 import '../../editor/editor_component_model.dart';

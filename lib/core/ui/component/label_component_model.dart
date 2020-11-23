@@ -6,16 +6,13 @@ import 'component_model.dart';
 
 class LabelComponentModel extends ComponentModel {
   TextStyle style = new TextStyle(fontSize: 16.0, color: Colors.black);
-  String text = "";
   ChangedComponent _changedComponent;
 
-  LabelComponentModel(this._changedComponent) : super(_changedComponent) {
-    text = _changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
-  }
+  LabelComponentModel(this._changedComponent) : super(_changedComponent) {}
 
   @override
   get preferredSize {
-    double width = TextUtils.getTextWidth(text, style).toDouble();
-    return Size(width, 50);
+    Size size = TextUtils.getTextSize(text, style);
+    return Size(size.width, size.height);
   }
 }

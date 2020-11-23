@@ -6,18 +6,15 @@ import 'component_widget.dart';
 import 'label_component_model.dart';
 
 class CoLabelWidget extends ComponentWidget {
-  final String text;
+  final LabelComponentModel componentModel;
 
-  CoLabelWidget({this.text, LabelComponentModel componentModel})
-      : super(componentModel: componentModel);
+  CoLabelWidget({this.componentModel}) : super(componentModel: componentModel);
 
   @override
   State<StatefulWidget> createState() => CoLabelWidgetState();
 }
 
 class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
-  String text = '';
-
   static Alignment getLabelAlignment(
       int horizontalAlignment, int verticalAlignment) {
     switch (horizontalAlignment) {
@@ -59,8 +56,9 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   double getBaseline() {
     double labelBaseline = 30;
 
-    if (style != null && style.fontSize != null) {
-      labelBaseline = style.fontSize / 2 + 21;
+    if (widget.componentModel.style != null &&
+        widget.componentModel.style.fontSize != null) {
+      labelBaseline = widget.componentModel.style.fontSize / 2; // + 21;
     }
 
     return labelBaseline;
@@ -69,45 +67,44 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
-    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    widget.componentModel.text = changedComponent.getProperty<String>(
+        ComponentProperty.TEXT, widget.componentModel.text);
   }
 
   @override
   void initState() {
     super.initState();
-    if (text.isEmpty) this.text = widget.text;
   }
 
   @override
   Widget build(BuildContext context) {
     TextOverflow overflow;
 
-    if (this.isMaximumSizeSet) overflow = TextOverflow.ellipsis;
+    if (widget.componentModel.isMaximumSizeSet)
+      overflow = TextOverflow.ellipsis;
 
-    if (text.isEmpty)
+    if (widget.componentModel.text.isEmpty)
       this.updateProperties(widget.componentModel.changedComponent);
 
     Widget child = Container(
       padding: EdgeInsets.only(top: 0.5),
-      color: this.background,
+      color: widget.componentModel.background,
       child: Align(
         alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
-        child: Baseline(
-            baselineType: TextBaseline.alphabetic,
-            baseline: getBaseline(),
-            child: text.trim().startsWith('<html>')
-                ? Html(data: text)
-                : Text(
-                    text,
-                    style: style,
-                    overflow: overflow,
-                  )),
+        child: widget.componentModel.text.trim().startsWith('<html>')
+            ? Html(data: widget.componentModel.text)
+            : Text(
+                widget.componentModel.text,
+                style: widget.componentModel.style,
+                overflow: overflow,
+              ),
       ),
     );
 
-    if (this.isMaximumSizeSet) {
+    if (widget.componentModel.isMaximumSizeSet) {
       return ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: this.maximumSize.width),
+          constraints:
+              BoxConstraints(maxWidth: widget.componentModel.maximumSize.width),
           child: child);
     } else {
       return SizedBox(child: child);

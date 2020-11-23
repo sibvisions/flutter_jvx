@@ -74,7 +74,6 @@ class SoComponentCreator implements IComponentCreator {
           // key: GlobalKey(debugLabel: changedComponent.id),
           // key: Key(changedComponent.id),
           // key: ValueKey(changedComponent.id),
-          text: '',
           componentModel: componentModel,
         ),
     'Button': (ComponentModel componentModel) => CoButtonWidget(
@@ -196,12 +195,11 @@ class SoComponentCreator implements IComponentCreator {
   }
 
   ComponentWidget _createDefaultComponent(ChangedComponent changedComponent) {
+    LabelComponentModel model = LabelComponentModel(changedComponent);
+    model.text = "Undefined Component '" +
+        (changedComponent.className != null ? changedComponent.className : "") +
+        "'!";
     ComponentWidget componentWidget = CoLabelWidget(
-      text: "Undefined Component '" +
-          (changedComponent.className != null
-              ? changedComponent.className
-              : "") +
-          "'!",
       componentModel: LabelComponentModel(changedComponent),
     );
 

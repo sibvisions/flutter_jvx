@@ -4,6 +4,11 @@ import '../so_action.dart';
 class PressButton extends Request {
   SoAction action;
 
+  @override
+  String get debugInfo {
+    return action.componentId;
+  }
+
   PressButton(this.action, String clientId)
       : super(RequestType.PRESS_BUTTON, clientId);
 

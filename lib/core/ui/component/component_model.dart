@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
+import '../../utils/app/so_text_style.dart';
+import '../../utils/theme/hex_color.dart';
 import '../container/container_component_model.dart';
 import '../screen/component_screen_widget.dart';
 import 'co_action_component_widget.dart';
@@ -11,29 +13,32 @@ import 'component_widget.dart';
 
 class ComponentModel extends ValueNotifier {
   Queue<ToUpdateComponent> _toUpdateComponents = Queue<ToUpdateComponent>();
-
-  String componentId;
-  String parentComponentId;
   String name;
-  bool enabled = true;
-  ChangedComponent _changedComponent;
-  ComponentWidgetState componentState;
-  CoState coState;
-  String constraints;
-  bool isVisible = true;
+  String componentId;
+  String rawComponentId;
+  CoState state = CoState.Free;
+  Color background = Colors.transparent;
+  Color foreground;
+  TextStyle style = new TextStyle(fontSize: 16.0, color: Colors.black);
   Size _preferredSize;
   Size _minimumSize;
   Size _maximumSize;
+  bool isVisible = true;
+  bool enabled = true;
+  String constraints = "";
+  int verticalAlignment = 1;
+  int horizontalAlignment = 0;
+  String text = "";
 
-  ButtonPressedCallback onButtonPressed;
+  String parentComponentId;
+  List<Key> childComponentIds;
 
-  String text;
+  ChangedComponent _changedComponent;
+  ComponentWidgetState componentState;
+  CoState coState;
 
-  Queue<ToUpdateComponent> get toUpdateComponents => _toUpdateComponents;
-
-  set toUpdateComponents(Queue<ToUpdateComponent> toUpdateComponents) =>
-      _toUpdateComponents = toUpdateComponents;
-
+  bool get isForegroundSet => foreground != null;
+  bool get isBackgroundSet => background != null;
   bool get isPreferredSizeSet => preferredSize != null;
   bool get isMinimumSizeSet => minimumSize != null;
   bool get isMaximumSizeSet => maximumSize != null;
@@ -43,6 +48,13 @@ class ComponentModel extends ValueNotifier {
   set minimumSize(Size size) => _minimumSize = size;
   Size get maximumSize => _maximumSize;
   set maximumSize(Size size) => _maximumSize = size;
+
+  ButtonPressedCallback onButtonPressed;
+
+  Queue<ToUpdateComponent> get toUpdateComponents => _toUpdateComponents;
+
+  set toUpdateComponents(Queue<ToUpdateComponent> toUpdateComponents) =>
+      _toUpdateComponents = toUpdateComponents;
 
   set compId(String newComponentId) {
     componentId = newComponentId;
@@ -71,21 +83,34 @@ class ComponentModel extends ValueNotifier {
   }
 
   void updateProperties(ChangedComponent changedComponent) {
-    parentComponentId = changedComponent.getProperty<String>(
-        ComponentProperty.PARENT, parentComponentId);
-    isVisible = changedComponent.getProperty<bool>(
-        ComponentProperty.VISIBLE, isVisible);
-    constraints = changedComponent.getProperty<String>(
-        ComponentProperty.CONSTRAINTS, constraints);
     preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, _preferredSize);
     maximumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MAXIMUM_SIZE, _maximumSize);
     minimumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MINIMUM_SIZE, _minimumSize);
+    rawComponentId = changedComponent.getProperty<String>(ComponentProperty.ID);
+    background =
+        changedComponent.getProperty<HexColor>(ComponentProperty.BACKGROUND);
+    name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
+    isVisible =
+        changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
+    style = SoTextStyle.addFontToTextStyle(
+        changedComponent.getProperty<String>(ComponentProperty.FONT, ""),
+        style);
+    foreground = changedComponent.getProperty<HexColor>(
+        ComponentProperty.FOREGROUND, null);
+    style = SoTextStyle.addForecolorToTextStyle(foreground, style);
     enabled =
-        changedComponent.getProperty<bool>(ComponentProperty.ENABLED, enabled);
-    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+        changedComponent.getProperty<bool>(ComponentProperty.ENABLED, true);
+    verticalAlignment = changedComponent.getProperty<int>(
+        ComponentProperty.VERTICAL_ALIGNMENT, verticalAlignment);
+    horizontalAlignment = changedComponent.getProperty<int>(
+        ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
+    parentComponentId = changedComponent.getProperty<String>(
+        ComponentProperty.PARENT, parentComponentId);
+    constraints = changedComponent.getProperty<String>(
+        ComponentProperty.CONSTRAINTS, constraints);
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
   }
 
