@@ -15,11 +15,7 @@ class ButtonComponentModel extends ActionComponentModel {
   String image;
 
   ButtonComponentModel(ChangedComponent changedComponent)
-      : super(changedComponent) {
-    style =
-        changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
-    image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
-  }
+      : super(changedComponent);
 
   @override
   get isPreferredSizeSet => this.preferredSize != null;
@@ -39,5 +35,13 @@ class ButtonComponentModel extends ActionComponentModel {
     Size size = TextUtils.getTextSize(text, fontStyle);
     return Size(size.width + width + margin.horizontal,
         size.height + height + margin.vertical);
+  }
+
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+
+    style =
+        changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
+    image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
   }
 }

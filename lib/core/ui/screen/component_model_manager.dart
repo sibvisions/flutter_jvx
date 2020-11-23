@@ -4,9 +4,10 @@ import '../component/models/checkbox_component_model.dart';
 import '../component/models/component_model.dart';
 import '../component/models/icon_component_model.dart';
 import '../component/models/label_component_model.dart';
+import '../component/models/text_area_component_model.dart';
+import '../component/models/text_field_component_model.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
 import '../component/popup_menu/popup_component_model.dart';
-import '../component/models/text_field_component_model.dart';
 import '../container/container_component_model.dart';
 import '../editor/editor_component_model.dart';
 
@@ -100,6 +101,9 @@ class ComponentModelManager {
         break;
       case 'TextField':
         componentModel = TextFieldComponentModel(changedComponent);
+        break;
+      case 'TextArea':
+        componentModel = TextAreaComponentModel(changedComponent);
         break;
 
       default:

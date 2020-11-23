@@ -10,12 +10,7 @@ class CheckBoxComponentModel extends EditableComponentModel {
   bool eventAction = false;
 
   CheckBoxComponentModel(ChangedComponent changedComponent)
-      : super(changedComponent) {
-    eventAction = changedComponent.getProperty<bool>(
-        ComponentProperty.EVENT_ACTION, eventAction);
-    selected = changedComponent.getProperty<bool>(
-        ComponentProperty.SELECTED, selected);
-  }
+      : super(changedComponent);
 
   @override
   get isPreferredSizeSet => this.preferredSize != null;
@@ -27,5 +22,14 @@ class CheckBoxComponentModel extends EditableComponentModel {
 
     Size size = TextUtils.getTextSize(text, fontStyle);
     return Size(size.width + checkSize, checkSize);
+  }
+
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+
+    eventAction = changedComponent.getProperty<bool>(
+        ComponentProperty.EVENT_ACTION, eventAction);
+    selected = changedComponent.getProperty<bool>(
+        ComponentProperty.SELECTED, selected);
   }
 }

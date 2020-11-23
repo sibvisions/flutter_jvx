@@ -4,8 +4,8 @@ import '../../../models/api/component/changed_component.dart';
 import '../../../utils/app/text_utils.dart';
 import 'text_component_model.dart';
 
-class TextFieldComponentModel extends TextComponentModel {
-  TextFieldComponentModel(ChangedComponent changedComponent)
+class TextAreaComponentModel extends TextComponentModel {
+  TextAreaComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
   @override
@@ -23,15 +23,12 @@ class TextFieldComponentModel extends TextComponentModel {
           .toDouble();
     }
 
-    return Size(width, 50);
+    return Size(width, 100);
   }
-
-  @override
-  get isMinimumSizeSet => this.minimumSize != null;
 
   @override
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
-    return Size(10, 50);
+    return Size(10, 100);
   }
 }

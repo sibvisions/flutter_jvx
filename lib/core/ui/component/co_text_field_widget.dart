@@ -34,8 +34,8 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: this.background != null
-              ? this.background
+          color: widget.componentModel.background != null
+              ? widget.componentModel.background
               : Colors.white
                   .withOpacity(this.appState.applicationStyle?.controlsOpacity),
           borderRadius: BorderRadius.circular(

@@ -14,7 +14,11 @@ class IconComponentModel extends ComponentModel {
   int horizontalAlignment = 1;
 
   IconComponentModel(ChangedComponent changedComponent)
-      : super(changedComponent) {
+      : super(changedComponent);
+
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction);
     selected = changedComponent.getProperty<bool>(

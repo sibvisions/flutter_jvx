@@ -8,7 +8,11 @@ class ActionComponentModel extends ComponentModel {
   ActionCallback onAction;
 
   ActionComponentModel(ChangedComponent changedComponent)
-      : super(changedComponent) {
+      : super(changedComponent);
+
+  void updateProperties(ChangedComponent changedComponent) {
+    super.updateProperties(changedComponent);
+
     action = SoAction(componentId: this.name, label: this.text);
   }
 }
