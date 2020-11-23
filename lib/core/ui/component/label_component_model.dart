@@ -10,6 +10,9 @@ class LabelComponentModel extends ComponentModel {
       : super(changedComponent);
 
   @override
+  get isPreferredSizeSet => this.preferredSize != null;
+
+  @override
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
 

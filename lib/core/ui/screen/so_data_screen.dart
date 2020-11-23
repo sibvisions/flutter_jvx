@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import '../../models/api/request.dart';
@@ -129,6 +130,12 @@ mixin SoDataScreen {
           AppStateProvider.of(context).appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
+  }
+
+  void onComponetValueChanged(String componentId, dynamic value) {
+    SetComponentValue setComponentValue = SetComponentValue(
+        componentId, value, AppStateProvider.of(context).appState.clientId);
+    BlocProvider.of<ApiBloc>(context).add(setComponentValue);
   }
 
   void requestNext() {

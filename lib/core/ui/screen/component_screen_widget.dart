@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
 import 'package:jvx_flutterclient/core/ui/component/action_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/component/editable_component_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -187,6 +188,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       } else if (componentClass?.componentModel is ActionComponentModel) {
         (componentClass?.componentModel as ActionComponentModel).onAction =
             this.onAction;
+      } else if (componentClass?.componentModel is EditableComponentModel) {
+        (componentClass?.componentModel as EditableComponentModel)
+            .onComponentValueChanged = this.onComponetValueChanged;
       } else if (component.additional && componentClass is CoPopupMenuWidget) {
         if (components
                 .containsKey(componentClass.componentModel.parentComponentId) &&

@@ -1,6 +1,8 @@
 import '../../models/api/component/changed_component.dart';
 import '../component/button_component_model.dart';
+import '../component/checkbox_component_model.dart';
 import '../component/component_model.dart';
+import '../component/icon_component_model.dart';
 import '../component/label_component_model.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
 import '../component/popup_menu/popup_component_model.dart';
@@ -89,6 +91,13 @@ class ComponentModelManager {
       case 'Button':
         componentModel = ButtonComponentModel(changedComponent);
         break;
+      case 'CheckBox':
+        componentModel = CheckBoxComponentModel(changedComponent);
+        break;
+      case 'Icon':
+        componentModel = IconComponentModel(changedComponent);
+        break;
+
       default:
         componentModel = ComponentModel(changedComponent);
         break;

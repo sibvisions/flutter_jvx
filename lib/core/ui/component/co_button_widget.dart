@@ -37,7 +37,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
           if (strinArr.length >= 3 &&
               double.tryParse(strinArr[1]) != null &&
               double.tryParse(strinArr[2]) != null) {
-            widget.componentModel.size =
+            widget.componentModel.iconSize =
                 Size(double.parse(strinArr[1]), double.parse(strinArr[2]));
             if (strinArr[3] != null) {
               widget.componentModel.network =
@@ -47,15 +47,15 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             if (this.appState.files.containsKey(strinArr[0])) {
               setState(() => widget.componentModel.icon = Image.memory(
                     utf8.base64Decode(this.appState.files[strinArr[0]]),
-                    width: widget.componentModel.size.width,
-                    height: widget.componentModel.size.height,
+                    width: widget.componentModel.iconSize.width,
+                    height: widget.componentModel.iconSize.height,
                     color: !this.enabled ? Colors.grey.shade500 : null,
                   ));
             } else if (widget.componentModel.network) {
               setState(() => widget.componentModel.icon = Image.network(
                     this.appState.baseUrl + strinArr[0],
-                    width: widget.componentModel.size.width,
-                    height: widget.componentModel.size.height,
+                    width: widget.componentModel.iconSize.width,
+                    height: widget.componentModel.iconSize.height,
                     color: !this.enabled ? Colors.grey.shade500 : null,
                   ));
             }
@@ -92,11 +92,11 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     Widget textWidget = new Text(
         widget.componentModel.text != null ? widget.componentModel.text : "",
         style: TextStyle(
-            fontSize: style.fontSize,
-            color: !this.enabled
+            fontSize: widget.componentModel.fontStyle.fontSize,
+            color: !widget.componentModel.enabled
                 ? Colors.grey.shade500
-                : this.foreground != null
-                    ? this.foreground
+                : widget.componentModel.foreground != null
+                    ? widget.componentModel.foreground
                     : Theme.of(context).primaryTextTheme.bodyText1.color));
 
     if (widget.componentModel.text?.isNotEmpty ?? true) {
@@ -106,9 +106,9 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             widget.componentModel.icon != null
                 ? widget.componentModel.icon
                 : SizedBox(
-                    width: widget.componentModel.size.width,
-                    height: widget.componentModel.size.height),
-            SizedBox(width: 10),
+                    width: widget.componentModel.iconSize.width,
+                    height: widget.componentModel.iconSize.height),
+            SizedBox(width: widget.componentModel.iconPadding),
             textWidget
           ],
           mainAxisAlignment: MainAxisAlignment.center,
@@ -125,9 +125,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     double minWidth = 44;
     EdgeInsets padding;
 
-    if (this.isPreferredSizeSet && this.preferredSize.width < minWidth) {
+    if (widget.componentModel.isPreferredSizeSet &&
+        widget.componentModel.preferredSize.width < minWidth) {
       padding = EdgeInsets.symmetric(horizontal: 0);
-      minWidth = this.preferredSize.width;
+      minWidth = widget.componentModel.preferredSize.width;
     }
 
     if (widget.componentModel.style == 'hyperlink') {
@@ -151,11 +152,11 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                     : '',
                 style: TextStyle(
                     decoration: TextDecoration.underline,
-                    fontSize: style.fontSize,
-                    color: !this.enabled
+                    fontSize: widget.componentModel.fontStyle.fontSize,
+                    color: !widget.componentModel.enabled
                         ? Colors.grey.shade500
-                        : this.foreground != null
-                            ? this.foreground
+                        : widget.componentModel.foreground != null
+                            ? widget.componentModel.foreground
                             : Colors.blue),
               ),
             ),
@@ -164,7 +165,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
       );
     }
     return Container(
-        margin: EdgeInsets.all(4),
+        margin: widget.componentModel.margin,
         child: ButtonTheme(
             minWidth: minWidth,
             padding: padding,
@@ -179,14 +180,16 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                             .onAction(widget.componentModel.action)
                         : null;
                   },
-                  color: this.background != null
-                      ? this.background
+                  color: widget.componentModel.background != null
+                      ? widget.componentModel.background
                       : Theme.of(context).primaryColor,
                   elevation: 2,
                   disabledColor: Colors.grey.shade300,
                   child: child,
-                  splashColor: this.background != null
-                      ? TinyColor(this.background).darken().color
+                  splashColor: widget.componentModel.background != null
+                      ? TinyColor(widget.componentModel.background)
+                          .darken()
+                          .color
                       : Theme.of(context).primaryColor,
                 ))));
   }
