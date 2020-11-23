@@ -56,9 +56,9 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   double getBaseline() {
     double labelBaseline = 30;
 
-    if (widget.componentModel.style != null &&
-        widget.componentModel.style.fontSize != null) {
-      labelBaseline = widget.componentModel.style.fontSize / 2; // + 21;
+    if (widget.componentModel.fontStyle != null &&
+        widget.componentModel.fontStyle.fontSize != null) {
+      labelBaseline = widget.componentModel.fontStyle.fontSize / 2; // + 21;
     }
 
     return labelBaseline;
@@ -95,7 +95,7 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
             ? Html(data: widget.componentModel.text)
             : Text(
                 widget.componentModel.text,
-                style: widget.componentModel.style,
+                style: widget.componentModel.fontStyle,
                 overflow: overflow,
               ),
       ),

@@ -19,7 +19,7 @@ class ComponentModel extends ValueNotifier {
   CoState state = CoState.Free;
   Color background = Colors.transparent;
   Color foreground;
-  TextStyle style = new TextStyle(fontSize: 16.0, color: Colors.black);
+  TextStyle fontStyle = new TextStyle(fontSize: 16.0, color: Colors.black);
   Size _preferredSize;
   Size _minimumSize;
   Size _maximumSize;
@@ -95,12 +95,12 @@ class ComponentModel extends ValueNotifier {
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     isVisible =
         changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
-    style = SoTextStyle.addFontToTextStyle(
+    fontStyle = SoTextStyle.addFontToTextStyle(
         changedComponent.getProperty<String>(ComponentProperty.FONT, ""),
-        style);
+        fontStyle);
     foreground = changedComponent.getProperty<HexColor>(
         ComponentProperty.FOREGROUND, null);
-    style = SoTextStyle.addForecolorToTextStyle(foreground, style);
+    fontStyle = SoTextStyle.addForecolorToTextStyle(foreground, fontStyle);
     enabled =
         changedComponent.getProperty<bool>(ComponentProperty.ENABLED, true);
     verticalAlignment = changedComponent.getProperty<int>(
@@ -112,6 +112,7 @@ class ComponentModel extends ValueNotifier {
     constraints = changedComponent.getProperty<String>(
         ComponentProperty.CONSTRAINTS, constraints);
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
+    text = _changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
   }
 
   void update() {
