@@ -70,8 +70,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentModelManager _componentModelManager = ComponentModelManager();
 
   bool debug = true;
-  ComponentWidget headerComponent;
-  ComponentWidget footerComponent;
 
   ComponentWidget rootComponent;
 
@@ -388,36 +386,28 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             element.componentModel.coState == CoState.Added,
         orElse: () => null);
 
-    if (headerComponent != null || footerComponent != null) {
+    if (widget.headerComponent != null || widget.footerComponent != null) {
       ComponentWidget headerFooterPanel = CoPanelWidget(
           componentModel:
               ComponentModel(ChangedComponent(id: 'headerFooterPanel')));
       (headerFooterPanel.componentModel as ContainerComponentModel)
           .toUpdateLayout
           .add('BorderLayout,0,0,0,0,0,0,');
-      if (headerComponent != null) {
-        headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
-        headerComponent.componentModel.constraints = 'North';
+      if (widget.headerComponent != null) {
+        widget.headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
+        widget.headerComponent.componentModel.constraints = 'North';
       }
       rootComponent.componentModel.parentComponentId = 'headerFooterPanel';
       rootComponent.componentModel.constraints = 'Center';
-      if (footerComponent != null) {
-        footerComponent.componentModel.parentComponentId = 'headerFooterPanel';
-        footerComponent.componentModel.constraints = 'South';
+      if (widget.footerComponent != null) {
+        widget.footerComponent.componentModel.parentComponentId = 'headerFooterPanel';
+        widget.footerComponent.componentModel.constraints = 'South';
       }
 
       return headerFooterPanel;
     }
 
     return rootComponent;
-  }
-
-  setHeader(ComponentWidget headerComponent) {
-    this.headerComponent = headerComponent;
-  }
-
-  setFooter(ComponentWidget footerComponent) {
-    this.footerComponent = footerComponent;
   }
 
   replaceComponent(ComponentWidget compToReplace, ComponentWidget newComp) {
@@ -568,7 +558,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget component = this.getComponentFromName(name);
 
       if (component != null && component != toReplaceComponent) {
-        toReplaceComponent.componentModel.compId = component.componentModel.componentId;
         toReplaceComponent.componentModel.toUpdateComponents.add(
             ToUpdateComponent(
                 componentId: component.componentModel.componentId,
@@ -576,6 +565,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                     component.componentModel.firstChangedComponent));
         toReplaceComponent.componentModel.toUpdateComponents
             .addAll(component.componentModel.toUpdateComponents);
+        toReplaceComponent.componentModel.compId = component.componentModel.componentId;
         toReplaceComponent.componentModel.parentComponentId =
             component.componentModel.parentComponentId;
         toReplaceComponent.componentModel.constraints =
