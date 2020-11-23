@@ -440,7 +440,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentWidget getComponentFromName(String componentName) {
     return this.components.values.firstWhere(
         (element) =>
-            element?.componentModel?.componentState?.name == componentName &&
+            element?.componentModel?.name == componentName &&
             element?.componentModel?.coState == CoState.Added,
         orElse: () => null);
   }
@@ -564,10 +564,18 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   void replaceComponents(Map<String, ComponentWidget> toReplaceComponents) {
     if (toReplaceComponents == null || toReplaceComponents.isEmpty) return;
 
-    toReplaceComponents.forEach((componentId, toReplaceComponent) {
-      ComponentWidget component = components[componentId];
+    toReplaceComponents.forEach((name, toReplaceComponent) {
+      ComponentWidget component = this.getComponentFromName(name);
 
       if (component != null && component != toReplaceComponent) {
+        toReplaceComponent.componentModel.compId = component.componentModel.componentId;
+        toReplaceComponent.componentModel.toUpdateComponents.add(
+            ToUpdateComponent(
+                componentId: component.componentModel.componentId,
+                changedComponent:
+                    component.componentModel.firstChangedComponent));
+        toReplaceComponent.componentModel.toUpdateComponents
+            .addAll(component.componentModel.toUpdateComponents);
         toReplaceComponent.componentModel.parentComponentId =
             component.componentModel.parentComponentId;
         toReplaceComponent.componentModel.constraints =

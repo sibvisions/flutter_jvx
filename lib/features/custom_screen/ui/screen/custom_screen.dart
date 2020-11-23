@@ -56,9 +56,9 @@ class CustomScreen extends StatelessWidget implements IScreen {
     customHeaderAndFooter.footerComponent = footerComponent;
   }
 
-  void replaceComponent(String componentId, ComponentWidget toReplaceComponent) {
-    if (!this.toReplace.containsKey(componentId)) {
-      this.replaceComponent(componentId, toReplaceComponent);
+  void replaceComponent(String name, ComponentWidget toReplaceComponent) {
+    if (!this.toReplace.containsKey(name)) {
+      this.toReplace[name] = toReplaceComponent;
     }
   }
 
