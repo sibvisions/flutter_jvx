@@ -6,6 +6,7 @@ import '../component/icon_component_model.dart';
 import '../component/label_component_model.dart';
 import '../component/popup_menu/popup_button_component_model.dart';
 import '../component/popup_menu/popup_component_model.dart';
+import '../component/text_field_component_model.dart';
 import '../container/container_component_model.dart';
 import '../editor/editor_component_model.dart';
 
@@ -96,6 +97,9 @@ class ComponentModelManager {
         break;
       case 'Icon':
         componentModel = IconComponentModel(changedComponent);
+        break;
+      case 'TextField':
+        componentModel = TextFieldComponentModel(changedComponent);
         break;
 
       default:
