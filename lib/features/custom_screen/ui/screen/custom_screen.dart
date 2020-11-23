@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/component/component_model.dart';
-import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
-import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../../../core/models/api/response.dart';
+import '../../../../core/ui/component/component_widget.dart';
 import '../../../../core/ui/screen/component_screen_widget.dart';
 import '../../../../core/ui/screen/i_screen.dart';
 import '../../../../core/ui/screen/so_component_creator.dart';
+import '../../../../core/ui/screen/so_component_data.dart';
 import '../../../../core/utils/app/listener/application_api.dart';
 import '../../../../core/utils/app/listener/data_api.dart';
 
@@ -18,6 +16,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
   final Response currentResponse = Response();
   final CustomHeaderAndFooter customHeaderAndFooter = CustomHeaderAndFooter();
   final List<SoComponentData> componentData = <SoComponentData>[];
+  final Map<String, ComponentWidget> toReplace = <String, ComponentWidget>{};
   final SoComponentCreator componentCreator;
 
   CustomScreen(this.componentId, this._templateName, this.componentCreator, {Key key}) : super(key: key);
@@ -57,6 +56,12 @@ class CustomScreen extends StatelessWidget implements IScreen {
     customHeaderAndFooter.footerComponent = footerComponent;
   }
 
+  void replaceComponent(String componentId, ComponentWidget toReplaceComponent) {
+    if (!this.toReplace.containsKey(componentId)) {
+      this.replaceComponent(componentId, toReplaceComponent);
+    }
+  }
+
   String getTemplateName() {
     return _templateName;
   }
@@ -79,6 +84,7 @@ class CustomScreen extends StatelessWidget implements IScreen {
           this.componentData.clear();
           this.componentData.addAll(data);
         },
+        toReplace: this.toReplace,
       ),
     );
   }

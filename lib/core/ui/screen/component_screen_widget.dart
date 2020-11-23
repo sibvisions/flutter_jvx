@@ -41,15 +41,17 @@ class ComponentScreenWidget extends StatefulWidget {
   final ComponentWidget headerComponent;
   final ComponentWidget footerComponent;
   final Function(List<SoComponentData>) onData;
+  final Map<String, ComponentWidget> toReplace;
 
   const ComponentScreenWidget(
       {Key key,
-      this.componentCreator,
-      this.response,
-      this.closeCurrentScreen,
+      @required this.componentCreator,
+      @required this.response,
+      @required this.closeCurrentScreen,
       this.headerComponent,
       this.footerComponent,
-      this.onData})
+      this.onData,
+      this.toReplace})
       : super(key: key);
 
   static ComponentScreenWidgetState of(BuildContext context) =>
@@ -86,13 +88,16 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
     if (request != null && responseData != null)
       this.updateData(request, responseData);
-    if (responseData.screenGeneric != null) {
-      this.updateComponents(responseData.screenGeneric.changedComponents);
-      rootComponent = this.getRootComponent();
-    }
 
     if (widget.onData != null) {
       widget.onData(this.componentData);
+    }
+    if (responseData.screenGeneric != null) {
+      this.updateComponents(responseData.screenGeneric.changedComponents);
+
+      this.replaceComponents(widget.toReplace);
+
+      rootComponent = this.getRootComponent();
     }
 
     if (rootComponent != null) {
@@ -554,5 +559,29 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     });
 
     return children;
+  }
+
+  void replaceComponents(Map<String, ComponentWidget> toReplaceComponents) {
+    if (toReplaceComponents == null || toReplaceComponents.isEmpty) return;
+
+    toReplaceComponents.forEach((componentId, toReplaceComponent) {
+      ComponentWidget component = components[componentId];
+
+      if (component != null && component != toReplaceComponent) {
+        toReplaceComponent.componentModel.parentComponentId =
+            component.componentModel.parentComponentId;
+        toReplaceComponent.componentModel.constraints =
+            component.componentModel.constraints;
+        toReplaceComponent.componentModel.minimumSize =
+            component.componentModel.minimumSize;
+        toReplaceComponent.componentModel.maximumSize =
+            component.componentModel.maximumSize;
+        toReplaceComponent.componentModel.preferredSize =
+            component.componentModel.preferredSize;
+
+        _removeFromParent(component);
+        _addToParent(toReplaceComponent, components);
+      }
+    });
   }
 }
