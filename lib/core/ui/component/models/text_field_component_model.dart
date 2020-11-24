@@ -14,6 +14,7 @@ class TextFieldComponentModel extends TextComponentModel {
   @override
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
+    double iconWidth = this.enabled ? iconSize + iconPadding.vertical : 0;
 
     double width = TextUtils.getTextWidth(text, fontStyle);
 
@@ -23,7 +24,7 @@ class TextFieldComponentModel extends TextComponentModel {
           .toDouble();
     }
 
-    return Size(width, 50);
+    return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 
   @override
@@ -32,6 +33,7 @@ class TextFieldComponentModel extends TextComponentModel {
   @override
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
-    return Size(10, 50);
+    double iconWidth = this.enabled ? iconSize + iconPadding.vertical : 0;
+    return Size(10 + iconWidth + textPadding.horizontal, 100);
   }
 }

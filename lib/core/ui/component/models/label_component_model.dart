@@ -19,4 +19,13 @@ class LabelComponentModel extends ComponentModel {
     Size size = TextUtils.getTextSize(text, fontStyle);
     return Size(size.width, size.height);
   }
+
+  @override
+  get isMinimumSizeSet => this.minimumSize != null;
+
+  @override
+  get minimumSize {
+    //if (super.isMinimumSizeSet) return super.minimumSize;
+    return preferredSize;
+  }
 }

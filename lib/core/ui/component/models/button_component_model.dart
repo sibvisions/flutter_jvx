@@ -23,7 +23,7 @@ class ButtonComponentModel extends ActionComponentModel {
   @override
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
-    double width = 30;
+    double width = 35;
     double height = 30;
 
     if (this.image != null) {

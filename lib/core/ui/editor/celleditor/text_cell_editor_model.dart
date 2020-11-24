@@ -9,13 +9,15 @@ class TextCellEditorModel extends CellEditorModel {
   BuildContext context;
   bool multiLine = false;
   double iconSize = 24;
+  EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
+  EdgeInsets iconPadding = EdgeInsets.only(right: 8);
 
   TextCellEditorModel(this.context, CellEditor currentCellEditor)
       : super(currentCellEditor);
 
   @override
   get preferredSize {
-    double iconWidth = this.editable ? iconSize : 0;
+    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
     String text = TextUtils.averageCharactersTextField;
 
     if (!multiLine &&
@@ -28,14 +30,16 @@ class TextCellEditorModel extends CellEditorModel {
         TextUtils.getTextWidth(text, Theme.of(context).textTheme.button)
             .toDouble();
     if (multiLine)
-      return Size(width + iconWidth, 100);
+      return Size(width + iconWidth + textPadding.horizontal, 100);
     else
-      return Size(width + iconWidth, 50);
+      return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 
   @override
   get minimumSize {
-    return Size(10, 50);
+    //if (super.isMinimumSizeSet) return super.minimumSize;
+    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
+    return Size(10 + iconWidth + textPadding.horizontal, 100);
   }
 
   @override

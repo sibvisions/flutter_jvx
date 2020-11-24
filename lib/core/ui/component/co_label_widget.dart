@@ -90,7 +90,8 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
       padding: EdgeInsets.only(top: 0.5),
       color: widget.componentModel.background,
       child: Align(
-        alignment: getLabelAlignment(horizontalAlignment, verticalAlignment),
+        alignment: getLabelAlignment(widget.componentModel.horizontalAlignment,
+            widget.componentModel.verticalAlignment),
         child: widget.componentModel.text.trim().startsWith('<html>')
             ? Html(data: widget.componentModel.text)
             : Text(

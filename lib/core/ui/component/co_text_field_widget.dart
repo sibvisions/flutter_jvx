@@ -28,6 +28,12 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
     });
   }
 
+  void onTextFieldValueChanged(dynamic newValue) {
+    this.setState(() {
+      widget.componentModel.onTextFieldValueChanged(newValue);
+    });
+  }
+
   void onTextFieldEndEditing() {
     focusNode.unfocus();
     widget.componentModel.onTextFieldEndEditing();
@@ -57,11 +63,37 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
               : Border.all(color: Colors.grey)),
       child: Container(
         width: 100,
-        child: TextFormField(
+        child: TextField(
           textAlign: SoTextAlign.getTextAlignFromInt(
               widget.componentModel.horizontalAlignment),
           decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(12), border: InputBorder.none),
+              contentPadding: widget.componentModel.textPadding,
+              border: InputBorder.none,
+              suffixIcon: widget.componentModel.enabled != null &&
+                      widget.componentModel.enabled
+                  ? Padding(
+                      padding: widget.componentModel.iconPadding,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (widget.componentModel.value != null &&
+                              this.textController.text.isNotEmpty) {
+                            widget.componentModel.value = null;
+                            widget.componentModel.valueChanged = true;
+                            widget.componentModel.onTextFieldValueChanged(
+                                widget.componentModel.value);
+                            widget.componentModel.valueChanged = false;
+                          }
+                        },
+                        child: this.textController.text.isNotEmpty
+                            ? Icon(Icons.clear,
+                                size: widget.componentModel.iconSize,
+                                color: Colors.grey[400])
+                            : SizedBox(
+                                height: widget.componentModel.iconSize,
+                                width: 1),
+                      ),
+                    )
+                  : null),
           style: TextStyle(
               color: widget.componentModel.enabled
                   ? (widget.componentModel.foreground != null
@@ -73,7 +105,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
           maxLines: 1,
           keyboardType: TextInputType.text,
           onEditingComplete: onTextFieldEndEditing,
-          onChanged: widget.componentModel.onTextFieldValueChanged,
+          onChanged: onTextFieldValueChanged,
           focusNode: focusNode,
           readOnly: !widget.componentModel.enabled,
         ),

@@ -92,11 +92,12 @@ class CoTextCellEditorWidgetState
               : Border.all(color: Colors.grey)),
       child: Container(
         width: 100,
+        height: (widget.cellEditorModel.multiLine ? 100 : 50),
         child: TextField(
             textAlign:
                 SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
             decoration: InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(12, 15, 12, 5),
+                contentPadding: widget.cellEditorModel.textPadding,
                 border: InputBorder.none,
                 hintText: placeholderVisible ? placeholder : null,
                 suffixIcon: this.editable != null && this.editable
