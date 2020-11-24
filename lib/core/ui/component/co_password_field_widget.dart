@@ -35,19 +35,8 @@ class CoPasswordFieldWidgetState
   }
 
   void onTextFieldEndEditing() {
-<<<<<<< HEAD
     focusNode.unfocus();
     widget.componentModel.onTextFieldEndEditing();
-=======
-    TextUtils.unfocusCurrentTextfield(context);
-
-    if (this.valueChanged) {
-      SetComponentValue setComponentValue =
-          SetComponentValue(this.name, text, this.appState.clientId);
-      BlocProvider.of<ApiBloc>(context).add(setComponentValue);
-      this.valueChanged = false;
-    }
->>>>>>> dev
   }
 
   @override

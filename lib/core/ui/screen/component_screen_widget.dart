@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -22,6 +21,7 @@ import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
 import '../editor/co_editor_widget.dart';
 import 'component_model_manager.dart';
 import 'i_component_creator.dart';
+import 'so_component_data.dart';
 import 'so_data_screen.dart';
 
 enum CoState {

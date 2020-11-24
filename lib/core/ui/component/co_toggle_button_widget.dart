@@ -4,19 +4,20 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/core/models/api/request/press_button.dart';
-import 'package:jvx_flutterclient/core/models/api/so_action.dart';
-import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
-import 'package:jvx_flutterclient/core/ui/component/models/component_model.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/custom/custom_toggle_button.dart';
-import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
+import '../../models/api/request/press_button.dart';
+import '../../models/api/so_action.dart';
+import '../../services/remote/bloc/api_bloc.dart';
+import '../../utils/app/text_utils.dart';
 import '../../utils/theme/theme_manager.dart';
+import '../widgets/custom/custom_toggle_button.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
 import 'co_action_component_widget.dart';
+import 'component_widget.dart';
+import 'models/component_model.dart';
 
 class CoToggleButtonWidget extends CoActionComponentWidget {
   CoToggleButtonWidget({ComponentModel componentModel})
@@ -26,7 +27,8 @@ class CoToggleButtonWidget extends CoActionComponentWidget {
   State<StatefulWidget> createState() => CoToggleButtonWidgetState();
 }
 
-class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
+class CoToggleButtonWidgetState
+    extends ComponentWidgetState<CoToggleButtonWidget> {
   String text = '';
   Widget icon;
   String textStyle;

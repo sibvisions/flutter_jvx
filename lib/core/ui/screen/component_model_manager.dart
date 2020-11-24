@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/core/ui/component/models/action_component_model.dart';
+
 import '../../models/api/component/changed_component.dart';
 import '../component/models/button_component_model.dart';
 import '../component/models/component_model.dart';
@@ -114,6 +116,9 @@ class ComponentModelManager {
         break;
       case 'PasswordField':
         componentModel = TextFieldComponentModel(changedComponent);
+        break;
+      case 'ToggleButton':
+        componentModel = ActionComponentModel(changedComponent);
         break;
 
       default:

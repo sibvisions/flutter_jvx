@@ -262,12 +262,6 @@ class SoComponentCreator implements IComponentCreator {
         break;
     }
 
-<<<<<<< HEAD
-    if (cellEditor != null && cellEditor.cellEditorModel != null)
-      cellEditor.cellEditorModel.isTableView = true;
-
-=======
->>>>>>> dev
     return cellEditor;
   }
 
