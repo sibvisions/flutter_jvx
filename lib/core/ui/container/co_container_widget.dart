@@ -127,7 +127,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   }
 
   ILayout _createLayoutForHeaderFooterPanel(String layoutData) {
-    return CoBorderLayoutContainerWidget.fromLayoutString(widget, null, layoutData);
+    return CoBorderLayoutContainerWidget.fromLayoutString(widget, layoutData, null);
   }
 
   ILayout _createLayout(
