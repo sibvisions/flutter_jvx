@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../utils/app/text_utils.dart';
-import '../../editor/celleditor/cell_editor_model.dart';
+import '../../../../models/api/editor/cell_editor.dart';
+import '../../../../utils/app/text_utils.dart';
+import 'cell_editor_model.dart';
 
 class NumberCellEditorModel extends CellEditorModel {
   double iconSize = 24;

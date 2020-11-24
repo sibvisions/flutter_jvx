@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../models/api/editor/cell_editor_properties.dart';
-import '../../../utils/app/text_utils.dart';
-import '../../editor/celleditor/cell_editor_model.dart';
+import '../../../../models/api/editor/cell_editor.dart';
+import '../../../../models/api/editor/cell_editor_properties.dart';
+import '../../../../utils/app/text_utils.dart';
+import 'cell_editor_model.dart';
 
 class DateCellEditorModel extends CellEditorModel {
   String dateFormat;

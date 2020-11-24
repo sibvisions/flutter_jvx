@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/cell_editor_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';

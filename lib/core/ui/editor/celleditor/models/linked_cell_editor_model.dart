@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../utils/app/text_utils.dart';
+import '../../../../models/api/editor/cell_editor.dart';
+import '../../../../utils/app/text_utils.dart';
 import 'referenced_cell_editor_model.dart';
 
 class LinkedCellEditorModel extends ReferencedCellEditorModel {

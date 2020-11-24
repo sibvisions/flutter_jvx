@@ -7,7 +7,7 @@ import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
 import 'formatter/numeric_text_formatter.dart';
-import 'number_cell_editor_model.dart';
+import 'models/number_cell_editor_model.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
   CoNumberCellEditorWidget(
