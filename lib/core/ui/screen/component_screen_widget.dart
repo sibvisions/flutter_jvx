@@ -12,8 +12,8 @@ import '../component/models/editable_component_model.dart';
 import '../component/popup_menu/co_menu_item_widget.dart';
 import '../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../component/popup_menu/co_popup_menu_widget.dart';
-import '../component/popup_menu/models/popup_button_component_model.dart';
-import '../component/popup_menu/models/popup_component_model.dart';
+import '../component/popup_menu/models/popup_menu_button_component_model.dart';
+import '../component/popup_menu/models/popup_menu_component_model.dart';
 import '../container/co_container_widget.dart';
 import '../container/container_component_model.dart';
 import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
@@ -197,7 +197,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                 is CoPopupMenuButtonWidget) {
           CoPopupMenuButtonWidget btn =
               components[componentClass.componentModel.parentComponentId];
-          (btn.componentModel as PopupButtonComponentModel).menu =
+          (btn.componentModel as PopupMenuButtonComponentModel).menu =
               componentClass;
         }
       } else if (componentClass is CoMenuItemWidget) {
@@ -207,7 +207,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
                 is CoPopupMenuWidget) {
           CoPopupMenuWidget menu =
               container[componentClass.componentModel.parentComponentId];
-          (menu.componentModel as PopupComponentModel)
+          (menu.componentModel as PopupMenuComponentModel)
               .updateMenuItem(componentClass);
         }
       }
@@ -409,8 +409,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   replaceComponent(ComponentWidget compToReplace, ComponentWidget newComp) {
     if (compToReplace != null) {
-      newComp.componentModel.componentState.parentComponentId =
-          compToReplace.componentModel.componentState.parentComponentId;
+      newComp.componentModel.parentComponentId =
+          compToReplace.componentModel.parentComponentId;
       newComp.componentModel.constraints =
           compToReplace.componentModel.constraints;
       newComp.componentModel.minimumSize =
@@ -445,8 +445,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
           ", Name: " +
           component.componentModel.name.toString() +
           ", parent: " +
-          (component.componentModel.componentState.parentComponentId != null
-              ? component.componentModel.componentState.parentComponentId
+          (component.componentModel.parentComponentId != null
+              ? component.componentModel.parentComponentId
               : "") +
           ", className: " +
           component.runtimeType.toString() +

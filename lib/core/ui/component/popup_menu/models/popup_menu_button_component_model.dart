@@ -6,14 +6,14 @@ import '../../../../models/api/component/component_properties.dart';
 import '../../models/component_model.dart';
 import '../co_popup_menu_widget.dart';
 
-class PopupButtonComponentModel extends ComponentModel {
+class PopupMenuButtonComponentModel extends ComponentModel {
   CoPopupMenuWidget menu;
   bool eventAction = false;
   String defaultMenuItem;
   String image;
   Size iconSize = Size(16, 16);
 
-  PopupButtonComponentModel(ChangedComponent changedComponent)
+  PopupMenuButtonComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
   @override

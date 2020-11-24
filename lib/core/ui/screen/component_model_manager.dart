@@ -7,8 +7,8 @@ import '../component/models/selected_component_model.dart';
 import '../component/models/text_area_component_model.dart';
 import '../component/models/text_field_component_model.dart';
 import '../component/popup_menu/models/menu_item_component_model.dart';
-import '../component/popup_menu/models/popup_button_component_model.dart';
-import '../component/popup_menu/models/popup_component_model.dart';
+import '../component/popup_menu/models/popup_menu_button_component_model.dart';
+import '../component/popup_menu/models/popup_menu_component_model.dart';
 import '../container/container_component_model.dart';
 import '../editor/editor_component_model.dart';
 
@@ -83,10 +83,10 @@ class ComponentModelManager {
         );
         break;
       case 'PopupMenu':
-        componentModel = PopupComponentModel(changedComponent);
+        componentModel = PopupMenuComponentModel(changedComponent);
         break;
       case 'PopupMenuButton':
-        componentModel = PopupButtonComponentModel(changedComponent);
+        componentModel = PopupMenuButtonComponentModel(changedComponent);
         break;
       case 'MenuItem':
         componentModel = MenuItemComponentModel(changedComponent);

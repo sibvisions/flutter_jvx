@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../component_widget.dart';
-import 'models/popup_component_model.dart';
+import 'models/popup_menu_component_model.dart';
 
 class CoPopupMenuWidget extends ComponentWidget {
-  CoPopupMenuWidget({Key key, PopupComponentModel componentModel})
+  CoPopupMenuWidget({Key key, PopupMenuComponentModel componentModel})
       : super(key: key, componentModel: componentModel);
 
   @override

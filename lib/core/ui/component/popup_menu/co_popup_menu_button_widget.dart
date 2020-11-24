@@ -16,11 +16,11 @@ import '../../../utils/theme/theme_manager.dart';
 import '../../widgets/util/fontAwesomeChanger.dart';
 import '../component_widget.dart';
 import 'co_popup_menu_widget.dart';
-import 'models/popup_button_component_model.dart';
-import 'models/popup_component_model.dart';
+import 'models/popup_menu_button_component_model.dart';
+import 'models/popup_menu_component_model.dart';
 
 class CoPopupMenuButtonWidget extends ComponentWidget {
-  final PopupButtonComponentModel componentModel;
+  final PopupMenuButtonComponentModel componentModel;
   CoPopupMenuButtonWidget({Key key, this.componentModel})
       : super(key: key, componentModel: componentModel);
 
@@ -115,7 +115,7 @@ class CoPopupMenuButtonWidgetState
       },
       itemBuilder: (BuildContext context) {
         return (widget.componentModel.menu?.componentModel
-                as PopupComponentModel)
+                as PopupMenuComponentModel)
             ?.menuItems;
       },
       padding: EdgeInsets.only(bottom: 8, left: 16),
@@ -128,7 +128,7 @@ class CoPopupMenuButtonWidgetState
 
   void _showPopupMenu(BuildContext context) async {
     List<PopupMenuItem<String>> menuItems =
-        (widget.componentModel.menu?.componentModel as PopupComponentModel)
+        (widget.componentModel.menu?.componentModel as PopupMenuComponentModel)
             ?.menuItems;
 
     final RenderBox overlay =
