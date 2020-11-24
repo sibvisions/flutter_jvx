@@ -6,14 +6,12 @@ import '../../editor/celleditor/cell_editor_model.dart';
 
 class TextCellEditorModel extends CellEditorModel {
   String dateFormat;
-  BuildContext context;
   bool multiLine = false;
   double iconSize = 24;
   EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
 
-  TextCellEditorModel(this.context, CellEditor currentCellEditor)
-      : super(currentCellEditor);
+  TextCellEditorModel(CellEditor currentCellEditor) : super(currentCellEditor);
 
   @override
   get preferredSize {
@@ -24,9 +22,7 @@ class TextCellEditorModel extends CellEditorModel {
       text = this.value;
     }
 
-    double width =
-        TextUtils.getTextWidth(text, Theme.of(context).textTheme.button)
-            .toDouble();
+    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
     if (multiLine)
       return Size(width + iconWidth + textPadding.horizontal, 100);
     else

@@ -5,12 +5,12 @@ import '../../../utils/app/text_utils.dart';
 import '../../editor/celleditor/cell_editor_model.dart';
 
 class NumberCellEditorModel extends CellEditorModel {
-  BuildContext context;
   double iconSize = 24;
   EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
+  TextStyle style;
 
-  NumberCellEditorModel(this.context, CellEditor currentCellEditor)
+  NumberCellEditorModel(CellEditor currentCellEditor)
       : super(currentCellEditor);
 
   @override
@@ -22,9 +22,7 @@ class NumberCellEditorModel extends CellEditorModel {
       text = this.value.toString();
     }
 
-    double width =
-        TextUtils.getTextWidth(text, Theme.of(context).textTheme.button)
-            .toDouble();
+    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
 
     return Size(width + iconWidth + textPadding.horizontal, 50);
   }

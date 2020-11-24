@@ -134,45 +134,36 @@ class SoComponentCreator implements IComponentCreator {
         )
   };
 
-  Map<
-      String,
-      CoCellEditorWidget Function(
-          CellEditor cellEditor, BuildContext context)> standardCellEditors = {
-    'CheckBoxCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoCheckboxCellEditorWidget(
+  Map<String, CoCellEditorWidget Function(CellEditor cellEditor)>
+      standardCellEditors = {
+    'CheckBoxCellEditor': (CellEditor cellEditor) => CoCheckboxCellEditorWidget(
           // key: GlobalKey(),
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'TextCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoTextCellEditorWidget(
+    'TextCellEditor': (CellEditor cellEditor) => CoTextCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: TextCellEditorModel(context, cellEditor),
+          cellEditorModel: TextCellEditorModel(cellEditor),
         ),
-    'NumberCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoNumberCellEditorWidget(
+    'NumberCellEditor': (CellEditor cellEditor) => CoNumberCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: NumberCellEditorModel(context, cellEditor),
+          cellEditorModel: NumberCellEditorModel(cellEditor),
         ),
-    'ImageViewer': (CellEditor cellEditor, BuildContext context) =>
-        CoImageCellEditorWidget(
+    'ImageViewer': (CellEditor cellEditor) => CoImageCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'ChoiceCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoChoiceCellEditorWidget(
+    'ChoiceCellEditor': (CellEditor cellEditor) => CoChoiceCellEditorWidget(
           changedCellEditor: cellEditor,
           cellEditorModel: CellEditorModel(cellEditor),
         ),
-    'DateCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoDateCellEditorWidget(
+    'DateCellEditor': (CellEditor cellEditor) => CoDateCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: DateCellEditorModel(context, cellEditor),
+          cellEditorModel: DateCellEditorModel(cellEditor),
         ),
-    'LinkedCellEditor': (CellEditor cellEditor, BuildContext context) =>
-        CoLinkedCellEditorWidget(
+    'LinkedCellEditor': (CellEditor cellEditor) => CoLinkedCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: LinkedCellEditorModel(context, cellEditor),
+          cellEditorModel: LinkedCellEditorModel(cellEditor),
         )
   };
 
@@ -226,7 +217,7 @@ class SoComponentCreator implements IComponentCreator {
       cellEditor = null;
     } else {
       cellEditor = this.standardCellEditors[toCreatecellEditor.className](
-          toCreatecellEditor, this.context);
+          toCreatecellEditor);
     }
 
     return cellEditor;
@@ -239,8 +230,7 @@ class SoComponentCreator implements IComponentCreator {
         {
           cellEditor = CoDateCellEditorWidget(
             changedCellEditor: toCreatecellEditor,
-            cellEditorModel:
-                DateCellEditorModel(this.context, toCreatecellEditor),
+            cellEditorModel: DateCellEditorModel(toCreatecellEditor),
             isTableView: true,
           );
         }
@@ -277,8 +267,7 @@ class SoComponentCreator implements IComponentCreator {
       case "DateCellEditor":
         {
           cellEditor = CoDateCellEditorWidget(
-            cellEditorModel:
-                DateCellEditorModel(this.context, toCreatecellEditor),
+            cellEditorModel: DateCellEditorModel(toCreatecellEditor),
             changedCellEditor: toCreatecellEditor,
             isTableView: true,
           );
@@ -319,8 +308,8 @@ class SoComponentCreator implements IComponentCreator {
     this.standardComponents[className] = closure;
   }
 
-  void replaceCellEditor(String className,
-      CoCellEditorWidget Function(CellEditor, BuildContext) closure) {
+  void replaceCellEditor(
+      String className, CoCellEditorWidget Function(CellEditor) closure) {
     this.standardCellEditors[className] = closure;
   }
 }

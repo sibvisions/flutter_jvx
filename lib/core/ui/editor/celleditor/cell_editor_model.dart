@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
@@ -40,6 +41,7 @@ class CellEditorModel extends ValueNotifier {
   bool borderVisible;
   bool placeholderVisible;
   int indexInTable;
+  TextStyle fontStyle = new TextStyle(fontSize: 16.0, color: Colors.black);
 
   Size preferredSize;
   Size minimumSize;

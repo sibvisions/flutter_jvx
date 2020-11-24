@@ -8,9 +8,8 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
   int pageIndex = 0;
   int pageSize = 100;
 
-  LinkedCellEditorModel(
-      BuildContext screenContext, CellEditor currentCellEditor)
-      : super(screenContext, currentCellEditor);
+  LinkedCellEditorModel(CellEditor currentCellEditor)
+      : super(currentCellEditor);
 
   @override
   get preferredSize {
@@ -29,9 +28,7 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
 
     if (text == "") text = TextUtils.averageCharactersTextField;
 
-    double width = TextUtils.getTextWidth(
-            text, Theme.of(screenContext).textTheme.subtitle1)
-        .toDouble();
+    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
     return Size(width + 100, 50);
   }
 

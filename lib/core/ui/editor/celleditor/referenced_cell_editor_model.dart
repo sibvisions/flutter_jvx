@@ -8,13 +8,12 @@ import '../../editor/celleditor/cell_editor_model.dart';
 import '../../screen/so_component_data.dart';
 
 class ReferencedCellEditorModel extends CellEditorModel {
-  BuildContext screenContext;
   SoComponentData referencedData;
   LinkReference linkReference;
   ColumnView columnView;
   String referenceDataProvider;
 
-  ReferencedCellEditorModel(this.screenContext, CellEditor currentCellEditor)
+  ReferencedCellEditorModel(CellEditor currentCellEditor)
       : super(currentCellEditor) {
     linkReference = currentCellEditor.linkReference;
     columnView = currentCellEditor.columnView;
