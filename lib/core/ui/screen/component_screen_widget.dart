@@ -393,6 +393,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       (headerFooterPanel.componentModel as ContainerComponentModel)
           .toUpdateLayout
           .add('BorderLayout,0,0,0,0,0,0,');
+
+      headerFooterPanel.componentModel.compId = 'headerFooterPanel';
+
       if (widget.headerComponent != null) {
         widget.headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
         widget.headerComponent.componentModel.constraints = 'North';
@@ -404,8 +407,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         widget.footerComponent.componentModel.constraints = 'South';
       }
 
-      _addToParent(widget.headerComponent, components);
-      _addToParent(widget.footerComponent, components);
+      components[widget.headerComponent.componentModel.componentId] = widget.headerComponent;
+      components[widget.footerComponent.componentModel.componentId] = widget.footerComponent;
 
       return headerFooterPanel;
     }
@@ -581,7 +584,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             component.componentModel.preferredSize;
 
         _removeFromParent(component);
-        _addToParent(toReplaceComponent, components);
+        components[toReplaceComponent.componentModel.componentId] = toReplaceComponent;
       }
     });
   }
