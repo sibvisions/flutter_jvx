@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../component_widget.dart';
-import 'popup_component_model.dart';
+import 'models/popup_component_model.dart';
 
 class CoPopupMenuWidget extends ComponentWidget {
   CoPopupMenuWidget({Key key, PopupComponentModel componentModel})

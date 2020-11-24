@@ -12,8 +12,8 @@ import '../component/models/editable_component_model.dart';
 import '../component/popup_menu/co_menu_item_widget.dart';
 import '../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../component/popup_menu/co_popup_menu_widget.dart';
-import '../component/popup_menu/popup_button_component_model.dart';
-import '../component/popup_menu/popup_component_model.dart';
+import '../component/popup_menu/models/popup_button_component_model.dart';
+import '../component/popup_menu/models/popup_component_model.dart';
 import '../container/co_container_widget.dart';
 import '../container/container_component_model.dart';
 import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
@@ -413,12 +413,12 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
           compToReplace.componentModel.componentState.parentComponentId;
       newComp.componentModel.componentState.constraints =
           compToReplace.componentModel.componentState.constraints;
-      newComp.componentModel.componentState.minimumSize =
-          compToReplace.componentModel.componentState.minimumSize;
-      newComp.componentModel.componentState.maximumSize =
-          compToReplace.componentModel.componentState.maximumSize;
-      newComp.componentModel.componentState.preferredSize =
-          compToReplace.componentModel.componentState.preferredSize;
+      newComp.componentModel.minimumSize =
+          compToReplace.componentModel.minimumSize;
+      newComp.componentModel.maximumSize =
+          compToReplace.componentModel.maximumSize;
+      newComp.componentModel.preferredSize =
+          compToReplace.componentModel.preferredSize;
       _removeFromParent(compToReplace);
       _addToParent(newComp, components);
     }

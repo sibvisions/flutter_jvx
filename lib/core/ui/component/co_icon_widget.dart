@@ -29,12 +29,12 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
     return Container(
         child: Row(
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-                this.horizontalAlignment),
+                widget.componentModel.horizontalAlignment),
             children: <Widget>[
           Container(
               decoration: BoxDecoration(
-                  color: background != null
-                      ? background
+                  color: widget.componentModel.background != null
+                      ? widget.componentModel.background
                       : Colors.white.withOpacity(
                           this.appState.applicationStyle?.controlsOpacity),
                   borderRadius: BorderRadius.circular(

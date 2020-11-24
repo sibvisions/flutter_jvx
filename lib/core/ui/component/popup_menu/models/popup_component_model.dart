@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/api/component/changed_component.dart';
-import '../models/component_model.dart';
-import 'co_menu_item_widget.dart';
+import '../../../../models/api/component/changed_component.dart';
+import '../../models/component_model.dart';
+import '../co_menu_item_widget.dart';
 
 class PopupComponentModel extends ComponentModel {
   Map<String, CoMenuItemWidget> _items = <String, CoMenuItemWidget>{};

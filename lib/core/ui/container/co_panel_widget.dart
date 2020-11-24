@@ -52,7 +52,7 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     }
 
     if (child != null) {
-      return Container(color: this.background, child: child);
+      return Container(color: widget.componentModel.background, child: child);
       // return Container(
       //   color: this.background,
       //   child: child,

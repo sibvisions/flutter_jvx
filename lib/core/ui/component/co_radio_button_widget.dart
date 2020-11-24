@@ -20,8 +20,8 @@ class CoRadioButtonWidgetState
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment:
-            IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
+        mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+            widget.componentModel.horizontalAlignment),
         children: <Widget>[
           Radio<String>(
               value: (widget.componentModel.selected
