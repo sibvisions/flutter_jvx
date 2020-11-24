@@ -404,6 +404,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         widget.footerComponent.componentModel.constraints = 'South';
       }
 
+      _addToParent(widget.headerComponent, components);
+      _addToParent(widget.footerComponent, components);
+
       return headerFooterPanel;
     }
 
