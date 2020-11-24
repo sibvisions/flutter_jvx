@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-
 /// The top-most region of a material design drawer. The header's [child]
 /// widget, if any, is placed inside a [Container] whose [decoration] can be
 /// passed as an argument, inset by the given [padding].
@@ -70,7 +69,6 @@ class CustomDrawerHeader extends StatelessWidget {
 
   final double drawerHeaderHeight; // bottom edge
 
-
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
@@ -90,14 +88,16 @@ class CustomDrawerHeader extends StatelessWidget {
         decoration: decoration,
         duration: duration,
         curve: curve,
-        child: child == null ? null : DefaultTextStyle(
-          style: theme.textTheme.body2,
-          child: MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: child,
-          ),
-        ),
+        child: child == null
+            ? null
+            : DefaultTextStyle(
+                style: theme.textTheme.bodyText2,
+                child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: child,
+                ),
+              ),
       ),
     );
   }

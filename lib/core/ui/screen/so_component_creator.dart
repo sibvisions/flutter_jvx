@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/component/co_toggle_button_widget.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/api/component/changed_component.dart';
@@ -127,6 +128,9 @@ class SoComponentCreator implements IComponentCreator {
     'PopupMenuButton': (ComponentModel componentModel) =>
         CoPopupMenuButtonWidget(
           componentModel: componentModel,
+        ),
+    'ToggleButton': (ComponentModel componentModel) => CoToggleButtonWidget(
+          componentModel: componentModel,
         )
   };
 
@@ -237,6 +241,7 @@ class SoComponentCreator implements IComponentCreator {
             changedCellEditor: toCreatecellEditor,
             cellEditorModel:
                 DateCellEditorModel(this.context, toCreatecellEditor),
+            isTableView: true,
           );
         }
         break;
@@ -257,9 +262,12 @@ class SoComponentCreator implements IComponentCreator {
         break;
     }
 
+<<<<<<< HEAD
     if (cellEditor != null && cellEditor.cellEditorModel != null)
       cellEditor.cellEditorModel.isTableView = true;
 
+=======
+>>>>>>> dev
     return cellEditor;
   }
 
@@ -275,9 +283,11 @@ class SoComponentCreator implements IComponentCreator {
       case "DateCellEditor":
         {
           cellEditor = CoDateCellEditorWidget(
-              cellEditorModel:
-                  DateCellEditorModel(this.context, toCreatecellEditor),
-              changedCellEditor: toCreatecellEditor);
+            cellEditorModel:
+                DateCellEditorModel(this.context, toCreatecellEditor),
+            changedCellEditor: toCreatecellEditor,
+            isTableView: true,
+          );
         }
         break;
       case "ChoiceCellEditor":
@@ -308,5 +318,15 @@ class SoComponentCreator implements IComponentCreator {
     );
 
     return editor;
+  }
+
+  void replaceComponent(
+      String className, ComponentWidget Function(ComponentModel) closure) {
+    this.standardComponents[className] = closure;
+  }
+
+  void replaceCellEditor(String className,
+      CoCellEditorWidget Function(CellEditor, BuildContext) closure) {
+    this.standardCellEditors[className] = closure;
   }
 }

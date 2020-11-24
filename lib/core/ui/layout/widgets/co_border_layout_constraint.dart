@@ -1,4 +1,3 @@
-
 import '../../component/component_widget.dart';
 
 /// Layout contraints to define widget position:

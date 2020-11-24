@@ -14,7 +14,7 @@ class CoScrollPanelWidget extends CoContainerWidget {
 
 class CoScrollPanelWidgetState extends CoContainerWidgetState {
   ScrollController _scrollController;
-  double _scrollOffset = 0;
+  double scrollOffset = 0;
   BoxConstraints constr;
 
   @override
@@ -24,7 +24,7 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
   }
 
   _scrollListener() {
-    this._scrollOffset = _scrollController.offset;
+    this.scrollOffset = _scrollController.offset;
   }
 
   @override

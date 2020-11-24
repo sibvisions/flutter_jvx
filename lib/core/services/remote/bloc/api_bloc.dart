@@ -174,7 +174,7 @@ class ApiBloc extends Bloc<Request, Response> {
       if (kIsWeb)
         yield* _downloadWeb(event, response);
       else
-        yield* await _downloadMobile(event, response);
+        yield* _downloadMobile(event, response);
     }
   }
 

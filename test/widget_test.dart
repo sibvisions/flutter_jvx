@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jvx_flutterclient/application_widget.dart';
-import 'package:jvx_flutterclient/core/ui/pages/startup_page.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/app_state_provider.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/restart_widget.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
@@ -29,14 +28,6 @@ void main() async {
       ));
 
       expect(find.byType(MaterialApp), findsOneWidget);
-    });
-
-    testWidgets('StartupPage creation', (WidgetTester tester) async {
-      await tester.pumpWidget(makeTestableWidget(child: StartupPage(shouldLoadConfig: false,)));
-
-      await tester.pump();
-
-      expect(find.byType(Text), findsOneWidget);
     });
   });
 }

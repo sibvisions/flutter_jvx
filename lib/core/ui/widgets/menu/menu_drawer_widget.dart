@@ -200,7 +200,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               IScreen screen =
                   widget.appState.screenManager.getScreen(item.componentId);
 
-              widget.appState.appFrame.setScreen(screen);
+              widget.appState.appFrame.setScreen(screen.getWidget(context));
 
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (_) => Theme(

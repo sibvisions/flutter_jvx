@@ -11,10 +11,13 @@ import 'date_cell_editor_model.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
   CoDateCellEditorWidget(
-      {CellEditor changedCellEditor, DateCellEditorModel cellEditorModel})
+      {CellEditor changedCellEditor,
+      DateCellEditorModel cellEditorModel,
+      bool isTableView = false})
       : super(
             changedCellEditor: changedCellEditor,
-            cellEditorModel: cellEditorModel);
+            cellEditorModel: cellEditorModel,
+            isTableView: isTableView);
 
   @override
   State<StatefulWidget> createState() => CoDateCellEditorWidgetState();
@@ -158,7 +161,7 @@ class CoDateCellEditorWidgetState
   Widget build(BuildContext context) {
     setEditorProperties(context);
 
-    if (!this.isTableView) {
+    if (!widget.isTableView) {
       return Container(
         width: 100,
         height: 50,
@@ -177,7 +180,7 @@ class CoDateCellEditorWidgetState
                     : Border.all(color: Colors.grey))
                 : null),
         child: FlatButton(
-          padding: EdgeInsets.fromLTRB(10, 8, 10, 10),
+            padding: EdgeInsets.fromLTRB(10, 8, 10, 10),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -237,7 +240,9 @@ class CoDateCellEditorWidgetState
                 )
               ],
             ),
-            onPressed: () => isTimeFormat && !isDateFormat ? _getTimePopUp(context) : _getDateTimePopUp(context)),
+            onPressed: () => isTimeFormat && !isDateFormat
+                ? _getTimePopUp(context)
+                : _getDateTimePopUp(context)),
       );
     } else {
       // Pref Editor Mode
@@ -246,7 +251,9 @@ class CoDateCellEditorWidgetState
 
       if (this.editable && this.preferredEditorMode == 0) {
         return GestureDetector(
-          onTap: () => isTimeFormat && !isDateFormat ? _getTimePopUp(context) : _getDateTimePopUp(context),
+          onTap: () => isTimeFormat && !isDateFormat
+              ? _getTimePopUp(context)
+              : _getDateTimePopUp(context),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

@@ -9,8 +9,8 @@ class UserData extends ResponseObject {
   UserData({this.userName, this.profileImage, this.displayName, this.roles});
 
   UserData.fromJson(Map<String, dynamic> json)
-    : userName = json['userName'],
-      profileImage = json['profileImage'],
-      displayName = json['displayName'],
-      roles = json['roles'];
+      : userName = json['userName'],
+        profileImage = json['profileImage'],
+        displayName = json['displayName'],
+        roles = json['roles'];
 }

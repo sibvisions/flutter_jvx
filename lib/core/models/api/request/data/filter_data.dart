@@ -9,16 +9,18 @@ class FilterData extends Request {
   int rowCount = -1;
   Filter filter = Filter();
 
-  FilterData(this.dataProvider, this.value, this.editorComponentId, String clientId, [this.filter, this.fromRow, this.rowCount])  : 
-      super(RequestType.DAL_FILTER, clientId);
+  FilterData(
+      this.dataProvider, this.value, this.editorComponentId, String clientId,
+      [this.filter, this.fromRow, this.rowCount])
+      : super(RequestType.DAL_FILTER, clientId);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'clientId': clientId,
-    'dataProvider': dataProvider,
-    'value': value,
-    'editorComponentId': editorComponentId,
-    'fromRow': fromRow,
-    'rowCount': rowCount,
-    'filter': filter?.toJson()
-  };
+        'clientId': clientId,
+        'dataProvider': dataProvider,
+        'value': value,
+        'editorComponentId': editorComponentId,
+        'fromRow': fromRow,
+        'rowCount': rowCount,
+        'filter': filter?.toJson()
+      };
 }

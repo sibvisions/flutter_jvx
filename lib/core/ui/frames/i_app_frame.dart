@@ -30,7 +30,7 @@ abstract class IAppFrame {
     this.menu = menu;
   }
 
-  void setScreen(screen) {
+  void setScreen(Widget screen) {
     this.screen = screen;
   }
 

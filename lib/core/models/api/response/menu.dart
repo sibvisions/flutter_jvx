@@ -3,12 +3,12 @@ import 'menu_item.dart';
 
 class Menu extends ResponseObject {
   List<MenuItem> entries;
-  
+
   Menu();
 
   Menu.fromJson(Map<String, dynamic> json)
-    : entries = readMenuItemListFromJson(json['entries']),
-      super.fromJson(json);
+      : entries = readMenuItemListFromJson(json['entries']),
+        super.fromJson(json);
 
   static readMenuItemListFromJson(List items) {
     List<MenuItem> convertedMenuItems = new List<MenuItem>();

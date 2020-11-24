@@ -1,12 +1,18 @@
+import 'package:flutter/material.dart';
+
 import '../../models/api/response.dart';
+import 'component_screen_widget.dart';
 import 'so_screen.dart';
 
 abstract class IScreen {
   String componentId;
 
+  GlobalKey<ComponentScreenWidgetState> screenKey;
+
+  bool closeCurrentScreen;
+
   /// Constructor for returning the default Implementation of this interface.
-  factory IScreen() =>
-      SoScreen();
+  factory IScreen() => SoScreen();
 
   /// Gets called when new components, metaData or data is comming from the server.
   void update(Response response);
@@ -15,4 +21,6 @@ abstract class IScreen {
   ///
   /// When `false` the server will not be called.
   bool withServer();
+
+  Widget getWidget(BuildContext context);
 }

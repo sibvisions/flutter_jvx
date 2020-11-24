@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import 'dart:collection';
 
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/cell_editor_model.dart';
@@ -11,6 +12,13 @@ class EditorComponentModel extends ComponentModel {
   Queue<SoComponentData> _toUpdateData = Queue<SoComponentData>();
 
   CellEditorModel cellEditorModel;
+=======
+import '../../models/api/component/changed_component.dart';
+import '../../models/api/component/component_properties.dart';
+import '../component/component_model.dart';
+
+class EditorComponentModel extends ComponentModel {
+>>>>>>> dev
   String dataProvider;
   String dataRow;
   String columnName;
@@ -29,6 +37,7 @@ class EditorComponentModel extends ComponentModel {
 
   bool get withChangedComponent => _withChangedComponent;
 
+<<<<<<< HEAD
   // Queue<SoComponentData> get toUpdateData => _toUpdateData;
   // set toUpdateData(Queue<SoComponentData> toUpdateData) =>
   //     _toUpdateData = toUpdateData;
@@ -56,6 +65,8 @@ class EditorComponentModel extends ComponentModel {
     return null;
   }
 
+=======
+>>>>>>> dev
   EditorComponentModel(ChangedComponent changedComponent)
       : super(changedComponent) {
     if (changedComponent != null) {

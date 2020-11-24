@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -15,6 +16,7 @@ import '../component/popup_menu/co_popup_menu_widget.dart';
 import '../component/popup_menu/models/popup_menu_button_component_model.dart';
 import '../component/popup_menu/models/popup_menu_component_model.dart';
 import '../container/co_container_widget.dart';
+import '../container/co_panel_widget.dart';
 import '../container/container_component_model.dart';
 import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
 import '../editor/co_editor_widget.dart';
@@ -37,9 +39,20 @@ class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
   final Response response;
   final bool closeCurrentScreen;
+  final ComponentWidget headerComponent;
+  final ComponentWidget footerComponent;
+  final Function(List<SoComponentData>) onData;
+  final Map<String, ComponentWidget> toReplace;
 
   const ComponentScreenWidget(
-      {Key key, this.componentCreator, this.response, this.closeCurrentScreen})
+      {Key key,
+      @required this.componentCreator,
+      @required this.response,
+      @required this.closeCurrentScreen,
+      this.headerComponent,
+      this.footerComponent,
+      this.onData,
+      this.toReplace})
       : super(key: key);
 
   static ComponentScreenWidgetState of(BuildContext context) =>
@@ -58,8 +71,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentModelManager _componentModelManager = ComponentModelManager();
 
   bool debug = true;
-  ComponentWidget headerComponent;
-  ComponentWidget footerComponent;
 
   ComponentWidget rootComponent;
 
@@ -76,8 +87,15 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
     if (request != null && responseData != null)
       this.updateData(request, responseData);
+
+    if (widget.onData != null) {
+      widget.onData(this.componentData);
+    }
     if (responseData.screenGeneric != null) {
       this.updateComponents(responseData.screenGeneric.changedComponents);
+
+      this.replaceComponents(widget.toReplace);
+
       rootComponent = this.getRootComponent();
     }
 
@@ -373,38 +391,42 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
             element.componentModel.coState == CoState.Added,
         orElse: () => null);
 
-    /*
-    if (headerComponent != null || footerComponent != null) {
+    if (widget.headerComponent != null || widget.footerComponent != null) {
       ComponentWidget headerFooterPanel =
-          CoPanelWidget(componentModel: ComponentModel('headerFooterPanel'));
-      (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-              .layout =
-          CoBorderLayout.fromLayoutString(
-              headerFooterPanel, 'BorderLayout,0,0,0,0,0,0,', '');
-      if (headerComponent != null) {
-        (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-            .addWithConstraints(headerComponent, 'North');
+          CoPanelWidget(componentModel: ContainerComponentModel());
+
+      headerFooterPanel.componentModel.compId = 'headerFooterPanel';
+
+      if (widget.headerComponent != null) {
+        widget.headerComponent.componentModel.parentComponentId =
+            'headerFooterPanel';
+        widget.headerComponent.componentModel.constraints = 'North';
+        widget.headerComponent.componentModel.coState = CoState.Added;
       }
-      (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-          .addWithConstraints(rootComponent, 'Center');
-      if (footerComponent != null) {
-        (headerFooterPanel.componentModel.componentState as CoPanelWidgetState)
-            .addWithConstraints(footerComponent, 'South');
+
+      if (rootComponent != null) {
+        rootComponent.componentModel.parentComponentId = 'headerFooterPanel';
+        rootComponent.componentModel.constraints = 'Center';
       }
+
+      if (widget.footerComponent != null) {
+        widget.footerComponent.componentModel.parentComponentId =
+            'headerFooterPanel';
+        widget.footerComponent.componentModel.constraints = 'South';
+        widget.footerComponent.componentModel.coState = CoState.Added;
+      }
+
+      components[widget.headerComponent.componentModel.componentId] =
+          widget.headerComponent;
+      components[widget.footerComponent.componentModel.componentId] =
+          widget.footerComponent;
+      components[headerFooterPanel.componentModel.componentId] =
+          headerFooterPanel;
 
       return headerFooterPanel;
     }
-    */
 
     return rootComponent;
-  }
-
-  setHeader(ComponentWidget headerComponent) {
-    this.headerComponent = headerComponent;
-  }
-
-  setFooter(ComponentWidget footerComponent) {
-    this.footerComponent = footerComponent;
   }
 
   replaceComponent(ComponentWidget compToReplace, ComponentWidget newComp) {
@@ -546,5 +568,39 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     });
 
     return children;
+  }
+
+  void replaceComponents(Map<String, ComponentWidget> toReplaceComponents) {
+    if (toReplaceComponents == null || toReplaceComponents.isEmpty) return;
+
+    toReplaceComponents.forEach((name, toReplaceComponent) {
+      ComponentWidget component = this.getComponentFromName(name);
+
+      if (component != null && component != toReplaceComponent) {
+        toReplaceComponent.componentModel.toUpdateComponents.add(
+            ToUpdateComponent(
+                componentId: component.componentModel.componentId,
+                changedComponent:
+                    component.componentModel.firstChangedComponent));
+        toReplaceComponent.componentModel.toUpdateComponents
+            .addAll(component.componentModel.toUpdateComponents);
+        toReplaceComponent.componentModel.compId =
+            component.componentModel.componentId;
+        toReplaceComponent.componentModel.parentComponentId =
+            component.componentModel.parentComponentId;
+        toReplaceComponent.componentModel.constraints =
+            component.componentModel.constraints;
+        toReplaceComponent.componentModel.minimumSize =
+            component.componentModel.minimumSize;
+        toReplaceComponent.componentModel.maximumSize =
+            component.componentModel.maximumSize;
+        toReplaceComponent.componentModel.preferredSize =
+            component.componentModel.preferredSize;
+
+        _removeFromParent(component);
+        components[toReplaceComponent.componentModel.componentId] =
+            toReplaceComponent;
+      }
+    });
   }
 }

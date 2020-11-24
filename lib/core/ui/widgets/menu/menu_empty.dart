@@ -8,8 +8,6 @@ class MenuEmpty extends StatefulWidget {
 class _MenuEmptyState extends State<MenuEmpty> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
-    );
+    return Container();
   }
 }

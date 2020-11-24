@@ -1,0 +1,36 @@
+[
+    {
+        "langCode": "de",
+        "name": "applicationMetaData",
+        "languageResource": "translation_de.xml",
+        "clientId": "3cee2677-c2cb-4c8d-a491-0252643ce294",
+        "version": "1.1"
+    },
+    {
+        "layoutMode": "Full",
+        "name": "deviceStatus"
+    },
+    {
+        "langCode": "de",
+        "name": "language",
+        "languageResource": "translation_de.xml"
+    },
+    {
+        "name": "login",
+        "componentId": "JVx Mobile, Demo_DP1_IF1_L1",
+        "loginData": {
+            "userName": {
+                "componentId": "UserName",
+                "text": ""
+            },
+            "password": {
+                "componentId": "Password",
+                "text": ""
+            },
+            "action": {
+                "componentId": "OK",
+                "label": "Anmelden"
+            }
+        }
+    }
+]

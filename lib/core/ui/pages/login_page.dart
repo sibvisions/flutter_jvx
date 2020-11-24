@@ -19,7 +19,10 @@ class LoginPage extends StatelessWidget {
       child: BlocProvider<ApiBloc>(
         create: (_) => sl<ApiBloc>(),
         child: Scaffold(
-          backgroundColor: AppStateProvider.of(context).appState.applicationStyle?.loginBackground,
+          backgroundColor: AppStateProvider.of(context)
+              .appState
+              .applicationStyle
+              ?.loginBackground,
           body: LoginPageWidget(),
         ),
       ),

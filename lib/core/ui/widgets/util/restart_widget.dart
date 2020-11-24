@@ -12,8 +12,8 @@ class RestartWidget extends StatefulWidget {
 
   static restartApp(BuildContext context, {bool shouldLoadConfig = false}) {
     final _RestartWidgetState state =
-      context.findAncestorStateOfType<_RestartWidgetState>();
-    
+        context.findAncestorStateOfType<_RestartWidgetState>();
+
     state._restartApp(shouldLoadConfig);
   }
 }
@@ -33,7 +33,10 @@ class _RestartWidgetState extends State<RestartWidget> {
   Widget build(BuildContext context) {
     return Container(
       key: key,
-      child: widget.loadConfigBuilder((this.shouldLoadConfig == null || this.shouldLoadConfig) ? true : false),
+      child: widget.loadConfigBuilder(
+          (this.shouldLoadConfig == null || this.shouldLoadConfig)
+              ? true
+              : false),
     );
   }
 }

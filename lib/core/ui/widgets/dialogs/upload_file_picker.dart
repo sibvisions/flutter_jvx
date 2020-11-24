@@ -29,8 +29,7 @@ Future<File> openFilePicker(BuildContext context, AppState appState) async {
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: Text(
-                        AppLocalizations.of(context)
-                            .text('Choose file'),
+                        AppLocalizations.of(context).text('Choose file'),
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
@@ -49,10 +48,10 @@ Future<File> openFilePicker(BuildContext context, AppState appState) async {
                     File compressedImage =
                         await FlutterNativeImage.compressImage(val.path,
                             quality: 80,
-                            targetWidth: appState.picSize,
-                            targetHeight: (properties.height *
-                                    appState.picSize /
-                                    properties.width)
+                            targetWidth: appState.picSize ?? 320,
+                            targetHeight: (properties.height ?? 400 *
+                                    appState.picSize ?? 320 /
+                                    properties.width ?? 400)
                                 .round());
 
                     file = compressedImage;
@@ -116,10 +115,8 @@ Future<File> openFilePicker(BuildContext context, AppState appState) async {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        FaIcon(
-                          FontAwesomeIcons.folderOpen,
-                          color: Theme.of(context).primaryColor
-                        ),
+                        FaIcon(FontAwesomeIcons.folderOpen,
+                            color: Theme.of(context).primaryColor),
                         SizedBox(
                           width: 15,
                         ),
@@ -152,8 +149,7 @@ Future<File> openFilePicker(BuildContext context, AppState appState) async {
                     Padding(
                       padding: const EdgeInsets.only(left: 16),
                       child: Text(
-                        AppLocalizations.of(context)
-                            .text('Choose file'),
+                        AppLocalizations.of(context).text('Choose file'),
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

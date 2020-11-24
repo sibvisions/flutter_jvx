@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../layout/I_alignment_constants.dart';
+import '../layout/i_alignment_constants.dart';
 import 'component_widget.dart';
 import 'models/selected_component_model.dart';
 

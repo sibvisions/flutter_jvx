@@ -14,12 +14,15 @@ import 'core/utils/theme/theme_manager.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  sl.registerFactory(() => ApiBloc(Response(), sl<NetworkInfo>(), sl<RestClient>(), sl<AppState>(), sl<SharedPreferencesManager>()));
+  sl.registerFactory(() => ApiBloc(Response(), sl<NetworkInfo>(),
+      sl<RestClient>(), sl<AppState>(), sl<SharedPreferencesManager>()));
 
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl<Connectivity>()));
+  sl.registerLazySingleton<NetworkInfo>(
+      () => NetworkInfoImpl(sl<Connectivity>()));
   sl.registerLazySingleton<RestClient>(() => RestClient(sl<HttpClient>()));
   sl.registerLazySingleton<ThemeManager>(() => ThemeManager());
-  sl.registerLazySingleton<SharedPreferencesManager>(() => SharedPreferencesManager(sl<SharedPreferences>()));
+  sl.registerLazySingleton<SharedPreferencesManager>(
+      () => SharedPreferencesManager(sl<SharedPreferences>()));
   sl.registerLazySingleton<AppState>(() => AppState());
 
   sl.registerLazySingleton<Connectivity>(() => Connectivity());

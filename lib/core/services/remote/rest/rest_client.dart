@@ -70,7 +70,9 @@ class RestClient {
           finalResponse = Response.fromJson([decodedBody]);
         }
       } on Exception {
-        finalResponse = Response();
+        finalResponse = Response()
+          ..error = ErrorResponse('Error', 'Couldn\t decode response body',
+              'An Error occured', 'message.error');
       }
     }
 
@@ -94,8 +96,11 @@ class RestClient {
       print(e);
     }
 
-    returnResponse.downloadResponse = DownloadResponse('', response.bodyBytes);
-
+    if (response.bodyBytes != null) {
+      returnResponse.downloadResponse =
+          DownloadResponse('', response.bodyBytes);
+    }
+    
     if (data['name'] == 'file') {
       if (kIsWeb) {
         returnResponse.downloadResponse.fileName = downloadFileName;
@@ -167,8 +172,6 @@ class RestClient {
             'server.error');
     } else {
       dynamic decodedBody = json.decode(response.body);
-
-      print(decodedBody.toString());
 
       try {
         if (decodedBody is List) {

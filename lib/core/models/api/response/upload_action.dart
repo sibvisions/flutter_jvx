@@ -6,6 +6,6 @@ class UploadAction extends ResponseObject {
   UploadAction({this.fileId});
 
   UploadAction.fromJson(Map<String, dynamic> json)
-    : fileId = json['fileId'],
-      super.fromJson(json);
+      : fileId = json['fileId'],
+        super.fromJson(json);
 }

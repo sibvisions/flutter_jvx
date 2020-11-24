@@ -172,23 +172,32 @@ class CoPopupMenuButtonWidgetState
     }
 
     return Container(
-      height: 50,
+      margin: EdgeInsets.all(4),
       child: ButtonTheme(
           minWidth: 44,
           child: SizedBox(
+              height: 50,
               child: RaisedButton(
-            onPressed: () =>
-                widget.componentModel.enabled ? buttonPressed(context) : null,
-            color: Theme.of(context).primaryColor,
-            elevation: 10,
-            shape: this.appState.applicationStyle?.buttonShape,
-            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Flexible(
-                  fit: FlexFit.loose, flex: 1, child: Center(child: child)),
-              _getPopupMenu(colorScheme),
-            ]),
-            splashColor: widget.componentModel.background,
-          ))),
+                onPressed: () => widget.componentModel.enabled
+                    ? buttonPressed(context)
+                    : null,
+                color: Theme.of(context).primaryColor,
+                shape: this.appState.applicationStyle?.buttonShape,
+                child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                          fit: FlexFit.loose,
+                          flex: 5,
+                          child: Center(child: child)),
+                      Flexible(
+                          fit: FlexFit.loose,
+                          flex: 5,
+                          child: _getPopupMenu(colorScheme)),
+                    ]),
+                splashColor: widget.componentModel.background,
+              ))),
     );
   }
 }

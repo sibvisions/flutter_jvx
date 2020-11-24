@@ -82,7 +82,8 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
 
   SplitViewMode get splitViewMode {
     if (kIsWeb &&
-        (this.appState.layoutMode == 'Full' || this.appState.layoutMode == 'Small')) {
+        (this.appState.layoutMode == 'Full' ||
+            this.appState.layoutMode == 'Small')) {
       return defaultSplitViewMode;
     }
 
@@ -155,7 +156,7 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
                     CoScrollPanelConstraints(constraints, preferredSize),
                 child: secondComponent)
           ],
-           ));
+        ));
       } else {
         widgets.add(Container());
       }

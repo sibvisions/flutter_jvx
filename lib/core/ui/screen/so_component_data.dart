@@ -99,13 +99,14 @@ class SoComponentData {
       if (data.selectedRow != pData.selectedRow)
         _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data.selectedRow = pData.selectedRow;
-    } else {
-      data.records.addAll(pData.records);
-      if (data.selectedRow != pData.selectedRow)
-        _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
-      data.selectedRow = pData.selectedRow;
-      data.isAllFetched = pData.isAllFetched;
-    }
+    } 
+    // else {
+    //   data.records.addAll(pData.records);
+    //   if (data.selectedRow != pData.selectedRow)
+    //     _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
+    //   data.selectedRow = pData.selectedRow;
+    //   data.isAllFetched = pData.isAllFetched;
+    // }
 
     if (data.selectedRow == null) data.selectedRow = 0;
 
@@ -167,7 +168,7 @@ class SoComponentData {
   }
 
   void selectRecord(BuildContext context, int index, [bool fetch = false]) {
-    if (index < data.records.length) {
+    if (index != null && index < data.records.length) {
       SelectRecord select = getSelectRecordRequest(context, index, fetch);
 
       if (fetch != null) select.fetch = fetch;

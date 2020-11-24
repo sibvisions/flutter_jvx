@@ -125,9 +125,8 @@ mixin SoDataScreen {
 
     // wait until textfields focus lost. 10 millis should do it.
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton = PressButton(
-          SoAction(componentId: action.componentId, label: action.label),
-          AppStateProvider.of(context).appState.clientId);
+      PressButton pressButton =
+          PressButton(action, AppStateProvider.of(context).appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
   }

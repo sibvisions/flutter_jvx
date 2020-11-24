@@ -75,7 +75,7 @@ class ComponentModel extends ValueNotifier {
           changedComponent: this._changedComponent,
           componentId: this._changedComponent.id));
 
-      this.updateProperties(changedComponent);
+      this.updateProperties(this._changedComponent);
     }
   }
 

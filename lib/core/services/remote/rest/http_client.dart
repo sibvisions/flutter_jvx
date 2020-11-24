@@ -19,7 +19,7 @@ abstract class HttpClient {
     return null;
   }
 
-  void setWithCredentials(bool withCredentials){}
+  void setWithCredentials(bool withCredentials) {}
 
   /// stores a key value pair in the respective storage.
   void close() {}

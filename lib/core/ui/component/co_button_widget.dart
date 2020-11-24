@@ -87,7 +87,6 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
     }
   }
 
-  @override
   void initState() {
     super.initState();
   }

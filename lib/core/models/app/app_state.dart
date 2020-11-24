@@ -10,7 +10,7 @@ class AppState {
   String password;
   String baseUrl;
   String appName;
-  String appMode;
+  String appMode ;
   String language;
   int picSize;
   String appVersion;
@@ -67,5 +67,6 @@ class AppState {
     this.screenManager = state.screenManager;
     this.menuCurrentPageIndex = state.menuCurrentPageIndex;
     this.package = state.package;
+    this.currentScreenComponentId = state.currentScreenComponentId;
   }
 }

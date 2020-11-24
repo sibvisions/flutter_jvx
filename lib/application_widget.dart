@@ -21,7 +21,14 @@ class ApplicationWidget extends StatelessWidget {
   final AppListener appListener;
   final bool package;
 
-  const ApplicationWidget({Key key, this.config, this.screenManager, this.handleSessionTimeout, this.appListener, this.package = false}) : super(key: key);
+  const ApplicationWidget(
+      {Key key,
+      this.config,
+      this.screenManager,
+      this.handleSessionTimeout,
+      this.appListener,
+      this.package = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
