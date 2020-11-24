@@ -399,16 +399,18 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       if (widget.headerComponent != null) {
         widget.headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
         widget.headerComponent.componentModel.constraints = 'North';
+        widget.headerComponent.componentModel.coState = CoState.Added;
       }
 
       if (rootComponent != null) {
         rootComponent.componentModel.parentComponentId = 'headerFooterPanel';
         rootComponent.componentModel.constraints = 'Center';
       }
-      
+
       if (widget.footerComponent != null) {
         widget.footerComponent.componentModel.parentComponentId = 'headerFooterPanel';
         widget.footerComponent.componentModel.constraints = 'South';
+        widget.footerComponent.componentModel.coState = CoState.Added;
       }
 
       components[widget.headerComponent.componentModel.componentId] = widget.headerComponent;
