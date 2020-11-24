@@ -22,11 +22,11 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  TextEditingController _controller = TextEditingController();
+  TextEditingController textController = TextEditingController();
   bool password = false;
   bool valueChanged = false;
   final GlobalKey textfieldKey = GlobalKey<CoTextCellEditorWidgetState>();
-  FocusNode node = FocusNode();
+  FocusNode focusNode = FocusNode();
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (this.value != newValue) {
@@ -36,7 +36,7 @@ class CoTextCellEditorWidgetState
   }
 
   void onTextFieldEndEditing() {
-    node.unfocus();
+    focusNode.unfocus();
 
     if (this.valueChanged) {
       super.onValueChanged(this.value);
@@ -57,14 +57,14 @@ class CoTextCellEditorWidgetState
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('password') ??
         false);
-    this.node.addListener(() {
-      if (!node.hasFocus) onTextFieldEndEditing();
+    this.focusNode.addListener(() {
+      if (!focusNode.hasFocus) onTextFieldEndEditing();
     });
   }
 
   @override
   void dispose() {
-    node.dispose();
+    focusNode.dispose();
 
     super.dispose();
   }
@@ -75,7 +75,7 @@ class CoTextCellEditorWidgetState
     setEditorProperties(context);
 
     String controllerValue = (this.value != null ? this.value.toString() : "");
-    _controller.value = _controller.value.copyWith(
+    textController.value = textController.value.copyWith(
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
@@ -105,17 +105,20 @@ class CoTextCellEditorWidgetState
                         child: GestureDetector(
                           onTap: () {
                             if (this.value != null &&
-                                this._controller.text.isNotEmpty) {
+                                this.textController.text.isNotEmpty) {
                               this.value = null;
                               this.valueChanged = true;
                               super.onValueChanged(this.value);
                               this.valueChanged = false;
                             }
                           },
-                          child: this._controller.text.isNotEmpty
+                          child: this.textController.text.isNotEmpty
                               ? Icon(Icons.clear,
-                                  size: 24, color: Colors.grey[400])
-                              : SizedBox(height: 24, width: 1),
+                                  size: widget.cellEditorModel.iconSize,
+                                  color: Colors.grey[400])
+                              : SizedBox(
+                                  height: widget.cellEditorModel.iconSize,
+                                  width: 1),
                         ),
                       )
                     : null),
@@ -123,8 +126,8 @@ class CoTextCellEditorWidgetState
                 color: this.editable != null && this.editable
                     ? (this.foreground != null ? this.foreground : Colors.black)
                     : Colors.grey[700]),
-            controller: _controller,
-            focusNode: node,
+            controller: textController,
+            focusNode: focusNode,
             minLines: null,
             maxLines: widget.cellEditorModel.multiLine ? null : 1,
             keyboardType: widget.cellEditorModel.multiLine

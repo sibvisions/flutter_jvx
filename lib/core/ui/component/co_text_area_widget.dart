@@ -23,6 +23,14 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
     super.initState();
     controller = TextEditingController();
     focusNode = FocusNode();
+    this.focusNode.addListener(() {
+      if (!focusNode.hasFocus) widget.componentModel.onTextFieldEndEditing();
+    });
+  }
+
+  void onTextFieldEndEditing() {
+    focusNode.unfocus();
+    widget.componentModel.onTextFieldEndEditing();
   }
 
   @override
@@ -65,9 +73,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
             minLines: null,
             maxLines: 1,
             keyboardType: TextInputType.text,
-            onEditingComplete: () {
-              widget.componentModel.onTextFieldEndEditing();
-            },
+            onEditingComplete: onTextFieldEndEditing,
             onChanged: widget.componentModel.onTextFieldValueChanged,
             focusNode: focusNode,
             readOnly: !widget.componentModel.enabled,

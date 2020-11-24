@@ -23,6 +23,14 @@ class CoPasswordFieldWidgetState
     super.initState();
     controller = TextEditingController();
     focusNode = FocusNode();
+    this.focusNode.addListener(() {
+      if (!focusNode.hasFocus) widget.componentModel.onTextFieldEndEditing();
+    });
+  }
+
+  void onTextFieldEndEditing() {
+    focusNode.unfocus();
+    widget.componentModel.onTextFieldEndEditing();
   }
 
   @override

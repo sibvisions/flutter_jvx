@@ -8,12 +8,14 @@ class TextCellEditorModel extends CellEditorModel {
   String dateFormat;
   BuildContext context;
   bool multiLine = false;
+  double iconSize = 24;
 
   TextCellEditorModel(this.context, CellEditor currentCellEditor)
       : super(currentCellEditor);
 
   @override
   get preferredSize {
+    double iconWidth = this.editable ? iconSize : 0;
     String text = TextUtils.averageCharactersTextField;
 
     if (!multiLine &&
@@ -26,9 +28,9 @@ class TextCellEditorModel extends CellEditorModel {
         TextUtils.getTextWidth(text, Theme.of(context).textTheme.button)
             .toDouble();
     if (multiLine)
-      return Size(width, 100);
+      return Size(width + iconWidth, 100);
     else
-      return Size(width, 50);
+      return Size(width + iconWidth, 50);
   }
 
   @override
