@@ -27,8 +27,7 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
       }
     }
 
-    if (text == "" || text.length < TextUtils.averageCharactersTextField.length)
-      text = TextUtils.averageCharactersTextField;
+    if (text == "") text = TextUtils.averageCharactersTextField;
 
     double width = TextUtils.getTextWidth(
             text, Theme.of(screenContext).textTheme.subtitle1)

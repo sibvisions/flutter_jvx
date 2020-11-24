@@ -6,20 +6,33 @@ import '../../editor/celleditor/cell_editor_model.dart';
 
 class NumberCellEditorModel extends CellEditorModel {
   BuildContext context;
+  double iconSize = 24;
+  EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
+  EdgeInsets iconPadding = EdgeInsets.only(right: 8);
 
   NumberCellEditorModel(this.context, CellEditor currentCellEditor)
       : super(currentCellEditor);
 
   @override
   get preferredSize {
-    double width = TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
-            Theme.of(context).textTheme.button)
-        .toDouble();
-    return Size(width, 50);
+    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
+    String text = TextUtils.averageCharactersTextField;
+
+    if (this.value != null) {
+      text = this.value.toString();
+    }
+
+    double width =
+        TextUtils.getTextWidth(text, Theme.of(context).textTheme.button)
+            .toDouble();
+
+    return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 
   @override
   get minimumSize {
-    return Size(100, 50);
+    //if (super.isMinimumSizeSet) return super.minimumSize;
+    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
+    return Size(10 + iconWidth + textPadding.horizontal, 100);
   }
 }

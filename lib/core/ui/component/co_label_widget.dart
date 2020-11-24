@@ -53,17 +53,6 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
     return Alignment.centerLeft;
   }
 
-  double getBaseline() {
-    double labelBaseline = 30;
-
-    if (widget.componentModel.fontStyle != null &&
-        widget.componentModel.fontStyle.fontSize != null) {
-      labelBaseline = widget.componentModel.fontStyle.fontSize / 2; // + 21;
-    }
-
-    return labelBaseline;
-  }
-
   @override
   void updateProperties(ChangedComponent changedComponent) {
     super.updateProperties(changedComponent);
@@ -92,13 +81,17 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
       child: Align(
         alignment: getLabelAlignment(widget.componentModel.horizontalAlignment,
             widget.componentModel.verticalAlignment),
-        child: widget.componentModel.text.trim().startsWith('<html>')
-            ? Html(data: widget.componentModel.text)
-            : Text(
-                widget.componentModel.text,
-                style: widget.componentModel.fontStyle,
-                overflow: overflow,
-              ),
+        child: Baseline(
+          baselineType: TextBaseline.alphabetic,
+          baseline: widget.componentModel.getBaseline(),
+          child: widget.componentModel.text.trim().startsWith('<html>')
+              ? Html(data: widget.componentModel.text)
+              : Text(
+                  widget.componentModel.text,
+                  style: widget.componentModel.fontStyle,
+                  overflow: overflow,
+                ),
+        ),
       ),
     );
 

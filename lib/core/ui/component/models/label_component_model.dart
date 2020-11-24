@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import '../../../models/api/component/changed_component.dart';
 import '../../../utils/app/text_utils.dart';
@@ -17,7 +19,7 @@ class LabelComponentModel extends ComponentModel {
     //if (super.isPreferredSizeSet) return super.preferredSize;
 
     Size size = TextUtils.getTextSize(text, fontStyle);
-    return Size(size.width, size.height);
+    return Size(size.width, max(size.height, getBaseline()));
   }
 
   @override
@@ -27,5 +29,15 @@ class LabelComponentModel extends ComponentModel {
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
     return preferredSize;
+  }
+
+  double getBaseline() {
+    double labelBaseline = 30;
+
+    if (fontStyle != null && fontStyle.fontSize != null) {
+      labelBaseline = fontStyle.fontSize / 2 + 21;
+    }
+
+    return labelBaseline;
   }
 }

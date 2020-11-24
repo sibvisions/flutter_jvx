@@ -20,9 +20,7 @@ class TextCellEditorModel extends CellEditorModel {
     double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
     String text = TextUtils.averageCharactersTextField;
 
-    if (!multiLine &&
-        this.value != null &&
-        this.value.toString().length > text.length) {
+    if (!multiLine && this.value != null) {
       text = this.value;
     }
 
