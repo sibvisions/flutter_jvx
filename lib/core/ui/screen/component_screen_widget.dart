@@ -409,6 +409,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
       components[widget.headerComponent.componentModel.componentId] = widget.headerComponent;
       components[widget.footerComponent.componentModel.componentId] = widget.footerComponent;
+      components[headerFooterPanel.componentModel.componentId] = headerFooterPanel;
 
       return headerFooterPanel;
     }
