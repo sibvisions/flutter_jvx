@@ -3,14 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/component/changed_component.dart';
-import '../../../models/api/request/press_button.dart';
 import '../../../models/api/so_action.dart';
-import '../../../services/remote/bloc/api_bloc.dart';
 import '../../../utils/app/text_utils.dart';
 import '../../../utils/theme/theme_manager.dart';
 import '../../widgets/util/fontAwesomeChanger.dart';
@@ -101,11 +98,7 @@ class CoPopupMenuButtonWidgetState
   void valueChanged(dynamic value) {
     TextUtils.unfocusCurrentTextfield(context);
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton = PressButton(
-          SoAction(componentId: value, label: null), this.appState.clientId);
-      BlocProvider.of<ApiBloc>(context).add(pressButton);
-    });
+    widget.componentModel.onAction(SoAction(componentId: value, label: null));
   }
 
   PopupMenuButton<String> _getPopupMenu(ColorScheme colorScheme) {
@@ -191,11 +184,8 @@ class CoPopupMenuButtonWidgetState
             shape: this.appState.applicationStyle?.buttonShape,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Flexible(
-                  fit: FlexFit.loose, flex: 8, child: Center(child: child)),
-              Flexible(
-                  fit: FlexFit.loose,
-                  flex: 2,
-                  child: _getPopupMenu(colorScheme)),
+                  fit: FlexFit.loose, flex: 1, child: Center(child: child)),
+              _getPopupMenu(colorScheme),
             ]),
             splashColor: widget.componentModel.background,
           ))),

@@ -5,7 +5,6 @@ import 'package:flutter/scheduler.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
-import '../../models/api/component/component_properties.dart';
 import '../../models/app/app_state.dart';
 import '../container/container_component_model.dart';
 import 'models/component_model.dart';

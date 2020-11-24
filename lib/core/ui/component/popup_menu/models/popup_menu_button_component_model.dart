@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import '../../../../models/api/component/changed_component.dart';
 import '../../../../models/api/component/component_properties.dart';
-import '../../models/component_model.dart';
+import '../../../../utils/app/text_utils.dart';
+import '../../models/action_component_model.dart';
 import '../co_popup_menu_widget.dart';
 
-class PopupMenuButtonComponentModel extends ComponentModel {
+class PopupMenuButtonComponentModel extends ActionComponentModel {
   CoPopupMenuWidget menu;
   bool eventAction = false;
   String defaultMenuItem;
