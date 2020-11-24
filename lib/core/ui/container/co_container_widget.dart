@@ -126,6 +126,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     }
   }
 
+  ILayout _createLayoutForHeaderFooterPanel(String layoutData) {
+    return CoBorderLayoutContainerWidget.fromLayoutString(widget, null, layoutData);
+  }
+
   ILayout _createLayout(
       CoContainerWidget container, ChangedComponent changedComponent) {
     if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
@@ -255,6 +259,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     if (widget.componentModel.changedComponent != null) {
       layout = _createLayout(widget, widget.componentModel.changedComponent);
     }
+
+    if (widget.componentModel.componentId == 'headerFooterPanel') {
+      layout = _createLayoutForHeaderFooterPanel('BorderLayout,0,0,0,0,0,0,');
+    }
+
     this.update();
 
     widget.componentModel.addListener(() => setState(() => this.update()));

@@ -390,9 +390,6 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget headerFooterPanel = CoPanelWidget(
           componentModel:
               ContainerComponentModel());
-      (headerFooterPanel.componentModel as ContainerComponentModel)
-          .toUpdateLayout
-          .add('BorderLayout,0,0,0,0,0,0,');
 
       headerFooterPanel.componentModel.compId = 'headerFooterPanel';
 
