@@ -125,7 +125,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
             this.components.removeAt(index);
             BlocProvider.of<ApiBloc>(context).add(TabClose(
                 clientId: this.appState.clientId,
-                componentId: this.name,
+                componentId: widget.componentModel.name,
                 index: index));
           }
           _initTabController(0);
@@ -138,7 +138,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
       } else {
         BlocProvider.of<ApiBloc>(context).add(TabSelect(
             clientId: this.appState.clientId,
-            componentId: this.name,
+            componentId: widget.componentModel.name,
             index: tabController.index));
       }
     }

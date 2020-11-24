@@ -19,8 +19,8 @@ class CoIconWidget extends ComponentWidget {
 
 class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
   void valueChanged(dynamic value) {
-    SetComponentValue setComponentValue =
-        SetComponentValue(this.name, value, this.appState.clientId);
+    SetComponentValue setComponentValue = SetComponentValue(
+        widget.componentModel.name, value, this.appState.clientId);
     BlocProvider.of<ApiBloc>(context).add(setComponentValue);
   }
 

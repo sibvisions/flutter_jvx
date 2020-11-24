@@ -29,8 +29,8 @@ class CoCheckBoxWidgetState extends ComponentWidgetState<CoCheckBoxWidget> {
               });
               if (widget.componentModel.eventAction != null &&
                   widget.componentModel.eventAction) {
-                widget.componentModel
-                    .onComponentValueChanged(this.name, change);
+                widget.componentModel.onComponentValueChanged(
+                    widget.componentModel.name, change);
               }
             },
             tristate: false,

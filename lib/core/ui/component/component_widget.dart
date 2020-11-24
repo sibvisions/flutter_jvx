@@ -7,10 +7,7 @@ import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/app/app_state.dart';
-import '../../utils/app/so_text_style.dart';
-import '../../utils/theme/hex_color.dart';
 import '../container/container_component_model.dart';
-import '../screen/component_screen_widget.dart';
 import 'models/component_model.dart';
 
 class ComponentWidget extends StatefulWidget {
@@ -24,27 +21,9 @@ class ComponentWidget extends StatefulWidget {
 }
 
 class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
-  String name;
-  String rawComponentId;
-  CoState state = CoState.Free;
-  bool isVisible = true;
-  String constraints = "";
-
-  String parentComponentId;
-  List<Key> childComponentIds;
-
   AppState appState;
 
-  void updateProperties(ChangedComponent changedComponent) {
-    rawComponentId = changedComponent.getProperty<String>(ComponentProperty.ID);
-    name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
-    isVisible =
-        changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
-    parentComponentId = changedComponent.getProperty<String>(
-        ComponentProperty.PARENT, parentComponentId);
-    constraints = changedComponent.getProperty<String>(
-        ComponentProperty.CONSTRAINTS, constraints);
-  }
+  void updateProperties(ChangedComponent changedComponent) {}
 
   void _update() {
     if ((widget as ComponentWidget).componentModel.firstChangedComponent !=
@@ -61,9 +40,6 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
 
     (widget as ComponentWidget).componentModel.toUpdateComponents =
         Queue<ToUpdateComponent>();
-
-    state = (widget as ComponentWidget).componentModel.coState;
-    constraints = (widget as ComponentWidget).componentModel.constraints;
   }
 
   @override

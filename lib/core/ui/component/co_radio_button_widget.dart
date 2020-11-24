@@ -38,8 +38,8 @@ class CoRadioButtonWidgetState
 
                 if (widget.componentModel.eventAction != null &&
                     widget.componentModel.eventAction) {
-                  widget.componentModel
-                      .onComponentValueChanged(this.name, change);
+                  widget.componentModel.onComponentValueChanged(
+                      widget.componentModel.name, change);
                 }
               }),
           widget.componentModel.text != null

@@ -280,7 +280,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       ComponentWidget component, Map<String, ComponentWidget> container) {
     _removeComponent(component, container);
     container.remove(component.componentModel.componentId);
-    component.componentModel.componentState.state = CoState.Destroyed;
+    component.componentModel.state = CoState.Destroyed;
   }
 
   void _moveComponent(ComponentWidget component, ChangedComponent newComponent,
@@ -411,8 +411,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
     if (compToReplace != null) {
       newComp.componentModel.componentState.parentComponentId =
           compToReplace.componentModel.componentState.parentComponentId;
-      newComp.componentModel.componentState.constraints =
-          compToReplace.componentModel.componentState.constraints;
+      newComp.componentModel.constraints =
+          compToReplace.componentModel.constraints;
       newComp.componentModel.minimumSize =
           compToReplace.componentModel.minimumSize;
       newComp.componentModel.maximumSize =
@@ -427,7 +427,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
   ComponentWidget getComponentFromName(String componentName) {
     return this.components.values.firstWhere(
         (element) =>
-            element?.componentModel?.componentState?.name == componentName &&
+            element?.componentModel?.name == componentName &&
             element?.componentModel?.coState == CoState.Added,
         orElse: () => null);
   }
@@ -443,7 +443,7 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
       debugString += " id: " +
           keyString +
           ", Name: " +
-          component.componentModel.componentState.name.toString() +
+          component.componentModel.name.toString() +
           ", parent: " +
           (component.componentModel.componentState.parentComponentId != null
               ? component.componentModel.componentState.parentComponentId
@@ -451,8 +451,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
           ", className: " +
           component.runtimeType.toString() +
           ", constraints: " +
-          (component.componentModel.componentState.constraints != null
-              ? component.componentModel.componentState.constraints
+          (component.componentModel.constraints != null
+              ? component.componentModel.constraints
               : "") +
           ", size:" +
           (size != null ? size.toString() : "nosize");
