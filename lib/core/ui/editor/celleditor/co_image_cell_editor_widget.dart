@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../layout/i_alignment_constants.dart';
-import 'cell_editor_model.dart';
+import 'models/cell_editor_model.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoImageCellEditorWidget extends CoCellEditorWidget {

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../models/api/editor/cell_editor_properties.dart';
-import '../../../models/api/editor/popup_size.dart';
-import '../../../utils/theme/hex_color.dart';
-import '../../screen/so_component_data.dart';
+import '../../../../models/api/editor/cell_editor.dart';
+import '../../../../models/api/editor/cell_editor_properties.dart';
+import '../../../../models/api/editor/popup_size.dart';
+import '../../../../utils/theme/hex_color.dart';
+import '../../../screen/so_component_data.dart';
 
 class CellEditorModel extends ValueNotifier {
   final CellEditor currentCellEditor;

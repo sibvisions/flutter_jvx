@@ -7,7 +7,7 @@ import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../utils/app/text_utils.dart';
 import 'co_cell_editor_widget.dart';
-import 'date_cell_editor_model.dart';
+import 'models/date_cell_editor_model.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
   CoDateCellEditorWidget(

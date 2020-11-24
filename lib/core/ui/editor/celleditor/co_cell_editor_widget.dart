@@ -8,7 +8,7 @@ import '../../../models/app/app_state.dart';
 import '../../../utils/theme/hex_color.dart';
 import '../co_editor_widget.dart';
 import '../editor_component_model.dart';
-import 'cell_editor_model.dart';
+import 'models/cell_editor_model.dart';
 
 class CoCellEditorWidget extends StatefulWidget {
   final CellEditor changedCellEditor;

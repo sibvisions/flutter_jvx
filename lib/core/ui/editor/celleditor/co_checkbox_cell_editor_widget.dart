@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../ui/layout/i_alignment_constants.dart';
-import 'cell_editor_model.dart';
 import 'co_cell_editor_widget.dart';
+import 'models/checkbox_cell_editor_model.dart';
 
 class CoCheckboxCellEditorWidget extends CoCellEditorWidget {
+  final CheckBoxCellEditorModel cellEditorModel;
+
   CoCheckboxCellEditorWidget({
     CellEditor changedCellEditor,
-    CellEditorModel cellEditorModel,
+    this.cellEditorModel,
     Key key,
   }) : super(
           changedCellEditor: changedCellEditor,
@@ -40,18 +42,8 @@ class CoCheckboxCellEditorWidgetState
   }
 
   void valueChanged(dynamic value) {
-    this.value = boolToValue(value);
+    this.value = widget.cellEditorModel.boolToValue(value);
     this.onValueChanged(this.value, indexInTable);
-  }
-
-  dynamic boolToValue(bool value) {
-    if (value) return selectedValue;
-    return deselectedValue;
-  }
-
-  bool valueToBool(dynamic value) {
-    if (value != null && value == selectedValue) return true;
-    return false;
   }
 
   @override
@@ -68,7 +60,7 @@ class CoCheckboxCellEditorWidgetState
             IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
         children: <Widget>[
           Checkbox(
-            value: valueToBool(this.value),
+            value: widget.cellEditorModel.valueToBool(this.value),
             onChanged: (bool change) => (this.editable != null && this.editable)
                 ? valueChanged(change)
                 : null,

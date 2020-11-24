@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
-
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../models/api/editor/column_view.dart';
-import '../../../models/api/editor/link_reference.dart';
-import '../../../models/api/response/data/data_book.dart';
-import '../../editor/celleditor/cell_editor_model.dart';
-import '../../screen/so_component_data.dart';
+import '../../../../models/api/editor/cell_editor.dart';
+import '../../../../models/api/editor/column_view.dart';
+import '../../../../models/api/editor/link_reference.dart';
+import '../../../../models/api/response/data/data_book.dart';
+import '../../../screen/so_component_data.dart';
+import 'cell_editor_model.dart';
 
 class ReferencedCellEditorModel extends CellEditorModel {
   SoComponentData referencedData;

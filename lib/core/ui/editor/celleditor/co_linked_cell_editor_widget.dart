@@ -9,7 +9,7 @@ import '../../../utils/app/text_utils.dart';
 import '../../widgets/custom/custom_dropdown_button.dart' as custom;
 import '../../widgets/dropdown/lazy_dropdown.dart';
 import 'co_referenced_cell_editor_widget.dart';
-import 'linked_cell_editor_model.dart';
+import 'models/linked_cell_editor_model.dart';
 
 class CoLinkedCellEditorWidget extends CoReferencedCellEditorWidget {
   final LinkedCellEditorModel cellEditorModel;

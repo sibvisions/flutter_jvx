@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/ui/component/co_toggle_button_widget.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/checkbox_cell_editor_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/api/component/changed_component.dart';
@@ -139,7 +140,7 @@ class SoComponentCreator implements IComponentCreator {
     'CheckBoxCellEditor': (CellEditor cellEditor) => CoCheckboxCellEditorWidget(
           // key: GlobalKey(),
           changedCellEditor: cellEditor,
-          cellEditorModel: CellEditorModel(cellEditor),
+          cellEditorModel: CheckBoxCellEditorModel(cellEditor),
         ),
     'TextCellEditor': (CellEditor cellEditor) => CoTextCellEditorWidget(
           changedCellEditor: cellEditor,
@@ -247,7 +248,7 @@ class SoComponentCreator implements IComponentCreator {
         {
           cellEditor = CoCheckboxCellEditorWidget(
               changedCellEditor: toCreatecellEditor,
-              cellEditorModel: CellEditorModel(toCreatecellEditor));
+              cellEditorModel: CheckBoxCellEditorModel(toCreatecellEditor));
         }
         break;
     }
@@ -283,7 +284,7 @@ class SoComponentCreator implements IComponentCreator {
       case "CheckBoxCellEditor":
         {
           cellEditor = CoCheckboxCellEditorWidget(
-              cellEditorModel: CellEditorModel(toCreatecellEditor),
+              cellEditorModel: CheckBoxCellEditorModel(toCreatecellEditor),
               changedCellEditor: toCreatecellEditor);
         }
         break;

@@ -4,7 +4,7 @@ import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
-import 'text_cell_editor_model.dart';
+import 'models/text_cell_editor_model.dart';
 
 class CoTextCellEditorWidget extends CoCellEditorWidget {
   final TextCellEditorModel cellEditorModel;
