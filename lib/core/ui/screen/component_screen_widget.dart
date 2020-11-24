@@ -400,8 +400,12 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         widget.headerComponent.componentModel.parentComponentId = 'headerFooterPanel';
         widget.headerComponent.componentModel.constraints = 'North';
       }
-      rootComponent.componentModel.parentComponentId = 'headerFooterPanel';
-      rootComponent.componentModel.constraints = 'Center';
+
+      if (rootComponent != null) {
+        rootComponent.componentModel.parentComponentId = 'headerFooterPanel';
+        rootComponent.componentModel.constraints = 'Center';
+      }
+      
       if (widget.footerComponent != null) {
         widget.footerComponent.componentModel.parentComponentId = 'headerFooterPanel';
         widget.footerComponent.componentModel.constraints = 'South';
