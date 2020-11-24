@@ -232,6 +232,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                       widget.appState.screenManager.registerScreen(screen);
                     }
 
+                    screen.closeCurrentScreen = this.closeCurrentScreen;
                     screen.update(this.currentResponse);
                   }
 
