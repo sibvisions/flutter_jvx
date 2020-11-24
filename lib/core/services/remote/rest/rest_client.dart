@@ -96,8 +96,11 @@ class RestClient {
       print(e);
     }
 
-    returnResponse.downloadResponse = DownloadResponse('', response.bodyBytes);
-
+    if (response.bodyBytes != null) {
+      returnResponse.downloadResponse =
+          DownloadResponse('', response.bodyBytes);
+    }
+    
     if (data['name'] == 'file') {
       if (kIsWeb) {
         returnResponse.downloadResponse.fileName = downloadFileName;

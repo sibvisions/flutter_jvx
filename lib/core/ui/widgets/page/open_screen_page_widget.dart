@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -128,6 +129,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             }
 
             if (state.request.requestType == RequestType.CLOSE_SCREEN) {
+              widget.appState.screenManager.removeScreen(this.rawComponentId);
+
               Navigator.of(context).pushReplacementNamed('/menu',
                   arguments: MenuArguments(widget.appState.items, true));
             } else {
@@ -209,6 +212,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         null) {
                       screen = widget.appState.screenManager
                           .findScreen(widget.menuComponentId);
+
+                      screen.screenKey = this.screenKey;
+                    } else if (widget.appState.screenManager
+                            .findScreen(this.rawComponentId) !=
+                        null) {
+                      screen = widget.appState.screenManager
+                          .findScreen(this.rawComponentId);
+
+                      screen.screenKey = this.screenKey;
                     } else {
                       screen = SoScreen(
                           screenKey: this.screenKey,
@@ -216,6 +228,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                           closeCurrentScreen: this.closeCurrentScreen,
                           componentCreator: SoComponentCreator(context),
                           response: this.currentResponse);
+
+                      widget.appState.screenManager.registerScreen(screen);
                     }
 
                     screen.update(this.currentResponse);
@@ -250,7 +264,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                                   )),
                         child: this.currentResponse.request.requestType !=
                                 RequestType.DEVICE_STATUS
-                            ? screen
+                            ? screen.getWidget(context)
                             : widget.appState.appFrame.screen));
 
                     return widget.appState.appFrame.getWidget();
@@ -262,7 +276,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                                 widget.appState.applicationStyle?.desktopColor),
                         child: this.currentResponse.request.requestType !=
                                 RequestType.DEVICE_STATUS
-                            ? screen
+                            ? screen.getWidget(context)
                             : widget.appState.appFrame.screen));
 
                     return widget.appState.appFrame.getWidget();
@@ -270,7 +284,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                     widget.appState.appFrame.setScreen(
                         this.currentResponse.request.requestType !=
                                 RequestType.DEVICE_STATUS
-                            ? screen
+                            ? screen.getWidget(context)
                             : widget.appState.appFrame.screen);
                     return widget.appState.appFrame.getWidget();
                   }
@@ -388,7 +402,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       IScreen screen =
           widget.appState.screenManager.getScreen(menuItem.componentId);
 
-      widget.appState.appFrame.setScreen(screen);
+      widget.appState.appFrame.setScreen(screen.getWidget(context));
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => Theme(

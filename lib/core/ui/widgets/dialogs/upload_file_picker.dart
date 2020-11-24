@@ -48,10 +48,10 @@ Future<File> openFilePicker(BuildContext context, AppState appState) async {
                     File compressedImage =
                         await FlutterNativeImage.compressImage(val.path,
                             quality: 80,
-                            targetWidth: appState.picSize,
-                            targetHeight: (properties.height *
-                                    appState.picSize /
-                                    properties.width)
+                            targetWidth: appState.picSize ?? 320,
+                            targetHeight: (properties.height ?? 400 *
+                                    appState.picSize ?? 320 /
+                                    properties.width ?? 400)
                                 .round());
 
                     file = compressedImage;

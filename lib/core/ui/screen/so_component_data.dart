@@ -168,7 +168,7 @@ class SoComponentData {
   }
 
   void selectRecord(BuildContext context, int index, [bool fetch = false]) {
-    if (index < data.records.length) {
+    if (index != null && index < data.records.length) {
       SelectRecord select = getSelectRecordRequest(context, index, fetch);
 
       if (fetch != null) select.fetch = fetch;

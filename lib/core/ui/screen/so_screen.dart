@@ -5,24 +5,23 @@ import 'component_screen_widget.dart';
 import 'i_screen.dart';
 import 'so_component_creator.dart';
 
-class SoScreen extends StatelessWidget implements IScreen {
-  final String componentId;
-  final Response response;
-  final bool closeCurrentScreen;
-  final SoComponentCreator componentCreator;
-  final GlobalKey<ComponentScreenWidgetState> screenKey;
+class SoScreen implements IScreen {
+  String componentId;
+  Response response;
+  bool closeCurrentScreen;
+  SoComponentCreator componentCreator;
+  GlobalKey<ComponentScreenWidgetState> screenKey;
 
-  const SoScreen(
+  SoScreen(
       {Key key,
       this.componentId,
       this.response,
       this.closeCurrentScreen,
       this.componentCreator,
-      this.screenKey})
-      : super(key: key);
+      this.screenKey});
 
   @override
-  Widget build(BuildContext context) {
+  Widget getWidget(BuildContext context) {
     return FractionallySizedBox(
         widthFactor: 1,
         heightFactor: 1,
@@ -41,10 +40,10 @@ class SoScreen extends StatelessWidget implements IScreen {
 
   @override
   void update(Response response) {
-    this.response.request = response.request;
-    this.response.responseData = response.responseData;
+    this.response = response;
   }
 
-  @override
-  set componentId(String _componentId) {}
+  void setCloseCurrentScreen(bool closeCurrentScreen) {
+    this.closeCurrentScreen = closeCurrentScreen;
+  }
 }
