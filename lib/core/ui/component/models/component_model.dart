@@ -8,7 +8,6 @@ import '../../../utils/app/so_text_style.dart';
 import '../../../utils/theme/hex_color.dart';
 import '../../container/container_component_model.dart';
 import '../../screen/component_screen_widget.dart';
-import '../co_action_component_widget.dart';
 import '../component_widget.dart';
 
 class ComponentModel extends ValueNotifier {
