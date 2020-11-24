@@ -27,12 +27,7 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   String name;
   String rawComponentId;
   CoState state = CoState.Free;
-  TextStyle style = new TextStyle(fontSize: 16.0, color: Colors.black);
-  Size _preferredSize;
-  Size _minimumSize;
-  Size _maximumSize;
   bool isVisible = true;
-  bool enabled = true;
   String constraints = "";
 
   String parentComponentId;
@@ -45,12 +40,6 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     isVisible =
         changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, true);
-    style = SoTextStyle.addFontToTextStyle(
-        changedComponent.getProperty<String>(ComponentProperty.FONT, ""),
-        style);
-
-    enabled =
-        changedComponent.getProperty<bool>(ComponentProperty.ENABLED, true);
     parentComponentId = changedComponent.getProperty<String>(
         ComponentProperty.PARENT, parentComponentId);
     constraints = changedComponent.getProperty<String>(

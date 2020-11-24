@@ -107,7 +107,7 @@ class CoPasswordFieldWidgetState
             onEditingComplete: onTextFieldEndEditing,
             onChanged: onTextFieldValueChanged,
             focusNode: focusNode,
-            readOnly: !this.enabled,
+            readOnly: !widget.componentModel.enabled,
             obscureText: true),
       ),
     );

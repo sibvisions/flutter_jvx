@@ -49,14 +49,18 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                     utf8.base64Decode(this.appState.files[strinArr[0]]),
                     width: widget.componentModel.iconSize.width,
                     height: widget.componentModel.iconSize.height,
-                    color: !this.enabled ? Colors.grey.shade500 : null,
+                    color: !widget.componentModel.enabled
+                        ? Colors.grey.shade500
+                        : null,
                   ));
             } else if (widget.componentModel.network) {
               setState(() => widget.componentModel.icon = Image.network(
                     this.appState.baseUrl + strinArr[0],
                     width: widget.componentModel.iconSize.width,
                     height: widget.componentModel.iconSize.height,
-                    color: !this.enabled ? Colors.grey.shade500 : null,
+                    color: !widget.componentModel.enabled
+                        ? Colors.grey.shade500
+                        : null,
                   ));
             }
           }
@@ -73,7 +77,9 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                   file.readAsBytesSync(),
                   width: size.width,
                   height: size.height,
-                  color: !this.enabled ? Colors.grey.shade500 : null,
+                  color: !widget.componentModel.enabled
+                      ? Colors.grey.shade500
+                      : null,
                 ));
           }
         }
@@ -139,7 +145,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         margin: EdgeInsets.all(4),
         child: GestureDetector(
           onTap: () {
-            this.enabled
+            widget.componentModel.enabled
                 ? widget.componentModel.onAction(widget.componentModel.action)
                 : null;
           },
@@ -175,7 +181,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 height: 50,
                 child: RaisedButton(
                   onPressed: () {
-                    this.enabled
+                    widget.componentModel.enabled
                         ? widget.componentModel
                             .onAction(widget.componentModel.action)
                         : null;

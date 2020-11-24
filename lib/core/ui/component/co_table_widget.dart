@@ -62,11 +62,12 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   }
 
   TextStyle get headerTextStyle {
-    return this.style.copyWith(fontWeight: FontWeight.bold);
+    return widget.componentModel.fontStyle
+        .copyWith(fontWeight: FontWeight.bold);
   }
 
   TextStyle get itemTextStyle {
-    return this.style;
+    return widget.componentModel.fontStyle;
   }
 
   @override
