@@ -99,22 +99,23 @@ class CoTextCellEditorWidgetState
                 contentPadding: EdgeInsets.fromLTRB(12, 15, 12, 5),
                 border: InputBorder.none,
                 hintText: placeholderVisible ? placeholder : null,
-                suffixIcon: this.editable != null &&
-                        this.editable &&
-                        this._controller.text.isNotEmpty
+                suffixIcon: this.editable != null && this.editable
                     ? Padding(
                         padding: EdgeInsets.only(right: 8),
                         child: GestureDetector(
                           onTap: () {
-                            if (this.value != null) {
+                            if (this.value != null &&
+                                this._controller.text.isNotEmpty) {
                               this.value = null;
                               this.valueChanged = true;
                               super.onValueChanged(this.value);
                               this.valueChanged = false;
                             }
                           },
-                          child: Icon(Icons.clear,
-                              size: 24, color: Colors.grey[400]),
+                          child: this._controller.text.isNotEmpty
+                              ? Icon(Icons.clear,
+                                  size: 24, color: Colors.grey[400])
+                              : SizedBox(height: 24, width: 1),
                         ),
                       )
                     : null),
