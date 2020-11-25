@@ -4,19 +4,20 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/core/models/api/request/press_button.dart';
-import 'package:jvx_flutterclient/core/models/api/so_action.dart';
-import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/custom/custom_toggle_button.dart';
-import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
+import '../../models/api/request/press_button.dart';
+import '../../models/api/so_action.dart';
+import '../../services/remote/bloc/api_bloc.dart';
+import '../../utils/app/text_utils.dart';
 import '../../utils/theme/theme_manager.dart';
+import '../widgets/custom/custom_toggle_button.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
 import 'co_action_component_widget.dart';
-import 'component_model.dart';
+import 'component_widget.dart';
+import 'models/component_model.dart';
 
 class CoToggleButtonWidget extends CoActionComponentWidget {
   CoToggleButtonWidget({ComponentModel componentModel})
@@ -26,7 +27,8 @@ class CoToggleButtonWidget extends CoActionComponentWidget {
   State<StatefulWidget> createState() => CoToggleButtonWidgetState();
 }
 
-class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
+class CoToggleButtonWidgetState
+    extends ComponentWidgetState<CoToggleButtonWidget> {
   String text = '';
   Widget icon;
   String textStyle;
@@ -44,7 +46,8 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     textStyle = changedComponent.getProperty<String>(
         ComponentProperty.STYLE, textStyle);
 
-    bool newSelected = changedComponent.getProperty<bool>(ComponentProperty.SELECTED);
+    bool newSelected =
+        changedComponent.getProperty<bool>(ComponentProperty.SELECTED);
     if (newSelected != null) {
       _selected = newSelected;
     }
@@ -70,14 +73,18 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
                     utf8.base64Decode(this.appState.files[strinArr[0]]),
                     width: size.width,
                     height: size.height,
-                    color: !this.enabled ? Colors.grey.shade500 : null,
+                    color: !widget.componentModel.enabled
+                        ? Colors.grey.shade500
+                        : null,
                   ));
             } else if (network) {
               setState(() => icon = Image.network(
                     this.appState.baseUrl + strinArr[0],
                     width: size.width,
                     height: size.height,
-                    color: !this.enabled ? Colors.grey.shade500 : null,
+                    color: !widget.componentModel.enabled
+                        ? Colors.grey.shade500
+                        : null,
                   ));
             }
           }
@@ -94,7 +101,9 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
                   file.readAsBytesSync(),
                   width: size.width,
                   height: size.height,
-                  color: !this.enabled ? Colors.grey.shade500 : null,
+                  color: !widget.componentModel.enabled
+                      ? Colors.grey.shade500
+                      : null,
                 ));
           }
         }
@@ -111,7 +120,7 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
 
     Future.delayed(const Duration(milliseconds: 100), () {
       PressButton pressButton = PressButton(
-          SoAction(componentId: this.name, label: this.text),
+          SoAction(componentId: widget.componentModel.name, label: this.text),
           this.appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
     });
@@ -122,11 +131,11 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     Widget child;
     Widget textWidget = new Text(text != null ? text : "",
         style: TextStyle(
-            fontSize: style.fontSize,
-            color: !this.enabled
+            fontSize: widget.componentModel.fontStyle.fontSize,
+            color: !widget.componentModel.enabled
                 ? Colors.grey.shade500
-                : this.foreground != null
-                    ? this.foreground
+                : widget.componentModel.foreground != null
+                    ? widget.componentModel.foreground
                     : Theme.of(context).primaryTextTheme.bodyText1.color));
 
     if (text?.isNotEmpty ?? true) {
@@ -153,17 +162,20 @@ class CoToggleButtonWidgetState extends CoActionComponentWidgetState {
     double minWidth = 44;
     EdgeInsets padding;
 
-    if (this.isPreferredSizeSet && this.preferredSize.width < minWidth) {
+    if (widget.componentModel.isPreferredSizeSet &&
+        widget.componentModel.preferredSize.width < minWidth) {
       padding = EdgeInsets.symmetric(horizontal: 0);
-      minWidth = this.preferredSize.width;
+      minWidth = widget.componentModel.preferredSize.width;
     }
 
     _disabledColor = Colors.orange;
 
     return CustomToggleButton(
-      background: this._selected != null && this._selected ? this.background : _disabledColor,
+      background: this._selected != null && this._selected
+          ? widget.componentModel.background
+          : _disabledColor,
       child: child,
-      enabled: this.enabled,
+      enabled: widget.componentModel.enabled,
       minWidth: minWidth,
       onPressed: buttonPressed,
       padding: padding,

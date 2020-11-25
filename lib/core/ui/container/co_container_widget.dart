@@ -111,9 +111,9 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
           changedComponent: changedComponent, componentId: componentId));
       pComponent.componentModel.update();
     }
-    preferredSize = changedComponent.getProperty<Size>(
+    widget.componentModel.preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, null);
-    maximumSize = changedComponent.getProperty<Size>(
+    widget.componentModel.maximumSize = changedComponent.getProperty<Size>(
         ComponentProperty.MAXIMUM_SIZE, null);
 
     if (layout != null) {
@@ -212,9 +212,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
       //   componentWidget.componentModel.update();
       // }
 
-      preferredSize = widget.componentModel.changedComponent
+      widget.componentModel.preferredSize = widget
+          .componentModel.changedComponent
           .getProperty<Size>(ComponentProperty.PREFERRED_SIZE, null);
-      maximumSize = widget.componentModel.changedComponent
+      widget.componentModel.maximumSize = widget.componentModel.changedComponent
           .getProperty<Size>(ComponentProperty.MAXIMUM_SIZE, null);
 
       if (layout != null) {

@@ -5,6 +5,11 @@ class CloseScreen extends Request {
   String componentId;
   OpenScreen openScreen;
 
+  @override
+  String get debugInfo {
+    return componentId;
+  }
+
   CloseScreen(
       {this.componentId,
       this.openScreen,

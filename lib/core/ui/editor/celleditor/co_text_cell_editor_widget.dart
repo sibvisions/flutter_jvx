@@ -4,7 +4,7 @@ import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
-import 'text_cell_editor_model.dart';
+import 'models/text_cell_editor_model.dart';
 
 class CoTextCellEditorWidget extends CoCellEditorWidget {
   final TextCellEditorModel cellEditorModel;
@@ -22,11 +22,11 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  TextEditingController _controller = TextEditingController();
+  TextEditingController textController = TextEditingController();
   bool password = false;
   bool valueChanged = false;
   final GlobalKey textfieldKey = GlobalKey<CoTextCellEditorWidgetState>();
-  FocusNode node = FocusNode();
+  FocusNode focusNode = FocusNode();
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (this.value != newValue) {
@@ -36,7 +36,7 @@ class CoTextCellEditorWidgetState
   }
 
   void onTextFieldEndEditing() {
-    node.unfocus();
+    focusNode.unfocus();
 
     if (this.valueChanged) {
       super.onValueChanged(this.value);
@@ -57,14 +57,14 @@ class CoTextCellEditorWidgetState
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('password') ??
         false);
-    this.node.addListener(() {
-      if (!node.hasFocus) onTextFieldEndEditing();
+    this.focusNode.addListener(() {
+      if (!focusNode.hasFocus) onTextFieldEndEditing();
     });
   }
 
   @override
   void dispose() {
-    node.dispose();
+    focusNode.dispose();
 
     super.dispose();
   }
@@ -75,7 +75,7 @@ class CoTextCellEditorWidgetState
     setEditorProperties(context);
 
     String controllerValue = (this.value != null ? this.value.toString() : "");
-    _controller.value = _controller.value.copyWith(
+    textController.value = textController.value.copyWith(
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
@@ -92,29 +92,34 @@ class CoTextCellEditorWidgetState
               : Border.all(color: Colors.grey)),
       child: Container(
         width: 100,
+        height: (widget.cellEditorModel.multiLine ? 100 : 50),
         child: TextField(
             textAlign:
                 SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
             decoration: InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(12, 15, 12, 5),
+                contentPadding: widget.cellEditorModel.textPadding,
                 border: InputBorder.none,
                 hintText: placeholderVisible ? placeholder : null,
-                suffixIcon: this.editable != null &&
-                        this.editable &&
-                        this._controller.text.isNotEmpty
+                suffixIcon: this.editable != null && this.editable
                     ? Padding(
                         padding: EdgeInsets.only(right: 8),
                         child: GestureDetector(
                           onTap: () {
-                            if (this.value != null) {
+                            if (this.value != null &&
+                                this.textController.text.isNotEmpty) {
                               this.value = null;
                               this.valueChanged = true;
                               super.onValueChanged(this.value);
                               this.valueChanged = false;
                             }
                           },
-                          child: Icon(Icons.clear,
-                              size: 24, color: Colors.grey[400]),
+                          child: this.textController.text.isNotEmpty
+                              ? Icon(Icons.clear,
+                                  size: widget.cellEditorModel.iconSize,
+                                  color: Colors.grey[400])
+                              : SizedBox(
+                                  height: widget.cellEditorModel.iconSize,
+                                  width: 1),
                         ),
                       )
                     : null),
@@ -122,8 +127,8 @@ class CoTextCellEditorWidgetState
                 color: this.editable != null && this.editable
                     ? (this.foreground != null ? this.foreground : Colors.black)
                     : Colors.grey[700]),
-            controller: _controller,
-            focusNode: node,
+            controller: textController,
+            focusNode: focusNode,
             minLines: null,
             maxLines: widget.cellEditorModel.multiLine ? null : 1,
             keyboardType: widget.cellEditorModel.multiLine

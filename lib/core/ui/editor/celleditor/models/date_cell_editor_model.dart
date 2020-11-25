@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../models/api/editor/cell_editor_properties.dart';
-import '../../../utils/app/text_utils.dart';
-import '../../editor/celleditor/cell_editor_model.dart';
+import '../../../../models/api/editor/cell_editor.dart';
+import '../../../../models/api/editor/cell_editor_properties.dart';
+import '../../../../utils/app/text_utils.dart';
+import 'cell_editor_model.dart';
 
 class DateCellEditorModel extends CellEditorModel {
   String dateFormat;
-  BuildContext context;
 
-  DateCellEditorModel(this.context, CellEditor currentCellEditor)
-      : super(currentCellEditor) {
+  DateCellEditorModel(CellEditor currentCellEditor) : super(currentCellEditor) {
     dateFormat = this
         .currentCellEditor
         .getProperty<String>(CellEditorProperty.DATE_FORMAT);
@@ -26,9 +24,7 @@ class DateCellEditorModel extends CellEditorModel {
 
     if (text.isEmpty) text = TextUtils.averageCharactersDateField;
 
-    double width =
-        TextUtils.getTextWidth(text, Theme.of(context).textTheme.bodyText1)
-            .toDouble();
+    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
     return Size(width + 110, 50);
   }
 

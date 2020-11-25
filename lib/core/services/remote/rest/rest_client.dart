@@ -46,8 +46,8 @@ class RestClient {
       finalResponse = Response()
         ..error = ErrorResponse(
             'Error',
-            'An Error while sending the Request occured',
             'An Error occured',
+            'An Error while sending the Request occured',
             'message.error');
     }
 
@@ -55,8 +55,8 @@ class RestClient {
       finalResponse = Response()
         ..error = ErrorResponse(
             'Error',
-            response != null ? this.utf8convert(response.body) : '',
             'An Error occured',
+            response != null ? this.utf8convert(response.body) : '',
             'message.error');
     } else {
       String body = this.utf8convert(response.body);
@@ -71,8 +71,8 @@ class RestClient {
         }
       } on Exception {
         finalResponse = Response()
-          ..error = ErrorResponse('Error', 'Couldn\t decode response body',
-              'An Error occured', 'message.error');
+          ..error = ErrorResponse('Error', 'An Error occured',
+              'Couldn\t decode response body', 'message.error');
       }
     }
 

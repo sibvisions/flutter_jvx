@@ -3,6 +3,11 @@ import '../../request.dart';
 class InsertRecord extends Request {
   String dataProvider;
 
+  @override
+  String get debugInfo {
+    return dataProvider;
+  }
+
   InsertRecord(this.dataProvider, String clientId)
       : super(RequestType.DAL_INSERT, clientId);
 

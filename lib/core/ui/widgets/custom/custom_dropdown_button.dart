@@ -763,7 +763,7 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
   }
 
   TextStyle get _textStyle =>
-      widget.style ?? Theme.of(context).textTheme.subhead;
+      widget.style ?? Theme.of(context).textTheme.subtitle1;
 
   void handleTap() {
     final RenderBox itemBox = context.findRenderObject();
@@ -902,7 +902,6 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
                   ),
                   SizedBox(
                     width: 58,
-                    //flex: 3,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -935,21 +934,6 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
         },
       ),
     );
-
-    // if (false) {
-    //   final double bottom = widget.isDense ? 0.0 : 8.0;
-    //   result = Stack(
-    //     children: <Widget>[
-    //       result,
-    //       Positioned(
-    //         left: 0.0,
-    //         right: 0.0,
-    //         bottom: bottom,
-    //         child: Container()
-    //       ),
-    //     ],
-    //   );
-    // }
 
     return Semantics(
       button: true,

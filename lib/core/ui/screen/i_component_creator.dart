@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../component/component_model.dart';
+import '../component/models/component_model.dart';
 import '../component/component_widget.dart';
 
 abstract class IComponentCreator {

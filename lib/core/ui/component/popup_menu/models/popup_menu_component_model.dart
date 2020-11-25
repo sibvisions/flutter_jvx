@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/api/component/changed_component.dart';
-import '../component_model.dart';
-import 'co_menu_item_widget.dart';
+import '../../../../models/api/component/changed_component.dart';
+import '../../models/component_model.dart';
+import '../co_menu_item_widget.dart';
 
-class PopupComponentModel extends ComponentModel {
+class PopupMenuComponentModel extends ComponentModel {
   Map<String, CoMenuItemWidget> _items = <String, CoMenuItemWidget>{};
 
   List<PopupMenuItem<String>> get menuItems {
@@ -17,7 +17,7 @@ class PopupComponentModel extends ComponentModel {
     return items;
   }
 
-  PopupComponentModel(ChangedComponent changedComponent)
+  PopupMenuComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
   void updateMenuItem(CoMenuItemWidget item) {

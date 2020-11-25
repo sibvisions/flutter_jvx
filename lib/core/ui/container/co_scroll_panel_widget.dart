@@ -20,7 +20,7 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
   @override
   get preferredSize {
     if (constr != null) return constr.biggest;
-    return super.preferredSize;
+    return widget.componentModel.preferredSize;
   }
 
   _scrollListener() {
@@ -54,7 +54,7 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
       //     key: this.componentId,
       //     child: Container(color: this.background, child: child));
       return Container(
-          color: this.background,
+          color: widget.componentModel.background,
           child: SingleChildScrollView(
               controller: _scrollController,
               // key: this.componentId,

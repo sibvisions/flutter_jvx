@@ -61,7 +61,7 @@ class ApiBloc extends Bloc<Request, Response> {
     if (event.requestType != RequestType.RELOAD) {
       event.id = _seqNo++;
       print(
-          '******* Outgoing Request ID: ${event.id}, RequestType: ${event.requestType.toString()}');
+          '******* Outgoing RequestID: ${event.id}, Type: ${event.requestType.toString().replaceAll("RequestType.", "")} (${event.debugInfo})');
     }
     _requestQueue.add(event);
     super.onEvent(event);
@@ -76,7 +76,7 @@ class ApiBloc extends Bloc<Request, Response> {
         if (response.request.requestType != RequestType.LOADING &&
             response.request.requestType != RequestType.RELOAD) {
           print(
-              '******* Incoming Request ID: ${response.request.id}, RequestType: ${response.request.requestType.toString()}');
+              '******* Incoming RequestID: ${response.request.id}, Type: ${response.request.requestType.toString().replaceAll("RequestType.", "")} (${response.request.debugInfo})');
         }
 
         yield response;

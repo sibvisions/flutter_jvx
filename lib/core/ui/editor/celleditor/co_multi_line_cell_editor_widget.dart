@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'models/referenced_cell_editor_model.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/response/data/data_book.dart';
-import 'cell_editor_model.dart';
 import 'co_referenced_cell_editor_widget.dart';
 
 class CoMultiLineCellEditorWidget extends CoReferencedCellEditorWidget {
+  ReferencedCellEditorModel cellEditorModel;
   CoMultiLineCellEditorWidget(
-      {CellEditor changedCellEditor, CellEditorModel cellEditorModel})
+      {CellEditor changedCellEditor, this.cellEditorModel})
       : super(
             changedCellEditor: changedCellEditor,
             cellEditorModel: cellEditorModel);
@@ -32,7 +33,8 @@ class CoMultiLineCellEditorWidgetState
 
     if (data != null && data.records.isNotEmpty) {
       data.columnNames.asMap().forEach((i, v) {
-        if (this.linkReference.referencedColumnNames.contains(v)) {
+        if (widget.cellEditorModel.linkReference.referencedColumnNames
+            .contains(v)) {
           visibleColumnsIndex.add(i);
         }
       });
@@ -67,12 +69,13 @@ class CoMultiLineCellEditorWidgetState
         data.selectedRow < data.records.length &&
         data.columnNames != null &&
         data.columnNames.length > 0 &&
-        this.linkReference != null &&
-        this.linkReference.referencedColumnNames != null &&
-        this.linkReference.referencedColumnNames.length > 0) {
+        widget.cellEditorModel.linkReference != null &&
+        widget.cellEditorModel.linkReference.referencedColumnNames != null &&
+        widget.cellEditorModel.linkReference.referencedColumnNames.length > 0) {
       int columnIndex = -1;
       data.columnNames.asMap().forEach((i, c) {
-        if (this.linkReference.referencedColumnNames[0] == c) columnIndex = i;
+        if (widget.cellEditorModel.linkReference.referencedColumnNames[0] == c)
+          columnIndex = i;
       });
       if (columnIndex >= 0) {
         value = data.records[data.selectedRow][columnIndex];

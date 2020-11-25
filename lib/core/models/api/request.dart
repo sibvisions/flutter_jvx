@@ -57,6 +57,7 @@ abstract class Request {
   RequestType requestType;
   String clientId;
   bool reload = false;
+  String debugInfo = "";
 
   Request(this.requestType, this.clientId);
 

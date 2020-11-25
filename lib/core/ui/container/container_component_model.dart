@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import '../../models/api/component/changed_component.dart';
-import '../component/component_model.dart';
+import '../component/models/component_model.dart';
 import '../component/component_widget.dart';
 
 class ContainerComponentModel extends ComponentModel {

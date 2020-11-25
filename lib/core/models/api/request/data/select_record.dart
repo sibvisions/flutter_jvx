@@ -9,6 +9,11 @@ class SelectRecord extends Request {
   int selectedRow;
   SoComponentData soComponentData;
 
+  @override
+  String get debugInfo {
+    return dataProvider + ", SelectedRow: " + selectedRow.toString();
+  }
+
   SelectRecord(this.dataProvider, this.filter, this.selectedRow,
       RequestType requestType, String clientId,
       [this.fetch])

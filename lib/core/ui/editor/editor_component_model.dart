@@ -1,6 +1,6 @@
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
-import '../component/component_model.dart';
+import '../component/models/component_model.dart';
 
 class EditorComponentModel extends ComponentModel {
   String dataProvider;

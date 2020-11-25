@@ -170,9 +170,8 @@ class RenderBorderLayoutWidget extends RenderBox
       double minHeight = 0;
       double maxHeight = double.infinity;
 
-      if (northComp.componentModel.componentState.isPreferredSizeSet) {
-        maxHeight =
-            northComp.componentModel.componentState.preferredSize.height;
+      if (northComp.componentModel.isPreferredSizeSet) {
+        maxHeight = northComp.componentModel.preferredSize.height;
         //minHeight = maxHeight;
       }
 
@@ -200,9 +199,8 @@ class RenderBorderLayoutWidget extends RenderBox
       double minHeight = 0;
       double maxHeight = double.infinity;
 
-      if (southComp.componentModel.componentState.isPreferredSizeSet) {
-        maxHeight =
-            southComp.componentModel.componentState.preferredSize.height;
+      if (southComp.componentModel.isPreferredSizeSet) {
+        maxHeight = southComp.componentModel.preferredSize.height;
         //minHeight = maxHeight;
       }
 
@@ -229,8 +227,8 @@ class RenderBorderLayoutWidget extends RenderBox
       double minWidth = 0;
       double maxWidth = double.infinity;
 
-      if (westComp.componentModel.componentState.isPreferredSizeSet) {
-        maxWidth = westComp.componentModel.componentState.preferredSize.width;
+      if (westComp.componentModel.isPreferredSizeSet) {
+        maxWidth = westComp.componentModel.preferredSize.width;
         //minHeight = maxHeight;
       }
 
@@ -259,8 +257,8 @@ class RenderBorderLayoutWidget extends RenderBox
       double minWidth = 0;
       double maxWidth = double.infinity;
 
-      if (eastComp.componentModel.componentState.isPreferredSizeSet) {
-        maxWidth = eastComp.componentModel.componentState.preferredSize.width;
+      if (eastComp.componentModel.isPreferredSizeSet) {
+        maxWidth = eastComp.componentModel.preferredSize.width;
         //minHeight = maxHeight;
       }
 
@@ -292,14 +290,14 @@ class RenderBorderLayoutWidget extends RenderBox
       if (minWidth == double.infinity) minWidth = 0;
 
       if (height == double.infinity &&
-          centerComp.componentModel.componentState.isPreferredSizeSet) {
-        height = centerComp.componentModel.componentState.preferredSize.height;
+          centerComp.componentModel.isPreferredSizeSet) {
+        height = centerComp.componentModel.preferredSize.height;
         minHeight = height;
       }
 
       if (width == double.infinity &&
-          centerComp.componentModel.componentState.isPreferredSizeSet) {
-        width = centerComp.componentModel.componentState.preferredSize.width;
+          centerComp.componentModel.isPreferredSizeSet) {
+        width = centerComp.componentModel.preferredSize.width;
         minWidth = width;
       }
 

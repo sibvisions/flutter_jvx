@@ -23,7 +23,9 @@ class CoEditorWidget extends ComponentWidget {
     this.cellEditor,
     this.data,
     EditorComponentModel componentModel,
-  }) : super(key: key, componentModel: componentModel);
+  }) : super(key: key, componentModel: componentModel) {
+    //componentModel.cellEditorModel = cellEditor?.cellEditorModel;
+  }
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
 
@@ -77,14 +79,16 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   @override
   get preferredSize {
-    if (super.preferredSize != null) return super.preferredSize;
+    if (cellEditorWidget.cellEditorModel.preferredSize != null)
+      return cellEditorWidget.cellEditorModel.preferredSize;
     if (_cellEditor != null) return _cellEditor.preferredSize;
     return null;
   }
 
   @override
   get minimumSize {
-    if (super.minimumSize != null) return super.minimumSize;
+    if (cellEditorWidget.cellEditorModel.minimumSize != null)
+      return cellEditorWidget.cellEditorModel.minimumSize;
     if (_cellEditor != null) return _cellEditor.minimumSize;
 
     return null;
@@ -92,7 +96,8 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   @override
   get maximumSize {
-    if (super.maximumSize != null) return super.maximumSize;
+    if (cellEditorWidget.cellEditorModel.maximumSize != null)
+      return cellEditorWidget.cellEditorModel.maximumSize;
     if (_cellEditor != null) return _cellEditor.maximumSize;
 
     return null;
@@ -133,16 +138,10 @@ class CoEditorWidgetState<T extends StatefulWidget>
       data.setValues(
           context,
           (value is List) ? value : [value],
-          (this.cellEditor as CoReferencedCellEditorWidgetState)
+          (this.cellEditorWidget as CoReferencedCellEditorWidget)
+              .cellEditorModel
               .linkReference
               .columnNames);
-
-      ComponentScreenWidget.of(context)
-          .getComponentData(
-              (this.cellEditor as CoReferencedCellEditorWidgetState)
-                  .linkReference
-                  .dataProvider)
-          .selectRecord(context, index);
     } else {
       data.setValues(
           context,
@@ -281,8 +280,12 @@ class CoEditorWidgetState<T extends StatefulWidget>
     }
 
     return Container(
-        height: super.preferredSize != null ? super.preferredSize.height : null,
-        width: super.preferredSize != null ? super.preferredSize.width : null,
+        height: cellEditorWidget.cellEditorModel.preferredSize != null
+            ? cellEditorWidget.cellEditorModel.preferredSize.height
+            : null,
+        width: cellEditorWidget.cellEditorModel.preferredSize != null
+            ? cellEditorWidget.cellEditorModel.preferredSize.width
+            : null,
         child: cellEditorWidget);
   }
 }

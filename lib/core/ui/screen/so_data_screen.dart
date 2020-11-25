@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
+import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import '../../models/api/request.dart';
 import '../../models/api/request/data/fetch_data.dart';
@@ -118,13 +120,25 @@ mixin SoDataScreen {
     return data;
   }
 
-  void onButtonPressed(String componentId, String label) {
+  void onAction(SoAction action) {
+    TextUtils.unfocusCurrentTextfield(context);
+
     // wait until textfields focus lost. 10 millis should do it.
     Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton = PressButton(
-          SoAction(componentId: componentId, label: label),
-          AppStateProvider.of(context).appState.clientId);
+      PressButton pressButton =
+          PressButton(action, AppStateProvider.of(context).appState.clientId);
       BlocProvider.of<ApiBloc>(context).add(pressButton);
+    });
+  }
+
+  void onComponetValueChanged(String componentId, dynamic value) {
+    TextUtils.unfocusCurrentTextfield(context);
+
+    // wait until textfields focus lost. 10 millis should do it.
+    Future.delayed(const Duration(milliseconds: 100), () {
+      SetComponentValue setComponentValue = SetComponentValue(
+          componentId, value, AppStateProvider.of(context).appState.clientId);
+      BlocProvider.of<ApiBloc>(context).add(setComponentValue);
     });
   }
 
