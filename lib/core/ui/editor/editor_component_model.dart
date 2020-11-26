@@ -55,25 +55,25 @@ class EditorComponentModel extends ComponentModel {
 
   @override
   get preferredSize {
-    if (cellEditor.cellEditorModel.preferredSize != null)
+    if (cellEditor?.cellEditorModel?.preferredSize != null)
       return cellEditor.cellEditorModel.preferredSize;
-    return null;
+    return super.preferredSize;
   }
 
   @override
   get minimumSize {
-    if (cellEditor.cellEditorModel.minimumSize != null)
+    if (cellEditor?.cellEditorModel?.minimumSize != null)
       return cellEditor.cellEditorModel.minimumSize;
 
-    return null;
+    return super.minimumSize;
   }
 
   @override
   get maximumSize {
-    if (cellEditor.cellEditorModel.maximumSize != null)
+    if (cellEditor?.cellEditorModel?.maximumSize != null)
       return cellEditor.cellEditorModel.maximumSize;
 
-    return null;
+    return super.maximumSize;
   }
 
   bool get withChangedComponent => _withChangedComponent;
