@@ -14,12 +14,9 @@ abstract class CoActionComponentWidget extends ComponentWidget {
 
 abstract class CoActionComponentWidgetState<T extends CoActionComponentWidget>
     extends ComponentWidgetState<T> {
-  ActionCallback onAction;
-
   @override
   void initState() {
     super.initState();
-    this.onAction = widget.componentModel.onAction;
   }
 
   @override

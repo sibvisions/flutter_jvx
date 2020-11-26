@@ -24,8 +24,8 @@ class SelectedComponentModel extends EditableComponentModel {
     return Size(size.width + checkSize, checkSize);
   }
 
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
+  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+    super.updateProperties(context, changedComponent);
 
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction);

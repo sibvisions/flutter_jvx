@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import 'core/models/app/app_state.dart';
 import 'core/models/app/login_arguments.dart';
@@ -31,7 +32,7 @@ class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => TextUtils.unfocusCurrentTextfield(context),
       child: MaterialApp(
         onGenerateRoute: (RouteSettings settings) {
           List<String> params = settings.name.replaceAll('/?', '').split('&');

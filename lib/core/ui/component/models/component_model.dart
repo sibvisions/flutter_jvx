@@ -1,17 +1,15 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
+import '../../../models/app/app_state.dart';
 import '../../../utils/app/so_text_style.dart';
 import '../../../utils/theme/hex_color.dart';
-import '../../container/container_component_model.dart';
 import '../../screen/component_screen_widget.dart';
 import '../component_widget.dart';
 
 class ComponentModel extends ValueNotifier {
-  Queue<ToUpdateComponent> _toUpdateComponents = Queue<ToUpdateComponent>();
   String name;
   String componentId;
   String rawComponentId;
@@ -36,6 +34,8 @@ class ComponentModel extends ValueNotifier {
   ComponentWidgetState componentState;
   CoState coState;
 
+  AppState appState;
+
   bool get isForegroundSet => foreground != null;
   bool get isBackgroundSet => background != null;
   bool get isPreferredSizeSet => preferredSize != null;
@@ -48,38 +48,22 @@ class ComponentModel extends ValueNotifier {
   Size get maximumSize => _maximumSize;
   set maximumSize(Size size) => _maximumSize = size;
 
-  Queue<ToUpdateComponent> get toUpdateComponents => _toUpdateComponents;
-
-  set toUpdateComponents(Queue<ToUpdateComponent> toUpdateComponents) =>
-      _toUpdateComponents = toUpdateComponents;
-
-  set compId(String newComponentId) {
-    componentId = newComponentId;
-  }
-
   ChangedComponent get changedComponent {
-    if (_toUpdateComponents != null && _toUpdateComponents.length > 0) {
-      return _toUpdateComponents.last.changedComponent;
-    }
-    return _changedComponent;
-  }
-
-  ChangedComponent get firstChangedComponent {
     return _changedComponent;
   }
 
   ComponentModel(this._changedComponent) : super(_changedComponent) {
+    this.appState = sl<AppState>();
+    
     if (this._changedComponent != null) {
-      this.compId = this._changedComponent.id;
-      this.toUpdateComponents.add(ToUpdateComponent(
-          changedComponent: this._changedComponent,
-          componentId: this._changedComponent.id));
-
-      this.updateProperties(this._changedComponent);
+      this.componentId = this._changedComponent.id;
     }
   }
 
-  void updateProperties(ChangedComponent changedComponent) {
+  /// Method for updating the properties of the component.
+  /// 
+  /// When overriding this method super should be called last.
+  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
     preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, _preferredSize);
     maximumSize = changedComponent.getProperty<Size>(
@@ -110,10 +94,8 @@ class ComponentModel extends ValueNotifier {
         ComponentProperty.CONSTRAINTS, constraints);
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     text = _changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
-  }
 
-  void update() {
-    if (changedComponent != null) this.updateProperties(changedComponent);
+    // Notify the listening widget to rebuild itself
     notifyListeners();
   }
 }

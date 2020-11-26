@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/table_component_model.dart';
 
 import '../../../utils/translation/app_localizations.dart';
 import '../../component/co_table_widget.dart';
@@ -48,7 +49,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   dynamic lastChangedFilter;
   CoTableWidget table;
 
-  void updateData() {
+  void updateData(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) this.setState(() {});
     });
@@ -82,7 +83,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
     if (this.widget.onSave != null) {
       dynamic value = widget.data.data.getRow(index);
       this.widget.onSave(new MapEntry<int, dynamic>(index, value));
-      this.updateData();
+      this.updateData(context);
     }
   }
 
@@ -157,13 +158,14 @@ class _LazyDropdownState extends State<LazyDropdown> {
     widget.data.registerDataChanged(updateData);
     _scrollController.addListener(_scrollListener);
 
-    EditorComponentModel editorComponentModel =
-        EditorComponentModel.withoutChangedComponent(false, false, true,
-            widget.displayColumnNames, _onRowTapped, null, null, null, null);
+    TableComponentModel tableComponentModel =
+        TableComponentModel.withoutChangedComponent(null, null, _onRowTapped,
+            false, false, true, widget.displayColumnNames, null);
+
+    tableComponentModel.setData(context, widget.data);
 
     table = CoTableWidget(
-      data: widget.data,
-      componentModel: editorComponentModel,
+      componentModel: tableComponentModel,
     );
   }
 

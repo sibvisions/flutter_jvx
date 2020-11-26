@@ -5,6 +5,9 @@ import '../../../utils/app/text_utils.dart';
 import 'text_component_model.dart';
 
 class TextAreaComponentModel extends TextComponentModel {
+  TextEditingController textController;
+  FocusNode focusNode;
+  
   TextAreaComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 

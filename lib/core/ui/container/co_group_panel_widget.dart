@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../models/api/component/changed_component.dart';
-import '../../models/api/component/component_properties.dart';
 import '../component/models/component_model.dart';
 import 'co_container_widget.dart';
 import 'co_scroll_panel_layout.dart';
+import 'models/group_panel_component_model.dart';
 
 class CoGroupPanelWidget extends CoContainerWidget {
   CoGroupPanelWidget({@required ComponentModel componentModel})
@@ -14,14 +13,6 @@ class CoGroupPanelWidget extends CoContainerWidget {
 }
 
 class CoGroupPanelWidgetState extends CoContainerWidgetState {
-  String text = "";
-
-  @override
-  void updateProperties(ChangedComponent changedcomponent) {
-    super.updateProperties(changedcomponent);
-    text = changedcomponent.getProperty<String>(ComponentProperty.TEXT, text);
-  }
-
   BoxConstraints _calculateConstraints(BoxConstraints constraints) {
     return BoxConstraints(
         minWidth: constraints.minWidth,
@@ -38,15 +29,17 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
+    GroupPanelComponentModel componentModel = widget.componentModel;
+
     Widget child;
-    if (this.layout != null) {
-      child = this.layout as Widget;
-      if (this.layout.setState != null) {
-        this.layout.setState(() {});
+    if (componentModel.layout != null) {
+      child = componentModel.layout as Widget;
+      if (componentModel.layout.setState != null) {
+        componentModel.layout.setState(() {});
       }
-    } else if (this.components.isNotEmpty) {
+    } else if (componentModel.components.isNotEmpty) {
       child = Column(
-        children: this.components,
+        children: componentModel.components,
       );
     }
 
@@ -69,7 +62,7 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
                       width: 10,
                     ),
                     Text(
-                      text,
+                      componentModel.text,
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
@@ -82,18 +75,19 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
                   CoScrollPanelLayoutId(
                       constraints: CoScrollPanelConstraints(constraints),
                       child: Card(
-                          color: this.appState.applicationStyle != null
-                              ? Colors.white.withOpacity(this
-                                  .appState
-                                  .applicationStyle
-                                  ?.controlsOpacity)
+                          color: componentModel.appState.applicationStyle !=
+                                  null
+                              ? Colors.white.withOpacity(componentModel
+                                  .appState.applicationStyle?.controlsOpacity)
                               : null,
                           margin: EdgeInsets.all(5),
                           elevation: 2.0,
                           child: child,
-                          shape: this.appState.applicationStyle != null
-                              ? this.appState.applicationStyle?.containerShape
-                              : RoundedRectangleBorder()))
+                          shape:
+                              componentModel.appState.applicationStyle != null
+                                  ? componentModel
+                                      .appState.applicationStyle?.containerShape
+                                  : RoundedRectangleBorder()))
                 ],
               )
             ],

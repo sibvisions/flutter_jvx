@@ -37,11 +37,11 @@ class ButtonComponentModel extends ActionComponentModel {
         size.height + height + margin.vertical);
   }
 
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
     style =
         changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
+    super.updateProperties(context, changedComponent);
   }
 }
