@@ -28,7 +28,9 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   void onDataChanged() {}
 
-  void onValueChanged(dynamic value, [int index]) {}
+  void onValueChanged(dynamic value, [int index]) {
+    setState(() { });
+  }
 
   void onFilter(dynamic value) {}
 
