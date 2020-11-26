@@ -25,22 +25,6 @@ class CoCheckboxCellEditorWidget extends CoCellEditorWidget {
 
 class CoCheckboxCellEditorWidgetState
     extends CoCellEditorWidgetState<CoCheckboxCellEditorWidget> {
-  dynamic selectedValue = true;
-  dynamic deselectedValue = false;
-  String text;
-
-  @override
-  void initState() {
-    super.initState();
-
-    selectedValue = widget.changedCellEditor
-        .getProperty<dynamic>(CellEditorProperty.SELECTED_VALUE, selectedValue);
-    deselectedValue = widget.changedCellEditor.getProperty<dynamic>(
-        CellEditorProperty.DESELECTED_VALUE, deselectedValue);
-    text = widget.changedCellEditor
-        .getProperty<String>(CellEditorProperty.TEXT, text);
-  }
-
   void valueChanged(dynamic value) {
     this.value = widget.cellEditorModel.boolToValue(value);
     this.onValueChanged(this.value, indexInTable);
@@ -50,28 +34,27 @@ class CoCheckboxCellEditorWidgetState
   Widget build(BuildContext context) {
     setEditorProperties(context);
     return Container(
-      // decoration: BoxDecoration(
-      //     color: background != null ? background : Colors.transparent,
-      //     borderRadius: BorderRadius.circular(5),
-      //     border:
-      //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: Row(
-        mainAxisAlignment:
-            IAlignmentConstants.getMainAxisAlignment(this.horizontalAlignment),
+        mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+            widget.cellEditorModel.horizontalAlignment),
         children: <Widget>[
           Checkbox(
             value: widget.cellEditorModel.valueToBool(this.value),
-            onChanged: (bool change) => (this.editable != null && this.editable)
-                ? valueChanged(change)
-                : null,
+            onChanged: (bool change) =>
+                (widget.cellEditorModel.editable != null &&
+                        widget.cellEditorModel.editable)
+                    ? valueChanged(change)
+                    : null,
             tristate: false,
           ),
-          text != null
+          widget.cellEditorModel.text != null
               ? SizedBox(
                   width: 0,
                 )
               : Container(),
-          text != null ? Text(text) : Container(),
+          widget.cellEditorModel.text != null
+              ? Text(widget.cellEditorModel.text)
+              : Container(),
         ],
       ),
     );

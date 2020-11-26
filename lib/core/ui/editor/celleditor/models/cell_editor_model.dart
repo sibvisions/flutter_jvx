@@ -86,5 +86,8 @@ class CellEditorModel extends ValueNotifier {
     placeholderVisible = this
         .currentCellEditor
         .getProperty<bool>(CellEditorProperty.PLACEHOLDER_VISIBLE, true);
+    dataProvider = this
+        .currentCellEditor
+        .getProperty<String>(CellEditorProperty.DATA_PROVIDER);
   }
 }

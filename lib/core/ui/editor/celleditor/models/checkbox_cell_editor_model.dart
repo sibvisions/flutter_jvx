@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/editor/cell_editor_properties.dart';
-
 import '../../../../models/api/editor/cell_editor.dart';
-import '../../../../utils/app/text_utils.dart';
+import '../../../../models/api/editor/cell_editor_properties.dart';
 import 'cell_editor_model.dart';
 
 class CheckBoxCellEditorModel extends CellEditorModel {

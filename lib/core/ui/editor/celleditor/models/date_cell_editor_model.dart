@@ -8,6 +8,7 @@ import 'cell_editor_model.dart';
 
 class DateCellEditorModel extends CellEditorModel {
   String dateFormat;
+  dynamic toUpdate;
 
   DateCellEditorModel(CellEditor currentCellEditor) : super(currentCellEditor) {
     dateFormat = this
@@ -36,5 +37,55 @@ class DateCellEditorModel extends CellEditorModel {
   @override
   get tableMinimumSize {
     return this.preferredSize;
+  }
+
+  get isTimeFormat {
+    return this.dateFormat.contains("H") || this.dateFormat.contains("m");
+  }
+
+  get isDateFormat {
+    return this.dateFormat.contains("d") ||
+        this.dateFormat.contains("M") ||
+        this.dateFormat.contains("y");
+  }
+
+  void setDatePart(DateTime date) {
+    DateTime timePart;
+    if (this.toUpdate == null)
+      timePart = DateTime(1970);
+    else {
+      if (this.toUpdate is int)
+        timePart = DateTime.fromMillisecondsSinceEpoch(this.toUpdate);
+      else if (this.toUpdate is String && int.tryParse(this.toUpdate) != null)
+        timePart =
+            DateTime.fromMillisecondsSinceEpoch(int.parse(this.toUpdate));
+      else
+        timePart = DateTime(1970);
+    }
+
+    timePart = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        timePart.hour,
+        timePart.minute,
+        timePart.second,
+        timePart.millisecond,
+        timePart.microsecond);
+
+    this.toUpdate = date.millisecondsSinceEpoch;
+  }
+
+  void setTimePart(TimeOfDay time) {
+    DateTime date;
+    if (this.toUpdate == null)
+      date = DateTime(1970);
+    else
+      date = DateTime.fromMillisecondsSinceEpoch(this.toUpdate);
+
+    date = DateTime(
+        date.year, date.month, date.day, time.hour, time.minute, 0, 0, 0);
+
+    this.toUpdate = date.millisecondsSinceEpoch;
   }
 }

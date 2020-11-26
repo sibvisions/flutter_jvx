@@ -1,16 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../ui/layout/i_alignment_constants.dart';
 import '../../../utils/image/image_loader.dart';
-import 'models/cell_editor_model.dart';
 import 'co_cell_editor_widget.dart';
 
 class CoChoiceCellEditorWidget extends CoCellEditorWidget {
+  final ChoiceCellEditorModel cellEditorModel;
   CoChoiceCellEditorWidget(
-      {Key key, CellEditor changedCellEditor, CellEditorModel cellEditorModel})
+      {Key key, CellEditor changedCellEditor, this.cellEditorModel})
       : super(
             changedCellEditor: changedCellEditor,
             cellEditorModel: cellEditorModel);
@@ -22,10 +23,7 @@ class CoChoiceCellEditorWidget extends CoCellEditorWidget {
 class CoChoiceCellEditorWidgetState
     extends CoCellEditorWidgetState<CoChoiceCellEditorWidget> {
   List<ChoiceCellEditorImage> _items = <ChoiceCellEditorImage>[];
-  String defaultImageName;
   ChoiceCellEditorImage defaultImage;
-  List<String> allowedValues;
-  List<String> imageNames;
   ChoiceCellEditorImage selectedImage;
   Size tableMinimumSize = Size(50, 40);
 
@@ -35,7 +33,8 @@ class CoChoiceCellEditorWidgetState
   }
 
   void loadImages() {
-    imageNames.forEach((image) => _items.add(loadImage(image)));
+    widget.cellEditorModel.imageNames
+        .forEach((image) => _items.add(loadImage(image)));
 
     selectedImage = _items[1];
   }
@@ -47,10 +46,13 @@ class CoChoiceCellEditorWidgetState
       selectedImage = defaultImage;
     }
 
-    if (path == null || imageNames.indexOf(path) > allowedValues.length - 1) {
+    if (path == null ||
+        widget.cellEditorModel.imageNames.indexOf(path) >
+            widget.cellEditorModel.allowedValues.length - 1) {
       return defaultImage;
     } else {
-      val = allowedValues[imageNames.indexOf(path)];
+      val = widget.cellEditorModel
+          .allowedValues[widget.cellEditorModel.imageNames.indexOf(path)];
     }
 
     ChoiceCellEditorImage choiceCellEditorImage =
@@ -71,22 +73,8 @@ class CoChoiceCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-    defaultImageName = widget.changedCellEditor.getProperty<String>(
-        CellEditorProperty.DEFAULT_IMAGE_NAME, defaultImageName);
-    if (defaultImageName == null) {
-      defaultImageName = widget.changedCellEditor
-          .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE);
-    }
-    allowedValues = widget.changedCellEditor.getProperty<List<String>>(
-        CellEditorProperty.ALLOWED_VALUES, allowedValues);
-    imageNames = widget.changedCellEditor
-        .getProperty<List<String>>(CellEditorProperty.IMAGE_NAMES, imageNames);
-    if (imageNames == null || imageNames.length < 1) {
-      imageNames = widget.changedCellEditor
-          .getProperty<List<String>>(CellEditorProperty.IMAGES);
-    }
 
-    defaultImage = loadImage(defaultImageName);
+    defaultImage = loadImage(widget.cellEditorModel.defaultImageName);
     loadImages();
   }
 
@@ -101,27 +89,24 @@ class CoChoiceCellEditorWidgetState
         selectedImage = _items[1];
     } else {
       if (this.value != null && (this.value as String).isNotEmpty) {
-        selectedImage = _items[this.allowedValues.indexOf(this.value)];
+        selectedImage =
+            _items[widget.cellEditorModel.allowedValues.indexOf(this.value)];
       } else if (defaultImage != null) {
         selectedImage = defaultImage;
       }
     }
 
     return Container(
-        // decoration: BoxDecoration(
-        //     color: background != null ? background : Colors.transparent,
-        //     borderRadius: BorderRadius.circular(5),
-        //     border:
-        //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
         child: Row(
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-                this.horizontalAlignment),
+                widget.cellEditorModel.horizontalAlignment),
             children: <Widget>[
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
             child: FlatButton(
-              onPressed: () =>
-                  this.editable ? setState(() => changeImage()) : null,
+              onPressed: () => widget.cellEditorModel.editable
+                  ? setState(() => changeImage())
+                  : null,
               padding: EdgeInsets.all(0.0),
               child: selectedImage.image,
             ),

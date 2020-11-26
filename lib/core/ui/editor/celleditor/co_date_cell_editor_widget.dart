@@ -10,9 +10,11 @@ import 'co_cell_editor_widget.dart';
 import 'models/date_cell_editor_model.dart';
 
 class CoDateCellEditorWidget extends CoCellEditorWidget {
+  final DateCellEditorModel cellEditorModel;
+
   CoDateCellEditorWidget(
       {CellEditor changedCellEditor,
-      DateCellEditorModel cellEditorModel,
+      this.cellEditorModel,
       bool isTableView = false})
       : super(
             changedCellEditor: changedCellEditor,
@@ -25,72 +27,9 @@ class CoDateCellEditorWidget extends CoCellEditorWidget {
 
 class CoDateCellEditorWidgetState
     extends CoCellEditorWidgetState<CoDateCellEditorWidget> {
-  dynamic toUpdate;
-
-  get isTimeFormat {
-    return (widget.cellEditorModel as DateCellEditorModel)
-            .dateFormat
-            .contains("H") ||
-        (widget.cellEditorModel as DateCellEditorModel)
-            .dateFormat
-            .contains("m");
-  }
-
-  get isDateFormat {
-    return (widget.cellEditorModel as DateCellEditorModel)
-            .dateFormat
-            .contains("d") ||
-        (widget.cellEditorModel as DateCellEditorModel)
-            .dateFormat
-            .contains("M") ||
-        (widget.cellEditorModel as DateCellEditorModel)
-            .dateFormat
-            .contains("y");
-  }
-
   void onDateValueChanged(dynamic value) {
-    this.toUpdate = null;
+    widget.cellEditorModel.toUpdate = null;
     super.onValueChanged(value, indexInTable);
-  }
-
-  void setDatePart(DateTime date) {
-    DateTime timePart;
-    if (this.toUpdate == null)
-      timePart = DateTime(1970);
-    else {
-      if (this.toUpdate is int)
-        timePart = DateTime.fromMillisecondsSinceEpoch(this.toUpdate);
-      else if (this.toUpdate is String && int.tryParse(this.toUpdate) != null)
-        timePart =
-            DateTime.fromMillisecondsSinceEpoch(int.parse(this.toUpdate));
-      else
-        timePart = DateTime(1970);
-    }
-
-    timePart = DateTime(
-        date.year,
-        date.month,
-        date.day,
-        timePart.hour,
-        timePart.minute,
-        timePart.second,
-        timePart.millisecond,
-        timePart.microsecond);
-
-    this.toUpdate = date.millisecondsSinceEpoch;
-  }
-
-  void setTimePart(TimeOfDay time) {
-    DateTime date;
-    if (this.toUpdate == null)
-      date = DateTime(1970);
-    else
-      date = DateTime.fromMillisecondsSinceEpoch(this.toUpdate);
-
-    date = DateTime(
-        date.year, date.month, date.day, time.hour, time.minute, 0, 0, 0);
-
-    this.toUpdate = date.millisecondsSinceEpoch;
   }
 
   _getTimePopUp(BuildContext context) {
@@ -105,8 +44,8 @@ class CoDateCellEditorWidgetState
                     DateTime.now().subtract(Duration(seconds: 1))))
         .then((time) {
       if (time != null) {
-        this.setTimePart(time);
-        this.onDateValueChanged(this.toUpdate);
+        widget.cellEditorModel.setTimePart(time);
+        this.onDateValueChanged(widget.cellEditorModel.toUpdate);
       }
     });
   }
@@ -123,8 +62,8 @@ class CoDateCellEditorWidgetState
           ? DateTime.fromMillisecondsSinceEpoch(this.value)
           : DateTime.now().subtract(Duration(seconds: 1)),
     ).then((date) {
-      if (date != null && isTimeFormat) {
-        this.setDatePart(date);
+      if (date != null && widget.cellEditorModel.isTimeFormat) {
+        widget.cellEditorModel.setDatePart(date);
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
           return showTimePicker(
                   context: context,
@@ -135,15 +74,15 @@ class CoDateCellEditorWidgetState
                           DateTime.now().subtract(Duration(seconds: 1))))
               .then((time) {
             if (time != null) {
-              this.setTimePart(time);
-              this.onDateValueChanged(this.toUpdate);
+              widget.cellEditorModel.setTimePart(time);
+              this.onDateValueChanged(widget.cellEditorModel.toUpdate);
             }
           });
         });
       } else {
         if (date != null) {
-          this.setDatePart(date);
-          this.onDateValueChanged(this.toUpdate);
+          widget.cellEditorModel.setDatePart(date);
+          this.onDateValueChanged(widget.cellEditorModel.toUpdate);
         }
       }
     });
@@ -192,9 +131,7 @@ class CoDateCellEditorWidgetState
                       (this.value != null &&
                               (this.value is int ||
                                   int.tryParse(this.value) != null))
-                          ? DateFormat((widget.cellEditorModel
-                                      as DateCellEditorModel)
-                                  .dateFormat)
+                          ? DateFormat(widget.cellEditorModel.dateFormat)
                               .format(DateTime.fromMillisecondsSinceEpoch(
                                   this.value is String
                                       ? int.parse(this.value)
@@ -232,15 +169,17 @@ class CoDateCellEditorWidgetState
                         color: Colors.grey[400],
                       ),
                       onTap: () {
-                        this.toUpdate = null;
-                        this.onDateValueChanged(this.toUpdate);
+                        widget.cellEditorModel.toUpdate = null;
+                        this.onDateValueChanged(
+                            widget.cellEditorModel.toUpdate);
                       },
                     )
                   ],
                 )
               ],
             ),
-            onPressed: () => isTimeFormat && !isDateFormat
+            onPressed: () => widget.cellEditorModel.isTimeFormat &&
+                    !widget.cellEditorModel.isDateFormat
                 ? _getTimePopUp(context)
                 : _getDateTimePopUp(context)),
       );
@@ -251,7 +190,8 @@ class CoDateCellEditorWidgetState
 
       if (this.editable && this.preferredEditorMode == 0) {
         return GestureDetector(
-          onTap: () => isTimeFormat && !isDateFormat
+          onTap: () => widget.cellEditorModel.isTimeFormat &&
+                  !widget.cellEditorModel.isDateFormat
               ? _getTimePopUp(context)
               : _getDateTimePopUp(context),
           child: Row(
@@ -264,10 +204,8 @@ class CoDateCellEditorWidgetState
                     (this.value != null &&
                             (this.value is int ||
                                 int.tryParse(this.value) != null))
-                        ? DateFormat(
-                                (widget.cellEditorModel as DateCellEditorModel)
-                                    .dateFormat)
-                            .format(DateTime.fromMillisecondsSinceEpoch(
+                        ? DateFormat(widget.cellEditorModel.dateFormat).format(
+                            DateTime.fromMillisecondsSinceEpoch(
                                 this.value is String
                                     ? int.parse(this.value)
                                     : this.value))
@@ -307,8 +245,9 @@ class CoDateCellEditorWidgetState
                         color: Colors.grey[400],
                       ),
                       onTap: () {
-                        this.toUpdate = null;
-                        this.onDateValueChanged(this.toUpdate);
+                        widget.cellEditorModel.toUpdate = null;
+                        this.onDateValueChanged(
+                            widget.cellEditorModel.toUpdate);
                       },
                     )
                   ],
@@ -323,8 +262,7 @@ class CoDateCellEditorWidgetState
         }
 
         String text = (this.value != null && this.value is int)
-            ? DateFormat(
-                    (widget.cellEditorModel as DateCellEditorModel).dateFormat)
+            ? DateFormat(widget.cellEditorModel.dateFormat)
                 .format(DateTime.fromMillisecondsSinceEpoch(this.value))
             : '';
 

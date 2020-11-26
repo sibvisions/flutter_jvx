@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/component/co_toggle_button_widget.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/checkbox_cell_editor_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../models/api/component/changed_component.dart';
@@ -15,18 +13,18 @@ import '../component/co_radio_button_widget.dart';
 import '../component/co_table_widget.dart';
 import '../component/co_text_area_widget.dart';
 import '../component/co_text_field_widget.dart';
-import '../component/models/component_model.dart';
+import '../component/co_toggle_button_widget.dart';
 import '../component/component_widget.dart';
+import '../component/models/component_model.dart';
+import '../component/models/label_component_model.dart';
 import '../component/popup_menu/co_menu_item_widget.dart';
 import '../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../component/popup_menu/co_popup_menu_widget.dart';
-import '../component/models/label_component_model.dart';
 import '../container/co_group_panel_widget.dart';
 import '../container/co_panel_widget.dart';
 import '../container/co_scroll_panel_widget.dart';
 import '../container/co_split_panel_widget.dart';
 import '../container/tabset_panel/co_tabset_panel_widget.dart';
-import '../editor/celleditor/models/cell_editor_model.dart';
 import '../editor/celleditor/co_cell_editor_widget.dart';
 import '../editor/celleditor/co_checkbox_cell_editor_widget.dart';
 import '../editor/celleditor/co_choice_cell_editor_widget.dart';
@@ -35,6 +33,9 @@ import '../editor/celleditor/co_image_cell_editor_widget.dart';
 import '../editor/celleditor/co_linked_cell_editor_widget.dart';
 import '../editor/celleditor/co_number_cell_editor_widget.dart';
 import '../editor/celleditor/co_text_cell_editor_widget.dart';
+import '../editor/celleditor/models/cell_editor_model.dart';
+import '../editor/celleditor/models/checkbox_cell_editor_model.dart';
+import '../editor/celleditor/models/choice_cell_editor_model.dart';
 import '../editor/celleditor/models/date_cell_editor_model.dart';
 import '../editor/celleditor/models/linked_cell_editor_model.dart';
 import '../editor/celleditor/models/number_cell_editor_model.dart';
@@ -156,7 +157,7 @@ class SoComponentCreator implements IComponentCreator {
         ),
     'ChoiceCellEditor': (CellEditor cellEditor) => CoChoiceCellEditorWidget(
           changedCellEditor: cellEditor,
-          cellEditorModel: CellEditorModel(cellEditor),
+          cellEditorModel: ChoiceCellEditorModel(cellEditor),
         ),
     'DateCellEditor': (CellEditor cellEditor) => CoDateCellEditorWidget(
           changedCellEditor: cellEditor,
@@ -240,7 +241,7 @@ class SoComponentCreator implements IComponentCreator {
         {
           cellEditor = CoChoiceCellEditorWidget(
             changedCellEditor: toCreatecellEditor,
-            cellEditorModel: CellEditorModel(toCreatecellEditor),
+            cellEditorModel: ChoiceCellEditorModel(toCreatecellEditor),
           );
         }
         break;
@@ -277,7 +278,7 @@ class SoComponentCreator implements IComponentCreator {
       case "ChoiceCellEditor":
         {
           cellEditor = CoChoiceCellEditorWidget(
-              cellEditorModel: CellEditorModel(toCreatecellEditor),
+              cellEditorModel: ChoiceCellEditorModel(toCreatecellEditor),
               changedCellEditor: toCreatecellEditor);
         }
         break;
