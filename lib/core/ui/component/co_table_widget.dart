@@ -23,6 +23,48 @@ class CoTableWidget extends CoEditorWidget {
 }
 
 class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
+  ItemScrollController scrollController;
+  ItemPositionsListener scrollPositionListener;
+
+  void onSelectedRowChanged(dynamic selectedRow) {
+    if (this.scrollController != null &&
+        selectedRow is int &&
+        selectedRow >= 0 &&
+        this.scrollController.isAttached) {
+      this.scrollController.scrollTo(
+          index: selectedRow,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.ease);
+    }
+  }
+
+  @override
+  void registerCallbacks() {
+    super.registerCallbacks();
+
+    widget.componentModel.onSelectedRowChangedCallback = this.onSelectedRowChanged;
+  }
+
+  scrollListener(BuildContext context) {
+    ItemPosition pos = this
+        .scrollPositionListener
+        .itemPositions
+        .value
+        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 0,
+            orElse: () => null);
+
+    if (pos != null &&
+        widget.componentModel.data.data != null &&
+        widget.componentModel.data.data.records != null &&
+        pos.index + widget.componentModel.fetchMoreItemOffset >
+            widget.componentModel.data.data.records.length) {
+      widget.componentModel.data?.getData(
+          context,
+          widget.componentModel.pageSize +
+              widget.componentModel.data.data.records.length);
+    }
+  }
+
   void _onRowTapped(int index) {
     if (widget.componentModel.onRowTapped == null) {
       widget.componentModel?.data?.selectRecord(context, index);
@@ -295,17 +337,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     return Container();
   }
 
-  @override
-  void onServerDataChanged() {
-    setState(() {
-      widget.componentModel.onServerDataChanged(context);
-    });
-  }
-
-  void onSelectedRowChanged(dynamic selectedRow) {
-    widget.componentModel.onSelectedRowChanged(selectedRow);
-  }
-
   Widget itemBuilder(BuildContext ctxt, int index) {
     if (index == 0 && widget.componentModel.tableHeaderVisible) {
       return getHeaderRow();
@@ -318,20 +349,21 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   @override
   void initState() {
     super.initState();
-    widget.componentModel.scrollController = ItemScrollController();
-    widget.componentModel.scrollPositionListener =
+    this.scrollController = ItemScrollController();
+    this.scrollPositionListener =
         ItemPositionsListener.create();
     if (widget.componentModel.componentCreator == null)
       widget.componentModel.componentCreator = SoComponentCreator(context);
-    widget.componentModel.scrollPositionListener.itemPositions
-        .addListener(widget.componentModel.scrollListener(context));
+    this.scrollPositionListener.itemPositions
+        .addListener(this.scrollListener(context));
   }
 
   @override
   Widget build(BuildContext context) {
     double borderWidth = 1;
     int itemCount = widget.componentModel.tableHeaderVisible ? 1 : 0;
-    widget.componentModel.data?.getData(context, widget.componentModel.pageSize);
+    widget.componentModel.data
+        ?.getData(context, widget.componentModel.pageSize);
 
     if (widget.componentModel.data?.data != null &&
         widget.componentModel.data?.data?.records != null)
@@ -396,9 +428,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                           borderRadius: BorderRadius.circular(5),
                           child: ScrollablePositionedList.builder(
                             itemScrollController:
-                                widget.componentModel.scrollController,
+                                this.scrollController,
                             itemPositionsListener:
-                                widget.componentModel.scrollPositionListener,
+                                this.scrollPositionListener,
                             itemCount: itemCount,
                             itemBuilder: itemBuilder,
                           ),
@@ -415,9 +447,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                         borderRadius: BorderRadius.circular(5),
                         child: ScrollablePositionedList.builder(
                           itemScrollController:
-                              widget.componentModel.scrollController,
+                              this.scrollController,
                           itemPositionsListener:
-                              widget.componentModel.scrollPositionListener,
+                              this.scrollPositionListener,
                           itemCount: itemCount,
                           itemBuilder: itemBuilder,
                         ),

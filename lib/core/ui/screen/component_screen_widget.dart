@@ -39,7 +39,6 @@ enum CoState {
 class ComponentScreenWidget extends StatefulWidget {
   final IComponentCreator componentCreator;
   final Response response;
-  final bool closeCurrentScreen;
   final ComponentWidget headerComponent;
   final ComponentWidget footerComponent;
   final Function(List<SoComponentData>) onData;
@@ -49,7 +48,6 @@ class ComponentScreenWidget extends StatefulWidget {
       {Key key,
       @required this.componentCreator,
       @required this.response,
-      @required this.closeCurrentScreen,
       this.headerComponent,
       this.footerComponent,
       this.onData,
@@ -77,7 +75,10 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.closeCurrentScreen != null && widget.closeCurrentScreen) {
+    if (widget.response.closeScreenAction != null &&
+        (rootComponent != null &&
+            rootComponent.componentModel.name ==
+                widget.response.closeScreenAction.componentId)) {
       components = <String, ComponentWidget>{};
     }
 

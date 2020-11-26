@@ -32,7 +32,9 @@ class ComponentWidgetState<T extends StatefulWidget> extends State<T> {
   void initState() {
     super.initState();
 
-    (widget as ComponentWidget).componentModel.addListener(() => setState(() {}));
+    (widget as ComponentWidget).componentModel.addListener(() {
+      setState(() {});
+    });
   }
 
   @override

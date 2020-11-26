@@ -31,6 +31,19 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
       componentModel.layout = componentModel.createLayoutForHeaderFooterPanel(
           widget, 'BorderLayout,0,0,0,0,0,0,');
     }
+
+    componentModel.components.forEach((component) {
+      if (componentModel.layout is CoBorderLayoutContainerWidget) {
+        CoBorderLayoutConstraints contraints =
+            getBorderLayoutConstraintsFromString(component.componentModel.constraints);
+
+        componentModel.layout.addLayoutComponent(
+            component, contraints);
+      } else {
+        componentModel.layout.addLayoutComponent(
+            component, component.componentModel.constraints);
+      }
+    });
   }
 
   @override
