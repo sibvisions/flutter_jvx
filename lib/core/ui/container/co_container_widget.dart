@@ -64,12 +64,12 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     componentModel.components.forEach((component) {
       if (componentModel.layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
-            getBorderLayoutConstraintsFromString(component.componentModel.constraints);
+            getBorderLayoutConstraintsFromString(
+                component.componentModel.constraints);
 
-        componentModel.layout.addLayoutComponent(
-            component, contraints);
+        componentModel.layout.addLayoutComponent(component, contraints);
       } else {
-        componentModel.layout.addLayoutComponent(
+        componentModel.layout?.addLayoutComponent(
             component, component.componentModel.constraints);
       }
     });
