@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
 
 import '../../../ui/layout/i_alignment_constants.dart';
 import 'co_cell_editor_widget.dart';
@@ -60,11 +61,6 @@ class CoChoiceCellEditorWidgetState
     }
 
     return Container(
-        // decoration: BoxDecoration(
-        //     color: background != null ? background : Colors.transparent,
-        //     borderRadius: BorderRadius.circular(5),
-        //     border:
-        //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
         child: Row(
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
                 cellEditorModel.horizontalAlignment),

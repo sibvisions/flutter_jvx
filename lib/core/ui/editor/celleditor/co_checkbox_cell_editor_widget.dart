@@ -21,11 +21,6 @@ class CoCheckboxCellEditorWidget extends CoCellEditorWidget {
 
 class CoCheckboxCellEditorWidgetState
     extends CoCellEditorWidgetState<CoCheckboxCellEditorWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void valueChanged(dynamic value) {
     widget.cellEditorModel.cellEditorValue = widget.cellEditorModel.boolToValue(value);
     this.onValueChanged(
@@ -35,11 +30,6 @@ class CoCheckboxCellEditorWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      // decoration: BoxDecoration(
-      //     color: background != null ? background : Colors.transparent,
-      //     borderRadius: BorderRadius.circular(5),
-      //     border:
-      //         borderVisible ? Border.all(color: UIData.ui_kit_color_2) : null),
       child: Row(
         mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
             widget.cellEditorModel.horizontalAlignment),
