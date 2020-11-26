@@ -23,8 +23,9 @@ class CoTableWidget extends CoEditorWidget {
 }
 
 class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
-  ItemScrollController scrollController;
-  ItemPositionsListener scrollPositionListener;
+  final ItemScrollController scrollController = ItemScrollController();
+  final ItemPositionsListener scrollPositionListener =
+      ItemPositionsListener.create();
 
   void onSelectedRowChanged(dynamic selectedRow) {
     if (this.scrollController != null &&
@@ -42,10 +43,11 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   void registerCallbacks() {
     super.registerCallbacks();
 
-    widget.componentModel.onSelectedRowChangedCallback = this.onSelectedRowChanged;
+    widget.componentModel.onSelectedRowChangedCallback =
+        this.onSelectedRowChanged;
   }
 
-  scrollListener(BuildContext context) {
+  scrollListener() {
     ItemPosition pos = this
         .scrollPositionListener
         .itemPositions
@@ -235,9 +237,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       : Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: Text(text,
-                              style: (widget?.componentModel
-                                      as TableComponentModel)
-                                  .itemTextStyle),
+                              style: widget.componentModel.itemTextStyle),
                         )),
               onTap: () => _onRowTapped(rowIndex),
             ),
@@ -250,10 +250,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
     if (widget.componentModel.columnLabels != null) {
       widget.componentModel.columnLabels.asMap().forEach((i, c) {
-        DataBookMetaDataColumn column =
-            (widget?.componentModel as TableComponentModel)
-                .data
-                ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
+        DataBookMetaDataColumn column = widget.componentModel.data
+            ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
         if (column != null && column.nullable) {
           children.add(getTableColumn(
               c.toString(), -1, i, widget.componentModel.columnNames[i],
@@ -349,13 +347,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   @override
   void initState() {
     super.initState();
-    this.scrollController = ItemScrollController();
-    this.scrollPositionListener =
-        ItemPositionsListener.create();
     if (widget.componentModel.componentCreator == null)
       widget.componentModel.componentCreator = SoComponentCreator(context);
-    this.scrollPositionListener.itemPositions
-        .addListener(this.scrollListener(context));
+    this.scrollPositionListener.itemPositions.addListener(this.scrollListener);
   }
 
   @override
@@ -427,10 +421,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(5),
                           child: ScrollablePositionedList.builder(
-                            itemScrollController:
-                                this.scrollController,
-                            itemPositionsListener:
-                                this.scrollPositionListener,
+                            itemScrollController: this.scrollController,
+                            itemPositionsListener: this.scrollPositionListener,
                             itemCount: itemCount,
                             itemBuilder: itemBuilder,
                           ),
@@ -446,10 +438,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: ScrollablePositionedList.builder(
-                          itemScrollController:
-                              this.scrollController,
-                          itemPositionsListener:
-                              this.scrollPositionListener,
+                          itemScrollController: this.scrollController,
+                          itemPositionsListener: this.scrollPositionListener,
                           itemCount: itemCount,
                           itemBuilder: itemBuilder,
                         ),
