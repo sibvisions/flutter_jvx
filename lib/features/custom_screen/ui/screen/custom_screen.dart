@@ -28,8 +28,6 @@ class CustomScreen implements IScreen {
 
   GlobalKey<ComponentScreenWidgetState> screenKey;
 
-  bool closeCurrentScreen;
-
   CustomScreen(this._templateName, {this.componentId, this.creator, this.screenKey});
 
   @override
@@ -54,7 +52,6 @@ class CustomScreen implements IScreen {
       child: ComponentScreenWidget(
         key: this.screenKey,
         response: this.currentResponse,
-        closeCurrentScreen: this.closeCurrentScreen,
         componentCreator: this.creator,
         footerComponent: this.footer,
         headerComponent: this.header,

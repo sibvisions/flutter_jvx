@@ -1,5 +1,6 @@
 import 'package:jvx_flutterclient/core/ui/component/models/action_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/component/models/table_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/toggle_button_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/container/models/group_panel_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/container/models/split_panel_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
@@ -122,7 +123,7 @@ class ComponentModelManager {
         componentModel = TextFieldComponentModel(changedComponent);
         break;
       case 'ToggleButton':
-        componentModel = ActionComponentModel(changedComponent);
+        componentModel = ToggleButtonComponentModel(changedComponent);
         break;
 
       default:

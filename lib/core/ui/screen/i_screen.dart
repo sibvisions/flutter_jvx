@@ -9,8 +9,6 @@ abstract class IScreen {
 
   GlobalKey<ComponentScreenWidgetState> screenKey;
 
-  bool closeCurrentScreen;
-
   /// Constructor for returning the default Implementation of this interface.
   factory IScreen() => SoScreen();
 

@@ -26,24 +26,29 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   void onEndEditing() {}
 
-  void onDataChanged() {
-    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .onDataChanged(context);
-  }
+  void onDataChanged() {}
 
-  void onValueChanged(dynamic value, [int index]) {
-    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .onValueChanged(context, value, index);
-  }
+  void onValueChanged(dynamic value, [int index]) {}
 
-  void onFilter(dynamic value) {
-    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .onFilter(value);
-  }
+  void onFilter(dynamic value) {}
 
   void onServerDataChanged() {
+    setState(() { });
+  }
+
+  void registerCallbacks() {
     ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .onServerDataChanged(context);
+        .onBeginEditingCallback = this.onBeginEditing;
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .onEndEditingCallback = this.onEndEditing;
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .onDataChangedCallback = this.onDataChanged;
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .onValueChangedCallback = this.onValueChanged;
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .onFilterCallback = this.onFilter;
+    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
+        .onServerDataChangedCallback = this.onServerDataChanged;
   }
 
   @override
@@ -51,6 +56,8 @@ class CoEditorWidgetState<T extends StatefulWidget>
     super.initState();
     ((widget as CoEditorWidget).componentModel as EditorComponentModel)
         .cellEditor = (widget as CoEditorWidget).cellEditor;
+
+    this.registerCallbacks();
   }
 
   @override

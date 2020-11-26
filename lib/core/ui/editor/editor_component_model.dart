@@ -11,6 +11,13 @@ import '../../models/api/component/component_properties.dart';
 import '../component/models/component_model.dart';
 import 'celleditor/co_cell_editor_widget.dart';
 
+typedef OnBeginEditing = void Function();
+typedef OnEndEditing = void Function();
+typedef OnDataChanged = void Function();
+typedef OnValueChanged = void Function(dynamic value, [int index]);
+typedef OnFilter = void Function(dynamic value);
+typedef OnServerDataChanged = void Function();
+
 class EditorComponentModel extends ComponentModel {
   String dataProvider;
   String dataRow;
@@ -31,6 +38,13 @@ class EditorComponentModel extends ComponentModel {
   Function(int index) onRowTapped;
   bool editable;
 
+  OnBeginEditing onBeginEditingCallback;
+  OnEndEditing onEndEditingCallback;
+  OnDataChanged onDataChangedCallback;
+  OnValueChanged onValueChangedCallback;
+  OnFilter onFilterCallback;
+  OnServerDataChanged onServerDataChangedCallback;
+
   SoComponentData get data => _data;
 
   void setData(BuildContext context, SoComponentData data) {
@@ -38,8 +52,9 @@ class EditorComponentModel extends ComponentModel {
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
 
-    this.cellEditor?.cellEditorModel?.value =
+    this.cellEditor?.cellEditorModel?.cellEditorValue =
         _data.getColumnData(context, columnName);
+    notifyListeners();
   }
 
   CoCellEditorWidget get cellEditor => _cellEditorWidget;
@@ -149,9 +164,17 @@ class EditorComponentModel extends ComponentModel {
     super.updateProperties(context, changedComponent);
   }
 
-  void onBeginEditing() {}
+  void onBeginEditing() {
+    if (this.onBeginEditingCallback != null) {
+      this.onBeginEditingCallback();
+    }
+  }
 
-  void onEndEditing() {}
+  void onEndEditing() {
+    if (this.onEndEditingCallback != null) {
+      this.onEndEditingCallback();
+    }
+  }
 
   void onDataChanged(BuildContext context) {
     _data?.unregisterDataChanged(onServerDataChanged);
@@ -160,6 +183,10 @@ class EditorComponentModel extends ComponentModel {
 
     this.cellEditor?.cellEditorModel?.value =
         _data.getColumnData(context, columnName);
+
+    if (this.onDataChangedCallback != null) {
+      this.onDataChangedCallback();
+    }
   }
 
   void onValueChanged(BuildContext context, dynamic value, [int index]) {
@@ -189,6 +216,10 @@ class EditorComponentModel extends ComponentModel {
               : null,
           isTextEditor);
     }
+
+    if (this.onValueChangedCallback != null) {
+      this.onValueChangedCallback(value, index);
+    }
   }
 
   void onFilter(dynamic value) {
@@ -199,12 +230,18 @@ class EditorComponentModel extends ComponentModel {
           .filterData(context, value, this.name);
     }
     */
+    if (this.onFilterCallback != null) {
+      this.onFilterCallback(value);
+    }
   }
 
   void onServerDataChanged(BuildContext context) {
     if (context != null)
       this.cellEditor?.cellEditorModel?.value =
           _data.getColumnData(context, columnName);
+      if (this.onServerDataChangedCallback != null) {
+        this.onServerDataChangedCallback();
+      }
   }
 
   void setEditorProperties(BuildContext context) {

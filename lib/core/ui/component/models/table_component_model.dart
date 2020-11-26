@@ -11,6 +11,8 @@ import '../../screen/so_component_creator.dart';
 import '../../screen/so_component_data.dart';
 import '../so_table_column_calculator.dart';
 
+typedef OnSelectedRowChanged = void Function(dynamic selectedRow);
+
 class TableComponentModel extends EditorComponentModel {
   // visible column names
   List<String> columnNames = <String>[];
@@ -32,8 +34,6 @@ class TableComponentModel extends EditorComponentModel {
 
   int selectedRow;
 
-  ItemScrollController scrollController;
-  ItemPositionsListener scrollPositionListener;
   int pageSize = 100;
   double fetchMoreItemOffset = 20;
   DataBook _data;
@@ -43,6 +43,8 @@ class TableComponentModel extends EditorComponentModel {
   bool autoResize = false;
   bool hasHorizontalScroller = false;
   Function(int index) onRowTapped;
+
+  OnSelectedRowChanged onSelectedRowChangedCallback;
 
   // Properties for lazy dropdown
   dynamic value;
@@ -141,10 +143,10 @@ class TableComponentModel extends EditorComponentModel {
   @override
   void setData(BuildContext context, SoComponentData data) {
     super.data?.unregisterDataChanged(onServerDataChanged);
-    super.data?.unregisterSelectedRowChanged(onSelectedRowChanged);
+    super.data?.unregisterSelectedRowChanged(onSelectedRowChangedCallback);
     super.setData(context, data);
     super.data?.registerDataChanged(onServerDataChanged);
-    super.data?.registerSelectedRowChanged(onSelectedRowChanged);
+    super.data?.registerSelectedRowChanged(onSelectedRowChangedCallback);
   }
 
   CoEditorWidget getEditorForColumn(String text, String columnName, int index) {
@@ -163,35 +165,5 @@ class TableComponentModel extends EditorComponentModel {
       }
     }
     return null;
-  }
-
-  void onSelectedRowChanged(dynamic selectedRow) {
-    if (this.scrollController != null &&
-        selectedRow is int &&
-        selectedRow >= 0 &&
-        this.scrollController.isAttached) {
-      this.scrollController.scrollTo(
-          index: selectedRow,
-          duration: Duration(milliseconds: 500),
-          curve: Curves.ease);
-    }
-  }
-
-  scrollListener(BuildContext context) {
-    ItemPosition pos = this
-        .scrollPositionListener
-        .itemPositions
-        .value
-        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 0,
-            orElse: () => null);
-
-    if (pos != null &&
-        this.data.data != null &&
-        this.data.data.records != null &&
-        pos.index + this.fetchMoreItemOffset > this.data.data.records.length) {
-      this
-          .data
-          ?.getData(context, this.pageSize + this.data.data.records.length);
-    }
   }
 }
