@@ -42,7 +42,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   void registerCallbacks() {
     super.registerCallbacks();
 
-    widget.componentModel.onSelectedRowChangedCallback = this.onSelectedRowChanged;
+    widget.componentModel.onSelectedRowChangedCallback =
+        this.onSelectedRowChanged;
   }
 
   scrollListener(BuildContext context) {
@@ -350,11 +351,12 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   void initState() {
     super.initState();
     this.scrollController = ItemScrollController();
-    this.scrollPositionListener =
-        ItemPositionsListener.create();
+    this.scrollPositionListener = ItemPositionsListener.create();
     if (widget.componentModel.componentCreator == null)
       widget.componentModel.componentCreator = SoComponentCreator(context);
-    this.scrollPositionListener.itemPositions
+    this
+        .scrollPositionListener
+        .itemPositions
         .addListener(this.scrollListener(context));
   }
 
@@ -427,10 +429,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(5),
                           child: ScrollablePositionedList.builder(
-                            itemScrollController:
-                                this.scrollController,
-                            itemPositionsListener:
-                                this.scrollPositionListener,
+                            itemScrollController: this.scrollController,
+                            itemPositionsListener: this.scrollPositionListener,
                             itemCount: itemCount,
                             itemBuilder: itemBuilder,
                           ),
@@ -446,10 +446,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: ScrollablePositionedList.builder(
-                          itemScrollController:
-                              this.scrollController,
-                          itemPositionsListener:
-                              this.scrollPositionListener,
+                          itemScrollController: this.scrollController,
+                          itemPositionsListener: this.scrollPositionListener,
                           itemCount: itemCount,
                           itemBuilder: itemBuilder,
                         ),

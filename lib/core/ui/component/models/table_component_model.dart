@@ -81,6 +81,38 @@ class TableComponentModel extends EditorComponentModel {
   bool get isMaximumSizeSet => maximumSize != null;
 
   @override
+  set data(SoComponentData data) {
+    super.data?.unregisterDataChanged(onServerDataChanged);
+    super.data?.unregisterSelectedRowChanged(onSelectedRowChangedCallback);
+    super.data = data;
+    super.data?.registerDataChanged(onServerDataChanged);
+    super.data?.registerSelectedRowChanged(onSelectedRowChangedCallback);
+  }
+
+  TableComponentModel(ChangedComponent changedComponent)
+      : super(changedComponent);
+
+  TableComponentModel.withoutChangedComponent(
+      dynamic value,
+      String columnName,
+      Function onRowTapped,
+      bool editable,
+      bool tableHeaderVisible,
+      bool autoResize,
+      List<String> columnNames,
+      List<String> columnLabels)
+      : super.withoutChangedComponent(
+            value, columnName, null, onRowTapped, editable) {
+    this.tableHeaderVisible = tableHeaderVisible;
+    this.editable = editable;
+    this.autoResize = autoResize;
+    this.columnNames = columnNames;
+    this.onRowTapped = onRowTapped;
+    this.indexInTable = indexInTable;
+    this.columnLabels = columnLabels;
+  }
+
+  @override
   void updateProperties(
       BuildContext context, ChangedComponent changedComponent) {
     showVerticalLines = changedComponent.getProperty<bool>(
@@ -115,38 +147,6 @@ class TableComponentModel extends EditorComponentModel {
         ComponentProperty.SELECTED_ROW, selectedRow);
 
     super.updateProperties(context, changedComponent);
-  }
-
-  TableComponentModel(ChangedComponent changedComponent)
-      : super(changedComponent);
-
-  TableComponentModel.withoutChangedComponent(
-      dynamic value,
-      String columnName,
-      Function onRowTapped,
-      bool editable,
-      bool tableHeaderVisible,
-      bool autoResize,
-      List<String> columnNames,
-      List<String> columnLabels)
-      : super.withoutChangedComponent(
-            value, columnName, null, onRowTapped, editable) {
-    this.tableHeaderVisible = tableHeaderVisible;
-    this.editable = editable;
-    this.autoResize = autoResize;
-    this.columnNames = columnNames;
-    this.onRowTapped = onRowTapped;
-    this.indexInTable = indexInTable;
-    this.columnLabels = columnLabels;
-  }
-
-  @override
-  void setData(BuildContext context, SoComponentData data) {
-    super.data?.unregisterDataChanged(onServerDataChanged);
-    super.data?.unregisterSelectedRowChanged(onSelectedRowChangedCallback);
-    super.setData(context, data);
-    super.data?.registerDataChanged(onServerDataChanged);
-    super.data?.registerSelectedRowChanged(onSelectedRowChangedCallback);
   }
 
   CoEditorWidget getEditorForColumn(String text, String columnName, int index) {

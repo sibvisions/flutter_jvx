@@ -20,16 +20,14 @@ class CoCellEditorWidget extends StatefulWidget {
 class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   VoidCallback onBeginEditing;
   VoidCallback onEndEditing;
-  Function(dynamic value, [int index]) onValueChanged;
+  Function(BuildContext context, dynamic value, [int index]) onValueChanged;
   ValueChanged<dynamic> onFilter;
 
-  void getCallbacks() {
-    CoEditorWidgetState editor = CoEditorWidget.of(context);
-
-    this.onBeginEditing = editor.onBeginEditing;
-    this.onEndEditing = editor.onEndEditing;
-    this.onValueChanged = editor.onValueChanged;
-    this.onFilter = editor.onFilter;
+  getCallbacksFromModel() {
+    this.onBeginEditing = (widget as CoCellEditorWidget).cellEditorModel.onBeginEditing;
+    this.onEndEditing = (widget as CoCellEditorWidget).cellEditorModel.onEndEditing;
+    this.onValueChanged = (widget as CoCellEditorWidget).cellEditorModel.onValueChanged;
+    this.onFilter = (widget as CoCellEditorWidget).cellEditorModel.onFilter;
   }
 
   @override
@@ -46,7 +44,7 @@ class CoCellEditorWidgetState<T extends StatefulWidget> extends State<T> {
   void initState() {
     super.initState();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) => getCallbacks());
+    this.getCallbacksFromModel();
 
     (widget as CoCellEditorWidget)
         .cellEditorModel

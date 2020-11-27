@@ -19,7 +19,7 @@ class CoMultiLineCellEditorWidgetState
     extends CoReferencedCellEditorWidgetState<CoMultiLineCellEditorWidget> {
   void valueChanged(dynamic value) {
     widget.cellEditorModel.cellEditorValue = value;
-    this.onValueChanged(value);
+    this.onValueChanged(context, value);
   }
 
   List<ListTile> getItems(DataBook data) {
