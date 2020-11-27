@@ -21,7 +21,7 @@ class CoDateCellEditorWidgetState
     extends CoCellEditorWidgetState<CoDateCellEditorWidget> {
   void onDateValueChanged(dynamic value) {
     (widget.cellEditorModel as DateCellEditorModel).toUpdate = null;
-    super.onValueChanged(value, widget.cellEditorModel.indexInTable);
+    super.onValueChanged(context, value, widget.cellEditorModel.indexInTable);
   }
 
   _getTimePopUp(BuildContext context) {
@@ -195,8 +195,8 @@ class CoDateCellEditorWidgetState
       // 1 = Single Click
       // 0 = Double Click
 
-      if (widget.cellEditorModel.editable &&
-          widget.cellEditorModel.preferredEditorMode == 0) {
+      if ((widget.cellEditorModel.editable != null && widget.cellEditorModel.editable) &&
+          (widget.cellEditorModel.preferredEditorMode != null && widget.cellEditorModel.preferredEditorMode == 0)) {
         return GestureDetector(
           onTap: () => (widget.cellEditorModel as DateCellEditorModel)
                       .isTimeFormat &&

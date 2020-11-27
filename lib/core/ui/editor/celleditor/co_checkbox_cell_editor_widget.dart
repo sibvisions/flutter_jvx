@@ -22,9 +22,10 @@ class CoCheckboxCellEditorWidget extends CoCellEditorWidget {
 class CoCheckboxCellEditorWidgetState
     extends CoCellEditorWidgetState<CoCheckboxCellEditorWidget> {
   void valueChanged(dynamic value) {
-    widget.cellEditorModel.cellEditorValue = widget.cellEditorModel.boolToValue(value);
-    this.onValueChanged(
-        widget.cellEditorModel.cellEditorValue, widget.cellEditorModel.indexInTable);
+    widget.cellEditorModel.cellEditorValue =
+        widget.cellEditorModel.boolToValue(value);
+    this.onValueChanged(context, widget.cellEditorModel.cellEditorValue,
+        widget.cellEditorModel.indexInTable);
   }
 
   @override

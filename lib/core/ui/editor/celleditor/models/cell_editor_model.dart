@@ -39,7 +39,7 @@ class CellEditorModel extends ValueNotifier {
   HexColor foreground;
   String placeholder;
   String font;
-  bool editable = true;
+  bool _editable = true;
   bool borderVisible;
   bool placeholderVisible;
   int indexInTable;
@@ -55,6 +55,16 @@ class CellEditorModel extends ValueNotifier {
   ValueChanged<dynamic> onFilter;
 
   AppState appState;
+
+  bool get editable {
+    return _editable;
+  }
+
+  set editable(bool editable) {
+    if (editable != null) {
+      this._editable = editable;
+    }
+  }
 
   bool get isPreferredSizeSet => preferredSize != null;
   bool get isMinimumSizeSet => minimumSize != null;

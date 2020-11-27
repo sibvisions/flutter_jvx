@@ -162,7 +162,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
         TableComponentModel.withoutChangedComponent(null, null, _onRowTapped,
             false, false, true, widget.displayColumnNames, null);
 
-    tableComponentModel.setData(context, widget.data);
+    tableComponentModel.data = widget.data;
 
     table = CoTableWidget(
       componentModel: tableComponentModel,

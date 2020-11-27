@@ -99,7 +99,7 @@ class CoTextCellEditorWidgetState
                               widget.cellEditorModel.cellEditorValue = null;
                               widget.cellEditorModel.valueChanged = true;
                               super
-                                  .onValueChanged(widget.cellEditorModel.cellEditorValue);
+                                  .onValueChanged(context, widget.cellEditorModel.cellEditorValue);
                               widget.cellEditorModel.valueChanged = false;
                             }
                           },

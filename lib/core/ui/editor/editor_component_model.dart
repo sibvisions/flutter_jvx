@@ -47,14 +47,10 @@ class EditorComponentModel extends ComponentModel {
 
   SoComponentData get data => _data;
 
-  void setData(BuildContext context, SoComponentData data) {
+  set data(SoComponentData data) {
     _data?.unregisterDataChanged(onServerDataChanged);
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
-
-    this.cellEditor?.cellEditorModel?.cellEditorValue =
-        _data.getColumnData(context, columnName);
-    notifyListeners();
   }
 
   CoCellEditorWidget get cellEditor => _cellEditorWidget;
@@ -239,16 +235,12 @@ class EditorComponentModel extends ComponentModel {
     if (context != null)
       this.cellEditor?.cellEditorModel?.value =
           _data.getColumnData(context, columnName);
-      if (this.onServerDataChangedCallback != null) {
-        this.onServerDataChangedCallback();
-      }
+    if (this.onServerDataChangedCallback != null) {
+      this.onServerDataChangedCallback();
+    }
   }
 
   void setEditorProperties(BuildContext context) {
-    this.cellEditor.cellEditorModel.onValueChanged = this.onValueChanged;
-    this.cellEditor.cellEditorModel.onEndEditing = this.onEndEditing;
-    this.cellEditor.cellEditorModel.onBeginEditing = this.onBeginEditing;
-    this.cellEditor.cellEditorModel.onFilter = this.onFilter;
     this.cellEditor.cellEditorModel.editable = this.cellEditorEditable;
     this.cellEditor.cellEditorModel.background = this.cellEditorBackground;
     this.cellEditor.cellEditorModel.foreground = this.cellEditorForeground;

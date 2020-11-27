@@ -32,9 +32,9 @@ class CoNumberCellEditorWidgetState
       if (cellEditorModel.tempValue.endsWith(format.symbols.DECIMAL_SEP))
         cellEditorModel.tempValue = cellEditorModel.tempValue
             .substring(0, cellEditorModel.tempValue.length - 1);
-      cellEditorModel.value = NumericTextFormatter.convertToNumber(
+      cellEditorModel.cellEditorValue = NumericTextFormatter.convertToNumber(
           cellEditorModel.tempValue, cellEditorModel.numberFormat, format);
-      super.onValueChanged(cellEditorModel.value);
+      super.onValueChanged(context, cellEditorModel.cellEditorValue);
       cellEditorModel.valueChanged = false;
     }
   }
@@ -86,10 +86,10 @@ class CoNumberCellEditorWidgetState
                       padding: EdgeInsets.only(right: 8),
                       child: GestureDetector(
                         onTap: () {
-                          if (cellEditorModel.value != null) {
-                            cellEditorModel.value = null;
+                          if (cellEditorModel.cellEditorValue != null) {
+                            cellEditorModel.cellEditorValue = null;
                             cellEditorModel.valueChanged = true;
-                            super.onValueChanged(cellEditorModel.value);
+                            super.onValueChanged(context, cellEditorModel.cellEditorValue);
                             cellEditorModel.valueChanged = false;
                           }
                         },

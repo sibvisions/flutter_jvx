@@ -25,7 +25,7 @@ class CoLinkedCellEditorWidgetState
     extends CoReferencedCellEditorWidgetState<CoLinkedCellEditorWidget> {
   void valueChanged(dynamic value) {
     widget.cellEditorModel.cellEditorValue = value;
-    this.onValueChanged(value);
+    this.onValueChanged(context, value);
   }
 
   void onLazyDropDownValueChanged(MapEntry<int, dynamic> pValue) {
@@ -43,9 +43,9 @@ class CoLinkedCellEditorWidgetState
       widget.cellEditorModel.cellEditorValue = pValue.value;
     if (widget.cellEditorModel.linkReference != null &&
         widget.cellEditorModel.linkReference.columnNames.length == 1)
-      this.onValueChanged(widget.cellEditorModel.cellEditorValue, pValue.value[0]);
+      this.onValueChanged(context, widget.cellEditorModel.cellEditorValue, pValue.value[0]);
     else
-      this.onValueChanged(pValue.value);
+      this.onValueChanged(context, pValue.value);
   }
 
   List<DropdownMenuItem> getItems(DataBook data) {
