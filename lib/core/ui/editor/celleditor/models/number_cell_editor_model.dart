@@ -26,6 +26,9 @@ class NumberCellEditorModel extends CellEditorModel {
     double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
     String text = TextUtils.averageCharactersTextField;
 
+    if (numberFormat != null && numberFormat.length < text.length)
+      text = text.substring(0, numberFormat?.length);
+
     if (cellEditorValue != null) {
       text = cellEditorValue.toString();
     }
@@ -67,7 +70,8 @@ class NumberCellEditorModel extends CellEditorModel {
   }
 
   String _getFormattedValue() {
-    if (cellEditorValue != null && (cellEditorValue is int || cellEditorValue is double)) {
+    if (cellEditorValue != null &&
+        (cellEditorValue is int || cellEditorValue is double)) {
       if (numberFormat != null && numberFormat.isNotEmpty) {
         intl.NumberFormat format = intl.NumberFormat(numberFormat);
         return format.format(cellEditorValue);
