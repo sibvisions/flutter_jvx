@@ -355,7 +355,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     this
         .scrollPositionListener
         .itemPositions
-        .addListener(this.scrollListener(context));
+        .addListener(() => this.scrollListener(context));
   }
 
   @override

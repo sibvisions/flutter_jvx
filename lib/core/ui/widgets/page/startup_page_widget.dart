@@ -172,7 +172,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
             primaryColor: newColor,
             primarySwatch: newColor,
             brightness: Brightness.light,
-            fontFamily: 'Raleway');
+            fontFamily: 'Raleway',
+            cursorColor: newColor,);
 
         if (response.applicationStyle.hash !=
                 this.manager.applicationStylingHash ||
