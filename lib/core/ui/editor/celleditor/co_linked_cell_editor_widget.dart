@@ -43,7 +43,8 @@ class CoLinkedCellEditorWidgetState
       widget.cellEditorModel.cellEditorValue = pValue.value;
     if (widget.cellEditorModel.linkReference != null &&
         widget.cellEditorModel.linkReference.columnNames.length == 1)
-      this.onValueChanged(context, widget.cellEditorModel.cellEditorValue, pValue.value[0]);
+      this.onValueChanged(
+          context, widget.cellEditorModel.cellEditorValue, pValue.value[0]);
     else
       this.onValueChanged(context, pValue.value);
   }
@@ -182,22 +183,21 @@ class CoLinkedCellEditorWidgetState
             showDialog(
                 context: context,
                 builder: (context) => BlocProvider<ApiBloc>(
-                      create: (_) => sl<ApiBloc>(),
-                      child: LazyDropdown(
-                          editable: widget.cellEditorModel.editable,
-                          data: widget.cellEditorModel.referencedData,
-                          context: context,
-                          displayColumnNames: dropDownColumnNames,
-                          fetchMoreYOffset:
-                              MediaQuery.of(context).size.height * 4,
-                          onSave: (value) {
-                            widget.cellEditorModel.cellEditorValue = value.value;
-                            onLazyDropDownValueChanged(value);
-                          },
-                          onFilter: onFilterDropDown,
-                          allowNull: true,
-                          onScrollToEnd: onScrollToEnd),
-                    ));
+                    create: (_) => sl<ApiBloc>(),
+                    child: LazyDropdown(
+                      editable: widget.cellEditorModel.editable,
+                      data: widget.cellEditorModel.referencedData,
+                      context: this.context,
+                      displayColumnNames: dropDownColumnNames,
+                      fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
+                      onSave: (value) {
+                        widget.cellEditorModel.cellEditorValue = value.value;
+                        onLazyDropDownValueChanged(value);
+                      },
+                      onFilter: onFilterDropDown,
+                      allowNull: true,
+                      onScrollToEnd: onScrollToEnd,
+                    )));
           },
         )),
       ),

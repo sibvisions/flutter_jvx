@@ -16,8 +16,10 @@ enum ContextMenuCommand { INSERT, DELETE }
 
 class CoTableWidget extends CoEditorWidget {
   final TableComponentModel componentModel;
+  final BuildContext customDataOperationContext;
 
-  CoTableWidget({this.componentModel}) : super(componentModel: componentModel);
+  CoTableWidget({this.componentModel, this.customDataOperationContext})
+      : super(componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoTableWidgetState();
 }
@@ -60,7 +62,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         pos.index + widget.componentModel.fetchMoreItemOffset >
             widget.componentModel.data.data.records.length) {
       widget.componentModel.data?.getData(
-          context,
+          widget.customDataOperationContext != null
+              ? widget.customDataOperationContext
+              : context,
           widget.componentModel.pageSize +
               widget.componentModel.data.data.records.length);
     }
@@ -68,7 +72,11 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   void _onRowTapped(int index) {
     if (widget.componentModel.onRowTapped == null) {
-      widget.componentModel?.data?.selectRecord(context, index);
+      widget.componentModel?.data?.selectRecord(
+          widget.customDataOperationContext != null
+              ? widget.customDataOperationContext
+              : context,
+          index);
     } else {
       widget.componentModel.onRowTapped(index);
     }

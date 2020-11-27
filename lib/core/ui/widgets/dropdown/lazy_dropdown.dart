@@ -166,6 +166,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
     table = CoTableWidget(
       componentModel: tableComponentModel,
+      customDataOperationContext: widget.context,
     );
   }
 
