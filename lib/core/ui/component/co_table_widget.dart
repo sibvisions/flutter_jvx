@@ -23,9 +23,8 @@ class CoTableWidget extends CoEditorWidget {
 }
 
 class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
-  final ItemScrollController scrollController = ItemScrollController();
-  final ItemPositionsListener scrollPositionListener =
-      ItemPositionsListener.create();
+  ItemScrollController scrollController;
+  ItemPositionsListener scrollPositionListener;
 
   void onSelectedRowChanged(dynamic selectedRow) {
     if (this.scrollController != null &&
@@ -47,7 +46,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         this.onSelectedRowChanged;
   }
 
-  scrollListener() {
+  scrollListener(BuildContext context) {
     ItemPosition pos = this
         .scrollPositionListener
         .itemPositions
@@ -237,7 +236,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       : Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                           child: Text(text,
-                              style: widget.componentModel.itemTextStyle),
+                              style: (widget?.componentModel
+                                      as TableComponentModel)
+                                  .itemTextStyle),
                         )),
               onTap: () => _onRowTapped(rowIndex),
             ),
@@ -250,8 +251,10 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
     if (widget.componentModel.columnLabels != null) {
       widget.componentModel.columnLabels.asMap().forEach((i, c) {
-        DataBookMetaDataColumn column = widget.componentModel.data
-            ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
+        DataBookMetaDataColumn column =
+            (widget?.componentModel as TableComponentModel)
+                .data
+                ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
         if (column != null && column.nullable) {
           children.add(getTableColumn(
               c.toString(), -1, i, widget.componentModel.columnNames[i],
@@ -347,17 +350,22 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   @override
   void initState() {
     super.initState();
+    this.scrollController = ItemScrollController();
+    this.scrollPositionListener = ItemPositionsListener.create();
     if (widget.componentModel.componentCreator == null)
       widget.componentModel.componentCreator = SoComponentCreator(context);
-    this.scrollPositionListener.itemPositions.addListener(this.scrollListener);
+    this
+        .scrollPositionListener
+        .itemPositions
+        .addListener(this.scrollListener(context));
   }
 
   @override
   Widget build(BuildContext context) {
     double borderWidth = 1;
     int itemCount = widget.componentModel.tableHeaderVisible ? 1 : 0;
-    widget.componentModel.data
-        ?.getData(context, widget.componentModel.pageSize);
+      widget.componentModel.data
+          ?.getData(context, widget.componentModel.pageSize);
 
     if (widget.componentModel.data?.data != null &&
         widget.componentModel.data?.data?.records != null)
