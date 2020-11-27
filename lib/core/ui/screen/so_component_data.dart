@@ -104,7 +104,7 @@ class SoComponentData {
       data.selectedRow = pData.selectedRow;
     }
     // else {
-    //   data.records.addAll(pData.records);
+    //   data.records.addAll(pData.records);1
     //   if (data.selectedRow != pData.selectedRow)
     //     _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
     //   data.selectedRow = pData.selectedRow;
