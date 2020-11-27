@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:jvx_flutterclient/core/models/api/editor/cell_editor.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/checkbox_cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/date_cell_editor_model.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
@@ -9,6 +13,7 @@ import '../../editor/co_editor_widget.dart';
 import '../../editor/editor_component_model.dart';
 import '../../screen/so_component_creator.dart';
 import '../../screen/so_component_data.dart';
+import '../component_widget.dart';
 import '../so_table_column_calculator.dart';
 
 typedef OnSelectedRowChanged = void Function(dynamic selectedRow);
@@ -36,7 +41,6 @@ class TableComponentModel extends EditorComponentModel {
 
   int pageSize = 100;
   double fetchMoreItemOffset = 20;
-  DataBook _data;
   List<SoTableColumn> columnInfo;
   var tapPosition;
   SoComponentCreator componentCreator;
@@ -48,6 +52,8 @@ class TableComponentModel extends EditorComponentModel {
 
   // Properties for lazy dropdown
   dynamic value;
+
+  Map<String, CoEditorWidget> _editors = <String, CoEditorWidget>{};
 
   TextStyle get headerStyleMandatory {
     return this.headerTextStyle;
@@ -83,10 +89,10 @@ class TableComponentModel extends EditorComponentModel {
   @override
   set data(SoComponentData data) {
     super.data?.unregisterDataChanged(onServerDataChanged);
-    super.data?.unregisterSelectedRowChanged(onSelectedRowChangedCallback);
+    super.data?.unregisterSelectedRowChanged(onSelectedRowChanged);
     super.data = data;
     super.data?.registerDataChanged(onServerDataChanged);
-    super.data?.registerSelectedRowChanged(onSelectedRowChangedCallback);
+    super.data?.registerSelectedRowChanged(onSelectedRowChanged);
   }
 
   TableComponentModel(ChangedComponent changedComponent)
@@ -149,19 +155,36 @@ class TableComponentModel extends EditorComponentModel {
     super.updateProperties(context, changedComponent);
   }
 
+  void onSelectedRowChanged(dynamic selectedRow) {
+    if (this.onSelectedRowChangedCallback != null) {
+      this.onSelectedRowChangedCallback(selectedRow);
+    }
+  }
+
+  String _getEditorIdentifier(String columnName, int index) {
+    return '${columnName}_$index';
+  }
+
   CoEditorWidget getEditorForColumn(String text, String columnName, int index) {
     DataBookMetaDataColumn column = this.data?.getMetaDataColumn(columnName);
 
-    if (column != null) {
-      CoEditorWidget editor = this.componentCreator.createEditorForTable(
-          column?.cellEditor,
-          text,
-          this.editable,
-          index,
-          this.data,
-          columnName);
-      if (editor != null) {
-        return editor;
+    if (column != null && index >= 0) {
+      if (_editors[_getEditorIdentifier(columnName, index)] == null) {
+        CoEditorWidget editor = this.componentCreator.createEditorForTable(
+              column?.cellEditor,
+              text,
+              this.editable,
+              index,
+              this.data,
+              columnName,
+            );
+        if (editor != null) {
+          _editors[_getEditorIdentifier(columnName, index)] = editor;
+          return editor;
+        }
+      } else {
+        _editors[_getEditorIdentifier(columnName, index)].cellEditor.cellEditorModel.cellEditorValue = text;
+        return _editors[_getEditorIdentifier(columnName, index)];
       }
     }
     return null;

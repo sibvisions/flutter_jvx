@@ -232,7 +232,7 @@ class EditorComponentModel extends ComponentModel {
   }
 
   void onServerDataChanged(BuildContext context) {
-    if (context != null)
+    if (context != null && this.withChangedComponent)
       this.cellEditor?.cellEditorModel?.cellEditorValue =
           _data.getColumnData(context, columnName);
     if (this.onServerDataChangedCallback != null) {

@@ -251,10 +251,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
     if (widget.componentModel.columnLabels != null) {
       widget.componentModel.columnLabels.asMap().forEach((i, c) {
-        DataBookMetaDataColumn column =
-            (widget?.componentModel as TableComponentModel)
-                .data
-                ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
+        DataBookMetaDataColumn column = widget.componentModel.data
+            ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
         if (column != null && column.nullable) {
           children.add(getTableColumn(
               c.toString(), -1, i, widget.componentModel.columnNames[i],
@@ -364,8 +362,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   Widget build(BuildContext context) {
     double borderWidth = 1;
     int itemCount = widget.componentModel.tableHeaderVisible ? 1 : 0;
-      widget.componentModel.data
-          ?.getData(context, widget.componentModel.pageSize);
+    widget.componentModel.data
+        ?.getData(context, widget.componentModel.pageSize);
 
     if (widget.componentModel.data?.data != null &&
         widget.componentModel.data?.data?.records != null)

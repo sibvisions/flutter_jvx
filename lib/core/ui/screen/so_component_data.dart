@@ -149,7 +149,7 @@ class SoComponentData {
   dynamic getColumnData(BuildContext context, String columnName) {
     if (data != null && data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
-    } else {
+    } else if (context != null) {
       this._fetchData(context, null, -1);
     }
 

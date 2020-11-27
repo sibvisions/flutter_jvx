@@ -267,7 +267,8 @@ class SoComponentCreator implements IComponentCreator {
           cellEditor = CoDateCellEditorWidget(
             cellEditorModel: DateCellEditorModel(toCreatecellEditor)
               ..isTableView = true
-              ..editable = editable,
+              ..editable = editable
+              ..cellEditorValue = value,
           );
         }
         break;
@@ -276,16 +277,17 @@ class SoComponentCreator implements IComponentCreator {
           cellEditor = CoChoiceCellEditorWidget(
               cellEditorModel: ChoiceCellEditorModel(toCreatecellEditor)
                 ..isTableView = true
-                ..editable = editable);
+                ..editable = editable
+                ..cellEditorValue = value);
         }
         break;
       case "CheckBoxCellEditor":
         {
           cellEditor = CoCheckboxCellEditorWidget(
-            cellEditorModel: CheckBoxCellEditorModel(toCreatecellEditor)
-              ..isTableView = true
-              ..editable = editable,
-          );
+              cellEditorModel: CheckBoxCellEditorModel(toCreatecellEditor)
+                ..isTableView = true
+                ..editable = editable
+                ..cellEditorValue = value);
         }
         break;
     }
@@ -296,13 +298,13 @@ class SoComponentCreator implements IComponentCreator {
         EditorComponentModel.withoutChangedComponent(
             value, columnName, indexInTable, null, editable);
 
-    componentModel.data = data;
-
     CoEditorWidget editor = CoEditorWidget(
       key: ValueKey(uuid.v4()),
       cellEditor: cellEditor,
       componentModel: componentModel,
     );
+
+    componentModel.data = data;
 
     return editor;
   }
