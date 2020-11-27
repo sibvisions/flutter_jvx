@@ -177,7 +177,7 @@ class EditorComponentModel extends ComponentModel {
     _data = this.data;
     _data?.registerDataChanged(onServerDataChanged);
 
-    this.cellEditor?.cellEditorModel?.value =
+    this.cellEditor?.cellEditorModel?.cellEditorValue =
         _data.getColumnData(context, columnName);
 
     if (this.onDataChangedCallback != null) {
@@ -233,7 +233,7 @@ class EditorComponentModel extends ComponentModel {
 
   void onServerDataChanged(BuildContext context) {
     if (context != null)
-      this.cellEditor?.cellEditorModel?.value =
+      this.cellEditor?.cellEditorModel?.cellEditorValue =
           _data.getColumnData(context, columnName);
     if (this.onServerDataChangedCallback != null) {
       this.onServerDataChangedCallback();

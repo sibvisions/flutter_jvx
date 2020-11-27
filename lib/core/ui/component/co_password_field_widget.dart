@@ -15,13 +15,16 @@ class CoPasswordFieldWidget extends ComponentWidget {
 
 class CoPasswordFieldWidgetState
     extends ComponentWidgetState<CoPasswordFieldWidget> {
+  TextEditingController textController = TextEditingController();
+  FocusNode focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
-    widget.componentModel.textController = TextEditingController();
-    widget.componentModel.focusNode = FocusNode();
-    widget.componentModel.focusNode.addListener(() {
-      if (!widget.componentModel.focusNode.hasFocus)
+    this.textController = TextEditingController();
+    this.focusNode = FocusNode();
+    this.focusNode.addListener(() {
+      if (!this.focusNode.hasFocus)
         widget.componentModel.onTextFieldEndEditing();
     });
   }
@@ -33,7 +36,7 @@ class CoPasswordFieldWidgetState
   }
 
   void onTextFieldEndEditing() {
-    widget.componentModel.focusNode.unfocus();
+    this.focusNode.unfocus();
     widget.componentModel.onTextFieldEndEditing();
   }
 
@@ -42,8 +45,8 @@ class CoPasswordFieldWidgetState
     String controllerValue = (widget.componentModel.text != null
         ? widget.componentModel.text.toString()
         : "");
-    widget.componentModel.textController.value =
-        widget.componentModel.textController.value.copyWith(
+    this.textController.value =
+        this.textController.value.copyWith(
             text: controllerValue,
             selection: TextSelection.collapsed(offset: controllerValue.length));
 
@@ -75,17 +78,16 @@ class CoPasswordFieldWidgetState
                         child: GestureDetector(
                           onTap: () {
                             if (widget.componentModel.value != null &&
-                                widget.componentModel.textController.text
+                                this.textController.text
                                     .isNotEmpty) {
-                              widget.componentModel.value = null;
+                              widget.componentModel.text = null;
                               widget.componentModel.valueChanged = true;
                               widget.componentModel.onTextFieldValueChanged(
-                                  widget.componentModel.value);
+                                  widget.componentModel.text);
                               widget.componentModel.valueChanged = false;
                             }
                           },
-                          child: widget
-                                  .componentModel.textController.text.isNotEmpty
+                          child: this.textController.text.isNotEmpty
                               ? Icon(Icons.clear,
                                   size: widget.componentModel.iconSize,
                                   color: Colors.grey[400])
@@ -101,13 +103,13 @@ class CoPasswordFieldWidgetState
                         ? widget.componentModel.foreground
                         : Colors.black)
                     : Colors.grey[700]),
-            controller: widget.componentModel.textController,
+            controller: this.textController,
             minLines: null,
             maxLines: 1,
             keyboardType: TextInputType.text,
             onEditingComplete: onTextFieldEndEditing,
             onChanged: onTextFieldValueChanged,
-            focusNode: widget.componentModel.focusNode,
+            focusNode: this.focusNode,
             readOnly: !widget.componentModel.enabled,
             obscureText: true),
       ),
@@ -116,8 +118,8 @@ class CoPasswordFieldWidgetState
 
   @override
   void dispose() {
-    widget.componentModel.textController.dispose();
-    widget.componentModel.focusNode.dispose();
+    this.textController.dispose();
+    this.focusNode.dispose();
     super.dispose();
   }
 }

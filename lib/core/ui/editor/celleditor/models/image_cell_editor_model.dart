@@ -25,8 +25,8 @@ class ImageCellEditorModel extends CellEditorModel {
   Size get minimumSize => Size(50, 50);
 
   @override
-  set value(_value) {
-    if (_value != super.value) {
+  set cellEditorValue(_value) {
+    if (_value != super.cellEditorValue) {
       if (_value != null && _value.toString().isNotEmpty) {
         defaultImage = null;
 
@@ -55,7 +55,7 @@ class ImageCellEditorModel extends CellEditorModel {
           }
         }
       }
-      super.value = _value;
+      super.cellEditorValue = _value;
     }
   }
 

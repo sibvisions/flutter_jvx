@@ -12,10 +12,8 @@ class TextCellEditorModel extends CellEditorModel {
   EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
 
-  TextEditingController textController = TextEditingController();
   bool password = false;
   bool valueChanged = false;
-  FocusNode focusNode = FocusNode();
 
   TextCellEditorModel(CellEditor cellEditor) : super(cellEditor) {
     this.multiLine = this

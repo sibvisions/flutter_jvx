@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:jvx_flutterclient/core/ui/editor/co_editor_widget.dart';
 
 import 'models/cell_editor_model.dart';
 

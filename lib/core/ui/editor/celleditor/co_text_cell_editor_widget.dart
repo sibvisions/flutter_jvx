@@ -16,6 +16,9 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
+  TextEditingController textController = TextEditingController();
+  FocusNode focusNode = FocusNode();
+
   void onTextFieldValueChanged(dynamic newValue) {
     if (widget.cellEditorModel.cellEditorValue != newValue) {
       widget.cellEditorModel.cellEditorValue = newValue;
@@ -24,11 +27,13 @@ class CoTextCellEditorWidgetState
   }
 
   void onTextFieldEndEditing() {
-    widget.cellEditorModel.focusNode.unfocus();
+    this.focusNode.unfocus();
 
     if (widget.cellEditorModel.valueChanged) {
-      widget.cellEditorModel.onValueChanged(context,
-          widget.cellEditorModel.cellEditorValue, widget.cellEditorModel.indexInTable);
+      widget.cellEditorModel.onValueChanged(
+          context,
+          widget.cellEditorModel.cellEditorValue,
+          widget.cellEditorModel.indexInTable);
       widget.cellEditorModel.valueChanged = false;
     } else if (super.onEndEditing != null) {
       super.onEndEditing();
@@ -38,14 +43,14 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
-    widget.cellEditorModel.focusNode.addListener(() {
-      if (!widget.cellEditorModel.focusNode.hasFocus) onTextFieldEndEditing();
+    this.focusNode.addListener(() {
+      if (!this.focusNode.hasFocus) onTextFieldEndEditing();
     });
   }
 
   @override
   void dispose() {
-    // widget.cellEditorModel.focusNode.dispose();
+    this.focusNode.dispose();
 
     super.dispose();
   }
@@ -55,8 +60,8 @@ class CoTextCellEditorWidgetState
     String controllerValue = (widget.cellEditorModel.cellEditorValue != null
         ? widget.cellEditorModel.cellEditorValue.toString()
         : "");
-    widget.cellEditorModel.textController.value =
-        widget.cellEditorModel.textController.value.copyWith(
+    this.textController.value =
+        this.textController.value.copyWith(
             text: controllerValue,
             selection: TextSelection.collapsed(offset: controllerValue.length));
 
@@ -93,17 +98,18 @@ class CoTextCellEditorWidgetState
                         padding: EdgeInsets.only(right: 8),
                         child: GestureDetector(
                           onTap: () {
-                            if (widget.cellEditorModel.cellEditorValue != null &&
-                                widget.cellEditorModel.textController.text
+                            if (widget.cellEditorModel.cellEditorValue !=
+                                    null &&
+                                this.textController.text
                                     .isNotEmpty) {
                               widget.cellEditorModel.cellEditorValue = null;
                               widget.cellEditorModel.valueChanged = true;
-                              super
-                                  .onValueChanged(context, widget.cellEditorModel.cellEditorValue);
+                              this.onValueChanged(context,
+                                  widget.cellEditorModel.cellEditorValue);
                               widget.cellEditorModel.valueChanged = false;
                             }
                           },
-                          child: widget.cellEditorModel.textController.text
+                          child: this.textController.text
                                   .isNotEmpty
                               ? Icon(Icons.clear,
                                   size: widget.cellEditorModel.iconSize,
@@ -121,8 +127,8 @@ class CoTextCellEditorWidgetState
                         ? widget.cellEditorModel.foreground
                         : Colors.black)
                     : Colors.grey[700]),
-            controller: widget.cellEditorModel.textController,
-            focusNode: widget.cellEditorModel.focusNode,
+            controller: this.textController,
+            focusNode: this.focusNode,
             minLines: null,
             maxLines: widget.cellEditorModel.multiLine ? null : 1,
             keyboardType: widget.cellEditorModel.multiLine

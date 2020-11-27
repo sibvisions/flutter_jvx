@@ -46,10 +46,10 @@ class NumberCellEditorModel extends CellEditorModel {
   }
 
   @override
-  set value(value) {
+  set cellEditorValue(value) {
     this.tempValue = _getFormattedValue();
     this.controller.text = this.tempValue;
-    super.value = value;
+    super.cellEditorValue = value;
   }
 
   NumberCellEditorModel(CellEditor cellEditor) : super(cellEditor) {
