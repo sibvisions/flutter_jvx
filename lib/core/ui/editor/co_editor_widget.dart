@@ -12,7 +12,9 @@ class CoEditorWidget extends ComponentWidget {
     Key key,
     this.cellEditor,
     EditorComponentModel componentModel,
-  }) : super(key: key, componentModel: componentModel);
+  }) : super(key: key, componentModel: componentModel) {
+    componentModel.cellEditor = this.cellEditor;
+  }
 
   State<StatefulWidget> createState() => CoEditorWidgetState();
 
@@ -29,13 +31,13 @@ class CoEditorWidgetState<T extends StatefulWidget>
   void onDataChanged() {}
 
   void onValueChanged(dynamic value, [int index]) {
-    setState(() { });
+    setState(() {});
   }
 
   void onFilter(dynamic value) {}
 
   void onServerDataChanged() {
-    setState(() { });
+    setState(() {});
   }
 
   void registerCallbacks() {
