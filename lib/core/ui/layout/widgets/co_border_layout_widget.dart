@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
+import '../../container/container_component_model.dart';
 import 'co_border_layout_constraint.dart';
 
 ///
@@ -507,6 +507,42 @@ class RenderBorderLayoutWidget extends RenderBox
     return new Size(
         width + insets.left + insets.right + insMargin.left + insMargin.right,
         height + insets.top + insets.bottom + insMargin.top + insMargin.bottom);
+  }
+
+  Size getPreferredSize(
+      RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
+    if (!comp.componentModel.isPreferredSizeSet) {
+      renderBox.layout(constraints, parentUsesSize: true);
+
+      if (!renderBox.hasSize) {
+        print("CoBorderLayout: RenderBox has no size after layout!");
+      }
+
+      if (renderBox.size.width == double.infinity ||
+          renderBox.size.height == double.infinity) {
+        print(
+            "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+      }
+      return renderBox.size;
+    } else {
+      return comp.componentModel.preferredSize;
+    }
+  }
+
+  Size getMinimumSize(
+      RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
+    if (!comp.componentModel.isMinimumSizeSet) {
+      renderBox.layout(constraints, parentUsesSize: true);
+
+      if (renderBox.size.width == double.infinity ||
+          renderBox.size.height == double.infinity) {
+        print(
+            "CoBorderLayout: getMinimumSize: Infinity height or width for BorderLayout!");
+      }
+      return renderBox.size;
+    } else {
+      return comp.componentModel.minimumSize;
+    }
   }
 }
 
