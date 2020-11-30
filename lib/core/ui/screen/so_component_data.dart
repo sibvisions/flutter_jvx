@@ -119,7 +119,8 @@ class SoComponentData {
 
   void updateDataProviderChanged(
       BuildContext context, DataproviderChanged pDataproviderChanged) {
-    _fetchData(context, pDataproviderChanged.reload, -1);
+    if (pDataproviderChanged.reload != null)
+      _fetchData(context, pDataproviderChanged.reload, -1);
     if (data != null && pDataproviderChanged.selectedRow != null)
       updateSelectedRow(context, pDataproviderChanged.selectedRow);
   }

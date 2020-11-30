@@ -51,6 +51,11 @@ class EditorComponentModel extends ComponentModel {
     _data?.unregisterDataChanged(onServerDataChanged);
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
+
+    if (this.cellEditor != null) {
+      this.cellEditor.cellEditorModel.cellEditorValue =
+          _data.getColumnData(null, columnName);
+    }
   }
 
   CoCellEditorWidget get cellEditor => _cellEditorWidget;

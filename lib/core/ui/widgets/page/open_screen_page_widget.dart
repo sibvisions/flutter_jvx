@@ -341,7 +341,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     return (groupCount > 1);
   }
 
-  _onWillPop() async {
+  Future<bool> _onWillPop() async {
     Navigation navigation = Navigation(
         clientId: widget.appState.clientId, componentId: rawComponentId);
 
