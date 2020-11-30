@@ -41,6 +41,11 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   }
 
   @override
+  void onServerDataChanged() {
+    setState(() { });
+  }
+
+  @override
   void registerCallbacks() {
     super.registerCallbacks();
 

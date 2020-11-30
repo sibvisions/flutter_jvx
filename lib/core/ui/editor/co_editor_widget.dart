@@ -36,9 +36,7 @@ class CoEditorWidgetState<T extends StatefulWidget>
 
   void onFilter(dynamic value) {}
 
-  void onServerDataChanged() {
-    setState(() {});
-  }
+  void onServerDataChanged() {}
 
   void registerCallbacks() {
     ((widget as CoEditorWidget).componentModel as EditorComponentModel)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
@@ -16,7 +17,7 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  FocusNode focusNode = FocusNode();
+  FocusNode focusNode;
   dynamic value;
 
   void onTextFieldValueChanged(dynamic newValue) {
@@ -41,6 +42,8 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
+
+    this.focusNode = FocusNode();
     this.focusNode.addListener(() {
       if (!this.focusNode.hasFocus) onTextFieldEndEditing();
     });

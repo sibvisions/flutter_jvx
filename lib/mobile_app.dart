@@ -32,7 +32,9 @@ class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => TextUtils.unfocusCurrentTextfield(context),
+      onTap: () {
+        TextUtils.unfocusCurrentTextfield(context);
+      },
       child: MaterialApp(
         onGenerateRoute: (RouteSettings settings) {
           List<String> params = settings.name.replaceAll('/?', '').split('&');
