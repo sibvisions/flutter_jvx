@@ -125,6 +125,7 @@ showSuccess(BuildContext context, String message, IconData icon) {
 
 showProgress(BuildContext context, [String loadingText]) {
   showDialog(
+      routeSettings: RouteSettings(name: '/loading'),
       context: context,
       barrierDismissible: false,
       builder: (context) => Opacity(

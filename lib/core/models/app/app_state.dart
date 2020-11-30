@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../features/custom_screen/handler/i_socket_handler.dart';
 import '../../ui/frames/i_app_frame.dart';
 import '../../ui/screen/i_screen_manager.dart';
@@ -10,7 +12,7 @@ class AppState {
   String password;
   String baseUrl;
   String appName;
-  String appMode ;
+  String appMode;
   String language;
   int picSize;
   String appVersion;

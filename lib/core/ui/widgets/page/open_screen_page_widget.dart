@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
@@ -123,6 +124,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   _blocListener() => BlocListener<ApiBloc, Response>(
         listener: (BuildContext context, Response state) {
+          if (state.request.requestType != RequestType.LOADING) {
+            hideProgress(context);
+          }
+
           if (state.hasError) {
             handleError(state, context);
           }
@@ -190,6 +195,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               }
             }
+          } else {
+            showProgress(context);
           }
         },
         child: WillPopScope(
