@@ -15,8 +15,8 @@ class CoPasswordFieldWidget extends ComponentWidget {
 
 class CoPasswordFieldWidgetState
     extends ComponentWidgetState<CoPasswordFieldWidget> {
-  TextEditingController textController = TextEditingController();
-  FocusNode focusNode = FocusNode();
+  TextEditingController textController;
+  FocusNode focusNode;
 
   @override
   void initState() {

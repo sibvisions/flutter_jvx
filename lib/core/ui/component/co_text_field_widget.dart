@@ -15,7 +15,7 @@ class CoTextFieldWidget extends ComponentWidget {
 }
 
 class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
-  TextEditingController textController = TextEditingController();
+  TextEditingController textController;
   FocusNode focusNode;
 
   @override

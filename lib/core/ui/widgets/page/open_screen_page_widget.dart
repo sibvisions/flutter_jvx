@@ -124,10 +124,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   _blocListener() => BlocListener<ApiBloc, Response>(
         listener: (BuildContext context, Response state) {
-          if (state.request.requestType != RequestType.LOADING) {
-            hideProgress(context);
-          }
-
           if (state.hasError) {
             handleError(state, context);
           }
@@ -195,8 +191,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               }
             }
-          } else {
-            showProgress(context);
           }
         },
         child: WillPopScope(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
@@ -16,8 +17,8 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  TextEditingController textController = TextEditingController();
-  FocusNode focusNode = FocusNode();
+  TextEditingController textController;
+  FocusNode focusNode;
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (widget.cellEditorModel.cellEditorValue != newValue) {
@@ -43,14 +44,20 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
+
+    this.textController = TextEditingController();
+
+    this.focusNode = FocusNode();
     this.focusNode.addListener(() {
-      if (!this.focusNode.hasFocus) onTextFieldEndEditing();
+      if (!this.focusNode.hasFocus)
+        onTextFieldEndEditing();
     });
   }
 
   @override
   void dispose() {
     this.focusNode.dispose();
+    this.textController.dispose();
 
     super.dispose();
   }
@@ -60,10 +67,9 @@ class CoTextCellEditorWidgetState
     String controllerValue = (widget.cellEditorModel.cellEditorValue != null
         ? widget.cellEditorModel.cellEditorValue.toString()
         : "");
-    this.textController.value =
-        this.textController.value.copyWith(
-            text: controllerValue,
-            selection: TextSelection.collapsed(offset: controllerValue.length));
+    this.textController.value = this.textController.value.copyWith(
+        text: controllerValue,
+        selection: TextSelection.collapsed(offset: controllerValue.length));
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -100,8 +106,7 @@ class CoTextCellEditorWidgetState
                           onTap: () {
                             if (widget.cellEditorModel.cellEditorValue !=
                                     null &&
-                                this.textController.text
-                                    .isNotEmpty) {
+                                this.textController.text.isNotEmpty) {
                               widget.cellEditorModel.cellEditorValue = null;
                               widget.cellEditorModel.valueChanged = true;
                               this.onValueChanged(context,
@@ -109,8 +114,7 @@ class CoTextCellEditorWidgetState
                               widget.cellEditorModel.valueChanged = false;
                             }
                           },
-                          child: this.textController.text
-                                  .isNotEmpty
+                          child: this.textController.text.isNotEmpty
                               ? Icon(Icons.clear,
                                   size: widget.cellEditorModel.iconSize,
                                   color: Colors.grey[400])

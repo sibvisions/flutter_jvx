@@ -12,7 +12,7 @@ class AppState {
   String password;
   String baseUrl;
   String appName;
-  String appMode;
+  String appMode = 'full';
   String language;
   int picSize;
   String appVersion;
