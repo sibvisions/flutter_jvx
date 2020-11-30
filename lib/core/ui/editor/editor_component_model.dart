@@ -142,8 +142,8 @@ class EditorComponentModel extends ComponentModel {
     cellEditorPlaceholder = changedComponent.getProperty<String>(
         ComponentProperty.CELL_EDITOR___PLACEHOLDER___, cellEditorPlaceholder);
 
-    print(
-        '-------------- PLACEHOLDER FOR ${cellEditor.runtimeType} : $cellEditorPlaceholder');
+    //print(
+    //    '-------------- PLACEHOLDER FOR ${cellEditor.runtimeType} : $cellEditorPlaceholder');
 
     cellEditorBackground = changedComponent.getProperty<HexColor>(
         ComponentProperty.CELL_EDITOR___BACKGROUND___, cellEditorBackground);
