@@ -17,7 +17,6 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  FocusNode focusNode;
   dynamic value;
 
   void onTextFieldValueChanged(dynamic newValue) {
@@ -28,7 +27,7 @@ class CoTextCellEditorWidgetState
   }
 
   void onTextFieldEndEditing() {
-    this.focusNode.unfocus();
+    widget.cellEditorModel.focusNode.unfocus();
 
     if (widget.cellEditorModel.valueChanged) {
       widget.cellEditorModel
@@ -43,16 +42,14 @@ class CoTextCellEditorWidgetState
   void initState() {
     super.initState();
 
-    this.focusNode = FocusNode();
-    this.focusNode.addListener(() {
-      if (!this.focusNode.hasFocus) onTextFieldEndEditing();
+    widget.cellEditorModel.focusNode = FocusNode();
+    widget.cellEditorModel.focusNode.addListener(() {
+      if (!widget.cellEditorModel.focusNode.hasFocus) onTextFieldEndEditing();
     });
   }
 
   @override
   void dispose() {
-    this.focusNode.dispose();
-
     super.dispose();
   }
 
@@ -121,7 +118,7 @@ class CoTextCellEditorWidgetState
                         : Colors.black)
                     : Colors.grey[700]),
             controller: widget.cellEditorModel.textController,
-            focusNode: this.focusNode,
+            focusNode: widget.cellEditorModel.focusNode,
             minLines: null,
             maxLines: widget.cellEditorModel.multiLine ? null : 1,
             keyboardType: widget.cellEditorModel.multiLine

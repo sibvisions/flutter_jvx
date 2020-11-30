@@ -15,6 +15,7 @@ class TextCellEditorModel extends CellEditorModel {
   bool password = false;
   bool valueChanged = false;
   TextEditingController textController = TextEditingController();
+  FocusNode focusNode = new FocusNode();
 
   TextCellEditorModel(CellEditor cellEditor) : super(cellEditor) {
     this.multiLine = this
