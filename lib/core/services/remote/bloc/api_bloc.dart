@@ -52,6 +52,7 @@ class ApiBloc extends Bloc<Request, Response> {
 
   Queue<Request> _requestQueue = Queue<Request>();
   int _seqNo = 0;
+  int lastYieldTime = 0;
 
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
       this.appState, this.manager)
@@ -79,6 +80,29 @@ class ApiBloc extends Bloc<Request, Response> {
           print(
               '******* Incoming RequestID: ${response.request.id}, Type: ${response.request.requestType.toString().replaceAll("RequestType.", "")} (${response.request.debugInfo})');
         }
+
+        int diff =
+            ((new DateTime.now().millisecondsSinceEpoch) - lastYieldTime);
+        if (diff < 100)
+          await Future.delayed(Duration(milliseconds: 100 - diff), () {});
+
+        /*if (response.request.requestType == RequestType.DAL_FETCH) {
+          print("ApiBloc yield with dal_fetch dataProvider " +
+              (response.request as FetchData).dataProvider +
+              " (" +
+              (new DateTime.now().millisecondsSinceEpoch).toString() +
+              ")");
+        }
+
+        print("lastYieldTime: " +
+            lastYieldTime.toString() +
+            "(" +
+            ((new DateTime.now().millisecondsSinceEpoch) - lastYieldTime)
+                .toString() +
+            ")");
+        */
+
+        lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
 
         yield response;
       }
