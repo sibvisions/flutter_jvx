@@ -1,8 +1,20 @@
+import 'package:jvx_flutterclient/core/ui/component/models/table_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/toggle_button_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/container/models/group_panel_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/container/models/split_panel_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
+
 import '../../models/api/component/changed_component.dart';
-import '../component/component_model.dart';
-import '../component/label_component_model.dart';
-import '../component/popup_menu/popup_button_component_model.dart';
-import '../component/popup_menu/popup_component_model.dart';
+import '../component/models/button_component_model.dart';
+import '../component/models/component_model.dart';
+import '../component/models/icon_component_model.dart';
+import '../component/models/label_component_model.dart';
+import '../component/models/selectable_component_model.dart';
+import '../component/models/text_area_component_model.dart';
+import '../component/models/text_field_component_model.dart';
+import '../component/popup_menu/models/menu_item_component_model.dart';
+import '../component/popup_menu/models/popup_menu_button_component_model.dart';
+import '../component/popup_menu/models/popup_menu_component_model.dart';
 import '../container/container_component_model.dart';
 import '../editor/editor_component_model.dart';
 
@@ -45,7 +57,7 @@ class ComponentModelManager {
 
     switch (changedComponent.className) {
       case 'Table':
-        componentModel = EditorComponentModel(changedComponent);
+        componentModel = TableComponentModel(changedComponent);
         break;
       case 'Editor':
         componentModel = EditorComponentModel(changedComponent);
@@ -56,7 +68,7 @@ class ComponentModelManager {
             componentId: changedComponent.id);
         break;
       case 'GroupPanel':
-        componentModel = ContainerComponentModel(
+        componentModel = GroupPanelComponentModel(
             changedComponent: changedComponent,
             componentId: changedComponent.id);
         break;
@@ -66,25 +78,53 @@ class ComponentModelManager {
             componentId: changedComponent.id);
         break;
       case 'TabsetPanel':
-        componentModel = ContainerComponentModel(
+        componentModel = TabsetPanelComponentModel(
             changedComponent: changedComponent,
             componentId: changedComponent.id);
         break;
       case 'SplitPanel':
-        componentModel = ContainerComponentModel(
+        componentModel = SplitPanelComponentModel(
           changedComponent: changedComponent,
           componentId: changedComponent.id,
         );
         break;
       case 'PopupMenu':
-        componentModel = PopupComponentModel(changedComponent);
+        componentModel = PopupMenuComponentModel(changedComponent);
         break;
       case 'PopupMenuButton':
-        componentModel = PopupButtonComponentModel(changedComponent);
+        componentModel = PopupMenuButtonComponentModel(changedComponent);
+        break;
+      case 'MenuItem':
+        componentModel = MenuItemComponentModel(changedComponent);
         break;
       case 'Label':
         componentModel = LabelComponentModel(changedComponent);
         break;
+      case 'Button':
+        componentModel = ButtonComponentModel(changedComponent);
+        break;
+      case 'CheckBox':
+        componentModel = SelectableComponentModel(changedComponent);
+        break;
+      case 'RadioButton':
+        componentModel = SelectableComponentModel(changedComponent);
+        break;
+      case 'Icon':
+        componentModel = IconComponentModel(changedComponent);
+        break;
+      case 'TextField':
+        componentModel = TextFieldComponentModel(changedComponent);
+        break;
+      case 'TextArea':
+        componentModel = TextAreaComponentModel(changedComponent);
+        break;
+      case 'PasswordField':
+        componentModel = TextFieldComponentModel(changedComponent);
+        break;
+      case 'ToggleButton':
+        componentModel = ToggleButtonComponentModel(changedComponent);
+        break;
+
       default:
         componentModel = ComponentModel(changedComponent);
         break;

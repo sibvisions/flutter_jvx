@@ -6,6 +6,11 @@ class ApplicationStyle extends Request {
   bool libraryImages = false;
   bool applicationImages = false;
 
+  @override
+  String get debugInfo {
+    return contentMode;
+  }
+
   ApplicationStyle(
       {this.name, this.contentMode, String clientId, RequestType requestType})
       : super(requestType, clientId);

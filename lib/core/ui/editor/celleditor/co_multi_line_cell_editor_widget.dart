@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/multi_line_cell_editor_model.dart';
+import 'models/referenced_cell_editor_model.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/response/data/data_book.dart';
-import 'cell_editor_model.dart';
 import 'co_referenced_cell_editor_widget.dart';
 
 class CoMultiLineCellEditorWidget extends CoReferencedCellEditorWidget {
-  CoMultiLineCellEditorWidget(
-      {CellEditor changedCellEditor, CellEditorModel cellEditorModel})
-      : super(
-            changedCellEditor: changedCellEditor,
-            cellEditorModel: cellEditorModel);
+  final ReferencedCellEditorModel cellEditorModel;
+  CoMultiLineCellEditorWidget({this.cellEditorModel})
+      : super(cellEditorModel: cellEditorModel);
 
   @override
   State<StatefulWidget> createState() => CoMultiLineCellEditorWidgetState();
@@ -18,12 +17,9 @@ class CoMultiLineCellEditorWidget extends CoReferencedCellEditorWidget {
 
 class CoMultiLineCellEditorWidgetState
     extends CoReferencedCellEditorWidgetState<CoMultiLineCellEditorWidget> {
-  List<ListTile> _items = <ListTile>[];
-  String selectedValue;
-
   void valueChanged(dynamic value) {
-    this.value = value;
-    this.onValueChanged(value);
+    widget.cellEditorModel.cellEditorValue = value;
+    this.onValueChanged(context, value);
   }
 
   List<ListTile> getItems(DataBook data) {
@@ -32,7 +28,8 @@ class CoMultiLineCellEditorWidgetState
 
     if (data != null && data.records.isNotEmpty) {
       data.columnNames.asMap().forEach((i, v) {
-        if (this.linkReference.referencedColumnNames.contains(v)) {
+        if (widget.cellEditorModel.linkReference.referencedColumnNames
+            .contains(v)) {
           visibleColumnsIndex.add(i);
         }
       });
@@ -52,10 +49,15 @@ class CoMultiLineCellEditorWidgetState
   ListTile getItem(String val, String text) {
     return ListTile(
       onTap: () {
-        selectedValue = val;
+        (widget.cellEditorModel as MultiLineCellEditorModel).selectedValue =
+            val;
         valueChanged(val);
       },
-      selected: selectedValue == val ? true : false,
+      selected:
+          (widget.cellEditorModel as MultiLineCellEditorModel).selectedValue ==
+                  val
+              ? true
+              : false,
       title: Text(text),
     );
   }
@@ -67,15 +69,17 @@ class CoMultiLineCellEditorWidgetState
         data.selectedRow < data.records.length &&
         data.columnNames != null &&
         data.columnNames.length > 0 &&
-        this.linkReference != null &&
-        this.linkReference.referencedColumnNames != null &&
-        this.linkReference.referencedColumnNames.length > 0) {
+        widget.cellEditorModel.linkReference != null &&
+        widget.cellEditorModel.linkReference.referencedColumnNames != null &&
+        widget.cellEditorModel.linkReference.referencedColumnNames.length > 0) {
       int columnIndex = -1;
       data.columnNames.asMap().forEach((i, c) {
-        if (this.linkReference.referencedColumnNames[0] == c) columnIndex = i;
+        if (widget.cellEditorModel.linkReference.referencedColumnNames[0] == c)
+          columnIndex = i;
       });
       if (columnIndex >= 0) {
-        value = data.records[data.selectedRow][columnIndex];
+        widget.cellEditorModel.cellEditorValue =
+            data.records[data.selectedRow][columnIndex];
       }
     }
 
@@ -83,28 +87,28 @@ class CoMultiLineCellEditorWidgetState
   }
 
   void setData(DataBook data) {
-    this._items = getItems(data);
+    (widget.cellEditorModel as MultiLineCellEditorModel).items = getItems(data);
   }
 
   @override
   Widget build(BuildContext context) {
-    setEditorProperties(context);
-
     return Container(
       decoration: BoxDecoration(
-          color: background != null
-              ? background
-              : Colors.white
-                  .withOpacity(this.appState.applicationStyle?.controlsOpacity),
-          borderRadius: BorderRadius.circular(
-              this.appState.applicationStyle?.cornerRadiusEditors),
-          border: borderVisible
+          color: widget.cellEditorModel.background != null
+              ? widget.cellEditorModel.background
+              : Colors.white.withOpacity(widget
+                  .cellEditorModel.appState.applicationStyle?.controlsOpacity),
+          borderRadius: BorderRadius.circular(widget
+              .cellEditorModel.appState.applicationStyle?.cornerRadiusEditors),
+          border: widget.cellEditorModel.borderVisible
               ? Border.all(color: Theme.of(context).primaryColor)
               : null),
       child: ListView.builder(
-        itemCount: _items.length,
+        itemCount:
+            (widget.cellEditorModel as MultiLineCellEditorModel).items.length,
         itemBuilder: (context, index) {
-          return _items[index];
+          return (widget.cellEditorModel as MultiLineCellEditorModel)
+              .items[index];
         },
       ),
     );

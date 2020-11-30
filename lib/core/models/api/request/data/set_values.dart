@@ -7,6 +7,15 @@ class SetValues extends Request {
   List<dynamic> values;
   Filter filter;
 
+  @override
+  String get debugInfo {
+    return dataProvider +
+        ", ColumnNames: " +
+        columnNames.toString() +
+        ", Values: " +
+        values.toString();
+  }
+
   SetValues(this.dataProvider, this.columnNames, this.values, String clientId,
       [this.filter])
       : super(RequestType.DAL_SET_VALUE, clientId);

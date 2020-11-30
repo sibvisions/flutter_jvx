@@ -5,6 +5,11 @@ class OpenScreen extends Request {
   bool manualClose;
   SoAction action;
 
+  @override
+  String get debugInfo {
+    return action.componentId;
+  }
+
   OpenScreen(
       {this.manualClose, this.action, String clientId, RequestType requestType})
       : super(requestType, clientId);

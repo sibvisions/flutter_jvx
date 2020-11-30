@@ -67,5 +67,6 @@ class AppState {
     this.screenManager = state.screenManager;
     this.menuCurrentPageIndex = state.menuCurrentPageIndex;
     this.package = state.package;
+    this.currentScreenComponentId = state.currentScreenComponentId;
   }
 }

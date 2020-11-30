@@ -27,7 +27,7 @@ class SoTableColumnCalculator {
 
     // get preferred header widths
 
-    if (columnLabels.length > 0) {
+    if (columnLabels != null && columnLabels.length > 0) {
       columnLabels.forEach((l) {
         double textWidth = TextUtils.getTextWidth(l, textStyle) + headerPadding;
         columns.add(SoTableColumn(textWidth + headerPadding, defaultMinWidh));

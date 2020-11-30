@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/table_component_model.dart';
 
-import '../../../models/api/response/data/data_book.dart';
 import '../../../utils/translation/app_localizations.dart';
 import '../../component/co_table_widget.dart';
 import '../../editor/editor_component_model.dart';
@@ -12,7 +12,7 @@ import '../../screen/so_component_data.dart';
 
 class LazyDropdown extends StatefulWidget {
   final allowNull;
-  final ValueChanged<dynamic> onSave;
+  final ValueChanged<MapEntry<int, dynamic>> onSave;
   final VoidCallback onCancel;
   final VoidCallback onScrollToEnd;
   final ValueChanged<String> onFilter;
@@ -49,7 +49,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   dynamic lastChangedFilter;
   CoTableWidget table;
 
-  void updateData() {
+  void updateData(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (mounted) this.setState(() {});
     });
@@ -74,15 +74,16 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
   void _onDelete() {
     Navigator.of(this.widget.context).pop();
-    if (this.widget.onSave != null) this.widget.onSave(null);
+    if (this.widget.onSave != null)
+      this.widget.onSave(new MapEntry<int, dynamic>(-1, null));
   }
 
   void _onRowTapped(int index) {
     Navigator.of(this.widget.context).pop();
     if (this.widget.onSave != null) {
       dynamic value = widget.data.data.getRow(index);
-      this.widget.onSave(value);
-      this.updateData();
+      this.widget.onSave(new MapEntry<int, dynamic>(index, value));
+      this.updateData(context);
     }
   }
 
@@ -157,13 +158,15 @@ class _LazyDropdownState extends State<LazyDropdown> {
     widget.data.registerDataChanged(updateData);
     _scrollController.addListener(_scrollListener);
 
-    EditorComponentModel editorComponentModel =
-        EditorComponentModel.withoutChangedComponent(false, false, true,
-            widget.displayColumnNames, _onRowTapped, null, null, null, null);
+    TableComponentModel tableComponentModel =
+        TableComponentModel.withoutChangedComponent(null, null, _onRowTapped,
+            false, false, true, widget.displayColumnNames, null);
+
+    tableComponentModel.data = widget.data;
 
     table = CoTableWidget(
-      data: widget.data,
-      componentModel: editorComponentModel,
+      componentModel: tableComponentModel,
+      customDataOperationContext: widget.context,
     );
   }
 
@@ -177,9 +180,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
-    int itemCount = 0;
-    DataBook data = widget.data.data;
-    if (data != null && data.records != null) itemCount = data.records.length;
 
     return Dialog(
         insetPadding: EdgeInsets.fromLTRB(25, 25, 25, 25),
@@ -199,7 +199,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(5.0),
                             topRight: Radius.circular(5.0))),
-                    // color: UIData.ui_kit_color_2,
                     child: Row(
                       children: <Widget>[
                         Padding(
@@ -238,11 +237,6 @@ class _LazyDropdownState extends State<LazyDropdown> {
                   child: Padding(
                       padding:
                           const EdgeInsets.only(left: 16, right: 16, top: 10),
-                      // child: ListView.builder(
-                      //   controller: _scrollController,
-                      //   itemCount: itemCount,
-                      //   itemBuilder: itemBuilder,
-                      // ),
                       child: table),
                 ),
                 ButtonBar(

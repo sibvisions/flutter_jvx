@@ -20,6 +20,10 @@ enum ResponseObjectType {
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {
+  if (responseObjectType == 'message.error' || responseObjectType == 'message.information') {
+    return ResponseObjectType.ERROR;
+  }
+
   try {
     responseObjectType =
         'ResponseObjectType.${responseObjectType.toUpperCase()}';

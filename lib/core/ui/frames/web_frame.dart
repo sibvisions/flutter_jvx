@@ -70,7 +70,7 @@ class _WebFrameState extends State<WebFrame> {
       IScreen screen = appState.screenManager
           .getScreen(menuItem.componentId, templateName: menuItem.text);
 
-      appState.appFrame.setScreen(screen);
+      appState.appFrame.setScreen(screen.getWidget(context));
 
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => appState.appFrame.getWidget()));

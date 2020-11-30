@@ -20,6 +20,8 @@ import '../../utils/app/text_utils.dart';
 import '../widgets/util/app_state_provider.dart';
 import 'so_data_screen.dart';
 
+typedef ContextCallback = void Function(BuildContext context);
+
 class SoComponentData {
   String dataProvider;
   bool isFetchingMetaData = false;
@@ -29,7 +31,7 @@ class SoComponentData {
   DataBookMetaData metaData;
   SoDataScreen soDataScreen;
 
-  List<VoidCallback> _onDataChanged = [];
+  List<ContextCallback> _onDataChanged = [];
   List<VoidCallback> _onMetaDataChanged = [];
   List<ValueChanged<dynamic>> _onSelectedRowChanged = [];
 
@@ -66,7 +68,8 @@ class SoComponentData {
     return null;
   }
 
-  void updateData(DataBook pData, [bool overrideData = false]) {
+  void updateData(BuildContext context, DataBook pData,
+      [bool overrideData = false]) {
     //if (data==null || data.isAllFetched || overrideData) {
     if (data == null || overrideData) {
       if (data != null &&
@@ -99,9 +102,9 @@ class SoComponentData {
       if (data.selectedRow != pData.selectedRow)
         _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
       data.selectedRow = pData.selectedRow;
-    } 
+    }
     // else {
-    //   data.records.addAll(pData.records);
+    //   data.records.addAll(pData.records);1
     //   if (data.selectedRow != pData.selectedRow)
     //     _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
     //   data.selectedRow = pData.selectedRow;
@@ -111,24 +114,24 @@ class SoComponentData {
     if (data.selectedRow == null) data.selectedRow = 0;
 
     isFetching = false;
-    _onDataChanged.forEach((d) => d());
+    _onDataChanged.forEach((d) => d(context));
   }
 
   void updateDataProviderChanged(
       BuildContext context, DataproviderChanged pDataproviderChanged) {
     _fetchData(context, pDataproviderChanged.reload, -1);
     if (data != null && pDataproviderChanged.selectedRow != null)
-      updateSelectedRow(pDataproviderChanged.selectedRow);
+      updateSelectedRow(context, pDataproviderChanged.selectedRow);
   }
 
-  void updateSelectedRow(int selectedRow,
+  void updateSelectedRow(BuildContext context, int selectedRow,
       [bool raiseSelectedRowChangeEvent = false]) {
     if (data != null) {
       if (data.selectedRow == null || data.selectedRow != selectedRow) {
         data.selectedRow = selectedRow;
         if (raiseSelectedRowChangeEvent)
           _onSelectedRowChanged.forEach((d) => d(selectedRow));
-        _onDataChanged.forEach((d) => d());
+        _onDataChanged.forEach((d) => d(context));
       }
     } else {
       print(
@@ -146,7 +149,7 @@ class SoComponentData {
   dynamic getColumnData(BuildContext context, String columnName) {
     if (data != null && data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
-    } else {
+    } else if (context != null) {
       this._fetchData(context, null, -1);
     }
 
@@ -168,7 +171,7 @@ class SoComponentData {
   }
 
   void selectRecord(BuildContext context, int index, [bool fetch = false]) {
-    if (index < data.records.length) {
+    if (index != null && index < data.records.length) {
       SelectRecord select = getSelectRecordRequest(context, index, fetch);
 
       if (fetch != null) select.fetch = fetch;
@@ -339,16 +342,17 @@ class SoComponentData {
     _onSelectedRowChanged.remove(callback);
   }
 
-  void registerDataChanged(VoidCallback callback) {
-    _onDataChanged.add(callback);
+  void registerDataChanged(ContextCallback callback) {
+    if (!_onDataChanged.contains(callback)) _onDataChanged.add(callback);
   }
 
-  void unregisterDataChanged(VoidCallback callback) {
+  void unregisterDataChanged(ContextCallback callback) {
     _onDataChanged.remove(callback);
   }
 
   void registerMetaDataChanged(VoidCallback callback) {
-    _onMetaDataChanged.add(callback);
+    if (!_onMetaDataChanged.contains(callback))
+      _onMetaDataChanged.add(callback);
   }
 
   void unregisterMetaDataChanged(VoidCallback callback) {

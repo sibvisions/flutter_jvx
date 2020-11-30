@@ -18,6 +18,11 @@ class Startup extends Request {
   final DeviceInfo deviceInfo;
   final String deviceMode;
 
+  @override
+  String get debugInfo {
+    return applicationName + ", Url: " + url + ", appMode: " + appMode;
+  }
+
   Startup(
       {RequestType requestType,
       String clientId,

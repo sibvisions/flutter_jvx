@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
@@ -19,47 +20,23 @@ class CoTabsetPanelWidget extends CoContainerWidget {
 
 class CoTabsetPanelWidgetState extends CoContainerWidgetState
     with TickerProviderStateMixin {
-  bool eventTabClosed;
-  bool eventTabActivated;
-  bool eventTabMoved;
-
-  List<bool> _isEnabled = <bool>[];
-  List<bool> _isClosable = <bool>[];
-
-  TabController tabController;
-  List<Tab> tabs = <Tab>[];
-  List<int> pendingDeletes = <int>[];
-
-  @override
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-    eventTabClosed =
-        changedComponent.getProperty<bool>(ComponentProperty.EVENT_TAB_CLOSED);
-    eventTabActivated = changedComponent
-        .getProperty<bool>(ComponentProperty.EVENT_TAB_ACTIVATED);
-    eventTabMoved =
-        changedComponent.getProperty<bool>(ComponentProperty.EVENT_TAB_MOVED);
-    int indx =
-        changedComponent.getProperty<int>(ComponentProperty.SELECTED_INDEX);
-    setState(() {
-      tabController.animateTo(indx != null && indx >= 0 ? indx : 0);
-    });
-  }
-
   List<Tab> createTabs() {
-    List<Tab> tablist = <Tab>[];
-    _isEnabled = <bool>[];
-    _isClosable = <bool>[];
+    final TabsetPanelComponentModel componentModel =
+        widget.componentModel as TabsetPanelComponentModel;
 
-    components.forEach((comp) {
+    List<Tab> tablist = <Tab>[];
+    componentModel.isEnabled = <bool>[];
+    componentModel.isClosable = <bool>[];
+
+    componentModel.components.forEach((comp) {
       List splittedConstr = comp.componentModel.constraints?.split(';');
       bool enabled = (splittedConstr[0]?.toLowerCase() == 'true');
       bool closable = (splittedConstr[1]?.toLowerCase() == 'true');
       String text = splittedConstr[2];
       String img = splittedConstr.length >= 4 ? splittedConstr[3] : '';
 
-      _isEnabled.add(enabled);
-      _isClosable.add(closable);
+      componentModel.isEnabled.add(enabled);
+      componentModel.isClosable.add(closable);
 
       double iconSize = 15;
 
@@ -96,7 +73,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
                           size: 20,
                         ),
                         onTap: () {
-                          closeTab(components.indexOf(comp));
+                          closeTab(componentModel.components.indexOf(comp));
                         },
                       ),
                     ],
@@ -111,44 +88,55 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
   }
 
   void _initTabController(int index) {
-    tabs = createTabs();
-    tabController =
-        TabController(initialIndex: index, length: tabs.length, vsync: this)
+    (widget.componentModel as TabsetPanelComponentModel).tabs = createTabs();
+    (widget.componentModel as TabsetPanelComponentModel).tabController =
+        TabController(
+            initialIndex: index,
+            length: (widget.componentModel as TabsetPanelComponentModel)
+                .tabs
+                .length,
+            vsync: this)
           ..addListener(_handleTabAnimation);
   }
 
   void _handleTabAnimation() {
-    if (!tabController.indexIsChanging) {
-      if (pendingDeletes.isNotEmpty) {
+    final TabsetPanelComponentModel componentModel =
+        widget.componentModel as TabsetPanelComponentModel;
+
+    if (!componentModel.tabController.indexIsChanging) {
+      if (componentModel.pendingDeletes.isNotEmpty) {
         setState(() {
-          for (int index in pendingDeletes) {
-            this.components.removeAt(index);
+          for (int index in componentModel.pendingDeletes) {
+            componentModel.components.removeAt(index);
             BlocProvider.of<ApiBloc>(context).add(TabClose(
-                clientId: this.appState.clientId,
-                componentId: this.name,
+                clientId: componentModel.appState.clientId,
+                componentId: widget.componentModel.name,
                 index: index));
           }
           _initTabController(0);
-          pendingDeletes.clear();
+          componentModel.pendingDeletes.clear();
         });
       }
 
-      if (!_isEnabled[tabController.index]) {
-        tabController.animateTo(tabController.previousIndex);
+      if (!componentModel.isEnabled[componentModel.tabController.index]) {
+        componentModel.tabController
+            .animateTo(componentModel.tabController.previousIndex);
       } else {
         BlocProvider.of<ApiBloc>(context).add(TabSelect(
-            clientId: this.appState.clientId,
-            componentId: this.name,
-            index: tabController.index));
+            clientId: componentModel.appState.clientId,
+            componentId: widget.componentModel.name,
+            index: componentModel.tabController.index));
       }
     }
   }
 
   void closeTab(int index) {
+    final TabsetPanelComponentModel componentModel = widget.componentModel;
+
     if (index > 0) {
       setState(() {
-        pendingDeletes.add(index);
-        tabController.animateTo(0);
+        componentModel.pendingDeletes.add(index);
+        componentModel.tabController.animateTo(0);
       });
     }
   }
@@ -161,7 +149,9 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
 
   @override
   void dispose() {
-    tabController.dispose();
+    (widget.componentModel as TabsetPanelComponentModel)
+        .tabController
+        .dispose();
     super.dispose();
   }
 
@@ -170,9 +160,17 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
     return Scaffold(
       appBar: TabBar(
           isScrollable: true,
-          controller: tabController,
-          tabs: tabs.map((tab) => tab).toList()),
-      body: TabBarView(controller: tabController, children: this.components),
+          controller: (widget.componentModel as TabsetPanelComponentModel)
+              .tabController,
+          tabs: (widget.componentModel as TabsetPanelComponentModel)
+              .tabs
+              .map((tab) => tab)
+              .toList()),
+      body: TabBarView(
+          controller: (widget.componentModel as TabsetPanelComponentModel)
+              .tabController,
+          children:
+              (widget.componentModel as TabsetPanelComponentModel).components),
     );
   }
 }

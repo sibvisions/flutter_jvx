@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/api/component/changed_component.dart';
-import '../../../models/api/component/component_properties.dart';
-import '../component_model.dart';
 import '../component_widget.dart';
+import 'models/menu_item_component_model.dart';
 
 class CoMenuItemWidget extends ComponentWidget {
-  CoMenuItemWidget({Key key, ComponentModel componentModel})
+  final MenuItemComponentModel componentModel;
+  CoMenuItemWidget({Key key, this.componentModel})
       : super(key: key, componentModel: componentModel);
 
   @override
@@ -14,25 +13,11 @@ class CoMenuItemWidget extends ComponentWidget {
 }
 
 class CoMenuItemWidgetState extends ComponentWidgetState<CoMenuItemWidget> {
-  String text;
-  bool eventAction = false;
-
-  @override
-  void updateProperties(ChangedComponent changedProperties) {
-    super.updateProperties(changedProperties);
-    text = changedProperties.getProperty<String>(ComponentProperty.TEXT, text);
-    eventAction = changedProperties.getProperty<bool>(
-        ComponentProperty.EVENT_ACTION, eventAction);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopupMenuItem<String>(
-        value: name, child: Text(text), enabled: enabled);
+        value: widget.componentModel.name,
+        child: Text(widget.componentModel.text),
+        enabled: widget.componentModel.enabled);
   }
 }

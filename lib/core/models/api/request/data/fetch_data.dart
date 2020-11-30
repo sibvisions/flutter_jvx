@@ -7,6 +7,15 @@ class FetchData extends Request {
   int rowCount = -1;
   bool includeMetaData = false;
 
+  @override
+  String get debugInfo {
+    return dataProvider +
+        ", From: " +
+        fromRow.toString() +
+        ", rowCount: " +
+        rowCount.toString();
+  }
+
   FetchData(this.dataProvider, String clientId,
       [this.columnNames, this.fromRow, this.rowCount, this.includeMetaData])
       : super(RequestType.DAL_FETCH, clientId);
