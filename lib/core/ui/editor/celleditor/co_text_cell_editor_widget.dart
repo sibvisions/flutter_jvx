@@ -16,12 +16,12 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
-  TextEditingController textController = TextEditingController();
   FocusNode focusNode = FocusNode();
+  dynamic value;
 
   void onTextFieldValueChanged(dynamic newValue) {
-    if (widget.cellEditorModel.cellEditorValue != newValue) {
-      widget.cellEditorModel.cellEditorValue = newValue;
+    if (value != newValue) {
+      value = newValue;
       widget.cellEditorModel.valueChanged = true;
     }
   }
@@ -30,10 +30,8 @@ class CoTextCellEditorWidgetState
     this.focusNode.unfocus();
 
     if (widget.cellEditorModel.valueChanged) {
-      widget.cellEditorModel.onValueChanged(
-          context,
-          widget.cellEditorModel.cellEditorValue,
-          widget.cellEditorModel.indexInTable);
+      widget.cellEditorModel
+          .onValueChanged(context, value, widget.cellEditorModel.indexInTable);
       widget.cellEditorModel.valueChanged = false;
     } else if (super.onEndEditing != null) {
       super.onEndEditing();
@@ -57,14 +55,6 @@ class CoTextCellEditorWidgetState
 
   @override
   Widget build(BuildContext context) {
-    String controllerValue = (widget.cellEditorModel.cellEditorValue != null
-        ? widget.cellEditorModel.cellEditorValue.toString()
-        : "");
-    this.textController.value =
-        this.textController.value.copyWith(
-            text: controllerValue,
-            selection: TextSelection.collapsed(offset: controllerValue.length));
-
     return DecoratedBox(
       decoration: BoxDecoration(
           color: widget.cellEditorModel.background != null
@@ -100,7 +90,7 @@ class CoTextCellEditorWidgetState
                           onTap: () {
                             if (widget.cellEditorModel.cellEditorValue !=
                                     null &&
-                                this.textController.text
+                                widget.cellEditorModel.textController.text
                                     .isNotEmpty) {
                               widget.cellEditorModel.cellEditorValue = null;
                               widget.cellEditorModel.valueChanged = true;
@@ -109,7 +99,7 @@ class CoTextCellEditorWidgetState
                               widget.cellEditorModel.valueChanged = false;
                             }
                           },
-                          child: this.textController.text
+                          child: widget.cellEditorModel.textController.text
                                   .isNotEmpty
                               ? Icon(Icons.clear,
                                   size: widget.cellEditorModel.iconSize,
@@ -127,7 +117,7 @@ class CoTextCellEditorWidgetState
                         ? widget.cellEditorModel.foreground
                         : Colors.black)
                     : Colors.grey[700]),
-            controller: this.textController,
+            controller: widget.cellEditorModel.textController,
             focusNode: this.focusNode,
             minLines: null,
             maxLines: widget.cellEditorModel.multiLine ? null : 1,
