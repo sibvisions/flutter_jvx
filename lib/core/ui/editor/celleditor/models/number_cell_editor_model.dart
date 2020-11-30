@@ -47,8 +47,8 @@ class NumberCellEditorModel extends CellEditorModel {
 
   @override
   set cellEditorValue(value) {
-    this.tempValue = _getFormattedValue();
-    this.controller.text = this.tempValue;
+    this.tempValue = _getFormattedValue(value);
+    this.controller.value = TextEditingValue(text: this.tempValue ?? '');
     super.cellEditorValue = value;
   }
 
@@ -69,15 +69,15 @@ class NumberCellEditorModel extends CellEditorModel {
     textInputType = this.getKeyboardType();
   }
 
-  String _getFormattedValue() {
-    if (cellEditorValue != null &&
-        (cellEditorValue is int || cellEditorValue is double)) {
+  String _getFormattedValue(dynamic value) {
+    if (value != null &&
+        (value is int || value is double)) {
       if (numberFormat != null && numberFormat.isNotEmpty) {
         intl.NumberFormat format = intl.NumberFormat(numberFormat);
-        return format.format(cellEditorValue);
+        return format.format(value);
       }
 
-      return cellEditorValue;
+      return value;
     }
 
     return "";

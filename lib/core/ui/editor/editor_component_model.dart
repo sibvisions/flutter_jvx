@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
+import 'package:jvx_flutterclient/core/ui/component/co_table_widget.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_number_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_referenced_cell_editor_widget.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_text_cell_editor_widget.dart';
@@ -52,7 +53,7 @@ class EditorComponentModel extends ComponentModel {
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
 
-    if (this.cellEditor != null) {
+    if (this.cellEditor != null && !this.cellEditor.cellEditorModel.isTableView){
       this.cellEditor.cellEditorModel.cellEditorValue =
           _data.getColumnData(null, columnName);
     }
