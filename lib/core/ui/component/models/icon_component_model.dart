@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
 import 'component_model.dart';
@@ -16,8 +18,9 @@ class IconComponentModel extends ComponentModel {
   IconComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
+    super.updateProperties(context, changedComponent);
 
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction);

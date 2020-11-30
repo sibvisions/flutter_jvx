@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
 
-import '../../../models/api/editor/cell_editor.dart';
-import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
 import 'formatter/numeric_text_formatter.dart';
 import 'models/number_cell_editor_model.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
-  CoNumberCellEditorWidget(
-      {Key key,
-      CellEditor changedCellEditor,
-      NumberCellEditorModel cellEditorModel})
-      : super(
-            key: key,
-            changedCellEditor: changedCellEditor,
-            cellEditorModel: cellEditorModel);
+  CoNumberCellEditorWidget({Key key, NumberCellEditorModel cellEditorModel})
+      : super(key: key, cellEditorModel: cellEditorModel);
 
   @override
   State<StatefulWidget> createState() => CoNumberCellEditorWidgetState();
@@ -25,128 +16,81 @@ class CoNumberCellEditorWidget extends CoCellEditorWidget {
 
 class CoNumberCellEditorWidgetState
     extends CoCellEditorWidgetState<CoNumberCellEditorWidget> {
-  TextEditingController _controller = TextEditingController();
-  bool valueChanged = false;
-  String numberFormat;
-  List<TextInputFormatter> textInputFormatter;
-  TextInputType textInputType;
-  String tempValue;
-  FocusNode node = FocusNode();
-
-  @override
-  set value(dynamic pValue) {
-    super.value = pValue;
-    this.tempValue = _getFormattedValue();
-    _controller.text = this.tempValue;
-  }
-
-  String _getFormattedValue() {
-    if (this.value != null && (this.value is int || this.value is double)) {
-      if (numberFormat != null && numberFormat.isNotEmpty) {
-        intl.NumberFormat format = intl.NumberFormat(numberFormat);
-        return format.format(this.value);
-      }
-
-      return this.value;
-    }
-
-    return "";
-  }
-
   void onTextFieldValueChanged(dynamic newValue) {
-    this.tempValue = newValue;
-    this.valueChanged = true;
+    (widget.cellEditorModel as NumberCellEditorModel).tempValue = newValue;
+    (widget.cellEditorModel as NumberCellEditorModel).valueChanged = true;
   }
 
   void onTextFieldEndEditing() {
-    node.unfocus();
+    NumberCellEditorModel cellEditorModel = widget.cellEditorModel;
 
-    if (this.valueChanged) {
-      intl.NumberFormat format = intl.NumberFormat(numberFormat);
-      if (tempValue.endsWith(format.symbols.DECIMAL_SEP))
-        tempValue = tempValue.substring(0, tempValue.length - 1);
-      this.value =
-          NumericTextFormatter.convertToNumber(tempValue, numberFormat, format);
-      super.onValueChanged(this.value);
-      this.valueChanged = false;
+    cellEditorModel.node.unfocus();
+
+    if (cellEditorModel.valueChanged) {
+      intl.NumberFormat format =
+          intl.NumberFormat(cellEditorModel.numberFormat);
+      if (cellEditorModel.tempValue.endsWith(format.symbols.DECIMAL_SEP))
+        cellEditorModel.tempValue = cellEditorModel.tempValue
+            .substring(0, cellEditorModel.tempValue.length - 1);
+      cellEditorModel.cellEditorValue = NumericTextFormatter.convertToNumber(
+          cellEditorModel.tempValue, cellEditorModel.numberFormat, format);
+      super.onValueChanged(context, cellEditorModel.cellEditorValue);
+      cellEditorModel.valueChanged = false;
     }
-  }
-
-  List<TextInputFormatter> getImputFormatter() {
-    List<TextInputFormatter> formatter = List<TextInputFormatter>();
-    if (numberFormat != null && numberFormat.isNotEmpty)
-      formatter.add(NumericTextFormatter(numberFormat)); //globals.language));
-
-    return formatter;
-  }
-
-  TextInputType getKeyboardType() {
-    if (numberFormat != null && numberFormat.isNotEmpty) {
-      if (!numberFormat.contains(".")) return TextInputType.number;
-    }
-
-    return TextInputType.numberWithOptions(decimal: true);
   }
 
   @override
   void initState() {
     super.initState();
-    numberFormat = widget.changedCellEditor
-        .getProperty<String>(CellEditorProperty.NUMBER_FORMAT);
 
-    /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
-    if (numberFormat != null) {
-      List<String> numberFormatParts = numberFormat.split(".");
-      if (numberFormatParts.length > 1 && numberFormatParts[1].length > 14) {
-        numberFormat =
-            numberFormatParts[0] + "." + numberFormatParts[1].substring(0, 14);
-      }
-    }
-
-    textInputFormatter = this.getImputFormatter();
-    textInputType = this.getKeyboardType();
-
-    this.node.addListener(() {
-      if (!node.hasFocus) onTextFieldEndEditing();
+    (widget.cellEditorModel as NumberCellEditorModel).node.addListener(() {
+      if (!(widget.cellEditorModel as NumberCellEditorModel).node.hasFocus)
+        onTextFieldEndEditing();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    setEditorProperties(context);
+    NumberCellEditorModel cellEditorModel = widget.cellEditorModel;
+
     TextDirection direction = TextDirection.ltr;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: this.background != null
-              ? this.background
-              : this.appState.applicationStyle != null
-                  ? Colors.white.withOpacity(
-                      this.appState.applicationStyle?.controlsOpacity)
+          color: cellEditorModel.background != null
+              ? cellEditorModel.background
+              : cellEditorModel.appState.applicationStyle != null
+                  ? Colors.white.withOpacity(cellEditorModel
+                      .appState.applicationStyle?.controlsOpacity)
                   : null,
           borderRadius: BorderRadius.circular(
-              this.appState.applicationStyle?.cornerRadiusEditors),
-          border: borderVisible && this.editable != null && this.editable
+              cellEditorModel.appState.applicationStyle?.cornerRadiusEditors),
+          border: cellEditorModel.borderVisible &&
+                  cellEditorModel.editable != null &&
+                  cellEditorModel.editable
               ? Border.all(color: Theme.of(context).primaryColor)
               : Border.all(color: Colors.grey)),
       child: Container(
         width: 100,
         child: TextFormField(
-          textAlign: SoTextAlign.getTextAlignFromInt(this.horizontalAlignment),
+          textAlign: SoTextAlign.getTextAlignFromInt(
+              cellEditorModel.horizontalAlignment),
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(12),
               border: InputBorder.none,
-              hintText: placeholderVisible ? placeholder : null,
-              suffixIcon: this.editable
+              hintText: cellEditorModel.placeholderVisible
+                  ? cellEditorModel.placeholder
+                  : null,
+              suffixIcon: cellEditorModel.editable
                   ? Padding(
                       padding: EdgeInsets.only(right: 8),
                       child: GestureDetector(
                         onTap: () {
-                          if (this.value != null) {
-                            this.value = null;
-                            this.valueChanged = true;
-                            super.onValueChanged(this.value);
-                            this.valueChanged = false;
+                          if (cellEditorModel.cellEditorValue != null) {
+                            cellEditorModel.cellEditorValue = null;
+                            cellEditorModel.valueChanged = true;
+                            super.onValueChanged(context, cellEditorModel.cellEditorValue);
+                            cellEditorModel.valueChanged = false;
                           }
                         },
                         child: Icon(Icons.clear,
@@ -155,17 +99,19 @@ class CoNumberCellEditorWidgetState
                     )
                   : null),
           style: TextStyle(
-              color: this.editable
-                  ? (this.foreground != null ? this.foreground : Colors.black)
+              color: cellEditorModel.editable
+                  ? (cellEditorModel.foreground != null
+                      ? cellEditorModel.foreground
+                      : Colors.black)
                   : Colors.grey[700]),
-          controller: _controller,
-          focusNode: node,
-          keyboardType: textInputType,
+          controller: cellEditorModel.controller,
+          focusNode: cellEditorModel.node,
+          keyboardType: cellEditorModel.textInputType,
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,
           textDirection: direction,
-          inputFormatters: textInputFormatter,
-          enabled: this.editable,
+          inputFormatters: cellEditorModel.textInputFormatter,
+          enabled: cellEditorModel.editable,
         ),
       ),
     );
@@ -173,7 +119,7 @@ class CoNumberCellEditorWidgetState
 
   @override
   void dispose() {
-    node.dispose();
+    // (widget.cellEditorModel as NumberCellEditorModel).node.dispose();
 
     super.dispose();
   }

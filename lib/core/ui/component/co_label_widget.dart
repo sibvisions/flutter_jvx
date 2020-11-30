@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import '../../models/api/component/changed_component.dart';
-import '../../models/api/component/component_properties.dart';
+
 import 'component_widget.dart';
 import 'models/label_component_model.dart';
 
@@ -54,13 +53,6 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
   }
 
   @override
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-    widget.componentModel.text = changedComponent.getProperty<String>(
-        ComponentProperty.TEXT, widget.componentModel.text);
-  }
-
-  @override
   void initState() {
     super.initState();
   }
@@ -73,7 +65,8 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
       overflow = TextOverflow.ellipsis;
 
     if (widget.componentModel.text.isEmpty)
-      this.updateProperties(widget.componentModel.changedComponent);
+      widget.componentModel
+          .updateProperties(context, widget.componentModel.changedComponent);
 
     Widget child = Container(
       padding: EdgeInsets.only(top: 0.5),

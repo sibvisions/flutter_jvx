@@ -36,14 +36,16 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
+    ContainerComponentModel componentModel = widget.componentModel;
+
     Widget child;
-    if (this.layout != null) {
-      child = this.layout as Widget;
-      if (this.layout.setState != null) {
-        this.layout.setState(() {});
+    if (componentModel.layout != null) {
+      child = componentModel.layout as Widget;
+      if (componentModel.layout.setState != null) {
+        componentModel.layout.setState(() {});
       }
-    } else if (this.components.isNotEmpty) {
-      child = Column(children: this.components);
+    } else if (componentModel.components.isNotEmpty) {
+      child = Column(children: componentModel.components);
     }
 
     Widget scrollWidget = new LayoutBuilder(

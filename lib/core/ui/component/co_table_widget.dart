@@ -4,140 +4,81 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../models/api/component/changed_component.dart';
-import '../../models/api/component/component_properties.dart';
 import '../../models/api/response/data/data_book.dart';
 import '../../models/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../utils/translation/app_localizations.dart';
 import '../editor/co_editor_widget.dart';
-import '../editor/editor_component_model.dart';
 import '../screen/so_component_creator.dart';
-import '../screen/so_component_data.dart';
+import 'models/table_component_model.dart';
 import 'so_table_column_calculator.dart';
 
 enum ContextMenuCommand { INSERT, DELETE }
 
 class CoTableWidget extends CoEditorWidget {
-  CoTableWidget({EditorComponentModel componentModel, SoComponentData data})
-      : super(componentModel: componentModel, data: data);
+  final TableComponentModel componentModel;
+  final BuildContext customDataOperationContext;
+
+  CoTableWidget({this.componentModel, this.customDataOperationContext})
+      : super(componentModel: componentModel);
 
   State<StatefulWidget> createState() => CoTableWidgetState();
 }
 
 class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
-  // visible column names
-  List<String> columnNames = <String>[];
+  ItemScrollController scrollController;
+  ItemPositionsListener scrollPositionListener;
 
-  // column labels for header
-  List<String> columnLabels = <String>[];
-
-  // the show vertical lines flag.
-  bool showVerticalLines = false;
-
-  // the show horizontal lines flag.
-  bool showHorizontalLines = false;
-
-  // the show table header flag
-  bool tableHeaderVisible = true;
-
-  // table editable
-  bool editable = true;
-
-  int selectedRow;
-
-  ItemScrollController _scrollController;
-  ItemPositionsListener _scrollPositionListener;
-  int pageSize = 100;
-  double fetchMoreItemOffset = 20;
-  DataBook _data;
-  List<SoTableColumn> columnInfo;
-  var _tapPosition;
-  SoComponentCreator componentCreator;
-  bool autoResize = false;
-  bool _hasHorizontalScroller = false;
-  Function(int index) onRowTapped;
-
-  TextStyle get headerStyleMandatory {
-    return this.headerTextStyle;
-  }
-
-  TextStyle get headerTextStyle {
-    return widget.componentModel.fontStyle
-        .copyWith(fontWeight: FontWeight.bold);
-  }
-
-  TextStyle get itemTextStyle {
-    return widget.componentModel.fontStyle;
+  void onSelectedRowChanged(dynamic selectedRow) {
+    if (this.scrollController != null &&
+        selectedRow is int &&
+        selectedRow >= 0 &&
+        this.scrollController.isAttached) {
+      this.scrollController.scrollTo(
+          index: selectedRow,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.ease);
+    }
   }
 
   @override
-  set data(SoComponentData data) {
-    super.data?.unregisterDataChanged(onServerDataChanged);
-    super.data?.unregisterSelectedRowChanged(onSelectedRowChanged);
-    super.data = data;
-    super.data?.registerDataChanged(onServerDataChanged);
-    super.data?.registerSelectedRowChanged(onSelectedRowChanged);
+  void registerCallbacks() {
+    super.registerCallbacks();
+
+    widget.componentModel.onSelectedRowChangedCallback =
+        this.onSelectedRowChanged;
   }
 
-  @override
-  get preferredSize {
-    if (super.preferredSize != null) return super.preferredSize;
-    return Size(300, 300);
-  }
+  scrollListener(BuildContext context) {
+    ItemPosition pos = this
+        .scrollPositionListener
+        .itemPositions
+        .value
+        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 0,
+            orElse: () => null);
 
-  @override
-  get minimumSize {
-    if (super.minimumSize != null) return super.minimumSize;
-    return Size(300, 100);
-  }
-
-  @override
-  bool get isPreferredSizeSet => true;
-  @override
-  bool get isMinimumSizeSet => true;
-  @override
-  bool get isMaximumSizeSet => maximumSize != null;
-
-  @override
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-    showVerticalLines = changedComponent.getProperty<bool>(
-        ComponentProperty.SHOW_VERTICAL_LINES, showVerticalLines);
-    showHorizontalLines = changedComponent.getProperty<bool>(
-        ComponentProperty.SHOW_HORIZONTAL_LINES, showHorizontalLines);
-    tableHeaderVisible = changedComponent.getProperty<bool>(
-        ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
-    columnNames = changedComponent.getProperty<List<String>>(
-        ComponentProperty.COLUMN_NAMES, columnNames);
-    columnLabels = changedComponent.getProperty<List<String>>(
-        ComponentProperty.COLUMN_LABELS, columnLabels);
-    autoResize = changedComponent.getProperty<bool>(
-        ComponentProperty.AUTO_RESIZE, autoResize);
-    editable = changedComponent.getProperty<bool>(
-        ComponentProperty.AUTO_RESIZE, editable);
-
-    if (this.dataProvider == null)
-      this.dataProvider = changedComponent.getProperty<String>(
-          ComponentProperty.DATA_BOOK, this.dataProvider);
-
-    int newSelectedRow =
-        changedComponent.getProperty<int>(ComponentProperty.SELECTED_ROW);
-    if (newSelectedRow != null &&
-        newSelectedRow >= 0 &&
-        newSelectedRow != selectedRow &&
-        this.data != null &&
-        this.data?.data != null)
-      this.data?.updateSelectedRow(newSelectedRow, true);
-
-    selectedRow = changedComponent.getProperty<int>(
-        ComponentProperty.SELECTED_ROW, selectedRow);
+    if (pos != null &&
+        widget.componentModel.data.data != null &&
+        widget.componentModel.data.data.records != null &&
+        pos.index + widget.componentModel.fetchMoreItemOffset >
+            widget.componentModel.data.data.records.length) {
+      widget.componentModel.data?.getData(
+          widget.customDataOperationContext != null
+              ? widget.customDataOperationContext
+              : context,
+          widget.componentModel.pageSize +
+              widget.componentModel.data.data.records.length);
+    }
   }
 
   void _onRowTapped(int index) {
-    if (this.onRowTapped == null) {
-      this.data?.selectRecord(context, index);
+    if (widget.componentModel.onRowTapped == null) {
+      widget.componentModel?.data?.selectRecord(
+          widget.customDataOperationContext != null
+              ? widget.customDataOperationContext
+              : context,
+          index);
     } else {
-      this.onRowTapped(index);
+      widget.componentModel.onRowTapped(index);
     }
   }
 
@@ -147,8 +88,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Colors.white.withOpacity(
-                this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+            color: Colors.white.withOpacity(widget.componentModel.appState
+                    .applicationStyle?.controlsOpacity ??
+                1.0),
           ),
           child: Container(
               decoration: BoxDecoration(
@@ -159,14 +101,16 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                           style: BorderStyle.solid))),
               child: Row(children: children)));
     } else {
-      Color backgroundColor = Colors.white
-          .withOpacity(this.appState.applicationStyle?.controlsOpacity ?? 1.0);
+      Color backgroundColor = Colors.white.withOpacity(
+          widget.componentModel.appState.applicationStyle?.controlsOpacity ??
+              1.0);
 
       if (isSelected)
         backgroundColor = Theme.of(context).primaryColor.withOpacity(0.1);
       else if (index % 2 == 1) {
         backgroundColor = Colors.grey[200].withOpacity(
-            this.appState.applicationStyle?.controlsOpacity ?? 1.0);
+            widget.componentModel.appState.applicationStyle?.controlsOpacity ??
+                1.0);
       }
       return Container(
         decoration: BoxDecoration(color: backgroundColor),
@@ -182,7 +126,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
               color: backgroundColor,
               child: InkWell(
                   highlightColor: Theme.of(context).primaryColor.withOpacity(
-                      this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+                      widget.componentModel.appState.applicationStyle
+                              ?.controlsOpacity ??
+                          1.0),
                   onTap: () {
                     _onRowTapped(index);
                   },
@@ -216,19 +162,22 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     List<PopupMenuEntry<ContextMenuModel>> popupMenuEntries =
         List<PopupMenuEntry<ContextMenuModel>>();
 
-    if (this.data?.insertEnabled ?? false) {
+    if (widget.componentModel.data?.insertEnabled ?? false) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare,
           'Insert', ContextMenuModel(index, ContextMenuCommand.INSERT)));
     }
 
-    if (index >= 0 && (this.data != null && this.data.deleteEnabled)) {
+    if (index >= 0 &&
+        (widget.componentModel.data != null &&
+            widget.componentModel.data.deleteEnabled)) {
       popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare,
           'Delete', ContextMenuModel(index, ContextMenuCommand.DELETE)));
     }
 
-    if (this.data?.insertEnabled ?? false) {
+    if (widget.componentModel.data?.insertEnabled ?? false) {
       showMenu(
-              position: RelativeRect.fromRect(_tapPosition & Size(40, 40),
+              position: RelativeRect.fromRect(
+                  widget.componentModel.tapPosition & Size(40, 40),
                   Offset.zero & MediaQuery.of(context).size),
               context: context,
               items: popupMenuEntries)
@@ -236,36 +185,24 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
         if (val != null) {
           if (val.command == ContextMenuCommand.INSERT)
-            this.data?.insertRecord(context);
+            widget.componentModel.data?.insertRecord(context);
           else if (val.command == ContextMenuCommand.DELETE)
-            this.data?.deleteRecord(context, val.index);
+            widget.componentModel.data?.deleteRecord(context, val.index);
         }
       });
     }
   }
 
-  CoEditorWidget _getEditorForColumn(
-      String text, String columnName, int index) {
-    DataBookMetaDataColumn column = this.data?.getMetaDataColumn(columnName);
-
-    if (column != null) {
-      CoEditorWidget clEditor = componentCreator.createEditorForTable(
-          column?.cellEditor, text, editable, index, this.data, columnName);
-      if (clEditor != null) {
-        return clEditor;
-      }
-    }
-    return null;
-  }
-
   Widget getTableColumn(
       String text, int rowIndex, int columnIndex, String columnName,
       {bool nullable}) {
-    CoEditorWidget editor = _getEditorForColumn(text, columnName, rowIndex);
+    CoEditorWidget editor =
+        widget.componentModel.getEditorForColumn(text, columnName, rowIndex);
     double width = 1;
 
-    if (columnInfo != null && columnIndex < columnInfo.length)
-      width = columnInfo[columnIndex].preferredWidth;
+    if (widget.componentModel.columnInfo != null &&
+        columnIndex < widget.componentModel.columnInfo.length)
+      width = widget.componentModel.columnInfo[columnIndex].preferredWidth;
 
     if (rowIndex == -1) {
       return Container(
@@ -277,8 +214,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 children: [
                   Text(text,
                       style: !nullable
-                          ? headerStyleMandatory
-                          : this.headerTextStyle),
+                          ? widget.componentModel.headerStyleMandatory
+                          : widget.componentModel.headerTextStyle),
                   SizedBox(
                     width: 2,
                   ),
@@ -306,7 +243,10 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       ? editor
                       : Padding(
                           padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Text(text, style: this.itemTextStyle),
+                          child: Text(text,
+                              style: (widget?.componentModel
+                                      as TableComponentModel)
+                                  .itemTextStyle),
                         )),
               onTap: () => _onRowTapped(rowIndex),
             ),
@@ -317,15 +257,17 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   Widget getHeaderRow() {
     List<Widget> children = new List<Widget>();
 
-    if (this.columnLabels != null) {
-      this.columnLabels.asMap().forEach((i, c) {
-        DataBookMetaDataColumn column =
-            this.data?.getMetaDataColumn(columnNames[i]);
+    if (widget.componentModel.columnLabels != null) {
+      widget.componentModel.columnLabels.asMap().forEach((i, c) {
+        DataBookMetaDataColumn column = widget.componentModel.data
+            ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
         if (column != null && column.nullable) {
-          children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
+          children.add(getTableColumn(
+              c.toString(), -1, i, widget.componentModel.columnNames[i],
               nullable: column?.nullable ?? false));
         } else {
-          children.add(getTableColumn(c.toString(), -1, i, columnNames[i],
+          children.add(getTableColumn(
+              c.toString(), -1, i, widget.componentModel.columnNames[i],
               nullable: column?.nullable ?? false));
         }
       });
@@ -338,56 +280,63 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     if (data != null && data.records != null && index < data.records.length) {
       List<Widget> children = new List<Widget>();
 
-      data.getRow(index, columnNames).asMap().forEach((i, c) {
-        children.add(getTableColumn(
-            c != null ? c.toString() : "", index, i, columnNames[i]));
+      data
+          .getRow(index, widget.componentModel.columnNames)
+          .asMap()
+          .forEach((i, c) {
+        children.add(getTableColumn(c != null ? c.toString() : "", index, i,
+            widget.componentModel.columnNames[i]));
       });
 
       bool isSelected = index == data.selectedRow;
-      if (this.selectedRow != null) isSelected = index == this.selectedRow;
+      if (widget.componentModel.selectedRow != null)
+        isSelected = index == widget.componentModel.selectedRow;
 
-      if (this.data != null &&
-          this.data.deleteEnabled &&
-          !_hasHorizontalScroller) {
-        return this.editable
+      if (widget.componentModel.data != null &&
+          widget.componentModel.data.deleteEnabled &&
+          !widget.componentModel.hasHorizontalScroller) {
+        return widget.componentModel.editable
             ? GestureDetector(
                 onLongPress: () => showContextMenu(context, index),
                 child: Slidable(
                   actionExtentRatio: 0.25,
                   child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(
-                            this.appState.applicationStyle?.controlsOpacity ??
-                                1.0),
+                        color: Colors.white.withOpacity(widget.componentModel
+                                .appState.applicationStyle?.controlsOpacity ??
+                            1.0),
                       ),
                       child: getTableRow(children, index, false, isSelected)),
                   actionPane: SlidableDrawerActionPane(),
                   secondaryActions: <Widget>[
                     new IconSlideAction(
                       caption: AppLocalizations.of(context).text('Delete'),
-                      color: Colors.red.withOpacity(
-                          this.appState.applicationStyle?.controlsOpacity ??
-                              1.0),
+                      color: Colors.red.withOpacity(widget.componentModel
+                              .appState.applicationStyle?.controlsOpacity ??
+                          1.0),
                       icon: Icons.delete,
-                      onTap: () => this.data?.deleteRecord(context, index),
+                      onTap: () => widget.componentModel.data
+                          ?.deleteRecord(context, index),
                     ),
                   ],
                 ))
             : Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(
-                      this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+                  color: Colors.white.withOpacity(widget.componentModel.appState
+                          .applicationStyle?.controlsOpacity ??
+                      1.0),
                 ),
                 child: getTableRow(children, index, false, isSelected));
       } else {
         return GestureDetector(
-            onLongPress: () =>
-                this.editable ? showContextMenu(context, index) : null,
+            onLongPress: () => widget.componentModel.editable
+                ? showContextMenu(context, index)
+                : null,
             child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(
-                        this.appState.applicationStyle?.controlsOpacity ??
-                            1.0)),
+                    color: Colors.white.withOpacity(widget.componentModel
+                            .appState.applicationStyle?.controlsOpacity ??
+                        1.0)),
                 child: getTableRow(children, index, false, isSelected)));
       }
     }
@@ -395,120 +344,87 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     return Container();
   }
 
-  @override
-  void onServerDataChanged() {
-    setState(() {});
-  }
-
-  void onSelectedRowChanged(dynamic selectedRow) {
-    if (_scrollController != null &&
-        selectedRow is int &&
-        selectedRow >= 0 &&
-        _scrollController.isAttached) {
-      _scrollController.scrollTo(
-          index: selectedRow,
-          duration: Duration(milliseconds: 500),
-          curve: Curves.ease);
-    }
-  }
-
   Widget itemBuilder(BuildContext ctxt, int index) {
-    if (index == 0 && tableHeaderVisible) {
+    if (index == 0 && widget.componentModel.tableHeaderVisible) {
       return getHeaderRow();
     } else {
-      if (tableHeaderVisible) index--;
-      return getDataRow(_data, index);
-    }
-  }
-
-  _scrollListener() {
-    ItemPosition pos = this
-        ._scrollPositionListener
-        .itemPositions
-        .value
-        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 0,
-            orElse: () => null);
-
-    if (pos != null &&
-        _data != null &&
-        _data.records != null &&
-        pos.index + fetchMoreItemOffset > _data.records.length) {
-      this.data?.getData(context, this.pageSize + _data.records.length);
+      if (widget.componentModel.tableHeaderVisible) index--;
+      return getDataRow(widget.componentModel.data.data, index);
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ItemScrollController();
-    _scrollPositionListener = ItemPositionsListener.create();
-    if (componentCreator == null)
-      componentCreator = SoComponentCreator(context);
-    _scrollPositionListener.itemPositions.addListener(_scrollListener);
-
-    if (!(widget.componentModel as EditorComponentModel).withChangedComponent) {
-      this.onRowTapped =
-          (widget.componentModel as EditorComponentModel).onRowTapped;
-      this.tableHeaderVisible =
-          (widget.componentModel as EditorComponentModel).tableHeaderVisible;
-      this.editable = (widget.componentModel as EditorComponentModel).editable;
-      this.autoResize =
-          (widget.componentModel as EditorComponentModel).autoResize;
-      this.columnNames =
-          (widget.componentModel as EditorComponentModel).columnNames;
-    }
+    this.scrollController = ItemScrollController();
+    this.scrollPositionListener = ItemPositionsListener.create();
+    if (widget.componentModel.componentCreator == null)
+      widget.componentModel.componentCreator = SoComponentCreator(context);
+    this
+        .scrollPositionListener
+        .itemPositions
+        .addListener(() => this.scrollListener(context));
   }
 
   @override
   Widget build(BuildContext context) {
     double borderWidth = 1;
-    int itemCount = tableHeaderVisible ? 1 : 0;
-    _data = this.data?.getData(context, pageSize);
+    int itemCount = widget.componentModel.tableHeaderVisible ? 1 : 0;
+    widget.componentModel.data
+        ?.getData(context, widget.componentModel.pageSize);
 
-    if (_data != null && _data.records != null)
-      itemCount += _data.records.length;
+    if (widget.componentModel.data?.data != null &&
+        widget.componentModel.data?.data?.records != null)
+      itemCount += widget.componentModel.data.data.records.length;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         //print(this.rawComponentId + "- Constraints:" + constraints.toString());
-        this.columnInfo = SoTableColumnCalculator.getColumnFlex(
-            this.data,
-            this.columnLabels,
-            this.columnNames,
-            itemTextStyle,
-            componentCreator,
-            autoResize,
-            constraints.maxWidth,
-            16.0,
-            16.0);
-        double columnWidth =
-            SoTableColumnCalculator.getColumnWidthSum(this.columnInfo);
+        widget.componentModel.columnInfo =
+            SoTableColumnCalculator.getColumnFlex(
+                widget.componentModel.data,
+                widget.componentModel.columnLabels,
+                widget.componentModel.columnNames,
+                widget.componentModel.itemTextStyle,
+                widget.componentModel.componentCreator,
+                widget.componentModel.autoResize,
+                constraints.maxWidth,
+                16.0,
+                16.0);
+        double columnWidth = SoTableColumnCalculator.getColumnWidthSum(
+            widget.componentModel.columnInfo);
         double tableHeight = SoTableColumnCalculator.getPreferredTableHeight(
-            this.data,
-            this.columnLabels,
-            itemTextStyle,
-            tableHeaderVisible,
+            widget.componentModel.data,
+            widget.componentModel.columnLabels,
+            widget.componentModel.itemTextStyle,
+            widget.componentModel.tableHeaderVisible,
             30,
             30);
 
-        _hasHorizontalScroller =
+        widget.componentModel.hasHorizontalScroller =
             (columnWidth + (2 * borderWidth) > constraints.maxWidth);
 
         Widget child = GestureDetector(
-            onTapDown: (details) => _tapPosition = details.globalPosition,
-            onLongPress: () =>
-                this.editable ? showContextMenu(context, -1) : null,
+            onTapDown: (details) =>
+                widget.componentModel.tapPosition = details.globalPosition,
+            onLongPress: () => widget.componentModel.editable
+                ? showContextMenu(context, -1)
+                : null,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(
                     width: borderWidth,
-                    color: Theme.of(context).primaryColor.withOpacity(
-                        this.appState.applicationStyle?.controlsOpacity ??
-                            1.0)),
-                color: Colors.white.withOpacity(
-                    this.appState.applicationStyle?.controlsOpacity ?? 1.0),
+                    color: Theme.of(context).primaryColor.withOpacity(widget
+                            .componentModel
+                            .appState
+                            .applicationStyle
+                            ?.controlsOpacity ??
+                        1.0)),
+                color: Colors.white.withOpacity(widget.componentModel.appState
+                        .applicationStyle?.controlsOpacity ??
+                    1.0),
               ),
-              child: _hasHorizontalScroller
+              child: widget.componentModel.hasHorizontalScroller
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Container(
@@ -519,8 +435,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(5),
                           child: ScrollablePositionedList.builder(
-                            itemScrollController: _scrollController,
-                            itemPositionsListener: _scrollPositionListener,
+                            itemScrollController: this.scrollController,
+                            itemPositionsListener: this.scrollPositionListener,
                             itemCount: itemCount,
                             itemBuilder: itemBuilder,
                           ),
@@ -528,15 +444,16 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       ),
                     )
                   : Container(
-                      width: (columnWidth + (2 * borderWidth) + 100) - borderWidth,
+                      width:
+                          (columnWidth + (2 * borderWidth) + 100) - borderWidth,
                       height: constraints.maxHeight == double.infinity
                           ? tableHeight - borderWidth
                           : constraints.maxHeight - borderWidth,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: ScrollablePositionedList.builder(
-                          itemScrollController: _scrollController,
-                          itemPositionsListener: _scrollPositionListener,
+                          itemScrollController: this.scrollController,
+                          itemPositionsListener: this.scrollPositionListener,
                           itemCount: itemCount,
                           itemBuilder: itemBuilder,
                         ),

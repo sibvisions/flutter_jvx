@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
+import '../../container/container_component_model.dart';
 import 'co_border_layout_constraint.dart';
 
 ///
@@ -330,6 +331,218 @@ class RenderBorderLayoutWidget extends RenderBox
   @override
   bool hitTestChildren(HitTestResult result, {Offset position}) {
     return defaultHitTestChildren(result, position: position);
+  }
+
+  Size minimumLayoutSize(ContainerComponentModel pTarget) {
+    if (pTarget.isMinimumSizeSet) {
+      return pTarget.minimumSize;
+    } else {
+      Size n;
+      if (north == null) {
+        n = new Size(0, 0);
+      } else {
+        n = this.getMinimumSize(
+            north,
+            BoxConstraints(
+                minHeight: 0,
+                minWidth: 0,
+                maxHeight: double.infinity,
+                maxWidth: double.infinity),
+            northComp);
+        n = Size(n.width, n.height + iVerticalGap);
+      }
+      Size w;
+      if (west == null) {
+        w = new Size(0, 0);
+      } else {
+        w = this.getMinimumSize(
+            west,
+            BoxConstraints(
+                minHeight: 0,
+                minWidth: 0,
+                maxHeight: double.infinity,
+                maxWidth: double.infinity),
+            westComp);
+        w = Size(w.width + iHorizontalGap, w.height);
+      }
+      Size c;
+      if (center == null) {
+        c = new Size(0, 0);
+      } else {
+        c = this.getMinimumSize(
+            center,
+            BoxConstraints(
+                minHeight: 0,
+                minWidth: 0,
+                maxHeight: double.infinity,
+                maxWidth: double.infinity),
+            centerComp);
+      }
+      Size e;
+      if (east == null) {
+        e = new Size(0, 0);
+      } else {
+        e = this.getMinimumSize(
+            east,
+            BoxConstraints(
+                minHeight: 0,
+                minWidth: 0,
+                maxHeight: double.infinity,
+                maxWidth: double.infinity),
+            eastComp);
+        e = Size(e.width + iHorizontalGap, e.height);
+      }
+      Size s;
+      if (south == null) {
+        s = new Size(0, 0);
+      } else {
+        s = this.getMinimumSize(
+            south,
+            BoxConstraints(
+                minHeight: 0,
+                minWidth: 0,
+                maxHeight: double.infinity,
+                maxWidth: double.infinity),
+            southComp);
+        s = Size(s.width, s.height + iVerticalGap);
+      }
+
+      return new Size(max(max(n.width, s.width), w.width + c.width + e.width),
+          max(max(w.height, e.height), c.height) + n.height + s.height);
+    }
+  }
+
+  Size maximumLayoutSize(ContainerComponentModel pTarget) {
+    if (pTarget.isMaximumSizeSet) {
+      return pTarget.maximumSize;
+    } else {
+      return new Size(double.maxFinite, double.maxFinite);
+    }
+  }
+
+  Size preferredLayoutSize(ContainerComponentModel pContainer) {
+    double width = 0;
+    double height = 0;
+
+    double maxWidth = 0;
+    double maxHeight = 0;
+    if (north != null) {
+      Size size = this.getPreferredSize(
+          north,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity),
+          northComp);
+
+      maxWidth = size.width;
+      height += size.height + iVerticalGap;
+    }
+    if (south != null) {
+      Size size = this.getPreferredSize(
+          south,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity),
+          southComp);
+
+      if (size.width > maxWidth) {
+        maxWidth = size.width;
+      }
+      height += size.height + iVerticalGap;
+    }
+    if (west != null) {
+      Size size = this.getPreferredSize(
+          west,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity),
+          westComp);
+
+      maxHeight = size.height;
+      width += size.width + iHorizontalGap;
+    }
+    if (east != null) {
+      Size size = this.getPreferredSize(
+          east,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity),
+          eastComp);
+
+      if (size.height > maxHeight) {
+        maxHeight = size.height;
+      }
+      width += size.width + iHorizontalGap;
+    }
+    if (center != null) {
+      Size size = this.getPreferredSize(
+          center,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity),
+          centerComp);
+      if (size.height > maxHeight) {
+        maxHeight = size.height;
+      }
+      width += size.width;
+    }
+    height += maxHeight;
+    if (maxWidth > width) {
+      width = maxWidth;
+    }
+
+    EdgeInsets insets = EdgeInsets.all(0);
+    // pContainer.getInsets();
+
+    return new Size(
+        width + insets.left + insets.right + insMargin.left + insMargin.right,
+        height + insets.top + insets.bottom + insMargin.top + insMargin.bottom);
+  }
+
+  Size getPreferredSize(
+      RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
+    if (!comp.componentModel.isPreferredSizeSet) {
+      renderBox.layout(constraints, parentUsesSize: true);
+
+      if (!renderBox.hasSize) {
+        print("CoBorderLayout: RenderBox has no size after layout!");
+      }
+
+      if (renderBox.size.width == double.infinity ||
+          renderBox.size.height == double.infinity) {
+        print(
+            "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+      }
+      return renderBox.size;
+    } else {
+      return comp.componentModel.preferredSize;
+    }
+  }
+
+  Size getMinimumSize(
+      RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
+    if (!comp.componentModel.isMinimumSizeSet) {
+      renderBox.layout(constraints, parentUsesSize: true);
+
+      if (renderBox.size.width == double.infinity ||
+          renderBox.size.height == double.infinity) {
+        print(
+            "CoBorderLayout: getMinimumSize: Infinity height or width for BorderLayout!");
+      }
+      return renderBox.size;
+    } else {
+      return comp.componentModel.minimumSize;
+    }
   }
 }
 

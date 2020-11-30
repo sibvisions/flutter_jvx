@@ -64,7 +64,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   RestartableTimer _deviceStatusTimer;
   String rawComponentId;
   String title;
-  bool closeCurrentScreen;
 
   Response currentResponse;
 
@@ -151,16 +150,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                   currentResponse = state;
                 });
 
-                if (state.closeScreenAction != null) {
-                  setState(() {
-                    this.closeCurrentScreen = true;
-                  });
-                } else {
-                  setState(() {
-                    this.closeCurrentScreen = false;
-                  });
-                }
-
                 if (state.request.requestType == RequestType.DEVICE_STATUS) {
                   setState(() {
                     widget.appState.layoutMode =
@@ -232,14 +221,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                       screen = SoScreen(
                           screenKey: this.screenKey,
                           componentId: rawComponentId,
-                          closeCurrentScreen: this.closeCurrentScreen,
                           componentCreator: SoComponentCreator(context),
                           response: this.currentResponse);
 
                       widget.appState.screenManager.registerScreen(screen);
                     }
 
-                    screen.closeCurrentScreen = this.closeCurrentScreen;
                     screen.update(this.currentResponse);
                   }
 

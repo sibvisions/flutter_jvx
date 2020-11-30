@@ -20,7 +20,7 @@ mixin SoDataScreen {
   List<SoComponentData> componentData = <SoComponentData>[];
   List<Request> requestQueue = <Request>[];
 
-  void updateData(Request request, ResponseData pData) {
+  void updateData(BuildContext context, Request request, ResponseData pData) {
     if (request is SelectRecord &&
         request.requestType == RequestType.DAL_DELETE) {
       SoComponentData cData = getComponentData(request.dataProvider);
@@ -30,7 +30,7 @@ mixin SoDataScreen {
     if (request == null || request?.requestType != RequestType.DAL_SET_VALUE) {
       pData.dataBooks?.forEach((d) {
         SoComponentData cData = getComponentData(d.dataProvider);
-        cData.updateData(d, request.reload);
+        cData.updateData(context, d, request.reload);
       });
 
       pData.dataBookMetaData?.forEach((m) {
@@ -53,9 +53,9 @@ mixin SoDataScreen {
         request is SetValues) {
       pData.dataBooks?.forEach((element) {
         SoComponentData cData = getComponentData(element.dataProvider);
-        cData.updateData(pData.dataBooks[0]);
+        cData.updateData(context, pData.dataBooks[0]);
         if (request.filter != null)
-          cData.updateSelectedRow(request.filter.values[0]);
+          cData.updateSelectedRow(context, request.filter.values[0]);
       });
     }
 
@@ -101,7 +101,7 @@ mixin SoDataScreen {
         request.requestType == RequestType.DAL_SELECT_RECORD &&
         (request is SelectRecord)) {
       SoComponentData cData = getComponentData(request.dataProvider);
-      cData?.updateSelectedRow(request.selectedRow);
+      cData?.updateSelectedRow(context, request.selectedRow);
     }
   }
 

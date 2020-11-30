@@ -16,15 +16,16 @@ class CoPasswordFieldWidget extends ComponentWidget {
 class CoPasswordFieldWidgetState
     extends ComponentWidgetState<CoPasswordFieldWidget> {
   TextEditingController textController = TextEditingController();
-  FocusNode focusNode;
+  FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController();
-    focusNode = FocusNode();
+    this.textController = TextEditingController();
+    this.focusNode = FocusNode();
     this.focusNode.addListener(() {
-      if (!focusNode.hasFocus) widget.componentModel.onTextFieldEndEditing();
+      if (!this.focusNode.hasFocus)
+        widget.componentModel.onTextFieldEndEditing();
     });
   }
 
@@ -35,7 +36,7 @@ class CoPasswordFieldWidgetState
   }
 
   void onTextFieldEndEditing() {
-    focusNode.unfocus();
+    this.focusNode.unfocus();
     widget.componentModel.onTextFieldEndEditing();
   }
 
@@ -44,18 +45,19 @@ class CoPasswordFieldWidgetState
     String controllerValue = (widget.componentModel.text != null
         ? widget.componentModel.text.toString()
         : "");
-    textController.value = textController.value.copyWith(
-        text: controllerValue,
-        selection: TextSelection.collapsed(offset: controllerValue.length));
+    this.textController.value =
+        this.textController.value.copyWith(
+            text: controllerValue,
+            selection: TextSelection.collapsed(offset: controllerValue.length));
 
     return DecoratedBox(
       decoration: BoxDecoration(
           color: widget.componentModel.background != null
               ? widget.componentModel.background
-              : Colors.white
-                  .withOpacity(this.appState.applicationStyle?.controlsOpacity),
-          borderRadius: BorderRadius.circular(
-              this.appState.applicationStyle?.cornerRadiusEditors),
+              : Colors.white.withOpacity(widget
+                  .componentModel.appState.applicationStyle?.controlsOpacity),
+          borderRadius: BorderRadius.circular(widget
+              .componentModel.appState.applicationStyle?.cornerRadiusEditors),
           border: widget.componentModel.border &&
                   widget.componentModel.enabled != null &&
                   widget.componentModel.enabled
@@ -76,11 +78,12 @@ class CoPasswordFieldWidgetState
                         child: GestureDetector(
                           onTap: () {
                             if (widget.componentModel.value != null &&
-                                this.textController.text.isNotEmpty) {
-                              widget.componentModel.value = null;
+                                this.textController.text
+                                    .isNotEmpty) {
+                              widget.componentModel.text = null;
                               widget.componentModel.valueChanged = true;
                               widget.componentModel.onTextFieldValueChanged(
-                                  widget.componentModel.value);
+                                  widget.componentModel.text);
                               widget.componentModel.valueChanged = false;
                             }
                           },
@@ -100,13 +103,13 @@ class CoPasswordFieldWidgetState
                         ? widget.componentModel.foreground
                         : Colors.black)
                     : Colors.grey[700]),
-            controller: textController,
+            controller: this.textController,
             minLines: null,
             maxLines: 1,
             keyboardType: TextInputType.text,
             onEditingComplete: onTextFieldEndEditing,
             onChanged: onTextFieldValueChanged,
-            focusNode: focusNode,
+            focusNode: this.focusNode,
             readOnly: !widget.componentModel.enabled,
             obscureText: true),
       ),
@@ -115,8 +118,8 @@ class CoPasswordFieldWidgetState
 
   @override
   void dispose() {
-    textController.dispose();
-    focusNode.dispose();
+    this.textController.dispose();
+    this.focusNode.dispose();
     super.dispose();
   }
 }

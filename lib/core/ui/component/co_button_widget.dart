@@ -21,10 +21,7 @@ class CoButtonWidget extends CoActionComponentWidget {
 }
 
 class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
-  @override
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-
+  void updateImage() {
     if (widget.componentModel.image != null) {
       if (checkFontAwesome(widget.componentModel.image)) {
         widget.componentModel.icon = convertFontAwesomeTextToIcon(
@@ -44,9 +41,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                   strinArr[3].toLowerCase() == 'true';
             }
 
-            if (this.appState.files.containsKey(strinArr[0])) {
+            if (widget.componentModel.appState.files.containsKey(strinArr[0])) {
               setState(() => widget.componentModel.icon = Image.memory(
-                    utf8.base64Decode(this.appState.files[strinArr[0]]),
+                    utf8.base64Decode(
+                        widget.componentModel.appState.files[strinArr[0]]),
                     width: widget.componentModel.iconSize.width,
                     height: widget.componentModel.iconSize.height,
                     color: !widget.componentModel.enabled
@@ -55,7 +53,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                   ));
             } else if (widget.componentModel.network) {
               setState(() => widget.componentModel.icon = Image.network(
-                    this.appState.baseUrl + strinArr[0],
+                    widget.componentModel.appState.baseUrl + strinArr[0],
                     width: widget.componentModel.iconSize.width,
                     height: widget.componentModel.iconSize.height,
                     color: !widget.componentModel.enabled
@@ -65,7 +63,8 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             }
           }
         } else {
-          File file = File('${this.appState.dir}${strinArr[0]}');
+          File file =
+              File('${widget.componentModel.appState.dir}${strinArr[0]}');
           if (file.existsSync()) {
             Size size = Size(16, 16);
 
@@ -89,6 +88,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
 
   void initState() {
     super.initState();
+
+    this.updateImage();
+
+    widget.componentModel.addListener(() => this.updateImage());
   }
 
   @override
@@ -175,7 +178,9 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             minWidth: minWidth,
             padding: padding,
             layoutBehavior: ButtonBarLayoutBehavior.constrained,
-            shape: this.appState.applicationStyle?.buttonShape ?? null,
+            shape:
+                widget.componentModel.appState.applicationStyle?.buttonShape ??
+                    null,
             child: SizedBox(
                 height: 50,
                 child: RaisedButton(

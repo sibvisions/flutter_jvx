@@ -8,7 +8,6 @@ import 'so_component_creator.dart';
 class SoScreen implements IScreen {
   String componentId;
   Response response;
-  bool closeCurrentScreen;
   SoComponentCreator componentCreator;
   GlobalKey<ComponentScreenWidgetState> screenKey;
 
@@ -16,7 +15,6 @@ class SoScreen implements IScreen {
       {Key key,
       this.componentId,
       this.response,
-      this.closeCurrentScreen,
       this.componentCreator,
       this.screenKey});
 
@@ -27,7 +25,6 @@ class SoScreen implements IScreen {
         heightFactor: 1,
         child: ComponentScreenWidget(
           key: this.screenKey,
-          closeCurrentScreen: this.closeCurrentScreen,
           componentCreator: this.componentCreator,
           response: this.response,
         ));
@@ -41,9 +38,5 @@ class SoScreen implements IScreen {
   @override
   void update(Response response) {
     this.response = response;
-  }
-
-  void setCloseCurrentScreen(bool closeCurrentScreen) {
-    this.closeCurrentScreen = closeCurrentScreen;
   }
 }

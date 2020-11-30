@@ -8,11 +8,8 @@ class CoReferencedCellEditorWidget extends CoCellEditorWidget {
   final ReferencedCellEditorModel cellEditorModel;
 
   CoReferencedCellEditorWidget({
-    CellEditor changedCellEditor,
     this.cellEditorModel,
-  }) : super(
-            changedCellEditor: changedCellEditor,
-            cellEditorModel: cellEditorModel);
+  }) : super(cellEditorModel: cellEditorModel);
 
   @override
   State<StatefulWidget> createState() =>
@@ -31,7 +28,7 @@ class CoReferencedCellEditorWidgetState<T extends StatefulWidget>
         ?.registerDataChanged(onServerDataChanged);
   }
 
-  void onServerDataChanged() {
+  void onServerDataChanged(BuildContext context) {
     this.setState(() {});
   }
 

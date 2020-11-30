@@ -17,14 +17,14 @@ class TextComponentModel extends EditableComponentModel {
   TextComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction);
     border = changedComponent.getProperty<bool>(ComponentProperty.BORDER, true);
     columns =
         changedComponent.getProperty<int>(ComponentProperty.COLUMNS, columns);
+    super.updateProperties(context, changedComponent);
   }
 
   void onTextFieldValueChanged(dynamic newValue) {

@@ -5,11 +5,11 @@ import '../../../models/api/component/component_properties.dart';
 import '../../../utils/app/text_utils.dart';
 import 'editable_component_model.dart';
 
-class SelectedComponentModel extends EditableComponentModel {
+class SelectableComponentModel extends EditableComponentModel {
   bool selected = false;
   bool eventAction = false;
 
-  SelectedComponentModel(ChangedComponent changedComponent)
+  SelectableComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
   @override
@@ -24,8 +24,8 @@ class SelectedComponentModel extends EditableComponentModel {
     return Size(size.width + checkSize, checkSize);
   }
 
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
+  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+    super.updateProperties(context, changedComponent);
 
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction);

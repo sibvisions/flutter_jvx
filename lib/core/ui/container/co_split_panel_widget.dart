@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/container/models/split_panel_component_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -18,72 +19,52 @@ class CoSplitPanelWidget extends CoContainerWidget {
 }
 
 class CoSplitPanelWidgetState extends CoContainerWidgetState {
-  final splitViewKey = GlobalKey();
-
-  final keyFirst = GlobalKey();
-  final keySecond = GlobalKey();
-
-  ScrollController scrollControllerView1 =
-      ScrollController(keepScrollOffset: true);
-  ScrollController scrollControllerView2 =
-      ScrollController(keepScrollOffset: true);
-
-  /// Constant for horizontal anchors.
-  static const HORIZONTAL = 0;
-
-  /// Constant for vertical anchors.
-  static const VERTICAL = 1;
-
-  /// Constant for relative anchors.
-  static const RELATIVE = 2;
-
-  int dividerPosition;
-  int dividerAlignment;
-
-  double currentSplitviewWeight;
-
-  @override
-  void updateProperties(ChangedComponent changedComponent) {
-    super.updateProperties(changedComponent);
-    dividerPosition =
-        changedComponent.getProperty<int>(ComponentProperty.DIVIDER_POSITION);
-    dividerAlignment = changedComponent.getProperty<int>(
-        ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
-  }
-
   void _calculateDividerPosition(
       BoxConstraints constraints, SplitViewMode splitViewMode) {
-    if (this.currentSplitviewWeight == null) {
-      if (this.dividerPosition != null &&
-          this.dividerPosition >= 0 &&
+    SplitPanelComponentModel componentModel = widget.componentModel;
+
+    if (componentModel.currentSplitviewWeight == null) {
+      if (componentModel.dividerPosition != null &&
+          componentModel.dividerPosition >= 0 &&
           constraints.maxWidth != null &&
-          this.dividerPosition < constraints.maxWidth &&
+          componentModel.dividerPosition < constraints.maxWidth &&
           splitViewMode == SplitViewMode.Horizontal) {
-        this.currentSplitviewWeight =
-            this.dividerPosition / constraints.maxWidth;
-      } else if (this.dividerPosition != null &&
-          this.dividerPosition >= 0 &&
+        componentModel.currentSplitviewWeight =
+            componentModel.dividerPosition / constraints.maxWidth;
+      } else if (componentModel.dividerPosition != null &&
+          componentModel.dividerPosition >= 0 &&
           constraints.maxHeight != null &&
-          this.dividerPosition < constraints.maxHeight &&
+          componentModel.dividerPosition < constraints.maxHeight &&
           (splitViewMode == SplitViewMode.Vertical)) {
-        this.currentSplitviewWeight =
-            this.dividerPosition / constraints.maxHeight;
+        componentModel.currentSplitviewWeight =
+            componentModel.dividerPosition / constraints.maxHeight;
       } else {
-        this.currentSplitviewWeight = 0.5;
+        componentModel.currentSplitviewWeight = 0.5;
       }
     }
   }
 
   SplitViewMode get defaultSplitViewMode {
-    return (dividerAlignment == HORIZONTAL || dividerAlignment == RELATIVE)
+    return ((widget.componentModel as SplitPanelComponentModel)
+                    .dividerAlignment ==
+                SplitPanelComponentModel.HORIZONTAL ||
+            (widget.componentModel as SplitPanelComponentModel)
+                    .dividerAlignment ==
+                SplitPanelComponentModel.RELATIVE)
         ? SplitViewMode.Horizontal
         : SplitViewMode.Vertical;
   }
 
   SplitViewMode get splitViewMode {
     if (kIsWeb &&
-        (this.appState.layoutMode == 'Full' ||
-            this.appState.layoutMode == 'Small')) {
+        ((widget.componentModel as SplitPanelComponentModel)
+                    .appState
+                    .layoutMode ==
+                'Full' ||
+            (widget.componentModel as SplitPanelComponentModel)
+                    .appState
+                    .layoutMode ==
+                'Small')) {
       return defaultSplitViewMode;
     }
 
@@ -99,10 +80,12 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
 
   @override
   Widget build(BuildContext context) {
+    SplitPanelComponentModel componentModel = widget.componentModel;
+
     ComponentWidget firstComponent =
-        getComponentWithContraint("FIRST_COMPONENT");
+        componentModel.getComponentWithContraint("FIRST_COMPONENT");
     ComponentWidget secondComponent =
-        getComponentWithContraint("SECOND_COMPONENT");
+        componentModel.getComponentWithContraint("SECOND_COMPONENT");
     List<Widget> widgets = new List<Widget>();
 
     return LayoutBuilder(
@@ -113,19 +96,19 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
         Size preferredSize;
 
         if (constraints.maxWidth != double.infinity &&
-            this.currentSplitviewWeight != null) {
+            componentModel.currentSplitviewWeight != null) {
           preferredSize = Size(
-              constraints.maxWidth * this.currentSplitviewWeight,
+              constraints.maxWidth * componentModel.currentSplitviewWeight,
               constraints.maxHeight);
         }
 
         widgets.add(CoScrollPanelLayout(
-          key: this.keyFirst,
+          key: componentModel.keyFirst,
           preferredConstraints:
               CoScrollPanelConstraints(constraints, preferredSize),
           children: [
             CoScrollPanelLayoutId(
-                key: ValueKey(this.keyFirst),
+                key: ValueKey(componentModel.keyFirst),
                 constraints:
                     CoScrollPanelConstraints(constraints, preferredSize),
                 child: firstComponent)
@@ -138,20 +121,20 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
       if (secondComponent != null) {
         Size preferredSize;
         if (constraints.maxWidth != double.infinity &&
-            this.currentSplitviewWeight != null) {
+            componentModel.currentSplitviewWeight != null) {
           preferredSize = Size(
               constraints.maxWidth -
-                  (constraints.maxWidth * this.currentSplitviewWeight),
+                  (constraints.maxWidth * componentModel.currentSplitviewWeight),
               constraints.maxHeight);
         }
 
         widgets.add(CoScrollPanelLayout(
-          key: this.keySecond,
+          key: componentModel.keySecond,
           preferredConstraints:
               CoScrollPanelConstraints(constraints, preferredSize),
           children: [
             CoScrollPanelLayoutId(
-                key: ValueKey(this.keySecond),
+                key: ValueKey(componentModel.keySecond),
                 constraints:
                     CoScrollPanelConstraints(constraints, preferredSize),
                 child: secondComponent)
@@ -163,29 +146,29 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
 
       if (this.splitViewMode != null) {
         return SplitView(
-          key: splitViewKey,
-          initialWeight: currentSplitviewWeight,
+          key: componentModel.splitViewKey,
+          initialWeight: componentModel.currentSplitviewWeight,
           gripColor: Colors.grey[300],
           handleColor: Colors.grey[800].withOpacity(0.5),
           view1: widgets[0],
           view2: widgets[1],
           viewMode: this.splitViewMode,
           onWeightChanged: (value) {
-            currentSplitviewWeight = value;
+            componentModel.currentSplitviewWeight = value;
           },
-          scrollControllerView1: scrollControllerView1,
-          scrollControllerView2: scrollControllerView2,
+          scrollControllerView1: componentModel.scrollControllerView1,
+          scrollControllerView2: componentModel.scrollControllerView2,
         );
       } else {
         return SplitView(
-          key: splitViewKey,
+          key: componentModel.splitViewKey,
           initialWeight: 0.5,
           showHandle: false,
           view1: widgets[0],
           view2: widgets[1],
           viewMode: SplitViewMode.Vertical,
-          scrollControllerView1: scrollControllerView1,
-          scrollControllerView2: scrollControllerView2,
+          scrollControllerView1: componentModel.scrollControllerView1,
+          scrollControllerView2: componentModel.scrollControllerView2,
         );
       }
     });

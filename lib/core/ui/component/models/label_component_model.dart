@@ -1,15 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
 import '../../../models/api/component/changed_component.dart';
+import '../../../models/api/component/component_properties.dart';
 import '../../../utils/app/text_utils.dart';
 import 'component_model.dart';
 
 class LabelComponentModel extends ComponentModel {
   TextStyle fontStyle = new TextStyle(fontSize: 16.0, color: Colors.black);
-
-  LabelComponentModel(ChangedComponent changedComponent)
-      : super(changedComponent);
 
   @override
   get isPreferredSizeSet => this.preferredSize != null;
@@ -29,6 +28,16 @@ class LabelComponentModel extends ComponentModel {
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
     return preferredSize;
+  }
+
+  LabelComponentModel(ChangedComponent changedComponent)
+      : super(changedComponent);
+
+  @override
+  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+    super.updateProperties(context, changedComponent);
+    this.text =
+        changedComponent.getProperty<String>(ComponentProperty.TEXT, this.text);
   }
 
   double getBaseline() {

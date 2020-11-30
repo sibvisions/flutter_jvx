@@ -1,11 +1,15 @@
-import 'package:jvx_flutterclient/core/ui/component/models/action_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/table_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/toggle_button_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/container/models/group_panel_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/container/models/split_panel_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../component/models/button_component_model.dart';
 import '../component/models/component_model.dart';
 import '../component/models/icon_component_model.dart';
 import '../component/models/label_component_model.dart';
-import '../component/models/selected_component_model.dart';
+import '../component/models/selectable_component_model.dart';
 import '../component/models/text_area_component_model.dart';
 import '../component/models/text_field_component_model.dart';
 import '../component/popup_menu/models/menu_item_component_model.dart';
@@ -53,7 +57,7 @@ class ComponentModelManager {
 
     switch (changedComponent.className) {
       case 'Table':
-        componentModel = EditorComponentModel(changedComponent);
+        componentModel = TableComponentModel(changedComponent);
         break;
       case 'Editor':
         componentModel = EditorComponentModel(changedComponent);
@@ -64,7 +68,7 @@ class ComponentModelManager {
             componentId: changedComponent.id);
         break;
       case 'GroupPanel':
-        componentModel = ContainerComponentModel(
+        componentModel = GroupPanelComponentModel(
             changedComponent: changedComponent,
             componentId: changedComponent.id);
         break;
@@ -74,12 +78,12 @@ class ComponentModelManager {
             componentId: changedComponent.id);
         break;
       case 'TabsetPanel':
-        componentModel = ContainerComponentModel(
+        componentModel = TabsetPanelComponentModel(
             changedComponent: changedComponent,
             componentId: changedComponent.id);
         break;
       case 'SplitPanel':
-        componentModel = ContainerComponentModel(
+        componentModel = SplitPanelComponentModel(
           changedComponent: changedComponent,
           componentId: changedComponent.id,
         );
@@ -100,10 +104,10 @@ class ComponentModelManager {
         componentModel = ButtonComponentModel(changedComponent);
         break;
       case 'CheckBox':
-        componentModel = SelectedComponentModel(changedComponent);
+        componentModel = SelectableComponentModel(changedComponent);
         break;
       case 'RadioButton':
-        componentModel = SelectedComponentModel(changedComponent);
+        componentModel = SelectableComponentModel(changedComponent);
         break;
       case 'Icon':
         componentModel = IconComponentModel(changedComponent);
@@ -118,7 +122,7 @@ class ComponentModelManager {
         componentModel = TextFieldComponentModel(changedComponent);
         break;
       case 'ToggleButton':
-        componentModel = ActionComponentModel(changedComponent);
+        componentModel = ToggleButtonComponentModel(changedComponent);
         break;
 
       default:

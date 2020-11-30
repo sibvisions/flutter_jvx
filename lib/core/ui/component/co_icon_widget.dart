@@ -20,7 +20,9 @@ class CoIconWidget extends ComponentWidget {
 class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
   void valueChanged(dynamic value) {
     SetComponentValue setComponentValue = SetComponentValue(
-        widget.componentModel.name, value, this.appState.clientId);
+        widget.componentModel.name,
+        value,
+        widget.componentModel.appState.clientId);
     BlocProvider.of<ApiBloc>(context).add(setComponentValue);
   }
 
@@ -35,10 +37,10 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
               decoration: BoxDecoration(
                   color: widget.componentModel.background != null
                       ? widget.componentModel.background
-                      : Colors.white.withOpacity(
-                          this.appState.applicationStyle?.controlsOpacity),
-                  borderRadius: BorderRadius.circular(
-                      this.appState.applicationStyle?.cornerRadiusEditors)),
+                      : Colors.white.withOpacity(widget.componentModel.appState
+                          .applicationStyle?.controlsOpacity),
+                  borderRadius: BorderRadius.circular(widget.componentModel
+                      .appState.applicationStyle?.cornerRadiusEditors)),
               child: CustomIcon(
                 image: widget.componentModel.image,
               ))
