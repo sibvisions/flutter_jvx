@@ -20,6 +20,10 @@ class CoTextCellEditorWidgetState
   dynamic value;
 
   void onTextFieldValueChanged(dynamic newValue) {
+    if (newValue != null && value == null) {
+      setState(() => value = newValue);
+    }
+
     if (value != newValue) {
       value = newValue;
       widget.cellEditorModel.valueChanged = true;
@@ -41,6 +45,8 @@ class CoTextCellEditorWidgetState
   @override
   void initState() {
     super.initState();
+
+    value = widget.cellEditorModel.cellEditorValue;
 
     widget.cellEditorModel.focusNode = FocusNode();
     widget.cellEditorModel.focusNode.addListener(() {
@@ -88,19 +94,19 @@ class CoTextCellEditorWidgetState
                         padding: EdgeInsets.only(right: 8),
                         child: GestureDetector(
                           onTap: () {
-                            if (widget.cellEditorModel.cellEditorValue !=
-                                    null &&
-                                widget.cellEditorModel.textController.text
-                                    .isNotEmpty) {
-                              widget.cellEditorModel.cellEditorValue = null;
+                            if (value != null && value.isNotEmpty) {
+                              setState(() {
+                                value = null;
+                              });
+                              widget.cellEditorModel.textController.value =
+                                  TextEditingValue(text: value ?? '');
                               widget.cellEditorModel.valueChanged = true;
-                              this.onValueChanged(context,
-                                  widget.cellEditorModel.cellEditorValue);
+                              widget.cellEditorModel.onValueChanged(context,
+                                  value, widget.cellEditorModel.indexInTable);
                               widget.cellEditorModel.valueChanged = false;
                             }
                           },
-                          child: widget.cellEditorModel.textController.text
-                                  .isNotEmpty
+                          child: value != null && value.isNotEmpty
                               ? Icon(Icons.clear,
                                   size: widget.cellEditorModel.iconSize,
                                   color: Colors.grey[400])
