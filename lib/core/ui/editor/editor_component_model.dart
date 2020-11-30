@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
-import 'package:jvx_flutterclient/core/ui/component/co_table_widget.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_number_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_referenced_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_text_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
-import 'package:jvx_flutterclient/core/utils/theme/hex_color.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
+import '../../models/api/response/data/filter.dart';
+import '../../utils/theme/hex_color.dart';
 import '../component/models/component_model.dart';
+import '../screen/so_component_data.dart';
 import 'celleditor/co_cell_editor_widget.dart';
+import 'celleditor/co_number_cell_editor_widget.dart';
+import 'celleditor/co_referenced_cell_editor_widget.dart';
+import 'celleditor/co_text_cell_editor_widget.dart';
 
 typedef OnBeginEditing = void Function();
 typedef OnEndEditing = void Function();
