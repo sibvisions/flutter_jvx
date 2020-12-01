@@ -309,9 +309,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         layoutData != null &&
         layoutData.isNotEmpty) {
       if (component is CoContainerWidget) {
-        (component.componentModel as ContainerComponentModel)
-            .layout
-            .updateLayoutData(layoutData);
+          (component.componentModel as ContainerComponentModel)
+              .layout
+              .updateLayoutData(layoutData);
       }
     }
 
@@ -319,9 +319,9 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
         layout != null &&
         layout.isNotEmpty) {
       if (component is CoContainerWidget) {
-        (component.componentModel as ContainerComponentModel)
-            .layout
-            .updateLayoutData(layoutData);
+          (component.componentModel as ContainerComponentModel)
+              .layout
+              .updateLayoutData(layoutData);
       }
     }
 
