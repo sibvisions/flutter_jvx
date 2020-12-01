@@ -18,8 +18,8 @@ class CoNumberCellEditorWidget extends CoCellEditorWidget {
 class CoNumberCellEditorWidgetState
     extends CoCellEditorWidgetState<CoNumberCellEditorWidget> {
   void onTextFieldValueChanged(dynamic newValue) {
-    (widget.cellEditorModel as NumberCellEditorModel).tempValue = newValue;
-    (widget.cellEditorModel as NumberCellEditorModel).valueChanged = true;
+    (widget.cellEditorModel).tempValue = newValue;
+    (widget.cellEditorModel).valueChanged = true;
   }
 
   void onTextFieldEndEditing() {
@@ -44,9 +44,8 @@ class CoNumberCellEditorWidgetState
   void initState() {
     super.initState();
 
-    (widget.cellEditorModel as NumberCellEditorModel).node.addListener(() {
-      if (!(widget.cellEditorModel as NumberCellEditorModel).node.hasFocus)
-        onTextFieldEndEditing();
+    (widget.cellEditorModel).node.addListener(() {
+      if (!(widget.cellEditorModel).node.hasFocus) onTextFieldEndEditing();
     });
   }
 

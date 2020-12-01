@@ -36,11 +36,11 @@ class NumberCellEditorModel extends CellEditorModel {
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
 
-    print("NumberCellEditor PreferredSize: " +
-        Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
-        "(" +
-        text +
-        ")");
+    // print("NumberCellEditor PreferredSize: " +
+    //     Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
+    //     "(" +
+    //     text +
+    //     ")");
 
     return Size(width + iconWidth + textPadding.horizontal, 50);
   }
