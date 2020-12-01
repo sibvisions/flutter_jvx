@@ -17,7 +17,7 @@ class CoNumberCellEditorWidget extends CoCellEditorWidget {
 
 class CoNumberCellEditorWidgetState
     extends CoCellEditorWidgetState<CoNumberCellEditorWidget> {
-  bool shouldShowSuffixIcon;
+  bool shouldShowSuffixIcon = false;
 
   void onTextFieldValueChanged(dynamic newValue) {
     if (widget.cellEditorModel.tempValue != newValue) {
