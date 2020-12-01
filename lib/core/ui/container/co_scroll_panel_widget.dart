@@ -30,10 +30,7 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
   }
 
   _scrollListener() {
-    if ((_scrollController.offset - this.scrollOffset) < 100)
-      this.scrollOffset = _scrollController.offset;
-    else
-      _scrollController.jumpTo(this.scrollOffset);
+    this.scrollOffset = _scrollController.offset;
   }
 
   @override

@@ -94,7 +94,7 @@ mixin SoDataScreen {
 
     pData.dataproviderChanged?.forEach((d) {
       SoComponentData cData = getComponentData(d.dataProvider);
-      cData.updateDataProviderChanged(context, d);
+      cData.updateDataProviderChanged(context, d, request.requestType);
     });
 
     if (request != null &&

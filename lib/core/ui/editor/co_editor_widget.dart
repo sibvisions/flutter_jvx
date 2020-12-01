@@ -56,8 +56,6 @@ class CoEditorWidgetState<T extends StatefulWidget>
   @override
   void initState() {
     super.initState();
-    ((widget as CoEditorWidget).componentModel as EditorComponentModel)
-        .cellEditor = (widget as CoEditorWidget).cellEditor;
 
     this.registerCallbacks();
   }

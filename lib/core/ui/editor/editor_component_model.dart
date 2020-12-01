@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_number_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_referenced_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/co_text_cell_editor_widget.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
-import 'package:jvx_flutterclient/core/utils/theme/hex_color.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
+import '../../models/api/response/data/filter.dart';
+import '../../utils/theme/hex_color.dart';
 import '../component/models/component_model.dart';
+import '../screen/so_component_data.dart';
 import 'celleditor/co_cell_editor_widget.dart';
+import 'celleditor/co_number_cell_editor_widget.dart';
+import 'celleditor/co_referenced_cell_editor_widget.dart';
+import 'celleditor/co_text_cell_editor_widget.dart';
 
 typedef OnBeginEditing = void Function();
 typedef OnEndEditing = void Function();
@@ -51,6 +51,11 @@ class EditorComponentModel extends ComponentModel {
     _data?.unregisterDataChanged(onServerDataChanged);
     _data = data;
     _data?.registerDataChanged(onServerDataChanged);
+
+    if (this.cellEditor != null && !this.cellEditor.cellEditorModel.isTableView){
+      this.cellEditor.cellEditorModel.cellEditorValue =
+          _data.getColumnData(null, columnName);
+    }
   }
 
   CoCellEditorWidget get cellEditor => _cellEditorWidget;
@@ -136,8 +141,8 @@ class EditorComponentModel extends ComponentModel {
     cellEditorPlaceholder = changedComponent.getProperty<String>(
         ComponentProperty.CELL_EDITOR___PLACEHOLDER___, cellEditorPlaceholder);
 
-    print(
-        '-------------- PLACEHOLDER FOR ${cellEditor.runtimeType} : $cellEditorPlaceholder');
+    //print(
+    //    '-------------- PLACEHOLDER FOR ${cellEditor.runtimeType} : $cellEditorPlaceholder');
 
     cellEditorBackground = changedComponent.getProperty<HexColor>(
         ComponentProperty.CELL_EDITOR___BACKGROUND___, cellEditorBackground);

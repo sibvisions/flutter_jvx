@@ -118,8 +118,9 @@ class SoComponentData {
   }
 
   void updateDataProviderChanged(
-      BuildContext context, DataproviderChanged pDataproviderChanged) {
-    _fetchData(context, pDataproviderChanged.reload, -1);
+      BuildContext context, DataproviderChanged pDataproviderChanged, [RequestType requestType]) {
+    if (pDataproviderChanged.reload != null || requestType == RequestType.UPLOAD)
+      _fetchData(context, pDataproviderChanged.reload, -1);
     if (data != null && pDataproviderChanged.selectedRow != null)
       updateSelectedRow(context, pDataproviderChanged.selectedRow);
   }

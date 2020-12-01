@@ -14,6 +14,8 @@ class TextCellEditorModel extends CellEditorModel {
 
   bool password = false;
   bool valueChanged = false;
+  TextEditingController textController = TextEditingController();
+  FocusNode focusNode = new FocusNode();
 
   TextCellEditorModel(CellEditor cellEditor) : super(cellEditor) {
     this.multiLine = this
@@ -26,6 +28,11 @@ class TextCellEditorModel extends CellEditorModel {
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE)
             ?.contains('password') ??
         false);
+  }
+  @override
+  set cellEditorValue(dynamic value) {
+    textController.value = TextEditingValue(text: value ?? '');
+    super.cellEditorValue = value;
   }
 
   @override
