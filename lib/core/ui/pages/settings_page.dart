@@ -311,7 +311,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   showLanguagePicker(BuildContext context) {
     List languages = widget?.appState?.translation?.keys
-        ?.map((k) => k.replaceAll('translation_', '').replaceAll('.xml', ''))
+        ?.map((k) => k.replaceAll('translation_', '').replaceAll('.json', ''))
         ?.toList();
 
     if (languages != null && languages.isNotEmpty)
@@ -344,16 +344,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
             cancelTextStyle:
                 TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
-            onConfirm: (Picker picker, List value) {
+            onConfirm: (Picker picker, List value) async {
               String newLang =
                   picker.getSelectedValues()[0].toString().toLowerCase();
+
+              if (newLang != null && newLang.isNotEmpty)
+                  await AppLocalizations.load(new Locale(newLang));
+
               setState(() {
                 isDialogOpen = false;
 
                 widget.appState.language = newLang;
                 this.language = newLang;
-                if (newLang != null && newLang.isNotEmpty)
-                  AppLocalizations.load(new Locale(newLang));
               });
             },
             onCancel: () => setState(() => isDialogOpen = false),
