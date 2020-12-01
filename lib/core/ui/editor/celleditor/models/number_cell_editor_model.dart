@@ -30,11 +30,18 @@ class NumberCellEditorModel extends CellEditorModel {
     if (numberFormat != null && numberFormat.length < text.length)
       text = text.substring(0, numberFormat?.length);
 
-    if (cellEditorValue != null) {
+    if (cellEditorValue != null && cellEditorValue.toString().length > 0) {
       text = cellEditorValue.toString();
     }
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+
+    print("NumberCellEditor PreferredSize: " +
+        Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
+        "(" +
+        text +
+        ")");
+
     return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 

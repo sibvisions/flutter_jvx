@@ -7,7 +7,8 @@ import 'formatter/numeric_text_formatter.dart';
 import 'models/number_cell_editor_model.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
-  CoNumberCellEditorWidget({Key key, NumberCellEditorModel cellEditorModel})
+  final NumberCellEditorModel cellEditorModel;
+  CoNumberCellEditorWidget({Key key, this.cellEditorModel})
       : super(key: key, cellEditorModel: cellEditorModel);
 
   @override
@@ -89,12 +90,21 @@ class CoNumberCellEditorWidgetState
                           if (cellEditorModel.cellEditorValue != null) {
                             cellEditorModel.cellEditorValue = null;
                             cellEditorModel.valueChanged = true;
-                            super.onValueChanged(context, cellEditorModel.cellEditorValue);
+                            super.onValueChanged(
+                                context, cellEditorModel.cellEditorValue);
                             cellEditorModel.valueChanged = false;
                           }
                         },
-                        child: Icon(Icons.clear,
-                            size: 24, color: Colors.grey[400]),
+                        child: cellEditorModel.cellEditorValue != null &&
+                                cellEditorModel.cellEditorValue
+                                    .toString()
+                                    .isNotEmpty
+                            ? Icon(Icons.clear,
+                                size: widget.cellEditorModel.iconSize,
+                                color: Colors.grey[400])
+                            : SizedBox(
+                                height: widget.cellEditorModel.iconSize,
+                                width: 1),
                       ),
                     )
                   : null),

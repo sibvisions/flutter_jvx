@@ -29,11 +29,19 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
     if (text == "") text = TextUtils.averageCharactersTextField;
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+
+    // print("LinkedCellEditor PreferredSize: " +
+    //     Size(width + 100, 50).toString() +
+    //     "(" +
+    //     text +
+    //     ")");
+
     return Size(width + 100, 50);
   }
 
   @override
   get minimumSize {
-    return Size(100, 50);
+    return preferredSize;
+    //return Size(100, 50);
   }
 }
