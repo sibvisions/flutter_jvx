@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/api/editor/cell_editor.dart';
 import 'co_cell_editor_widget.dart';
 import 'models/referenced_cell_editor_model.dart';
 
