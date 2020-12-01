@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/component/changed_component.dart';
-import 'package:jvx_flutterclient/core/models/api/component/component_properties.dart';
-import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
+
+import '../../../../models/api/component/changed_component.dart';
+import '../../../../models/api/component/component_properties.dart';
+import '../../container_component_model.dart';
 
 class TabsetPanelComponentModel extends ContainerComponentModel {
   bool eventTabClosed;
@@ -11,9 +12,10 @@ class TabsetPanelComponentModel extends ContainerComponentModel {
   List<bool> isEnabled = <bool>[];
   List<bool> isClosable = <bool>[];
 
-  TabController tabController;
   List<Tab> tabs = <Tab>[];
   List<int> pendingDeletes = <int>[];
+
+  int selectedIndex;
 
   TabsetPanelComponentModel(
       {ChangedComponent changedComponent, String componentId})
@@ -30,8 +32,7 @@ class TabsetPanelComponentModel extends ContainerComponentModel {
         .getProperty<bool>(ComponentProperty.EVENT_TAB_ACTIVATED);
     eventTabMoved =
         changedComponent.getProperty<bool>(ComponentProperty.EVENT_TAB_MOVED);
-    int indx =
+    selectedIndex =
         changedComponent.getProperty<int>(ComponentProperty.SELECTED_INDEX);
-    tabController.animateTo(indx != null && indx >= 0 ? indx : 0);
   }
 }

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/core/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
 
-import '../../../models/api/component/changed_component.dart';
-import '../../../models/api/component/component_properties.dart';
 import '../../../models/api/request/tab_close.dart';
 import '../../../models/api/request/tab_select.dart';
 import '../../../services/remote/bloc/api_bloc.dart';
 import '../../widgets/custom/custom_icon.dart';
 import '../co_container_widget.dart';
 import '../container_component_model.dart';
+import 'models/tabset_panel_component_model.dart';
 
 class CoTabsetPanelWidget extends CoContainerWidget {
   CoTabsetPanelWidget({ContainerComponentModel componentModel})
@@ -20,6 +18,8 @@ class CoTabsetPanelWidget extends CoContainerWidget {
 
 class CoTabsetPanelWidgetState extends CoContainerWidgetState
     with TickerProviderStateMixin {
+  TabController tabController;
+
   List<Tab> createTabs() {
     final TabsetPanelComponentModel componentModel =
         widget.componentModel as TabsetPanelComponentModel;
@@ -89,21 +89,19 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
 
   void _initTabController(int index) {
     (widget.componentModel as TabsetPanelComponentModel).tabs = createTabs();
-    (widget.componentModel as TabsetPanelComponentModel).tabController =
-        TabController(
-            initialIndex: index,
-            length: (widget.componentModel as TabsetPanelComponentModel)
-                .tabs
-                .length,
-            vsync: this)
-          ..addListener(_handleTabAnimation);
+    this.tabController = TabController(
+        initialIndex: index,
+        length:
+            (widget.componentModel as TabsetPanelComponentModel).tabs.length,
+        vsync: this)
+      ..addListener(_handleTabAnimation);
   }
 
   void _handleTabAnimation() {
     final TabsetPanelComponentModel componentModel =
         widget.componentModel as TabsetPanelComponentModel;
 
-    if (!componentModel.tabController.indexIsChanging) {
+    if (!this.tabController.indexIsChanging) {
       if (componentModel.pendingDeletes.isNotEmpty) {
         setState(() {
           for (int index in componentModel.pendingDeletes) {
@@ -118,14 +116,13 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
         });
       }
 
-      if (!componentModel.isEnabled[componentModel.tabController.index]) {
-        componentModel.tabController
-            .animateTo(componentModel.tabController.previousIndex);
+      if (!componentModel.isEnabled[this.tabController.index]) {
+        this.tabController.animateTo(this.tabController.previousIndex);
       } else {
         BlocProvider.of<ApiBloc>(context).add(TabSelect(
             clientId: componentModel.appState.clientId,
             componentId: widget.componentModel.name,
-            index: componentModel.tabController.index));
+            index: this.tabController.index));
       }
     }
   }
@@ -136,7 +133,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
     if (index > 0) {
       setState(() {
         componentModel.pendingDeletes.add(index);
-        componentModel.tabController.animateTo(0);
+        this.tabController.animateTo(0);
       });
     }
   }
@@ -149,26 +146,27 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
 
   @override
   void dispose() {
-    (widget.componentModel as TabsetPanelComponentModel)
-        .tabController
-        .dispose();
+    this.tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    int _idx = (widget.componentModel as TabsetPanelComponentModel).selectedIndex;
+    if (_idx != this.tabController.index) {
+      tabController.animateTo(_idx != null && _idx >= 0 ? _idx : 0);
+    }
+
     return Scaffold(
       appBar: TabBar(
           isScrollable: true,
-          controller: (widget.componentModel as TabsetPanelComponentModel)
-              .tabController,
+          controller: this.tabController,
           tabs: (widget.componentModel as TabsetPanelComponentModel)
               .tabs
               .map((tab) => tab)
               .toList()),
       body: TabBarView(
-          controller: (widget.componentModel as TabsetPanelComponentModel)
-              .tabController,
+          controller: this.tabController,
           children:
               (widget.componentModel as TabsetPanelComponentModel).components),
     );

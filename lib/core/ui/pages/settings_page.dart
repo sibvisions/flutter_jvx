@@ -20,8 +20,13 @@ import '../widgets/util/restart_widget.dart';
 class SettingsPage extends StatefulWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
+  final bool warmWelcome;
 
-  SettingsPage({Key key, @required this.appState, @required this.manager})
+  SettingsPage(
+      {Key key,
+      @required this.appState,
+      @required this.manager,
+      @required this.warmWelcome})
       : super(key: key);
 
   _SettingsPageState createState() => _SettingsPageState();
@@ -382,16 +387,20 @@ class _SettingsPageState extends State<SettingsPage> {
           floatingIcon: FontAwesomeIcons.qrcode,
           qrCallback: () => scanBarcode(),
           bodyData: settingsBuilder(),
-          bottomButton1:
-              AppLocalizations.of(context).text('Back').toUpperCase(),
-          bottomButton2:
-              AppLocalizations.of(context).text('Save').toUpperCase(),
+          bottomButton1: widget.warmWelcome
+              ? null
+              : AppLocalizations.of(context).text('Back').toUpperCase(),
+          bottomButton2: widget.warmWelcome
+              ? AppLocalizations.of(context).text('Open').toUpperCase()
+              : AppLocalizations.of(context).text('Save').toUpperCase(),
           bottomButton1Function: () {
-            if (ModalRoute.of(context).settings.arguments is String &&
-                ModalRoute.of(context).settings.arguments == "error.dialog") {
-              RestartWidget.restartApp(context, shouldLoadConfig: false);
-            } else {
-              if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+            if (!widget.warmWelcome) {
+              if (ModalRoute.of(context).settings.arguments is String &&
+                  ModalRoute.of(context).settings.arguments == "error.dialog") {
+                RestartWidget.restartApp(context, shouldLoadConfig: false);
+              } else {
+                if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+              }
             }
           },
           bottomButton2Function: () {
