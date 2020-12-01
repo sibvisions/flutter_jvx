@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/download.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
+import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
 import 'package:jvx_flutterclient/core/utils/theme/get_color_from_app_style.dart';
 import 'package:uuid/uuid.dart';
 
@@ -262,7 +263,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) Navigator.of(context).pushReplacementNamed('/settings');
+        if (mounted) Navigator.of(context).pushReplacementNamed('/settings', arguments: SettingsArguments(warmWelcome: true));
       });
       return;
     }
