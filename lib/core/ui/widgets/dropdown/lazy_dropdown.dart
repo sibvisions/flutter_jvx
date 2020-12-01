@@ -48,6 +48,7 @@ class _LazyDropdownState extends State<LazyDropdown> {
   Timer filterTimer; // 200-300 Milliseconds
   dynamic lastChangedFilter;
   CoTableWidget table;
+  Size maxSize = Size(600, 800);
 
   void updateData(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -180,6 +181,13 @@ class _LazyDropdownState extends State<LazyDropdown> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     ColorScheme colorScheme = theme.colorScheme;
+    double containerWidth;
+    double containerHeight;
+    Size displaySize = MediaQuery.of(context).size;
+
+    if (displaySize.width - 50 > maxSize.width) containerWidth = maxSize.width;
+    if (displaySize.height - 50 > maxSize.height)
+      containerHeight = maxSize.height;
 
     return Dialog(
         insetPadding: EdgeInsets.fromLTRB(25, 25, 25, 25),
@@ -187,6 +195,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
         child: Container(
+          width: containerWidth,
+          height: containerHeight,
           child: Container(
             decoration: new BoxDecoration(
                 color: Colors.white,
