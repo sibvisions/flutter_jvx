@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:xml/xml.dart';
 
 import '../../../injection_container.dart';
 import '../../models/app/app_state.dart';
@@ -22,57 +20,52 @@ class AppLocalizations {
   static Future<AppLocalizations> load(Locale locale) async {
     AppState appState = sl<AppState>();
 
-    String contents;
-    File file;
-
     try {
-      if (!kIsWeb) {
-        if (locale.languageCode == 'en' &&
-            appState.translation['translation.xml'] != null) {
-          file = File(appState.translation['translation.xml']);
-          if (file.existsSync()) {
-            contents = file.readAsStringSync();
-          }
-        } else if (locale.languageCode != 'en' &&
-            appState.translation['translation_${locale.languageCode}.xml'] !=
-                null) {
-          file = File(
-              appState.translation['translation_${locale.languageCode}.xml']);
+      if (appState.translation != null &&
+          appState.translation.isNotEmpty &&
+          appState.translation['translation_${locale.languageCode}.json'] !=
+              null) {
+        final file = File(
+            appState.translation['translation_${locale.languageCode}.json']);
 
-          if (file.existsSync()) {
-            contents = file.readAsStringSync();
-          }
-        } else {
-          try {
-            String jsonContent =
-                await rootBundle.loadString('locale/i18n_de.json');
-            _localizedValues = json.decode(jsonContent);
-          } catch (e) {
-            throw new Error();
-          }
+        String contents = await file.readAsString();
+
+        if (contents != null && contents.length > 0) {
+          List<dynamic> translationList = json.decode(contents);
+          _localizedValues = <String, dynamic>{};
+
+          translationList.forEach((translation) {
+            _localizedValues.putIfAbsent(
+                translation['text'], () => translation['translation']);
+          });
+        }
+      } else if (appState.translation != null &&
+          appState.translation.isNotEmpty &&
+          appState.translation['translation.json'] != null) {
+        final file = File(appState.translation['translation.json']);
+
+        String contents = await file.readAsString();
+
+        if (contents != null && contents.length > 0) {
+          List<dynamic> translationList = json.decode(contents);
+          _localizedValues = <String, dynamic>{};
+
+          translationList.forEach((translation) {
+            _localizedValues.putIfAbsent(
+                translation['text'], () => translation['translation']);
+          });
         }
       } else {
-        contents = appState.files[appState.translation[
-            locale.languageCode == 'en'
-                ? 'translation.xml'
-                : 'translation_${locale.languageCode}.xml']];
+        String jsonContent = await rootBundle.loadString(appState.package
+            ? "packages/jvx_flutterclient/locale/i18n_${locale.languageCode}.json"
+            : "locale/i18n_${locale.languageCode}.json");
+        _localizedValues = json.decode(jsonContent);
       }
     } catch (e) {
-      AppLocalizations translations = new AppLocalizations(const Locale('en'));
       String jsonContent = await rootBundle.loadString(appState.package
-          ? "packages/jvx_flutterclient/locale/i18n_de.json"
-          : "locale/i18n_de.json");
+          ? "packages/jvx_flutterclient/locale/i18n_en.json"
+          : "locale/i18n_en.json");
       _localizedValues = json.decode(jsonContent);
-
-      return translations;
-    }
-
-    if (contents != null && contents.length > 0) {
-      XmlDocument doc = XmlDocument.parse(contents);
-
-      doc.findAllElements('entry').toList().forEach((element) {
-        _localizedValues[element.attributes.first.value] = element.text;
-      });
     }
 
     return AppLocalizations(locale);
