@@ -49,11 +49,11 @@ class TextCellEditorModel extends CellEditorModel {
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
 
-    print("TextCellEditor PreferredSize: " +
-        Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
-        "(" +
-        text +
-        ")");
+    // print("TextCellEditor PreferredSize: " +
+    //     Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
+    //     "(" +
+    //     text +
+    //     ")");
 
     if (multiLine)
       return Size(18 + width + iconWidth + textPadding.horizontal, 100);
