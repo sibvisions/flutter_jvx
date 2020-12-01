@@ -23,6 +23,7 @@ class NumberCellEditorModel extends CellEditorModel {
 
   @override
   get preferredSize {
+    //if (super.isPreferredSizeSet) return super.preferredSize;
     double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
     String text = TextUtils.averageCharactersTextField;
 
@@ -34,15 +35,15 @@ class NumberCellEditorModel extends CellEditorModel {
     }
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
-
     return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 
   @override
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
-    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
-    return Size(10 + iconWidth + textPadding.horizontal, 100);
+    return preferredSize;
+    //double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
+    //return Size(10 + iconWidth + textPadding.horizontal, 100);
   }
 
   @override
@@ -70,8 +71,7 @@ class NumberCellEditorModel extends CellEditorModel {
   }
 
   String _getFormattedValue(dynamic value) {
-    if (value != null &&
-        (value is int || value is double)) {
+    if (value != null && (value is int || value is double)) {
       if (numberFormat != null && numberFormat.isNotEmpty) {
         intl.NumberFormat format = intl.NumberFormat(numberFormat);
         return format.format(value);

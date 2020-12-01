@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
 import 'co_grid_layout_constraint.dart';
 
 ///
@@ -247,6 +248,97 @@ class RenderGridLayoutWidget extends RenderBox
 
       this.size = size;
     }
+  }
+
+  Size getPreferredSize(
+      RenderBox renderBox, CoGridLayoutConstraints constraint) {
+    if (!constraint.comp.componentModel.isPreferredSizeSet) {
+      renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+
+      if (!renderBox.hasSize) {
+        BoxConstraints constraints = BoxConstraints(
+            minHeight: 0,
+            maxHeight: this.constraints.maxHeight,
+            minWidth: 0,
+            maxWidth: this.constraints.maxWidth < 0
+                ? this.constraints.maxWidth
+                : this.constraints.maxWidth);
+
+        renderBox.layout(constraints, parentUsesSize: true);
+      }
+
+      if (!renderBox.hasSize) {
+        print("CoFormLayout: RenderBox has no size after layout!");
+      }
+
+      if (renderBox.size.width == double.infinity ||
+          renderBox.size.height == double.infinity) {
+        print(
+            "CoFormLayout: getPrefererredSize: Infinity height or width for FormLayout!");
+      }
+      return renderBox.size;
+    } else {
+      return constraint.comp.componentModel.preferredSize;
+    }
+  }
+
+  Size preferredLayoutSize(ContainerComponentModel pParent) {
+    double maxWidth = 0;
+    double maxHeight = 0;
+
+    int targetColumns = columns;
+    int targetRows = rows;
+
+    constraintMap?.forEach((component, constraints) {
+      EdgeInsets insets = constraints.insets;
+
+      Size pref = getPreferredSize(component, constraints);
+      double width =
+          (pref.width + constraints.gridWidth - 1) / constraints.gridWidth +
+              insets.left +
+              insets.right;
+      if (width > maxWidth) {
+        maxWidth = width;
+      }
+      double height =
+          (pref.height + constraints.gridHeight - 1) / constraints.gridHeight +
+              insets.top +
+              insets.bottom;
+      if (height > maxHeight) {
+        maxHeight = height;
+      }
+
+      if (columns <= 0 &&
+          constraints.gridX + constraints.gridWidth > targetColumns) {
+        targetColumns = constraints.gridX + constraints.gridWidth;
+      }
+      if (rows <= 0 &&
+          constraints.gridY + constraints.gridHeight > targetRows) {
+        targetRows = constraints.gridY + constraints.gridHeight;
+      }
+    });
+
+    return new Size(
+        maxWidth * targetColumns +
+            margins.left +
+            margins.right +
+            horizontalGap * (targetColumns - 1),
+        maxHeight * targetRows +
+            margins.top +
+            margins.bottom +
+            verticalGap * (targetRows - 1));
+
+    //EdgeInsets parentInsets = pParent.insets;
+
+    /*return new Size(maxWidth * targetColumns + parentInsets.left + parentInsets.right 
+				  + margins.left + margins.right + horizontalGap * (targetColumns - 1),
+				  maxHeight * targetRows + parentInsets.bottom + parentInsets.top 
+				   + margins.top + margins.bottom + verticalGap * (targetRows - 1));
+*/
+  }
+
+  Size minimumLayoutSize(ContainerComponentModel parent) {
+    return new Size(0, 0);
   }
 
   @override
