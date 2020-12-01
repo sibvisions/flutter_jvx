@@ -138,8 +138,9 @@ class Response {
               break;
           }
         } else {
-          error = ErrorResponse('Error', 'An Error occured',
-              'Couldn\'t parse Response', 'message.error');
+          if (!hasError)
+            error = ErrorResponse('Error', 'An Error occured',
+                'Couldn\'t parse Response', 'message.error');
         }
       });
     }
