@@ -22,7 +22,7 @@ class ComponentModel extends ValueNotifier {
   Size _maximumSize;
   bool isVisible = true;
   bool enabled = true;
-  String constraints = "";
+  String _constraints = "";
   int verticalAlignment = 1;
   int horizontalAlignment = 0;
   String text = "";
@@ -35,6 +35,14 @@ class ComponentModel extends ValueNotifier {
   CoState coState;
 
   AppState appState;
+
+  String get constraints => _constraints;
+  set constraints(String constr) {
+    if (_constraints != constr) {
+      _constraints = constr;
+      notifyListeners();
+    }
+  }
 
   bool get isForegroundSet => foreground != null;
   bool get isBackgroundSet => background != null;
@@ -54,16 +62,17 @@ class ComponentModel extends ValueNotifier {
 
   ComponentModel(this._changedComponent) : super(_changedComponent) {
     this.appState = sl<AppState>();
-    
+
     if (this._changedComponent != null) {
       this.componentId = this._changedComponent.id;
     }
   }
 
   /// Method for updating the properties of the component.
-  /// 
+  ///
   /// When overriding this method super should be called last.
-  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
     preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, _preferredSize);
     maximumSize = changedComponent.getProperty<Size>(
@@ -90,7 +99,7 @@ class ComponentModel extends ValueNotifier {
         ComponentProperty.HORIZONTAL_ALIGNMENT, horizontalAlignment);
     parentComponentId = changedComponent.getProperty<String>(
         ComponentProperty.PARENT, parentComponentId);
-    constraints = changedComponent.getProperty<String>(
+    _constraints = changedComponent.getProperty<String>(
         ComponentProperty.CONSTRAINTS, constraints);
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     text = _changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
