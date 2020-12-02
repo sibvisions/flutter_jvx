@@ -42,6 +42,8 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
   @override
   get minimumSize {
     return preferredSize;
-    //return Size(100, 50);
   }
+
+  @override
+  Size get tableMinimumSize => Size(150, 50);
 }
