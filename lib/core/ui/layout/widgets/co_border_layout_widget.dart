@@ -89,6 +89,11 @@ class RenderBorderLayoutWidget extends RenderBox
   int iVerticalGap;
   CoContainerWidget container;
 
+  // only used in parent layouts
+  Size preferredLayoutSize;
+  Size minimumLayoutSize;
+  Size maximumLayoutSize;
+
   RenderBorderLayoutWidget(
       this.container, this.insMargin, this.iHorizontalGap, this.iVerticalGap,
       {List<RenderBox> children}) {
@@ -164,6 +169,11 @@ class RenderBorderLayoutWidget extends RenderBox
 
       child = childParentData.nextSibling;
     }
+
+    // calculate preferred, minimum and maximum layout sizes for parent layouts
+    // preferredLayoutSize = _preferredLayoutSize(container.componentModel);
+    // minimumLayoutSize = _minimumLayoutSize(container.componentModel);
+    // maximumLayoutSize = _maximumLayoutSize(container.componentModel);
 
     // layout NORTH
     if (north != null) {
@@ -333,7 +343,7 @@ class RenderBorderLayoutWidget extends RenderBox
     return defaultHitTestChildren(result, position: position);
   }
 
-  Size minimumLayoutSize(ContainerComponentModel pTarget) {
+  Size _minimumLayoutSize(ContainerComponentModel pTarget) {
     if (pTarget.isMinimumSizeSet) {
       return pTarget.minimumSize;
     } else {
@@ -412,7 +422,7 @@ class RenderBorderLayoutWidget extends RenderBox
     }
   }
 
-  Size maximumLayoutSize(ContainerComponentModel pTarget) {
+  Size _maximumLayoutSize(ContainerComponentModel pTarget) {
     if (pTarget.isMaximumSizeSet) {
       return pTarget.maximumSize;
     } else {
@@ -420,7 +430,7 @@ class RenderBorderLayoutWidget extends RenderBox
     }
   }
 
-  Size preferredLayoutSize(ContainerComponentModel pContainer) {
+  Size _preferredLayoutSize(ContainerComponentModel pContainer) {
     double width = 0;
     double height = 0;
 

@@ -106,6 +106,7 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
           key: componentModel.keyFirst,
           preferredConstraints:
               CoScrollPanelConstraints(constraints, preferredSize),
+          container: widget.componentModel,
           children: [
             CoScrollPanelLayoutId(
                 key: ValueKey(componentModel.keyFirst),
@@ -124,7 +125,8 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
             componentModel.currentSplitviewWeight != null) {
           preferredSize = Size(
               constraints.maxWidth -
-                  (constraints.maxWidth * componentModel.currentSplitviewWeight),
+                  (constraints.maxWidth *
+                      componentModel.currentSplitviewWeight),
               constraints.maxHeight);
         }
 
