@@ -80,19 +80,28 @@ class SoComponentData {
     } else if (true /*data.isAllFetched*/) {
       if (pData.records.length > 0) {
         for (int i = pData.from; i <= pData.to; i++) {
+          List<dynamic> record = pData.records[(i - pData.from)];
+          String recordState = record[record.length - 1];
+
           if ((i - pData.from) < data.records.length &&
               i < this.data.records.length) {
-            List<dynamic> record = pData.records[(i - pData.from)];
-            String recordState = record[record.length - 1];
-            if (recordState == "I")
+            if (recordState == 'I' &&
+                this.data.selectedRow != pData.selectedRow) {
               this
                   .data
                   .records
                   .insert((i - pData.from), pData.records[(i - pData.from)]);
-            else if (recordState == "D")
-              this.data.records.removeAt((i - pData.from));
-            else
+            } else if ((recordState != 'I' &&
+                    (pData.from == pData.to &&
+                        this.data.records[pData.from] != null)) ||
+                (recordState == 'I' &&
+                    this.data.selectedRow == pData.selectedRow &&
+                    (pData.from == pData.to &&
+                        this.data.records[pData.from] != null))) {
               this.data.records[i] = pData.records[(i - pData.from)];
+            } else if (recordState == 'D') {
+              this.data.records.removeAt((i - pData.from));
+            }
           } else {
             this.data.records.add(pData.records[(i - pData.from)]);
           }
