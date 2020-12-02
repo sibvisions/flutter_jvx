@@ -18,15 +18,18 @@ class CoTextCellEditorWidget extends CoCellEditorWidget {
 class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
   dynamic value;
+  bool shouldShowSuffixIcon = false;
 
   void onTextFieldValueChanged(dynamic newValue) {
-    if (newValue != null && value == null) {
-      setState(() => value = newValue);
-    }
-
     if (value != newValue) {
       value = newValue;
       widget.cellEditorModel.valueChanged = true;
+
+      if (newValue != null && newValue.isNotEmpty) {
+        setState(() {
+          shouldShowSuffixIcon = true;
+        });
+      }
     }
   }
 
@@ -61,6 +64,8 @@ class CoTextCellEditorWidgetState
 
   @override
   Widget build(BuildContext context) {
+    if (value != null && value.isNotEmpty) shouldShowSuffixIcon = true;
+
     return DecoratedBox(
       decoration: BoxDecoration(
           color: widget.cellEditorModel.background != null
@@ -95,18 +100,18 @@ class CoTextCellEditorWidgetState
                         child: GestureDetector(
                           onTap: () {
                             if (value != null && value.isNotEmpty) {
+                              widget.cellEditorModel.textController.value =
+                                  TextEditingValue(text: '');
+                              widget.cellEditorModel.valueChanged = true;
+                              widget.cellEditorModel.onValueChanged(context,
+                                  null, widget.cellEditorModel.indexInTable);
+                              widget.cellEditorModel.valueChanged = false;
                               setState(() {
                                 value = null;
                               });
-                              widget.cellEditorModel.textController.value =
-                                  TextEditingValue(text: value ?? '');
-                              widget.cellEditorModel.valueChanged = true;
-                              widget.cellEditorModel.onValueChanged(context,
-                                  value, widget.cellEditorModel.indexInTable);
-                              widget.cellEditorModel.valueChanged = false;
                             }
                           },
-                          child: value != null && value.isNotEmpty
+                          child: shouldShowSuffixIcon
                               ? Icon(Icons.clear,
                                   size: widget.cellEditorModel.iconSize,
                                   color: Colors.grey[400])

@@ -37,25 +37,37 @@ class TextCellEditorModel extends CellEditorModel {
 
   @override
   get preferredSize {
+    //if (super.isPreferredSizeSet) return super.preferredSize;
     double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
     String text = TextUtils.averageCharactersTextField;
 
-    if (!multiLine && cellEditorValue != null) {
+    if (!multiLine &&
+        cellEditorValue != null &&
+        cellEditorValue.toString().length > 0) {
       text = cellEditorValue;
     }
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+
+    // print("TextCellEditor PreferredSize: " +
+    //     Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
+    //     "(" +
+    //     text +
+    //     ")");
+
     if (multiLine)
-      return Size(width + iconWidth + textPadding.horizontal, 100);
+      return Size(18 + width + iconWidth + textPadding.horizontal, 100);
     else
-      return Size(width + iconWidth + textPadding.horizontal, 50);
+      return Size(18 + width + iconWidth + textPadding.horizontal, 50);
   }
 
   @override
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
-    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
-    return Size(10 + iconWidth + textPadding.horizontal, 100);
+    return preferredSize;
+    //double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
+
+    //return Size(18 + iconWidth + textPadding.horizontal, 100);
   }
 
   @override

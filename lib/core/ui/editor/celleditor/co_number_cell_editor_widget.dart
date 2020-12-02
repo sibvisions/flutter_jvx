@@ -7,7 +7,8 @@ import 'formatter/numeric_text_formatter.dart';
 import 'models/number_cell_editor_model.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
-  CoNumberCellEditorWidget({Key key, NumberCellEditorModel cellEditorModel})
+  final NumberCellEditorModel cellEditorModel;
+  CoNumberCellEditorWidget({Key key, this.cellEditorModel})
       : super(key: key, cellEditorModel: cellEditorModel);
 
   @override
@@ -16,9 +17,19 @@ class CoNumberCellEditorWidget extends CoCellEditorWidget {
 
 class CoNumberCellEditorWidgetState
     extends CoCellEditorWidgetState<CoNumberCellEditorWidget> {
+  bool shouldShowSuffixIcon = false;
+
   void onTextFieldValueChanged(dynamic newValue) {
-    (widget.cellEditorModel as NumberCellEditorModel).tempValue = newValue;
-    (widget.cellEditorModel as NumberCellEditorModel).valueChanged = true;
+    if (widget.cellEditorModel.tempValue != newValue) {
+      widget.cellEditorModel.tempValue = newValue;
+      widget.cellEditorModel.valueChanged = true;
+
+      if (newValue != null && newValue.isNotEmpty) {
+        setState(() {
+          shouldShowSuffixIcon = true;
+        });
+      }
+    }
   }
 
   void onTextFieldEndEditing() {
@@ -43,75 +54,82 @@ class CoNumberCellEditorWidgetState
   void initState() {
     super.initState();
 
-    (widget.cellEditorModel as NumberCellEditorModel).node.addListener(() {
-      if (!(widget.cellEditorModel as NumberCellEditorModel).node.hasFocus)
-        onTextFieldEndEditing();
+    widget.cellEditorModel.node.addListener(() {
+      if (!widget.cellEditorModel.node.hasFocus) onTextFieldEndEditing();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    NumberCellEditorModel cellEditorModel = widget.cellEditorModel;
-
     TextDirection direction = TextDirection.ltr;
+
+    if (widget.cellEditorModel.tempValue != null &&
+        widget.cellEditorModel.tempValue.isNotEmpty)
+      shouldShowSuffixIcon = true;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: cellEditorModel.background != null
-              ? cellEditorModel.background
-              : cellEditorModel.appState.applicationStyle != null
-                  ? Colors.white.withOpacity(cellEditorModel
-                      .appState.applicationStyle?.controlsOpacity)
+          color: widget.cellEditorModel.background != null
+              ? widget.cellEditorModel.background
+              : widget.cellEditorModel.appState.applicationStyle != null
+                  ? Colors.white.withOpacity(widget.cellEditorModel.appState
+                      .applicationStyle?.controlsOpacity)
                   : null,
-          borderRadius: BorderRadius.circular(
-              cellEditorModel.appState.applicationStyle?.cornerRadiusEditors),
-          border: cellEditorModel.borderVisible &&
-                  cellEditorModel.editable != null &&
-                  cellEditorModel.editable
+          borderRadius: BorderRadius.circular(widget
+              .cellEditorModel.appState.applicationStyle?.cornerRadiusEditors),
+          border: widget.cellEditorModel.borderVisible &&
+                  widget.cellEditorModel.editable != null &&
+                  widget.cellEditorModel.editable
               ? Border.all(color: Theme.of(context).primaryColor)
               : Border.all(color: Colors.grey)),
       child: Container(
         width: 100,
         child: TextFormField(
           textAlign: SoTextAlign.getTextAlignFromInt(
-              cellEditorModel.horizontalAlignment),
+              widget.cellEditorModel.horizontalAlignment),
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(12),
               border: InputBorder.none,
-              hintText: cellEditorModel.placeholderVisible
-                  ? cellEditorModel.placeholder
+              hintText: widget.cellEditorModel.placeholderVisible
+                  ? widget.cellEditorModel.placeholder
                   : null,
-              suffixIcon: cellEditorModel.editable
+              suffixIcon: widget.cellEditorModel.editable
                   ? Padding(
                       padding: EdgeInsets.only(right: 8),
                       child: GestureDetector(
                         onTap: () {
-                          if (cellEditorModel.cellEditorValue != null) {
-                            cellEditorModel.cellEditorValue = null;
-                            cellEditorModel.valueChanged = true;
-                            super.onValueChanged(context, cellEditorModel.cellEditorValue);
-                            cellEditorModel.valueChanged = false;
+                          if (widget.cellEditorModel.tempValue != null) {
+                            widget.cellEditorModel.tempValue = null;
+                            widget.cellEditorModel.valueChanged = true;
+                            super.onValueChanged(context,
+                                widget.cellEditorModel.cellEditorValue);
+                            widget.cellEditorModel.valueChanged = false;
                           }
                         },
-                        child: Icon(Icons.clear,
-                            size: 24, color: Colors.grey[400]),
+                        child: shouldShowSuffixIcon
+                            ? Icon(Icons.clear,
+                                size: widget.cellEditorModel.iconSize,
+                                color: Colors.grey[400])
+                            : SizedBox(
+                                height: widget.cellEditorModel.iconSize,
+                                width: 1),
                       ),
                     )
                   : null),
           style: TextStyle(
-              color: cellEditorModel.editable
-                  ? (cellEditorModel.foreground != null
-                      ? cellEditorModel.foreground
+              color: widget.cellEditorModel.editable
+                  ? (widget.cellEditorModel.foreground != null
+                      ? widget.cellEditorModel.foreground
                       : Colors.black)
                   : Colors.grey[700]),
-          controller: cellEditorModel.controller,
-          focusNode: cellEditorModel.node,
-          keyboardType: cellEditorModel.textInputType,
+          controller: widget.cellEditorModel.controller,
+          focusNode: widget.cellEditorModel.node,
+          keyboardType: widget.cellEditorModel.textInputType,
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,
           textDirection: direction,
-          inputFormatters: cellEditorModel.textInputFormatter,
-          enabled: cellEditorModel.editable,
+          inputFormatters: widget.cellEditorModel.textInputFormatter,
+          enabled: widget.cellEditorModel.editable,
         ),
       ),
     );

@@ -55,7 +55,7 @@ class SoTableColumnCalculator {
                 componentData.getMetaDataColumn(columnNames[i]);
             if (metaDataColumn != null && metaDataColumn.cellEditor != null) {
               editor = componentCreator
-                  .createCellEditorForTable(metaDataColumn.cellEditor);
+                  .createCellEditorForTable(metaDataColumn.cellEditor, componentData);
             }
           }
 

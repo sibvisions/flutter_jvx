@@ -119,6 +119,7 @@ class _WebFrameState extends State<WebFrame> {
             child: SettingsPage(
           appState: this.appState,
           manager: SharedPrefProvider.of(context).manager,
+          warmWelcome: false,
         )),
         body: Column(
           children: [

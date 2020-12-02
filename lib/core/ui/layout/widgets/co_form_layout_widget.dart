@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
 
 import '../../container/co_container_widget.dart';
 import 'co_form_layout_anchor.dart';
@@ -275,38 +276,6 @@ class RenderFormLayoutWidget extends RenderBox
     valid = false;
   }
 
-  /*
-     * {@inheritDoc}
-     */
-  Size minimumLayoutSize(CoContainerWidget pTarget) {
-    if (pTarget.componentModel.isMinimumSizeSet) {
-      return pTarget.componentModel.minimumSize;
-    } else {
-      // Martin H.: returning Size 0,0 isnt perfect.
-      return new Size(0, 0);
-    }
-  }
-
-  /*
-     * {@inheritDoc}
-     */
-  Size preferredLayoutSize(CoContainerWidget pTarget) {
-    calculateAnchors(pTarget);
-
-    return Size(preferredWidth.toDouble(), preferredHeight.toDouble());
-  }
-
-  /*
-     * {@inheritDoc}
-     */
-  Size maximumLayoutSize(CoContainerWidget pTarget) {
-    if (pTarget.componentModel.isMaximumSizeSet) {
-      return pTarget.componentModel.maximumSize;
-    } else {
-      return new Size(double.infinity, double.infinity);
-    }
-  }
-
   @override
   void setupParentData(RenderBox child) {
     if (child.parentData is! MultiChildLayoutParentData)
@@ -335,7 +304,7 @@ class RenderFormLayoutWidget extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    calculateAnchors(container);
+    calculateAnchors(container.componentModel);
 
     layoutWidth = preferredWidth.toDouble();
     layoutHeight = preferredHeight.toDouble();
@@ -654,7 +623,7 @@ class RenderFormLayoutWidget extends RenderBox
     }
   }
 
-  void calculateAnchors(CoContainerWidget pContainer) {
+  void calculateAnchors(ContainerComponentModel pContainer) {
     if (!valid) {
       // reset border anchors
       leftAnchor.position = 0;
@@ -909,8 +878,8 @@ class RenderFormLayoutWidget extends RenderBox
     if (calculateTargetDependentAnchors) {
       // set border anchors
       Size size = Size(layoutWidth, layoutHeight);
-      Size minSize = minimumLayoutSize(pTarget);
-      Size maxSize = maximumLayoutSize(pTarget);
+      Size minSize = minimumLayoutSize(pTarget.componentModel);
+      Size maxSize = maximumLayoutSize(pTarget.componentModel);
       EdgeInsets ins = EdgeInsets.zero;
       size = Size(size.width - ins.left + ins.right,
           size.height - ins.top + ins.bottom);
@@ -1004,6 +973,28 @@ class RenderFormLayoutWidget extends RenderBox
         //}
       }
       calculateTargetDependentAnchors = false;
+    }
+  }
+
+  Size minimumLayoutSize(ContainerComponentModel pTarget) {
+    if (pTarget.isMinimumSizeSet) {
+      return pTarget.minimumSize;
+    } else {
+      return new Size(0, 0);
+    }
+  }
+
+  Size preferredLayoutSize(ContainerComponentModel pTarget) {
+    calculateAnchors(pTarget);
+
+    return Size(preferredWidth.toDouble(), preferredHeight.toDouble());
+  }
+
+  Size maximumLayoutSize(ContainerComponentModel pTarget) {
+    if (pTarget.isMaximumSizeSet) {
+      return pTarget.maximumSize;
+    } else {
+      return new Size(double.infinity, double.infinity);
     }
   }
 }

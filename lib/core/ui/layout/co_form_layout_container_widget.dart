@@ -167,17 +167,34 @@ class CoFormLayoutContainerWidget extends StatelessWidget
   }
 
   void addLayoutComponent(ComponentWidget pComponent, String pConstraint) {
+    // print("FormLayoutContainerWidget AddLayoutComponent:" +
+    //     pComponent.componentModel.componentId);
     if (pConstraint == null || pConstraint.isEmpty) {
       throw new ArgumentError(
           "Constraint " + pConstraint.toString() + " is not allowed!");
     } else {
       _layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
+      CoFormLayoutConstraint constraint =
+          this.getConstraintsFromString(pConstraint);
+      Key key = this.getKeyByComponentId(pComponent.componentModel.componentId);
+
+      if (key == null) {
+        key = createKey(pComponent.componentModel.componentId);
+      }
+
+      if (constraint != null) {
+        constraint.comp = pComponent;
+        children.add(CoFormLayoutConstraintData(
+            key: key, child: pComponent, id: constraint));
+      }
     }
 
     _valid = false;
   }
 
   void removeLayoutComponent(ComponentWidget pComponent) {
+    //   print("FormLayoutContainerWidget RemoveLayoutComponent:" +
+    //       pComponent.componentModel.componentId);
     _layoutConstraints.removeWhere((c, s) =>
         pComponent.componentModel.componentId.toString() ==
         pComponent.componentModel.componentId.toString());
@@ -244,6 +261,10 @@ class CoFormLayoutContainerWidget extends StatelessWidget
     return CustomStatefulBuilder(
       dispose: () => super.setState = null,
       builder: (context, setState) {
+        // print("FormLayoutContainerWidget layoutConstraintsCount:" +
+        //     children.length.toString() +
+        //     ", " +
+        //     this._layoutConstraints.length.toString());
         super.setState = setState;
 
         return Container(

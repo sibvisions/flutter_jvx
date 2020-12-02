@@ -202,34 +202,31 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 body: Builder(builder: (BuildContext context) {
                   IScreen screen;
 
-                  if (this.currentResponse.request.requestType !=
-                      RequestType.DEVICE_STATUS) {
-                    if (widget.appState.screenManager
-                            .findScreen(widget.menuComponentId) !=
-                        null) {
-                      screen = widget.appState.screenManager
-                          .findScreen(widget.menuComponentId);
+                  if (widget.appState.screenManager
+                          .findScreen(widget.menuComponentId) !=
+                      null) {
+                    screen = widget.appState.screenManager
+                        .findScreen(widget.menuComponentId);
 
-                      screen.screenKey = this.screenKey;
-                    } else if (widget.appState.screenManager
-                            .findScreen(this.rawComponentId) !=
-                        null) {
-                      screen = widget.appState.screenManager
-                          .findScreen(this.rawComponentId);
+                    screen.screenKey = this.screenKey;
+                  } else if (widget.appState.screenManager
+                          .findScreen(this.rawComponentId) !=
+                      null) {
+                    screen = widget.appState.screenManager
+                        .findScreen(this.rawComponentId);
 
-                      screen.screenKey = this.screenKey;
-                    } else {
-                      screen = SoScreen(
-                          screenKey: this.screenKey,
-                          componentId: rawComponentId,
-                          componentCreator: SoComponentCreator(context),
-                          response: this.currentResponse);
+                    screen.screenKey = this.screenKey;
+                  } else {
+                    screen = SoScreen(
+                        screenKey: this.screenKey,
+                        componentId: rawComponentId,
+                        componentCreator: SoComponentCreator(context),
+                        response: this.currentResponse);
 
-                      widget.appState.screenManager.registerScreen(screen);
-                    }
-
-                    screen.update(this.currentResponse);
+                    widget.appState.screenManager.registerScreen(screen);
                   }
+
+                  screen.update(this.currentResponse);
 
                   if (widget.appState.applicationStyle != null &&
                       widget.appState.applicationStyle?.desktopIcon != null) {
@@ -258,10 +255,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                                         : null,
                                     fit: BoxFit.cover,
                                   )),
-                        child: this.currentResponse.request.requestType !=
-                                RequestType.DEVICE_STATUS
-                            ? screen.getWidget(context)
-                            : widget.appState.appFrame.screen));
+                        child: screen.getWidget(context)));
 
                     return widget.appState.appFrame.getWidget();
                   } else if (widget.appState.applicationStyle != null &&
@@ -270,18 +264,11 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         decoration: BoxDecoration(
                             color:
                                 widget.appState.applicationStyle?.desktopColor),
-                        child: this.currentResponse.request.requestType !=
-                                RequestType.DEVICE_STATUS
-                            ? screen.getWidget(context)
-                            : widget.appState.appFrame.screen));
+                        child: screen.getWidget(context)));
 
                     return widget.appState.appFrame.getWidget();
                   } else {
-                    widget.appState.appFrame.setScreen(
-                        this.currentResponse.request.requestType !=
-                                RequestType.DEVICE_STATUS
-                            ? screen.getWidget(context)
-                            : widget.appState.appFrame.screen);
+                    widget.appState.appFrame.setScreen(screen.getWidget(context));
                     return widget.appState.appFrame.getWidget();
                   }
                 }))),
