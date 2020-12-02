@@ -222,7 +222,7 @@ class SoComponentCreator implements IComponentCreator {
     return cellEditor;
   }
 
-  CoCellEditorWidget createCellEditorForTable(CellEditor toCreatecellEditor) {
+  CoCellEditorWidget createCellEditorForTable(CellEditor toCreatecellEditor, SoComponentData data) {
     CoCellEditorWidget cellEditor;
     switch (toCreatecellEditor.className) {
       case "DateCellEditor":
@@ -246,6 +246,15 @@ class SoComponentCreator implements IComponentCreator {
           cellEditor = CoCheckboxCellEditorWidget(
               cellEditorModel: CheckBoxCellEditorModel(toCreatecellEditor)
                 ..isTableView = true);
+        }
+        break;
+      case "LinkedCellEditor":
+        {
+          cellEditor = CoLinkedCellEditorWidget(
+            cellEditorModel: LinkedCellEditorModel(toCreatecellEditor)
+              ..isTableView = true
+              ..referencedData = data,
+          );
         }
         break;
     }
@@ -290,6 +299,16 @@ class SoComponentCreator implements IComponentCreator {
                 ..cellEditorValue = value);
         }
         break;
+      case "LinkedCellEditor":
+        {
+          cellEditor = CoLinkedCellEditorWidget(
+            cellEditorModel: LinkedCellEditorModel(toCreatecellEditor)
+              ..isTableView = true
+              ..editable = editable
+              ..cellEditorValue = value
+              ..referencedData = data,
+          );
+        }
     }
 
     if (cellEditor == null) return null;

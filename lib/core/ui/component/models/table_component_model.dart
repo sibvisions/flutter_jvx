@@ -4,6 +4,9 @@ import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/cell_editor_m
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/checkbox_cell_editor_model.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/date_cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/linked_cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/referenced_cell_editor_model.dart';
+import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
@@ -165,7 +168,8 @@ class TableComponentModel extends EditorComponentModel {
     return '${columnName}_$index';
   }
 
-  CoEditorWidget getEditorForColumn(String text, String columnName, int index) {
+  CoEditorWidget getEditorForColumn(
+      BuildContext context, String text, String columnName, int index) {
     DataBookMetaDataColumn column = this.data?.getMetaDataColumn(columnName);
 
     if (column != null && index >= 0) {
@@ -179,11 +183,25 @@ class TableComponentModel extends EditorComponentModel {
               columnName,
             );
         if (editor != null) {
+          if (editor.cellEditor.cellEditorModel is LinkedCellEditorModel) {
+            (editor.cellEditor.cellEditorModel as LinkedCellEditorModel)
+                    .referencedData =
+                ComponentScreenWidget.of(context).getComponentData(editor
+                    .cellEditor
+                    .cellEditorModel
+                    .cellEditor
+                    .linkReference
+                    .dataProvider);
+          }
+
           _editors[_getEditorIdentifier(columnName, index)] = editor;
           return editor;
         }
       } else {
-        _editors[_getEditorIdentifier(columnName, index)].cellEditor.cellEditorModel.cellEditorValue = text;
+        _editors[_getEditorIdentifier(columnName, index)]
+            .cellEditor
+            .cellEditorModel
+            .cellEditorValue = text;
         return _editors[_getEditorIdentifier(columnName, index)];
       }
     }

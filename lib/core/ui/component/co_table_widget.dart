@@ -202,7 +202,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       String text, int rowIndex, int columnIndex, String columnName,
       {bool nullable}) {
     CoEditorWidget editor =
-        widget.componentModel.getEditorForColumn(text, columnName, rowIndex);
+        widget.componentModel.getEditorForColumn(context, text, columnName, rowIndex);
     double width = 1;
 
     if (widget.componentModel.columnInfo != null &&
