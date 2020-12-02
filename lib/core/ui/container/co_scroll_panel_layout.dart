@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
+import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
+import 'package:jvx_flutterclient/core/ui/layout/widgets/co_border_layout_widget.dart';
 
 class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
   final CoScrollPanelConstraints preferredConstraints;
+  final ContainerComponentModel container;
 
   CoScrollPanelLayout(
       {Key key,
       List<CoScrollPanelLayoutId> children: const [],
-      this.preferredConstraints})
+      this.preferredConstraints,
+      this.container})
       : super(key: key, children: children);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderScrollPanelLayout();
+    return RenderScrollPanelLayout(this.container);
   }
 
   @override
@@ -38,8 +42,9 @@ class RenderScrollPanelLayout extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   RenderBox child;
   CoScrollPanelConstraints preferredConstraints;
+  ContainerComponentModel container;
 
-  RenderScrollPanelLayout({List<RenderBox> children}) {
+  RenderScrollPanelLayout(this.container, {List<RenderBox> children}) {
     addAll(children);
   }
 
@@ -67,6 +72,16 @@ class RenderScrollPanelLayout extends RenderBox
               minHeight: this.constraints.minHeight,
               maxHeight: this.constraints.maxHeight),
           parentUsesSize: true);
+
+      if (child is RenderShiftedBox &&
+          (child as RenderShiftedBox).child is RenderBorderLayoutWidget) {
+        RenderBorderLayoutWidget childLayout =
+            (child as RenderShiftedBox).child as RenderBorderLayoutWidget;
+
+        Size preferredSize = childLayout.preferredLayoutSize;
+
+        print(preferredSize);
+      }
 
       if (child.size.height <
               preferredConstraints.parentConstraints.maxHeight &&
