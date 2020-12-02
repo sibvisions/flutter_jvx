@@ -109,12 +109,23 @@ class MobileApp extends StatelessWidget {
                       ));
               break;
             case '/settings':
-              return MaterialPageRoute(
-                  builder: (_) => SettingsPage(
-                        appState: appState,
-                        manager: manager,
-                        warmWelcome: (settings.arguments as SettingsArguments)?.warmWelcome ?? false,
-                      ));
+              if (settings.arguments is SettingsArguments) {
+                return MaterialPageRoute(
+                    builder: (_) => SettingsPage(
+                          appState: appState,
+                          manager: manager,
+                          warmWelcome: (settings.arguments as SettingsArguments)
+                                  ?.warmWelcome ??
+                              false,
+                        ));
+              } else {
+                return MaterialPageRoute(
+                    builder: (_) => SettingsPage(
+                          appState: appState,
+                          manager: manager,
+                          warmWelcome: false,
+                        ));
+              }
               break;
             case '/':
               return MaterialPageRoute(
