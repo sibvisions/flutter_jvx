@@ -85,6 +85,17 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   _updateDataFromSystem() {
     appState.translation = this.manager.translation;
 
+    appState.supportedLocales = List<Locale>.from(this
+        .manager
+        .translation
+        .keys
+        .map((key) {
+          if (key.contains('_'))
+            return Locale(key.substring(key.indexOf('_') + 1, key.indexOf('.')));
+          else
+            return Locale('en');
+        }));
+
     if (this.manager.appData['appName'] != null &&
         this.manager.appData['appName'].isNotEmpty) {
       appState.appName = this.manager.appData['appName'];
@@ -103,8 +114,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (this.manager.mobileOnly != null) {
       appState.mobileOnly = this.manager.mobileOnly;
     }
-
-    appState.translation = this.manager.translation;
   }
 
   String _getDeviceId() {
@@ -316,8 +325,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
             _applicationStyle(response);
           else if (response.request.requestType ==
               RequestType.DOWNLOAD_TRANSLATION) {
-            sl<SupportedLocaleManager>().value =
-                this.appState.supportedLocales;
+            sl<SupportedLocaleManager>().value = this.appState.supportedLocales;
           } else if (response.request.requestType ==
                   RequestType.DOWNLOAD_IMAGES &&
               (response.loginItem != null || response.menu != null))

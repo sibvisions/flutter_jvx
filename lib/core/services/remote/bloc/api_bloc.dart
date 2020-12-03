@@ -245,7 +245,11 @@ class ApiBloc extends Bloc<Request, Response> {
           } else {
             trimmedFilename = 'en';
           }
-          this.appState.supportedLocales.add(Locale(trimmedFilename));
+          this.appState.supportedLocales.firstWhere(
+              (locale) => locale.languageCode == trimmedFilename, orElse: () {
+            this.appState.supportedLocales.add(Locale(trimmedFilename));
+            return null;
+          });
         }
       }
 
@@ -315,11 +319,16 @@ class ApiBloc extends Bloc<Request, Response> {
             String trimmedFilename = file.name;
             if (trimmedFilename.contains('_')) {
               trimmedFilename = trimmedFilename.substring(
-                  trimmedFilename.indexOf('_') + 1, trimmedFilename.indexOf('.'));
+                  trimmedFilename.indexOf('_') + 1,
+                  trimmedFilename.indexOf('.'));
             } else {
               trimmedFilename = 'en';
             }
-            this.appState.supportedLocales.add(Locale(trimmedFilename));
+            this.appState.supportedLocales.firstWhere(
+                (locale) => locale.languageCode == trimmedFilename, orElse: () {
+              this.appState.supportedLocales.add(Locale(trimmedFilename));
+              return null;
+            });
           }
         }
 

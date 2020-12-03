@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
+import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../../utils/translation/app_localizations.dart';
 import '../util/restart_widget.dart';
@@ -162,33 +164,36 @@ showTextInputDialog(BuildContext context, String title, String textLabel,
       builder: (BuildContext context) {
         TextEditingController _controller =
             new TextEditingController(text: initialVal);
-        return AlertDialog(
-          title: Text(title),
-          content: Form(
-            child: new TextField(
-              controller: _controller,
-              style: new TextStyle(fontSize: 15.0, color: Colors.black),
-              decoration: new InputDecoration(
-                  hintText: textHint,
-                  labelText: textLabel,
-                  labelStyle: TextStyle(fontWeight: FontWeight.w700)),
+        return Theme(
+          data: sl<ThemeManager>().themeData,
+          child: AlertDialog(
+            title: Text(title),
+            content: Form(
+              child: new TextField(
+                controller: _controller,
+                style: new TextStyle(fontSize: 15.0, color: Colors.black),
+                decoration: new InputDecoration(
+                    hintText: textHint,
+                    labelText: textLabel,
+                    labelStyle: TextStyle(fontWeight: FontWeight.w700)),
+              ),
             ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text(AppLocalizations.of(context).text('Close')),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text(AppLocalizations.of(context).text('OK')),
+                onPressed: () {
+                  onTapCallback(_controller.text);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text(AppLocalizations.of(context).text('Close')),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text(AppLocalizations.of(context).text('OK')),
-              onPressed: () {
-                onTapCallback(_controller.text);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
         );
       });
 }

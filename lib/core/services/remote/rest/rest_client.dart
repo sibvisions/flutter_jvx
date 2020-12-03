@@ -39,8 +39,8 @@ class RestClient {
       finalResponse = Response()
         ..error = ErrorResponse(
             'Timeout Error',
+            'Timeout Error',
             'Couldn\'t connect to the server!',
-            'Timeout error',
             'timeout.error');
     } on Exception {
       finalResponse = Response()
@@ -96,12 +96,12 @@ class RestClient {
       print(e);
     }
 
-    if (response.bodyBytes != null) {
+    if (response != null && response.bodyBytes != null) {
       returnResponse.downloadResponse =
           DownloadResponse('', response.bodyBytes);
     }
     
-    if (data['name'] == 'file') {
+    if (response != null && data['name'] == 'file') {
       if (kIsWeb) {
         returnResponse.downloadResponse.fileName = downloadFileName;
       } else {
@@ -182,7 +182,7 @@ class RestClient {
       } catch (e) {
         return Response()
           ..error = ErrorResponse(
-              'Error', '${e.toString()}', 'An error occured.', 'error');
+              'Error', 'An error occured.', '${e.toString()}', 'error');
       }
     }
 
