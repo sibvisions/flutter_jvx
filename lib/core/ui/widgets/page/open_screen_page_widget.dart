@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/request/reload.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
@@ -199,79 +200,92 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 endDrawer: _endDrawer(),
                 key: _scaffoldKey,
                 appBar: _appBar(this.title),
-                body: Builder(builder: (BuildContext context) {
-                  IScreen screen;
+                body: RefreshIndicator(
+                  onRefresh: () async {
+                    Reload reloadRequest = Reload(
+                        clientId: widget.appState.clientId,
+                        requestType: RequestType.RELOAD);
 
-                  if (widget.appState.screenManager
-                          .findScreen(widget.menuComponentId) !=
-                      null) {
-                    screen = widget.appState.screenManager
-                        .findScreen(widget.menuComponentId);
+                    BlocProvider.of<ApiBloc>(context).add(reloadRequest);
+                  },
+                  child: Builder(builder: (BuildContext context) {
+                    IScreen screen;
 
-                    screen.screenKey = this.screenKey;
-                  } else if (widget.appState.screenManager
-                          .findScreen(this.rawComponentId) !=
-                      null) {
-                    screen = widget.appState.screenManager
-                        .findScreen(this.rawComponentId);
+                    if (widget.appState.screenManager
+                            .findScreen(widget.menuComponentId) !=
+                        null) {
+                      screen = widget.appState.screenManager
+                          .findScreen(widget.menuComponentId);
 
-                    screen.screenKey = this.screenKey;
-                  } else {
-                    screen = SoScreen(
-                        screenKey: this.screenKey,
-                        componentId: rawComponentId,
-                        componentCreator: SoComponentCreator(context),
-                        response: this.currentResponse);
+                      screen.screenKey = this.screenKey;
+                    } else if (widget.appState.screenManager
+                            .findScreen(this.rawComponentId) !=
+                        null) {
+                      screen = widget.appState.screenManager
+                          .findScreen(this.rawComponentId);
 
-                    widget.appState.screenManager.registerScreen(screen);
-                  }
+                      screen.screenKey = this.screenKey;
+                    } else {
+                      screen = SoScreen(
+                          screenKey: this.screenKey,
+                          componentId: rawComponentId,
+                          componentCreator: SoComponentCreator(context),
+                          response: this.currentResponse);
 
-                  screen.update(this.currentResponse);
+                      widget.appState.screenManager.registerScreen(screen);
+                    }
 
-                  if (widget.appState.applicationStyle != null &&
-                      widget.appState.applicationStyle?.desktopIcon != null) {
-                    widget.appState.appFrame.setScreen(Container(
-                        decoration: BoxDecoration(
-                            color: (widget.appState.applicationStyle != null &&
-                                    widget.appState.applicationStyle
-                                            ?.desktopColor !=
-                                        null)
-                                ? widget.appState.applicationStyle?.desktopColor
-                                : null,
-                            image: !kIsWeb
-                                ? DecorationImage(
-                                    image: FileImage(File(
-                                        '${widget.appState.dir}${widget.appState.applicationStyle?.desktopIcon}')),
-                                    fit: BoxFit.cover)
-                                : DecorationImage(
-                                    image: widget.appState.files.containsKey(
-                                            widget.appState.applicationStyle
-                                                .desktopIcon)
-                                        ? MemoryImage(base64Decode(
-                                            widget.appState.files[widget
-                                                .appState
-                                                .applicationStyle
-                                                .desktopIcon]))
-                                        : null,
-                                    fit: BoxFit.cover,
-                                  )),
-                        child: screen.getWidget(context)));
+                    screen.update(this.currentResponse);
 
-                    return widget.appState.appFrame.getWidget();
-                  } else if (widget.appState.applicationStyle != null &&
-                      widget.appState.applicationStyle?.desktopColor != null) {
-                    widget.appState.appFrame.setScreen(Container(
-                        decoration: BoxDecoration(
-                            color:
-                                widget.appState.applicationStyle?.desktopColor),
-                        child: screen.getWidget(context)));
+                    if (widget.appState.applicationStyle != null &&
+                        widget.appState.applicationStyle?.desktopIcon != null) {
+                      widget.appState.appFrame.setScreen(Container(
+                          decoration: BoxDecoration(
+                              color:
+                                  (widget.appState.applicationStyle != null &&
+                                          widget.appState.applicationStyle
+                                                  ?.desktopColor !=
+                                              null)
+                                      ? widget.appState.applicationStyle
+                                          ?.desktopColor
+                                      : null,
+                              image: !kIsWeb
+                                  ? DecorationImage(
+                                      image: FileImage(File(
+                                          '${widget.appState.dir}${widget.appState.applicationStyle?.desktopIcon}')),
+                                      fit: BoxFit.cover)
+                                  : DecorationImage(
+                                      image: widget.appState.files.containsKey(
+                                              widget.appState.applicationStyle
+                                                  .desktopIcon)
+                                          ? MemoryImage(base64Decode(
+                                              widget.appState.files[widget
+                                                  .appState
+                                                  .applicationStyle
+                                                  .desktopIcon]))
+                                          : null,
+                                      fit: BoxFit.cover,
+                                    )),
+                          child: screen.getWidget(context)));
 
-                    return widget.appState.appFrame.getWidget();
-                  } else {
-                    widget.appState.appFrame.setScreen(screen.getWidget(context));
-                    return widget.appState.appFrame.getWidget();
-                  }
-                }))),
+                      return widget.appState.appFrame.getWidget();
+                    } else if (widget.appState.applicationStyle != null &&
+                        widget.appState.applicationStyle?.desktopColor !=
+                            null) {
+                      widget.appState.appFrame.setScreen(Container(
+                          decoration: BoxDecoration(
+                              color: widget
+                                  .appState.applicationStyle?.desktopColor),
+                          child: screen.getWidget(context)));
+
+                      return widget.appState.appFrame.getWidget();
+                    } else {
+                      widget.appState.appFrame
+                          .setScreen(screen.getWidget(context));
+                      return widget.appState.appFrame.getWidget();
+                    }
+                  }),
+                ))),
       );
 
   AppBar _appBar(String title) {

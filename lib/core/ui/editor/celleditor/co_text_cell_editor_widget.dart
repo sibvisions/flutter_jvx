@@ -90,9 +90,7 @@ class CoTextCellEditorWidgetState
             decoration: InputDecoration(
                 contentPadding: widget.cellEditorModel.textPadding,
                 border: InputBorder.none,
-                hintText: widget.cellEditorModel.placeholderVisible
-                    ? widget.cellEditorModel.placeholder
-                    : null,
+                hintText: widget.cellEditorModel.placeholder,
                 suffixIcon: widget.cellEditorModel.editable != null &&
                         widget.cellEditorModel.editable
                     ? Padding(

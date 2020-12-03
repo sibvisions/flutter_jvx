@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
-import '../../models/api/component/changed_component.dart';
 import '../../utils/theme/theme_manager.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
-import 'models/button_component_model.dart';
 import 'co_action_component_widget.dart';
+import 'models/button_component_model.dart';
 
 class CoButtonWidget extends CoActionComponentWidget {
   final ButtonComponentModel componentModel;
@@ -184,12 +183,12 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             child: SizedBox(
                 height: 50,
                 child: RaisedButton(
-                  onPressed: () {
-                    widget.componentModel.enabled
-                        ? widget.componentModel
-                            .onAction(widget.componentModel.action)
-                        : null;
-                  },
+                  onPressed: widget.componentModel.enabled
+                      ? () {
+                          widget.componentModel
+                              .onAction(widget.componentModel.action);
+                        }
+                      : null,
                   color: widget.componentModel.background != null
                       ? widget.componentModel.background
                       : Theme.of(context).primaryColor,

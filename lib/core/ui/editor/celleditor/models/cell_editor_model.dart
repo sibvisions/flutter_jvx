@@ -41,7 +41,6 @@ class CellEditorModel extends ValueNotifier {
   String font;
   bool _editable = true;
   bool borderVisible;
-  bool placeholderVisible;
   int indexInTable;
   TextStyle fontStyle = new TextStyle(fontSize: 16.0, color: Colors.black);
 
@@ -105,9 +104,6 @@ class CellEditorModel extends ValueNotifier {
       borderVisible = this
           .cellEditor
           .getProperty<bool>(CellEditorProperty.BORDER_VISIBLE, true);
-      placeholderVisible = this
-          .cellEditor
-          .getProperty<bool>(CellEditorProperty.PLACEHOLDER_VISIBLE, true);
     }
   }
 }

@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/request/menu.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../../models/api/request.dart';
@@ -373,8 +374,15 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                     currentTitle: title,
                   )
                 : null,
-            body: FractionallySizedBox(
-                widthFactor: 1, heightFactor: 1, child: body)),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                Menu menuRequest = Menu(widget.appState.clientId);
+
+                BlocProvider.of<ApiBloc>(context).add(menuRequest);
+              },
+              child: FractionallySizedBox(
+                  widthFactor: 1, heightFactor: 1, child: body),
+            )),
       ),
     );
   }

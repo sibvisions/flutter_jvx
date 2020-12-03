@@ -13,6 +13,7 @@ class TextComponentModel extends EditableComponentModel {
   double iconSize = 24;
   EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
+  String placeholder = '';
 
   TextComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
@@ -24,6 +25,8 @@ class TextComponentModel extends EditableComponentModel {
     border = changedComponent.getProperty<bool>(ComponentProperty.BORDER, true);
     columns =
         changedComponent.getProperty<int>(ComponentProperty.COLUMNS, columns);
+    placeholder =
+        changedComponent.getProperty<String>(ComponentProperty.PLACEHOLDER, placeholder);
     super.updateProperties(context, changedComponent);
   }
 
