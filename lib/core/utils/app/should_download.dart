@@ -13,9 +13,6 @@ Future<bool> shouldDownload(AppState appState) async {
     return true;
   }
 
-  // TESTING
-  return true;
-
   if (Platform.isIOS) {
     _baseDirectory = (await getApplicationSupportDirectory()).path;
   } else {
