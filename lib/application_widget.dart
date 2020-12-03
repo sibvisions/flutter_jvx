@@ -56,7 +56,6 @@ class ApplicationWidget extends StatelessWidget {
                     child: ValueListenableBuilder(
                       valueListenable: sl<SupportedLocaleManager>(),
                       builder: (BuildContext context, List<Locale> supportedLocales, Widget child) {
-                        print('SUPPORTED LOCALES: $supportedLocales');
                         return MobileApp(
                           shouldLoadConfig: shouldLoadConfig,
                           themeData: themeData,
