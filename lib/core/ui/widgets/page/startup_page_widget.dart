@@ -5,6 +5,7 @@ import 'package:jvx_flutterclient/core/models/api/request/download.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
 import 'package:jvx_flutterclient/core/utils/theme/get_color_from_app_style.dart';
+import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
@@ -170,11 +171,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         MaterialColor newColor = getColorFromAppStyle(response);
 
         sl<ThemeManager>().themeData = ThemeData(
-            primaryColor: newColor,
-            primarySwatch: newColor,
-            brightness: Brightness.light,
-            fontFamily: 'Raleway',
-            cursorColor: newColor,);
+          primaryColor: newColor,
+          primarySwatch: newColor,
+          brightness: Brightness.light,
+          fontFamily: 'Raleway',
+          cursorColor: newColor,
+        );
 
         if (response.applicationStyle.hash !=
                 this.manager.applicationStylingHash ||
@@ -263,7 +265,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) Navigator.of(context).pushReplacementNamed('/settings', arguments: SettingsArguments(warmWelcome: true));
+        if (mounted)
+          Navigator.of(context).pushReplacementNamed('/settings',
+              arguments: SettingsArguments(warmWelcome: true));
       });
       return;
     }
@@ -308,6 +312,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           else if (response.request.requestType == RequestType.APP_STYLE)
             _applicationStyle(response);
           else if (response.request.requestType ==
+              RequestType.DOWNLOAD_TRANSLATION) {
+            sl<SupportedLocaleManager>().value =
+                this.appState.supportedLocales;
+          } else if (response.request.requestType ==
                   RequestType.DOWNLOAD_IMAGES &&
               (response.loginItem != null || response.menu != null))
             _checkForLogin(response);

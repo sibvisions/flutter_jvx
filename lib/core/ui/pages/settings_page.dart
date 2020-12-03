@@ -310,16 +310,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   showLanguagePicker(BuildContext context) {
-    List languages = widget?.appState?.translation?.keys
-        ?.map((k) => k.replaceAll('translation_', '').replaceAll('.json', ''))
-        ?.toList();
-
-    if (languages != null && languages.isNotEmpty)
-      languages[languages.indexOf('translation')] = 'en';
-
-    if (languages == null || languages.length > 0) {
-      languages = ['en', 'de'];
-    }
+    List<String> languages = List<String>.from(widget.appState.supportedLocales.map((e) => e.languageCode));
 
     List<int> selected;
     int selectedIndex = languages

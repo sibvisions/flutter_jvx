@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
 
 import 'core/models/app/app_state.dart';
 import 'core/services/local/shared_preferences_manager.dart';
@@ -52,10 +53,17 @@ class ApplicationWidget extends StatelessWidget {
                   manager: sl<SharedPreferencesManager>(),
                   child: AppStateProvider(
                     appState: appState,
-                    child: MobileApp(
-                      shouldLoadConfig: shouldLoadConfig,
-                      themeData: themeData,
-                      config: this.config,
+                    child: ValueListenableBuilder(
+                      valueListenable: sl<SupportedLocaleManager>(),
+                      builder: (BuildContext context, List<Locale> supportedLocales, Widget child) {
+                        print('SUPPORTED LOCALES: $supportedLocales');
+                        return MobileApp(
+                          shouldLoadConfig: shouldLoadConfig,
+                          themeData: themeData,
+                          config: this.config,
+                          supportedLocales: supportedLocales,
+                        );
+                      }
                     ),
                   ),
                 );

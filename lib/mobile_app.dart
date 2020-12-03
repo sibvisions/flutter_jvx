@@ -22,13 +22,15 @@ class MobileApp extends StatelessWidget {
   final bool shouldLoadConfig;
   final ThemeData themeData;
   final Config config;
+  final List<Locale> supportedLocales;
 
-  const MobileApp(
-      {Key key,
-      @required this.shouldLoadConfig,
-      @required this.themeData,
-      this.config})
-      : super(key: key);
+  const MobileApp({
+    Key key,
+    @required this.shouldLoadConfig,
+    @required this.themeData,
+    @required this.supportedLocales,
+    this.config,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +154,7 @@ class MobileApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [const Locale('en'), const Locale('de')],
+        supportedLocales: this.supportedLocales.isNotEmpty ? this.supportedLocales : [const Locale('en'), const Locale('de')],
         title: 'JVx Mobile',
         theme: this.themeData,
         debugShowCheckedModeBanner: false,

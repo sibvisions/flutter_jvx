@@ -23,6 +23,7 @@ void main() async {
 
     testWidgets('MobileApp creation', (WidgetTester tester) async {
       await tester.pumpWidget(new MobileApp(
+        supportedLocales: [Locale('en'), Locale('de')],
         themeData: ThemeData(),
         shouldLoadConfig: false,
       ));

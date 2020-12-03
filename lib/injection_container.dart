@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:get_it/get_it.dart';
+import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/models/api/response.dart';
@@ -21,6 +22,8 @@ Future<void> init() async {
       () => NetworkInfoImpl(sl<Connectivity>()));
   sl.registerLazySingleton<RestClient>(() => RestClient(sl<HttpClient>()));
   sl.registerLazySingleton<ThemeManager>(() => ThemeManager());
+  sl.registerLazySingleton<SupportedLocaleManager>(
+      () => SupportedLocaleManager());
   sl.registerLazySingleton<SharedPreferencesManager>(
       () => SharedPreferencesManager(sl<SharedPreferences>()));
   sl.registerLazySingleton<AppState>(() => AppState());

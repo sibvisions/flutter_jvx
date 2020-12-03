@@ -237,6 +237,15 @@ class ApiBloc extends Bloc<Request, Response> {
               .files
               .putIfAbsent(filename, () => utf8.decode((file.content)));
           this.appState.translation[file.name] = '$filename';
+
+          String trimmedFilename = file.name;
+          if (trimmedFilename.contains('_')) {
+            trimmedFilename = trimmedFilename.substring(
+                trimmedFilename.indexOf('_'), trimmedFilename.indexOf('.'));
+          } else {
+            trimmedFilename = 'en';
+          }
+          this.appState.supportedLocales.add(Locale(trimmedFilename));
         }
       }
 
@@ -302,6 +311,15 @@ class ApiBloc extends Bloc<Request, Response> {
             this.appState.translation.putIfAbsent(file.name, () => '$filename');
             outFile = await outFile.create(recursive: true);
             await outFile.writeAsBytes(file.content);
+
+            String trimmedFilename = file.name;
+            if (trimmedFilename.contains('_')) {
+              trimmedFilename = trimmedFilename.substring(
+                  trimmedFilename.indexOf('_') + 1, trimmedFilename.indexOf('.'));
+            } else {
+              trimmedFilename = 'en';
+            }
+            this.appState.supportedLocales.add(Locale(trimmedFilename));
           }
         }
 
