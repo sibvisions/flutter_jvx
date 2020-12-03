@@ -30,7 +30,8 @@
     "buildandroid": "flutter clean && run-s setBuildDate && run-s updateCommitAppVersionJson && run-s increasebuildnumber && flutter build apk --release",
     "postbuildandroid": "run-s copyBuildAndroid",
     "buildweb": "flutter clean && flutter build web",
-    "postbuildweb": "run-s copyBuildWeb"
+    "postbuildweb": "run-s copyBuildWeb",
+    "updateVersion": "run-s setBuildDate && run-s updateCommitAppVersionJson && run-s increaseBuildNumberAppVersionJson"
   },
   "repository": {
     "type": "git",
