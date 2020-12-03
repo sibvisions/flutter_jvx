@@ -8,6 +8,7 @@ import '../../utils/theme/theme_manager.dart';
 import '../widgets/page/startup_page_widget.dart';
 
 class StartupPage extends StatelessWidget {
+  static const String route = '/startup';
   final Config config;
   final bool shouldLoadConfig;
 

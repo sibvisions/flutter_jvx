@@ -8,6 +8,8 @@ import '../widgets/page/login/login_page_widget.dart';
 import '../widgets/util/app_state_provider.dart';
 
 class LoginPage extends StatelessWidget {
+  static const String route = '/login';
+
   final String lastUsername;
 
   const LoginPage({Key key, this.lastUsername}) : super(key: key);

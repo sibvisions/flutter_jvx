@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/download.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
+import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
+import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
+import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 import 'package:jvx_flutterclient/core/utils/theme/get_color_from_app_style.dart';
 import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
 import 'package:uuid/uuid.dart';
@@ -214,12 +217,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    Navigator.of(context).pushReplacementNamed('/login',
+    Navigator.of(context).pushReplacementNamed(LoginPage.route,
         arguments: LoginArguments(response.loginItem.username));
   }
 
   void _menu(Response response) {
-    Navigator.of(context).pushReplacementNamed('/menu',
+    Navigator.of(context).pushReplacementNamed(MenuPage.route,
         arguments:
             MenuArguments(response.menu.entries, true, this.welcomeScreen));
   }
@@ -266,7 +269,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted)
-          Navigator.of(context).pushReplacementNamed('/settings',
+          Navigator.of(context).pushReplacementNamed(SettingsPage.route,
               arguments: SettingsArguments(warmWelcome: true));
       });
       return;

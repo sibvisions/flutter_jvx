@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
 
 import '../../../../models/api/request.dart';
 import '../../../../models/api/response.dart';
@@ -57,7 +58,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                 appState.roles = state.userData.roles;
               }
 
-              Navigator.of(context).pushReplacementNamed('/menu',
+              Navigator.of(context).pushReplacementNamed(MenuPage.route,
                   arguments: MenuArguments(state.menu.entries, true,
                       state.responseData.screenGeneric != null ? state : null));
             }

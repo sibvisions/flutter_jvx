@@ -80,7 +80,7 @@ class MobileApp extends StatelessWidget {
           }
 
           switch (settings.name) {
-            case '/menu':
+            case MenuPage.route:
               MenuArguments arguments = settings.arguments;
 
               return MaterialPageRoute(
@@ -91,7 +91,7 @@ class MobileApp extends StatelessWidget {
                 ),
               );
               break;
-            case '/screen':
+            case OpenScreenPage.route:
               ScreenArguments arguments = settings.arguments;
 
               return MaterialPageRoute(
@@ -103,14 +103,14 @@ class MobileApp extends StatelessWidget {
                         title: arguments.title,
                       ));
               break;
-            case '/login':
+            case LoginPage.route:
               return MaterialPageRoute(
                   builder: (_) => LoginPage(
                         lastUsername:
                             (settings.arguments as LoginArguments).lastUsername,
                       ));
               break;
-            case '/settings':
+            case SettingsPage.route:
               if (settings.arguments is SettingsArguments) {
                 return MaterialPageRoute(
                     builder: (_) => SettingsPage(
@@ -129,7 +129,7 @@ class MobileApp extends StatelessWidget {
                         ));
               }
               break;
-            case '/':
+            case StartupPage.route:
               return MaterialPageRoute(
                 builder: (_) => StartupPage(
                   shouldLoadConfig: this.shouldLoadConfig,
@@ -159,7 +159,7 @@ class MobileApp extends StatelessWidget {
         theme: this.themeData,
         debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
-        initialRoute: '/',
+        initialRoute: StartupPage.route,
       ),
     );
   }

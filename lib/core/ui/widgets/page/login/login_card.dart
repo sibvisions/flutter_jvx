@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 
 import '../../../../models/api/request.dart';
 import '../../../../models/api/request/login.dart';
@@ -145,7 +146,7 @@ class _LoginCardState extends State<LoginCard>
                           onPressed: () {
                             SchedulerBinding.instance
                                 .addPostFrameCallback((timeStamp) {
-                              Navigator.of(context).pushNamed('/settings');
+                              Navigator.of(context).pushNamed(SettingsPage.route);
                             });
                           },
                           label: Text(

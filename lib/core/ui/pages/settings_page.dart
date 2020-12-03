@@ -18,6 +18,7 @@ import '../widgets/dialogs/dialogs.dart';
 import '../widgets/util/restart_widget.dart';
 
 class SettingsPage extends StatefulWidget {
+  static const String route = '/settings';
   final AppState appState;
   final SharedPreferencesManager manager;
   final bool warmWelcome;

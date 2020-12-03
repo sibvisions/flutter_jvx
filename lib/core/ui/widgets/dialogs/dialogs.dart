@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 
 import '../../../utils/translation/app_localizations.dart';
 import '../util/restart_widget.dart';
@@ -26,7 +27,7 @@ showGoToSettings(BuildContext context, String title, String message) {
               FlatButton(
                 child: Text(AppLocalizations.of(context).text('To Settings')),
                 onPressed: () => Navigator.of(context).pushReplacementNamed(
-                    '/settings',
+                    SettingsPage.route,
                     arguments: "error.dialog"),
               )
             ],

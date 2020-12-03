@@ -11,6 +11,7 @@ import '../widgets/page/menu_page_widget.dart';
 import '../widgets/util/app_state_provider.dart';
 
 class MenuPage extends StatelessWidget {
+  static const String route = '/menu';
   final List<MenuItem> menuItems;
   final bool listMenuItemsInDrawer;
   final Response welcomeScreen;

@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/core/models/api/request/reload.dart';
+import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
@@ -137,7 +138,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             if (state.request.requestType == RequestType.CLOSE_SCREEN) {
               widget.appState.screenManager.removeScreen(this.rawComponentId);
 
-              Navigator.of(context).pushReplacementNamed('/menu',
+              Navigator.of(context).pushReplacementNamed(MenuPage.route,
                   arguments: MenuArguments(widget.appState.items, true));
             } else {
               if (isScreenRequest(state.request.requestType)) {
@@ -187,7 +188,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                     state.responseData.screenGeneric == null) {
                   widget.appState.screenManager
                       .removeScreen(this.rawComponentId);
-                  Navigator.of(context).pushReplacementNamed('/menu',
+                  Navigator.of(context).pushReplacementNamed(MenuPage.route,
                       arguments: MenuArguments(widget.appState.items, true));
                 }
               }
@@ -386,7 +387,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       } else if (state.closeScreenAction != null) {
         if (state.responseData.screenGeneric == null) {
           widget.appState.screenManager.removeScreen(this.rawComponentId);
-          Navigator.of(context).pushReplacementNamed('/menu',
+          Navigator.of(context).pushReplacementNamed(MenuPage.route,
               arguments: MenuArguments(widget.appState.items, true));
         }
       }
