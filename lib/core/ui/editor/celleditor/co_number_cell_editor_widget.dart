@@ -90,9 +90,7 @@ class CoNumberCellEditorWidgetState
           decoration: InputDecoration(
               contentPadding: EdgeInsets.all(12),
               border: InputBorder.none,
-              hintText: widget.cellEditorModel.placeholderVisible
-                  ? widget.cellEditorModel.placeholder
-                  : null,
+              hintText: widget.cellEditorModel.placeholder,
               suffixIcon: widget.cellEditorModel.editable
                   ? Padding(
                       padding: EdgeInsets.only(right: 8),

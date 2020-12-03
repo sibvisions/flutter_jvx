@@ -45,10 +45,9 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
     String controllerValue = (widget.componentModel.text != null
         ? widget.componentModel.text.toString()
         : "");
-    this.textController.value =
-        this.textController.value.copyWith(
-            text: controllerValue,
-            selection: TextSelection.collapsed(offset: controllerValue.length));
+    this.textController.value = this.textController.value.copyWith(
+        text: controllerValue,
+        selection: TextSelection.collapsed(offset: controllerValue.length));
 
     return Container(
       child: DecoratedBox(
@@ -70,6 +69,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
             textAlign: SoTextAlign.getTextAlignFromInt(
                 widget.componentModel.horizontalAlignment),
             decoration: InputDecoration(
+                hintText: widget.componentModel.placeholder,
                 contentPadding: widget.componentModel.textPadding,
                 border: InputBorder.none,
                 suffixIcon: widget.componentModel.enabled != null &&
@@ -79,8 +79,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
                         child: GestureDetector(
                           onTap: () {
                             if (widget.componentModel.value != null &&
-                                this.textController.text
-                                    .isNotEmpty) {
+                                this.textController.text.isNotEmpty) {
                               widget.componentModel.text = null;
                               widget.componentModel.valueChanged = true;
                               widget.componentModel.onTextFieldValueChanged(

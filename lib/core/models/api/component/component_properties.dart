@@ -70,7 +70,8 @@ enum ComponentProperty {
   EVENT_TAB_CLOSED,
   EVENT_TAB_MOVED,
   EVENT_TAB_ACTIVATED,
-  SELECTED_INDEX
+  SELECTED_INDEX,
+  PLACEHOLDER
 }
 
 class ComponentProperties {

@@ -68,6 +68,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
           textAlign: SoTextAlign.getTextAlignFromInt(
               widget.componentModel.horizontalAlignment),
           decoration: InputDecoration(
+              hintText: widget.componentModel.placeholder,
               contentPadding: widget.componentModel.textPadding,
               border: InputBorder.none,
               suffixIcon: widget.componentModel.enabled != null &&
@@ -77,8 +78,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
                       child: GestureDetector(
                         onTap: () {
                           if (widget.componentModel.value != null &&
-                              this.textController.text
-                                  .isNotEmpty) {
+                              this.textController.text.isNotEmpty) {
                             widget.componentModel.text = null;
                             widget.componentModel.valueChanged = true;
                             widget.componentModel.onTextFieldValueChanged(
@@ -86,14 +86,13 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
                             widget.componentModel.valueChanged = false;
                           }
                         },
-                        child:
-                            this.textController.text.isNotEmpty
-                                ? Icon(Icons.clear,
-                                    size: widget.componentModel.iconSize,
-                                    color: Colors.grey[400])
-                                : SizedBox(
-                                    height: widget.componentModel.iconSize,
-                                    width: 1),
+                        child: this.textController.text.isNotEmpty
+                            ? Icon(Icons.clear,
+                                size: widget.componentModel.iconSize,
+                                color: Colors.grey[400])
+                            : SizedBox(
+                                height: widget.componentModel.iconSize,
+                                width: 1),
                       ),
                     )
                   : null),
