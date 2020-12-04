@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
 
 import '../../../ui/layout/i_alignment_constants.dart';
 import 'co_cell_editor_widget.dart';
