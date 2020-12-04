@@ -85,16 +85,15 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   _updateDataFromSystem() {
     appState.translation = this.manager.translation;
 
-    appState.supportedLocales = List<Locale>.from(this
-        .manager
-        .translation
-        .keys
-        .map((key) {
-          if (key.contains('_'))
-            return Locale(key.substring(key.indexOf('_') + 1, key.indexOf('.')));
-          else
-            return Locale('en');
-        }));
+    if (appState.translation != null && appState.translation.isNotEmpty) {
+      appState.supportedLocales =
+          List<Locale>.from(appState.translation.keys.map((key) {
+        if (key.contains('_'))
+          return Locale(key.substring(key.indexOf('_') + 1, key.indexOf('.')));
+        else
+          return Locale('en');
+      }));
+    }
 
     if (this.manager.appData['appName'] != null &&
         this.manager.appData['appName'].isNotEmpty) {

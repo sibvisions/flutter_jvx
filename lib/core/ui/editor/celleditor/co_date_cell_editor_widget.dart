@@ -137,7 +137,7 @@ class CoDateCellEditorWidgetState
                                   widget.cellEditorModel.cellEditorValue is String
                                       ? int.parse(widget.cellEditorModel.cellEditorValue)
                                       : widget.cellEditorModel.cellEditorValue))
-                          : widget.cellEditorModel.placeholder,
+                          : widget.cellEditorModel.placeholder ?? '',
                       style: (widget.cellEditorModel.cellEditorValue != null &&
                               widget.cellEditorModel.cellEditorValue is int)
                           ? TextStyle(
@@ -281,7 +281,7 @@ class CoDateCellEditorWidgetState
                     widget.cellEditorModel.cellEditorValue))
             : '';
 
-        return Text(text);
+        return Text(text ?? '');
       }
     }
   }
