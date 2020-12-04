@@ -311,7 +311,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 });
               },
             ),
-            title: Text(title),
+            title: Text(title ?? ''),
           )
         : null;
   }
