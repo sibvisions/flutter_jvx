@@ -97,11 +97,13 @@ class CoNumberCellEditorWidgetState
                       child: GestureDetector(
                         onTap: () {
                           if (widget.cellEditorModel.tempValue != null) {
-                            widget.cellEditorModel.tempValue = null;
                             widget.cellEditorModel.valueChanged = true;
                             super.onValueChanged(context,
-                                widget.cellEditorModel.cellEditorValue);
+                                null);
                             widget.cellEditorModel.valueChanged = false;
+                            setState(() {
+                              widget.cellEditorModel.tempValue = null;
+                            });
                           }
                         },
                         child: shouldShowSuffixIcon
