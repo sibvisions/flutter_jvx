@@ -55,6 +55,11 @@ class ImageCellEditorModel extends CellEditorModel {
           }
         }
       }
+
+      if (_value == null) {
+        currentImage = null;
+      }
+
       super.cellEditorValue = _value;
     }
   }
