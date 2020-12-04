@@ -55,7 +55,7 @@ class AppLocalizations {
                 translation['text'], () => translation['translation']);
           });
         }
-      } else {
+      } else if (locale.languageCode != 'en') {
         String jsonContent = await rootBundle.loadString(appState.package
             ? "packages/jvx_flutterclient/locale/i18n_${locale.languageCode}.json"
             : "locale/i18n_${locale.languageCode}.json");

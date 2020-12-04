@@ -161,7 +161,7 @@ class CoLinkedCellEditorWidgetState
       child: Container(
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
-          hint: Text(h == null ? widget.cellEditorModel.placeholder : h),
+          hint: Text(h == null ? widget.cellEditorModel.placeholder ?? '' : h),
           value: v,
           items: items,
           onChanged: valueChanged,

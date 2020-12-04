@@ -22,13 +22,15 @@ class MobileApp extends StatelessWidget {
   final bool shouldLoadConfig;
   final ThemeData themeData;
   final Config config;
+  final List<Locale> supportedLocales;
 
-  const MobileApp(
-      {Key key,
-      @required this.shouldLoadConfig,
-      @required this.themeData,
-      this.config})
-      : super(key: key);
+  const MobileApp({
+    Key key,
+    @required this.shouldLoadConfig,
+    @required this.themeData,
+    @required this.supportedLocales,
+    this.config,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +80,7 @@ class MobileApp extends StatelessWidget {
           }
 
           switch (settings.name) {
-            case '/menu':
+            case MenuPage.route:
               MenuArguments arguments = settings.arguments;
 
               return MaterialPageRoute(
@@ -89,7 +91,7 @@ class MobileApp extends StatelessWidget {
                 ),
               );
               break;
-            case '/screen':
+            case OpenScreenPage.route:
               ScreenArguments arguments = settings.arguments;
 
               return MaterialPageRoute(
@@ -101,14 +103,14 @@ class MobileApp extends StatelessWidget {
                         title: arguments.title,
                       ));
               break;
-            case '/login':
+            case LoginPage.route:
               return MaterialPageRoute(
                   builder: (_) => LoginPage(
                         lastUsername:
                             (settings.arguments as LoginArguments).lastUsername,
                       ));
               break;
-            case '/settings':
+            case SettingsPage.route:
               if (settings.arguments is SettingsArguments) {
                 return MaterialPageRoute(
                     builder: (_) => SettingsPage(
@@ -127,7 +129,7 @@ class MobileApp extends StatelessWidget {
                         ));
               }
               break;
-            case '/':
+            case StartupPage.route:
               return MaterialPageRoute(
                 builder: (_) => StartupPage(
                   shouldLoadConfig: this.shouldLoadConfig,
@@ -152,12 +154,12 @@ class MobileApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [const Locale('en'), const Locale('de')],
+        supportedLocales: this.supportedLocales.isNotEmpty ? this.supportedLocales : [const Locale('en'), const Locale('de')],
         title: 'JVx Mobile',
         theme: this.themeData,
         debugShowCheckedModeBanner: false,
         showPerformanceOverlay: false,
-        initialRoute: '/',
+        initialRoute: StartupPage.route,
       ),
     );
   }

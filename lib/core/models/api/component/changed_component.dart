@@ -11,6 +11,8 @@ class ChangedComponent extends ComponentProperties {
   bool remove;
   bool additional;
   String screenTitle;
+  String screenNavigationName;
+  bool screenModal;
 
   ChangedComponent({
     this.id,
@@ -21,6 +23,8 @@ class ChangedComponent extends ComponentProperties {
     this.remove,
     this.additional,
     this.screenTitle,
+    this.screenModal,
+    this.screenNavigationName
   }) : super(null);
 
   get layoutName {
@@ -40,7 +44,9 @@ class ChangedComponent extends ComponentProperties {
     destroy = this.getProperty<bool>(ComponentProperty.$DESTROY, false);
     remove = this.getProperty<bool>(ComponentProperty.$REMOVE, false);
     additional = this.getProperty<bool>(ComponentProperty.$ADDITIONAL, false);
-    screenTitle = this.getProperty<String>(ComponentProperty.SCREEN__TITLE);
+    screenTitle = this.getProperty<String>(ComponentProperty.SCREEN___TITLE___);
+    screenNavigationName = this.getProperty<String>(ComponentProperty.SCREEN___NAVIGATION_NAME___);
+    screenModal = this.getProperty<bool>(ComponentProperty.SCREEN___MODAL___);
 
     if (json[_cellEditorIdentifier] != null)
       cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);

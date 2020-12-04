@@ -11,6 +11,7 @@ import '../widgets/page/open_screen_page_widget.dart';
 import '../widgets/util/app_state_provider.dart';
 
 class OpenScreenPage extends StatelessWidget {
+  static const String route = '/screen';
   final String title;
   final Response response;
   final String menuComponentId;

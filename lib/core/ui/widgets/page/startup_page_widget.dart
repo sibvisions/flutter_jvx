@@ -4,7 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/download.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
+import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
+import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
+import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 import 'package:jvx_flutterclient/core/utils/theme/get_color_from_app_style.dart';
+import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
@@ -81,6 +85,16 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   _updateDataFromSystem() {
     appState.translation = this.manager.translation;
 
+    if (appState.translation != null && appState.translation.isNotEmpty) {
+      appState.supportedLocales =
+          List<Locale>.from(appState.translation.keys.map((key) {
+        if (key.contains('_'))
+          return Locale(key.substring(key.indexOf('_') + 1, key.indexOf('.')));
+        else
+          return Locale('en');
+      }));
+    }
+
     if (this.manager.appData['appName'] != null &&
         this.manager.appData['appName'].isNotEmpty) {
       appState.appName = this.manager.appData['appName'];
@@ -99,8 +113,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (this.manager.mobileOnly != null) {
       appState.mobileOnly = this.manager.mobileOnly;
     }
-
-    appState.translation = this.manager.translation;
   }
 
   String _getDeviceId() {
@@ -170,11 +182,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         MaterialColor newColor = getColorFromAppStyle(response);
 
         sl<ThemeManager>().themeData = ThemeData(
-            primaryColor: newColor,
-            primarySwatch: newColor,
-            brightness: Brightness.light,
-            fontFamily: 'Raleway',
-            cursorColor: newColor,);
+          primaryColor: newColor,
+          primarySwatch: newColor,
+          brightness: Brightness.light,
+          fontFamily: 'Raleway',
+          cursorColor: newColor,
+        );
 
         if (response.applicationStyle.hash !=
                 this.manager.applicationStylingHash ||
@@ -212,12 +225,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    Navigator.of(context).pushReplacementNamed('/login',
+    Navigator.of(context).pushReplacementNamed(LoginPage.route,
         arguments: LoginArguments(response.loginItem.username));
   }
 
   void _menu(Response response) {
-    Navigator.of(context).pushReplacementNamed('/menu',
+    Navigator.of(context).pushReplacementNamed(MenuPage.route,
         arguments:
             MenuArguments(response.menu.entries, true, this.welcomeScreen));
   }
@@ -263,7 +276,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) Navigator.of(context).pushReplacementNamed('/settings', arguments: SettingsArguments(warmWelcome: true));
+        if (mounted)
+          Navigator.of(context).pushReplacementNamed(SettingsPage.route,
+              arguments: SettingsArguments(warmWelcome: true));
       });
       return;
     }
@@ -308,6 +323,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           else if (response.request.requestType == RequestType.APP_STYLE)
             _applicationStyle(response);
           else if (response.request.requestType ==
+              RequestType.DOWNLOAD_TRANSLATION) {
+            sl<SupportedLocaleManager>().value = this.appState.supportedLocales;
+          } else if (response.request.requestType ==
                   RequestType.DOWNLOAD_IMAGES &&
               (response.loginItem != null || response.menu != null))
             _checkForLogin(response);

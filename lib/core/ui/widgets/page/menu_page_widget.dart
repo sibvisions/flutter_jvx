@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/core/models/api/request/menu.dart';
+import 'package:jvx_flutterclient/core/ui/pages/open_screen_page.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../../models/api/request.dart';
@@ -125,7 +126,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     if (widget.welcomeScreen != null) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).pushReplacementNamed(
-          '/screen',
+          OpenScreenPage.route,
           arguments: ScreenArguments(
             response: widget.welcomeScreen,
             menuComponentId: widget.menuItems
@@ -338,7 +339,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
           if (response.responseData.screenGeneric != null &&
               response.request.requestType == RequestType.OPEN_SCREEN) {
-            Navigator.of(context).pushReplacementNamed('/screen',
+            Navigator.of(context).pushReplacementNamed(OpenScreenPage.route,
                 arguments: ScreenArguments(
                   response: response,
                   menuComponentId:

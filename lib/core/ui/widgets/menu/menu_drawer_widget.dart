@@ -5,6 +5,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
+import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -64,7 +66,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           (state.error == null || !state.hasError)) {
         Future.delayed(
             Duration.zero,
-            () => Navigator.of(context).pushReplacementNamed('/login',
+            () => Navigator.of(context).pushReplacementNamed(LoginPage.route,
                 arguments: LoginArguments(widget.appState.username)));
       }
 
@@ -93,7 +95,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                         color:
                             Theme.of(context).primaryTextTheme.bodyText1.color),
                     onTap: () {
-                      Navigator.of(context).pushNamed('/settings');
+                      Navigator.of(context).pushNamed(SettingsPage.route);
                     },
                   ),
                   Divider(

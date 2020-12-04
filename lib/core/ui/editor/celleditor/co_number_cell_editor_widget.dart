@@ -88,7 +88,7 @@ class CoNumberCellEditorWidgetState
           textAlign: SoTextAlign.getTextAlignFromInt(
               widget.cellEditorModel.horizontalAlignment),
           decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(12),
+              contentPadding: EdgeInsets.fromLTRB(12, 15, 12, 12),
               border: InputBorder.none,
               hintText: widget.cellEditorModel.placeholder,
               suffixIcon: widget.cellEditorModel.editable
@@ -97,11 +97,13 @@ class CoNumberCellEditorWidgetState
                       child: GestureDetector(
                         onTap: () {
                           if (widget.cellEditorModel.tempValue != null) {
-                            widget.cellEditorModel.tempValue = null;
                             widget.cellEditorModel.valueChanged = true;
                             super.onValueChanged(context,
-                                widget.cellEditorModel.cellEditorValue);
+                                null);
                             widget.cellEditorModel.valueChanged = false;
+                            setState(() {
+                              widget.cellEditorModel.tempValue = null;
+                            });
                           }
                         },
                         child: shouldShowSuffixIcon

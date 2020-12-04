@@ -39,6 +39,7 @@ class AppState {
   int menuCurrentPageIndex;
   bool package;
   String currentScreenComponentId;
+  List<Locale> supportedLocales = [];
 
   AppState();
 
@@ -70,5 +71,6 @@ class AppState {
     this.menuCurrentPageIndex = state.menuCurrentPageIndex;
     this.package = state.package;
     this.currentScreenComponentId = state.currentScreenComponentId;
+    this.supportedLocales = state.supportedLocales;
   }
 }
