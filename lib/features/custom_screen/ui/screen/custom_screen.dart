@@ -12,6 +12,9 @@ class CustomScreen implements IScreen {
   @override
   String componentId;
 
+  @override
+  String screenTitle;
+
   String _templateName;
   Response currentResponse;
 
