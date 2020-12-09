@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
+import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
+import 'package:jvx_flutterclient/core/ui/component/models/component_model.dart';
 import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/layout/widgets/co_border_layout_widget.dart';
+import 'package:jvx_flutterclient/core/ui/layout/widgets/co_layout_render_box.dart';
 
 class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
   final CoScrollPanelConstraints preferredConstraints;
@@ -36,7 +39,7 @@ class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderScrollPanelLayout extends RenderBox
+class RenderScrollPanelLayout extends CoLayoutRenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
@@ -64,47 +67,70 @@ class RenderScrollPanelLayout extends RenderBox
       renderBox = childParentData.nextSibling;
     }
 
+    this.preferredLayoutSize = this.constraints.biggest;
+    this.maximumLayoutSize = this.constraints.biggest;
+    this.minimumLayoutSize = this.constraints.biggest;
+
+    Size preferredSize;
+
     if (child != null) {
-      child.layout(
-          BoxConstraints(
-              minWidth: this.constraints.minWidth,
-              maxWidth: this.constraints.maxWidth,
-              minHeight: this.constraints.minHeight,
-              maxHeight: this.constraints.maxHeight),
-          parentUsesSize: true);
+      this.layoutRenderBox(child, BoxConstraints.tightForFinite());
 
       if (child is RenderShiftedBox &&
-          (child as RenderShiftedBox).child is RenderBorderLayoutWidget) {
-        RenderBorderLayoutWidget childLayout =
-            (child as RenderShiftedBox).child as RenderBorderLayoutWidget;
+          (child as RenderShiftedBox).child is CoLayoutRenderBox) {
+        CoLayoutRenderBox childLayout =
+            (child as RenderShiftedBox).child as CoLayoutRenderBox;
 
-        Size preferredSize = childLayout.preferredLayoutSize;
+        preferredSize = childLayout.preferredLayoutSize;
 
-        print(preferredSize);
+        /*if (this.preferredConstraints.componentModel != null)
+          print(this.preferredConstraints.componentModel.componentId +
+              ";" +
+              this.preferredConstraints.componentModel.constraints +
+              ";" +
+              this.preferredConstraints.componentModel.toString());
+
+        if (child.hasSize) print("child:" + child.size.toString());
+
+        print("pref:" + preferredSize.toString());*/
       }
+
+      //print("split_pref:" + preferredConstraints.preferredSize.toString());
+
+      double newHeight;
+      double newWidth;
 
       if (child.size.height <
               preferredConstraints.parentConstraints.maxHeight &&
           preferredConstraints.parentConstraints.maxHeight != double.infinity) {
-        double maxHeight = preferredConstraints.parentConstraints.maxHeight;
+        newHeight = preferredConstraints.parentConstraints.maxHeight;
+      }
 
-        child.layout(
-            BoxConstraints(
-                minWidth: this.preferredConstraints.parentConstraints.minWidth,
-                maxWidth: this.preferredConstraints.parentConstraints.maxWidth,
-                minHeight: maxHeight,
-                maxHeight: maxHeight),
-            parentUsesSize: true);
-      } else if (this.preferredConstraints.preferredSize != null &&
+      if (this.preferredConstraints.preferredSize != null &&
           child.size.width < this.preferredConstraints.preferredSize.width) {
-        child.layout(
+        newWidth = this.preferredConstraints.preferredSize.width;
+      }
+
+      if (newHeight != null || newWidth != null) {
+        BoxConstraints newConstraints = BoxConstraints(
+            minWidth: (newWidth != null ? newWidth : this.constraints.minWidth),
+            maxWidth: (newWidth != null ? newWidth : this.constraints.maxWidth),
+            minHeight:
+                (newHeight != null ? newHeight : this.constraints.minHeight),
+            maxHeight:
+                (newHeight != null ? newHeight : this.constraints.maxHeight));
+
+        this.layoutRenderBox(child, newConstraints);
+
+        //if (child.hasSize) print("childAfter1:" + child.size.toString());
+      } else {
+        this.layoutRenderBox(
+            child,
             BoxConstraints(
-                minWidth: this.preferredConstraints.preferredSize.width,
-                maxWidth: this.preferredConstraints.preferredSize.width,
-                minHeight:
-                    this.preferredConstraints.parentConstraints.minHeight,
-                maxHeight: child.size.height),
-            parentUsesSize: true);
+                minWidth: this.constraints.minWidth,
+                maxWidth: this.constraints.maxWidth,
+                minHeight: this.constraints.minHeight,
+                maxHeight: this.constraints.maxHeight));
       }
 
       final MultiChildLayoutParentData childParentData = child.parentData;
@@ -112,6 +138,8 @@ class RenderScrollPanelLayout extends RenderBox
       this.size = this
           .constraints
           .constrainDimensions(child.size.width, child.size.height);
+      //if (child.hasSize) print("childAfter2:" + child.size.toString());
+      //print("returnSize:" + this.size.toString());
     } else {
       this.size = this.constraints.constrainDimensions(
           this.preferredConstraints.parentConstraints.biggest.width,
@@ -161,7 +189,9 @@ class CoScrollPanelLayoutId
 
 class CoScrollPanelConstraints {
   BoxConstraints parentConstraints;
+  ComponentModel componentModel;
   Size preferredSize;
 
-  CoScrollPanelConstraints(this.parentConstraints, [this.preferredSize]);
+  CoScrollPanelConstraints(this.parentConstraints, this.componentModel,
+      [this.preferredSize]);
 }

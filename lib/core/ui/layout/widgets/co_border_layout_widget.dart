@@ -3,11 +3,14 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:universal_html/prefer_universal/html.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
 import '../../container/container_component_model.dart';
 import 'co_border_layout_constraint.dart';
+import 'co_form_layout_widget.dart';
+import 'co_layout_render_box.dart';
 
 ///
 /// The <code>JVxSequenceLayout</code> can be used as {@link java.awt.FlowLayout} with
@@ -70,7 +73,7 @@ class CoBorderLayoutWidget extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderBorderLayoutWidget extends RenderBox
+class RenderBorderLayoutWidget extends CoLayoutRenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
@@ -88,11 +91,6 @@ class RenderBorderLayoutWidget extends RenderBox
   int iHorizontalGap;
   int iVerticalGap;
   CoContainerWidget container;
-
-  // only used in parent layouts
-  Size preferredLayoutSize;
-  Size minimumLayoutSize;
-  Size maximumLayoutSize;
 
   RenderBorderLayoutWidget(
       this.container, this.insMargin, this.iHorizontalGap, this.iVerticalGap,
@@ -171,9 +169,9 @@ class RenderBorderLayoutWidget extends RenderBox
     }
 
     // calculate preferred, minimum and maximum layout sizes for parent layouts
-    // preferredLayoutSize = _preferredLayoutSize(container.componentModel);
-    // minimumLayoutSize = _minimumLayoutSize(container.componentModel);
-    // maximumLayoutSize = _maximumLayoutSize(container.componentModel);
+    preferredLayoutSize = _preferredLayoutSize(container.componentModel);
+    minimumLayoutSize = _minimumLayoutSize(container.componentModel);
+    maximumLayoutSize = _maximumLayoutSize(container.componentModel);
 
     // layout NORTH
     if (north != null) {
@@ -188,20 +186,27 @@ class RenderBorderLayoutWidget extends RenderBox
 
       if (minWidth == double.infinity) minWidth = 0;
 
-      north.layout(
+      Size size = layoutRenderBox(
+          north,
           BoxConstraints(
               minWidth: minWidth,
               maxWidth: width,
               minHeight: minHeight,
-              maxHeight: maxHeight),
-          parentUsesSize: true);
+              maxHeight: maxHeight));
+      // north.layout(
+      //     BoxConstraints(
+      //         minWidth: minWidth,
+      //         maxWidth: width,
+      //         minHeight: minHeight,
+      //         maxHeight: maxHeight),
+      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = north.parentData;
       childParentData.offset = Offset(x, y);
 
-      y += north.size.height + iVerticalGap;
-      height -= north.size.height + iVerticalGap;
-      layoutWidth += north.size.width;
-      layoutHeight += north.size.height;
+      y += size.height + iVerticalGap;
+      height -= size.height + iVerticalGap;
+      layoutWidth += size.width;
+      layoutHeight += size.height;
     }
 
     // layout SOUTH
@@ -217,19 +222,26 @@ class RenderBorderLayoutWidget extends RenderBox
 
       if (minWidth == double.infinity) minWidth = 0;
 
-      south.layout(
+      Size size = layoutRenderBox(
+          south,
           BoxConstraints(
               minWidth: minWidth,
               maxWidth: width,
               minHeight: minHeight,
-              maxHeight: maxHeight),
-          parentUsesSize: true);
+              maxHeight: maxHeight));
+      // south.layout(
+      //     normalizeConstraints(BoxConstraints(
+      //         minWidth: minWidth,
+      //         maxWidth: width,
+      //         minHeight: minHeight,
+      //         maxHeight: maxHeight)),
+      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = south.parentData;
-      childParentData.offset = Offset(x, y + height - south.size.height);
+      childParentData.offset = Offset(x, y + height - size.height);
 
-      height -= south.size.height + iVerticalGap;
-      layoutWidth = max(south.size.width, layoutWidth);
-      layoutHeight += south.size.height;
+      height -= size.height + iVerticalGap;
+      layoutWidth = max(size.width, layoutWidth);
+      layoutHeight += size.height;
     }
 
     // layout WEST
@@ -245,21 +257,27 @@ class RenderBorderLayoutWidget extends RenderBox
 
       if (minHeight == double.infinity) minHeight = 0;
 
-      west.layout(
+      Size size = layoutRenderBox(
+          west,
           BoxConstraints(
               minWidth: minWidth,
               maxWidth: maxWidth,
               minHeight: minHeight,
-              maxHeight: height),
-          parentUsesSize: true);
+              maxHeight: height));
+      // west.layout(
+      //     normalizeConstraints(BoxConstraints(
+      //         minWidth: minWidth,
+      //         maxWidth: maxWidth,
+      //         minHeight: minHeight,
+      //         maxHeight: height)),
+      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = west.parentData;
       childParentData.offset = Offset(x, y);
 
-      x += west.size.width + iHorizontalGap;
-      width -= west.size.width + iHorizontalGap;
-      layoutMiddleWidth += west.size.width + iHorizontalGap;
-      layoutMiddleHeight =
-          max(west.size.height + iVerticalGap, layoutMiddleHeight);
+      x += size.width + iHorizontalGap;
+      width -= size.width + iHorizontalGap;
+      layoutMiddleWidth += size.width + iHorizontalGap;
+      layoutMiddleHeight = max(size.height + iVerticalGap, layoutMiddleHeight);
     }
 
     // layout EAST
@@ -275,20 +293,26 @@ class RenderBorderLayoutWidget extends RenderBox
 
       if (minHeight == double.infinity) minHeight = 0;
 
-      east.layout(
+      Size size = layoutRenderBox(
+          east,
           BoxConstraints(
               minWidth: minWidth,
               maxWidth: maxWidth,
               minHeight: minHeight,
-              maxHeight: height),
-          parentUsesSize: true);
+              maxHeight: height));
+      // east.layout(
+      //     normalizeConstraints(BoxConstraints(
+      //         minWidth: minWidth,
+      //         maxWidth: maxWidth,
+      //         minHeight: minHeight,
+      //         maxHeight: height)),
+      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = east.parentData;
-      childParentData.offset = Offset(x + width - east.size.width, y);
+      childParentData.offset = Offset(x + width - size.width, y);
 
-      width -= east.size.width + iHorizontalGap;
-      layoutMiddleWidth += east.size.width + iHorizontalGap;
-      layoutMiddleHeight =
-          max(east.size.height + iVerticalGap, layoutMiddleHeight);
+      width -= size.width + iHorizontalGap;
+      layoutMiddleWidth += size.width + iHorizontalGap;
+      layoutMiddleHeight = max(size.height + iVerticalGap, layoutMiddleHeight);
     }
 
     // layout CENTER
@@ -312,18 +336,25 @@ class RenderBorderLayoutWidget extends RenderBox
         minWidth = width;
       }
 
-      center.layout(
+      Size size = layoutRenderBox(
+          center,
           BoxConstraints(
               minWidth: minWidth,
               maxWidth: width,
               minHeight: minHeight,
-              maxHeight: height),
-          parentUsesSize: true);
+              maxHeight: height));
+
+      // center.layout(
+      //     normalizeConstraints(BoxConstraints(
+      //         minWidth: minWidth,
+      //         maxWidth: width,
+      //         minHeight: minHeight,
+      //         maxHeight: height)),
+      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData = center.parentData;
       childParentData.offset = Offset(x, y);
-      layoutMiddleWidth += center.size.width + iHorizontalGap;
-      layoutMiddleHeight =
-          max(center.size.height + iVerticalGap, layoutMiddleHeight);
+      layoutMiddleWidth += size.width + iHorizontalGap;
+      layoutMiddleHeight = max(size.height + iVerticalGap, layoutMiddleHeight);
     }
 
     layoutWidth = max(layoutWidth, layoutMiddleWidth);
@@ -522,18 +553,26 @@ class RenderBorderLayoutWidget extends RenderBox
   Size getPreferredSize(
       RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      renderBox.layout(constraints, parentUsesSize: true);
+      Size size = getChildLayoutPreferredSize(renderBox);
+      if (size != null) {
+        return size;
+      } else {
+        if (renderBox.hasSize)
+          size = renderBox.size;
+        else
+          size = layoutRenderBox(renderBox, constraints);
+        //renderBox.layout(constraints, parentUsesSize: true);
 
-      if (!renderBox.hasSize) {
-        print("CoBorderLayout: RenderBox has no size after layout!");
-      }
+        if (size == null) {
+          print("CoBorderLayout: RenderBox has no size after layout!");
+        }
 
-      if (renderBox.size.width == double.infinity ||
-          renderBox.size.height == double.infinity) {
-        print(
-            "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+        if (size.width == double.infinity || size.height == double.infinity) {
+          print(
+              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+        }
+        return size;
       }
-      return renderBox.size;
     } else {
       return comp.componentModel.preferredSize;
     }
@@ -542,14 +581,19 @@ class RenderBorderLayoutWidget extends RenderBox
   Size getMinimumSize(
       RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
     if (!comp.componentModel.isMinimumSizeSet) {
-      renderBox.layout(constraints, parentUsesSize: true);
+      Size size = getChildLayoutMinimumSize(renderBox);
+      if (size != null)
+        return size;
+      else {
+        Size size = layoutRenderBox(renderBox, constraints);
+        //renderBox.layout(constraints, parentUsesSize: true);
 
-      if (renderBox.size.width == double.infinity ||
-          renderBox.size.height == double.infinity) {
-        print(
-            "CoBorderLayout: getMinimumSize: Infinity height or width for BorderLayout!");
+        if (size.width == double.infinity || size.height == double.infinity) {
+          print(
+              "CoBorderLayout: getMinimumSize: Infinity height or width for BorderLayout!");
+        }
+        return size;
       }
-      return renderBox.size;
     } else {
       return comp.componentModel.minimumSize;
     }

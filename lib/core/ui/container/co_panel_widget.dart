@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/container/co_scroll_panel_layout.dart';
 
 import '../component/component_widget.dart';
 import '../component/models/component_model.dart';
@@ -55,11 +56,23 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     }
 
     if (child != null) {
-      return Container(color: widget.componentModel.background, child: child);
-      // return Container(
-      //   color: this.background,
-      //   child: child,
-      // );
+      // return LayoutBuilder(
+      //     builder: (BuildContext context, BoxConstraints constraints) {
+      //   return CoScrollPanelLayout(
+      //       preferredConstraints:
+      //           CoScrollPanelConstraints(constraints, componentModel),
+      //       children: [
+      //         CoScrollPanelLayoutId(
+      //             constraints:
+      //                 CoScrollPanelConstraints(constraints, componentModel),
+      //             child: Container(
+      //                 color: widget.componentModel.background, child: child))
+      //       ]);
+      // });
+      return Container(
+        color: widget.componentModel.background,
+        child: child,
+      );
 /*         return Container(
             key: componentId,
             color: this.background, 

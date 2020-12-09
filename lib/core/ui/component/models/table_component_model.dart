@@ -73,13 +73,18 @@ class TableComponentModel extends EditorComponentModel {
   @override
   get preferredSize {
     if (super.preferredSize != null) return super.preferredSize;
-    return Size(300, 300);
+
+    double columnWidth;
+    if (columnInfo != null)
+      columnWidth = SoTableColumnCalculator.getColumnWidthSum(columnInfo);
+
+    return Size(columnWidth != null ? columnWidth : 300, 300);
   }
 
   @override
   get minimumSize {
     if (super.minimumSize != null) return super.minimumSize;
-    return Size(300, 100);
+    return preferredSize;
   }
 
   @override

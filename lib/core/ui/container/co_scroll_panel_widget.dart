@@ -67,11 +67,13 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
               controller: _scrollController,
               // key: this.componentId,
               child: CoScrollPanelLayout(
-                preferredConstraints: CoScrollPanelConstraints(constraints),
+                preferredConstraints:
+                    CoScrollPanelConstraints(constraints, componentModel),
                 children: [
                   CoScrollPanelLayoutId(
                       // key: ValueKey(widget.key),
-                      constraints: CoScrollPanelConstraints(constraints),
+                      constraints:
+                          CoScrollPanelConstraints(constraints, componentModel),
                       child: child)
                 ],
               )));
