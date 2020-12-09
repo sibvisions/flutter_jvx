@@ -7,6 +7,9 @@ class ScreenManager extends IScreenManager {
   Map<String, IScreen> _screens = <String, IScreen>{};
 
   @override
+  Map<String, IScreen> get screens => _screens;
+
+  @override
   IScreen getScreen(String componentId, {String templateName}) {
     IScreen screen = this.findScreen(componentId);
 

@@ -10,13 +10,15 @@ class SoScreen implements IScreen {
   Response response;
   SoComponentCreator componentCreator;
   GlobalKey<ComponentScreenWidgetState> screenKey;
+  String screenTitle;
 
   SoScreen(
       {Key key,
       this.componentId,
       this.response,
       this.componentCreator,
-      this.screenKey});
+      this.screenKey,
+      this.screenTitle});
 
   @override
   Widget getWidget(BuildContext context) {

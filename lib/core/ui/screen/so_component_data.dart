@@ -139,11 +139,11 @@ class SoComponentData {
   void updateSelectedRow(BuildContext context, int selectedRow,
       [bool raiseSelectedRowChangeEvent = false]) {
     if (data != null) {
+      _onDataChanged.forEach((d) => d(context));
       if (data.selectedRow == null || data.selectedRow != selectedRow) {
         data.selectedRow = selectedRow;
         if (raiseSelectedRowChangeEvent)
           _onSelectedRowChanged.forEach((d) => d(selectedRow));
-        _onDataChanged.forEach((d) => d(context));
       }
     } else {
       print(
