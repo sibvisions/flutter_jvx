@@ -3,11 +3,12 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
 
 import '../../container/co_container_widget.dart';
+import '../../container/container_component_model.dart';
 import 'co_form_layout_anchor.dart';
 import 'co_form_layout_constraint.dart';
+import 'co_layout_render_box.dart';
 
 ///
 /// The FormLayout is a simple to use Layout which allows complex forms.
@@ -135,7 +136,7 @@ class CoFormLayoutWidget extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderFormLayoutWidget extends RenderBox
+class RenderFormLayoutWidget extends CoLayoutRenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
@@ -303,6 +304,11 @@ class RenderFormLayoutWidget extends RenderBox
 
       child = childParentData.nextSibling;
     }
+
+    // calculate preferred, minimum and maximum layout sizes for parent layouts
+    preferredLayoutSize = _preferredLayoutSize(container.componentModel);
+    minimumLayoutSize = _minimumLayoutSize(container.componentModel);
+    maximumLayoutSize = _maximumLayoutSize(container.componentModel);
 
     calculateAnchors(container.componentModel);
 
@@ -514,32 +520,41 @@ class RenderFormLayoutWidget extends RenderBox
   Size getPreferredSize(
       RenderBox renderBox, CoFormLayoutConstraint constraint) {
     if (!constraint.comp.componentModel.isPreferredSizeSet) {
-      renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+      Size size = getChildLayoutPreferredSize(renderBox);
 
-      if (!renderBox.hasSize) {
-        int margin = constraint.leftAnchor.getAbsolutePosition() +
-            constraint.rightAnchor.getAbsolutePosition();
-        BoxConstraints constraints = BoxConstraints(
-            minHeight: 0,
-            maxHeight: this.constraints.maxHeight,
-            minWidth: 0,
-            maxWidth: this.constraints.maxWidth - margin < 0
-                ? this.constraints.maxWidth
-                : this.constraints.maxWidth - margin);
+      if (size != null) {
+        return size;
+      } else {
+        if (renderBox.hasSize)
+          return renderBox.size;
+        else {
+          //renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
 
-        renderBox.layout(constraints, parentUsesSize: true);
+          int margin = constraint.leftAnchor.getAbsolutePosition() +
+              constraint.rightAnchor.getAbsolutePosition();
+          BoxConstraints constraints = BoxConstraints(
+              minHeight: 0,
+              maxHeight: this.constraints.maxHeight,
+              minWidth: 0,
+              maxWidth: this.constraints.maxWidth - margin < 0
+                  ? this.constraints.maxWidth
+                  : this.constraints.maxWidth - margin);
+
+          return layoutRenderBox(renderBox, constraints);
+          //renderBox.layout(constraints, parentUsesSize: true);
+        }
       }
 
-      if (!renderBox.hasSize) {
-        print("CoFormLayout: RenderBox has no size after layout!");
-      }
+      // if (!renderBox.hasSize) {
+      //   print("CoFormLayout: RenderBox has no size after layout!");
+      // }
 
-      if (renderBox.size.width == double.infinity ||
-          renderBox.size.height == double.infinity) {
-        print(
-            "CoFormLayout: getPrefererredSize: Infinity height or width for FormLayout!");
-      }
-      return renderBox.size;
+      // if (renderBox.size.width == double.infinity ||
+      //     renderBox.size.height == double.infinity) {
+      //   print(
+      //       "CoFormLayout: getPrefererredSize: Infinity height or width for FormLayout!");
+      // }
+      // return renderBox.size;
     } else {
       return constraint.comp.componentModel.preferredSize;
     }
@@ -547,14 +562,25 @@ class RenderFormLayoutWidget extends RenderBox
 
   Size getMinimumSize(RenderBox renderBox, CoFormLayoutConstraint constraint) {
     if (!constraint.comp.componentModel.isMinimumSizeSet) {
-      renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+      Size size = getChildLayoutMinimumSize(renderBox);
 
-      if (renderBox.size.width == double.infinity ||
-          renderBox.size.height == double.infinity) {
-        print(
-            "CoFormLayout: getMinimumSize: Infinity height or width for FormLayout!");
+      if (size != null) {
+        return size;
+      } else {
+        if (renderBox.hasSize)
+          return renderBox.size;
+        else {
+          return layoutRenderBox(renderBox, BoxConstraints.tightFor());
+          // renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+
+          // if (renderBox.size.width == double.infinity ||
+          //     renderBox.size.height == double.infinity) {
+          //   print(
+          //       "CoFormLayout: getMinimumSize: Infinity height or width for FormLayout!");
+          // }
+          // return renderBox.size;
+        }
       }
-      return renderBox.size;
     } else {
       return constraint.comp.componentModel.minimumSize;
     }
@@ -878,8 +904,8 @@ class RenderFormLayoutWidget extends RenderBox
     if (calculateTargetDependentAnchors) {
       // set border anchors
       Size size = Size(layoutWidth, layoutHeight);
-      Size minSize = minimumLayoutSize(pTarget.componentModel);
-      Size maxSize = maximumLayoutSize(pTarget.componentModel);
+      Size minSize = _minimumLayoutSize(pTarget.componentModel);
+      Size maxSize = _maximumLayoutSize(pTarget.componentModel);
       EdgeInsets ins = EdgeInsets.zero;
       size = Size(size.width - ins.left + ins.right,
           size.height - ins.top + ins.bottom);
@@ -976,7 +1002,7 @@ class RenderFormLayoutWidget extends RenderBox
     }
   }
 
-  Size minimumLayoutSize(ContainerComponentModel pTarget) {
+  Size _minimumLayoutSize(ContainerComponentModel pTarget) {
     if (pTarget.isMinimumSizeSet) {
       return pTarget.minimumSize;
     } else {
@@ -984,13 +1010,13 @@ class RenderFormLayoutWidget extends RenderBox
     }
   }
 
-  Size preferredLayoutSize(ContainerComponentModel pTarget) {
+  Size _preferredLayoutSize(ContainerComponentModel pTarget) {
     calculateAnchors(pTarget);
 
     return Size(preferredWidth.toDouble(), preferredHeight.toDouble());
   }
 
-  Size maximumLayoutSize(ContainerComponentModel pTarget) {
+  Size _maximumLayoutSize(ContainerComponentModel pTarget) {
     if (pTarget.isMaximumSizeSet) {
       return pTarget.maximumSize;
     } else {

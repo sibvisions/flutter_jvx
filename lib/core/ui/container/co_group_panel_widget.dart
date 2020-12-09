@@ -70,24 +70,28 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
                 ),
               ),
               CoScrollPanelLayout(
-                preferredConstraints: CoScrollPanelConstraints(constraints),
+                preferredConstraints:
+                    CoScrollPanelConstraints(constraints, componentModel),
                 children: [
                   CoScrollPanelLayoutId(
-                      constraints: CoScrollPanelConstraints(constraints),
+                      constraints:
+                          CoScrollPanelConstraints(constraints, componentModel),
                       child: Card(
-                          color: componentModel.appState.applicationStyle !=
-                                  null
-                              ? Colors.white.withOpacity(componentModel
-                                  .appState.applicationStyle?.controlsOpacity)
-                              : null,
+                          color:
+                              componentModel.appState.applicationStyle != null
+                                  ? Colors.white.withOpacity(componentModel
+                                      .appState
+                                      .applicationStyle
+                                      ?.controlsOpacity)
+                                  : null,
                           margin: EdgeInsets.all(5),
                           elevation: 2.0,
                           child: child,
-                          shape:
-                              componentModel.appState.applicationStyle != null
-                                  ? componentModel
-                                      .appState.applicationStyle?.containerShape
-                                  : RoundedRectangleBorder()))
+                          shape: componentModel.appState.applicationStyle !=
+                                  null
+                              ? componentModel
+                                  .appState.applicationStyle?.containerShape
+                              : RoundedRectangleBorder()))
                 ],
               )
             ],

@@ -28,6 +28,14 @@ class SplitPanelComponentModel extends ContainerComponentModel {
 
   double currentSplitviewWeight;
 
+  BoxConstraints lastConstraints;
+
+  @override
+  get preferredSize {
+    if (lastConstraints != null) return lastConstraints.biggest;
+    return null;
+  }
+
   SplitPanelComponentModel(
       {ChangedComponent changedComponent, String componentId})
       : super(changedComponent: changedComponent, componentId: componentId);

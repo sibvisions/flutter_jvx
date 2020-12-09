@@ -2,13 +2,14 @@ library split_view;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
 import 'package:jvx_flutterclient/core/ui/container/co_scroll_panel_layout.dart';
 
 /// SplitView
 class SplitView extends StatefulWidget {
   final key;
-  final Widget view1;
-  final Widget view2;
+  final ComponentWidget view1;
+  final ComponentWidget view2;
   final SplitViewMode viewMode;
   final double gripSize;
   final double initialWeight;
@@ -79,7 +80,8 @@ class _SplitViewState extends State<SplitView> {
       List<CoScrollPanelLayoutId> children = view.children;
       if (children != null && children.length > 0) {
         CoScrollPanelConstraints viewConstraints = children[0].constraints;
-        if (viewConstraints != null && viewConstraints.preferredSize != null) {
+        if (viewConstraints != null) {
+          // && viewConstraints.preferredSize != null) {
           viewConstraints.preferredSize = size;
         }
       }
@@ -120,9 +122,7 @@ class _SplitViewState extends State<SplitView> {
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView1,
           child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                  constraints: view1Constraints, child: widget.view1))),
+              scrollDirection: Axis.horizontal, child: widget.view1)),
     ));
 
     children.add(Positioned(
@@ -134,9 +134,7 @@ class _SplitViewState extends State<SplitView> {
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView2,
           child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                  constraints: view2Constraints, child: widget.view2))),
+              scrollDirection: Axis.horizontal, child: widget.view2)),
     ));
 
     if (widget.showHandle) {
@@ -188,24 +186,39 @@ class _SplitViewState extends State<SplitView> {
 
   Widget _buildHorizontalView(
       BuildContext context, BoxConstraints constraints, double w) {
-    final double left = constraints.maxWidth * w;
-    final double right = constraints.maxWidth * (1.0 - w);
+    final double maxWidth = constraints.maxWidth == double.infinity
+        ? MediaQuery.of(context).size.width
+        : constraints.maxWidth;
+    final double maxHeight = constraints.maxHeight == double.infinity
+        ? MediaQuery.of(context).size.height
+        : constraints.maxHeight;
+
+    final double left = maxWidth * w;
+    final double right = maxWidth * (1.0 - w);
     BoxConstraints view1Constraints = BoxConstraints(
-        minHeight: constraints.maxHeight,
-        maxHeight: constraints.maxHeight,
+        minHeight: constraints.maxHeight == double.infinity
+            ? 0
+            : constraints.maxHeight,
+        maxHeight: constraints.maxHeight == double.infinity
+            ? 0
+            : constraints.maxHeight,
         minWidth: left,
         maxWidth: left);
 
     BoxConstraints view2Constraints = BoxConstraints(
-        minHeight: constraints.maxHeight,
-        maxHeight: constraints.maxHeight,
+        minHeight: constraints.maxHeight == double.infinity
+            ? 0
+            : constraints.maxHeight,
+        maxHeight: constraints.maxHeight == double.infinity
+            ? 0
+            : constraints.maxHeight,
         minWidth: right,
         maxWidth: right);
 
     List<Widget> children = List<Widget>();
 
-    this.updatePreferredSize(widget.view1, Size(left, constraints.maxHeight));
-    this.updatePreferredSize(widget.view2, Size(right, constraints.maxHeight));
+    this.updatePreferredSize(widget.view1, Size(left, maxHeight));
+    this.updatePreferredSize(widget.view2, Size(right, maxHeight));
 
     children.add(Positioned(
       top: 0,
@@ -217,8 +230,19 @@ class _SplitViewState extends State<SplitView> {
           controller: widget.scrollControllerView1,
           child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                  constraints: view1Constraints, child: widget.view1))),
+              child: CoScrollPanelLayout(
+                preferredConstraints: CoScrollPanelConstraints(constraints,
+                    widget.view1.componentModel, view1Constraints.biggest),
+                container: null,
+                children: [
+                  CoScrollPanelLayoutId(
+                      constraints: CoScrollPanelConstraints(
+                          constraints,
+                          widget.view1.componentModel,
+                          view1Constraints.biggest),
+                      child: widget.view1)
+                ],
+              ))),
     ));
 
     children.add(Positioned(
@@ -231,8 +255,18 @@ class _SplitViewState extends State<SplitView> {
           controller: widget.scrollControllerView2,
           child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                  constraints: view2Constraints, child: widget.view2))),
+              child: CoScrollPanelLayout(
+                preferredConstraints: CoScrollPanelConstraints(constraints,
+                    widget.view2.componentModel, view2Constraints.biggest),
+                children: [
+                  CoScrollPanelLayoutId(
+                      constraints: CoScrollPanelConstraints(
+                          constraints,
+                          widget.view2.componentModel,
+                          view2Constraints.biggest),
+                      child: widget.view2)
+                ],
+              ))),
     ));
 
     if (widget.showHandle) {
@@ -273,9 +307,12 @@ class _SplitViewState extends State<SplitView> {
             color: widget.gripColor,
           )));
     }
-    return Stack(
-      children: children,
-    );
+    return Container(
+        width: maxWidth,
+        height: maxHeight,
+        child: Stack(
+          children: children,
+        ));
   }
 }
 
