@@ -4,18 +4,18 @@
     <item>
         <bitmap
             android:tileMode="disabled" android:gravity="top"
-            android:src="@mipmap/jvx_bg" />
+            android:src="@mipmap/bg" />
     </item>
 
     <item android:top="100dp"
         android:width="138dp"
         android:height="145dp"
-        android:drawable="@mipmap/jvx_ss"
+        android:drawable="@mipmap/ss"
         android:gravity="center|top" />
 
     <item android:bottom="50dp">
         <bitmap
             android:gravity="bottom"
-            android:src="@mipmap/sibvision_logo" />
+            android:src="@mipmap/logo" />
     </item>
 </layer-list>

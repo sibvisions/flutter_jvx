@@ -35,8 +35,8 @@ class LoginBackground extends StatelessWidget {
                         this.appState.applicationStyle?.loginLogo == null)
                     ? Image.asset(
                         appState.package
-                            ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
-                            : 'assets/images/sibvisions.png',
+                            ? 'packages/jvx_flutterclient/assets/images/logo_small.png'
+                            : 'assets/images/logo_small.png',
                         fit: BoxFit.fitHeight)
                     : !kIsWeb
                         ? Image.file(
@@ -69,12 +69,13 @@ class LoginBackground extends StatelessWidget {
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: !kIsWeb
-                      ? File('${this.appState.dir}${this.appState.applicationStyle?.loginIcon}').existsSync()
+                      ? File('${this.appState.dir}${this.appState.applicationStyle?.loginIcon}')
+                              .existsSync()
                           ? FileImage(File(
                               '${this.appState.dir}${this.appState.applicationStyle?.loginIcon}'))
                           : AssetImage(appState.package
-                              ? 'packages/jvx_flutterclient/assets/images/sibvisions.png'
-                              : 'assets/images/sibvisions.png')
+                              ? 'packages/jvx_flutterclient/assets/images/logo_small.png'
+                              : 'assets/images/logo_small.png')
                       : MemoryImage(utf8.base64Decode(this
                           .appState
                           .files[this.appState.applicationStyle?.loginIcon])),
