@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
+
 import '../../../models/api/component/changed_component.dart';
 import 'component_model.dart';
 
 typedef ComponentValueChangedCallback = void Function(
-    String componentId, dynamic value);
+    BuildContext context, String componentId, dynamic value);
 
 class EditableComponentModel extends ComponentModel {
   ComponentValueChangedCallback onComponentValueChanged;

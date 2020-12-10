@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/core/models/api/request/open_screen.dart';
 import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:jvx_flutterclient/core/models/api/so_action.dart';
-import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
@@ -66,11 +66,12 @@ class _WebFrameState extends State<WebFrame> {
     if (appState.screenManager != null &&
         !appState.screenManager
             .getScreen(menuItem.componentId, templateName: menuItem.text)
-            .withServer()) {
-      IScreen screen = appState.screenManager
+            .configuration
+            .withServer) {
+      SoScreen screen = appState.screenManager
           .getScreen(menuItem.componentId, templateName: menuItem.text);
 
-      appState.appFrame.setScreen(screen.getWidget(context));
+      appState.appFrame.setScreen(screen);
 
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => appState.appFrame.getWidget()));
@@ -161,8 +162,8 @@ class _WebFrameState extends State<WebFrame> {
                                               null)
                                       ? Image.asset(
                                           appState.package
-                                              ? 'packages/jvx_flutterclient/assets/images/sibvisions.jpg'
-                                              : 'assets/images/sibvisions.jpg',
+                                              ? 'packages/jvx_flutterclient/assets/images/logo_small.jpg'
+                                              : 'assets/images/logo_small.jpg',
                                           fit: BoxFit.contain)
                                       : Image.memory(
                                           base64Decode(this.appState.files[this

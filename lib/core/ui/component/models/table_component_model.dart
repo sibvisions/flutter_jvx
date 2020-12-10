@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/api/editor/cell_editor.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/cell_editor_model.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/checkbox_cell_editor_model.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/date_cell_editor_model.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/linked_cell_editor_model.dart';
-import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/referenced_cell_editor_model.dart';
-import 'package:jvx_flutterclient/core/ui/screen/component_screen_widget.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
-import '../../../models/api/response/data/data_book.dart';
 import '../../../models/api/response/meta_data/data_book_meta_data_column.dart';
+import '../../editor/celleditor/models/linked_cell_editor_model.dart';
 import '../../editor/co_editor_widget.dart';
 import '../../editor/editor_component_model.dart';
 import '../../screen/so_component_creator.dart';
 import '../../screen/so_component_data.dart';
-import '../component_widget.dart';
+import '../../screen/so_screen.dart';
 import '../so_table_column_calculator.dart';
 
 typedef OnSelectedRowChanged = void Function(dynamic selectedRow);
@@ -195,7 +187,7 @@ class TableComponentModel extends EditorComponentModel {
           if (editor.cellEditor.cellEditorModel is LinkedCellEditorModel) {
             (editor.cellEditor.cellEditorModel as LinkedCellEditorModel)
                     .referencedData =
-                ComponentScreenWidget.of(context).getComponentData(editor
+                SoScreen.of(context).getComponentData(editor
                     .cellEditor
                     .cellEditorModel
                     .cellEditor

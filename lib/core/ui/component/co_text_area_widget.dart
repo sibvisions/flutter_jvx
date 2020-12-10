@@ -25,7 +25,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
     this.focusNode = FocusNode();
     this.focusNode.addListener(() {
       if (!this.focusNode.hasFocus)
-        widget.componentModel.onTextFieldEndEditing();
+        widget.componentModel.onTextFieldEndEditing(context);
     });
   }
 
@@ -37,7 +37,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
 
   void onTextFieldEndEditing() {
     this.focusNode.unfocus();
-    widget.componentModel.onTextFieldEndEditing();
+    widget.componentModel.onTextFieldEndEditing(context);
   }
 
   @override

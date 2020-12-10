@@ -27,19 +27,18 @@ class ComponentModelManager {
     return this._componentModels[componentId];
   }
 
-  ComponentModel addComponentModel(
-      String componentId, ChangedComponent changedComponent,
+  ComponentModel addComponentModel(ChangedComponent changedComponent,
       [bool overrideExisting = false]) {
     if (overrideExisting) {
-      this._componentModels[componentId] =
+      this._componentModels[changedComponent.id] =
           _getComponentModelByClassname(changedComponent);
-      return this._componentModels[componentId];
+      return this._componentModels[changedComponent.id];
     } else {
-      if (this._componentModels[componentId] == null) {
-        this._componentModels[componentId] =
+      if (this._componentModels[changedComponent.id] == null) {
+        this._componentModels[changedComponent.id] =
             _getComponentModelByClassname(changedComponent);
       }
-      return this._componentModels[componentId];
+      return this._componentModels[changedComponent.id];
     }
   }
 

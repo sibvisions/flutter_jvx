@@ -44,8 +44,8 @@ class ImageCellEditorModel extends CellEditorModel {
             file = File(defaultImageName != null
                 ? '${this.appState.dir}$defaultImageName'
                 : appState.package
-                    ? 'packages/jvx_flutterclient/assets/images/sib_visions.jpg'
-                    : 'assets/images/sib_visions.jpg');
+                    ? 'packages/jvx_flutterclient/assets/images/logo.jpg'
+                    : 'assets/images/logo.jpg');
 
             if (file.existsSync()) {
               defaultImage = Image.file(file);

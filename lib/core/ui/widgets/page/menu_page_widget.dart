@@ -8,12 +8,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/models/api/request/menu.dart';
-import 'package:jvx_flutterclient/core/ui/pages/open_screen_page.dart';
-import 'package:jvx_flutterclient/injection_container.dart';
 
+import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
 import '../../../models/api/request/device_status.dart';
+import '../../../models/api/request/menu.dart';
 import '../../../models/api/request/open_screen.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/menu_item.dart';
@@ -24,8 +23,9 @@ import '../../../services/remote/bloc/api_bloc.dart';
 import '../../../utils/app/get_menu_widget.dart';
 import '../../../utils/app/listener/application_api.dart';
 import '../../frames/app_frame.dart';
-import '../../screen/i_screen.dart';
+import '../../pages/open_screen_page.dart';
 import '../../screen/so_menu_manager.dart';
+import '../../screen/so_screen.dart';
 import '../dialogs/dialogs.dart';
 import '../menu/menu_drawer_widget.dart';
 import '../util/error_handling.dart';
@@ -207,13 +207,20 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   _onPressed(MenuItem menuItem) {
     if (widget.appState.screenManager != null &&
+        widget.appState.screenManager.findScreen(menuItem.componentId) !=
+            null &&
+        widget.appState.screenManager
+                .findScreen(menuItem.componentId)
+                .configuration !=
+            null &&
         !widget.appState.screenManager
-            .getScreen(menuItem.componentId)
-            .withServer()) {
-      IScreen screen =
+            .findScreen(menuItem.componentId)
+            .configuration
+            .withServer) {
+      SoScreen screen =
           widget.appState.screenManager.getScreen(menuItem.componentId);
 
-      widget.appState.appFrame.setScreen(screen.getWidget(context));
+      widget.appState.appFrame.setScreen(screen);
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => Theme(
