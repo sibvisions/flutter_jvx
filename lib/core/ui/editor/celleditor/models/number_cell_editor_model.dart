@@ -16,7 +16,7 @@ class NumberCellEditorModel extends CellEditorModel {
   TextEditingController controller = TextEditingController();
   bool valueChanged = false;
   String numberFormat;
-  List<TextInputFormatter> textInputFormatter;
+  List<TextInputFormatter> textInputFormatter = List<TextInputFormatter>();
   TextInputType textInputType;
   String tempValue;
   FocusNode node = FocusNode();
@@ -35,13 +35,6 @@ class NumberCellEditorModel extends CellEditorModel {
     }
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
-
-    // print("NumberCellEditor PreferredSize: " +
-    //     Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
-    //     "(" +
-    //     text +
-    //     ")");
-
     return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 
@@ -75,6 +68,9 @@ class NumberCellEditorModel extends CellEditorModel {
     }
 
     textInputType = this.getKeyboardType();
+
+    if (this.numberFormat != null && this.numberFormat.isNotEmpty)
+      textInputFormatter.add(NumericTextFormatter(this.numberFormat));
   }
 
   String _getFormattedValue(dynamic value) {
@@ -96,14 +92,5 @@ class NumberCellEditorModel extends CellEditorModel {
     }
 
     return TextInputType.numberWithOptions(decimal: true);
-  }
-
-  List<TextInputFormatter> getImputFormatter() {
-    List<TextInputFormatter> formatter = List<TextInputFormatter>();
-    if (this.numberFormat != null && this.numberFormat.isNotEmpty)
-      formatter
-          .add(NumericTextFormatter(this.numberFormat)); //globals.language));
-
-    return formatter;
   }
 }
