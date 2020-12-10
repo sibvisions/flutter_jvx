@@ -438,15 +438,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           }
         });
       } else if (state.closeScreenAction != null) {
+        widget.appState.screenManager
+            .removeScreen(state.closeScreenAction.componentId);
         if (state.responseData.screenGeneric == null) {
-          widget.appState.screenManager
-              .removeScreen(state.closeScreenAction.componentId);
           if (widget.appState.screenManager.screens.isEmpty) {
             Navigator.of(context).pushReplacementNamed(MenuPage.route,
                 arguments: MenuArguments(widget.appState.items, true));
           } else {
             this.rawComponentId =
-              widget.appState.screenManager.screens.values.last.componentId;
+                widget.appState.screenManager.screens.values.last.componentId;
           }
         }
       }
