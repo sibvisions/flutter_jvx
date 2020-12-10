@@ -6,6 +6,7 @@ import 'so_screen.dart';
 
 abstract class IScreen {
   String componentId;
+  String screenTitle;
 
   GlobalKey<ComponentScreenWidgetState> screenKey;
 

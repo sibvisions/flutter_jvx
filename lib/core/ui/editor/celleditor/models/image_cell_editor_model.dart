@@ -15,7 +15,7 @@ class ImageCellEditorModel extends CellEditorModel {
   File file;
   double width = 100;
   double height = 100;
-  BoxFit fit = BoxFit.scaleDown;
+  BoxFit fit = BoxFit.contain;
   Alignment alignment = Alignment.center;
 
   @override

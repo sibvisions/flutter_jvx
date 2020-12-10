@@ -124,6 +124,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
   }
 
+  _updateOpenScreens(Response response) {
+    widget.appState.screenManager.screens.forEach((componentId, screen) {
+      screen.update(response);
+    });
+  }
+
   _blocListener() => BlocListener<ApiBloc, Response>(
         listener: (BuildContext context, Response state) {
           if (state.hasError) {
@@ -137,13 +143,17 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
             if (state.request.requestType == RequestType.CLOSE_SCREEN) {
               widget.appState.screenManager.removeScreen(this.rawComponentId);
-
-              Navigator.of(context).pushReplacementNamed(MenuPage.route,
-                  arguments: MenuArguments(widget.appState.items, true));
+              if (widget.appState.screenManager.screens.isEmpty)
+                Navigator.of(context).pushReplacementNamed(MenuPage.route,
+                    arguments: MenuArguments(widget.appState.items, true));
+              else
+                this.rawComponentId = widget
+                    .appState.screenManager.screens.values.last.componentId;
             } else {
               if (isScreenRequest(state.request.requestType)) {
                 if (state.responseData.screenGeneric != null &&
-                    !state.responseData.screenGeneric.update) {
+                    !state.responseData.screenGeneric.update &&
+                    state.responseData.screenGeneric.screenTitle != null) {
                   setState(() {
                     title = state.responseData.screenGeneric.screenTitle;
                   });
@@ -184,12 +194,18 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                   rawComponentId = state.responseData.screenGeneric.componentId;
                 }
 
-                if (state.request.requestType == RequestType.NAVIGATION &&
-                    state.responseData.screenGeneric == null) {
-                  widget.appState.screenManager
-                      .removeScreen(this.rawComponentId);
-                  Navigator.of(context).pushReplacementNamed(MenuPage.route,
-                      arguments: MenuArguments(widget.appState.items, true));
+                if (state.request.requestType == RequestType.NAVIGATION) {
+                  if (state.responseData.screenGeneric == null) {
+                    widget.appState.screenManager
+                        .removeScreen(this.rawComponentId);
+                    if (widget.appState.screenManager.screens.isEmpty)
+                      Navigator.of(context).pushReplacementNamed(MenuPage.route,
+                          arguments:
+                              MenuArguments(widget.appState.items, true));
+                    else
+                      this.rawComponentId = widget.appState.screenManager
+                          .screens.values.last.componentId;
+                  }
                 }
               }
             }
@@ -217,26 +233,64 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         null) {
                       screen = widget.appState.screenManager
                           .findScreen(widget.menuComponentId);
-
-                      screen.screenKey = this.screenKey;
                     } else if (widget.appState.screenManager
                             .findScreen(this.rawComponentId) !=
                         null) {
                       screen = widget.appState.screenManager
                           .findScreen(this.rawComponentId);
-
-                      screen.screenKey = this.screenKey;
                     } else {
                       screen = SoScreen(
-                          screenKey: this.screenKey,
-                          componentId: rawComponentId,
+                          screenTitle: this
+                                  .currentResponse
+                                  .responseData
+                                  .screenGeneric
+                                  ?.screenTitle ??
+                              this.title,
+                          componentId: this.rawComponentId,
                           componentCreator: SoComponentCreator(context),
                           response: this.currentResponse);
 
-                      widget.appState.screenManager.registerScreen(screen);
+                      if (this.currentResponse.request.requestType !=
+                              RequestType.NAVIGATION &&
+                          this.currentResponse.request.requestType !=
+                              RequestType.CLOSE_SCREEN &&
+                          this.currentResponse.responseData.screenGeneric !=
+                              null &&
+                          this
+                                  .currentResponse
+                                  .responseData
+                                  .screenGeneric
+                                  .componentId ==
+                              screen.componentId)
+                        widget.appState.screenManager.registerScreen(screen);
                     }
 
-                    screen.update(this.currentResponse);
+                    if (this.title != screen.screenTitle &&
+                        screen.screenTitle != null &&
+                        screen.screenTitle.isNotEmpty) {
+                      SchedulerBinding.instance
+                          .addPostFrameCallback((_) => setState(() {
+                                this.title = screen.screenTitle;
+                              }));
+                    }
+
+                    _updateOpenScreens(this.currentResponse);
+
+                    int index = widget.appState.screenManager.screens.keys
+                        .toList()
+                        .indexOf(screen.componentId);
+
+                    Widget child;
+
+                    if (index != -1) {
+                      child = IndexedStack(
+                        children: widget.appState.screenManager.screens.values
+                            .map((e) => e.getWidget(context))
+                            .toList(),
+                        index: index,
+                        key: this.screenKey,
+                      );
+                    }
 
                     if (widget.appState.applicationStyle != null &&
                         widget.appState.applicationStyle?.desktopIcon != null) {
@@ -267,7 +321,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                                           : null,
                                       fit: BoxFit.cover,
                                     )),
-                          child: screen.getWidget(context)));
+                          child: child));
 
                       return widget.appState.appFrame.getWidget();
                     } else if (widget.appState.applicationStyle != null &&
@@ -277,12 +331,11 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                           decoration: BoxDecoration(
                               color: widget
                                   .appState.applicationStyle?.desktopColor),
-                          child: screen.getWidget(context)));
+                          child: child));
 
                       return widget.appState.appFrame.getWidget();
                     } else {
-                      widget.appState.appFrame
-                          .setScreen(screen.getWidget(context));
+                      widget.appState.appFrame.setScreen(child);
                       return widget.appState.appFrame.getWidget();
                     }
                   }),
@@ -385,10 +438,16 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           }
         });
       } else if (state.closeScreenAction != null) {
+        widget.appState.screenManager
+            .removeScreen(state.closeScreenAction.componentId);
         if (state.responseData.screenGeneric == null) {
-          widget.appState.screenManager.removeScreen(this.rawComponentId);
-          Navigator.of(context).pushReplacementNamed(MenuPage.route,
-              arguments: MenuArguments(widget.appState.items, true));
+          if (widget.appState.screenManager.screens.isEmpty) {
+            Navigator.of(context).pushReplacementNamed(MenuPage.route,
+                arguments: MenuArguments(widget.appState.items, true));
+          } else {
+            this.rawComponentId =
+                widget.appState.screenManager.screens.values.last.componentId;
+          }
         }
       }
     }
@@ -415,7 +474,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       SoAction action =
           SoAction(componentId: menuItem.componentId, label: menuItem.text);
 
-      this.title = action.label;
+      this.title = action.label != null ? action.label : this.title;
 
       OpenScreen openScreen = OpenScreen(
         action: action,
@@ -455,7 +514,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     rawComponentId = widget.response.responseData.screenGeneric.componentId;
 
     this.screenKey =
-        GlobalKey<ComponentScreenWidgetState>(debugLabel: rawComponentId);
+        GlobalKey<ComponentScreenWidgetState>(debugLabel: this.rawComponentId);
 
     WidgetsBinding.instance.addObserver(this);
   }

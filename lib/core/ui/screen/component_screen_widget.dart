@@ -318,8 +318,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
               (newComponent.className != null ? newComponent.className : "") +
               ")");
         (component.componentModel as ContainerComponentModel)
-            .layout
-            .updateLayoutData(layoutData);
+            ?.layout
+            ?.updateLayoutData(layoutData);
       }
     }
 
@@ -336,8 +336,8 @@ class ComponentScreenWidgetState extends State<ComponentScreenWidget>
               (newComponent.className != null ? newComponent.className : "") +
               ")");
         (component.componentModel as ContainerComponentModel)
-            .layout
-            .updateLayoutString(layout);
+            ?.layout
+            ?.updateLayoutString(layout);
       }
     }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/container/models/split_panel_component_model.dart';
+import 'models/split_panel_component_model.dart';
 
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
@@ -11,7 +11,9 @@ import 'co_scroll_panel_layout.dart';
 import 'container_component_model.dart';
 
 class CoSplitPanelWidget extends CoContainerWidget {
-  CoSplitPanelWidget({ContainerComponentModel componentModel})
+  final SplitPanelComponentModel componentModel;
+
+  CoSplitPanelWidget({this.componentModel})
       : super(componentModel: componentModel);
 
   @override
@@ -29,15 +31,25 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
           constraints.maxWidth != null &&
           componentModel.dividerPosition < constraints.maxWidth &&
           splitViewMode == SplitViewMode.Horizontal) {
-        componentModel.currentSplitviewWeight =
-            componentModel.dividerPosition / constraints.maxWidth;
+        if (constraints.maxWidth == double.infinity)
+          componentModel.currentSplitviewWeight =
+              componentModel.dividerPosition /
+                  MediaQuery.of(context).size.width;
+        else
+          componentModel.currentSplitviewWeight =
+              componentModel.dividerPosition / constraints.maxWidth;
       } else if (componentModel.dividerPosition != null &&
           componentModel.dividerPosition >= 0 &&
           constraints.maxHeight != null &&
           componentModel.dividerPosition < constraints.maxHeight &&
           (splitViewMode == SplitViewMode.Vertical)) {
-        componentModel.currentSplitviewWeight =
-            componentModel.dividerPosition / constraints.maxHeight;
+        if (constraints.maxWidth == double.infinity)
+          componentModel.currentSplitviewWeight =
+              componentModel.dividerPosition /
+                  MediaQuery.of(context).size.height;
+        else
+          componentModel.currentSplitviewWeight =
+              componentModel.dividerPosition / constraints.maxHeight;
       } else {
         componentModel.currentSplitviewWeight = 0.5;
       }
@@ -90,6 +102,7 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      componentModel.lastConstraints = constraints;
       _calculateDividerPosition(constraints, this.splitViewMode);
 
       if (firstComponent != null) {
@@ -102,19 +115,7 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
               constraints.maxHeight);
         }
 
-        widgets.add(CoScrollPanelLayout(
-          key: componentModel.keyFirst,
-          preferredConstraints:
-              CoScrollPanelConstraints(constraints, preferredSize),
-          container: widget.componentModel,
-          children: [
-            CoScrollPanelLayoutId(
-                key: ValueKey(componentModel.keyFirst),
-                constraints:
-                    CoScrollPanelConstraints(constraints, preferredSize),
-                child: firstComponent)
-          ],
-        ));
+        widgets.add(firstComponent);
       } else {
         widgets.add(Container());
       }
@@ -130,18 +131,7 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
               constraints.maxHeight);
         }
 
-        widgets.add(CoScrollPanelLayout(
-          key: componentModel.keySecond,
-          preferredConstraints:
-              CoScrollPanelConstraints(constraints, preferredSize),
-          children: [
-            CoScrollPanelLayoutId(
-                key: ValueKey(componentModel.keySecond),
-                constraints:
-                    CoScrollPanelConstraints(constraints, preferredSize),
-                child: secondComponent)
-          ],
-        ));
+        widgets.add(secondComponent);
       } else {
         widgets.add(Container());
       }

@@ -311,7 +311,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   showLanguagePicker(BuildContext context) {
-    List<String> languages = List<String>.from(widget.appState.supportedLocales.map((e) => e.languageCode));
+    List<String> languages = List<String>.from(
+        widget.appState.supportedLocales.map((e) => e.languageCode));
 
     List<int> selected;
     int selectedIndex = languages
@@ -341,7 +342,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   picker.getSelectedValues()[0].toString().toLowerCase();
 
               if (newLang != null && newLang.isNotEmpty)
-                  await AppLocalizations.load(new Locale(newLang));
+                await AppLocalizations.load(new Locale(newLang));
 
               setState(() {
                 isDialogOpen = false;
@@ -405,12 +406,24 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   savePreferences() async {
-    widget.manager.setAppData(
-        appName: this.appName,
-        baseUrl: this.baseUrl,
-        language: this.language,
-        picSize: widget.appState.picSize);
-    widget.manager.setLoginData(username: toSaveUsername, password: toSavePwd);
+    if (_checkString(this.appName) && _checkString(this.baseUrl)) {
+      widget.manager.setAppData(
+          appName: this.appName,
+          baseUrl: this.baseUrl,
+          language: this.language,
+          picSize: widget.appState.picSize);
+    } else {
+      showError(context, 'App name or base URL are null or empty',
+          'Please enter a valid app name and base URL');
+    }
+
+    if (_checkString(toSaveUsername) && _checkString(toSavePwd))
+      widget.manager
+          .setLoginData(username: toSaveUsername, password: toSavePwd);
+  }
+
+  bool _checkString(String toCheck) {
+    return (toCheck != null && toCheck.isNotEmpty);
   }
 
   Future scanBarcode() async {

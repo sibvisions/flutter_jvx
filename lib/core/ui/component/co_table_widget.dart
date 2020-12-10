@@ -42,7 +42,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   @override
   void onServerDataChanged() {
-    setState(() { });
+    setState(() {});
   }
 
   @override
@@ -201,8 +201,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   Widget getTableColumn(
       String text, int rowIndex, int columnIndex, String columnName,
       {bool nullable}) {
-    CoEditorWidget editor =
-        widget.componentModel.getEditorForColumn(context, text, columnName, rowIndex);
+    CoEditorWidget editor = widget.componentModel
+        .getEditorForColumn(context, text, columnName, rowIndex);
     double width = 1;
 
     if (widget.componentModel.columnInfo != null &&
@@ -373,7 +373,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    double borderWidth = 1;
     int itemCount = widget.componentModel.tableHeaderVisible ? 1 : 0;
     widget.componentModel.data
         ?.getData(context, widget.componentModel.pageSize);
@@ -406,7 +405,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             30);
 
         widget.componentModel.hasHorizontalScroller =
-            (columnWidth + (2 * borderWidth) > constraints.maxWidth);
+            (columnWidth + (2 * widget.componentModel.borderWidth) >
+                constraints.maxWidth);
 
         Widget child = GestureDetector(
             onTapDown: (details) =>
@@ -418,7 +418,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(
-                    width: borderWidth,
+                    width: widget.componentModel.borderWidth,
                     color: Theme.of(context).primaryColor.withOpacity(widget
                             .componentModel
                             .appState
@@ -433,7 +433,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                   ? SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Container(
-                        width: columnWidth + (2 * borderWidth) + 100,
+                        width: columnWidth +
+                            (2 * widget.componentModel.borderWidth) +
+                            100,
                         height: constraints.maxHeight == double.infinity
                             ? tableHeight
                             : constraints.maxHeight,
@@ -449,11 +451,14 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       ),
                     )
                   : Container(
-                      width:
-                          (columnWidth + (2 * borderWidth) + 100) - borderWidth,
+                      width: (columnWidth +
+                              (2 * widget.componentModel.borderWidth) +
+                              100) -
+                          widget.componentModel.borderWidth,
                       height: constraints.maxHeight == double.infinity
-                          ? tableHeight - borderWidth
-                          : constraints.maxHeight - borderWidth,
+                          ? tableHeight - widget.componentModel.borderWidth
+                          : constraints.maxHeight -
+                              widget.componentModel.borderWidth,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: ScrollablePositionedList.builder(

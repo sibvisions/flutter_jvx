@@ -44,6 +44,7 @@ class TableComponentModel extends EditorComponentModel {
 
   int pageSize = 100;
   double fetchMoreItemOffset = 20;
+  double borderWidth = 1;
   List<SoTableColumn> columnInfo;
   var tapPosition;
   SoComponentCreator componentCreator;
@@ -73,13 +74,21 @@ class TableComponentModel extends EditorComponentModel {
   @override
   get preferredSize {
     if (super.preferredSize != null) return super.preferredSize;
-    return Size(300, 300);
+
+    double columnWidth;
+    columnInfo = SoTableColumnCalculator.getColumnFlex(data, columnLabels,
+        columnNames, itemTextStyle, componentCreator, autoResize, 16.0, 16.0);
+    if (columnInfo != null)
+      columnWidth = SoTableColumnCalculator.getColumnWidthSum(columnInfo);
+
+    return Size(
+        (columnWidth != null ? columnWidth : 300) + (2 * borderWidth), 300);
   }
 
   @override
   get minimumSize {
     if (super.minimumSize != null) return super.minimumSize;
-    return Size(300, 100);
+    return preferredSize;
   }
 
   @override
