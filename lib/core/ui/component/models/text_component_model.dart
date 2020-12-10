@@ -37,9 +37,9 @@ class TextComponentModel extends EditableComponentModel {
     }
   }
 
-  void onTextFieldEndEditing() {
+  void onTextFieldEndEditing(BuildContext context) {
     if (this.valueChanged) {
-      onComponentValueChanged(this.rawComponentId, text);
+      onComponentValueChanged(context, this.rawComponentId, text);
       this.valueChanged = false;
     }
   }

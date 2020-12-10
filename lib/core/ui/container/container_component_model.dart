@@ -11,7 +11,7 @@ import '../layout/co_grid_layout_container_widget.dart';
 import '../layout/co_layout.dart';
 import '../layout/i_layout.dart';
 import '../layout/widgets/co_border_layout_constraint.dart';
-import '../screen/component_screen_widget.dart';
+import '../screen/so_screen.dart';
 import 'co_container_widget.dart';
 
 class ContainerComponentModel extends ComponentModel {
@@ -91,6 +91,25 @@ class ContainerComponentModel extends ComponentModel {
         (component) => component.componentModel.constraints == constraint);
   }
 
+  void updateConstraintsWithWidget(
+      ComponentWidget componentWidget, String newConstraints) {
+    if (layout != null) {
+      layout.removeLayoutComponent(componentWidget);
+
+      if (layout is CoBorderLayoutContainerWidget) {
+        CoBorderLayoutConstraints contraints =
+            getBorderLayoutConstraintsFromString(newConstraints);
+        layout.addLayoutComponent(componentWidget, contraints);
+      } else if (layout is CoFormLayoutContainerWidget) {
+        layout.addLayoutComponent(componentWidget, newConstraints);
+      } else if (layout is CoFlowLayoutContainerWidget) {
+        layout.addLayoutComponent(componentWidget, newConstraints);
+      } else if (layout is CoGridLayoutContainerWidget) {
+        layout.addLayoutComponent(componentWidget, newConstraints);
+      }
+    }
+  }
+
   void updateComponentProperties(BuildContext context, String componentId,
       ChangedComponent changedComponent) {
     ComponentWidget pComponent = this.components.firstWhere(
@@ -115,7 +134,8 @@ class ContainerComponentModel extends ComponentModel {
     }
   }
 
-  ILayout createLayoutForHeaderFooterPanel(CoContainerWidget container, String layoutData) {
+  ILayout createLayoutForHeaderFooterPanel(
+      CoContainerWidget container, String layoutData) {
     return CoBorderLayoutContainerWidget.fromLayoutString(
         container, layoutData, null);
   }
