@@ -1,22 +1,18 @@
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
+
 import '../../models/api/response/user_data.dart';
-import 'i_screen.dart';
 import 'i_screen_manager.dart';
 import 'so_menu_manager.dart';
 
 class ScreenManager extends IScreenManager {
-  Map<String, IScreen> _screens = <String, IScreen>{};
+  Map<String, SoScreen> _screens = <String, SoScreen>{};
 
   @override
-  Map<String, IScreen> get screens => _screens;
+  Map<String, SoScreen> get screens => _screens;
 
   @override
-  IScreen getScreen(String componentId, {String templateName}) {
-    IScreen screen = this.findScreen(componentId);
-
-    if (screen == null) {
-      return IScreen();
-    }
-
+  SoScreen getScreen(String componentId, {String templateName}) {
+    SoScreen screen = this.findScreen(componentId);
     return screen;
   }
 
@@ -27,13 +23,13 @@ class ScreenManager extends IScreenManager {
   onUserData(UserData userData) {}
 
   @override
-  void registerScreen(IScreen screen) {
-    _screens.addAll({screen.componentId: screen});
+  void registerScreen(SoScreen screen) {
+    _screens.addAll({screen.configuration.componentId: screen});
   }
 
   @override
-  IScreen findScreen(String name) {
-    IScreen result;
+  SoScreen findScreen(String name) {
+    SoScreen result;
     _screens.forEach((key, value) => name == key ? result = value : null);
     return result;
   }
@@ -47,9 +43,9 @@ class ScreenManager extends IScreenManager {
   void init() {}
 
   @override
-  void updateScreen(IScreen screen) {
-    if (_screens.containsKey(screen.componentId)) {
-      _screens[screen.componentId] = screen;
+  void updateScreen(SoScreen screen) {
+    if (_screens.containsKey(screen.configuration.componentId)) {
+      _screens[screen.configuration.componentId] = screen;
     }
   }
 }

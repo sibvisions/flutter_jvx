@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/injection_container.dart';
 
+import '../../../../injection_container.dart';
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
 import '../../../models/app/app_state.dart';
 import '../../../utils/app/so_text_style.dart';
 import '../../../utils/theme/hex_color.dart';
-import '../../screen/component_screen_widget.dart';
+import '../../screen/so_screen.dart';
 import '../component_widget.dart';
 
 class ComponentModel extends ValueNotifier {

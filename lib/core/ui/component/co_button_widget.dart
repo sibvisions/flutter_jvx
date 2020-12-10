@@ -147,7 +147,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         child: GestureDetector(
           onTap: () {
             widget.componentModel.enabled
-                ? widget.componentModel.onAction(widget.componentModel.action)
+                ? widget.componentModel.onAction(context, widget.componentModel.action)
                 : null;
           },
           child: SizedBox(
@@ -186,7 +186,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                   onPressed: widget.componentModel.enabled
                       ? () {
                           widget.componentModel
-                              .onAction(widget.componentModel.action);
+                              .onAction(context, widget.componentModel.action);
                         }
                       : null,
                   color: widget.componentModel.background != null

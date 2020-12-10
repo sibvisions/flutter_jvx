@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/page/open_screen_page_widget.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/response.dart';
@@ -7,7 +8,6 @@ import '../../models/api/response/menu_item.dart';
 import '../../models/app/app_state.dart';
 import '../../services/remote/bloc/api_bloc.dart';
 import '../../utils/theme/theme_manager.dart';
-import '../widgets/page/open_screen_page_widget.dart';
 import '../widgets/util/app_state_provider.dart';
 
 class OpenScreenPage extends StatelessWidget {

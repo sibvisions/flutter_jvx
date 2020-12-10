@@ -5,9 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
-import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
-import 'package:jvx_flutterclient/core/ui/screen/i_screen.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../../injection_container.dart';
@@ -21,6 +18,9 @@ import '../../../models/app/app_state.dart';
 import '../../../models/app/login_arguments.dart';
 import '../../../services/remote/bloc/api_bloc.dart';
 import '../../../utils/translation/app_localizations.dart';
+import '../../pages/login_page.dart';
+import '../../pages/settings_page.dart';
+import '../../screen/so_screen.dart';
 import '../custom/custom_drawer_header.dart';
 import '../custom/custom_icon.dart';
 
@@ -198,11 +198,12 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
             if (widget.appState.screenManager != null &&
                 !widget.appState.screenManager
                     .getScreen(item.componentId)
-                    .withServer()) {
-              IScreen screen =
+                    .configuration
+                    .withServer) {
+              SoScreen screen =
                   widget.appState.screenManager.getScreen(item.componentId);
 
-              widget.appState.appFrame.setScreen(screen.getWidget(context));
+              widget.appState.appFrame.setScreen(screen);
 
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (_) => Theme(

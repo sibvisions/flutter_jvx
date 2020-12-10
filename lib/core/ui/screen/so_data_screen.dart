@@ -16,7 +16,6 @@ import '../widgets/util/app_state_provider.dart';
 import 'so_component_data.dart';
 
 mixin SoDataScreen {
-  BuildContext context;
   List<SoComponentData> componentData = <SoComponentData>[];
   List<Request> requestQueue = <Request>[];
 
@@ -120,7 +119,7 @@ mixin SoDataScreen {
     return data;
   }
 
-  void onAction(SoAction action) {
+  void onAction(BuildContext context, SoAction action) {
     TextUtils.unfocusCurrentTextfield(context);
 
     // wait until textfields focus lost. 10 millis should do it.
@@ -131,7 +130,7 @@ mixin SoDataScreen {
     });
   }
 
-  void onComponetValueChanged(String componentId, dynamic value) {
+  void onComponetValueChanged(BuildContext context, String componentId, dynamic value) {
     TextUtils.unfocusCurrentTextfield(context);
 
     // wait until textfields focus lost. 10 millis should do it.
@@ -142,7 +141,7 @@ mixin SoDataScreen {
     });
   }
 
-  void requestNext() {
+  void requestNext(BuildContext context) {
     if (requestQueue.length > 0) {
       BlocProvider.of<ApiBloc>(context).add(requestQueue.first);
       requestQueue.removeAt(0);
