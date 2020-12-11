@@ -364,6 +364,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         .componentId);
               }
 
+              if (screen.configuration.screenTitle != null &&
+                  screen.configuration.screenTitle.isNotEmpty &&
+                  screen.configuration.screenTitle != this.title) {
+                this.title = screen.configuration.screenTitle;
+              }
+
               Widget child;
 
               if (currentIndex >= 0) {

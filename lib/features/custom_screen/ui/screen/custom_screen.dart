@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
 
 import '../../../../core/ui/screen/so_component_creator.dart';
 import '../../../../core/ui/screen/so_screen.dart';
@@ -10,11 +11,13 @@ class CustomScreen extends SoScreen {
   final SoScreenConfiguration configuration;
   final String templateName;
 
-  CustomScreen({this.templateName, SoComponentCreator creator, this.configuration}) : super(configuration: configuration, creator: creator);
+  CustomScreen(
+      {this.templateName, SoComponentCreator creator, this.configuration})
+      : super(configuration: configuration, creator: creator);
 }
 
 class CustomScreenState extends SoScreenState<CustomScreen> {
-  DataApi getDataApi(String dataProvider, BuildContext context) {
+  DataApi getDataApi(BuildContext context, String dataProvider) {
     return DataApi(this.getComponentData(dataProvider), context);
   }
 
@@ -22,19 +25,30 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
     return ApplicationApi(context);
   }
 
-  // void setHeader(ComponentWidget header) {
-  //   this.header = header;
-  // }
+  void setHeader(ComponentWidget header) {
+    this.header = header;
+  }
 
-  // void setFooter(ComponentWidget footer) {
-  //   this.footer = footer;
-  // }
+  void setFooter(ComponentWidget footer) {
+    this.footer = footer;
+  }
 
-  // void replaceComponent(String name, ComponentWidget toReplaceComponent) {
-  //   if (!this.toReplace.containsKey(name)) {
-  //     this.toReplace[name] = toReplaceComponent;
-  //   }
-  // }
+  /// Method for replacing components in widget tree by name.
+  /// 
+  /// Returns `true` if component could be replaced.
+  /// 
+  /// Returns `false` if component could not be replaced.
+  bool replaceComponentByName(String name, ComponentWidget newComponentWidget) {
+    ComponentWidget toReplaceComponent = this.components.values.toList().firstWhere(
+        (component) => component.componentModel.name == name,
+        orElse: () => null);
+
+    if (toReplaceComponent != null) {
+      this.replaceComponent(newComponentWidget, toReplaceComponent);
+      return true;
+    }
+    return false;
+  }
 
   String getTemplateName() => widget.templateName;
 }

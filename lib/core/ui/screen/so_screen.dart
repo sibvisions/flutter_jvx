@@ -69,6 +69,8 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   ComponentWidget header;
   ComponentWidget footer;
 
+  Map<String, ComponentWidget> get components => _components;
+
   @override
   void initState() {
     super.initState();
@@ -505,6 +507,8 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   }
 
   /// Method for replacing components
+  /// 
+  /// [toReplaceComponentWidget] is the component to be replaced with [componentWidget]
   void replaceComponent(ComponentWidget componentWidget, ComponentWidget toReplaceComponentWidget) {
     if (componentWidget != null && toReplaceComponentWidget != null) {
       componentWidget.componentModel.parentComponentId = toReplaceComponentWidget.componentModel.parentComponentId;
