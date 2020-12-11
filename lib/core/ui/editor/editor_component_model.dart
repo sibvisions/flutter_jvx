@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/response/data/filter.dart';
+import '../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../utils/theme/hex_color.dart';
 import '../component/models/component_model.dart';
 import '../screen/so_component_data.dart';
@@ -56,6 +57,8 @@ class EditorComponentModel extends ComponentModel {
         !this.cellEditor.cellEditorModel.isTableView) {
       this.cellEditor.cellEditorModel.cellEditorValue =
           _data.getColumnData(null, columnName);
+      this.cellEditor.cellEditorModel.columnName = this.columnName;
+      this.cellEditor.cellEditorModel.data = data;
     }
   }
 

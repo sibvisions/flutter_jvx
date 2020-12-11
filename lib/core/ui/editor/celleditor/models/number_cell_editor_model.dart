@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:jvx_flutterclient/core/models/api/response/meta_data/data_book_meta_data_column.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../../../models/api/editor/cell_editor.dart';
 import '../../../../models/api/editor/cell_editor_properties.dart';
@@ -16,10 +18,17 @@ class NumberCellEditorModel extends CellEditorModel {
   TextEditingController controller = TextEditingController();
   bool valueChanged = false;
   String numberFormat;
+  NumericTextFormatter numericTextFormatter;
   List<TextInputFormatter> textInputFormatter = List<TextInputFormatter>();
   TextInputType textInputType;
   String tempValue;
   FocusNode node = FocusNode();
+
+  @override
+  set data(SoComponentData newData) {
+    super.data = newData;
+    updateMetadataNumberformat();
+  }
 
   @override
   get preferredSize {
@@ -67,10 +76,10 @@ class NumberCellEditorModel extends CellEditorModel {
       }
     }
 
-    textInputType = this.getKeyboardType();
-
-    if (this.numberFormat != null && this.numberFormat.isNotEmpty)
-      textInputFormatter.add(NumericTextFormatter(this.numberFormat));
+    if (this.numberFormat != null && this.numberFormat.isNotEmpty) {
+      this.numericTextFormatter = NumericTextFormatter(this.numberFormat);
+      textInputFormatter.add(this.numericTextFormatter);
+    }
   }
 
   String _getFormattedValue(dynamic value) {
@@ -89,8 +98,30 @@ class NumberCellEditorModel extends CellEditorModel {
   TextInputType getKeyboardType() {
     if (this.numberFormat != null && this.numberFormat.isNotEmpty) {
       if (!this.numberFormat.contains(".")) return TextInputType.number;
+
+      if (this.numericTextFormatter.scale <= 0) return TextInputType.number;
     }
 
     return TextInputType.numberWithOptions(decimal: true);
+  }
+
+  void updateMetadataNumberformat() {
+    if (this.columnName != null && this.numericTextFormatter != null) {
+      if (this.data?.metaData != null) {
+        DataBookMetaDataColumn column =
+            this.data.metaData.getColumn(this.columnName);
+
+        if (column?.cellEditor != null) {
+          this.numericTextFormatter.precision =
+              column.cellEditor.getProperty<int>(CellEditorProperty.PRECISION);
+          this.numericTextFormatter.length =
+              column.cellEditor.getProperty<int>(CellEditorProperty.LENGTH);
+          this.numericTextFormatter.scale =
+              column.cellEditor.getProperty<int>(CellEditorProperty.SCALE);
+          this.numericTextFormatter.signed =
+              column.cellEditor.getProperty<bool>(CellEditorProperty.SIGNED);
+        }
+      }
+    }
   }
 }

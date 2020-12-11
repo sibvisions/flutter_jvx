@@ -4,8 +4,19 @@ import 'package:intl/intl.dart';
 class NumericTextFormatter extends TextInputFormatter {
   String numberFormat;
   String locale;
+  int precision;
+  int length;
+  int scale;
+  bool signed;
 
-  NumericTextFormatter([this.numberFormat, this.locale]) : super();
+  NumericTextFormatter(
+      [this.numberFormat,
+      this.locale,
+      this.precision,
+      this.length,
+      this.scale,
+      this.signed])
+      : super();
 
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {

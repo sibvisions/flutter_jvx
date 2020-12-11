@@ -96,9 +96,9 @@ class CellEditorModel extends ValueNotifier {
           this.cellEditor.getProperty<String>(CellEditorProperty.CONTENT_TYPE);
       directCellEditor = this.cellEditor.getProperty<bool>(
           CellEditorProperty.DIRECT_CELL_EDITOR, directCellEditor);
-      columnName = this
-          .cellEditor
-          .getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
+      // columnName = this
+      //     .cellEditor
+      //     .getProperty<String>(CellEditorProperty.COLUMN_NAME, columnName);
       dataProvider =
           this.cellEditor.getProperty<String>(CellEditorProperty.DATA_PROVIDER);
       borderVisible = this

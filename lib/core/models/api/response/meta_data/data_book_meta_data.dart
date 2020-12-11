@@ -41,4 +41,14 @@ class DataBookMetaData extends ResponseObject {
     if (json['columnView.table'] != null)
       tableColumnView = List<String>.from(json['columnView.table']);
   }
+
+  DataBookMetaDataColumn getColumn(String columnName) {
+    for (var element in columns) {
+      if (element.name.toUpperCase() == columnName.toUpperCase()) {
+        return element;
+      }
+    }
+
+    return null;
+  }
 }
