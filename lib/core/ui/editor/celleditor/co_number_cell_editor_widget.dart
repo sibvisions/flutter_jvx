@@ -3,7 +3,6 @@ import 'package:intl/intl.dart' as intl;
 
 import '../../../utils/app/so_text_align.dart';
 import 'co_cell_editor_widget.dart';
-import 'formatter/numeric_text_formatter.dart';
 import 'models/number_cell_editor_model.dart';
 
 class CoNumberCellEditorWidget extends CoCellEditorWidget {
@@ -43,8 +42,8 @@ class CoNumberCellEditorWidgetState
       if (cellEditorModel.tempValue.endsWith(format.symbols.DECIMAL_SEP))
         cellEditorModel.tempValue = cellEditorModel.tempValue
             .substring(0, cellEditorModel.tempValue.length - 1);
-      cellEditorModel.cellEditorValue = NumericTextFormatter.convertToNumber(
-          cellEditorModel.tempValue, cellEditorModel.numberFormat, format);
+      cellEditorModel.cellEditorValue = cellEditorModel.numericTextFormatter
+          .convertToNumber(cellEditorModel.tempValue);
       super.onValueChanged(context, cellEditorModel.cellEditorValue);
       cellEditorModel.valueChanged = false;
     }
@@ -64,7 +63,7 @@ class CoNumberCellEditorWidgetState
     TextDirection direction = TextDirection.ltr;
 
     widget.cellEditorModel.textInputType =
-        widget.cellEditorModel.getKeyboardType();
+        widget.cellEditorModel.numericTextFormatter.getKeyboardType();
 
     if (widget.cellEditorModel.tempValue != null &&
         widget.cellEditorModel.tempValue.isNotEmpty)
@@ -103,6 +102,7 @@ class CoNumberCellEditorWidgetState
                             widget.cellEditorModel.valueChanged = true;
                             super.onValueChanged(context, null);
                             widget.cellEditorModel.valueChanged = false;
+                            widget.cellEditorModel.controller.clear();
                             setState(() {
                               widget.cellEditorModel.tempValue = null;
                             });

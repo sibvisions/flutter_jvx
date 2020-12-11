@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:jvx_flutterclient/core/models/api/response/meta_data/data_book_meta_data_column.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 
 import '../../../../models/api/editor/cell_editor.dart';
 import '../../../../models/api/editor/cell_editor_properties.dart';
+import '../../../../models/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../../../utils/app/text_utils.dart';
+import '../../../screen/so_component_data.dart';
 import '../formatter/numeric_text_formatter.dart';
 import 'cell_editor_model.dart';
 
@@ -57,7 +56,7 @@ class NumberCellEditorModel extends CellEditorModel {
 
   @override
   set cellEditorValue(value) {
-    this.tempValue = _getFormattedValue(value);
+    this.tempValue = numericTextFormatter.getFormattedString(value);
     this.controller.value = TextEditingValue(text: this.tempValue ?? '');
     super.cellEditorValue = value;
   }
@@ -66,43 +65,11 @@ class NumberCellEditorModel extends CellEditorModel {
     numberFormat =
         this.cellEditor.getProperty<String>(CellEditorProperty.NUMBER_FORMAT);
 
-    /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
-    /// textInputFormatter = this.getImputFormatter();
-    if (numberFormat != null) {
-      List<String> numberFormatParts = numberFormat.split(".");
-      if (numberFormatParts.length > 1 && numberFormatParts[1].length > 14) {
-        numberFormat =
-            numberFormatParts[0] + "." + numberFormatParts[1].substring(0, 14);
-      }
-    }
-
     if (this.numberFormat != null && this.numberFormat.isNotEmpty) {
-      this.numericTextFormatter = NumericTextFormatter(this.numberFormat);
+      this.numericTextFormatter =
+          NumericTextFormatter(this.numberFormat, this.appState.language);
       textInputFormatter.add(this.numericTextFormatter);
     }
-  }
-
-  String _getFormattedValue(dynamic value) {
-    if (value != null && (value is int || value is double)) {
-      if (numberFormat != null && numberFormat.isNotEmpty) {
-        intl.NumberFormat format = intl.NumberFormat(numberFormat);
-        return format.format(value);
-      }
-
-      return value;
-    }
-
-    return "";
-  }
-
-  TextInputType getKeyboardType() {
-    if (this.numberFormat != null && this.numberFormat.isNotEmpty) {
-      if (!this.numberFormat.contains(".")) return TextInputType.number;
-
-      if (this.numericTextFormatter.scale <= 0) return TextInputType.number;
-    }
-
-    return TextInputType.numberWithOptions(decimal: true);
   }
 
   void updateMetadataNumberformat() {
