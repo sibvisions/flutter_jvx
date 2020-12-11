@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
 import '../../../models/api/request/download.dart';
 import '../../../models/api/request/navigation.dart';
@@ -18,6 +20,8 @@ import '../../../models/api/so_action.dart';
 import '../../../models/app/app_state.dart';
 import '../../../models/app/menu_arguments.dart';
 import '../../../services/remote/bloc/api_bloc.dart';
+import '../../../utils/app/get_menu_widget.dart';
+import '../../../utils/app/listener/application_api.dart';
 import '../../frames/app_frame.dart';
 import '../../pages/menu_page.dart';
 import '../../screen/screen_manager.dart';
@@ -26,12 +30,6 @@ import '../../screen/so_screen_configuration.dart';
 import '../dialogs/upload_file_picker.dart';
 import '../menu/menu_drawer_widget.dart';
 import '../util/error_handling.dart';
-import '../../../utils/app/get_menu_widget.dart';
-import '../../../utils/app/listener/application_api.dart';
-import '../../../../features/custom_screen/ui/screen/custom_screen.dart';
-import 'package:uuid/uuid.dart';
-
-import '../../../../injection_container.dart';
 
 class OpenScreenPageWidget extends StatefulWidget {
   final String title;
@@ -390,8 +388,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         .responseData
                         .screenGeneric
                         .componentId);
-              } else {
-                this.currentIndex = 0;
+
+                if (this.currentIndex < 0) {
+                  this.currentIndex = _openScreenManager.screens.keys
+                      .toList()
+                      .indexOf(widget.menuComponentId);
+                }
               }
 
               Widget child;
@@ -399,7 +401,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               if (currentIndex >= 0) {
                 child = IndexedStack(
                   children: _openScreenManager.screens.values.toList(),
-                  index: currentIndex,
+                  index: currentIndex >= 0 ? currentIndex : 0,
                   key: this.screenGlobalKey,
                 );
               }
