@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
 import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
+import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
@@ -118,11 +119,15 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       this.updateData(context, response.request, response.responseData);
     }
 
-    if (response.responseData.screenGeneric != null &&
-        response.responseData.screenGeneric.componentId ==
-            (widget as SoScreen).configuration.componentId) {
-      this.updateComponents(
-          response.responseData.screenGeneric.changedComponents);
+    if (response.responseData.screenGeneric != null) {
+      if (response.responseData.screenGeneric.componentId ==
+          (widget as SoScreen).configuration.componentId) {
+        this.updateComponents(
+            response.responseData.screenGeneric.changedComponents);
+      } else if (widget is CustomScreen) {
+        this.updateComponents(
+            response.responseData.screenGeneric.changedComponents);
+      }
     }
   }
 
@@ -500,6 +505,14 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       }
 
       _components[HEADER_FOOTER_PANEL_COMPONENT_ID] = headerFooterPanel;
+
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .addWithConstraints(header, header.componentModel.constraints);
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .addWithConstraints(
+              rootComponent, rootComponent.componentModel.constraints);
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .addWithConstraints(footer, footer.componentModel.constraints);
 
       return headerFooterPanel;
     }

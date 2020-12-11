@@ -377,7 +377,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                   screen.configuration.screenTitle != this.title) {
                 this.title = screen.configuration.screenTitle;
               }
-
               _updateOpenScreens(this.currentResponse);
 
               if (this.currentResponse?.responseData?.screenGeneric != null) {
