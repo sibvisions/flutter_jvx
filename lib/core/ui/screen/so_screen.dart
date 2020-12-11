@@ -87,9 +87,9 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   Widget build(BuildContext context) {
     SoScreenConfiguration configuration = (widget as SoScreen).configuration;
 
-    if (configuration.value.closeScreenAction != null &&
+    if (configuration?.value?.closeScreenAction != null &&
         (rootComponent != null &&
-            configuration.value.closeScreenAction.componentId ==
+            configuration?.value?.closeScreenAction?.componentId ==
                 rootComponent.componentModel.name)) {
       rootComponent = null;
       _components = <String, ComponentWidget>{};
