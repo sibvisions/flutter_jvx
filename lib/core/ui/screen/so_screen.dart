@@ -98,14 +98,18 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
     return ValueListenableBuilder(
         valueListenable: configuration,
         builder: (BuildContext context, Response response, Widget child) {
-          this.update(response);
+          if (response != null) {
+            this.update(response);
 
-          if (rootComponent == null) {
-            rootComponent = getRootComponent();
+            if (rootComponent == null) {
+              rootComponent = getRootComponent();
+            }
+
+            return FractionallySizedBox(
+                widthFactor: 1, heightFactor: 1, child: rootComponent);
+          } else {
+            return Container();
           }
-
-          return FractionallySizedBox(
-              widthFactor: 1, heightFactor: 1, child: rootComponent);
         });
   }
 
