@@ -22,6 +22,10 @@ enum CellEditorProperty {
   DEFAULT_IMAGE,
   IMAGES,
   BOOLEAN,
+  PRECISION,
+  SCALE,
+  LENGTH,
+  SIGNED
 }
 
 class CellEditorProperties {

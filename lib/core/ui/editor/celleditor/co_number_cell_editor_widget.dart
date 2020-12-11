@@ -63,6 +63,9 @@ class CoNumberCellEditorWidgetState
   Widget build(BuildContext context) {
     TextDirection direction = TextDirection.ltr;
 
+    widget.cellEditorModel.textInputType =
+        widget.cellEditorModel.getKeyboardType();
+
     if (widget.cellEditorModel.tempValue != null &&
         widget.cellEditorModel.tempValue.isNotEmpty)
       shouldShowSuffixIcon = true;
@@ -98,8 +101,7 @@ class CoNumberCellEditorWidgetState
                         onTap: () {
                           if (widget.cellEditorModel.tempValue != null) {
                             widget.cellEditorModel.valueChanged = true;
-                            super.onValueChanged(context,
-                                null);
+                            super.onValueChanged(context, null);
                             widget.cellEditorModel.valueChanged = false;
                             setState(() {
                               widget.cellEditorModel.tempValue = null;
