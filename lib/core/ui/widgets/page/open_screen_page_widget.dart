@@ -5,30 +5,30 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/models/api/request.dart';
-import 'package:jvx_flutterclient/core/models/api/request/download.dart';
-import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
-import 'package:jvx_flutterclient/core/models/api/request/open_screen.dart';
-import 'package:jvx_flutterclient/core/models/api/request/reload.dart';
-import 'package:jvx_flutterclient/core/models/api/request/upload.dart';
-import 'package:jvx_flutterclient/core/models/api/response.dart';
-import 'package:jvx_flutterclient/core/models/api/response/device_status_response.dart';
-import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
-import 'package:jvx_flutterclient/core/models/api/so_action.dart';
-import 'package:jvx_flutterclient/core/models/app/app_state.dart';
-import 'package:jvx_flutterclient/core/models/app/menu_arguments.dart';
-import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
-import 'package:jvx_flutterclient/core/ui/frames/app_frame.dart';
-import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
-import 'package:jvx_flutterclient/core/ui/screen/screen_manager.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/dialogs/upload_file_picker.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/menu/menu_drawer_widget.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
-import 'package:jvx_flutterclient/core/utils/app/get_menu_widget.dart';
-import 'package:jvx_flutterclient/core/utils/app/listener/application_api.dart';
-import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
+import '../../../models/api/request.dart';
+import '../../../models/api/request/download.dart';
+import '../../../models/api/request/navigation.dart';
+import '../../../models/api/request/open_screen.dart';
+import '../../../models/api/request/reload.dart';
+import '../../../models/api/request/upload.dart';
+import '../../../models/api/response.dart';
+import '../../../models/api/response/device_status_response.dart';
+import '../../../models/api/response/menu_item.dart';
+import '../../../models/api/so_action.dart';
+import '../../../models/app/app_state.dart';
+import '../../../models/app/menu_arguments.dart';
+import '../../../services/remote/bloc/api_bloc.dart';
+import '../../frames/app_frame.dart';
+import '../../pages/menu_page.dart';
+import '../../screen/screen_manager.dart';
+import '../../screen/so_screen.dart';
+import '../../screen/so_screen_configuration.dart';
+import '../dialogs/upload_file_picker.dart';
+import '../menu/menu_drawer_widget.dart';
+import '../util/error_handling.dart';
+import '../../../utils/app/get_menu_widget.dart';
+import '../../../utils/app/listener/application_api.dart';
+import '../../../../features/custom_screen/ui/screen/custom_screen.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
@@ -374,6 +374,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               }
 
+              if (screen.configuration.screenTitle != null &&
+                  screen.configuration.screenTitle.isNotEmpty &&
+                  screen.configuration.screenTitle != this.title) {
+                this.title = screen.configuration.screenTitle;
+              }
+
               _updateOpenScreens(this.currentResponse);
 
               if (this.currentResponse?.responseData?.screenGeneric != null) {
@@ -388,18 +394,11 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 this.currentIndex = 0;
               }
 
-              if (screen.configuration.screenTitle != null &&
-                  screen.configuration.screenTitle.isNotEmpty &&
-                  screen.configuration.screenTitle != this.title) {
-                this.title = screen.configuration.screenTitle;
-              }
-
               Widget child;
 
               if (currentIndex >= 0) {
                 child = IndexedStack(
-                  children:
-                      _openScreenManager.screens.values.map((e) => e).toList(),
+                  children: _openScreenManager.screens.values.toList(),
                   index: currentIndex,
                   key: this.screenGlobalKey,
                 );
