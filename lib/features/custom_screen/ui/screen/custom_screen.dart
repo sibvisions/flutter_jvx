@@ -11,9 +11,16 @@ class CustomScreen extends SoScreen {
   final SoScreenConfiguration configuration;
   final String templateName;
 
-  CustomScreen(
-      {this.templateName, SoComponentCreator creator, this.configuration})
-      : super(configuration: configuration, creator: creator);
+  const CustomScreen(
+      {Key key,
+      this.templateName,
+      SoComponentCreator creator,
+      this.configuration})
+      : super(
+            key: key,
+            configuration: configuration,
+            creator: creator,
+            templateName: templateName);
 }
 
 class CustomScreenState extends SoScreenState<CustomScreen> {
@@ -34,14 +41,17 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
   }
 
   /// Method for replacing components in widget tree by name.
-  /// 
+  ///
   /// Returns `true` if component could be replaced.
-  /// 
+  ///
   /// Returns `false` if component could not be replaced.
   bool replaceComponentByName(String name, ComponentWidget newComponentWidget) {
-    ComponentWidget toReplaceComponent = this.components.values.toList().firstWhere(
-        (component) => component.componentModel.name == name,
-        orElse: () => null);
+    ComponentWidget toReplaceComponent = this
+        .components
+        .values
+        .toList()
+        .firstWhere((component) => component.componentModel.name == name,
+            orElse: () => null);
 
     if (toReplaceComponent != null) {
       this.replaceComponent(newComponentWidget, toReplaceComponent);

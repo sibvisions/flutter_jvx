@@ -27,21 +27,15 @@ import 'component_model_manager.dart';
 import 'so_component_creator.dart';
 import 'so_data_screen.dart';
 
-enum CoState {
-  Added,
-  Free,
-  Removed,
-  Destroyed
-}
+enum CoState { Added, Free, Removed, Destroyed }
 
 class SoScreen extends StatefulWidget {
   final SoScreenConfiguration configuration;
   final SoComponentCreator creator;
+  final String templateName;
 
   const SoScreen(
-      {Key key,
-      this.creator,
-      @required this.configuration})
+      {Key key, this.creator, @required this.configuration, this.templateName})
       : super(key: key);
 
   static SoScreenState of(BuildContext context) =>
@@ -466,24 +460,30 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
         orElse: () => null);
 
     if (header != null || footer != null) {
-      ComponentWidget headerFooterPanel = CoPanelWidget(componentModel: ContainerComponentModel(),);
+      ComponentWidget headerFooterPanel = CoPanelWidget(
+        componentModel: ContainerComponentModel(),
+      );
 
-      headerFooterPanel.componentModel.componentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+      headerFooterPanel.componentModel.componentId =
+          HEADER_FOOTER_PANEL_COMPONENT_ID;
 
       if (header != null) {
-        header.componentModel.parentComponentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+        header.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
         header.componentModel.constraints = 'North';
         header.componentModel.coState = CoState.Added;
         _components[header.componentModel.componentId] = header;
       }
 
       if (rootComponent != null) {
-        rootComponent.componentModel.parentComponentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+        rootComponent.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
         rootComponent.componentModel.constraints = 'Center';
       }
 
       if (footer != null) {
-        footer.componentModel.parentComponentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+        footer.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
         footer.componentModel.constraints = 'South';
         footer.componentModel.coState = CoState.Added;
         _components[footer.componentModel.componentId] = footer;
@@ -507,15 +507,21 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   }
 
   /// Method for replacing components
-  /// 
+  ///
   /// [toReplaceComponentWidget] is the component to be replaced with [componentWidget]
-  void replaceComponent(ComponentWidget componentWidget, ComponentWidget toReplaceComponentWidget) {
+  void replaceComponent(ComponentWidget componentWidget,
+      ComponentWidget toReplaceComponentWidget) {
     if (componentWidget != null && toReplaceComponentWidget != null) {
-      componentWidget.componentModel.parentComponentId = toReplaceComponentWidget.componentModel.parentComponentId;
-      componentWidget.componentModel.constraints = toReplaceComponentWidget.componentModel.constraints;
-      componentWidget.componentModel.minimumSize = toReplaceComponentWidget.componentModel.minimumSize;
-      componentWidget.componentModel.maximumSize = toReplaceComponentWidget.componentModel.maximumSize;
-      componentWidget.componentModel.preferredSize = toReplaceComponentWidget.componentModel.preferredSize;
+      componentWidget.componentModel.parentComponentId =
+          toReplaceComponentWidget.componentModel.parentComponentId;
+      componentWidget.componentModel.constraints =
+          toReplaceComponentWidget.componentModel.constraints;
+      componentWidget.componentModel.minimumSize =
+          toReplaceComponentWidget.componentModel.minimumSize;
+      componentWidget.componentModel.maximumSize =
+          toReplaceComponentWidget.componentModel.maximumSize;
+      componentWidget.componentModel.preferredSize =
+          toReplaceComponentWidget.componentModel.preferredSize;
 
       _removeFromParent(toReplaceComponentWidget, _components);
       _addToParent(componentWidget, _components);
