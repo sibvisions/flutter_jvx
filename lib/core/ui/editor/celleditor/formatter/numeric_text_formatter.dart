@@ -130,8 +130,9 @@ class NumericTextFormatter extends TextInputFormatter {
   String _cutDigits(String formatString, int cutAt) {
     List<String> numberFormatParts = this._numberFormat.split(".");
     if (numberFormatParts.length > 1 && numberFormatParts[1].length > cutAt) {
-      String newFormat =
-          numberFormatParts[0] + "." + numberFormatParts[1].substring(0, cutAt);
+      String newFormat = numberFormatParts[0] +
+          "." +
+          numberFormatParts[1].substring(0, cutAt < 0 ? 0 : cutAt);
       if (newFormat.endsWith("."))
         return newFormat.substring(0, newFormat.length - 1);
       return newFormat;
