@@ -5,30 +5,31 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jvx_flutterclient/core/models/api/request.dart';
-import 'package:jvx_flutterclient/core/models/api/request/download.dart';
-import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
-import 'package:jvx_flutterclient/core/models/api/request/open_screen.dart';
-import 'package:jvx_flutterclient/core/models/api/request/reload.dart';
-import 'package:jvx_flutterclient/core/models/api/request/upload.dart';
-import 'package:jvx_flutterclient/core/models/api/response.dart';
-import 'package:jvx_flutterclient/core/models/api/response/device_status_response.dart';
-import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
-import 'package:jvx_flutterclient/core/models/api/so_action.dart';
-import 'package:jvx_flutterclient/core/models/app/app_state.dart';
-import 'package:jvx_flutterclient/core/models/app/menu_arguments.dart';
-import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
-import 'package:jvx_flutterclient/core/ui/frames/app_frame.dart';
-import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/dialogs/upload_file_picker.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/menu/menu_drawer_widget.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
-import 'package:jvx_flutterclient/core/utils/app/get_menu_widget.dart';
-import 'package:jvx_flutterclient/core/utils/app/listener/application_api.dart';
 
 import '../../../../injection_container.dart';
+import '../../../models/api/request.dart';
+import '../../../models/api/request/download.dart';
+import '../../../models/api/request/navigation.dart';
+import '../../../models/api/request/open_screen.dart';
+import '../../../models/api/request/reload.dart';
+import '../../../models/api/request/upload.dart';
+import '../../../models/api/response.dart';
+import '../../../models/api/response/device_status_response.dart';
+import '../../../models/api/response/menu_item.dart';
+import '../../../models/api/so_action.dart';
+import '../../../models/app/app_state.dart';
+import '../../../models/app/menu_arguments.dart';
+import '../../../services/remote/bloc/api_bloc.dart';
+import '../../../utils/app/get_menu_widget.dart';
+import '../../../utils/app/listener/application_api.dart';
+import '../../frames/app_frame.dart';
+import '../../pages/menu_page.dart';
+import '../../screen/screen_manager.dart';
+import '../../screen/so_screen.dart';
+import '../../screen/so_screen_configuration.dart';
+import '../dialogs/upload_file_picker.dart';
+import '../menu/menu_drawer_widget.dart';
+import '../util/error_handling.dart';
 
 class OpenScreenPageWidget extends StatefulWidget {
   final String title;
@@ -56,6 +57,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  ScreenManager _openScreenManager = ScreenManager();
+
   Orientation orientation;
   double width;
   double height;
@@ -68,12 +71,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   Response currentResponse;
 
   String get currentCompId {
-    if (widget.appState.screenManager.screens != null &&
-        widget.appState.screenManager.screens.isNotEmpty) {
-      return widget.appState.screenManager.screens.keys
-          .toList()[this.currentIndex];
-    } else
+    try {
+      if (_openScreenManager.screens != null &&
+          _openScreenManager.screens.isNotEmpty) {
+        return _openScreenManager.screens.keys.toList()[this.currentIndex];
+      } else
+        return null;
+    } catch (e) {
       return null;
+    }
   }
 
   String get menuMode {
@@ -105,7 +111,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     _appFrame();
 
     this.screenGlobalKey = GlobalKey<SoScreenState>(
-        debugLabel: widget.response.responseData.screenGeneric.componentId);
+        debugLabel: widget.response?.responseData?.screenGeneric?.componentId ??
+            widget.menuComponentId);
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -126,13 +133,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   _onPressed(MenuItem menuItem) {
-    if (widget.appState.screenManager != null &&
-        !widget.appState.screenManager
+    if (_openScreenManager != null &&
+        !_openScreenManager
             .getScreen(menuItem.componentId)
             .configuration
             .withServer) {
-      SoScreen screen =
-          widget.appState.screenManager.getScreen(menuItem.componentId);
+      SoScreen screen = _openScreenManager.getScreen(menuItem.componentId);
 
       widget.appState.appFrame.setScreen(screen);
 
@@ -165,10 +171,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   /// Method for updating screens with newest response
   void _updateOpenScreens(Response response) {
-    if (widget.appState.screenManager != null &&
-        widget.appState.screenManager.screens != null &&
-        widget.appState.screenManager.screens.isNotEmpty) {
-      widget.appState.screenManager.screens.forEach((_, screen) {
+    if (_openScreenManager != null &&
+        _openScreenManager.screens != null &&
+        _openScreenManager.screens.isNotEmpty) {
+      _openScreenManager.screens.forEach((_, screen) {
         screen.configuration.value = response;
       });
     }
@@ -202,10 +208,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 title = state.responseData.screenGeneric.screenTitle;
               });
 
-              if (widget.appState.screenManager.findScreen(
+              if (_openScreenManager.findScreen(
                       state.responseData.screenGeneric.componentId) ==
                   null) {
-                widget.appState.screenManager.registerScreen(SoScreen(
+                _openScreenManager.registerScreen(SoScreen(
                   configuration: SoScreenConfiguration(state,
                       screenTitle: state.responseData.screenGeneric.screenTitle,
                       componentId: state.responseData.screenGeneric.componentId,
@@ -306,62 +312,64 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           },
           child: Builder(
             builder: (BuildContext context) {
-              SoScreen screen;
+              SoScreen screen = widget.appState.screenManager
+                  .findScreen(widget.menuComponentId);
 
-              if (this.currentCompId == null) {
+              if (screen != null &&
+                  !_openScreenManager.screens
+                      .containsKey(widget.menuComponentId)) {
+                // If custom screen exists and is not yet added to openscreen stack
+                _openScreenManager.registerScreen(screen);
+                screen.configuration.value = this.currentResponse;
+              } else if (screen != null &&
+                  _openScreenManager.screens
+                      .containsKey(widget.menuComponentId)) {
+                // If custom screen exists and is added to openscreen stack
+                screen.configuration.value = this.currentResponse;
+              } else if (screen == null &&
+                  (_openScreenManager.screens
+                          .containsKey(widget.menuComponentId) ||
+                      _openScreenManager.screens
+                          .containsKey(this.currentCompId))) {
+                // If custom screen is null
+                screen =
+                    _openScreenManager.findScreen(widget.menuComponentId) ??
+                        _openScreenManager.findScreen(this.currentCompId);
+                screen.configuration.value = this.currentResponse;
+              } else {
+                // If both custom screen and normal screen is null
                 screen = SoScreen(
                   configuration: SoScreenConfiguration(this.currentResponse,
                       screenTitle: this
                               .currentResponse
-                              .responseData
-                              .screenGeneric
+                              ?.responseData
+                              ?.screenGeneric
                               ?.screenTitle ??
                           this.title,
                       componentId: this
                               .currentResponse
-                              .responseData
-                              .screenGeneric
+                              ?.responseData
+                              ?.screenGeneric
                               ?.componentId ??
-                          widget
-                              .response.responseData.screenGeneric.componentId,
+                          widget.response?.responseData?.screenGeneric
+                              ?.componentId ??
+                          widget.menuComponentId,
                       withServer: true),
                 );
 
-                if (this.currentResponse.request.requestType !=
+                if (this.currentResponse?.request?.requestType !=
                         RequestType.NAVIGATION &&
-                    this.currentResponse.request.requestType !=
+                    this.currentResponse?.request?.requestType !=
                         RequestType.CLOSE_SCREEN &&
-                    this.currentResponse.responseData.screenGeneric != null &&
+                    this.currentResponse?.responseData?.screenGeneric != null &&
                     this
                             .currentResponse
                             .responseData
                             .screenGeneric
                             .componentId ==
                         screen.configuration.componentId) {
-                  widget.appState.screenManager.registerScreen(screen);
+                  _openScreenManager.registerScreen(screen);
                 }
-              } else if (widget.appState.screenManager
-                      .findScreen(widget.menuComponentId) !=
-                  null) {
-                screen = widget.appState.screenManager
-                    .findScreen(widget.menuComponentId);
-              } else if (widget.appState.screenManager
-                      .findScreen(this.currentCompId) !=
-                  null) {
-                screen = widget.appState.screenManager
-                    .findScreen(this.currentCompId);
-              }
-
-              _updateOpenScreens(this.currentResponse);
-
-              if (this.currentResponse.responseData.screenGeneric != null) {
-                this.currentIndex = widget.appState.screenManager.screens.keys
-                    .toList()
-                    .indexOf(this
-                        .currentResponse
-                        .responseData
-                        .screenGeneric
-                        .componentId);
               }
 
               if (screen.configuration.screenTitle != null &&
@@ -370,14 +378,30 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 this.title = screen.configuration.screenTitle;
               }
 
+              _updateOpenScreens(this.currentResponse);
+
+              if (this.currentResponse?.responseData?.screenGeneric != null) {
+                this.currentIndex = _openScreenManager.screens.keys
+                    .toList()
+                    .indexOf(this
+                        .currentResponse
+                        .responseData
+                        .screenGeneric
+                        .componentId);
+
+                if (this.currentIndex < 0) {
+                  this.currentIndex = _openScreenManager.screens.keys
+                      .toList()
+                      .indexOf(widget.menuComponentId);
+                }
+              }
+
               Widget child;
 
               if (currentIndex >= 0) {
                 child = IndexedStack(
-                  children: widget.appState.screenManager.screens.values
-                      .map((e) => e)
-                      .toList(),
-                  index: currentIndex,
+                  children: _openScreenManager.screens.values.toList(),
+                  index: currentIndex >= 0 ? currentIndex : 0,
                   key: this.screenGlobalKey,
                 );
               }
@@ -473,14 +497,13 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     // Removing current screen
     if (response.closeScreenAction != null &&
         response.closeScreenAction.componentId != null) {
-      widget.appState.screenManager
-          .removeScreen(response.closeScreenAction.componentId);
+      _openScreenManager.removeScreen(response.closeScreenAction.componentId);
     } else {
-      widget.appState.screenManager.removeScreen(this.currentCompId);
+      _openScreenManager.removeScreen(this.currentCompId);
     }
 
-    if (widget.appState.screenManager.screens != null &&
-        widget.appState.screenManager.screens.isEmpty) {
+    if (_openScreenManager.screens != null &&
+        _openScreenManager.screens.isEmpty) {
       // When no more screens exist return to menu page
       Navigator.of(context).pushReplacementNamed(MenuPage.route,
           arguments: MenuArguments(widget.appState.items, true));

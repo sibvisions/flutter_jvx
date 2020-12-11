@@ -22,12 +22,25 @@ class CustomScreen extends SoScreen {
             configuration: configuration,
             creator: creator,
             templateName: templateName);
+
+  @override
+  SoScreenState<StatefulWidget> createState() => CustomScreenState();
 }
 
 class CustomScreenState extends SoScreenState<CustomScreen> {
   @override
+  Widget build(BuildContext context) {
+    return super.build(context);
+  }
+
+  @override
   void update(Response response) {
     super.update(response);
+  }
+
+  @override
+  void onResponse(Response response) {
+    super.onResponse(response);
   }
 
   DataApi getDataApi(BuildContext context, String dataProvider) {

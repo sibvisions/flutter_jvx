@@ -217,18 +217,11 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             .findScreen(menuItem.componentId)
             .configuration
             .withServer) {
-      SoScreen screen =
-          widget.appState.screenManager.getScreen(menuItem.componentId);
-
-      widget.appState.appFrame.setScreen(screen);
-
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (_) => Theme(
-                data: Theme.of(context),
-                child: BlocProvider<ApiBloc>(
-                    create: (_) => sl<ApiBloc>(),
-                    child: widget.appState.appFrame.getWidget()),
-              )));
+      Navigator.pushReplacementNamed(context, OpenScreenPage.route,
+          arguments: ScreenArguments(
+              items: widget.menuItems,
+              menuComponentId: menuItem.componentId,
+              title: menuItem.text));
     } else {
       SoAction action =
           SoAction(componentId: menuItem.componentId, label: menuItem.text);
