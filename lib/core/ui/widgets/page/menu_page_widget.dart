@@ -217,10 +217,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             .findScreen(menuItem.componentId)
             .configuration
             .withServer) {
-      SoScreen screen =
-          widget.appState.screenManager.getScreen(menuItem.componentId);
-
-      widget.appState.appFrame.setScreen(screen);
+      widget.appState.appFrame.setScreen(
+          widget.appState.screenManager.findScreen(menuItem.componentId));
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (_) => Theme(

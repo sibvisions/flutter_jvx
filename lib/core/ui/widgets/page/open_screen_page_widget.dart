@@ -20,6 +20,7 @@ import 'package:jvx_flutterclient/core/models/app/menu_arguments.dart';
 import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
 import 'package:jvx_flutterclient/core/ui/frames/app_frame.dart';
 import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
+import 'package:jvx_flutterclient/core/ui/screen/screen_manager.dart';
 import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
 import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/dialogs/upload_file_picker.dart';
@@ -27,6 +28,7 @@ import 'package:jvx_flutterclient/core/ui/widgets/menu/menu_drawer_widget.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/core/utils/app/get_menu_widget.dart';
 import 'package:jvx_flutterclient/core/utils/app/listener/application_api.dart';
+import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../../injection_container.dart';
 
@@ -56,6 +58,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  ScreenManager _openScreenManager = ScreenManager();
+
   Orientation orientation;
   double width;
   double height;
@@ -68,12 +72,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   Response currentResponse;
 
   String get currentCompId {
-    if (widget.appState.screenManager.screens != null &&
-        widget.appState.screenManager.screens.isNotEmpty) {
-      return widget.appState.screenManager.screens.keys
-          .toList()[this.currentIndex];
-    } else
+    try {
+      if (_openScreenManager.screens != null &&
+          _openScreenManager.screens.isNotEmpty) {
+        return _openScreenManager.screens.keys.toList()[this.currentIndex];
+      } else
+        return null;
+    } catch (e) {
       return null;
+    }
   }
 
   String get menuMode {
@@ -126,13 +133,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   _onPressed(MenuItem menuItem) {
-    if (widget.appState.screenManager != null &&
-        !widget.appState.screenManager
+    if (_openScreenManager != null &&
+        !_openScreenManager
             .getScreen(menuItem.componentId)
             .configuration
             .withServer) {
-      SoScreen screen =
-          widget.appState.screenManager.getScreen(menuItem.componentId);
+      SoScreen screen = _openScreenManager.getScreen(menuItem.componentId);
 
       widget.appState.appFrame.setScreen(screen);
 
@@ -165,10 +171,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   /// Method for updating screens with newest response
   void _updateOpenScreens(Response response) {
-    if (widget.appState.screenManager != null &&
-        widget.appState.screenManager.screens != null &&
-        widget.appState.screenManager.screens.isNotEmpty) {
-      widget.appState.screenManager.screens.forEach((_, screen) {
+    if (_openScreenManager != null &&
+        _openScreenManager.screens != null &&
+        _openScreenManager.screens.isNotEmpty) {
+      _openScreenManager.screens.forEach((_, screen) {
         screen.configuration.value = response;
       });
     }
@@ -202,10 +208,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 title = state.responseData.screenGeneric.screenTitle;
               });
 
-              if (widget.appState.screenManager.findScreen(
+              if (_openScreenManager.findScreen(
                       state.responseData.screenGeneric.componentId) ==
                   null) {
-                widget.appState.screenManager.registerScreen(SoScreen(
+                _openScreenManager.registerScreen(SoScreen(
                   configuration: SoScreenConfiguration(state,
                       screenTitle: state.responseData.screenGeneric.screenTitle,
                       componentId: state.responseData.screenGeneric.componentId,
@@ -306,9 +312,32 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           },
           child: Builder(
             builder: (BuildContext context) {
-              SoScreen screen;
+              SoScreen screen = widget.appState.screenManager
+                  .findScreen(widget.menuComponentId);
 
-              if (this.currentCompId == null) {
+              if (screen != null &&
+                  !_openScreenManager.screens
+                      .containsKey(widget.menuComponentId)) {
+                // If custom screen exists and is not yet added to openscreen stack
+                _openScreenManager.registerScreen(screen);
+                screen.configuration.value = this.currentResponse;
+              } else if (screen != null &&
+                  _openScreenManager.screens
+                      .containsKey(widget.menuComponentId)) {
+                // If custom screen exists and is added to openscreen stack
+                screen.configuration.value = this.currentResponse;
+              } else if (screen == null &&
+                  (_openScreenManager.screens
+                          .containsKey(widget.menuComponentId) ||
+                      _openScreenManager.screens
+                          .containsKey(this.currentCompId))) {
+                // If custom screen is null
+                screen =
+                    _openScreenManager.findScreen(widget.menuComponentId) ??
+                        _openScreenManager.findScreen(this.currentCompId);
+                screen.configuration.value = this.currentResponse;
+              } else {
+                // If both custom screen and normal screen is null
                 screen = SoScreen(
                   configuration: SoScreenConfiguration(this.currentResponse,
                       screenTitle: this
@@ -338,24 +367,14 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                             .screenGeneric
                             .componentId ==
                         screen.configuration.componentId) {
-                  widget.appState.screenManager.registerScreen(screen);
+                  _openScreenManager.registerScreen(screen);
                 }
-              } else if (widget.appState.screenManager
-                      .findScreen(widget.menuComponentId) !=
-                  null) {
-                screen = widget.appState.screenManager
-                    .findScreen(widget.menuComponentId);
-              } else if (widget.appState.screenManager
-                      .findScreen(this.currentCompId) !=
-                  null) {
-                screen = widget.appState.screenManager
-                    .findScreen(this.currentCompId);
               }
 
               _updateOpenScreens(this.currentResponse);
 
               if (this.currentResponse.responseData.screenGeneric != null) {
-                this.currentIndex = widget.appState.screenManager.screens.keys
+                this.currentIndex = _openScreenManager.screens.keys
                     .toList()
                     .indexOf(this
                         .currentResponse
@@ -374,9 +393,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
               if (currentIndex >= 0) {
                 child = IndexedStack(
-                  children: widget.appState.screenManager.screens.values
-                      .map((e) => e)
-                      .toList(),
+                  children:
+                      _openScreenManager.screens.values.map((e) => e).toList(),
                   index: currentIndex,
                   key: this.screenGlobalKey,
                 );
@@ -473,14 +491,13 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     // Removing current screen
     if (response.closeScreenAction != null &&
         response.closeScreenAction.componentId != null) {
-      widget.appState.screenManager
-          .removeScreen(response.closeScreenAction.componentId);
+      _openScreenManager.removeScreen(response.closeScreenAction.componentId);
     } else {
-      widget.appState.screenManager.removeScreen(this.currentCompId);
+      _openScreenManager.removeScreen(this.currentCompId);
     }
 
-    if (widget.appState.screenManager.screens != null &&
-        widget.appState.screenManager.screens.isEmpty) {
+    if (_openScreenManager.screens != null &&
+        _openScreenManager.screens.isEmpty) {
       // When no more screens exist return to menu page
       Navigator.of(context).pushReplacementNamed(MenuPage.route,
           arguments: MenuArguments(widget.appState.items, true));
