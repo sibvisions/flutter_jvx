@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
 import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
 
+import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/response.dart';
@@ -76,6 +78,9 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       _creator = SoComponentCreator();
 
     _componentModelManager = ComponentModelManager();
+
+    (widget as SoScreen).configuration.addListener(
+        () => this.onResponse((widget as SoScreen).configuration.value));
   }
 
   @override
@@ -90,19 +95,18 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       _components = <String, ComponentWidget>{};
     }
 
-    return ValueListenableBuilder<Response>(
-      valueListenable: configuration,
-      builder: (BuildContext context, Response response, Widget child) {
-        this.update(response);
+    return ValueListenableBuilder(
+        valueListenable: configuration,
+        builder: (BuildContext context, Response response, Widget child) {
+          this.update(response);
 
-        if (rootComponent == null) {
-          rootComponent = getRootComponent();
-        }
+          if (rootComponent == null) {
+            rootComponent = getRootComponent();
+          }
 
-        return FractionallySizedBox(
-            widthFactor: 1, heightFactor: 1, child: rootComponent);
-      },
-    );
+          return FractionallySizedBox(
+              widthFactor: 1, heightFactor: 1, child: rootComponent);
+        });
   }
 
   void update(Response response) {
@@ -528,5 +532,9 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       _removeFromParent(toReplaceComponentWidget, _components);
       _addToParent(componentWidget, _components);
     }
+  }
+
+  void onResponse(Response response) {
+    
   }
 }
