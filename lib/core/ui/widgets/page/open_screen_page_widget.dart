@@ -29,6 +29,7 @@ import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/core/utils/app/get_menu_widget.dart';
 import 'package:jvx_flutterclient/core/utils/app/listener/application_api.dart';
 import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
 
@@ -112,7 +113,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     _appFrame();
 
     this.screenGlobalKey = GlobalKey<SoScreenState>(
-        debugLabel: widget.response.responseData.screenGeneric.componentId);
+        debugLabel: widget.response?.responseData?.screenGeneric?.componentId ??
+            widget.menuComponentId);
 
     WidgetsBinding.instance.addObserver(this);
   }
@@ -342,25 +344,26 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                   configuration: SoScreenConfiguration(this.currentResponse,
                       screenTitle: this
                               .currentResponse
-                              .responseData
-                              .screenGeneric
+                              ?.responseData
+                              ?.screenGeneric
                               ?.screenTitle ??
                           this.title,
                       componentId: this
                               .currentResponse
-                              .responseData
-                              .screenGeneric
+                              ?.responseData
+                              ?.screenGeneric
                               ?.componentId ??
-                          widget
-                              .response.responseData.screenGeneric.componentId,
+                          widget.response?.responseData?.screenGeneric
+                              ?.componentId ??
+                          widget.menuComponentId,
                       withServer: true),
                 );
 
-                if (this.currentResponse.request.requestType !=
+                if (this.currentResponse?.request?.requestType !=
                         RequestType.NAVIGATION &&
-                    this.currentResponse.request.requestType !=
+                    this.currentResponse?.request?.requestType !=
                         RequestType.CLOSE_SCREEN &&
-                    this.currentResponse.responseData.screenGeneric != null &&
+                    this.currentResponse?.responseData?.screenGeneric != null &&
                     this
                             .currentResponse
                             .responseData
@@ -373,7 +376,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
               _updateOpenScreens(this.currentResponse);
 
-              if (this.currentResponse.responseData.screenGeneric != null) {
+              if (this.currentResponse?.responseData?.screenGeneric != null) {
                 this.currentIndex = _openScreenManager.screens.keys
                     .toList()
                     .indexOf(this
@@ -381,6 +384,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         .responseData
                         .screenGeneric
                         .componentId);
+              } else {
+                this.currentIndex = 0;
               }
 
               if (screen.configuration.screenTitle != null &&
