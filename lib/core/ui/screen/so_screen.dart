@@ -534,7 +534,5 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
     }
   }
 
-  void onResponse(Response response) {
-    
-  }
+  void onResponse(Response response) {}
 }

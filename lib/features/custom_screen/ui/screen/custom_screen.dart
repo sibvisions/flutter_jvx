@@ -30,6 +30,11 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
     super.update(response);
   }
 
+  @override
+  void onResponse(Response response) {
+    super.onResponse(response);
+  }
+
   DataApi getDataApi(BuildContext context, String dataProvider) {
     return DataApi(this.getComponentData(dataProvider), context);
   }
