@@ -93,18 +93,7 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
     return ValueListenableBuilder<Response>(
       valueListenable: configuration,
       builder: (BuildContext context, Response response, Widget child) {
-        if (configuration.value.request != null &&
-            configuration.value.responseData != null) {
-          this.updateData(context, configuration.value.request,
-              configuration.value.responseData);
-        }
-
-        if (configuration.value.responseData.screenGeneric != null &&
-            configuration.value.responseData.screenGeneric.componentId ==
-                configuration.componentId) {
-          this.updateComponents(
-              configuration.value.responseData.screenGeneric.changedComponents);
-        }
+        this.update(response);
 
         if (rootComponent == null) {
           rootComponent = getRootComponent();
@@ -114,6 +103,19 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
             widthFactor: 1, heightFactor: 1, child: rootComponent);
       },
     );
+  }
+
+  void update(Response response) {
+    if (response.request != null && response.responseData != null) {
+      this.updateData(context, response.request, response.responseData);
+    }
+
+    if (response.responseData.screenGeneric != null &&
+        response.responseData.screenGeneric.componentId ==
+            (widget as SoScreen).configuration.componentId) {
+      this.updateComponents(
+          response.responseData.screenGeneric.changedComponents);
+    }
   }
 
   void updateComponents(List<ChangedComponent> changedComponents) {
