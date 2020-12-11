@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/api/response.dart';
 import 'package:jvx_flutterclient/core/ui/component/component_widget.dart';
 
 import '../../../../core/ui/screen/so_component_creator.dart';
@@ -24,6 +25,11 @@ class CustomScreen extends SoScreen {
 }
 
 class CustomScreenState extends SoScreenState<CustomScreen> {
+  @override
+  void update(Response response) {
+    super.update(response);
+  }
+
   DataApi getDataApi(BuildContext context, String dataProvider) {
     return DataApi(this.getComponentData(dataProvider), context);
   }
