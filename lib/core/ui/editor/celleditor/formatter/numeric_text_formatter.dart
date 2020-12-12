@@ -59,6 +59,7 @@ class NumericTextFormatter extends TextInputFormatter {
       return newValue.copyWith(text: '');
     } else if (newValue.text.compareTo(oldValue.text) != 0) {
       String newString = newValue.text;
+      int textLengthChange = newValue.text.length - oldValue.text.length;
 
       /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
       if (newString.length > 16) return newValue.copyWith(text: oldValue.text);
@@ -86,6 +87,19 @@ class NumericTextFormatter extends TextInputFormatter {
       newString = this.getFormattedString(number);
 
       if (addTrailingDecSep) newString += numberFormatter.symbols.DECIMAL_SEP;
+      if (textLengthChange < 0 && newString.length >= oldValue.text.length) {
+        TextSelection selection = oldValue.selection;
+        return newValue.copyWith(
+            text: newString,
+            selection:
+                TextSelection.collapsed(offset: selection.baseOffset + 1));
+      } else if (textLengthChange > 0 &&
+          newString.length <= oldValue.text.length) {
+        TextSelection selection = oldValue.selection;
+        return newValue.copyWith(
+            text: newString,
+            selection: TextSelection.collapsed(offset: selection.baseOffset));
+      }
       return newValue.copyWith(text: newString);
     } else {
       return newValue;
