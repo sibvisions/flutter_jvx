@@ -159,7 +159,7 @@ class TableComponentModel extends EditorComponentModel {
     super.updateProperties(context, changedComponent);
   }
 
-  void onSelectedRowChanged(dynamic selectedRow) {
+  void onSelectedRowChanged(BuildContext context, dynamic selectedRow) {
     if (this.onSelectedRowChangedCallback != null) {
       this.onSelectedRowChangedCallback(selectedRow);
     }
@@ -187,12 +187,8 @@ class TableComponentModel extends EditorComponentModel {
           if (editor.cellEditor.cellEditorModel is LinkedCellEditorModel) {
             (editor.cellEditor.cellEditorModel as LinkedCellEditorModel)
                     .referencedData =
-                SoScreen.of(context).getComponentData(editor
-                    .cellEditor
-                    .cellEditorModel
-                    .cellEditor
-                    .linkReference
-                    .dataProvider);
+                SoScreen.of(context).getComponentData(editor.cellEditor
+                    .cellEditorModel.cellEditor.linkReference.dataProvider);
           }
 
           _editors[_getEditorIdentifier(columnName, index)] = editor;
