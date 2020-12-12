@@ -90,27 +90,36 @@ class _SplitViewState extends State<SplitView> {
 
   Stack _buildVerticalView(
       BuildContext context, BoxConstraints constraints, double w) {
+    final double maxWidth = constraints.maxWidth == double.infinity
+        ? MediaQuery.of(context).size.width
+        : constraints.maxWidth;
+    final double maxHeight = constraints.maxHeight == double.infinity
+        ? MediaQuery.of(context).size.height
+        : constraints.maxHeight;
+
     double top = constraints.maxHeight * w;
     double bottom = constraints.maxHeight * (1.0 - w);
 
     BoxConstraints view1Constraints = BoxConstraints(
-        minHeight: 0,
-        maxHeight: double.infinity,
-        minWidth: constraints.maxWidth,
-        maxWidth: constraints.maxWidth);
+        minHeight: top,
+        maxHeight: top,
+        minWidth:
+            constraints.maxWidth == double.infinity ? 0 : constraints.maxWidth,
+        maxWidth:
+            constraints.maxWidth == double.infinity ? 0 : constraints.maxWidth);
 
     BoxConstraints view2Constraints = BoxConstraints(
-        minHeight: 0,
-        maxHeight: double.infinity,
-        minWidth: constraints.maxWidth,
-        maxWidth: constraints.maxWidth);
+        minHeight: bottom,
+        maxHeight: bottom,
+        minWidth:
+            constraints.maxWidth == double.infinity ? 0 : constraints.maxWidth,
+        maxWidth:
+            constraints.maxWidth == double.infinity ? 0 : constraints.maxWidth);
 
     List<Widget> children = List<Widget>();
 
-    this.updatePreferredSize(
-        widget.view1, Size(constraints.maxWidth, constraints.maxHeight));
-    this.updatePreferredSize(
-        widget.view2, Size(constraints.maxWidth, constraints.maxHeight));
+    this.updatePreferredSize(widget.view1, Size(maxWidth, top));
+    this.updatePreferredSize(widget.view2, Size(maxWidth, bottom));
 
     children.add(Positioned(
       top: 0,
@@ -122,7 +131,20 @@ class _SplitViewState extends State<SplitView> {
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView1,
           child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal, child: widget.view1)),
+              scrollDirection: Axis.horizontal,
+              child: CoScrollPanelLayout(
+                preferredConstraints: CoScrollPanelConstraints(constraints,
+                    widget.view1.componentModel, view1Constraints.biggest),
+                container: null,
+                children: [
+                  CoScrollPanelLayoutId(
+                      constraints: CoScrollPanelConstraints(
+                          constraints,
+                          widget.view1.componentModel,
+                          view1Constraints.biggest),
+                      child: widget.view1)
+                ],
+              ))),
     ));
 
     children.add(Positioned(
@@ -134,7 +156,19 @@ class _SplitViewState extends State<SplitView> {
           scrollDirection: Axis.vertical,
           controller: widget.scrollControllerView2,
           child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal, child: widget.view2)),
+              scrollDirection: Axis.horizontal,
+              child: CoScrollPanelLayout(
+                preferredConstraints: CoScrollPanelConstraints(constraints,
+                    widget.view2.componentModel, view2Constraints.biggest),
+                children: [
+                  CoScrollPanelLayoutId(
+                      constraints: CoScrollPanelConstraints(
+                          constraints,
+                          widget.view2.componentModel,
+                          view2Constraints.biggest),
+                      child: widget.view2)
+                ],
+              ))),
     ));
 
     if (widget.showHandle) {
@@ -195,6 +229,7 @@ class _SplitViewState extends State<SplitView> {
 
     final double left = maxWidth * w;
     final double right = maxWidth * (1.0 - w);
+
     BoxConstraints view1Constraints = BoxConstraints(
         minHeight: constraints.maxHeight == double.infinity
             ? 0
