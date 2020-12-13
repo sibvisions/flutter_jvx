@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart' as intl;
 
 import '../../../../models/api/editor/cell_editor.dart';
 import '../../../../models/api/editor/cell_editor_properties.dart';
+import '../../../../models/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../../../utils/app/text_utils.dart';
+import '../../../screen/so_component_data.dart';
 import '../formatter/numeric_text_formatter.dart';
 import 'cell_editor_model.dart';
 
@@ -16,10 +17,17 @@ class NumberCellEditorModel extends CellEditorModel {
   TextEditingController controller = TextEditingController();
   bool valueChanged = false;
   String numberFormat;
-  List<TextInputFormatter> textInputFormatter;
+  NumericTextFormatter numericTextFormatter;
+  List<TextInputFormatter> textInputFormatter = List<TextInputFormatter>();
   TextInputType textInputType;
   String tempValue;
   FocusNode node = FocusNode();
+
+  @override
+  set data(SoComponentData newData) {
+    super.data = newData;
+    updateMetadataNumberformat();
+  }
 
   @override
   get preferredSize {
@@ -35,13 +43,6 @@ class NumberCellEditorModel extends CellEditorModel {
     }
 
     double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
-
-    // print("NumberCellEditor PreferredSize: " +
-    //     Size(18 + width + iconWidth + textPadding.horizontal, 50).toString() +
-    //     "(" +
-    //     text +
-    //     ")");
-
     return Size(width + iconWidth + textPadding.horizontal, 50);
   }
 
@@ -55,7 +56,7 @@ class NumberCellEditorModel extends CellEditorModel {
 
   @override
   set cellEditorValue(value) {
-    this.tempValue = _getFormattedValue(value);
+    this.tempValue = numericTextFormatter.getFormattedString(value);
     this.controller.value = TextEditingValue(text: this.tempValue ?? '');
     super.cellEditorValue = value;
   }
@@ -64,46 +65,30 @@ class NumberCellEditorModel extends CellEditorModel {
     numberFormat =
         this.cellEditor.getProperty<String>(CellEditorProperty.NUMBER_FORMAT);
 
-    /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
-    /// textInputFormatter = this.getImputFormatter();
-    if (numberFormat != null) {
-      List<String> numberFormatParts = numberFormat.split(".");
-      if (numberFormatParts.length > 1 && numberFormatParts[1].length > 14) {
-        numberFormat =
-            numberFormatParts[0] + "." + numberFormatParts[1].substring(0, 14);
-      }
-    }
-
-    textInputType = this.getKeyboardType();
-  }
-
-  String _getFormattedValue(dynamic value) {
-    if (value != null && (value is int || value is double)) {
-      if (numberFormat != null && numberFormat.isNotEmpty) {
-        intl.NumberFormat format = intl.NumberFormat(numberFormat);
-        return format.format(value);
-      }
-
-      return value;
-    }
-
-    return "";
-  }
-
-  TextInputType getKeyboardType() {
     if (this.numberFormat != null && this.numberFormat.isNotEmpty) {
-      if (!this.numberFormat.contains(".")) return TextInputType.number;
+      this.numericTextFormatter =
+          NumericTextFormatter(this.numberFormat, this.appState.language);
+      textInputFormatter.add(this.numericTextFormatter);
     }
-
-    return TextInputType.numberWithOptions(decimal: true);
   }
 
-  List<TextInputFormatter> getImputFormatter() {
-    List<TextInputFormatter> formatter = List<TextInputFormatter>();
-    if (this.numberFormat != null && this.numberFormat.isNotEmpty)
-      formatter
-          .add(NumericTextFormatter(this.numberFormat)); //globals.language));
+  void updateMetadataNumberformat() {
+    if (this.columnName != null && this.numericTextFormatter != null) {
+      if (this.data?.metaData != null) {
+        DataBookMetaDataColumn column =
+            this.data.metaData.getColumn(this.columnName);
 
-    return formatter;
+        if (column?.cellEditor != null) {
+          this.numericTextFormatter.precision =
+              column.cellEditor.getProperty<int>(CellEditorProperty.PRECISION);
+          this.numericTextFormatter.length =
+              column.cellEditor.getProperty<int>(CellEditorProperty.LENGTH);
+          this.numericTextFormatter.scale =
+              column.cellEditor.getProperty<int>(CellEditorProperty.SCALE);
+          this.numericTextFormatter.signed =
+              column.cellEditor.getProperty<bool>(CellEditorProperty.SIGNED);
+        }
+      }
+    }
   }
 }

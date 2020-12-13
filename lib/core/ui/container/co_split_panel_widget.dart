@@ -57,37 +57,32 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
   }
 
   SplitViewMode get defaultSplitViewMode {
-    return ((widget.componentModel as SplitPanelComponentModel)
-                    .dividerAlignment ==
+    SplitPanelComponentModel componentModel = widget.componentModel;
+    return (componentModel.dividerAlignment ==
                 SplitPanelComponentModel.HORIZONTAL ||
-            (widget.componentModel as SplitPanelComponentModel)
-                    .dividerAlignment ==
+            componentModel.dividerAlignment ==
                 SplitPanelComponentModel.RELATIVE)
         ? SplitViewMode.Horizontal
         : SplitViewMode.Vertical;
   }
 
   SplitViewMode get splitViewMode {
-    if (kIsWeb &&
-        ((widget.componentModel as SplitPanelComponentModel)
-                    .appState
-                    .layoutMode ==
-                'Full' ||
-            (widget.componentModel as SplitPanelComponentModel)
-                    .appState
-                    .layoutMode ==
-                'Small')) {
-      return defaultSplitViewMode;
-    }
+    return defaultSplitViewMode;
+    // SplitPanelComponentModel componentModel = widget.componentModel;
+    // if (kIsWeb &&
+    //     (componentModel.appState.layoutMode == 'Full' ||
+    //         componentModel.appState.layoutMode == 'Small')) {
+    //   return defaultSplitViewMode;
+    // }
 
-    if (defaultSplitViewMode == SplitViewMode.Horizontal) {
-      if (MediaQuery.of(context).size.width >= 667) return defaultSplitViewMode;
-    } else {
-      if (MediaQuery.of(context).size.height >= 667)
-        return defaultSplitViewMode;
-    }
+    // if (defaultSplitViewMode == SplitViewMode.Horizontal) {
+    //   if (MediaQuery.of(context).size.width >= 667) return defaultSplitViewMode;
+    // } else {
+    //   if (MediaQuery.of(context).size.height >= 667)
+    //     return defaultSplitViewMode;
+    // }
 
-    return null;
+    // return defaultSplitViewMode;
   }
 
   @override

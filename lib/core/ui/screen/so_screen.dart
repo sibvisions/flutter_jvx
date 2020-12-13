@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
 import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
+import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
+import '../../../injection_container.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/response.dart';
@@ -27,21 +30,15 @@ import 'component_model_manager.dart';
 import 'so_component_creator.dart';
 import 'so_data_screen.dart';
 
-enum CoState {
-  Added,
-  Free,
-  Removed,
-  Destroyed
-}
+enum CoState { Added, Free, Removed, Destroyed }
 
 class SoScreen extends StatefulWidget {
   final SoScreenConfiguration configuration;
   final SoComponentCreator creator;
+  final String templateName;
 
   const SoScreen(
-      {Key key,
-      this.creator,
-      @required this.configuration})
+      {Key key, this.creator, @required this.configuration, this.templateName})
       : super(key: key);
 
   static SoScreenState of(BuildContext context) =>
@@ -69,6 +66,8 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   ComponentWidget header;
   ComponentWidget footer;
 
+  Map<String, ComponentWidget> get components => _components;
+
   @override
   void initState() {
     super.initState();
@@ -80,44 +79,56 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       _creator = SoComponentCreator();
 
     _componentModelManager = ComponentModelManager();
+
+    (widget as SoScreen).configuration.addListener(
+        () => this.onResponse((widget as SoScreen).configuration.value));
   }
 
   @override
   Widget build(BuildContext context) {
     SoScreenConfiguration configuration = (widget as SoScreen).configuration;
 
-    if (configuration.value.closeScreenAction != null &&
+    if (configuration?.value?.closeScreenAction != null &&
         (rootComponent != null &&
-            configuration.value.closeScreenAction.componentId ==
+            configuration?.value?.closeScreenAction?.componentId ==
                 rootComponent.componentModel.name)) {
       rootComponent = null;
       _components = <String, ComponentWidget>{};
     }
 
-    return ValueListenableBuilder<Response>(
-      valueListenable: configuration,
-      builder: (BuildContext context, Response response, Widget child) {
-        if (configuration.value.request != null &&
-            configuration.value.responseData != null) {
-          this.updateData(context, configuration.value.request,
-              configuration.value.responseData);
-        }
+    return ValueListenableBuilder(
+        valueListenable: configuration,
+        builder: (BuildContext context, Response response, Widget child) {
+          if (response != null) {
+            this.update(response);
 
-        if (configuration.value.responseData.screenGeneric != null &&
-            configuration.value.responseData.screenGeneric.componentId ==
-                configuration.componentId) {
-          this.updateComponents(
-              configuration.value.responseData.screenGeneric.changedComponents);
-        }
+            if (rootComponent == null) {
+              rootComponent = getRootComponent();
+            }
 
-        if (rootComponent == null) {
-          rootComponent = getRootComponent();
-        }
+            return FractionallySizedBox(
+                widthFactor: 1, heightFactor: 1, child: rootComponent);
+          } else {
+            return Container();
+          }
+        });
+  }
 
-        return FractionallySizedBox(
-            widthFactor: 1, heightFactor: 1, child: rootComponent);
-      },
-    );
+  void update(Response response) {
+    if (response.request != null && response.responseData != null) {
+      this.updateData(context, response.request, response.responseData);
+    }
+
+    if (response.responseData.screenGeneric != null) {
+      if (response.responseData.screenGeneric.componentId ==
+          (widget as SoScreen).configuration.componentId) {
+        this.updateComponents(
+            response.responseData.screenGeneric.changedComponents);
+      } else if (widget is CustomScreen) {
+        this.updateComponents(
+            response.responseData.screenGeneric.changedComponents);
+      }
+    }
   }
 
   void updateComponents(List<ChangedComponent> changedComponents) {
@@ -464,30 +475,44 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
         orElse: () => null);
 
     if (header != null || footer != null) {
-      ComponentWidget headerFooterPanel = CoPanelWidget(componentModel: ContainerComponentModel(),);
+      ComponentWidget headerFooterPanel = CoPanelWidget(
+        componentModel: ContainerComponentModel(),
+      );
 
-      headerFooterPanel.componentModel.componentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+      headerFooterPanel.componentModel.componentId =
+          HEADER_FOOTER_PANEL_COMPONENT_ID;
 
       if (header != null) {
-        header.componentModel.parentComponentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+        header.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
         header.componentModel.constraints = 'North';
         header.componentModel.coState = CoState.Added;
         _components[header.componentModel.componentId] = header;
       }
 
       if (rootComponent != null) {
-        rootComponent.componentModel.parentComponentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+        rootComponent.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
         rootComponent.componentModel.constraints = 'Center';
       }
 
       if (footer != null) {
-        footer.componentModel.parentComponentId = HEADER_FOOTER_PANEL_COMPONENT_ID;
+        footer.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
         footer.componentModel.constraints = 'South';
         footer.componentModel.coState = CoState.Added;
         _components[footer.componentModel.componentId] = footer;
       }
 
       _components[HEADER_FOOTER_PANEL_COMPONENT_ID] = headerFooterPanel;
+
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .addWithConstraints(header, header.componentModel.constraints);
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .addWithConstraints(
+              rootComponent, rootComponent.componentModel.constraints);
+      (headerFooterPanel.componentModel as ContainerComponentModel)
+          .addWithConstraints(footer, footer.componentModel.constraints);
 
       return headerFooterPanel;
     }
@@ -505,16 +530,26 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   }
 
   /// Method for replacing components
-  void replaceComponent(ComponentWidget componentWidget, ComponentWidget toReplaceComponentWidget) {
+  ///
+  /// [toReplaceComponentWidget] is the component to be replaced with [componentWidget]
+  void replaceComponent(ComponentWidget componentWidget,
+      ComponentWidget toReplaceComponentWidget) {
     if (componentWidget != null && toReplaceComponentWidget != null) {
-      componentWidget.componentModel.parentComponentId = toReplaceComponentWidget.componentModel.parentComponentId;
-      componentWidget.componentModel.constraints = toReplaceComponentWidget.componentModel.constraints;
-      componentWidget.componentModel.minimumSize = toReplaceComponentWidget.componentModel.minimumSize;
-      componentWidget.componentModel.maximumSize = toReplaceComponentWidget.componentModel.maximumSize;
-      componentWidget.componentModel.preferredSize = toReplaceComponentWidget.componentModel.preferredSize;
+      componentWidget.componentModel.parentComponentId =
+          toReplaceComponentWidget.componentModel.parentComponentId;
+      componentWidget.componentModel.constraints =
+          toReplaceComponentWidget.componentModel.constraints;
+      componentWidget.componentModel.minimumSize =
+          toReplaceComponentWidget.componentModel.minimumSize;
+      componentWidget.componentModel.maximumSize =
+          toReplaceComponentWidget.componentModel.maximumSize;
+      componentWidget.componentModel.preferredSize =
+          toReplaceComponentWidget.componentModel.preferredSize;
 
       _removeFromParent(toReplaceComponentWidget, _components);
       _addToParent(componentWidget, _components);
     }
   }
+
+  void onResponse(Response response) {}
 }

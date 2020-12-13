@@ -21,6 +21,8 @@ import '../widgets/util/app_state_provider.dart';
 import 'so_data_screen.dart';
 
 typedef ContextCallback = void Function(BuildContext context);
+typedef ContextValueCallback = void Function(
+    BuildContext context, dynamic selectedRow);
 
 class SoComponentData {
   String dataProvider;
@@ -33,7 +35,7 @@ class SoComponentData {
 
   List<ContextCallback> _onDataChanged = [];
   List<VoidCallback> _onMetaDataChanged = [];
-  List<ValueChanged<dynamic>> _onSelectedRowChanged = [];
+  List<ContextValueCallback> _onSelectedRowChanged = [];
 
   SoComponentData(this.dataProvider, this.soDataScreen)
       : assert(dataProvider != null);
@@ -75,7 +77,7 @@ class SoComponentData {
       if (data != null &&
           pData != null &&
           data.selectedRow != pData.selectedRow)
-        _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
+        _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       data = pData;
     } else if (true /*data.isAllFetched*/) {
       if (pData.records.length > 0) {
@@ -109,7 +111,7 @@ class SoComponentData {
       }
       data.isAllFetched = pData.isAllFetched;
       if (data.selectedRow != pData.selectedRow)
-        _onSelectedRowChanged.forEach((d) => d(pData.selectedRow));
+        _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       data.selectedRow = pData.selectedRow;
     }
     // else {
@@ -133,7 +135,7 @@ class SoComponentData {
         requestType == RequestType.UPLOAD)
       _fetchData(context, pDataproviderChanged.reload, -1);
     if (data != null && pDataproviderChanged.selectedRow != null)
-      updateSelectedRow(context, pDataproviderChanged.selectedRow);
+      updateSelectedRow(context, pDataproviderChanged.selectedRow, true);
   }
 
   void updateSelectedRow(BuildContext context, int selectedRow,
@@ -143,7 +145,7 @@ class SoComponentData {
       if (data.selectedRow == null || data.selectedRow != selectedRow) {
         data.selectedRow = selectedRow;
         if (raiseSelectedRowChangeEvent)
-          _onSelectedRowChanged.forEach((d) => d(selectedRow));
+          _onSelectedRowChanged.forEach((d) => d(context, selectedRow));
       }
     } else {
       print(
@@ -346,11 +348,12 @@ class SoComponentData {
     return data?.columnNames?.indexWhere((c) => c == columnName);
   }
 
-  void registerSelectedRowChanged(ValueChanged<dynamic> callback) {
-    _onSelectedRowChanged.add(callback);
+  void registerSelectedRowChanged(ContextValueCallback callback) {
+    if (!_onSelectedRowChanged.contains(callback))
+      _onSelectedRowChanged.add(callback);
   }
 
-  void unregisterSelectedRowChanged(ValueChanged<dynamic> callback) {
+  void unregisterSelectedRowChanged(ContextValueCallback callback) {
     _onSelectedRowChanged.remove(callback);
   }
 

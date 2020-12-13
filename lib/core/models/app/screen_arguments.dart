@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
+
 import '../api/response.dart';
 import '../api/response/menu_item.dart';
 

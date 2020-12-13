@@ -153,6 +153,9 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
     double layoutMiddleWidth = 0;
     double layoutMiddleHeight = 0;
 
+    double globalMaxWidth = 0;
+    double globalMaxWidthCenterRow = 0;
+
     // Set components
     this.north = null;
     this.south = null;
@@ -207,6 +210,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       height -= size.height + iVerticalGap;
       layoutWidth += size.width;
       layoutHeight += size.height;
+      globalMaxWidth = size.width;
     }
 
     // layout SOUTH
@@ -214,6 +218,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       double minWidth = width;
       double minHeight = 0;
       double maxHeight = double.infinity;
+
+      if (globalMaxWidth > minHeight) minHeight = globalMaxWidth;
 
       if (southComp.componentModel.isPreferredSizeSet) {
         maxHeight = southComp.componentModel.preferredSize.height;
@@ -242,6 +248,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       height -= size.height + iVerticalGap;
       layoutWidth = max(size.width, layoutWidth);
       layoutHeight += size.height;
+
+      if (size.width > globalMaxWidth) globalMaxWidth = size.width;
     }
 
     // layout WEST
@@ -278,6 +286,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       width -= size.width + iHorizontalGap;
       layoutMiddleWidth += size.width + iHorizontalGap;
       layoutMiddleHeight = max(size.height + iVerticalGap, layoutMiddleHeight);
+      globalMaxWidthCenterRow = size.width;
     }
 
     // layout EAST
@@ -313,6 +322,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       width -= size.width + iHorizontalGap;
       layoutMiddleWidth += size.width + iHorizontalGap;
       layoutMiddleHeight = max(size.height + iVerticalGap, layoutMiddleHeight);
+      globalMaxWidthCenterRow += size.width;
     }
 
     // layout CENTER
@@ -334,6 +344,11 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
           centerComp.componentModel.isPreferredSizeSet) {
         width = centerComp.componentModel.preferredSize.width;
         minWidth = width;
+      }
+
+      if (globalMaxWidth - globalMaxWidthCenterRow > minWidth) {
+        minWidth = globalMaxWidth - globalMaxWidthCenterRow;
+        if (width < minWidth) width = minWidth;
       }
 
       Size size = layoutRenderBox(
