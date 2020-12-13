@@ -21,13 +21,25 @@ class TableComponentModel extends EditorComponentModel {
   List<String> columnLabels = <String>[];
 
   // the show vertical lines flag.
-  bool showVerticalLines = false;
+  bool showVerticalLines = true;
 
   // the show horizontal lines flag.
-  bool showHorizontalLines = false;
+  bool showHorizontalLines = true;
+
+  // the show selection flag.
+  bool showSelection = true;
 
   // the show table header flag
   bool tableHeaderVisible = true;
+
+  // the show focus rect flag.
+  bool showFocusRect = true;
+
+  // the show focus rect flag.
+  bool sortOnHeaderEnabled = true;
+
+  // the show focus rect flag.
+  bool wordWrapEnabled = false;
 
   // table editable
   bool editable = true;
@@ -131,6 +143,12 @@ class TableComponentModel extends EditorComponentModel {
         ComponentProperty.SHOW_HORIZONTAL_LINES, showHorizontalLines);
     tableHeaderVisible = changedComponent.getProperty<bool>(
         ComponentProperty.TABLE_HEADER_VISIBLE, tableHeaderVisible);
+    sortOnHeaderEnabled = changedComponent.getProperty<bool>(
+        ComponentProperty.SORT_ON_HEADER_ENABLED, sortOnHeaderEnabled);
+    showSelection = changedComponent.getProperty<bool>(
+        ComponentProperty.SHOW_SELECTION, showSelection);
+    showFocusRect = changedComponent.getProperty<bool>(
+        ComponentProperty.SHOW_FOCUS_RECT, showFocusRect);
     columnNames = changedComponent.getProperty<List<String>>(
         ComponentProperty.COLUMN_NAMES, columnNames);
     columnLabels = changedComponent.getProperty<List<String>>(
