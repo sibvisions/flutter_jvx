@@ -37,27 +37,30 @@ class RestClient {
           .timeout(const Duration(seconds: 10));
     } on TimeoutException {
       finalResponse = Response()
-        ..error = ErrorResponse(
-            'Timeout Error',
-            'Timeout Error',
-            'Couldn\'t connect to the server!',
-            'timeout.error');
+        ..error = ErrorResponse('Timeout Error', 'Timeout Error',
+            'Couldn\'t connect to the server!', 'timeout.error');
     } on Exception {
       finalResponse = Response()
-        ..error = ErrorResponse(
-            'Error',
-            'An Error occured',
-            'An Error while sending the Request occured',
-            'message.error');
+        ..error = ErrorResponse('Error', 'An Error occured',
+            'An Error while sending the Request occured', 'message.error');
     }
 
     if (response == null || (response as http.Response).statusCode != 200) {
-      finalResponse = Response()
-        ..error = ErrorResponse(
-            'Error',
-            'An Error occured',
-            response != null ? this.utf8convert(response.body) : '',
-            'message.error');
+      if ((response as http.Response).statusCode == 404) {
+        finalResponse = Response()
+          ..error = ErrorResponse(
+              'Error',
+              'An Error occured',
+              'The Base url entered is invalid. The server could not be found',
+              'message.error');
+      } else {
+        finalResponse = Response()
+          ..error = ErrorResponse(
+              'Error',
+              'An Error occured',
+              response != null ? this.utf8convert(response.body) : '',
+              'message.error');
+      }
     } else {
       String body = this.utf8convert(response.body);
       dynamic decodedBody = json.decode(body);
@@ -100,7 +103,7 @@ class RestClient {
       returnResponse.downloadResponse =
           DownloadResponse('', response.bodyBytes);
     }
-    
+
     if (response != null && data['name'] == 'file') {
       if (kIsWeb) {
         returnResponse.downloadResponse.fileName = downloadFileName;

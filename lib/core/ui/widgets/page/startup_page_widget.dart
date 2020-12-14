@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -297,7 +299,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         userName: appState.username,
         password: appState.password,
         authKey: this.manager.authKey,
-        layoutMode: 'generic');
+        layoutMode: 'generic',
+        language: appState.language != null && appState.language.isNotEmpty ? appState.language : Platform.localeName);
 
     BlocProvider.of<ApiBloc>(context).add(startup);
   }
