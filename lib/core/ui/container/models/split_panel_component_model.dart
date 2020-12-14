@@ -14,17 +14,12 @@ class SplitPanelComponentModel extends ContainerComponentModel {
   ScrollController scrollControllerView2 =
       ScrollController(keepScrollOffset: true);
 
-  /// Constant for horizontal anchors.
-  static const HORIZONTAL = 0;
-
-  /// Constant for vertical anchors.
-  static const VERTICAL = 1;
-
-  /// Constant for relative anchors.
-  static const RELATIVE = 2;
+  static const VERTICAL = 0;
+  static const HORIZONTAL = 1;
 
   int dividerPosition;
   int dividerAlignment;
+  int orientation = HORIZONTAL;
 
   double currentSplitviewWeight;
 
@@ -46,7 +41,17 @@ class SplitPanelComponentModel extends ContainerComponentModel {
     dividerPosition =
         changedComponent.getProperty<int>(ComponentProperty.DIVIDER_POSITION);
     dividerAlignment = changedComponent.getProperty<int>(
-        ComponentProperty.DIVIDER_ALIGNMENT, HORIZONTAL);
+        ComponentProperty.DIVIDER_ALIGNMENT, dividerAlignment);
+    orientation = changedComponent.getProperty<int>(
+        ComponentProperty.ORIENTATION, orientation);
+
     super.updateProperties(context, changedComponent);
+
+    // print("SplitPanel - DividerPosition: " +
+    //     dividerPosition.toString() +
+    //     " DividerAlignment: " +
+    //     dividerAlignment.toString() +
+    //     " Orientation: " +
+    //     orientation.toString());
   }
 }
