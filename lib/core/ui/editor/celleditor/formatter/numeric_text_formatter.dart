@@ -74,32 +74,34 @@ class NumericTextFormatter extends TextInputFormatter {
 
       if (precision != null && scale != null) {
         String toMatch = number.toString();
+        int localScale = (scale < 0 ? 0 : scale);
+        int localPrecision = precision <= 0 ? 15 - scale : precision;
         RegExp expression = new RegExp(r"^(?=(\D*\d\D*){0," +
-            precision.toString() +
+            localPrecision.toString() +
             r"}$)-?([0-9]+)?([\.,]?[0-9]{0," +
-            scale.toString() +
+            localScale.toString() +
             r"})?$");
 
         if (!expression.hasMatch(toMatch))
           return newValue.copyWith(text: oldValue.text);
       }
 
-      newString = this.getFormattedString(number);
+      //newString = this.getFormattedString(number);
 
       if (addTrailingDecSep) newString += numberFormatter.symbols.DECIMAL_SEP;
-      if (textLengthChange < 0 && newString.length >= oldValue.text.length) {
-        TextSelection selection = oldValue.selection;
-        return newValue.copyWith(
-            text: newString,
-            selection:
-                TextSelection.collapsed(offset: selection.baseOffset + 1));
-      } else if (textLengthChange > 0 &&
-          newString.length <= oldValue.text.length) {
-        TextSelection selection = oldValue.selection;
-        return newValue.copyWith(
-            text: newString,
-            selection: TextSelection.collapsed(offset: selection.baseOffset));
-      }
+      // if (textLengthChange < 0 && newString.length >= oldValue.text.length) {
+      //   TextSelection selection = oldValue.selection;
+      //   return newValue.copyWith(
+      //       text: newString,
+      //       selection:
+      //           TextSelection.collapsed(offset: selection.baseOffset + 1));
+      // } else if (textLengthChange > 0 &&
+      //     newString.length <= oldValue.text.length) {
+      //   TextSelection selection = oldValue.selection;
+      //   return newValue.copyWith(
+      //       text: newString,
+      //       selection: TextSelection.collapsed(offset: selection.baseOffset));
+      // }
       return newValue.copyWith(text: newString);
     } else {
       return newValue;
