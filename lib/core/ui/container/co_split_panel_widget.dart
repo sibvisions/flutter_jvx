@@ -58,10 +58,7 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
 
   SplitViewMode get defaultSplitViewMode {
     SplitPanelComponentModel componentModel = widget.componentModel;
-    return (componentModel.dividerAlignment ==
-                SplitPanelComponentModel.HORIZONTAL ||
-            componentModel.dividerAlignment ==
-                SplitPanelComponentModel.RELATIVE)
+    return (componentModel.orientation == SplitPanelComponentModel.HORIZONTAL)
         ? SplitViewMode.Horizontal
         : SplitViewMode.Vertical;
   }
@@ -100,64 +97,23 @@ class CoSplitPanelWidgetState extends CoContainerWidgetState {
       componentModel.lastConstraints = constraints;
       _calculateDividerPosition(constraints, this.splitViewMode);
 
-      if (firstComponent != null) {
-        Size preferredSize;
+      widgets.add(firstComponent != null ? firstComponent : Container());
+      widgets.add(secondComponent != null ? secondComponent : Container());
 
-        if (constraints.maxWidth != double.infinity &&
-            componentModel.currentSplitviewWeight != null) {
-          preferredSize = Size(
-              constraints.maxWidth * componentModel.currentSplitviewWeight,
-              constraints.maxHeight);
-        }
-
-        widgets.add(firstComponent);
-      } else {
-        widgets.add(Container());
-      }
-
-      if (secondComponent != null) {
-        Size preferredSize;
-        if (constraints.maxWidth != double.infinity &&
-            componentModel.currentSplitviewWeight != null) {
-          preferredSize = Size(
-              constraints.maxWidth -
-                  (constraints.maxWidth *
-                      componentModel.currentSplitviewWeight),
-              constraints.maxHeight);
-        }
-
-        widgets.add(secondComponent);
-      } else {
-        widgets.add(Container());
-      }
-
-      if (this.splitViewMode != null) {
-        return SplitView(
-          key: componentModel.splitViewKey,
-          initialWeight: componentModel.currentSplitviewWeight,
-          gripColor: Colors.grey[300],
-          handleColor: Colors.grey[800].withOpacity(0.5),
-          view1: widgets[0],
-          view2: widgets[1],
-          viewMode: this.splitViewMode,
-          onWeightChanged: (value) {
-            componentModel.currentSplitviewWeight = value;
-          },
-          scrollControllerView1: componentModel.scrollControllerView1,
-          scrollControllerView2: componentModel.scrollControllerView2,
-        );
-      } else {
-        return SplitView(
-          key: componentModel.splitViewKey,
-          initialWeight: 0.5,
-          showHandle: false,
-          view1: widgets[0],
-          view2: widgets[1],
-          viewMode: SplitViewMode.Vertical,
-          scrollControllerView1: componentModel.scrollControllerView1,
-          scrollControllerView2: componentModel.scrollControllerView2,
-        );
-      }
+      return SplitView(
+        key: componentModel.splitViewKey,
+        initialWeight: componentModel.currentSplitviewWeight,
+        gripColor: Colors.grey[300],
+        handleColor: Colors.grey[800].withOpacity(0.5),
+        view1: widgets[0],
+        view2: widgets[1],
+        viewMode: this.splitViewMode,
+        onWeightChanged: (value) {
+          componentModel.currentSplitviewWeight = value;
+        },
+        scrollControllerView1: componentModel.scrollControllerView1,
+        scrollControllerView2: componentModel.scrollControllerView2,
+      );
     });
   }
 }
