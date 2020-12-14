@@ -18,13 +18,13 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
         minWidth: constraints.minWidth,
         maxWidth: constraints.maxWidth,
         minHeight: constraints.minHeight == constraints.maxHeight
-            ? ((constraints.maxHeight - 31) < 0
+            ? ((constraints.maxHeight - 42) < 0
                 ? 0
-                : (constraints.maxHeight - 31))
+                : (constraints.maxHeight - 42))
             : constraints.minHeight,
-        maxHeight: (constraints.maxHeight - 31) < 0
+        maxHeight: (constraints.maxHeight - 42) < 0
             ? 0
-            : (constraints.maxHeight - 31));
+            : (constraints.maxHeight - 42));
   }
 
   @override
