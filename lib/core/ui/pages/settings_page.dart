@@ -23,12 +23,12 @@ class SettingsPage extends StatefulWidget {
   final SharedPreferencesManager manager;
   final bool warmWelcome;
 
-  SettingsPage(
-      {Key key,
-      @required this.appState,
-      @required this.manager,
-      @required this.warmWelcome})
-      : super(key: key);
+  SettingsPage({
+    Key key,
+    @required this.appState,
+    @required this.manager,
+    @required this.warmWelcome,
+  }) : super(key: key);
 
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -314,47 +314,49 @@ class _SettingsPageState extends State<SettingsPage> {
     List<String> languages = List<String>.from(
         widget.appState.supportedLocales.map((e) => e.languageCode));
 
-    List<int> selected;
-    int selectedIndex = languages
-        .indexWhere((element) => element == widget.appState.language ?? 'en');
+    if (languages != null && languages.isNotEmpty) {
+      List<int> selected;
+      int selectedIndex = languages
+          .indexWhere((element) => element == widget.appState.language ?? 'en');
 
-    if (selectedIndex >= 0 && selectedIndex < languages.length)
-      selected = [selectedIndex];
+      if (selectedIndex >= 0 && selectedIndex < languages.length)
+        selected = [selectedIndex];
 
-    setState(() {
-      isDialogOpen = true;
-    });
+      setState(() {
+        isDialogOpen = true;
+      });
 
-    new Picker(
-            confirmText: AppLocalizations.of(context).text('Confirm'),
-            cancelText: AppLocalizations.of(context).text('Cancel'),
-            adapter: PickerDataAdapter<String>(pickerdata: languages),
-            selecteds: selected,
-            changeToFirst: true,
-            textAlign: TextAlign.center,
-            columnPadding: const EdgeInsets.all(8.0),
-            confirmTextStyle:
-                TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
-            cancelTextStyle:
-                TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
-            onConfirm: (Picker picker, List value) async {
-              String newLang =
-                  picker.getSelectedValues()[0].toString().toLowerCase();
+      new Picker(
+              confirmText: AppLocalizations.of(context).text('Confirm'),
+              cancelText: AppLocalizations.of(context).text('Cancel'),
+              adapter: PickerDataAdapter<String>(pickerdata: languages),
+              selecteds: selected,
+              changeToFirst: true,
+              textAlign: TextAlign.center,
+              columnPadding: const EdgeInsets.all(8.0),
+              confirmTextStyle:
+                  TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
+              cancelTextStyle:
+                  TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
+              onConfirm: (Picker picker, List value) async {
+                String newLang =
+                    picker.getSelectedValues()[0].toString().toLowerCase();
 
-              if (newLang != null && newLang.isNotEmpty)
-                await AppLocalizations.load(new Locale(newLang));
+                if (newLang != null && newLang.isNotEmpty)
+                  await AppLocalizations.load(new Locale(newLang));
 
-              setState(() {
-                isDialogOpen = false;
+                setState(() {
+                  isDialogOpen = false;
 
-                widget.appState.language = newLang;
-                this.language = newLang;
-              });
-            },
-            onCancel: () => setState(() => isDialogOpen = false),
-            onSelect: (Picker picker, int index, List<int> selected) =>
-                setState(() => isDialogOpen = false))
-        .show(scaffoldState.currentState);
+                  widget.appState.language = newLang;
+                  this.language = newLang;
+                });
+              },
+              onCancel: () => setState(() => isDialogOpen = false),
+              onSelect: (Picker picker, int index, List<int> selected) =>
+                  setState(() => isDialogOpen = false))
+          .show(scaffoldState.currentState);
+    }
   }
 
   Widget settingsLoader() {
@@ -373,7 +375,7 @@ class _SettingsPageState extends State<SettingsPage> {
           centerDocked: true,
           scaffoldKey: scaffoldState,
           appTitle: AppLocalizations.of(context).text('Settings'),
-          showBottomNav: true,
+          showBottomNav: isDialogOpen != null && isDialogOpen ? false : true,
           showFAB: (!kIsWeb && !isDialogOpen),
           backGroundColor: (widget.appState.applicationStyle != null &&
                   widget.appState.applicationStyle?.desktopColor != null)

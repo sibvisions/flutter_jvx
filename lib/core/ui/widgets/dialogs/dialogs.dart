@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
 import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
@@ -89,7 +90,13 @@ showRestart(BuildContext context, String title, String message) async {
                   child: Text(AppLocalizations.of(context).text('OK')),
                   onPressed: () {
                     Navigator.of(context).pop();
-                  })
+                  }),
+              FlatButton(
+                  child:
+                      Text(AppLocalizations.of(context).text('Go to settings')),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(SettingsPage.route);
+                  }),
             ],
           )).then((val) {
     RestartWidget.restartApp(context);

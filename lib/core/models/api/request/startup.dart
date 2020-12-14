@@ -17,6 +17,7 @@ class Startup extends Request {
   final String url;
   final DeviceInfo deviceInfo;
   final String deviceMode;
+  final String language;
 
   @override
   String get debugInfo {
@@ -36,7 +37,8 @@ class Startup extends Request {
       this.deviceId,
       this.userName,
       this.password,
-      this.url})
+      this.url,
+      this.language})
       : this.deviceInfo = DeviceInfo(),
         this.deviceMode = kIsWeb ? 'desktop' : 'mobile',
         super(requestType, clientId);
@@ -60,6 +62,7 @@ class Startup extends Request {
         'appVersion': deviceInfo.appVersion,
         'deviceType': deviceInfo.deviceType,
         'deviceTypeModel': deviceInfo.deviceTypeModel,
-        'deviceMode': this.deviceMode
+        'deviceMode': this.deviceMode,
+        'langCode': this.language
       };
 }

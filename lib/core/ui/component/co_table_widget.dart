@@ -411,9 +411,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         Widget child = GestureDetector(
             onTapDown: (details) =>
                 widget.componentModel.tapPosition = details.globalPosition,
-            onLongPress: () => widget.componentModel.editable
-                ? showContextMenu(context, -1)
-                : null,
+            onLongPress: () => showContextMenu(context, -1),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
