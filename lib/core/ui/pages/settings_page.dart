@@ -375,7 +375,7 @@ class _SettingsPageState extends State<SettingsPage> {
           centerDocked: true,
           scaffoldKey: scaffoldState,
           appTitle: AppLocalizations.of(context).text('Settings'),
-          showBottomNav: true,
+          showBottomNav: isDialogOpen != null && isDialogOpen ? false : true,
           showFAB: (!kIsWeb && !isDialogOpen),
           backGroundColor: (widget.appState.applicationStyle != null &&
                   widget.appState.applicationStyle?.desktopColor != null)
