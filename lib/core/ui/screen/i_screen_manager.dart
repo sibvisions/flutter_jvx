@@ -5,9 +5,11 @@ import 'so_menu_manager.dart';
 
 /// Interface for the [ScreenManager] class.
 abstract class IScreenManager {
-
   /// Method for returning all currently open screens.
   Map<String, SoScreen> get screens;
+
+  /// Method for returning the current [UserData]
+  UserData get userData;
 
   /// Will be called before [getScreen] is called.
   ///

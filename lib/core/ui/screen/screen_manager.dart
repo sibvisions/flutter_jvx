@@ -6,9 +6,13 @@ import 'so_menu_manager.dart';
 
 class ScreenManager extends IScreenManager {
   Map<String, SoScreen> _screens = <String, SoScreen>{};
+  UserData _userData;
 
   @override
   Map<String, SoScreen> get screens => _screens;
+
+  @override
+  UserData get userData => _userData;
 
   @override
   SoScreen getScreen(String componentId, {String templateName}) {
@@ -20,7 +24,9 @@ class ScreenManager extends IScreenManager {
   void onMenu(SoMenuManager menuManager) {}
 
   @override
-  onUserData(UserData userData) {}
+  onUserData(UserData userData) {
+    this._userData = userData;
+  }
 
   @override
   void registerScreen(SoScreen screen) {
