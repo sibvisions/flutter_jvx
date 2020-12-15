@@ -6,6 +6,10 @@ class UserData extends ResponseObject {
   String displayName;
   List<dynamic> roles;
 
+  bool hasRole(String role) => this.roles != null && this.roles.isNotEmpty
+      ? this.roles.contains(role)
+      : false;
+
   UserData({this.userName, this.profileImage, this.displayName, this.roles});
 
   UserData.fromJson(Map<String, dynamic> json)
