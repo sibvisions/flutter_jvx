@@ -69,6 +69,9 @@ class ImageCellEditorModel extends CellEditorModel {
         .cellEditor
         .getProperty<String>(CellEditorProperty.DEFAULT_IMAGE_NAME);
 
+    verticalAlignment =
+        this.cellEditor.getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
+
     if (defaultImageName != null) {
       if (kIsWeb && this.appState.files.containsKey(defaultImageName)) {
         defaultImage =
@@ -84,18 +87,66 @@ class ImageCellEditorModel extends CellEditorModel {
   }
 
   DecorationImage getImage(double height, int horizontalAlignment) {
-    switch (horizontalAlignment) {
+    switch (verticalAlignment) {
       case 0:
-        alignment = Alignment.centerLeft;
-        break;
+        {
+          if (horizontalAlignment == 0) {
+            alignment = Alignment.topLeft;
+          } else if (horizontalAlignment == 1) {
+            alignment = Alignment.topCenter;
+          } else if (horizontalAlignment == 2) {
+            alignment = Alignment.topRight;
+          } else if (horizontalAlignment == 3) {
+            alignment = Alignment.topCenter;
+            fit = BoxFit.fitWidth;
+          }
+          break;
+        }
       case 1:
-        break;
+        {
+          if (horizontalAlignment == 0) {
+            alignment = Alignment.centerLeft;
+          } else if (horizontalAlignment == 1) {
+            alignment = Alignment.center;
+          } else if (horizontalAlignment == 2) {
+            alignment = Alignment.centerRight;
+          } else if (horizontalAlignment == 3) {
+            alignment = Alignment.center;
+            fit = BoxFit.fitWidth;
+          }
+          break;
+        }
       case 2:
-        alignment = Alignment.centerRight;
-        break;
+        {
+          if (horizontalAlignment == 0) {
+            alignment = Alignment.bottomLeft;
+          } else if (horizontalAlignment == 1) {
+            alignment = Alignment.bottomCenter;
+          } else if (horizontalAlignment == 2) {
+            alignment = Alignment.bottomRight;
+          } else if (horizontalAlignment == 3) {
+            alignment = Alignment.bottomCenter;
+            fit = BoxFit.fitWidth;
+          }
+          break;
+        }
       case 3:
-        fit = BoxFit.fill;
-        break;
+        {
+          if (horizontalAlignment == 0) {
+            alignment = Alignment.centerLeft;
+            fit = BoxFit.fitHeight;
+          } else if (horizontalAlignment == 1) {
+            alignment = Alignment.center;
+            fit = BoxFit.fitHeight;
+          } else if (horizontalAlignment == 2) {
+            alignment = Alignment.centerRight;
+            fit = BoxFit.fitHeight;
+          } else if (horizontalAlignment == 3) {
+            alignment = Alignment.center;
+            fit = BoxFit.fill;
+          }
+          break;
+        }
     }
 
     if (currentImage != null) {
