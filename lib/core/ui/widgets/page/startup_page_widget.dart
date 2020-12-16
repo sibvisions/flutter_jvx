@@ -275,6 +275,15 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _requestStartup() {
+    String languageToServer;
+
+    if (appState.language != null && appState.language.isNotEmpty) {
+      languageToServer = appState.language;
+    } else {
+      languageToServer = Platform.localeName.substring(0, 2);
+      appState.language = 'en';
+    }
+
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -283,15 +292,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
               arguments: SettingsArguments(warmWelcome: true));
       });
       return;
-    }
-
-    String languageToServer;
-
-    if (appState.language != null && appState.language.isNotEmpty) {
-      languageToServer = appState.language;
-    } else {
-      languageToServer = Platform.localeName.substring(0, 2);
-      appState.language = languageToServer;
     }
 
     Startup startup = Startup(
