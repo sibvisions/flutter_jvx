@@ -211,16 +211,16 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               if (_openScreenManager.findScreen(
                       state.responseData.screenGeneric.componentId) ==
                   null) {
-                if (widget.appState.appMode.toLowerCase() == 'preview') {
-                  _openScreenManager.screens.forEach(
-                      (compId, _) => _openScreenManager.removeScreen(compId));
-                }
                 _openScreenManager.registerScreen(SoScreen(
                   configuration: SoScreenConfiguration(state,
                       screenTitle: state.responseData.screenGeneric.screenTitle,
                       componentId: state.responseData.screenGeneric.componentId,
                       withServer: true),
                 ));
+                if (widget.appState.appMode == null || widget.appState.appMode?.toLowerCase() == 'preview') {
+                  _openScreenManager.screens.removeWhere((key, _) =>
+                      key != state.responseData.screenGeneric.componentId);
+                }
               }
             }
 
