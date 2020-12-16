@@ -285,6 +285,15 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       return;
     }
 
+    String languageToServer;
+
+    if (appState.language != null && appState.language.isNotEmpty) {
+      languageToServer = appState.language;
+    } else {
+      languageToServer = Platform.localeName.substring(0, 2);
+      appState.language = languageToServer;
+    }
+
     Startup startup = Startup(
         url: appState.baseUrl,
         applicationName: appState.appName,
@@ -300,7 +309,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         password: appState.password,
         authKey: this.manager.authKey,
         layoutMode: 'generic',
-        language: appState.language != null && appState.language.isNotEmpty ? appState.language : Platform.localeName);
+        language: languageToServer);
 
     BlocProvider.of<ApiBloc>(context).add(startup);
   }

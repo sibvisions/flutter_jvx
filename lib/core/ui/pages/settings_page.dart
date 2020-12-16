@@ -327,35 +327,33 @@ class _SettingsPageState extends State<SettingsPage> {
       });
 
       new Picker(
-              confirmText: AppLocalizations.of(context).text('Confirm'),
-              cancelText: AppLocalizations.of(context).text('Cancel'),
-              adapter: PickerDataAdapter<String>(pickerdata: languages),
-              selecteds: selected,
-              changeToFirst: true,
-              textAlign: TextAlign.center,
-              columnPadding: const EdgeInsets.all(8.0),
-              confirmTextStyle:
-                  TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
-              cancelTextStyle:
-                  TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
-              onConfirm: (Picker picker, List value) async {
-                String newLang =
-                    picker.getSelectedValues()[0].toString().toLowerCase();
+        confirmText: AppLocalizations.of(context).text('Confirm'),
+        cancelText: AppLocalizations.of(context).text('Cancel'),
+        adapter: PickerDataAdapter<String>(pickerdata: languages),
+        selecteds: selected,
+        changeToFirst: true,
+        textAlign: TextAlign.center,
+        columnPadding: const EdgeInsets.all(8.0),
+        confirmTextStyle:
+            TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
+        cancelTextStyle:
+            TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
+        onConfirm: (Picker picker, List value) async {
+          String newLang =
+              picker.getSelectedValues()[0].toString().toLowerCase();
 
-                if (newLang != null && newLang.isNotEmpty)
-                  await AppLocalizations.load(new Locale(newLang));
+          if (newLang != null && newLang.isNotEmpty)
+            await AppLocalizations.load(new Locale(newLang));
 
-                setState(() {
-                  isDialogOpen = false;
+          setState(() {
+            isDialogOpen = false;
 
-                  widget.appState.language = newLang;
-                  this.language = newLang;
-                });
-              },
-              onCancel: () => setState(() => isDialogOpen = false),
-              onSelect: (Picker picker, int index, List<int> selected) =>
-                  setState(() => isDialogOpen = false))
-          .show(scaffoldState.currentState);
+            widget.appState.language = newLang;
+            this.language = newLang;
+          });
+        },
+        onCancel: () => setState(() => isDialogOpen = false),
+      ).show(scaffoldState.currentState);
     }
   }
 

@@ -58,7 +58,7 @@ class RestClient {
           ..error = ErrorResponse(
               'Error',
               'An Error occured',
-              response != null ? this.utf8convert(response.body) : '',
+              'Could\'t connect to the server. Please check if the URL is valid',
               'message.error');
       }
     } else {
