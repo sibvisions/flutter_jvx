@@ -45,8 +45,8 @@ class RestClient {
             'An Error while sending the Request occured', 'message.error');
     }
 
-    if (response == null || (response as http.Response).statusCode != 200) {
-      if ((response as http.Response).statusCode == 404) {
+    if (response == null || (response as http.Response)?.statusCode != 200) {
+      if ((response as http.Response)?.statusCode == 404) {
         finalResponse = Response()
           ..error = ErrorResponse(
               'Error',
@@ -62,7 +62,7 @@ class RestClient {
               'message.error');
       }
     } else {
-      String body = this.utf8convert(response.body);
+      String body = this.utf8convert(response?.body);
       dynamic decodedBody = json.decode(body);
 
       try {
