@@ -87,6 +87,8 @@ class CoTextCellEditorWidgetState
         child: TextField(
             textAlign: SoTextAlign.getTextAlignFromInt(
                 widget.cellEditorModel.horizontalAlignment),
+            textAlignVertical: SoTextAlignVertical.getTextAlignFromInt(
+                widget.cellEditorModel.verticalAlignment),
             decoration: InputDecoration(
                 contentPadding: widget.cellEditorModel.textPadding,
                 border: InputBorder.none,

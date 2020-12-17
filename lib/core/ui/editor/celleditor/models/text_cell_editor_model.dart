@@ -9,7 +9,7 @@ class TextCellEditorModel extends CellEditorModel {
   String dateFormat;
   bool multiLine = false;
   double iconSize = 24;
-  EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
+  EdgeInsets textPadding = EdgeInsets.only(left: 8);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
 
   bool password = false;
