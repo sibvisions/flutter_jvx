@@ -6,7 +6,8 @@ import '../component/component_widget.dart';
 import 'container_component_model.dart';
 
 class CoContainerWidget extends ComponentWidget {
-  CoContainerWidget({ContainerComponentModel componentModel})
+  ContainerComponentModel componentModel;
+  CoContainerWidget({this.componentModel})
       : super(componentModel: componentModel);
 
   static CoContainerWidgetState of(BuildContext context) =>
@@ -35,10 +36,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
     componentModel.components.forEach((component) {
       if (componentModel.layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
-            getBorderLayoutConstraintsFromString(component.componentModel.constraints);
+            getBorderLayoutConstraintsFromString(
+                component.componentModel.constraints);
 
-        componentModel.layout.addLayoutComponent(
-            component, contraints);
+        componentModel.layout.addLayoutComponent(component, contraints);
       } else {
         componentModel.layout.addLayoutComponent(
             component, component.componentModel.constraints);

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/models/app/app_state.dart';
-import 'package:jvx_flutterclient/core/ui/container/co_panel_widget.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_screen_configuration.dart';
-import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
-import '../../../injection_container.dart';
+import '../../../features/custom_screen/ui/screen/custom_screen.dart';
 import '../../models/api/component/changed_component.dart';
 import '../../models/api/component/component_properties.dart';
 import '../../models/api/response.dart';
@@ -22,6 +18,7 @@ import '../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../component/popup_menu/co_popup_menu_widget.dart';
 import '../component/popup_menu/models/popup_menu_component_model.dart';
 import '../container/co_container_widget.dart';
+import '../container/co_panel_widget.dart';
 import '../container/container_component_model.dart';
 import '../editor/celleditor/co_referenced_cell_editor_widget.dart';
 import '../editor/co_editor_widget.dart';
@@ -29,6 +26,7 @@ import '../editor/editor_component_model.dart';
 import 'component_model_manager.dart';
 import 'so_component_creator.dart';
 import 'so_data_screen.dart';
+import 'so_screen_configuration.dart';
 
 enum CoState { Added, Free, Removed, Destroyed }
 
@@ -105,6 +103,8 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
             if (rootComponent == null) {
               rootComponent = getRootComponent();
             }
+
+            debugPrintCurrentWidgetTree();
 
             return FractionallySizedBox(
                 widthFactor: 1, heightFactor: 1, child: rootComponent);
@@ -189,8 +189,7 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
 
               if (parentComponentWidget != null &&
                   parentComponentWidget is CoContainerWidget) {
-                (parentComponentWidget.componentModel
-                        as ContainerComponentModel)
+                (parentComponentWidget.componentModel)
                     .updateComponentProperties(
                         context,
                         componentWidget.componentModel.componentId,
@@ -338,9 +337,8 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       if (parentComponentWidget != null &&
           parentComponentWidget is CoContainerWidget) {
         // Adding componentWidget to parentComponentWidget with layout constraints
-        (parentComponentWidget.componentModel as ContainerComponentModel)
-            .addWithConstraints(
-                componentWidget, componentWidget.componentModel.constraints);
+        (parentComponentWidget.componentModel).addWithConstraints(
+            componentWidget, componentWidget.componentModel.constraints);
       }
     }
   }
@@ -363,7 +361,7 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
 
       if (parentComponentWidget != null &&
           parentComponentWidget is CoContainerWidget) {
-        (parentComponentWidget.componentModel as ContainerComponentModel)
+        (parentComponentWidget.componentModel)
             .removeWithComponent(componentWidget);
       }
     }
@@ -402,9 +400,7 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
               'Update layoutData (id: ${changedComponent.id}, newLayoutData: $layoutData, className: ${changedComponent.className})');
         }
         // Updating layout data
-        (componentWidget.componentModel as ContainerComponentModel)
-            ?.layout
-            ?.updateLayoutData(layoutData);
+        (componentWidget.componentModel)?.layout?.updateLayoutData(layoutData);
       }
     }
 
@@ -416,9 +412,7 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
         }
 
         // Updating layout itself
-        (componentWidget.componentModel as ContainerComponentModel)
-            ?.layout
-            ?.updateLayoutString(layout);
+        (componentWidget.componentModel)?.layout?.updateLayoutString(layout);
       }
     }
 
@@ -552,4 +546,83 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
   }
 
   void onResponse(Response response) {}
+
+  void debugPrintCurrentWidgetTree() {
+    if (debug) {
+      ComponentWidget component = getRootComponent();
+      print("--------------------");
+      print("Current widget tree:");
+      print("--------------------");
+      debugPrintComponent(component, 0);
+      print("--------------------");
+    }
+  }
+
+  void debugPrintComponent(ComponentWidget component, int level) {
+    if (component != null) {
+      String debugString = " |" * level;
+      Size size;
+      //_getSizes(component.componentModel.componentId);
+      String keyString = component.componentModel.componentId.toString();
+      keyString =
+          keyString.substring(keyString.indexOf(" ") + 1, keyString.length - 1);
+      debugString += " id: " +
+          keyString +
+          ", Name: " +
+          component.componentModel.name.toString() +
+          ", parent: " +
+          (component.componentModel.parentComponentId != null
+              ? component.componentModel.parentComponentId
+              : "") +
+          ", className: " +
+          component.runtimeType.toString() +
+          ", constraints: " +
+          (component.componentModel.constraints != null
+              ? component.componentModel.constraints
+              : "") +
+          ", size:" +
+          (size != null ? size.toString() : "nosize");
+      if (component is CoEditorWidget) {
+        debugString += ", dataProvider: " +
+            ((component.cellEditor?.cellEditorModel?.dataProvider != null ??
+                    false)
+                ? component.cellEditor.cellEditorModel.dataProvider
+                : "");
+      }
+      if (component is CoContainerWidget) {
+        debugString += ", layout: " +
+            (component.componentModel.layout != null &&
+                    component.componentModel.layout.rawLayoutString != null
+                ? component.componentModel.layout.rawLayoutString
+                : "") +
+            ", layoutData: " +
+            (component.componentModel.layout != null &&
+                    component.componentModel.layout.rawLayoutData != null
+                ? component.componentModel.layout.rawLayoutData
+                : "") +
+            ", childCount: " +
+            (component.componentModel.components != null
+                ? component.componentModel.components.length.toString()
+                : "0");
+        print(debugString);
+        if (component.componentModel.components != null) {
+          component.componentModel.components.forEach((c) {
+            debugPrintComponent(c, (level + 1));
+          });
+        }
+      } else {
+        print(debugString);
+      }
+    }
+  }
+
+  // Size _getSizes(GlobalKey key) {
+  //   if (key != null && key.currentContext != null) {
+  //     final RenderBox renderBox = key.currentContext.findRenderObject();
+  //     if (renderBox != null && renderBox.hasSize) {
+  //       return renderBox.size;
+  //     }
+  //   }
+  //   return null;
+  // }
 }
