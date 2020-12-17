@@ -83,6 +83,9 @@ class CoLayoutRenderBox extends RenderBox {
     double minHeight = constraints.minHeight < 0 ? 0 : constraints.minHeight;
     double maxHeight = constraints.maxHeight < 0 ? 0 : constraints.maxHeight;
 
+    if (minWidth > maxWidth) minWidth = maxWidth;
+    if (minHeight > maxHeight) minHeight = maxHeight;
+
     return BoxConstraints(
         minWidth: minWidth,
         maxWidth: maxWidth,
