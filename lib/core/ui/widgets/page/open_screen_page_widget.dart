@@ -501,7 +501,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
 
     if (_openScreenManager.screens != null &&
-        _openScreenManager.screens.isEmpty) {
+        _openScreenManager.screens.isEmpty &&
+        response.responseData.screenGeneric == null) {
       // When no more screens exist return to menu page
       Navigator.of(context).pushReplacementNamed(MenuPage.route,
           arguments: MenuArguments(widget.appState.items, true));
