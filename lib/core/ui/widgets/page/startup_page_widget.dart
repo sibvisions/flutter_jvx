@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -263,7 +264,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (widget.shouldLoadConfig)
       _updateDataFromConfig(Config.loadFile(conf: widget.config))
           .then((value) => _requestStartup());
-    else if (widget.config != null) {
+    else if (widget.config != null &&
+        widget.config.debug != null &&
+        widget.config.debug) {
       appState.appName = widget.config.appName;
       appState.baseUrl = widget.config.baseUrl;
       appState.username = widget.config.username;
@@ -275,6 +278,17 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _requestStartup() {
+    String languageToServer;
+
+    if (appState.language != null && appState.language.isNotEmpty) {
+      languageToServer = appState.language;
+    } else {
+      languageToServer = kIsWeb
+          ? window.locale.languageCode
+          : Platform.localeName.substring(0, 2);
+      appState.language = 'en';
+    }
+
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -300,7 +314,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         password: appState.password,
         authKey: this.manager.authKey,
         layoutMode: 'generic',
-        language: appState.language != null && appState.language.isNotEmpty ? appState.language : Platform.localeName);
+        language: languageToServer);
 
     BlocProvider.of<ApiBloc>(context).add(startup);
   }

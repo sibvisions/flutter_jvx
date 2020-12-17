@@ -25,8 +25,8 @@ class TextComponentModel extends EditableComponentModel {
     border = changedComponent.getProperty<bool>(ComponentProperty.BORDER, true);
     columns =
         changedComponent.getProperty<int>(ComponentProperty.COLUMNS, columns);
-    placeholder =
-        changedComponent.getProperty<String>(ComponentProperty.PLACEHOLDER, placeholder);
+    placeholder = changedComponent.getProperty<String>(
+        ComponentProperty.PLACEHOLDER, placeholder);
     super.updateProperties(context, changedComponent);
   }
 

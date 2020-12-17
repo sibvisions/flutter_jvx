@@ -795,34 +795,40 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
         }
         if (constraint.leftAnchor.getBorderAnchor() == leftAnchor &&
             constraint.rightAnchor.getBorderAnchor() == rightAnchor) {
-          int w = constraint.leftAnchor.getAbsolutePosition() -
-              constraint.rightAnchor.getAbsolutePosition() +
-              preferredSize.width.round();
-          if (w > preferredWidth) {
-            preferredWidth = w;
-          }
-          w = constraint.leftAnchor.getAbsolutePosition() -
-              constraint.rightAnchor.getAbsolutePosition() +
-              minimumSize.width.round();
-          if (w > minimumWidth) {
-            minimumWidth = w;
+          if (!constraint.leftAnchor.autoSize ||
+              !constraint.rightAnchor.autoSize) {
+            int w = constraint.leftAnchor.getAbsolutePosition() -
+                constraint.rightAnchor.getAbsolutePosition() +
+                preferredSize.width.round();
+            if (w > preferredWidth) {
+              preferredWidth = w;
+            }
+            w = constraint.leftAnchor.getAbsolutePosition() -
+                constraint.rightAnchor.getAbsolutePosition() +
+                minimumSize.width.round();
+            if (w > minimumWidth) {
+              minimumWidth = w;
+            }
           }
           leftBorderUsed = true;
           rightBorderUsed = true;
         }
         if (constraint.topAnchor.getBorderAnchor() == topAnchor &&
             constraint.bottomAnchor.getBorderAnchor() == bottomAnchor) {
-          int h = constraint.topAnchor.getAbsolutePosition() -
-              constraint.bottomAnchor.getAbsolutePosition() +
-              preferredSize.height.round();
-          if (h > preferredHeight) {
-            preferredHeight = h;
-          }
-          h = constraint.topAnchor.getAbsolutePosition() -
-              constraint.bottomAnchor.getAbsolutePosition() +
-              minimumSize.height.round();
-          if (h > minimumHeight) {
-            minimumHeight = h;
+          if (!constraint.topAnchor.autoSize ||
+              !constraint.bottomAnchor.autoSize) {
+            int h = constraint.topAnchor.getAbsolutePosition() -
+                constraint.bottomAnchor.getAbsolutePosition() +
+                preferredSize.height.round();
+            if (h > preferredHeight) {
+              preferredHeight = h;
+            }
+            h = constraint.topAnchor.getAbsolutePosition() -
+                constraint.bottomAnchor.getAbsolutePosition() +
+                minimumSize.height.round();
+            if (h > minimumHeight) {
+              minimumHeight = h;
+            }
           }
           topBorderUsed = true;
           bottomBorderUsed = true;
@@ -1006,6 +1012,7 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
     if (pTarget.isMinimumSizeSet) {
       return pTarget.minimumSize;
     } else {
+      //return Size(minimumWidth.toDouble(), minimumHeight.toDouble());
       return new Size(0, 0);
     }
   }

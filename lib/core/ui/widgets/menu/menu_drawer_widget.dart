@@ -191,6 +191,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                     color: Theme.of(context).primaryColor,
                   )),
           onTap: () async {
+            Navigator.of(context).pop();
+
             setState(() {
               title = item.text;
             });

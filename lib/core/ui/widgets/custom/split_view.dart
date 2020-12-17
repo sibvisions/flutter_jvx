@@ -97,8 +97,8 @@ class _SplitViewState extends State<SplitView> {
         ? MediaQuery.of(context).size.height
         : constraints.maxHeight;
 
-    double top = constraints.maxHeight * w;
-    double bottom = constraints.maxHeight * (1.0 - w);
+    double top = maxHeight * w;
+    double bottom = maxHeight * (1.0 - w);
 
     BoxConstraints view1Constraints = BoxConstraints(
         minHeight: top,
@@ -122,54 +122,57 @@ class _SplitViewState extends State<SplitView> {
     this.updatePreferredSize(widget.view2, Size(maxWidth, bottom));
 
     children.add(Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      //bottom: bottom,
-      height: bottom,
-      child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          controller: widget.scrollControllerView1,
+        top: 0,
+        left: 0,
+        right: 0,
+        height: top,
+        child: Container(
+          color: Colors.white,
           child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CoScrollPanelLayout(
-                preferredConstraints: CoScrollPanelConstraints(constraints,
-                    widget.view1.componentModel, view1Constraints.biggest),
-                container: null,
-                children: [
-                  CoScrollPanelLayoutId(
-                      constraints: CoScrollPanelConstraints(
-                          constraints,
-                          widget.view1.componentModel,
-                          view1Constraints.biggest),
-                      child: widget.view1)
-                ],
-              ))),
-    ));
+              scrollDirection: Axis.vertical,
+              controller: widget.scrollControllerView1,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: CoScrollPanelLayout(
+                    preferredConstraints: CoScrollPanelConstraints(constraints,
+                        widget.view1.componentModel, view1Constraints.biggest),
+                    container: null,
+                    children: [
+                      CoScrollPanelLayoutId(
+                          constraints: CoScrollPanelConstraints(
+                              constraints,
+                              widget.view1.componentModel,
+                              view1Constraints.biggest),
+                          child: widget.view1)
+                    ],
+                  ))),
+        )));
 
     children.add(Positioned(
-      top: top,
-      left: 0,
-      right: 0,
-      height: bottom,
-      child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          controller: widget.scrollControllerView2,
+        top: top,
+        left: 0,
+        right: 0,
+        height: bottom,
+        child: Container(
+          color: Colors.white,
           child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CoScrollPanelLayout(
-                preferredConstraints: CoScrollPanelConstraints(constraints,
-                    widget.view2.componentModel, view2Constraints.biggest),
-                children: [
-                  CoScrollPanelLayoutId(
-                      constraints: CoScrollPanelConstraints(
-                          constraints,
-                          widget.view2.componentModel,
-                          view2Constraints.biggest),
-                      child: widget.view2)
-                ],
-              ))),
-    ));
+              scrollDirection: Axis.vertical,
+              controller: widget.scrollControllerView2,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: CoScrollPanelLayout(
+                    preferredConstraints: CoScrollPanelConstraints(constraints,
+                        widget.view2.componentModel, view2Constraints.biggest),
+                    children: [
+                      CoScrollPanelLayoutId(
+                          constraints: CoScrollPanelConstraints(
+                              constraints,
+                              widget.view2.componentModel,
+                              view2Constraints.biggest),
+                          child: widget.view2)
+                    ],
+                  ))),
+        )));
 
     if (widget.showHandle) {
       children.add(Positioned(

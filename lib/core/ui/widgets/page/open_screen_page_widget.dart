@@ -223,8 +223,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             if (state.request.requestType == RequestType.DEVICE_STATUS)
               _onDeviceStatusResponse(state.deviceStatusResponse);
 
-            if (state.request.requestType == RequestType.PRESS_BUTTON)
-              _onPressButtonRequest(state);
+            _onPressButtonRequest(state);
 
             if (state.request.requestType == RequestType.OPEN_SCREEN) {
               _onOpenScreen(state);
@@ -502,7 +501,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
 
     if (_openScreenManager.screens != null &&
-        _openScreenManager.screens.isEmpty) {
+        _openScreenManager.screens.isEmpty &&
+        response.responseData.screenGeneric == null) {
       // When no more screens exist return to menu page
       Navigator.of(context).pushReplacementNamed(MenuPage.route,
           arguments: MenuArguments(widget.appState.items, true));

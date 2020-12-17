@@ -334,9 +334,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 child: getTableRow(children, index, false, isSelected));
       } else {
         return GestureDetector(
-            onLongPress: () => widget.componentModel.editable
-                ? showContextMenu(context, index)
-                : null,
+            onLongPress: () => showContextMenu(context, index),
             child: Container(
                 decoration: BoxDecoration(
                     color: Colors.white.withOpacity(widget.componentModel

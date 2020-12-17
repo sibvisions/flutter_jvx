@@ -74,7 +74,7 @@ class NumericTextFormatter extends TextInputFormatter {
 
       if (precision != null && scale != null) {
         String toMatch = number.toString();
-        int localScale = (scale < 0 ? 0 : scale);
+        int localScale = (scale < 0 ? 14 : scale);
         int localPrecision = precision <= 0 ? 15 - scale : precision;
         RegExp expression = new RegExp(r"^(?=(\D*\d\D*){0," +
             localPrecision.toString() +
@@ -83,7 +83,8 @@ class NumericTextFormatter extends TextInputFormatter {
             r"})?$");
 
         if (!expression.hasMatch(toMatch))
-          return newValue.copyWith(text: oldValue.text);
+          return newValue.copyWith(
+              text: oldValue.text, selection: oldValue.selection);
       }
 
       //newString = this.getFormattedString(number);
@@ -125,7 +126,7 @@ class NumericTextFormatter extends TextInputFormatter {
     if (pValue is String && pValue != null) {
       number = numberFormatter.parse(pValue);
 
-      if (scale <= 0 && (number is double)) {
+      if (scale == 0 && (number is double)) {
         number = int.parse(number.truncate().toString());
       }
     }
@@ -137,7 +138,7 @@ class NumericTextFormatter extends TextInputFormatter {
     if (this._numberFormat != null && this._numberFormat.isNotEmpty) {
       if (!this.numberFormat.contains(".")) return TextInputType.number;
 
-      if (this.scale <= 0) return TextInputType.number;
+      if (this.scale == 0) return TextInputType.number;
     }
 
     return TextInputType.numberWithOptions(decimal: true);
@@ -148,7 +149,7 @@ class NumericTextFormatter extends TextInputFormatter {
     if (numberFormatParts.length > 1 && numberFormatParts[1].length > cutAt) {
       String newFormat = numberFormatParts[0] +
           "." +
-          numberFormatParts[1].substring(0, cutAt < 0 ? 0 : cutAt);
+          numberFormatParts[1].substring(0, cutAt < 0 ? 14 : cutAt);
       if (newFormat.endsWith("."))
         return newFormat.substring(0, newFormat.length - 1);
       return newFormat;
