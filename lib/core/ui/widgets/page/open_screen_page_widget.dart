@@ -217,18 +217,13 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                       componentId: state.responseData.screenGeneric.componentId,
                       withServer: true),
                 ));
-                if (widget.appState.appMode == null || widget.appState.appMode?.toLowerCase() == 'preview') {
-                  _openScreenManager.screens.removeWhere((key, _) =>
-                      key != state.responseData.screenGeneric.componentId);
-                }
               }
             }
 
             if (state.request.requestType == RequestType.DEVICE_STATUS)
               _onDeviceStatusResponse(state.deviceStatusResponse);
 
-            if (state.request.requestType == RequestType.PRESS_BUTTON)
-              _onPressButtonRequest(state);
+            _onPressButtonRequest(state);
 
             if (state.request.requestType == RequestType.OPEN_SCREEN) {
               _onOpenScreen(state);
