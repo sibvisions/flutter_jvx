@@ -264,7 +264,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (widget.shouldLoadConfig)
       _updateDataFromConfig(Config.loadFile(conf: widget.config))
           .then((value) => _requestStartup());
-    else if (widget.config != null) {
+    else if (widget.config != null &&
+        widget.config.debug != null &&
+        widget.config.debug) {
       appState.appName = widget.config.appName;
       appState.baseUrl = widget.config.baseUrl;
       appState.username = widget.config.username;
