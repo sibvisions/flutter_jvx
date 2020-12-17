@@ -97,8 +97,8 @@ class _SplitViewState extends State<SplitView> {
         ? MediaQuery.of(context).size.height
         : constraints.maxHeight;
 
-    double top = constraints.maxHeight * w;
-    double bottom = constraints.maxHeight * (1.0 - w);
+    double top = maxHeight * w;
+    double bottom = maxHeight * (1.0 - w);
 
     BoxConstraints view1Constraints = BoxConstraints(
         minHeight: top,
