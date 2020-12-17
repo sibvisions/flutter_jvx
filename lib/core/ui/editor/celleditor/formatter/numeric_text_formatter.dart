@@ -83,7 +83,8 @@ class NumericTextFormatter extends TextInputFormatter {
             r"})?$");
 
         if (!expression.hasMatch(toMatch))
-          return newValue.copyWith(text: oldValue.text);
+          return newValue.copyWith(
+              text: oldValue.text, selection: oldValue.selection);
       }
 
       //newString = this.getFormattedString(number);
