@@ -80,12 +80,16 @@ class SharedPreferencesManager {
   }
 
   void setAppData(
-      {String appName, String baseUrl, String language, int picSize}) {
+      {String appName,
+      String baseUrl,
+      String language,
+      int picSize,
+      bool overrideOnNull = false}) {
     if (appName != null && appName.isNotEmpty)
       this.sharedPreferences.setString('appName', appName);
     if (baseUrl != null && baseUrl.isNotEmpty)
       this.sharedPreferences.setString('baseUrl', baseUrl);
-    if (language != null && language.isNotEmpty)
+    if ((language != null && language.isNotEmpty) || overrideOnNull)
       this.sharedPreferences.setString('language', language);
     if (picSize != null &&
         (picSize == 320 || picSize == 640 || picSize == 1024))

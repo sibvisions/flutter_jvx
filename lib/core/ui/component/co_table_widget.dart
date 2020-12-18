@@ -300,38 +300,30 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
       if (widget.componentModel.data != null &&
           widget.componentModel.data.deleteEnabled &&
           !widget.componentModel.hasHorizontalScroller) {
-        return widget.componentModel.editable
-            ? GestureDetector(
-                onLongPress: () => showContextMenu(context, index),
-                child: Slidable(
-                  actionExtentRatio: 0.25,
-                  child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(widget.componentModel
-                                .appState.applicationStyle?.controlsOpacity ??
-                            1.0),
-                      ),
-                      child: getTableRow(children, index, false, isSelected)),
-                  actionPane: SlidableDrawerActionPane(),
-                  secondaryActions: <Widget>[
-                    new IconSlideAction(
-                      caption: AppLocalizations.of(context).text('Delete'),
-                      color: Colors.red.withOpacity(widget.componentModel
-                              .appState.applicationStyle?.controlsOpacity ??
-                          1.0),
-                      icon: Icons.delete,
-                      onTap: () => widget.componentModel.data
-                          ?.deleteRecord(context, index),
-                    ),
-                  ],
-                ))
-            : Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(widget.componentModel.appState
+        return GestureDetector(
+            onLongPress: () => showContextMenu(context, index),
+            child: Slidable(
+              actionExtentRatio: 0.25,
+              child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(widget.componentModel
+                            .appState.applicationStyle?.controlsOpacity ??
+                        1.0),
+                  ),
+                  child: getTableRow(children, index, false, isSelected)),
+              actionPane: SlidableDrawerActionPane(),
+              secondaryActions: <Widget>[
+                new IconSlideAction(
+                  caption: AppLocalizations.of(context).text('Delete'),
+                  color: Colors.red.withOpacity(widget.componentModel.appState
                           .applicationStyle?.controlsOpacity ??
                       1.0),
+                  icon: Icons.delete,
+                  onTap: () =>
+                      widget.componentModel.data?.deleteRecord(context, index),
                 ),
-                child: getTableRow(children, index, false, isSelected));
+              ],
+            ));
       } else {
         return GestureDetector(
             onLongPress: () => showContextMenu(context, index),
