@@ -25,7 +25,8 @@ enum CellEditorProperty {
   PRECISION,
   SCALE,
   LENGTH,
-  SIGNED
+  SIGNED,
+  PRESERVE_ASPECT_RATIO
 }
 
 class CellEditorProperties {
