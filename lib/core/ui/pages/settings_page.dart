@@ -90,10 +90,6 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
 
-    if (widget.appState.language == null || widget.appState.language.isEmpty) {
-      widget.appState.language = 'en';
-    }
-
     loadVersion();
   }
 
@@ -179,20 +175,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       });
                     },
                   ),
-                  ListTile(
-                    leading: FaIcon(
-                      FontAwesomeIcons.language,
-                      color: sl<ThemeManager>().themeData.primaryColor,
-                    ),
-                    title: Text(AppLocalizations.of(context).text('Language')),
-                    trailing: FaIcon(FontAwesomeIcons.arrowRight),
-                    subtitle: Text(widget.appState.language != null
-                        ? widget.appState.language
-                        : ''),
-                    onTap: () {
-                      showLanguagePicker(context);
-                    },
-                  ),
+                  (widget.warmWelcome != null && !widget.warmWelcome)
+                      ? ListTile(
+                          leading: FaIcon(
+                            FontAwesomeIcons.language,
+                            color: sl<ThemeManager>().themeData.primaryColor,
+                          ),
+                          title: Text(
+                              AppLocalizations.of(context).text('Language')),
+                          trailing: FaIcon(FontAwesomeIcons.arrowRight),
+                          subtitle: Text(widget.appState.language != null
+                              ? widget.appState.language
+                              : ''),
+                          onTap: () {
+                            showLanguagePicker(context);
+                          },
+                        )
+                      : Container(),
                   ListTile(
                     leading: FaIcon(
                       FontAwesomeIcons.image,

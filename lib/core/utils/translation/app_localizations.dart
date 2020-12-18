@@ -55,17 +55,9 @@ class AppLocalizations {
                 translation['text'], () => translation['translation']);
           });
         }
-      } else if (locale.languageCode != 'en') {
-        String jsonContent = await rootBundle.loadString(appState.package
-            ? "packages/jvx_flutterclient/locale/i18n_${locale.languageCode}.json"
-            : "locale/i18n_${locale.languageCode}.json");
-        _localizedValues = json.decode(jsonContent);
       }
     } catch (e) {
-      String jsonContent = await rootBundle.loadString(appState.package
-          ? "packages/jvx_flutterclient/locale/i18n_de.json"
-          : "locale/i18n_de.json");
-      _localizedValues = json.decode(jsonContent);
+      return AppLocalizations(const Locale('en'));
     }
 
     return AppLocalizations(locale);

@@ -17,6 +17,7 @@ class ImageCellEditorModel extends CellEditorModel {
   double height = 100;
   BoxFit fit = BoxFit.contain;
   Alignment alignment = Alignment.center;
+  bool preserveAspectRatio = false;
 
   @override
   Size get preferredSize => Size(150, 150);
@@ -71,6 +72,10 @@ class ImageCellEditorModel extends CellEditorModel {
 
     verticalAlignment =
         this.cellEditor.getProperty<int>(CellEditorProperty.VERTICAL_ALIGNMENT);
+
+    preserveAspectRatio = this
+        .cellEditor
+        .getProperty<bool>(CellEditorProperty.PRESERVE_ASPECT_RATIO);
 
     if (defaultImageName != null) {
       if (kIsWeb && this.appState.files.containsKey(defaultImageName)) {
@@ -143,7 +148,10 @@ class ImageCellEditorModel extends CellEditorModel {
             fit = BoxFit.fitHeight;
           } else if (horizontalAlignment == 3) {
             alignment = Alignment.center;
-            fit = BoxFit.fill;
+            if (preserveAspectRatio != null && preserveAspectRatio)
+              fit = BoxFit.contain;
+            else
+              fit = BoxFit.fill;
           }
           break;
         }

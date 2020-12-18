@@ -286,7 +286,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       languageToServer = kIsWeb
           ? window.locale.languageCode
           : Platform.localeName.substring(0, 2);
-      appState.language = 'en';
     }
 
     if ((appState.appName == null || appState.appName.isEmpty) ||
