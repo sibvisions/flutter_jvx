@@ -46,11 +46,17 @@ class Config {
 
     if (!kReleaseMode) {
       try {
-        String configString = await rootBundle.loadString(
-            path ?? appState.package
-                ? "packages/jvx_flutterclient/env/conf.json"
-                : "env/conf.json",
-            cache: false);
+        String configString;
+
+        if (path != null && path.trim().isNotEmpty) {
+          configString = await rootBundle.loadString(path, cache: false);
+        } else {
+          configString = await rootBundle.loadString(
+              appState.package
+                  ? "packages/jvx_flutterclient/env/conf.json"
+                  : "env/conf.json",
+              cache: false);
+        }
 
         config = Config.fromJson(json.decode(configString));
       } catch (e) {
