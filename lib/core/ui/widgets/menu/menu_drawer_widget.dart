@@ -199,6 +199,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
             if (widget.appState.screenManager != null &&
                 widget.appState.screenManager.screens.isNotEmpty &&
+                widget.appState.screenManager.getScreen(item.componentId) !=
+                    null &&
                 !widget.appState.screenManager
                     .getScreen(item.componentId)
                     .configuration
