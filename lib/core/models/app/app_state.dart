@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/utils/config/config.dart';
 
 import '../../../features/custom_screen/handler/i_socket_handler.dart';
 import '../../ui/frames/i_app_frame.dart';
@@ -40,6 +41,7 @@ class AppState {
   bool package;
   String currentScreenComponentId;
   List<Locale> supportedLocales = [];
+  Config config;
 
   AppState();
 
@@ -72,5 +74,6 @@ class AppState {
     this.package = state.package;
     this.currentScreenComponentId = state.currentScreenComponentId;
     this.supportedLocales = state.supportedLocales;
+    this.config = config;
   }
 }

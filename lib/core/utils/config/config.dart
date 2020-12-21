@@ -14,6 +14,9 @@ class Config {
   String password;
   String appMode = 'full';
   Widget startupWidget;
+  Map<String, dynamic> _properties;
+
+  Map<String, dynamic> get properties => _properties;
 
   Config(
       {this.baseUrl,
@@ -30,7 +33,8 @@ class Config {
         debug = json['debug'],
         username = json['username'],
         password = json['password'],
-        appMode = json['appMode'];
+        appMode = json['appMode'],
+        _properties = json;
 
   static Future<Config> loadFile({String path, Config conf}) async {
     AppState appState = sl<AppState>();
