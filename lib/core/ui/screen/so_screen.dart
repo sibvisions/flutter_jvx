@@ -77,6 +77,11 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
       _creator = SoComponentCreator();
 
     _componentModelManager = ComponentModelManager();
+
+    this.onResponse((widget as SoScreen).configuration.value);
+
+    (widget as SoScreen).configuration.addListener(
+        () => this.onResponse((widget as SoScreen).configuration.value));
   }
 
   @override
@@ -96,8 +101,6 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
         builder: (BuildContext context, Response response, Widget child) {
           if (response != null) {
             this.update(response);
-
-            this.onResponse(response);
 
             if (rootComponent == null) {
               rootComponent = getRootComponent();
