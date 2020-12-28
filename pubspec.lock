@@ -190,6 +190,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.1"
+  flinq:
+    dependency: transitive
+    description:
+      name: flinq
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -207,6 +214,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_google_maps:
+    dependency: "direct main"
+    description:
+      name: flutter_google_maps
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   flutter_html:
     dependency: "direct main"
     description:
@@ -297,6 +311,41 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.3"
+  google_directions_api:
+    dependency: transitive
+    description:
+      name: google_directions_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
+  google_maps:
+    dependency: transitive
+    description:
+      name: google_maps
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.4.5"
+  google_maps_flutter:
+    dependency: transitive
+    description:
+      name: google_maps_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.33"
+  google_maps_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: google_maps_flutter_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
+  google_polyline_algorithm:
+    dependency: transitive
+    description:
+      name: google_polyline_algorithm
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   html:
     dependency: transitive
     description:
@@ -324,7 +373,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+15"
+    version: "0.6.7+17"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -339,6 +388,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
+  js_wrapping:
+    dependency: transitive
+    description:
+      name: js_wrapping
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   json_rpc_2:
     dependency: transitive
     description:
@@ -596,6 +652,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  stream_transform:
+    dependency: transitive
+    description:
+      name: stream_transform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   string_scanner:
     dependency: transitive
     description:
