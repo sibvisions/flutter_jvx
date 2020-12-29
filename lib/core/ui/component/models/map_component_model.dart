@@ -41,14 +41,23 @@ class MapComponentModel extends ComponentModel {
     pointSelectionEnabled = changedComponent
         .getProperty<bool>(ComponentProperty.POINT_SELECTION_ENABLED);
     marker = changedComponent.getProperty<String>(ComponentProperty.MARKER);
-    lineColor =
-        changedComponent.getProperty<HexColor>(ComponentProperty.LINE_COLOR);
-    fillColor =
-        changedComponent.getProperty<HexColor>(ComponentProperty.FILL_COLOR);
+
+    String newLineColor =
+        changedComponent.getProperty<String>(ComponentProperty.LINE_COLOR);
+    lineColor = newLineColor != null && HexColor.isHexColor(newLineColor)
+        ? HexColor(newLineColor)
+        : null;
+
+    String newFillColor =
+        changedComponent.getProperty<String>(ComponentProperty.FILL_COLOR);
+
+    fillColor = newFillColor != null && HexColor.isHexColor(newFillColor)
+        ? HexColor(newFillColor)
+        : null;
+
     tileProvider =
         changedComponent.getProperty<String>(ComponentProperty.TILE_PROVIDER);
 
     super.updateProperties(context, changedComponent);
-    
   }
 }

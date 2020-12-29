@@ -1,3 +1,4 @@
+import 'package:jvx_flutterclient/core/ui/component/models/map_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/component/models/table_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/component/models/toggle_button_component_model.dart';
 import 'package:jvx_flutterclient/core/ui/container/models/group_panel_component_model.dart';
@@ -123,7 +124,9 @@ class ComponentModelManager {
       case 'ToggleButton':
         componentModel = ToggleButtonComponentModel(changedComponent);
         break;
-
+      case 'Map':
+        componentModel = MapComponentModel(changedComponent);
+        break;
       default:
         componentModel = ComponentModel(changedComponent);
         break;
