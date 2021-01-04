@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_component_data.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../../injection_container.dart';
@@ -30,6 +31,7 @@ class MenuDrawerWidget extends StatefulWidget {
   final bool listMenuItems;
   final String currentTitle;
   final AppState appState;
+  final Function onPressed;
 
   MenuDrawerWidget(
       {Key key,
@@ -37,7 +39,8 @@ class MenuDrawerWidget extends StatefulWidget {
       this.listMenuItems = false,
       @required this.currentTitle,
       this.groupedMenuMode = true,
-      @required this.appState})
+      @required this.appState,
+      @required this.onPressed})
       : super(key: key);
 
   @override
@@ -197,41 +200,43 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               title = item.text;
             });
 
-            if (widget.appState.screenManager != null &&
-                widget.appState.screenManager.screens.isNotEmpty &&
-                widget.appState.screenManager.getScreen(item.componentId) !=
-                    null &&
-                !widget.appState.screenManager
-                    .getScreen(item.componentId)
-                    .configuration
-                    .withServer) {
-              SoScreen screen =
-                  widget.appState.screenManager.getScreen(item.componentId);
+            if (widget.onPressed != null) widget.onPressed(item);
 
-              widget.appState.appFrame.setScreen(screen);
+            // if (widget.appState.screenManager != null &&
+            //     widget.appState.screenManager.screens.isNotEmpty &&
+            //     widget.appState.screenManager.getScreen(item.componentId) !=
+            //         null &&
+            //     !widget.appState.screenManager
+            //         .getScreen(item.componentId)
+            //         .configuration
+            //         .withServer) {
+            //   SoScreen screen =
+            //       widget.appState.screenManager.getScreen(item.componentId);
 
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (_) => Theme(
-                        data: Theme.of(context),
-                        child: BlocProvider<ApiBloc>(
-                            create: (_) => sl<ApiBloc>(),
-                            child: widget.appState.appFrame.getWidget()),
-                      )));
-            } else {
-              SoAction action =
-                  SoAction(componentId: item.componentId, label: item.text);
+            //   widget.appState.appFrame.setScreen(screen);
 
-              this.title = action.label;
+            //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //       builder: (_) => Theme(
+            //             data: Theme.of(context),
+            //             child: BlocProvider<ApiBloc>(
+            //                 create: (_) => sl<ApiBloc>(),
+            //                 child: widget.appState.appFrame.getWidget()),
+            //           )));
+            // } else {
+            //   SoAction action =
+            //       SoAction(componentId: item.componentId, label: item.text);
 
-              OpenScreen openScreen = OpenScreen(
-                action: action,
-                clientId: widget.appState.clientId,
-                manualClose: false,
-                requestType: RequestType.OPEN_SCREEN,
-              );
+            //   this.title = action.label;
 
-              BlocProvider.of<ApiBloc>(context).add(openScreen);
-            }
+            //   OpenScreen openScreen = OpenScreen(
+            //     action: action,
+            //     clientId: widget.appState.clientId,
+            //     manualClose: false,
+            //     requestType: RequestType.OPEN_SCREEN,
+            //   );
+
+            //   BlocProvider.of<ApiBloc>(context).add(openScreen);
+            // }
           },
         ));
 
