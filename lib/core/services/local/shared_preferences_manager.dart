@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
@@ -79,6 +80,17 @@ class SharedPreferencesManager {
       return null;
   }
 
+  bool get isOffline => this.sharedPreferences.getBool('offline');
+
+  List<MenuItem> get menuItems {
+    try {
+      return json.decode(this.sharedPreferences.getString('menuItems'));
+    } catch (e) {
+      print('Couldn\'t parse MenuItems');
+      return null;
+    }
+  }
+
   void setAppData(
       {String appName,
       String baseUrl,
@@ -138,4 +150,15 @@ class SharedPreferencesManager {
 
   void setAuthKey(String authKey) =>
       this.sharedPreferences.setString('authKey', authKey);
+
+  void setOffline(bool offline) =>
+      this.sharedPreferences.setBool('offline', offline);
+
+  void setMenuItems(List<MenuItem> menuItems) {
+    try {
+      this.sharedPreferences.setString('menuItems', json.encode(menuItems));
+    } catch (e) {
+      print('Couldn\'t encode menu items');
+    }
+  }
 }

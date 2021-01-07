@@ -42,6 +42,9 @@ class AppState {
   String currentScreenComponentId;
   List<Locale> supportedLocales = [];
   Config config;
+  bool offline = false;
+
+  bool get isOffline => offline;
 
   AppState();
 

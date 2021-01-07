@@ -230,8 +230,14 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    Navigator.of(context).pushReplacementNamed(LoginPage.route,
-        arguments: LoginArguments(response.loginItem.username));
+    if (this.manager.isOffline) {
+      this.appState.offline = this.manager.isOffline;
+      Navigator.of(context).pushNamed(MenuPage.route,
+          arguments: MenuArguments(this.manager.menuItems, true));
+    } else {
+      Navigator.of(context).pushReplacementNamed(LoginPage.route,
+          arguments: LoginArguments(response.loginItem.username));
+    }
   }
 
   void _menu(Response response) {

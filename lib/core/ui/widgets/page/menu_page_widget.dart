@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -185,6 +186,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   _screenManager() {
+    SharedPrefProvider.of(context).manager.setMenuItems(this.items);
     if (widget.appState.screenManager != null) {
       SoMenuManager menuManager = SoMenuManager(this.items);
       widget.appState.screenManager.onMenu(menuManager);
