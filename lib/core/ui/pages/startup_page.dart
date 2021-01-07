@@ -12,8 +12,11 @@ class StartupPage extends StatelessWidget {
   final Config config;
   final bool shouldLoadConfig;
 
-  const StartupPage({Key key, this.config, @required this.shouldLoadConfig})
-      : super(key: key);
+  const StartupPage({
+    Key key,
+    this.config,
+    @required this.shouldLoadConfig,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

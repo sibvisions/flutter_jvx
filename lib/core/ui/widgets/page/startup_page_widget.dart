@@ -294,9 +294,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted)
+        if (mounted) {
           Navigator.of(context).pushReplacementNamed(SettingsPage.route,
               arguments: SettingsArguments(warmWelcome: true));
+        }
       });
       return;
     }

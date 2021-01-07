@@ -21,6 +21,7 @@ class ApplicationWidget extends StatelessWidget {
   final bool handleSessionTimeout;
   final AppListener appListener;
   final bool package;
+  final Widget welcomeWidget;
 
   const ApplicationWidget(
       {Key key,
@@ -28,7 +29,8 @@ class ApplicationWidget extends StatelessWidget {
       this.screenManager,
       this.handleSessionTimeout,
       this.appListener,
-      this.package = false})
+      this.package = false,
+      this.welcomeWidget})
       : super(key: key);
 
   @override
@@ -54,16 +56,17 @@ class ApplicationWidget extends StatelessWidget {
                   child: AppStateProvider(
                     appState: appState,
                     child: ValueListenableBuilder(
-                      valueListenable: sl<SupportedLocaleManager>(),
-                      builder: (BuildContext context, List<Locale> supportedLocales, Widget child) {
-                        return MobileApp(
-                          shouldLoadConfig: shouldLoadConfig,
-                          themeData: themeData,
-                          config: this.config,
-                          supportedLocales: supportedLocales,
-                        );
-                      }
-                    ),
+                        valueListenable: sl<SupportedLocaleManager>(),
+                        builder: (BuildContext context,
+                            List<Locale> supportedLocales, Widget child) {
+                          return MobileApp(
+                            welcomeWidget: this.welcomeWidget,
+                            shouldLoadConfig: shouldLoadConfig,
+                            themeData: themeData,
+                            config: this.config,
+                            supportedLocales: supportedLocales,
+                          );
+                        }),
                   ),
                 );
               }),
