@@ -14,6 +14,9 @@ class Config {
   String password;
   String appMode = 'full';
   Widget startupWidget;
+  Map<String, dynamic> _properties;
+
+  Map<String, dynamic> get properties => _properties;
 
   Config(
       {this.baseUrl,
@@ -30,7 +33,8 @@ class Config {
         debug = json['debug'],
         username = json['username'],
         password = json['password'],
-        appMode = json['appMode'];
+        appMode = json['appMode'],
+        _properties = json;
 
   static Future<Config> loadFile({String path, Config conf}) async {
     AppState appState = sl<AppState>();
@@ -42,11 +46,17 @@ class Config {
 
     if (!kReleaseMode) {
       try {
-        String configString = await rootBundle.loadString(
-            path ?? appState.package
-                ? "packages/jvx_flutterclient/env/conf.json"
-                : "env/conf.json",
-            cache: false);
+        String configString;
+
+        if (path != null && path.trim().isNotEmpty) {
+          configString = await rootBundle.loadString(path, cache: false);
+        } else {
+          configString = await rootBundle.loadString(
+              appState.package
+                  ? "packages/jvx_flutterclient/env/conf.json"
+                  : "env/conf.json",
+              cache: false);
+        }
 
         config = Config.fromJson(json.decode(configString));
       } catch (e) {

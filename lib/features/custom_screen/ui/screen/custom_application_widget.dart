@@ -27,12 +27,16 @@ class CustomApplicationWidget extends StatelessWidget {
   /// The AppListener to react to certain events during app usage
   final AppListener appListener;
 
+  /// Widget that will be shown first when app opens
+  final Widget welcomeWidget;
+
   const CustomApplicationWidget(
       {Key key,
       this.screenManager,
       this.config,
       this.handleSessionTimeout,
-      this.appListener})
+      this.appListener,
+      this.welcomeWidget})
       : super(key: key);
 
   @override
@@ -43,6 +47,7 @@ class CustomApplicationWidget extends StatelessWidget {
       handleSessionTimeout: this.handleSessionTimeout,
       package: true,
       screenManager: this.screenManager,
+      welcomeWidget: this.welcomeWidget,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/component/co_map_component_widget.dart';
 import 'package:jvx_flutterclient/core/ui/component/co_toggle_button_widget.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/checkbox_cell_editor_model.dart';
 import 'package:jvx_flutterclient/core/ui/editor/celleditor/models/choice_cell_editor_model.dart';
@@ -137,6 +138,9 @@ class SoComponentCreator implements IComponentCreator {
         ),
     'ToggleButton': (ComponentModel componentModel) => CoToggleButtonWidget(
           componentModel: componentModel,
+        ),
+    'Map': (ComponentModel componentModel) => CoMapComponentWidget(
+          componentModel: componentModel,
         )
   };
 
@@ -222,7 +226,8 @@ class SoComponentCreator implements IComponentCreator {
     return cellEditor;
   }
 
-  CoCellEditorWidget createCellEditorForTable(CellEditor toCreatecellEditor, SoComponentData data) {
+  CoCellEditorWidget createCellEditorForTable(
+      CellEditor toCreatecellEditor, SoComponentData data) {
     CoCellEditorWidget cellEditor;
     switch (toCreatecellEditor.className) {
       case "DateCellEditor":

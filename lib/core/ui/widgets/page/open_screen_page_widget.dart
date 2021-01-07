@@ -133,12 +133,14 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   _onPressed(MenuItem menuItem) {
-    if (_openScreenManager != null &&
-        !_openScreenManager
+    if (widget.appState.screenManager.screens != null &&
+        widget.appState.screenManager.screens.isNotEmpty &&
+        !widget.appState.screenManager
             .getScreen(menuItem.componentId)
             .configuration
             .withServer) {
-      SoScreen screen = _openScreenManager.getScreen(menuItem.componentId);
+      SoScreen screen =
+          widget.appState.screenManager.getScreen(menuItem.componentId);
 
       widget.appState.appFrame.setScreen(screen);
 
@@ -245,6 +247,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   MenuDrawerWidget _endDrawer() => widget.appState.appFrame.showScreenHeader
       ? MenuDrawerWidget(
+          onPressed: _onPressed,
           appState: widget.appState,
           menuItems: widget.items,
           listMenuItems: true,

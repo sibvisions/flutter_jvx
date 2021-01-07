@@ -52,6 +52,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   Future<void> _updateDataFromConfig(Future<Config> configFuture) async {
     Config config = await configFuture;
 
+    this.appState.config = config;
+
     if (config?.debug != null && config.debug) {
       if (config.appName == null || !config.appName.isNotEmpty) {
         await showError(context, 'Error in Config',
@@ -267,6 +269,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     else if (widget.config != null &&
         widget.config.debug != null &&
         widget.config.debug) {
+      appState.config = widget.config;
       appState.appName = widget.config.appName;
       appState.baseUrl = widget.config.baseUrl;
       appState.username = widget.config.username;
@@ -291,9 +294,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if ((appState.appName == null || appState.appName.isEmpty) ||
         (appState.baseUrl == null || appState.baseUrl.isEmpty)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted)
+        if (mounted) {
           Navigator.of(context).pushReplacementNamed(SettingsPage.route,
               arguments: SettingsArguments(warmWelcome: true));
+        }
       });
       return;
     }

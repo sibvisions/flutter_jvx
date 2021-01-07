@@ -368,6 +368,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                 : null,
             endDrawer: widget.appState.appFrame.showScreenHeader
                 ? MenuDrawerWidget(
+                    onPressed: _onPressed,
                     menuItems: this.items,
                     listMenuItems: true,
                     groupedMenuMode: groupedMenuMode,

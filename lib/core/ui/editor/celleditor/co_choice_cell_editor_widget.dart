@@ -51,9 +51,10 @@ class CoChoiceCellEditorWidgetState
         cellEditorModel.selectedImage = cellEditorModel.items[1];
     } else {
       if (cellEditorModel.cellEditorValue != null &&
-          (cellEditorModel.cellEditorValue as String).isNotEmpty) {
-        cellEditorModel.selectedImage = cellEditorModel.items[
-            cellEditorModel.allowedValues.indexOf(cellEditorModel.cellEditorValue)];
+          (cellEditorModel.cellEditorValue as String).trim().isNotEmpty) {
+        cellEditorModel.selectedImage = cellEditorModel.items[cellEditorModel
+            .allowedValues
+            .indexOf(cellEditorModel.cellEditorValue)];
       } else if (cellEditorModel.defaultImage != null) {
         cellEditorModel.selectedImage = cellEditorModel.defaultImage;
       }

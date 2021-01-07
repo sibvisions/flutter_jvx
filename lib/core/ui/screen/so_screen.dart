@@ -78,6 +78,8 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
 
     _componentModelManager = ComponentModelManager();
 
+    this.onResponse((widget as SoScreen).configuration.value);
+
     (widget as SoScreen).configuration.addListener(
         () => this.onResponse((widget as SoScreen).configuration.value));
   }

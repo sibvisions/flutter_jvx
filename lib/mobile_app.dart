@@ -23,12 +23,14 @@ class MobileApp extends StatelessWidget {
   final ThemeData themeData;
   final Config config;
   final List<Locale> supportedLocales;
+  final Widget welcomeWidget;
 
   const MobileApp({
     Key key,
     @required this.shouldLoadConfig,
     @required this.themeData,
     @required this.supportedLocales,
+    this.welcomeWidget,
     this.config,
   }) : super(key: key);
 
@@ -111,6 +113,9 @@ class MobileApp extends StatelessWidget {
                       ));
               break;
             case SettingsPage.route:
+              if (this.welcomeWidget != null) {
+                return MaterialPageRoute(builder: (_) => this.welcomeWidget);
+              }
               if (settings.arguments is SettingsArguments) {
                 return MaterialPageRoute(
                     builder: (_) => SettingsPage(
@@ -154,7 +159,9 @@ class MobileApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: this.supportedLocales.isNotEmpty ? this.supportedLocales : [const Locale('en'), const Locale('de')],
+        supportedLocales: this.supportedLocales.isNotEmpty
+            ? this.supportedLocales
+            : [const Locale('en'), const Locale('de')],
         title: 'JVx Mobile',
         theme: this.themeData,
         debugShowCheckedModeBanner: false,
