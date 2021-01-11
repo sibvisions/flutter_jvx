@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 
 import '../../models/api/request.dart';
@@ -102,6 +107,24 @@ mixin SoDataScreen {
       SoComponentData cData = getComponentData(request.dataProvider);
       cData?.updateSelectedRow(context, request.selectedRow);
     }
+
+    //this.testOfflineDB(context, request, pData);
+  }
+
+  Future<void> testOfflineDB(
+      BuildContext context, Request request, ResponseData pData) async {
+    String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+
+    OfflineDatabase db = await LocalDatabaseManager.localDatabaseManager
+        .getDatabase<OfflineDatabase>(() => new OfflineDatabase(), path);
+
+    await Future.forEach(pData.dataBookMetaData, (m) async {
+      await db.createTableWithMetaData(m);
+    });
+
+    await Future.forEach(pData.dataBooks, (d) async {
+      await db.insertRows(d);
+    });
   }
 
   SoComponentData getComponentData(String dataProvider) {
@@ -130,7 +153,8 @@ mixin SoDataScreen {
     });
   }
 
-  void onComponetValueChanged(BuildContext context, String componentId, dynamic value) {
+  void onComponetValueChanged(
+      BuildContext context, String componentId, dynamic value) {
     TextUtils.unfocusCurrentTextfield(context);
 
     // wait until textfields focus lost. 10 millis should do it.
