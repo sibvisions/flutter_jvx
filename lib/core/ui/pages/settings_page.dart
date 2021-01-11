@@ -47,6 +47,8 @@ class _SettingsPageState extends State<SettingsPage> {
   List<PickerItem<int>> imageSizeItems;
   bool isDialogOpen = false;
 
+  String selectedLanguage;
+
   String get versionText {
     String v = 'App v$version Build $buildNumber';
     if (widget.appState.appVersion != null &&
@@ -338,22 +340,24 @@ class _SettingsPageState extends State<SettingsPage> {
         cancelTextStyle:
             TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
         onConfirm: (Picker picker, List value) async {
-          String newLang =
+          selectedLanguage =
               picker.getSelectedValues()[0].toString().toLowerCase();
-
-          if (newLang != null && newLang.isNotEmpty)
-            await AppLocalizations.load(new Locale(newLang));
 
           setState(() {
             isDialogOpen = false;
-
-            widget.appState.language = newLang;
-            this.language = newLang;
           });
         },
         onCancel: () => setState(() => isDialogOpen = false),
       ).show(scaffoldState.currentState);
     }
+  }
+
+  _switchLang(String newLang) async {
+    if (newLang != null && newLang.isNotEmpty)
+      await AppLocalizations.load(new Locale(newLang));
+
+    widget.appState.language = newLang;
+    this.language = newLang;
   }
 
   Widget settingsLoader() {
@@ -383,7 +387,7 @@ class _SettingsPageState extends State<SettingsPage> {
           bodyData: settingsBuilder(),
           bottomButton1: widget.warmWelcome
               ? null
-              : AppLocalizations.of(context).text('Back').toUpperCase(),
+              : AppLocalizations.of(context).text('Cancel').toUpperCase(),
           bottomButton2: widget.warmWelcome
               ? AppLocalizations.of(context).text('Open').toUpperCase()
               : AppLocalizations.of(context).text('Save').toUpperCase(),
@@ -419,6 +423,10 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_checkString(toSaveUsername) && _checkString(toSavePwd))
       widget.manager
           .setLoginData(username: toSaveUsername, password: toSavePwd);
+
+    if (widget.appState.language != this.selectedLanguage) {
+      _switchLang(this.selectedLanguage);
+    }
   }
 
   bool _checkString(String toCheck) {

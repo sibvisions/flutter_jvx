@@ -112,7 +112,9 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     SystemChrome.setApplicationSwitcherDescription(
         ApplicationSwitcherDescription(
             primaryColor: Theme.of(context).primaryColor.value,
-            label: widget.appState.appName + ' - ' + widget.appState.username));
+            label: widget.appState.appName ??
+                '' + ' - ' + widget.appState.username ??
+                ''));
 
     if (widget.appState.appListener != null) {
       widget.appState.appListener
@@ -186,12 +188,12 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   _screenManager() {
-    SharedPrefProvider.of(context).manager.setMenuItems(this.items);
     if (widget.appState.screenManager != null) {
       SoMenuManager menuManager = SoMenuManager(this.items);
       widget.appState.screenManager.onMenu(menuManager);
       this.items = menuManager.menuItems;
     }
+    SharedPrefProvider.of(context).manager.setMenuItems(this.items);
   }
 
   _appFrame() {
@@ -356,15 +358,29 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             appBar: widget.appState.appFrame.showScreenHeader
                 ? AppBar(
                     backgroundColor: Theme.of(context).primaryColor,
-                    title: Text('Menu'),
+                    title: Text('Menu' +
+                        (widget.appState.isOffline ? ' - Offline' : '')),
                     automaticallyImplyLeading: false,
                     actions: [
+                      widget.appState.isOffline
+                          ? IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  widget.appState.offline = false;
+                                  SharedPrefProvider.of(context)
+                                      .manager
+                                      .setOffline(false);
+                                });
+                              },
+                              icon: FaIcon(FontAwesomeIcons.broadcastTower),
+                            )
+                          : Container(),
                       IconButton(
                         onPressed: () {
                           _scaffoldKey.currentState.openEndDrawer();
                         },
                         icon: FaIcon(FontAwesomeIcons.ellipsisV),
-                      )
+                      ),
                     ],
                   )
                 : null,

@@ -84,7 +84,13 @@ class SharedPreferencesManager {
 
   List<MenuItem> get menuItems {
     try {
-      return json.decode(this.sharedPreferences.getString('menuItems'));
+      List<MenuItem> items =
+          (json.decode(this.sharedPreferences.getString('menuItems'))
+                  as List<dynamic>)
+              .map<MenuItem>((e) => MenuItem.fromJson(e))
+              .toList();
+
+      return items;
     } catch (e) {
       print('Couldn\'t parse MenuItems');
       return null;
@@ -156,7 +162,8 @@ class SharedPreferencesManager {
 
   void setMenuItems(List<MenuItem> menuItems) {
     try {
-      this.sharedPreferences.setString('menuItems', json.encode(menuItems));
+      if (menuItems != null)
+        this.sharedPreferences.setString('menuItems', json.encode(menuItems));
     } catch (e) {
       print('Couldn\'t encode menu items');
     }

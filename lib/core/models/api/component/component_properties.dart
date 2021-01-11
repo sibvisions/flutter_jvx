@@ -92,6 +92,7 @@ enum ComponentProperty {
   LINE_COLOR,
   FILL_COLOR,
   TILE_PROVIDER,
+  CLASS_NAME_EVENT_SOURCE_REF,
 }
 
 class ComponentProperties {
