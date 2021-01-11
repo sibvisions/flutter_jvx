@@ -44,7 +44,7 @@ class AppState {
   Config config;
   bool offline = false;
 
-  bool get isOffline => offline;
+  bool get isOffline => offline != null ? offline : false;
 
   AppState();
 

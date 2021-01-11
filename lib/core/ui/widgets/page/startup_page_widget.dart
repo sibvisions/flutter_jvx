@@ -230,8 +230,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    if (this.manager.isOffline) {
-      this.appState.offline = this.manager.isOffline;
+    if (this.appState.offline) {
       Navigator.of(context).pushNamed(MenuPage.route,
           arguments: MenuArguments(this.manager.menuItems, true));
     } else {
@@ -241,12 +240,22 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _menu(Response response) {
-    Navigator.of(context).pushReplacementNamed(MenuPage.route,
-        arguments:
-            MenuArguments(response.menu.entries, true, this.welcomeScreen));
+    if (this.appState.offline) {
+      Navigator.of(context).pushReplacementNamed(MenuPage.route,
+          arguments:
+              MenuArguments(this.manager.menuItems, true, this.welcomeScreen));
+    } else {
+      Navigator.of(context).pushReplacementNamed(MenuPage.route,
+          arguments:
+              MenuArguments(response.menu.entries, true, this.welcomeScreen));
+    }
   }
 
   void _checkForLogin(Response response) {
+    if (this.manager.isOffline != null && this.manager.isOffline) {
+      this.appState.offline = this.manager.isOffline;
+    }
+
     if (response != null && response.loginItem != null) {
       return _login(response);
     } else if (response.menu != null) {

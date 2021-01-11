@@ -44,8 +44,8 @@ class CoLinkedCellEditorWidgetState
     if (widget.cellEditorModel.linkReference != null &&
         widget.cellEditorModel.linkReference.columnNames.length == 1)
       this.onValueChanged(
-          context, widget.cellEditorModel.cellEditorValue, pValue.value[0]);
-    else
+          context, widget.cellEditorModel.cellEditorValue, pValue.value != null ? pValue.value[0] : null);
+    else 
       this.onValueChanged(context, pValue.value);
   }
 

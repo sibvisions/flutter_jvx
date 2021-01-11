@@ -26,6 +26,7 @@ class ComponentModel extends ValueNotifier {
   int verticalAlignment = 1;
   int horizontalAlignment = 0;
   String text = "";
+  String classNameEventSourceRef;
 
   String parentComponentId;
   List<Key> childComponentIds;
@@ -103,6 +104,8 @@ class ComponentModel extends ValueNotifier {
         ComponentProperty.CONSTRAINTS, constraints);
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name);
     text = _changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    classNameEventSourceRef = _changedComponent
+        .getProperty<String>(ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF);
 
     // Notify the listening widget to rebuild itself
     notifyListeners();

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
@@ -185,6 +186,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 child: RaisedButton(
                   onPressed: widget.componentModel.enabled
                       ? () {
+                          if (widget.componentModel.classNameEventSourceRef == 'OfflineButton') {
+                            SharedPrefProvider.of(context).manager.setOffline(true);
+                            widget.componentModel.appState.offline = true;
+                          }
                           widget.componentModel
                               .onAction(context, widget.componentModel.action);
                         }

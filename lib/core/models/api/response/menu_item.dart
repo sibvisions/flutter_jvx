@@ -11,4 +11,11 @@ class MenuItem {
         group = json['group'],
         image = json['image'],
         text = json['text'];
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'componentId': componentId,
+        'group': group,
+        'image': image,
+        'text': text
+      };
 }
