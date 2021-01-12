@@ -1,9 +1,6 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:w_common/disposable.dart';
 
 import 'local_database/i_database_provider.dart';
-import 'local_database/local_database.dart';
-import 'local_database/offline_database.dart';
 
 class LocalDatabaseManager extends Object with Disposable {
   static final LocalDatabaseManager localDatabaseManager =
