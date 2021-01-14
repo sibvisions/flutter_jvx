@@ -7,6 +7,7 @@ import '../../utils/config/config.dart';
 import '../../utils/theme/theme_manager.dart';
 import '../widgets/page/startup_page_widget.dart';
 
+/// Stateless widget for wrapping the [StartupPageWidget]
 class StartupPage extends StatelessWidget {
   static const String route = '/startup';
   final Config config;
@@ -20,6 +21,7 @@ class StartupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Setting theme in current widget tree
     return Theme(
       data: sl<ThemeManager>().themeData,
       child: BlocProvider<ApiBloc>(

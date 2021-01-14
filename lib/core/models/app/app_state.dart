@@ -8,25 +8,66 @@ import '../../utils/app/listener/app_listener.dart';
 import '../api/response/application_style_response.dart';
 import '../api/response/menu_item.dart';
 
+/// Current state of the App.
 class AppState {
   String username;
   String password;
   String baseUrl;
   String appName;
+
+  /// Current app mode.
+  /// 
+  /// `preview`: Only one menu item will be shown.
+  /// 
+  /// `full`: Every menu item will be shown.
   String appMode;
+  
+  /// Current language of the application.
   String language;
+
+  /// Current picture size.
+  /// 
+  /// `320`, `640` and `1024` are the sizes to choose from.
   int picSize;
+
+  /// App version from the server.
   String appVersion;
+
+  /// States how many lines can be fetched ahead in lazy loading.
   int readAheadLimit = 100;
+
+  /// Avaible translations and their file locations.
   Map<String, dynamic> translation = <String, dynamic>{};
+
+  /// For web. Defines if layout should look mobile style only.
   bool mobileOnly = false;
+
+  /// For web. Defines if layout should look web style only.
   bool webOnly = false;
+
+  /// Current frame for the application.
+  /// 
+  /// `WebFrame`: Frame for web applications.
+  /// 
+  /// `AppFrame`: Default frame and frame for mobile applications.
   IAppFrame appFrame;
+
+  /// Current application style sent from the server.
   ApplicationStyleResponse applicationStyle;
+
+  /// Display name of user shown in [MenuDrawerWidget].
   String displayName;
+
+  /// base64 encoded profile image.
   String profileImage;
+
+  /// Roles of the user.
   List roles;
+
+  /// ClienId sent from the server.
   String clientId;
+
+  /// Parameter from app config.
   bool handleSessionTimeout;
   Map<String, String> files = <String, String>{};
   List<String> images = <String>[];
