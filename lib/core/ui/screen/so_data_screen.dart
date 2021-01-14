@@ -123,7 +123,7 @@ mixin SoDataScreen {
     });
 
     await Future.forEach(pData.dataBooks, (d) async {
-      await db.insertRows(d);
+      await db.importRows(d);
     });
   }
 

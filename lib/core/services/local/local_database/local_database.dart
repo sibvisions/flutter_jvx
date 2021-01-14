@@ -64,7 +64,7 @@ class LocalDatabase implements IDatabaseProvider {
   }
 
   Future<List<Map<String, dynamic>>> selectRows(String tableName,
-      [String where, String orderBy]) async {
+      [String where, String orderBy, String limit]) async {
     if (tableName == null || this.db == null || !this.db.isOpen) {
       return null;
     }
@@ -77,6 +77,10 @@ class LocalDatabase implements IDatabaseProvider {
 
     if (orderBy != null && orderBy.length > 0) {
       sql = "$sql ORDER BY $orderBy";
+    }
+
+    if (limit != null && limit.length > 0) {
+      sql = "$sql LIMIT $limit";
     }
 
     if (this.debug) {

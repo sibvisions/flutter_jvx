@@ -1,3 +1,9 @@
+import 'package:jvx_flutterclient/core/models/api/request.dart';
+import 'package:jvx_flutterclient/core/models/api/request/data/fetch_data.dart';
+import 'package:jvx_flutterclient/core/models/api/request/data/insert_record.dart';
+import 'package:jvx_flutterclient/core/models/api/request/data/select_record.dart';
+import 'package:jvx_flutterclient/core/models/api/request/data/set_values.dart';
+import 'package:jvx_flutterclient/core/models/api/response.dart';
 import 'package:jvx_flutterclient/core/models/api/response/data/data_book.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
@@ -15,9 +21,8 @@ const String UPDATE_DATA_SEPERATOR = ", ";
 
 const String OFFLINE_COLUMNS_PRIMARY_KEY = "off_primaryKey";
 const String OFFLINE_COLUMNS_MASTER_KEY = "off_masterKey";
-const String OFFLINE_COLUMNS_INSERTED = "off_inserted";
-const String OFFLINE_COLUMNS_UPDATED = "off_updated";
-const String OFFLINE_COLUMNS_DELETED = "off_deleted";
+const String OFFLINE_COLUMNS_STATE = "off_state";
+const String OFFLINE_COLUMNS_SELECTED = "off_selected";
 const String OFFLINE_COLUMNS_CREATED = "off_created";
 const String OFFLINE_COLUMNS_CHANGED = "off_changed";
 
@@ -46,7 +51,7 @@ class OfflineDatabase extends LocalDatabase {
     }
   }
 
-  Future<bool> insertRows(DataBook data) async {
+  Future<bool> importRows(DataBook data) async {
     int failedInsertCount = 0;
 
     if (data != null &&
@@ -65,15 +70,69 @@ class OfflineDatabase extends LocalDatabase {
           if (!await this.insert(tableName, columnString, valueString)) {
             failedInsertCount++;
           }
-
-          if (failedInsertCount > 0) {
-            return false;
-          } else {
-            return true;
-          }
         });
+
+        if (failedInsertCount > 0) {
+          return false;
+        } else {
+          return true;
+        }
       }
     }
+
+    return false;
+  }
+
+  Future<Response> setValues(SetValues request) async {
+    if (request != null &&
+        request.columnNames != null &&
+        request.values != null &&
+        request.columnNames.length > 0 &&
+        request.columnNames.length == request.values.length) {
+      String tableName = _formatTableName(request.dataProvider);
+
+      if (await tableExists(tableName)) {
+        String sqlSet = "";
+        for (int i = 0; i < request.columnNames.length; i++) {
+          dynamic value = request.values[i];
+          String columnName = request.columnNames[i];
+          if (value == null)
+            sqlSet =
+                "$sqlSet[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]=NULL$UPDATE_DATA_SEPERATOR";
+          else
+            sqlSet =
+                "$sqlSet[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$UPDATE_DATA_SEPERATOR";
+        }
+        //await this.update(tableName, sqlSet, where);
+      }
+    }
+  }
+
+  Future<Response> selectRecord(SelectRecord request) async {
+    if (request != null) {
+      String tableName = _formatTableName(request.dataProvider);
+
+      if (await tableExists(tableName)) {}
+    }
+    return null;
+  }
+
+  Future<void> deleteRecord() {}
+  Future<void> insertRecord() {}
+
+  Future<Response> request(Request request) {
+    if (request != null) {
+      if (request is FetchData) {
+      } else if (request is SetValues) {
+        this.setValues(request);
+      } else if (request is InsertRecord) {
+      } else if (request is SelectRecord) {
+        if (request.requestType == RequestType.DAL_SELECT_RECORD) {
+        } else if (request.requestType == RequestType.DAL_DELETE) {}
+      }
+    }
+
+    return null;
   }
 
   String _getInsertValueList(List<dynamic> row) {
@@ -94,6 +153,9 @@ class OfflineDatabase extends LocalDatabase {
         }
       });
 
+      insertString =
+          "${insertString}datetime('now')$INSERT_INTO_DATA_SEPERATOR";
+
       insertString = insertString.substring(
           0, insertString.length - INSERT_INTO_DATA_SEPERATOR.length);
     }
@@ -110,6 +172,9 @@ class OfflineDatabase extends LocalDatabase {
       columnList = "$columnList$formatedColumnName$INSERT_INTO_DATA_SEPERATOR";
     });
 
+    columnList =
+        "$columnList$OFFLINE_COLUMNS_CREATED$INSERT_INTO_DATA_SEPERATOR";
+
     columnList = columnList.substring(
         0, columnList.length - INSERT_INTO_DATA_SEPERATOR.length);
     return columnList;
@@ -117,7 +182,7 @@ class OfflineDatabase extends LocalDatabase {
 
   String _formatColumnForInsert(String columnName, String columnSuffix) {
     if (columnName != OFFLINE_COLUMNS_MASTER_KEY &&
-        columnName != OFFLINE_COLUMNS_INSERTED) {
+        columnName != OFFLINE_COLUMNS_STATE) {
       return "[$columnName$columnSuffix]";
     } else {
       return "[$columnName]";
@@ -150,9 +215,8 @@ class OfflineDatabase extends LocalDatabase {
   String _getOfflineColumns() {
     return "$OFFLINE_COLUMNS_PRIMARY_KEY INTEGER PRIMARY KEY$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_MASTER_KEY INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR" +
-        "$OFFLINE_COLUMNS_INSERTED INTEGER DEFAULT 0$CREATE_TABLE_COLUMNS_SEPERATOR" +
-        "$OFFLINE_COLUMNS_UPDATED INTEGER DEFAULT 0$CREATE_TABLE_COLUMNS_SEPERATOR" +
-        "$OFFLINE_COLUMNS_DELETED INTEGER DEFAULT 0$CREATE_TABLE_COLUMNS_SEPERATOR" +
+        "$OFFLINE_COLUMNS_STATE TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
+        "$OFFLINE_COLUMNS_SELECTED INTEGER DEFAULT 0$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_CREATED INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_CHANGED INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR";
   }
