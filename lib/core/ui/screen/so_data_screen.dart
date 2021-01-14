@@ -133,7 +133,7 @@ mixin SoDataScreen {
       data = componentData.firstWhere((d) => d.dataProvider == dataProvider,
           orElse: () => null);
 
-    if (data == null) {
+    if (data == null && dataProvider != null) {
       data = SoComponentData(dataProvider, this);
       //data.addToRequestQueue = this._addToRequestQueue;
       componentData.add(data);
