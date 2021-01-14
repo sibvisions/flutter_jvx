@@ -6,6 +6,7 @@ class SetValues extends Request {
   List<dynamic> columnNames;
   List<dynamic> values;
   Filter filter;
+  int offlineSelectedRow;
 
   @override
   String get debugInfo {
@@ -17,6 +18,7 @@ class SetValues extends Request {
   }
 
   SetValues(this.dataProvider, this.columnNames, this.values, String clientId,
+      this.offlineSelectedRow,
       [this.filter])
       : super(RequestType.DAL_SET_VALUE, clientId);
 
