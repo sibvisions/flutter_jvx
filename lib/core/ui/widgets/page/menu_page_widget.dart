@@ -193,7 +193,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
       widget.appState.screenManager.onMenu(menuManager);
       this.items = menuManager.menuItems;
     }
-    SharedPrefProvider.of(context).manager.setMenuItems(this.items);
+    // SharedPrefProvider.of(context).manager.setMenuItems(this.items);
   }
 
   _appFrame() {
