@@ -30,6 +30,8 @@ import '../../screen/so_screen_configuration.dart';
 import '../dialogs/upload_file_picker.dart';
 import '../menu/menu_drawer_widget.dart';
 import '../util/error_handling.dart';
+import '../util/restart_widget.dart';
+import '../util/shared_pref_provider.dart';
 
 class OpenScreenPageWidget extends StatefulWidget {
   final String title;
