@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/download.dart';
+import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
 import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
@@ -240,22 +241,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _menu(Response response) {
-    if (this.appState.offline) {
-      Navigator.of(context).pushReplacementNamed(MenuPage.route,
-          arguments:
-              MenuArguments(this.manager.menuItems, true, this.welcomeScreen));
-    } else {
-      Navigator.of(context).pushReplacementNamed(MenuPage.route,
-          arguments:
-              MenuArguments(response.menu.entries, true, this.welcomeScreen));
-    }
+    Navigator.of(context).pushReplacementNamed(MenuPage.route,
+        arguments:
+            MenuArguments(response.menu.entries, true, this.welcomeScreen));
   }
 
   void _checkForLogin(Response response) {
-    if (this.manager.isOffline != null && this.manager.isOffline) {
-      this.appState.offline = this.manager.isOffline;
-    }
-
     if (response != null && response.loginItem != null) {
       return _login(response);
     } else if (response.menu != null) {
@@ -317,24 +308,33 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       return;
     }
 
-    Startup startup = Startup(
-        url: appState.baseUrl,
-        applicationName: appState.appName,
-        screenHeight: MediaQuery.of(context).size.height.toInt(),
-        screenWidth: MediaQuery.of(context).size.width.toInt(),
-        appMode: appState.appMode != null && appState.appMode.isNotEmpty
-            ? appState.appMode
-            : 'preview',
-        readAheadLimit: appState.readAheadLimit,
-        requestType: RequestType.STARTUP,
-        deviceId: _getDeviceId(),
-        userName: appState.username,
-        password: appState.password,
-        authKey: this.manager.authKey,
-        layoutMode: 'generic',
-        language: languageToServer);
+    if (this.manager.isOffline != null && this.manager.isOffline) {
+      this.appState.offline = this.manager.isOffline;
+    }
 
-    BlocProvider.of<ApiBloc>(context).add(startup);
+    if (this.appState.isOffline) {
+      Navigator.of(context).pushNamed(MenuPage.route,
+          arguments: MenuArguments(<MenuItem>[], true));
+    } else {
+      Startup startup = Startup(
+          url: appState.baseUrl,
+          applicationName: appState.appName,
+          screenHeight: MediaQuery.of(context).size.height.toInt(),
+          screenWidth: MediaQuery.of(context).size.width.toInt(),
+          appMode: appState.appMode != null && appState.appMode.isNotEmpty
+              ? appState.appMode
+              : 'preview',
+          readAheadLimit: appState.readAheadLimit,
+          requestType: RequestType.STARTUP,
+          deviceId: _getDeviceId(),
+          userName: appState.username,
+          password: appState.password,
+          authKey: this.manager.authKey,
+          layoutMode: 'generic',
+          language: languageToServer);
+
+      BlocProvider.of<ApiBloc>(context).add(startup);
+    }
   }
 
   @override
