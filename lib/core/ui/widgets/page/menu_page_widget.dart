@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/restart_widget.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 
 import '../../../../injection_container.dart';
@@ -189,11 +190,11 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   _screenManager() {
     if (widget.appState.screenManager != null) {
-      SoMenuManager menuManager = SoMenuManager(this.items);
+      SoMenuManager menuManager = SoMenuManager(widget.appState.isOffline ? <MenuItem>[] : this.items);
       widget.appState.screenManager.onMenu(menuManager);
       this.items = menuManager.menuItems;
     }
-    // SharedPrefProvider.of(context).manager.setMenuItems(this.items);
+    SharedPrefProvider.of(context).manager.setMenuItems(this.items);
   }
 
   _appFrame() {
@@ -370,6 +371,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                   SharedPrefProvider.of(context)
                                       .manager
                                       .setOffline(false);
+                                  
+                                  RestartWidget.restartApp(context);
                                 });
                               },
                               icon: FaIcon(FontAwesomeIcons.broadcastTower),
