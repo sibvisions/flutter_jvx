@@ -106,6 +106,25 @@ class OfflineDatabase extends LocalDatabase {
     return false;
   }
 
+  Future<List<List<dynamic>>> getSyncData(String dataProvider) async {
+    if (dataProvider != null) {
+      String tableName = _formatTableName(dataProvider);
+      String where = "[$OFFLINE_COLUMNS_STATE]<>''";
+      String orderBy = "[$OFFLINE_COLUMNS_CHANGED]";
+
+      List<Map<String, dynamic>> result =
+          await this.selectRows(tableName, where, orderBy);
+
+      List<List<dynamic>> records = new List<List<dynamic>>();
+
+      result.forEach((element) {
+        records.add(_removeSpecialColumns(element).values.toList());
+      });
+
+      return records;
+    }
+  }
+
   Future<Response> fetchData(FetchData request) async {
     if (request != null && request.dataProvider != null) {
       String tableName = _formatTableName(request.dataProvider);
@@ -178,6 +197,7 @@ class OfflineDatabase extends LocalDatabase {
               rowState != OFFLINE_ROW_STATE_DELETED) {
             sqlSet =
                 "$sqlSet[$OFFLINE_COLUMNS_STATE]='$OFFLINE_ROW_STATE_EDITED'";
+            sqlSet = "$sqlSet[$OFFLINE_COLUMNS_CHANGED]=datetime('now')";
           }
           String where =
               "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
@@ -240,24 +260,51 @@ class OfflineDatabase extends LocalDatabase {
         String where =
             "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
 
-        // Delete localy if inserted before
+        // Delete locally if inserted before
         if (rowState == OFFLINE_ROW_STATE_INSERTED) {
           if (await this.delete(tableName, where)) {
-            //todo
+            FetchData fetch = FetchData(request.dataProvider, request.clientId);
+            return await this.fetchData(fetch);
           }
         } else {
           String sqlSet =
-              "[$OFFLINE_COLUMNS_STATE] = '$OFFLINE_ROW_STATE_DELETED'";
-
+              "[$OFFLINE_COLUMNS_STATE] = '$OFFLINE_ROW_STATE_DELETED'$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED] = datetime('now')";
+          sqlSet = "$sqlSet[$OFFLINE_COLUMNS_CHANGED]=datetime('now')";
           if (await this.update(tableName, sqlSet, where)) {
-            //todo
+            FetchData fetch = FetchData(request.dataProvider, request.clientId);
+            return await this.fetchData(fetch);
           }
         }
       }
     }
   }
 
-  Future<Response> insertRecord(InsertRecord request) async {}
+  Future<Response> insertRecord(InsertRecord request) async {
+    if (request != null && request.dataProvider != null) {
+      String tableName = _formatTableName(request.dataProvider);
+      int count = await this.rowCount(tableName);
+      String columnString =
+          "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
+      String valueString =
+          "'$OFFLINE_ROW_STATE_INSERTED'{$INSERT_INTO_DATA_SEPERATOR}datetime('now')";
+      if (await insert(tableName, columnString, valueString)) {
+        Response response = new Response();
+        ResponseData data = new ResponseData();
+        DataBook dataBook = new DataBook(
+          dataProvider: request.dataProvider,
+          selectedRow: count,
+        );
+        dataBook.records =
+            (await _getRowWithIndex(tableName, count)).values.toList();
+
+        data.dataBooks = [dataBook];
+        response.responseData = data;
+        return response;
+      }
+    }
+
+    return null;
+  }
 
   Future<Response> request(Request request) async {
     if (request != null) {
@@ -409,7 +456,7 @@ class OfflineDatabase extends LocalDatabase {
   String _getOfflineColumns() {
     return "$OFFLINE_COLUMNS_PRIMARY_KEY INTEGER PRIMARY KEY$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_MASTER_KEY INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR" +
-        "$OFFLINE_COLUMNS_STATE TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
+        "$OFFLINE_COLUMNS_STATE TEXT DEFAULT ''$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_CREATED INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_CHANGED INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR";
   }

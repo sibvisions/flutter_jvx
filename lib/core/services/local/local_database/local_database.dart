@@ -63,6 +63,23 @@ class LocalDatabase implements IDatabaseProvider {
             0); // && result[0] is QueryRow && result[0].row[0]>0);
   }
 
+  Future<int> rowCount(String tableName) async {
+    if (tableName == null || this.db == null || !this.db.isOpen) return 0;
+
+    List<Map<String, dynamic>> result =
+        await this.db.rawQuery("SELECT COUNT(*) FROM [$tableName]");
+
+    if (result != null &&
+        result.length > 0 &&
+        result[0] != null &&
+        result[0].length > 0 &&
+        result[0].containsKey('COUNT(*)')) {
+      return result[0]['COUNT(*)'];
+    }
+
+    return 0;
+  }
+
   Future<List<Map<String, dynamic>>> selectRows(String tableName,
       [String where, String orderBy, String limit]) async {
     if (tableName == null || this.db == null || !this.db.isOpen) {
