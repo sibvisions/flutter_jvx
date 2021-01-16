@@ -141,10 +141,10 @@ class OfflineDatabase extends LocalDatabase {
       String tableName = _formatTableName(request.dataProvider);
       String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
       String limit = "";
-      if (request.fromRow >= 0) {
+      if (request.fromRow != null && request.fromRow >= 0) {
         limit = request.fromRow.toString();
         if (request.rowCount >= 0) limit = ", " + request.rowCount.toString();
-      } else if (request.rowCount >= 0) {
+      } else if (request.rowCount != null && request.rowCount >= 0) {
         limit = request.rowCount.toString();
       }
 
@@ -166,13 +166,20 @@ class OfflineDatabase extends LocalDatabase {
         records: records,
       );
 
-      dataBook.from = request.fromRow;
-      dataBook.to = request?.rowCount ?? -1 + request?.fromRow ?? -1;
+      if (request.fromRow != null)
+        dataBook.from = request.fromRow;
+      else {
+        dataBook.from = 0;
+        dataBook.isAllFetched = true;
+      }
+      dataBook.to = records.length + dataBook.from;
 
       data.dataBooks = [dataBook];
       response.responseData = data;
       return response;
     }
+
+    return null;
   }
 
   Future<Response> setValues(SetValues request) async {
@@ -234,6 +241,7 @@ class OfflineDatabase extends LocalDatabase {
         }
       }
     }
+    return null;
   }
 
   Future<Response> selectRecord(SelectRecord request) async {
@@ -247,10 +255,12 @@ class OfflineDatabase extends LocalDatabase {
 
       if (request.selectedRow >= 0) {
         String tableName = _formatTableName(request.dataProvider);
-        dataBook.records =
-            (await _getRowWithIndex(tableName, request.selectedRow))
-                .values
-                .toList();
+
+        Map<String, dynamic> record =
+            await _getRowWithIndex(tableName, request.selectedRow);
+        dataBook.records = _removeSpecialColumns(record).values.toList();
+        dataBook.from = request.selectedRow;
+        dataBook.to = request.selectedRow;
       }
 
       data.dataBooks = [dataBook];
@@ -280,7 +290,6 @@ class OfflineDatabase extends LocalDatabase {
         } else {
           String sqlSet =
               "[$OFFLINE_COLUMNS_STATE] = '$OFFLINE_ROW_STATE_DELETED'$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED] = datetime('now')";
-          sqlSet = "$sqlSet[$OFFLINE_COLUMNS_CHANGED]=datetime('now')";
           if (await this.update(tableName, sqlSet, where)) {
             FetchData fetch = FetchData(request.dataProvider, request.clientId);
             return await this.fetchData(fetch);
@@ -288,6 +297,7 @@ class OfflineDatabase extends LocalDatabase {
         }
       }
     }
+    return null;
   }
 
   Future<Response> insertRecord(InsertRecord request) async {
@@ -297,7 +307,7 @@ class OfflineDatabase extends LocalDatabase {
       String columnString =
           "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
       String valueString =
-          "'$OFFLINE_ROW_STATE_INSERTED'{$INSERT_INTO_DATA_SEPERATOR}datetime('now')";
+          "'$OFFLINE_ROW_STATE_INSERTED'${INSERT_INTO_DATA_SEPERATOR}datetime('now')";
       if (await insert(tableName, columnString, valueString)) {
         Response response = new Response();
         ResponseData data = new ResponseData();
@@ -305,8 +315,11 @@ class OfflineDatabase extends LocalDatabase {
           dataProvider: request.dataProvider,
           selectedRow: count,
         );
-        dataBook.records =
-            (await _getRowWithIndex(tableName, count)).values.toList();
+        Map<String, dynamic> record = await _getRowWithIndex(tableName, count);
+        dataBook.records = _removeSpecialColumns(record).values.toList();
+
+        dataBook.from = count;
+        dataBook.to = count;
 
         data.dataBooks = [dataBook];
         response.responseData = data;

@@ -7,13 +7,15 @@ import 'i_database_provider.dart';
 class LocalDatabase implements IDatabaseProvider {
   bool debug = true;
   Database db;
+  String path;
 
   Future<void> openCreateDatabase(String path) async {
     if (this.debug) log('SQLite openCreateDatabase:' + path);
     this.db = await openDatabase(path, version: 1);
+    this.path = path;
   }
 
-  void closeDatabase() async {
+  Future<void> closeDatabase() async {
     if (this.db?.isOpen ?? false) await this.db.close();
   }
 
