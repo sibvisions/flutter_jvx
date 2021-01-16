@@ -4,5 +4,5 @@ abstract class IDatabaseProvider {
   Database db;
 
   Future<void> openCreateDatabase(String path);
-  void closeDatabase();
+  Future<void> closeDatabase();
 }

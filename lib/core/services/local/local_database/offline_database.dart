@@ -1,3 +1,4 @@
+import 'dart:io';
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../models/api/request.dart';
@@ -122,6 +123,16 @@ class OfflineDatabase extends LocalDatabase {
       });
 
       return records;
+    }
+  }
+
+  Future<bool> cleanupDatabase() async {
+    await this.closeDatabase();
+    try {
+      File file = File(this.path);
+      await file.delete();
+    } catch (error) {
+      print(error);
     }
   }
 
