@@ -50,6 +50,23 @@ class LocalDatabase implements IDatabaseProvider {
     return false;
   }
 
+  Future<bool> cleanTable(String tableName) async {
+    if (tableName == null || this.db == null || !this.db.isOpen) return false;
+
+    if (await this.tableExists(tableName)) {
+      String sql = "DELETE FROM [$tableName];";
+      await this.db.execute(sql);
+
+      if (this.debug) {
+        log('SQLite cleanTable:' + sql);
+      }
+
+      if (!await this.tableExists(tableName)) return false;
+    }
+
+    return false;
+  }
+
   Future<bool> tableExists(String tableName) async {
     if (tableName == null || this.db == null || !this.db.isOpen) return false;
 
