@@ -21,4 +21,13 @@ class DataBookMetaDataColumn extends ComponentProperties {
     if (json[_cellEditorIdentifier] != null)
       cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': name,
+    'label': label,
+    'dataTypeIdentifier': dataTypeIdentifier,
+    'readOnly': readOnly,
+    'nullable': nullable,
+    'cellEditor': cellEditor.toJson(),
+  };
 }

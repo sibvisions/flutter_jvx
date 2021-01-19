@@ -7,6 +7,7 @@ import 'package:jvx_flutterclient/core/services/local/shared_preferences_manager
 import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
 import 'package:jvx_flutterclient/core/services/remote/rest/rest_client.dart';
 import 'package:jvx_flutterclient/core/utils/network/network_info.dart';
+import 'package:jvx_flutterclient/core/utils/translation/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
@@ -83,11 +84,43 @@ class OfflineDatabase extends LocalDatabase
         language: bloc.appState.language);
 
     await for (Response response in bloc.startup(startup)) {
-      bloc.close();
-      if (response != null)
+      if (response != null) {
+        this._setProperties(bloc, response);
+        bloc.close();
         return true;
-      else
+      } else {
+        bloc.close();
         return false;
+      }
+    }
+  }
+
+  void _setProperties(ApiBloc bloc, Response response) {
+    if (response.applicationMetaData != null) {
+      if (response.applicationMetaData != null &&
+          response.applicationMetaData.version != bloc.manager.appVersion) {
+        bloc.manager.setPreviousAppVersion(bloc.manager.appVersion);
+        bloc.manager.setAppVersion(response.applicationMetaData.version);
+      }
+
+      if (bloc.appState.language != response.applicationMetaData.langCode &&
+          response.applicationMetaData.langCode != null &&
+          response.applicationMetaData.langCode.isNotEmpty) {
+        AppLocalizations.load(Locale(response.applicationMetaData.langCode));
+      }
+
+      bloc.appState.language = response.applicationMetaData.langCode;
+      bloc.appState.clientId = response.applicationMetaData.clientId;
+      bloc.appState.appVersion = response.applicationMetaData.version;
+    }
+    if (response.menu != null) {
+      bloc.appState.items = response.menu.entries;
+    }
+    if (response.userData != null) {
+      bloc.appState.displayName = response.userData.displayName;
+      bloc.appState.profileImage = response.userData.profileImage;
+      bloc.appState.username = response.userData.userName;
+      bloc.appState.roles = response.userData.roles;
     }
   }
 
