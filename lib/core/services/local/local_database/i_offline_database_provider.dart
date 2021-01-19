@@ -3,5 +3,5 @@ import '../../../models/api/response.dart';
 import 'i_database_provider.dart';
 
 abstract class IOfflineDatabaseProvider extends IDatabaseProvider {
-  Future<Response> request(Request request);
+  Stream<Response> request(Request request);
 }

@@ -333,24 +333,24 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Response> request(Request request) async {
+  Stream<Response> request(Request request) async* {
     if (request != null) {
       if (request is FetchData) {
-        return await fetchData(request);
+        yield await fetchData(request);
       } else if (request is SetValues) {
-        return await this.setValues(request);
+        yield await this.setValues(request);
       } else if (request is InsertRecord) {
-        return await this.insertRecord(request);
+        yield await this.insertRecord(request);
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
-          return await this.selectRecord(request);
+          yield await this.selectRecord(request);
         } else if (request.requestType == RequestType.DAL_DELETE) {
-          return await this.deleteRecord(request);
+          yield await this.deleteRecord(request);
         }
       }
     }
 
-    return null;
+    yield null;
   }
 
   Future<Map<String, dynamic>> _getRowWithOfflinePrimaryKey(
