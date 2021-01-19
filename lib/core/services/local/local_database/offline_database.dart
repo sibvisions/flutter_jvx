@@ -33,8 +33,22 @@ const String OFFLINE_ROW_STATE_EDITED = "U";
 const String OFFLINE_ROW_STATE_INSERTED = "I";
 const String OFFLINE_ROW_STATE_DELETED = "D";
 
+const String OFFLINE_META_DATA_TABLE = "off_metaData";
+const String OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER = "data_provider";
+const String OFFLINE_META_DATA_TABLE_COLUMN_DATA = "data";
+
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
+  Future<void> openCreateDatabase(String path) async {
+    await super.openCreateDatabase(path);
+    if (db?.isOpen ?? false) {
+      String columnStr =
+          "$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER TEXT $CREATE_TABLE_COLUMNS_SEPERATOR" +
+              "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
+      await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
+    }
+  }
+
   Future<void> importComponentList(List<SoComponentData> componentData) async {
     Future.forEach(componentData, (element) async {
       await importComponent(element);
