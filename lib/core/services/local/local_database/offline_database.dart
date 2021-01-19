@@ -448,16 +448,21 @@ class OfflineDatabase extends LocalDatabase
   Stream<Response> request(Request request) async* {
     if (request != null) {
       if (request is FetchData) {
-        yield await fetchData(request)..request = request;
+        yield await fetchData(request)
+          ..request = request;
       } else if (request is SetValues) {
-        yield await this.setValues(request)..request = request;
+        yield await this.setValues(request)
+          ..request = request;
       } else if (request is InsertRecord) {
-        yield await this.insertRecord(request)..request = request;
+        yield await this.insertRecord(request)
+          ..request = request;
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
-          yield await this.selectRecord(request)..request = request;
+          yield await this.selectRecord(request)
+            ..request = request;
         } else if (request.requestType == RequestType.DAL_DELETE) {
-          yield await this.deleteRecord(request)..request = request;
+          yield await this.deleteRecord(request)
+            ..request = request;
         }
       } else if (request is Navigation) {
         yield Response()..request = Navigation();
@@ -475,7 +480,7 @@ class OfflineDatabase extends LocalDatabase
       String setString =
           "[$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME] = '$tableName'$UPDATE_DATA_SEPERATOR" +
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA] = '$metaData'";
-      return await update(tableName, setString, where);
+      return await update(OFFLINE_META_DATA_TABLE, setString, where);
     } else {
       String columnString =
           "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]$INSERT_INTO_DATA_SEPERATOR" +
@@ -483,7 +488,7 @@ class OfflineDatabase extends LocalDatabase
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA]";
       String valueString =
           "'$dataProvider'$INSERT_INTO_DATA_SEPERATOR'$tableName'$INSERT_INTO_DATA_SEPERATOR'$metaData'";
-      return await insert(tableName, columnString, valueString);
+      return await insert(OFFLINE_META_DATA_TABLE, columnString, valueString);
     }
   }
 
