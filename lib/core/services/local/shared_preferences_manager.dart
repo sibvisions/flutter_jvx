@@ -139,7 +139,7 @@ class SharedPreferencesManager {
     this.sharedPreferences.setString('translation', jsonString);
   }
 
-  void setApplicationStyle(Map<String, String> applicationStyle) {
+  void setApplicationStyle(Map<String, dynamic> applicationStyle) {
     String jsonString = json.encode(applicationStyle);
 
     this.sharedPreferences.setString('applicationStyle', jsonString);
