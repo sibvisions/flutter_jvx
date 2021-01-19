@@ -155,9 +155,9 @@ mixin SoDataScreen {
 
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-      sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
-      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+      await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .importComponentList(componentData);
     } else {
       // wait until textfields focus lost. 10 millis should do it.
