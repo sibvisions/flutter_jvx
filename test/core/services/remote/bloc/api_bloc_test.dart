@@ -8,6 +8,7 @@ import 'package:jvx_flutterclient/core/models/api/request/login.dart';
 import 'package:jvx_flutterclient/core/models/api/request/startup.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
 import 'package:jvx_flutterclient/core/models/app/app_state.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/shared_preferences_manager.dart';
 import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
 import 'package:jvx_flutterclient/core/services/remote/rest/http_client.dart';
@@ -35,6 +36,7 @@ void main() async {
   SharedPreferencesManager manager;
   AppState appState;
   Response response;
+  OfflineDatabase offlineDatabase;
 
   MockHttpClient mockHttpClient;
   MockConnectivity mockConnectivity;
@@ -50,8 +52,10 @@ void main() async {
     manager = SharedPreferencesManager(mockSharedPreferences);
     appState = AppState();
     response = Response();
+    offlineDatabase = OfflineDatabase();
 
-    bloc = ApiBloc(response, networkInfo, restClient, appState, manager);
+    bloc = ApiBloc(
+        response, networkInfo, restClient, appState, manager, offlineDatabase);
   });
 
   test('initial state should not have an error', () async {

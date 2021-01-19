@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../models/api/request.dart';
@@ -31,7 +33,8 @@ const String OFFLINE_ROW_STATE_EDITED = "U";
 const String OFFLINE_ROW_STATE_INSERTED = "I";
 const String OFFLINE_ROW_STATE_DELETED = "D";
 
-class OfflineDatabase extends LocalDatabase {
+class OfflineDatabase extends LocalDatabase
+    implements IOfflineDatabaseProvider {
   Future<void> importComponentList(List<SoComponentData> componentData) async {
     Future.forEach(componentData, (element) async {
       await importComponent(element);
