@@ -7,6 +7,7 @@ import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
@@ -49,13 +50,14 @@ class ApiBloc extends Bloc<Request, Response> {
   final RestClient restClient;
   final AppState appState;
   final SharedPreferencesManager manager;
+  final IOfflineDatabaseProvider offlineDb;
 
   Queue<Request> _requestQueue = Queue<Request>();
   int _seqNo = 0;
   int lastYieldTime = 0;
 
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
-      this.appState, this.manager)
+      this.appState, this.manager, this.offlineDb)
       : super(initialState);
 
   @override
