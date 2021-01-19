@@ -1,6 +1,15 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/models/api/request/startup.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+import 'package:jvx_flutterclient/core/services/local/shared_preferences_manager.dart';
+import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
+import 'package:jvx_flutterclient/core/services/remote/rest/rest_client.dart';
+import 'package:jvx_flutterclient/core/utils/network/network_info.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../../../injection_container.dart';
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../models/api/request.dart';
@@ -46,6 +55,37 @@ class OfflineDatabase extends LocalDatabase
           "$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER TEXT $CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
+    }
+  }
+
+  Future<bool> syncOnline(BuildContext context) async {
+    ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
+        sl<AppState>(), sl<SharedPreferencesManager>(), null);
+
+    Startup startup = Startup(
+        url: bloc.appState.baseUrl,
+        applicationName: bloc.appState.appName,
+        screenHeight: MediaQuery.of(context).size.height.toInt(),
+        screenWidth: MediaQuery.of(context).size.width.toInt(),
+        appMode:
+            bloc.appState.appMode != null && bloc.appState.appMode.isNotEmpty
+                ? bloc.appState.appMode
+                : 'preview',
+        readAheadLimit: bloc.appState.readAheadLimit,
+        requestType: RequestType.STARTUP,
+        deviceId: bloc.manager.deviceId,
+        userName: bloc.appState.username,
+        password: bloc.appState.password,
+        authKey: bloc.manager.authKey,
+        layoutMode: 'generic',
+        language: bloc.appState.language);
+
+    await for (Response response in bloc.startup(startup)) {
+      bloc.close();
+      if (response != null)
+        return true;
+      else
+        return false;
     }
   }
 
@@ -347,24 +387,24 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Response> request(Request request) async {
+  Stream<Response> request(Request request) async* {
     if (request != null) {
       if (request is FetchData) {
-        return await fetchData(request);
+        yield await fetchData(request);
       } else if (request is SetValues) {
-        return await this.setValues(request);
+        yield await this.setValues(request);
       } else if (request is InsertRecord) {
-        return await this.insertRecord(request);
+        yield await this.insertRecord(request);
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
-          return await this.selectRecord(request);
+          yield await this.selectRecord(request);
         } else if (request.requestType == RequestType.DAL_DELETE) {
-          return await this.deleteRecord(request);
+          yield await this.deleteRecord(request);
         }
       }
     }
 
-    return null;
+    yield null;
   }
 
   Future<Map<String, dynamic>> _getRowWithOfflinePrimaryKey(
