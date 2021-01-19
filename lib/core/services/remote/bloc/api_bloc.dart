@@ -73,11 +73,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
-    yield updateResponse(Response()..request = Loading());
-
     if (this.appState.isOffline && this.offlineDb.isOpen) {
       yield* this.offlineDb.request(event);
     } else if (await this.networkInfo.isConnected) {
+      yield updateResponse(Response()..request = Loading());
       await for (Response response
           in makeRequest(_requestQueue.removeFirst())) {
         if (response.request.requestType != RequestType.LOADING &&
