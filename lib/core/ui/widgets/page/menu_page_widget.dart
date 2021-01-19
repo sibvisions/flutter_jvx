@@ -8,6 +8,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/restart_widget.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
@@ -374,7 +376,9 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                       .manager
                                       .setOffline(false);
 
-                                  RestartWidget.restartApp(context);
+                                  (sl<IOfflineDatabaseProvider>() as OfflineDatabase).cleanupDatabase();
+
+                                  sl<IOfflineDatabaseProvider>().syncOnline(context);
                                 });
                               },
                               icon: FaIcon(FontAwesomeIcons.broadcastTower),
