@@ -174,7 +174,19 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  Future<DataBookMetaData> getMetaData(String dataProvider) async {}
+  Future<DataBookMetaData> getMetaData(String dataProvider) async {
+    String where =
+        "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]='$dataProvider'";
+    List<Map<String, dynamic>> result =
+        await this.selectRows(OFFLINE_META_DATA_TABLE, where);
+    if (result != null &&
+        result.length > 0 &&
+        result[0].containsKey(OFFLINE_META_DATA_TABLE_COLUMN_DATA)) {
+      String metaData = result[0][OFFLINE_META_DATA_TABLE_COLUMN_DATA];
+
+      return DataBookMetaData.fromJson(json.decode(metaData));
+    }
+  }
 
   Future<bool> importRows(DataBook data) async {
     int failedInsertCount = 0;
@@ -265,6 +277,8 @@ class OfflineDatabase extends LocalDatabase
         dataProvider: request.dataProvider,
         records: records,
       );
+
+      data.dataBookMetaData = [await getMetaData(request.dataProvider)];
 
       if (request.fromRow != null)
         dataBook.from = request.fromRow;
