@@ -51,4 +51,20 @@ class DataBookMetaData extends ResponseObject {
 
     return null;
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'dataProvider': dataProvider,
+        'readOnly': readOnly,
+        'deleteEnabled': deleteEnabled,
+        'updateEnabled': updateEnabled,
+        'insertEnabled': insertEnabled,
+        'primaryKeyColumns': primaryKeyColumns,
+        'tableColumnView': tableColumnView,
+        'detailDataProviders': detailDataProviders
+            .map<Map<String, dynamic>>((dp) => dp.toJson())
+            .toList(),
+        'columns':
+            columns.map<Map<String, dynamic>>((c) => c.toJson()).toList(),
+      };
 }
+ 
