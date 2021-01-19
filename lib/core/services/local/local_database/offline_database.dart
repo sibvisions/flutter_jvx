@@ -468,7 +468,7 @@ class OfflineDatabase extends LocalDatabase
       String dataProvider, String tableName, String metaData) async {
     String where =
         "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]='$dataProvider'";
-    if (await rowExists(tableName, where)) {
+    if (await rowExists(OFFLINE_META_DATA_TABLE, where)) {
       String setString =
           "[$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME] = '$tableName'$UPDATE_DATA_SEPERATOR" +
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA] = '$metaData'";

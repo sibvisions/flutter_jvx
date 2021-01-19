@@ -20,9 +20,9 @@ class CellEditor extends CellEditorProperties {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'className': className,
-    'linkReference': linkReference.toJson(),
-    'columnView': columnView.toJson(),
-    'popupSize': popupSize.toJson()
-  };
+        'className': className,
+        'linkReference': linkReference?.toJson(),
+        'columnView': columnView?.toJson(),
+        'popupSize': popupSize?.toJson()
+      };
 }
