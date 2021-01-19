@@ -188,54 +188,58 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   Widget _blocListener() {
     return BlocListener<ApiBloc, Response>(
       listener: (BuildContext context, Response state) {
-        // Checking for error
-        if (state.hasError) {
-          handleError(state, context);
-        }
+        if (state != null) {
+          // Checking for error
+          if (state.hasError) {
+            handleError(state, context);
+          }
 
-        if (state.request.requestType != RequestType.LOADING) {
-          // Updating menu
-          if (state.request.requestType == RequestType.MENU)
-            _onMenuResponse(state.menu.entries);
+          if (state.request.requestType != RequestType.LOADING) {
+            // Updating menu
+            if (state.request.requestType == RequestType.MENU)
+              _onMenuResponse(state.menu.entries);
 
-          if (state.request.requestType == RequestType.CLOSE_SCREEN) {
-            _onCloseScreen(state);
-          } else if (isScreenRequest(state.request.requestType)) {
-            // Update response
-            setState(() {
-              this.currentResponse = state;
-            });
-
-            if (state.responseData.screenGeneric != null &&
-                state.responseData.screenGeneric.screenTitle != null) {
+            if (state.request.requestType == RequestType.CLOSE_SCREEN) {
+              _onCloseScreen(state);
+            } else if (isScreenRequest(state.request.requestType)) {
+              // Update response
               setState(() {
-                title = state.responseData.screenGeneric.screenTitle;
+                this.currentResponse = state;
               });
 
-              if (_openScreenManager.findScreen(
-                      state.responseData.screenGeneric.componentId) ==
-                  null) {
-                _openScreenManager.registerScreen(SoScreen(
-                  configuration: SoScreenConfiguration(state,
-                      screenTitle: state.responseData.screenGeneric.screenTitle,
-                      componentId: state.responseData.screenGeneric.componentId,
-                      withServer: true),
-                ));
+              if (state.responseData.screenGeneric != null &&
+                  state.responseData.screenGeneric.screenTitle != null) {
+                setState(() {
+                  title = state.responseData.screenGeneric.screenTitle;
+                });
+
+                if (_openScreenManager.findScreen(
+                        state.responseData.screenGeneric.componentId) ==
+                    null) {
+                  _openScreenManager.registerScreen(SoScreen(
+                    configuration: SoScreenConfiguration(state,
+                        screenTitle:
+                            state.responseData.screenGeneric.screenTitle,
+                        componentId:
+                            state.responseData.screenGeneric.componentId,
+                        withServer: true),
+                  ));
+                }
               }
-            }
 
-            if (state.request.requestType == RequestType.DEVICE_STATUS)
-              _onDeviceStatusResponse(state.deviceStatusResponse);
+              if (state.request.requestType == RequestType.DEVICE_STATUS)
+                _onDeviceStatusResponse(state.deviceStatusResponse);
 
-            _onPressButtonRequest(state);
+              _onPressButtonRequest(state);
 
-            if (state.request.requestType == RequestType.OPEN_SCREEN) {
-              _onOpenScreen(state);
-            }
+              if (state.request.requestType == RequestType.OPEN_SCREEN) {
+                _onOpenScreen(state);
+              }
 
-            if (state.request.requestType == RequestType.NAVIGATION &&
-                state.responseData.screenGeneric == null) {
-              _onCloseScreen(state);
+              if (state.request.requestType == RequestType.NAVIGATION &&
+                  state.responseData.screenGeneric == null) {
+                _onCloseScreen(state);
+              }
             }
           }
         }
