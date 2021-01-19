@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:jvx_flutterclient/core/models/api/request/startup.dart';
@@ -164,7 +165,7 @@ class OfflineDatabase extends LocalDatabase
 
           if (await createTable(tablename, columns)) {
             // toDo serialize metaData
-            String metaDataString = ""; //metaData.
+            String metaDataString = json.encode(metaData.toJson());
             await _insertUpdateMetaData(
                 metaData.dataProvider, tablename, metaDataString);
           }
@@ -172,6 +173,8 @@ class OfflineDatabase extends LocalDatabase
       }
     }
   }
+
+  Future<DataBookMetaData> getMetaData(String dataProvider) async {}
 
   Future<bool> importRows(DataBook data) async {
     int failedInsertCount = 0;
