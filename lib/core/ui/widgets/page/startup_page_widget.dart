@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/download.dart';
+import 'package:jvx_flutterclient/core/models/api/response/application_style_response.dart';
 import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
@@ -185,7 +186,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           response.applicationStyle.themeColor != null) {
         this.appState.applicationStyle = response.applicationStyle;
 
-        MaterialColor newColor = getColorFromAppStyle(response);
+        MaterialColor newColor =
+            getColorFromAppStyle(response.applicationStyle);
 
         sl<ThemeManager>().themeData = ThemeData(
           primaryColor: newColor,
@@ -194,6 +196,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           fontFamily: 'Raleway',
           cursorColor: newColor,
         );
+
+        this.manager.setApplicationStyle(response.applicationStyle.toJson());
 
         if (response.applicationStyle.hash !=
                 this.manager.applicationStylingHash ||
@@ -310,6 +314,17 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
     if (this.manager.isOffline != null && this.manager.isOffline) {
       this.appState.offline = this.manager.isOffline;
+
+      MaterialColor newColor = getColorFromAppStyle(
+          ApplicationStyleResponse.fromJson(this.manager.applicationStyle));
+
+      sl<ThemeManager>().themeData = ThemeData(
+        primaryColor: newColor,
+        primarySwatch: newColor,
+        brightness: Brightness.light,
+        fontFamily: 'Raleway',
+        cursorColor: newColor,
+      );
     }
 
     if (this.appState.isOffline) {
