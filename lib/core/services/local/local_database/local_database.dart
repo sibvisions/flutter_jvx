@@ -7,13 +7,15 @@ import 'i_database_provider.dart';
 class LocalDatabase implements IDatabaseProvider {
   bool debug = true;
   Database db;
+  String path;
 
   Future<void> openCreateDatabase(String path) async {
     if (this.debug) log('SQLite openCreateDatabase:' + path);
     this.db = await openDatabase(path, version: 1);
+    this.path = path;
   }
 
-  void closeDatabase() async {
+  Future<void> closeDatabase() async {
     if (this.db?.isOpen ?? false) await this.db.close();
   }
 
@@ -48,6 +50,23 @@ class LocalDatabase implements IDatabaseProvider {
     return false;
   }
 
+  Future<bool> cleanTable(String tableName) async {
+    if (tableName == null || this.db == null || !this.db.isOpen) return false;
+
+    if (await this.tableExists(tableName)) {
+      String sql = "DELETE FROM [$tableName];";
+      await this.db.execute(sql);
+
+      if (this.debug) {
+        log('SQLite cleanTable:' + sql);
+      }
+
+      if (!await this.tableExists(tableName)) return false;
+    }
+
+    return false;
+  }
+
   Future<bool> tableExists(String tableName) async {
     if (tableName == null || this.db == null || !this.db.isOpen) return false;
 
@@ -61,6 +80,23 @@ class LocalDatabase implements IDatabaseProvider {
         result[0].length > 0 &&
         result[0]['COUNT(*)'] >
             0); // && result[0] is QueryRow && result[0].row[0]>0);
+  }
+
+  Future<int> rowCount(String tableName) async {
+    if (tableName == null || this.db == null || !this.db.isOpen) return 0;
+
+    List<Map<String, dynamic>> result =
+        await this.db.rawQuery("SELECT COUNT(*) FROM [$tableName]");
+
+    if (result != null &&
+        result.length > 0 &&
+        result[0] != null &&
+        result[0].length > 0 &&
+        result[0].containsKey('COUNT(*)')) {
+      return result[0]['COUNT(*)'];
+    }
+
+    return 0;
   }
 
   Future<List<Map<String, dynamic>>> selectRows(String tableName,

@@ -1,3 +1,4 @@
+import 'dart:io';
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import '../../../models/api/request.dart';
@@ -26,7 +27,7 @@ const String OFFLINE_COLUMNS_STATE = "off_state";
 const String OFFLINE_COLUMNS_CREATED = "off_created";
 const String OFFLINE_COLUMNS_CHANGED = "off_changed";
 
-const String OFFLINE_ROW_STATE_EDITED = "E";
+const String OFFLINE_ROW_STATE_EDITED = "U";
 const String OFFLINE_ROW_STATE_INSERTED = "I";
 const String OFFLINE_ROW_STATE_DELETED = "D";
 
@@ -106,6 +107,81 @@ class OfflineDatabase extends LocalDatabase {
     return false;
   }
 
+  Future<List<List<dynamic>>> getSyncData(String dataProvider) async {
+    if (dataProvider != null) {
+      String tableName = _formatTableName(dataProvider);
+      String where = "[$OFFLINE_COLUMNS_STATE]<>''";
+      String orderBy = "[$OFFLINE_COLUMNS_CHANGED]";
+
+      List<Map<String, dynamic>> result =
+          await this.selectRows(tableName, where, orderBy);
+
+      List<List<dynamic>> records = new List<List<dynamic>>();
+
+      result.forEach((element) {
+        records.add(_removeSpecialColumns(element).values.toList());
+      });
+
+      return records;
+    }
+  }
+
+  Future<bool> cleanupDatabase() async {
+    await this.closeDatabase();
+    try {
+      File file = File(this.path);
+      await file.delete();
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<Response> fetchData(FetchData request) async {
+    if (request != null && request.dataProvider != null) {
+      String tableName = _formatTableName(request.dataProvider);
+      String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
+      String limit = "";
+      if (request.fromRow != null && request.fromRow >= 0) {
+        limit = request.fromRow.toString();
+        if (request.rowCount >= 0) limit = ", " + request.rowCount.toString();
+      } else if (request.rowCount != null && request.rowCount >= 0) {
+        limit = request.rowCount.toString();
+      }
+
+      String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+
+      List<Map<String, dynamic>> result =
+          await this.selectRows(tableName, where, orderBy, limit);
+
+      List<List<dynamic>> records = new List<List<dynamic>>();
+
+      result.forEach((element) {
+        records.add(_removeSpecialColumns(element).values.toList());
+      });
+
+      Response response = new Response();
+      ResponseData data = new ResponseData();
+      DataBook dataBook = new DataBook(
+        dataProvider: request.dataProvider,
+        records: records,
+      );
+
+      if (request.fromRow != null)
+        dataBook.from = request.fromRow;
+      else {
+        dataBook.from = 0;
+        dataBook.isAllFetched = true;
+      }
+      dataBook.to = records.length + dataBook.from;
+
+      data.dataBooks = [dataBook];
+      response.responseData = data;
+      return response;
+    }
+
+    return null;
+  }
+
   Future<Response> setValues(SetValues request) async {
     if (request != null &&
         request.columnNames != null &&
@@ -118,8 +194,10 @@ class OfflineDatabase extends LocalDatabase {
 
       if (await tableExists(tableName)) {
         String sqlSet = "";
-        dynamic internalPrimaryKey = this._getSelectedInternalPrimaryKey(
-            tableName, request.offlineSelectedRow);
+        Map<String, dynamic> record =
+            await _getRowWithIndex(tableName, request.offlineSelectedRow);
+        dynamic offlinePrimaryKey = await this._getOfflinePrimaryKey(record);
+
         for (int i = 0; i < request.columnNames.length; i++) {
           dynamic value = request.values[i];
           String columnName = request.columnNames[i];
@@ -132,14 +210,38 @@ class OfflineDatabase extends LocalDatabase {
         }
 
         if (sqlSet.length > 0) {
-          sqlSet =
-              "$sqlSet[$OFFLINE_COLUMNS_STATE]=$OFFLINE_ROW_STATE_EDITED$UPDATE_DATA_SEPERATOR";
+          String rowState = await this._getRowState(record);
+          if (rowState != OFFLINE_ROW_STATE_INSERTED &&
+              rowState != OFFLINE_ROW_STATE_DELETED) {
+            sqlSet =
+                "$sqlSet[$OFFLINE_COLUMNS_STATE]='$OFFLINE_ROW_STATE_EDITED'";
+            sqlSet = "$sqlSet[$OFFLINE_COLUMNS_CHANGED]=datetime('now')";
+          }
           String where =
-              "$OFFLINE_COLUMNS_PRIMARY_KEY='${internalPrimaryKey.toString()}'";
-          if (await this.update(tableName, sqlSet, where)) {}
+              "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
+          if (await this.update(tableName, sqlSet, where)) {
+            Map<String, dynamic> row = await _getRowWithOfflinePrimaryKey(
+                tableName, offlinePrimaryKey);
+            List<dynamic> records = row.values.toList();
+            Response response = new Response();
+            ResponseData data = new ResponseData();
+            DataBook dataBook = new DataBook(
+              dataProvider: request.dataProvider,
+              selectedRow: request.offlineSelectedRow,
+              records: records,
+            );
+
+            dataBook.from = request.offlineSelectedRow;
+            dataBook.to = request.offlineSelectedRow;
+
+            data.dataBooks = [dataBook];
+            response.responseData = data;
+            return response;
+          }
         }
       }
     }
+    return null;
   }
 
   Future<Response> selectRecord(SelectRecord request) async {
@@ -147,8 +249,20 @@ class OfflineDatabase extends LocalDatabase {
       Response response = new Response();
       ResponseData data = new ResponseData();
       DataBook dataBook = new DataBook(
+        dataProvider: request.dataProvider,
         selectedRow: request.selectedRow,
       );
+
+      if (request.selectedRow >= 0) {
+        String tableName = _formatTableName(request.dataProvider);
+
+        Map<String, dynamic> record =
+            await _getRowWithIndex(tableName, request.selectedRow);
+        dataBook.records = _removeSpecialColumns(record).values.toList();
+        dataBook.from = request.selectedRow;
+        dataBook.to = request.selectedRow;
+      }
+
       data.dataBooks = [dataBook];
       response.responseData = data;
       return response;
@@ -156,21 +270,79 @@ class OfflineDatabase extends LocalDatabase {
     return null;
   }
 
-  Future<void> deleteRecord(SelectRecord request) {}
-  Future<void> insertRecord(InsertRecord request) {}
+  Future<Response> deleteRecord(SelectRecord request) async {
+    if (request != null) {
+      String tableName = _formatTableName(request.dataProvider);
+      if (await tableExists(tableName)) {
+        Map<String, dynamic> record =
+            await _getRowWithIndex(tableName, request.selectedRow);
+        dynamic offlinePrimaryKey = await this._getOfflinePrimaryKey(record);
+        String rowState = await this._getRowState(record);
+        String where =
+            "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
 
-  Future<Response> request(Request request) {
+        // Delete locally if inserted before
+        if (rowState == OFFLINE_ROW_STATE_INSERTED) {
+          if (await this.delete(tableName, where)) {
+            FetchData fetch = FetchData(request.dataProvider, request.clientId);
+            return await this.fetchData(fetch);
+          }
+        } else {
+          String sqlSet =
+              "[$OFFLINE_COLUMNS_STATE] = '$OFFLINE_ROW_STATE_DELETED'$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED] = datetime('now')";
+          if (await this.update(tableName, sqlSet, where)) {
+            FetchData fetch = FetchData(request.dataProvider, request.clientId);
+            return await this.fetchData(fetch);
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  Future<Response> insertRecord(InsertRecord request) async {
+    if (request != null && request.dataProvider != null) {
+      String tableName = _formatTableName(request.dataProvider);
+      int count = await this.rowCount(tableName);
+      String columnString =
+          "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
+      String valueString =
+          "'$OFFLINE_ROW_STATE_INSERTED'${INSERT_INTO_DATA_SEPERATOR}datetime('now')";
+      if (await insert(tableName, columnString, valueString)) {
+        Response response = new Response();
+        ResponseData data = new ResponseData();
+        DataBook dataBook = new DataBook(
+          dataProvider: request.dataProvider,
+          selectedRow: count,
+        );
+        Map<String, dynamic> record = await _getRowWithIndex(tableName, count);
+        dataBook.records = _removeSpecialColumns(record).values.toList();
+
+        dataBook.from = count;
+        dataBook.to = count;
+
+        data.dataBooks = [dataBook];
+        response.responseData = data;
+        return response;
+      }
+    }
+
+    return null;
+  }
+
+  Future<Response> request(Request request) async {
     if (request != null) {
       if (request is FetchData) {
+        return await fetchData(request);
       } else if (request is SetValues) {
-        return this.setValues(request);
+        return await this.setValues(request);
       } else if (request is InsertRecord) {
-        return this.insertRecord(request);
+        return await this.insertRecord(request);
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
-          return this.selectRecord(request);
+          return await this.selectRecord(request);
         } else if (request.requestType == RequestType.DAL_DELETE) {
-          return this.deleteRecord(request);
+          return await this.deleteRecord(request);
         }
       }
     }
@@ -184,22 +356,53 @@ class OfflineDatabase extends LocalDatabase {
         "[$OFFLINE_COLUMNS_PRIMARY_KEY]='${offlinePrimaryKey.toString()}'";
     List<Map<String, dynamic>> result = await this.selectRows(tableName, where);
 
-    if (result.length > 0) {}
+    if (result.length > 0) {
+      return _removeSpecialColumns(result[0]);
+    }
     return null;
   }
 
-  String _removeSpecialColumns(Map<String, dynamic> row) {}
-
-  Future<dynamic> _getSelectedInternalPrimaryKey(
+  Future<Map<String, dynamic>> _getRowWithIndex(
       String tableName, int index) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
+    String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
     List<Map<String, dynamic>> result =
-        await this.selectRows(tableName, "", orderBy, "$index, 1");
+        await this.selectRows(tableName, where, orderBy, "$index, 1");
 
     if (result != null && result.length > 0) {
-      if (result[0].containsKey(OFFLINE_COLUMNS_PRIMARY_KEY)) {
-        return result[0][OFFLINE_COLUMNS_PRIMARY_KEY];
+      return result[0];
+    }
+
+    return null;
+  }
+
+  Map<String, dynamic> _removeSpecialColumns(Map<String, dynamic> row) {
+    Map<String, dynamic> cleanRows = new Map<String, dynamic>();
+
+    row.forEach((columnName, value) {
+      if (columnName.endsWith(CREATE_TABLE_COLUMNS_NEW_SUFFIX)) {
+        String newColumnName = columnName.substring(
+            0, columnName.length - CREATE_TABLE_COLUMNS_NEW_SUFFIX.length);
+        cleanRows[newColumnName] = value;
+      } else if (columnName == OFFLINE_COLUMNS_STATE) {
+        cleanRows[OFFLINE_COLUMNS_STATE] = value;
       }
+    });
+
+    return cleanRows;
+  }
+
+  Future<dynamic> _getOfflinePrimaryKey(Map<String, dynamic> result) async {
+    if (result != null && result.containsKey(OFFLINE_COLUMNS_PRIMARY_KEY)) {
+      return result[OFFLINE_COLUMNS_PRIMARY_KEY];
+    }
+
+    return null;
+  }
+
+  Future<String> _getRowState(Map<String, dynamic> result) async {
+    if (result != null && result.containsKey(OFFLINE_COLUMNS_STATE)) {
+      return result[OFFLINE_COLUMNS_STATE].toString();
     }
 
     return null;
@@ -277,7 +480,7 @@ class OfflineDatabase extends LocalDatabase {
   String _getOfflineColumns() {
     return "$OFFLINE_COLUMNS_PRIMARY_KEY INTEGER PRIMARY KEY$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_MASTER_KEY INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR" +
-        "$OFFLINE_COLUMNS_STATE TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
+        "$OFFLINE_COLUMNS_STATE TEXT DEFAULT ''$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_CREATED INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR" +
         "$OFFLINE_COLUMNS_CHANGED INTEGER$CREATE_TABLE_COLUMNS_SEPERATOR";
   }
