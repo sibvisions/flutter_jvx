@@ -179,6 +179,6 @@ class ApplicationStyleResponse extends ResponseObject {
         'menu': {'mode': menuMode},
         'theme': {'color': themeColor.value},
         'desktop.color': desktopColor,
-        'login.background': loginBackground
+        'login.background': loginBackground,
       };
 }

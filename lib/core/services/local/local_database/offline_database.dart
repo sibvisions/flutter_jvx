@@ -95,6 +95,8 @@ class OfflineDatabase extends LocalDatabase
         return false;
       }
     }
+
+    return false;
   }
 
   void _setProperties(ApiBloc bloc, Response response) {
