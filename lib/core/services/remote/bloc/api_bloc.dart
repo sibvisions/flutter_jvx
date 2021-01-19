@@ -680,18 +680,22 @@ class ApiBloc extends Bloc<Request, Response> {
     Response currentResponse = state;
     Response toUpdate = response;
 
-    if (response.applicationMetaData == null)
-      response.applicationMetaData = currentResponse.applicationMetaData;
-    if (response.applicationStyle == null)
-      response.applicationStyle = currentResponse.applicationStyle;
-    if (response.authenticationData == null)
-      response.authenticationData = currentResponse.authenticationData;
-    if (response.language == null) response.language = currentResponse.language;
-    if (response.loginItem == null)
-      response.loginItem = currentResponse.loginItem;
-    if (response.menu == null) response.menu = currentResponse.menu;
-    if (response.userData == null) response.userData = currentResponse.userData;
-
+    if (currentResponse != null) {
+      if (response.applicationMetaData == null)
+        response.applicationMetaData = currentResponse.applicationMetaData;
+      if (response.applicationStyle == null)
+        response.applicationStyle = currentResponse.applicationStyle;
+      if (response.authenticationData == null)
+        response.authenticationData = currentResponse.authenticationData;
+      if (response.language == null)
+        response.language = currentResponse.language;
+      if (response.loginItem == null)
+        response.loginItem = currentResponse.loginItem;
+      if (response.menu == null) response.menu = currentResponse.menu;
+      if (response.userData == null)
+        response.userData = currentResponse.userData;
+    }
+    
     return toUpdate;
   }
 }

@@ -194,7 +194,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   _screenManager() {
     if (widget.appState.screenManager != null) {
-      SoMenuManager menuManager = SoMenuManager(widget.appState.isOffline ? <MenuItem>[] : this.items);
+      SoMenuManager menuManager =
+          SoMenuManager(widget.appState.isOffline ? <MenuItem>[] : this.items);
       widget.appState.screenManager.onMenu(menuManager);
       this.items = menuManager.menuItems;
     }
@@ -376,9 +377,15 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                       .manager
                                       .setOffline(false);
 
-                                  (sl<IOfflineDatabaseProvider>() as OfflineDatabase).cleanupDatabase();
+                                  (sl<IOfflineDatabaseProvider>()
+                                          as OfflineDatabase)
+                                      .cleanupDatabase()
+                                      .then((value) =>
+                                          sl<IOfflineDatabaseProvider>()
+                                              .syncOnline(context));
 
-                                  sl<IOfflineDatabaseProvider>().syncOnline(context);
+                                  BlocProvider.of<ApiBloc>(context)
+                                      .add(Menu(widget.appState.clientId));
                                 });
                               },
                               icon: FaIcon(FontAwesomeIcons.broadcastTower),
