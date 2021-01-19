@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/startup.dart';
 import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
@@ -458,6 +459,8 @@ class OfflineDatabase extends LocalDatabase
         } else if (request.requestType == RequestType.DAL_DELETE) {
           yield await this.deleteRecord(request);
         }
+      } else if (request is Navigation) {
+        yield Response()..request = Navigation();
       }
     }
 
