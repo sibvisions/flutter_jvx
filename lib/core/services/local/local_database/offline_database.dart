@@ -448,16 +448,16 @@ class OfflineDatabase extends LocalDatabase
   Stream<Response> request(Request request) async* {
     if (request != null) {
       if (request is FetchData) {
-        yield await fetchData(request);
+        yield await fetchData(request)..request = request;
       } else if (request is SetValues) {
-        yield await this.setValues(request);
+        yield await this.setValues(request)..request = request;
       } else if (request is InsertRecord) {
-        yield await this.insertRecord(request);
+        yield await this.insertRecord(request)..request = request;
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
-          yield await this.selectRecord(request);
+          yield await this.selectRecord(request)..request = request;
         } else if (request.requestType == RequestType.DAL_DELETE) {
-          yield await this.deleteRecord(request);
+          yield await this.deleteRecord(request)..request = request;
         }
       } else if (request is Navigation) {
         yield Response()..request = Navigation();
