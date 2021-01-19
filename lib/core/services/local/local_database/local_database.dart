@@ -84,6 +84,25 @@ class LocalDatabase implements IDatabaseProvider {
             0); // && result[0] is QueryRow && result[0].row[0]>0);
   }
 
+  Future<bool> rowExists(String tableName, [String where]) async {
+    if (tableName == null || this.db == null || !this.db.isOpen) {
+      return false;
+    }
+
+    String sql = "SELECT * FROM [$tableName]";
+
+    if (where != null && where.length > 0) {
+      sql = "$sql WHERE $where";
+    }
+
+    if (this.debug) {
+      log('SQLite rowExists:' + sql);
+    }
+
+    List<Map<String, dynamic>> result = await this.db.rawQuery(sql);
+    return result.length > 0;
+  }
+
   Future<int> rowCount(String tableName) async {
     if (tableName == null || this.db == null || !this.db.isOpen) return 0;
 

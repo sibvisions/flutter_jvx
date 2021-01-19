@@ -44,6 +44,7 @@ const String OFFLINE_ROW_STATE_DELETED = "D";
 
 const String OFFLINE_META_DATA_TABLE = "off_metaData";
 const String OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER = "data_provider";
+const String OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME = "table_name";
 const String OFFLINE_META_DATA_TABLE_COLUMN_DATA = "data";
 
 class OfflineDatabase extends LocalDatabase
@@ -52,7 +53,8 @@ class OfflineDatabase extends LocalDatabase
     await super.openCreateDatabase(path);
     if (db?.isOpen ?? false) {
       String columnStr =
-          "$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER TEXT $CREATE_TABLE_COLUMNS_SEPERATOR" +
+          "$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
+              "$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
     }
@@ -127,7 +129,12 @@ class OfflineDatabase extends LocalDatabase
             columns = columns.substring(
                 0, columns.length - CREATE_TABLE_COLUMNS_SEPERATOR.length);
 
-          await createTable(tablename, columns);
+          if (await createTable(tablename, columns)) {
+            // toDo serialize metaData
+            String metaDataString = ""; //metaData.
+            await _insertUpdateMetaData(
+                metaData.dataProvider, tablename, metaDataString);
+          }
         }
       }
     }
@@ -405,6 +412,26 @@ class OfflineDatabase extends LocalDatabase
     }
 
     yield null;
+  }
+
+  Future<bool> _insertUpdateMetaData(
+      String dataProvider, String tableName, String metaData) async {
+    String where =
+        "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]='$dataProvider'";
+    if (await rowExists(tableName, where)) {
+      String setString =
+          "[$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME] = '$tableName'$UPDATE_DATA_SEPERATOR" +
+              "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA] = '$metaData'";
+      return await update(tableName, setString, where);
+    } else {
+      String columnString =
+          "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]$INSERT_INTO_DATA_SEPERATOR" +
+              "[$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME]$INSERT_INTO_DATA_SEPERATOR" +
+              "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA]";
+      String valueString =
+          "'$dataProvider'$INSERT_INTO_DATA_SEPERATOR'$tableName'$INSERT_INTO_DATA_SEPERATOR'$metaData'";
+      return await insert(tableName, columnString, valueString);
+    }
   }
 
   Future<Map<String, dynamic>> _getRowWithOfflinePrimaryKey(
