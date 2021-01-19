@@ -315,16 +315,19 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (this.manager.isOffline != null && this.manager.isOffline) {
       this.appState.offline = this.manager.isOffline;
 
-      MaterialColor newColor = getColorFromAppStyle(
-          ApplicationStyleResponse.fromJson(this.manager.applicationStyle));
+      if (this.manager.applicationStyle != null &&
+          this.manager.applicationStyle.isNotEmpty) {
+        MaterialColor newColor = getColorFromAppStyle(
+            ApplicationStyleResponse.fromJson(this.manager.applicationStyle));
 
-      sl<ThemeManager>().themeData = ThemeData(
-        primaryColor: newColor,
-        primarySwatch: newColor,
-        brightness: Brightness.light,
-        fontFamily: 'Raleway',
-        cursorColor: newColor,
-      );
+        sl<ThemeManager>().themeData = ThemeData(
+          primaryColor: newColor,
+          primarySwatch: newColor,
+          brightness: Brightness.light,
+          fontFamily: 'Raleway',
+          cursorColor: newColor,
+        );
+      }
     }
 
     if (this.appState.isOffline) {
