@@ -216,17 +216,22 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   _onPressed(MenuItem menuItem) {
+    SoScreen toOpenScreen =
+        widget.appState.screenManager.findScreen(menuItem.componentId);
+
     if (widget.appState.screenManager != null &&
-        widget.appState.screenManager.findScreen(menuItem.componentId) !=
-            null &&
-        widget.appState.screenManager
-                .findScreen(menuItem.componentId)
-                .configuration !=
-            null &&
-        !widget.appState.screenManager
-            .findScreen(menuItem.componentId)
-            .configuration
-            .withServer) {
+        toOpenScreen != null &&
+        toOpenScreen.configuration != null &&
+        !toOpenScreen.configuration.withServer) {
+      Navigator.pushReplacementNamed(context, OpenScreenPage.route,
+          arguments: ScreenArguments(
+              items: widget.menuItems,
+              menuComponentId: menuItem.componentId,
+              title: menuItem.text));
+    } else if (toOpenScreen != null &&
+        toOpenScreen.configuration != null &&
+        toOpenScreen.configuration.withServer &&
+        widget.appState.isOffline) {
       Navigator.pushReplacementNamed(context, OpenScreenPage.route,
           arguments: ScreenArguments(
               items: widget.menuItems,
