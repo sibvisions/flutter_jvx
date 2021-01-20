@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
@@ -149,7 +150,7 @@ mixin SoDataScreen {
       String classNameEventSourceRef) async {
     TextUtils.unfocusCurrentTextfield(context);
 
-    if (classNameEventSourceRef == 'OfflineButton') {
+    if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
       SharedPrefProvider.of(context).manager.setOffline(true);
       AppStateProvider.of(context).appState.offline = true;
 
