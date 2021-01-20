@@ -382,12 +382,12 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                       .manager
                                       .setOffline(false);
 
-                                  (sl<IOfflineDatabaseProvider>()
-                                          as OfflineDatabase)
-                                      .cleanupDatabase()
+                                  sl<IOfflineDatabaseProvider>()
+                                      .syncOnline(context)
                                       .then((value) =>
-                                          sl<IOfflineDatabaseProvider>()
-                                              .syncOnline(context));
+                                          (sl<IOfflineDatabaseProvider>()
+                                                  as OfflineDatabase)
+                                              .cleanupDatabase());
 
                                   BlocProvider.of<ApiBloc>(context)
                                       .add(Menu(widget.appState.clientId));
