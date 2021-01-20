@@ -34,6 +34,6 @@ class FetchData extends Request {
         'fromRow': fromRow,
         'rowCount': rowCount,
         'includeMetaData': includeMetaData,
-        'filter': filter != null ? filter.toJson() : Filter().toJson()
+        'filter': filter?.toJson()
       };
 }
