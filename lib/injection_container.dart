@@ -16,7 +16,7 @@ import 'core/utils/theme/theme_manager.dart';
 
 final sl = GetIt.instance;
 
-Future<void> init() async {
+Future<void> init([IOfflineDatabaseProvider offlineDatabase]) async {
   sl.registerFactory(() => ApiBloc(
       Response(),
       sl<NetworkInfo>(),
@@ -39,5 +39,8 @@ Future<void> init() async {
   sl.registerLazySingleton<HttpClient>(() => HttpClient());
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
-  sl.registerLazySingleton<IOfflineDatabaseProvider>(() => OfflineDatabase());
+  if (offlineDatabase == null)
+    sl.registerLazySingleton<IOfflineDatabaseProvider>(() => OfflineDatabase());
+  else
+    sl.registerLazySingleton<IOfflineDatabaseProvider>(() => offlineDatabase);
 }
