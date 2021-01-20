@@ -65,8 +65,9 @@ class SoComponentData {
   }
 
   List<dynamic> primaryKeyColumnsForRow(int index) {
-    if (metaData != null && metaData.primaryKeyColumns != null)
-      return metaData.primaryKeyColumns;
+    if (metaData != null && metaData.primaryKeyColumns != null) {
+      return data.getRow(index, primaryKeyColumns);
+    }
     return null;
   }
 
@@ -277,7 +278,13 @@ class SoComponentData {
       setValues.columnNames = columnNames;
     }
 
-    if (filter != null) setValues.filter = filter;
+    if (filter != null) {
+      setValues.filter = filter;
+    } else if (data.selectedRow >= 0) {
+      setValues.filter = Filter(
+          columnNames: this.primaryKeyColumns,
+          values: data.getRow(data.selectedRow, this.primaryKeyColumns));
+    }
 
     if (!isTextfield) {
       TextUtils.unfocusCurrentTextfield(context);
@@ -297,7 +304,8 @@ class SoComponentData {
         .firstWhere((col) => col.name == columnName, orElse: () => null);
   }
 
-  void _fetchData(BuildContext context, int reload, int rowCountNeeded) {
+  void _fetchData(BuildContext context, int reload, int rowCountNeeded,
+      [Filter filter]) {
     this.isFetching = true;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
 
@@ -312,6 +320,7 @@ class SoComponentData {
       fetch.rowCount = rowCountNeeded - data.records.length;
     }
 
+    fetch.filter = filter;
     fetch.reload = (reload == -1);
 
     if (this.metaData == null) {
@@ -351,6 +360,8 @@ class SoComponentData {
   int _getColumnIndex(String columnName) {
     return data?.columnNames?.indexWhere((c) => c == columnName);
   }
+
+  List<dynamic> getPrimaryKeys(int index) {}
 
   void registerSelectedRowChanged(ContextValueCallback callback) {
     if (!_onSelectedRowChanged.contains(callback))
