@@ -1,16 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
-import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
-import 'package:jvx_flutterclient/core/models/api/request/startup.dart';
-import 'package:jvx_flutterclient/core/models/app/app_state.dart';
-import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
-import 'package:jvx_flutterclient/core/services/local/shared_preferences_manager.dart';
-import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
-import 'package:jvx_flutterclient/core/services/remote/rest/rest_client.dart';
-import 'package:jvx_flutterclient/core/utils/network/network_info.dart';
-import 'package:jvx_flutterclient/core/utils/translation/app_localizations.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/editor/cell_editor.dart';
@@ -20,11 +11,20 @@ import '../../../models/api/request/data/fetch_data.dart';
 import '../../../models/api/request/data/insert_record.dart';
 import '../../../models/api/request/data/select_record.dart';
 import '../../../models/api/request/data/set_values.dart';
+import '../../../models/api/request/navigation.dart';
+import '../../../models/api/request/startup.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/data/data_book.dart';
 import '../../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../../models/api/response/response_data.dart';
+import '../../../models/app/app_state.dart';
 import '../../../ui/screen/so_component_data.dart';
+import '../../../utils/network/network_info.dart';
+import '../../../utils/translation/app_localizations.dart';
+import '../../remote/bloc/api_bloc.dart';
+import '../../remote/rest/rest_client.dart';
+import '../shared_preferences_manager.dart';
+import 'i_offline_database_provider.dart';
 import 'local_database.dart';
 
 const String CREATE_TABLE_COLUMNS_SEPERATOR = ", ";
