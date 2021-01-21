@@ -134,7 +134,7 @@ class SoComponentData {
       [RequestType requestType]) {
     if (pDataproviderChanged.reload != null ||
         requestType == RequestType.UPLOAD)
-      _fetchData(context, pDataproviderChanged.reload, -1);
+      fetchData(context, pDataproviderChanged.reload, -1);
     if (data != null && pDataproviderChanged.selectedRow != null)
       updateSelectedRow(context, pDataproviderChanged.selectedRow, true);
   }
@@ -165,7 +165,7 @@ class SoComponentData {
     if (data != null && data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
     } else if (context != null) {
-      this._fetchData(context, null, -1);
+      this.fetchData(context, null, -1);
     }
 
     return "";
@@ -179,7 +179,7 @@ class SoComponentData {
           data.records.length >= rowCountNeeded) {
         return data;
       }
-      if (!this.isFetching) this._fetchData(context, null, rowCountNeeded);
+      if (!this.isFetching) this.fetchData(context, null, rowCountNeeded);
     }
 
     return data;
@@ -304,7 +304,7 @@ class SoComponentData {
         .firstWhere((col) => col.name == columnName, orElse: () => null);
   }
 
-  void _fetchData(BuildContext context, int reload, int rowCountNeeded,
+  void fetchData(BuildContext context, int reload, int rowCountNeeded,
       [Filter filter]) {
     this.isFetching = true;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
