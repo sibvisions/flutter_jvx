@@ -338,7 +338,7 @@ class OfflineDatabase extends LocalDatabase
       if (request.filter != null &&
           request.filter.columnNames != null &&
           request.filter.values != null) {
-        String whereFilter = OfflineDatabaseFormatter.getWhereString(
+        String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
             request.filter.columnNames, request.filter.values);
         if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
       }
@@ -372,6 +372,7 @@ class OfflineDatabase extends LocalDatabase
       }
       dataBook.to = records.length + dataBook.from;
       dataBook.columnNames = metaData?.columnNames;
+
       data.dataBooks = [dataBook];
       response.responseData = data;
       return response;
