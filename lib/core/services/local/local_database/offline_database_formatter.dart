@@ -55,7 +55,7 @@ class OfflineDatabaseFormatter {
     }
   }
 
-  static String getWhereString(List<String> columnNames, List<dynamic> values) {
+  static String getWhereFilter(List<String> columnNames, List<dynamic> values) {
     String sqlWhere = "";
     if (columnNames != null &&
         values != null &&
@@ -63,10 +63,7 @@ class OfflineDatabaseFormatter {
       for (int i = 0; i < columnNames.length; i++) {
         dynamic value = values[i];
         String columnName = columnNames[i];
-        if (value == null)
-          sqlWhere =
-              "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]=NULL$WHERE_AND";
-        else
+        if (value != null)
           sqlWhere =
               "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$WHERE_AND";
       }

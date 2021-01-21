@@ -338,10 +338,9 @@ class OfflineDatabase extends LocalDatabase
       if (request.filter != null &&
           request.filter.columnNames != null &&
           request.filter.values != null) {
-        where = where +
-            WHERE_AND +
-            OfflineDatabaseFormatter.getWhereString(
-                request.filter.columnNames, request.filter.values);
+        String whereFilter = OfflineDatabaseFormatter.getWhereString(
+            request.filter.columnNames, request.filter.values);
+        if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
       }
 
       List<Map<String, dynamic>> result =
