@@ -52,6 +52,8 @@ const String OFFLINE_META_DATA_TABLE_COLUMN_DATA = "data";
 
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
+  int syncProgress = 0;
+
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
     if (db?.isOpen ?? false) {
