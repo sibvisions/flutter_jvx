@@ -7,5 +7,8 @@ import 'i_database_provider.dart';
 abstract class IOfflineDatabaseProvider extends IDatabaseProvider {
   int syncProgress;
   Stream<Response> request(Request request);
-  Future<bool> syncOnline(BuildContext context);
+  Future<bool> syncOnline(BuildContext context,
+      [List<String> syncDataProvider]);
+  Future<bool> syncDelete(
+      BuildContext context, String dataProvider, List<dynamic> row);
 }

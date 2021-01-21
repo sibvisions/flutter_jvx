@@ -91,6 +91,16 @@ class OfflineDatabase extends LocalDatabase
       if (response != null) {
         this._setProperties(bloc, response);
         bloc.close();
+
+        List<String> syncDataProvider = await this.getOfflineDataProvider();
+
+        Future.forEach(syncDataProvider, (dataProvider) async {
+          if (dataProvider != null) {
+            List<Map<String, dynamic>> syncData =
+                await this.getSyncData(dataProvider);
+          }
+        });
+
         return true;
       } else {
         bloc.close();
@@ -99,6 +109,12 @@ class OfflineDatabase extends LocalDatabase
     }
 
     return false;
+  }
+
+  Future<bool> syncDelete(
+      BuildContext context, String dataProvider, List<dynamic> row) {
+    ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
+        sl<AppState>(), sl<SharedPreferencesManager>(), null);
   }
 
   void _setProperties(ApiBloc bloc, Response response) {
@@ -193,6 +209,23 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
+  Future<List<String>> getOfflineDataProvider() async {
+    List<String> offlineDataProvider = List<String>();
+
+    List<Map<String, dynamic>> result =
+        await this.selectRows(OFFLINE_META_DATA_TABLE);
+    if (result != null && result.length > 0) {
+      result.forEach((row) {
+        if (row.containsKey(OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER)) {
+          offlineDataProvider
+              .add(row[OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]);
+        }
+      });
+    }
+
+    return offlineDataProvider;
+  }
+
   Future<bool> importRows(DataBook data) async {
     int failedInsertCount = 0;
 
@@ -224,22 +257,14 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
-  Future<List<List<dynamic>>> getSyncData(String dataProvider) async {
+  Future<List<Map<String, dynamic>>> getSyncData(String dataProvider) async {
     if (dataProvider != null) {
       String tableName = _formatTableName(dataProvider);
-      String where = "[$OFFLINE_COLUMNS_STATE]<>''";
+      String where =
+          "[$OFFLINE_COLUMNS_STATE]<>'' AND [$OFFLINE_COLUMNS_STATE] is not null";
       String orderBy = "[$OFFLINE_COLUMNS_CHANGED]";
 
-      List<Map<String, dynamic>> result =
-          await this.selectRows(tableName, where, orderBy);
-
-      List<List<dynamic>> records = new List<List<dynamic>>();
-
-      result.forEach((element) {
-        records.add(_removeSpecialColumns(element).values.toList());
-      });
-
-      return records;
+      return await this.selectRows(tableName, where, orderBy);
     }
   }
 
