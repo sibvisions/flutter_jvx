@@ -15,6 +15,12 @@ class DataBookMetaData extends ResponseObject {
   List<String> primaryKeyColumns = <String>[];
   List<String> tableColumnView;
 
+  List<String> get columnNames {
+    List<String> names = List<String>();
+    columns?.forEach((element) => names.add(element.name));
+    return names;
+  }
+
   DataBookMetaData(
       {this.dataProvider,
       this.columns,
@@ -67,4 +73,3 @@ class DataBookMetaData extends ResponseObject {
             columns.map<Map<String, dynamic>>((c) => c.toJson()).toList(),
       };
 }
- 

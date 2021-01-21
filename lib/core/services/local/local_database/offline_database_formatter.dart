@@ -10,6 +10,7 @@ const String CREATE_TABLE_NAME_PREFIX = "off_";
 
 const String INSERT_INTO_DATA_SEPERATOR = ", ";
 const String UPDATE_DATA_SEPERATOR = ", ";
+const String WHERE_AND = " AND ";
 
 const String OFFLINE_COLUMNS_PRIMARY_KEY = "off_primaryKey";
 const String OFFLINE_COLUMNS_MASTER_KEY = "off_masterKey";
@@ -54,6 +55,29 @@ class OfflineDatabaseFormatter {
     }
   }
 
+  static String getWhereString(List<String> columnNames, List<dynamic> values) {
+    String sqlWhere = "";
+    if (columnNames != null &&
+        values != null &&
+        columnNames.length == values.length) {
+      for (int i = 0; i < columnNames.length; i++) {
+        dynamic value = values[i];
+        String columnName = columnNames[i];
+        if (value == null)
+          sqlWhere =
+              "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]=NULL$WHERE_AND";
+        else
+          sqlWhere =
+              "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$WHERE_AND";
+      }
+    }
+
+    if (sqlWhere.length > 0)
+      sqlWhere = sqlWhere.substring(0, sqlWhere.length - WHERE_AND.length);
+
+    return sqlWhere;
+  }
+
   static String getUpdateSetString(
       List<dynamic> columnNames, List<dynamic> values) {
     String sqlSet = "";
@@ -71,6 +95,10 @@ class OfflineDatabaseFormatter {
               "$sqlSet[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$UPDATE_DATA_SEPERATOR";
       }
     }
+
+    if (sqlSet.length > 0)
+      sqlSet =
+          sqlSet.substring(0, sqlSet.length - UPDATE_DATA_SEPERATOR.length);
 
     return sqlSet;
   }

@@ -134,6 +134,9 @@ class OfflineDatabase extends LocalDatabase
       if (response != null) {
         _setProperties(bloc, response);
         bloc.close();
+        if (await deleteRecord(select, true) != null) {
+          return true;
+        }
       } else {
         bloc.close();
         return false;
@@ -144,13 +147,35 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncInsert(
-      BuildContext context, String dataProvider, List<dynamic> row) {
+      BuildContext context, String dataProvider, List<dynamic> row) async {
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
+
+    InsertRecord insert = InsertRecord(dataProvider, bloc.appState.clientId);
+    await for (Response response in bloc.data(insert)) {
+      if (response != null) {
+        _setProperties(bloc, response);
+
+        if (response.responseData != null &&
+            response.responseData.dataBooks != null) {
+          DataBook dataBook = response.responseData.dataBooks
+              .firstWhere((element) => element.dataProvider == dataProvider);
+          if (dataBook != null && dataBook.records != null) {}
+        }
+
+        bloc.close();
+        return false;
+      } else {
+        bloc.close();
+        return false;
+      }
+    }
+
+    return false;
   }
 
   Future<bool> syncUpdate(
-      BuildContext context, String dataProvider, List<dynamic> row) {
+      BuildContext context, String dataProvider, List<dynamic> row) async {
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
   }
@@ -219,6 +244,8 @@ class OfflineDatabase extends LocalDatabase
 
       return DataBookMetaData.fromJson(json.decode(metaData));
     }
+
+    return null;
   }
 
   Future<List<String>> getOfflineDataProvider() async {
@@ -308,6 +335,15 @@ class OfflineDatabase extends LocalDatabase
 
       String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
 
+      if (request.filter != null &&
+          request.filter.columnNames != null &&
+          request.filter.values != null) {
+        where = where +
+            WHERE_AND +
+            OfflineDatabaseFormatter.getWhereString(
+                request.filter.columnNames, request.filter.values);
+      }
+
       List<Map<String, dynamic>> result =
           await this.selectRows(tableName, where, orderBy, limit);
 
@@ -326,7 +362,8 @@ class OfflineDatabase extends LocalDatabase
         records: records,
       );
 
-      data.dataBookMetaData = [await getMetaData(request.dataProvider)];
+      DataBookMetaData metaData = await getMetaData(request.dataProvider);
+      data.dataBookMetaData = [metaData];
 
       if (request.fromRow != null)
         dataBook.from = request.fromRow;
@@ -335,7 +372,7 @@ class OfflineDatabase extends LocalDatabase
         dataBook.isAllFetched = true;
       }
       dataBook.to = records.length + dataBook.from;
-
+      dataBook.columnNames = metaData?.columnNames;
       data.dataBooks = [dataBook];
       response.responseData = data;
       return response;
@@ -367,6 +404,7 @@ class OfflineDatabase extends LocalDatabase
           if (rowState != OFFLINE_ROW_STATE_INSERTED &&
               rowState != OFFLINE_ROW_STATE_DELETED) {
             sqlSet = sqlSet +
+                UPDATE_DATA_SEPERATOR +
                 OfflineDatabaseFormatter.getStateSetString(
                     OFFLINE_ROW_STATE_UPDATED);
           }
@@ -426,7 +464,8 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Response> deleteRecord(SelectRecord request) async {
+  Future<Response> deleteRecord(SelectRecord request,
+      [bool forceDelete = false]) async {
     if (request != null) {
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
@@ -439,7 +478,7 @@ class OfflineDatabase extends LocalDatabase
             "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
 
         // Delete locally if inserted before
-        if (rowState == OFFLINE_ROW_STATE_INSERTED) {
+        if (rowState == OFFLINE_ROW_STATE_INSERTED || forceDelete) {
           if (await this.delete(tableName, where)) {
             FetchData fetch = FetchData(request.dataProvider, request.clientId);
             return await this.fetchData(fetch);
