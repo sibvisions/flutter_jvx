@@ -1,7 +1,6 @@
-import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
-
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
+import 'local_database.dart';
 
 const String CREATE_TABLE_COLUMNS_SEPERATOR = ", ";
 const String CREATE_TABLE_COLUMNS_OLD_SUFFIX = "_old";
