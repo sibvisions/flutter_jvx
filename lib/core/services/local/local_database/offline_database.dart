@@ -67,7 +67,6 @@ class OfflineDatabase extends LocalDatabase
     await for (Response response in bloc.startup(startup)) {
       if (response != null) {
         this._setProperties(bloc, response);
-        bloc.close();
 
         int rowsToSync = 0;
         int rowsSynced = 0;
@@ -75,7 +74,7 @@ class OfflineDatabase extends LocalDatabase
         Map<String, List<Map<String, dynamic>>> syncData =
             Map<String, List<Map<String, dynamic>>>();
 
-        Future.forEach(syncDataProvider, (dataProvider) async {
+        await Future.forEach(syncDataProvider, (dataProvider) async {
           if (dataProvider != null) {
             syncData[dataProvider] = await this.getSyncData(dataProvider);
 
@@ -84,7 +83,7 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
-        Future.forEach(syncData.entries, (entry) async {
+        await Future.forEach(syncData.entries, (entry) async {
           DataBookMetaData metaData = await getMetaData(entry.key);
 
           Future.forEach(entry.value, (element) async {
@@ -113,6 +112,7 @@ class OfflineDatabase extends LocalDatabase
           });
         });
 
+        bloc.close();
         return true;
       } else {
         bloc.close();
@@ -120,6 +120,7 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
+    bloc.close();
     return false;
   }
 
