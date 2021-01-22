@@ -89,24 +89,25 @@ class OfflineDatabase extends LocalDatabase
 
           Future.forEach(entry.value, (element) async {
             String state = OfflineDatabaseFormatter.getRowState(element);
-            switch (state) {
-              case OFFLINE_ROW_STATE_DELETED:
-                Map<String, dynamic> values =
-                    OfflineDatabaseFormatter.getDataColumns(
-                        element, metaData.primaryKeyColumns);
-                Filter filter = Filter(
-                    columnNames: metaData.primaryKeyColumns,
-                    values: values.values.toList());
-                if (await this.syncDelete(context, entry.key, filter))
-                  rowsSynced++;
-                break;
-              case OFFLINE_ROW_STATE_INSERTED:
-                //todo
-                break;
-              case OFFLINE_ROW_STATE_UPDATED:
-                //todo
-                break;
-              default:
+            Map<String, dynamic> primaryKeyValues =
+                OfflineDatabaseFormatter.getDataColumns(
+                    element, metaData.primaryKeyColumns);
+            Filter primaryKeyFilter = Filter(
+                columnNames: metaData.primaryKeyColumns,
+                values: primaryKeyValues.values.toList());
+            if (state == OFFLINE_ROW_STATE_DELETED) {
+              if (await this.syncDelete(context, entry.key, primaryKeyFilter))
+                rowsSynced++;
+            } else if (state == OFFLINE_ROW_STATE_INSERTED) {
+              if (await this.syncInsert(context, entry.key, primaryKeyFilter,
+                  metaData.columnNames, element)) {
+                rowsSynced++;
+              }
+            } else if (state == OFFLINE_ROW_STATE_UPDATED) {
+              if (await this.syncUpdate(context, entry.key, primaryKeyFilter,
+                  metaData.columnNames, element)) {
+                rowsSynced++;
+              }
             }
             _setSyncProgress(rowsToSync, rowsSynced);
           });
@@ -147,7 +148,11 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncInsert(
-      BuildContext context, String dataProvider, List<dynamic> row) async {
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
@@ -160,7 +165,30 @@ class OfflineDatabase extends LocalDatabase
             response.responseData.dataBooks != null) {
           DataBook dataBook = response.responseData.dataBooks
               .firstWhere((element) => element.dataProvider == dataProvider);
-          if (dataBook != null && dataBook.records != null) {}
+          if (dataBook != null &&
+              dataBook.records != null &&
+              dataBook.records.length > 0) {
+            Map<String, dynamic> changedInsertValues =
+                OfflineDatabaseFormatter.getChangedValuesForInsert(
+                    dataBook.records, columnNames, row, filter.columnNames);
+
+            SetValues setValues = SetValues(
+                dataProvider,
+                changedInsertValues.keys.toList(),
+                changedInsertValues.values.toList(),
+                bloc.appState.clientId,
+                null,
+                filter);
+            await for (Response response in bloc.data(setValues)) {
+              bloc.close();
+
+              dynamic offlinePrimaryKey =
+                  OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+              if (await setOfflineState(
+                  dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
+                return true;
+            }
+          }
         }
 
         bloc.close();
@@ -175,9 +203,36 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncUpdate(
-      BuildContext context, String dataProvider, List<dynamic> row) async {
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
+
+    Map<String, dynamic> changedValues =
+        OfflineDatabaseFormatter.getChangedValuesForUpdate(
+            columnNames, row, filter.columnNames);
+    SetValues setValues = SetValues(dataProvider, changedValues.keys.toList(),
+        changedValues.values.toList(), bloc.appState.clientId, null, filter);
+
+    await for (Response response in bloc.data(setValues)) {
+      if (response != null) {
+        _setProperties(bloc, response);
+        bloc.close();
+        dynamic offlinePrimaryKey =
+            OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+        if (await setOfflineState(
+            dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
+          return true;
+      } else {
+        bloc.close();
+        return false;
+      }
+    }
+
+    return false;
   }
 
   Future<void> importComponentList(List<SoComponentData> componentData) async {
@@ -310,6 +365,15 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
+  Future<bool> setOfflineState(
+      String dataProvider, int offlinePrimaryKey, String state) async {
+    String tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
+    String setString = OfflineDatabaseFormatter.getStateSetString(state);
+    String where =
+        "[$OFFLINE_COLUMNS_PRIMARY_KEY]=${offlinePrimaryKey.toString()}";
+    return await update(tableName, setString, where);
+  }
+
   Future<bool> cleanupDatabase() async {
     await this.closeDatabase();
     try {
@@ -399,7 +463,8 @@ class OfflineDatabase extends LocalDatabase
         if (sqlSet.length > 0) {
           Map<String, dynamic> record =
               await _getRowWithIndex(tableName, request.offlineSelectedRow);
-          dynamic offlinePrimaryKey = await this._getOfflinePrimaryKey(record);
+          dynamic offlinePrimaryKey =
+              OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
           String rowState = OfflineDatabaseFormatter.getRowState(record);
           if (rowState != OFFLINE_ROW_STATE_INSERTED &&
               rowState != OFFLINE_ROW_STATE_DELETED) {
@@ -472,7 +537,8 @@ class OfflineDatabase extends LocalDatabase
       if (await tableExists(tableName)) {
         Map<String, dynamic> record =
             await _getRowWithIndex(tableName, request.selectedRow);
-        dynamic offlinePrimaryKey = await this._getOfflinePrimaryKey(record);
+        dynamic offlinePrimaryKey =
+            OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
         String rowState = OfflineDatabaseFormatter.getRowState(record);
         String where =
             "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
@@ -599,14 +665,6 @@ class OfflineDatabase extends LocalDatabase
 
     if (result != null && result.length > 0) {
       return result[0];
-    }
-
-    return null;
-  }
-
-  dynamic _getOfflinePrimaryKey(Map<String, dynamic> result) {
-    if (result != null && result.containsKey(OFFLINE_COLUMNS_PRIMARY_KEY)) {
-      return result[OFFLINE_COLUMNS_PRIMARY_KEY];
     }
 
     return null;

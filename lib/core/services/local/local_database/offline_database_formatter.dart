@@ -21,6 +21,7 @@ const String OFFLINE_COLUMNS_CHANGED = "off_changed";
 const String OFFLINE_ROW_STATE_UPDATED = "U";
 const String OFFLINE_ROW_STATE_INSERTED = "I";
 const String OFFLINE_ROW_STATE_DELETED = "D";
+const String OFFLINE_ROW_STATE_UNCHANGED = "";
 
 const String OFFLINE_META_DATA_TABLE = "off_metaData";
 const String OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER = "data_provider";
@@ -42,6 +43,72 @@ class OfflineDatabaseFormatter {
     }
 
     return null;
+  }
+
+  static dynamic getNewValue(Map<String, dynamic> result, String columnName) {
+    if (result != null &&
+        result.containsKey(columnName + CREATE_TABLE_COLUMNS_NEW_SUFFIX)) {
+      return result[columnName + CREATE_TABLE_COLUMNS_NEW_SUFFIX];
+    }
+
+    return null;
+  }
+
+  static dynamic getOldValue(Map<String, dynamic> result, String columnName) {
+    if (result != null &&
+        result.containsKey(columnName + CREATE_TABLE_COLUMNS_OLD_SUFFIX)) {
+      return result[columnName + CREATE_TABLE_COLUMNS_OLD_SUFFIX];
+    }
+
+    return null;
+  }
+
+  static Map<String, dynamic> getChangedValuesForInsert(
+      List<dynamic> onlineInsertedRow,
+      List<dynamic> onlineColumnNames,
+      Map<String, dynamic> offlineInsertedRow,
+      List<dynamic> primaryKeyColumns) {
+    Map<String, dynamic> changedValues = Map<String, dynamic>();
+
+    if (onlineInsertedRow != null &&
+        offlineInsertedRow != null &&
+        onlineColumnNames != null &&
+        onlineInsertedRow.length == onlineColumnNames.length) {
+      for (int i = 0; i < onlineInsertedRow.length; i++) {
+        String columnName = onlineColumnNames[i];
+        if (!primaryKeyColumns.contains(columnName)) {
+          dynamic onlineValue = onlineInsertedRow[i];
+          dynamic offlineValue = getNewValue(offlineInsertedRow, columnName);
+          if (onlineValue != offlineValue)
+            changedValues[columnName] = offlineValue;
+        }
+      }
+    }
+
+    return changedValues;
+  }
+
+  static Map<String, dynamic> getChangedValuesForUpdate(
+      List<dynamic> columnNames,
+      Map<String, dynamic> row,
+      List<dynamic> primaryKeyColumns) {
+    Map<String, dynamic> changedValues = Map<String, dynamic>();
+
+    if (columnNames != null &&
+        row != null &&
+        primaryKeyColumns != null &&
+        row.length == columnNames.length) {
+      for (int i = 0; i < columnNames.length; i++) {
+        String columnName = columnNames[i];
+        if (!primaryKeyColumns.contains(columnName)) {
+          dynamic oldValue = getOldValue(row, columnName);
+          dynamic newValue = getNewValue(row, columnName);
+          if (oldValue != oldValue) changedValues[columnName] = newValue;
+        }
+      }
+    }
+
+    return changedValues;
   }
 
   static String getStateSetString(String state) {
