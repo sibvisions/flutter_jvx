@@ -11,7 +11,7 @@ class SoScreenConfiguration extends ValueNotifier<Response> {
   SoScreenConfiguration(Response response,
       {@required this.componentId,
       @required this.screenTitle,
-      @required this.screenComponentId,
+      this.screenComponentId = "",
       this.withServer = true})
       : super(response);
 }
