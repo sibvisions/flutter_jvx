@@ -375,6 +375,7 @@ class OfflineDatabase extends LocalDatabase
           metaDataObject != null)
         metaDataObject.offlineScreenComponentId =
             result[0][OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID];
+      return metaDataObject;
     }
 
     return null;
