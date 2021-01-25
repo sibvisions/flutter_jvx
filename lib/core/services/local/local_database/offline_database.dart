@@ -2,24 +2,27 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
+import '../../../models/api/request/close_screen.dart';
 import '../../../models/api/request/data/fetch_data.dart';
 import '../../../models/api/request/data/insert_record.dart';
+import '../../../models/api/request/data/meta_data.dart' as DAL;
 import '../../../models/api/request/data/select_record.dart';
 import '../../../models/api/request/data/set_values.dart';
 import '../../../models/api/request/navigation.dart';
+import '../../../models/api/request/open_screen.dart';
 import '../../../models/api/request/startup.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/data/data_book.dart';
 import '../../../models/api/response/data/filter.dart';
-import '../../../models/api/request/data/meta_data.dart' as DAL;
 import '../../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../../models/api/response/response_data.dart';
+import '../../../models/api/so_action.dart';
 import '../../../models/app/app_state.dart';
 import '../../../ui/screen/so_component_data.dart';
+import '../../../ui/screen/so_screen.dart';
 import '../../../utils/network/network_info.dart';
 import '../../../utils/translation/app_localizations.dart';
 import '../../remote/bloc/api_bloc.dart';
@@ -70,6 +73,7 @@ class OfflineDatabase extends LocalDatabase
     await for (Response response in bloc.startup(startup)) {
       if (response != null) {
         this._setProperties(bloc, response);
+        String currentScreenComponentId = "";
 
         int rowsToSync = 0;
         int rowsSynced = 0;
@@ -88,6 +92,33 @@ class OfflineDatabase extends LocalDatabase
 
         await Future.forEach(syncData.entries, (entry) async {
           DataBookMetaData metaData = await getMetaData(entry.key);
+
+          if (metaData.offlineScreenComponentId != currentScreenComponentId) {
+            if (currentScreenComponentId.length > 0) {
+              CloseScreen closeScreen = CloseScreen(
+                  componentId: currentScreenComponentId,
+                  clientId: bloc.appState.clientId,
+                  requestType: RequestType.CLOSE_SCREEN);
+
+              await for (Response response in bloc.closeScreen(closeScreen)) {
+                if (response != null) {}
+              }
+            }
+
+            SoAction action = SoAction(
+                componentId: metaData.offlineScreenComponentId,
+                label: "SyncOffline");
+            OpenScreen openScreen = OpenScreen(
+                action: action,
+                clientId: bloc.appState.clientId,
+                manualClose: false,
+                requestType: RequestType.OPEN_SCREEN);
+            await for (Response response in bloc.openScreen(openScreen)) {
+              if (response != null) {
+                currentScreenComponentId = metaData.offlineScreenComponentId;
+              }
+            }
+          }
 
           await Future.forEach(entry.value, (element) async {
             String state = OfflineDatabaseFormatter.getRowState(element);
