@@ -14,6 +14,7 @@ class DataBookMetaData extends ResponseObject {
   List<DataBookMetaDataColumn> columns = <DataBookMetaDataColumn>[];
   List<String> primaryKeyColumns = <String>[];
   List<String> tableColumnView;
+  String offlineScreenComponentId;
 
   List<String> get columnNames {
     List<String> names = List<String>();

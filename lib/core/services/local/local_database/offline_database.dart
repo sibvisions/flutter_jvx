@@ -336,7 +336,14 @@ class OfflineDatabase extends LocalDatabase
         result[0].containsKey(OFFLINE_META_DATA_TABLE_COLUMN_DATA)) {
       String metaData = result[0][OFFLINE_META_DATA_TABLE_COLUMN_DATA];
 
-      return DataBookMetaData.fromJson(json.decode(metaData));
+      DataBookMetaData metaDataObject =
+          DataBookMetaData.fromJson(json.decode(metaData));
+
+      if (result[0].containsKey(
+              OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID) &&
+          metaDataObject != null)
+        metaDataObject.offlineScreenComponentId =
+            result[0][OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID];
     }
 
     return null;
