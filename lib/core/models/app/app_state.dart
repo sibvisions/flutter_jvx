@@ -34,7 +34,7 @@ class AppState {
   String appVersion;
 
   /// States how many lines can be fetched ahead in lazy loading.
-  int readAheadLimit = 10000;
+  int readAheadLimit = 5000;
 
   /// Avaible translations and their file locations.
   Map<String, dynamic> translation = <String, dynamic>{};
