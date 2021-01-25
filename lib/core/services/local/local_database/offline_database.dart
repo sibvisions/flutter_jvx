@@ -136,16 +136,26 @@ class OfflineDatabase extends LocalDatabase
       if (response != null) {
         _setProperties(bloc, response);
         bloc.close();
-        if (await deleteRecord(select, true) != null) {
-          return true;
-        }
-      } else {
-        bloc.close();
-        return false;
-      }
-    }
+        String tableName =
+            OfflineDatabaseFormatter.formatTableName(dataProvider);
+        if (await tableExists(tableName)) {
+          Map<String, dynamic> record =
+              await _getRowWithFilter(tableName, filter);
+          dynamic offlinePrimaryKey =
+              OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
+          String where =
+              "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
 
-    return false;
+          bloc.close();
+          return await this.delete(tableName, where);
+        } else {
+          bloc.close();
+          return false;
+        }
+      }
+
+      return false;
+    }
   }
 
   Future<bool> syncInsert(
@@ -663,6 +673,29 @@ class OfflineDatabase extends LocalDatabase
     String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
     List<Map<String, dynamic>> result =
         await this.selectRows(tableName, where, orderBy, "$index, 1");
+
+    if (result != null && result.length > 0) {
+      return result[0];
+    }
+
+    return null;
+  }
+
+  Future<Map<String, dynamic>> _getRowWithFilter(
+      String tableName, Filter filter,
+      [bool ignoreDeleted]) async {
+    String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
+    String where = "";
+
+    if (filter != null)
+      where = OfflineDatabaseFormatter.getWhereFilter(
+          filter.columnNames, filter.values);
+    if (!ignoreDeleted) if (where.length > 0)
+      where = where +
+          "$WHERE_AND[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+
+    List<Map<String, dynamic>> result =
+        await this.selectRows(tableName, where, orderBy);
 
     if (result != null && result.length > 0) {
       return result[0];
