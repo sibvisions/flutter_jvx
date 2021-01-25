@@ -222,6 +222,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                             state.responseData.screenGeneric.screenTitle,
                         componentId:
                             state.responseData.screenGeneric.componentId,
+                        screenComponentId: widget.menuComponentId,
                         withServer: true),
                   ));
                 }
@@ -362,6 +363,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                           widget.response?.responseData?.screenGeneric
                               ?.componentId ??
                           widget.menuComponentId,
+                      screenComponentId: widget.menuComponentId,
                       withServer: true),
                 );
 

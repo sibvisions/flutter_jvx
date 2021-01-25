@@ -305,7 +305,7 @@ class OfflineDatabase extends LocalDatabase
             (componentData.soDataScreen as SoScreenState<SoScreen>)
                 .widget
                 .configuration
-                ?.componentId;
+                ?.screenComponentId;
 
       await createTableWithMetaData(componentData.metaData, screenComponentId);
       await importRows(componentData.data);
