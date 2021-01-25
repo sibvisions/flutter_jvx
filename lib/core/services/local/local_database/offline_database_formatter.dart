@@ -244,7 +244,7 @@ class OfflineDatabaseFormatter {
       if (columnName.endsWith(CREATE_TABLE_COLUMNS_NEW_SUFFIX)) {
         String newColumnName = columnName.substring(
             0, columnName.length - CREATE_TABLE_COLUMNS_NEW_SUFFIX.length);
-        if (columnNames == null || columnName.contains(newColumnName))
+        if (columnNames == null || columnNames.contains(newColumnName))
           dataColumns[newColumnName] = value;
       }
     });
