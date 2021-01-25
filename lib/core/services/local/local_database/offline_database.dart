@@ -14,6 +14,7 @@ import '../../../models/api/request/startup.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/data/data_book.dart';
 import '../../../models/api/response/data/filter.dart';
+import '../../../models/api/request/data/meta_data.dart' as DAL;
 import '../../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../../models/api/response/response_data.dart';
 import '../../../models/app/app_state.dart';
@@ -296,6 +297,19 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
+  }
+
+  Future<Response> getMetaDataRequest(DAL.MetaData request) async {
+    Response response = Response();
+    if (request != null && request.dataProvider != null) {
+      DataBookMetaData metaData = await this.getMetaData(request.dataProvider);
+      if (metaData != null) {
+        ResponseData responseData = ResponseData();
+        responseData.dataBookMetaData = [metaData];
+        response.responseData = responseData;
+      }
+    }
+    return response;
   }
 
   Future<DataBookMetaData> getMetaData(String dataProvider) async {
@@ -618,6 +632,9 @@ class OfflineDatabase extends LocalDatabase
           ..request = request;
       } else if (request is InsertRecord) {
         yield await this.insertRecord(request)
+          ..request = request;
+      } else if (request is MetaData) {
+        yield await this.getMetaDataRequest(request)
           ..request = request;
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
