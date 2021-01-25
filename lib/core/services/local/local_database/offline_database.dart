@@ -140,7 +140,7 @@ class OfflineDatabase extends LocalDatabase
             OfflineDatabaseFormatter.formatTableName(dataProvider);
         if (await tableExists(tableName)) {
           Map<String, dynamic> record =
-              await _getRowWithFilter(tableName, filter);
+              await _getRowWithFilter(tableName, filter, true);
           dynamic offlinePrimaryKey =
               OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
           String where =
@@ -683,7 +683,7 @@ class OfflineDatabase extends LocalDatabase
 
   Future<Map<String, dynamic>> _getRowWithFilter(
       String tableName, Filter filter,
-      [bool ignoreDeleted]) async {
+      [bool ignoreDeleted = false]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
     String where = "";
 
