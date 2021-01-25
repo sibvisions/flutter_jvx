@@ -159,7 +159,7 @@ mixin SoDataScreen {
       await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
       await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-          .importComponentList(componentData);
+          .importComponents(componentData);
     } else {
       // wait until textfields focus lost. 10 millis should do it.
       Future.delayed(const Duration(milliseconds: 100), () {

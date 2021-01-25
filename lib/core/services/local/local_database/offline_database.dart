@@ -34,7 +34,9 @@ import 'offline_database_formatter.dart';
 
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
-  int syncProgress = 0;
+  int progress = 0;
+  int _rowsToImport;
+  int _rowsImported;
 
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
@@ -92,7 +94,7 @@ class OfflineDatabase extends LocalDatabase
 
         await Future.forEach(syncData.entries, (entry) async {
           if (entry.value.length > 0) {
-            DataBookMetaData metaData = await getMetaData(entry.key);
+            DataBookMetaData metaData = await getMetaDataBook(entry.key);
 
             if (metaData.offlineScreenComponentId != currentScreenComponentId) {
               if (currentScreenComponentId.length > 0) {
@@ -145,7 +147,7 @@ class OfflineDatabase extends LocalDatabase
                   rowsSynced++;
                 }
               }
-              _setSyncProgress(rowsToSync, rowsSynced);
+              _setProgress(rowsToSync, rowsSynced);
             });
           }
         });
@@ -233,7 +235,7 @@ class OfflineDatabase extends LocalDatabase
 
               dynamic offlinePrimaryKey =
                   OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-              if (await setOfflineState(
+              if (await _setOfflineState(
                   dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
                 return true;
             }
@@ -272,7 +274,7 @@ class OfflineDatabase extends LocalDatabase
         bloc.close();
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-        if (await setOfflineState(
+        if (await _setOfflineState(
             dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
           return true;
       } else {
@@ -284,13 +286,19 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
-  Future<void> importComponentList(List<SoComponentData> componentData) async {
+  Future<void> importComponents(List<SoComponentData> componentData) async {
+    _rowsToImport = 0;
+    _rowsImported = 0;
+    componentData.forEach((element) {
+      _rowsToImport += element?.data?.records?.length;
+    });
+
     Future.forEach(componentData, (element) async {
-      await importComponent(element);
+      await _importComponent(element);
     });
   }
 
-  Future<void> importComponent(SoComponentData componentData) async {
+  Future<void> _importComponent(SoComponentData componentData) async {
     if (componentData != null &&
         componentData.data != null &&
         componentData.metaData != null) {
@@ -311,12 +319,12 @@ class OfflineDatabase extends LocalDatabase
                 .configuration
                 ?.screenComponentId;
 
-      await createTableWithMetaData(componentData.metaData, screenComponentId);
-      await importRows(componentData.data);
+      await _createTableWithMetaData(componentData.metaData, screenComponentId);
+      await _importRows(componentData.data);
     }
   }
 
-  Future<void> createTableWithMetaData(
+  Future<void> _createTableWithMetaData(
       DataBookMetaData metaData, String screenComponentId) async {
     if (metaData != null &&
         metaData.columns != null &&
@@ -348,10 +356,11 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  Future<Response> getMetaDataRequest(DAL.MetaData request) async {
+  Future<Response> getMetaData(DAL.MetaData request) async {
     Response response = Response();
     if (request != null && request.dataProvider != null) {
-      DataBookMetaData metaData = await this.getMetaData(request.dataProvider);
+      DataBookMetaData metaData =
+          await this.getMetaDataBook(request.dataProvider);
       if (metaData != null) {
         ResponseData responseData = ResponseData();
         responseData.dataBookMetaData = [metaData];
@@ -361,7 +370,7 @@ class OfflineDatabase extends LocalDatabase
     return response;
   }
 
-  Future<DataBookMetaData> getMetaData(String dataProvider) async {
+  Future<DataBookMetaData> getMetaDataBook(String dataProvider) async {
     String where =
         "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]='$dataProvider'";
     List<Map<String, dynamic>> result =
@@ -402,7 +411,7 @@ class OfflineDatabase extends LocalDatabase
     return offlineDataProvider;
   }
 
-  Future<bool> importRows(DataBook data) async {
+  Future<bool> _importRows(DataBook data) async {
     int failedInsertCount = 0;
 
     if (data != null &&
@@ -422,6 +431,9 @@ class OfflineDatabase extends LocalDatabase
 
           if (!await this.insert(tableName, columnString, valueString)) {
             failedInsertCount++;
+          } else {
+            _rowsImported++;
+            _setProgress(_rowsToImport, _rowsImported);
           }
         });
 
@@ -447,7 +459,7 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  Future<bool> setOfflineState(
+  Future<bool> _setOfflineState(
       String dataProvider, int offlinePrimaryKey, String state) async {
     String tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
     String setString = OfflineDatabaseFormatter.getStateSetString(state);
@@ -507,7 +519,7 @@ class OfflineDatabase extends LocalDatabase
         records: records,
       );
 
-      DataBookMetaData metaData = await getMetaData(request.dataProvider);
+      DataBookMetaData metaData = await getMetaDataBook(request.dataProvider);
       data.dataBookMetaData = [metaData];
 
       if (request.fromRow != null)
@@ -691,7 +703,7 @@ class OfflineDatabase extends LocalDatabase
         yield await this.insertRecord(request)
           ..request = request;
       } else if (request is MetaData) {
-        yield await this.getMetaDataRequest(request)
+        yield await this.getMetaData(request)
           ..request = request;
       } else if (request is SelectRecord) {
         if (request.requestType == RequestType.DAL_SELECT_RECORD) {
@@ -809,10 +821,10 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  void _setSyncProgress(int rowsToSync, int rowsSynced) {
-    if (rowsToSync == 0)
-      syncProgress = 0;
+  void _setProgress(int rowsCount, int rowsDone) {
+    if (rowsCount == 0)
+      progress = 0;
     else
-      syncProgress = (rowsSynced / rowsToSync * 100).floor();
+      progress = (rowsDone / rowsCount * 100).floor();
   }
 }
