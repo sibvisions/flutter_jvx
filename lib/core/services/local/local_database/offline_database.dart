@@ -91,59 +91,63 @@ class OfflineDatabase extends LocalDatabase
         });
 
         await Future.forEach(syncData.entries, (entry) async {
-          DataBookMetaData metaData = await getMetaData(entry.key);
+          if (entry.value.length > 0) {
+            DataBookMetaData metaData = await getMetaData(entry.key);
 
-          if (metaData.offlineScreenComponentId != currentScreenComponentId) {
-            if (currentScreenComponentId.length > 0) {
-              CloseScreen closeScreen = CloseScreen(
-                  componentId: currentScreenComponentId,
+            if (metaData.offlineScreenComponentId != currentScreenComponentId) {
+              if (currentScreenComponentId.length > 0) {
+                CloseScreen closeScreen = CloseScreen(
+                    componentId: currentScreenComponentId,
+                    clientId: bloc.appState.clientId,
+                    requestType: RequestType.CLOSE_SCREEN);
+
+                await for (Response response in bloc.closeScreen(closeScreen)) {
+                  if (response != null) {
+                    currentScreenComponentId = "";
+                  }
+                }
+              }
+
+              SoAction action = SoAction(
+                  componentId: metaData.offlineScreenComponentId,
+                  label: "SyncOffline");
+              OpenScreen openScreen = OpenScreen(
+                  action: action,
                   clientId: bloc.appState.clientId,
-                  requestType: RequestType.CLOSE_SCREEN);
-
-              await for (Response response in bloc.closeScreen(closeScreen)) {
-                if (response != null) {}
+                  manualClose: false,
+                  requestType: RequestType.OPEN_SCREEN);
+              await for (Response response in bloc.openScreen(openScreen)) {
+                if (response != null) {
+                  currentScreenComponentId = metaData.offlineScreenComponentId;
+                }
               }
             }
 
-            SoAction action = SoAction(
-                componentId: metaData.offlineScreenComponentId,
-                label: "SyncOffline");
-            OpenScreen openScreen = OpenScreen(
-                action: action,
-                clientId: bloc.appState.clientId,
-                manualClose: false,
-                requestType: RequestType.OPEN_SCREEN);
-            await for (Response response in bloc.openScreen(openScreen)) {
-              if (response != null) {
-                currentScreenComponentId = metaData.offlineScreenComponentId;
+            await Future.forEach(entry.value, (element) async {
+              String state = OfflineDatabaseFormatter.getRowState(element);
+              Map<String, dynamic> primaryKeyValues =
+                  OfflineDatabaseFormatter.getDataColumns(
+                      element, metaData.primaryKeyColumns);
+              Filter primaryKeyFilter = Filter(
+                  columnNames: metaData.primaryKeyColumns,
+                  values: primaryKeyValues.values.toList());
+              if (state == OFFLINE_ROW_STATE_DELETED) {
+                if (await this.syncDelete(context, entry.key, primaryKeyFilter))
+                  rowsSynced++;
+              } else if (state == OFFLINE_ROW_STATE_INSERTED) {
+                if (await this.syncInsert(context, entry.key, primaryKeyFilter,
+                    metaData.columnNames, element)) {
+                  rowsSynced++;
+                }
+              } else if (state == OFFLINE_ROW_STATE_UPDATED) {
+                if (await this.syncUpdate(context, entry.key, primaryKeyFilter,
+                    metaData.columnNames, element)) {
+                  rowsSynced++;
+                }
               }
-            }
+              _setSyncProgress(rowsToSync, rowsSynced);
+            });
           }
-
-          await Future.forEach(entry.value, (element) async {
-            String state = OfflineDatabaseFormatter.getRowState(element);
-            Map<String, dynamic> primaryKeyValues =
-                OfflineDatabaseFormatter.getDataColumns(
-                    element, metaData.primaryKeyColumns);
-            Filter primaryKeyFilter = Filter(
-                columnNames: metaData.primaryKeyColumns,
-                values: primaryKeyValues.values.toList());
-            if (state == OFFLINE_ROW_STATE_DELETED) {
-              if (await this.syncDelete(context, entry.key, primaryKeyFilter))
-                rowsSynced++;
-            } else if (state == OFFLINE_ROW_STATE_INSERTED) {
-              if (await this.syncInsert(context, entry.key, primaryKeyFilter,
-                  metaData.columnNames, element)) {
-                rowsSynced++;
-              }
-            } else if (state == OFFLINE_ROW_STATE_UPDATED) {
-              if (await this.syncUpdate(context, entry.key, primaryKeyFilter,
-                  metaData.columnNames, element)) {
-                rowsSynced++;
-              }
-            }
-            _setSyncProgress(rowsToSync, rowsSynced);
-          });
         });
 
         bloc.close();
