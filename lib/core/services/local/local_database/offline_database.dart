@@ -266,9 +266,15 @@ class OfflineDatabase extends LocalDatabase
       }
       String screenComponentId = "";
       if (componentData.soDataScreen != null &&
-          (componentData.soDataScreen as SoScreen).configuration != null)
+          (componentData.soDataScreen as SoScreenState<SoScreen>)
+                  .widget
+                  .configuration !=
+              null)
         screenComponentId =
-            (componentData.soDataScreen as SoScreen).configuration?.componentId;
+            (componentData.soDataScreen as SoScreenState<SoScreen>)
+                .widget
+                .configuration
+                ?.componentId;
 
       await createTableWithMetaData(componentData.metaData, screenComponentId);
       await importRows(componentData.data);
