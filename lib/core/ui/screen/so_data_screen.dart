@@ -115,21 +115,21 @@ mixin SoDataScreen {
     //this.testOfflineDB(context, request, pData);
   }
 
-  Future<void> testOfflineDB(
-      BuildContext context, Request request, ResponseData pData) async {
-    String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+  // Future<void> testOfflineDB(
+  //     BuildContext context, Request request, ResponseData pData) async {
+  //   String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-    OfflineDatabase db = await LocalDatabaseManager.localDatabaseManager
-        .getDatabase<OfflineDatabase>(() => new OfflineDatabase(), path);
+  //   OfflineDatabase db = await LocalDatabaseManager.localDatabaseManager
+  //       .getDatabase<OfflineDatabase>(() => new OfflineDatabase(), path);
 
-    await Future.forEach(pData.dataBookMetaData, (m) async {
-      await db.createTableWithMetaData(m);
-    });
+  //   await Future.forEach(pData.dataBookMetaData, (m) async {
+  //     await db.createTableWithMetaData(m, this.so);
+  //   });
 
-    await Future.forEach(pData.dataBooks, (d) async {
-      await db.importRows(d);
-    });
-  }
+  //   await Future.forEach(pData.dataBooks, (d) async {
+  //     await db.importRows(d);
+  //   });
+  // }
 
   SoComponentData getComponentData(String dataProvider) {
     SoComponentData data;

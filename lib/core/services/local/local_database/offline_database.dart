@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -38,6 +39,7 @@ class OfflineDatabase extends LocalDatabase
       String columnStr =
           "$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
+              "$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
     }
@@ -262,13 +264,19 @@ class OfflineDatabase extends LocalDatabase
       if (await tableExists(tableName)) {
         await this.dropTable(tableName);
       }
+      String screenComponentId = "";
+      if (componentData.soDataScreen != null &&
+          (componentData.soDataScreen as SoScreen).configuration != null)
+        screenComponentId =
+            (componentData.soDataScreen as SoScreen).configuration?.componentId;
 
-      await createTableWithMetaData(componentData.metaData);
+      await createTableWithMetaData(componentData.metaData, screenComponentId);
       await importRows(componentData.data);
     }
   }
 
-  Future<void> createTableWithMetaData(DataBookMetaData metaData) async {
+  Future<void> createTableWithMetaData(
+      DataBookMetaData metaData, String screenComponentId) async {
     if (metaData != null &&
         metaData.columns != null &&
         metaData.columns.length > 0) {
@@ -291,8 +299,8 @@ class OfflineDatabase extends LocalDatabase
           if (await createTable(tablename, columns)) {
             // toDo serialize metaData
             String metaDataString = json.encode(metaData.toJson());
-            await _insertUpdateMetaData(
-                metaData.dataProvider, tablename, metaDataString);
+            await _insertUpdateMetaData(metaData.dataProvider, tablename,
+                screenComponentId, metaDataString);
           }
         }
       }
@@ -652,22 +660,24 @@ class OfflineDatabase extends LocalDatabase
     yield null;
   }
 
-  Future<bool> _insertUpdateMetaData(
-      String dataProvider, String tableName, String metaData) async {
+  Future<bool> _insertUpdateMetaData(String dataProvider, String tableName,
+      String screenComponentId, String metaData) async {
     String where =
         "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]='$dataProvider'";
     if (await rowExists(OFFLINE_META_DATA_TABLE, where)) {
       String setString =
           "[$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME] = '$tableName'$UPDATE_DATA_SEPERATOR" +
+              "[$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID] = '$screenComponentId'$UPDATE_DATA_SEPERATOR" +
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA] = '$metaData'";
       return await update(OFFLINE_META_DATA_TABLE, setString, where);
     } else {
       String columnString =
           "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]$INSERT_INTO_DATA_SEPERATOR" +
               "[$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME]$INSERT_INTO_DATA_SEPERATOR" +
+              "[$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID]$INSERT_INTO_DATA_SEPERATOR" +
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA]";
       String valueString =
-          "'$dataProvider'$INSERT_INTO_DATA_SEPERATOR'$tableName'$INSERT_INTO_DATA_SEPERATOR'$metaData'";
+          "'$dataProvider'$INSERT_INTO_DATA_SEPERATOR'$tableName'$INSERT_INTO_DATA_SEPERATOR'$screenComponentId'$INSERT_INTO_DATA_SEPERATOR'$metaData'";
       return await insert(OFFLINE_META_DATA_TABLE, columnString, valueString);
     }
   }
