@@ -16,17 +16,17 @@ class AppState {
   String appName;
 
   /// Current app mode.
-  /// 
+  ///
   /// `preview`: Only one menu item will be shown.
-  /// 
+  ///
   /// `full`: Every menu item will be shown.
   String appMode;
-  
+
   /// Current language of the application.
   String language;
 
   /// Current picture size.
-  /// 
+  ///
   /// `320`, `640` and `1024` are the sizes to choose from.
   int picSize;
 
@@ -34,7 +34,7 @@ class AppState {
   String appVersion;
 
   /// States how many lines can be fetched ahead in lazy loading.
-  int readAheadLimit = 100;
+  int readAheadLimit = 10000;
 
   /// Avaible translations and their file locations.
   Map<String, dynamic> translation = <String, dynamic>{};
@@ -46,9 +46,9 @@ class AppState {
   bool webOnly = false;
 
   /// Current frame for the application.
-  /// 
+  ///
   /// `WebFrame`: Frame for web applications.
-  /// 
+  ///
   /// `AppFrame`: Default frame and frame for mobile applications.
   IAppFrame appFrame;
 
