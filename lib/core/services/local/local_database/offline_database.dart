@@ -86,7 +86,7 @@ class OfflineDatabase extends LocalDatabase
         await Future.forEach(syncData.entries, (entry) async {
           DataBookMetaData metaData = await getMetaData(entry.key);
 
-          Future.forEach(entry.value, (element) async {
+          await Future.forEach(entry.value, (element) async {
             String state = OfflineDatabaseFormatter.getRowState(element);
             Map<String, dynamic> primaryKeyValues =
                 OfflineDatabaseFormatter.getDataColumns(
