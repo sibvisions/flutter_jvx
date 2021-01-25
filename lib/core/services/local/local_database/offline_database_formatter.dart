@@ -25,6 +25,8 @@ const String OFFLINE_ROW_STATE_UNCHANGED = "";
 const String OFFLINE_META_DATA_TABLE = "off_metaData";
 const String OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER = "data_provider";
 const String OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME = "table_name";
+const String OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID =
+    "screen_comp_id";
 const String OFFLINE_META_DATA_TABLE_COLUMN_DATA = "data";
 
 class OfflineDatabaseFormatter {
