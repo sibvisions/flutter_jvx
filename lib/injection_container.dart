@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:get_it/get_it.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
@@ -26,7 +25,7 @@ Future<void> init([IOfflineDatabaseProvider offlineDatabase]) async {
       sl<IOfflineDatabaseProvider>()));
 
   sl.registerLazySingleton<NetworkInfo>(
-      () => NetworkInfoImpl(sl<Connectivity>()));
+      () => NetworkInfoImpl('google.com'));
   sl.registerLazySingleton<RestClient>(() => RestClient(sl<HttpClient>()));
   sl.registerLazySingleton<ThemeManager>(() => ThemeManager());
   sl.registerLazySingleton<SupportedLocaleManager>(
@@ -35,7 +34,6 @@ Future<void> init([IOfflineDatabaseProvider offlineDatabase]) async {
       () => SharedPreferencesManager(sl<SharedPreferences>()));
   sl.registerLazySingleton<AppState>(() => AppState());
 
-  sl.registerLazySingleton<Connectivity>(() => Connectivity());
   sl.registerLazySingleton<HttpClient>(() => HttpClient());
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
