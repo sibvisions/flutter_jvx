@@ -64,7 +64,7 @@ class OfflineDatabaseFormatter {
     return null;
   }
 
-  static Map<String, dynamic> getChangedValuesForInsert(
+  static Map<String, dynamic> getChangedValues(
       List<dynamic> onlineInsertedRow,
       List<dynamic> onlineColumnNames,
       Map<String, dynamic> offlineInsertedRow,
@@ -77,12 +77,10 @@ class OfflineDatabaseFormatter {
         onlineInsertedRow.length == onlineColumnNames.length) {
       for (int i = 0; i < onlineInsertedRow.length; i++) {
         String columnName = onlineColumnNames[i];
-        if (!primaryKeyColumns.contains(columnName)) {
-          dynamic onlineValue = onlineInsertedRow[i];
-          dynamic offlineValue = getNewValue(offlineInsertedRow, columnName);
-          if (onlineValue != offlineValue)
-            changedValues[columnName] = offlineValue;
-        }
+        dynamic onlineValue = onlineInsertedRow[i];
+        dynamic offlineValue = getNewValue(offlineInsertedRow, columnName);
+        if (onlineValue != offlineValue)
+          changedValues[columnName] = offlineValue;
       }
     }
 
@@ -125,6 +123,8 @@ class OfflineDatabaseFormatter {
         break;
       default:
     }
+
+    return "";
   }
 
   static String getWhereFilter(

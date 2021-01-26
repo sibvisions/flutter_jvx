@@ -220,7 +220,7 @@ class OfflineDatabase extends LocalDatabase
               dataBook.records != null &&
               dataBook.records.length > 0) {
             Map<String, dynamic> changedInsertValues =
-                OfflineDatabaseFormatter.getChangedValuesForInsert(
+                OfflineDatabaseFormatter.getChangedValues(
                     dataBook.records, columnNames, row, filter.columnNames);
 
             SetValues setValues = SetValues(
@@ -228,16 +228,15 @@ class OfflineDatabase extends LocalDatabase
                 changedInsertValues.keys.toList(),
                 changedInsertValues.values.toList(),
                 bloc.appState.clientId,
-                null,
-                filter);
+                null);
             await for (Response response in bloc.data(setValues)) {
-              bloc.close();
-
-              dynamic offlinePrimaryKey =
-                  OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-              if (await _setOfflineState(
-                  dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
-                return true;
+              if (response != null) {
+                dynamic offlinePrimaryKey =
+                    OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+                bloc.close();
+                if (await _setOfflineState(dataProvider, offlinePrimaryKey,
+                    OFFLINE_ROW_STATE_UNCHANGED)) return true;
+              }
             }
           }
         }
