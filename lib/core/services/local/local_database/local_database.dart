@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'i_database_provider.dart';
 
 class LocalDatabase implements IDatabaseProvider {
-  bool debug = false;
+  bool debug = true;
   Database db;
   String path;
 
