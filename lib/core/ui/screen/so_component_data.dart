@@ -286,6 +286,8 @@ class SoComponentData {
           values: data.getRow(data.selectedRow, this.primaryKeyColumns));
     }
 
+    setValues.offlineSelectedRow = data.selectedRow;
+
     if (!isTextfield) {
       TextUtils.unfocusCurrentTextfield(context);
 

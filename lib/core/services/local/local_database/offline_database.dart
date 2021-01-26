@@ -572,9 +572,7 @@ class OfflineDatabase extends LocalDatabase
         request.columnNames != null &&
         request.values != null &&
         request.columnNames.length > 0 &&
-        request.columnNames.length == request.values.length &&
-        request.offlineSelectedRow != null &&
-        request.offlineSelectedRow >= 0) {
+        request.columnNames.length == request.values.length) {
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
 
@@ -583,8 +581,13 @@ class OfflineDatabase extends LocalDatabase
             request.columnNames, request.values);
 
         if (sqlSet.length > 0) {
-          Map<String, dynamic> record =
-              await _getRowWithIndex(tableName, request.offlineSelectedRow);
+          Map<String, dynamic> record;
+          if (request.offlineSelectedRow >= 0)
+            record =
+                await _getRowWithIndex(tableName, request.offlineSelectedRow);
+          else if (request.filter != null)
+            record = await _getRowWithFilter(tableName, request.filter);
+
           dynamic offlinePrimaryKey =
               OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
           String rowState = OfflineDatabaseFormatter.getRowState(record);
@@ -702,13 +705,15 @@ class OfflineDatabase extends LocalDatabase
           dataProvider: request.dataProvider,
           selectedRow: count,
         );
-        Map<String, dynamic> record = await _getRowWithIndex(tableName, count);
+        Map<String, dynamic> record =
+            await _getRowWithIndex(tableName, count - 1);
         dataBook.records = OfflineDatabaseFormatter.removeOfflineColumns(record)
             .values
             .toList();
 
-        dataBook.from = count;
-        dataBook.to = count;
+        dataBook.from = count - 1;
+        dataBook.to = count - 1;
+        dataBook.selectedRow = count - 1;
 
         data.dataBooks = [dataBook];
         response.responseData = data;
