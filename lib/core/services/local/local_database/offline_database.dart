@@ -178,7 +178,7 @@ class OfflineDatabase extends LocalDatabase
       _rowsToImport += element?.data?.records?.length;
     });
 
-    Future.forEach(componentData, (element) async {
+    await Future.forEach(componentData, (element) async {
       result = result & await _importComponent(element);
     });
 
@@ -244,10 +244,11 @@ class OfflineDatabase extends LocalDatabase
           if (dataBook != null &&
               dataBook.records != null &&
               dataBook.records.length > 0) {
-            dataBook.records.removeLast();
+            List<dynamic> records = dataBook.records;
+            records.removeLast();
             Map<String, dynamic> changedInsertValues =
                 OfflineDatabaseFormatter.getChangedValues(
-                    dataBook.records, columnNames, row, filter.columnNames);
+                    records, columnNames, row, filter.columnNames);
 
             SetValues setValues = SetValues(
                 dataProvider,
@@ -361,7 +362,6 @@ class OfflineDatabase extends LocalDatabase
                 0, columns.length - CREATE_TABLE_COLUMNS_SEPERATOR.length);
 
           if (await createTable(tablename, columns)) {
-            // toDo serialize metaData
             String metaDataString = json.encode(metaData.toJson());
             await _insertUpdateMetaData(metaData.dataProvider, tablename,
                 screenComponentId, metaDataString);
