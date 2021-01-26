@@ -39,16 +39,16 @@ void main() async {
   OfflineDatabase offlineDatabase;
 
   MockHttpClient mockHttpClient;
-  MockConnectivity mockConnectivity;
+  // MockConnectivity mockConnectivity;
   MockSharedPreferences mockSharedPreferences;
 
   setUp(() {
-    mockConnectivity = MockConnectivity();
+    // mockConnectivity = MockConnectivity();
     mockHttpClient = MockHttpClient();
     mockSharedPreferences = MockSharedPreferences();
 
     restClient = RestClient(mockHttpClient);
-    networkInfo = NetworkInfoImpl(mockConnectivity);
+    // networkInfo = NetworkInfoImpl(mockConnectivity);
     manager = SharedPreferencesManager(mockSharedPreferences);
     appState = AppState();
     response = Response();

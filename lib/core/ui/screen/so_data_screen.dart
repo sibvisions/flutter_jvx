@@ -8,6 +8,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_d
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
@@ -151,6 +152,8 @@ mixin SoDataScreen {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
+      showProgress(context);
+      
       SharedPrefProvider.of(context).manager.setOffline(true);
       AppStateProvider.of(context).appState.offline = true;
 
@@ -160,6 +163,8 @@ mixin SoDataScreen {
 
       await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .importComponents(componentData);
+
+      hideProgress(context);
     } else {
       // wait until textfields focus lost. 10 millis should do it.
       Future.delayed(const Duration(milliseconds: 100), () {
