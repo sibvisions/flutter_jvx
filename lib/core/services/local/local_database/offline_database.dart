@@ -183,15 +183,15 @@ class OfflineDatabase extends LocalDatabase
     });
 
     try {
-      //await this.beginTransaction();
-      // this.setSynchronous(false);
+      this.setSynchronous(false);
+      await this.beginTransaction();
 
       await Future.forEach(componentData, (element) async {
         result = result & await _importComponent(element);
       });
 
-      //await this.commitTransaction();
-      // this.setSynchronous(true);
+      await this.commitTransaction();
+      this.setSynchronous(true);
     } catch (e) {
       await this.rollbackTransaction();
     }
