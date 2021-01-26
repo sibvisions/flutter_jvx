@@ -142,7 +142,7 @@ class OfflineDatabaseFormatter {
           if (compareOperator == FilterCompareOperator.EQUAL)
             sqlWhere =
                 "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$WHERE_AND";
-          else if (compareOperator == FilterCompareOperator.EQUAL)
+          else if (compareOperator == FilterCompareOperator.LIKE)
             sqlWhere =
                 "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] LIKE '${value.toString()}'$WHERE_AND";
         } else
