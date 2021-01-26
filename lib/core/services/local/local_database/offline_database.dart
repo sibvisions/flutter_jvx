@@ -519,7 +519,9 @@ class OfflineDatabase extends LocalDatabase
           request.filter.columnNames != null &&
           request.filter.values != null) {
         String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
-            request.filter.columnNames, request.filter.values);
+            request.filter.columnNames,
+            request.filter.values,
+            request.filter.compareOperator);
         if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
       }
 
@@ -799,7 +801,7 @@ class OfflineDatabase extends LocalDatabase
 
     if (filter != null)
       where = OfflineDatabaseFormatter.getWhereFilter(
-          filter.columnNames, filter.values);
+          filter.columnNames, filter.values, filter.compareOperator);
     if (!ignoreDeleted) if (where.length > 0)
       where = where +
           "$WHERE_AND[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";

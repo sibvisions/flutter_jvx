@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
+
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
 import 'local_database.dart';
@@ -127,8 +129,8 @@ class OfflineDatabaseFormatter {
     return "";
   }
 
-  static String getWhereFilter(
-      List<dynamic> columnNames, List<dynamic> values) {
+  static String getWhereFilter(List<dynamic> columnNames, List<dynamic> values,
+      FilterCompareOperator compareOperator) {
     String sqlWhere = "";
     if (columnNames != null &&
         values != null &&
@@ -136,9 +138,16 @@ class OfflineDatabaseFormatter {
       for (int i = 0; i < columnNames.length; i++) {
         dynamic value = values[i];
         String columnName = columnNames[i].toString();
-        if (value != null)
+        if (value != null) {
+          if (compareOperator == FilterCompareOperator.EQUAL)
+            sqlWhere =
+                "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$WHERE_AND";
+          else if (compareOperator == FilterCompareOperator.EQUAL)
+            sqlWhere =
+                "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] LIKE '${value.toString()}'$WHERE_AND";
+        } else
           sqlWhere =
-              "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX]='${value.toString()}'$WHERE_AND";
+              "$sqlWhere[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] IS NULL$WHERE_AND";
       }
     }
 
