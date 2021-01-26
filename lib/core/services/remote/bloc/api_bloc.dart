@@ -377,6 +377,10 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> data(Request request) async* {
     Response resp = await processRequest(request);
 
+    if (request is InsertRecord && request.setValues != null) {
+      this.add(request.setValues);
+    }
+
     yield resp;
   }
 

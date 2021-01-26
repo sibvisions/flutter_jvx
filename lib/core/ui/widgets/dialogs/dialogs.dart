@@ -138,24 +138,27 @@ showProgress(BuildContext context, [String loadingText]) {
       routeSettings: RouteSettings(name: '/loading'),
       context: context,
       barrierDismissible: false,
-      builder: (context) => Opacity(
-            opacity: 0.7,
-            child: Container(
-              child: Center(
-                  child: Container(
-                width: 100,
-                height: 100,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    CircularProgressIndicator(backgroundColor: Colors.white),
-                  ],
-                ),
-              )),
+      builder: (context) => WillPopScope(
+            onWillPop: () async => false,
+            child: Opacity(
+              opacity: 0.7,
+              child: Container(
+                child: Center(
+                    child: Container(
+                  width: 100,
+                  height: 100,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      CircularProgressIndicator(backgroundColor: Colors.white),
+                    ],
+                  ),
+                )),
+              ),
             ),
           ));
 }
