@@ -53,6 +53,9 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncOnline(BuildContext context) async {
+    bool result = false;
+    int rowsToSync = 0;
+    int rowsSynced = 0;
     error = null;
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
@@ -80,8 +83,6 @@ class OfflineDatabase extends LocalDatabase
         this._setProperties(bloc, response);
         String currentScreenComponentId = "";
 
-        int rowsToSync = 0;
-        int rowsSynced = 0;
         List<String> syncDataProvider = await this.getOfflineDataProvider();
         Map<String, List<Map<String, dynamic>>> syncData =
             Map<String, List<Map<String, dynamic>>>();
@@ -155,17 +156,20 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
-        bloc.close();
-        print("Online sync finished!");
-        return true;
-      } else {
-        bloc.close();
-        return false;
+        result = true;
       }
     }
 
     bloc.close();
-    return false;
+
+    if (result)
+      print(
+          "Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
+    else
+      print(
+          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
+
+    return result;
   }
 
   Future<bool> importComponents(List<SoComponentData> componentData) async {
@@ -182,7 +186,12 @@ class OfflineDatabase extends LocalDatabase
       result = result & await _importComponent(element);
     });
 
-    print("Offline import done!");
+    if (result)
+      print(
+          "Offline import finished successfully! Synced records: $_rowsImported/$_rowsToImport");
+    else
+      print(
+          "Offline import finished with error! Synced records: $_rowsImported/$_rowsToImport ErrorDetail: ${error?.details}");
 
     return result;
   }
