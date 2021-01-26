@@ -343,8 +343,10 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
           if (response.request.requestType == RequestType.MENU) {
             setState(() {
-              widget.appState.items = response.menu.entries;
-              this.items = response.menu.entries;
+              if (response.menu != null) {
+                widget.appState.items = response.menu.entries;
+                this.items = response.menu.entries;
+              }
             });
           }
 
