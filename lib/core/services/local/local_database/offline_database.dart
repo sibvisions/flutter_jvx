@@ -244,11 +244,9 @@ class OfflineDatabase extends LocalDatabase
           if (dataBook != null &&
               dataBook.records != null &&
               dataBook.records.length > 0) {
-            List<dynamic> records = dataBook.records;
-            records.removeAt(records.length - 1);
             Map<String, dynamic> changedInsertValues =
                 OfflineDatabaseFormatter.getChangedValues(
-                    records, columnNames, row, filter.columnNames);
+                    dataBook.records, columnNames, row, filter.columnNames);
 
             SetValues setValues = SetValues(
                 dataProvider,
