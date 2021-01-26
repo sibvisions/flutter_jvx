@@ -212,6 +212,48 @@ class LocalDatabase implements IDatabaseProvider {
     return true;
   }
 
+  Future<void> beginTransaction() async {
+    if (this.db == null || !this.db.isOpen) return false;
+
+    String sql = "BEGIN TRANSACTION";
+
+    if (this.debug) {
+      log('SQLite beginTransaction:' + sql);
+    }
+
+    this.db.execute(sql);
+
+    return true;
+  }
+
+  Future<void> commitTransaction() async {
+    if (this.db == null || !this.db.isOpen) return false;
+
+    String sql = "COMMIT";
+
+    if (this.debug) {
+      log('SQLite commitTransaction:' + sql);
+    }
+
+    this.db.execute(sql);
+
+    return true;
+  }
+
+  Future<void> rollbackTransaction() async {
+    if (this.db == null || !this.db.isOpen) return false;
+
+    String sql = "ROLLBACK";
+
+    if (this.debug) {
+      log('SQLite rollbackTransaction:' + sql);
+    }
+
+    this.db.execute(sql);
+
+    return true;
+  }
+
   static String escapeStringForSqlLite(String stringToEscape) {
     return stringToEscape.replaceAll("'", "''");
   }
