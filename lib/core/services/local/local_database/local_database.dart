@@ -196,6 +196,22 @@ class LocalDatabase implements IDatabaseProvider {
     return true;
   }
 
+  Future<void> setSynchronous(bool onOff) async {
+    if (this.db == null || !this.db.isOpen) return false;
+
+    String sql = "PRAGMA synchronous = OFF";
+
+    if (onOff) sql = "PRAGMA synchronous = ON";
+
+    if (this.debug) {
+      log('SQLite setSynchronous:' + sql);
+    }
+
+    this.db.execute(sql);
+
+    return true;
+  }
+
   static String escapeStringForSqlLite(String stringToEscape) {
     return stringToEscape.replaceAll("'", "''");
   }
