@@ -98,7 +98,7 @@ class OfflineDatabaseFormatter {
     if (columnNames != null &&
         row != null &&
         primaryKeyColumns != null &&
-        row.length == columnNames.length) {
+        row.length >= columnNames.length) {
       for (int i = 0; i < columnNames.length; i++) {
         String columnName = columnNames[i];
         if (!primaryKeyColumns.contains(columnName)) {
