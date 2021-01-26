@@ -156,6 +156,7 @@ class OfflineDatabase extends LocalDatabase
         });
 
         bloc.close();
+        print("Online sync finished!");
         return true;
       } else {
         bloc.close();
@@ -167,18 +168,21 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
-  Future<void> importComponents(List<SoComponentData> componentData) async {
+  Future<bool> importComponents(List<SoComponentData> componentData) async {
     _rowsToImport = 0;
     _rowsImported = 0;
     error = null;
+    bool result = true;
 
     componentData.forEach((element) {
       _rowsToImport += element?.data?.records?.length;
     });
 
     Future.forEach(componentData, (element) async {
-      await _importComponent(element);
+      result = result & await _importComponent(element);
     });
+
+    return result;
   }
 
   Future<bool> syncDelete(
@@ -213,6 +217,8 @@ class OfflineDatabase extends LocalDatabase
 
       return false;
     }
+
+    return false;
   }
 
   Future<bool> syncInsert(
@@ -236,6 +242,7 @@ class OfflineDatabase extends LocalDatabase
           if (dataBook != null &&
               dataBook.records != null &&
               dataBook.records.length > 0) {
+            dataBook.records.removeLast();
             Map<String, dynamic> changedInsertValues =
                 OfflineDatabaseFormatter.getChangedValues(
                     dataBook.records, columnNames, row, filter.columnNames);
@@ -302,7 +309,7 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
-  Future<void> _importComponent(SoComponentData componentData) async {
+  Future<bool> _importComponent(SoComponentData componentData) async {
     if (componentData != null &&
         componentData.data != null &&
         componentData.metaData != null) {
@@ -324,8 +331,10 @@ class OfflineDatabase extends LocalDatabase
                 ?.screenComponentId;
 
       await _createTableWithMetaData(componentData.metaData, screenComponentId);
-      await _importRows(componentData.data);
+      return await _importRows(componentData.data);
     }
+
+    return false;
   }
 
   Future<void> _createTableWithMetaData(
@@ -835,6 +844,7 @@ class OfflineDatabase extends LocalDatabase
   bool hasError(Response response) {
     if (response.hasError) {
       error = response.error;
+      print("Offline db error: " + error.details);
       return true;
     }
 
