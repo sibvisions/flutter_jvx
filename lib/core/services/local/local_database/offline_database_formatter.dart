@@ -71,14 +71,11 @@ class OfflineDatabaseFormatter {
       List<dynamic> primaryKeyColumns) {
     Map<String, dynamic> changedValues = Map<String, dynamic>();
 
-    // remove metaData column
-    onlineInsertedRow?.removeLast();
-
     if (onlineInsertedRow != null &&
         offlineInsertedRow != null &&
         onlineColumnNames != null &&
-        onlineInsertedRow.length == onlineColumnNames.length) {
-      for (int i = 0; i < onlineInsertedRow.length; i++) {
+        onlineInsertedRow.length - 1 == onlineColumnNames.length) {
+      for (int i = 0; i < onlineColumnNames.length; i++) {
         String columnName = onlineColumnNames[i];
         dynamic onlineValue = onlineInsertedRow[i];
         dynamic offlineValue = getNewValue(offlineInsertedRow, columnName);
