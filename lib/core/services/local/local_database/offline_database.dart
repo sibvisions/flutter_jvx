@@ -182,13 +182,13 @@ class OfflineDatabase extends LocalDatabase
       _rowsToImport += element?.data?.records?.length;
     });
 
-    this.setSynchronous(false);
+    // this.setSynchronous(false);
 
     await Future.forEach(componentData, (element) async {
       result = result & await _importComponent(element);
     });
 
-    this.setSynchronous(true);
+    // this.setSynchronous(true);
 
     if (result)
       print(
