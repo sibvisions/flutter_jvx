@@ -182,6 +182,8 @@ class OfflineDatabase extends LocalDatabase
       result = result & await _importComponent(element);
     });
 
+    print("Offline import done!");
+
     return result;
   }
 
