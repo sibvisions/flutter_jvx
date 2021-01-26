@@ -104,7 +104,7 @@ class OfflineDatabaseFormatter {
         if (!primaryKeyColumns.contains(columnName)) {
           dynamic oldValue = getOldValue(row, columnName);
           dynamic newValue = getNewValue(row, columnName);
-          if (oldValue != oldValue) changedValues[columnName] = newValue;
+          if (oldValue != newValue) changedValues[columnName] = newValue;
         }
       }
     }
