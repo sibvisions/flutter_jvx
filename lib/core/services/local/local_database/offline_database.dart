@@ -183,15 +183,44 @@ class OfflineDatabase extends LocalDatabase
     });
 
     try {
-      this.setSynchronous(false);
+      //this.setSynchronous(false);
       await this.beginTransaction();
 
       await Future.forEach(componentData, (element) async {
-        result = result & await _importComponent(element);
+        if (element != null &&
+            element.data != null &&
+            element.metaData != null) {
+          String tableName =
+              OfflineDatabaseFormatter.formatTableName(element.dataProvider);
+          if (await tableExists(tableName)) {
+            await this.dropTable(tableName);
+          }
+          String screenComponentId = "";
+          if (element.soDataScreen != null &&
+              (element.soDataScreen as SoScreenState<SoScreen>)
+                      .widget
+                      .configuration !=
+                  null)
+            screenComponentId =
+                (element.soDataScreen as SoScreenState<SoScreen>)
+                    .widget
+                    .configuration
+                    ?.screenComponentId;
+
+          await _createTableWithMetaData(element.metaData, screenComponentId);
+        }
+      });
+
+      await Future.forEach(componentData, (element) async {
+        if (element != null &&
+            element.data != null &&
+            element.metaData != null) {
+          result = result & await _importRows(element.data);
+        }
       });
 
       await this.commitTransaction();
-      this.setSynchronous(true);
+      //this.setSynchronous(true);
     } catch (e) {
       await this.rollbackTransaction();
     }
@@ -324,34 +353,6 @@ class OfflineDatabase extends LocalDatabase
         bloc.close();
         return false;
       }
-    }
-
-    return false;
-  }
-
-  Future<bool> _importComponent(SoComponentData componentData) async {
-    if (componentData != null &&
-        componentData.data != null &&
-        componentData.metaData != null) {
-      String tableName =
-          OfflineDatabaseFormatter.formatTableName(componentData.dataProvider);
-      if (await tableExists(tableName)) {
-        await this.dropTable(tableName);
-      }
-      String screenComponentId = "";
-      if (componentData.soDataScreen != null &&
-          (componentData.soDataScreen as SoScreenState<SoScreen>)
-                  .widget
-                  .configuration !=
-              null)
-        screenComponentId =
-            (componentData.soDataScreen as SoScreenState<SoScreen>)
-                .widget
-                .configuration
-                ?.screenComponentId;
-
-      await _createTableWithMetaData(componentData.metaData, screenComponentId);
-      return await _importRows(componentData.data);
     }
 
     return false;
