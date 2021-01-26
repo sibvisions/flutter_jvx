@@ -164,10 +164,10 @@ class OfflineDatabase extends LocalDatabase
 
     if (result)
       print(
-          "Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
+          "Online sync finished successfully! Imported records: $rowsSynced/$rowsToSync");
     else
       print(
-          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
+          "Online sync finished with error! Imported records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
 
     return result;
   }
@@ -255,7 +255,7 @@ class OfflineDatabase extends LocalDatabase
               dataBook.records.length > 0) {
             Map<String, dynamic> changedInsertValues =
                 OfflineDatabaseFormatter.getChangedValues(
-                    dataBook.records, columnNames, row, filter.columnNames);
+                    dataBook.records[0], columnNames, row, filter.columnNames);
 
             SetValues setValues = SetValues(
                 dataProvider,
