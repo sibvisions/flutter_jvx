@@ -17,6 +17,7 @@ import '../../../models/api/request/startup.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/data/data_book.dart';
 import '../../../models/api/response/data/filter.dart';
+import '../../../models/api/response/error_response.dart';
 import '../../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../../models/api/response/response_data.dart';
 import '../../../models/api/so_action.dart';
@@ -37,6 +38,7 @@ class OfflineDatabase extends LocalDatabase
   int progress = 0;
   int _rowsToImport;
   int _rowsImported;
+  ErrorResponse error;
 
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
@@ -51,6 +53,7 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncOnline(BuildContext context) async {
+    error = null;
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
@@ -73,7 +76,7 @@ class OfflineDatabase extends LocalDatabase
         language: bloc.appState.language);
 
     await for (Response response in bloc.startup(startup)) {
-      if (response != null) {
+      if (response != null && !hasError(response)) {
         this._setProperties(bloc, response);
         String currentScreenComponentId = "";
 
@@ -104,7 +107,7 @@ class OfflineDatabase extends LocalDatabase
                     requestType: RequestType.CLOSE_SCREEN);
 
                 await for (Response response in bloc.closeScreen(closeScreen)) {
-                  if (response != null) {
+                  if (response != null && !hasError(response)) {
                     currentScreenComponentId = "";
                   }
                 }
@@ -119,7 +122,7 @@ class OfflineDatabase extends LocalDatabase
                   manualClose: false,
                   requestType: RequestType.OPEN_SCREEN);
               await for (Response response in bloc.openScreen(openScreen)) {
-                if (response != null) {
+                if (response != null && !hasError(response)) {
                   currentScreenComponentId = metaData.offlineScreenComponentId;
                 }
               }
@@ -147,7 +150,7 @@ class OfflineDatabase extends LocalDatabase
                   rowsSynced++;
                 }
               }
-              _setProgress(rowsToSync, rowsSynced);
+              setProgress(rowsToSync, rowsSynced);
             });
           }
         });
@@ -164,6 +167,20 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
+  Future<void> importComponents(List<SoComponentData> componentData) async {
+    _rowsToImport = 0;
+    _rowsImported = 0;
+    error = null;
+
+    componentData.forEach((element) {
+      _rowsToImport += element?.data?.records?.length;
+    });
+
+    Future.forEach(componentData, (element) async {
+      await _importComponent(element);
+    });
+  }
+
   Future<bool> syncDelete(
       BuildContext context, String dataProvider, Filter filter) async {
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
@@ -173,7 +190,7 @@ class OfflineDatabase extends LocalDatabase
         RequestType.DAL_DELETE, bloc.appState.clientId);
 
     await for (Response response in bloc.data(select)) {
-      if (response != null) {
+      if (response != null && !hasError(response)) {
         _setProperties(bloc, response);
         bloc.close();
         String tableName =
@@ -209,7 +226,7 @@ class OfflineDatabase extends LocalDatabase
 
     InsertRecord insert = InsertRecord(dataProvider, bloc.appState.clientId);
     await for (Response response in bloc.data(insert)) {
-      if (response != null) {
+      if (response != null && !hasError(response)) {
         _setProperties(bloc, response);
 
         if (response.responseData != null &&
@@ -230,7 +247,7 @@ class OfflineDatabase extends LocalDatabase
                 bloc.appState.clientId,
                 null);
             await for (Response response in bloc.data(setValues)) {
-              if (response != null) {
+              if (response != null && !hasError(response)) {
                 dynamic offlinePrimaryKey =
                     OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
                 bloc.close();
@@ -268,7 +285,7 @@ class OfflineDatabase extends LocalDatabase
         changedValues.values.toList(), bloc.appState.clientId, null, filter);
 
     await for (Response response in bloc.data(setValues)) {
-      if (response != null) {
+      if (response != null && !hasError(response)) {
         _setProperties(bloc, response);
         bloc.close();
         dynamic offlinePrimaryKey =
@@ -283,18 +300,6 @@ class OfflineDatabase extends LocalDatabase
     }
 
     return false;
-  }
-
-  Future<void> importComponents(List<SoComponentData> componentData) async {
-    _rowsToImport = 0;
-    _rowsImported = 0;
-    componentData.forEach((element) {
-      _rowsToImport += element?.data?.records?.length;
-    });
-
-    Future.forEach(componentData, (element) async {
-      await _importComponent(element);
-    });
   }
 
   Future<void> _importComponent(SoComponentData componentData) async {
@@ -432,7 +437,7 @@ class OfflineDatabase extends LocalDatabase
             failedInsertCount++;
           } else {
             _rowsImported++;
-            _setProgress(_rowsToImport, _rowsImported);
+            setProgress(_rowsToImport, _rowsImported);
           }
         });
 
@@ -820,10 +825,19 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  void _setProgress(int rowsCount, int rowsDone) {
+  void setProgress(int rowsCount, int rowsDone) {
     if (rowsCount == 0)
       progress = 0;
     else
       progress = (rowsDone / rowsCount * 100).floor();
+  }
+
+  bool hasError(Response response) {
+    if (response.hasError) {
+      error = response.error;
+      return true;
+    }
+
+    return false;
   }
 }
