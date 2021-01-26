@@ -236,10 +236,12 @@ class SoComponentData {
     }
   }
 
-  void insertRecord(BuildContext context) {
+  void insertRecord(BuildContext context, [SetValues setValues]) {
     if (insertEnabled) {
       InsertRecord insert = InsertRecord(
           this.dataProvider, AppStateProvider.of(context).appState.clientId);
+
+      insert.setValues = setValues;
 
       BlocProvider.of<ApiBloc>(context).add(insert);
     }
