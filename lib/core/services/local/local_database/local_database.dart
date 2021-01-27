@@ -167,7 +167,7 @@ class LocalDatabase implements IDatabaseProvider {
     if (this.db == null || !this.db.isOpen) return;
 
     await this.db.transaction((txn) async {
-      Future.forEach(sqlStatements, (sql) async {
+      await Future.forEach(sqlStatements, (sql) async {
         await this.db.execute(sql);
       });
     });
