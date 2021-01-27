@@ -49,6 +49,7 @@ class OfflineDatabase extends LocalDatabase
               "$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
+      //await this.setCacheSize(4000);
     }
   }
 
@@ -218,11 +219,9 @@ class OfflineDatabase extends LocalDatabase
           print('**5**' + DateTime.now().toString());
         }
       });
-      await this.commitTransaction();
       print('**6**' + DateTime.now().toString());
 
-      this.setSynchronous(false);
-      await this.beginTransaction();
+      //this.setSynchronous(false);
       print('**7**' + DateTime.now().toString());
 
       await Future.forEach(componentData, (element) async {
@@ -241,13 +240,12 @@ class OfflineDatabase extends LocalDatabase
       await this.commitTransaction();
       print('**11**' + DateTime.now().toString());
 
-      this.setSynchronous(true);
-      print('**12**' + DateTime.now().toString());
+      //this.setSynchronous(true);
     } catch (e) {
       await this.rollbackTransaction();
     }
 
-    print('**13**' + DateTime.now().toString());
+    print('**12**' + DateTime.now().toString());
 
     if (result)
       print(
@@ -514,6 +512,8 @@ class OfflineDatabase extends LocalDatabase
 
       return await this.selectRows(tableName, where, orderBy);
     }
+
+    return null;
   }
 
   Future<bool> _setOfflineState(
@@ -530,9 +530,11 @@ class OfflineDatabase extends LocalDatabase
     try {
       File file = File(this.path);
       await file.delete();
+      return true;
     } catch (error) {
       print(error);
     }
+    return false;
   }
 
   Future<Response> fetchData(FetchData request) async {
@@ -581,9 +583,10 @@ class OfflineDatabase extends LocalDatabase
       DataBookMetaData metaData = await getMetaDataBook(request.dataProvider);
       data.dataBookMetaData = [metaData];
 
-      if (request.fromRow != null)
+      if (request.fromRow != null) {
         dataBook.from = request.fromRow;
-      else {
+        dataBook.isAllFetched = false;
+      } else {
         dataBook.from = 0;
         dataBook.isAllFetched = true;
       }
@@ -595,7 +598,7 @@ class OfflineDatabase extends LocalDatabase
       return response;
     }
 
-    return null;
+    return Response();
   }
 
   Future<Response> setValues(SetValues request) async {
@@ -653,7 +656,7 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
-    return null;
+    return Response();
   }
 
   Future<Response> selectRecord(SelectRecord request) async {
@@ -671,9 +674,9 @@ class OfflineDatabase extends LocalDatabase
 
         Map<String, dynamic> record =
             await _getRowWithIndex(tableName, request.selectedRow);
-        dataBook.records = OfflineDatabaseFormatter.removeOfflineColumns(record)
-            .values
-            .toList();
+        dataBook.records = [
+          OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
+        ];
         dataBook.from = request.selectedRow;
         dataBook.to = request.selectedRow;
       }
@@ -682,7 +685,7 @@ class OfflineDatabase extends LocalDatabase
       response.responseData = data;
       return response;
     }
-    return null;
+    return Response();
   }
 
   Future<Response> deleteRecord(SelectRecord request,
@@ -717,7 +720,7 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
-    return null;
+    return Response();
   }
 
   Future<Response> insertRecord(InsertRecord request) async {
@@ -738,9 +741,9 @@ class OfflineDatabase extends LocalDatabase
         );
         Map<String, dynamic> record =
             await _getRowWithIndex(tableName, count - 1);
-        dataBook.records = OfflineDatabaseFormatter.removeOfflineColumns(record)
-            .values
-            .toList();
+        dataBook.records = [
+          OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
+        ];
 
         dataBook.from = count - 1;
         dataBook.to = count - 1;
@@ -752,7 +755,7 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
-    return null;
+    return Response();
   }
 
   Stream<Response> request(Request request) async* {

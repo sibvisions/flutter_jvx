@@ -197,7 +197,7 @@ class LocalDatabase implements IDatabaseProvider {
   }
 
   Future<void> setSynchronous(bool onOff) async {
-    if (this.db == null || !this.db.isOpen) return false;
+    if (this.db == null || !this.db.isOpen) return;
 
     String sql = "PRAGMA synchronous = OFF";
 
@@ -208,12 +208,10 @@ class LocalDatabase implements IDatabaseProvider {
     }
 
     this.db.execute(sql);
-
-    return true;
   }
 
   Future<void> beginTransaction() async {
-    if (this.db == null || !this.db.isOpen) return false;
+    if (this.db == null || !this.db.isOpen) return;
 
     String sql = "BEGIN TRANSACTION";
 
@@ -227,7 +225,7 @@ class LocalDatabase implements IDatabaseProvider {
   }
 
   Future<void> commitTransaction() async {
-    if (this.db == null || !this.db.isOpen) return false;
+    if (this.db == null || !this.db.isOpen) return;
 
     String sql = "COMMIT";
 
@@ -236,12 +234,10 @@ class LocalDatabase implements IDatabaseProvider {
     }
 
     this.db.execute(sql);
-
-    return true;
   }
 
   Future<void> rollbackTransaction() async {
-    if (this.db == null || !this.db.isOpen) return false;
+    if (this.db == null || !this.db.isOpen) return;
 
     String sql = "ROLLBACK";
 
@@ -250,8 +246,18 @@ class LocalDatabase implements IDatabaseProvider {
     }
 
     this.db.execute(sql);
+  }
 
-    return true;
+  Future<void> setCacheSize(int size) async {
+    if (this.db == null || !this.db.isOpen) return;
+
+    String sql = "PRAGMA cache_size=${size.toString()}";
+
+    if (this.debug) {
+      log('SQLite setCacheSize:' + sql);
+    }
+
+    this.db.execute(sql);
   }
 
   static String escapeStringForSqlLite(String stringToEscape) {
