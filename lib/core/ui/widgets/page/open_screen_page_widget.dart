@@ -294,13 +294,27 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                Navigation navigation = Navigation(
-                    clientId: widget.appState.clientId,
-                    componentId: this.currentCompId);
+                if (_openScreenManager.screens[currentIndex] is CustomScreen &&
+                    _openScreenManager
+                            .screens[currentIndex].configuration?.onBack !=
+                        null) {
+                  if (_openScreenManager.screens[currentIndex].configuration
+                      .onBack()) {
+                    Navigation navigation = Navigation(
+                        clientId: widget.appState.clientId,
+                        componentId: this.currentCompId);
 
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  BlocProvider.of<ApiBloc>(context).add(navigation);
-                });
+                    BlocProvider.of<ApiBloc>(context).add(navigation);
+                  }
+                } else {
+                  Navigation navigation = Navigation(
+                      clientId: widget.appState.clientId,
+                      componentId: this.currentCompId);
+
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    BlocProvider.of<ApiBloc>(context).add(navigation);
+                  });
+                }
               },
             ),
             title: Text(title ?? ''),
