@@ -251,7 +251,7 @@ class LocalDatabase implements IDatabaseProvider {
   Future<void> setCacheSize(int size) async {
     if (this.db == null || !this.db.isOpen) return;
 
-    String sql = "PRAGMA cache_size=";
+    String sql = "PRAGMA cache_size=${size.toString()}";
 
     if (this.debug) {
       log('SQLite setCacheSize:' + sql);
