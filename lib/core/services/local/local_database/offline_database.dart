@@ -806,8 +806,6 @@ class OfflineDatabase extends LocalDatabase
         yield Response()..request = Navigation();
       }
     }
-
-    yield null;
   }
 
   Future<bool> _insertUpdateMetaData(String dataProvider, String tableName,
