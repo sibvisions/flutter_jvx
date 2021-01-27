@@ -767,8 +767,14 @@ class OfflineDatabase extends LocalDatabase
         yield await this.setValues(request)
           ..request = request;
       } else if (request is InsertRecord) {
-        yield await this.insertRecord(request)
+        Response resp = await this.insertRecord(request)
           ..request = request;
+
+        if (request.setValues != null) {
+          this.request(request.setValues);
+        }
+
+        yield resp;
       } else if (request is MetaData) {
         yield await this.getMetaData(request)
           ..request = request;
