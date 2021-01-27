@@ -49,7 +49,7 @@ class OfflineDatabase extends LocalDatabase
               "$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
-      //await this.setCacheSize(-4000);
+      await this.setCacheSize(4000);
     }
   }
 
