@@ -39,6 +39,7 @@ class OfflineDatabase extends LocalDatabase
   int _rowsToImport;
   int _rowsImported;
   ErrorResponse error;
+  Filter _lastFetchFilter;
 
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
@@ -570,6 +571,7 @@ class OfflineDatabase extends LocalDatabase
       if (request.filter != null &&
           request.filter.columnNames != null &&
           request.filter.values != null) {
+        _lastFetchFilter = request.filter;
         String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
             request.filter.columnNames,
             request.filter.values,
@@ -734,7 +736,8 @@ class OfflineDatabase extends LocalDatabase
               OfflineDatabaseFormatter.getStateSetString(
                   OFFLINE_ROW_STATE_DELETED),
               where)) {
-            FetchData fetch = FetchData(request.dataProvider, request.clientId);
+            FetchData fetch = FetchData(request.dataProvider, request.clientId,
+                null, null, null, null, _lastFetchFilter);
             return await this.fetchData(fetch);
           }
         }
