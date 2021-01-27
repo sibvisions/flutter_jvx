@@ -783,8 +783,16 @@ class OfflineDatabase extends LocalDatabase
   Stream<Response> request(Request request) async* {
     if (request != null) {
       if (request is FetchData) {
-        yield await fetchData(request)
-          ..request = request;
+        Response resp = await fetchData(request);
+
+        resp.request = request;
+
+        if (resp.responseData.dataBooks.length > 0) {
+          print(
+              '${resp.responseData.dataBooks[0].dataProvider}: ${resp.responseData.dataBooks[0].records.length}');
+        }
+
+        yield resp;
       } else if (request is SetValues) {
         yield await this.setValues(request)
           ..request = request;
