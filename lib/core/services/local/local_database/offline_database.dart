@@ -605,7 +605,7 @@ class OfflineDatabase extends LocalDatabase
         dataBook.from = 0;
         dataBook.isAllFetched = true;
       }
-      dataBook.to = records.length + dataBook.from;
+      dataBook.to = records.length - 1 + dataBook.from;
       dataBook.columnNames = metaData?.columnNames;
 
       data.dataBooks = [dataBook];
