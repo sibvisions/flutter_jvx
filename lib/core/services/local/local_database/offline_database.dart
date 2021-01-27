@@ -165,10 +165,10 @@ class OfflineDatabase extends LocalDatabase
 
     if (result)
       print(
-          "Online sync finished successfully! Imported records: $rowsSynced/$rowsToSync");
+          "Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
     else
       print(
-          "Online sync finished with error! Imported records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
+          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
 
     return result;
   }
@@ -249,10 +249,10 @@ class OfflineDatabase extends LocalDatabase
 
     if (result)
       print(
-          "Offline import finished successfully! Synced records: $_rowsImported/$_rowsToImport");
+          "Offline import finished successfully! Imported records: $_rowsImported/$_rowsToImport");
     else
       print(
-          "Offline import finished with error! Synced records: $_rowsImported/$_rowsToImport ErrorDetail: ${error?.details}");
+          "Offline import finished with error! Importes records: $_rowsImported/$_rowsToImport ErrorDetail: ${error?.details}");
 
     return result;
   }
