@@ -49,6 +49,7 @@ class OfflineDatabase extends LocalDatabase
               "$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
+      await this.setCacheSize(-4000);
     }
   }
 
@@ -218,11 +219,9 @@ class OfflineDatabase extends LocalDatabase
           print('**5**' + DateTime.now().toString());
         }
       });
-      await this.commitTransaction();
       print('**6**' + DateTime.now().toString());
 
-      this.setSynchronous(false);
-      await this.beginTransaction();
+      //this.setSynchronous(false);
       print('**7**' + DateTime.now().toString());
 
       await Future.forEach(componentData, (element) async {
@@ -241,13 +240,12 @@ class OfflineDatabase extends LocalDatabase
       await this.commitTransaction();
       print('**11**' + DateTime.now().toString());
 
-      this.setSynchronous(true);
-      print('**12**' + DateTime.now().toString());
+      //this.setSynchronous(true);
     } catch (e) {
       await this.rollbackTransaction();
     }
 
-    print('**13**' + DateTime.now().toString());
+    print('**12**' + DateTime.now().toString());
 
     if (result)
       print(
