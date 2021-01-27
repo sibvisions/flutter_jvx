@@ -716,8 +716,8 @@ class OfflineDatabase extends LocalDatabase
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
       if (await tableExists(tableName)) {
-        Map<String, dynamic> record =
-            await _getRowWithIndex(tableName, request.selectedRow);
+        Map<String, dynamic> record = await _getRowWithIndex(
+            tableName, request.selectedRow, _lastFetchFilter);
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
         String rowState = OfflineDatabaseFormatter.getRowState(record);
@@ -865,10 +865,18 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Map<String, dynamic>> _getRowWithIndex(
-      String tableName, int index) async {
+  Future<Map<String, dynamic>> _getRowWithIndex(String tableName, int index,
+      [Filter filter]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
     String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+
+    if (filter != null && filter.columnNames != null && filter.values != null) {
+      _lastFetchFilter = filter;
+      String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
+          filter.columnNames, filter.values, filter.compareOperator);
+      if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
+    }
+
     List<Map<String, dynamic>> result =
         await this.selectRows(tableName, where, orderBy, "$index, 1");
 
