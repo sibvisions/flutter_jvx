@@ -787,6 +787,12 @@ class OfflineDatabase extends LocalDatabase
           ..request = request;
 
         if (request.setValues != null) {
+          if (resp?.responseData?.dataBooks != null) {
+            DataBook databook;
+            databook = resp.responseData.dataBooks.firstWhere(
+                (element) => element.dataProvider == request.dataProvider);
+            request.setValues.offlineSelectedRow = databook.selectedRow;
+          }
           yield await this.setValues(request.setValues);
         } else {
           yield resp;
