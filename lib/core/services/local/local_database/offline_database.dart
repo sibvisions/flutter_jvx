@@ -750,12 +750,13 @@ class OfflineDatabase extends LocalDatabase
     if (request != null && request.dataProvider != null) {
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
-      int count = await this.rowCount(tableName);
       String columnString =
           "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
       String valueString =
           "'$OFFLINE_ROW_STATE_INSERTED'${INSERT_INTO_DATA_SEPERATOR}datetime('now')";
       if (await insert(tableName, columnString, valueString)) {
+        int count = await this.rowCount(tableName);
+
         Response response = new Response();
         ResponseData data = new ResponseData();
         DataBook dataBook = new DataBook(
