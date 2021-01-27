@@ -49,7 +49,7 @@ class OfflineDatabase extends LocalDatabase
               "$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
       await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
-      await this.setCacheSize(-4000);
+      //await this.setCacheSize(-4000);
     }
   }
 
@@ -669,9 +669,9 @@ class OfflineDatabase extends LocalDatabase
 
         Map<String, dynamic> record =
             await _getRowWithIndex(tableName, request.selectedRow);
-        dataBook.records = OfflineDatabaseFormatter.removeOfflineColumns(record)
-            .values
-            .toList();
+        dataBook.records = [
+          OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
+        ];
         dataBook.from = request.selectedRow;
         dataBook.to = request.selectedRow;
       }
@@ -736,9 +736,9 @@ class OfflineDatabase extends LocalDatabase
         );
         Map<String, dynamic> record =
             await _getRowWithIndex(tableName, count - 1);
-        dataBook.records = OfflineDatabaseFormatter.removeOfflineColumns(record)
-            .values
-            .toList();
+        dataBook.records = [
+          OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
+        ];
 
         dataBook.from = count - 1;
         dataBook.to = count - 1;
