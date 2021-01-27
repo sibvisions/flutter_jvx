@@ -154,9 +154,9 @@ class LocalDatabase implements IDatabaseProvider {
     String sql =
         "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)";
 
-    // if (this.debug) {
-    //   log('SQLite insert:' + sql);
-    // }
+    if (this.debug) {
+      log('SQLite insert:' + sql);
+    }
 
     await this.db.execute(sql);
 
