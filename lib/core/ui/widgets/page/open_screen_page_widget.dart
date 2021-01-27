@@ -294,8 +294,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                if (_openScreenManager
-                        .screens[currentIndex].configuration?.onBack !=
+                if (_openScreenManager.screens.values
+                        .toList()[currentIndex]
+                        .configuration
+                        ?.onBack !=
                     null) {
                   if (_openScreenManager.screens[currentIndex].configuration
                       .onBack()) {
