@@ -173,6 +173,19 @@ class LocalDatabase implements IDatabaseProvider {
     });
   }
 
+  Future<void> batch(List<String> sqlStatements) async {
+    if (this.db == null || !this.db.isOpen) return;
+
+    await this.db.transaction((txn) async {
+      var batch = txn.batch();
+      sqlStatements.forEach((sql) {
+        batch.execute(sql);
+      });
+
+      batch.commit(noResult: true);
+    });
+  }
+
   Future<bool> update(String tableName, String setString, String where) async {
     if (tableName == null || this.db == null || !this.db.isOpen) return false;
 
