@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -460,10 +461,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       );
 
   Future<bool> _onWillPop() async {
-    Navigation navigation = Navigation(
-        clientId: widget.appState.clientId, componentId: this.currentCompId);
+    if (_openScreenManager.screens[currentIndex] is CustomScreen &&
+        _openScreenManager.screens[currentIndex].configuration?.onBack != null) {
+      return _openScreenManager.screens[currentIndex].configuration.onBack();
+    } else {
+      Navigation navigation = Navigation(
+          clientId: widget.appState.clientId, componentId: this.currentCompId);
 
-    BlocProvider.of<ApiBloc>(context).add(navigation);
+      BlocProvider.of<ApiBloc>(context).add(navigation);
+    }
 
     return false;
   }
