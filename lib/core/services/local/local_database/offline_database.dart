@@ -189,7 +189,7 @@ class OfflineDatabase extends LocalDatabase
       print('**2**' + DateTime.now().toString());
 
       //this.setSynchronous(false);
-      await this.beginTransaction();
+      //await this.beginTransaction();
 
       await Future.forEach(componentData, (element) async {
         if (element != null &&
@@ -237,12 +237,12 @@ class OfflineDatabase extends LocalDatabase
 
       print('**10**' + DateTime.now().toString());
 
-      await this.commitTransaction();
+      //await this.commitTransaction();
       print('**11**' + DateTime.now().toString());
 
       //this.setSynchronous(true);
     } catch (e) {
-      await this.rollbackTransaction();
+      //await this.rollbackTransaction();
     }
 
     print('**12**' + DateTime.now().toString());
@@ -478,19 +478,35 @@ class OfflineDatabase extends LocalDatabase
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
 
       if (await tableExists(tableName)) {
-        await Future.forEach(data.records, (element) async {
+        List<String> sqlStatements = List<String>();
+        print('**8A**' + DateTime.now().toString());
+
+        data.records.forEach((element) {
           String columnString =
               OfflineDatabaseFormatter.getInsertColumnList(data.columnNames);
           String valueString =
               OfflineDatabaseFormatter.getInsertValueList(element);
-
-          if (!await this.insert(tableName, columnString, valueString)) {
-            failedInsertCount++;
-          } else {
-            _rowsImported++;
-            setProgress(_rowsToImport, _rowsImported);
-          }
+          sqlStatements.add(
+              "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)");
         });
+
+        print('**8B**' + DateTime.now().toString());
+        await this.bulk(sqlStatements);
+        print('**8C**' + DateTime.now().toString());
+
+        // await Future.forEach(data.records, (element) async {
+        //   String columnString =
+        //       OfflineDatabaseFormatter.getInsertColumnList(data.columnNames);
+        //   String valueString =
+        //       OfflineDatabaseFormatter.getInsertValueList(element);
+
+        //   if (!await this.insert(tableName, columnString, valueString)) {
+        //     failedInsertCount++;
+        //   } else {
+        //     _rowsImported++;
+        //     setProgress(_rowsToImport, _rowsImported);
+        //   }
+        // });
 
         if (failedInsertCount > 0) {
           return false;
