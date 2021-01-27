@@ -299,7 +299,9 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                         .configuration
                         ?.onBack !=
                     null) {
-                  if (_openScreenManager.screens[currentIndex].configuration
+                  if (_openScreenManager.screens.values
+                      .toList()[currentIndex]
+                      .configuration
                       .onBack()) {
                     Navigation navigation = Navigation(
                         clientId: widget.appState.clientId,
