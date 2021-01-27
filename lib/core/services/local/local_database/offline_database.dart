@@ -512,6 +512,8 @@ class OfflineDatabase extends LocalDatabase
 
       return await this.selectRows(tableName, where, orderBy);
     }
+
+    return null;
   }
 
   Future<bool> _setOfflineState(
@@ -528,9 +530,11 @@ class OfflineDatabase extends LocalDatabase
     try {
       File file = File(this.path);
       await file.delete();
+      return true;
     } catch (error) {
       print(error);
     }
+    return false;
   }
 
   Future<Response> fetchData(FetchData request) async {
@@ -594,7 +598,7 @@ class OfflineDatabase extends LocalDatabase
       return response;
     }
 
-    return null;
+    return Response();
   }
 
   Future<Response> setValues(SetValues request) async {
@@ -652,7 +656,7 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
-    return null;
+    return Response();
   }
 
   Future<Response> selectRecord(SelectRecord request) async {
@@ -681,7 +685,7 @@ class OfflineDatabase extends LocalDatabase
       response.responseData = data;
       return response;
     }
-    return null;
+    return Response();
   }
 
   Future<Response> deleteRecord(SelectRecord request,
@@ -716,7 +720,7 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
-    return null;
+    return Response();
   }
 
   Future<Response> insertRecord(InsertRecord request) async {
@@ -751,7 +755,7 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
-    return null;
+    return Response();
   }
 
   Stream<Response> request(Request request) async* {
