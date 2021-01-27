@@ -462,8 +462,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   Future<bool> _onWillPop() async {
     if (_openScreenManager.screens[currentIndex] is CustomScreen &&
-        _openScreenManager.screens[currentIndex].configuration?.onBack != null) {
-      return _openScreenManager.screens[currentIndex].configuration.onBack();
+        _openScreenManager.screens[currentIndex].configuration?.onBack !=
+            null) {
+      if (_openScreenManager.screens[currentIndex].configuration.onBack()) {
+        Navigation navigation = Navigation(
+            clientId: widget.appState.clientId,
+            componentId: this.currentCompId);
+
+        BlocProvider.of<ApiBloc>(context).add(navigation);
+      }
     } else {
       Navigation navigation = Navigation(
           clientId: widget.appState.clientId, componentId: this.currentCompId);
