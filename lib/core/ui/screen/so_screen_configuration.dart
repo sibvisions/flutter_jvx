@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../../models/api/response.dart';
 
 class SoScreenConfiguration extends ValueNotifier<Response> {
-  final String componentId;
-  final String screenTitle;
-  final bool withServer;
-  final String screenComponentId;
-  final bool offlineScreen;
-  final bool Function() onBack;
+  String componentId;
+  String screenTitle;
+  bool withServer;
+  String screenComponentId;
+  bool offlineScreen;
+  bool Function() onBack;
 
   SoScreenConfiguration(Response response,
       {@required this.componentId,
