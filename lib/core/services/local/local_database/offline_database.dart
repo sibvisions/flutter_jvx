@@ -611,6 +611,8 @@ class OfflineDatabase extends LocalDatabase
 
       data.dataBooks = [dataBook];
       response.responseData = data;
+      response.request = request;
+
       return response;
     }
 
@@ -659,7 +661,7 @@ class OfflineDatabase extends LocalDatabase
             DataBook dataBook = new DataBook(
               dataProvider: request.dataProvider,
               selectedRow: request.offlineSelectedRow,
-              records: records,
+              records: [records],
             );
 
             dataBook.from = request.offlineSelectedRow;
@@ -667,6 +669,8 @@ class OfflineDatabase extends LocalDatabase
 
             data.dataBooks = [dataBook];
             response.responseData = data;
+            response.request = request;
+
             return response;
           }
         }
@@ -699,6 +703,7 @@ class OfflineDatabase extends LocalDatabase
 
       data.dataBooks = [dataBook];
       response.responseData = data;
+      response.request = request;
       return response;
     }
     return Response();
@@ -767,6 +772,8 @@ class OfflineDatabase extends LocalDatabase
 
         data.dataBooks = [dataBook];
         response.responseData = data;
+        response.request = request;
+
         return response;
       }
     }
