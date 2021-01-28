@@ -596,8 +596,8 @@ class OfflineDatabase extends LocalDatabase
         if (sqlSet.length > 0) {
           Map<String, dynamic> record;
           if (request.offlineSelectedRow >= 0)
-            record =
-                await _getRowWithIndex(tableName, request.offlineSelectedRow);
+            record = await _getRowWithIndex(
+                tableName, request.offlineSelectedRow - 1);
           else if (request.filter != null)
             record = await _getRowWithFilter(tableName, request.filter);
 
