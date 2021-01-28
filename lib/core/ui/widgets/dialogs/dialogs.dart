@@ -188,7 +188,7 @@ showLinearProgressIndicator(BuildContext context) {
                   child: Center(
                       child: Container(
                     width: 200,
-                    height: 100,
+                    height: 200,
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -196,6 +196,7 @@ showLinearProgressIndicator(BuildContext context) {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
+                        Text('Gehe offline...'),
                         LinearProgressIndicator(
                           value: _progress,
                         )
