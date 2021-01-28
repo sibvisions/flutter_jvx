@@ -206,6 +206,10 @@ class _LoginCardState extends State<LoginCard>
           .login(username?.trim(), password?.trim());
 
       if (loginSuccess) {
+        widget.appState.username = username?.trim();
+        SharedPrefProvider.of(context).manager.setLoginData(
+            username: username?.trim(), password: password?.trim());
+
         Navigator.of(context).pushReplacementNamed(MenuPage.route,
             arguments: MenuArguments(<MenuItem>[], true, null));
       } else {
