@@ -732,6 +732,7 @@ class OfflineDatabase extends LocalDatabase
         dataBook.from = count - 1;
         dataBook.to = count - 1;
         dataBook.selectedRow = count - 1;
+        dataBook.isAllFetched = false;
 
         data.dataBooks = [dataBook];
         response.responseData = data;
