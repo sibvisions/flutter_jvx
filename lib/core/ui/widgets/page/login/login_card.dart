@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
+import 'package:jvx_flutterclient/core/models/app/menu_arguments.dart';
+import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
 import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 
 import '../../../../models/api/request.dart';
 import '../../../../models/api/request/login.dart';
@@ -146,7 +151,8 @@ class _LoginCardState extends State<LoginCard>
                           onPressed: () {
                             SchedulerBinding.instance
                                 .addPostFrameCallback((timeStamp) {
-                              Navigator.of(context).pushNamed(SettingsPage.route);
+                              Navigator.of(context)
+                                  .pushNamed(SettingsPage.route);
                             });
                           },
                           label: Text(
@@ -194,14 +200,27 @@ class _LoginCardState extends State<LoginCard>
   }
 
   _login(BuildContext context) {
-    Login login = Login(
-        clientId: widget.appState.clientId,
-        createAuthKey: rememberMe,
-        username: username?.trim(),
-        password: password?.trim(),
-        requestType: RequestType.LOGIN);
+    if (widget.appState.isOffline) {
+      bool loginSuccess = SharedPrefProvider.of(context)
+          .manager
+          .login(username?.trim(), password?.trim());
 
-    BlocProvider.of<ApiBloc>(context).add(login);
+      if (loginSuccess) {
+        Navigator.of(context).pushReplacementNamed(MenuPage.route,
+            arguments: MenuArguments(<MenuItem>[], true, null));
+      } else {
+        showError(context, 'Login error', 'False username or password');
+      }
+    } else {
+      Login login = Login(
+          clientId: widget.appState.clientId,
+          createAuthKey: rememberMe,
+          username: username?.trim(),
+          password: password?.trim(),
+          requestType: RequestType.LOGIN);
+
+      BlocProvider.of<ApiBloc>(context).add(login);
+    }
   }
 
   @override

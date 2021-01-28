@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -123,6 +124,14 @@ class SharedPreferencesManager {
     }
   }
 
+  void setOfflineLoginHash({String username, String password}) {
+    String usernameHash = sha256.convert(utf8.encode(username)).toString();
+    String passwordHash = sha256.convert(utf8.encode(password)).toString();
+
+    this.sharedPreferences.setString('usernameHash', usernameHash);
+    this.sharedPreferences.setString('passwordHash', passwordHash);
+  }
+
   void setAppVersion(String appVersion) =>
       this.sharedPreferences.setString('appVersion', appVersion);
 
@@ -167,5 +176,19 @@ class SharedPreferencesManager {
     } catch (e) {
       print('Couldn\'t encode menu items');
     }
+  }
+
+  bool login(String username, String password) {
+    String usernameHash = sha256.convert(utf8.encode(username)).toString();
+    String passwordHash = sha256.convert(utf8.encode(password)).toString();
+
+    String savedUsernameHash = this.sharedPreferences.getString('usernameHash');
+    String savedPasswordHash = this.sharedPreferences.getString('passwordHash');
+
+    if (usernameHash == savedUsernameHash &&
+        passwordHash == savedPasswordHash) {
+      return true;
+    }
+    return false;
   }
 }

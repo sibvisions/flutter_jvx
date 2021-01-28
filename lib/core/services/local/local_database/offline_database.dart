@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/models/api/request/logout.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -783,7 +784,9 @@ class OfflineDatabase extends LocalDatabase
             ..request = request;
         }
       } else if (request is Navigation) {
-        yield Response()..request = Navigation();
+        yield Response()..request = request;
+      } else if (request is Logout) {
+        yield Response()..request = request;
       }
     }
   }

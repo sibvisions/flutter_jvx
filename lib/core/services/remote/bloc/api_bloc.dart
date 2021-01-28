@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -169,6 +170,9 @@ class ApiBloc extends Bloc<Request, Response> {
       this
           .manager
           .setLoginData(username: event.username, password: event.password);
+
+      this.manager.setOfflineLoginHash(
+          username: event.username, password: event.password);
     }
 
     Response response = await processRequest(event);
@@ -699,7 +703,7 @@ class ApiBloc extends Bloc<Request, Response> {
       if (response.userData == null)
         response.userData = currentResponse.userData;
     }
-    
+
     return toUpdate;
   }
 }
