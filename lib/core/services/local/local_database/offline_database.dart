@@ -139,8 +139,8 @@ class OfflineDatabase extends LocalDatabase
                   columnNames: metaData.primaryKeyColumns,
                   values: primaryKeyValues.values.toList());
               if (state == OFFLINE_ROW_STATE_DELETED) {
-                if (await this.syncDelete(context, entry.key, primaryKeyFilter))
-                  rowsSynced++;
+                if (await this.syncDelete(context, entry.key, primaryKeyFilter,
+                    metaData.columnNames, element)) rowsSynced++;
               } else if (state == OFFLINE_ROW_STATE_INSERTED) {
                 if (await this.syncInsert(context, entry.key, primaryKeyFilter,
                     metaData.columnNames, element)) {
@@ -157,7 +157,7 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
-        result = true;
+        if (rowsSynced == rowsToSync) result = true;
       }
     }
 
@@ -223,7 +223,11 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncDelete(
-      BuildContext context, String dataProvider, Filter filter) async {
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
