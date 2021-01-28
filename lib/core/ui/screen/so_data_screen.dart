@@ -153,21 +153,28 @@ mixin SoDataScreen {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
-      showProgress(context);
-      
-      SharedPrefProvider.of(context).manager.setOffline(true);
-      AppStateProvider.of(context).appState.offline = true;
+      showLinearProgressIndicator(context,
+          (sl<IOfflineDatabaseProvider>() as OfflineDatabase).progress);
 
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
       await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
-      await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-          .importComponents(componentData);
+      bool importSuccess =
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .importComponents(componentData);
 
-      hideProgress(context);
+      hideLinearProgressIndicator(context);
 
-      BlocProvider.of<ApiBloc>(context).add(Navigation());
+      if (importSuccess) {
+        SharedPrefProvider.of(context).manager.setOffline(true);
+        AppStateProvider.of(context).appState.offline = true;
+
+        BlocProvider.of<ApiBloc>(context).add(Navigation());
+      } else {
+        showError(context, 'Offline error',
+            'Could\'t import component data into offline db');
+      }
     } else {
       // wait until textfields focus lost. 10 millis should do it.
       Future.delayed(const Duration(milliseconds: 100), () {
