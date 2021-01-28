@@ -913,12 +913,8 @@ class OfflineDatabase extends LocalDatabase
   }
 
   void addProgressCallback(ProgressCallback callback) {
-    this._progressCallbacks.remove(callback);
+    this._progressCallbacks = <ProgressCallback>[];
     this._progressCallbacks.add(callback);
-  }
-
-  void removeProgressCallback(ProgressCallback callback) {
-    this._progressCallbacks.remove(callback);
   }
 
   void removeAllProgressCallbacks() {
