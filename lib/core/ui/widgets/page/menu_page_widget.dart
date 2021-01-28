@@ -377,25 +377,29 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                     actions: [
                       widget.appState.isOffline
                           ? IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  widget.appState.offline = false;
-                                });
+                              onPressed: () async {
+                                bool syncSuccess =
+                                    await sl<IOfflineDatabaseProvider>()
+                                        .syncOnline(context);
+                                if (syncSuccess) {
+                                  await (sl<IOfflineDatabaseProvider>()
+                                          as OfflineDatabase)
+                                      .cleanupDatabase();
 
-                                SharedPrefProvider.of(context)
-                                    .manager
-                                    .setOffline(false);
+                                  setState(() {
+                                    widget.appState.offline = false;
+                                  });
 
-                                sl<IOfflineDatabaseProvider>()
-                                    .syncOnline(context)
-                                    .then((value) =>
-                                        (sl<IOfflineDatabaseProvider>()
-                                                as OfflineDatabase)
-                                            .cleanupDatabase()
-                                            .then((value) {
-                                          BlocProvider.of<ApiBloc>(context).add(
-                                              Menu(widget.appState.clientId));
-                                        }));
+                                  SharedPrefProvider.of(context)
+                                      .manager
+                                      .setOffline(false);
+
+                                  BlocProvider.of<ApiBloc>(context)
+                                      .add(Menu(widget.appState.clientId));
+                                } else {
+                                  showError(context, 'Sync error',
+                                      'Could not sync data to server');
+                                }
                               },
                               icon: FaIcon(FontAwesomeIcons.broadcastTower),
                             )
