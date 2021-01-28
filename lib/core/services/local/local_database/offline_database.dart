@@ -726,7 +726,7 @@ class OfflineDatabase extends LocalDatabase
           selectedRow: count,
         );
         Map<String, dynamic> record =
-            await _getRowWithIndex(tableName, count - 1);
+            await _getRowWithIndex(tableName, count - 2);
         dataBook.records = [
           OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
         ];
