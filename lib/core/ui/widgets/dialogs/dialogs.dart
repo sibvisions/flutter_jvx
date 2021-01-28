@@ -170,14 +170,14 @@ hideProgress(BuildContext context) {
 }
 
 showLinearProgressIndicator(BuildContext context) {
+  double _progress = 0;
+
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => WillPopScope(
             onWillPop: () async => false,
             child: StatefulBuilder(builder: (context, setState) {
-              double _progress = 0;
-
               (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
                   .addProgressCallback(
                       (val) => setState(() => _progress = val));
@@ -209,7 +209,8 @@ showLinearProgressIndicator(BuildContext context) {
 }
 
 hideLinearProgressIndicator(BuildContext context) {
-  (sl<IOfflineDatabaseProvider>() as OfflineDatabase).removeAllProgressCallbacks();
+  (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+      .removeAllProgressCallbacks();
   Navigator.of(context).pop();
 }
 
