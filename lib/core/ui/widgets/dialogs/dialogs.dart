@@ -182,27 +182,29 @@ showLinearProgressIndicator(BuildContext context) {
                   .addProgressCallback(
                       (val) => setState(() => _progress = val));
 
-              return Opacity(
-                opacity: 0.7,
-                child: Container(
-                  child: Center(
-                      child: Container(
-                    width: 200,
-                    height: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Text('Gehe offline...'),
-                        LinearProgressIndicator(
-                          value: _progress,
-                        )
-                      ],
-                    ),
-                  )),
+              return Material(
+                child: Opacity(
+                  opacity: 0.7,
+                  child: Container(
+                    child: Center(
+                        child: Container(
+                      width: 200,
+                      height: 200,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Text('Gehe offline...'),
+                          LinearProgressIndicator(
+                            value: _progress,
+                          )
+                        ],
+                      ),
+                    )),
+                  ),
                 ),
               );
             }),
