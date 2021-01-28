@@ -380,20 +380,22 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                               onPressed: () {
                                 setState(() {
                                   widget.appState.offline = false;
-                                  SharedPrefProvider.of(context)
-                                      .manager
-                                      .setOffline(false);
-
-                                  sl<IOfflineDatabaseProvider>()
-                                      .syncOnline(context)
-                                      .then((value) =>
-                                          (sl<IOfflineDatabaseProvider>()
-                                                  as OfflineDatabase)
-                                              .cleanupDatabase());
-
-                                  widget.appState.items = SharedPrefProvider.of(context).manager.menuItems;
-                                  this.items = widget.appState.items;
                                 });
+
+                                SharedPrefProvider.of(context)
+                                    .manager
+                                    .setOffline(false);
+
+                                sl<IOfflineDatabaseProvider>()
+                                    .syncOnline(context)
+                                    .then((value) =>
+                                        (sl<IOfflineDatabaseProvider>()
+                                                as OfflineDatabase)
+                                            .cleanupDatabase()
+                                            .then((value) {
+                                          BlocProvider.of<ApiBloc>(context).add(
+                                              Menu(widget.appState.clientId));
+                                        }));
                               },
                               icon: FaIcon(FontAwesomeIcons.broadcastTower),
                             )
