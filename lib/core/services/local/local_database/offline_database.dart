@@ -157,7 +157,7 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
-        result = true;
+        if (rowsSynced == rowsToSync) result = true;
       }
     }
 
