@@ -298,7 +298,7 @@ class OfflineDatabase extends LocalDatabase
                 dynamic offlinePrimaryKey =
                     OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
                 bloc.close();
-                if (await _setOfflineState(dataProvider, offlinePrimaryKey,
+                if (await setOfflineState(dataProvider, offlinePrimaryKey,
                     OFFLINE_ROW_STATE_UNCHANGED)) return true;
               }
             }
@@ -337,7 +337,7 @@ class OfflineDatabase extends LocalDatabase
         bloc.close();
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-        if (await _setOfflineState(
+        if (await setOfflineState(
             dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
           return true;
       } else {
@@ -488,7 +488,7 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<bool> _setOfflineState(
+  Future<bool> setOfflineState(
       String dataProvider, int offlinePrimaryKey, String state) async {
     String tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
     String setString = OfflineDatabaseFormatter.getStateSetString(state);
