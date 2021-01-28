@@ -167,6 +167,41 @@ hideProgress(BuildContext context) {
   Navigator.of(context).pop();
 }
 
+showLinearProgressIndicator(BuildContext context, int progress) {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+            onWillPop: () async => false,
+            child: Opacity(
+              opacity: 0.7,
+              child: Container(
+                child: Center(
+                    child: Container(
+                  width: 200,
+                  height: 100,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      LinearProgressIndicator(
+                        value: progress.toDouble(),
+                      )
+                    ],
+                  ),
+                )),
+              ),
+            ),
+          ));
+}
+
+hideLinearProgressIndicator(BuildContext context) {
+  Navigator.of(context).pop();
+}
+
 showTextInputDialog(BuildContext context, String title, String textLabel,
     String textHint, initialVal, void onTapCallback(String val)) {
   showDialog(

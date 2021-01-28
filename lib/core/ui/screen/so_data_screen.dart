@@ -153,7 +153,8 @@ mixin SoDataScreen {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
-      showProgress(context);
+      showLinearProgressIndicator(context,
+          (sl<IOfflineDatabaseProvider>() as OfflineDatabase).progress);
 
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
@@ -163,12 +164,12 @@ mixin SoDataScreen {
           await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
               .importComponents(componentData);
 
-      hideProgress(context);
+      hideLinearProgressIndicator(context);
 
       if (importSuccess) {
         SharedPrefProvider.of(context).manager.setOffline(true);
         AppStateProvider.of(context).appState.offline = true;
-        
+
         BlocProvider.of<ApiBloc>(context).add(Navigation());
       } else {
         showError(context, 'Offline error',
