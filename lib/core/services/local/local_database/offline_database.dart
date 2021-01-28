@@ -627,6 +627,7 @@ class OfflineDatabase extends LocalDatabase
 
             dataBook.from = request.offlineSelectedRow;
             dataBook.to = request.offlineSelectedRow;
+            dataBook.isAllFetched = false;
 
             data.dataBooks = [dataBook];
             response.responseData = data;
@@ -662,6 +663,7 @@ class OfflineDatabase extends LocalDatabase
         dataBook.to = request.selectedRow;
       }
 
+      dataBook.isAllFetched = false;
       data.dataBooks = [dataBook];
       response.responseData = data;
       response.request = request;
