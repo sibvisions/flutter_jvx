@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
@@ -165,6 +166,8 @@ mixin SoDataScreen {
           .importComponents(componentData);
 
       hideProgress(context);
+
+      BlocProvider.of<ApiBloc>(context).add(Navigation());
     } else {
       // wait until textfields focus lost. 10 millis should do it.
       Future.delayed(const Duration(milliseconds: 100), () {
