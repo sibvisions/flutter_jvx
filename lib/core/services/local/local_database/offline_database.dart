@@ -179,73 +179,38 @@ class OfflineDatabase extends LocalDatabase
     error = null;
     bool result = true;
 
-    print('**1**' + DateTime.now().toString());
-
     componentData.forEach((element) {
       _rowsToImport += element?.data?.records?.length;
     });
 
-    try {
-      print('**2**' + DateTime.now().toString());
+    await Future.forEach(componentData, (element) async {
+      if (element != null && element.data != null && element.metaData != null) {
+        String tableName =
+            OfflineDatabaseFormatter.formatTableName(element.dataProvider);
 
-      //this.setSynchronous(false);
-      //await this.beginTransaction();
-
-      await Future.forEach(componentData, (element) async {
-        if (element != null &&
-            element.data != null &&
-            element.metaData != null) {
-          String tableName =
-              OfflineDatabaseFormatter.formatTableName(element.dataProvider);
-          print('**3**' + DateTime.now().toString());
-
-          if (await tableExists(tableName)) {
-            await this.dropTable(tableName);
-          }
-          String screenComponentId = "";
-          if (element.soDataScreen != null &&
-              (element.soDataScreen as SoScreenState<SoScreen>)
-                      .widget
-                      .configuration !=
-                  null)
-            screenComponentId =
-                (element.soDataScreen as SoScreenState<SoScreen>)
+        if (await tableExists(tableName)) {
+          await this.dropTable(tableName);
+        }
+        String screenComponentId = "";
+        if (element.soDataScreen != null &&
+            (element.soDataScreen as SoScreenState<SoScreen>)
                     .widget
-                    .configuration
-                    ?.screenComponentId;
-          print('**4**' + DateTime.now().toString());
+                    .configuration !=
+                null)
+          screenComponentId = (element.soDataScreen as SoScreenState<SoScreen>)
+              .widget
+              .configuration
+              ?.screenComponentId;
 
-          await _createTableWithMetaData(element.metaData, screenComponentId);
-          print('**5**' + DateTime.now().toString());
-        }
-      });
-      print('**6**' + DateTime.now().toString());
+        await _createTableWithMetaData(element.metaData, screenComponentId);
+      }
+    });
 
-      //this.setSynchronous(false);
-      print('**7**' + DateTime.now().toString());
-
-      await Future.forEach(componentData, (element) async {
-        if (element != null &&
-            element.data != null &&
-            element.metaData != null) {
-          print('**8**' + DateTime.now().toString());
-
-          result = result & await _importRows(element.data);
-          print('**9**' + DateTime.now().toString());
-        }
-      });
-
-      print('**10**' + DateTime.now().toString());
-
-      //await this.commitTransaction();
-      print('**11**' + DateTime.now().toString());
-
-      //this.setSynchronous(true);
-    } catch (e) {
-      //await this.rollbackTransaction();
-    }
-
-    print('**12**' + DateTime.now().toString());
+    await Future.forEach(componentData, (element) async {
+      if (element != null && element.data != null && element.metaData != null) {
+        result = result & await _importRows(element.data);
+      }
+    });
 
     if (result)
       print(
@@ -479,7 +444,6 @@ class OfflineDatabase extends LocalDatabase
 
       if (await tableExists(tableName)) {
         List<String> sqlStatements = List<String>();
-        print('**8A**' + DateTime.now().toString());
 
         data.records.forEach((element) {
           String columnString =
@@ -490,23 +454,11 @@ class OfflineDatabase extends LocalDatabase
               "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)");
         });
 
-        print('**8B**' + DateTime.now().toString());
-        await this.batch(sqlStatements);
-        print('**8C**' + DateTime.now().toString());
-
-        // await Future.forEach(data.records, (element) async {
-        //   String columnString =
-        //       OfflineDatabaseFormatter.getInsertColumnList(data.columnNames);
-        //   String valueString =
-        //       OfflineDatabaseFormatter.getInsertValueList(element);
-
-        //   if (!await this.insert(tableName, columnString, valueString)) {
-        //     failedInsertCount++;
-        //   } else {
-        //     _rowsImported++;
-        //     setProgress(_rowsToImport, _rowsImported);
-        //   }
-        // });
+        await this.bulk(sqlStatements, () {
+          _rowsImported++;
+          setProgress(_rowsToImport, _rowsImported);
+        });
+        //await this.batch(sqlStatements);
 
         if (failedInsertCount > 0) {
           return false;
