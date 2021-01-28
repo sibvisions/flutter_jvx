@@ -381,6 +381,9 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                 bool syncSuccess =
                                     await sl<IOfflineDatabaseProvider>()
                                         .syncOnline(context);
+                                (sl<IOfflineDatabaseProvider>()
+                                        as OfflineDatabase)
+                                    .removeAllProgressCallbacks();
                                 if (syncSuccess) {
                                   await (sl<IOfflineDatabaseProvider>()
                                           as OfflineDatabase)
