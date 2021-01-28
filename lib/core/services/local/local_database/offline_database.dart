@@ -36,7 +36,7 @@ import 'offline_database_formatter.dart';
 
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
-  int progress = 0;
+  double progress = 0.0;
   int rowsToImport;
   int rowsImported;
   ErrorResponse error;
@@ -903,7 +903,7 @@ class OfflineDatabase extends LocalDatabase
     if (rowsCount == 0)
       progress = 0;
     else
-      progress = (rowsDone / rowsCount * 100).floor();
+      progress = (rowsDone / rowsCount);
   }
 
   bool hasError(Response response) {
