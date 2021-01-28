@@ -4,6 +4,8 @@ import 'package:sqflite/sqflite.dart';
 
 import 'i_database_provider.dart';
 
+typedef ProgressCallback();
+
 class LocalDatabase implements IDatabaseProvider {
   bool debug = true;
   Database db;
@@ -154,21 +156,25 @@ class LocalDatabase implements IDatabaseProvider {
     String sql =
         "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)";
 
-    // if (this.debug) {
-    //   log('SQLite insert:' + sql);
-    // }
+    if (this.debug) {
+      log('SQLite insert:' + sql);
+    }
 
     await this.db.execute(sql);
 
     return true;
   }
 
-  Future<void> bulk(List<String> sqlStatements) async {
+  Future<void> bulk(List<String> sqlStatements,
+      [ProgressCallback callback]) async {
     if (this.db == null || !this.db.isOpen) return;
 
     await this.db.transaction((txn) async {
       await Future.forEach(sqlStatements, (sql) async {
         await txn.execute(sql);
+        if (callback != null) {
+          callback();
+        }
       });
     });
   }

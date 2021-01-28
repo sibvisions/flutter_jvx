@@ -165,10 +165,10 @@ class OfflineDatabase extends LocalDatabase
 
     if (result)
       print(
-          "Online sync finished successfully! Imported records: $rowsSynced/$rowsToSync");
+          "Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
     else
       print(
-          "Online sync finished with error! Imported records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
+          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
 
     return result;
   }
@@ -179,80 +179,45 @@ class OfflineDatabase extends LocalDatabase
     error = null;
     bool result = true;
 
-    print('**1**' + DateTime.now().toString());
-
     componentData.forEach((element) {
       _rowsToImport += element?.data?.records?.length;
     });
 
-    try {
-      print('**2**' + DateTime.now().toString());
+    await Future.forEach(componentData, (element) async {
+      if (element != null && element.data != null && element.metaData != null) {
+        String tableName =
+            OfflineDatabaseFormatter.formatTableName(element.dataProvider);
 
-      //this.setSynchronous(false);
-      //await this.beginTransaction();
-
-      await Future.forEach(componentData, (element) async {
-        if (element != null &&
-            element.data != null &&
-            element.metaData != null) {
-          String tableName =
-              OfflineDatabaseFormatter.formatTableName(element.dataProvider);
-          print('**3**' + DateTime.now().toString());
-
-          if (await tableExists(tableName)) {
-            await this.dropTable(tableName);
-          }
-          String screenComponentId = "";
-          if (element.soDataScreen != null &&
-              (element.soDataScreen as SoScreenState<SoScreen>)
-                      .widget
-                      .configuration !=
-                  null)
-            screenComponentId =
-                (element.soDataScreen as SoScreenState<SoScreen>)
+        if (await tableExists(tableName)) {
+          await this.dropTable(tableName);
+        }
+        String screenComponentId = "";
+        if (element.soDataScreen != null &&
+            (element.soDataScreen as SoScreenState<SoScreen>)
                     .widget
-                    .configuration
-                    ?.screenComponentId;
-          print('**4**' + DateTime.now().toString());
+                    .configuration !=
+                null)
+          screenComponentId = (element.soDataScreen as SoScreenState<SoScreen>)
+              .widget
+              .configuration
+              ?.screenComponentId;
 
-          await _createTableWithMetaData(element.metaData, screenComponentId);
-          print('**5**' + DateTime.now().toString());
-        }
-      });
-      print('**6**' + DateTime.now().toString());
+        await _createTableWithMetaData(element.metaData, screenComponentId);
+      }
+    });
 
-      //this.setSynchronous(false);
-      print('**7**' + DateTime.now().toString());
-
-      await Future.forEach(componentData, (element) async {
-        if (element != null &&
-            element.data != null &&
-            element.metaData != null) {
-          print('**8**' + DateTime.now().toString());
-
-          result = result & await _importRows(element.data);
-          print('**9**' + DateTime.now().toString());
-        }
-      });
-
-      print('**10**' + DateTime.now().toString());
-
-      //await this.commitTransaction();
-      print('**11**' + DateTime.now().toString());
-
-      //this.setSynchronous(true);
-    } catch (e) {
-      //await this.rollbackTransaction();
-    }
-
-    print('**12**' + DateTime.now().toString());
+    await Future.forEach(componentData, (element) async {
+      if (element != null && element.data != null && element.metaData != null) {
+        result = result & await _importRows(element.data);
+      }
+    });
 
     if (result)
       print(
-          "Offline import finished successfully! Synced records: $_rowsImported/$_rowsToImport");
+          "Offline import finished successfully! Imported records: $_rowsImported/$_rowsToImport");
     else
       print(
-          "Offline import finished with error! Synced records: $_rowsImported/$_rowsToImport ErrorDetail: ${error?.details}");
+          "Offline import finished with error! Importes records: $_rowsImported/$_rowsToImport ErrorDetail: ${error?.details}");
 
     return result;
   }
@@ -479,7 +444,6 @@ class OfflineDatabase extends LocalDatabase
 
       if (await tableExists(tableName)) {
         List<String> sqlStatements = List<String>();
-        print('**8A**' + DateTime.now().toString());
 
         data.records.forEach((element) {
           String columnString =
@@ -490,23 +454,11 @@ class OfflineDatabase extends LocalDatabase
               "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)");
         });
 
-        print('**8B**' + DateTime.now().toString());
-        await this.batch(sqlStatements);
-        print('**8C**' + DateTime.now().toString());
-
-        // await Future.forEach(data.records, (element) async {
-        //   String columnString =
-        //       OfflineDatabaseFormatter.getInsertColumnList(data.columnNames);
-        //   String valueString =
-        //       OfflineDatabaseFormatter.getInsertValueList(element);
-
-        //   if (!await this.insert(tableName, columnString, valueString)) {
-        //     failedInsertCount++;
-        //   } else {
-        //     _rowsImported++;
-        //     setProgress(_rowsToImport, _rowsImported);
-        //   }
-        // });
+        await this.bulk(sqlStatements, () {
+          _rowsImported++;
+          setProgress(_rowsToImport, _rowsImported);
+        });
+        //await this.batch(sqlStatements);
 
         if (failedInsertCount > 0) {
           return false;
@@ -716,8 +668,8 @@ class OfflineDatabase extends LocalDatabase
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
       if (await tableExists(tableName)) {
-        Map<String, dynamic> record =
-            await _getRowWithIndex(tableName, request.selectedRow);
+        Map<String, dynamic> record = await _getRowWithIndex(
+            tableName, request.selectedRow, _lastFetchFilter);
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
         String rowState = OfflineDatabaseFormatter.getRowState(record);
@@ -750,12 +702,13 @@ class OfflineDatabase extends LocalDatabase
     if (request != null && request.dataProvider != null) {
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
-      int count = await this.rowCount(tableName);
       String columnString =
           "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
       String valueString =
           "'$OFFLINE_ROW_STATE_INSERTED'${INSERT_INTO_DATA_SEPERATOR}datetime('now')";
       if (await insert(tableName, columnString, valueString)) {
+        int count = await this.rowCount(tableName);
+
         Response response = new Response();
         ResponseData data = new ResponseData();
         DataBook dataBook = new DataBook(
@@ -865,10 +818,18 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Map<String, dynamic>> _getRowWithIndex(
-      String tableName, int index) async {
+  Future<Map<String, dynamic>> _getRowWithIndex(String tableName, int index,
+      [Filter filter]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
     String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+
+    if (filter != null && filter.columnNames != null && filter.values != null) {
+      _lastFetchFilter = filter;
+      String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
+          filter.columnNames, filter.values, filter.compareOperator);
+      if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
+    }
+
     List<Map<String, dynamic>> result =
         await this.selectRows(tableName, where, orderBy, "$index, 1");
 
