@@ -36,8 +36,8 @@ import 'offline_database_formatter.dart';
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
   int progress = 0;
-  int _rowsToImport;
-  int _rowsImported;
+  int rowsToImport;
+  int rowsImported;
   ErrorResponse error;
   Filter _lastFetchFilter;
 
@@ -174,13 +174,13 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> importComponents(List<SoComponentData> componentData) async {
-    _rowsToImport = 0;
-    _rowsImported = 0;
+    rowsToImport = 0;
+    rowsImported = 0;
     error = null;
     bool result = true;
 
     componentData.forEach((element) {
-      _rowsToImport += element?.data?.records?.length;
+      rowsToImport += element?.data?.records?.length;
     });
 
     await Future.forEach(componentData, (element) async {
@@ -214,10 +214,10 @@ class OfflineDatabase extends LocalDatabase
 
     if (result)
       print(
-          "Offline import finished successfully! Imported records: $_rowsImported/$_rowsToImport");
+          "Offline import finished successfully! Imported records: $rowsImported/$rowsToImport");
     else
       print(
-          "Offline import finished with error! Importes records: $_rowsImported/$_rowsToImport ErrorDetail: ${error?.details}");
+          "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${error?.details}");
 
     return result;
   }
@@ -459,8 +459,8 @@ class OfflineDatabase extends LocalDatabase
         });
 
         await this.bulk(sqlStatements, () {
-          _rowsImported++;
-          setProgress(_rowsToImport, _rowsImported);
+          rowsImported++;
+          setProgress(rowsToImport, rowsImported);
         });
         //await this.batch(sqlStatements);
 
