@@ -153,8 +153,7 @@ mixin SoDataScreen {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
-      showLinearProgressIndicator(context,
-          (sl<IOfflineDatabaseProvider>() as OfflineDatabase).progress);
+      showLinearProgressIndicator(context);
 
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 

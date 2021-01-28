@@ -34,6 +34,8 @@ import 'i_offline_database_provider.dart';
 import 'local_database.dart';
 import 'offline_database_formatter.dart';
 
+typedef ProgressCallback = Function(double);
+
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
   double progress = 0.0;
@@ -41,6 +43,7 @@ class OfflineDatabase extends LocalDatabase
   int rowsImported;
   ErrorResponse error;
   Filter _lastFetchFilter;
+  List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
@@ -904,6 +907,21 @@ class OfflineDatabase extends LocalDatabase
       progress = 0;
     else
       progress = (rowsDone / rowsCount);
+
+    this._progressCallbacks.forEach((callback) => callback(progress));
+  }
+
+  void addProgressCallback(ProgressCallback callback) {
+    this._progressCallbacks.remove(callback);
+    this._progressCallbacks.add(callback);
+  }
+
+  void removeProgressCallback(ProgressCallback callback) {
+    this._progressCallbacks.remove(callback);
+  }
+
+  void removeAllProgressCallbacks() {
+    this._progressCallbacks = <ProgressCallback>[];
   }
 
   bool hasError(Response response) {

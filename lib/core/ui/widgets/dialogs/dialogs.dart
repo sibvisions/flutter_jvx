@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
@@ -167,38 +169,47 @@ hideProgress(BuildContext context) {
   Navigator.of(context).pop();
 }
 
-showLinearProgressIndicator(BuildContext context, int progress) {
+showLinearProgressIndicator(BuildContext context) {
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => WillPopScope(
             onWillPop: () async => false,
-            child: Opacity(
-              opacity: 0.7,
-              child: Container(
-                child: Center(
-                    child: Container(
-                  width: 200,
-                  height: 100,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      LinearProgressIndicator(
-                        value: progress.toDouble(),
-                      )
-                    ],
-                  ),
-                )),
-              ),
-            ),
+            child: StatefulBuilder(builder: (context, setState) {
+              double _progress = 0;
+
+              (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .addProgressCallback(
+                      (val) => setState(() => _progress = val));
+
+              return Opacity(
+                opacity: 0.7,
+                child: Container(
+                  child: Center(
+                      child: Container(
+                    width: 200,
+                    height: 100,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        LinearProgressIndicator(
+                          value: _progress,
+                        )
+                      ],
+                    ),
+                  )),
+                ),
+              );
+            }),
           ));
 }
 
 hideLinearProgressIndicator(BuildContext context) {
+  (sl<IOfflineDatabaseProvider>() as OfflineDatabase).removeAllProgressCallbacks();
   Navigator.of(context).pop();
 }
 
