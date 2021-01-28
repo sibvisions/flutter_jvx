@@ -212,8 +212,6 @@ showLinearProgressIndicator(BuildContext context) {
 }
 
 hideLinearProgressIndicator(BuildContext context) {
-  (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-      .removeAllProgressCallbacks();
   Navigator.of(context).pop();
 }
 
