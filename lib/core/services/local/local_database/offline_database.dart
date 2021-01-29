@@ -246,7 +246,7 @@ class OfflineDatabase extends LocalDatabase
             OfflineDatabaseFormatter.formatTableName(dataProvider);
         if (await tableExists(tableName)) {
           Map<String, dynamic> record =
-              await _getRowWithFilter(tableName, filter, true);
+              await _getRowWithFilter(tableName, filter, false);
           dynamic offlinePrimaryKey =
               OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
           String where =
@@ -832,9 +832,11 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<Map<String, dynamic>> _getRowWithIndex(String tableName, int index,
-      [Filter filter]) async {
+      [Filter filter, bool ignoreDeleted = true]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
-    String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+    String where = ignoreDeleted
+        ? "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'"
+        : "";
 
     if (filter != null && filter.columnNames != null && filter.values != null) {
       _lastFetchFilter = filter;
@@ -855,16 +857,20 @@ class OfflineDatabase extends LocalDatabase
 
   Future<Map<String, dynamic>> _getRowWithFilter(
       String tableName, Filter filter,
-      [bool ignoreDeleted = false]) async {
+      [bool ignoreDeleted = true]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
     String where = "";
 
     if (filter != null)
       where = OfflineDatabaseFormatter.getWhereFilter(
           filter.columnNames, filter.values, filter.compareOperator);
-    if (!ignoreDeleted) if (where.length > 0)
-      where = where +
-          "$WHERE_AND[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+    if (ignoreDeleted) {
+      if (where.length > 0)
+        where = where +
+            "$WHERE_AND[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+      else
+        where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
+    }
 
     List<Map<String, dynamic>> result =
         await this.selectRows(tableName, where, orderBy);
