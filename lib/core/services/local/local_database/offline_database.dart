@@ -596,8 +596,8 @@ class OfflineDatabase extends LocalDatabase
         if (sqlSet.length > 0) {
           Map<String, dynamic> record;
           if (request.offlineSelectedRow >= 0)
-            record =
-                await _getRowWithIndex(tableName, request.offlineSelectedRow);
+            record = await _getRowWithIndex(
+                tableName, request.offlineSelectedRow - 1);
           else if (request.filter != null)
             record = await _getRowWithFilter(tableName, request.filter);
 
@@ -731,7 +731,7 @@ class OfflineDatabase extends LocalDatabase
           selectedRow: count,
         );
         Map<String, dynamic> record =
-            await _getRowWithIndex(tableName, count - 2);
+            await _getRowWithIndex(tableName, count - 1);
         dataBook.records = [
           OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
         ];
