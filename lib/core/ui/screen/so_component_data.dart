@@ -218,14 +218,16 @@ class SoComponentData {
     return select;
   }
 
-  void deleteRecord(BuildContext context, int index) {
+  void deleteRecord(BuildContext context, int index, [Filter filter]) {
     if (index < data.records.length) {
       SelectRecord select = SelectRecord(
           dataProvider,
-          Filter(
-              columnNames: this.primaryKeyColumns,
-              values: data.getRow(index, this.primaryKeyColumns)),
-          index,
+          filter != null
+              ? filter
+              : Filter(
+                  columnNames: this.primaryKeyColumns,
+                  values: data.getRow(index, this.primaryKeyColumns)),
+          filter != null ? -1 : index,
           RequestType.DAL_DELETE,
           AppStateProvider.of(context).appState.clientId);
 
@@ -319,7 +321,10 @@ class SoComponentData {
     } else if (reload != null && reload == -1 && rowCountNeeded != -1) {
       fetch.fromRow = 0;
       fetch.rowCount = rowCountNeeded - data.records.length;
-    } else if (data != null && !data.isAllFetched && rowCountNeeded != -1) {
+    } else if (data != null &&
+        data.isAllFetched != null &&
+        !data.isAllFetched &&
+        rowCountNeeded != -1) {
       fetch.fromRow = data.records.length;
       fetch.rowCount = rowCountNeeded - data.records.length;
     }
