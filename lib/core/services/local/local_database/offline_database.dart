@@ -39,8 +39,8 @@ typedef ProgressCallback = Function(double);
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
   double progress = 0.0;
-  int rowsToImport;
-  int rowsImported;
+  int rowsToImport = 0;
+  int rowsImported = 0;
   ErrorResponse error;
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
