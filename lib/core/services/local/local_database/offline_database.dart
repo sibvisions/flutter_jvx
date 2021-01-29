@@ -678,8 +678,13 @@ class OfflineDatabase extends LocalDatabase
       String tableName =
           OfflineDatabaseFormatter.formatTableName(request.dataProvider);
       if (await tableExists(tableName)) {
-        Map<String, dynamic> record = await _getRowWithIndex(
-            tableName, request.selectedRow, _lastFetchFilter);
+        Map<String, dynamic> record;
+        if (request.selectedRow >= 0)
+          record = await _getRowWithIndex(
+              tableName, request.selectedRow, _lastFetchFilter);
+        else
+          record = await _getRowWithFilter(tableName, request.filter);
+
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
         String rowState = OfflineDatabaseFormatter.getRowState(record);
