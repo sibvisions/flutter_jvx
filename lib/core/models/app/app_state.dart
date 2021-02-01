@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/models/api/response/application_parameters.dart';
 import 'package:jvx_flutterclient/core/utils/config/config.dart';
 
 import '../../../features/custom_screen/handler/i_socket_handler.dart';
@@ -84,6 +85,7 @@ class AppState {
   List<Locale> supportedLocales = [];
   Config config;
   bool offline = false;
+  ApplicationParameters applicationParameters;
 
   bool get isOffline => offline != null ? offline : false;
 
@@ -118,6 +120,8 @@ class AppState {
     this.package = state.package;
     this.currentScreenComponentId = state.currentScreenComponentId;
     this.supportedLocales = state.supportedLocales;
-    this.config = config;
+    this.config = state.config;
+    this.offline = state.offline;
+    this.applicationParameters = state.applicationParameters;
   }
 }

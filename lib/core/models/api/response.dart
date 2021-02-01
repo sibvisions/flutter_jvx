@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/core/models/api/response/application_parameters.dart';
+
 import 'request.dart';
 import 'response/application_meta_data.dart';
 import 'response/application_style_response.dart';
@@ -40,6 +42,7 @@ class Response {
   ResponseData responseData = ResponseData();
   DownloadResponse downloadResponse;
   ShowDocument showDocument;
+  ApplicationParameters applicationParameters;
 
   bool get hasError => error != null;
 
@@ -135,6 +138,9 @@ class Response {
             case ResponseObjectType.APPLICATION_STYLE:
               applicationStyle =
                   ApplicationStyleResponse.fromJson(responseObject);
+              break;
+            case ResponseObjectType.APPLICATIONPARAMETERS:
+              applicationParameters = ApplicationParameters.fromJson(responseObject);
               break;
           }
         } else {

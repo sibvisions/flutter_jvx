@@ -17,6 +17,7 @@ enum ResponseObjectType {
   DEVICESTATUS,
   RESTART,
   ERROR,
+  APPLICATIONPARAMETERS
 }
 
 ResponseObjectType getResponseObjectTypeEnum(String responseObjectType) {

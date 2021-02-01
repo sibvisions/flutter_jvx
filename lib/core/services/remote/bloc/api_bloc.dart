@@ -681,6 +681,13 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
     }
 
+    if (response.applicationParameters != null) {
+      this
+          .appState
+          .applicationParameters
+          .updateParameters(response.applicationParameters);
+    }
+
     return response;
   }
 
