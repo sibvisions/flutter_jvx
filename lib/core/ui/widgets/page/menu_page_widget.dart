@@ -378,30 +378,34 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                       widget.appState.isOffline
                           ? IconButton(
                               onPressed: () async {
-                                bool syncSuccess =
-                                    await sl<IOfflineDatabaseProvider>()
-                                        .syncOnline(context);
-                                (sl<IOfflineDatabaseProvider>()
-                                        as OfflineDatabase)
-                                    .removeAllProgressCallbacks();
-                                if (syncSuccess) {
-                                  await (sl<IOfflineDatabaseProvider>()
+                                bool shouldSync = await showSyncDialog(context);
+
+                                if (shouldSync) {
+                                  bool syncSuccess =
+                                      await sl<IOfflineDatabaseProvider>()
+                                          .syncOnline(context);
+                                  (sl<IOfflineDatabaseProvider>()
                                           as OfflineDatabase)
-                                      .cleanupDatabase();
+                                      .removeAllProgressCallbacks();
+                                  if (syncSuccess) {
+                                    await (sl<IOfflineDatabaseProvider>()
+                                            as OfflineDatabase)
+                                        .cleanupDatabase();
 
-                                  setState(() {
-                                    widget.appState.offline = false;
-                                  });
+                                    setState(() {
+                                      widget.appState.offline = false;
+                                    });
 
-                                  SharedPrefProvider.of(context)
-                                      .manager
-                                      .setOffline(false);
+                                    SharedPrefProvider.of(context)
+                                        .manager
+                                        .setOffline(false);
 
-                                  BlocProvider.of<ApiBloc>(context)
-                                      .add(Menu(widget.appState.clientId));
-                                } else {
-                                  showError(context, 'Sync error',
-                                      'Could not sync data to server');
+                                    BlocProvider.of<ApiBloc>(context)
+                                        .add(Menu(widget.appState.clientId));
+                                  } else {
+                                    showError(context, 'Sync error',
+                                        'Could not sync data to server');
+                                  }
                                 }
                               },
                               icon: FaIcon(FontAwesomeIcons.broadcastTower),

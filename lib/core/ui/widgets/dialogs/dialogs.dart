@@ -260,3 +260,31 @@ showTextInputDialog(BuildContext context, String title, String textLabel,
         );
       });
 }
+
+showSyncDialog(BuildContext context) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return Theme(
+          data: sl<ThemeManager>().themeData,
+          child: AlertDialog(
+            title: Text(
+                'Wollen Sie in den Online Modus wechseln und alle geänderten Daten zum Server synchronisieren?'),
+            actions: [
+              new FlatButton(
+                child: Text('Ja'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              new FlatButton(
+                child: Text('Nein'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+            ],
+          ),
+        );
+      });
+}
