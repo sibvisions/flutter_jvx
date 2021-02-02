@@ -380,7 +380,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                               onPressed: () async {
                                 bool shouldSync = await showSyncDialog(context);
 
-                                if (shouldSync) {
+                                if (shouldSync != null && shouldSync) {
                                   bool syncSuccess =
                                       await sl<IOfflineDatabaseProvider>()
                                           .syncOnline(context);
