@@ -64,7 +64,9 @@ mixin SoDataScreen {
       pData.dataBooks?.forEach((element) {
         SoComponentData cData = getComponentData(element.dataProvider);
         cData.updateData(context, pData.dataBooks[0]);
-        if (request.filter != null)
+        if (request.filter != null &&
+            request.filter.values != null &&
+            request.filter.values.length > 0)
           cData.updateSelectedRow(context, request.filter.values[0]);
       });
     }

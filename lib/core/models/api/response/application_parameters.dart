@@ -21,7 +21,15 @@ class ApplicationParameters extends ResponseObject {
   }
 
   ApplicationParameters.fromJson(Map<String, dynamic> json)
-      : parameters = json
-            .map((key, value) => key != 'name' ? MapEntry(key, value) : null),
-        super.fromJson(json);
+      : super.fromJson(json) {
+    if (json != null && json.length > 0) {
+      parameters = <String, dynamic>{};
+
+      json.forEach((key, value) {
+        if (key != 'name') {
+          parameters[key] = value;
+        }
+      });
+    }
+  }
 }
