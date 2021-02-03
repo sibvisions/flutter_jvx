@@ -14,11 +14,11 @@ import 'package:jvx_flutterclient/injection_container.dart';
 import '../../../utils/translation/app_localizations.dart';
 import '../util/restart_widget.dart';
 
-showGoToSettings(BuildContext context, String title, String message) {
+showGoToSettings(BuildContext context, String title, String message) async {
   if (title == null) title = "Missing title";
   if (message == null) message = "";
 
-  showDialog(
+  await showDialog(
       context: context,
       builder: (context) => AlertDialog(
             title: Text(title),

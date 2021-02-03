@@ -188,12 +188,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   /// Method for creating a bloc listener and all the logic for the screens
   Widget _blocListener() {
     return BlocListener<ApiBloc, Response>(
-      listener: (BuildContext context, Response state) {
+      listener: (BuildContext context, Response state) async {
         if (state != null) {
           // Checking for error
-          if (state.hasError) {
-            handleError(state, context);
-          }
+          await handleError(state, context);
 
           if (state.request.requestType != RequestType.LOADING) {
             // Updating menu
