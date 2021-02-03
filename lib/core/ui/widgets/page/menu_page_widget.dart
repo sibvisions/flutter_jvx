@@ -133,20 +133,16 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
     if (widget.welcomeScreen != null) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed(
-          OpenScreenPage.route,
-          arguments: ScreenArguments(
-            response: widget.welcomeScreen,
+        this._navigateToScreen(
+            items: widget.menuItems,
+            title: widget.welcomeScreen.responseData.screenGeneric.screenTitle,
             menuComponentId: widget.menuItems
                 .firstWhere(
                     (item) => item.text.contains(widget
                         .welcomeScreen.responseData.screenGeneric.screenTitle),
                     orElse: () => null)
                 ?.componentId,
-            items: widget.menuItems,
-            title: widget.welcomeScreen.responseData.screenGeneric.screenTitle,
-          ),
-        );
+            response: widget.welcomeScreen);
       });
     }
   }
@@ -223,20 +219,18 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
         toOpenScreen != null &&
         toOpenScreen.configuration != null &&
         !toOpenScreen.configuration.withServer) {
-      Navigator.pushReplacementNamed(context, OpenScreenPage.route,
-          arguments: ScreenArguments(
-              items: widget.menuItems,
-              menuComponentId: menuItem.componentId,
-              title: menuItem.text));
+      this._navigateToScreen(
+          items: widget.menuItems,
+          menuComponentId: menuItem.componentId,
+          title: menuItem.text);
     } else if (toOpenScreen != null &&
         toOpenScreen.configuration != null &&
         toOpenScreen.configuration.withServer &&
         widget.appState.isOffline) {
-      Navigator.pushReplacementNamed(context, OpenScreenPage.route,
-          arguments: ScreenArguments(
-              items: widget.menuItems,
-              menuComponentId: menuItem.componentId,
-              title: menuItem.text));
+      this._navigateToScreen(
+          items: widget.menuItems,
+          menuComponentId: menuItem.componentId,
+          title: menuItem.text);
     } else {
       SoAction action =
           SoAction(componentId: menuItem.componentId, label: menuItem.text);
@@ -251,6 +245,30 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
       );
 
       BlocProvider.of<ApiBloc>(context).add(openScreen);
+    }
+  }
+
+  void _navigateToScreen(
+      {String menuComponentId,
+      List<MenuItem> items,
+      Response response,
+      String title}) {
+    if (kIsWeb) {
+      Navigator.of(context).pushReplacementNamed(OpenScreenPage.route,
+          arguments: ScreenArguments(
+            response: response,
+            menuComponentId: menuComponentId,
+            title: title,
+            items: items,
+          ));
+    } else {
+      Navigator.of(context).pushNamed(OpenScreenPage.route,
+          arguments: ScreenArguments(
+            response: response,
+            menuComponentId: menuComponentId,
+            title: title,
+            items: items,
+          ));
     }
   }
 
@@ -356,14 +374,12 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
           if (response.responseData.screenGeneric != null &&
               response.request.requestType == RequestType.OPEN_SCREEN) {
-            Navigator.of(context).pushReplacementNamed(OpenScreenPage.route,
-                arguments: ScreenArguments(
-                  response: response,
-                  menuComponentId:
-                      (response.request as OpenScreen).action.componentId,
-                  title: response.responseData.screenGeneric.screenTitle,
-                  items: this.items,
-                ));
+            this._navigateToScreen(
+                response: response,
+                menuComponentId:
+                    (response.request as OpenScreen).action.componentId,
+                title: response.responseData.screenGeneric.screenTitle,
+                items: this.items);
           }
         },
         child: Scaffold(

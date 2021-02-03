@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
 import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../../injection_container.dart';
@@ -536,6 +537,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         response.closeScreenAction.componentId != null) {
       _openScreenManager.removeScreen(response.closeScreenAction.componentId);
     } else {
+      // BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+      //     clientId: widget.appState.clientId,
+      //     componentId: this.currentCompId,
+      //     requestType: RequestType.CLOSE_SCREEN));
       _openScreenManager.removeScreen(this.currentCompId);
     }
 
@@ -543,8 +548,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         _openScreenManager.screens.isEmpty &&
         response.responseData.screenGeneric == null) {
       // When no more screens exist return to menu page
-      Navigator.of(context).pushReplacementNamed(MenuPage.route,
-          arguments: MenuArguments(widget.appState.items, true));
+      if (kIsWeb) {
+        Navigator.of(context).pushReplacementNamed(MenuPage.route,
+            arguments: MenuArguments(widget.appState.items, true));
+      } else {
+        Navigator.of(context).pop();
+      }
     } else if (this.currentIndex > 0) {
       this.currentIndex = this.currentIndex - 1;
     }

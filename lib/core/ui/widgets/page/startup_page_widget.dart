@@ -238,7 +238,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
   void _login(Response response) {
     if (this.appState.offline) {
-      Navigator.of(context).pushNamed(MenuPage.route,
+      Navigator.of(context).pushReplacementNamed(MenuPage.route,
           arguments: MenuArguments(this.manager.menuItems, true));
     } else {
       Navigator.of(context).pushReplacementNamed(LoginPage.route,
@@ -347,7 +347,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
       await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
-      Navigator.of(context).pushNamed(MenuPage.route,
+      Navigator.of(context).pushReplacementNamed(MenuPage.route,
           arguments: MenuArguments(<MenuItem>[], true));
     } else {
       Startup startup = Startup(
