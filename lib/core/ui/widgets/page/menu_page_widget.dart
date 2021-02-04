@@ -192,9 +192,12 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     if (widget.appState.screenManager != null) {
       SoMenuManager menuManager =
           SoMenuManager(widget.appState.isOffline ? <MenuItem>[] : this.items);
-      SharedPrefProvider.of(context).manager.setMenuItems(this.items);
+      if (widget.appState.isOffline)
+        SharedPrefProvider.of(context).manager.setMenuItems(this.items);
       widget.appState.screenManager.onMenu(menuManager);
-      this.items = menuManager.menuItems;
+      setState(() {
+        this.items = menuManager.menuItems;
+      });
     }
   }
 

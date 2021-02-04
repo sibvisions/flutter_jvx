@@ -270,7 +270,7 @@ class SoComponentData {
         data?.columnNames,
         values,
         AppStateProvider.of(context).appState.clientId,
-        data.selectedRow);
+        data?.selectedRow);
 
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {
