@@ -780,7 +780,7 @@ class OfflineDatabase extends LocalDatabase
                 (element) => element.dataProvider == request.dataProvider);
             request.setValues.offlineSelectedRow = databook.selectedRow;
           }
-          yield await this.setValues(request.setValues);
+          yield await this.setValues(request.setValues)..request = request.setValues;
         } else {
           yield resp;
         }
