@@ -284,7 +284,7 @@ class SoComponentData {
 
     if (filter != null) {
       setValues.filter = filter;
-    } else if (data.selectedRow >= 0) {
+    } else if (data.selectedRow != null && data.selectedRow >= 0) {
       setValues.filter = Filter(
           columnNames: this.primaryKeyColumns,
           values: data.getRow(data.selectedRow, this.primaryKeyColumns));
