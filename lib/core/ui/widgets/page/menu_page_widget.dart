@@ -195,9 +195,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
       if (widget.appState.isOffline)
         SharedPrefProvider.of(context).manager.setMenuItems(this.items);
       widget.appState.screenManager.onMenu(menuManager);
-      setState(() {
-        this.items = menuManager.menuItems;
-      });
+      this.items = menuManager.menuItems;
     }
   }
 
@@ -265,14 +263,20 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             items: items,
           ));
     } else {
-      Navigator.of(context).pushNamed(OpenScreenPage.route,
-          arguments: ScreenArguments(
-            response: response,
-            menuComponentId: menuComponentId,
-            title: title,
-            items: items,
-          ));
+      Navigator.of(context)
+          .pushNamed(OpenScreenPage.route,
+              arguments: ScreenArguments(
+                response: response,
+                menuComponentId: menuComponentId,
+                title: title,
+                items: items,
+              ))
+          .then((_) => _onRoutePop());
     }
+  }
+
+  _onRoutePop() {
+    setState(() {});
   }
 
   @override
