@@ -349,7 +349,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          widget.appState.username.isNotEmpty
+                          widget.appState.username != null &&
+                                  widget.appState.username.isNotEmpty
                               ? Text(
                                   AppLocalizations.of(context)
                                       .text('Logged in as'),
