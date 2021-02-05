@@ -8,6 +8,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
@@ -111,6 +112,14 @@ class ApiBloc extends Bloc<Request, Response> {
 
         yield response;
       }
+    } else {
+      yield Response()
+        ..request = event
+        ..error = ErrorResponse(
+            'Connection error',
+            'Couldn\'t connect to server.',
+            'Couldn\'t connect to server.',
+            'message.error');
     }
   }
 

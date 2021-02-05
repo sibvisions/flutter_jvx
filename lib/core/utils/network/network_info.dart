@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
+
 abstract class NetworkInfo {
   Future<bool> get isConnected;
 }
@@ -11,8 +14,17 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Future<bool> get isConnected async {
+    String baseUrl = sl<AppState>().baseUrl;
+    String trimmedBaseUrl;
+
     try {
-      final result = await InternetAddress.lookup(this.connectionChecker);
+      if (baseUrl != null && baseUrl.isNotEmpty) {
+        trimmedBaseUrl = baseUrl.split('/')[2].split(':')[0];
+        print(trimmedBaseUrl);
+      }
+
+      final result = await InternetAddress.lookup(
+          trimmedBaseUrl ?? this.connectionChecker);
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
       }
