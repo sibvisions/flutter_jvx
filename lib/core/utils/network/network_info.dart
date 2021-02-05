@@ -20,7 +20,6 @@ class NetworkInfoImpl implements NetworkInfo {
     try {
       if (baseUrl != null && baseUrl.isNotEmpty) {
         trimmedBaseUrl = baseUrl.split('/')[2].split(':')[0];
-        print(trimmedBaseUrl);
       }
 
       final result = await InternetAddress.lookup(
