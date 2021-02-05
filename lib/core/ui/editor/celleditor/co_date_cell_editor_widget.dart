@@ -166,8 +166,11 @@ class CoDateCellEditorWidgetState
                       width: 10,
                     ),
                     (widget.cellEditorModel as DateCellEditorModel)
-                                .cellEditorValue !=
-                            null
+                                    .cellEditorValue !=
+                                null &&
+                            (widget.cellEditorModel as DateCellEditorModel)
+                                    .cellEditorValue !=
+                                ''
                         ? GestureDetector(
                             child: Icon(
                               Icons.clear,
@@ -258,8 +261,11 @@ class CoDateCellEditorWidgetState
                       width: 10,
                     ),
                     (widget.cellEditorModel as DateCellEditorModel)
-                                .cellEditorValue !=
-                            null
+                                    .cellEditorValue !=
+                                null &&
+                            (widget.cellEditorModel as DateCellEditorModel)
+                                    .cellEditorValue !=
+                                ''
                         ? GestureDetector(
                             child: Icon(
                               Icons.clear,

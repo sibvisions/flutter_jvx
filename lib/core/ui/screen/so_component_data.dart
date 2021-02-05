@@ -162,7 +162,10 @@ class SoComponentData {
   }
 
   dynamic getColumnData(BuildContext context, String columnName) {
-    if (data != null && data.selectedRow < data.records.length) {
+    if (data != null &&
+        data.selectedRow != null &&
+        data.records != null &&
+        data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
     } else if (context != null) {
       this.fetchData(context, null, -1);
@@ -284,7 +287,9 @@ class SoComponentData {
 
     if (filter != null) {
       setValues.filter = filter;
-    } else if (data != null && data.selectedRow >= 0) {
+    } else if (data != null &&
+        data.selectedRow != null &&
+        data.selectedRow >= 0) {
       setValues.filter = Filter(
           columnNames: this.primaryKeyColumns,
           values: data.getRow(data.selectedRow, this.primaryKeyColumns));
@@ -360,6 +365,8 @@ class SoComponentData {
   void _setColumnValue(String columnName, dynamic value) {
     int columnIndex = _getColumnIndex(columnName);
     if (columnIndex != null &&
+        data.selectedRow != null &&
+        data.records != null &&
         data.selectedRow >= 0 &&
         data.selectedRow < data.records.length) {
       data.records[data.selectedRow][columnIndex] = value;
