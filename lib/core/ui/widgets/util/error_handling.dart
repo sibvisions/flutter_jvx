@@ -7,9 +7,9 @@ import '../../../utils/translation/app_localizations.dart';
 import '../dialogs/dialogs.dart';
 
 Future<bool> handleError(Response response, BuildContext context) async {
-  TextUtils.unfocusCurrentTextfield(context);
-
   if (response.hasError) {
+    TextUtils.unfocusCurrentTextfield(context);
+
     if (response.error.name == 'message.sessionexpired') {
       await showSessionExpired(context, response.error.title, 'App will restart.');
     } else if (response.error.name == 'message.error' &&
