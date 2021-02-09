@@ -61,6 +61,43 @@ class DataBook extends ResponseObject {
     return -1;
   }
 
+  T getValue<T>(int rowIndex, dynamic columnName) {
+    int columnIndex = getColumnIndex(columnName);
+    dynamic value;
+
+    if (columnIndex >= 0) {
+      value = records[rowIndex][columnIndex];
+
+      if (value is String) {
+        if (T == bool) {
+          return (value.toLowerCase() == 'true') as T;
+        } else if (T == String) {
+          if (value != null) return value as T;
+        }
+      } else if (value is bool) {
+        if (T == int) {
+          if (value)
+            return 1 as T;
+          else
+            return 0 as T;
+        }
+      }
+    }
+
+    return value;
+  }
+
+  List<dynamic> getValues<T>(int rowIndex, List<dynamic> columnNames) {
+    List<int> columnIndexes = getColumnIndexes(columnNames);
+    List<dynamic> values = new List<dynamic>();
+
+    columnIndexes.forEach((columnIndex) {
+      values.add(records[rowIndex][columnIndex]);
+    });
+
+    return values;
+  }
+
   int getRowIndexWithFilter(Filter filter) {
     int rowIndex = -1;
     if (this.records != null &&
