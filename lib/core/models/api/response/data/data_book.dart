@@ -63,35 +63,19 @@ class DataBook extends ResponseObject {
     return -1;
   }
 
-  T getValue<T>(dynamic columnName, [int rowIndex]) {
+  dynamic getValue(dynamic columnName, [int rowIndex]) {
     int columnIndex = getColumnIndex(columnName);
-    dynamic value;
 
     if (rowIndex != null) rowIndex = selectedRow;
 
     if (columnIndex >= 0) {
-      value = records[rowIndex][columnIndex];
-
-      if (value is String) {
-        if (T == bool) {
-          return (value.toLowerCase() == 'true') as T;
-        } else if (T == String) {
-          if (value != null) return value as T;
-        }
-      } else if (value is bool) {
-        if (T == int) {
-          if (value)
-            return 1 as T;
-          else
-            return 0 as T;
-        }
-      }
+      return records[rowIndex][columnIndex];
     }
 
-    return value;
+    return null;
   }
 
-  List<dynamic> getValues<T>(List<dynamic> columnNames, [int rowIndex]) {
+  List<dynamic> getValues(List<dynamic> columnNames, [int rowIndex]) {
     List<int> columnIndexes = getColumnIndexes(columnNames);
     List<dynamic> values = new List<dynamic>();
 
