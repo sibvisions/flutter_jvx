@@ -1,7 +1,18 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
+import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../models/api/request.dart';
 import '../../models/api/request/data/fetch_data.dart';
@@ -53,7 +64,9 @@ mixin SoDataScreen {
       pData.dataBooks?.forEach((element) {
         SoComponentData cData = getComponentData(element.dataProvider);
         cData.updateData(context, pData.dataBooks[0]);
-        if (request.filter != null)
+        if (request.filter != null &&
+            request.filter.values != null &&
+            request.filter.values.length > 0)
           cData.updateSelectedRow(context, request.filter.values[0]);
       });
     }
@@ -102,7 +115,25 @@ mixin SoDataScreen {
       SoComponentData cData = getComponentData(request.dataProvider);
       cData?.updateSelectedRow(context, request.selectedRow);
     }
+
+    //this.testOfflineDB(context, request, pData);
   }
+
+  // Future<void> testOfflineDB(
+  //     BuildContext context, Request request, ResponseData pData) async {
+  //   String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+
+  //   OfflineDatabase db = await LocalDatabaseManager.localDatabaseManager
+  //       .getDatabase<OfflineDatabase>(() => new OfflineDatabase(), path);
+
+  //   await Future.forEach(pData.dataBookMetaData, (m) async {
+  //     await db.createTableWithMetaData(m, this.so);
+  //   });
+
+  //   await Future.forEach(pData.dataBooks, (d) async {
+  //     await db.importRows(d);
+  //   });
+  // }
 
   SoComponentData getComponentData(String dataProvider) {
     SoComponentData data;
@@ -110,7 +141,7 @@ mixin SoDataScreen {
       data = componentData.firstWhere((d) => d.dataProvider == dataProvider,
           orElse: () => null);
 
-    if (data == null) {
+    if (data == null && dataProvider != null) {
       data = SoComponentData(dataProvider, this);
       //data.addToRequestQueue = this._addToRequestQueue;
       componentData.add(data);
@@ -119,18 +150,47 @@ mixin SoDataScreen {
     return data;
   }
 
-  void onAction(BuildContext context, SoAction action) {
+  void onAction(BuildContext context, SoAction action,
+      String classNameEventSourceRef) async {
     TextUtils.unfocusCurrentTextfield(context);
 
-    // wait until textfields focus lost. 10 millis should do it.
-    Future.delayed(const Duration(milliseconds: 100), () {
-      PressButton pressButton =
-          PressButton(action, AppStateProvider.of(context).appState.clientId);
-      BlocProvider.of<ApiBloc>(context).add(pressButton);
-    });
+    if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
+      showLinearProgressIndicator(context);
+
+      String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+
+      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+      bool importSuccess =
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .importComponents(componentData);
+
+      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+          .removeAllProgressCallbacks();
+
+      hideLinearProgressIndicator(context);
+
+      if (importSuccess) {
+        SharedPrefProvider.of(context).manager.setOffline(true);
+        AppStateProvider.of(context).appState.offline = true;
+
+        BlocProvider.of<ApiBloc>(context).add(Navigation());
+      } else {
+        showError(context, 'Offline error',
+            'Could\'t import component data into offline db');
+      }
+    } else {
+      // wait until textfields focus lost. 10 millis should do it.
+      Future.delayed(const Duration(milliseconds: 100), () {
+        PressButton pressButton =
+            PressButton(action, AppStateProvider.of(context).appState.clientId);
+        BlocProvider.of<ApiBloc>(context).add(pressButton);
+      });
+    }
   }
 
-  void onComponetValueChanged(BuildContext context, String componentId, dynamic value) {
+  void onComponetValueChanged(
+      BuildContext context, String componentId, dynamic value) {
     TextUtils.unfocusCurrentTextfield(context);
 
     // wait until textfields focus lost. 10 millis should do it.

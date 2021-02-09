@@ -17,6 +17,7 @@ import 'core/ui/widgets/util/app_state_provider.dart';
 import 'core/ui/widgets/util/shared_pref_provider.dart';
 import 'core/utils/config/config.dart';
 import 'core/utils/translation/app_localizations.dart';
+import 'core/ui/routes/default_page_route.dart';
 
 class MobileApp extends StatelessWidget {
   final bool shouldLoadConfig;
@@ -85,7 +86,7 @@ class MobileApp extends StatelessWidget {
             case MenuPage.route:
               MenuArguments arguments = settings.arguments;
 
-              return MaterialPageRoute(
+              return DefaultPageRoute(
                 builder: (_) => MenuPage(
                   listMenuItemsInDrawer: arguments.listMenuItemsInDrawer,
                   menuItems: arguments.menuItems,
@@ -96,7 +97,7 @@ class MobileApp extends StatelessWidget {
             case OpenScreenPage.route:
               ScreenArguments arguments = settings.arguments;
 
-              return MaterialPageRoute(
+              return DefaultPageRoute(
                   builder: (_) => OpenScreenPage(
                         items: arguments.items,
                         menuComponentId: arguments.menuComponentId,
@@ -106,7 +107,7 @@ class MobileApp extends StatelessWidget {
                       ));
               break;
             case LoginPage.route:
-              return MaterialPageRoute(
+              return DefaultPageRoute(
                   builder: (_) => LoginPage(
                         lastUsername:
                             (settings.arguments as LoginArguments).lastUsername,
@@ -117,7 +118,7 @@ class MobileApp extends StatelessWidget {
                 return MaterialPageRoute(builder: (_) => this.welcomeWidget);
               }
               if (settings.arguments is SettingsArguments) {
-                return MaterialPageRoute(
+                return DefaultPageRoute(
                     builder: (_) => SettingsPage(
                           appState: appState,
                           manager: manager,
@@ -126,7 +127,7 @@ class MobileApp extends StatelessWidget {
                               false,
                         ));
               } else {
-                return MaterialPageRoute(
+                return DefaultPageRoute(
                     builder: (_) => SettingsPage(
                           appState: appState,
                           manager: manager,
@@ -135,7 +136,7 @@ class MobileApp extends StatelessWidget {
               }
               break;
             case StartupPage.route:
-              return MaterialPageRoute(
+              return DefaultPageRoute(
                 builder: (_) => StartupPage(
                   shouldLoadConfig: this.shouldLoadConfig,
                   config: this.config,
@@ -146,7 +147,7 @@ class MobileApp extends StatelessWidget {
           return null;
         },
         onUnknownRoute: (RouteSettings settings) {
-          return MaterialPageRoute(
+          return DefaultPageRoute(
             builder: (_) => StartupPage(
               shouldLoadConfig: this.shouldLoadConfig,
               config: this.config,

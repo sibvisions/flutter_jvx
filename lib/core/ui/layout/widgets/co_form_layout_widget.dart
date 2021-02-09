@@ -964,7 +964,7 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
           } else {
             topAnchor.position = ((size.height - maxSize.height) / 2).round();
           }
-          bottomAnchor.position = topAnchor.position + maxSize.height;
+          bottomAnchor.position = (topAnchor.position + maxSize.height).round();
         } else {
           topAnchor.position = 0;
           bottomAnchor.position = size.height.round();

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
@@ -147,7 +148,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         child: GestureDetector(
           onTap: () {
             widget.componentModel.enabled
-                ? widget.componentModel.onAction(context, widget.componentModel.action)
+                ? widget.componentModel.onAction(
+                    context,
+                    widget.componentModel.action,
+                    widget.componentModel.classNameEventSourceRef)
                 : null;
           },
           child: SizedBox(
@@ -185,8 +189,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 child: RaisedButton(
                   onPressed: widget.componentModel.enabled
                       ? () {
-                          widget.componentModel
-                              .onAction(context, widget.componentModel.action);
+                          widget.componentModel.onAction(
+                              context,
+                              widget.componentModel.action,
+                              widget.componentModel.classNameEventSourceRef);
                         }
                       : null,
                   color: widget.componentModel.background != null

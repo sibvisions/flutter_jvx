@@ -4,18 +4,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/builder/custom_stateful_builder.dart';
 import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../../utils/translation/app_localizations.dart';
 import '../util/restart_widget.dart';
 
-showGoToSettings(BuildContext context, String title, String message) {
+showGoToSettings(BuildContext context, String title, String message) async {
   if (title == null) title = "Missing title";
   if (message == null) message = "";
 
-  showDialog(
+  await showDialog(
       context: context,
       builder: (context) => AlertDialog(
             title: Text(title),
@@ -138,29 +141,83 @@ showProgress(BuildContext context, [String loadingText]) {
       routeSettings: RouteSettings(name: '/loading'),
       context: context,
       barrierDismissible: false,
-      builder: (context) => Opacity(
-            opacity: 0.7,
-            child: Container(
-              child: Center(
-                  child: Container(
-                width: 100,
-                height: 100,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    CircularProgressIndicator(backgroundColor: Colors.white),
-                  ],
-                ),
-              )),
+      builder: (context) => WillPopScope(
+            onWillPop: () async => false,
+            child: Opacity(
+              opacity: 0.7,
+              child: Container(
+                child: Center(
+                    child: Container(
+                  width: 100,
+                  height: 100,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      CircularProgressIndicator(backgroundColor: Colors.white),
+                    ],
+                  ),
+                )),
+              ),
             ),
           ));
 }
 
 hideProgress(BuildContext context) {
+  Navigator.of(context).pop();
+}
+
+showLinearProgressIndicator(BuildContext context) {
+  double _progress = 0;
+
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+            onWillPop: () async => false,
+            child: CustomStatefulBuilder(
+              builder: (context, setState) {
+                (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                    .addProgressCallback(
+                        (val) => setState(() => _progress = val));
+
+                return Material(
+                  color: Colors.white,
+                  child: Opacity(
+                    opacity: 0.7,
+                    child: Container(
+                      child: Center(
+                          child: Container(
+                        width: 200,
+                        height: 200,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text('Gehe offline...'),
+                            LinearProgressIndicator(
+                              value: _progress,
+                            )
+                          ],
+                        ),
+                      )),
+                    ),
+                  ),
+                );
+              },
+              dispose: () => (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .removeAllProgressCallbacks(),
+            ),
+          ));
+}
+
+hideLinearProgressIndicator(BuildContext context) {
   Navigator.of(context).pop();
 }
 
@@ -197,6 +254,34 @@ showTextInputDialog(BuildContext context, String title, String textLabel,
                 onPressed: () {
                   onTapCallback(_controller.text);
                   Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      });
+}
+
+showSyncDialog(BuildContext context) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return Theme(
+          data: sl<ThemeManager>().themeData,
+          child: AlertDialog(
+            title: Text(
+                'Wollen Sie in den Online Modus wechseln und alle geänderten Daten zum Server synchronisieren?'),
+            actions: [
+              new FlatButton(
+                child: Text('Ja'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              new FlatButton(
+                child: Text('Nein'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
                 },
               ),
             ],

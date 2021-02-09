@@ -65,8 +65,9 @@ class SoComponentData {
   }
 
   List<dynamic> primaryKeyColumnsForRow(int index) {
-    if (metaData != null && metaData.primaryKeyColumns != null)
-      return metaData.primaryKeyColumns;
+    if (metaData != null && metaData.primaryKeyColumns != null) {
+      return data.getRow(index, primaryKeyColumns);
+    }
     return null;
   }
 
@@ -133,7 +134,7 @@ class SoComponentData {
       [RequestType requestType]) {
     if (pDataproviderChanged.reload != null ||
         requestType == RequestType.UPLOAD)
-      _fetchData(context, pDataproviderChanged.reload, -1);
+      fetchData(context, pDataproviderChanged.reload, -1);
     if (data != null && pDataproviderChanged.selectedRow != null)
       updateSelectedRow(context, pDataproviderChanged.selectedRow, true);
   }
@@ -161,10 +162,13 @@ class SoComponentData {
   }
 
   dynamic getColumnData(BuildContext context, String columnName) {
-    if (data != null && data.selectedRow < data.records.length) {
+    if (data != null &&
+        data.selectedRow != null &&
+        data.records != null &&
+        data.selectedRow < data.records.length) {
       return _getColumnValue(columnName);
     } else if (context != null) {
-      this._fetchData(context, null, -1);
+      this.fetchData(context, null, -1);
     }
 
     return "";
@@ -178,7 +182,7 @@ class SoComponentData {
           data.records.length >= rowCountNeeded) {
         return data;
       }
-      if (!this.isFetching) this._fetchData(context, null, rowCountNeeded);
+      if (!this.isFetching) this.fetchData(context, null, rowCountNeeded);
     }
 
     return data;
@@ -217,14 +221,16 @@ class SoComponentData {
     return select;
   }
 
-  void deleteRecord(BuildContext context, int index) {
+  void deleteRecord(BuildContext context, int index, [Filter filter]) {
     if (index < data.records.length) {
       SelectRecord select = SelectRecord(
           dataProvider,
-          Filter(
-              columnNames: this.primaryKeyColumns,
-              values: data.getRow(index, this.primaryKeyColumns)),
-          index,
+          filter != null
+              ? filter
+              : Filter(
+                  columnNames: this.primaryKeyColumns,
+                  values: data.getRow(index, this.primaryKeyColumns)),
+          filter != null ? -1 : index,
           RequestType.DAL_DELETE,
           AppStateProvider.of(context).appState.clientId);
 
@@ -235,10 +241,12 @@ class SoComponentData {
     }
   }
 
-  void insertRecord(BuildContext context) {
+  void insertRecord(BuildContext context, [SetValues setValues]) {
     if (insertEnabled) {
       InsertRecord insert = InsertRecord(
           this.dataProvider, AppStateProvider.of(context).appState.clientId);
+
+      insert.setValues = setValues;
 
       BlocProvider.of<ApiBloc>(context).add(insert);
     }
@@ -260,8 +268,12 @@ class SoComponentData {
 
   void setValues(BuildContext context, List<dynamic> values,
       [List<dynamic> columnNames, Filter filter, bool isTextfield = false]) {
-    SetValues setValues = SetValues(this.dataProvider, data?.columnNames,
-        values, AppStateProvider.of(context).appState.clientId);
+    SetValues setValues = SetValues(
+        this.dataProvider,
+        data?.columnNames,
+        values,
+        AppStateProvider.of(context).appState.clientId,
+        data?.selectedRow);
 
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {
@@ -273,7 +285,17 @@ class SoComponentData {
       setValues.columnNames = columnNames;
     }
 
-    if (filter != null) setValues.filter = filter;
+    if (filter != null) {
+      setValues.filter = filter;
+    } else if (data != null &&
+        data.selectedRow != null &&
+        data.selectedRow >= 0) {
+      setValues.filter = Filter(
+          columnNames: this.primaryKeyColumns,
+          values: data.getRow(data.selectedRow, this.primaryKeyColumns));
+    }
+
+    setValues.offlineSelectedRow = data?.selectedRow;
 
     if (!isTextfield) {
       TextUtils.unfocusCurrentTextfield(context);
@@ -293,7 +315,8 @@ class SoComponentData {
         .firstWhere((col) => col.name == columnName, orElse: () => null);
   }
 
-  void _fetchData(BuildContext context, int reload, int rowCountNeeded) {
+  void fetchData(BuildContext context, int reload, int rowCountNeeded,
+      [Filter filter]) {
     this.isFetching = true;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
 
@@ -303,11 +326,15 @@ class SoComponentData {
     } else if (reload != null && reload == -1 && rowCountNeeded != -1) {
       fetch.fromRow = 0;
       fetch.rowCount = rowCountNeeded - data.records.length;
-    } else if (data != null && !data.isAllFetched && rowCountNeeded != -1) {
+    } else if (data != null &&
+        data.isAllFetched != null &&
+        !data.isAllFetched &&
+        rowCountNeeded != -1) {
       fetch.fromRow = data.records.length;
       fetch.rowCount = rowCountNeeded - data.records.length;
     }
 
+    fetch.filter = filter;
     fetch.reload = (reload == -1);
 
     if (this.metaData == null) {
@@ -338,6 +365,8 @@ class SoComponentData {
   void _setColumnValue(String columnName, dynamic value) {
     int columnIndex = _getColumnIndex(columnName);
     if (columnIndex != null &&
+        data.selectedRow != null &&
+        data.records != null &&
         data.selectedRow >= 0 &&
         data.selectedRow < data.records.length) {
       data.records[data.selectedRow][columnIndex] = value;
@@ -347,6 +376,8 @@ class SoComponentData {
   int _getColumnIndex(String columnName) {
     return data?.columnNames?.indexWhere((c) => c == columnName);
   }
+
+  List<dynamic> getPrimaryKeys(int index) {}
 
   void registerSelectedRowChanged(ContextValueCallback callback) {
     if (!_onSelectedRowChanged.contains(callback))

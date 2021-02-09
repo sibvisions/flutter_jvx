@@ -64,7 +64,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     title = widget.currentTitle;
 
     return BlocBuilder<ApiBloc, Response>(builder: (context, state) {
-      if (state.request != null &&
+      if (state != null &&
+          state.request != null &&
           state.request.requestType == RequestType.LOGOUT &&
           (state.error == null || !state.hasError)) {
         Future.delayed(
@@ -348,7 +349,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          widget.appState.username.isNotEmpty
+                          widget.appState.username != null &&
+                                  widget.appState.username.isNotEmpty
                               ? Text(
                                   AppLocalizations.of(context)
                                       .text('Logged in as'),

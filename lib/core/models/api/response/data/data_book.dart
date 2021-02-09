@@ -38,7 +38,7 @@ class DataBook extends ResponseObject {
     return row;
   }
 
-  List<int> getColumnIndex(List<dynamic> columnNames) {
+  List<int> getColumnIndexes(List<dynamic> columnNames) {
     List<int> visibleColumnsIndex = <int>[];
     this.columnNames.asMap().forEach((i, v) {
       if (columnNames != null) {
@@ -51,13 +51,23 @@ class DataBook extends ResponseObject {
     return visibleColumnsIndex;
   }
 
+  int getColumnIndex(dynamic columnName) {
+    this.columnNames.asMap().forEach((i, v) {
+      if (columnName != null && columnName == v) {
+        return i;
+      }
+    });
+
+    return -1;
+  }
+
   int getRowIndexWithFilter(Filter filter) {
     int rowIndex = -1;
     if (this.records != null &&
         filter.values != null &&
         filter.columnNames != null &&
         filter.values.length == filter.columnNames.length) {
-      List<int> columnIndex = this.getColumnIndex(filter.columnNames);
+      List<int> columnIndex = this.getColumnIndexes(filter.columnNames);
       for (int i = 0; i < this.records.length; i++) {
         dynamic r = this.records[i];
         if (r is List) {

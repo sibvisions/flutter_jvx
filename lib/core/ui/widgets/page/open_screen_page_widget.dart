@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
+import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -30,6 +32,8 @@ import '../../screen/so_screen_configuration.dart';
 import '../dialogs/upload_file_picker.dart';
 import '../menu/menu_drawer_widget.dart';
 import '../util/error_handling.dart';
+import '../util/restart_widget.dart';
+import '../util/shared_pref_provider.dart';
 
 class OpenScreenPageWidget extends StatefulWidget {
   final String title;
@@ -185,55 +189,58 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   /// Method for creating a bloc listener and all the logic for the screens
   Widget _blocListener() {
     return BlocListener<ApiBloc, Response>(
-      listener: (BuildContext context, Response state) {
-        // Checking for error
-        if (state.hasError) {
-          handleError(state, context);
-        }
+      listener: (BuildContext context, Response state) async {
+        if (state != null) {
+          // Checking for error
+          await handleError(state, context);
 
-        if (state.request.requestType != RequestType.LOADING) {
-          // Updating menu
-          if (state.request.requestType == RequestType.MENU)
-            _onMenuResponse(state.menu.entries);
+          if (state.request.requestType != RequestType.LOADING) {
+            // Updating menu
+            if (state.request.requestType == RequestType.MENU)
+              _onMenuResponse(state.menu.entries);
 
-          if (state.request.requestType == RequestType.CLOSE_SCREEN) {
-            _onCloseScreen(state);
-          } else if (isScreenRequest(state.request.requestType)) {
-            // Update response
-            setState(() {
-              this.currentResponse = state;
-            });
-
-            if (state.responseData.screenGeneric != null &&
-                state.responseData.screenGeneric.screenTitle != null) {
+            if (state.request.requestType == RequestType.CLOSE_SCREEN) {
+              _onCloseScreen(state);
+            } else if (isScreenRequest(state.request.requestType)) {
+              // Update response
               setState(() {
-                title = state.responseData.screenGeneric.screenTitle;
+                this.currentResponse = state;
               });
 
-              if (_openScreenManager.findScreen(
-                      state.responseData.screenGeneric.componentId) ==
-                  null) {
-                _openScreenManager.registerScreen(SoScreen(
-                  configuration: SoScreenConfiguration(state,
-                      screenTitle: state.responseData.screenGeneric.screenTitle,
-                      componentId: state.responseData.screenGeneric.componentId,
-                      withServer: true),
-                ));
+              if (state.responseData.screenGeneric != null &&
+                  state.responseData.screenGeneric.screenTitle != null) {
+                setState(() {
+                  title = state.responseData.screenGeneric.screenTitle;
+                });
+
+                if (_openScreenManager.findScreen(
+                        state.responseData.screenGeneric.componentId) ==
+                    null) {
+                  _openScreenManager.registerScreen(SoScreen(
+                    configuration: SoScreenConfiguration(state,
+                        screenTitle:
+                            state.responseData.screenGeneric.screenTitle,
+                        componentId:
+                            state.responseData.screenGeneric.componentId,
+                        screenComponentId: widget.menuComponentId,
+                        withServer: true),
+                  ));
+                }
               }
-            }
 
-            if (state.request.requestType == RequestType.DEVICE_STATUS)
-              _onDeviceStatusResponse(state.deviceStatusResponse);
+              if (state.request.requestType == RequestType.DEVICE_STATUS)
+                _onDeviceStatusResponse(state.deviceStatusResponse);
 
-            _onPressButtonRequest(state);
+              _onPressButtonRequest(state);
 
-            if (state.request.requestType == RequestType.OPEN_SCREEN) {
-              _onOpenScreen(state);
-            }
+              if (state.request.requestType == RequestType.OPEN_SCREEN) {
+                _onOpenScreen(state);
+              }
 
-            if (state.request.requestType == RequestType.NAVIGATION &&
-                state.responseData.screenGeneric == null) {
-              _onCloseScreen(state);
+              if (state.request.requestType == RequestType.NAVIGATION &&
+                  state.responseData.screenGeneric == null) {
+                _onCloseScreen(state);
+              }
             }
           }
         }
@@ -286,13 +293,30 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                Navigation navigation = Navigation(
-                    clientId: widget.appState.clientId,
-                    componentId: this.currentCompId);
+                if (_openScreenManager.screens.values
+                        .toList()[currentIndex]
+                        .configuration
+                        ?.onBack !=
+                    null) {
+                  if (_openScreenManager.screens.values
+                      .toList()[currentIndex]
+                      .configuration
+                      .onBack()) {
+                    Navigation navigation = Navigation(
+                        clientId: widget.appState.clientId,
+                        componentId: this.currentCompId);
 
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  BlocProvider.of<ApiBloc>(context).add(navigation);
-                });
+                    BlocProvider.of<ApiBloc>(context).add(navigation);
+                  }
+                } else {
+                  Navigation navigation = Navigation(
+                      clientId: widget.appState.clientId,
+                      componentId: this.currentCompId);
+
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    BlocProvider.of<ApiBloc>(context).add(navigation);
+                  });
+                }
               },
             ),
             title: Text(title ?? ''),
@@ -356,6 +380,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                           widget.response?.responseData?.screenGeneric
                               ?.componentId ??
                           widget.menuComponentId,
+                      screenComponentId: widget.menuComponentId,
                       withServer: true),
                 );
 
@@ -452,10 +477,22 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       );
 
   Future<bool> _onWillPop() async {
-    Navigation navigation = Navigation(
-        clientId: widget.appState.clientId, componentId: this.currentCompId);
+    if (_openScreenManager.screens[currentIndex] is CustomScreen &&
+        _openScreenManager.screens[currentIndex].configuration?.onBack !=
+            null) {
+      if (_openScreenManager.screens[currentIndex].configuration.onBack()) {
+        Navigation navigation = Navigation(
+            clientId: widget.appState.clientId,
+            componentId: this.currentCompId);
 
-    BlocProvider.of<ApiBloc>(context).add(navigation);
+        BlocProvider.of<ApiBloc>(context).add(navigation);
+      }
+    } else {
+      Navigation navigation = Navigation(
+          clientId: widget.appState.clientId, componentId: this.currentCompId);
+
+      BlocProvider.of<ApiBloc>(context).add(navigation);
+    }
 
     return false;
   }
@@ -500,6 +537,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         response.closeScreenAction.componentId != null) {
       _openScreenManager.removeScreen(response.closeScreenAction.componentId);
     } else {
+      // BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+      //     clientId: widget.appState.clientId,
+      //     componentId: this.currentCompId,
+      //     requestType: RequestType.CLOSE_SCREEN));
       _openScreenManager.removeScreen(this.currentCompId);
     }
 
@@ -507,8 +548,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         _openScreenManager.screens.isEmpty &&
         response.responseData.screenGeneric == null) {
       // When no more screens exist return to menu page
-      Navigator.of(context).pushReplacementNamed(MenuPage.route,
-          arguments: MenuArguments(widget.appState.items, true));
+      if (kIsWeb) {
+        Navigator.of(context).pushReplacementNamed(MenuPage.route,
+            arguments: MenuArguments(widget.appState.items, true));
+      } else {
+        Navigator.of(context).pop();
+      }
     } else if (this.currentIndex > 0) {
       this.currentIndex = this.currentIndex - 1;
     }

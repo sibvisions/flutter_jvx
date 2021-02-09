@@ -1,3 +1,5 @@
+import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
+
 import '../../request.dart';
 
 class FetchData extends Request {
@@ -6,6 +8,7 @@ class FetchData extends Request {
   int fromRow = -1;
   int rowCount = -1;
   bool includeMetaData = false;
+  Filter filter;
 
   @override
   String get debugInfo {
@@ -17,7 +20,11 @@ class FetchData extends Request {
   }
 
   FetchData(this.dataProvider, String clientId,
-      [this.columnNames, this.fromRow, this.rowCount, this.includeMetaData])
+      [this.columnNames,
+      this.fromRow,
+      this.rowCount,
+      this.includeMetaData,
+      this.filter])
       : super(RequestType.DAL_FETCH, clientId);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -26,6 +33,7 @@ class FetchData extends Request {
         'columnNames': columnNames,
         'fromRow': fromRow,
         'rowCount': rowCount,
-        'includeMetaData': includeMetaData
+        'includeMetaData': includeMetaData,
+        'filter': filter?.toJson()
       };
 }

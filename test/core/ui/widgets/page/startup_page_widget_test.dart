@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
 import 'package:jvx_flutterclient/core/models/app/app_state.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/shared_preferences_manager.dart';
 import 'package:jvx_flutterclient/core/services/remote/bloc/api_bloc.dart';
 import 'package:jvx_flutterclient/core/services/remote/rest/rest_client.dart';
@@ -29,23 +30,26 @@ void main() async {
   SharedPreferencesManager manager;
   AppState appState;
   Response response;
+  OfflineDatabase offlineDatabase;
 
   MockHttpClient mockHttpClient;
-  MockConnectivity mockConnectivity;
+  // MockConnectivity mockConnectivity;
   MockSharedPreferences mockSharedPreferences;
 
   setUp(() {
-    mockConnectivity = MockConnectivity();
+    // mockConnectivity = MockConnectivity();
     mockHttpClient = MockHttpClient();
     mockSharedPreferences = MockSharedPreferences();
 
     restClient = RestClient(mockHttpClient);
-    networkInfo = NetworkInfoImpl(mockConnectivity);
+    // networkInfo = NetworkInfoImpl(mockConnectivity);
     manager = SharedPreferencesManager(mockSharedPreferences);
     appState = AppState();
     response = Response();
+    offlineDatabase = OfflineDatabase();
 
-    bloc = ApiBloc(response, networkInfo, restClient, appState, manager);
+    bloc = ApiBloc(
+        response, networkInfo, restClient, appState, manager, offlineDatabase);
   });
 
   group('widget creation', () {

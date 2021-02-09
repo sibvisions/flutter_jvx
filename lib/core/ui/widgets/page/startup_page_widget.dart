@@ -5,13 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/download.dart';
+import 'package:jvx_flutterclient/core/models/api/response/application_style_response.dart';
+import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
 import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
 import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
 import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
 import 'package:jvx_flutterclient/core/utils/theme/get_color_from_app_style.dart';
 import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
@@ -184,7 +188,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           response.applicationStyle.themeColor != null) {
         this.appState.applicationStyle = response.applicationStyle;
 
-        MaterialColor newColor = getColorFromAppStyle(response);
+        MaterialColor newColor =
+            getColorFromAppStyle(response.applicationStyle);
 
         sl<ThemeManager>().themeData = ThemeData(
           primaryColor: newColor,
@@ -193,6 +198,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           fontFamily: 'Raleway',
           cursorColor: newColor,
         );
+
+        this.manager.setApplicationStyle(response.applicationStyle.toJson());
 
         if (response.applicationStyle.hash !=
                 this.manager.applicationStylingHash ||
@@ -230,8 +237,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    Navigator.of(context).pushReplacementNamed(LoginPage.route,
-        arguments: LoginArguments(response.loginItem.username));
+    if (this.appState.offline) {
+      Navigator.of(context).pushReplacementNamed(MenuPage.route,
+          arguments: MenuArguments(this.manager.menuItems, true));
+    } else {
+      Navigator.of(context).pushReplacementNamed(LoginPage.route,
+          arguments: LoginArguments(response.loginItem.username));
+    }
   }
 
   void _menu(Response response) {
@@ -280,7 +292,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       _requestStartup();
   }
 
-  void _requestStartup() {
+  void _requestStartup() async {
     String languageToServer;
 
     if (appState.language != null && appState.language.isNotEmpty) {
@@ -302,24 +314,61 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       return;
     }
 
-    Startup startup = Startup(
-        url: appState.baseUrl,
-        applicationName: appState.appName,
-        screenHeight: MediaQuery.of(context).size.height.toInt(),
-        screenWidth: MediaQuery.of(context).size.width.toInt(),
-        appMode: appState.appMode != null && appState.appMode.isNotEmpty
-            ? appState.appMode
-            : 'preview',
-        readAheadLimit: appState.readAheadLimit,
-        requestType: RequestType.STARTUP,
-        deviceId: _getDeviceId(),
-        userName: appState.username,
-        password: appState.password,
-        authKey: this.manager.authKey,
-        layoutMode: 'generic',
-        language: languageToServer);
+    if (this.manager.isOffline != null && this.manager.isOffline) {
+      this.appState.offline = this.manager.isOffline;
 
-    BlocProvider.of<ApiBloc>(context).add(startup);
+      if (this.manager.applicationStyle != null &&
+          this.manager.applicationStyle.isNotEmpty) {
+        MaterialColor newColor = getColorFromAppStyle(
+            ApplicationStyleResponse.fromJson(this.manager.applicationStyle));
+
+        sl<ThemeManager>().themeData = ThemeData(
+          primaryColor: newColor,
+          primarySwatch: newColor,
+          brightness: Brightness.light,
+          fontFamily: 'Raleway',
+          cursorColor: newColor,
+        );
+      }
+    }
+
+    if (this.appState.isOffline) {
+      if (!kIsWeb) {
+        if (Platform.isIOS) {
+          this.appState.dir = (await getApplicationSupportDirectory()).path;
+        } else {
+          this.appState.dir = (await getApplicationDocumentsDirectory()).path;
+        }
+      } else {
+        this.appState.dir = '';
+      }
+
+      String path = this.appState.dir + "/offlineDB.db";
+
+      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+      Navigator.of(context).pushReplacementNamed(MenuPage.route,
+          arguments: MenuArguments(<MenuItem>[], true));
+    } else {
+      Startup startup = Startup(
+          url: appState.baseUrl,
+          applicationName: appState.appName,
+          screenHeight: MediaQuery.of(context).size.height.toInt(),
+          screenWidth: MediaQuery.of(context).size.width.toInt(),
+          appMode: appState.appMode != null && appState.appMode.isNotEmpty
+              ? appState.appMode
+              : 'preview',
+          readAheadLimit: appState.readAheadLimit,
+          requestType: RequestType.STARTUP,
+          deviceId: _getDeviceId(),
+          userName: appState.username,
+          password: appState.password,
+          authKey: this.manager.authKey,
+          layoutMode: 'generic',
+          language: languageToServer);
+
+      BlocProvider.of<ApiBloc>(context).add(startup);
+    }
   }
 
   @override

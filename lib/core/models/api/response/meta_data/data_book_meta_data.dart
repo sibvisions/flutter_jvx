@@ -14,6 +14,13 @@ class DataBookMetaData extends ResponseObject {
   List<DataBookMetaDataColumn> columns = <DataBookMetaDataColumn>[];
   List<String> primaryKeyColumns = <String>[];
   List<String> tableColumnView;
+  String offlineScreenComponentId;
+
+  List<String> get columnNames {
+    List<String> names = List<String>();
+    columns?.forEach((element) => names.add(element.name));
+    return names;
+  }
 
   DataBookMetaData(
       {this.dataProvider,
@@ -51,4 +58,19 @@ class DataBookMetaData extends ResponseObject {
 
     return null;
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'dataProvider': dataProvider,
+        'readOnly': readOnly,
+        'deleteEnabled': deleteEnabled,
+        'updateEnabled': updateEnabled,
+        'insertEnabled': insertEnabled,
+        'primaryKeyColumns': primaryKeyColumns,
+        'tableColumnView': tableColumnView,
+        'detailDataProviders': detailDataProviders
+            .map<Map<String, dynamic>>((dp) => dp.toJson())
+            .toList(),
+        'columns':
+            columns.map<Map<String, dynamic>>((c) => c.toJson()).toList(),
+      };
 }

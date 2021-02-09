@@ -10,4 +10,10 @@ class DataBookMetaDataProvider {
       : name = json['name'],
         columnNames = json['columnNames'],
         masterColumnNames = json['masterColumnNames'];
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'name': name,
+    'columnNames': columnNames,
+    'masterColumnNames': masterColumnNames
+  };
 }

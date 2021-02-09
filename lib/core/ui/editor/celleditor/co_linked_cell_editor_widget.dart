@@ -43,8 +43,8 @@ class CoLinkedCellEditorWidgetState
       widget.cellEditorModel.cellEditorValue = pValue.value;
     if (widget.cellEditorModel.linkReference != null &&
         widget.cellEditorModel.linkReference.columnNames.length == 1)
-      this.onValueChanged(
-          context, widget.cellEditorModel.cellEditorValue, pValue.value[0]);
+      this.onValueChanged(context, widget.cellEditorModel.cellEditorValue,
+          pValue.value != null ? pValue.value[0] : null);
     else
       this.onValueChanged(context, pValue.value);
   }
@@ -115,7 +115,8 @@ class CoLinkedCellEditorWidgetState
 
   @override
   Widget build(BuildContext context) {
-    if (widget.cellEditorModel.referencedData.data == null) {
+    if (widget.cellEditorModel?.referencedData != null &&
+        widget.cellEditorModel.referencedData.data == null) {
       widget.cellEditorModel.referencedData.getData(context, -1);
     }
 

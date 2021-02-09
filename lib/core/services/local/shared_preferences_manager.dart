@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
+import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
@@ -79,6 +81,23 @@ class SharedPreferencesManager {
       return null;
   }
 
+  bool get isOffline => this.sharedPreferences.getBool('offline');
+
+  List<MenuItem> get menuItems {
+    try {
+      List<MenuItem> items =
+          (json.decode(this.sharedPreferences.getString('menuItems'))
+                  as List<dynamic>)
+              .map<MenuItem>((e) => MenuItem.fromJson(e))
+              .toList();
+
+      return items;
+    } catch (e) {
+      print('Couldn\'t parse MenuItems');
+      return null;
+    }
+  }
+
   void setAppData(
       {String appName,
       String baseUrl,
@@ -105,6 +124,14 @@ class SharedPreferencesManager {
     }
   }
 
+  void setOfflineLoginHash({String username, String password}) {
+    String usernameHash = sha256.convert(utf8.encode(username)).toString();
+    String passwordHash = sha256.convert(utf8.encode(password)).toString();
+
+    this.sharedPreferences.setString('usernameHash', usernameHash);
+    this.sharedPreferences.setString('passwordHash', passwordHash);
+  }
+
   void setAppVersion(String appVersion) =>
       this.sharedPreferences.setString('appVersion', appVersion);
 
@@ -121,7 +148,7 @@ class SharedPreferencesManager {
     this.sharedPreferences.setString('translation', jsonString);
   }
 
-  void setApplicationStyle(Map<String, String> applicationStyle) {
+  void setApplicationStyle(Map<String, dynamic> applicationStyle) {
     String jsonString = json.encode(applicationStyle);
 
     this.sharedPreferences.setString('applicationStyle', jsonString);
@@ -138,4 +165,30 @@ class SharedPreferencesManager {
 
   void setAuthKey(String authKey) =>
       this.sharedPreferences.setString('authKey', authKey);
+
+  void setOffline(bool offline) =>
+      this.sharedPreferences.setBool('offline', offline);
+
+  void setMenuItems(List<MenuItem> menuItems) {
+    try {
+      if (menuItems != null)
+        this.sharedPreferences.setString('menuItems', json.encode(menuItems));
+    } catch (e) {
+      print('Couldn\'t encode menu items');
+    }
+  }
+
+  bool login(String username, String password) {
+    String usernameHash = sha256.convert(utf8.encode(username)).toString();
+    String passwordHash = sha256.convert(utf8.encode(password)).toString();
+
+    String savedUsernameHash = this.sharedPreferences.getString('usernameHash');
+    String savedPasswordHash = this.sharedPreferences.getString('passwordHash');
+
+    if (usernameHash == savedUsernameHash &&
+        passwordHash == savedPasswordHash) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -54,7 +54,8 @@ class CoDateCellEditorWidgetState
       lastDate: DateTime(2050),
       initialDate: (widget.cellEditorModel.cellEditorValue != null &&
               widget.cellEditorModel.cellEditorValue is int)
-          ? DateTime.fromMillisecondsSinceEpoch(widget.cellEditorModel.cellEditorValue)
+          ? DateTime.fromMillisecondsSinceEpoch(
+              widget.cellEditorModel.cellEditorValue)
           : DateTime.now().subtract(Duration(seconds: 1)),
     ).then((date) {
       if (date != null &&
@@ -63,13 +64,14 @@ class CoDateCellEditorWidgetState
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
           return showTimePicker(
                   context: context,
-                  initialTime: (widget.cellEditorModel.cellEditorValue != null &&
-                          widget.cellEditorModel.cellEditorValue is int)
-                      ? TimeOfDay.fromDateTime(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              widget.cellEditorModel.cellEditorValue))
-                      : TimeOfDay.fromDateTime(
-                          DateTime.now().subtract(Duration(seconds: 1))))
+                  initialTime:
+                      (widget.cellEditorModel.cellEditorValue != null &&
+                              widget.cellEditorModel.cellEditorValue is int)
+                          ? TimeOfDay.fromDateTime(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  widget.cellEditorModel.cellEditorValue))
+                          : TimeOfDay.fromDateTime(
+                              DateTime.now().subtract(Duration(seconds: 1))))
               .then((time) {
             if (time != null) {
               (widget.cellEditorModel as DateCellEditorModel).setTimePart(time);
@@ -128,15 +130,16 @@ class CoDateCellEditorWidgetState
                     child: Text(
                       (widget.cellEditorModel.cellEditorValue != null &&
                               (widget.cellEditorModel.cellEditorValue is int ||
-                                  int.tryParse(widget.cellEditorModel.cellEditorValue) !=
+                                  int.tryParse(widget
+                                          .cellEditorModel.cellEditorValue) !=
                                       null))
                           ? DateFormat((widget.cellEditorModel
                                       as DateCellEditorModel)
                                   .dateFormat)
-                              .format(DateTime.fromMillisecondsSinceEpoch(
-                                  widget.cellEditorModel.cellEditorValue is String
-                                      ? int.parse(widget.cellEditorModel.cellEditorValue)
-                                      : widget.cellEditorModel.cellEditorValue))
+                              .format(DateTime.fromMillisecondsSinceEpoch(widget
+                                      .cellEditorModel.cellEditorValue is String
+                                  ? int.parse(widget.cellEditorModel.cellEditorValue)
+                                  : widget.cellEditorModel.cellEditorValue))
                           : widget.cellEditorModel.placeholder ?? '',
                       style: (widget.cellEditorModel.cellEditorValue != null &&
                               widget.cellEditorModel.cellEditorValue is int)
@@ -162,20 +165,27 @@ class CoDateCellEditorWidgetState
                     SizedBox(
                       width: 10,
                     ),
-                    GestureDetector(
-                      child: Icon(
-                        Icons.clear,
-                        size: 24,
-                        color: Colors.grey[400],
-                      ),
-                      onTap: () {
-                        (widget.cellEditorModel as DateCellEditorModel)
-                            .toUpdate = null;
-                        this.onDateValueChanged(
+                    (widget.cellEditorModel as DateCellEditorModel)
+                                    .cellEditorValue !=
+                                null &&
                             (widget.cellEditorModel as DateCellEditorModel)
-                                .toUpdate);
-                      },
-                    )
+                                    .cellEditorValue !=
+                                ''
+                        ? GestureDetector(
+                            child: Icon(
+                              Icons.clear,
+                              size: 24,
+                              color: Colors.grey[400],
+                            ),
+                            onTap: () {
+                              (widget.cellEditorModel as DateCellEditorModel)
+                                  .toUpdate = null;
+                              this.onDateValueChanged((widget.cellEditorModel
+                                      as DateCellEditorModel)
+                                  .toUpdate);
+                            },
+                          )
+                        : Container()
                   ],
                 )
               ],
@@ -192,8 +202,10 @@ class CoDateCellEditorWidgetState
       // 1 = Single Click
       // 0 = Double Click
 
-      if ((widget.cellEditorModel.editable != null && widget.cellEditorModel.editable) &&
-          (widget.cellEditorModel.preferredEditorMode != null && widget.cellEditorModel.preferredEditorMode == 0)) {
+      if ((widget.cellEditorModel.editable != null &&
+              widget.cellEditorModel.editable) &&
+          (widget.cellEditorModel.preferredEditorMode != null &&
+              widget.cellEditorModel.preferredEditorMode == 0)) {
         return GestureDetector(
           onTap: () => (widget.cellEditorModel as DateCellEditorModel)
                       .isTimeFormat &&
@@ -209,15 +221,17 @@ class CoDateCellEditorWidgetState
                   child: Text(
                     (widget.cellEditorModel.cellEditorValue != null &&
                             (widget.cellEditorModel.cellEditorValue is int ||
-                                int.tryParse(widget.cellEditorModel.cellEditorValue) !=
+                                int.tryParse(widget
+                                        .cellEditorModel.cellEditorValue) !=
                                     null))
                         ? DateFormat(
                                 (widget.cellEditorModel as DateCellEditorModel)
                                     .dateFormat)
-                            .format(DateTime.fromMillisecondsSinceEpoch(
-                                widget.cellEditorModel.cellEditorValue is String
-                                    ? int.parse(widget.cellEditorModel.cellEditorValue)
-                                    : widget.cellEditorModel.cellEditorValue))
+                            .format(DateTime.fromMillisecondsSinceEpoch(widget
+                                    .cellEditorModel.cellEditorValue is String
+                                ? int.parse(
+                                    widget.cellEditorModel.cellEditorValue)
+                                : widget.cellEditorModel.cellEditorValue))
                         : widget.cellEditorModel.placeholder ?? '',
                     style: (widget.cellEditorModel.cellEditorValue != null &&
                             widget.cellEditorModel.cellEditorValue is int)
@@ -246,20 +260,27 @@ class CoDateCellEditorWidgetState
                     SizedBox(
                       width: 10,
                     ),
-                    GestureDetector(
-                      child: Icon(
-                        Icons.clear,
-                        size: 16,
-                        color: Colors.grey[400],
-                      ),
-                      onTap: () {
-                        (widget.cellEditorModel as DateCellEditorModel)
-                            .toUpdate = null;
-                        this.onDateValueChanged(
+                    (widget.cellEditorModel as DateCellEditorModel)
+                                    .cellEditorValue !=
+                                null &&
                             (widget.cellEditorModel as DateCellEditorModel)
-                                .toUpdate);
-                      },
-                    )
+                                    .cellEditorValue !=
+                                ''
+                        ? GestureDetector(
+                            child: Icon(
+                              Icons.clear,
+                              size: 24,
+                              color: Colors.grey[400],
+                            ),
+                            onTap: () {
+                              (widget.cellEditorModel as DateCellEditorModel)
+                                  .toUpdate = null;
+                              this.onDateValueChanged((widget.cellEditorModel
+                                      as DateCellEditorModel)
+                                  .toUpdate);
+                            },
+                          )
+                        : Container()
                   ],
                 ),
               )

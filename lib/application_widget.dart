@@ -15,6 +15,9 @@ import 'core/utils/theme/theme_manager.dart';
 import 'injection_container.dart';
 import 'mobile_app.dart';
 
+/// Entrypoint for the application.
+/// 
+/// Gets wrapped by [CustomApplicationWidget]
 class ApplicationWidget extends StatelessWidget {
   final Config config;
   final IScreenManager screenManager;
@@ -35,12 +38,16 @@ class ApplicationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Getting the current appState from GetIt.
     AppState appState = sl<AppState>();
 
+    // Setting screen manager. If none was given a standard impl will be used.
     appState.screenManager = this.screenManager ?? ScreenManager();
 
+    // Initializing screen manager
     appState.screenManager.init();
 
+    // Setting app parameters
     appState.handleSessionTimeout = handleSessionTimeout ?? true;
     appState.appListener = this.appListener;
     appState.package = this.package;

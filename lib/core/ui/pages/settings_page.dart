@@ -47,6 +47,8 @@ class _SettingsPageState extends State<SettingsPage> {
   List<PickerItem<int>> imageSizeItems;
   bool isDialogOpen = false;
 
+  String selectedLanguage;
+
   String get versionText {
     String v = 'App v$version Build $buildNumber';
     if (widget.appState.appVersion != null &&
@@ -125,22 +127,23 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? widget.appState.appName
                         : ''),
                     onTap: () {
-                      showTextInputDialog(
-                          context,
-                          AppLocalizations.of(context).text('App name'),
-                          AppLocalizations.of(context).text('App name'),
-                          AppLocalizations.of(context)
-                              .text('Enter new App Name'),
-                          widget.appState.appName, (String value) {
-                        if (value == null)
-                          this.appName = widget.appState.appName;
-                        else {
-                          setState(() {
-                            this.appName = value;
-                            widget.appState.appName = value;
-                          });
-                        }
-                      });
+                      if (!widget.appState.isOffline)
+                        showTextInputDialog(
+                            context,
+                            AppLocalizations.of(context).text('App name'),
+                            AppLocalizations.of(context).text('App name'),
+                            AppLocalizations.of(context)
+                                .text('Enter new App Name'),
+                            widget.appState.appName, (String value) {
+                          if (value == null)
+                            this.appName = widget.appState.appName;
+                          else {
+                            setState(() {
+                              this.appName = value;
+                              widget.appState.appName = value;
+                            });
+                          }
+                        });
                     },
                   ),
                   ListTile(
@@ -154,25 +157,26 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? widget.appState.baseUrl
                         : ''),
                     onTap: () {
-                      showTextInputDialog(
-                          context,
-                          AppLocalizations.of(context).text('Base Url'),
-                          AppLocalizations.of(context).text('Base Url'),
-                          'http://enter.baseUrl/services/mobile',
-                          widget.appState.baseUrl, (String value) {
-                        if (value == null)
-                          this.baseUrl = widget.appState.baseUrl;
-                        else {
-                          if (value.endsWith('/')) {
-                            value = value.substring(0, value.length - 1);
-                          }
+                      if (!widget.appState.isOffline)
+                        showTextInputDialog(
+                            context,
+                            AppLocalizations.of(context).text('Base Url'),
+                            AppLocalizations.of(context).text('Base Url'),
+                            'http://enter.baseUrl/services/mobile',
+                            widget.appState.baseUrl, (String value) {
+                          if (value == null)
+                            this.baseUrl = widget.appState.baseUrl;
+                          else {
+                            if (value.endsWith('/')) {
+                              value = value.substring(0, value.length - 1);
+                            }
 
-                          setState(() {
-                            this.baseUrl = value;
-                            widget.appState.baseUrl = value;
-                          });
-                        }
-                      });
+                            setState(() {
+                              this.baseUrl = value;
+                              widget.appState.baseUrl = value;
+                            });
+                          }
+                        });
                     },
                   ),
                   (widget.warmWelcome != null && !widget.warmWelcome)
@@ -188,7 +192,8 @@ class _SettingsPageState extends State<SettingsPage> {
                               ? widget.appState.language
                               : ''),
                           onTap: () {
-                            showLanguagePicker(context);
+                            if (!widget.appState.isOffline)
+                              showLanguagePicker(context);
                           },
                         )
                       : Container(),
@@ -200,7 +205,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: Text(this.imageSizeTitle),
                     trailing: FaIcon(FontAwesomeIcons.arrowRight),
                     onTap: () {
-                      showImageSizePicker(context);
+                      if (!widget.appState.isOffline)
+                        showImageSizePicker(context);
                     },
                   ),
                 ],
@@ -338,22 +344,24 @@ class _SettingsPageState extends State<SettingsPage> {
         cancelTextStyle:
             TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
         onConfirm: (Picker picker, List value) async {
-          String newLang =
+          selectedLanguage =
               picker.getSelectedValues()[0].toString().toLowerCase();
-
-          if (newLang != null && newLang.isNotEmpty)
-            await AppLocalizations.load(new Locale(newLang));
 
           setState(() {
             isDialogOpen = false;
-
-            widget.appState.language = newLang;
-            this.language = newLang;
           });
         },
         onCancel: () => setState(() => isDialogOpen = false),
       ).show(scaffoldState.currentState);
     }
+  }
+
+  _switchLang(String newLang) async {
+    if (newLang != null && newLang.isNotEmpty)
+      await AppLocalizations.load(new Locale(newLang));
+
+    widget.appState.language = newLang;
+    this.language = newLang;
   }
 
   Widget settingsLoader() {
@@ -383,7 +391,7 @@ class _SettingsPageState extends State<SettingsPage> {
           bodyData: settingsBuilder(),
           bottomButton1: widget.warmWelcome
               ? null
-              : AppLocalizations.of(context).text('Back').toUpperCase(),
+              : AppLocalizations.of(context).text('Cancel').toUpperCase(),
           bottomButton2: widget.warmWelcome
               ? AppLocalizations.of(context).text('Open').toUpperCase()
               : AppLocalizations.of(context).text('Save').toUpperCase(),
@@ -419,6 +427,10 @@ class _SettingsPageState extends State<SettingsPage> {
     if (_checkString(toSaveUsername) && _checkString(toSavePwd))
       widget.manager
           .setLoginData(username: toSaveUsername, password: toSavePwd);
+
+    if (widget.appState.language != this.selectedLanguage) {
+      _switchLang(this.selectedLanguage);
+    }
   }
 
   bool _checkString(String toCheck) {

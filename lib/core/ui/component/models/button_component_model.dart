@@ -42,6 +42,7 @@ class ButtonComponentModel extends ActionComponentModel {
     style =
         changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
+
     super.updateProperties(context, changedComponent);
   }
 }

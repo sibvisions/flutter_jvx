@@ -4,9 +4,12 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
@@ -49,13 +52,14 @@ class ApiBloc extends Bloc<Request, Response> {
   final RestClient restClient;
   final AppState appState;
   final SharedPreferencesManager manager;
+  final IOfflineDatabaseProvider offlineDb;
 
   Queue<Request> _requestQueue = Queue<Request>();
   int _seqNo = 0;
   int lastYieldTime = 0;
 
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
-      this.appState, this.manager)
+      this.appState, this.manager, this.offlineDb)
       : super(initialState);
 
   @override
@@ -71,8 +75,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
-    yield updateResponse(Response()..request = Loading());
-    if (await this.networkInfo.isConnected) {
+    if (this.appState.isOffline && this.offlineDb.isOpen) {
+      yield* this.offlineDb.request(event);
+    } else if (await this.networkInfo.isConnected) {
+      yield updateResponse(Response()..request = Loading());
       await for (Response response
           in makeRequest(_requestQueue.removeFirst())) {
         if (response.request.requestType != RequestType.LOADING &&
@@ -106,6 +112,14 @@ class ApiBloc extends Bloc<Request, Response> {
 
         yield response;
       }
+    } else {
+      yield Response()
+        ..request = event
+        ..error = ErrorResponse(
+            'Connection error',
+            'Couldn\'t connect to server.',
+            'Couldn\'t connect to server.',
+            'message.error');
     }
   }
 
@@ -165,6 +179,9 @@ class ApiBloc extends Bloc<Request, Response> {
       this
           .manager
           .setLoginData(username: event.username, password: event.password);
+
+      this.manager.setOfflineLoginHash(
+          username: event.username, password: event.password);
     }
 
     Response response = await processRequest(event);
@@ -372,6 +389,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   Stream<Response> data(Request request) async* {
     Response resp = await processRequest(request);
+
+    if (request is InsertRecord && request.setValues != null) {
+      this.add(request.setValues);
+    }
 
     yield resp;
   }
@@ -669,6 +690,17 @@ class ApiBloc extends Bloc<Request, Response> {
         break;
     }
 
+    if (response.applicationParameters != null) {
+      if (this.appState.applicationParameters == null) {
+        this.appState.applicationParameters = response.applicationParameters;
+      } else {
+        this
+            .appState
+            .applicationParameters
+            .updateParameters(response.applicationParameters);
+      }
+    }
+
     return response;
   }
 
@@ -676,17 +708,21 @@ class ApiBloc extends Bloc<Request, Response> {
     Response currentResponse = state;
     Response toUpdate = response;
 
-    if (response.applicationMetaData == null)
-      response.applicationMetaData = currentResponse.applicationMetaData;
-    if (response.applicationStyle == null)
-      response.applicationStyle = currentResponse.applicationStyle;
-    if (response.authenticationData == null)
-      response.authenticationData = currentResponse.authenticationData;
-    if (response.language == null) response.language = currentResponse.language;
-    if (response.loginItem == null)
-      response.loginItem = currentResponse.loginItem;
-    if (response.menu == null) response.menu = currentResponse.menu;
-    if (response.userData == null) response.userData = currentResponse.userData;
+    if (currentResponse != null) {
+      if (response.applicationMetaData == null)
+        response.applicationMetaData = currentResponse.applicationMetaData;
+      if (response.applicationStyle == null)
+        response.applicationStyle = currentResponse.applicationStyle;
+      if (response.authenticationData == null)
+        response.authenticationData = currentResponse.authenticationData;
+      if (response.language == null)
+        response.language = currentResponse.language;
+      if (response.loginItem == null)
+        response.loginItem = currentResponse.loginItem;
+      if (response.menu == null) response.menu = currentResponse.menu;
+      if (response.userData == null)
+        response.userData = currentResponse.userData;
+    }
 
     return toUpdate;
   }

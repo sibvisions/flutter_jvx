@@ -18,4 +18,11 @@ class CellEditor extends CellEditorProperties {
     if (json['popupSize'] != null)
       popupSize = PopupSize.fromJson(json['popupSize']);
   }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'className': className,
+        'linkReference': linkReference?.toJson(),
+        'columnView': columnView?.toJson(),
+        'popupSize': popupSize?.toJson()
+      };
 }

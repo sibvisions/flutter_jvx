@@ -8,6 +8,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/restart_widget.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
+import 'package:jvx_flutterclient/core/utils/network/network_info.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -111,7 +117,9 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     SystemChrome.setApplicationSwitcherDescription(
         ApplicationSwitcherDescription(
             primaryColor: Theme.of(context).primaryColor.value,
-            label: widget.appState.appName + ' - ' + widget.appState.username));
+            label: widget.appState.appName ??
+                '' + ' - ' + widget.appState.username ??
+                ''));
 
     if (widget.appState.appListener != null) {
       widget.appState.appListener
@@ -125,20 +133,16 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
     if (widget.welcomeScreen != null) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed(
-          OpenScreenPage.route,
-          arguments: ScreenArguments(
-            response: widget.welcomeScreen,
+        this._navigateToScreen(
+            items: widget.menuItems,
+            title: widget.welcomeScreen.responseData.screenGeneric.screenTitle,
             menuComponentId: widget.menuItems
                 .firstWhere(
                     (item) => item.text.contains(widget
                         .welcomeScreen.responseData.screenGeneric.screenTitle),
                     orElse: () => null)
                 ?.componentId,
-            items: widget.menuItems,
-            title: widget.welcomeScreen.responseData.screenGeneric.screenTitle,
-          ),
-        );
+            response: widget.welcomeScreen);
       });
     }
   }
@@ -186,7 +190,10 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   _screenManager() {
     if (widget.appState.screenManager != null) {
-      SoMenuManager menuManager = SoMenuManager(this.items);
+      SoMenuManager menuManager =
+          SoMenuManager(widget.appState.isOffline ? <MenuItem>[] : this.items);
+      if (widget.appState.isOffline)
+        SharedPrefProvider.of(context).manager.setMenuItems(this.items);
       widget.appState.screenManager.onMenu(menuManager);
       this.items = menuManager.menuItems;
     }
@@ -206,22 +213,25 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   _onPressed(MenuItem menuItem) {
+    SoScreen toOpenScreen =
+        widget.appState.screenManager.findScreen(menuItem.componentId);
+
     if (widget.appState.screenManager != null &&
-        widget.appState.screenManager.findScreen(menuItem.componentId) !=
-            null &&
-        widget.appState.screenManager
-                .findScreen(menuItem.componentId)
-                .configuration !=
-            null &&
-        !widget.appState.screenManager
-            .findScreen(menuItem.componentId)
-            .configuration
-            .withServer) {
-      Navigator.pushReplacementNamed(context, OpenScreenPage.route,
-          arguments: ScreenArguments(
-              items: widget.menuItems,
-              menuComponentId: menuItem.componentId,
-              title: menuItem.text));
+        toOpenScreen != null &&
+        toOpenScreen.configuration != null &&
+        !toOpenScreen.configuration.withServer) {
+      this._navigateToScreen(
+          items: widget.menuItems,
+          menuComponentId: menuItem.componentId,
+          title: menuItem.text);
+    } else if (toOpenScreen != null &&
+        toOpenScreen.configuration != null &&
+        toOpenScreen.configuration.withServer &&
+        widget.appState.isOffline) {
+      this._navigateToScreen(
+          items: widget.menuItems,
+          menuComponentId: menuItem.componentId,
+          title: menuItem.text);
     } else {
       SoAction action =
           SoAction(componentId: menuItem.componentId, label: menuItem.text);
@@ -237,6 +247,36 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
       BlocProvider.of<ApiBloc>(context).add(openScreen);
     }
+  }
+
+  void _navigateToScreen(
+      {String menuComponentId,
+      List<MenuItem> items,
+      Response response,
+      String title}) {
+    if (kIsWeb) {
+      Navigator.of(context).pushReplacementNamed(OpenScreenPage.route,
+          arguments: ScreenArguments(
+            response: response,
+            menuComponentId: menuComponentId,
+            title: title,
+            items: items,
+          ));
+    } else {
+      Navigator.of(context)
+          .pushNamed(OpenScreenPage.route,
+              arguments: ScreenArguments(
+                response: response,
+                menuComponentId: menuComponentId,
+                title: title,
+                items: items,
+              ))
+          .then((_) => _onRoutePop());
+    }
+  }
+
+  _onRoutePop() {
+    setState(() {});
   }
 
   @override
@@ -328,8 +368,10 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
           if (response.request.requestType == RequestType.MENU) {
             setState(() {
-              widget.appState.items = response.menu.entries;
-              this.items = response.menu.entries;
+              if (response.menu != null) {
+                widget.appState.items = response.menu.entries;
+                this.items = response.menu.entries;
+              }
             });
           }
 
@@ -339,14 +381,12 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
           if (response.responseData.screenGeneric != null &&
               response.request.requestType == RequestType.OPEN_SCREEN) {
-            Navigator.of(context).pushReplacementNamed(OpenScreenPage.route,
-                arguments: ScreenArguments(
-                  response: response,
-                  menuComponentId:
-                      (response.request as OpenScreen).action.componentId,
-                  title: response.responseData.screenGeneric.screenTitle,
-                  items: this.items,
-                ));
+            this._navigateToScreen(
+                response: response,
+                menuComponentId:
+                    (response.request as OpenScreen).action.componentId,
+                title: response.responseData.screenGeneric.screenTitle,
+                items: this.items);
           }
         },
         child: Scaffold(
@@ -354,15 +394,52 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             appBar: widget.appState.appFrame.showScreenHeader
                 ? AppBar(
                     backgroundColor: Theme.of(context).primaryColor,
-                    title: Text('Menu'),
+                    title: Text('Menu' +
+                        (widget.appState.isOffline ? ' - Offline' : '')),
                     automaticallyImplyLeading: false,
                     actions: [
+                      widget.appState.isOffline
+                          ? IconButton(
+                              onPressed: () async {
+                                bool shouldSync = await showSyncDialog(context);
+
+                                if (shouldSync != null && shouldSync) {
+                                  bool syncSuccess =
+                                      await sl<IOfflineDatabaseProvider>()
+                                          .syncOnline(context);
+                                  (sl<IOfflineDatabaseProvider>()
+                                          as OfflineDatabase)
+                                      .removeAllProgressCallbacks();
+                                  if (syncSuccess) {
+                                    await (sl<IOfflineDatabaseProvider>()
+                                            as OfflineDatabase)
+                                        .cleanupDatabase();
+
+                                    setState(() {
+                                      widget.appState.offline = false;
+                                    });
+
+                                    SharedPrefProvider.of(context)
+                                        .manager
+                                        .setOffline(false);
+
+                                    BlocProvider.of<ApiBloc>(context)
+                                        .add(Menu(widget.appState.clientId));
+                                  } else {
+                                    showError(context, 'Sync error',
+                                        'Could not sync data to server');
+                                  }
+                                }
+                              },
+                              icon: FaIcon(FontAwesomeIcons.broadcastTower),
+                            )
+                          : Container(),
                       IconButton(
                         onPressed: () {
                           _scaffoldKey.currentState.openEndDrawer();
                         },
                         icon: FaIcon(FontAwesomeIcons.ellipsisV),
-                      )
+                      ),
                     ],
                   )
                 : null,

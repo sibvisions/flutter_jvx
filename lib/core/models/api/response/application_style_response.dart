@@ -21,6 +21,8 @@ class ApplicationStyleResponse extends ResponseObject {
   double menuOpacity = 1.0;
   double sidemenuOpacity = 1.0;
 
+  String themeColorString;
+
   double cornerRadiusButtons = 5.0;
   double cornerRadiusEditors = 5.0;
   double cornerRadiusContainer = 5.0;
@@ -70,9 +72,10 @@ class ApplicationStyleResponse extends ResponseObject {
       menuMode = null;
 
     if (jsonMap['theme'] != null &&
-        HexColor.isHexColor(jsonMap['theme']['color']))
+        HexColor.isHexColor(jsonMap['theme']['color'])) {
       themeColor = HexColor(jsonMap['theme']['color']);
-    else
+      themeColorString = jsonMap['theme']['color'];
+    } else
       themeColor = null;
 
     if (jsonMap['desktop.color'] != null &&
@@ -177,8 +180,8 @@ class ApplicationStyleResponse extends ResponseObject {
         'login.logo': loginLogo,
         'desktop.icon': desktopIcon,
         'menu': {'mode': menuMode},
-        'theme': {'color': themeColor.value},
-        'desktop.color': desktopColor,
-        'login.background': loginBackground
+        'theme': {'color': themeColorString},
+        'desktop.color': desktopColor?.toString(),
+        'login.background': loginBackground?.toString(),
       };
 }

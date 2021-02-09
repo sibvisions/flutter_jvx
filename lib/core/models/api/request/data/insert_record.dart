@@ -1,7 +1,10 @@
+import 'package:jvx_flutterclient/core/models/api/request/data/set_values.dart';
+
 import '../../request.dart';
 
 class InsertRecord extends Request {
   String dataProvider;
+  SetValues setValues;
 
   @override
   String get debugInfo {
