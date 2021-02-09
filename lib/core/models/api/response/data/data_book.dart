@@ -54,13 +54,14 @@ class DataBook extends ResponseObject {
   }
 
   int getColumnIndex(dynamic columnName) {
+    int result = -1;
     this.columnNames.asMap().forEach((i, v) {
       if (columnName != null && columnName == v) {
-        return i;
+        result = i;
       }
     });
 
-    return -1;
+    return result;
   }
 
   dynamic getValue(dynamic columnName, [int rowIndex]) {
