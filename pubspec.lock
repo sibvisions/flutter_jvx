@@ -215,7 +215,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -380,7 +380,7 @@ packages:
       name: google_maps_flutter_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   google_polyline_algorithm:
     dependency: transitive
     description:
@@ -422,14 +422,14 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+21"
+    version: "0.6.7+22"
   image_picker_platform_interface:
     dependency: transitive
     description:
       name: image_picker_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.6"
   intl:
     dependency: "direct main"
     description:
@@ -555,7 +555,7 @@ packages:
       name: package_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3+2"
+    version: "0.4.3+4"
   package_resolver:
     dependency: transitive
     description:
@@ -716,7 +716,7 @@ packages:
       name: sass
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.32.5"
+    version: "1.32.6"
   screen:
     dependency: transitive
     description:
@@ -772,7 +772,7 @@ packages:
       name: shared_preferences_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2+2"
+    version: "0.0.2+3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1064,7 +1064,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.4"
+    version: "1.7.4+1"
   wkt_parser:
     dependency: transitive
     description:
