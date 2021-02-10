@@ -75,24 +75,19 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
-    if (this.appState.isOffline && this.offlineDb.isOpen) {
-      yield* this.offlineDb.request(event);
-    } else if (await this.networkInfo.isConnected) {
-      yield updateResponse(Response()..request = Loading());
-      await for (Response response
-          in makeRequest(_requestQueue.removeFirst())) {
-        if (response.request.requestType != RequestType.LOADING &&
-            response.request.requestType != RequestType.RELOAD) {
-          print(
-              '******* Incoming RequestID: ${response.request.id}, Type: ${response.request.requestType.toString().replaceAll("RequestType.", "")} (${response.request.debugInfo})');
-        }
+    yield updateResponse(Response()..request = Loading());
+    await for (Response response in makeRequest(_requestQueue.removeFirst())) {
+      if (response.request.requestType != RequestType.LOADING &&
+          response.request.requestType != RequestType.RELOAD) {
+        print(
+            '******* Incoming RequestID: ${response.request.id}, Type: ${response.request.requestType.toString().replaceAll("RequestType.", "")} (${response.request.debugInfo})');
+      }
 
-        int diff =
-            ((new DateTime.now().millisecondsSinceEpoch) - lastYieldTime);
-        if (diff < 100)
-          await Future.delayed(Duration(milliseconds: 100 - diff), () {});
+      int diff = ((new DateTime.now().millisecondsSinceEpoch) - lastYieldTime);
+      if (diff < 100)
+        await Future.delayed(Duration(milliseconds: 100 - diff), () {});
 
-        /*if (response.request.requestType == RequestType.DAL_FETCH) {
+      /*if (response.request.requestType == RequestType.DAL_FETCH) {
           print("ApiBloc yield with dal_fetch dataProvider " +
               (response.request as FetchData).dataProvider +
               " (" +
@@ -108,9 +103,55 @@ class ApiBloc extends Bloc<Request, Response> {
             ")");
         */
 
-        lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
+      lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
 
-        yield response;
+      yield response;
+    }
+  }
+
+  Stream<Response> makeRequest(Request event) async* {
+    if (this.appState.isOffline && this.offlineDb.isOpen) {
+      yield* this.offlineDb.request(event);
+    } else if (await this.networkInfo.isConnected) {
+      if (event is Startup) {
+        yield* startup(event);
+      } else if (event is ApplicationStyle) {
+        yield* applicationStyle(event);
+      } else if (event is Download) {
+        yield* download(event);
+      } else if (event is Login) {
+        yield* login(event);
+      } else if (event is Logout) {
+        yield* logout(event);
+      } else if (event is OpenScreen) {
+        yield* openScreen(event);
+      } else if (event is CloseScreen) {
+        yield* closeScreen(event);
+      } else if (event is Navigation) {
+        yield* navigation(event);
+      } else if (event is DeviceStatus) {
+        yield* deviceStatus(event);
+      } else if (event is req.Change) {
+        yield* change(event);
+      } else if (event is Menu) {
+        yield* menu(event);
+      } else if (event is SetValues ||
+          event is SelectRecord ||
+          event is FetchData ||
+          event is FilterData ||
+          event is InsertRecord ||
+          event is SaveData ||
+          event is dataModel.MetaData ||
+          event is SetComponentValue) {
+        yield* data(event);
+      } else if (event is PressButton) {
+        yield* pressButton(event);
+      } else if (event is Upload) {
+        yield* upload(event);
+      } else if (event is TabSelect) {
+        yield* tabSelect(event);
+      } else if (event is TabClose) {
+        yield* tabClose(event);
       }
     } else {
       yield Response()
@@ -120,49 +161,6 @@ class ApiBloc extends Bloc<Request, Response> {
             'Couldn\'t connect to server.',
             'Couldn\'t connect to server.',
             'message.error');
-    }
-  }
-
-  Stream<Response> makeRequest(Request event) async* {
-    if (event is Startup) {
-      yield* startup(event);
-    } else if (event is ApplicationStyle) {
-      yield* applicationStyle(event);
-    } else if (event is Download) {
-      yield* download(event);
-    } else if (event is Login) {
-      yield* login(event);
-    } else if (event is Logout) {
-      yield* logout(event);
-    } else if (event is OpenScreen) {
-      yield* openScreen(event);
-    } else if (event is CloseScreen) {
-      yield* closeScreen(event);
-    } else if (event is Navigation) {
-      yield* navigation(event);
-    } else if (event is DeviceStatus) {
-      yield* deviceStatus(event);
-    } else if (event is req.Change) {
-      yield* change(event);
-    } else if (event is Menu) {
-      yield* menu(event);
-    } else if (event is SetValues ||
-        event is SelectRecord ||
-        event is FetchData ||
-        event is FilterData ||
-        event is InsertRecord ||
-        event is SaveData ||
-        event is dataModel.MetaData ||
-        event is SetComponentValue) {
-      yield* data(event);
-    } else if (event is PressButton) {
-      yield* pressButton(event);
-    } else if (event is Upload) {
-      yield* upload(event);
-    } else if (event is TabSelect) {
-      yield* tabSelect(event);
-    } else if (event is TabClose) {
-      yield* tabClose(event);
     }
   }
 
