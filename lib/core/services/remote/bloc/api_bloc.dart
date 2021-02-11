@@ -62,6 +62,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
   bool get isAwaitingResponse => _requestQueue.isNotEmpty;
 
+  Request get nextRequest => this
+      ._requestQueue
+      .firstWhere((Request request) => request != null, orElse: () => null);
+
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
       this.appState, this.manager, this.offlineDb)
       : super(initialState);
@@ -80,7 +84,7 @@ class ApiBloc extends Bloc<Request, Response> {
   @override
   Stream<Response> mapEventToState(Request event) async* {
     yield updateResponse(Response()..request = Loading());
-    await for (Response response in makeRequest(_requestQueue.first)) {
+    await for (Response response in makeRequest(this.nextRequest)) {
       if (response.request.requestType != RequestType.LOADING &&
           response.request.requestType != RequestType.RELOAD) {
         print(
