@@ -82,9 +82,9 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> mapEventToState(Request event) async* {
     yield updateResponse(Response()..request = Loading());
 
-    this._currentRequest = _requestQueue.removeFirst();
-
-    await for (Response response in makeRequest(this._currentRequest)) {
+    await for (Response response in makeRequest(this._currentRequest != null
+        ? this._currentRequest
+        : this._requestQueue.removeFirst())) {
       if (response.request.requestType != RequestType.LOADING &&
           response.request.requestType != RequestType.RELOAD) {
         print(
@@ -113,8 +113,10 @@ class ApiBloc extends Bloc<Request, Response> {
 
       lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
 
-      if (_requestQueue.isEmpty && this._onResponseFinished.isNotEmpty) {
-        this._onResponseFinished[0]();
+      if (_requestQueue.isEmpty) {
+        if (this._onResponseFinished.isNotEmpty) this._onResponseFinished[0]();
+      } else if (_requestQueue.isNotEmpty) {
+        this._currentRequest = _requestQueue.removeFirst();
       }
 
       yield response;
