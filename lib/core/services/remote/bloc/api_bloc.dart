@@ -59,12 +59,9 @@ class ApiBloc extends Bloc<Request, Response> {
   List<Function> _onResponseFinished = <Function>[];
   int _seqNo = 0;
   int lastYieldTime = 0;
+  Request _currentRequest;
 
-  bool get isAwaitingResponse => _requestQueue.isNotEmpty;
-
-  Request get nextRequest => this
-      ._requestQueue
-      .firstWhere((Request request) => request != null, orElse: () => null);
+  bool get isAwaitingResponse => _currentRequest != null;
 
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
       this.appState, this.manager, this.offlineDb)
@@ -84,7 +81,10 @@ class ApiBloc extends Bloc<Request, Response> {
   @override
   Stream<Response> mapEventToState(Request event) async* {
     yield updateResponse(Response()..request = Loading());
-    await for (Response response in makeRequest(this.nextRequest)) {
+
+    this._currentRequest = _requestQueue.removeFirst();
+
+    await for (Response response in makeRequest(this._currentRequest)) {
       if (response.request.requestType != RequestType.LOADING &&
           response.request.requestType != RequestType.RELOAD) {
         print(
@@ -112,8 +112,6 @@ class ApiBloc extends Bloc<Request, Response> {
         */
 
       lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
-
-      _requestQueue.removeFirst();
 
       if (_requestQueue.isEmpty && this._onResponseFinished.isNotEmpty) {
         this._onResponseFinished[0]();
