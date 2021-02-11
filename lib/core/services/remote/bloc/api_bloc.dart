@@ -13,6 +13,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_d
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:w_common/func.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/application_style.dart';
@@ -55,8 +56,11 @@ class ApiBloc extends Bloc<Request, Response> {
   final IOfflineDatabaseProvider offlineDb;
 
   Queue<Request> _requestQueue = Queue<Request>();
+  List<Function> _onResponseFinished = <Function>[];
   int _seqNo = 0;
   int lastYieldTime = 0;
+
+  bool get isAwaitingResponse => _requestQueue.isNotEmpty;
 
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
       this.appState, this.manager, this.offlineDb)
@@ -76,7 +80,7 @@ class ApiBloc extends Bloc<Request, Response> {
   @override
   Stream<Response> mapEventToState(Request event) async* {
     yield updateResponse(Response()..request = Loading());
-    await for (Response response in makeRequest(_requestQueue.removeFirst())) {
+    await for (Response response in makeRequest(_requestQueue.first)) {
       if (response.request.requestType != RequestType.LOADING &&
           response.request.requestType != RequestType.RELOAD) {
         print(
@@ -105,8 +109,23 @@ class ApiBloc extends Bloc<Request, Response> {
 
       lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
 
+      _requestQueue.removeFirst();
+
+      if (_requestQueue.isEmpty && this._onResponseFinished.isNotEmpty) {
+        this._onResponseFinished[0]();
+      }
+
       yield response;
     }
+  }
+
+  void addOnResponseFinishedCallback(Function callback) {
+    this._onResponseFinished = <Function>[];
+    this._onResponseFinished.add(callback);
+  }
+
+  void removeAllCallbacks() {
+    this._onResponseFinished = <Function>[];
   }
 
   Stream<Response> makeRequest(Request event) async* {

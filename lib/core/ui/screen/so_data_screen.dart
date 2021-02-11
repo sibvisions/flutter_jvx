@@ -150,34 +150,45 @@ mixin SoDataScreen {
     return data;
   }
 
+  void goOffline(BuildContext context) async {
+    BlocProvider.of<ApiBloc>(context).removeAllCallbacks();
+
+    showLinearProgressIndicator(context);
+
+    String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+
+    await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+    bool importSuccess =
+        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .importComponents(componentData);
+
+    (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+        .removeAllProgressCallbacks();
+
+    hideLinearProgressIndicator(context);
+
+    if (importSuccess) {
+      SharedPrefProvider.of(context).manager.setOffline(true);
+      AppStateProvider.of(context).appState.offline = true;
+
+      BlocProvider.of<ApiBloc>(context).add(Navigation());
+    } else {
+      showError(context, 'Offline error',
+          'Could\'t import component data into offline db');
+    }
+  }
+
   void onAction(BuildContext context, SoAction action,
       String classNameEventSourceRef) async {
     TextUtils.unfocusCurrentTextfield(context);
 
     if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
-      showLinearProgressIndicator(context);
-
-      String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
-
-      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
-
-      bool importSuccess =
-          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-              .importComponents(componentData);
-
-      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-          .removeAllProgressCallbacks();
-
-      hideLinearProgressIndicator(context);
-
-      if (importSuccess) {
-        SharedPrefProvider.of(context).manager.setOffline(true);
-        AppStateProvider.of(context).appState.offline = true;
-
-        BlocProvider.of<ApiBloc>(context).add(Navigation());
+      if (BlocProvider.of<ApiBloc>(context).isAwaitingResponse) {
+        BlocProvider.of<ApiBloc>(context)
+            .addOnResponseFinishedCallback(goOffline);
       } else {
-        showError(context, 'Offline error',
-            'Could\'t import component data into offline db');
+        this.goOffline(context);
       }
     } else {
       // wait until textfields focus lost. 10 millis should do it.
