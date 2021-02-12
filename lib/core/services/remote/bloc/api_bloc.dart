@@ -135,7 +135,7 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> makeRequest(Request event) async* {
     if (this.appState.isOffline && this.offlineDb.isOpen) {
       yield* this.offlineDb.request(event);
-    } else if (await this.networkInfo.isConnected) {
+    } else if (await this.networkInfo.isConnected || kIsWeb) {
       if (event is Startup) {
         yield* startup(event);
       } else if (event is ApplicationStyle) {
