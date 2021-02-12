@@ -17,10 +17,12 @@ class DataBook extends ResponseObject {
       this.records,
       this.columnNames});
 
-  List<dynamic> getRow(int index, [List<String> pColumnNames]) {
+  List<dynamic> getRow([int rowIndex, List<String> pColumnNames]) {
     List<dynamic> row = <dynamic>[];
 
-    if (index < this.records.length) {
+    if (rowIndex == null) rowIndex = selectedRow;
+
+    if (rowIndex < this.records.length) {
       if (pColumnNames == null)
         pColumnNames = List<String>.from(this.columnNames);
       List<int> columnIndexes = <int>[];
@@ -31,7 +33,7 @@ class DataBook extends ResponseObject {
       });
 
       columnIndexes.forEach((i) {
-        row.add(this.records[index][i]);
+        row.add(this.records[rowIndex][i]);
       });
     }
 
@@ -52,13 +54,39 @@ class DataBook extends ResponseObject {
   }
 
   int getColumnIndex(dynamic columnName) {
+    int result = -1;
     this.columnNames.asMap().forEach((i, v) {
       if (columnName != null && columnName == v) {
-        return i;
+        result = i;
       }
     });
 
-    return -1;
+    return result;
+  }
+
+  dynamic getValue(dynamic columnName, [int rowIndex]) {
+    int columnIndex = getColumnIndex(columnName);
+
+    if (rowIndex == null) rowIndex = selectedRow;
+
+    if (columnIndex >= 0) {
+      return records[rowIndex][columnIndex];
+    }
+
+    return null;
+  }
+
+  List<dynamic> getValues(List<dynamic> columnNames, [int rowIndex]) {
+    List<int> columnIndexes = getColumnIndexes(columnNames);
+    List<dynamic> values = new List<dynamic>();
+
+    if (rowIndex == null) rowIndex = selectedRow;
+
+    columnIndexes.forEach((columnIndex) {
+      values.add(records[rowIndex][columnIndex]);
+    });
+
+    return values;
   }
 
   int getRowIndexWithFilter(Filter filter) {

@@ -20,10 +20,21 @@ import 'core/utils/translation/app_localizations.dart';
 import 'core/ui/routes/default_page_route.dart';
 
 class MobileApp extends StatelessWidget {
+  /// If true config gets loaded from assets.
   final bool shouldLoadConfig;
+
+  /// Theme for the Application.
   final ThemeData themeData;
+
+  /// Config from custom application.
   final Config config;
+
+  /// Supported languages.
   final List<Locale> supportedLocales;
+
+  /// Widget shown right after startup widget.
+  /// 
+  /// If null menu page widget gets shown.
   final Widget welcomeWidget;
 
   const MobileApp({
@@ -43,9 +54,14 @@ class MobileApp extends StatelessWidget {
       },
       child: MaterialApp(
         onGenerateRoute: (RouteSettings settings) {
+          // Getting all parameters out of route settings.
           List<String> params = settings.name.replaceAll('/?', '').split('&');
+
+          // Getting SharedPreferencesManager from context.
           SharedPreferencesManager manager =
               SharedPrefProvider.of(context).manager;
+
+          // Getting AppState from context.
           AppState appState = AppStateProvider.of(context).appState;
 
           if (params.length > 0) {

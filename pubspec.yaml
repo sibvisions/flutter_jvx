@@ -63,6 +63,9 @@ dev_dependencies:
     sdk: flutter
   mockito: ^4.0.0
 
+# dependency_overrides:
+#   intl: ^0.16.1
+
 flutter:
   uses-material-design: true
 

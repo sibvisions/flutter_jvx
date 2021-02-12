@@ -13,6 +13,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_d
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:w_common/func.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/application_style.dart';
@@ -55,8 +56,12 @@ class ApiBloc extends Bloc<Request, Response> {
   final IOfflineDatabaseProvider offlineDb;
 
   Queue<Request> _requestQueue = Queue<Request>();
+  List<Function> _onResponseFinished = <Function>[];
   int _seqNo = 0;
   int lastYieldTime = 0;
+  Request _currentRequest;
+
+  bool get isAwaitingResponse => _currentRequest != null;
 
   ApiBloc(Response initialState, this.networkInfo, this.restClient,
       this.appState, this.manager, this.offlineDb)
@@ -75,24 +80,23 @@ class ApiBloc extends Bloc<Request, Response> {
 
   @override
   Stream<Response> mapEventToState(Request event) async* {
-    if (this.appState.isOffline && this.offlineDb.isOpen) {
-      yield* this.offlineDb.request(event);
-    } else if (await this.networkInfo.isConnected) {
-      yield updateResponse(Response()..request = Loading());
-      await for (Response response
-          in makeRequest(_requestQueue.removeFirst())) {
-        if (response.request.requestType != RequestType.LOADING &&
-            response.request.requestType != RequestType.RELOAD) {
-          print(
-              '******* Incoming RequestID: ${response.request.id}, Type: ${response.request.requestType.toString().replaceAll("RequestType.", "")} (${response.request.debugInfo})');
-        }
+    yield updateResponse(Response()..request = Loading());
 
-        int diff =
-            ((new DateTime.now().millisecondsSinceEpoch) - lastYieldTime);
-        if (diff < 100)
-          await Future.delayed(Duration(milliseconds: 100 - diff), () {});
+    if (this._requestQueue.isNotEmpty)
+      this._currentRequest = this._requestQueue.removeFirst();
 
-        /*if (response.request.requestType == RequestType.DAL_FETCH) {
+    await for (Response response in makeRequest(this._currentRequest)) {
+      if (response.request.requestType != RequestType.LOADING &&
+          response.request.requestType != RequestType.RELOAD) {
+        print(
+            '******* Incoming RequestID: ${response.request.id}, Type: ${response.request.requestType.toString().replaceAll("RequestType.", "")} (${response.request.debugInfo})');
+      }
+
+      int diff = ((new DateTime.now().millisecondsSinceEpoch) - lastYieldTime);
+      if (diff < 100)
+        await Future.delayed(Duration(milliseconds: 100 - diff), () {});
+
+      /*if (response.request.requestType == RequestType.DAL_FETCH) {
           print("ApiBloc yield with dal_fetch dataProvider " +
               (response.request as FetchData).dataProvider +
               " (" +
@@ -108,61 +112,70 @@ class ApiBloc extends Bloc<Request, Response> {
             ")");
         */
 
-        lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
+      lastYieldTime = new DateTime.now().millisecondsSinceEpoch;
 
-        yield response;
+      if (_requestQueue.isEmpty && this._onResponseFinished.isNotEmpty) {
+        this._onResponseFinished[0]();
       }
-    } else {
-      yield Response()
-        ..request = event
-        ..error = ErrorResponse(
-            'Connection error',
-            'Couldn\'t connect to server.',
-            'Couldn\'t connect to server.',
-            'message.error');
+
+      this._currentRequest = null;
+      yield response;
     }
   }
 
+  void addOnResponseFinishedCallback(Function callback) {
+    this._onResponseFinished = <Function>[];
+    this._onResponseFinished.add(callback);
+  }
+
+  void removeAllCallbacks() {
+    this._onResponseFinished = <Function>[];
+  }
+
   Stream<Response> makeRequest(Request event) async* {
-    if (event is Startup) {
-      yield* startup(event);
-    } else if (event is ApplicationStyle) {
-      yield* applicationStyle(event);
-    } else if (event is Download) {
-      yield* download(event);
-    } else if (event is Login) {
-      yield* login(event);
-    } else if (event is Logout) {
-      yield* logout(event);
-    } else if (event is OpenScreen) {
-      yield* openScreen(event);
-    } else if (event is CloseScreen) {
-      yield* closeScreen(event);
-    } else if (event is Navigation) {
-      yield* navigation(event);
-    } else if (event is DeviceStatus) {
-      yield* deviceStatus(event);
-    } else if (event is req.Change) {
-      yield* change(event);
-    } else if (event is Menu) {
-      yield* menu(event);
-    } else if (event is SetValues ||
-        event is SelectRecord ||
-        event is FetchData ||
-        event is FilterData ||
-        event is InsertRecord ||
-        event is SaveData ||
-        event is dataModel.MetaData ||
-        event is SetComponentValue) {
-      yield* data(event);
-    } else if (event is PressButton) {
-      yield* pressButton(event);
-    } else if (event is Upload) {
-      yield* upload(event);
-    } else if (event is TabSelect) {
-      yield* tabSelect(event);
-    } else if (event is TabClose) {
-      yield* tabClose(event);
+    if (this.appState.isOffline && this.offlineDb.isOpen) {
+      yield* this.offlineDb.request(event);
+    } else {
+      if (event is Startup) {
+        yield* startup(event);
+      } else if (event is ApplicationStyle) {
+        yield* applicationStyle(event);
+      } else if (event is Download) {
+        yield* download(event);
+      } else if (event is Login) {
+        yield* login(event);
+      } else if (event is Logout) {
+        yield* logout(event);
+      } else if (event is OpenScreen) {
+        yield* openScreen(event);
+      } else if (event is CloseScreen) {
+        yield* closeScreen(event);
+      } else if (event is Navigation) {
+        yield* navigation(event);
+      } else if (event is DeviceStatus) {
+        yield* deviceStatus(event);
+      } else if (event is req.Change) {
+        yield* change(event);
+      } else if (event is Menu) {
+        yield* menu(event);
+      } else if (event is SetValues ||
+          event is SelectRecord ||
+          event is FetchData ||
+          event is FilterData ||
+          event is InsertRecord ||
+          event is SaveData ||
+          event is dataModel.MetaData ||
+          event is SetComponentValue) {
+        yield* data(event);
+      } else if (event is PressButton) {
+        yield* pressButton(event);
+      } else if (event is Upload) {
+        yield* upload(event);
+      } else if (event is TabSelect) {
+        yield* tabSelect(event);
+      } else if (event is TabClose) {
+        yield* tabClose(event);
+      }
     }
   }
 
@@ -471,234 +484,244 @@ class ApiBloc extends Bloc<Request, Response> {
   Future<Response> processRequest(Request event) async {
     Response response;
 
-    switch (event.requestType) {
-      case RequestType.STARTUP:
-        response = await this
-            .restClient
-            .post(this.appState.baseUrl + '/api/startup', event.toJson());
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.LOGIN:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/v2/login',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.LOGOUT:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/logout',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.OPEN_SCREEN:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/v2/openScreen',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.CLOSE_SCREEN:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/closeScreen',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DOWNLOAD_TRANSLATION:
-        response = await this.restClient.download(
-            this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.manager.downloadFileName);
-        response.downloadResponse?.download =
-            ZipDecoder().decodeBytes(response.downloadResponse?.download);
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DOWNLOAD_IMAGES:
-        response = await this.restClient.download(
-            this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.manager.downloadFileName);
-        response.downloadResponse?.download =
-            ZipDecoder().decodeBytes(response.downloadResponse?.download);
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.APP_STYLE:
-        response = await this.restClient.post(
+    if (kIsWeb || await this.networkInfo.isConnected) {
+      switch (event.requestType) {
+        case RequestType.STARTUP:
+          response = await this
+              .restClient
+              .post(this.appState.baseUrl + '/api/startup', event.toJson());
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.LOGIN:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/v2/login',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.LOGOUT:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/logout',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.OPEN_SCREEN:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/v2/openScreen',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.CLOSE_SCREEN:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/closeScreen',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DOWNLOAD_TRANSLATION:
+          response = await this.restClient.download(
               this.appState.baseUrl + '/download',
               event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_SELECT_RECORD:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/selectRecord',
+              this.manager.downloadFileName);
+          response.downloadResponse?.download =
+              ZipDecoder().decodeBytes(response.downloadResponse?.download);
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DOWNLOAD_IMAGES:
+          response = await this.restClient.download(
+              this.appState.baseUrl + '/download',
               event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_SET_VALUE:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/setValues',
+              this.manager.downloadFileName);
+          response.downloadResponse?.download =
+              ZipDecoder().decodeBytes(response.downloadResponse?.download);
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.APP_STYLE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/download',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_SELECT_RECORD:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/selectRecord',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_SET_VALUE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/setValues',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_FETCH:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/fetch',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_DELETE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/deleteRecord',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_FILTER:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/filter',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_INSERT:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/insertRecord',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_SAVE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/save',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DAL_METADATA:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/dal/metaData',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.PRESS_BUTTON:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/v2/pressButton',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.NAVIGATION:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/navigation',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.LOADING:
+          response = updateResponse(Response());
+          break;
+        case RequestType.RELOAD:
+          response = updateResponse(Response());
+          break;
+        case RequestType.DEVICE_STATUS:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/deviceStatus',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.DOWNLOAD:
+          response = await this.restClient.download(
+              this.appState.baseUrl + '/download',
               event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_FETCH:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/fetch',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_DELETE:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/deleteRecord',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_FILTER:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/filter',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_INSERT:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/insertRecord',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_SAVE:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/save',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DAL_METADATA:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/dal/metaData',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.PRESS_BUTTON:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/v2/pressButton',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.NAVIGATION:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/navigation',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.LOADING:
-        response = updateResponse(Response());
-        break;
-      case RequestType.RELOAD:
-        response = updateResponse(Response());
-        break;
-      case RequestType.DEVICE_STATUS:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/deviceStatus',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.DOWNLOAD:
-        response = await this.restClient.download(
-            this.appState.baseUrl + '/download',
-            event.toJson(),
-            this.manager.downloadFileName);
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.UPLOAD:
-        response = await this
-            .restClient
-            .upload(this.appState.baseUrl + '/upload', event);
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.CHANGE:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/changes',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.SET_VALUE:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/comp/setValue',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.TAB_SELECT:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/comp/selectTab',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.TAB_CLOSE:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/comp/closeTab',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-      case RequestType.MENU:
-        response = await this.restClient.post(
-              this.appState.baseUrl + '/api/menu',
-              event.toJson(),
-            );
-        response.request = event;
-        updateResponse(response);
-        break;
-    }
-
-    if (response.applicationParameters != null) {
-      if (this.appState.applicationParameters == null) {
-        this.appState.applicationParameters = response.applicationParameters;
-      } else {
-        this
-            .appState
-            .applicationParameters
-            .updateParameters(response.applicationParameters);
+              this.manager.downloadFileName);
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.UPLOAD:
+          response = await this
+              .restClient
+              .upload(this.appState.baseUrl + '/upload', event);
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.CHANGE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/changes',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.SET_VALUE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/comp/setValue',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.TAB_SELECT:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/comp/selectTab',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.TAB_CLOSE:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/comp/closeTab',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
+        case RequestType.MENU:
+          response = await this.restClient.post(
+                this.appState.baseUrl + '/api/menu',
+                event.toJson(),
+              );
+          response.request = event;
+          updateResponse(response);
+          break;
       }
+
+      if (response.applicationParameters != null) {
+        if (this.appState.applicationParameters == null) {
+          this.appState.applicationParameters = response.applicationParameters;
+        } else {
+          this
+              .appState
+              .applicationParameters
+              .updateParameters(response.applicationParameters);
+        }
+      }
+    } else {
+      return Response()
+        ..request = event
+        ..error = ErrorResponse(
+            'Connection error',
+            'Couldn\'t connect to server.',
+            'Couldn\'t connect to server.',
+            'message.error');
     }
 
     return response;

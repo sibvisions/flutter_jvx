@@ -130,11 +130,11 @@ class CoPopupMenuButtonWidgetState
                     children: <Widget>[
                       Flexible(
                           fit: FlexFit.loose,
-                          flex: 5,
+                          flex: 10,
                           child: Center(child: child)),
                       Flexible(
                           fit: FlexFit.loose,
-                          flex: 5,
+                          flex: 1,
                           child: _getPopupMenu(colorScheme)),
                     ]),
                 splashColor: widget.componentModel.background,
@@ -142,3 +142,4 @@ class CoPopupMenuButtonWidgetState
     );
   }
 }
+  
