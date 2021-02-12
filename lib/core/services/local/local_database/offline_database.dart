@@ -183,6 +183,8 @@ class OfflineDatabase extends LocalDatabase
     error = null;
     bool result = true;
 
+    componentData = this.filterImportComponents(componentData);
+
     componentData.forEach((element) {
       if (rowsImported != null && element?.data?.records != null)
         rowsToImport += element?.data?.records?.length;
@@ -225,6 +227,11 @@ class OfflineDatabase extends LocalDatabase
           "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${error?.details}");
 
     return result;
+  }
+
+  List<SoComponentData> filterImportComponents(
+      List<SoComponentData> componentData) {
+    return componentData;
   }
 
   Future<bool> syncDelete(
@@ -780,7 +787,8 @@ class OfflineDatabase extends LocalDatabase
                 (element) => element.dataProvider == request.dataProvider);
             request.setValues.offlineSelectedRow = databook.selectedRow;
           }
-          yield await this.setValues(request.setValues)..request = request.setValues;
+          yield await this.setValues(request.setValues)
+            ..request = request.setValues;
         } else {
           yield resp;
         }
