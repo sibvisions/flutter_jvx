@@ -157,7 +157,7 @@ class OfflineDatabase extends LocalDatabase
                   rowsSynced++;
                 }
               }
-              setProgress(rowsToSync, rowsSynced);
+              setRowProgress(rowsToSync, rowsSynced);
             });
           }
         });
@@ -188,11 +188,17 @@ class OfflineDatabase extends LocalDatabase
 
     componentData = this.filterImportComponents(componentData);
 
+    double currentProgress = 0;
+    double fetchProgress =
+        componentData.length > 0 ? 0.5 / componentData.length : 0;
+
     await Future.forEach(componentData, (element) async {
       if (result) {
         result = await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
         if (rowsImported != null && element?.data?.records != null)
           rowsToImport += element?.data?.records?.length;
+        currentProgress += fetchProgress;
+        setProgress(currentProgress);
       }
     });
 
@@ -478,7 +484,8 @@ class OfflineDatabase extends LocalDatabase
 
         await this.bulk(sqlStatements, () {
           rowsImported++;
-          setProgress(rowsToImport, rowsImported);
+          setProgress(
+              rowsToImport == 0 ? 0.5 : rowsImported / 2 / rowsToImport);
         });
         //await this.batch(sqlStatements);
 
@@ -931,12 +938,15 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  void setProgress(int rowsCount, int rowsDone) {
+  void setRowProgress(int rowsCount, int rowsDone) {
     if (rowsCount == 0)
-      progress = 0;
+      setProgress(0);
     else
-      progress = (rowsDone / rowsCount);
+      setProgress(rowsDone / rowsCount);
+  }
 
+  void setProgress(double progress) {
+    this.progress = progress;
     this._progressCallbacks.forEach((callback) => callback(progress));
   }
 
