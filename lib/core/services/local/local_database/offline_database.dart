@@ -484,8 +484,9 @@ class OfflineDatabase extends LocalDatabase
 
         await this.bulk(sqlStatements, () {
           rowsImported++;
-          setProgress(
-              rowsToImport == 0 ? 0.5 : rowsImported / 2 / rowsToImport);
+          setProgress(rowsToImport == 0
+              ? 0.5
+              : 0.5 + (rowsImported / 2 / rowsToImport));
         });
         //await this.batch(sqlStatements);
 
