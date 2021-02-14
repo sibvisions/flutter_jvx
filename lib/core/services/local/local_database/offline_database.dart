@@ -188,10 +188,12 @@ class OfflineDatabase extends LocalDatabase
 
     componentData = this.filterImportComponents(componentData);
 
-    componentData.forEach((element) {
-      element.fetchAll(bloc, fetchOfllineRecordPerRequest);
-      if (rowsImported != null && element?.data?.records != null)
-        rowsToImport += element?.data?.records?.length;
+    Future.forEach(componentData, (element) async {
+      if (result) {
+        result = await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
+        if (rowsImported != null && element?.data?.records != null)
+          rowsToImport += element?.data?.records?.length;
+      }
     });
 
     await Future.forEach(componentData, (element) async {
