@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/response.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/request.dart';
@@ -72,13 +73,14 @@ class SoComponentData {
   }
 
   void updateData(BuildContext context, DataBook pData,
-      [bool overrideData = false]) {
+      [bool overrideData = false, bool silent = false]) {
     //if (data==null || data.isAllFetched || overrideData) {
     if (data == null || overrideData) {
       if (data != null &&
           pData != null &&
-          data.selectedRow != pData.selectedRow)
+          data.selectedRow != pData.selectedRow) if (!silent) {
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
+      }
       data = pData;
     } else if (true /*data.isAllFetched*/) {
       if (pData.records.length > 0) {
@@ -111,7 +113,7 @@ class SoComponentData {
         }
       }
       data.isAllFetched = pData.isAllFetched;
-      if (data.selectedRow != pData.selectedRow)
+      if (data.selectedRow != pData.selectedRow && !silent)
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       data.selectedRow = pData.selectedRow;
     }
@@ -344,6 +346,39 @@ class SoComponentData {
 
     // sl<ApiBloc>().add(fetch);
     BlocProvider.of<ApiBloc>(context).add(fetch);
+  }
+
+  Future<bool> fetchAll(ApiBloc bloc, int recordPerRequest) async {
+    if (!data.isAllFetched) {
+      bool result = true;
+      this.isFetching = true;
+
+      while (!this.data.isAllFetched && result) {
+        result = await _fetchAllSingle(bloc, recordPerRequest);
+      }
+      return result;
+    } else {
+      return true;
+    }
+  }
+
+  Future<bool> _fetchAllSingle(ApiBloc bloc, int recordPerRequest) async {
+    bool result = false;
+    FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
+    fetch.fromRow = data.records.length;
+    fetch.rowCount = recordPerRequest - data.records.length;
+    fetch.clientId = bloc.appState.clientId;
+    fetch.includeMetaData = false;
+
+    await for (Response response in bloc.data(fetch)) {
+      response?.responseData?.dataBooks?.forEach((dataBook) {
+        if (dataBook.dataProvider == this.dataProvider)
+          this.updateData(null, dataBook);
+        result = true;
+      });
+    }
+
+    return result;
   }
 
   dynamic _getColumnValue(String columnName) {
