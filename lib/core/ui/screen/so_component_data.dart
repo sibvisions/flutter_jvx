@@ -73,12 +73,12 @@ class SoComponentData {
   }
 
   void updateData(BuildContext context, DataBook pData,
-      [bool overrideData = false, bool silent = false]) {
+      [bool overrideData = false]) {
     //if (data==null || data.isAllFetched || overrideData) {
     if (data == null || overrideData) {
       if (data != null &&
           pData != null &&
-          data.selectedRow != pData.selectedRow) if (!silent) {
+          data.selectedRow != pData.selectedRow) if (context != null) {
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       }
       data = pData;
@@ -113,7 +113,7 @@ class SoComponentData {
         }
       }
       data.isAllFetched = pData.isAllFetched;
-      if (data.selectedRow != pData.selectedRow && !silent)
+      if (data.selectedRow != pData.selectedRow && context != null)
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       data.selectedRow = pData.selectedRow;
     }
