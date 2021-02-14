@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,7 @@ import 'http_client.dart';
 
 class RestClient {
   final HttpClient _client;
+  bool debug = false;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
@@ -64,6 +66,10 @@ class RestClient {
     } else {
       String body = this.utf8convert(response?.body);
       dynamic decodedBody = json.decode(body);
+
+      if (debug) {
+        log("Response: $body");
+      }
 
       try {
         if (decodedBody is List) {
