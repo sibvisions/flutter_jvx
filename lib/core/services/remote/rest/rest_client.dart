@@ -15,7 +15,7 @@ import 'http_client.dart';
 
 class RestClient {
   final HttpClient _client;
-  bool debug = false;
+  bool debug = true;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
