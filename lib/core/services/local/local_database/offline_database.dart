@@ -41,6 +41,7 @@ class OfflineDatabase extends LocalDatabase
   double progress = 0.0;
   int rowsToImport = 0;
   int rowsImported = 0;
+  int fetchOfllineRecordPerRequest = 100;
   ErrorResponse error;
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
@@ -182,10 +183,13 @@ class OfflineDatabase extends LocalDatabase
     rowsImported = 0;
     error = null;
     bool result = true;
+    ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
+        sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
     componentData = this.filterImportComponents(componentData);
 
     componentData.forEach((element) {
+      element.fetchAll(bloc, fetchOfllineRecordPerRequest);
       if (rowsImported != null && element?.data?.records != null)
         rowsToImport += element?.data?.records?.length;
     });
