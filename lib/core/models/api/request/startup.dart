@@ -18,14 +18,14 @@ class Startup extends Request {
   final DeviceInfo deviceInfo;
   final String deviceMode;
   final String language;
+  final bool forceNewSession;
 
   @override
   String get debugInfo {
     return applicationName + ", Url: " + url + ", appMode: " + appMode;
   }
 
-  Startup(
-      {RequestType requestType,
+  Startup({RequestType requestType,
       String clientId,
       this.applicationName,
       this.authKey,
@@ -38,7 +38,8 @@ class Startup extends Request {
       this.userName,
       this.password,
       this.url,
-      this.language})
+      this.language,
+      this.forceNewSession})
       : this.deviceInfo = DeviceInfo(),
         this.deviceMode = kIsWeb ? 'desktop' : 'mobile',
         super(requestType, clientId);
@@ -63,6 +64,7 @@ class Startup extends Request {
         'deviceType': deviceInfo.deviceType,
         'deviceTypeModel': deviceInfo.deviceTypeModel,
         'deviceMode': this.deviceMode,
-        'langCode': this.language
+        'langCode': this.language,
+        'forceNewSession': this.forceNewSession,
       };
 }
