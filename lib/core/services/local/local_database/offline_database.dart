@@ -90,6 +90,7 @@ class OfflineDatabase extends LocalDatabase
         layoutMode: 'generic',
         language: bloc.appState.language);
 
+    // startup request
     await for (Response response in bloc.startup(startup)) {
       if (response != null && !hasError(response)) {
         this._setProperties(bloc, response);
@@ -99,6 +100,7 @@ class OfflineDatabase extends LocalDatabase
         Map<String, List<Map<String, dynamic>>> syncData =
             Map<String, List<Map<String, dynamic>>>();
 
+        // get sync data
         await Future.forEach(syncDataProvider, (dataProvider) async {
           if (dataProvider != null) {
             syncData[dataProvider] = await this.getSyncData(dataProvider);
@@ -108,10 +110,12 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
+        // sync data to server
         await Future.forEach(syncData.entries, (entry) async {
           if (entry.value.length > 0) {
             DataBookMetaData metaData = await getMetaDataBook(entry.key);
 
+            // open close screen
             if (metaData.offlineScreenComponentId != currentScreenComponentId) {
               if (currentScreenComponentId.length > 0) {
                 CloseScreen closeScreen = CloseScreen(
@@ -141,6 +145,7 @@ class OfflineDatabase extends LocalDatabase
               }
             }
 
+            // sync insert, update, delete to server
             await Future.forEach(entry.value, (element) async {
               String state = OfflineDatabaseFormatter.getRowState(element);
               Map<String, dynamic> primaryKeyValues =
@@ -168,6 +173,7 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
+        // close screen if an screen is open
         if (currentScreenComponentId.length > 0) {
           CloseScreen closeScreen = CloseScreen(
               componentId: currentScreenComponentId,
@@ -194,6 +200,7 @@ class OfflineDatabase extends LocalDatabase
       print(
           "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
 
+    // set general error
     if (!result && error == null) {
       error = ErrorResponse(
           AppLocalizations.of(context).text('Offline Fehler'),
