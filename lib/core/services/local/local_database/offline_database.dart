@@ -181,6 +181,15 @@ class OfflineDatabase extends LocalDatabase
       print(
           "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
 
+    if (!result && error == null) {
+      error = ErrorResponse(
+          AppLocalizations.of(context).text('Offline Fehler'),
+          '',
+          AppLocalizations.of(context).text(
+              'Leider ist ein Fehler beim synchronisieren der Daten aufgetreten.'),
+          'offline.error');
+    }
+
     return result;
   }
 
@@ -275,10 +284,10 @@ class OfflineDatabase extends LocalDatabase
 
     if (!result && error == null) {
       error = ErrorResponse(
-          AppLocalizations.of(context).text('Offline error'),
+          AppLocalizations.of(context).text('Offline Fehler'),
           '',
-          AppLocalizations.of(context)
-              .text('Could\'t import component data into offline db'),
+          AppLocalizations.of(context).text(
+              'Leider ist ein Fehler beim wechseln in den Offline Modus aufgetreten.'),
           'offline.error');
     }
 
