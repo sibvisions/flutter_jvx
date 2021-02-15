@@ -88,7 +88,8 @@ class OfflineDatabase extends LocalDatabase
         password: bloc.appState.password,
         authKey: bloc.manager.authKey,
         layoutMode: 'generic',
-        language: bloc.appState.language);
+        language: bloc.appState.language,
+        forceNewSession: true);
 
     // startup request
     await for (Response response in bloc.startup(startup)) {
