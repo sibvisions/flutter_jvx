@@ -197,16 +197,22 @@ showLinearProgressIndicator(BuildContext context) {
                         decoration: BoxDecoration(
                             color: Theme.of(context).primaryColor.withAlpha(33),
                             borderRadius: BorderRadius.circular(15)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Text(AppLocalizations.of(context)
-                                    .text('Gehe offline...') +
-                                ' ${(_progress * 100).round()}%'),
-                            LinearProgressIndicator(
-                              value: _progress,
-                            )
-                          ],
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)
+                                        .text('Gehe offline...') +
+                                    ' ${(_progress * 100).round()}%',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              LinearProgressIndicator(
+                                value: _progress,
+                              )
+                            ],
+                          ),
                         ),
                       )),
                     ),
