@@ -193,10 +193,9 @@ showLinearProgressIndicator(BuildContext context) {
                           child: Container(
                         width: 200,
                         height: 200,
-                        color: Theme.of(context).primaryColor.withAlpha(33),
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).primaryColor.withAlpha(33),
                             borderRadius: BorderRadius.circular(15)),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
