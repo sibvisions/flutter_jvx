@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
+import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/request.dart';
@@ -348,22 +349,23 @@ class SoComponentData {
     BlocProvider.of<ApiBloc>(context).add(fetch);
   }
 
-  Future<bool> fetchAll(ApiBloc bloc, int recordPerRequest) async {
+  Future<ErrorResponse> fetchAll(ApiBloc bloc, int recordPerRequest) async {
+    ErrorResponse result;
     if (!data.isAllFetched) {
-      bool result = true;
       this.isFetching = true;
 
-      while (!this.data.isAllFetched && result) {
+      while (!this.data.isAllFetched && result == null) {
         result = await _fetchAllSingle(bloc, recordPerRequest);
+        if (result != null) break;
       }
-      return result;
-    } else {
-      return true;
     }
+
+    return result;
   }
 
-  Future<bool> _fetchAllSingle(ApiBloc bloc, int recordPerRequest) async {
-    bool result = false;
+  Future<ErrorResponse> _fetchAllSingle(
+      ApiBloc bloc, int recordPerRequest) async {
+    ErrorResponse result;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = data.records.length;
     fetch.rowCount = recordPerRequest - data.records.length;
@@ -371,11 +373,14 @@ class SoComponentData {
     fetch.includeMetaData = false;
 
     await for (Response response in bloc.data(fetch)) {
-      response?.responseData?.dataBooks?.forEach((dataBook) {
-        if (dataBook.dataProvider == this.dataProvider)
-          this.updateData(null, dataBook);
-        result = true;
-      });
+      if (response.error != null)
+        result = response.error;
+      else {
+        response?.responseData?.dataBooks?.forEach((dataBook) {
+          if (dataBook.dataProvider == this.dataProvider)
+            this.updateData(null, dataBook);
+        });
+      }
     }
 
     return result;

@@ -178,7 +178,8 @@ class OfflineDatabase extends LocalDatabase
     return result;
   }
 
-  Future<bool> importComponents(List<SoComponentData> componentData) async {
+  Future<bool> importComponents(
+      BuildContext context, List<SoComponentData> componentData) async {
     rowsToImport = 0;
     rowsImported = 0;
     error = null;
@@ -192,44 +193,72 @@ class OfflineDatabase extends LocalDatabase
     double fetchProgress =
         componentData.length > 0 ? 0.5 / componentData.length : 0;
 
+    // fetch all data to prepare offline sync
     await Future.forEach(componentData, (element) async {
       if (result) {
-        result = await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
-        if (rowsImported != null && element?.data?.records != null)
-          rowsToImport += element?.data?.records?.length;
-        currentProgress += fetchProgress;
-        setProgress(currentProgress);
-      }
-    });
+        this.error = await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
 
-    await Future.forEach(componentData, (element) async {
-      if (element != null && element.data != null && element.metaData != null) {
-        String tableName =
-            OfflineDatabaseFormatter.formatTableName(element.dataProvider);
-
-        if (await tableExists(tableName)) {
-          await this.dropTable(tableName);
+        if (this.error != null)
+          result = false;
+        else {
+          if (rowsImported != null && element?.data?.records != null)
+            rowsToImport += element?.data?.records?.length;
+          currentProgress += fetchProgress;
+          setProgress(currentProgress);
         }
-        String screenComponentId = "";
-        if (element.soDataScreen != null &&
-            (element.soDataScreen as SoScreenState<SoScreen>)
+      }
+    });
+
+    // create all offline tables
+    if (result) {
+      await Future.forEach(componentData, (element) async {
+        if (element != null &&
+            element.data != null &&
+            element.metaData != null) {
+          String tableName =
+              OfflineDatabaseFormatter.formatTableName(element.dataProvider);
+
+          if (await tableExists(tableName)) {
+            await this.dropTable(tableName);
+          }
+          String screenComponentId = "";
+          if (element.soDataScreen != null &&
+              (element.soDataScreen as SoScreenState<SoScreen>)
+                      .widget
+                      .configuration !=
+                  null)
+            screenComponentId =
+                (element.soDataScreen as SoScreenState<SoScreen>)
                     .widget
-                    .configuration !=
-                null)
-          screenComponentId = (element.soDataScreen as SoScreenState<SoScreen>)
-              .widget
-              .configuration
-              ?.screenComponentId;
+                    .configuration
+                    ?.screenComponentId;
 
-        await _createTableWithMetaData(element.metaData, screenComponentId);
-      }
-    });
+          result = result &
+              await _createTableWithMetaData(
+                  context, element.metaData, screenComponentId);
+        }
+      });
 
-    await Future.forEach(componentData, (element) async {
-      if (element != null && element.data != null && element.metaData != null) {
-        result = result & await _importRows(element.data);
+      // import all rows
+      if (result) {
+        await Future.forEach(componentData, (element) async {
+          if (element != null &&
+              element.data != null &&
+              element.metaData != null &&
+              result) {
+            result = result & await _importRows(element.data);
+            if (!result) {
+              error = ErrorResponse(
+                  AppLocalizations.of(context).text('Importfehler'),
+                  '',
+                  AppLocalizations.of(context).text(
+                      'Die Daten konnten nicht für den Offlinebetrieb importiert werden.'),
+                  'ImportOfflineData');
+            }
+          }
+        });
       }
-    });
+    }
 
     if (result)
       print(
@@ -373,8 +402,9 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
-  Future<void> _createTableWithMetaData(
+  Future<bool> _createTableWithMetaData(BuildContext context,
       DataBookMetaData metaData, String screenComponentId) async {
+    bool result = true;
     if (metaData != null &&
         metaData.columns != null &&
         metaData.columns.length > 0) {
@@ -396,12 +426,22 @@ class OfflineDatabase extends LocalDatabase
 
           if (await createTable(tablename, columns)) {
             String metaDataString = json.encode(metaData.toJson());
-            await _insertUpdateMetaData(metaData.dataProvider, tablename,
-                screenComponentId, metaDataString);
+            result = result &
+                await _insertUpdateMetaData(metaData.dataProvider, tablename,
+                    screenComponentId, metaDataString);
+          } else {
+            result = false;
+            error = ErrorResponse(
+                AppLocalizations.of(context).text('Importfehler'),
+                '',
+                AppLocalizations.of(context).text(
+                    'Die Tabellen für den Offlinebetrieb konnten nicht erstellt werden.'),
+                'ImportOfflineData');
           }
         }
       }
     }
+    return result;
   }
 
   Future<Response> getMetaData(DAL.MetaData request) async {

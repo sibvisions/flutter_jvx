@@ -161,7 +161,7 @@ mixin SoDataScreen {
 
     bool importSuccess =
         await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .importComponents(componentData);
+            .importComponents(context, componentData);
 
     (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
         .removeAllProgressCallbacks();
