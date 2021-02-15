@@ -426,8 +426,11 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                     BlocProvider.of<ApiBloc>(context)
                                         .add(Menu(widget.appState.clientId));
                                   } else {
-                                    showError(context, 'Sync error',
-                                        'Could not sync data to server');
+                                    handleError(
+                                        (sl<IOfflineDatabaseProvider>()
+                                                as OfflineDatabase)
+                                            .responseError,
+                                        context);
                                   }
                                 }
                               },

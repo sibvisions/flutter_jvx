@@ -12,6 +12,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database/local_datab
 import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
@@ -163,7 +164,7 @@ mixin SoDataScreen {
 
     bool importSuccess =
         await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .importComponents(componentData);
+            .importComponents(context, componentData);
 
     (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
         .removeAllProgressCallbacks();
@@ -181,8 +182,11 @@ mixin SoDataScreen {
           componentId: appState.currentScreenComponentId,
           requestType: RequestType.CLOSE_SCREEN,));
     } else {
-      showError(context, 'Offline error',
-          'Could\'t import component data into offline db');
+      handleError(
+          (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
+          context);
+      await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+          .cleanupDatabase();
     }
   }
 
