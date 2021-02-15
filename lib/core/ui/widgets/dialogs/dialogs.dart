@@ -193,6 +193,7 @@ showLinearProgressIndicator(BuildContext context) {
                           child: Container(
                         width: 200,
                         height: 200,
+                        color: Theme.of(context).primaryColor.withAlpha(33),
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                             color: Colors.white,
@@ -200,7 +201,9 @@ showLinearProgressIndicator(BuildContext context) {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Text('Gehe offline...'),
+                            Text(AppLocalizations.of(context)
+                                    .text('Gehe offline...') +
+                                ' ${(_progress * 100).round()}%'),
                             LinearProgressIndicator(
                               value: _progress,
                             )
