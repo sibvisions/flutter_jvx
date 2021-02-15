@@ -32,6 +32,11 @@ class RestClient {
 
     Response finalResponse;
 
+    if (data != null && data['forceNewSession'] != null && data['forceNewSession']) {
+      this.headers.clear();
+      this.headers['Content-Type'] = 'application/json';
+    }
+
     try {
       response = await this
           ._client

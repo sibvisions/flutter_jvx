@@ -178,9 +178,11 @@ mixin SoDataScreen {
       appState.offline = true;
 
       BlocProvider.of<ApiBloc>(context).add(CloseScreen(
-          clientId: appState.clientId,
-          componentId: appState.currentScreenComponentId,
-          requestType: RequestType.CLOSE_SCREEN,));
+        clientId: appState.clientId,
+        componentId: appState.currentScreenComponentId,
+        requestType: RequestType.CLOSE_SCREEN,
+      ));
+      BlocProvider.of<ApiBloc>(context).add(Navigation());
     } else {
       handleError(
           (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
