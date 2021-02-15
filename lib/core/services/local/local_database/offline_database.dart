@@ -73,7 +73,7 @@ class OfflineDatabase extends LocalDatabase
     ApiBloc bloc = new ApiBloc(
         null,
         sl<NetworkInfo>(),
-        RestClient(HttpClient()),
+        sl<RestClient>(),
         sl<AppState>(),
         sl<SharedPreferencesManager>(),
         null);
