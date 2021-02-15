@@ -273,7 +273,7 @@ class OfflineDatabase extends LocalDatabase
       print(
           "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${error?.details}");
 
-    if (!result) {
+    if (!result && error == null) {
       error = ErrorResponse(
           AppLocalizations.of(context).text('Offline error'),
           '',
