@@ -277,17 +277,17 @@ showSyncDialog(BuildContext context) {
         return Theme(
           data: sl<ThemeManager>().themeData,
           child: AlertDialog(
-            title: Text(
-                'Wollen Sie in den Online Modus wechseln und alle geänderten Daten zum Server synchronisieren?'),
+            title: Text(AppLocalizations.of(context).text(
+                'Wollen Sie in den Online Modus wechseln und alle Änderungen synchronisieren?')),
             actions: [
               new FlatButton(
-                child: Text('Ja'),
+                child: Text(AppLocalizations.of(context).text('Ja')),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
               ),
               new FlatButton(
-                child: Text('Nein'),
+                child: Text(AppLocalizations.of(context).text('Nein')),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
