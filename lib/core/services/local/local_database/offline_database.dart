@@ -168,6 +168,19 @@ class OfflineDatabase extends LocalDatabase
           }
         });
 
+        if (currentScreenComponentId.length > 0) {
+          CloseScreen closeScreen = CloseScreen(
+              componentId: currentScreenComponentId,
+              clientId: bloc.appState.clientId,
+              requestType: RequestType.CLOSE_SCREEN);
+
+          await for (Response response in bloc.closeScreen(closeScreen)) {
+            if (response != null && !hasError(response)) {
+              currentScreenComponentId = "";
+            }
+          }
+        }
+
         if (rowsSynced == rowsToSync) result = true;
       }
     }
