@@ -15,7 +15,7 @@ import 'http_client.dart';
 
 class RestClient {
   final HttpClient _client;
-  bool debug = false;
+  bool debug = true;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
@@ -32,7 +32,9 @@ class RestClient {
 
     Response finalResponse;
 
-    if (data != null && data['forceNewSession'] != null && data['forceNewSession']) {
+    if (data != null &&
+        data['forceNewSession'] != null &&
+        data['forceNewSession']) {
       this.headers.clear();
       this.headers['Content-Type'] = 'application/json';
     }
