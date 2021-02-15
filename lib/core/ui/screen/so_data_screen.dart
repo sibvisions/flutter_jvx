@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
 import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
@@ -170,9 +172,14 @@ mixin SoDataScreen {
 
     if (importSuccess) {
       SharedPrefProvider.of(context).manager.setOffline(true);
-      AppStateProvider.of(context).appState.offline = true;
+      AppState appState = AppStateProvider.of(context).appState;
 
-      BlocProvider.of<ApiBloc>(context).add(Navigation());
+      appState.offline = true;
+
+      BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+          clientId: appState.clientId,
+          componentId: appState.currentScreenComponentId,
+          requestType: RequestType.CLOSE_SCREEN,));
     } else {
       showError(context, 'Offline error',
           'Could\'t import component data into offline db');
