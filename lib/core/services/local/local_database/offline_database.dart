@@ -33,6 +33,7 @@ import '../shared_preferences_manager.dart';
 import 'i_offline_database_provider.dart';
 import 'local_database.dart';
 import 'offline_database_formatter.dart';
+import '../../remote/rest/http_client.dart';
 
 typedef ProgressCallback = Function(double);
 
@@ -69,8 +70,13 @@ class OfflineDatabase extends LocalDatabase
     int rowsToSync = 0;
     int rowsSynced = 0;
     error = null;
-    ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
-        sl<AppState>(), sl<SharedPreferencesManager>(), null);
+    ApiBloc bloc = new ApiBloc(
+        null,
+        sl<NetworkInfo>(),
+        RestClient(HttpClient()),
+        sl<AppState>(),
+        sl<SharedPreferencesManager>(),
+        null);
 
     Startup startup = Startup(
         url: bloc.appState.baseUrl,
