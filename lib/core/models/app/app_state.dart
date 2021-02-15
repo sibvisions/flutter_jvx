@@ -21,7 +21,7 @@ class AppState {
   /// `preview`: Only one menu item will be shown.
   ///
   /// `full`: Every menu item will be shown.
-  String appMode;
+  String appMode = 'full';
 
   /// Current language of the application.
   String language;
