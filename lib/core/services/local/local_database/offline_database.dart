@@ -46,6 +46,12 @@ class OfflineDatabase extends LocalDatabase
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
+  Response get responseError {
+    Response response = Response();
+    response.error = error;
+    return response;
+  }
+
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
     if (db?.isOpen ?? false) {
@@ -253,7 +259,7 @@ class OfflineDatabase extends LocalDatabase
                   '',
                   AppLocalizations.of(context).text(
                       'Die Daten konnten nicht für den Offlinebetrieb importiert werden.'),
-                  'ImportOfflineData');
+                  'offline.error');
             }
           }
         });
@@ -266,6 +272,15 @@ class OfflineDatabase extends LocalDatabase
     else
       print(
           "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${error?.details}");
+
+    if (!result) {
+      error = ErrorResponse(
+          AppLocalizations.of(context).text('Offline error'),
+          '',
+          AppLocalizations.of(context)
+              .text('Could\'t import component data into offline db'),
+          'offline.error');
+    }
 
     return result;
   }
