@@ -178,6 +178,8 @@ mixin SoDataScreen {
       handleError(
           (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
           context);
+      await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+          .cleanupDatabase();
     }
   }
 
