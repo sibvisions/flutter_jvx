@@ -80,8 +80,12 @@ class OfflineDatabase extends LocalDatabase
         readAheadLimit: bloc.appState.readAheadLimit,
         requestType: RequestType.STARTUP,
         deviceId: bloc.manager.deviceId,
-        userName: bloc.appState.username,
-        password: bloc.appState.password,
+        userName: bloc.manager.authKey == null
+            ? bloc?.manager?.loginData['username']
+            : bloc.appState.username,
+        password: bloc.manager.authKey == null
+            ? bloc?.manager?.loginData['password']
+            : bloc.appState.password,
         authKey: bloc.manager.authKey,
         layoutMode: 'generic',
         language: bloc.appState.language,
