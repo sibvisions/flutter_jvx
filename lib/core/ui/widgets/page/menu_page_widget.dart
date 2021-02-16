@@ -268,19 +268,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   @override
   void initState() {
     super.initState();
-
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-    //   DeviceStatus deviceStatus = DeviceStatus(
-    //       screenSize: MediaQuery.of(context).size,
-    //       timeZoneCode: '',
-    //       langCode: '',
-    //       clientId: widget.appState.clientId);
-
-    //   BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-    //   lastOrientation = MediaQuery.of(context).orientation;
-    //   width = MediaQuery.of(context).size.width;
-    //   height = MediaQuery.of(context).size.height;
-    // });
   }
 
   @override

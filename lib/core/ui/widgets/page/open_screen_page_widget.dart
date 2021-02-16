@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
+import 'package:jvx_flutterclient/core/models/api/request/device_status.dart';
 import 'package:jvx_flutterclient/features/custom_screen/ui/screen/custom_screen.dart';
 
 import '../../../../injection_container.dart';
@@ -66,6 +68,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   Orientation orientation;
   double width;
   double height;
+  Timer _deviceStatusTimer;
 
   String title;
 
@@ -96,6 +99,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   @override
   Widget build(BuildContext context) {
+    this._addDeviceStatusTimer(context);
+
     return _blocListener();
   }
 
@@ -125,6 +130,32 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+  }
+
+  void _addDeviceStatusTimer(BuildContext context) {
+    if (orientation == null) {
+      orientation = MediaQuery.of(context).orientation;
+      width = MediaQuery.of(context).size.width;
+      height = MediaQuery.of(context).size.height;
+    } else if (orientation != MediaQuery.of(context).orientation ||
+        width != MediaQuery.of(context).size.width ||
+        height != MediaQuery.of(context).size.height) {
+      if (_deviceStatusTimer != null && _deviceStatusTimer.isActive)
+        _deviceStatusTimer.cancel();
+
+      _deviceStatusTimer = new Timer(const Duration(milliseconds: 300), () {
+        DeviceStatus deviceStatus = DeviceStatus(
+            screenSize: MediaQuery.of(context).size,
+            timeZoneCode: '',
+            langCode: '',
+            clientId: widget.appState.clientId);
+
+        BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+        orientation = MediaQuery.of(context).orientation;
+        width = MediaQuery.of(context).size.width;
+        height = MediaQuery.of(context).size.height;
+      });
+    }
   }
 
   void _appFrame() {
