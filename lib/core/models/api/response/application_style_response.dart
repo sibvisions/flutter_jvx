@@ -184,9 +184,9 @@ class ApplicationStyleResponse extends ResponseObject {
         'desktop.color': desktopColor?.toString(),
         'login.background': loginBackground?.toString(),
         'opacity': {
-          'menu': menuOpacity,
-          'sidemenu': sidemenuOpacity,
-          'controls': controlsOpacity
+          'menu': menuOpacity.toString(),
+          'sidemenu': sidemenuOpacity.toString(),
+          'controls': controlsOpacity.toString()
         }
       };
 }
