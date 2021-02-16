@@ -329,32 +329,47 @@ class OfflineDatabase extends LocalDatabase
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
-    SelectRecord select = SelectRecord(dataProvider, filter, null,
-        RequestType.DAL_DELETE, bloc.appState.clientId);
+    FetchData fetch = FetchData(dataProvider, bloc.appState.clientId,
+        columnNames, null, null, false, filter);
 
-    await for (Response response in bloc.data(select)) {
+    await for (Response response in bloc.data(fetch)) {
       if (response != null && !hasError(response)) {
         _setProperties(bloc, response);
-        bloc.close();
-        String tableName =
-            OfflineDatabaseFormatter.formatTableName(dataProvider);
-        if (await tableExists(tableName)) {
-          Map<String, dynamic> record =
-              await _getRowWithFilter(tableName, filter, false);
-          dynamic offlinePrimaryKey =
-              OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
-          String where =
-              "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
+        if (response?.responseData?.dataBooks != null) {
+          DataBook databook;
+          databook = response.responseData.dataBooks
+              .firstWhere((element) => element.dataProvider == dataProvider);
+          if (databook?.records?.length == 1) {
+            SelectRecord select = SelectRecord(dataProvider, filter, null,
+                RequestType.DAL_DELETE, bloc.appState.clientId);
 
-          bloc.close();
-          return await this.delete(tableName, where);
-        } else {
-          bloc.close();
-          return false;
+            await for (Response response in bloc.data(select)) {
+              if (response != null && !hasError(response)) {
+                _setProperties(bloc, response);
+                bloc.close();
+                String tableName =
+                    OfflineDatabaseFormatter.formatTableName(dataProvider);
+                if (await tableExists(tableName)) {
+                  Map<String, dynamic> record =
+                      await _getRowWithFilter(tableName, filter, false);
+                  dynamic offlinePrimaryKey =
+                      OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
+                  String where =
+                      "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
+
+                  bloc.close();
+                  return await this.delete(tableName, where);
+                } else {
+                  bloc.close();
+                  return false;
+                }
+              }
+
+              return false;
+            }
+          }
         }
       }
-
-      return false;
     }
 
     return false;
