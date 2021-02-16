@@ -68,131 +68,152 @@ class OfflineDatabase extends LocalDatabase
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
-    Startup startup = Startup(
-        url: bloc.appState.baseUrl,
-        applicationName: bloc.appState.appName,
-        screenHeight: MediaQuery.of(context).size.height.toInt(),
-        screenWidth: MediaQuery.of(context).size.width.toInt(),
-        appMode:
-            bloc.appState.appMode != null && bloc.appState.appMode.isNotEmpty
-                ? bloc.appState.appMode
-                : 'preview',
-        readAheadLimit: bloc.appState.readAheadLimit,
-        requestType: RequestType.STARTUP,
-        deviceId: bloc.manager.deviceId,
-        userName: bloc.manager.authKey == null
-            ? bloc?.manager?.loginData['username']
-            : bloc.appState.username,
-        password: bloc.manager.authKey == null
-            ? bloc?.manager?.loginData['password']
-            : bloc.appState.password,
-        authKey: bloc.manager.authKey,
-        layoutMode: 'generic',
-        language: bloc.appState.language,
-        forceNewSession: true);
+    String authUsername = bloc.manager.authKey == null
+        ? bloc?.manager?.loginData['username']
+        : bloc.appState.username;
+    String authPassword = bloc.manager.authKey == null
+        ? bloc?.manager?.loginData['password']
+        : bloc.appState.password;
+    String authKey = bloc.manager.authKey;
 
-    // startup request
-    await for (Response response in bloc.startup(startup)) {
-      if (response != null && !hasError(response)) {
-        this._setProperties(bloc, response);
-        String currentScreenComponentId = "";
+    if (authKey != null || (authUsername != null && authPassword != null)) {
+      Startup startup = Startup(
+          url: bloc.appState.baseUrl,
+          applicationName: bloc.appState.appName,
+          screenHeight: MediaQuery.of(context).size.height.toInt(),
+          screenWidth: MediaQuery.of(context).size.width.toInt(),
+          appMode:
+              bloc.appState.appMode != null && bloc.appState.appMode.isNotEmpty
+                  ? bloc.appState.appMode
+                  : 'preview',
+          readAheadLimit: bloc.appState.readAheadLimit,
+          requestType: RequestType.STARTUP,
+          deviceId: bloc.manager.deviceId,
+          userName: authUsername,
+          password: authPassword,
+          authKey: authKey,
+          layoutMode: 'generic',
+          language: bloc.appState.language,
+          forceNewSession: true);
 
-        List<String> syncDataProvider = await this.getOfflineDataProvider();
-        Map<String, List<Map<String, dynamic>>> syncData =
-            Map<String, List<Map<String, dynamic>>>();
+      // startup request
+      await for (Response response in bloc.startup(startup)) {
+        if (response != null && !hasError(response)) {
+          this._setProperties(bloc, response);
+          String currentScreenComponentId = "";
 
-        // get sync data
-        await Future.forEach(syncDataProvider, (dataProvider) async {
-          if (dataProvider != null) {
-            syncData[dataProvider] = await this.getSyncData(dataProvider);
+          List<String> syncDataProvider = await this.getOfflineDataProvider();
+          Map<String, List<Map<String, dynamic>>> syncData =
+              Map<String, List<Map<String, dynamic>>>();
 
-            if (syncData[dataProvider] != null)
-              rowsToSync += syncData[dataProvider].length;
-          }
-        });
+          // get sync data
+          await Future.forEach(syncDataProvider, (dataProvider) async {
+            if (dataProvider != null) {
+              syncData[dataProvider] = await this.getSyncData(dataProvider);
 
-        // sync data to server
-        await Future.forEach(syncData.entries, (entry) async {
-          if (entry.value.length > 0) {
-            DataBookMetaData metaData = await getMetaDataBook(entry.key);
+              if (syncData[dataProvider] != null)
+                rowsToSync += syncData[dataProvider].length;
+            }
+          });
 
-            // open close screen
-            if (metaData.offlineScreenComponentId != currentScreenComponentId) {
-              if (currentScreenComponentId.length > 0) {
-                CloseScreen closeScreen = CloseScreen(
-                    componentId: currentScreenComponentId,
+          // sync data to server
+          await Future.forEach(syncData.entries, (entry) async {
+            if (entry.value.length > 0) {
+              DataBookMetaData metaData = await getMetaDataBook(entry.key);
+
+              // open close screen
+              if (metaData.offlineScreenComponentId !=
+                  currentScreenComponentId) {
+                if (currentScreenComponentId.length > 0) {
+                  CloseScreen closeScreen = CloseScreen(
+                      componentId: currentScreenComponentId,
+                      clientId: bloc.appState.clientId,
+                      requestType: RequestType.CLOSE_SCREEN);
+
+                  await for (Response response
+                      in bloc.closeScreen(closeScreen)) {
+                    if (response != null && !hasError(response)) {
+                      currentScreenComponentId = "";
+                    }
+                  }
+                }
+
+                SoAction action = SoAction(
+                    componentId: metaData.offlineScreenComponentId,
+                    label: "SyncOffline");
+                OpenScreen openScreen = OpenScreen(
+                    action: action,
                     clientId: bloc.appState.clientId,
-                    requestType: RequestType.CLOSE_SCREEN);
-
-                await for (Response response in bloc.closeScreen(closeScreen)) {
+                    manualClose: false,
+                    requestType: RequestType.OPEN_SCREEN);
+                await for (Response response in bloc.openScreen(openScreen)) {
                   if (response != null && !hasError(response)) {
-                    currentScreenComponentId = "";
+                    currentScreenComponentId =
+                        metaData.offlineScreenComponentId;
                   }
                 }
               }
 
-              SoAction action = SoAction(
-                  componentId: metaData.offlineScreenComponentId,
-                  label: "SyncOffline");
-              OpenScreen openScreen = OpenScreen(
-                  action: action,
-                  clientId: bloc.appState.clientId,
-                  manualClose: false,
-                  requestType: RequestType.OPEN_SCREEN);
-              await for (Response response in bloc.openScreen(openScreen)) {
-                if (response != null && !hasError(response)) {
-                  currentScreenComponentId = metaData.offlineScreenComponentId;
+              // sync insert, update, delete to server
+              await Future.forEach(entry.value, (element) async {
+                String state = OfflineDatabaseFormatter.getRowState(element);
+                Map<String, dynamic> primaryKeyValues =
+                    OfflineDatabaseFormatter.getDataColumns(
+                        element, metaData.primaryKeyColumns);
+                Filter primaryKeyFilter = Filter(
+                    columnNames: metaData.primaryKeyColumns,
+                    values: primaryKeyValues.values.toList());
+                if (state == OFFLINE_ROW_STATE_DELETED) {
+                  if (await this.syncDelete(
+                      context,
+                      entry.key,
+                      primaryKeyFilter,
+                      metaData.columnNames,
+                      element)) rowsSynced++;
+                } else if (state == OFFLINE_ROW_STATE_INSERTED) {
+                  if (await this.syncInsert(context, entry.key,
+                      primaryKeyFilter, metaData.columnNames, element)) {
+                    rowsSynced++;
+                  }
+                } else if (state == OFFLINE_ROW_STATE_UPDATED) {
+                  if (await this.syncUpdate(context, entry.key,
+                      primaryKeyFilter, metaData.columnNames, element)) {
+                    rowsSynced++;
+                  }
                 }
+                setRowProgress(rowsToSync, rowsSynced);
+              });
+            }
+          });
+
+          // close screen if an screen is open
+          if (currentScreenComponentId.length > 0) {
+            CloseScreen closeScreen = CloseScreen(
+                componentId: currentScreenComponentId,
+                clientId: bloc.appState.clientId,
+                requestType: RequestType.CLOSE_SCREEN);
+
+            await for (Response response in bloc.closeScreen(closeScreen)) {
+              if (response != null && !hasError(response)) {
+                currentScreenComponentId = "";
               }
             }
-
-            // sync insert, update, delete to server
-            await Future.forEach(entry.value, (element) async {
-              String state = OfflineDatabaseFormatter.getRowState(element);
-              Map<String, dynamic> primaryKeyValues =
-                  OfflineDatabaseFormatter.getDataColumns(
-                      element, metaData.primaryKeyColumns);
-              Filter primaryKeyFilter = Filter(
-                  columnNames: metaData.primaryKeyColumns,
-                  values: primaryKeyValues.values.toList());
-              if (state == OFFLINE_ROW_STATE_DELETED) {
-                if (await this.syncDelete(context, entry.key, primaryKeyFilter,
-                    metaData.columnNames, element)) rowsSynced++;
-              } else if (state == OFFLINE_ROW_STATE_INSERTED) {
-                if (await this.syncInsert(context, entry.key, primaryKeyFilter,
-                    metaData.columnNames, element)) {
-                  rowsSynced++;
-                }
-              } else if (state == OFFLINE_ROW_STATE_UPDATED) {
-                if (await this.syncUpdate(context, entry.key, primaryKeyFilter,
-                    metaData.columnNames, element)) {
-                  rowsSynced++;
-                }
-              }
-              setRowProgress(rowsToSync, rowsSynced);
-            });
           }
-        });
 
-        // close screen if an screen is open
-        if (currentScreenComponentId.length > 0) {
-          CloseScreen closeScreen = CloseScreen(
-              componentId: currentScreenComponentId,
-              clientId: bloc.appState.clientId,
-              requestType: RequestType.CLOSE_SCREEN);
-
-          await for (Response response in bloc.closeScreen(closeScreen)) {
-            if (response != null && !hasError(response)) {
-              currentScreenComponentId = "";
-            }
-          }
+          if (rowsSynced == rowsToSync) result = true;
         }
-
-        if (rowsSynced == rowsToSync) result = true;
       }
-    }
 
-    bloc.close();
+      bloc.close();
+    } else {
+      responseError = Response();
+      responseError.error = ErrorResponse(
+          AppLocalizations.of(context).text('Online Sync Fehler'),
+          '',
+          AppLocalizations.of(context)
+              .text('Authentifizierung fehlgeschlagen.'),
+          'offline.error');
+    }
 
     if (result)
       print(
