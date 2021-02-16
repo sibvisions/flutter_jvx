@@ -4,17 +4,17 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jvx_flutterclient/core/models/api/request/download.dart';
-import 'package:jvx_flutterclient/core/models/api/response/application_style_response.dart';
-import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
-import 'package:jvx_flutterclient/core/models/app/login_arguments.dart';
-import 'package:jvx_flutterclient/core/models/app/settings_arguments.dart';
-import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
-import 'package:jvx_flutterclient/core/ui/pages/login_page.dart';
-import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
-import 'package:jvx_flutterclient/core/ui/pages/settings_page.dart';
-import 'package:jvx_flutterclient/core/utils/theme/get_color_from_app_style.dart';
-import 'package:jvx_flutterclient/core/utils/translation/supported_locale_manager.dart';
+import '../../../models/api/request/download.dart';
+import '../../../models/api/response/application_style_response.dart';
+import '../../../models/api/response/menu_item.dart';
+import '../../../models/app/login_arguments.dart';
+import '../../../models/app/settings_arguments.dart';
+import '../../../services/local/local_database/i_offline_database_provider.dart';
+import '../../pages/login_page.dart';
+import '../../pages/menu_page.dart';
+import '../../pages/settings_page.dart';
+import '../../../utils/theme/get_color_from_app_style.dart';
+import '../../../utils/translation/supported_locale_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -237,13 +237,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _login(Response response) {
-    if (this.appState.offline) {
-      Navigator.of(context).pushReplacementNamed(MenuPage.route,
-          arguments: MenuArguments(this.manager.menuItems, true));
-    } else {
-      Navigator.of(context).pushReplacementNamed(LoginPage.route,
-          arguments: LoginArguments(response.loginItem.username));
-    }
+    Navigator.of(context).pushReplacementNamed(LoginPage.route,
+        arguments: LoginArguments(response.loginItem.username));
   }
 
   void _menu(Response response) {
@@ -253,7 +248,11 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _checkForLogin(Response response) {
-    if (response != null && response.loginItem != null) {
+    if (response != null && response.loginItem != null ||
+        (this.appState.isOffline &&
+            this.manager.loginData['username'] == null &&
+            this.manager.loginData['password'] == null &&
+            this.manager.authKey == null)) {
       return _login(response);
     } else if (response.menu != null) {
       return _menu(response);
