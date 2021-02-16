@@ -37,10 +37,17 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
               decoration: BoxDecoration(
                   color: widget.componentModel.background != null
                       ? widget.componentModel.background
-                      : Colors.white.withOpacity(widget.componentModel.appState
-                          .applicationStyle?.controlsOpacity),
-                  borderRadius: BorderRadius.circular(widget.componentModel
-                      .appState.applicationStyle?.cornerRadiusEditors)),
+                      : Colors.white.withOpacity(
+                          widget.componentModel.appState.applicationStyle !=
+                                  null
+                              ? widget.componentModel.appState.applicationStyle
+                                  ?.controlsOpacity
+                              : 1.0),
+                  borderRadius: BorderRadius.circular(
+                      widget.componentModel.appState.applicationStyle != null
+                          ? widget.componentModel.appState.applicationStyle
+                              ?.cornerRadiusEditors
+                          : 5)),
               child: CustomIcon(
                 image: widget.componentModel.image,
               ))
