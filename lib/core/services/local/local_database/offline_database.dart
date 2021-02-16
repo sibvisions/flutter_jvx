@@ -160,7 +160,7 @@ class OfflineDatabase extends LocalDatabase
                     OfflineDatabaseFormatter.getDataColumns(
                         element, metaData.primaryKeyColumns);
                 Filter primaryKeyFilter = Filter(
-                    columnNames: metaData.primaryKeyColumns,
+                    columnNames: primaryKeyValues.keys.toList(),
                     values: primaryKeyValues.values.toList());
                 if (state == OFFLINE_ROW_STATE_DELETED) {
                   if (await this.syncDelete(
