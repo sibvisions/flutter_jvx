@@ -68,10 +68,10 @@ class OfflineDatabase extends LocalDatabase
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
     String authUsername = bloc.manager.authKey == null
-        ? bloc?.manager?.loginData['username']
+        ? bloc?.manager?.syncLoginData['username']
         : bloc.appState.username;
     String authPassword = bloc.manager.authKey == null
-        ? bloc?.manager?.loginData['password']
+        ? bloc?.manager?.syncLoginData['password']
         : bloc.appState.password;
     String authKey = bloc.manager.authKey;
 

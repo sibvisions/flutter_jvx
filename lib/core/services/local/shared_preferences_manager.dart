@@ -72,6 +72,25 @@ class SharedPreferencesManager {
     return data;
   }
 
+  Map<String, dynamic> get syncLoginData {
+    Map<String, dynamic> data = <String, dynamic>{};
+
+    data.putIfAbsent(
+        'username',
+        () => encrypter.decrypt(
+            Encrypted.fromBase64(
+                this.sharedPreferences.getString('syncUsername')),
+            iv: _iv));
+    data.putIfAbsent(
+        'password',
+        () => encrypter.decrypt(
+            Encrypted.fromBase64(
+                this.sharedPreferences.getString('syncPassword')),
+            iv: _iv));
+
+    return data;
+  }
+
   Map<String, dynamic> get applicationStyle {
     String jsonString = this.sharedPreferences.getString('applicationStyle');
 
@@ -134,6 +153,18 @@ class SharedPreferencesManager {
       this
           .sharedPreferences
           .setString('password', encrypter.encrypt(password, iv: _iv).base64);
+    }
+  }
+
+  void setSyncLoginData(
+      {String username, String password, bool override = false}) {
+    if ((username != null && username.isNotEmpty) || override) {
+      this.sharedPreferences.setString(
+          'syncUsername', encrypter.encrypt(username, iv: _iv).base64);
+    }
+    if ((password != null && password.isNotEmpty) || override) {
+      this.sharedPreferences.setString(
+          'syncPassword', encrypter.encrypt(password, iv: _iv).base64);
     }
   }
 
