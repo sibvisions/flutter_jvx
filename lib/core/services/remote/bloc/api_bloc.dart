@@ -188,14 +188,18 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> login(Login event) async* {
     this.appState.username = event.username;
 
-    this
-        .manager
-        .setLoginData(username: event.username, password: event.password);
-
     if (event.createAuthKey) {
+      this
+          .manager
+          .setLoginData(username: event.username, password: event.password);
+
       this.manager.setOfflineLoginHash(
           username: event.username, password: event.password);
     }
+
+    this
+        .manager
+        .setSyncLoginData(username: event.username, password: event.password);
 
     Response response = await processRequest(event);
 

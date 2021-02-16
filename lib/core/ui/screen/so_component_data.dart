@@ -113,7 +113,11 @@ class SoComponentData {
           }
         }
       }
-      data.isAllFetched = pData.isAllFetched;
+      if (pData.isAllFetched != null) {
+        data.isAllFetched = pData.isAllFetched;
+      } else if (data.isAllFetched == null) {
+        data.isAllFetched = false;
+      }
       if (data.selectedRow != pData.selectedRow && context != null)
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       data.selectedRow = pData.selectedRow;
@@ -351,10 +355,11 @@ class SoComponentData {
 
   Future<Response> fetchAll(ApiBloc bloc, int recordPerRequest) async {
     Response result;
-    if (!data.isAllFetched) {
+    if (data.isAllFetched == null || !data.isAllFetched) {
       this.isFetching = true;
 
-      while (!this.data.isAllFetched && result == null) {
+      while (
+          (data.isAllFetched == null || !data.isAllFetched) && result == null) {
         result = await _fetchAllSingle(bloc, recordPerRequest);
         if (result != null) break;
       }

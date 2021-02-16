@@ -68,10 +68,10 @@ class OfflineDatabase extends LocalDatabase
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
     String authUsername = bloc.manager.authKey == null
-        ? bloc?.manager?.loginData['username']
+        ? bloc?.manager?.syncLoginData['username']
         : bloc.appState.username;
     String authPassword = bloc.manager.authKey == null
-        ? bloc?.manager?.loginData['password']
+        ? bloc?.manager?.syncLoginData['password']
         : bloc.appState.password;
     String authKey = bloc.manager.authKey;
 
@@ -160,7 +160,7 @@ class OfflineDatabase extends LocalDatabase
                     OfflineDatabaseFormatter.getDataColumns(
                         element, metaData.primaryKeyColumns);
                 Filter primaryKeyFilter = Filter(
-                    columnNames: metaData.primaryKeyColumns,
+                    columnNames: primaryKeyValues.keys.toList(),
                     values: primaryKeyValues.values.toList());
                 if (state == OFFLINE_ROW_STATE_DELETED) {
                   if (await this.syncDelete(
