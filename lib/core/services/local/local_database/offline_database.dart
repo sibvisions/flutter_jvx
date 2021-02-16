@@ -48,12 +48,6 @@ class OfflineDatabase extends LocalDatabase
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
-  // Response get responseError {
-  //   Response response = Response();
-  //   response.error = error;
-  //   return response;
-  // }
-
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
     if (db?.isOpen ?? false) {
