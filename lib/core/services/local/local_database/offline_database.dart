@@ -43,15 +43,16 @@ class OfflineDatabase extends LocalDatabase
   int rowsToImport = 0;
   int rowsImported = 0;
   int fetchOfllineRecordPerRequest = 100;
-  ErrorResponse error;
+  //ErrorResponse error;
+  Response responseError;
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
-  Response get responseError {
-    Response response = Response();
-    response.error = error;
-    return response;
-  }
+  // Response get responseError {
+  //   Response response = Response();
+  //   response.error = error;
+  //   return response;
+  // }
 
   Future<void> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
@@ -69,14 +70,9 @@ class OfflineDatabase extends LocalDatabase
     bool result = false;
     int rowsToSync = 0;
     int rowsSynced = 0;
-    error = null;
-    ApiBloc bloc = new ApiBloc(
-        null,
-        sl<NetworkInfo>(),
-        sl<RestClient>(),
-        sl<AppState>(),
-        sl<SharedPreferencesManager>(),
-        null);
+    responseError = null;
+    ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
+        sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
     Startup startup = Startup(
         url: bloc.appState.baseUrl,
@@ -112,7 +108,7 @@ class OfflineDatabase extends LocalDatabase
           if (dataProvider != null) {
             syncData[dataProvider] = await this.getSyncData(dataProvider);
 
-            if (syncData[dataProvider] !=  null)
+            if (syncData[dataProvider] != null)
               rowsToSync += syncData[dataProvider].length;
           }
         });
@@ -205,11 +201,12 @@ class OfflineDatabase extends LocalDatabase
           "Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
     else
       print(
-          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${error?.details}");
+          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${responseError?.error?.details}");
 
     // set general error
-    if (!result && error == null) {
-      error = ErrorResponse(
+    if (!result && responseError == null) {
+      responseError = Response();
+      responseError.error = ErrorResponse(
           AppLocalizations.of(context).text('Offline Fehler'),
           '',
           AppLocalizations.of(context).text(
@@ -224,7 +221,7 @@ class OfflineDatabase extends LocalDatabase
       BuildContext context, List<SoComponentData> componentData) async {
     rowsToImport = 0;
     rowsImported = 0;
-    error = null;
+    responseError = null;
     bool result = true;
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
@@ -238,9 +235,10 @@ class OfflineDatabase extends LocalDatabase
     // fetch all data to prepare offline sync
     await Future.forEach(componentData, (element) async {
       if (result) {
-        this.error = await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
+        this.responseError =
+            await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
 
-        if (this.error != null)
+        if (this.responseError.hasError)
           result = false;
         else {
           if (rowsImported != null && element?.data?.records != null)
@@ -290,7 +288,8 @@ class OfflineDatabase extends LocalDatabase
               result) {
             result = result & await _importRows(element.data);
             if (!result) {
-              error = ErrorResponse(
+              responseError = Response();
+              responseError.error = ErrorResponse(
                   AppLocalizations.of(context).text('Importfehler'),
                   '',
                   AppLocalizations.of(context).text(
@@ -307,14 +306,15 @@ class OfflineDatabase extends LocalDatabase
           "Offline import finished successfully! Imported records: $rowsImported/$rowsToImport");
     else
       print(
-          "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${error?.details}");
+          "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${responseError?.error?.details}");
 
-    if (!result && error == null) {
-      error = ErrorResponse(
+    if (!result && responseError == null) {
+      responseError = Response();
+      responseError.error = ErrorResponse(
           AppLocalizations.of(context).text('Offline Fehler'),
           '',
           AppLocalizations.of(context).text(
-              'Leider ist ein Fehler beim wechseln in den Offline Modus aufgetreten.'),
+              'Es ist ein Fehler beim wechseln in den Offline Modus aufgetreten.'),
           'offline.error');
     }
 
@@ -482,7 +482,8 @@ class OfflineDatabase extends LocalDatabase
                     screenComponentId, metaDataString);
           } else {
             result = false;
-            error = ErrorResponse(
+            responseError = Response();
+            responseError.error = ErrorResponse(
                 AppLocalizations.of(context).text('Importfehler'),
                 '',
                 AppLocalizations.of(context).text(
@@ -1053,8 +1054,7 @@ class OfflineDatabase extends LocalDatabase
 
   bool hasError(Response response) {
     if (response.hasError) {
-      error = response.error;
-      print("Offline db error: " + error.details);
+      responseError = response;
       return true;
     }
 

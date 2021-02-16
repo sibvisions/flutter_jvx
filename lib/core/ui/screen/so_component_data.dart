@@ -349,8 +349,8 @@ class SoComponentData {
     BlocProvider.of<ApiBloc>(context).add(fetch);
   }
 
-  Future<ErrorResponse> fetchAll(ApiBloc bloc, int recordPerRequest) async {
-    ErrorResponse result;
+  Future<Response> fetchAll(ApiBloc bloc, int recordPerRequest) async {
+    Response result;
     if (!data.isAllFetched) {
       this.isFetching = true;
 
@@ -363,9 +363,8 @@ class SoComponentData {
     return result;
   }
 
-  Future<ErrorResponse> _fetchAllSingle(
-      ApiBloc bloc, int recordPerRequest) async {
-    ErrorResponse result;
+  Future<Response> _fetchAllSingle(ApiBloc bloc, int recordPerRequest) async {
+    Response result;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = data.records.length;
     fetch.rowCount = recordPerRequest - data.records.length;
@@ -374,7 +373,7 @@ class SoComponentData {
 
     await for (Response response in bloc.data(fetch)) {
       if (response.error != null)
-        result = response.error;
+        result = response;
       else {
         response?.responseData?.dataBooks?.forEach((dataBook) {
           if (dataBook.dataProvider == this.dataProvider)
