@@ -1,11 +1,14 @@
 import 'dart:convert';
-
+import 'package:encrypt/encrypt.dart';
 import 'package:crypto/crypto.dart';
 import 'package:jvx_flutterclient/core/models/api/response/menu_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesManager {
   final SharedPreferences sharedPreferences;
+  final _iv = IV.fromLength(16);
+  final encrypter =
+      Encrypter(AES(Key.fromUtf8('dkAO8lt3BPf6MrI3f9qnwIL1SW8kH5Va')));
 
   SharedPreferencesManager(this.sharedPreferences);
 
@@ -56,9 +59,15 @@ class SharedPreferencesManager {
     Map<String, dynamic> data = <String, dynamic>{};
 
     data.putIfAbsent(
-        'username', () => this.sharedPreferences.getString('username'));
+        'username',
+        () => encrypter.decrypt(
+            Encrypted.fromBase64(this.sharedPreferences.getString('username')),
+            iv: _iv));
     data.putIfAbsent(
-        'password', () => this.sharedPreferences.getString('password'));
+        'password',
+        () => encrypter.decrypt(
+            Encrypted.fromBase64(this.sharedPreferences.getString('password')),
+            iv: _iv));
 
     return data;
   }
@@ -117,10 +126,14 @@ class SharedPreferencesManager {
 
   void setLoginData({String username, String password, bool override = false}) {
     if ((username != null && username.isNotEmpty) || override) {
-      this.sharedPreferences.setString('username', username);
+      this
+          .sharedPreferences
+          .setString('username', encrypter.encrypt(username, iv: _iv).base64);
     }
     if ((password != null && password.isNotEmpty) || override) {
-      this.sharedPreferences.setString('password', password);
+      this
+          .sharedPreferences
+          .setString('password', encrypter.encrypt(password, iv: _iv).base64);
     }
   }
 
