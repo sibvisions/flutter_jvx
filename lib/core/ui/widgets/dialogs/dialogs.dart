@@ -185,7 +185,7 @@ showLinearProgressIndicator(BuildContext context) {
                         (val) => setState(() => _progress = val));
 
                 return Material(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                   child: Opacity(
                     opacity: 0.7,
                     child: Container(
@@ -195,7 +195,7 @@ showLinearProgressIndicator(BuildContext context) {
                         height: 200,
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor.withAlpha(33),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(15)),
                         child: Padding(
                           padding: EdgeInsets.all(16),
