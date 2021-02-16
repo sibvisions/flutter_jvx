@@ -357,7 +357,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           screenWidth: MediaQuery.of(context).size.width.toInt(),
           appMode: appState.appMode != null && appState.appMode.isNotEmpty
               ? appState.appMode
-              : 'preview',
+              : 'full',
           readAheadLimit: appState.readAheadLimit,
           requestType: RequestType.STARTUP,
           deviceId: _getDeviceId(),
