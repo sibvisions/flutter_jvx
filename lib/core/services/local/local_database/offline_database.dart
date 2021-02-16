@@ -232,7 +232,7 @@ class OfflineDatabase extends LocalDatabase
         this.responseError =
             await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
 
-        if (this.responseError.hasError)
+        if (this.responseError?.hasError ?? false)
           result = false;
         else {
           if (rowsImported != null && element?.data?.records != null)
