@@ -186,36 +186,33 @@ showLinearProgressIndicator(BuildContext context) {
 
                 return Material(
                   color: Theme.of(context).primaryColor,
-                  child: Opacity(
-                    opacity: 0.7,
-                    child: Container(
-                      child: Center(
-                          child: Container(
-                        width: 200,
-                        height: 200,
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Text(
-                                AppLocalizations.of(context)
-                                        .text('Gehe offline...') +
-                                    ' ${(_progress * 100).round()}%',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              LinearProgressIndicator(
-                                value: _progress,
-                              )
-                            ],
-                          ),
+                  child: Container(
+                    child: Center(
+                        child: Container(
+                      width: 200,
+                      height: 200,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)
+                                      .text('Gehe offline...') +
+                                  ' ${(_progress * 100).round()}%',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            LinearProgressIndicator(
+                              value: _progress,
+                            )
+                          ],
                         ),
-                      )),
-                    ),
+                      ),
+                    )),
                   ),
                 );
               },
