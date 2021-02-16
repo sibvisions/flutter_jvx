@@ -112,7 +112,7 @@ class OfflineDatabase extends LocalDatabase
           if (dataProvider != null) {
             syncData[dataProvider] = await this.getSyncData(dataProvider);
 
-            if (syncData[dataProvider] != null)
+            if (syncData[dataProvider] !=  null)
               rowsToSync += syncData[dataProvider].length;
           }
         });

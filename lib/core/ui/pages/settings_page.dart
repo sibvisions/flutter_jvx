@@ -255,10 +255,12 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   loadVersion() async {
-    Map<String, dynamic> buildversion = json.decode(await rootBundle.loadString(
-        widget.appState.package
-            ? 'packages/jvx_flutterclient/env/app_version.json'
-            : 'env/app_version.json'));
+    Map<String, dynamic> buildversion = widget.appState.config.appVersion != null
+        ? widget.appState.config.appVersion
+        : json.decode(await rootBundle.loadString(
+          widget.appState.package
+              ? 'packages/jvx_flutterclient/env/app_version.json'
+              : 'env/app_version.json'));
 
     setState(() {
       version = buildversion['version'];
