@@ -43,7 +43,6 @@ class OfflineDatabase extends LocalDatabase
   int rowsToImport = 0;
   int rowsImported = 0;
   int fetchOfllineRecordPerRequest = 100;
-  //ErrorResponse error;
   Response responseError;
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
