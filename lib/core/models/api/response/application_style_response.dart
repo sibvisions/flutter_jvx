@@ -183,5 +183,10 @@ class ApplicationStyleResponse extends ResponseObject {
         'theme': {'color': themeColorString},
         'desktop.color': desktopColor?.toString(),
         'login.background': loginBackground?.toString(),
+        'opacity': {
+          'menu': menuOpacity,
+          'sidemenu': sidemenuOpacity,
+          'controls': controlsOpacity
+        }
       };
 }
