@@ -201,7 +201,7 @@ class OfflineDatabase extends LocalDatabase
     if (!result && responseError == null) {
       responseError = Response();
       responseError.error = ErrorResponse(
-          AppLocalizations.of(context).text('Offline Fehler'),
+          AppLocalizations.of(context).text('Online Sync Fehler'),
           '',
           AppLocalizations.of(context).text(
               'Leider ist ein Fehler beim synchronisieren der Daten aufgetreten.'),
@@ -367,6 +367,14 @@ class OfflineDatabase extends LocalDatabase
 
               return false;
             }
+          } else {
+            responseError = Response();
+            responseError.error = ErrorResponse(
+                AppLocalizations.of(context).text('Online Sync Fehler'),
+                '',
+                AppLocalizations.of(context)
+                    .text('Der zu löschende Datensatz wurde nicht gefunden.'),
+                'offline.error');
           }
         }
       }
