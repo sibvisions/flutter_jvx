@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -62,7 +63,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   Orientation lastOrientation;
 
-  RestartableTimer _deviceStatusTimer;
+  Timer _deviceStatusTimer;
 
   String title;
 
@@ -155,36 +156,21 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     } else if (lastOrientation != MediaQuery.of(context).orientation ||
         width != MediaQuery.of(context).size.width ||
         height != MediaQuery.of(context).size.height) {
-      DeviceStatus deviceStatus = DeviceStatus(
-          screenSize: MediaQuery.of(context).size,
-          timeZoneCode: '',
-          langCode: '',
-          clientId: widget.appState.clientId);
+      if (_deviceStatusTimer != null && _deviceStatusTimer.isActive)
+        _deviceStatusTimer.cancel();
 
-      BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-      lastOrientation = MediaQuery.of(context).orientation;
-      width = MediaQuery.of(context).size.width;
-      height = MediaQuery.of(context).size.height;
+      _deviceStatusTimer = new Timer(const Duration(milliseconds: 300), () {
+        DeviceStatus deviceStatus = DeviceStatus(
+            screenSize: MediaQuery.of(context).size,
+            timeZoneCode: '',
+            langCode: '',
+            clientId: widget.appState.clientId);
 
-      // if (_deviceStatusTimer == null) {
-      //   _deviceStatusTimer = RestartableTimer(const Duration(seconds: 50), () {
-      //     DeviceStatus deviceStatus = DeviceStatus(
-      //         screenSize: MediaQuery.of(context).size,
-      //         timeZoneCode: '',
-      //         langCode: '',
-      //         clientId: widget.appState.clientId);
-
-      //     BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-      //     lastOrientation = MediaQuery.of(context).orientation;
-      //     width = MediaQuery.of(context).size.width;
-      //     height = MediaQuery.of(context).size.height;
-
-      //     _deviceStatusTimer.cancel();
-      //     _deviceStatusTimer = null;
-      //   });
-      // } else {
-      //   _deviceStatusTimer.reset();
-      // }
+        BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+        lastOrientation = MediaQuery.of(context).orientation;
+        width = MediaQuery.of(context).size.width;
+        height = MediaQuery.of(context).size.height;
+      });
     }
   }
 
@@ -282,19 +268,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   @override
   void initState() {
     super.initState();
-
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-    //   DeviceStatus deviceStatus = DeviceStatus(
-    //       screenSize: MediaQuery.of(context).size,
-    //       timeZoneCode: '',
-    //       langCode: '',
-    //       clientId: widget.appState.clientId);
-
-    //   BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-    //   lastOrientation = MediaQuery.of(context).orientation;
-    //   width = MediaQuery.of(context).size.width;
-    //   height = MediaQuery.of(context).size.height;
-    // });
   }
 
   @override
