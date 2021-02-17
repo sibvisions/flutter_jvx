@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/response/menu.dart';
 import '../../../models/api/request/download.dart';
 import '../../../models/api/response/application_style_response.dart';
 import '../../../models/api/response/menu_item.dart';
@@ -243,18 +244,18 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
   void _menu(Response response) {
     Navigator.of(context).pushReplacementNamed(MenuPage.route,
-        arguments:
-            MenuArguments(response.menu.entries, true, this.welcomeScreen));
+        arguments: MenuArguments(
+            response?.menu?.entries ?? <MenuItem>[], true, this.welcomeScreen));
   }
 
   void _checkForLogin(Response response) {
-    if (response != null && response.loginItem != null ||
+    if (response != null && response?.loginItem != null ||
         (this.appState.isOffline &&
             (this.manager.loginData['username'] == null ||
                 this.manager.loginData['password'] == null ||
                 this.manager.authKey == null))) {
       return _login(response);
-    } else if (response.menu != null) {
+    } else if (response?.menu != null) {
       return _menu(response);
     }
   }
