@@ -372,7 +372,7 @@ class SoComponentData {
     Response result;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = data.records.length;
-    fetch.rowCount = recordPerRequest - data.records.length;
+    fetch.rowCount = recordPerRequest;
     fetch.clientId = bloc.appState.clientId;
     fetch.includeMetaData = false;
 
