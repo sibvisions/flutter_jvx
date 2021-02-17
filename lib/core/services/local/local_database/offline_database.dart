@@ -42,7 +42,7 @@ class OfflineDatabase extends LocalDatabase
   double progress = 0.0;
   int rowsToImport = 0;
   int rowsImported = 0;
-  int fetchOfllineRecordPerRequest = 100;
+  int fetchOfflineRecordsPerRequest = 100;
   Response responseError;
   Filter _lastFetchFilter;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
@@ -254,7 +254,7 @@ class OfflineDatabase extends LocalDatabase
     await Future.forEach(componentData, (element) async {
       if (result) {
         this.responseError =
-            await element.fetchAll(bloc, fetchOfllineRecordPerRequest);
+            await element.fetchAll(bloc, fetchOfflineRecordsPerRequest);
 
         if (this.responseError?.hasError ?? false)
           result = false;

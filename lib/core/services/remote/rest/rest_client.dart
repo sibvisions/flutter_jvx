@@ -15,7 +15,7 @@ import 'http_client.dart';
 
 class RestClient {
   final HttpClient _client;
-  bool debug = false;
+  bool debug = true;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
@@ -27,6 +27,10 @@ class RestClient {
 
   Future<Response> post(String path, dynamic data) async {
     final content = json.encode(data);
+
+    if (debug) {
+      log("Request: $content");
+    }
 
     var response;
 
