@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:jvx_flutterclient/core/models/api/request/logout.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/app_state_provider.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -1069,6 +1070,11 @@ class OfflineDatabase extends LocalDatabase
       bloc.appState.profileImage = response.userData.profileImage;
       bloc.appState.username = response.userData.userName;
       bloc.appState.roles = response.userData.roles;
+    }
+    if (response.applicationStyle != null) {
+      bloc.appState.applicationStyle = response.applicationStyle;
+
+      bloc.manager.setApplicationStyle(response.applicationStyle.toJson());
     }
   }
 
