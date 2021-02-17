@@ -353,14 +353,14 @@ class SoComponentData {
     BlocProvider.of<ApiBloc>(context).add(fetch);
   }
 
-  Future<Response> fetchAll(ApiBloc bloc, int recordPerRequest) async {
+  Future<Response> fetchAll(ApiBloc bloc, int recordsPerRequest) async {
     Response result;
     if (data.isAllFetched == null || !data.isAllFetched) {
       this.isFetching = true;
 
       while (
           (data.isAllFetched == null || !data.isAllFetched) && result == null) {
-        result = await _fetchAllSingle(bloc, recordPerRequest);
+        result = await _fetchAllSingle(bloc, recordsPerRequest);
         if (result != null) break;
       }
     }
@@ -368,11 +368,11 @@ class SoComponentData {
     return result;
   }
 
-  Future<Response> _fetchAllSingle(ApiBloc bloc, int recordPerRequest) async {
+  Future<Response> _fetchAllSingle(ApiBloc bloc, int recordsPerRequest) async {
     Response result;
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = data.records.length;
-    fetch.rowCount = recordPerRequest;
+    fetch.rowCount = recordsPerRequest;
     fetch.clientId = bloc.appState.clientId;
     fetch.includeMetaData = false;
 
