@@ -287,7 +287,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       ? MenuDrawerWidget(
           onPressed: _onPressed,
           appState: widget.appState,
-          menuItems: widget.items,
+          menuItems: widget.appState.items,
           listMenuItems: true,
           currentTitle: widget.title,
           groupedMenuMode:
