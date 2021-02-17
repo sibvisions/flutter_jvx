@@ -54,10 +54,12 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
         decoration: BoxDecoration(
             color: widget.componentModel.background != null
                 ? widget.componentModel.background
-                : Colors.white.withOpacity(widget
-                    .componentModel.appState.applicationStyle?.controlsOpacity),
-            borderRadius: BorderRadius.circular(widget
-                .componentModel.appState.applicationStyle?.cornerRadiusEditors),
+                : Colors.white.withOpacity(widget.componentModel.appState
+                        .applicationStyle?.controlsOpacity ??
+                    1.0),
+            borderRadius: BorderRadius.circular(widget.componentModel.appState
+                    .applicationStyle?.cornerRadiusEditors ??
+                5.0),
             border: widget.componentModel.border &&
                     widget.componentModel.enabled != null &&
                     widget.componentModel.enabled
