@@ -58,16 +58,23 @@ class SharedPreferencesManager {
   Map<String, dynamic> get loginData {
     Map<String, dynamic> data = <String, dynamic>{};
 
-    data.putIfAbsent(
-        'username',
-        () => encrypter.decrypt(
-            Encrypted.fromBase64(this.sharedPreferences.getString('username')),
-            iv: _iv));
-    data.putIfAbsent(
-        'password',
-        () => encrypter.decrypt(
-            Encrypted.fromBase64(this.sharedPreferences.getString('password')),
-            iv: _iv));
+    String username = this.sharedPreferences.getString('username');
+    String password = this.sharedPreferences.getString('password');
+
+    if (username != null && username.isNotEmpty)
+      data.putIfAbsent(
+          'username',
+          () => encrypter.decrypt(
+              Encrypted.fromBase64(
+                  this.sharedPreferences.getString('username')),
+              iv: _iv));
+    if (password != null && password.isNotEmpty)
+      data.putIfAbsent(
+          'password',
+          () => encrypter.decrypt(
+              Encrypted.fromBase64(
+                  this.sharedPreferences.getString('password')),
+              iv: _iv));
 
     return data;
   }
