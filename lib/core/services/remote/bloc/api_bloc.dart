@@ -192,10 +192,10 @@ class ApiBloc extends Bloc<Request, Response> {
       this
           .manager
           .setLoginData(username: event.username, password: event.password);
-
-      this.manager.setOfflineLoginHash(
-          username: event.username, password: event.password);
     }
+
+    this.manager.setOfflineLoginHash(
+        username: event.username, password: event.password);
 
     this
         .manager
