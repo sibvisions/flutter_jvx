@@ -28,6 +28,10 @@ class RestClient {
   Future<Response> post(String path, dynamic data) async {
     final content = json.encode(data);
 
+    if (debug) {
+      log("Request: $content");
+    }
+
     var response;
 
     Response finalResponse;
