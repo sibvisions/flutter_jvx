@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/container/co_scroll_panel_layout.dart';
+import 'co_scroll_panel_layout.dart';
 
 import '../component/component_widget.dart';
 import '../component/models/component_model.dart';

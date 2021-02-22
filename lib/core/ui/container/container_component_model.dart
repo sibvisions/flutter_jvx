@@ -17,6 +17,7 @@ import 'co_container_widget.dart';
 class ContainerComponentModel extends ComponentModel {
   CoLayout layout;
   List<ComponentWidget> components = new List<ComponentWidget>();
+  Function onComponentChange;
 
   ContainerComponentModel(
       {ChangedComponent changedComponent, String componentId})
@@ -59,6 +60,8 @@ class ContainerComponentModel extends ComponentModel {
         layout.addLayoutComponent(pComponent, pConstraints);
       }
     }
+
+    if (this.onComponentChange != null) this.onComponentChange();
   }
 
   void remove(int pIndex) {
@@ -67,6 +70,8 @@ class ContainerComponentModel extends ComponentModel {
       layout.removeLayoutComponent(pComponent);
     }
     components.removeAt(pIndex);
+
+    if (this.onComponentChange != null) this.onComponentChange();
   }
 
   void removeWithComponent(ComponentWidget pComponent) {
@@ -78,12 +83,16 @@ class ContainerComponentModel extends ComponentModel {
       remove(index);
       pComponent.componentModel.coState = CoState.Free;
     }
+
+    if (this.onComponentChange != null) this.onComponentChange();
   }
 
   void removeAll() {
     while (components.length > 0) {
       remove(components.length - 1);
     }
+
+    if (this.onComponentChange != null) this.onComponentChange();
   }
 
   ComponentWidget getComponentWithContraint(String constraint) {
@@ -132,6 +141,8 @@ class ContainerComponentModel extends ComponentModel {
             .addLayoutComponent(pComponent, contraints);
       }
     }
+
+    if (this.onComponentChange != null) this.onComponentChange();
   }
 
   ILayout createLayoutForHeaderFooterPanel(
