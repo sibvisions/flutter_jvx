@@ -133,7 +133,7 @@ class RenderGridLayoutWidget extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    Size size = this.constraints.biggest;
+    Size size = this.constraints.smallest;
     int targetColumns = columns;
     int targetRows = rows;
 
@@ -157,14 +157,20 @@ class RenderGridLayoutWidget extends RenderBox
       int totalGapsWidth = (targetColumns - 1) * horizontalGap;
       int totalGapsHeight = (targetRows - 1) * verticalGap;
 
-      int totalWidth = size.width.round() -
-          leftInsets -
-          margins.right.round() -
-          totalGapsWidth;
-      int totalHeight = size.height.round() -
-          topInsets -
-          margins.bottom.round() -
-          totalGapsHeight;
+      int totalWidth =
+          leftInsets > 0 && margins.right > 0 && totalGapsHeight > 0
+              ? size.width.round() -
+                  leftInsets -
+                  margins.right.round() -
+                  totalGapsWidth
+              : 0;
+      int totalHeight =
+          topInsets > 0 && margins.bottom > 0 && totalGapsHeight > 0
+              ? size.height.round() -
+                  topInsets -
+                  margins.bottom.round() -
+                  totalGapsHeight
+              : 0;
 
       int columnSize = (totalWidth / targetColumns).round();
       int rowSize = (totalHeight / targetRows).round();
