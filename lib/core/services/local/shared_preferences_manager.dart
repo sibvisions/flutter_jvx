@@ -152,14 +152,20 @@ class SharedPreferencesManager {
 
   void setLoginData({String username, String password, bool override = false}) {
     if ((username != null && username.isNotEmpty) || override) {
-      this
-          .sharedPreferences
-          .setString('username', encrypter.encrypt(username, iv: _iv).base64);
+      if (username != null && username.isNotEmpty)
+        this
+            .sharedPreferences
+            .setString('username', encrypter.encrypt(username, iv: _iv).base64);
+      else
+        this.sharedPreferences.setString('username', username);
     }
     if ((password != null && password.isNotEmpty) || override) {
-      this
-          .sharedPreferences
-          .setString('password', encrypter.encrypt(password, iv: _iv).base64);
+      if (password != null && password.isNotEmpty)
+        this
+            .sharedPreferences
+            .setString('password', encrypter.encrypt(password, iv: _iv).base64);
+      else
+        this.sharedPreferences.setString('password', password);
     }
   }
 
