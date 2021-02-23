@@ -171,7 +171,7 @@ mixin SoDataScreen {
   void goOffline(BuildContext context) async {
     BlocProvider.of<ApiBloc>(context).removeAllCallbacks();
 
-    showLinearProgressIndicator(context);
+    //showLinearProgressIndicator(context);
 
     String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
