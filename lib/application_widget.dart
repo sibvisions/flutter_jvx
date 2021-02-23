@@ -16,7 +16,7 @@ import 'injection_container.dart';
 import 'mobile_app.dart';
 
 /// Entrypoint for the application.
-/// 
+///
 /// Gets wrapped by [CustomApplicationWidget]
 class ApplicationWidget extends StatelessWidget {
   final Config config;
@@ -25,6 +25,7 @@ class ApplicationWidget extends StatelessWidget {
   final AppListener appListener;
   final bool package;
   final Widget welcomeWidget;
+  final bool rememberMeChecked;
 
   const ApplicationWidget(
       {Key key,
@@ -33,7 +34,8 @@ class ApplicationWidget extends StatelessWidget {
       this.handleSessionTimeout,
       this.appListener,
       this.package = false,
-      this.welcomeWidget})
+      this.welcomeWidget,
+      this.rememberMeChecked})
       : super(key: key);
 
   @override
@@ -49,6 +51,7 @@ class ApplicationWidget extends StatelessWidget {
 
     // Setting app parameters
     appState.handleSessionTimeout = handleSessionTimeout ?? true;
+    appState.rememberMeChecked = this.rememberMeChecked ?? false;
     appState.appListener = this.appListener;
     appState.package = this.package;
 

@@ -6,11 +6,13 @@ import 'package:jvx_flutterclient/injection_container.dart';
 
 class AppConfig {
   bool handleSessionTimeout;
+  bool rembemerMeChecked;
 
   AppConfig({this.handleSessionTimeout});
 
   AppConfig.fromJson(Map<String, dynamic> json)
-      : handleSessionTimeout = json['handleSessionTimeout'];
+      : handleSessionTimeout = json['handleSessionTimeout'],
+        rembemerMeChecked = json['rembemerMeChecked'];
 
   static Future<AppConfig> loadFile({String path}) async {
     AppState appState = sl<AppState>();
