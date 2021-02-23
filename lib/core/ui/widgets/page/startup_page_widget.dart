@@ -161,8 +161,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         this.manager.setAppVersion(response.applicationMetaData.version);
       }
 
-      AppConfig.loadFile().then((AppConfig config) =>
-          appState.handleSessionTimeout = config.handleSessionTimeout);
+      AppConfig.loadFile().then((AppConfig config) {
+        appState.handleSessionTimeout = config.handleSessionTimeout;
+        appState.rememberMeChecked = config.rembemerMeChecked;
+      });
 
       this.appState.clientId = response.applicationMetaData.clientId;
       this.appState.language = response.applicationMetaData.langCode;

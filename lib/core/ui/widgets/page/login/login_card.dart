@@ -184,6 +184,8 @@ class _LoginCardState extends State<LoginCard>
   @override
   initState() {
     super.initState();
+    this.rememberMe = widget.appState.rememberMeChecked;
+
     username = widget.username;
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 1500));

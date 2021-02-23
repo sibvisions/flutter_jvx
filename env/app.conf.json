@@ -1,3 +1,4 @@
 {
-    "handleSessionTimeout": true
+    "handleSessionTimeout": true,
+    "rembemerMeChecked": false
 }

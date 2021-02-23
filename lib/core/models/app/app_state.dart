@@ -86,6 +86,7 @@ class AppState {
   Config config;
   bool offline = false;
   ApplicationParameters applicationParameters;
+  bool rememberMeChecked;
 
   bool get isOffline => offline != null ? offline : false;
 
@@ -123,5 +124,6 @@ class AppState {
     this.config = state.config;
     this.offline = state.offline;
     this.applicationParameters = state.applicationParameters;
+    this.rememberMeChecked = state.rememberMeChecked;
   }
 }
