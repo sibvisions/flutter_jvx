@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:tinycolor/tinycolor.dart';
 
@@ -187,6 +188,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 child: RaisedButton(
                   onPressed: widget.componentModel.enabled
                       ? () {
+                          if (widget.componentModel.action
+                                  ?.classNameEventSourceRef ==
+                              "OfflineButton")
+                            showLinearProgressIndicator(context);
                           widget.componentModel
                               .onAction(context, widget.componentModel.action);
                         }
