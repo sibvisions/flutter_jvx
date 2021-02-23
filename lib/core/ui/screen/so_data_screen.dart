@@ -192,25 +192,24 @@ mixin SoDataScreen {
     }
   }
 
-  void onAction(BuildContext context, SoAction action,
-      String classNameEventSourceRef) async {
+  void onAction(BuildContext context, SoAction action) async {
     TextUtils.unfocusCurrentTextfield(context);
 
-    if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
+    /*if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
       if (BlocProvider.of<ApiBloc>(context).isAwaitingResponse) {
         BlocProvider.of<ApiBloc>(context)
             .addOnResponseFinishedCallback(goOffline);
       } else {
         this.goOffline(context);
       }
-    } else {
-      // wait until textfields focus lost. 10 millis should do it.
-      Future.delayed(const Duration(milliseconds: 100), () {
-        PressButton pressButton =
-            PressButton(action, AppStateProvider.of(context).appState.clientId);
-        BlocProvider.of<ApiBloc>(context).add(pressButton);
-      });
-    }
+    } else {*/
+    // wait until textfields focus lost. 10 millis should do it.
+    Future.delayed(const Duration(milliseconds: 100), () {
+      PressButton pressButton =
+          PressButton(action, AppStateProvider.of(context).appState.clientId);
+      BlocProvider.of<ApiBloc>(context).add(pressButton);
+    });
+    //}
   }
 
   void onComponetValueChanged(

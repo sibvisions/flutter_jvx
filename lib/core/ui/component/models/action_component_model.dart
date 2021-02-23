@@ -17,6 +17,9 @@ class ActionComponentModel extends ComponentModel {
       BuildContext context, ChangedComponent changedComponent) {
     super.updateProperties(context, changedComponent);
 
-    action = SoAction(componentId: this.name, label: this.text);
+    action = SoAction(
+        componentId: this.name,
+        label: this.text,
+        classNameEventSourceRef: this.classNameEventSourceRef);
   }
 }

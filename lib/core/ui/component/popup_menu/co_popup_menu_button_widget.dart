@@ -31,10 +31,8 @@ class CoPopupMenuButtonWidgetState
     TextUtils.unfocusCurrentTextfield(context);
 
     if (widget.componentModel.onAction != null)
-      widget.componentModel.onAction(
-          context,
-          SoAction(componentId: value, label: null),
-          widget.componentModel.classNameEventSourceRef);
+      widget.componentModel
+          .onAction(context, SoAction(componentId: value, label: null));
   }
 
   PopupMenuButton<String> _getPopupMenu(ColorScheme colorScheme) {
@@ -142,4 +140,3 @@ class CoPopupMenuButtonWidgetState
     );
   }
 }
-  
