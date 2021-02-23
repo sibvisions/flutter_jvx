@@ -148,12 +148,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         margin: EdgeInsets.all(4),
         child: GestureDetector(
           onTap: () {
-            if (widget.componentModel.enabled) {
-              if (widget.componentModel.action?.classNameEventSourceRef ==
-                  "OfflineButton") showLinearProgressIndicator(context);
-              widget.componentModel
-                  .onAction(context, widget.componentModel.action);
-            }
+            widget.componentModel.enabled
+                ? widget.componentModel
+                    .onAction(context, widget.componentModel.action)
+                : null;
           },
           child: SizedBox(
             height: 40,
@@ -190,6 +188,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                 child: RaisedButton(
                   onPressed: widget.componentModel.enabled
                       ? () {
+                          if (widget.componentModel.action
+                                  ?.classNameEventSourceRef ==
+                              "OfflineButton")
+                            showLinearProgressIndicator(context);
                           widget.componentModel
                               .onAction(context, widget.componentModel.action);
                         }
