@@ -257,7 +257,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                 this.manager.loginData['password'] == null ||
                 this.manager.authKey == null))) {
       return _login(response);
-    } else if (response?.menu != null) {
+    } else if (response?.menu != null || this.appState.isOffline) {
       return _menu(response);
     }
   }
