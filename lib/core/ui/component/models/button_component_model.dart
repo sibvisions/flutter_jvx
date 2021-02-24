@@ -13,6 +13,7 @@ class ButtonComponentModel extends ActionComponentModel {
   double iconPadding = 10;
   EdgeInsets margin = EdgeInsets.all(4);
   String image;
+  int horizontalTextPosition;
 
   ButtonComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
@@ -42,6 +43,8 @@ class ButtonComponentModel extends ActionComponentModel {
     style =
         changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
+    horizontalTextPosition = changedComponent
+        .getProperty<int>(ComponentProperty.HORIZONTAL_TEXT_POSITION);
 
     super.updateProperties(context, changedComponent);
   }

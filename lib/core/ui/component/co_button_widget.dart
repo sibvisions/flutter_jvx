@@ -110,18 +110,29 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
 
     if (widget.componentModel.text?.isNotEmpty ?? true) {
       if (widget.componentModel.image != null) {
-        child = Row(
-          children: <Widget>[
-            widget.componentModel.icon != null
-                ? widget.componentModel.icon
-                : SizedBox(
-                    width: widget.componentModel.iconSize.width,
-                    height: widget.componentModel.iconSize.height),
-            SizedBox(width: widget.componentModel.iconPadding),
-            textWidget
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
+        Widget icon = widget.componentModel.icon != null
+            ? widget.componentModel.icon
+            : SizedBox(
+                width: widget.componentModel.iconSize.width,
+                height: widget.componentModel.iconSize.height);
+        if (widget.componentModel.horizontalTextPosition != TextAlign.left)
+          child = Row(
+            children: <Widget>[
+              icon,
+              SizedBox(width: widget.componentModel.iconPadding),
+              textWidget
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
+        else
+          child = Row(
+            children: <Widget>[
+              textWidget,
+              SizedBox(width: widget.componentModel.iconPadding),
+              icon,
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
       } else {
         child = textWidget;
       }

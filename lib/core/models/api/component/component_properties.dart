@@ -93,6 +93,7 @@ enum ComponentProperty {
   FILL_COLOR,
   TILE_PROVIDER,
   CLASS_NAME_EVENT_SOURCE_REF,
+  HORIZONTAL_TEXT_POSITION,
 }
 
 class ComponentProperties {
