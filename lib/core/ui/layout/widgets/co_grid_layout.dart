@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jvx_flutterclient/core/ui/container/container_component_model.dart';
+
+import '../../container/co_container_widget.dart';
+import '../../container/container_component_model.dart';
 import 'co_grid_layout_constraint.dart';
+import 'co_layout_render_box.dart';
 
 ///
 /// The GridLayout class is a layout manager that lays out a container's components in a rectangular grid.
@@ -29,6 +32,8 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
   // the vertical gap between components. */
   final int verticalGap;
 
+  CoContainerWidget container;
+
   CoGridLayoutWidget(
       {Key key,
       List<CoGridLayoutConstraintData> children: const [],
@@ -41,8 +46,8 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderGridLayoutWidget(this.rows, this.columns, this.margins,
-        this.horizontalGap, this.verticalGap);
+    return RenderGridLayoutWidget(this.container, this.rows, this.columns,
+        this.margins, this.horizontalGap, this.verticalGap);
   }
 
   @override
@@ -86,7 +91,7 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderGridLayoutWidget extends RenderBox
+class RenderGridLayoutWidget extends CoLayoutRenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
@@ -115,7 +120,9 @@ class RenderGridLayoutWidget extends RenderBox
   // cache for y-coordinates.
   List<int> yPosition;
 
-  RenderGridLayoutWidget(this.rows, this.columns, this.margins,
+  CoContainerWidget container;
+
+  RenderGridLayoutWidget(this.container, this.rows, this.columns, this.margins,
       this.horizontalGap, this.verticalGap,
       {List<RenderBox> children}) {
     addAll(children);
@@ -133,7 +140,11 @@ class RenderGridLayoutWidget extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    Size size = this.constraints.smallest;
+    preferredLayoutSize = _preferredLayoutSize(container.componentModel);
+    minimumLayoutSize = _minimumLayoutSize(container.componentModel);
+    maximumLayoutSize = _maximumLayoutSize(container.componentModel);
+
+    Size size = this.constraints.biggest;
     int targetColumns = columns;
     int targetRows = rows;
 
@@ -157,20 +168,14 @@ class RenderGridLayoutWidget extends RenderBox
       int totalGapsWidth = (targetColumns - 1) * horizontalGap;
       int totalGapsHeight = (targetRows - 1) * verticalGap;
 
-      int totalWidth =
-          leftInsets > 0 && margins.right > 0 && totalGapsHeight > 0
-              ? size.width.round() -
-                  leftInsets -
-                  margins.right.round() -
-                  totalGapsWidth
-              : 0;
-      int totalHeight =
-          topInsets > 0 && margins.bottom > 0 && totalGapsHeight > 0
-              ? size.height.round() -
-                  topInsets -
-                  margins.bottom.round() -
-                  totalGapsHeight
-              : 0;
+      int totalWidth = size.width.round() -
+          leftInsets -
+          margins.right.round() -
+          totalGapsWidth;
+      int totalHeight = size.height.round() -
+          topInsets -
+          margins.bottom.round() -
+          totalGapsHeight;
 
       int columnSize = (totalWidth / targetColumns).round();
       int rowSize = (totalHeight / targetRows).round();
@@ -288,7 +293,7 @@ class RenderGridLayoutWidget extends RenderBox
     }
   }
 
-  Size preferredLayoutSize(ContainerComponentModel pParent) {
+  Size _preferredLayoutSize(ContainerComponentModel pParent) {
     double maxWidth = 0;
     double maxHeight = 0;
 
@@ -343,8 +348,12 @@ class RenderGridLayoutWidget extends RenderBox
 */
   }
 
-  Size minimumLayoutSize(ContainerComponentModel parent) {
-    return new Size(0, 0);
+  Size _minimumLayoutSize(ContainerComponentModel parent) {
+    return Size(0, 0);
+  }
+
+  Size _maximumLayoutSize(ContainerComponentModel pTarget) {
+    return Size(double.infinity, double.infinity);
   }
 
   @override
