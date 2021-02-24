@@ -169,10 +169,18 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
       int totalGapsWidth = (targetColumns - 1) * horizontalGap;
       int totalGapsHeight = (targetRows - 1) * verticalGap;
 
+      int width = size.width == double.infinity
+          ? preferredLayoutSize.width.round()
+          : size.width.round();
+
+      int height = size.height == double.infinity
+          ? preferredLayoutSize.height.round()
+          : size.height.round();
+
       int totalWidth =
-          (size.width - leftInsets - margins.right - totalGapsWidth).round();
+          width - leftInsets - margins.right.round() - totalGapsWidth;
       int totalHeight =
-          (size.height - topInsets - margins.bottom - totalGapsHeight).round();
+          height - topInsets - margins.bottom.round() - totalGapsHeight;
 
       int columnSize = (totalWidth / targetColumns).round();
       int rowSize = (totalHeight / targetRows).round();
