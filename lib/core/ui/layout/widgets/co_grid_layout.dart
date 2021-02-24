@@ -149,6 +149,9 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
     int targetColumns = columns;
     int targetRows = rows;
 
+    if (size.width == double.infinity || size.height == double.infinity)
+      size = preferredLayoutSize;
+
     if (columns <= 0 || rows <= 0) {
       constraintMap?.forEach((component, constraints) {
         if (columns <= 0 &&
@@ -169,18 +172,14 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
       int totalGapsWidth = (targetColumns - 1) * horizontalGap;
       int totalGapsHeight = (targetRows - 1) * verticalGap;
 
-      int width = size.width == double.infinity
-          ? preferredLayoutSize.width.round()
-          : size.width.round();
-
-      int height = size.height == double.infinity
-          ? preferredLayoutSize.height.round()
-          : size.height.round();
-
-      int totalWidth =
-          width - leftInsets - margins.right.round() - totalGapsWidth;
-      int totalHeight =
-          height - topInsets - margins.bottom.round() - totalGapsHeight;
+      int totalWidth = size.width.round() -
+          leftInsets -
+          margins.right.round() -
+          totalGapsWidth;
+      int totalHeight = size.height.round() -
+          topInsets -
+          margins.bottom.round() -
+          totalGapsHeight;
 
       int columnSize = (totalWidth / targetColumns).round();
       int rowSize = (totalHeight / targetRows).round();
