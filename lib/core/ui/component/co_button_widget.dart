@@ -3,12 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
 import '../../utils/theme/theme_manager.dart';
+import '../widgets/dialogs/dialogs.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
 import 'co_action_component_widget.dart';
 import 'models/button_component_model.dart';
