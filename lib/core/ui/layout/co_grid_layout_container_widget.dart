@@ -137,6 +137,7 @@ class CoGridLayoutContainerWidget extends StatelessWidget
         return Container(
             child: CoGridLayoutWidget(
           key: key,
+          container: container,
           children: children,
           rows: rows,
           columns: columns,

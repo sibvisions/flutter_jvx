@@ -32,10 +32,11 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
   // the vertical gap between components. */
   final int verticalGap;
 
-  CoContainerWidget container;
+  final CoContainerWidget container;
 
   CoGridLayoutWidget(
       {Key key,
+      this.container,
       List<CoGridLayoutConstraintData> children: const [],
       this.rows = 1,
       this.columns = 1,
