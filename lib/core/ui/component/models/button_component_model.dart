@@ -49,9 +49,10 @@ class ButtonComponentModel extends ActionComponentModel {
       BuildContext context, ChangedComponent changedComponent) {
     style =
         changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
-    image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
-    _horizontalTextPosition = changedComponent
-        .getProperty<int>(ComponentProperty.HORIZONTAL_TEXT_POSITION);
+    image =
+        changedComponent.getProperty<String>(ComponentProperty.IMAGE, image);
+    _horizontalTextPosition = changedComponent.getProperty<int>(
+        ComponentProperty.HORIZONTAL_TEXT_POSITION, _horizontalTextPosition);
 
     super.updateProperties(context, changedComponent);
   }
