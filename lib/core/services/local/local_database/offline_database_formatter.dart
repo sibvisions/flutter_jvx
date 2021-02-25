@@ -130,7 +130,7 @@ class OfflineDatabaseFormatter {
   }
 
   static String getWhereFilter(List<dynamic> columnNames, List<dynamic> values,
-      FilterCompareOperator compareOperator) {
+      List<FilterCompareOperator> compareOperators) {
     String sqlWhere = "";
     if (columnNames != null &&
         values != null &&
@@ -138,6 +138,9 @@ class OfflineDatabaseFormatter {
       for (int i = 0; i < columnNames.length; i++) {
         dynamic value = values[i];
         String columnName = columnNames[i].toString();
+        FilterCompareOperator compareOperator = FilterCompareOperator.EQUAL;
+        if (compareOperators != null && i < compareOperators.length)
+          compareOperator = compareOperators[i];
         if (value != null) {
           if (compareOperator == FilterCompareOperator.EQUAL)
             sqlWhere =
