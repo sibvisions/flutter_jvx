@@ -376,7 +376,7 @@ class SoComponentData {
     if (reload) data.records = new List<dynamic>();
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = data.records.length;
-    fetch.rowCount = recordsPerRequest;
+    fetch.rowCount = -1;
     fetch.clientId = bloc.appState.clientId;
     fetch.includeMetaData = false;
 
