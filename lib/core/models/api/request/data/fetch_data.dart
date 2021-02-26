@@ -1,6 +1,6 @@
-import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
-
 import '../../request.dart';
+import '../../response/data/filter.dart';
+import '../../response/data/filter_condition.dart';
 
 class FetchData extends Request {
   String dataProvider;
@@ -9,6 +9,7 @@ class FetchData extends Request {
   int rowCount = -1;
   bool includeMetaData = false;
   Filter filter;
+  FilterCondition condition;
 
   @override
   String get debugInfo {

@@ -1,5 +1,6 @@
 import '../../request.dart';
 import '../../response/data/filter.dart';
+import '../../response/data/filter_condition.dart';
 
 class FilterData extends Request {
   String dataProvider;
@@ -8,6 +9,7 @@ class FilterData extends Request {
   int fromRow = -1;
   int rowCount = -1;
   Filter filter = Filter();
+  FilterCondition condition;
 
   FilterData(
       this.dataProvider, this.value, this.editorComponentId, String clientId,
