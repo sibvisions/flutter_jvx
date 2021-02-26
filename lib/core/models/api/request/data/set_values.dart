@@ -1,6 +1,5 @@
 import '../../request.dart';
 import '../../response/data/filter.dart';
-import '../../response/data/filter_condition.dart';
 
 class SetValues extends Request {
   String dataProvider;
@@ -8,7 +7,6 @@ class SetValues extends Request {
   List<dynamic> values;
   Filter filter;
   int offlineSelectedRow;
-  FilterCondition condition;
 
   @override
   String get debugInfo {

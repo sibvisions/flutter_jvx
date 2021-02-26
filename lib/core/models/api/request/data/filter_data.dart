@@ -8,6 +8,7 @@ class FilterData extends Request {
   String editorComponentId;
   int fromRow = -1;
   int rowCount = -1;
+  bool includeMetaData = false;
   Filter filter = Filter();
   FilterCondition condition;
 
@@ -23,6 +24,7 @@ class FilterData extends Request {
         'editorComponentId': editorComponentId,
         'fromRow': fromRow,
         'rowCount': rowCount,
+        'includeMetaData': includeMetaData,
         'filter': filter?.toJson()
       };
 }

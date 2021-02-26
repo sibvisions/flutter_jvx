@@ -1,7 +1,6 @@
 import '../../../../ui/screen/so_component_data.dart';
 import '../../request.dart';
 import '../../response/data/filter.dart';
-import '../../response/data/filter_condition.dart';
 
 class SelectRecord extends Request {
   String dataProvider;
@@ -9,7 +8,6 @@ class SelectRecord extends Request {
   Filter filter = Filter();
   int selectedRow;
   SoComponentData soComponentData;
-  FilterCondition condition;
 
   @override
   String get debugInfo {
