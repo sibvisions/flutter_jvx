@@ -4,6 +4,7 @@ import '../../response/data/filter_condition.dart';
 
 class FilterData extends Request {
   String dataProvider;
+  List<dynamic> columnNames;
   String value;
   String editorComponentId;
   int fromRow = -1;
@@ -20,6 +21,7 @@ class FilterData extends Request {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'clientId': clientId,
         'dataProvider': dataProvider,
+        'columnNames': columnNames,
         'value': value,
         'editorComponentId': editorComponentId,
         'fromRow': fromRow,

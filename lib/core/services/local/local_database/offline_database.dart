@@ -2,24 +2,25 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:jvx_flutterclient/core/models/api/request/application_style.dart';
-import 'package:jvx_flutterclient/core/models/api/request/logout.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/util/app_state_provider.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
+import '../../../models/api/request/application_style.dart';
 import '../../../models/api/request/close_screen.dart';
 import '../../../models/api/request/data/fetch_data.dart';
+import '../../../models/api/request/data/filter_data.dart';
 import '../../../models/api/request/data/insert_record.dart';
 import '../../../models/api/request/data/meta_data.dart' as DAL;
 import '../../../models/api/request/data/select_record.dart';
 import '../../../models/api/request/data/set_values.dart';
+import '../../../models/api/request/logout.dart';
 import '../../../models/api/request/navigation.dart';
 import '../../../models/api/request/open_screen.dart';
 import '../../../models/api/request/startup.dart';
 import '../../../models/api/response.dart';
 import '../../../models/api/response/data/data_book.dart';
 import '../../../models/api/response/data/filter.dart';
+import '../../../models/api/response/data/filter_condition.dart';
 import '../../../models/api/response/error_response.dart';
 import '../../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../../models/api/response/response_data.dart';
@@ -35,7 +36,6 @@ import '../shared_preferences_manager.dart';
 import 'i_offline_database_provider.dart';
 import 'local_database.dart';
 import 'offline_database_formatter.dart';
-import '../../remote/rest/http_client.dart';
 
 typedef ProgressCallback = Function(double);
 
@@ -688,28 +688,57 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<Response> fetchData(FetchData request) async {
-    if (request != null && request.dataProvider != null) {
-      String tableName =
-          OfflineDatabaseFormatter.formatTableName(request.dataProvider);
+    return await _getData(
+        request,
+        request.dataProvider,
+        request.columnNames,
+        request.fromRow,
+        request.rowCount,
+        request.includeMetaData,
+        request.filter,
+        null);
+  }
+
+  Future<Response> filterData(FilterData request) async {
+    return await _getData(
+        request,
+        request.dataProvider,
+        request.columnNames,
+        request.fromRow,
+        request.rowCount,
+        request.includeMetaData,
+        request.filter,
+        request.condition);
+  }
+
+  Future<Response> _getData(
+      Request request,
+      String dataProvider,
+      List<dynamic> columnNames,
+      int fromRow,
+      int rowCount,
+      bool includeMetaData,
+      Filter filter,
+      FilterCondition filterCondition) async {
+    if (request != null && dataProvider != null) {
+      String tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
       String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
       String limit = "";
-      if (request.fromRow != null && request.fromRow >= 0) {
-        limit = request.fromRow.toString();
-        if (request.rowCount >= 0) limit = ", " + request.rowCount.toString();
-      } else if (request.rowCount != null && request.rowCount >= 0) {
-        limit = request.rowCount.toString();
+      if (fromRow != null && fromRow >= 0) {
+        limit = fromRow.toString();
+        if (rowCount >= 0) limit = ", " + rowCount.toString();
+      } else if (rowCount != null && rowCount >= 0) {
+        limit = rowCount.toString();
       }
 
       String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
 
-      if (request.filter != null &&
-          request.filter.columnNames != null &&
-          request.filter.values != null) {
-        _lastFetchFilter = request.filter;
+      if (filter != null &&
+          filter.columnNames != null &&
+          filter.values != null) {
+        _lastFetchFilter = filter;
         String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
-            request.filter.columnNames,
-            request.filter.values,
-            request.filter.compareOperator);
+            filter.columnNames, filter.values, filter.compareOperator);
         if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
       }
 
@@ -727,15 +756,15 @@ class OfflineDatabase extends LocalDatabase
       Response response = new Response();
       ResponseData data = new ResponseData();
       DataBook dataBook = new DataBook(
-        dataProvider: request.dataProvider,
+        dataProvider: dataProvider,
         records: records,
       );
 
-      DataBookMetaData metaData = await getMetaDataBook(request.dataProvider);
+      DataBookMetaData metaData = await getMetaDataBook(dataProvider);
       data.dataBookMetaData = [metaData];
 
-      if (request.fromRow != null) {
-        dataBook.from = request.fromRow;
+      if (fromRow != null) {
+        dataBook.from = fromRow;
         dataBook.isAllFetched = false;
       } else {
         dataBook.from = 0;
@@ -930,6 +959,17 @@ class OfflineDatabase extends LocalDatabase
     if (request != null) {
       if (request is FetchData) {
         Response resp = await fetchData(request);
+
+        resp.request = request;
+
+        if (resp.responseData.dataBooks.length > 0) {
+          print(
+              '${resp.responseData.dataBooks[0].dataProvider}: ${resp.responseData.dataBooks[0].records.length}');
+        }
+
+        yield resp;
+      } else if (request is FilterData) {
+        Response resp = await filterData(request);
 
         resp.request = request;
 
