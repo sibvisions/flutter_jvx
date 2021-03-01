@@ -13,7 +13,7 @@ class IconComponentModel extends ComponentModel {
   @override
   int verticalAlignment = 1;
   @override
-  int horizontalAlignment = 1;
+  int horizontalAlignment = 2;
 
   IconComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
