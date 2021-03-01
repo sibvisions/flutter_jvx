@@ -189,7 +189,7 @@ class OfflineDatabaseFormatter {
 
         subConditions.forEach((subCondition) {
           sqlWhere =
-              '$sqlWhere${_getWhereOperator(condition.operatorType)}(${getWhereFilterWithCondition(subCondition.condition)})';
+              '$sqlWhere${_getWhereOperator(condition.operatorType)}(${getWhereFilterWithCondition(subCondition)})';
         });
       }
     }
