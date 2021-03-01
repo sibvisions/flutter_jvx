@@ -175,23 +175,25 @@ class OfflineDatabaseFormatter {
     String sqlWhere = "";
 
     if (condition != null) {
-      if (condition.columnName != null && condition.compareType != null)
+      if (condition.columnName != null && condition.compareType != null) {
         sqlWhere =
             '$sqlWhere${_getWhereCondition(condition.columnName, condition.value, condition.compareType, condition.not)}';
-
-      if (condition.operatorType != null) {
-        List<FilterCondition> subConditions = [];
-
-        if (condition.condition != null) {
-          subConditions.add(condition.condition);
-        } else if (condition.conditions != null)
-          subConditions.addAll(condition.conditions);
-
-        subConditions.forEach((subCondition) {
-          sqlWhere =
-              '$sqlWhere${_getWhereOperator(condition.operatorType)}(${getWhereFilterWithCondition(subCondition)})';
-        });
+        if (condition.operatorType != null)
+          sqlWhere = sqlWhere =
+              '$sqlWhere${_getWhereOperator(condition.operatorType)}';
       }
+
+      List<FilterCondition> subConditions = [];
+
+      if (condition.condition != null) {
+        subConditions.add(condition.condition);
+      } else if (condition.conditions != null)
+        subConditions.addAll(condition.conditions);
+
+      subConditions.forEach((subCondition) {
+        sqlWhere =
+            '$sqlWhere${_getWhereOperator(condition.operatorType)}(${getWhereFilterWithCondition(subCondition)})';
+      });
     }
     return sqlWhere;
   }
