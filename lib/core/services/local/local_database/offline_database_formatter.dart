@@ -143,9 +143,11 @@ class OfflineDatabaseFormatter {
     return "";
   }
 
+  /// For testing filterConditons. Result should be:
+  /// ACTIVE = 'Y' AND (FIRST_NAME LIKE '*a*' OR (LAST_NAME LIKE '*B*' AND VALID_FROM >= Thu Feb 25 13:19:44 GMT+01:00 2021))
   static FilterCondition getTestFilter() {
-    FilterCondition condValidFrom =
-        new FilterCondition(columnName: "VALID_FROM", value: DateTime.now());
+    FilterCondition condValidFrom = new FilterCondition(
+        columnName: "VALID_FROM", value: DateTime.now().millisecondsSinceEpoch);
     condValidFrom.compareType = CompareType.GREATER_EQUALS;
 
     FilterCondition condFirstName =
