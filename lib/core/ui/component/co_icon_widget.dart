@@ -29,32 +29,30 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Padding(
-            padding: EdgeInsets.only(bottom: 6),
-            child: Row(
-                mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-                    widget.componentModel.horizontalAlignment),
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                      decoration: BoxDecoration(
-                          color: widget.componentModel.background != null
-                              ? widget.componentModel.background
-                              : Colors.white.withOpacity(widget.componentModel
-                                          .appState.applicationStyle !=
-                                      null
-                                  ? widget.componentModel.appState
-                                      .applicationStyle?.controlsOpacity
-                                  : 1.0),
-                          borderRadius: BorderRadius.circular(
-                              widget.componentModel.appState.applicationStyle !=
-                                      null
-                                  ? widget.componentModel.appState
-                                      .applicationStyle?.cornerRadiusEditors
-                                  : 5)),
-                      child: CustomIcon(
-                        image: widget.componentModel.image,
-                      ))
-                ])));
+        child: Row(
+            mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+                widget.componentModel.horizontalAlignment),
+            crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(
+                widget.componentModel.verticalAlignment),
+            children: <Widget>[
+          Container(
+              decoration: BoxDecoration(
+                  color: widget.componentModel.background != null
+                      ? widget.componentModel.background
+                      : Colors.white.withOpacity(
+                          widget.componentModel.appState.applicationStyle !=
+                                  null
+                              ? widget.componentModel.appState.applicationStyle
+                                  ?.controlsOpacity
+                              : 1.0),
+                  borderRadius: BorderRadius.circular(
+                      widget.componentModel.appState.applicationStyle != null
+                          ? widget.componentModel.appState.applicationStyle
+                              ?.cornerRadiusEditors
+                          : 5)),
+              child: CustomIcon(
+                image: widget.componentModel.image,
+              ))
+        ]));
   }
 }
