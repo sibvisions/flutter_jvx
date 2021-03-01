@@ -47,6 +47,7 @@ class OfflineDatabase extends LocalDatabase
   int fetchOfflineRecordsPerRequest = 100;
   Response responseError;
   Filter _lastFetchFilter;
+  FilterCondition _lastFetchFilterCondition;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
   Future<void> openCreateDatabase(String path) async {
@@ -738,14 +739,11 @@ class OfflineDatabase extends LocalDatabase
 
       String where = "[$OFFLINE_COLUMNS_STATE]<>'$OFFLINE_ROW_STATE_DELETED'";
 
-      if (filter != null &&
-          filter.columnNames != null &&
-          filter.values != null) {
-        _lastFetchFilter = filter;
-        String whereFilter = OfflineDatabaseFormatter.getWhereFilter(
-            filter.columnNames, filter.values, filter.compareOperator);
-        if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
-      }
+      _lastFetchFilter = filter;
+      _lastFetchFilterCondition = filterCondition;
+      String whereFilter =
+          OfflineDatabaseFormatter.getWhereFilterNew(filter, filterCondition);
+      if (whereFilter.length > 0) where = where + WHERE_AND + whereFilter;
 
       List<Map<String, dynamic>> result =
           await this.selectRows(tableName, where, orderBy, limit);
