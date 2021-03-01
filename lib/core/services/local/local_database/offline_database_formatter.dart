@@ -1,4 +1,6 @@
+import 'package:jvx_flutterclient/core/models/api/request/data/filter_data.dart';
 import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
+import 'package:jvx_flutterclient/core/models/api/response/data/filter_condition.dart';
 
 import '../../../models/api/editor/cell_editor.dart';
 import '../../../models/api/editor/cell_editor_properties.dart';
@@ -12,6 +14,7 @@ const String CREATE_TABLE_NAME_PREFIX = "off_";
 const String INSERT_INTO_DATA_SEPERATOR = ", ";
 const String UPDATE_DATA_SEPERATOR = ", ";
 const String WHERE_AND = " AND ";
+const String WHERE_OR = " OR ";
 
 const String OFFLINE_COLUMNS_PRIMARY_KEY = "off_primaryKey";
 const String OFFLINE_COLUMNS_MASTER_KEY = "off_masterKey";
@@ -127,6 +130,108 @@ class OfflineDatabaseFormatter {
     }
 
     return "";
+  }
+
+  static String getWhereFilterNew(Filter filter, FilterCondition condition) {
+    if (filter != null && condition == null) {
+      return getWhereFilter(
+          filter.columnNames, filter.values, filter.compareOperator);
+    } else if (condition != null) {
+      return getWhereFilterWithCondition(condition);
+    }
+
+    return "";
+  }
+
+  static FilterCondition getTestFilter() {
+    FilterCondition condValidFrom =
+        new FilterCondition(columnName: "VALID_FROM", value: DateTime.now());
+    condValidFrom.compareType = CompareType.GREATER_EQUALS;
+
+    FilterCondition condFirstName =
+        new FilterCondition(columnName: "FIRST_NAME", value: "*a*");
+    condFirstName.compareType = CompareType.LIKE;
+
+    FilterCondition condLastName =
+        new FilterCondition(columnName: "LAST_NAME", value: "*B*");
+    condLastName.compareType = CompareType.LIKE;
+    condLastName.operatorType = OperatorType.AND;
+    condLastName.condition = condValidFrom;
+
+    FilterCondition condActive =
+        new FilterCondition(columnName: "ACTIVE", value: "Y");
+    condActive.compareType = CompareType.EQUALS;
+
+    FilterCondition condOr = new FilterCondition();
+    condOr.operatorType = OperatorType.OR;
+    condOr.conditions = [condFirstName, condLastName];
+
+    condActive.operatorType = OperatorType.AND;
+    condActive.conditions = [condOr];
+    return condActive;
+  }
+
+  static String getWhereFilterWithCondition(FilterCondition condition) {
+    String sqlWhere = "";
+
+    if (condition != null) {
+      sqlWhere =
+          '$sqlWhere${_getWhereCondition(condition.columnName, condition.value, condition.compareType, condition.not)}';
+
+      List<FilterCondition> subConditions = [];
+
+      if (condition.condition != null) {
+        subConditions.add(condition.condition);
+      } else if (condition.conditions != null)
+        subConditions.addAll(condition.conditions);
+
+      subConditions.forEach((subCondition) {
+        sqlWhere =
+            '$sqlWhere${_getWhereOperator(subCondition.operatorType)}(${getWhereFilterWithCondition(subCondition.condition)})';
+      });
+    }
+    return sqlWhere;
+  }
+
+  static String _getWhereCondition(
+      String columnName, dynamic value, CompareType conpareType,
+      [bool not = false]) {
+    if (value != null) {
+      String comparer = "=";
+      if (conpareType == CompareType.EQUALS)
+        comparer = '=';
+      else if (conpareType == CompareType.LIKE)
+        comparer = 'LIKE';
+      else if (conpareType == CompareType.LESS)
+        comparer = '<';
+      else if (conpareType == CompareType.LESS_EQUALS)
+        comparer = '<=';
+      else if (conpareType == CompareType.GREATER)
+        comparer = '>';
+      else if (conpareType == CompareType.GREATER_EQUALS) comparer = '>=';
+      if (not != null && not)
+        return "NOT ([$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] $comparer ${_getWhereValue(value)})";
+      else
+        return "[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] $comparer ${_getWhereValue(value)}";
+    } else {
+      if (not != null && not)
+        return "[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] NOT IS NULL";
+      else
+        return "[$columnName$CREATE_TABLE_COLUMNS_NEW_SUFFIX] IS NULL";
+    }
+  }
+
+  static String _getWhereValue(dynamic value) {
+    if (value is int || value is double || value is bool)
+      return value.toString();
+    else if (value is String) return '$value';
+  }
+
+  static String _getWhereOperator(OperatorType operatorType) {
+    if (operatorType == OperatorType.OR)
+      return WHERE_OR;
+    else
+      return WHERE_AND;
   }
 
   static String getWhereFilter(List<dynamic> columnNames, List<dynamic> values,

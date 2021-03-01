@@ -26,7 +26,7 @@ class FilterCondition {
   FilterCondition condition;
   List<FilterCondition> conditions;
 
-  FilterCondition({this.columnName, this.value, this.compareType});
+  FilterCondition({this.columnName, this.value});
 
   FilterCondition.fromJson(Map<String, dynamic> json) {
     columnName = json['columnName'];
