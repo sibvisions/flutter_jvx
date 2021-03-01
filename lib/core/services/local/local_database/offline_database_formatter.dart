@@ -179,7 +179,7 @@ class OfflineDatabaseFormatter {
     if (condition != null) {
       if (condition.columnName != null && condition.compareType != null) {
         sqlWhere =
-            '$sqlWhere${_getWhereCondition(condition.columnName, condition.value, condition.compareType, condition.not)}';
+            '$sqlWhere(${_getWhereCondition(condition.columnName, condition.value, condition.compareType, condition.not)})';
         if (condition.operatorType != null)
           sqlWhere = sqlWhere =
               '$sqlWhere${_getWhereOperator(condition.operatorType)}';
