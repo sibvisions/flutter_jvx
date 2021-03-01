@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
+import 'package:jvx_flutterclient/core/models/api/response/data/filter_condition.dart';
 import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
 
 import '../../../injection_container.dart';
@@ -271,6 +272,39 @@ class SoComponentData {
         AppStateProvider.of(context).appState.clientId, null, 0, 100);
     filter.reload = true;
     BlocProvider.of<ApiBloc>(context).add(filter);
+  }
+
+  void filterDataExtended(BuildContext context, int reload, int rowCountNeeded,
+      [Filter filter, FilterCondition filterCondition]) {
+    this.isFetching = true;
+    FilterData filterData =
+        FilterData(dataProvider, null, null, sl<AppState>().clientId);
+
+    if (reload != null && reload >= 0) {
+      filterData.fromRow = reload;
+      filterData.rowCount = 1;
+    } else if (reload != null && reload == -1 && rowCountNeeded != -1) {
+      filterData.fromRow = 0;
+      filterData.rowCount = rowCountNeeded - data.records.length;
+    } else if (data != null &&
+        data.isAllFetched != null &&
+        !data.isAllFetched &&
+        rowCountNeeded != -1) {
+      filterData.fromRow = data.records.length;
+      filterData.rowCount = rowCountNeeded - data.records.length;
+    }
+
+    filterData.filter = filter;
+    filterData.condition = filterCondition;
+    filterData.reload = (reload == -1);
+
+    if (this.metaData == null) {
+      filterData.includeMetaData = true;
+      isFetchingMetaData = true;
+    }
+
+    // sl<ApiBloc>().add(fetch);
+    BlocProvider.of<ApiBloc>(context).add(filterData);
   }
 
   void setValues(BuildContext context, List<dynamic> values,
