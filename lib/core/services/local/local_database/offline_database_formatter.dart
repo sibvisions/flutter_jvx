@@ -196,7 +196,7 @@ class OfflineDatabaseFormatter {
         sqlWhere = '$sqlWhere(${getWhereFilterWithCondition(subCondition)})';
         if (index < subConditions.length - 1)
           sqlWhere = sqlWhere =
-              '$sqlWhere${_getWhereOperator(subCondition.operatorType)}';
+              '$sqlWhere${_getWhereOperator(condition.operatorType)}';
       });
     }
     return sqlWhere;
