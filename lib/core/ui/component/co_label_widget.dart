@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:jvx_flutterclient/core/ui/layout/i_alignment_constants.dart';
 
 import 'component_widget.dart';
 import 'models/label_component_model.dart';
@@ -71,20 +72,24 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
     Widget child = Container(
       padding: EdgeInsets.only(top: 0.5),
       color: widget.componentModel.background,
-      child: Align(
-        alignment: getLabelAlignment(widget.componentModel.horizontalAlignment,
+      child: Row(
+        mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
+            widget.componentModel.horizontalAlignment),
+        crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(
             widget.componentModel.verticalAlignment),
-        child: Baseline(
-          baselineType: TextBaseline.alphabetic,
-          baseline: widget.componentModel.getBaseline(),
-          child: widget.componentModel.text.trim().startsWith('<html>')
-              ? Html(data: widget.componentModel.text)
-              : Text(
-                  widget.componentModel.text,
-                  style: widget.componentModel.fontStyle,
-                  overflow: overflow,
-                ),
-        ),
+        children: <Widget>[
+          Baseline(
+            baselineType: TextBaseline.alphabetic,
+            baseline: widget.componentModel.getBaseline(),
+            child: widget.componentModel.text.trim().startsWith('<html>')
+                ? Html(data: widget.componentModel.text)
+                : Text(
+                    widget.componentModel.text,
+                    style: widget.componentModel.fontStyle,
+                    overflow: overflow,
+                  ),
+          )
+        ],
       ),
     );
 
