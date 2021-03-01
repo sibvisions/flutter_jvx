@@ -234,7 +234,7 @@ class OfflineDatabaseFormatter {
   static String _getWhereValue(dynamic value) {
     if (value is int || value is double || value is bool)
       return value.toString();
-    else if (value is String) return '$value';
+    else if (value is String) return "'$value'";
   }
 
   static String _getWhereOperator(OperatorType operatorType) {
