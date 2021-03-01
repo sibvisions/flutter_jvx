@@ -196,16 +196,17 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             child: SizedBox(
                 height: 50,
                 child: RaisedButton(
-                  onPressed: widget.componentModel.enabled
-                      ? () {
-                          if (widget.componentModel.action
-                                  ?.classNameEventSourceRef ==
-                              "OfflineButton")
-                            showLinearProgressIndicator(context);
-                          widget.componentModel
-                              .onAction(context, widget.componentModel.action);
-                        }
-                      : null,
+                  onPressed: () {
+                    if (widget.componentModel.enabled) {
+                      if (widget
+                              .componentModel.action?.classNameEventSourceRef ==
+                          "OfflineButton") {
+                        showLinearProgressIndicator(context);
+                      }
+                      widget.componentModel
+                          .onAction(context, widget.componentModel.action);
+                    }
+                  },
                   color: widget.componentModel.background != null
                       ? widget.componentModel.background
                       : Theme.of(context).primaryColor,
