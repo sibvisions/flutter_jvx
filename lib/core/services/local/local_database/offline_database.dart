@@ -263,6 +263,11 @@ class OfflineDatabase extends LocalDatabase
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
+    // test only
+    FilterCondition condition = OfflineDatabaseFormatter.getTestFilter();
+    String where =
+        OfflineDatabaseFormatter.getWhereFilterWithCondition(condition);
+
     componentData = this.filterImportComponents(componentData);
 
     double currentProgress = 0;
