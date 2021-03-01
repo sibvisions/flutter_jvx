@@ -192,8 +192,11 @@ class OfflineDatabaseFormatter {
       } else if (condition.conditions != null)
         subConditions.addAll(condition.conditions);
 
-      subConditions.forEach((subCondition) {
+      subConditions.asMap().forEach((index, subCondition) {
         sqlWhere = '$sqlWhere(${getWhereFilterWithCondition(subCondition)})';
+        if (index < subConditions.length - 1)
+          sqlWhere = sqlWhere =
+              '$sqlWhere${_getWhereOperator(subCondition.operatorType)}';
       });
     }
     return sqlWhere;
