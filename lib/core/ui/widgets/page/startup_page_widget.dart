@@ -162,8 +162,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       }
 
       AppConfig.loadFile().then((AppConfig config) {
-        appState.handleSessionTimeout = config.handleSessionTimeout;
-        appState.rememberMeChecked = config.rembemerMeChecked ?? false;
+        if (config != null) {
+          appState.handleSessionTimeout = config.handleSessionTimeout;
+          appState.rememberMeChecked = config.rembemerMeChecked ?? false;
+        }
       });
 
       this.appState.clientId = response.applicationMetaData.clientId;

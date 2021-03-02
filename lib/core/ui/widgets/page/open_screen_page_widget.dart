@@ -212,7 +212,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         _openScreenManager.screens != null &&
         _openScreenManager.screens.isNotEmpty) {
       _openScreenManager.screens.forEach((_, screen) {
-        screen.configuration.value = response;
+        if (screen.configuration.value != response)
+          screen.configuration.value = response;
       });
     }
   }
@@ -369,12 +370,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                     .containsKey(widget.menuComponentId)) {
               // If custom screen exists and is not yet added to openscreen stack
               _openScreenManager.registerScreen(screen);
-              screen.configuration.value = this.currentResponse;
-            } else if (screen != null &&
-                _openScreenManager.screens
-                    .containsKey(widget.menuComponentId)) {
-              // If custom screen exists and is added to openscreen stack
-              screen.configuration.value = this.currentResponse;
             } else if (screen == null &&
                 (_openScreenManager.screens
                         .containsKey(widget.menuComponentId) ||
@@ -383,7 +378,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               // If custom screen is null
               screen = _openScreenManager.findScreen(widget.menuComponentId) ??
                   _openScreenManager.findScreen(this.currentCompId);
-              screen.configuration.value = this.currentResponse;
             } else {
               // If both custom screen and normal screen is null
               screen = SoScreen(
@@ -422,6 +416,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 screen.configuration.screenTitle != this.title) {
               this.title = screen.configuration.screenTitle;
             }
+
             _updateOpenScreens(this.currentResponse);
 
             if (this.currentResponse?.responseData?.screenGeneric != null) {

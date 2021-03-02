@@ -249,15 +249,18 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             items: items,
           ));
     } else {
-      Navigator.of(context)
-          .pushNamed(OpenScreenPage.route,
-              arguments: ScreenArguments(
-                response: response,
-                menuComponentId: menuComponentId,
-                title: title,
-                items: items,
-              ))
-          .then((_) => _onRoutePop());
+      ModalRoute r = ModalRoute.of(context);
+      if (r.isCurrent) {
+        Navigator.of(context)
+            .pushNamed(OpenScreenPage.route,
+                arguments: ScreenArguments(
+                  response: response,
+                  menuComponentId: menuComponentId,
+                  title: title,
+                  items: items,
+                ))
+            .then((_) => _onRoutePop());
+      }
     }
   }
 
