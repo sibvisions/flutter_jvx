@@ -11,7 +11,7 @@ class IconComponentModel extends ComponentModel {
   String image;
 
   @override
-  int verticalAlignment = 1;
+  int verticalAlignment = 2;
   @override
   int horizontalAlignment = 1;
 

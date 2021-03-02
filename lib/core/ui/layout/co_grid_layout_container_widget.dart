@@ -18,7 +18,7 @@ class CoGridLayoutContainerWidget extends StatelessWidget
   /// stores all constraints. */
   Map<ComponentWidget, String> _constraintMap = <ComponentWidget, String>{};
 
-  List<CoGridLayoutConstraintData> children = <CoGridLayoutConstraintData>[];
+  //List<CoGridLayoutConstraintData> children = <CoGridLayoutConstraintData>[];
 
   CoGridLayoutContainerWidget(Key key) : super(key: key);
 
@@ -109,30 +109,33 @@ class CoGridLayoutContainerWidget extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    this._constraintMap.forEach((k, v) {
-      if (k.componentModel.isVisible) {
-        CoGridLayoutConstraints constraint = this.getConstraintsFromString(v);
-        Key key = this.getKeyByComponentId(k.componentModel.componentId);
-
-        if (key == null) {
-          key = this.createKey(k.componentModel.componentId);
-        }
-
-        if (constraint != null) {
-          constraint.comp = k;
-          children.add(new CoGridLayoutConstraintData(
-            key: key,
-            child: k,
-            id: constraint,
-          ));
-        }
-      }
-    });
-
     return CustomStatefulBuilder(
       dispose: () => super.setState,
       builder: (context, setState) {
         super.setState = setState;
+
+        List<CoGridLayoutConstraintData> children =
+            <CoGridLayoutConstraintData>[];
+        this._constraintMap.forEach((k, v) {
+          if (k.componentModel.isVisible) {
+            CoGridLayoutConstraints constraint =
+                this.getConstraintsFromString(v);
+            Key key = this.getKeyByComponentId(k.componentModel.componentId);
+
+            if (key == null) {
+              key = this.createKey(k.componentModel.componentId);
+            }
+
+            if (constraint != null) {
+              constraint.comp = k;
+              children.add(new CoGridLayoutConstraintData(
+                key: key,
+                child: k,
+                id: constraint,
+              ));
+            }
+          }
+        });
 
         return Container(
             child: CoGridLayoutWidget(

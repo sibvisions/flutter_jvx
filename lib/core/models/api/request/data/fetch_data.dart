@@ -1,6 +1,5 @@
-import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
-
 import '../../request.dart';
+import '../../response/data/filter.dart';
 
 class FetchData extends Request {
   String dataProvider;

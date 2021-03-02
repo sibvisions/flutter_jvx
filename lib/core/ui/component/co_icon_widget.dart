@@ -32,25 +32,30 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
         child: Row(
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
                 widget.componentModel.horizontalAlignment),
+            crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(
+                widget.componentModel.verticalAlignment),
             children: <Widget>[
-          Container(
-              decoration: BoxDecoration(
-                  color: widget.componentModel.background != null
-                      ? widget.componentModel.background
-                      : Colors.white.withOpacity(
+          Padding(
+              padding: EdgeInsets.only(bottom: 3),
+              child: Container(
+                  decoration: BoxDecoration(
+                      color: widget.componentModel.background != null
+                          ? widget.componentModel.background
+                          : Colors.white.withOpacity(
+                              widget.componentModel.appState.applicationStyle !=
+                                      null
+                                  ? widget.componentModel.appState
+                                      .applicationStyle?.controlsOpacity
+                                  : 1.0),
+                      borderRadius: BorderRadius.circular(
                           widget.componentModel.appState.applicationStyle !=
                                   null
                               ? widget.componentModel.appState.applicationStyle
-                                  ?.controlsOpacity
-                              : 1.0),
-                  borderRadius: BorderRadius.circular(
-                      widget.componentModel.appState.applicationStyle != null
-                          ? widget.componentModel.appState.applicationStyle
-                              ?.cornerRadiusEditors
-                          : 5)),
-              child: CustomIcon(
-                image: widget.componentModel.image,
-              ))
+                                  ?.cornerRadiusEditors
+                              : 5)),
+                  child: CustomIcon(
+                    image: widget.componentModel.image,
+                  )))
         ]));
   }
 }
