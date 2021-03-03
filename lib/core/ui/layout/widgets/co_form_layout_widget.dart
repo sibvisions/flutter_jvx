@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -358,6 +359,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
     this.valid = true;
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
+    dev.log(
+        "FormLayout in Container ${container.componentModel.componentId} with ${layoutConstraints.length} items and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
   }
 
   /*

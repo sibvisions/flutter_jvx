@@ -268,30 +268,26 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   Size getPreferredSize(
       RenderBox renderBox, CoGridLayoutConstraints constraint) {
     if (!constraint.comp.componentModel.isPreferredSizeSet) {
-      renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+      Size size = getChildLayoutPreferredSize(renderBox);
+      if (size != null) {
+        return size;
+      } else {
+        if (renderBox.hasSize)
+          size = renderBox.size;
+        else
+          size = layoutRenderBox(renderBox, constraints);
+        //renderBox.layout(constraints, parentUsesSize: true);
 
-      if (!renderBox.hasSize) {
-        BoxConstraints constraints = BoxConstraints(
-            minHeight: 0,
-            maxHeight: this.constraints.maxHeight,
-            minWidth: 0,
-            maxWidth: this.constraints.maxWidth < 0
-                ? this.constraints.maxWidth
-                : this.constraints.maxWidth);
+        if (size == null) {
+          print("CoBorderLayout: RenderBox has no size after layout!");
+        }
 
-        renderBox.layout(constraints, parentUsesSize: true);
+        if (size.width == double.infinity || size.height == double.infinity) {
+          print(
+              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+        }
+        return size;
       }
-
-      if (!renderBox.hasSize) {
-        print("CoFormLayout: RenderBox has no size after layout!");
-      }
-
-      if (renderBox.size.width == double.infinity ||
-          renderBox.size.height == double.infinity) {
-        print(
-            "CoFormLayout: getPrefererredSize: Infinity height or width for FormLayout!");
-      }
-      return renderBox.size;
     } else {
       return constraint.comp.componentModel.preferredSize;
     }
