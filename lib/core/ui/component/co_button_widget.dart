@@ -26,7 +26,13 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
       if (checkFontAwesome(widget.componentModel.image)) {
         widget.componentModel.icon = convertFontAwesomeTextToIcon(
             widget.componentModel.image,
-            sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
+            !widget.componentModel.enabled
+                ? Colors.grey.shade500
+                : sl<ThemeManager>()
+                    .themeData
+                    .primaryTextTheme
+                    .bodyText1
+                    .color);
       } else {
         List strinArr =
             List<String>.from(widget.componentModel.image.split(','));
