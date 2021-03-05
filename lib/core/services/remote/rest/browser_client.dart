@@ -16,12 +16,13 @@ class BrowserClient implements HttpClient {
   @override
   Future<Response> post(url,
       {Map<String, String> headers, body, Encoding encoding}) {
-    return client.post(url, headers: headers, body: body, encoding: encoding);
+    return client.post(Uri.parse(url),
+        headers: headers, body: body, encoding: encoding);
   }
 
   @override
   Future<Response> get(url, {Map<String, String> headers}) {
-    return client.get(url, headers: headers);
+    return client.get(Uri.parse(url), headers: headers);
   }
 
   void setWithCredentials(bool withCredentials) {

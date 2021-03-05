@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_google_maps/flutter_google_maps.dart';
+// import 'package:flutter_google_maps/flutter_google_maps.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import 'component_widget.dart';
@@ -19,9 +19,9 @@ class CoMapComponentWidgetState
   @override
   Widget build(BuildContext context) {
     if (widget.componentModel.tileProvider == 'google') {
-      return GoogleMap(
-        initialZoom: 13.0,
-      );
+      // return GoogleMap(
+      //   initialZoom: 13.0,
+      // );
     } else {
       return FlutterMap(options: MapOptions(zoom: 13.0), layers: [
         new TileLayerOptions(

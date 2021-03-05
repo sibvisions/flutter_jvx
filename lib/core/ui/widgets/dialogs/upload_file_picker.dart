@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -49,9 +50,10 @@ Future<File> openFilePicker(BuildContext context, AppState appState) async {
                         await FlutterNativeImage.compressImage(val.path,
                             quality: 80,
                             targetWidth: appState.picSize ?? 320,
-                            targetHeight: (properties.height ?? 400 *
-                                    appState.picSize ?? 320 /
-                                    properties.width ?? 400)
+                            targetHeight: (properties.height ??
+                                    400 * appState.picSize ??
+                                    320 / properties.width ??
+                                    400)
                                 .round());
 
                     file = compressedImage;
@@ -206,11 +208,12 @@ Future<File> pick(String type) async {
 
     file = File(f.path);
   } else if (type == 'file system') {
-    // FilePickerResult result = await FilePicker.platform.pickFiles(type: FileType.any);
+    FilePickerResult result =
+        await FilePicker.platform.pickFiles(type: FileType.any);
 
-    // if (result.count > 0) {
-    //   file = result.isSinglePick ? File(result.files[0].path) : null;
-    // }
+    if (result.count > 0) {
+      file = result.isSinglePick ? File(result.files[0].path) : null;
+    }
   }
 
   return file;
