@@ -15,6 +15,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database_manager.dar
 import 'package:jvx_flutterclient/core/ui/widgets/util/restart_widget.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/network/network_info.dart';
+import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -104,33 +105,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    this.items = widget.menuItems;
-
-    if (widget.appState.appMode == 'preview' &&
-        this.items != null &&
-        this.items.length > 1) {
-      this.items = [this.items[0]];
-    }
-
-    SystemChrome.setApplicationSwitcherDescription(
-        ApplicationSwitcherDescription(
-            primaryColor: Theme.of(context).primaryColor.value,
-            label: widget.appState.appName ??
-                '' + ' - ' + widget.appState.username ??
-                ''));
-
-    if (widget.appState.appListener != null) {
-      widget.appState.appListener
-          .fireAfterStartupListener(ApplicationApi(context));
-    }
-
-    if (widget.appState.customSocketHandler != null &&
-        !widget.appState.customSocketHandler.isOn) {
-      widget.appState.customSocketHandler.initCommunication();
-    }
+  void initState() {
+    super.initState();
 
     if (widget.welcomeScreen != null) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -145,6 +121,36 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                 ?.componentId,
             response: widget.welcomeScreen);
       });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    this.items = widget.menuItems;
+
+    if (widget.appState.appMode == 'preview' &&
+        this.items != null &&
+        this.items.length > 1) {
+      this.items = [this.items[0]];
+    }
+
+    SystemChrome.setApplicationSwitcherDescription(
+        ApplicationSwitcherDescription(
+            primaryColor: sl<ThemeManager>().themeData.primaryColor.value,
+            label: widget.appState.appName ??
+                '' + ' - ' + widget.appState.username ??
+                ''));
+
+    if (widget.appState.appListener != null) {
+      widget.appState.appListener
+          .fireAfterStartupListener(ApplicationApi(context));
+    }
+
+    if (widget.appState.customSocketHandler != null &&
+        !widget.appState.customSocketHandler.isOn) {
+      widget.appState.customSocketHandler.initCommunication();
     }
   }
 
@@ -266,11 +272,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   _onRoutePop() {
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
