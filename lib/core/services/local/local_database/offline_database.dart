@@ -618,12 +618,9 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> _importRows(DataBook data) async {
-    int failedInsertCount = 0;
-
     if (data != null &&
         data.dataProvider != null &&
         data.records != null &&
-        data.records.length > 0 &&
         data.columnNames != null) {
       String tableName =
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
@@ -648,11 +645,7 @@ class OfflineDatabase extends LocalDatabase
         });
         //await this.batch(sqlStatements);
 
-        if (failedInsertCount > 0) {
-          return false;
-        } else {
-          return true;
-        }
+        return true;
       }
     }
 
