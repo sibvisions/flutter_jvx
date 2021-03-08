@@ -408,7 +408,7 @@ class SoComponentData {
   Future<Response> _fetchAllSingle(
       ApiBloc bloc, int recordsPerRequest, bool reload) async {
     Response result;
-    if (reload) data.records = new List<dynamic>();
+    if (reload && data != null) data.records = [];
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = reload ? 0 : data.records.length;
     fetch.rowCount = recordsPerRequest;
