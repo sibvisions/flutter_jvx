@@ -394,12 +394,13 @@ class SoComponentData {
 
   Future<Response> fetchAll(ApiBloc bloc, int recordsPerRequest) async {
     Response result;
-    if (data.isAllFetched == null || !data.isAllFetched) {
+    if (data == null || data.isAllFetched == null || !data.isAllFetched) {
       bool reload = true;
       this.isFetching = true;
 
       while (
-          (data.isAllFetched == null || !data.isAllFetched) && result == null) {
+          (data == null || data.isAllFetched == null || !data.isAllFetched) &&
+              result == null) {
         result = await _fetchAllSingle(bloc, recordsPerRequest, reload);
         reload = false;
         if (result != null) break;
@@ -412,7 +413,7 @@ class SoComponentData {
   Future<Response> _fetchAllSingle(
       ApiBloc bloc, int recordsPerRequest, bool reload) async {
     Response result;
-    if (reload) data.records = new List<dynamic>();
+    if (reload && data != null) data.records = [];
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
     fetch.fromRow = reload ? 0 : data.records.length;
     fetch.rowCount = recordsPerRequest;
@@ -428,9 +429,10 @@ class SoComponentData {
         });
         response?.responseData?.dataBooks?.forEach((dataBook) {
           if (dataBook.dataProvider == this.dataProvider) {
-            if (dataBook.records == null || dataBook.records.length == 0)
+            if (dataBook.records == null || dataBook.records.length == 0) {
+              if (this.data == null) this.data = dataBook;
               this.data.isAllFetched = true;
-            else
+            } else
               this.updateData(null, dataBook);
           }
         });
