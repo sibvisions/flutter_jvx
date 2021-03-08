@@ -389,12 +389,13 @@ class SoComponentData {
 
   Future<Response> fetchAll(ApiBloc bloc, int recordsPerRequest) async {
     Response result;
-    if (data.isAllFetched == null || !data.isAllFetched) {
+    if (data == null || data.isAllFetched == null || !data.isAllFetched) {
       bool reload = true;
       this.isFetching = true;
 
       while (
-          (data.isAllFetched == null || !data.isAllFetched) && result == null) {
+          (data == null || data.isAllFetched == null || !data.isAllFetched) &&
+              result == null) {
         result = await _fetchAllSingle(bloc, recordsPerRequest, reload);
         reload = false;
         if (result != null) break;
