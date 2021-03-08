@@ -4,12 +4,16 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
+import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:w_common/func.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/application_style.dart';
@@ -37,12 +41,10 @@ import '../../../models/api/request/tab_close.dart';
 import '../../../models/api/request/tab_select.dart';
 import '../../../models/api/request/upload.dart';
 import '../../../models/api/response.dart';
-import '../../../models/api/response/error_response.dart';
 import '../../../models/app/app_state.dart';
 import '../../../utils/app/get_local_file_path.dart';
 import '../../../utils/network/network_info.dart';
 import '../../../utils/translation/app_localizations.dart';
-import '../../local/local_database/i_offline_database_provider.dart';
 import '../../local/shared_preferences_manager.dart';
 import '../rest/rest_client.dart';
 

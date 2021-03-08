@@ -15,13 +15,12 @@ class MobileClient implements HttpClient {
   @override
   Future<prefHttp.Response> post(url,
       {Map<String, String> headers, body, Encoding encoding}) {
-    return client.post(Uri.parse(url),
-        headers: headers, body: body, encoding: encoding);
+    return client.post(url, headers: headers, body: body, encoding: encoding);
   }
 
   @override
   Future<prefHttp.Response> get(url, {Map<String, String> headers}) {
-    return client.get(Uri.parse(url), headers: headers);
+    return client.get(url, headers: headers);
   }
 
   void setWithCredentials(bool withCredentials) {
