@@ -47,7 +47,7 @@ class RestClient {
       response = await this
           ._client
           .post(path, body: content, headers: headers)
-          .timeout(const Duration(seconds: 20));
+          .timeout(const Duration(seconds: 60));
     } on TimeoutException {
       finalResponse = Response()
         ..error = ErrorResponse('Timeout Error', 'Timeout Error',
@@ -111,7 +111,7 @@ class RestClient {
       response = await this
           ._client
           .post(path, body: content, headers: headers)
-          .timeout(const Duration(seconds: 20));
+          .timeout(const Duration(seconds: 60));
     } catch (e) {
       print(e);
     }
@@ -174,7 +174,7 @@ class RestClient {
       final streamedResponse = await request.send();
 
       response = await http.Response.fromStream(streamedResponse)
-          .timeout(const Duration(seconds: 20));
+          .timeout(const Duration(seconds: 60));
     } catch (e) {
       print('EXCEPTION: $e');
 
