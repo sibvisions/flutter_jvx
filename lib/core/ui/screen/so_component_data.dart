@@ -409,25 +409,18 @@ class SoComponentData {
     Response result;
     if (reload) data.records = new List<dynamic>();
     FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
-    fetch.fromRow = reload ? 0 : data.records.length;
-    fetch.rowCount = recordsPerRequest;
+    fetch.fromRow = data.records.length;
+    fetch.rowCount = -1;
     fetch.clientId = bloc.appState.clientId;
-    fetch.includeMetaData = reload;
+    fetch.includeMetaData = false;
 
     await for (Response response in bloc.data(fetch)) {
       if (response.error != null)
         result = response;
       else {
-        response?.responseData?.dataBookMetaData?.forEach((m) {
-          if (m.dataProvider == this.dataProvider) this.updateMetaData(m);
-        });
         response?.responseData?.dataBooks?.forEach((dataBook) {
-          if (dataBook.dataProvider == this.dataProvider) {
-            if (dataBook.records == null || dataBook.records.length == 0)
-              this.data.isAllFetched = true;
-            else
-              this.updateData(null, dataBook);
-          }
+          if (dataBook.dataProvider == this.dataProvider)
+            this.updateData(null, dataBook);
         });
       }
     }
