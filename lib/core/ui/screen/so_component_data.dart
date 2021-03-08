@@ -331,9 +331,14 @@ class SoComponentData {
     } else if (data != null &&
         data.selectedRow != null &&
         data.selectedRow >= 0) {
-      setValues.filter = Filter(
-          columnNames: this.primaryKeyColumns,
-          values: data.getRow(data.selectedRow, this.primaryKeyColumns));
+      final values = data.getRow(data.selectedRow, this.primaryKeyColumns);
+
+      if (values != null && values.isNotEmpty) {
+        setValues.filter = Filter(
+            compareOperator: [FilterCompareOperator.EQUAL],
+            columnNames: this.primaryKeyColumns,
+            values: values);
+      }
     }
 
     setValues.offlineSelectedRow = data?.selectedRow;
