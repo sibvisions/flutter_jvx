@@ -424,9 +424,10 @@ class SoComponentData {
         });
         response?.responseData?.dataBooks?.forEach((dataBook) {
           if (dataBook.dataProvider == this.dataProvider) {
-            if (dataBook.records == null || dataBook.records.length == 0)
+            if (dataBook.records == null || dataBook.records.length == 0) {
+              if (this.data == null) this.data = dataBook;
               this.data.isAllFetched = true;
-            else
+            } else
               this.updateData(null, dataBook);
           }
         });
