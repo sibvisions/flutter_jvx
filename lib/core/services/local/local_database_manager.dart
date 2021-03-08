@@ -1,5 +1,4 @@
-import 'package:w_common/disposable.dart';
-
+import 'custom/disposable.dart';
 import 'local_database/i_database_provider.dart';
 
 class LocalDatabaseManager extends Object with Disposable {
