@@ -265,9 +265,9 @@ class OfflineDatabase extends LocalDatabase
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
     // test only
-    FilterCondition condition = OfflineDatabaseFormatter.getTestFilter();
-    String where =
-        OfflineDatabaseFormatter.getWhereFilterWithCondition(condition);
+    //FilterCondition condition = OfflineDatabaseFormatter.getTestFilter();
+    //String where =
+    //    OfflineDatabaseFormatter.getWhereFilterWithCondition(condition);
 
     componentData = this.filterImportComponents(componentData);
 
