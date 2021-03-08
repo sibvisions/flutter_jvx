@@ -271,6 +271,17 @@ class OfflineDatabase extends LocalDatabase
 
     componentData = this.filterImportComponents(componentData);
 
+    if (componentData == null || componentData.length == 0) {
+      responseError = Response();
+      responseError.error = ErrorResponse(
+          AppLocalizations.of(context).text('Offline Fehler'),
+          '',
+          AppLocalizations.of(context)
+              .text('Es wurden keine DataBooks für den Offline Modus gefunden'),
+          'offline.error');
+      result = false;
+    }
+
     double currentProgress = 0;
     double fetchProgress =
         componentData.length > 0 ? 0.5 / componentData.length : 0;
