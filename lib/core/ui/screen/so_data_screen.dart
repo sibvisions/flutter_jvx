@@ -12,6 +12,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_d
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
@@ -200,7 +201,8 @@ mixin SoDataScreen {
             .cleanupDatabase();
       }
     } else {
-      hideLinearProgressIndicator(context);
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => hideLinearProgressIndicator(context));
     }
   }
 
