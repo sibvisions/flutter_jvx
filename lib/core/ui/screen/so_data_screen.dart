@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
 import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
+import 'package:jvx_flutterclient/core/models/api/response.dart';
 import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
@@ -154,49 +155,52 @@ mixin SoDataScreen {
     return data;
   }
 
-  void goOffline(
-      BuildContext context, Request request, ResponseData pData) async {
+  void goOffline(BuildContext context, Response response) async {
     BlocProvider.of<ApiBloc>(context).removeAllCallbacks();
 
-    pData.dataproviderChanged?.forEach((d) {
+    response.responseData.dataproviderChanged?.forEach((d) {
       getComponentData(d.dataProvider);
     });
-    pData.dataBooks?.forEach((d) {
+    response.responseData.dataBooks?.forEach((d) {
       SoComponentData cData = getComponentData(d.dataProvider);
-      cData.updateData(context, d, request.reload);
+      cData.updateData(context, d, response.request.reload);
     });
 
-    String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+    if (!response.hasError) {
+      String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-    await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
-    bool importSuccess =
+      bool importSuccess =
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .importComponents(context, componentData);
+
+      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+          .removeAllProgressCallbacks();
+
+      hideLinearProgressIndicator(context);
+
+      if (importSuccess) {
+        SharedPrefProvider.of(context).manager.setOffline(true);
+        AppState appState = AppStateProvider.of(context).appState;
+
+        appState.offline = true;
+
+        BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+          clientId: appState.clientId,
+          componentId: appState.currentScreenComponentId,
+          requestType: RequestType.CLOSE_SCREEN,
+        ));
+        BlocProvider.of<ApiBloc>(context).add(Navigation());
+      } else {
+        handleError(
+            (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
+            context);
         await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .importComponents(context, componentData);
-
-    (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-        .removeAllProgressCallbacks();
-
-    hideLinearProgressIndicator(context);
-
-    if (importSuccess) {
-      SharedPrefProvider.of(context).manager.setOffline(true);
-      AppState appState = AppStateProvider.of(context).appState;
-
-      appState.offline = true;
-
-      BlocProvider.of<ApiBloc>(context).add(CloseScreen(
-        clientId: appState.clientId,
-        componentId: appState.currentScreenComponentId,
-        requestType: RequestType.CLOSE_SCREEN,
-      ));
-      BlocProvider.of<ApiBloc>(context).add(Navigation());
+            .cleanupDatabase();
+      }
     } else {
-      handleError(
-          (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
-          context);
-      await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-          .cleanupDatabase();
+      hideLinearProgressIndicator(context);
     }
   }
 

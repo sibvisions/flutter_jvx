@@ -120,12 +120,11 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
 
   void update(Response response) {
     if (response.request != null && response.responseData != null) {
-      if (!response.hasError &&
-          response.request is PressButton &&
+      if (response.request is PressButton &&
           (response.request as PressButton).action.classNameEventSourceRef ==
               'OfflineButton' &&
           !kIsWeb)
-        this.goOffline(context, response.request, response.responseData);
+        this.goOffline(context, response);
       else
         this.updateData(context, response.request, response.responseData);
     }
