@@ -174,19 +174,31 @@ class SharedPreferencesManager {
     if ((username != null && username.isNotEmpty) || override) {
       this.sharedPreferences.setString(
           'syncUsername', encrypter.encrypt(username, iv: _iv).base64);
+    } else {
+      this.sharedPreferences.remove('syncUsername');
     }
     if ((password != null && password.isNotEmpty) || override) {
       this.sharedPreferences.setString(
           'syncPassword', encrypter.encrypt(password, iv: _iv).base64);
+    } else {
+      this.sharedPreferences.remove('syncPassword');
     }
   }
 
   void setOfflineLoginHash({String username, String password}) {
-    String usernameHash = sha256.convert(utf8.encode(username)).toString();
-    String passwordHash = sha256.convert(utf8.encode(password)).toString();
+    if (username != null &&
+        username.isNotEmpty &&
+        password != null &&
+        password.isNotEmpty) {
+      String usernameHash = sha256.convert(utf8.encode(username)).toString();
+      String passwordHash = sha256.convert(utf8.encode(password)).toString();
 
-    this.sharedPreferences.setString('usernameHash', usernameHash);
-    this.sharedPreferences.setString('passwordHash', passwordHash);
+      this.sharedPreferences.setString('usernameHash', usernameHash);
+      this.sharedPreferences.setString('passwordHash', passwordHash);
+    } else {
+      this.sharedPreferences.remove('usernameHash');
+      this.sharedPreferences.remove('passwordHash');
+    }
   }
 
   void setAppVersion(String appVersion) =>

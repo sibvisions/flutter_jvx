@@ -421,6 +421,14 @@ class _SettingsPageState extends State<SettingsPage> {
           baseUrl: this.baseUrl,
           language: this.language,
           picSize: widget.appState.picSize);
+
+      widget.manager
+          .setLoginData(username: null, password: null, override: true);
+      widget.manager.setAuthKey(null);
+
+      widget.manager.setSyncLoginData(username: null, password: null);
+
+      widget.manager.setOfflineLoginHash(username: null, password: null);
     } else {
       showError(context, 'App name or base URL are null or empty',
           'Please enter a valid app name and base URL');
