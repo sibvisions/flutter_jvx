@@ -156,16 +156,16 @@ class SharedPreferencesManager {
         this
             .sharedPreferences
             .setString('username', encrypter.encrypt(username, iv: _iv).base64);
-      else
-        this.sharedPreferences.setString('username', username);
+      else if (this.sharedPreferences.containsKey('username'))
+        this.sharedPreferences.remove('username');
     }
     if ((password != null && password.isNotEmpty) || override) {
       if (password != null && password.isNotEmpty)
         this
             .sharedPreferences
             .setString('password', encrypter.encrypt(password, iv: _iv).base64);
-      else
-        this.sharedPreferences.setString('password', password);
+      else if (this.sharedPreferences.containsKey('password'))
+        this.sharedPreferences.remove('password');
     }
   }
 
