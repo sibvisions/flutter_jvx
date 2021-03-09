@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/models/api/request/press_button.dart';
 
 import '../../../features/custom_screen/ui/screen/custom_screen.dart';
 import '../../models/api/component/changed_component.dart';
@@ -118,7 +120,14 @@ class SoScreenState<T extends StatefulWidget> extends State<T>
 
   void update(Response response) {
     if (response.request != null && response.responseData != null) {
-      this.updateData(context, response.request, response.responseData);
+      if (!response.hasError &&
+          response.request is PressButton &&
+          (response.request as PressButton).action.classNameEventSourceRef ==
+              'OfflineButton' &&
+          !kIsWeb)
+        this.goOffline(context, response.request, response.responseData);
+      else
+        this.updateData(context, response.request, response.responseData);
     }
 
     if (response.responseData.screenGeneric != null) {
