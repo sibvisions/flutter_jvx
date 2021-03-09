@@ -849,6 +849,9 @@ class OfflineDatabase extends LocalDatabase
           }
         }
       }
+    } else {
+      throw new Exception(
+          'Offline database exception: SetValues columnNames and values does not match or null!');
     }
     return Response();
   }
