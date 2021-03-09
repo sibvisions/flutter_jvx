@@ -156,16 +156,16 @@ class SharedPreferencesManager {
         this
             .sharedPreferences
             .setString('username', encrypter.encrypt(username, iv: _iv).base64);
-      else
-        this.sharedPreferences.setString('username', username);
+      else if (this.sharedPreferences.containsKey('username'))
+        this.sharedPreferences.remove('username');
     }
     if ((password != null && password.isNotEmpty) || override) {
       if (password != null && password.isNotEmpty)
         this
             .sharedPreferences
             .setString('password', encrypter.encrypt(password, iv: _iv).base64);
-      else
-        this.sharedPreferences.setString('password', password);
+      else if (this.sharedPreferences.containsKey('password'))
+        this.sharedPreferences.remove('password');
     }
   }
 
@@ -220,8 +220,12 @@ class SharedPreferencesManager {
   void setMobileOnly(bool mobileOnly) =>
       this.sharedPreferences.setBool('mobileOnly', mobileOnly);
 
-  void setAuthKey(String authKey) =>
+  void setAuthKey(String authKey) {
+    if (authKey != null && authKey.isNotEmpty)
       this.sharedPreferences.setString('authKey', authKey);
+    else if (this.sharedPreferences.containsKey('authKey'))
+      this.sharedPreferences.remove('authKey');
+  }
 
   void setOffline(bool offline) =>
       this.sharedPreferences.setBool('offline', offline);
