@@ -94,6 +94,8 @@ enum ComponentProperty {
   TILE_PROVIDER,
   CLASS_NAME_EVENT_SOURCE_REF,
   HORIZONTAL_TEXT_POSITION,
+  GROUP_DATA_BOOK,
+  POINTS_DATA_BOOK
 }
 
 class ComponentProperties {

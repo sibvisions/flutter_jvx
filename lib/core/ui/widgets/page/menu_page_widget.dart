@@ -57,6 +57,8 @@ class MenuPageWidget extends StatefulWidget {
 }
 
 class _MenuPageWidgetState extends State<MenuPageWidget> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<MenuItem> items;
 
   double width;
@@ -271,13 +273,11 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   _onRoutePop() {
-    setState(() {});
+    // setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
     _addDeviceStatusTimer(context);
 
     _screenManager();
