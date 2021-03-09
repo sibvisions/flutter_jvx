@@ -180,6 +180,14 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> startup(Startup event) async* {
     Response response = await processRequest(event);
 
+    if (event.userName != null &&
+        event.userName.isNotEmpty &&
+        event.password != null &&
+        event.password.isNotEmpty) {
+      this.manager.setOfflineLoginHash(
+          username: event.userName, password: event.password);
+    }
+
     yield response;
   }
 

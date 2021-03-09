@@ -204,13 +204,9 @@ class _LoginCardState extends State<LoginCard>
   _login(BuildContext context) {
     if (widget.appState.isOffline) {
       bool loginSuccess = false;
-      try {
-        loginSuccess = SharedPrefProvider.of(context)
-            .manager
-            .login(username?.trim(), password?.trim());
-      } catch (e) {
-        print(e);
-      }
+      loginSuccess = SharedPrefProvider.of(context)
+          .manager
+          .login(username?.trim(), password?.trim());
 
       if (loginSuccess) {
         widget.appState.username = username?.trim();

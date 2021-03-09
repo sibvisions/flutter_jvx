@@ -255,8 +255,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   void _checkForLogin(Response response) {
     if (response != null && response?.loginItem != null ||
         (this.appState.isOffline &&
-            (this.manager.loginData['username'] == null ||
-                this.manager.loginData['password'] == null ||
+            ((this.manager.loginData['username'] == null ||
+                    this.manager.loginData['password'] == null) &&
                 this.manager.authKey == null))) {
       return _login(response);
     } else if (response?.menu != null || this.appState.isOffline) {
