@@ -220,8 +220,12 @@ class SharedPreferencesManager {
   void setMobileOnly(bool mobileOnly) =>
       this.sharedPreferences.setBool('mobileOnly', mobileOnly);
 
-  void setAuthKey(String authKey) =>
+  void setAuthKey(String authKey) {
+    if (authKey != null && authKey.isNotEmpty)
       this.sharedPreferences.setString('authKey', authKey);
+    else if (this.sharedPreferences.containsKey('authKey'))
+      this.sharedPreferences.remove('authKey');
+  }
 
   void setOffline(bool offline) =>
       this.sharedPreferences.setBool('offline', offline);
