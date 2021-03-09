@@ -188,9 +188,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                               AppLocalizations.of(context).text('Language')),
                           trailing: FaIcon(FontAwesomeIcons.arrowRight),
-                          subtitle: Text(widget.appState.language != null
-                              ? widget.appState.language
-                              : ''),
+                          subtitle: Text(this.selectedLanguage != null &&
+                                  this.selectedLanguage.isNotEmpty
+                              ? this.selectedLanguage
+                              : widget.appState.language),
                           onTap: () {
                             if (!widget.appState.isOffline)
                               showLanguagePicker(context);
@@ -346,10 +347,9 @@ class _SettingsPageState extends State<SettingsPage> {
         cancelTextStyle:
             TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
         onConfirm: (Picker picker, List value) async {
-          selectedLanguage =
-              picker.getSelectedValues()[0].toString().toLowerCase();
-
           setState(() {
+            selectedLanguage =
+                picker.getSelectedValues()[0].toString().toLowerCase();
             isDialogOpen = false;
           });
         },
