@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -235,11 +236,9 @@ class OfflineDatabase extends LocalDatabase
     }
 
     if (result)
-      print(
-          "Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
+      log("Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
     else
-      print(
-          "Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${responseError?.error?.details}");
+      log("Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${responseError?.error?.details}");
 
     // set general error
     if (!result && responseError == null) {
@@ -358,11 +357,9 @@ class OfflineDatabase extends LocalDatabase
     }
 
     if (result)
-      print(
-          "Offline import finished successfully! Imported records: $rowsImported/$rowsToImport");
+      log("Offline import finished successfully! Imported records: $rowsImported/$rowsToImport");
     else
-      print(
-          "Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${responseError?.error?.details}");
+      log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${responseError?.error?.details}");
 
     if (!result && responseError == null) {
       responseError = Response();
