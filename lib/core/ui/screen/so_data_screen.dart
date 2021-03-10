@@ -183,16 +183,18 @@ mixin SoDataScreen {
       (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .removeAllProgressCallbacks();
 
-      hideLinearProgressIndicator(context);
-
       if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
           null) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
         handleError(
             (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
             context);
         await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
             .cleanupDatabase();
       } else if (importSuccess) {
+        hideLinearProgressIndicator(context);
+
         SharedPrefProvider.of(context).manager.setOffline(true);
         AppState appState = AppStateProvider.of(context).appState;
 
