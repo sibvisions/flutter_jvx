@@ -33,7 +33,7 @@ class MobileApp extends StatelessWidget {
   final List<Locale> supportedLocales;
 
   /// Widget shown right after startup widget.
-  /// 
+  ///
   /// If null menu page widget gets shown.
   final Widget welcomeWidget;
 
@@ -125,6 +125,7 @@ class MobileApp extends StatelessWidget {
             case LoginPage.route:
               return DefaultPageRoute(
                   builder: (_) => LoginPage(
+                        appState: appState,
                         lastUsername:
                             (settings.arguments as LoginArguments).lastUsername,
                       ));
