@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
 import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
+import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
 import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
@@ -17,6 +19,7 @@ import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
+import 'package:jvx_flutterclient/core/utils/translation/app_localizations.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../models/api/request.dart';
@@ -156,6 +159,24 @@ mixin SoDataScreen {
     return data;
   }
 
+  Future<void> showOfflineError(
+      BuildContext context, ErrorResponse response) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(response.title),
+            content: Text(response.message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(AppLocalizations.of(context).text('Close')),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        });
+  }
+
   void goOffline(BuildContext context, Response response) async {
     BlocProvider.of<ApiBloc>(context).removeAllCallbacks();
 
@@ -188,9 +209,13 @@ mixin SoDataScreen {
           null) {
         WidgetsBinding.instance
             .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
-        handleError(
-            (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
-            context);
+
+        await showOfflineError(
+            context,
+            (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                .responseError
+                .error);
+
         await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
             .cleanupDatabase();
       } else if (importSuccess) {
