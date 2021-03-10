@@ -183,8 +183,7 @@ mixin SoDataScreen {
       (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .removeAllProgressCallbacks();
 
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+      hideLinearProgressIndicator(context);
 
       if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
           null) {
