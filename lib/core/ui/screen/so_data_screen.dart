@@ -181,7 +181,14 @@ mixin SoDataScreen {
 
       hideLinearProgressIndicator(context);
 
-      if (importSuccess) {
+      if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
+          null) {
+        handleError(
+            (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
+            context);
+        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .cleanupDatabase();
+      } else if (importSuccess) {
         SharedPrefProvider.of(context).manager.setOffline(true);
         AppState appState = AppStateProvider.of(context).appState;
 
@@ -193,16 +200,10 @@ mixin SoDataScreen {
           requestType: RequestType.CLOSE_SCREEN,
         ));
         BlocProvider.of<ApiBloc>(context).add(Navigation());
-      } else {
-        handleError(
-            (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
-            context);
-        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .cleanupDatabase();
       }
     } else {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => hideLinearProgressIndicator(context));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
     }
   }
 
