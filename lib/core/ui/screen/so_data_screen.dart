@@ -167,7 +167,11 @@ mixin SoDataScreen {
       cData.updateData(context, d, response.request.reload);
     });
 
+    WidgetsBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+
     if (!response.hasError) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => showLinearProgressIndicator(context));
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
       await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
@@ -179,7 +183,8 @@ mixin SoDataScreen {
       (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .removeAllProgressCallbacks();
 
-      hideLinearProgressIndicator(context);
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
 
       if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
           null) {
