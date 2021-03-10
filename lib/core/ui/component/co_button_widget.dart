@@ -207,7 +207,8 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                       if (widget
                               .componentModel.action?.classNameEventSourceRef ==
                           "OfflineButton") {
-                        showLinearProgressIndicator(context);
+                        showProgress(context);
+                        //showLinearProgressIndicator(context);
                       }
                       widget.componentModel
                           .onAction(context, widget.componentModel.action);

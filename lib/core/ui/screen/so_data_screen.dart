@@ -167,7 +167,11 @@ mixin SoDataScreen {
       cData.updateData(context, d, response.request.reload);
     });
 
+    WidgetsBinding.instance.addPostFrameCallback((_) => hideProgress(context));
+
     if (!response.hasError) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => showLinearProgressIndicator(context));
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
       await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
@@ -175,13 +179,23 @@ mixin SoDataScreen {
       bool importSuccess =
           await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
               .importComponents(context, componentData);
+      (response.request as PressButton).action.classNameEventSourceRef = null;
 
       (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .removeAllProgressCallbacks();
 
-      hideLinearProgressIndicator(context);
+      if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
+          null) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        handleError(
+            (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
+            context);
+        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .cleanupDatabase();
+      } else if (importSuccess) {
+        hideLinearProgressIndicator(context);
 
-      if (importSuccess) {
         SharedPrefProvider.of(context).manager.setOffline(true);
         AppState appState = AppStateProvider.of(context).appState;
 
@@ -193,16 +207,10 @@ mixin SoDataScreen {
           requestType: RequestType.CLOSE_SCREEN,
         ));
         BlocProvider.of<ApiBloc>(context).add(Navigation());
-      } else {
-        handleError(
-            (sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError,
-            context);
-        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .cleanupDatabase();
       }
     } else {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => hideLinearProgressIndicator(context));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
     }
   }
 
