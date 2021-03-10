@@ -101,7 +101,7 @@ class OfflineDatabase extends LocalDatabase
       // startup request
       await for (Response response in bloc.startup(startup)) {
         if (response != null && !hasError(response)) {
-          this._setProperties(bloc, response);
+          this.setProperties(bloc, response);
 
           ApplicationStyle applicationStyle = ApplicationStyle(
               clientId: bloc.appState.clientId,
@@ -113,7 +113,7 @@ class OfflineDatabase extends LocalDatabase
           await for (Response response
               in bloc.applicationStyle(applicationStyle)) {
             if (response != null && !hasError(response)) {
-              this._setProperties(bloc, response);
+              this.setProperties(bloc, response);
               String currentScreenComponentId = "";
 
               List<String> syncDataProvider =
@@ -396,7 +396,7 @@ class OfflineDatabase extends LocalDatabase
 
     await for (Response response in bloc.data(fetch)) {
       if (response != null && !hasError(response)) {
-        _setProperties(bloc, response);
+        setProperties(bloc, response);
         if (response?.responseData?.dataBooks != null) {
           DataBook databook;
           databook = response.responseData.dataBooks
@@ -407,13 +407,13 @@ class OfflineDatabase extends LocalDatabase
 
             await for (Response response in bloc.data(select)) {
               if (response != null && !hasError(response)) {
-                _setProperties(bloc, response);
+                setProperties(bloc, response);
                 bloc.close();
                 String tableName =
                     OfflineDatabaseFormatter.formatTableName(dataProvider);
                 if (await tableExists(tableName)) {
                   Map<String, dynamic> record =
-                      await _getRowWithFilter(tableName, filter, false);
+                      await getRowWithFilter(tableName, filter, false);
                   dynamic offlinePrimaryKey =
                       OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
                   String where =
@@ -457,7 +457,7 @@ class OfflineDatabase extends LocalDatabase
     InsertRecord insert = InsertRecord(dataProvider, bloc.appState.clientId);
     await for (Response response in bloc.data(insert)) {
       if (response != null && !hasError(response)) {
-        _setProperties(bloc, response);
+        setProperties(bloc, response);
 
         if (response.responseData != null &&
             response.responseData.dataBooks != null) {
@@ -516,7 +516,7 @@ class OfflineDatabase extends LocalDatabase
 
     await for (Response response in bloc.data(setValues)) {
       if (response != null && !hasError(response)) {
-        _setProperties(bloc, response);
+        setProperties(bloc, response);
         bloc.close();
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
@@ -557,7 +557,7 @@ class OfflineDatabase extends LocalDatabase
           if (await createTable(tablename, columns)) {
             String metaDataString = json.encode(metaData.toJson());
             result = result &
-                await _insertUpdateMetaData(metaData.dataProvider, tablename,
+                await insertUpdateMetaData(metaData.dataProvider, tablename,
                     screenComponentId, metaDataString);
           } else {
             result = false;
@@ -808,10 +808,10 @@ class OfflineDatabase extends LocalDatabase
         if (sqlSet.length > 0) {
           Map<String, dynamic> record;
           if (request.offlineSelectedRow >= 0)
-            record = await _getRowWithIndex(
+            record = await getRowWithIndex(
                 tableName, request.offlineSelectedRow, null, false);
           else if (request.filter != null)
-            record = await _getRowWithFilter(tableName, request.filter);
+            record = await getRowWithFilter(tableName, request.filter);
 
           dynamic offlinePrimaryKey =
               OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
@@ -826,8 +826,8 @@ class OfflineDatabase extends LocalDatabase
           String where =
               "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
           if (await this.update(tableName, sqlSet, where)) {
-            Map<String, dynamic> row = await _getRowWithOfflinePrimaryKey(
-                tableName, offlinePrimaryKey);
+            Map<String, dynamic> row =
+                await getRowWithOfflinePrimaryKey(tableName, offlinePrimaryKey);
             List<dynamic> records = row.values.toList();
             Response response = new Response();
             ResponseData data = new ResponseData();
@@ -870,7 +870,7 @@ class OfflineDatabase extends LocalDatabase
             OfflineDatabaseFormatter.formatTableName(request.dataProvider);
 
         Map<String, dynamic> record =
-            await _getRowWithIndex(tableName, request.selectedRow);
+            await getRowWithIndex(tableName, request.selectedRow);
         dataBook.records = [
           OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
         ];
@@ -895,10 +895,10 @@ class OfflineDatabase extends LocalDatabase
       if (await tableExists(tableName)) {
         Map<String, dynamic> record;
         if (request.selectedRow >= 0)
-          record = await _getRowWithIndex(
+          record = await getRowWithIndex(
               tableName, request.selectedRow, _lastFetchFilter);
         else
-          record = await _getRowWithFilter(tableName, request.filter);
+          record = await getRowWithFilter(tableName, request.filter);
 
         dynamic offlinePrimaryKey =
             OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
@@ -946,7 +946,7 @@ class OfflineDatabase extends LocalDatabase
           selectedRow: count,
         );
         Map<String, dynamic> record =
-            await _getRowWithIndex(tableName, count - 1, null, false);
+            await getRowWithIndex(tableName, count - 1, null, false);
         dataBook.records = [
           OfflineDatabaseFormatter.removeOfflineColumns(record).values.toList()
         ];
@@ -1029,7 +1029,7 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  Future<bool> _insertUpdateMetaData(String dataProvider, String tableName,
+  Future<bool> insertUpdateMetaData(String dataProvider, String tableName,
       String screenComponentId, String metaData) async {
     String where =
         "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]='$dataProvider'";
@@ -1051,7 +1051,7 @@ class OfflineDatabase extends LocalDatabase
     }
   }
 
-  Future<Map<String, dynamic>> _getRowWithOfflinePrimaryKey(
+  Future<Map<String, dynamic>> getRowWithOfflinePrimaryKey(
       String tableName, dynamic offlinePrimaryKey) async {
     String where =
         "[$OFFLINE_COLUMNS_PRIMARY_KEY]='${offlinePrimaryKey.toString()}'";
@@ -1063,7 +1063,7 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Map<String, dynamic>> _getRowWithIndex(String tableName, int index,
+  Future<Map<String, dynamic>> getRowWithIndex(String tableName, int index,
       [Filter filter, bool ignoreDeleted = true]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
     String where = ignoreDeleted
@@ -1087,8 +1087,7 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<Map<String, dynamic>> _getRowWithFilter(
-      String tableName, Filter filter,
+  Future<Map<String, dynamic>> getRowWithFilter(String tableName, Filter filter,
       [bool ignoreDeleted = true]) async {
     String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
     String where = "";
@@ -1114,7 +1113,7 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  void _setProperties(ApiBloc bloc, Response response) {
+  void setProperties(ApiBloc bloc, Response response) {
     if (response.applicationMetaData != null) {
       if (response.applicationMetaData != null &&
           response.applicationMetaData.version != bloc.manager.appVersion) {
