@@ -49,18 +49,18 @@ class ApplicationWidget extends StatelessWidget {
     // Initializing screen manager
     appState.screenManager.init();
 
-    // Setting app parameters
-    appState.handleSessionTimeout = handleSessionTimeout ?? true;
-    appState.rememberMeChecked = this.rememberMeChecked ?? false;
-    appState.appListener = this.appListener;
-    appState.package = this.package;
-
     return RestartWidget(
       loadConfigBuilder: (bool shouldLoadConfig) =>
           ValueListenableBuilder<ThemeData>(
               valueListenable: sl<ThemeManager>(),
               builder:
                   (BuildContext context, ThemeData themeData, Widget child) {
+                // Setting app parameters
+                appState.handleSessionTimeout = handleSessionTimeout ?? true;
+                appState.rememberMeChecked = this.rememberMeChecked ?? false;
+                appState.appListener = this.appListener;
+                appState.package = this.package;
+
                 return SharedPrefProvider(
                   manager: sl<SharedPreferencesManager>(),
                   child: AppStateProvider(
