@@ -273,7 +273,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   _onRoutePop() {
-    // setState(() {});
+    if (widget.appState.isOffline) setState(() {});
   }
 
   @override
