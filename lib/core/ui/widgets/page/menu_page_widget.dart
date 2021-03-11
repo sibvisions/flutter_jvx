@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -371,8 +372,26 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             appBar: widget.appState.appFrame.showScreenHeader
                 ? AppBar(
                     backgroundColor: Theme.of(context).primaryColor,
-                    title: Text('Menu' +
-                        (widget.appState.isOffline ? ' - Offline' : '')),
+                    title: Row(
+                      children: [
+                        Text('Menu'),
+                        if (widget.appState.isOffline)
+                          SizedBox(
+                            width: 10,
+                          ),
+                        if (widget.appState.isOffline)
+                          Chip(
+                            backgroundColor: Colors.white,
+                            label: Text(
+                              'Offline',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )
+                      ],
+                    ),
                     automaticallyImplyLeading: false,
                     actions: [
                       widget.appState.isOffline

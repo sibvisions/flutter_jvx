@@ -351,7 +351,26 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               },
             ),
-            title: Text(title ?? ''),
+            title: Row(
+              children: [
+                Text(title ?? ''),
+                if (widget.appState.isOffline)
+                  SizedBox(
+                    width: 10,
+                  ),
+                if (widget.appState.isOffline)
+                  Chip(
+                    backgroundColor: Colors.white,
+                    label: Text(
+                      'Offline',
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+              ],
+            ),
           )
         : null;
   }

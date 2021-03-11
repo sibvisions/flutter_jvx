@@ -57,6 +57,7 @@ dependencies:
   # w_common: ^1.20.3
   encrypt: ^4.1.0
   latlong: ^0.6.1
+  badges: ^1.2.0
 
 dev_dependencies:
   flutter_test:
