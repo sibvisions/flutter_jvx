@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:jvx_flutterclient/core/models/api/request/data/save_data.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -405,26 +406,23 @@ class OfflineDatabase extends LocalDatabase
             await for (Response response in bloc.data(select)) {
               if (response != null && !hasError(response)) {
                 setProperties(bloc, response);
-                bloc.close();
-                String tableName =
-                    OfflineDatabaseFormatter.formatTableName(dataProvider);
-                if (await tableExists(tableName)) {
-                  Map<String, dynamic> record =
-                      await getRowWithFilter(tableName, filter, false);
-                  dynamic offlinePrimaryKey =
-                      OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
-                  String where =
-                      "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
+                if (await syncSave(
+                    context, dataProvider, filter, columnNames, row)) {
+                  String tableName =
+                      OfflineDatabaseFormatter.formatTableName(dataProvider);
+                  if (await tableExists(tableName)) {
+                    Map<String, dynamic> record =
+                        await getRowWithFilter(tableName, filter, false);
+                    dynamic offlinePrimaryKey =
+                        OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
+                    String where =
+                        "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
 
-                  bloc.close();
-                  return await this.delete(tableName, where);
-                } else {
-                  bloc.close();
-                  return false;
+                    bloc.close();
+                    return await this.delete(tableName, where);
+                  }
                 }
               }
-
-              return false;
             }
           } else {
             responseError = Response();
@@ -439,6 +437,7 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
+    bloc.close();
     return false;
   }
 
@@ -475,11 +474,14 @@ class OfflineDatabase extends LocalDatabase
                 null);
             await for (Response response in bloc.data(setValues)) {
               if (response != null && !hasError(response)) {
-                dynamic offlinePrimaryKey =
-                    OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-                bloc.close();
-                if (await setOfflineState(dataProvider, offlinePrimaryKey,
-                    OFFLINE_ROW_STATE_UNCHANGED)) return true;
+                if (await syncSave(
+                    context, dataProvider, filter, columnNames, row)) {
+                  dynamic offlinePrimaryKey =
+                      OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+                  bloc.close();
+                  if (await setOfflineState(dataProvider, offlinePrimaryKey,
+                      OFFLINE_ROW_STATE_UNCHANGED)) return true;
+                }
               }
             }
           }
@@ -514,18 +516,41 @@ class OfflineDatabase extends LocalDatabase
     await for (Response response in bloc.data(setValues)) {
       if (response != null && !hasError(response)) {
         setProperties(bloc, response);
-        bloc.close();
-        dynamic offlinePrimaryKey =
-            OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-        if (await setOfflineState(
-            dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
-          return true;
-      } else {
-        bloc.close();
-        return false;
+        if (await syncSave(context, dataProvider, filter, columnNames, row)) {
+          dynamic offlinePrimaryKey =
+              OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+          if (await setOfflineState(
+              dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED)) {
+            bloc.close();
+            return true;
+          }
+        }
       }
     }
 
+    bloc.close();
+    return false;
+  }
+
+  Future<bool> syncSave(
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
+    ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
+        sl<AppState>(), sl<SharedPreferencesManager>(), null);
+    SaveData saveData = SaveData(dataProvider, bloc.appState.clientId);
+
+    await for (Response response in bloc.data(saveData)) {
+      if (response != null && !hasError(response)) {
+        setProperties(bloc, response);
+        bloc.close();
+        return true;
+      }
+    }
+
+    bloc.close();
     return false;
   }
 
