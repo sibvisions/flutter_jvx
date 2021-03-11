@@ -241,10 +241,20 @@ mixin SoDataScreen {
             .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
       }
     } catch (e) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => hideProgress(context));
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+      try {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideProgress(context));
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        SharedPrefProvider.of(context).manager.setOffline(false);
+        AppState appState = AppStateProvider.of(context).appState;
+
+        appState.offline = false;
+        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .cleanupDatabase();
+      } catch (ee) {}
       rethrow;
     }
   }
