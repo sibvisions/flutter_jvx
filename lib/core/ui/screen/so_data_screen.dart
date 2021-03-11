@@ -195,11 +195,13 @@ mixin SoDataScreen {
           .addPostFrameCallback((_) => showLinearProgressIndicator(context));
       String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
-
       bool importSuccess =
-          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-              .importComponents(context, componentData);
+          await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+      if (importSuccess)
+        importSuccess = importSuccess &
+            await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                .importComponents(context, componentData);
 
       (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
           .removeAllProgressCallbacks();

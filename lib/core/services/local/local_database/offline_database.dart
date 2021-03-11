@@ -52,7 +52,7 @@ class OfflineDatabase extends LocalDatabase
   FilterCondition _lastFetchFilterCondition;
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
-  Future<void> openCreateDatabase(String path) async {
+  Future<bool> openCreateDatabase(String path) async {
     await super.openCreateDatabase(path);
     if (db?.isOpen ?? false) {
       String columnStr =
@@ -60,8 +60,10 @@ class OfflineDatabase extends LocalDatabase
               "$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_SCREEN_COMPONENT_ID TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_DATA TEXT";
-      await this.createTable(OFFLINE_META_DATA_TABLE, columnStr);
+      if (await this.createTable(OFFLINE_META_DATA_TABLE, columnStr))
+        return true;
     }
+    return false;
   }
 
   Future<bool> syncOnline(BuildContext context) async {
