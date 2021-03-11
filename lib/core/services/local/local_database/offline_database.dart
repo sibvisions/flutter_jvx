@@ -632,7 +632,7 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<List<String>> getOfflineDataProvider() async {
-    List<String> offlineDataProvider = List<String>();
+    List<String> offlineDataProvider = <String>[];
 
     List<Map<String, dynamic>> result =
         await this.selectRows(OFFLINE_META_DATA_TABLE);
@@ -657,7 +657,7 @@ class OfflineDatabase extends LocalDatabase
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
 
       if (await tableExists(tableName)) {
-        List<String> sqlStatements = List<String>();
+        List<String> sqlStatements = <String>[];
 
         data.records.forEach((element) {
           String columnString =
