@@ -699,14 +699,8 @@ class OfflineDatabase extends LocalDatabase
       if (await tableExists(tableName)) {
         return await this.selectRows(tableName, where, orderBy);
       } else {
-        responseError = Response();
-        responseError.error = ErrorResponse(
-            AppLocalizations.of(context).text('Importfehler'),
-            '',
-            AppLocalizations.of(context).text(
-                'Die Tabelle für den Online sync konnte nicht gefunden werden: ' +
-                    dataProvider),
-            'ImportOfflineData');
+        throw new Exception(
+            'Offline database exception: Could not find offline table for dataProvider $dataProvider ');
       }
     }
 
