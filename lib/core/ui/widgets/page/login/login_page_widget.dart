@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
@@ -66,7 +68,30 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              LoginBackground(widget.appState),
+              if (widget.appState.applicationStyle.loginIcon != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: FileImage(File(
+                                '${widget.appState.dir}${widget.appState.applicationStyle.loginIcon}')))),
+                  ),
+                )
+              else
+                LoginBackground(widget.appState),
+              if (widget.appState.applicationStyle.loginIcon != null)
+                Positioned(
+                  top: 100,
+                  left: 20,
+                  right: 20,
+                  child: Image.file(File(
+                      '${widget.appState.dir}${widget.appState.applicationStyle.loginLogo}')),
+                ),
               LoginWidgets(
                 appState: widget.appState,
                 username: widget.lastUsername,
