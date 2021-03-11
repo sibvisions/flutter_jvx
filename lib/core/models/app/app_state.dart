@@ -87,6 +87,7 @@ class AppState {
   bool offline = false;
   ApplicationParameters applicationParameters;
   bool rememberMeChecked;
+  bool hideLoginCheckbox;
 
   bool get isOffline => offline != null ? offline : false;
 
