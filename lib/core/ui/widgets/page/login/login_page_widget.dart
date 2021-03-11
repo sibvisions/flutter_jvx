@@ -86,7 +86,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                 LoginBackground(widget.appState),
               if (widget.appState.applicationStyle.loginIcon != null)
                 Positioned(
-                  top: (MediaQuery.of(context).size.height / 12.76),
+                  top: 100,
                   left: 20,
                   right: 20,
                   child: Align(
