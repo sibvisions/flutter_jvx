@@ -584,13 +584,8 @@ class OfflineDatabase extends LocalDatabase
                     screenComponentId, metaDataString);
           } else {
             result = false;
-            responseError = Response();
-            responseError.error = ErrorResponse(
-                AppLocalizations.of(context).text('Importfehler'),
-                '',
-                AppLocalizations.of(context).text(
-                    'Die Tabellen für den Offlinebetrieb konnten nicht erstellt werden.'),
-                'ImportOfflineData');
+            throw new Exception(
+                'Offline database exception: Could not create offline table for dataProvider $metaData.dataProvider ');
           }
         }
       }
