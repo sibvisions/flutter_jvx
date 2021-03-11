@@ -126,7 +126,8 @@ class OfflineDatabase extends LocalDatabase
               // get sync data
               await Future.forEach(syncDataProvider, (dataProvider) async {
                 if (dataProvider != null) {
-                  syncData[dataProvider] = await this.getSyncData(dataProvider);
+                  syncData[dataProvider] =
+                      await this.getSyncData(context, dataProvider);
 
                   if (syncData[dataProvider] != null)
                     rowsToSync += syncData[dataProvider].length;
@@ -687,14 +688,26 @@ class OfflineDatabase extends LocalDatabase
     return false;
   }
 
-  Future<List<Map<String, dynamic>>> getSyncData(String dataProvider) async {
+  Future<List<Map<String, dynamic>>> getSyncData(
+      BuildContext context, String dataProvider) async {
     if (dataProvider != null) {
       String tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
       String where =
           "[$OFFLINE_COLUMNS_STATE]<>'' AND [$OFFLINE_COLUMNS_STATE] is not null";
       String orderBy = "[$OFFLINE_COLUMNS_CHANGED]";
 
-      return await this.selectRows(tableName, where, orderBy);
+      if (await tableExists(tableName)) {
+        return await this.selectRows(tableName, where, orderBy);
+      } else {
+        responseError = Response();
+        responseError.error = ErrorResponse(
+            AppLocalizations.of(context).text('Importfehler'),
+            '',
+            AppLocalizations.of(context).text(
+                'Die Tabelle für den Online sync konnte nicht gefunden werden: ' +
+                    dataProvider),
+            'ImportOfflineData');
+      }
     }
 
     return null;
