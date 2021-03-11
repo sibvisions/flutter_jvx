@@ -103,15 +103,17 @@ class _LoginCardState extends State<LoginCard>
                 ),
                 Row(
                   children: <Widget>[
-                    Checkbox(
-                      value: rememberMe,
-                      activeColor: Theme.of(context).primaryColor,
-                      onChanged: (bool val) {
-                        setState(() {
-                          rememberMe = val;
-                        });
-                      },
-                    ),
+                    if (widget.appState.hideLoginCheckbox == null ||
+                        !widget.appState.hideLoginCheckbox)
+                      Checkbox(
+                        value: rememberMe,
+                        activeColor: Theme.of(context).primaryColor,
+                        onChanged: (bool val) {
+                          setState(() {
+                            rememberMe = val;
+                          });
+                        },
+                      ),
                     FlatButton(
                         onPressed: () {
                           setState(() {

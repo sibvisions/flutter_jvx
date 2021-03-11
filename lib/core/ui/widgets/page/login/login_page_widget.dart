@@ -89,8 +89,13 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   top: 100,
                   left: 20,
                   right: 20,
-                  child: Image.file(File(
-                      '${widget.appState.dir}${widget.appState.applicationStyle.loginLogo}')),
+                  child: Align(
+                    child: Image.file(
+                      File(
+                          '${widget.appState.dir}${widget.appState.applicationStyle.loginLogo}'),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
                 ),
               LoginWidgets(
                 appState: widget.appState,

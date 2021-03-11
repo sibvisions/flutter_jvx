@@ -26,6 +26,8 @@ class CustomApplicationWidget extends StatelessWidget {
 
   final bool rememberMeChecked;
 
+  final bool hideLoginCheckbox;
+
   /// The AppListener to react to certain events during app usage
   final AppListener appListener;
 
@@ -39,7 +41,8 @@ class CustomApplicationWidget extends StatelessWidget {
       this.handleSessionTimeout,
       this.appListener,
       this.welcomeWidget,
-      this.rememberMeChecked})
+      this.rememberMeChecked,
+      this.hideLoginCheckbox})
       : super(key: key);
 
   @override
@@ -52,6 +55,7 @@ class CustomApplicationWidget extends StatelessWidget {
       screenManager: this.screenManager,
       welcomeWidget: this.welcomeWidget,
       rememberMeChecked: this.rememberMeChecked,
+      hideLoginCheckbox: this.hideLoginCheckbox,
     );
   }
 }
