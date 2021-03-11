@@ -84,7 +84,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                 )
               else
                 LoginBackground(widget.appState),
-              if (widget.appState.applicationStyle?.loginIcon != null)
+              if (widget.appState.applicationStyle?.loginLogo != null)
                 Positioned(
                   top: 100,
                   left: 20,
