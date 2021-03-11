@@ -190,53 +190,62 @@ mixin SoDataScreen {
 
     WidgetsBinding.instance.addPostFrameCallback((_) => hideProgress(context));
 
-    if (!response.hasError) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => showLinearProgressIndicator(context));
-      String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+    try {
+      if (!response.hasError) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showLinearProgressIndicator(context));
+        String path =
+            AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-      bool importSuccess =
-          await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+        bool importSuccess =
+            await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
-      if (importSuccess)
-        importSuccess = importSuccess &
-            await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-                .importComponents(context, componentData);
+        if (importSuccess)
+          importSuccess = importSuccess &
+              await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .importComponents(context, componentData);
 
-      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-          .removeAllProgressCallbacks();
+        (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .removeAllProgressCallbacks();
 
-      if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
-          null) {
+        if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
+            null) {
+          WidgetsBinding.instance.addPostFrameCallback(
+              (_) => hideLinearProgressIndicator(context));
+
+          await showOfflineError(
+              context,
+              (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .responseError
+                  .error);
+
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .cleanupDatabase();
+        } else if (importSuccess) {
+          hideLinearProgressIndicator(context);
+
+          SharedPrefProvider.of(context).manager.setOffline(true);
+          AppState appState = AppStateProvider.of(context).appState;
+
+          appState.offline = true;
+
+          BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+            clientId: appState.clientId,
+            componentId: appState.currentScreenComponentId,
+            requestType: RequestType.CLOSE_SCREEN,
+          ));
+          BlocProvider.of<ApiBloc>(context).add(Navigation());
+        }
+      } else {
         WidgetsBinding.instance
             .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
-
-        await showOfflineError(
-            context,
-            (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-                .responseError
-                .error);
-
-        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .cleanupDatabase();
-      } else if (importSuccess) {
-        hideLinearProgressIndicator(context);
-
-        SharedPrefProvider.of(context).manager.setOffline(true);
-        AppState appState = AppStateProvider.of(context).appState;
-
-        appState.offline = true;
-
-        BlocProvider.of<ApiBloc>(context).add(CloseScreen(
-          clientId: appState.clientId,
-          componentId: appState.currentScreenComponentId,
-          requestType: RequestType.CLOSE_SCREEN,
-        ));
-        BlocProvider.of<ApiBloc>(context).add(Navigation());
       }
-    } else {
+    } catch (e) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => hideProgress(context));
       WidgetsBinding.instance
           .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+      rethrow;
     }
   }
 
