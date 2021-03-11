@@ -68,7 +68,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (widget.appState.applicationStyle.loginIcon != null)
+              if (widget.appState.applicationStyle?.loginIcon != null)
                 Positioned(
                   left: 0,
                   right: 0,
@@ -79,12 +79,12 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                         image: DecorationImage(
                             fit: BoxFit.cover,
                             image: FileImage(File(
-                                '${widget.appState.dir}${widget.appState.applicationStyle.loginIcon}')))),
+                                '${widget.appState.dir}${widget.appState.applicationStyle?.loginIcon}')))),
                   ),
                 )
               else
                 LoginBackground(widget.appState),
-              if (widget.appState.applicationStyle.loginIcon != null)
+              if (widget.appState.applicationStyle?.loginIcon != null)
                 Positioned(
                   top: 100,
                   left: 20,
@@ -92,7 +92,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   child: Align(
                     child: Image.file(
                       File(
-                          '${widget.appState.dir}${widget.appState.applicationStyle.loginLogo}'),
+                          '${widget.appState.dir}${widget.appState.applicationStyle?.loginLogo}'),
                       fit: BoxFit.fitHeight,
                     ),
                   ),

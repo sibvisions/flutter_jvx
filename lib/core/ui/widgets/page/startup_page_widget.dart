@@ -319,6 +319,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     }
 
     if (this.manager.isOffline != null && this.manager.isOffline) {
+      this.appState.applicationStyle =
+          ApplicationStyleResponse.fromJson(this.manager.applicationStyle);
+
       this.appState.offline = this.manager.isOffline;
 
       if (this.manager.applicationStyle != null &&
