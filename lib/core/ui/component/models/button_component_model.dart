@@ -12,7 +12,7 @@ class ButtonComponentModel extends ActionComponentModel {
   bool network = false;
   Size iconSize = Size(16, 16);
   double iconPadding = 10;
-  EdgeInsets margin = EdgeInsets.all(4);
+  EdgeInsets margin = EdgeInsets.all(0);
   String image;
   int _horizontalTextPosition;
 
