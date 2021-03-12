@@ -13,7 +13,7 @@ class LocalDatabase implements IDatabaseProvider {
 
   bool get isOpen => db != null;
 
-  Future<void> openCreateDatabase(String path) async {
+  Future<bool> openCreateDatabase(String path) async {
     if (this.debug) log('SQLite openCreateDatabase:' + path);
     this.db = await openDatabase(path, version: 1);
     this.path = path;

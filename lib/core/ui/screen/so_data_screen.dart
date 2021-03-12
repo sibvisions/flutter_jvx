@@ -190,51 +190,72 @@ mixin SoDataScreen {
 
     WidgetsBinding.instance.addPostFrameCallback((_) => hideProgress(context));
 
-    if (!response.hasError) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => showLinearProgressIndicator(context));
-      String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+    try {
+      if (!response.hasError) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showLinearProgressIndicator(context));
+        String path =
+            AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-      await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+        bool importSuccess =
+            await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
 
-      bool importSuccess =
+        if (importSuccess)
+          importSuccess = importSuccess &
+              await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .importComponents(context, componentData);
+
+        (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .removeAllProgressCallbacks();
+
+        if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
+            null) {
+          WidgetsBinding.instance.addPostFrameCallback(
+              (_) => hideLinearProgressIndicator(context));
+
+          await showOfflineError(
+              context,
+              (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .responseError
+                  .error);
+
           await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-              .importComponents(context, componentData);
+              .cleanupDatabase();
+        } else if (importSuccess) {
+          hideLinearProgressIndicator(context);
 
-      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-          .removeAllProgressCallbacks();
+          SharedPrefProvider.of(context).manager.setOffline(true);
+          AppState appState = AppStateProvider.of(context).appState;
 
-      if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
-          null) {
+          appState.offline = true;
+
+          BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+            clientId: appState.clientId,
+            componentId: appState.currentScreenComponentId,
+            requestType: RequestType.CLOSE_SCREEN,
+          ));
+          BlocProvider.of<ApiBloc>(context).add(Navigation());
+        }
+      } else {
         WidgetsBinding.instance
             .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
-
-        await showOfflineError(
-            context,
-            (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-                .responseError
-                .error);
-
-        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .cleanupDatabase();
-      } else if (importSuccess) {
-        hideLinearProgressIndicator(context);
-
-        SharedPrefProvider.of(context).manager.setOffline(true);
+      }
+    } catch (e) {
+      try {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideProgress(context));
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        SharedPrefProvider.of(context).manager.setOffline(false);
         AppState appState = AppStateProvider.of(context).appState;
 
-        appState.offline = true;
-
-        BlocProvider.of<ApiBloc>(context).add(CloseScreen(
-          clientId: appState.clientId,
-          componentId: appState.currentScreenComponentId,
-          requestType: RequestType.CLOSE_SCREEN,
-        ));
-        BlocProvider.of<ApiBloc>(context).add(Navigation());
-      }
-    } else {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        appState.offline = false;
+        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .cleanupDatabase();
+      } catch (ee) {}
+      rethrow;
     }
   }
 

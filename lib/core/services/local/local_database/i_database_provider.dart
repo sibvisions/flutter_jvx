@@ -5,6 +5,6 @@ abstract class IDatabaseProvider {
 
   bool get isOpen;
 
-  Future<void> openCreateDatabase(String path);
+  Future<bool> openCreateDatabase(String path);
   Future<void> closeDatabase();
 }
