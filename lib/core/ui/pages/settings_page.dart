@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:barras/barras.dart';
 import 'package:intl/intl.dart';
 
 import '../../../injection_container.dart';
@@ -453,9 +453,9 @@ class _SettingsPageState extends State<SettingsPage> {
     // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
     //     "#ff6666", AppLocalizations.of(context).text("Cancel"), true, ScanMode.QR);
 
-    var result = await BarcodeScanner.scan();
+    final result = await Barras.scan(context);
 
-    Map<String, dynamic> properties = getProperties(result.rawContent);
+    Map<String, dynamic> properties = getProperties(result);
 
     setState(() {
       if (properties['APPNAME'] != null) {

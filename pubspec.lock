@@ -64,13 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
-  barcode_scan:
+  barras:
     dependency: "direct main"
     description:
-      name: barcode_scan
+      name: barras
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "0.0.2"
   bloc:
     dependency: "direct main"
     description:
@@ -272,6 +272,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_beep:
+    dependency: transitive
+    description:
+      name: flutter_beep
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -703,13 +710,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
-  protobuf:
-    dependency: transitive
-    description:
-      name: protobuf
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.3"
   provider:
     dependency: transitive
     description:
@@ -724,6 +724,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.4"
+  qrcode:
+    dependency: transitive
+    description:
+      name: qrcode
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   quiver:
     dependency: transitive
     description:
@@ -883,6 +890,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  torch_compat:
+    dependency: transitive
+    description:
+      name: torch_compat
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   transformer_page_view:
     dependency: transitive
     description:

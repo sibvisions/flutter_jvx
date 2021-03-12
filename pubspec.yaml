@@ -31,7 +31,8 @@ dependencies:
   font_awesome_flutter: ^8.10.0
   intl: ^0.17.0
   crypto: ^2.1.5
-  barcode_scan: ^3.0.1
+  # barcode_scan: ^3.0.1
+  barras: any
   path_provider: ^2.0.1
   universal_html: ^1.2.3
   archive: ^2.0.13
