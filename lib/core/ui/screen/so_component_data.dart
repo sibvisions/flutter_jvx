@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/models/api/response.dart';
@@ -394,6 +396,7 @@ class SoComponentData {
 
   Future<Response> fetchAll(ApiBloc bloc, int recordsPerRequest) async {
     Response result;
+    log('Start fetching all records for ${this.dataProvider}.');
     if (data == null || data.isAllFetched == null || !data.isAllFetched) {
       bool reload = true;
       this.isFetching = true;
@@ -406,6 +409,11 @@ class SoComponentData {
         if (result != null) break;
       }
     }
+
+    if (result == null)
+      log('Finished fetching all records for ${this.dataProvider}. Records: ${data.records.length}');
+    else
+      log('Finished fetching all records for ${this.dataProvider} with error: ${result.error?.message}');
 
     return result;
   }

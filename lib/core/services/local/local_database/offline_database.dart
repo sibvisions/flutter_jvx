@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:disk_space/disk_space.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../injection_container.dart';
@@ -53,8 +54,7 @@ class OfflineDatabase extends LocalDatabase
   List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
   Future<bool> openCreateDatabase(String path) async {
-    await super.openCreateDatabase(path);
-    if (db?.isOpen ?? false) {
+    if (await super.openCreateDatabase(path)) {
       String columnStr =
           "$OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
               "$OFFLINE_META_DATA_TABLE_COLUMN_TABLE_NAME TEXT$CREATE_TABLE_COLUMNS_SEPERATOR" +
@@ -73,6 +73,8 @@ class OfflineDatabase extends LocalDatabase
     responseError = null;
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
+
+    log('Online sync started.');
 
     String authUsername = bloc.manager.authKey == null
         ? bloc?.manager?.syncLoginData['username']
@@ -267,6 +269,9 @@ class OfflineDatabase extends LocalDatabase
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
+    double freeDiscSpace = await DiskSpace.getFreeDiskSpace;
+    log('Offline import started with free disc space: ${freeDiscSpace}MB');
+
     // test only
     //FilterCondition condition = OfflineDatabaseFormatter.getTestFilter();
     //String where =
@@ -280,7 +285,7 @@ class OfflineDatabase extends LocalDatabase
           AppLocalizations.of(context).text('Offline Fehler'),
           '',
           AppLocalizations.of(context).text(
-              'Es wurden keine DataBooks für den Offline Modus gefunden!'),
+              'Es wurden keine DataProvider für den Offline Modus angegeben!'),
           'offline.error');
       result = false;
     }
@@ -291,7 +296,7 @@ class OfflineDatabase extends LocalDatabase
           componentData.length > 0 ? 0.5 / componentData.length : 0;
 
       // fetch all data to prepare offline sync
-      await Future.forEach(componentData, (element) async {
+      await Future.forEach(componentData, (SoComponentData element) async {
         if (result) {
           this.responseError =
               await element.fetchAll(bloc, fetchOfflineRecordsPerRequest);
@@ -360,10 +365,12 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
+    freeDiscSpace = await DiskSpace.getFreeDiskSpace;
+
     if (result)
-      log("Offline import finished successfully! Imported records: $rowsImported/$rowsToImport");
+      log("Offline import finished successfully! Imported records: $rowsImported/$rowsToImport, Free disk space: ${freeDiscSpace}MB");
     else
-      log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport ErrorDetail: ${responseError?.error?.details}");
+      log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, Free disk space: $freeDiscSpace, ErrorDetail: ${responseError?.error?.details}");
 
     if (!result && responseError == null) {
       responseError = Response();
