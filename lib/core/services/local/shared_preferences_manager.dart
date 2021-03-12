@@ -12,17 +12,6 @@ class SharedPreferencesManager {
 
   SharedPreferencesManager(this.sharedPreferences);
 
-  bool get warmWelcome {
-    bool result = this.sharedPreferences.getBool('warmWelcome');
-
-    if (result != null && !result) {
-      return false;
-    } else {
-      this.sharedPreferences.setBool('warmWelcome', false);
-      return true;
-    }
-  }
-
   String get authKey => this.sharedPreferences.getString('authKey');
 
   String get appVersion =>
@@ -138,54 +127,55 @@ class SharedPreferencesManager {
       String baseUrl,
       String language,
       int picSize,
-      bool overrideOnNull = false}) {
+      bool overrideOnNull = false}) async {
     if (appName != null && appName.isNotEmpty)
-      this.sharedPreferences.setString('appName', appName);
+      await this.sharedPreferences.setString('appName', appName);
     if (baseUrl != null && baseUrl.isNotEmpty)
-      this.sharedPreferences.setString('baseUrl', baseUrl);
+      await this.sharedPreferences.setString('baseUrl', baseUrl);
     if ((language != null && language.isNotEmpty) || overrideOnNull)
-      this.sharedPreferences.setString('language', language);
+      await this.sharedPreferences.setString('language', language);
     if (picSize != null &&
         (picSize == 320 || picSize == 640 || picSize == 1024))
-      this.sharedPreferences.setInt('picSize', picSize);
+      await this.sharedPreferences.setInt('picSize', picSize);
   }
 
-  void setLoginData({String username, String password, bool override = false}) {
+  void setLoginData(
+      {String username, String password, bool override = false}) async {
     if ((username != null && username.isNotEmpty) || override) {
       if (username != null && username.isNotEmpty)
-        this
+        await this
             .sharedPreferences
             .setString('username', encrypter.encrypt(username, iv: _iv).base64);
       else if (this.sharedPreferences.containsKey('username'))
-        this.sharedPreferences.remove('username');
+        await this.sharedPreferences.remove('username');
     }
     if ((password != null && password.isNotEmpty) || override) {
       if (password != null && password.isNotEmpty)
-        this
+        await this
             .sharedPreferences
             .setString('password', encrypter.encrypt(password, iv: _iv).base64);
       else if (this.sharedPreferences.containsKey('password'))
-        this.sharedPreferences.remove('password');
+        await this.sharedPreferences.remove('password');
     }
   }
 
   void setSyncLoginData(
-      {String username, String password, bool override = false}) {
+      {String username, String password, bool override = false}) async {
     if ((username != null && username.isNotEmpty) || override) {
-      this.sharedPreferences.setString(
+      await this.sharedPreferences.setString(
           'syncUsername', encrypter.encrypt(username, iv: _iv).base64);
     } else {
-      this.sharedPreferences.remove('syncUsername');
+      await this.sharedPreferences.remove('syncUsername');
     }
     if ((password != null && password.isNotEmpty) || override) {
-      this.sharedPreferences.setString(
+      await this.sharedPreferences.setString(
           'syncPassword', encrypter.encrypt(password, iv: _iv).base64);
     } else {
-      this.sharedPreferences.remove('syncPassword');
+      await this.sharedPreferences.remove('syncPassword');
     }
   }
 
-  void setOfflineLoginHash({String username, String password}) {
+  void setOfflineLoginHash({String username, String password}) async {
     if (username != null &&
         username.isNotEmpty &&
         password != null &&
@@ -193,59 +183,63 @@ class SharedPreferencesManager {
       String usernameHash = sha256.convert(utf8.encode(username)).toString();
       String passwordHash = sha256.convert(utf8.encode(password)).toString();
 
-      this.sharedPreferences.setString('usernameHash', usernameHash);
-      this.sharedPreferences.setString('passwordHash', passwordHash);
+      await this.sharedPreferences.setString('usernameHash', usernameHash);
+      await this.sharedPreferences.setString('passwordHash', passwordHash);
     } else {
-      this.sharedPreferences.remove('usernameHash');
-      this.sharedPreferences.remove('passwordHash');
+      await this.sharedPreferences.remove('usernameHash');
+      await this.sharedPreferences.remove('passwordHash');
     }
   }
 
-  void setAppVersion(String appVersion) =>
-      this.sharedPreferences.setString('appVersion', appVersion);
+  void setAppVersion(String appVersion) async =>
+      await this.sharedPreferences.setString('appVersion', appVersion);
 
-  void setPreviousAppVersion(String previousAppVersion) =>
-      this.sharedPreferences.setString('prevAppVersion', previousAppVersion);
-
-  void setApplicationStylingHash(String applicationStylingHash) => this
+  void setPreviousAppVersion(String previousAppVersion) async => await this
       .sharedPreferences
-      .setString('applicationStylingHash', applicationStylingHash);
+      .setString('prevAppVersion', previousAppVersion);
 
-  void setTranslation(Map<String, dynamic> translation) {
+  void setApplicationStylingHash(String applicationStylingHash) async =>
+      await this
+          .sharedPreferences
+          .setString('applicationStylingHash', applicationStylingHash);
+
+  void setTranslation(Map<String, dynamic> translation) async {
     String jsonString = json.encode(translation);
 
-    this.sharedPreferences.setString('translation', jsonString);
+    await this.sharedPreferences.setString('translation', jsonString);
   }
 
-  void setApplicationStyle(Map<String, dynamic> applicationStyle) {
+  void setApplicationStyle(Map<String, dynamic> applicationStyle) async {
     String jsonString = json.encode(applicationStyle);
 
-    this.sharedPreferences.setString('applicationStyle', jsonString);
+    await this.sharedPreferences.setString('applicationStyle', jsonString);
   }
 
-  void setDeviceId(String deviceId) =>
-      this.sharedPreferences.setString('deviceId', deviceId);
+  void setDeviceId(String deviceId) async =>
+      await this.sharedPreferences.setString('deviceId', deviceId);
 
-  void setDownloadFileName(String fileName) =>
-      this.sharedPreferences.setString('fileName', fileName);
+  void setDownloadFileName(String fileName) async =>
+      await this.sharedPreferences.setString('fileName', fileName);
 
-  void setMobileOnly(bool mobileOnly) =>
-      this.sharedPreferences.setBool('mobileOnly', mobileOnly);
+  void setMobileOnly(bool mobileOnly) async =>
+      await this.sharedPreferences.setBool('mobileOnly', mobileOnly);
 
-  void setAuthKey(String authKey) {
+  void setAuthKey(String authKey) async {
     if (authKey != null && authKey.isNotEmpty)
-      this.sharedPreferences.setString('authKey', authKey);
+      await this.sharedPreferences.setString('authKey', authKey);
     else if (this.sharedPreferences.containsKey('authKey'))
-      this.sharedPreferences.remove('authKey');
+      await this.sharedPreferences.remove('authKey');
   }
 
-  void setOffline(bool offline) =>
-      this.sharedPreferences.setBool('offline', offline);
+  void setOffline(bool offline) async =>
+      await this.sharedPreferences.setBool('offline', offline);
 
-  void setMenuItems(List<MenuItem> menuItems) {
+  void setMenuItems(List<MenuItem> menuItems) async {
     try {
       if (menuItems != null)
-        this.sharedPreferences.setString('menuItems', json.encode(menuItems));
+        await this
+            .sharedPreferences
+            .setString('menuItems', json.encode(menuItems));
     } catch (e) {
       print('Couldn\'t encode menu items');
     }

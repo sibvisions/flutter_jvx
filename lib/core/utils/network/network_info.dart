@@ -25,19 +25,14 @@ class NetworkInfoImpl implements NetworkInfo {
       final result = await InternetAddress.lookup(
           trimmedBaseUrl ?? this.connectionChecker);
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('YOU HAVE CONNECTION TO THE SERVER');
         return true;
       }
     } on SocketException catch (_) {
+      print('YOU HAVE NO CONNECTION TO THE SERVER');
       return false;
     }
+    print('YOU HAVE NO CONNECTION TO THE SERVER');
     return false;
-
-    // ConnectivityResult result =
-    //     await this.connectionChecker.checkConnectivity();
-
-    // if (result != ConnectivityResult.none) {
-    //   return true;
-    // }
-    // return false;
   }
 }
