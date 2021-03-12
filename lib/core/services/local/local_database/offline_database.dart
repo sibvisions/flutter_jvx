@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:disk_space/disk_space.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../injection_container.dart';
@@ -269,8 +268,8 @@ class OfflineDatabase extends LocalDatabase
     ApiBloc bloc = new ApiBloc(null, sl<NetworkInfo>(), sl<RestClient>(),
         sl<AppState>(), sl<SharedPreferencesManager>(), null);
 
-    double freeDiscSpace = await DiskSpace.getFreeDiskSpace;
-    log('Offline import started with free disc space: ${freeDiscSpace}MB');
+    //double freeDiscSpace = await DiskSpace.getFreeDiskSpace;
+    log('Offline import started!');
 
     // test only
     //FilterCondition condition = OfflineDatabaseFormatter.getTestFilter();
@@ -365,12 +364,12 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
-    freeDiscSpace = await DiskSpace.getFreeDiskSpace;
+    //freeDiscSpace = await DiskSpace.getFreeDiskSpace;
 
     if (result)
-      log("Offline import finished successfully! Imported records: $rowsImported/$rowsToImport, Free disk space: ${freeDiscSpace}MB");
+      log("Offline import finished successfully! Imported records: $rowsImported/$rowsToImport");
     else
-      log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, Free disk space: $freeDiscSpace, ErrorDetail: ${responseError?.error?.details}");
+      log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, ErrorDetail: ${responseError?.error?.details}");
 
     if (!result && responseError == null) {
       responseError = Response();

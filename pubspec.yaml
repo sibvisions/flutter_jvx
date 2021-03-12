@@ -58,7 +58,6 @@ dependencies:
   encrypt: ^4.1.0
   latlong: ^0.6.1
   badges: ^1.2.0
-  disk_space: ^0.1.0+2
 
 dev_dependencies:
   flutter_test:
