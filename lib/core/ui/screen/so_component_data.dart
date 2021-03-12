@@ -426,6 +426,7 @@ class SoComponentData {
     fetch.rowCount = recordsPerRequest;
     fetch.clientId = bloc.appState.clientId;
     fetch.includeMetaData = reload;
+    fetch.reload = reload;
 
     await for (Response response in bloc.data(fetch)) {
       if (response.error != null)

@@ -12,10 +12,9 @@ class FetchData extends Request {
   @override
   String get debugInfo {
     return dataProvider +
-        ", From: " +
-        fromRow.toString() +
-        ", rowCount: " +
-        rowCount.toString();
+        ", From: $fromRow" +
+        ", rowCount: $rowCount" +
+        ", reload: $reload";
   }
 
   FetchData(this.dataProvider, String clientId,
