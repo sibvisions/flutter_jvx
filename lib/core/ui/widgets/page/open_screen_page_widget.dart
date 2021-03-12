@@ -351,26 +351,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                 }
               },
             ),
-            title: Row(
-              children: [
-                Text(title ?? ''),
-                if (widget.appState.isOffline)
-                  SizedBox(
-                    width: 10,
-                  ),
-                if (widget.appState.isOffline)
-                  Chip(
-                    backgroundColor: Colors.white,
-                    label: Text(
-                      'Offline',
-                      style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )
-              ],
-            ),
+            title: Text(title ?? ''),
           )
         : null;
   }
@@ -379,130 +360,159 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         key: _scaffoldKey,
         appBar: _appBar(this.title),
         endDrawer: _endDrawer(),
-        body: Builder(
-          builder: (BuildContext context) {
-            SoScreen screen = widget.appState.screenManager
-                .findScreen(widget.menuComponentId);
+        body: Column(
+          children: [
+            if (widget.appState.isOffline)
+              Container(
+                height: 20,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.grey.shade500,
+                child: Text(
+                  'OFFLINE',
+                  style: TextStyle(color: Colors.white),
+                ),
+                alignment: Alignment.center,
+              ),
+            Expanded(
+              child: Builder(
+                builder: (BuildContext context) {
+                  SoScreen screen = widget.appState.screenManager
+                      .findScreen(widget.menuComponentId);
 
-            if (screen != null &&
-                !_openScreenManager.screens
-                    .containsKey(widget.menuComponentId)) {
-              // If custom screen exists and is not yet added to openscreen stack
-              _openScreenManager.registerScreen(screen);
-            } else if (screen == null &&
-                (_openScreenManager.screens
-                        .containsKey(widget.menuComponentId) ||
-                    _openScreenManager.screens
-                        .containsKey(this.currentCompId))) {
-              // If custom screen is null
-              screen = _openScreenManager.findScreen(widget.menuComponentId) ??
-                  _openScreenManager.findScreen(this.currentCompId);
-            } else {
-              // If both custom screen and normal screen is null
-              screen = SoScreen(
-                configuration: SoScreenConfiguration(this.currentResponse,
-                    screenTitle: this
+                  if (screen != null &&
+                      !_openScreenManager.screens
+                          .containsKey(widget.menuComponentId)) {
+                    // If custom screen exists and is not yet added to openscreen stack
+                    _openScreenManager.registerScreen(screen);
+                  } else if (screen == null &&
+                      (_openScreenManager.screens
+                              .containsKey(widget.menuComponentId) ||
+                          _openScreenManager.screens
+                              .containsKey(this.currentCompId))) {
+                    // If custom screen is null
+                    screen =
+                        _openScreenManager.findScreen(widget.menuComponentId) ??
+                            _openScreenManager.findScreen(this.currentCompId);
+                  } else {
+                    // If both custom screen and normal screen is null
+                    screen = SoScreen(
+                      configuration: SoScreenConfiguration(this.currentResponse,
+                          screenTitle: this
+                                  .currentResponse
+                                  ?.responseData
+                                  ?.screenGeneric
+                                  ?.screenTitle ??
+                              this.title,
+                          componentId: this
+                                  .currentResponse
+                                  ?.responseData
+                                  ?.screenGeneric
+                                  ?.componentId ??
+                              widget.response?.responseData?.screenGeneric
+                                  ?.componentId ??
+                              widget.menuComponentId,
+                          screenComponentId: widget.menuComponentId,
+                          withServer: true),
+                    );
+
+                    if (this.currentResponse?.request?.requestType !=
+                            RequestType.NAVIGATION &&
+                        this.currentResponse?.request?.requestType !=
+                            RequestType.CLOSE_SCREEN &&
+                        this.currentResponse?.responseData?.screenGeneric !=
+                            null &&
+                        this
+                                .currentResponse
+                                .responseData
+                                .screenGeneric
+                                .componentId ==
+                            screen.configuration.componentId) {
+                      _openScreenManager.registerScreen(screen);
+                    }
+                  }
+
+                  if (screen.configuration.screenTitle != null &&
+                      screen.configuration.screenTitle.isNotEmpty &&
+                      screen.configuration.screenTitle != this.title) {
+                    this.title = screen.configuration.screenTitle;
+                  }
+
+                  _updateOpenScreens(this.currentResponse);
+
+                  if (this.currentResponse?.responseData?.screenGeneric !=
+                      null) {
+                    this.currentIndex = _openScreenManager.screens.keys
+                        .toList()
+                        .indexOf(this
                             .currentResponse
-                            ?.responseData
-                            ?.screenGeneric
-                            ?.screenTitle ??
-                        this.title,
-                    componentId: this
-                            .currentResponse
-                            ?.responseData
-                            ?.screenGeneric
-                            ?.componentId ??
-                        widget.response?.responseData?.screenGeneric
-                            ?.componentId ??
-                        widget.menuComponentId,
-                    screenComponentId: widget.menuComponentId,
-                    withServer: true),
-              );
+                            .responseData
+                            .screenGeneric
+                            .componentId);
 
-              if (this.currentResponse?.request?.requestType !=
-                      RequestType.NAVIGATION &&
-                  this.currentResponse?.request?.requestType !=
-                      RequestType.CLOSE_SCREEN &&
-                  this.currentResponse?.responseData?.screenGeneric != null &&
-                  this.currentResponse.responseData.screenGeneric.componentId ==
-                      screen.configuration.componentId) {
-                _openScreenManager.registerScreen(screen);
-              }
-            }
+                    if (this.currentIndex < 0) {
+                      this.currentIndex = _openScreenManager.screens.keys
+                          .toList()
+                          .indexOf(widget.menuComponentId);
+                    }
+                  }
 
-            if (screen.configuration.screenTitle != null &&
-                screen.configuration.screenTitle.isNotEmpty &&
-                screen.configuration.screenTitle != this.title) {
-              this.title = screen.configuration.screenTitle;
-            }
+                  Widget child;
 
-            _updateOpenScreens(this.currentResponse);
+                  if (currentIndex >= 0) {
+                    child = IndexedStack(
+                      children: _openScreenManager.screens.values.toList(),
+                      index: currentIndex >= 0 ? currentIndex : 0,
+                      key: this.screenGlobalKey,
+                    );
+                  }
 
-            if (this.currentResponse?.responseData?.screenGeneric != null) {
-              this.currentIndex = _openScreenManager.screens.keys
-                  .toList()
-                  .indexOf(this
-                      .currentResponse
-                      .responseData
-                      .screenGeneric
-                      .componentId);
+                  if (widget.appState.applicationStyle != null &&
+                      widget.appState.applicationStyle?.desktopIcon != null) {
+                    widget.appState.appFrame.setScreen(Container(
+                        decoration: BoxDecoration(
+                            color: (widget.appState.applicationStyle != null &&
+                                    widget.appState.applicationStyle
+                                            ?.desktopColor !=
+                                        null)
+                                ? widget.appState.applicationStyle?.desktopColor
+                                : null,
+                            image: !kIsWeb
+                                ? DecorationImage(
+                                    image: FileImage(File(
+                                        '${widget.appState.dir}${widget.appState.applicationStyle?.desktopIcon}')),
+                                    fit: BoxFit.cover)
+                                : DecorationImage(
+                                    image: widget.appState.files.containsKey(
+                                            widget.appState.applicationStyle
+                                                .desktopIcon)
+                                        ? MemoryImage(base64Decode(
+                                            widget.appState.files[widget
+                                                .appState
+                                                .applicationStyle
+                                                .desktopIcon]))
+                                        : null,
+                                    fit: BoxFit.cover,
+                                  )),
+                        child: child));
 
-              if (this.currentIndex < 0) {
-                this.currentIndex = _openScreenManager.screens.keys
-                    .toList()
-                    .indexOf(widget.menuComponentId);
-              }
-            }
+                    return widget.appState.appFrame.getWidget();
+                  } else if (widget.appState.applicationStyle != null &&
+                      widget.appState.applicationStyle?.desktopColor != null) {
+                    widget.appState.appFrame.setScreen(Container(
+                        decoration: BoxDecoration(
+                            color:
+                                widget.appState.applicationStyle?.desktopColor),
+                        child: child));
 
-            Widget child;
-
-            if (currentIndex >= 0) {
-              child = IndexedStack(
-                children: _openScreenManager.screens.values.toList(),
-                index: currentIndex >= 0 ? currentIndex : 0,
-                key: this.screenGlobalKey,
-              );
-            }
-
-            if (widget.appState.applicationStyle != null &&
-                widget.appState.applicationStyle?.desktopIcon != null) {
-              widget.appState.appFrame.setScreen(Container(
-                  decoration: BoxDecoration(
-                      color: (widget.appState.applicationStyle != null &&
-                              widget.appState.applicationStyle?.desktopColor !=
-                                  null)
-                          ? widget.appState.applicationStyle?.desktopColor
-                          : null,
-                      image: !kIsWeb
-                          ? DecorationImage(
-                              image: FileImage(File(
-                                  '${widget.appState.dir}${widget.appState.applicationStyle?.desktopIcon}')),
-                              fit: BoxFit.cover)
-                          : DecorationImage(
-                              image: widget.appState.files.containsKey(widget
-                                      .appState.applicationStyle.desktopIcon)
-                                  ? MemoryImage(base64Decode(
-                                      widget.appState.files[widget.appState
-                                          .applicationStyle.desktopIcon]))
-                                  : null,
-                              fit: BoxFit.cover,
-                            )),
-                  child: child));
-
-              return widget.appState.appFrame.getWidget();
-            } else if (widget.appState.applicationStyle != null &&
-                widget.appState.applicationStyle?.desktopColor != null) {
-              widget.appState.appFrame.setScreen(Container(
-                  decoration: BoxDecoration(
-                      color: widget.appState.applicationStyle?.desktopColor),
-                  child: child));
-
-              return widget.appState.appFrame.getWidget();
-            } else {
-              widget.appState.appFrame.setScreen(child);
-              return widget.appState.appFrame.getWidget();
-            }
-          },
+                    return widget.appState.appFrame.getWidget();
+                  } else {
+                    widget.appState.appFrame.setScreen(child);
+                    return widget.appState.appFrame.getWidget();
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       );
 

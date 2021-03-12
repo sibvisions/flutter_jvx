@@ -188,10 +188,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                               AppLocalizations.of(context).text('Language')),
                           trailing: FaIcon(FontAwesomeIcons.arrowRight),
-                          subtitle: Text(this.selectedLanguage != null &&
-                                  this.selectedLanguage.isNotEmpty
-                              ? this.selectedLanguage
-                              : widget.appState.language),
+                          subtitle: Text((this.selectedLanguage != null &&
+                                      this.selectedLanguage.isNotEmpty
+                                  ? this.selectedLanguage
+                                  : widget.appState.language) ??
+                              ''),
                           onTap: () {
                             if (!widget.appState.isOffline)
                               showLanguagePicker(context);

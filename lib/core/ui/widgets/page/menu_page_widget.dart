@@ -372,26 +372,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             appBar: widget.appState.appFrame.showScreenHeader
                 ? AppBar(
                     backgroundColor: Theme.of(context).primaryColor,
-                    title: Row(
-                      children: [
-                        Text('Menu'),
-                        if (widget.appState.isOffline)
-                          SizedBox(
-                            width: 10,
-                          ),
-                        if (widget.appState.isOffline)
-                          Chip(
-                            backgroundColor: Colors.white,
-                            label: Text(
-                              'Offline',
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  letterSpacing: 1,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )
-                      ],
-                    ),
+                    title: Text('Menu'),
                     automaticallyImplyLeading: false,
                     actions: [
                       widget.appState.isOffline
@@ -459,7 +440,23 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                 BlocProvider.of<ApiBloc>(context).add(menuRequest);
               },
               child: FractionallySizedBox(
-                  widthFactor: 1, heightFactor: 1, child: body),
+                  widthFactor: 1,
+                  heightFactor: 1,
+                  child: Column(
+                    children: [
+                      if (widget.appState.isOffline)
+                        Container(
+                          height: 20,
+                          color: Colors.grey.shade500,
+                          child: Text(
+                            'OFFLINE',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          alignment: Alignment.center,
+                        ),
+                      body,
+                    ],
+                  )),
             )),
       ),
     );

@@ -28,6 +28,7 @@ class MenuGridView extends StatefulWidget {
 class _MenuGridViewState extends State<MenuGridView> {
   Widget _buildGridView(List<MenuItem> menuItems) {
     return GridView.builder(
+      shrinkWrap: true,
       itemCount: menuItems.length,
       gridDelegate: new SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 210, crossAxisSpacing: 1),
