@@ -31,6 +31,7 @@ class FetchData extends Request {
         'columnNames': columnNames,
         'fromRow': fromRow,
         'rowCount': rowCount,
+        "reload": reload,
         'includeMetaData': includeMetaData,
         'filter': filter?.toJson()
       };
