@@ -276,7 +276,7 @@ class OfflineDatabase extends LocalDatabase
     //String where =
     //    OfflineDatabaseFormatter.getWhereFilterWithCondition(condition);
 
-    componentData = this.filterImportComponents(componentData);
+    componentData = this.getOfflineImportComponentData(componentData);
 
     if (componentData == null || componentData.length == 0) {
       responseError = Response();
@@ -384,7 +384,7 @@ class OfflineDatabase extends LocalDatabase
     return result;
   }
 
-  List<SoComponentData> filterImportComponents(
+  List<SoComponentData> getOfflineImportComponentData(
       List<SoComponentData> componentData) {
     return componentData;
   }
