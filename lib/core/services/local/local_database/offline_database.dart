@@ -122,7 +122,7 @@ class OfflineDatabase extends LocalDatabase
               String currentScreenComponentId = "";
 
               List<String> syncDataProvider =
-                  await this.getOfflineDataProvider();
+                  await this.getOnlineSyncDataProvider();
               Map<String, List<Map<String, dynamic>>> syncData =
                   Map<String, List<Map<String, dynamic>>>();
 
@@ -639,7 +639,7 @@ class OfflineDatabase extends LocalDatabase
     return null;
   }
 
-  Future<List<String>> getOfflineDataProvider() async {
+  Future<List<String>> getOnlineSyncDataProvider() async {
     List<String> offlineDataProvider = <String>[];
 
     List<Map<String, dynamic>> result =
