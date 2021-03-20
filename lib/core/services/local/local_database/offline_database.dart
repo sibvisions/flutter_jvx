@@ -284,7 +284,7 @@ class OfflineDatabase extends LocalDatabase
           AppLocalizations.of(context).text('Offline Fehler'),
           '',
           AppLocalizations.of(context).text(
-              'Es wurden keine DataProvider für den Offline Modus angegeben!'),
+              'Es wurden keine DataProvider für den Offline Modus angegeben! Möglicherweise hat sich der Applikationsname geändert.'),
           'offline.error');
       result = false;
     }
