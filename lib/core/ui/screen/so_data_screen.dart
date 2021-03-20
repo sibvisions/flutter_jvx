@@ -210,14 +210,14 @@ mixin SoDataScreen {
 
         if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
             null) {
-          WidgetsBinding.instance.addPostFrameCallback(
-              (_) => hideLinearProgressIndicator(context));
-
-          await showOfflineError(
-              context,
-              (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-                  .responseError
-                  .error);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            hideLinearProgressIndicator(context);
+            showOfflineError(
+                context,
+                (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                    .responseError
+                    .error);
+          });
 
           await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
               .cleanupDatabase();
