@@ -500,6 +500,9 @@ class ApiBloc extends Bloc<Request, Response> {
   Future<Response> processRequest(Request event) async {
     Response response;
 
+    if (this.appState.requestTimeout != null)
+      this.restClient.requestTimeout = this.appState.requestTimeout;
+
     if (kIsWeb || await this.networkInfo.isConnected) {
       switch (event.requestType) {
         case RequestType.STARTUP:
