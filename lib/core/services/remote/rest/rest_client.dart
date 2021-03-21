@@ -16,7 +16,7 @@ import 'http_client.dart';
 class RestClient {
   final HttpClient _client;
   bool debug = true;
-  int requestTimeout = 60;
+  int requestTimeout = 10;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
