@@ -89,6 +89,9 @@ class AppState {
   bool rememberMeChecked;
   bool hideLoginCheckbox;
 
+  /// Request timeout in seconds
+  int requestTimeout;
+
   bool get isOffline => offline != null ? offline : false;
 
   AppState();
@@ -126,5 +129,6 @@ class AppState {
     this.offline = state.offline;
     this.applicationParameters = state.applicationParameters;
     this.rememberMeChecked = state.rememberMeChecked;
+    this.requestTimeout = state.requestTimeout;
   }
 }

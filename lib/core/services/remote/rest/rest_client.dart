@@ -16,6 +16,7 @@ import 'http_client.dart';
 class RestClient {
   final HttpClient _client;
   bool debug = true;
+  int requestTimeout = 60;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
@@ -47,7 +48,7 @@ class RestClient {
       response = await this
           ._client
           .post(path, body: content, headers: headers)
-          .timeout(const Duration(seconds: 60));
+          .timeout(Duration(seconds: requestTimeout));
     } on TimeoutException {
       finalResponse = Response()
         ..error = ErrorResponse('Timeout Error', 'Timeout Error',
@@ -111,7 +112,7 @@ class RestClient {
       response = await this
           ._client
           .post(path, body: content, headers: headers)
-          .timeout(const Duration(seconds: 60));
+          .timeout(Duration(seconds: requestTimeout));
     } catch (e) {
       print(e);
     }
@@ -174,7 +175,7 @@ class RestClient {
       final streamedResponse = await request.send();
 
       response = await http.Response.fromStream(streamedResponse)
-          .timeout(const Duration(seconds: 60));
+          .timeout(Duration(seconds: requestTimeout));
     } catch (e) {
       print('EXCEPTION: $e');
 

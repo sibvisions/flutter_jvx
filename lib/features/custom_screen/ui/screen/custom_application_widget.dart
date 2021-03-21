@@ -28,6 +28,9 @@ class CustomApplicationWidget extends StatelessWidget {
 
   final bool hideLoginCheckbox;
 
+  /// Request timeout in seconds
+  final int requestTimeout;
+
   /// The AppListener to react to certain events during app usage
   final AppListener appListener;
 
@@ -42,7 +45,8 @@ class CustomApplicationWidget extends StatelessWidget {
       this.appListener,
       this.welcomeWidget,
       this.rememberMeChecked,
-      this.hideLoginCheckbox})
+      this.hideLoginCheckbox,
+      this.requestTimeout = 10})
       : super(key: key);
 
   @override
@@ -56,6 +60,7 @@ class CustomApplicationWidget extends StatelessWidget {
       welcomeWidget: this.welcomeWidget,
       rememberMeChecked: this.rememberMeChecked,
       hideLoginCheckbox: this.hideLoginCheckbox,
+      requestTimeout: this.requestTimeout,
     );
   }
 }

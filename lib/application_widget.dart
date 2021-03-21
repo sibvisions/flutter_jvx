@@ -27,6 +27,7 @@ class ApplicationWidget extends StatelessWidget {
   final Widget welcomeWidget;
   final bool rememberMeChecked;
   final bool hideLoginCheckbox;
+  final int requestTimeout;
 
   const ApplicationWidget(
       {Key key,
@@ -37,7 +38,8 @@ class ApplicationWidget extends StatelessWidget {
       this.package = false,
       this.welcomeWidget,
       this.rememberMeChecked,
-      this.hideLoginCheckbox})
+      this.hideLoginCheckbox,
+      this.requestTimeout = 10})
       : super(key: key);
 
   @override
@@ -61,6 +63,7 @@ class ApplicationWidget extends StatelessWidget {
                 appState.handleSessionTimeout = handleSessionTimeout ?? true;
                 appState.rememberMeChecked = this.rememberMeChecked ?? false;
                 appState.hideLoginCheckbox = this.hideLoginCheckbox ?? false;
+                appState.requestTimeout = this.requestTimeout ?? 10;
                 appState.appListener = this.appListener;
                 appState.package = this.package;
 
