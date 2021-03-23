@@ -442,21 +442,29 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
               child: FractionallySizedBox(
                   widthFactor: 1,
                   heightFactor: 1,
-                  child: Column(
-                    children: [
-                      if (widget.appState.isOffline)
-                        Container(
-                          height: 20,
-                          color: Colors.grey.shade500,
-                          child: Text(
-                            'OFFLINE',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          alignment: Alignment.center,
-                        ),
-                      body,
-                    ],
-                  )),
+                  child: LayoutBuilder(builder: (context, constraint) {
+                    double maxmenuHeight = constraint.maxHeight -
+                        (widget.appState.isOffline ? 20 : 0);
+                    return ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraint.maxHeight),
+                        child: IntrinsicHeight(
+                            child: Column(
+                          children: [
+                            if (widget.appState.isOffline)
+                              Container(
+                                height: 20,
+                                color: Colors.grey.shade500,
+                                child: Text(
+                                  'OFFLINE',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                alignment: Alignment.center,
+                              ),
+                            Container(height: maxmenuHeight, child: body),
+                          ],
+                        )));
+                  })),
             )),
       ),
     );
