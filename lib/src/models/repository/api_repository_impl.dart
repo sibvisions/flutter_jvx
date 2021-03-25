@@ -110,10 +110,13 @@ class ApiRepositoryImpl implements ApiRepository {
       return dataSource.login(request);
     });
 
-    if (state is ApiResponse &&
-        state.hasObject<AuthenticationDataResponseObject>()) {
-      manager.authKey =
-          state.getObjectByType<AuthenticationDataResponseObject>()!.authKey;
+    if (state is ApiResponse) {
+      manager.setSyncLoginData(
+          username: request.username, password: request.password);
+
+      if (state.hasObject<AuthenticationDataResponseObject>())
+        manager.authKey =
+            state.getObjectByType<AuthenticationDataResponseObject>()!.authKey;
     }
 
     return state;

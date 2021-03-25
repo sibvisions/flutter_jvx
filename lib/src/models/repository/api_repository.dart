@@ -1,4 +1,6 @@
 import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
+import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
 import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
 
 import '../api/requests/application_style_request.dart';
@@ -20,6 +22,14 @@ import '../api/requests/tab_select_request.dart';
 import '../api/requests/upload_request.dart';
 
 abstract class ApiRepository {
+  final SharedPreferencesManager manager;
+  final AppState appState;
+
+  ApiRepository({
+    required this.manager,
+    required this.appState,
+  });
+
   Future<ApiState> startup(StartupRequest request);
   Future<ApiState> applicationStyle(ApplicationStyleRequest request);
   Future<ApiState> downloadTranslation(DownloadTranslationRequest request);

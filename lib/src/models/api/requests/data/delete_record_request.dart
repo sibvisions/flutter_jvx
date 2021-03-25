@@ -4,7 +4,7 @@ import 'data_request.dart';
 class DeleteRecordRequest extends DataRequest {
   bool fetch;
   Filter? filter = Filter();
-  int selectedRow;
+  int? selectedRow;
 
   DeleteRecordRequest(
       {required String clientId,
@@ -12,7 +12,7 @@ class DeleteRecordRequest extends DataRequest {
       String? debugInfo,
       bool reload = false,
       required this.filter,
-      required this.selectedRow,
+      this.selectedRow,
       this.fetch = false})
       : super(
             clientId: clientId,

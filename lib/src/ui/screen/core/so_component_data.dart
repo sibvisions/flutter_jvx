@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/repository/api_repository.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/errors/failure.dart';
@@ -436,7 +437,8 @@ class SoComponentData {
     return select;
   }
 
-  Future<ApiState?> fetchAll(ApiCubit bloc, int recordsPerRequest) async {
+  Future<ApiState?> fetchAll(
+      ApiRepository repository, int recordsPerRequest) async {
     ApiState? result;
     log('Start fetching all records for ${this.dataProvider}.');
     if (data == null || data!.isAllFetched == null || !data!.isAllFetched!) {
@@ -447,7 +449,7 @@ class SoComponentData {
               data!.isAllFetched == null ||
               !data!.isAllFetched!) &&
           result == null) {
-        result = await _fetchAllSingle(bloc, recordsPerRequest, reload);
+        result = await _fetchAllSingle(repository, recordsPerRequest, reload);
         reload = false;
         if (result != null) break;
       }
@@ -464,7 +466,7 @@ class SoComponentData {
   }
 
   Future<ApiState?> _fetchAllSingle(
-      ApiCubit bloc, int recordsPerRequest, bool reload) async {
+      ApiRepository repository, int recordsPerRequest, bool reload) async {
     ApiState? result;
     if (reload && data != null) data!.records = [];
     FetchDataRequest fetch = FetchDataRequest(
@@ -475,9 +477,11 @@ class SoComponentData {
         rowCount: recordsPerRequest,
         includeMetaData: reload);
 
-    ApiState response = await bloc.data(fetch);
+    List<ApiState> states = await repository.data(fetch);
 
-    if (response is ApiResponse) {
+    if (states.isNotEmpty && states.first is ApiResponse) {
+      ApiResponse response = states.first as ApiResponse;
+
       if (response.hasError)
         result = response;
       else {
@@ -495,8 +499,8 @@ class SoComponentData {
           }
         }
       }
-    } else if (response is ApiError) {
-      result = response;
+    } else if (states.first is ApiError) {
+      result = states.first;
     }
     return result;
   }

@@ -7,7 +7,7 @@ class DataBook extends ResponseObject {
   bool? isAllFetched;
   String? dataProvider;
   List<dynamic> records;
-  List<dynamic> columnNames;
+  List<String> columnNames;
   int? from;
   int? to;
 
@@ -17,10 +17,10 @@ class DataBook extends ResponseObject {
       this.isAllFetched,
       this.dataProvider,
       this.from,
-      this.to})
-      : records = <dynamic>[],
-        columnNames = <dynamic>[],
-        super(name: name);
+      this.to,
+      this.records = const <dynamic>[],
+      this.columnNames = const <String>[]})
+      : super(name: name);
 
   List<dynamic>? getRow(int? rowIndex, List<String>? pColumnNames) {
     List<dynamic> row = <dynamic>[];

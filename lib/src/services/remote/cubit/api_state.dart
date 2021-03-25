@@ -115,6 +115,26 @@ class ApiResponse extends ApiState {
 
   bool get hasError => this.getObjectByType<Failure>() != null;
 
+  bool get hasDataObject => getAllDataObjects().isNotEmpty;
+
+  bool get hasDataBook => hasObject<DataBook>();
+
+  bool get hasMetaDataBook => hasObject<DataBookMetaData>();
+
+  bool get hasDataProviderChanged => hasObject<DataproviderChanged>();
+
+  DataBook? getDataBookByProvider(String dataProvider) {
+    DataBook? dataBook;
+
+    for (final d in _objects.whereType<DataBook>().toList()) {
+      if (d.dataProvider == dataProvider) {
+        dataBook = d;
+      }
+    }
+
+    return dataBook;
+  }
+
   ResponseObject? getObjectByName(String name) {
     int? index = _indices[name];
 
@@ -139,8 +159,6 @@ class ApiResponse extends ApiState {
 
   bool hasObject<T>() => getObjectByType<T>() != null;
 
-  bool get hasDataObject => getAllDataObjects().isNotEmpty;
-
   List<T> getAllObjectsByType<T extends ResponseObject>() {
     List<T> toReturn = _objects.whereType<T>().toList();
 
@@ -158,6 +176,10 @@ class ApiResponse extends ApiState {
       ...dataBookMetaDatas,
       ...dpcs,
     ];
+  }
+
+  void addResponseObject(ResponseObject responseObject) {
+    if (!_objects.contains(responseObject)) _objects.add(responseObject);
   }
 
   static Map<String, int> _getIndicesFromObjects(List<ResponseObject> objects) {

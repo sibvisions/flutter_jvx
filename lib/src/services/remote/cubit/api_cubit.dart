@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../../../models/api/errors/failure.dart';
@@ -116,263 +113,35 @@ class ApiCubit extends Cubit<ApiState> {
     return states.first;
   }
 
-  Future<void> change(ChangeRequest request) {
-    // TODO: implement change
-    throw UnimplementedError();
+  Future<void> change(ChangeRequest request) async {
+    emit(await repository.change(request));
   }
 
-  Future<void> closeScreen(CloseScreenRequest request) {
-    // TODO: implement closeScreen
-    throw UnimplementedError();
+  Future<void> closeScreen(CloseScreenRequest request) async {
+    emit(await repository.closeScreen(request));
   }
 
-  Future<void> deviceStatus(DeviceStatusRequest request) {
-    // TODO: implement deviceStatus
-    throw UnimplementedError();
+  Future<void> deviceStatus(DeviceStatusRequest request) async {
+    emit(await repository.deviceStatus(request));
   }
 
-  Future<void> menu(MenuRequest request) {
-    // TODO: implement menu
-    throw UnimplementedError();
+  Future<void> menu(MenuRequest request) async {
+    emit(await repository.menu(request));
   }
 
-  Future<void> setComponentValue(SetComponentValueRequest request) {
-    // TODO: implement setComponentValue
-    throw UnimplementedError();
+  Future<void> setComponentValue(SetComponentValueRequest request) async {
+    emit(await repository.setComponentValue(request));
   }
 
-  Future<void> tabClose(TabCloseRequest request) {
-    // TODO: implement tabClose
-    throw UnimplementedError();
+  Future<void> tabClose(TabCloseRequest request) async {
+    emit(await repository.tabClose(request));
   }
 
-  Future<void> tabSelect(TabSelectRequest request) {
-    // TODO: implement tabSelect
-    throw UnimplementedError();
+  Future<void> tabSelect(TabSelectRequest request) async {
+    emit(await repository.tabSelect(request));
   }
 
-  Future<void> upload(UploadRequest request) {
-    // TODO: implement upload
-    throw UnimplementedError();
-  }
-
-  // Future<Either<ApiError, ApiResponse>> _sendRequest(
-  //     Uri uri, Request request) async {
-  //   if (!kIsWeb) {
-  //     if (!(await networkInfo.isConnected)) {
-  //       return Left(ApiError(
-  //           failure: ServerFailure(
-  //               title: 'Internet problems.',
-  //               message: 'No connection to the internet!',
-  //               details: '',
-  //               name: 'message.error')));
-  //     }
-  //   }
-
-  //   Either<Failure, http.Response> either =
-  //       await client.post(uri: uri, data: request.toJson());
-
-  //   return either.fold((l) => Left(ApiError(failure: l)), (r) {
-  //     if (r.statusCode != 404) {
-  //       List decodedBody = _getDecodedBody(r);
-  //       Failure? failure = _getErrorIfExists(decodedBody);
-
-  //       if (failure != null) {
-  //         return Left(ApiError(failure: failure));
-  //       } else {
-  //         final cookie = r.headers['set-cookie'];
-
-  //         if (cookie != null && cookie.isNotEmpty) {
-  //           final index = cookie.indexOf(';');
-
-  //           if (client.headers == null) {
-  //             client.headers = <String, String>{
-  //               'Content-Type': 'application/json'
-  //             };
-  //           }
-
-  //           client.headers!['cookie'] =
-  //               (index == -1) ? cookie : cookie.substring(0, index);
-  //         }
-
-  //         ApiResponse response = ApiResponse.fromJson(request, decodedBody);
-
-  //         return Right(response);
-  //       }
-  //     } else {
-  //       return Left(ApiError(
-  //           failure: Failure(
-  //               details: '',
-  //               message: 'App with appname not found',
-  //               name: 'message.error',
-  //               title: 'Not found')));
-  //     }
-  //   });
-  // }
-
-  // Future<Either<ApiError, ApiResponse>> _sendDownloadRequest(
-  //     Uri uri, Request request) async {
-  //   if (!kIsWeb) {
-  //     if (!(await networkInfo.isConnected)) {
-  //       return Left(ApiError(
-  //           failure: ServerFailure(
-  //               title: 'Internet problems.',
-  //               message: 'No connection to the internet!',
-  //               details: '',
-  //               name: 'message.error')));
-  //     }
-  //   }
-
-  //   Either<Failure, http.Response> either = await client.post(
-  //       uri: uri,
-  //       data: request.toJson(),
-  //       timeout: appState.appConfig!.requestTimeout);
-
-  //   return either.fold((l) => Left(ApiError(failure: l)), (r) async {
-  //     bool isTranslation = (request is DownloadTranslationRequest);
-
-  //     if (!kIsWeb) {
-  //       deleteOutdatedData(
-  //           baseUrl: appState.serverConfig!.baseUrl,
-  //           translation: isTranslation);
-  //     }
-
-  //     Archive archive = ZipDecoder().decodeBytes(r.bodyBytes);
-
-  //     late String localFilePath;
-
-  //     if (!kIsWeb) {
-  //       localFilePath = getLocalFilePath(
-  //             baseDir: appState.baseDirectory,
-  //             baseUrl: appState.serverConfig!.baseUrl,
-  //             appName: appState.serverConfig!.appName,
-  //             appVersion: appState.applicationMetaData!.version,
-  //             translation: isTranslation,
-  //           ) +
-  //           '/';
-  //     } else {
-  //       localFilePath = '';
-  //     }
-
-  //     if (!isTranslation) {
-  //       appState.fileConfig.images.clear();
-  //     }
-
-  //     for (final file in archive) {
-  //       final filename = '$localFilePath${file.name}';
-
-  //       if (!kIsWeb) {
-  //         if (file.isFile) {
-  //           var outputFile = File(filename);
-
-  //           outputFile = await outputFile.create(recursive: true);
-
-  //           await outputFile.writeAsBytes(file.content);
-
-  //           if (isTranslation) {
-  //             appState.translationConfig.possibleTranslations
-  //                 .putIfAbsent(file.name, () => '$filename');
-
-  //             String trimmedFilename = file.name;
-
-  //             if (trimmedFilename.contains('_')) {
-  //               trimmedFilename = trimmedFilename.substring(
-  //                   trimmedFilename.indexOf('_') + 1,
-  //                   trimmedFilename.indexOf('.'));
-  //             } else {
-  //               trimmedFilename = 'en';
-  //             }
-
-  //             if (!appState.translationConfig.supportedLocales
-  //                 .contains(Locale(trimmedFilename))) {
-  //               appState.translationConfig.supportedLocales
-  //                   .add(Locale(trimmedFilename));
-  //             }
-  //           } else {
-  //             appState.fileConfig.images.add(filename);
-  //           }
-  //         }
-  //       } else {
-  //         if (isTranslation) {
-  //           appState.translationConfig.possibleTranslations
-  //               .putIfAbsent(file.name, () => filename);
-
-  //           String trimmedFilename = file.name;
-
-  //           if (trimmedFilename.contains('_')) {
-  //             trimmedFilename = trimmedFilename.substring(
-  //                 trimmedFilename.indexOf('_') + 1,
-  //                 trimmedFilename.indexOf('.'));
-  //           } else {
-  //             trimmedFilename = 'en';
-  //           }
-
-  //           if (!appState.translationConfig.supportedLocales
-  //               .contains(Locale(trimmedFilename))) {
-  //             appState.translationConfig.supportedLocales
-  //                 .add(Locale(trimmedFilename));
-  //           }
-  //         } else {
-  //           appState.fileConfig.images.add(filename);
-  //         }
-
-  //         if (file.isFile) {
-  //           appState.fileConfig.files
-  //               .putIfAbsent('/${file.name}', () => utf8.decode(file.content));
-  //         }
-  //       }
-  //     }
-
-  //     if (isTranslation) {
-  //       manager.possibleTranslations =
-  //           appState.translationConfig.possibleTranslations;
-
-  //       sl<SupportedLocaleManager>().value =
-  //           appState.translationConfig.supportedLocales;
-  //     } else {
-  //       manager.savedImages = appState.fileConfig.images;
-  //     }
-
-  //     ApiResponse response = ApiResponse(request: request, objects: [
-  //       DownloadResponseObject(name: 'download', translation: isTranslation)
-  //     ]);
-
-  //     return Right(response);
-  //   });
-  // }
-
-  Failure? _getErrorIfExists(List<dynamic> responses) {
-    if (responses.isNotEmpty) {
-      for (final response in responses) {
-        if (response['name'] == 'message.error' ||
-            response['name'] == 'server.error' ||
-            response['name'] == 'message.sessionexpired') {
-          return ServerFailure.fromJson(response);
-        }
-      }
-    }
-
-    return null;
-  }
-
-  List<dynamic> _getDecodedBody(http.Response response) {
-    String body = utf8Convert(response.body);
-
-    dynamic decodedBody = json.decode(body);
-
-    if (decodedBody is List)
-      return decodedBody;
-    else
-      return [decodedBody];
-  }
-
-  String utf8Convert(String text) {
-    try {
-      List<int> bytes = text.toString().codeUnits;
-      return utf8.decode(bytes);
-    } catch (e) {
-      print("Failed to decode string to utf-8!");
-      return text;
-    }
+  Future<void> upload(UploadRequest request) async {
+    emit(await repository.upload(request));
   }
 }

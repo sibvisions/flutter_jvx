@@ -1,10 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
-import 'package:flutterclient/src/ui/util/error/custom_bloc_listener.dart';
-import 'package:flutterclient/src/util/app/get_image_string.dart';
-import 'dart:io';
 import 'package:uuid/uuid.dart';
 
 import '../../../../injection_container.dart';
@@ -18,6 +15,7 @@ import '../../../models/api/response_objects/device_status_response_object.dart'
 import '../../../models/api/response_objects/language_response_object.dart';
 import '../../../models/api/response_objects/login_response_object.dart';
 import '../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../models/state/app_state.dart';
 import '../../../models/state/routes/arguments/login_page_arguments.dart';
 import '../../../models/state/routes/arguments/menu_page_arguments.dart';
@@ -25,12 +23,13 @@ import '../../../models/state/routes/routes.dart';
 import '../../../services/local/locale/supported_locale_manager.dart';
 import '../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
+import '../../../util/app/get_image_string.dart';
 import '../../../util/color/get_color_from_app_style.dart';
 import '../../../util/device_info/device_info.dart';
 import '../../../util/download/download_helper.dart';
 import '../../../util/theme/theme_manager.dart';
 import '../../../util/translation/app_localizations.dart';
-import '../../util/restart_widget.dart';
+import '../../util/error/custom_bloc_listener.dart';
 
 class StartupPageWidget extends StatefulWidget {
   final AppState appState;

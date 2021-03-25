@@ -89,6 +89,42 @@ class SharedPreferencesManager {
     }
   }
 
+  Map<String, dynamic>? get syncLoginData {
+    Map<String, dynamic> data = <String, dynamic>{};
+
+    data.putIfAbsent(
+        'username',
+        () => encrypter.decrypt(
+            Encrypted.fromBase64(
+                sharedPreferences.getString('syncUsername') ?? ''),
+            iv: iv));
+    data.putIfAbsent(
+        'password',
+        () => encrypter.decrypt(
+            Encrypted.fromBase64(
+                sharedPreferences.getString('syncPassword') ?? ''),
+            iv: iv));
+
+    return data;
+  }
+
+  void setSyncLoginData(
+      {required String? username, required String? password}) {
+    if (username != null && username.isNotEmpty) {
+      sharedPreferences.setString(
+          'syncUsername', encrypter.encrypt(username, iv: iv).base64);
+    } else {
+      sharedPreferences.remove('syncUsername');
+    }
+
+    if (password != null && password.isNotEmpty) {
+      sharedPreferences.setString(
+          'syncPassword', encrypter.encrypt(password, iv: iv).base64);
+    } else {
+      sharedPreferences.remove('syncPassword');
+    }
+  }
+
   set baseUrl(String? baseUrl) {
     if (baseUrl != null)
       sharedPreferences.setString('baseUrl', baseUrl);

@@ -5,7 +5,7 @@ class SetValuesRequest extends DataRequest {
   List<dynamic> columnNames;
   List<dynamic> values;
   Filter? filter;
-  int offlineSelectedRow;
+  int? offlineSelectedRow;
 
   SetValuesRequest(
       {required String clientId,
@@ -15,7 +15,7 @@ class SetValuesRequest extends DataRequest {
       required this.values,
       required this.columnNames,
       this.filter,
-      required this.offlineSelectedRow})
+      this.offlineSelectedRow})
       : super(
             clientId: clientId,
             dataProvider: dataProvider,

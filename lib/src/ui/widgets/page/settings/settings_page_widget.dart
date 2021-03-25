@@ -203,6 +203,12 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       appName!.isNotEmpty &&
                       baseUrl != null &&
                       baseUrl!.isNotEmpty) {
+                    if (appName != widget.appState.serverConfig?.appName ||
+                        baseUrl != widget.appState.serverConfig?.baseUrl) {
+                      widget.manager
+                          .setSyncLoginData(username: null, password: null);
+                    }
+
                     widget.manager.appName = appName;
                     widget.manager.baseUrl = baseUrl;
                     if (widget.manager.language != language) {

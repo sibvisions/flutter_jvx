@@ -3,6 +3,7 @@ import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
 
 class SoScreenConfiguration extends ValueNotifier<ApiState?> {
   String componentId;
+  String screenComponentId;
   String screenTitle;
   String? templateName;
   bool withServer;
@@ -13,6 +14,7 @@ class SoScreenConfiguration extends ValueNotifier<ApiState?> {
       {ApiState? response,
       required this.componentId,
       required this.screenTitle,
+      required this.screenComponentId,
       this.drawer = const SizedBox(),
       this.templateName,
       this.offlineScreen = false,
