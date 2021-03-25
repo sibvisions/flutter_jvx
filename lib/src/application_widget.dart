@@ -111,12 +111,8 @@ class ApplicationWidget extends StatelessWidget {
     SharedPreferencesManager manager = sl<SharedPreferencesManager>();
     String initialRoute = '/';
 
-    if (appState.screenManager == null) {
-      if (screenManager != null) {
-        appState.screenManager = screenManager;
-      } else {
-        appState.screenManager = ScreenManager();
-      }
+    if (screenManager != null) {
+      appState.screenManager = screenManager!;
     }
 
     if (appState.listener == null) {

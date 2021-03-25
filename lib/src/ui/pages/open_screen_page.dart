@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import '../../../injection_container.dart';
 import '../../models/state/app_state.dart';
 import '../../services/local/shared_preferences/shared_preferences_manager.dart';
-import '../../services/remote/cubit/api_cubit.dart';
 import '../../util/theme/theme_manager.dart';
+import '../screen/core/so_screen.dart';
 import '../widgets/page/open_screen/open_screen_page_widget.dart';
 
 class OpenScreenPage extends StatelessWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
-  final ApiResponse response;
+  final SoScreen screen;
 
   const OpenScreenPage(
       {Key? key,
       required this.appState,
       required this.manager,
-      required this.response})
+      required this.screen})
       : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class OpenScreenPage extends StatelessWidget {
         child: OpenScreenPageWidget(
           appState: appState,
           manager: manager,
-          response: response,
+          screen: screen,
         ));
   }
 }

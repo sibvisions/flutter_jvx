@@ -23,7 +23,7 @@ class SoMenuManager {
       {required String id,
       required String group,
       required String text,
-      required String image,
+      required String? image,
       bool checkUnique = true,
       required String templateName}) {
     MenuItem itemToAdd =

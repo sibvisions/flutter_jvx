@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/ui/screen/core/manager/so_menu_manager.dart';
-import 'package:flutterclient/src/ui/util/error/custom_bloc_listener.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
+import '../../../screen/core/manager/so_menu_manager.dart';
+import '../../../util/error/custom_bloc_listener.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/logout_request.dart';
@@ -43,11 +44,18 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   @override
   void initState() {
-    if (widget.appState.screenManager != null) {
-      SoMenuManager menuManager = SoMenuManager(widget.menuItems);
+    _menuItems = widget.menuItems;
 
-      widget.appState.screenManager!.onMenu(menuManager);
-      _menuItems = menuManager.menuItems;
+    SoMenuManager menuManager = SoMenuManager(_menuItems);
+
+    widget.appState.screenManager.onMenu(menuManager);
+
+    if (widget.response != null) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) => Navigator.of(context)
+          .pushNamed(Routes.openScreen,
+              arguments: OpenScreenPageArguments(
+                  screen: widget.appState.screenManager
+                      .createScreen(response: widget.response!))));
     }
 
     super.initState();
@@ -65,8 +73,30 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                 arguments: LoginPageArguments(
                     lastUsername: widget.appState.userData?.username ?? ''));
           } else if (state.request is OpenScreenRequest) {
-            Navigator.of(context).pushNamed(Routes.openScreen,
-                arguments: OpenScreenPageArguments(response: state));
+            ScreenGenericResponseObject? screenGeneric =
+                state.getObjectByType<ScreenGenericResponseObject>();
+
+            if (screenGeneric != null) {
+              if (widget.appState.screenManager.hasScreen(
+                  (state.request as OpenScreenRequest).componentId)) {
+                widget.appState.screenManager
+                    .findScreen(
+                        (state.request as OpenScreenRequest).componentId)!
+                    .configuration
+                    .value = state;
+
+                Navigator.of(context).pushNamed(Routes.openScreen,
+                    arguments: OpenScreenPageArguments(
+                        screen: widget.appState.screenManager.findScreen(
+                            (state.request as OpenScreenRequest)
+                                .componentId)!));
+              } else {
+                Navigator.of(context).pushNamed(Routes.openScreen,
+                    arguments: OpenScreenPageArguments(
+                        screen: widget.appState.screenManager
+                            .createScreen(response: state)));
+              }
+            }
           }
         } else if (state is ApiError) {
           await ErrorHandler.handleError(state, context);
@@ -74,9 +104,9 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
       },
       child: Builder(
         builder: (context) {
-          if (widget.manager.webOnly) {
+          if (widget.appState.webOnly) {
             return BrowserMenuWidget();
-          } else if (widget.manager.mobileOnly) {
+          } else if (widget.appState.mobileOnly) {
             return MobileMenuWidget(
               appState: widget.appState,
               menuItems: _menuItems,

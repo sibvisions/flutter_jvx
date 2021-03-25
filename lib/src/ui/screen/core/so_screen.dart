@@ -29,12 +29,10 @@ enum CoState { Added, Free, Removed, Destroyed }
 class SoScreen extends StatefulWidget {
   final SoScreenConfiguration configuration;
   final SoComponentCreator creator;
-  final Widget drawer;
 
   SoScreen({
     Key? key,
     required this.configuration,
-    required this.drawer,
     required this.creator,
   }) : super(key: key);
 
@@ -62,8 +60,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   Map<String, ComponentWidget> get components => _components;
 
-  void onState(ApiState state) {
-    if (state is ApiResponse) {
+  void onState(ApiState? state) {
+    if (state is ApiResponse && widget.configuration.withServer) {
       _checkForCloseScreenAction(state);
 
       update(state);
@@ -414,7 +412,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
               ],
             )
           : null,
-      endDrawer: widget.drawer,
+      endDrawer: widget.configuration.drawer,
       body: Center(child: rootComponent),
     );
   }

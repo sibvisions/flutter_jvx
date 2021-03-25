@@ -1,7 +1,7 @@
-import '../../../../services/remote/cubit/api_cubit.dart';
+import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
 
 class OpenScreenPageArguments {
-  ApiResponse response;
+  SoScreen screen;
 
-  OpenScreenPageArguments({required this.response});
+  OpenScreenPageArguments({required this.screen});
 }

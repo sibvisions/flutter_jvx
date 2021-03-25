@@ -71,7 +71,7 @@ class SoComponentData {
       if (pData.records.length > 0) {
         for (int i = pData.from ?? 0; i <= (pData.to ?? 0); i++) {
           List<dynamic> record = pData.records[(i - pData.from!)];
-          String recordState = record[record.length - 1];
+          String recordState = record[record.length - 1] ?? '';
 
           if ((i - pData.from!) < data!.records.length &&
               i < data!.records.length) {

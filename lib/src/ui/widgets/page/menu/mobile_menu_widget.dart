@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../injection_container.dart';
@@ -35,11 +36,22 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _onPressedMenuItem(MenuItem menuItem) {
-    OpenScreenRequest request = OpenScreenRequest(
-        clientId: widget.appState.applicationMetaData!.clientId,
-        componentId: menuItem.componentId);
+    if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
+        !widget.appState.screenManager
+            .findScreen(menuItem.componentId)!
+            .configuration
+            .withServer) {
+      Navigator.of(context).pushNamed(Routes.openScreen,
+          arguments: OpenScreenPageArguments(
+              screen: widget.appState.screenManager
+                  .findScreen(menuItem.componentId)!));
+    } else {
+      OpenScreenRequest request = OpenScreenRequest(
+          clientId: widget.appState.applicationMetaData!.clientId,
+          componentId: menuItem.componentId);
 
-    sl<ApiCubit>().openScreen(request);
+      sl<ApiCubit>().openScreen(request);
+    }
   }
 
   Widget _getMobileMenuWidget() {

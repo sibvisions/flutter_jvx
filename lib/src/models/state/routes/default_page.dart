@@ -6,7 +6,7 @@ class DefaultPage extends MaterialPage {
   DefaultPage(
       {required Widget child,
       required String name,
-      required Object arguments,
+      required Object? arguments,
       required LocalKey? key})
       : super(child: child, key: key, name: name, arguments: arguments);
 

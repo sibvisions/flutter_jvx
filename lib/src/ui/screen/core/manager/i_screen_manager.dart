@@ -1,3 +1,6 @@
+import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
+import 'package:flutterclient/src/ui/widgets/drawer/menu_drawer_widget.dart';
+
 import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../so_screen.dart';
 import 'so_menu_manager.dart';
@@ -34,9 +37,15 @@ abstract class IScreenManager {
   /// Method for finding a regsitered Screen
   SoScreen? findScreen(String name);
 
+  /// Method for checking if manager has the screen
+  bool hasScreen(String componentId);
+
   /// Method for removing a registered Screen
   void removeScreen(String name);
 
   /// Method for updating and/or replacing
   void updateScreen(SoScreen screen);
+
+  SoScreen createScreen(
+      {required ApiResponse response, MenuDrawerWidget? drawer});
 }

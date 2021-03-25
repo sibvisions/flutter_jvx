@@ -1,3 +1,5 @@
+import 'package:flutterclient/src/ui/screen/core/manager/screen_manager.dart';
+
 import '../../services/remote/handler/i_socket_handler.dart';
 import '../../ui/screen/core/manager/i_screen_manager.dart';
 import '../../util/app/listener/app_listener.dart';
@@ -35,7 +37,7 @@ class AppState {
   String baseDirectory = '';
   int picSize = 320;
 
-  IScreenManager? screenManager;
+  IScreenManager screenManager = ScreenManager();
   AppListener? listener;
   ISocketHandler? socketHandler;
 

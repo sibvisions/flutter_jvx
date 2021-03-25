@@ -1,19 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/requests/close_screen_request.dart';
-import 'package:flutterclient/src/models/api/requests/device_status_request.dart';
-import 'package:flutterclient/src/models/api/requests/navigation_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/close_screen_action_response_object.dart';
-import 'package:flutterclient/src/util/app/listener/listener.dart';
-import 'package:flutterclient/src/util/app/text_utils.dart';
 
 import '../../../../../injection_container.dart';
-import '../../../../models/api/requests/data/data_request.dart';
+import '../../../../models/api/requests/close_screen_request.dart';
+import '../../../../models/api/requests/device_status_request.dart';
 import '../../../../models/api/requests/logout_request.dart';
+import '../../../../models/api/requests/navigation_request.dart';
 import '../../../../models/api/requests/open_screen_request.dart';
-import '../../../../models/api/requests/press_button_request.dart';
-import '../../../../models/api/response_objects/device_status_response_object.dart';
+import '../../../../models/api/response_objects/close_screen_action_response_object.dart';
 import '../../../../models/api/response_objects/device_status_response_object.dart';
 import '../../../../models/api/response_objects/download_action_response_object.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
@@ -25,6 +20,8 @@ import '../../../../models/state/routes/default_page.dart';
 import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
+import '../../../../util/app/listener/listener.dart';
+import '../../../../util/app/text_utils.dart';
 import '../../../screen/core/configuration/so_screen_configuration.dart';
 import '../../../screen/core/so_component_creator.dart';
 import '../../../screen/core/so_screen.dart';
@@ -34,13 +31,13 @@ import '../../drawer/menu_drawer_widget.dart';
 class OpenScreenPageWidget extends StatefulWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
-  final ApiResponse response;
+  final SoScreen screen;
 
   const OpenScreenPageWidget({
     Key? key,
     required this.appState,
     required this.manager,
-    required this.response,
+    required this.screen,
   }) : super(key: key);
 
   @override
@@ -52,10 +49,20 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   List<DefaultPage> _pages = <DefaultPage>[];
 
   late String _currentComponentId;
-  late ApiResponse _response;
+  ApiResponse? _response;
 
   late Size _lastScreenSize;
   late Timer _deviceStatusTimer;
+
+  MenuDrawerWidget getMenuDrawer(String title) => MenuDrawerWidget(
+        appState: widget.appState,
+        menuItems: widget.appState.menuResponseObject.entries,
+        onLogoutPressed: _onLogoutPressed,
+        onMenuItemPressed: _onMenuItemPressed,
+        onSettingsPressed: () =>
+            Navigator.of(context).pushNamed(Routes.settings),
+        title: title,
+      );
 
   void _listener(BuildContext context, ApiState state) {
     if (state is ApiResponse) {
@@ -82,7 +89,11 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       } else if (state.request is OpenScreenRequest) {
         if (state.hasObject<ScreenGenericResponseObject>()) {
           setState(() {
-            addPage(_createScreen(state));
+            addPage(widget.appState.screenManager.createScreen(
+                response: state,
+                drawer: getMenuDrawer(state
+                    .getObjectByType<ScreenGenericResponseObject>()!
+                    .screenTitle!)));
           });
         }
       }
@@ -171,39 +182,16 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
   }
 
-  void _addInitialScreen(ApiResponse response) {
-    _response = widget.response;
+  void _addInitialScreen(SoScreen screen) {
+    if (screen.configuration.value != null)
+      _response = screen.configuration.value as ApiResponse;
 
-    _currentComponentId =
-        response.getObjectByType<ScreenGenericResponseObject>()!.screenTitle ??
-            '';
+    screen.configuration.drawer =
+        getMenuDrawer(screen.configuration.screenTitle);
 
-    addPage(_createScreen(response));
-  }
+    _currentComponentId = screen.configuration.componentId;
 
-  SoScreen _createScreen(ApiResponse response) {
-    ScreenGenericResponseObject? screenGeneric =
-        response.getObjectByType<ScreenGenericResponseObject>();
-
-    SoScreen screen = SoScreen(
-      creator: SoComponentCreator(),
-      drawer: MenuDrawerWidget(
-        appState: widget.appState,
-        menuItems: widget.appState.menuResponseObject.entries,
-        onLogoutPressed: _onLogoutPressed,
-        onMenuItemPressed: _onMenuItemPressed,
-        onSettingsPressed: () =>
-            Navigator.of(context).pushNamed(Routes.settings),
-        title: screenGeneric!.screenTitle!,
-      ),
-      configuration: SoScreenConfiguration(
-        componentId: screenGeneric.componentId!,
-        response: response,
-        screenTitle: screenGeneric.screenTitle!,
-      ),
-    );
-
-    return screen;
+    addPage(screen);
   }
 
   void _addDeviceStatusTimer(BuildContext context) {
@@ -238,7 +226,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           .fireAfterStartupListener(ApplicationApi(context));
     }
 
-    _addInitialScreen(widget.response);
+    _addInitialScreen(widget.screen);
 
     WidgetsBinding.instance!.addObserver(this);
   }

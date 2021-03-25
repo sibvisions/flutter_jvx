@@ -6,7 +6,11 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/data/delete_record_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/fetch_data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/filter_data_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/save_data_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -191,6 +195,16 @@ class ApiCubit extends Cubit<ApiState> {
       path += '/api/dal/setValues';
     } else if (request is InsertRecordRequest) {
       path += '/api/dal/insertRecord';
+    } else if (request is FetchDataRequest) {
+      path += '/api/dal/fetch';
+    } else if (request is SaveDataRequest) {
+      path += '/api/dal/save';
+    } else if (request is FilterDataRequest) {
+      path += '/api/dal/filter';
+    } else if (request is DeleteRecordRequest) {
+      path += '/api/dal/deleteRecord';
+    } else if (request is MetaDataRequest) {
+      path += '/api/dal/metaData';
     }
 
     Either<ApiError, ApiResponse> either =
@@ -266,7 +280,7 @@ class ApiCubit extends Cubit<ApiState> {
         await client.post(uri: uri, data: request.toJson());
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) {
-      if (r.statusCode == 200) {
+      if (r.statusCode != 404) {
         List decodedBody = _getDecodedBody(r);
         Failure? failure = _getErrorIfExists(decodedBody);
 
@@ -294,7 +308,11 @@ class ApiCubit extends Cubit<ApiState> {
         }
       } else {
         return Left(ApiError(
-            failure: Failure(details: '', message: '', name: '', title: 'Status Error')));
+            failure: Failure(
+                details: '',
+                message: 'App with appname not found',
+                name: 'message.error',
+                title: 'Not found')));
       }
     });
   }

@@ -1,7 +1,20 @@
-import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
-import 'package:flutterclient/src/ui/screen/core/manager/i_screen_manager.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
-import 'package:flutterclient/src/ui/screen/core/manager/so_menu_manager.dart';
+import 'dart:developer';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
+import 'package:flutterclient/src/ui/screen/custom/test/test_custom_screen.dart';
+import 'package:flutterclient/src/ui/screen/custom/test/test_online_custom_screen.dart';
+
+import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
+import '../../../../models/api/response_objects/user_data_response_object.dart';
+import '../../../../services/remote/cubit/api_cubit.dart';
+import '../../../widgets/drawer/menu_drawer_widget.dart';
+import '../configuration/so_screen_configuration.dart';
+import '../so_component_creator.dart';
+import '../so_screen.dart';
+import 'i_screen_manager.dart';
+import 'so_menu_manager.dart';
 
 class ScreenManager implements IScreenManager {
   Map<String, SoScreen> _screens = <String, SoScreen>{};
@@ -54,5 +67,34 @@ class ScreenManager implements IScreenManager {
     if (_screens.containsKey(screen.configuration.componentId)) {
       _screens[screen.configuration.componentId] = screen;
     }
+  }
+
+  @override
+  SoScreen createScreen(
+      {required ApiResponse response, MenuDrawerWidget? drawer}) {
+    ScreenGenericResponseObject? screenGeneric =
+        response.getObjectByType<ScreenGenericResponseObject>();
+
+    SoScreen screen = SoScreen(
+      creator: SoComponentCreator(),
+      configuration: SoScreenConfiguration(
+        drawer: drawer ?? SizedBox(),
+        componentId: screenGeneric!.componentId!,
+        response: response,
+        screenTitle: screenGeneric.screenTitle!,
+        withServer: true,
+        offlineScreen: false,
+      ),
+    );
+
+    return screen;
+  }
+
+  @override
+  bool hasScreen(String componentId) {
+    if (screens.containsKey(componentId)) {
+      return true;
+    }
+    return false;
   }
 }

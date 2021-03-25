@@ -92,7 +92,7 @@ class MobileApp extends StatelessWidget {
             builder: (_) => OpenScreenPage(
                 appState: appState,
                 manager: manager,
-                response: arguments.response));
+                screen: arguments.screen));
       default:
         return DefaultPageRoute(
             settings: RouteSettings(

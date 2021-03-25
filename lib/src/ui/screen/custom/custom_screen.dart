@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/ui/screen/core/configuration/so_screen_configuration.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
-import 'package:flutterclient/src/util/app/listener/application_api.dart';
+import 'package:flutterclient/src/ui/screen/core/so_component_creator.dart';
+
+import '../../../services/remote/cubit/api_cubit.dart';
+import '../../../util/app/listener/application_api.dart';
+import '../core/configuration/so_screen_configuration.dart';
+import '../core/so_screen.dart';
 
 class CustomScreen extends SoScreen {
-  CustomScreen(
-      {Key? key,
-      required SoScreenConfiguration configuration,
-      dynamic creator,
-      required Widget drawer})
-      : super(
-            key: key,
-            configuration: configuration,
-            creator: creator,
-            drawer: drawer);
+  CustomScreen({
+    Key? key,
+    required SoScreenConfiguration configuration,
+    required SoComponentCreator creator,
+  }) : super(
+          key: key,
+          configuration: configuration,
+          creator: creator,
+        );
 }
 
 class CustomScreenState extends SoScreenState<CustomScreen> {
@@ -24,7 +25,7 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
   }
 
   @override
-  void onState(ApiState state) {
+  void onState(ApiState? state) {
     super.onState(state);
   }
 
