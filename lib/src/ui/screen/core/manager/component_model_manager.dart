@@ -1,4 +1,7 @@
 import 'package:flutterclient/src/ui/component/model/icon_component_model.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/menu_item_component_model.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_button_component_model.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
 import 'package:flutterclient/src/ui/editor/editor_component_model.dart';
 
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -88,15 +91,18 @@ class ComponentModelManager {
       //     componentId: changedComponent.id,
       //   );
       //   break;
-      // case 'PopupMenu':
-      //   componentModel = PopupMenuComponentModel(changedComponent);
-      //   break;
-      // case 'PopupMenuButton':
-      //   componentModel = PopupMenuButtonComponentModel(changedComponent);
-      //   break;
-      // case 'MenuItem':
-      //   componentModel = MenuItemComponentModel(changedComponent);
-      //   break;
+      case 'PopupMenu':
+        componentModel =
+            PopupMenuComponentModel(changedComponent: changedComponent);
+        break;
+      case 'PopupMenuButton':
+        componentModel = PopupMenuButtonComponentModel(
+            changedComponent: changedComponent, onAction: onAction!);
+        break;
+      case 'MenuItem':
+        componentModel =
+            MenuItemComponentModel(changedComponent: changedComponent);
+        break;
       case 'Label':
         componentModel =
             LabelComponentModel(changedComponent: changedComponent);

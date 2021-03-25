@@ -1,5 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../models/api/response_objects/close_screen_action_response_object.dart';
@@ -102,12 +106,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         String? parent = changedComponent.getProperty<String>(
             ComponentProperty.PARENT, null);
 
-        if (changedComponent.additional ??
-            false ||
-                (parent != null &&
-                    parent.isNotEmpty &&
-                    _additionalComponents.containsKey(parent)) ||
-                _additionalComponents.containsKey(changedComponent.id)) {
+        if (changedComponent.additional ||
+            (parent != null &&
+                parent.isNotEmpty &&
+                _additionalComponents.containsKey(parent)) ||
+            _additionalComponents.containsKey(changedComponent.id)) {
           _updateComponent(changedComponent, _additionalComponents);
         } else {
           _updateComponent(changedComponent, _components);
@@ -191,9 +194,51 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
               .linkReference!
               .dataProvider!);
         }
+      } else if (changedComponent.additional &&
+          componentWidget is CoPopupMenuWidget) {
+        if (_components.containsKey(
+                componentWidget.componentModel.parentComponentId) &&
+            _components[componentWidget.componentModel.parentComponentId]
+                is CoPopupMenuButtonWidget) {
+          CoPopupMenuButtonWidget btn =
+              _components[componentWidget.componentModel.parentComponentId]!
+                  as CoPopupMenuButtonWidget;
+
+          btn.componentModel.menu = componentWidget;
+        }
+      } else if (componentWidget is CoMenuItemWidget) {
+        if (container.containsKey(
+                componentWidget.componentModel.parentComponentId) &&
+            container[componentWidget.componentModel.parentComponentId]
+                is CoPopupMenuWidget) {
+          CoPopupMenuWidget menu =
+              container[componentWidget.componentModel.parentComponentId]!
+                  as CoPopupMenuWidget;
+
+          (menu.componentModel as PopupMenuComponentModel)
+              .updateMenuItem(componentWidget);
+        }
       }
     } else {
       componentWidget = container[changedComponent.id]!;
+
+      if (componentWidget is CoEditorWidget) {
+        (componentWidget.componentModel as EditorComponentModel).data =
+            getComponentData(
+                (componentWidget.componentModel as EditorComponentModel)
+                    .dataProvider!);
+
+        if (componentWidget.cellEditor is CoReferencedCellEditorWidget) {
+          (componentWidget.cellEditor as CoReferencedCellEditorWidget)
+              .cellEditorModel
+              .referencedData = getComponentData((componentWidget.cellEditor
+                  as CoReferencedCellEditorWidget)
+              .cellEditorModel
+              .cellEditor
+              .linkReference!
+              .dataProvider!);
+        }
+      }
     }
 
     componentWidget.componentModel.state = CoState.Added;

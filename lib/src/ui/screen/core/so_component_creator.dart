@@ -3,6 +3,12 @@ import 'package:flutterclient/src/models/api/response_objects/response_data/comp
 import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
 import 'package:flutterclient/src/ui/component/co_icon_widget.dart';
 import 'package:flutterclient/src/ui/component/model/icon_component_model.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/menu_item_component_model.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_button_component_model.dart';
+import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_text_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/models/text_cell_editor_model.dart';
@@ -39,7 +45,17 @@ class SoComponentCreator implements IComponentCreator {
     'Button': (ComponentModel componentModel) =>
         CoButtonWidget(componentModel: componentModel as ButtonComponentModel),
     'Icon': (ComponentModel componentModel) =>
-        CoIconWidget(componentModel: componentModel as IconComponentModel)
+        CoIconWidget(componentModel: componentModel as IconComponentModel),
+    'PopupMenu': (ComponentModel componentModel) => CoPopupMenuWidget(
+          componentModel: componentModel as PopupMenuComponentModel,
+        ),
+    'MenuItem': (ComponentModel componentModel) => CoMenuItemWidget(
+          componentModel: componentModel as MenuItemComponentModel,
+        ),
+    'PopupMenuButton': (ComponentModel componentModel) =>
+        CoPopupMenuButtonWidget(
+          componentModel: componentModel as PopupMenuButtonComponentModel,
+        ),
   };
 
   Map<String, CellEditorWidgetBuilder> standardCellEditors = {

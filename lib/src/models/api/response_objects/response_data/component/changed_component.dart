@@ -9,7 +9,7 @@ class ChangedComponent extends ComponentProperties {
   CellEditor? cellEditor;
   bool? destroy;
   bool? remove;
-  bool? additional;
+  bool additional = false;
   String? screenTitle;
   String? screenNavigationName;
   bool? screenModal;
@@ -21,7 +21,6 @@ class ChangedComponent extends ComponentProperties {
       this.cellEditor,
       this.destroy,
       this.remove,
-      this.additional,
       this.screenTitle,
       this.screenModal,
       this.screenNavigationName})
@@ -43,7 +42,7 @@ class ChangedComponent extends ComponentProperties {
     className = this.getProperty<String>(ComponentProperty.CLASS_NAME, '');
     destroy = this.getProperty<bool>(ComponentProperty.$DESTROY, false);
     remove = this.getProperty<bool>(ComponentProperty.$REMOVE, false);
-    additional = this.getProperty<bool>(ComponentProperty.$ADDITIONAL, false);
+    additional = this.getProperty<bool>(ComponentProperty.$ADDITIONAL, false)!;
     screenTitle =
         this.getProperty<String>(ComponentProperty.SCREEN___TITLE___, '');
     screenNavigationName = this
