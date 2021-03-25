@@ -1,4 +1,4 @@
-import 'package:flutterclient/src/models/api/remote_data_source.dart';
+import 'package:flutterclient/src/models/api/data_source.dart';
 import 'package:flutterclient/src/models/api/remote_data_source_impl.dart';
 import 'package:flutterclient/src/models/repository/api_repository.dart';
 import 'package:flutterclient/src/models/repository/api_repository_impl.dart';
@@ -16,14 +16,14 @@ import 'package:get_it/get_it.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  sl.registerLazySingleton<ApiCubit>(() =>
-      ApiCubit(client: sl(), appState: sl(), manager: sl(), networkInfo: sl()));
+  sl.registerLazySingleton<ApiCubit>(() => ApiCubit(
+      repository: sl(), appState: sl(), manager: sl(), networkInfo: sl()));
 
-  sl.registerLazySingleton<ApiRepository>(
-      () => ApiRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<ApiRepository>(() => ApiRepositoryImpl(
+      dataSource: sl(), networkInfo: sl(), appState: sl(), manager: sl()));
 
-  sl.registerLazySingleton<RemoteDataSource>(
-      () => RemoteDataSourceImpl(client: sl()));
+  sl.registerLazySingleton<DataSource>(
+      () => RemoteDataSourceImpl(client: sl(), appState: sl()));
 
   sl.registerLazySingleton<RestClient>(() => RestClientImpl(client: sl()));
 

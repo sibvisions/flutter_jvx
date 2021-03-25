@@ -55,6 +55,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
             colorsInverted ? Theme.of(context).primaryColor : Colors.white,
         body: CustomCubitListener(
             appState: widget.appState,
+            handleLoading: true,
+            handleError: true,
             bloc: sl<ApiCubit>(),
             listener: (context, state) {
               if (state is ApiResponse) {

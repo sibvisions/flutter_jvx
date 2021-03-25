@@ -1,6 +1,25 @@
-import 'package:flutterclient/src/services/remote/rest/http_client.dart';
+import 'dart:convert';
 
-import 'remote_data_source.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/delete_record_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/fetch_data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/filter_data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/meta_data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/save_data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
+import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
+import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:flutterclient/src/services/remote/rest/rest_client.dart';
+import 'package:http/http.dart' as http;
+
+import '../../services/remote/cubit/api_cubit.dart';
+import '../../services/remote/rest/http_client.dart';
+import 'data_source.dart';
+import 'errors/failure.dart';
+import 'request.dart';
 import 'requests/application_style_request.dart';
 import 'requests/change_request.dart';
 import 'requests/close_screen_request.dart';
@@ -19,110 +38,285 @@ import 'requests/tab_close_request.dart';
 import 'requests/tab_select_request.dart';
 import 'requests/upload_request.dart';
 
-class RemoteDataSourceImpl implements RemoteDataSource {
-  final HttpClient client;
+class RemoteDataSourceImpl implements DataSource {
+  final RestClient client;
+  final AppState appState;
 
-  RemoteDataSourceImpl({required this.client});
+  RemoteDataSourceImpl({required this.client, required this.appState});
 
   @override
-  Future<void> applicationStyle(ApplicationStyleRequest request) {
-    // TODO: implement applicationStyle
-    throw UnimplementedError();
+  Future<ApiState> applicationStyle(ApplicationStyleRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/download';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> change(ChangeRequest request) {
-    // TODO: implement change
-    throw UnimplementedError();
+  Future<ApiState> change(ChangeRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/changes';
+
+    return (await _sendRequest(Uri.parse(path), request))
+        .fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> closeScreen(CloseScreenRequest request) {
-    // TODO: implement closeScreen
-    throw UnimplementedError();
+  Future<ApiState> closeScreen(CloseScreenRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/closeScreen';
+
+    return (await _sendRequest(Uri.parse(path), request))
+        .fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> deviceStatus(DeviceStatusRequest request) {
-    // TODO: implement deviceStatus
-    throw UnimplementedError();
+  Future<ApiState> deviceStatus(DeviceStatusRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/deviceStatus';
+
+    return (await _sendRequest(Uri.parse(path), request))
+        .fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> downloadImages(DownloadImagesRequest request) {
-    // TODO: implement downloadImages
-    throw UnimplementedError();
+  Future<ApiState> downloadImages(DownloadImagesRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/download';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendDownloadRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> downloadTranslation(DownloadTranslationRequest request) {
-    // TODO: implement downloadTranslation
-    throw UnimplementedError();
+  Future<ApiState> downloadTranslation(
+      DownloadTranslationRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/download';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendDownloadRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> login(LoginRequest request) {
-    // TODO: implement login
-    throw UnimplementedError();
+  Future<ApiState> login(LoginRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/v2/login';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> logout(LogoutRequest request) {
-    // TODO: implement logout
-    throw UnimplementedError();
+  Future<ApiState> logout(LogoutRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/logout';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> menu(MenuRequest request) {
-    // TODO: implement menu
-    throw UnimplementedError();
+  Future<ApiState> menu(MenuRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/menu';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> navigation(NavigationRequest request) {
-    // TODO: implement navigation
-    throw UnimplementedError();
+  Future<ApiState> navigation(NavigationRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/navigation';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> openScreen(OpenScreenRequest request) {
-    // TODO: implement openScreen
-    throw UnimplementedError();
+  Future<ApiState> openScreen(OpenScreenRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/v2/openScreen';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> pressButton(PressButtonRequest request) {
-    // TODO: implement pressButton
-    throw UnimplementedError();
+  Future<ApiState> pressButton(PressButtonRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/v2/pressButton';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> setComponentValue(SetComponentValueRequest request) {
-    // TODO: implement setComponentValue
-    throw UnimplementedError();
+  Future<ApiState> setComponentValue(SetComponentValueRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/comp/setValue';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> startup(StartupRequest request) {
-    // TODO: implement startup
-    throw UnimplementedError();
+  Future<ApiState> startup(StartupRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/startup';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<void> tabClose(TabCloseRequest request) {
+  Future<ApiState> tabClose(TabCloseRequest request) {
     // TODO: implement tabClose
     throw UnimplementedError();
   }
 
   @override
-  Future<void> tabSelect(TabSelectRequest request) {
+  Future<ApiState> tabSelect(TabSelectRequest request) {
     // TODO: implement tabSelect
     throw UnimplementedError();
   }
 
   @override
-  Future<void> upload(UploadRequest request) {
+  Future<ApiState> upload(UploadRequest request) {
     // TODO: implement upload
     throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiState> data(DataRequest request) async {
+    String path = appState.serverConfig!.baseUrl;
+
+    if (request is SetValuesRequest) {
+      path += '/api/dal/setValues';
+    } else if (request is InsertRecordRequest) {
+      path += '/api/dal/insertRecord';
+    } else if (request is FetchDataRequest) {
+      path += '/api/dal/fetch';
+    } else if (request is SaveDataRequest) {
+      path += '/api/dal/save';
+    } else if (request is FilterDataRequest) {
+      path += '/api/dal/filter';
+    } else if (request is DeleteRecordRequest) {
+      path += '/api/dal/deleteRecord';
+    } else if (request is MetaDataRequest) {
+      path += '/api/dal/metaData';
+    }
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
+  }
+
+  Future<Either<ApiError, ApiResponse>> _sendRequest(
+      Uri uri, Request request) async {
+    Either<Failure, http.Response> either = await client.post(
+        uri: uri,
+        data: request.toJson(),
+        timeout: appState.appConfig!.requestTimeout);
+
+    return either.fold((l) => Left(ApiError(failure: l)), (r) async {
+      if (r.statusCode != 404) {
+        List decodedBody = _getDecodedBody(r);
+        Failure? failure = _getErrorIfExists(decodedBody);
+
+        if (failure != null) {
+          return Left(ApiError(failure: failure));
+        } else {
+          final cookie = r.headers['set-cookie'];
+
+          if (cookie != null && cookie.isNotEmpty) {
+            final index = cookie.indexOf(';');
+
+            if (client.headers == null) {
+              client.headers = <String, String>{
+                'Content-Type': 'application/json'
+              };
+            }
+
+            client.headers!['cookie'] =
+                (index == -1) ? cookie : cookie.substring(0, index);
+          }
+
+          ApiResponse response = ApiResponse.fromJson(request, decodedBody);
+
+          return Right(response);
+        }
+      } else {
+        return Left(ApiError(
+            failure: Failure(
+                details: '',
+                message: 'App with appname not found',
+                name: 'message.error',
+                title: 'Not found')));
+      }
+    });
+  }
+
+  Future<Either<ApiError, ApiResponse>> _sendDownloadRequest(
+      Uri uri, Request request) async {
+    Either<Failure, http.Response> either = await client.post(
+        uri: uri,
+        data: request.toJson(),
+        timeout: appState.appConfig!.requestTimeout);
+
+    return either.fold((l) => Left(ApiError(failure: l)), (r) {
+      return Right(ApiResponse(objects: [
+        DownloadResponseObject(
+            name: 'download',
+            translation: (request is DownloadTranslationRequest),
+            bodyBytes: r.bodyBytes)
+      ], request: request));
+    });
+  }
+
+  Failure? _getErrorIfExists(List<dynamic> responses) {
+    if (responses.isNotEmpty) {
+      for (final response in responses) {
+        if (response['name'] == 'message.error' ||
+            response['name'] == 'server.error' ||
+            response['name'] == 'message.sessionexpired') {
+          return ServerFailure.fromJson(response);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  List<dynamic> _getDecodedBody(http.Response response) {
+    String body = utf8Convert(response.body);
+
+    dynamic decodedBody = json.decode(body);
+
+    if (decodedBody is List)
+      return decodedBody;
+    else
+      return [decodedBody];
+  }
+
+  String utf8Convert(String text) {
+    try {
+      List<int> bytes = text.toString().codeUnits;
+      return utf8.decode(bytes);
+    } catch (e) {
+      print("Failed to decode string to utf-8!");
+      return text;
+    }
   }
 }
