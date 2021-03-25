@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
@@ -107,11 +109,19 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
       }
 
       if (this.preferredConstraints.preferredSize != null &&
+          this.preferredConstraints.preferredSize.width != double.infinity &&
           child.size.width < this.preferredConstraints.preferredSize.width) {
         newWidth = this.preferredConstraints.preferredSize.width;
       }
 
+      // if (this.constraints.maxWidth != double.infinity &&
+      //     child.size.width < this.constraints.maxWidth) {
+      //   newWidth = this.constraints.maxWidth;
+      // }
+
       if (newHeight != null || newWidth != null) {
+        //log("CoScrollPanelLayout1 hasSize ${child.size}");
+
         BoxConstraints newConstraints = BoxConstraints(
             minWidth: (newWidth != null ? newWidth : this.constraints.minWidth),
             maxWidth: (newWidth != null ? newWidth : this.constraints.maxWidth),
@@ -119,18 +129,25 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
                 (newHeight != null ? newHeight : this.constraints.minHeight),
             maxHeight:
                 (newHeight != null ? newHeight : this.constraints.maxHeight));
+        //log("CoScrollPanelLayout1 layout with constraints ${newConstraints}");
 
         this.layoutRenderBox(child, newConstraints);
 
         //if (child.hasSize) print("childAfter1:" + child.size.toString());
       } else {
+        //log("CoScrollPanelLayout2 hasSize ${child.size}");
+        //log("CoScrollPanelLayout2 layout with constraints ${this.constraints}");
         this.layoutRenderBox(
             child,
             BoxConstraints(
                 minWidth: this.constraints.minWidth,
-                maxWidth: this.constraints.maxWidth,
+                maxWidth: this.constraints.maxWidth != double.infinity
+                    ? this.constraints.maxWidth
+                    : child.size.width,
                 minHeight: this.constraints.minHeight,
-                maxHeight: this.constraints.maxHeight));
+                maxHeight: this.constraints.maxHeight != double.infinity
+                    ? this.constraints.maxHeight
+                    : child.size.height));
       }
 
       final MultiChildLayoutParentData childParentData = child.parentData;
@@ -139,7 +156,7 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
           .constraints
           .constrainDimensions(child.size.width, child.size.height);
       //if (child.hasSize) print("childAfter2:" + child.size.toString());
-      //print("returnSize:" + this.size.toString());
+      //log("returnSize:${this.size}");
     } else {
       this.size = this.constraints.constrainDimensions(
           this.preferredConstraints.parentConstraints.biggest.width,

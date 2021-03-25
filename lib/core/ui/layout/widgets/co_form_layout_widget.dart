@@ -1016,7 +1016,7 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       return pTarget.minimumSize;
     } else {
       //return Size(minimumWidth.toDouble(), minimumHeight.toDouble());
-      return new Size(0, 0);
+      return _preferredLayoutSize(pTarget);
     }
   }
 
