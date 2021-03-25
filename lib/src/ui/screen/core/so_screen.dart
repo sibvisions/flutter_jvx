@@ -4,6 +4,7 @@ import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.da
 import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
+import 'package:flutterclient/src/ui/container/co_panel_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../models/api/response_objects/close_screen_action_response_object.dart';
@@ -345,7 +346,6 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   ComponentWidget? getRootComponent() {
     ComponentWidget? rootComponent;
-
     try {
       rootComponent = _components.values.firstWhere(
         (componentWidget) =>
@@ -356,7 +356,73 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       rootComponent = null;
     }
 
+    if (header != null || footer != null) {
+      ComponentWidget headerFooterPanel = CoPanelWidget(
+        componentModel:
+            ContainerComponentModel(changedComponent: ChangedComponent()),
+      );
+
+      headerFooterPanel.componentModel.componentId =
+          HEADER_FOOTER_PANEL_COMPONENT_ID;
+
+      if (header != null) {
+        header!.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
+        header!.componentModel.constraints = 'North';
+        header!.componentModel.state = CoState.Added;
+        _components[header!.componentModel.componentId!] = header!;
+      }
+
+      if (rootComponent != null) {
+        rootComponent.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
+        rootComponent.componentModel.constraints = 'Center';
+      }
+
+      if (footer != null) {
+        footer!.componentModel.parentComponentId =
+            HEADER_FOOTER_PANEL_COMPONENT_ID;
+        footer!.componentModel.constraints = 'South';
+        footer!.componentModel.state = CoState.Added;
+        _components[footer!.componentModel.componentId!] = footer!;
+      }
+
+      _components[HEADER_FOOTER_PANEL_COMPONENT_ID] = headerFooterPanel;
+
+      if (rootComponent != null) {
+        (headerFooterPanel.componentModel as ContainerComponentModel)
+            .addWithConstraints(header!, header!.componentModel.constraints!);
+        (headerFooterPanel.componentModel as ContainerComponentModel)
+            .addWithConstraints(
+                rootComponent, rootComponent.componentModel.constraints!);
+        (headerFooterPanel.componentModel as ContainerComponentModel)
+            .addWithConstraints(footer!, footer!.componentModel.constraints!);
+      }
+
+      return headerFooterPanel;
+    }
+
     return rootComponent;
+  }
+
+  /// Method for replacing components
+  ///
+  /// [toReplaceComponentWidget] is the component to be replaced with [componentWidget]
+  void replaceComponent(ComponentWidget componentWidget,
+      ComponentWidget toReplaceComponentWidget) {
+    componentWidget.componentModel.parentComponentId =
+        toReplaceComponentWidget.componentModel.parentComponentId;
+    componentWidget.componentModel.constraints =
+        toReplaceComponentWidget.componentModel.constraints;
+    componentWidget.componentModel.minimumSize =
+        toReplaceComponentWidget.componentModel.minimumSize;
+    componentWidget.componentModel.maximumSize =
+        toReplaceComponentWidget.componentModel.maximumSize;
+    componentWidget.componentModel.preferredSize =
+        toReplaceComponentWidget.componentModel.preferredSize;
+
+    _removeFromParent(toReplaceComponentWidget, _components);
+    _addToParent(componentWidget, _components);
   }
 
   @override
