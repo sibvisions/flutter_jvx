@@ -66,7 +66,9 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (state is ApiResponse && widget.configuration.withServer) {
       _checkForCloseScreenAction(state);
 
-      update(state);
+      setState(() {
+        update(state);
+      });
 
       rootComponent = getRootComponent();
     }

@@ -113,6 +113,8 @@ class ApiResponse extends ApiState {
     return ApiResponse(objects: objects, request: request);
   }
 
+  List<ResponseObject> get objects => _objects;
+
   bool get hasError => this.getObjectByType<Failure>() != null;
 
   bool get hasDataObject => getAllDataObjects().isNotEmpty;

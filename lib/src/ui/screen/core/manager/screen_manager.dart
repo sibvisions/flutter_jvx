@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutterclient/injection_container.dart';
 import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
 import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
+import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/ui/screen/custom/test/test_custom_screen.dart';
 import 'package:flutterclient/src/ui/screen/custom/test/test_online_custom_screen.dart';
 
@@ -79,7 +81,7 @@ class ScreenManager implements IScreenManager {
     SoScreen screen = SoScreen(
       creator: SoComponentCreator(),
       configuration: SoScreenConfiguration(
-        screenComponentId: (response.request as OpenScreenRequest).componentId,
+        screenComponentId: sl<AppState>().currentMenuComponentId ?? '',
         drawer: drawer ?? SizedBox(),
         componentId: screenGeneric!.componentId!,
         response: response,

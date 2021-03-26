@@ -23,7 +23,9 @@ class ScreenGenericResponseObject extends ResponseObject {
   ScreenGenericResponseObject.fromJson({required Map<String, dynamic> map})
       : update = map['update'],
         changedComponents = getComponents(
-            list: map['changedComponents'] ?? map['updatedComponents']),
+            list: map['changedComponents'] ??
+                map['updatedComponents'] ??
+                <dynamic>[]),
         super.fromJson(map: map);
 
   static List<ChangedComponent> getComponents({required List<dynamic> list}) {

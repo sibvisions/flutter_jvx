@@ -78,7 +78,10 @@ class ApplicationStyleResponseObject extends ResponseObject {
       menuMode = map['menu']['mode'];
     }
 
-    final themeColor = HexColor.fromHex(map['theme']['color']);
+    Color? themeColor;
+
+    if (map['theme'] != null && map['theme']['color'] != null)
+      themeColor = HexColor.fromHex(map['theme']['color']);
 
     final loginStyle = LoginStyle.fromJson(map);
     final desktopStyle = DesktopStyle.fromJson(map);

@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_object.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/data/dataprovider_changed.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/close_screen_request.dart';
@@ -47,6 +50,7 @@ class OpenScreenPageWidget extends StatefulWidget {
 class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     with WidgetsBindingObserver {
   List<DefaultPage> _pages = <DefaultPage>[];
+  List<SoScreen> _screens = <SoScreen>[];
 
   late String _currentComponentId;
   ApiResponse? _response;
@@ -68,8 +72,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     if (state is ApiResponse) {
       _response = state;
 
-      _pages.forEach(
-          (page) => (page.child as SoScreen).configuration.value = state);
+      _updateScreens(state);
 
       if (state.request is LogoutRequest) {
         Navigator.of(context).pushNamed(Routes.login,
@@ -78,34 +81,54 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         _pages.removeLast();
 
         if (_pages.isEmpty) {
+          _screens.removeLast();
           Navigator.of(context).pop();
         }
       } else if (state.request is CloseScreenRequest) {
         _pages.removeLast();
 
         if (_pages.isEmpty) {
+          _screens.removeLast();
           Navigator.of(context).pop();
         }
-      } else if (state.request is OpenScreenRequest) {
-        if (state.hasObject<ScreenGenericResponseObject>()) {
-          setState(() {
-            addPage(widget.appState.screenManager.createScreen(
-                response: state,
-                drawer: getMenuDrawer(state
-                    .getObjectByType<ScreenGenericResponseObject>()!
-                    .screenTitle!)));
-          });
+      }
+
+      if (state.hasObject<ScreenGenericResponseObject>()) {
+        ScreenGenericResponseObject screenGeneric =
+            state.getObjectByType<ScreenGenericResponseObject>()!;
+
+        if (screenGeneric.changedComponents.isNotEmpty) {
+          addPage(widget.appState.screenManager.createScreen(
+              response: state,
+              drawer: getMenuDrawer(state
+                  .getObjectByType<ScreenGenericResponseObject>()!
+                  .screenTitle!)));
+        } else if (!screenGeneric.update) {
+          SoScreen soScreen = _screens.firstWhere((screen) =>
+              screen.configuration.componentId == screenGeneric.componentId);
+
+          addPage(soScreen, register: false);
         }
       }
 
       if (state.hasObject<CloseScreenActionResponseObject>()) {
         setState(() {
-          _pages.removeWhere((page) =>
-              (page.child as SoScreen).configuration.componentId ==
-              state
-                  .getObjectByType<CloseScreenActionResponseObject>()!
-                  .componentId);
+          _screens.removeWhere((screen) {
+            if (screen.configuration.componentId ==
+                state
+                    .getObjectByType<CloseScreenActionResponseObject>()!
+                    .componentId) {
+              _pages.removeWhere((page) => page.child == screen);
+              return true;
+            }
+
+            return false;
+          });
         });
+
+        if (_pages.isEmpty) {
+          Navigator.of(context).pop();
+        }
       }
 
       if (state.hasObject<DeviceStatusResponseObject>()) {
@@ -121,12 +144,32 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
   }
 
-  void addPage(SoScreen screen) {
-    _pages.add(DefaultPage(
-        name: screen.configuration.componentId,
-        arguments: screen.configuration.value,
-        key: ValueKey(screen.configuration.componentId),
-        child: screen));
+  void _updateScreens(ApiResponse response) {
+    for (final screen in _screens) {
+      screen.configuration.value = response;
+    }
+  }
+
+  void addPage(SoScreen screen, {bool register = true}) {
+    if (register) {
+      _screens.add(screen);
+    }
+
+    if (mounted) {
+      setState(() {
+        _pages.add(DefaultPage(
+            name: screen.configuration.componentId,
+            arguments: screen.configuration.value,
+            key: ValueKey(screen.configuration.componentId),
+            child: screen));
+      });
+    } else {
+      _pages.add(DefaultPage(
+          name: screen.configuration.componentId,
+          arguments: screen.configuration.value,
+          key: ValueKey(screen.configuration.componentId),
+          child: screen));
+    }
   }
 
   void addAllScreens(List<SoScreen> screensToAdd) {
@@ -268,11 +311,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           listener: _listener,
           child: _pages.isNotEmpty
               ? Navigator(
-                  pages: [
-                    if (_pages.isNotEmpty) _pages.first,
-                    if (_pages.isNotEmpty && _pages.indexOf(_pages.last) > 0)
-                      _pages.last,
-                  ],
+                  pages: [..._pages],
                   onPopPage: _onPopPage,
                 )
               : Container(),

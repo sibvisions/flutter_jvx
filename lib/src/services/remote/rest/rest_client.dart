@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -59,7 +58,8 @@ class RestClientImpl implements RestClient {
     }
 
     try {
-      log('REQUEST: $data');
+      log('HEADERS: $headers');
+      log('REQUEST ${uri.path}: $data');
 
       final response = await client
           .post(uri, body: json.encode(data), headers: headers)
