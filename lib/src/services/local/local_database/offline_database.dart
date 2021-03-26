@@ -78,6 +78,7 @@ class OfflineDatabase extends LocalDatabase
     responseError = null;
 
     ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
         dataSource: sl<DataSource>(),
         networkInfo: sl<NetworkInfo>(),
         appState: sl<AppState>(),
@@ -249,6 +250,7 @@ class OfflineDatabase extends LocalDatabase
     bool result = true;
 
     ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
@@ -369,6 +371,7 @@ class OfflineDatabase extends LocalDatabase
       List<dynamic> columnNames,
       Map<String, dynamic> row) async {
     ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
@@ -440,6 +443,7 @@ class OfflineDatabase extends LocalDatabase
       List<dynamic> columnNames,
       Map<String, dynamic> row) async {
     ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
@@ -496,6 +500,7 @@ class OfflineDatabase extends LocalDatabase
       List<dynamic> columnNames,
       Map<String, dynamic> row) async {
     ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
@@ -536,6 +541,7 @@ class OfflineDatabase extends LocalDatabase
       List<dynamic> columnNames,
       Map<String, dynamic> row) async {
     ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),

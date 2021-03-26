@@ -5,7 +5,7 @@ class LanguageResponseObject extends ResponseObject {
   final String languageResource;
 
   LanguageResponseObject(
-      {required String name,
+      {String name = 'language',
       required this.language,
       required this.languageResource})
       : super(name: name);

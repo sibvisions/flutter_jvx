@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutterclient/src/models/api/errors/failure.dart';
 import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
+import 'package:flutterclient/src/models/api/response_objects/login_response_object.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
+import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
 
 import '../../../injection_container.dart';
 import '../../services/local/locale/supported_locale_manager.dart';
@@ -39,6 +43,7 @@ import 'api_repository.dart';
 
 class ApiRepositoryImpl implements ApiRepository {
   final DataSource dataSource;
+  final OfflineDatabase offlineDataSource;
   final NetworkInfo networkInfo;
   final AppState appState;
   final SharedPreferencesManager manager;
@@ -47,7 +52,8 @@ class ApiRepositoryImpl implements ApiRepository {
       {required this.dataSource,
       required this.networkInfo,
       required this.appState,
-      required this.manager});
+      required this.manager,
+      required this.offlineDataSource});
 
   @override
   Future<ApiState> applicationStyle(ApplicationStyleRequest request) async {
@@ -106,20 +112,45 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> login(LoginRequest request) async {
-    ApiState state = await _checkConnection(() {
-      return dataSource.login(request);
-    });
+    if (!appState.isOffline) {
+      ApiState state = await _checkConnection(() {
+        return dataSource.login(request);
+      });
 
-    if (state is ApiResponse) {
-      manager.setSyncLoginData(
-          username: request.username, password: request.password);
+      if (state is ApiResponse) {
+        manager.setSyncLoginData(
+            username: request.username, password: request.password);
 
-      if (state.hasObject<AuthenticationDataResponseObject>())
-        manager.authKey =
-            state.getObjectByType<AuthenticationDataResponseObject>()!.authKey;
+        if (state.hasObject<AuthenticationDataResponseObject>())
+          manager.authKey = state
+              .getObjectByType<AuthenticationDataResponseObject>()!
+              .authKey;
+      }
+
+      return state;
+    } else {
+      final offlineUsername = manager.offlineUsername;
+      final offlinePassword = manager.offlinePassword;
+
+      String usernameHash =
+          sha256.convert(utf8.encode(request.username)).toString();
+      String passwordHash =
+          sha256.convert(utf8.encode(request.password)).toString();
+
+      if (usernameHash == offlineUsername && passwordHash == offlinePassword) {
+        return ApiResponse(request: request, objects: [
+          LoginResponseObject(name: 'login', username: request.username),
+          MenuResponseObject(name: 'menu', entries: [])
+        ]);
+      } else {
+        return ApiError(
+            failure: Failure(
+                title: 'Login error',
+                details: '',
+                message: 'False username or password',
+                name: 'message.error'));
+      }
     }
-
-    return state;
   }
 
   @override

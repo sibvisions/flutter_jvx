@@ -4,6 +4,7 @@ import 'package:flutterclient/src/models/api/response_objects/application_style/
 import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:crypto/crypto.dart';
 
 class SharedPreferencesManager {
   final SharedPreferences sharedPreferences;
@@ -106,6 +107,32 @@ class SharedPreferencesManager {
             iv: iv));
 
     return data;
+  }
+
+  bool get isOffline => sharedPreferences.getBool('isOffline') ?? false;
+
+  String? get offlineUsername => sharedPreferences.getString('offlineUsername');
+
+  String? get offlinePassword => sharedPreferences.getString('offlinePassword');
+
+  set offlineUsername(String? username) {
+    if (username != null && username.isNotEmpty) {
+      final hash = sha256.convert(utf8.encode(username)).toString();
+
+      sharedPreferences.setString('offlineUsername', hash);
+    } else {
+      sharedPreferences.remove('offlineUsername');
+    }
+  }
+
+  set offlinePassword(String? password) {
+    if (password != null && password.isNotEmpty) {
+      final hash = sha256.convert(utf8.encode(password)).toString();
+
+      sharedPreferences.setString('offlinePassword', hash);
+    } else {
+      sharedPreferences.remove('offlinePassword');
+    }
   }
 
   void setSyncLoginData(

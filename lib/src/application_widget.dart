@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/screen/core/manager/screen_manager.dart';
 
 import '../injection_container.dart';
 import 'browser_app.dart';
