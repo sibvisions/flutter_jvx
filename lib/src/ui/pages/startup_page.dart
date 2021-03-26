@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/injection_container.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
-import 'package:flutterclient/src/ui/widgets/page/startup_page_widget.dart';
-import 'package:flutterclient/src/util/theme/theme_manager.dart';
+
+import '../../../injection_container.dart';
+import '../../models/state/app_state.dart';
+import '../../services/local/shared_preferences/shared_preferences_manager.dart';
+import '../../util/theme/theme_manager.dart';
+import '../widgets/page/startup/startup_page_widget.dart';
+import '../widgets/page/startup/offline_startup_page_widget.dart';
 
 class StartupPage extends StatelessWidget {
   final Widget? startupWidget;
@@ -24,10 +26,21 @@ class StartupPage extends StatelessWidget {
     }
     return Theme(
         data: sl<ThemeManager>().value,
-        child: StartupPageWidget(
-          appState: appState,
-          manager: manager,
-          startupWidget: startupWidget,
-        ));
+        child: _getStartupPageWidget(appState.isOffline));
+  }
+
+  Widget _getStartupPageWidget(bool isOffline) {
+    if (isOffline) {
+      return OfflineStartupPageWidget(
+        appState: appState,
+        manager: manager,
+      );
+    } else {
+      return StartupPageWidget(
+        appState: appState,
+        manager: manager,
+        startupWidget: startupWidget,
+      );
+    }
   }
 }

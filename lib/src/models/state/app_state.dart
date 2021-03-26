@@ -37,6 +37,8 @@ class AppState {
   String baseDirectory = '';
   int picSize = 320;
 
+  bool isOffline = false;
+
   IScreenManager screenManager = ScreenManager();
   AppListener? listener;
   ISocketHandler? socketHandler;
