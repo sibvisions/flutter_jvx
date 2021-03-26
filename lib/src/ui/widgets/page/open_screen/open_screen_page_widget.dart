@@ -249,22 +249,34 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   Widget build(BuildContext context) {
     _addDeviceStatusTimer(context);
 
-    return GestureDetector(
-      onTap: () => TextUtils.unfocusCurrentTextfield(context),
-      child: CustomCubitListener(
-        appState: widget.appState,
-        bloc: sl<ApiCubit>(),
-        listener: _listener,
-        child: _pages.isNotEmpty
-            ? Navigator(
-                pages: [
-                  if (_pages.isNotEmpty) _pages.first,
-                  if (_pages.isNotEmpty && _pages.indexOf(_pages.last) > 0)
-                    _pages.last,
-                ],
-                onPopPage: _onPopPage,
-              )
-            : Container(),
+    return WillPopScope(
+      onWillPop: () async {
+        NavigationRequest request = NavigationRequest(
+            clientId: widget.appState.applicationMetaData!.clientId,
+            componentId:
+                (_pages.last.child as SoScreen).configuration.componentId);
+
+        await sl<ApiCubit>().navigation(request);
+
+        return false;
+      },
+      child: GestureDetector(
+        onTap: () => TextUtils.unfocusCurrentTextfield(context),
+        child: CustomCubitListener(
+          appState: widget.appState,
+          bloc: sl<ApiCubit>(),
+          listener: _listener,
+          child: _pages.isNotEmpty
+              ? Navigator(
+                  pages: [
+                    if (_pages.isNotEmpty) _pages.first,
+                    if (_pages.isNotEmpty && _pages.indexOf(_pages.last) > 0)
+                      _pages.last,
+                  ],
+                  onPopPage: _onPopPage,
+                )
+              : Container(),
+        ),
       ),
     );
   }

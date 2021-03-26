@@ -193,16 +193,16 @@ class TableComponentModel extends EditorComponentModel {
         CoEditorWidget? editor = this.componentCreator!.createEditorForTable(
               column.cellEditor!,
               text,
-              editable!,
+              editable ?? false,
               index,
               data!,
               columnName,
             );
         if (editor != null) {
-          if (editor.cellEditor.cellEditorModel is LinkedCellEditorModel) {
-            (editor.cellEditor.cellEditorModel as LinkedCellEditorModel)
+          if (editor.cellEditor!.cellEditorModel is LinkedCellEditorModel) {
+            (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
                     .referencedData =
-                SoScreen.of(context)!.getComponentData(editor.cellEditor
+                SoScreen.of(context)!.getComponentData(editor.cellEditor!
                     .cellEditorModel.cellEditor.linkReference!.dataProvider!);
           }
 
@@ -211,7 +211,7 @@ class TableComponentModel extends EditorComponentModel {
         }
       } else {
         _editors[_getEditorIdentifier(columnName, index)]
-            ?.cellEditor
+            ?.cellEditor!
             .cellEditorModel
             .cellEditorValue = text;
         return _editors[_getEditorIdentifier(columnName, index)];

@@ -5,11 +5,11 @@ import 'package:flutterclient/src/ui/editor/editor_component_model.dart';
 import 'package:flutterclient/src/util/app/text_utils.dart';
 
 class CoEditorWidget extends ComponentWidget {
-  final CoCellEditorWidget cellEditor;
+  final CoCellEditorWidget? cellEditor;
 
   CoEditorWidget(
       {Key? key,
-      required this.cellEditor,
+      this.cellEditor,
       required EditorComponentModel editorComponentModel})
       : super(componentModel: editorComponentModel, key: key) {
     editorComponentModel.cellEditor = cellEditor;
@@ -22,7 +22,8 @@ class CoEditorWidget extends ComponentWidget {
       context.findAncestorStateOfType<CoEditorWidgetState>();
 }
 
-class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
+class CoEditorWidgetState<T extends CoEditorWidget>
+    extends ComponentWidgetState<T> {
   void onBeginEditing() {}
 
   void onEndEditing() {}
@@ -35,7 +36,7 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
 
   void onServerDataChanged() {}
 
-  void _registerCallbacks() {
+  void registerCallbacks() {
     EditorComponentModel editorComponentModel =
         widget.componentModel as EditorComponentModel;
 
@@ -51,7 +52,7 @@ class CoEditorWidgetState extends ComponentWidgetState<CoEditorWidget> {
   void initState() {
     super.initState();
 
-    _registerCallbacks();
+    registerCallbacks();
   }
 
   @override

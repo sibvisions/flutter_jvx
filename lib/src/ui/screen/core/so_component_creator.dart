@@ -1,32 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/component/changed_component.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
-import 'package:flutterclient/src/ui/component/co_icon_widget.dart';
-import 'package:flutterclient/src/ui/component/model/icon_component_model.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/menu_item_component_model.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_button_component_model.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_text_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/text_cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/co_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/editor_component_model.dart';
-import 'package:flutterclient/src/ui/screen/core/so_component_data.dart';
+import 'package:flutterclient/src/ui/component/co_text_field_widget.dart';
+import 'package:flutterclient/src/ui/component/co_toggle_button_widget.dart';
+import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../../models/api/response_objects/response_data/component/changed_component.dart';
+import '../../../models/api/response_objects/response_data/editor/cell_editor.dart';
 import '../../component/co_button_widget.dart';
+import '../../component/co_checkbox_component_widget.dart';
+import '../../component/co_icon_widget.dart';
 import '../../component/co_label_widget.dart';
+import '../../component/co_password_field_widget.dart';
+import '../../component/co_table_widget.dart';
+import '../../component/co_text_area_widget.dart';
+import '../../component/component_widget.dart';
 import '../../component/model/button_component_model.dart';
 import '../../component/model/component_model.dart';
-import '../../component/component_widget.dart';
-import '../../component/model/component_model.dart';
+import '../../component/model/icon_component_model.dart';
 import '../../component/model/label_component_model.dart';
+import '../../component/model/selectable_component_model.dart';
+import '../../component/model/table_component_model.dart';
+import '../../component/model/text_area_component_model.dart';
+import '../../component/model/text_field_component_model.dart';
+import '../../component/popup_menu/co_menu_item_widget.dart';
+import '../../component/popup_menu/co_popup_menu_button_widget.dart';
+import '../../component/popup_menu/co_popup_menu_widget.dart';
+import '../../component/popup_menu/models/menu_item_component_model.dart';
+import '../../component/popup_menu/models/popup_menu_button_component_model.dart';
+import '../../component/popup_menu/models/popup_menu_component_model.dart';
 import '../../container/co_panel_widget.dart';
 import '../../container/models/container_component_model.dart';
+import '../../editor/cell_editor/co_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_text_cell_editor_widget.dart';
+import '../../editor/cell_editor/models/text_cell_editor_model.dart';
+import '../../editor/co_editor_widget.dart';
+import '../../editor/editor_component_model.dart';
 import 'i_component_creator.dart';
-import 'package:uuid/uuid.dart';
+import 'so_component_data.dart';
 
 typedef ComponentWidgetBuilder = ComponentWidget Function(ComponentModel);
 typedef CellEditorWidgetBuilder = CoCellEditorWidget Function(
@@ -56,6 +66,20 @@ class SoComponentCreator implements IComponentCreator {
         CoPopupMenuButtonWidget(
           componentModel: componentModel as PopupMenuButtonComponentModel,
         ),
+    'CheckBox': (ComponentModel componentModel) => CoCheckBoxWidget(
+        componentModel: componentModel as SelectableComponentModel),
+    'PasswordField': (ComponentModel componentModel) => CoPasswordFieldWidget(
+          componentModel: componentModel as TextFieldComponentModel,
+        ),
+    'Table': (ComponentModel componentModel) => CoTableWidget(
+          componentModel: componentModel as TableComponentModel,
+        ),
+    'TextArea': (ComponentModel componentModel) => CoTextAreaWidget(
+        componentModel: componentModel as TextAreaComponentModel),
+    'TextField': (ComponentModel componentModel) => CoTextFieldWidget(
+        componentModel: componentModel as TextFieldComponentModel),
+    'ToggleButton': (ComponentModel componetModel) => CoToggleButtonWidget(
+        componentModel: componetModel as ToggleButtonComponentModel)
   };
 
   Map<String, CellEditorWidgetBuilder> standardCellEditors = {

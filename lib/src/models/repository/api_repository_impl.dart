@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
 
 import '../../../injection_container.dart';
 import '../../services/local/local_database/offline_database.dart';
@@ -43,7 +44,7 @@ import 'api_repository.dart';
 
 class ApiRepositoryImpl implements ApiRepository {
   final DataSource dataSource;
-  final OfflineDatabase offlineDataSource;
+  final IOfflineDatabaseProvider offlineDataSource;
   final NetworkInfo networkInfo;
   final AppState appState;
   final SharedPreferencesManager manager;

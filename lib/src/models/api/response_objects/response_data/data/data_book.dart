@@ -134,7 +134,7 @@ class DataBook extends ResponseObject {
         isAllFetched = map['isAllFetched'],
         dataProvider = map['dataProvider'],
         records = map['records'],
-        columnNames = map['columnNames'],
+        columnNames = List<String>.from(map['columnNames']),
         from = map['from'],
         to = map['to'],
         super.fromJson(map: map);

@@ -1,4 +1,9 @@
 import 'package:flutterclient/src/ui/component/model/icon_component_model.dart';
+import 'package:flutterclient/src/ui/component/model/selectable_component_model.dart';
+import 'package:flutterclient/src/ui/component/model/table_component_model.dart';
+import 'package:flutterclient/src/ui/component/model/text_area_component_model.dart';
+import 'package:flutterclient/src/ui/component/model/text_field_component_model.dart';
+import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/menu_item_component_model.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_button_component_model.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
@@ -24,8 +29,8 @@ class ComponentModelManager {
 
   ComponentModel? addComponentModel(ChangedComponent changedComponent,
       {bool overrideExisting = false,
-      ActionCallback? onAction,
-      ComponentValueChangedCallback? onComponentValueChanged}) {
+      required ActionCallback onAction,
+      required ComponentValueChangedCallback onComponentValueChanged}) {
     if (overrideExisting) {
       this._componentModels[changedComponent.id!] =
           _getComponentModelByClassname(changedComponent,
@@ -53,14 +58,15 @@ class ComponentModelManager {
 
   ComponentModel _getComponentModelByClassname(
       ChangedComponent changedComponent,
-      {ActionCallback? onAction,
-      ComponentValueChangedCallback? onComponentValueChanged}) {
+      {required ActionCallback onAction,
+      required ComponentValueChangedCallback onComponentValueChanged}) {
     ComponentModel? componentModel;
 
     switch (changedComponent.className) {
-      // case 'Table':
-      //   componentModel = TableComponentModel(changedComponent);
-      //   break;
+      case 'Table':
+        componentModel =
+            TableComponentModel(changedComponent: changedComponent);
+        break;
       case 'Editor':
         componentModel =
             EditorComponentModel(changedComponent: changedComponent);
@@ -97,7 +103,7 @@ class ComponentModelManager {
         break;
       case 'PopupMenuButton':
         componentModel = PopupMenuButtonComponentModel(
-            changedComponent: changedComponent, onAction: onAction!);
+            changedComponent: changedComponent, onAction: onAction);
         break;
       case 'MenuItem':
         componentModel =
@@ -109,34 +115,43 @@ class ComponentModelManager {
         break;
       case 'Button':
         componentModel = ButtonComponentModel(
-            changedComponent: changedComponent, onAction: onAction!);
+            changedComponent: changedComponent, onAction: onAction);
         break;
-      // case 'CheckBox':
-      //   componentModel = SelectableComponentModel(changedComponent);
-      //   break;
-      // case 'RadioButton':
-      //   componentModel = SelectableComponentModel(changedComponent);
-      //   break;
+      case 'CheckBox':
+        componentModel = SelectableComponentModel(
+            changedComponent: changedComponent,
+            onComponentValueChanged: onComponentValueChanged);
+        break;
+      case 'RadioButton':
+        componentModel = SelectableComponentModel(
+            changedComponent: changedComponent,
+            onComponentValueChanged: onComponentValueChanged);
+        break;
       case 'Icon':
         componentModel = IconComponentModel(changedComponent: changedComponent);
         break;
       // case 'TextField':
       //   componentModel = TextFieldComponentModel(changedComponent);
       //   break;
-      // case 'TextArea':
-      //   componentModel = TextAreaComponentModel(changedComponent);
-      //   break;
-      // case 'PasswordField':
-      //   componentModel = TextFieldComponentModel(changedComponent);
-      //   break;
-      // case 'ToggleButton':
-      //   componentModel = ToggleButtonComponentModel(changedComponent);
-      //   break;
+      case 'TextArea':
+        componentModel = TextAreaComponentModel(
+            changedComponent: changedComponent,
+            onComponentValueChanged: onComponentValueChanged);
+        break;
+      case 'PasswordField':
+        componentModel = TextFieldComponentModel(
+            changedComponent: changedComponent,
+            onComponentValueChanged: onComponentValueChanged);
+        break;
+      case 'ToggleButton':
+        componentModel = ToggleButtonComponentModel(
+            changedComponent: changedComponent, onAction: onAction);
+        break;
       // case 'Map':
       //   componentModel = MapComponentModel(changedComponent);
       //   break;
       // default:
-      //   componentModel = ComponentModel(changedComponent);
+      //   componentModel = ComponentModel(changedComponent: changedComponent);
       //   break;
     }
 

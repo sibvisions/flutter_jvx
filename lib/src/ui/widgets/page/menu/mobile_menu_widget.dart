@@ -168,6 +168,24 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
                 })
           ],
         ),
-        body: _getMobileMenuWidget());
+        body: FractionallySizedBox(
+          widthFactor: 1,
+          heightFactor: 1,
+          child: Column(
+            children: [
+              if (widget.appState.isOffline)
+                Container(
+                  height: 20,
+                  color: Colors.grey.shade500,
+                  child: Text(
+                    'OFFLINE',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  alignment: Alignment.center,
+                ),
+              Expanded(child: _getMobileMenuWidget()),
+            ],
+          ),
+        ));
   }
 }

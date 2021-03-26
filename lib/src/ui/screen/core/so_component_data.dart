@@ -300,14 +300,14 @@ class SoComponentData {
   void setValues(BuildContext context, List<dynamic> values,
       [List<dynamic>? columnNames, Filter? filter, bool isTextField = false]) {
     SetValuesRequest setValues = SetValuesRequest(
+        columnNames: columnNames ?? data!.columnNames,
         dataProvider: dataProvider,
-        columnNames: data!.columnNames,
         values: values,
         clientId: AppStateProvider.of(context)!
             .appState
             .applicationMetaData!
             .clientId,
-        offlineSelectedRow: data!.selectedRow!);
+        offlineSelectedRow: data?.selectedRow);
 
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {
@@ -335,7 +335,7 @@ class SoComponentData {
       }
     }
 
-    setValues.offlineSelectedRow = data!.selectedRow!;
+    setValues.offlineSelectedRow = data?.selectedRow;
 
     if (!isTextField) {
       TextUtils.unfocusCurrentTextfield(context);

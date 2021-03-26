@@ -9,6 +9,7 @@ import 'package:flutterclient/src/models/api/requests/data/filter_data_request.d
 import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/meta_data_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/save_data_request.dart';
+import 'package:flutterclient/src/models/api/requests/data/select_record_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
 import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
@@ -215,6 +216,8 @@ class RemoteDataSourceImpl implements DataSource {
       path += '/api/dal/deleteRecord';
     } else if (request is MetaDataRequest) {
       path += '/api/dal/metaData';
+    } else if (request is SelectRecordRequest) {
+      path += '/api/dal/selectRecord';
     }
 
     Either<ApiError, ApiResponse> either =
