@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterclient/src/models/api/errors/failure.dart';
 import 'package:flutterclient/src/models/api/requests/close_screen_request.dart';
 import 'package:flutterclient/src/models/api/requests/navigation_request.dart';
 import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
@@ -7,6 +8,8 @@ import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
 import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
 import 'package:flutterclient/src/ui/util/inherited_widgets/shared_preferences_provider.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/linear_progress_dialog.dart';
+import 'package:flutterclient/src/util/translation/app_localizations.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -208,7 +211,8 @@ mixin SoDataScreen {
 
     try {
       if (!response.hasError) {
-        // TODO: show linear progress indicator
+        WidgetsBinding.instance!
+            .addPostFrameCallback((_) => showLinearProgressDialog(context));
 
         String path = AppStateProvider.of(context)!.appState.baseDirectory +
             '/offlineDB.db';
@@ -223,12 +227,18 @@ mixin SoDataScreen {
 
         if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
             null) {
-          // TODO: hide linear progress + show offline error
+          WidgetsBinding.instance!
+              .addPostFrameCallback((_) => hideLinearProgressDialog(context));
+          await showOfflineError(
+              context,
+              (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .responseError);
 
           await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
               .cleanupDatabase();
         } else if (importSuccess) {
-          // TODO: hide linear progress
+          WidgetsBinding.instance!
+              .addPostFrameCallback((_) => hideLinearProgressDialog(context));
 
           SharedPreferencesProvider.of(context)!.manager.isOffline = true;
           AppState appState = AppStateProvider.of(context)!.appState;
@@ -240,11 +250,13 @@ mixin SoDataScreen {
               clientId: appState.applicationMetaData!.clientId));
         }
       } else {
-        // TODO: hide linear progress
+        WidgetsBinding.instance!
+            .addPostFrameCallback((_) => hideLinearProgressDialog(context));
       }
     } catch (e) {
       try {
-        // TODO: hide Loading indicators
+        WidgetsBinding.instance!
+            .addPostFrameCallback((_) => hideLinearProgressDialog(context));
 
         SharedPreferencesProvider.of(context)!.manager.isOffline = false;
         AppState appState = AppStateProvider.of(context)!.appState;
@@ -256,5 +268,22 @@ mixin SoDataScreen {
 
       rethrow;
     }
+  }
+
+  Future<void> showOfflineError(BuildContext context, Failure? failure) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(failure?.title ?? ''),
+            content: Text(failure?.message ?? ''),
+            actions: <Widget>[
+              ElevatedButton(
+                child: Text(AppLocalizations.of(context)!.text('Close')),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        });
   }
 }

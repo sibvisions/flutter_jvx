@@ -3,44 +3,43 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutterclient/src/models/api/data_source.dart';
-import 'package:flutterclient/src/models/api/errors/failure.dart';
-import 'package:flutterclient/src/models/api/requests/application_style_request.dart';
-import 'package:flutterclient/src/models/api/requests/close_screen_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/delete_record_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/fetch_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/filter_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/meta_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/save_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/select_record_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
-import 'package:flutterclient/src/models/api/requests/logout_request.dart';
-import 'package:flutterclient/src/models/api/requests/navigation_request.dart';
-import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
-import 'package:flutterclient/src/models/api/requests/startup_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/application_meta_data_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/application_style/application_style_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/language_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/filter.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/filter_condition.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/meta_data/data_book_meta_data.dart';
-import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
-import 'package:flutterclient/src/models/repository/api_repository.dart';
-import 'package:flutterclient/src/models/repository/api_repository_impl.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/services/remote/network_info/network_info.dart';
-import 'package:flutterclient/src/ui/screen/core/so_component_data.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
-import 'package:flutterclient/src/util/translation/app_localizations.dart';
 
 import '../../../../injection_container.dart';
+import '../../../models/api/data_source.dart';
+import '../../../models/api/errors/failure.dart';
 import '../../../models/api/request.dart';
-import '../../remote/rest/rest_client.dart';
+import '../../../models/api/requests/application_style_request.dart';
+import '../../../models/api/requests/close_screen_request.dart';
+import '../../../models/api/requests/data/delete_record_request.dart';
+import '../../../models/api/requests/data/fetch_data_request.dart';
+import '../../../models/api/requests/data/filter_data_request.dart';
+import '../../../models/api/requests/data/insert_record_request.dart';
+import '../../../models/api/requests/data/meta_data_request.dart';
+import '../../../models/api/requests/data/save_data_request.dart';
+import '../../../models/api/requests/data/select_record_request.dart';
+import '../../../models/api/requests/data/set_values_request.dart';
+import '../../../models/api/requests/logout_request.dart';
+import '../../../models/api/requests/navigation_request.dart';
+import '../../../models/api/requests/open_screen_request.dart';
+import '../../../models/api/requests/startup_request.dart';
+import '../../../models/api/response_objects/application_meta_data_response_object.dart';
+import '../../../models/api/response_objects/application_style/application_style_response_object.dart';
+import '../../../models/api/response_objects/language_response_object.dart';
+import '../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../models/api/response_objects/response_data/data/data_book.dart';
+import '../../../models/api/response_objects/response_data/data/filter.dart';
+import '../../../models/api/response_objects/response_data/data/filter_condition.dart';
+import '../../../models/api/response_objects/response_data/meta_data/data_book_meta_data.dart';
+import '../../../models/api/response_objects/user_data_response_object.dart';
+import '../../../models/repository/api_repository.dart';
+import '../../../models/repository/api_repository_impl.dart';
+import '../../../models/state/app_state.dart';
+import '../../../ui/screen/core/so_component_data.dart';
+import '../../../ui/screen/core/so_screen.dart';
+import '../../../util/translation/app_localizations.dart';
+import '../../remote/cubit/api_cubit.dart';
+import '../../remote/network_info/network_info.dart';
+import '../shared_preferences/shared_preferences_manager.dart';
 import 'i_offline_database_provider.dart';
 import 'local_database.dart';
 import 'offline_database_formatter.dart';
@@ -49,14 +48,13 @@ typedef ProgressCallback = Function(double);
 
 class OfflineDatabase extends LocalDatabase
     implements IOfflineDatabaseProvider {
-  double? progress = 0.0;
+  ValueNotifier<double?> progress = ValueNotifier<double>(0.0);
   int rowsToImport = 0;
   int rowsImported = 0;
   int fetchOfflineRecordsPerRequest = 100;
   Failure? responseError;
   Filter? _lastFetchFilter;
   FilterCondition? _lastFetchFilterCondition;
-  List<ProgressCallback> _progressCallbacks = <ProgressCallback>[];
 
   Future<bool> openCreateDatabase(String path) async {
     if (await super.openCreateDatabase(path)) {
@@ -1216,17 +1214,7 @@ class OfflineDatabase extends LocalDatabase
   }
 
   void setProgress(double progress) {
-    this.progress = progress;
-    this._progressCallbacks.forEach((callback) => callback(progress));
-  }
-
-  void addProgressCallback(ProgressCallback callback) {
-    this._progressCallbacks = <ProgressCallback>[];
-    this._progressCallbacks.add(callback);
-  }
-
-  void removeAllProgressCallbacks() {
-    this._progressCallbacks = <ProgressCallback>[];
+    this.progress.value = progress;
   }
 
   bool hasError(ApiResponse response) {

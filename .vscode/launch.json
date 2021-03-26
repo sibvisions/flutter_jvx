@@ -5,10 +5,9 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutterclient",
-            "cwd": "flutterclient",
+            "name": "Flutter",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         }
     ]
 }

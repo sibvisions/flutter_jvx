@@ -5,7 +5,7 @@ import '../../remote/cubit/api_cubit.dart';
 import 'i_database_provider.dart';
 
 abstract class IOfflineDatabaseProvider extends IDatabaseProvider {
-  double? progress;
+  ValueNotifier<double?> progress = ValueNotifier<double>(0.0);
   Future<ApiState> request(Request? request);
   Future<bool> syncOnline(BuildContext context);
 }
