@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/component/changed_component.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/component/component_properties.dart';
-import 'package:flutterclient/src/ui/component/component_widget.dart';
-import 'package:flutterclient/src/ui/component/model/component_model.dart';
-import 'package:flutterclient/src/ui/layout/co_border_layout_container_widget.dart';
-import 'package:flutterclient/src/ui/layout/co_form_layout_container_widget.dart';
-import 'package:flutterclient/src/ui/layout/co_layout.dart';
-import 'package:flutterclient/src/ui/layout/i_layout.dart';
-import 'package:flutterclient/src/ui/layout/widgets/co_border_layout_constraint.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
+import 'package:flutterclient/src/ui/layout/co_grid_layout_container_widget.dart';
 
+import '../../../models/api/response_objects/response_data/component/changed_component.dart';
+import '../../../models/api/response_objects/response_data/component/component_properties.dart';
+import '../../component/component_widget.dart';
+import '../../component/model/component_model.dart';
+import '../../layout/co_border_layout_container_widget.dart';
+import '../../layout/co_form_layout_container_widget.dart';
+import '../../layout/co_layout.dart';
+import '../../layout/widgets/co_border_layout_constraint.dart';
+import '../../screen/core/so_screen.dart';
 import '../co_container_widget.dart';
 
 class ContainerComponentModel extends ComponentModel {
@@ -53,7 +53,7 @@ class ContainerComponentModel extends ComponentModel {
         layout!.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is Object /*CoFlowLayoutContainerWidget*/) {
         layout!.addLayoutComponent(pComponent, pConstraints);
-      } else if (layout is Object /*CoGridLayoutContainerWidget*/) {
+      } else if (layout is CoGridLayoutContainerWidget) {
         layout!.addLayoutComponent(pComponent, pConstraints);
       }
     }
@@ -108,7 +108,7 @@ class ContainerComponentModel extends ComponentModel {
         layout!.addLayoutComponent(componentWidget, newConstraints);
       } else if (layout is Object /*CoFlowLayoutContainerWidget*/) {
         layout!.addLayoutComponent(componentWidget, newConstraints);
-      } else if (layout is Object /*CoGridLayoutContainerWidget*/) {
+      } else if (layout is CoGridLayoutContainerWidget) {
         layout!.addLayoutComponent(componentWidget, newConstraints);
       }
     }
@@ -171,12 +171,11 @@ class ContainerComponentModel extends ComponentModel {
         //         container, layoutRaw, layoutData);
         //   }
         //   break;
-        // case "GridLayout":
-        //   {
-        //     return CoGridLayoutContainerWidget.fromLayoutString(
-        //         container, layoutRaw, layoutData);
-        //   }
-        //   break;
+        case "GridLayout":
+          {
+            return CoGridLayoutContainerWidget.fromLayoutString(
+                container, layoutRaw ?? '', layoutData ?? '');
+          }
       }
 
       return null;

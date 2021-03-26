@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterclient/src/ui/component/co_text_field_widget.dart';
 import 'package:flutterclient/src/ui/component/co_toggle_button_widget.dart';
 import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/cell_editor_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -129,10 +130,16 @@ class SoComponentCreator implements IComponentCreator {
   }
 
   CoCellEditorWidget createCellEditor(CellEditor toCreateCellEditor) {
-    CoCellEditorWidget cellEditor =
-        standardCellEditors[toCreateCellEditor.className]!(toCreateCellEditor);
+    if (standardCellEditors[toCreateCellEditor.className] != null) {
+      CoCellEditorWidget cellEditor =
+          standardCellEditors[toCreateCellEditor.className]!(
+              toCreateCellEditor);
 
-    return cellEditor;
+      return cellEditor;
+    } else {
+      return CoCellEditorWidget(
+          cellEditorModel: CellEditorModel(cellEditor: toCreateCellEditor));
+    }
   }
 
   CoCellEditorWidget? createCellEditorForTable(

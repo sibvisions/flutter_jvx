@@ -52,6 +52,8 @@ class CoCellEditorWidgetState<T extends CoCellEditorWidget> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Text('Cell editor not implemented yet!'),
+    );
   }
 }

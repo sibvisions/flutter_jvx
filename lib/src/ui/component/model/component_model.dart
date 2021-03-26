@@ -20,7 +20,7 @@ class ComponentModel with ChangeNotifier {
   CoState state = CoState.Free;
 
   // Styling
-  Color? background = Colors.transparent;
+  Color? background;
   Color? foreground;
   TextStyle fontStyle = TextStyle(fontSize: 16.0, color: Colors.black);
 
