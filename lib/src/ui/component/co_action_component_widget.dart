@@ -4,7 +4,7 @@ import 'component_widget.dart';
 import 'model/action_component_model.dart';
 
 typedef ActionCallback = void Function(
-    BuildContext context, String componentId);
+    BuildContext context, String componentId, String? classNameEventSourceRef);
 
 abstract class CoActionComponentWidget extends ComponentWidget {
   final ActionComponentModel componentModel;

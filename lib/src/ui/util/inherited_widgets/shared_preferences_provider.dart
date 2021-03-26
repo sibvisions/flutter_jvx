@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
 
 class SharedPreferencesProvider extends InheritedWidget {
   final Widget child;
-  final manager;
+  final SharedPreferencesManager manager;
 
-  SharedPreferencesProvider({required this.child, this.manager})
+  SharedPreferencesProvider({required this.child, required this.manager})
       : super(child: child);
 
   static SharedPreferencesProvider? of(BuildContext context) =>

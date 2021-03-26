@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/press_button_request.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
@@ -85,7 +86,9 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
   }
 
   void update(ApiResponse response) {
-    if (response.hasDataObject) {
+    if (_isOfflineRequest(response)) {
+      goOffline(context, response);
+    } else if (response.hasDataObject) {
       updateData(context, response.request, response.getAllDataObjects());
     }
 
@@ -423,6 +426,17 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
     _removeFromParent(toReplaceComponentWidget, _components);
     _addToParent(componentWidget, _components);
+  }
+
+  bool _isOfflineRequest(ApiResponse response) {
+    if (response.request is PressButtonRequest &&
+        (response.request as PressButtonRequest).classNameEventSourceRef !=
+            null &&
+        (response.request as PressButtonRequest).classNameEventSourceRef ==
+            'OfflineButton') {
+      return true;
+    }
+    return false;
   }
 
   @override

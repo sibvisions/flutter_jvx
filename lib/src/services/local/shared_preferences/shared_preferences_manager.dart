@@ -115,6 +115,9 @@ class SharedPreferencesManager {
 
   String? get offlinePassword => sharedPreferences.getString('offlinePassword');
 
+  set isOffline(bool isOffline) =>
+      sharedPreferences.setBool('isOffline', isOffline);
+
   set offlineUsername(String? username) {
     if (username != null && username.isNotEmpty) {
       final hash = sha256.convert(utf8.encode(username)).toString();

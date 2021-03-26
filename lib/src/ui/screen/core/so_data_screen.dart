@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutterclient/src/models/api/requests/close_screen_request.dart';
+import 'package:flutterclient/src/models/api/requests/navigation_request.dart';
 import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
+import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
+import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
+import 'package:flutterclient/src/ui/util/inherited_widgets/shared_preferences_provider.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -143,7 +150,8 @@ mixin SoDataScreen {
     return data!;
   }
 
-  void onAction(BuildContext context, String componentId) async {
+  void onAction(BuildContext context, String componentId,
+      String? classNameEventSourceRef) async {
     TextUtils.unfocusCurrentTextfield(context);
 
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -181,6 +189,72 @@ mixin SoDataScreen {
     if (requestQueue.length > 0) {
       sl<ApiCubit>().data(requestQueue.first);
       requestQueue.removeAt(0);
+    }
+  }
+
+  void goOffline(BuildContext context, ApiResponse response) async {
+    if (response.hasDataProviderChanged) {
+      for (final dpc in response.getAllObjectsByType<DataproviderChanged>()) {
+        getComponentData(dpc.dataProvider!);
+      }
+    }
+
+    if (response.hasDataBook) {
+      for (final d in response.getAllObjectsByType<DataBook>()) {
+        SoComponentData cData = getComponentData(d.dataProvider!);
+        cData.updateData(context, d, response.request.reload);
+      }
+    }
+
+    try {
+      if (!response.hasError) {
+        // TODO: show linear progress indicator
+
+        String path = AppStateProvider.of(context)!.appState.baseDirectory +
+            '/offlineDB.db';
+
+        bool importSuccess =
+            await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+        if (importSuccess) {
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .importComponents(context, componentData);
+        }
+
+        if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
+            null) {
+          // TODO: hide linear progress + show offline error
+
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .cleanupDatabase();
+        } else if (importSuccess) {
+          // TODO: hide linear progress
+
+          SharedPreferencesProvider.of(context)!.manager.isOffline = true;
+          AppState appState = AppStateProvider.of(context)!.appState;
+
+          appState.isOffline = true;
+
+          sl<ApiCubit>().navigation(NavigationRequest(
+              componentId: '',
+              clientId: appState.applicationMetaData!.clientId));
+        }
+      } else {
+        // TODO: hide linear progress
+      }
+    } catch (e) {
+      try {
+        // TODO: hide Loading indicators
+
+        SharedPreferencesProvider.of(context)!.manager.isOffline = false;
+        AppState appState = AppStateProvider.of(context)!.appState;
+
+        appState.isOffline = false;
+        await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .cleanupDatabase();
+      } catch (ee) {}
+
+      rethrow;
     }
   }
 }

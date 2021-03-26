@@ -161,8 +161,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         child: GestureDetector(
           onTap: () {
             if (widget.componentModel.enabled) {
-              widget.componentModel
-                  .onAction(context, widget.componentModel.name!);
+              widget.componentModel.onAction(
+                  context,
+                  widget.componentModel.name!,
+                  widget.componentModel.classNameEventSourceRef);
             }
           },
           child: SizedBox(
@@ -203,8 +205,10 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                         showLoadingIndicator(context);
                       }
 
-                      widget.componentModel
-                          .onAction(context, widget.componentModel.name!);
+                      widget.componentModel.onAction(
+                          context,
+                          widget.componentModel.name!,
+                          widget.componentModel.classNameEventSourceRef);
                     }
                   },
                   style: ButtonStyle(

@@ -2,26 +2,24 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:crypto/crypto.dart';
-import 'package:flutterclient/src/models/api/errors/failure.dart';
-import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/login_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
-import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
 
 import '../../../injection_container.dart';
+import '../../services/local/local_database/offline_database.dart';
 import '../../services/local/locale/supported_locale_manager.dart';
 import '../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../services/remote/cubit/api_cubit.dart';
 import '../../services/remote/network_info/network_info.dart';
 import '../../util/download/download_helper.dart';
 import '../api/data_source.dart';
+import '../api/errors/failure.dart';
 import '../api/requests/application_style_request.dart';
 import '../api/requests/change_request.dart';
 import '../api/requests/close_screen_request.dart';
+import '../api/requests/data/data_request.dart';
+import '../api/requests/data/insert_record_request.dart';
 import '../api/requests/device_status_request.dart';
 import '../api/requests/download_images_request.dart';
 import '../api/requests/download_translation_request.dart';
@@ -38,6 +36,8 @@ import '../api/requests/tab_select_request.dart';
 import '../api/requests/upload_request.dart';
 import '../api/response_objects/authentication_data_response_object.dart';
 import '../api/response_objects/download_response_object.dart';
+import '../api/response_objects/login_response_object.dart';
+import '../api/response_objects/menu/menu_response_object.dart';
 import '../state/app_state.dart';
 import 'api_repository.dart';
 
@@ -155,18 +155,22 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> logout(LogoutRequest request) async {
-    ApiState state = await _checkConnection(() {
-      return dataSource.logout(request);
-    });
+    if (!appState.isOffline) {
+      ApiState state = await _checkConnection(() {
+        return dataSource.logout(request);
+      });
 
-    if (state is ApiResponse) {
-      manager.authKey = null;
-      manager.userData = null;
+      if (state is ApiResponse) {
+        manager.authKey = null;
+        manager.userData = null;
 
-      appState.userData = null;
+        appState.userData = null;
+      }
+
+      return state;
+    } else {
+      return ApiResponse(request: request, objects: []);
     }
-
-    return state;
   }
 
   @override
@@ -178,9 +182,13 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> navigation(NavigationRequest request) async {
-    return await _checkConnection(() {
-      return dataSource.navigation(request);
-    });
+    if (!appState.isOffline) {
+      return await _checkConnection(() {
+        return dataSource.navigation(request);
+      });
+    } else {
+      return ApiResponse(request: request, objects: []);
+    }
   }
 
   @override
@@ -240,22 +248,26 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<List<ApiState>> data(DataRequest request) async {
-    List<ApiState> states = <ApiState>[];
+    if (!appState.isOffline) {
+      List<ApiState> states = <ApiState>[];
 
-    ApiState state = await _checkConnection(() {
-      return dataSource.data(request);
-    });
+      ApiState state = await _checkConnection(() {
+        return dataSource.data(request);
+      });
 
-    states.add(state);
+      states.add(state);
 
-    if (request is InsertRecordRequest &&
-        request.setValues != null &&
-        state is ApiResponse &&
-        !state.hasError) {
-      states.add(await dataSource.data(request.setValues as DataRequest));
+      if (request is InsertRecordRequest &&
+          request.setValues != null &&
+          state is ApiResponse &&
+          !state.hasError) {
+        states.add(await dataSource.data(request.setValues as DataRequest));
+      }
+
+      return states;
+    } else {
+      return [await offlineDataSource.request(request)];
     }
-
-    return states;
   }
 
   Future<void> handleDownload(ApiResponse response) async {

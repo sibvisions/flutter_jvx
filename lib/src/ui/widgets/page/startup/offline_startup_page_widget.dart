@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterclient/injection_container.dart';
 import 'package:flutterclient/src/models/api/response_objects/application_style/application_style_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/language_response_object.dart';
+import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
 import 'package:flutterclient/src/services/local/locale/supported_locale_manager.dart';
@@ -61,6 +62,12 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
       sl<SupportedLocaleManager>().value =
           widget.appState.translationConfig.supportedLocales;
     }
+
+    UserDataResponseObject? userData = widget.manager.userData;
+
+    if (userData != null) {
+      widget.appState.userData = userData;
+    }
   }
 
   void _setAppState() {
@@ -72,9 +79,7 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
   }
 
   void _checkForLogin() {
-    if (widget.manager.authKey != null) {
-      
-    }
+    if (widget.manager.authKey != null) {}
   }
 
   @override

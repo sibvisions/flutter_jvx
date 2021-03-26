@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/menu_request.dart';
 import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
+import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
+import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
+import 'package:flutterclient/src/ui/util/error/error_handler.dart';
+import 'package:flutterclient/src/ui/util/inherited_widgets/shared_preferences_provider.dart';
+import 'package:flutterclient/src/ui/widgets/page/menu/dialogs/sync_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../injection_container.dart';
@@ -93,6 +99,44 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
     }
   }
 
+  Widget _getOfflineIcon() {
+    return IconButton(
+        icon: FaIcon(FontAwesomeIcons.broadcastTower),
+        onPressed: () async {
+          bool shouldSync = await showSyncDialog(context);
+
+          if (shouldSync) {
+            bool syncSuccess =
+                await sl<IOfflineDatabaseProvider>().syncOnline(context);
+
+            if (syncSuccess) {
+              await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .cleanupDatabase();
+
+              setState(() {
+                widget.appState.isOffline = false;
+              });
+
+              SharedPreferencesProvider.of(context)!.manager.isOffline = false;
+
+              sl<ApiCubit>().menu(MenuRequest(
+                  clientId: widget.appState.applicationMetaData!.clientId));
+            } else {
+              if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                      .responseError !=
+                  null) {
+                ErrorHandler.handleError(
+                    ApiError(
+                        failure:
+                            (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                                .responseError!),
+                    context);
+              }
+            }
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +159,7 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
             style: TextStyle(color: Theme.of(context).primaryColor.textColor()),
           ),
           actions: [
+            if (widget.appState.isOffline) _getOfflineIcon(),
             IconButton(
                 icon: FaIcon(FontAwesomeIcons.ellipsisV),
                 onPressed: () {

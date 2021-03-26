@@ -30,7 +30,8 @@ class CoPopupMenuButtonWidgetState
   void valueChanged(dynamic value) {
     TextUtils.unfocusCurrentTextfield(context);
 
-    widget.componentModel.onAction(context, value);
+    widget.componentModel.onAction(
+        context, value, widget.componentModel.classNameEventSourceRef);
   }
 
   PopupMenuButton<String> _getPopupMenu(ColorScheme colorScheme) {

@@ -1,20 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
-import '../../../screen/core/manager/so_menu_manager.dart';
-import '../../../util/error/custom_bloc_listener.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/logout_request.dart';
 import '../../../../models/api/requests/open_screen_request.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
+import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/login_page_arguments.dart';
 import '../../../../models/state/routes/arguments/open_screen_page_arguments.dart';
 import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
+import '../../../screen/core/manager/so_menu_manager.dart';
+import '../../../util/error/custom_bloc_listener.dart';
 import '../../../util/error/error_handler.dart';
 import 'browser_menu_widget.dart';
 import 'mobile_menu_widget.dart';
