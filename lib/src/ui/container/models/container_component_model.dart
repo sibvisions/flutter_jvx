@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/layout/co_flow_layout_container_widget.dart';
 import 'package:flutterclient/src/ui/layout/co_grid_layout_container_widget.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -51,7 +52,7 @@ class ContainerComponentModel extends ComponentModel {
         layout!.addLayoutComponent(pComponent, contraints);
       } else if (layout is CoFormLayoutContainerWidget) {
         layout!.addLayoutComponent(pComponent, pConstraints);
-      } else if (layout is Object /*CoFlowLayoutContainerWidget*/) {
+      } else if (layout is CoFlowLayoutContainerWidget) {
         layout!.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is CoGridLayoutContainerWidget) {
         layout!.addLayoutComponent(pComponent, pConstraints);
@@ -106,7 +107,7 @@ class ContainerComponentModel extends ComponentModel {
         layout!.addLayoutComponent(componentWidget, contraints);
       } else if (layout is CoFormLayoutContainerWidget) {
         layout!.addLayoutComponent(componentWidget, newConstraints);
-      } else if (layout is Object /*CoFlowLayoutContainerWidget*/) {
+      } else if (layout is CoFlowLayoutContainerWidget) {
         layout!.addLayoutComponent(componentWidget, newConstraints);
       } else if (layout is CoGridLayoutContainerWidget) {
         layout!.addLayoutComponent(componentWidget, newConstraints);
@@ -157,20 +158,18 @@ class ContainerComponentModel extends ComponentModel {
         case "BorderLayout":
           {
             return CoBorderLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw!, layoutData);
+                container, layoutRaw ?? '', layoutData);
           }
         case "FormLayout":
           {
             return CoFormLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw!, layoutData!);
+                container, layoutRaw ?? '', layoutData ?? '');
           }
-        //   break;
-        // case "FlowLayout":
-        //   {
-        //     return CoFlowLayoutContainerWidget.fromLayoutString(
-        //         container, layoutRaw, layoutData);
-        //   }
-        //   break;
+        case "FlowLayout":
+          {
+            return CoFlowLayoutContainerWidget.fromLayoutString(
+                container, layoutRaw ?? '', layoutData ?? '');
+          }
         case "GridLayout":
           {
             return CoGridLayoutContainerWidget.fromLayoutString(
