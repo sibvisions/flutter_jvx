@@ -37,7 +37,7 @@ class CellEditorModel extends ChangeNotifier {
   String? placeholder;
   String? font;
   bool _editable = true;
-  bool? borderVisible;
+  bool borderVisible = true;
   int indexInTable = -1;
   TextStyle fontStyle = TextStyle(fontSize: 16, color: Colors.black);
   Size? tableMinimumSize;
@@ -91,6 +91,6 @@ class CellEditorModel extends ChangeNotifier {
         .getProperty<String>(CellEditorProperty.DATA_PROVIDER, dataProvider);
     borderVisible = this
         .cellEditor
-        .getProperty<bool>(CellEditorProperty.BORDER_VISIBLE, true);
+        .getProperty<bool>(CellEditorProperty.BORDER_VISIBLE, true)!;
   }
 }

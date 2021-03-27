@@ -246,7 +246,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   Widget getHeaderRow() {
     List<Widget> children = <Widget>[];
 
-    widget.componentModel.columnLabels.asMap().forEach((i, c) {
+    widget.componentModel.columnLabels?.asMap().forEach((i, c) {
       DataBookMetaDataColumn? column = widget.componentModel.data
           ?.getMetaDataColumn(widget.componentModel.columnNames[i]);
       if (column != null && column.nullable != null && column.nullable!) {
@@ -359,7 +359,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         widget.componentModel.columnInfo =
             SoTableColumnCalculator.getColumnFlex(
                 widget.componentModel.data!,
-                widget.componentModel.columnLabels,
+                widget.componentModel.columnLabels ?? <String>[],
                 widget.componentModel.columnNames,
                 widget.componentModel.itemTextStyle,
                 widget.componentModel.componentCreator!,
@@ -371,7 +371,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             widget.componentModel.columnInfo!);
         double tableHeight = SoTableColumnCalculator.getPreferredTableHeight(
             widget.componentModel.data!,
-            widget.componentModel.columnLabels,
+            widget.componentModel.columnLabels ?? <String>[],
             widget.componentModel.itemTextStyle,
             widget.componentModel.tableHeaderVisible,
             30,

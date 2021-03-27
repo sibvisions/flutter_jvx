@@ -18,7 +18,7 @@ class TableComponentModel extends EditorComponentModel {
   List<String> columnNames = <String>[];
 
   // column labels for header
-  List<String> columnLabels = <String>[];
+  List<String>? columnLabels = <String>[];
 
   // the show vertical lines flag.
   bool showVerticalLines = true;
@@ -77,8 +77,15 @@ class TableComponentModel extends EditorComponentModel {
     if (super.preferredSize != null) return super.preferredSize;
 
     double? columnWidth;
-    columnInfo = SoTableColumnCalculator.getColumnFlex(data!, columnLabels,
-        columnNames, itemTextStyle, componentCreator!, autoResize, 16.0, 16.0);
+    columnInfo = SoTableColumnCalculator.getColumnFlex(
+        data!,
+        columnLabels ?? <String>[],
+        columnNames,
+        itemTextStyle,
+        componentCreator!,
+        autoResize,
+        16.0,
+        16.0);
     if (columnInfo != null)
       columnWidth = SoTableColumnCalculator.getColumnWidthSum(columnInfo!);
 
@@ -113,13 +120,13 @@ class TableComponentModel extends EditorComponentModel {
 
   TableComponentModel.withoutChangedComponent(
       dynamic value,
-      String columnName,
+      String? columnName,
       Function(int index)? onRowTapped,
       bool editable,
       bool tableHeaderVisible,
       bool autoResize,
       List<String> columnNames,
-      List<String> columnLabels)
+      List<String>? columnLabels)
       : super.withoutChangedComponent(
             value, columnName, null, onRowTapped, editable) {
     this.tableHeaderVisible = tableHeaderVisible;

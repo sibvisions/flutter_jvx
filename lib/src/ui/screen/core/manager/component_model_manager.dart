@@ -130,9 +130,11 @@ class ComponentModelManager {
       case 'Icon':
         componentModel = IconComponentModel(changedComponent: changedComponent);
         break;
-      // case 'TextField':
-      //   componentModel = TextFieldComponentModel(changedComponent);
-      //   break;
+      case 'TextField':
+        componentModel = TextFieldComponentModel(
+            changedComponent: changedComponent,
+            onComponentValueChanged: onComponentValueChanged);
+        break;
       case 'TextArea':
         componentModel = TextAreaComponentModel(
             changedComponent: changedComponent,

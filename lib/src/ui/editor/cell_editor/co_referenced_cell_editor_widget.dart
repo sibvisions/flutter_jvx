@@ -14,5 +14,5 @@ class CoReferencedCellEditorWidget extends CoCellEditorWidget {
       CoCellEditorWidgetState();
 }
 
-class CoReferencedCellEditorWidgetState
-    extends CoCellEditorWidgetState<CoReferencedCellEditorWidget> {}
+class CoReferencedCellEditorWidgetState<T extends CoReferencedCellEditorWidget>
+    extends CoCellEditorWidgetState<T> {}

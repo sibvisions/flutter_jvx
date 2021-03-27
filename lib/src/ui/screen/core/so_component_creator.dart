@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/component/co_radio_button_widget.dart';
 import 'package:flutterclient/src/ui/component/co_text_field_widget.dart';
 import 'package:flutterclient/src/ui/component/co_toggle_button_widget.dart';
 import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/co_checkbox_cell_editor_widget.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/co_choice_cell_editor_widget.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/co_date_cell_editor_widget.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/co_image_cell_editor_widget.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/co_linked_cell_editor_widget.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/co_number_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/models/cell_editor_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/checkbox_cell_editor_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/choice_cell_editor_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/date_cell_editor_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/image_cell_editor_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/linked_cell_editor_model.dart';
+import 'package:flutterclient/src/ui/editor/cell_editor/models/number_cell_editor_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -80,12 +93,27 @@ class SoComponentCreator implements IComponentCreator {
     'TextField': (ComponentModel componentModel) => CoTextFieldWidget(
         componentModel: componentModel as TextFieldComponentModel),
     'ToggleButton': (ComponentModel componetModel) => CoToggleButtonWidget(
-        componentModel: componetModel as ToggleButtonComponentModel)
+        componentModel: componetModel as ToggleButtonComponentModel),
+    'RadioButton': (ComponentModel componentModel) => CoRadioButtonWidget(
+        componentModel: componentModel as SelectableComponentModel),
   };
 
   Map<String, CellEditorWidgetBuilder> standardCellEditors = {
     'TextCellEditor': (CellEditor cellEditor) => CoTextCellEditorWidget(
-        cellEditorModel: TextCellEditorModel(cellEditor: cellEditor))
+        cellEditorModel: TextCellEditorModel(cellEditor: cellEditor)),
+    'CheckBoxCellEditor': (CellEditor cellEditor) => CoCheckboxCellEditorWidget(
+        cellEditorModel:
+            CheckBoxCellEditorModel(currentCellEditor: cellEditor)),
+    'NumberCellEditor': (CellEditor cellEditor) => CoNumberCellEditorWidget(
+        cellEditorModel: NumberCellEditorModel(cellEditor: cellEditor)),
+    'ImageViewer': (CellEditor cellEditor) => CoImageCellEditorWidget(
+        cellEditorModel: ImageCellEditorModel(cellEditor: cellEditor)),
+    'ChoiceCellEditor': (CellEditor cellEditor) => CoChoiceCellEditorWidget(
+        cellEditorModel: ChoiceCellEditorModel(cellEditor: cellEditor)),
+    'DateCellEditor': (CellEditor cellEditor) => CoDateCellEditorWidget(
+        cellEditorModel: DateCellEditorModel(cellEditor: cellEditor)),
+    'LinkedCellEditor': (CellEditor cellEditor) => CoLinkedCellEditorWidget(
+        cellEditorModel: LinkedCellEditorModel(cellEditor: cellEditor))
   };
 
   @override

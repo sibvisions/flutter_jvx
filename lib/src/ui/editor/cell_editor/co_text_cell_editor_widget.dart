@@ -24,8 +24,7 @@ class CoTextCellEditorWidgetState
       widget.cellEditorModel.backgroundColor ?? Colors.white;
 
   Border get textFieldBorder {
-    if (widget.cellEditorModel.borderVisible != null &&
-        widget.cellEditorModel.borderVisible! &&
+    if (widget.cellEditorModel.borderVisible &&
         widget.cellEditorModel.editable) {
       return Border.all(color: Theme.of(context).primaryColor);
     }

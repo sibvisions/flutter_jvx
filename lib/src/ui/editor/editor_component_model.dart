@@ -111,7 +111,7 @@ class EditorComponentModel extends ComponentModel {
 
   EditorComponentModel.withoutChangedComponent(
     dynamic value,
-    String columnName,
+    String? columnName,
     int? indexInTable,
     Function(int index)? onRowTapped,
     bool editable,
