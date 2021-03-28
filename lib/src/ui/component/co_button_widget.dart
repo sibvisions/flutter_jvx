@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/injection_container.dart';
+import 'package:flutterclient/src/util/theme/theme_manager.dart';
 
 import '../../util/color/color_extension.dart';
 import '../../util/icon/font_awesome_changer.dart';
@@ -28,7 +30,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             widget.componentModel.image!,
             !widget.componentModel.enabled
                 ? Colors.grey.shade500
-                : Theme.of(context).primaryColor.textColor());
+                : sl<ThemeManager>().value.primaryColor.textColor());
       } else {
         List strinArr =
             List<String>.from(widget.componentModel.image!.split(','));

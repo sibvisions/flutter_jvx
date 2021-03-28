@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterclient/src/models/api/errors/failure.dart';
 import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
+import 'package:flutterclient/src/models/repository/api_repository.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import 'error_handler.dart';
@@ -41,8 +43,16 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (handleError && state is ApiError && modalRoute.isCurrent) {
-          ErrorHandler.handleError(state, context);
+        if (handleError &&
+            (state is ApiError ||
+                (state is ApiResponse && state.hasObject<Failure>())) &&
+            modalRoute.isCurrent) {
+          if (state is ApiError) {
+            ErrorHandler.handleError(state, context);
+          } else if (state is ApiResponse) {
+            ErrorHandler.handleError(
+                ApiError(failure: state.getObjectByType<Failure>()!), context);
+          }
         }
 
         if (state is ApiResponse) {

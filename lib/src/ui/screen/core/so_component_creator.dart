@@ -3,6 +3,11 @@ import 'package:flutterclient/src/ui/component/co_radio_button_widget.dart';
 import 'package:flutterclient/src/ui/component/co_text_field_widget.dart';
 import 'package:flutterclient/src/ui/component/co_toggle_button_widget.dart';
 import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
+import 'package:flutterclient/src/ui/container/co_group_panel_widget.dart';
+import 'package:flutterclient/src/ui/container/co_scroll_panel_widget.dart';
+import 'package:flutterclient/src/ui/container/co_split_panel_widget.dart';
+import 'package:flutterclient/src/ui/container/models/group_panel_component_model.dart';
+import 'package:flutterclient/src/ui/container/models/split_panel_component_model.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_checkbox_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_choice_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_date_cell_editor_widget.dart';
@@ -62,8 +67,17 @@ class SoComponentCreator implements IComponentCreator {
   SoComponentCreator();
 
   Map<String, ComponentWidgetBuilder> standardComponents = {
+    // Containers
     'Panel': (ComponentModel componentModel) => CoPanelWidget(
         componentModel: componentModel as ContainerComponentModel),
+    'ScrollPanel': (ComponentModel componentModel) => CoScrollPanelWidget(
+        componentModel: componentModel as ContainerComponentModel),
+    'GroupPanel': (ComponentModel componentModel) => CoGroupPanelWidget(
+        componentModel: componentModel as GroupPanelComponentModel),
+    'SplitPanel': (ComponentModel componentModel) => CoSplitPanelWidget(
+        componentModel: componentModel as SplitPanelComponentModel),
+
+    // Components
     'Label': (ComponentModel componentModel) =>
         CoLabelWidget(componentModel: componentModel as LabelComponentModel),
     'Button': (ComponentModel componentModel) =>
@@ -174,40 +188,43 @@ class SoComponentCreator implements IComponentCreator {
       CellEditor toCreateCellEditor, SoComponentData data) {
     CoCellEditorWidget? cellEditor;
 
-    // switch (toCreateCellEditor.className) {
-    // case "DateCellEditor":
-    //   {
-    //     cellEditor = CoDateCellEditorWidget(
-    //       cellEditorModel: DateCellEditorModel(toCreatecellEditor)
-    //         ..isTableView = true,
-    //     );
-    //   }
-    //   break;
-    // case "ChoiceCellEditor":
-    //   {
-    //     cellEditor = CoChoiceCellEditorWidget(
-    //       cellEditorModel: ChoiceCellEditorModel(toCreatecellEditor)
-    //         ..isTableView = true,
-    //     );
-    //   }
-    //   break;
-    // case "CheckBoxCellEditor":
-    //   {
-    //     cellEditor = CoCheckboxCellEditorWidget(
-    //         cellEditorModel: CheckBoxCellEditorModel(toCreatecellEditor)
-    //           ..isTableView = true);
-    //   }
-    //   break;
-    // case "LinkedCellEditor":
-    //   {
-    //     cellEditor = CoLinkedCellEditorWidget(
-    //       cellEditorModel: LinkedCellEditorModel(toCreatecellEditor)
-    //         ..isTableView = true
-    //         ..referencedData = data,
-    //     );
-    //   }
-    //   break;
-    // }
+    switch (toCreateCellEditor.className) {
+      case "DateCellEditor":
+        {
+          cellEditor = CoDateCellEditorWidget(
+            cellEditorModel: DateCellEditorModel(cellEditor: toCreateCellEditor)
+              ..isTableView = true,
+          );
+        }
+        break;
+      case "ChoiceCellEditor":
+        {
+          cellEditor = CoChoiceCellEditorWidget(
+            cellEditorModel:
+                ChoiceCellEditorModel(cellEditor: toCreateCellEditor)
+                  ..isTableView = true,
+          );
+        }
+        break;
+      case "CheckBoxCellEditor":
+        {
+          cellEditor = CoCheckboxCellEditorWidget(
+              cellEditorModel:
+                  CheckBoxCellEditorModel(currentCellEditor: toCreateCellEditor)
+                    ..isTableView = true);
+        }
+        break;
+      case "LinkedCellEditor":
+        {
+          cellEditor = CoLinkedCellEditorWidget(
+            cellEditorModel:
+                LinkedCellEditorModel(cellEditor: toCreateCellEditor)
+                  ..isTableView = true
+                  ..referencedData = data,
+          );
+        }
+        break;
+    }
 
     return cellEditor;
   }

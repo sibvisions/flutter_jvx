@@ -129,6 +129,7 @@ class CoDateCellEditorWidgetState
             border: _getBorder()),
         child: ElevatedButton(
             style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.white),
                 padding: MaterialStateProperty.all(
                     EdgeInsets.fromLTRB(10, 8, 10, 10))),
             child: Row(

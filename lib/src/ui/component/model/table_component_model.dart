@@ -195,7 +195,7 @@ class TableComponentModel extends EditorComponentModel {
       BuildContext context, String text, String columnName, int index) {
     DataBookMetaDataColumn? column = this.data?.getMetaDataColumn(columnName);
 
-    if (column != null && index >= 0) {
+    if (column != null) {
       if (_editors[_getEditorIdentifier(columnName, index)] == null) {
         CoEditorWidget? editor = this.componentCreator!.createEditorForTable(
               column.cellEditor!,

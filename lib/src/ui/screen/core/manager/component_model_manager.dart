@@ -7,6 +7,8 @@ import 'package:flutterclient/src/ui/component/model/toggle_button_component_mod
 import 'package:flutterclient/src/ui/component/popup_menu/models/menu_item_component_model.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_button_component_model.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
+import 'package:flutterclient/src/ui/container/models/group_panel_component_model.dart';
+import 'package:flutterclient/src/ui/container/models/split_panel_component_model.dart';
 import 'package:flutterclient/src/ui/editor/editor_component_model.dart';
 
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -76,27 +78,26 @@ class ComponentModelManager {
           changedComponent: changedComponent,
         );
         break;
-      // case 'GroupPanel':
-      //   componentModel = GroupPanelComponentModel(
-      //       changedComponent: changedComponent,
-      //       componentId: changedComponent.id);
-      //   break;
-      // case 'ScrollPanel':
-      //   componentModel = ContainerComponentModel(
-      //       changedComponent: changedComponent,
-      //       componentId: changedComponent.id);
-      //   break;
+      case 'GroupPanel':
+        componentModel = GroupPanelComponentModel(
+          changedComponent: changedComponent,
+        );
+        break;
+      case 'ScrollPanel':
+        componentModel = ContainerComponentModel(
+          changedComponent: changedComponent,
+        );
+        break;
       // case 'TabsetPanel':
       //   componentModel = TabsetPanelComponentModel(
       //       changedComponent: changedComponent,
       //       componentId: changedComponent.id);
       //   break;
-      // case 'SplitPanel':
-      //   componentModel = SplitPanelComponentModel(
-      //     changedComponent: changedComponent,
-      //     componentId: changedComponent.id,
-      //   );
-      //   break;
+      case 'SplitPanel':
+        componentModel = SplitPanelComponentModel(
+          changedComponent: changedComponent,
+        );
+        break;
       case 'PopupMenu':
         componentModel =
             PopupMenuComponentModel(changedComponent: changedComponent);

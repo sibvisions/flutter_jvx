@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/services.dart';
-import 'package:flutterclient/src/models/api/errors/failure.dart';
+import '../../models/api/errors/failure.dart';
 import 'package:yaml/yaml.dart';
 
 class AppConfig {
@@ -40,13 +40,24 @@ class AppConfig {
   static Future<Either<Failure, AppConfig>> loadConfig(
       {required String path, bool package = false}) async {
     try {
-      if (path.trim().isNotEmpty) {
+      if (path.contains('.yaml')) {
+        if (path.trim().isNotEmpty) {
+          final String configString = await rootBundle
+              .loadString(package ? 'packages/flutterclient/$path' : path);
+
+          final YamlMap map = loadYaml(configString);
+
+          final AppConfig devConfig = AppConfig.fromYaml(map: map);
+
+          return Right(devConfig);
+        }
+      } else {
         final String configString = await rootBundle
             .loadString(package ? 'packages/flutterclient/$path' : path);
 
-        final YamlMap map = loadYaml(configString);
+        final Map<String, dynamic> map = json.decode(configString);
 
-        final AppConfig devConfig = AppConfig.fromYaml(map: map);
+        final AppConfig devConfig = AppConfig.fromJson(map: map);
 
         return Right(devConfig);
       }

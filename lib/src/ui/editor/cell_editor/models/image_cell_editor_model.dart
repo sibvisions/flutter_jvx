@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor_properties.dart';
+import 'package:flutterclient/src/util/download/download_helper.dart';
 
 import 'cell_editor_model.dart';
 
@@ -83,7 +84,13 @@ class ImageCellEditorModel extends CellEditorModel {
         defaultImage = Image.memory(
             base64Decode(this.appState.fileConfig.files[defaultImageName]!));
       } else {
-        file = File('${this.appState.baseDirectory}$defaultImageName');
+        final path = getLocalFilePath(
+            baseUrl: appState.serverConfig!.baseUrl,
+            appName: appState.serverConfig!.appName,
+            appVersion: appState.applicationMetaData!.version,
+            translation: false,
+            baseDir: appState.baseDirectory);
+        file = File('$path$defaultImageName');
 
         if (file?.existsSync() ?? false) {
           defaultImage = Image.file(file!);

@@ -73,22 +73,25 @@ class ScreenManager implements IScreenManager {
   }
 
   @override
-  SoScreen createScreen(
-      {required ApiResponse response, MenuDrawerWidget? drawer}) {
+  SoScreen createScreen({
+    required ApiResponse response,
+    Function(String componentId)? onPopPage,
+    MenuDrawerWidget? drawer,
+  }) {
     ScreenGenericResponseObject? screenGeneric =
         response.getObjectByType<ScreenGenericResponseObject>();
 
     SoScreen screen = SoScreen(
       creator: SoComponentCreator(),
       configuration: SoScreenConfiguration(
-        screenComponentId: sl<AppState>().currentMenuComponentId ?? '',
-        drawer: drawer ?? SizedBox(),
-        componentId: screenGeneric!.componentId!,
-        response: response,
-        screenTitle: screenGeneric.screenTitle!,
-        withServer: true,
-        offlineScreen: false,
-      ),
+          screenComponentId: sl<AppState>().currentMenuComponentId ?? '',
+          drawer: drawer ?? SizedBox(),
+          componentId: screenGeneric!.componentId!,
+          response: response,
+          screenTitle: screenGeneric.screenTitle!,
+          withServer: true,
+          offlineScreen: false,
+          onPopPage: onPopPage),
     );
 
     return screen;

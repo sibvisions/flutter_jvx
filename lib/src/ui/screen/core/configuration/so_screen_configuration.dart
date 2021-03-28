@@ -9,12 +9,14 @@ class SoScreenConfiguration extends ValueNotifier<ApiState?> {
   bool withServer;
   bool offlineScreen;
   Widget drawer;
+  Function(String componentId)? onPopPage;
 
   SoScreenConfiguration(
       {ApiState? response,
       required this.componentId,
       required this.screenTitle,
       required this.screenComponentId,
+      this.onPopPage,
       this.drawer = const SizedBox(),
       this.templateName,
       this.offlineScreen = false,

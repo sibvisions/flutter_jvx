@@ -28,6 +28,10 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     ContainerComponentModel componentModel =
         widget.componentModel as ContainerComponentModel;
 
+    if (widget.componentModel.constraints == 'South') {
+      print("FUCK YOU");
+    }
+
     late Widget child;
 
     if (componentModel.layout != null) {

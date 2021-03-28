@@ -482,7 +482,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     color: Theme.of(context).primaryColor.textColor(),
                   ),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    widget.configuration
+                        .onPopPage!(widget.configuration.componentId);
                   }),
               actions: [
                 IconButton(

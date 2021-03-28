@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/screen/core/so_component_data.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/response_data/editor/cell_editor.dart';
@@ -9,6 +10,8 @@ import '../../../../models/state/app_state.dart';
 
 class CellEditorModel extends ChangeNotifier {
   CellEditor cellEditor;
+
+  SoComponentData? data;
 
   bool isTableView = false;
   int horizontalAlignment = 0;

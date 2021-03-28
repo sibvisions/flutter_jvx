@@ -17,6 +17,35 @@ class CoContainerWidget extends ComponentWidget {
 
 class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   @override
+  void didUpdateWidget(covariant CoContainerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    ContainerComponentModel componentModel =
+        widget.componentModel as ContainerComponentModel;
+
+    componentModel.layout = componentModel.createLayout(
+        widget, widget.componentModel.changedComponent);
+
+    if (widget.componentModel.componentId == 'headerFooterPanel') {
+      componentModel.layout = componentModel.createLayoutForHeaderFooterPanel(
+          widget, 'BorderLayout,0,0,0,0,0,0,');
+    }
+
+    componentModel.components.forEach((component) {
+      if (componentModel.layout is CoBorderLayoutContainerWidget) {
+        CoBorderLayoutConstraints contraints =
+            getBorderLayoutConstraintsFromString(
+                component.componentModel.constraints!);
+
+        componentModel.layout?.addLayoutComponent(component, contraints);
+      } else {
+        componentModel.layout?.addLayoutComponent(
+            component, component.componentModel.constraints);
+      }
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
     ContainerComponentModel componentModel =

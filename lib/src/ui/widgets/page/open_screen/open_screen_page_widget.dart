@@ -72,19 +72,22 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     if (state is ApiResponse) {
       _response = state;
 
-      _updateScreens(state);
+      if (state.hasDataObject || state.hasObject<ScreenGenericResponseObject>())
+        _updateScreens(state);
 
       if (state.request is LogoutRequest) {
         Navigator.of(context).pushNamed(Routes.login,
             arguments: LoginPageArguments(lastUsername: ''));
-      } else if (state.request is NavigationRequest) {
+      } else if (state.request is NavigationRequest &&
+          !state.hasObject<ScreenGenericResponseObject>()) {
         _pages.removeLast();
 
         if (_pages.isEmpty) {
           _screens.removeLast();
           Navigator.of(context).pop();
         }
-      } else if (state.request is CloseScreenRequest) {
+      } else if (state.request is CloseScreenRequest &&
+          !state.hasObject<ScreenGenericResponseObject>()) {
         _pages.removeLast();
 
         if (_pages.isEmpty) {
@@ -98,11 +101,20 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             state.getObjectByType<ScreenGenericResponseObject>()!;
 
         if (screenGeneric.changedComponents.isNotEmpty) {
-          addPage(widget.appState.screenManager.createScreen(
-              response: state,
-              drawer: getMenuDrawer(state
-                  .getObjectByType<ScreenGenericResponseObject>()!
-                  .screenTitle!)));
+          SoScreen? screenToUpdate;
+          try {
+            screenToUpdate = _screens.firstWhere((screen) =>
+                screen.configuration.componentId == screenGeneric.componentId);
+          } catch (_) {}
+
+          if (screenToUpdate == null) {
+            addPage(widget.appState.screenManager.createScreen(
+                onPopPage: _onPopPage,
+                response: state,
+                drawer: getMenuDrawer(state
+                    .getObjectByType<ScreenGenericResponseObject>()!
+                    .screenTitle!)));
+          }
         } else if (!screenGeneric.update) {
           SoScreen soScreen = _screens.firstWhere((screen) =>
               screen.configuration.componentId == screenGeneric.componentId);
@@ -178,34 +190,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     }
   }
 
-  bool _onPopPage(Route<dynamic> route, dynamic sendNavigation) {
-    try {
-      if (!route.didPop(route)) {
-        return false;
-      }
+  void _onPopPage(String componentId) {
+    NavigationRequest request = NavigationRequest(
+        clientId: widget.appState.applicationMetaData!.clientId,
+        componentId: (_pages.last.child as SoScreen).configuration.componentId);
 
-      if (sendNavigation is bool && !sendNavigation) {
-        return true;
-      }
-
-      NavigationRequest request = NavigationRequest(
-          clientId: widget.appState.applicationMetaData!.clientId,
-          componentId:
-              (_pages.last.child as SoScreen).configuration.componentId);
-
-      sl<ApiCubit>().navigation(request);
-
-      return false;
-    } catch (e) {
-      NavigationRequest request = NavigationRequest(
-          clientId: widget.appState.applicationMetaData!.clientId,
-          componentId:
-              (_pages.last.child as SoScreen).configuration.componentId);
-
-      sl<ApiCubit>().navigation(request);
-
-      return false;
-    }
+    sl<ApiCubit>().navigation(request);
   }
 
   void _onLogoutPressed() {
@@ -228,6 +218,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   void _addInitialScreen(SoScreen screen) {
     if (screen.configuration.value != null)
       _response = screen.configuration.value as ApiResponse;
+
+    if (screen.configuration.onPopPage == null) {
+      screen.configuration.onPopPage = _onPopPage;
+    }
 
     screen.configuration.drawer =
         getMenuDrawer(screen.configuration.screenTitle);
@@ -312,7 +306,17 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           child: _pages.isNotEmpty
               ? Navigator(
                   pages: [..._pages],
-                  onPopPage: _onPopPage,
+                  onPopPage: (Route<dynamic> route, dynamic val) {
+                    NavigationRequest request = NavigationRequest(
+                        clientId: widget.appState.applicationMetaData!.clientId,
+                        componentId: (_pages.last.child as SoScreen)
+                            .configuration
+                            .componentId);
+
+                    sl<ApiCubit>().navigation(request);
+
+                    return false;
+                  },
                 )
               : Container(),
         ),

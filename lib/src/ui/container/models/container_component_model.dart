@@ -16,10 +16,33 @@ import '../co_container_widget.dart';
 class ContainerComponentModel extends ComponentModel {
   List<ComponentWidget> components = <ComponentWidget>[];
 
+  String? layoutData;
+  String? layoutString;
+
   CoLayout? layout;
+
+  get layoutName {
+    List<String>? parameter = layoutString?.split(",");
+    if (parameter != null && parameter.length > 0) {
+      return parameter[0];
+    }
+
+    return null;
+  }
 
   ContainerComponentModel({required ChangedComponent changedComponent})
       : super(changedComponent: changedComponent);
+
+  @override
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
+    layoutData = changedComponent.getProperty<String>(
+        ComponentProperty.LAYOUT_DATA, layoutData);
+    layoutString = changedComponent.getProperty<String>(
+        ComponentProperty.LAYOUT, layoutString);
+
+    super.updateProperties(context, changedComponent);
+  }
 
   void add(ComponentWidget pComponent) {
     addWithContraintsAndIndex(pComponent, null, -1);
@@ -148,13 +171,25 @@ class ContainerComponentModel extends ComponentModel {
 
   CoLayout? createLayout(
       CoContainerWidget container, ChangedComponent changedComponent) {
-    if (changedComponent.hasProperty(ComponentProperty.LAYOUT)) {
+    if (changedComponent.hasProperty(ComponentProperty.LAYOUT) ||
+        ((container.componentModel as ContainerComponentModel).layoutString !=
+                null &&
+            (container.componentModel as ContainerComponentModel)
+                .layoutString!
+                .isNotEmpty)) {
       String? layoutRaw =
           changedComponent.getProperty<String>(ComponentProperty.LAYOUT, null);
       String? layoutData = changedComponent.getProperty<String>(
           ComponentProperty.LAYOUT_DATA, null);
 
-      switch (changedComponent.layoutName) {
+      if (layoutRaw == null || layoutRaw.isEmpty) {
+        layoutRaw =
+            (container.componentModel as ContainerComponentModel).layoutString;
+        layoutData =
+            (container.componentModel as ContainerComponentModel).layoutData;
+      }
+
+      switch (layoutName) {
         case "BorderLayout":
           {
             return CoBorderLayoutContainerWidget.fromLayoutString(

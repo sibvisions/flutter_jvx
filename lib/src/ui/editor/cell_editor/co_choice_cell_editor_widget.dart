@@ -70,14 +70,22 @@ class CoChoiceCellEditorWidgetState
                 cellEditorModel.horizontalAlignment),
             children: <Widget>[
           ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
-            child: ElevatedButton(
-              onPressed: () => cellEditorModel.editable
-                  ? setState(() => changeImage())
-                  : null,
-              child: cellEditorModel.selectedImage!.image,
-            ),
-          )
+              constraints: BoxConstraints(maxWidth: 40, maxHeight: 40),
+              // child: ElevatedButton(
+              //   style: ButtonStyle(
+              //       backgroundColor:
+              //           MaterialStateProperty.all(Colors.transparent)),
+              //   onPressed: () => cellEditorModel.editable
+              //       ? setState(() => changeImage())
+              //       : null,
+              //   child: cellEditorModel.selectedImage!.image,
+              // ),
+              child: GestureDetector(
+                child: cellEditorModel.selectedImage!.image,
+                onTap: () => cellEditorModel.editable
+                    ? setState(() => changeImage())
+                    : null,
+              ))
         ]));
   }
 }
