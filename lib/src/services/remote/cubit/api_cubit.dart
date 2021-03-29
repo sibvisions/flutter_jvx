@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/download_request.dart';
 import 'package:meta/meta.dart';
 
 import '../../../models/api/errors/failure.dart';
@@ -143,5 +144,9 @@ class ApiCubit extends Cubit<ApiState> {
 
   Future<void> upload(UploadRequest request) async {
     emit(await repository.upload(request));
+  }
+
+  Future<void> download(DownloadRequest request) async {
+    emit(await repository.download(request));
   }
 }

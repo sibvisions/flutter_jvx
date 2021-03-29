@@ -12,6 +12,7 @@ import 'package:flutterclient/src/models/api/requests/data/meta_data_request.dar
 import 'package:flutterclient/src/models/api/requests/data/save_data_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/select_record_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
+import 'package:flutterclient/src/models/api/requests/download_request.dart';
 import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/upload_response_object.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
@@ -205,6 +206,16 @@ class RemoteDataSourceImpl implements DataSource {
   }
 
   @override
+  Future<ApiState> download(request) async {
+    final path = appState.serverConfig!.baseUrl + '/download';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendDownloadRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
+  }
+
+  @override
   Future<ApiState> data(DataRequest request) async {
     String path = appState.serverConfig!.baseUrl;
 
@@ -285,10 +296,11 @@ class RemoteDataSourceImpl implements DataSource {
         timeout: appState.appConfig!.requestTimeout);
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) {
-      ApiResponse response = ApiResponse.fromJson(request, json.decode(r.body));
+      ApiResponse response = ApiResponse(request: request, objects: []);
 
       response.addResponseObject(DownloadResponseObject(
           name: 'download',
+          fileId: request is DownloadRequest ? request.fileId : '',
           translation: (request is DownloadTranslationRequest),
           bodyBytes: r.bodyBytes));
 

@@ -15,16 +15,16 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
   get preferredSize {
     String? text = "";
 
-    if ((referencedData?.data?.records != null) &&
-        referencedData!.data!.records.length > 0) {
-      List<String?> items = this.getItems();
-      for (int i = 0; i < items.length && i < 10; i++) {
-        if (text == null ||
-            (items[i] != null && items[i]!.length > text.length)) {
-          text = items[i];
-        }
-      }
-    }
+    // if ((referencedData?.data?.records != null) &&
+    //     referencedData!.data!.records.length > 0) {
+    //   List<String?> items = this.getItems();
+    //   for (int i = 0; i < items.length && i < 10; i++) {
+    //     if (text == null ||
+    //         (items[i] != null && items[i]!.length > text.length)) {
+    //       text = items[i];
+    //     }
+    //   }
+    // }
 
     if (text == "") text = TextUtils.averageCharactersTextField;
 

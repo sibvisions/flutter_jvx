@@ -121,11 +121,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       AppLocalizations.load(Locale(widget.appState.language!.language));
     }
 
-    ApplicationStyleRequest applicationStyleRequest = ApplicationStyleRequest(
-      clientId: widget.appState.applicationMetaData!.clientId,
-    );
+    if (widget.appState.applicationMetaData != null) {
+      ApplicationStyleRequest applicationStyleRequest = ApplicationStyleRequest(
+        clientId: widget.appState.applicationMetaData!.clientId,
+      );
 
-    sl<ApiCubit>().applicationStyle(applicationStyleRequest);
+      sl<ApiCubit>().applicationStyle(applicationStyleRequest);
+    }
   }
 
   void _setLocalData() {

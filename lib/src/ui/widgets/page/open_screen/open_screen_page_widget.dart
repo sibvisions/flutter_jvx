@@ -1,11 +1,18 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/download_request.dart';
 import 'package:flutterclient/src/models/api/requests/upload_request.dart';
 import 'package:flutterclient/src/models/api/response_object.dart';
+import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/dataprovider_changed.dart';
+import 'package:flutterclient/src/models/api/response_objects/upload_response_object.dart';
 import 'package:flutterclient/src/ui/widgets/dialog/file_picker_dialog.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/close_screen_request.dart';
@@ -152,7 +159,14 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         });
       }
 
-      if (state.hasObject<DownloadActionResponseObject>()) {}
+      if (state.hasObject<DownloadActionResponseObject>()) {
+        DownloadRequest request = DownloadRequest(
+            clientId: widget.appState.applicationMetaData!.clientId,
+            fileId:
+                state.getObjectByType<DownloadActionResponseObject>()!.fileId);
+
+        sl<ApiCubit>().download(request);
+      }
 
       if (state.hasObject<UploadActionResponseObject>()) {
         openFilePicker(context, widget.appState).then((file) {
@@ -168,6 +182,38 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           }
         });
       }
+
+      if (state.hasObject<DownloadResponseObject>()) {
+        _downloadFile(state);
+      }
+    }
+  }
+
+  void _downloadFile(ApiResponse state) async {
+    DownloadResponseObject download =
+        state.getObjectByType<DownloadResponseObject>()!;
+
+    if (!kIsWeb) {
+      final dir = await getExternalStorageDirectory();
+
+      File toSave = File('${dir?.path}/${download.fileId}');
+
+      toSave = await toSave.create(recursive: true);
+      await toSave.writeAsBytes(download.bodyBytes);
+    } else {
+      final blob = html.Blob([download.bodyBytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.document.createElement('a') as html.AnchorElement
+        ..href = url
+        ..style.display = 'none'
+        ..download = download.fileId;
+
+      html.document.body?.children.add(anchor);
+
+      anchor.click();
+
+      html.document.body?.children.remove(anchor);
+      html.Url.revokeObjectUrl(url);
     }
   }
 

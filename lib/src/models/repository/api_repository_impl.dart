@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/download_request.dart';
 import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
 
 import '../../../injection_container.dart';
@@ -244,6 +245,13 @@ class ApiRepositoryImpl implements ApiRepository {
   Future<ApiState> upload(UploadRequest request) async {
     return await _checkConnection(() {
       return dataSource.upload(request);
+    });
+  }
+
+  @override
+  Future<ApiState> download(DownloadRequest request) async {
+    return await _checkConnection(() {
+      return dataSource.download(request);
     });
   }
 

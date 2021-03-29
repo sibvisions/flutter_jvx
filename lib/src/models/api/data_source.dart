@@ -1,4 +1,5 @@
 import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
+import 'package:flutterclient/src/models/api/requests/download_request.dart';
 import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
 
 import 'requests/application_style_request.dart';
@@ -24,6 +25,7 @@ abstract class DataSource {
   Future<ApiState> applicationStyle(ApplicationStyleRequest request);
   Future<ApiState> downloadTranslation(DownloadTranslationRequest request);
   Future<ApiState> downloadImages(DownloadImagesRequest request);
+  Future<ApiState> download(DownloadRequest request);
   Future<ApiState> login(LoginRequest request);
   Future<ApiState> logout(LogoutRequest request);
   Future<ApiState> change(ChangeRequest request);

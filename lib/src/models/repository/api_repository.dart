@@ -1,4 +1,5 @@
 import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
+import 'package:flutterclient/src/models/api/requests/download_request.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
 import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
@@ -34,6 +35,7 @@ abstract class ApiRepository {
   Future<ApiState> applicationStyle(ApplicationStyleRequest request);
   Future<ApiState> downloadTranslation(DownloadTranslationRequest request);
   Future<ApiState> downloadImages(DownloadImagesRequest request);
+  Future<ApiState> download(DownloadRequest request);
   Future<ApiState> login(LoginRequest request);
   Future<ApiState> logout(LogoutRequest request);
   Future<ApiState> change(ChangeRequest request);

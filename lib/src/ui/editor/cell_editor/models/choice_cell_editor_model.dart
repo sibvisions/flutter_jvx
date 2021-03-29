@@ -8,7 +8,7 @@ import 'cell_editor_model.dart';
 class ChoiceCellEditorModel extends CellEditorModel {
   List<ChoiceCellEditorImage> items = <ChoiceCellEditorImage>[];
   String? defaultImageName;
-  ChoiceCellEditorImage? defaultImage;
+  late ChoiceCellEditorImage defaultImage;
   List<String>? allowedValues;
   List<String>? imageNames;
   ChoiceCellEditorImage? selectedImage;
@@ -20,7 +20,7 @@ class ChoiceCellEditorModel extends CellEditorModel {
         CellEditorProperty.DEFAULT_IMAGE_NAME, defaultImageName);
     if (defaultImageName == null) {
       defaultImageName = this.cellEditor.getProperty<String>(
-          CellEditorProperty.DEFAULT_IMAGE, defaultImageName)!;
+          CellEditorProperty.DEFAULT_IMAGE, defaultImageName);
     }
     allowedValues = cellEditor.getProperty<List<String>>(
         CellEditorProperty.ALLOWED_VALUES, allowedValues);
@@ -50,11 +50,12 @@ class ChoiceCellEditorModel extends CellEditorModel {
       this.selectedImage = this.defaultImage;
     }
 
-    if (path == null ||
-        this.imageNames!.indexOf(path) > this.allowedValues!.length - 1) {
-      return this.defaultImage!;
+    if (this.imageNames!.indexOf(path ?? '') > this.allowedValues!.length - 1) {
+      return defaultImage;
     } else {
-      val = this.allowedValues![this.imageNames!.indexOf(path)];
+      int indx = this.imageNames!.indexOf(path ?? '');
+
+      val = this.allowedValues![indx >= 0 ? indx : 0];
     }
 
     ChoiceCellEditorImage choiceCellEditorImage =
