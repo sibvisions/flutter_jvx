@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'package:universal_html/html.dart';
 
 import 'device_info.dart';
 
