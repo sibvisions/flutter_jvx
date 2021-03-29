@@ -14,6 +14,10 @@ class UploadRequest extends Request {
       required this.file})
       : super(clientId: clientId, debugInfo: debugInfo, reload: reload);
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'fileId': fileId, 'name': 'upload', ...super.toJson()};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'fileId': fileId,
+        'name': 'upload',
+        'file': file,
+        ...super.toJson()
+      };
 }

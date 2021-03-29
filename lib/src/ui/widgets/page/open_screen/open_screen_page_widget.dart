@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/upload_request.dart';
 import 'package:flutterclient/src/models/api/response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/dataprovider_changed.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/file_picker_dialog.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/close_screen_request.dart';
@@ -152,7 +154,20 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
       if (state.hasObject<DownloadActionResponseObject>()) {}
 
-      if (state.hasObject<UploadActionResponseObject>()) {}
+      if (state.hasObject<UploadActionResponseObject>()) {
+        openFilePicker(context, widget.appState).then((file) {
+          if (file != null) {
+            UploadRequest upload = UploadRequest(
+                clientId: widget.appState.applicationMetaData!.clientId,
+                file: file,
+                fileId: state
+                    .getObjectByType<UploadActionResponseObject>()!
+                    .fileId);
+
+            sl<ApiCubit>().upload(upload);
+          }
+        });
+      }
     }
   }
 

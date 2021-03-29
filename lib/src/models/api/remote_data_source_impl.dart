@@ -13,6 +13,7 @@ import 'package:flutterclient/src/models/api/requests/data/save_data_request.dar
 import 'package:flutterclient/src/models/api/requests/data/select_record_request.dart';
 import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
 import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
+import 'package:flutterclient/src/models/api/response_objects/upload_response_object.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/services/remote/rest/rest_client.dart';
 import 'package:http/http.dart' as http;
@@ -194,9 +195,13 @@ class RemoteDataSourceImpl implements DataSource {
   }
 
   @override
-  Future<ApiState> upload(UploadRequest request) {
-    // TODO: implement upload
-    throw UnimplementedError();
+  Future<ApiState> upload(UploadRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/upload';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendUploadRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
@@ -280,12 +285,29 @@ class RemoteDataSourceImpl implements DataSource {
         timeout: appState.appConfig!.requestTimeout);
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) {
-      return Right(ApiResponse(objects: [
-        DownloadResponseObject(
-            name: 'download',
-            translation: (request is DownloadTranslationRequest),
-            bodyBytes: r.bodyBytes)
-      ], request: request));
+      ApiResponse response = ApiResponse.fromJson(request, json.decode(r.body));
+
+      response.addResponseObject(DownloadResponseObject(
+          name: 'download',
+          translation: (request is DownloadTranslationRequest),
+          bodyBytes: r.bodyBytes));
+
+      return Right(response);
+    });
+  }
+
+  Future<Either<ApiError, ApiResponse>> _sendUploadRequest(
+      Uri uri, UploadRequest request) async {
+    Either<Failure, http.Response> either =
+        await client.upload(uri: uri, data: request.toJson());
+
+    return either.fold((l) => Left(ApiError(failure: l)), (r) {
+      ApiResponse response = ApiResponse.fromJson(request, json.decode(r.body));
+
+      response.addResponseObject(
+          UploadResponseObject(name: 'upload', filename: request.fileId));
+
+      return Right(response);
     });
   }
 

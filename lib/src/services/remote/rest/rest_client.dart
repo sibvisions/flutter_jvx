@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 import '../../../models/api/errors/failure.dart';
 import 'http_client.dart';
@@ -11,15 +12,13 @@ import 'http_client.dart';
 abstract class RestClient {
   Map<String, String>? headers;
 
-  Future<Either<Failure, Response>> get({required Uri uri});
+  Future<Either<Failure, http.Response>> get({required Uri uri});
 
-  Future<Either<Failure, Response>> post(
+  Future<Either<Failure, http.Response>> post(
       {required Uri uri, required Map<String, dynamic> data, int timeout});
 
-  Future<Either<Failure, Response>> upload(
-      {required Uri uri,
-      required String fileName,
-      required Map<String, dynamic> data});
+  Future<Either<Failure, http.Response>> upload(
+      {required Uri uri, required Map<String, dynamic> data, int timeout});
 }
 
 class RestClientImpl implements RestClient {
@@ -78,9 +77,34 @@ class RestClientImpl implements RestClient {
   @override
   Future<Either<Failure, http.Response>> upload(
       {required Uri uri,
-      required String fileName,
-      required Map<String, dynamic> data}) {
-    // TODO: implement upload
-    throw UnimplementedError();
+      required Map<String, dynamic> data,
+      int timeout = 10}) async {
+    try {
+      var request = http.MultipartRequest("POST", uri);
+
+      request.headers.addAll(headers!);
+
+      request.fields['clientId'] = data['clientId'];
+      request.fields['fileId'] = data['fileId'];
+
+      File file = data['file'];
+
+      request.files.add(http.MultipartFile.fromBytes(
+          'data', file.readAsBytesSync(),
+          filename: basename(file.path)));
+
+      final streamedResponse = await request.send();
+
+      var response = await http.Response.fromStream(streamedResponse)
+          .timeout(Duration(seconds: timeout));
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(
+          title: 'Connection Problems',
+          details: '',
+          name: 'message.error',
+          message: e.toString()));
+    }
   }
 }
