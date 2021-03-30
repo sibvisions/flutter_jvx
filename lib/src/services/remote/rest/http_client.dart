@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'http_client_stub.dart'
-    // ignore: uri_does_not_exist
     if (dart.library.io) 'mobile_client.dart'
-    // ignore: uri_does_not_exist
     if (dart.library.html) 'browser_client.dart';
 
 abstract class HttpClient {

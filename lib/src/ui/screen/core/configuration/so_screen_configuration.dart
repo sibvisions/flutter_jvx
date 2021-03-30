@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
 
 class SoScreenConfiguration extends ValueNotifier<ApiState?> {
@@ -10,12 +11,14 @@ class SoScreenConfiguration extends ValueNotifier<ApiState?> {
   bool offlineScreen;
   Widget drawer;
   Function(String componentId)? onPopPage;
+  Function(MenuItem)? onMenuItemPressed;
 
   SoScreenConfiguration(
       {ApiState? response,
       required this.componentId,
       required this.screenTitle,
       required this.screenComponentId,
+      this.onMenuItemPressed,
       this.onPopPage,
       this.drawer = const SizedBox(),
       this.templateName,

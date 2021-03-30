@@ -23,7 +23,7 @@ abstract class RestClient {
 
 class RestClientImpl implements RestClient {
   Map<String, String>? headers = {'Content-Type': 'application/json'};
-  HttpClient client;
+  final HttpClient client;
 
   @override
   RestClientImpl({Map<String, String>? headers, required this.client}) {

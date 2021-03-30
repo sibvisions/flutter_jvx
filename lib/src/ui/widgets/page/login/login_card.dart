@@ -176,7 +176,7 @@ class _LoginCardState extends State<LoginCard>
   void _login(BuildContext context) {
     if (loginUsername.trim().isNotEmpty && loginPassword.trim().isNotEmpty) {
       LoginRequest request = LoginRequest(
-          clientId: widget.appState.applicationMetaData!.clientId,
+          clientId: widget.appState.applicationMetaData?.clientId ?? '',
           createAuthKey: rememberMe,
           username: loginUsername,
           password: loginPassword);

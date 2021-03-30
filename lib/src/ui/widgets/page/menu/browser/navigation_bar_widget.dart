@@ -1,38 +1,166 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
+import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class NavigationBarWidget extends StatelessWidget {
+import '../../../../../../flutterclient.dart';
+
+class NavigationBarWidget extends StatefulWidget {
   final Widget child;
+  final AppState appState;
+  final Function onLogoutPressed;
+  final Function(MenuItem) onMenuItemPressed;
+  final List<MenuItem> menuItems;
 
-  const NavigationBarWidget({Key? key, required this.child}) : super(key: key);
+  const NavigationBarWidget(
+      {Key? key,
+      required this.child,
+      required this.appState,
+      required this.onLogoutPressed,
+      required this.onMenuItemPressed,
+      required this.menuItems})
+      : super(key: key);
+
+  @override
+  _NavigationBarWidgetState createState() => _NavigationBarWidgetState();
+}
+
+class _NavigationBarWidgetState extends State<NavigationBarWidget> {
+  Uint8List? _decodedImg;
+  bool isShowingMenu = true;
+
+  Widget _getMenuWidget(BuildContext context) {
+    return MenuListViewWidget(
+        menuItems: widget.menuItems,
+        groupedMenuMode: true,
+        onPressed: widget.onMenuItemPressed,
+        appState: widget.appState);
+    if (widget.appState.applicationStyle?.menuMode != null) {
+      switch (widget.appState.applicationStyle!.menuMode) {
+        case 'grid':
+          return MenuGridViewWidget(
+              items: widget.menuItems,
+              groupedMenuMode: false,
+              onPressed: widget.onMenuItemPressed,
+              appState: widget.appState);
+        case 'grid_grouped':
+          return MenuGridViewWidget(
+              items: widget.menuItems,
+              groupedMenuMode: true,
+              onPressed: widget.onMenuItemPressed,
+              appState: widget.appState);
+        case 'list':
+          return MenuListViewWidget(
+              menuItems: widget.menuItems,
+              groupedMenuMode: false,
+              onPressed: widget.onMenuItemPressed,
+              appState: widget.appState);
+        case 'list_grouped':
+          return MenuListViewWidget(
+              menuItems: widget.menuItems,
+              groupedMenuMode: true,
+              onPressed: widget.onMenuItemPressed,
+              appState: widget.appState);
+        default:
+          return MenuGridViewWidget(
+              items: widget.menuItems,
+              groupedMenuMode: false,
+              onPressed: widget.onMenuItemPressed,
+              appState: widget.appState);
+      }
+    } else {
+      return Container();
+    }
+  }
+
+  ImageProvider? _getImageProvider() {
+    if (widget.appState.userData?.profileImage != null &&
+        widget.appState.userData!.profileImage.isNotEmpty) {
+      return MemoryImage(_decodedImg!);
+    }
+
+    return null;
+  }
+
+  Widget _getNavWidget() {
+    return Flexible(
+        flex: 2,
+        child: Container(
+            child: Column(
+          children: [
+            Image.asset(
+              'assets/images/logo_small.png',
+              height: 60,
+            ),
+            _getMenuWidget(context),
+          ],
+        )));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.appState.userData?.profileImage != null &&
+        widget.appState.userData!.profileImage.isNotEmpty) {
+      _decodedImg = base64Decode(widget.appState.userData!.profileImage);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 100,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                'Home',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(width: 100.0),
-              Text(
-                'About',
-                style: TextStyle(fontSize: 20.0),
-              ),
-              SizedBox(width: 100.0),
-              Text(
-                'Contact',
-                style: TextStyle(fontSize: 20.0),
-              ),
-            ],
+    return Material(
+      child: Row(
+        children: [
+          AnimatedContainer(
+              duration: const Duration(seconds: 1),
+              child: isShowingMenu ? _getNavWidget() : Container()),
+          Flexible(
+            flex: 8,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  color: Theme.of(context).primaryColor,
+                  height: 60,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                            icon: FaIcon(FontAwesomeIcons.ellipsisV),
+                            onPressed: () {
+                              setState(() {
+                                isShowingMenu = !isShowingMenu;
+                              });
+                            }),
+                        CircleAvatar(
+                          backgroundImage: _getImageProvider(),
+                          child: widget.appState.userData?.profileImage ==
+                                      null ||
+                                  widget.appState.userData!.profileImage.isEmpty
+                              ? FaIcon(
+                                  FontAwesomeIcons.userTie,
+                                  color: Theme.of(context).primaryColor,
+                                  size: MediaQuery.of(context).size.height / 10,
+                                )
+                              : Container(),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(child: widget.child)
+              ],
+            ),
           ),
-        ),
-        Expanded(child: child)
-      ],
+        ],
+      ),
     );
   }
 }

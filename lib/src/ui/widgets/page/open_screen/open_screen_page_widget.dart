@@ -10,6 +10,7 @@ import 'package:flutterclient/src/models/api/response_objects/download_response_
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/dataprovider_changed.dart';
 import 'package:flutterclient/src/models/api/response_objects/upload_response_object.dart';
+import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
 import 'package:flutterclient/src/ui/widgets/dialog/file_picker_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
@@ -267,7 +268,16 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   void _onMenuItemPressed(MenuItem menuItem) {
-    if (menuItem.componentId != widget.appState.currentMenuComponentId) {
+    if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
+        !widget.appState.screenManager
+            .findScreen(menuItem.componentId)!
+            .configuration
+            .withServer) {
+      Navigator.of(context).pushNamed(Routes.openScreen,
+          arguments: OpenScreenPageArguments(
+              screen: widget.appState.screenManager
+                  .findScreen(menuItem.componentId)!));
+    } else {
       OpenScreenRequest request = OpenScreenRequest(
           clientId: widget.appState.applicationMetaData!.clientId,
           componentId: menuItem.componentId);
@@ -282,6 +292,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
     if (screen.configuration.onPopPage == null) {
       screen.configuration.onPopPage = _onPopPage;
+    }
+
+    if (screen.configuration.onMenuItemPressed == null) {
+      screen.configuration.onMenuItemPressed = _onMenuItemPressed;
     }
 
     screen.configuration.drawer =

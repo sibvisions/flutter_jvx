@@ -104,7 +104,17 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
       child: Builder(
         builder: (context) {
           if (widget.appState.webOnly) {
-            return BrowserMenuWidget();
+            return BrowserMenuWidget(
+              listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
+              appState: widget.appState,
+              menuItems: _menuItems,
+              onLogoutPressed: () {
+                LogoutRequest logoutRequest = LogoutRequest(
+                    clientId: widget.appState.applicationMetaData!.clientId);
+
+                sl<ApiCubit>().logout(logoutRequest);
+              },
+            );
           } else if (widget.appState.mobileOnly) {
             return MobileMenuWidget(
               appState: widget.appState,
@@ -121,7 +131,18 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
                 if (orientation == Orientation.landscape) {
-                  return BrowserMenuWidget();
+                  return BrowserMenuWidget(
+                    listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
+                    appState: widget.appState,
+                    menuItems: _menuItems,
+                    onLogoutPressed: () {
+                      LogoutRequest logoutRequest = LogoutRequest(
+                          clientId:
+                              widget.appState.applicationMetaData!.clientId);
+
+                      sl<ApiCubit>().logout(logoutRequest);
+                    },
+                  );
                 } else {
                   return MobileMenuWidget(
                     appState: widget.appState,

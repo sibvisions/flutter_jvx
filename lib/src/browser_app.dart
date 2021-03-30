@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutterclient/src/models/api/response_objects/language_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
+import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
+import 'package:flutterclient/src/ui/pages/open_screen_page.dart';
 import 'package:flutterclient/src/ui/util/navigator/custom_navigator.dart';
 import 'package:flutterclient/src/util/config/server_config.dart';
 
@@ -137,6 +139,29 @@ class BrowserApp extends StatelessWidget {
                     appState: appState,
                     manager: manager,
                   ));
+        case Routes.openScreen:
+          if (settings.arguments != null) {
+            OpenScreenPageArguments? arguments =
+                settings.arguments as OpenScreenPageArguments;
+
+            return MaterialPageRoute(
+                settings: RouteSettings(
+                    name: Routes.openScreen, arguments: settings.arguments),
+                builder: (_) => OpenScreenPage(
+                      appState: appState,
+                      manager: manager,
+                      screen: arguments.screen,
+                    ));
+          } else {
+            return MaterialPageRoute(
+                settings: RouteSettings(
+                    name: Routes.startup, arguments: settings.arguments),
+                builder: (_) => StartupPage(
+                      startupWidget: null,
+                      appState: appState,
+                      manager: manager,
+                    ));
+          }
         default:
           return MaterialPageRoute(
               settings: RouteSettings(

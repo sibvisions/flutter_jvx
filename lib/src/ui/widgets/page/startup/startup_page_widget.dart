@@ -250,7 +250,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     _updateDataFromSystem();
 
     _sendStartupRequest();

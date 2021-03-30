@@ -1,11 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/models/api/requests/press_button_request.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
+import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
 import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
 import 'package:flutterclient/src/ui/container/co_panel_widget.dart';
+import 'package:flutterclient/src/ui/util/inherited_widgets/app_state_provider.dart';
+import 'package:flutterclient/src/ui/widgets/page/menu/browser/navigation_bar_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../models/api/response_objects/close_screen_action_response_object.dart';
@@ -465,38 +470,59 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: !kIsWeb
-          ? AppBar(
-              actionsIconTheme: IconThemeData(
-                  color: Theme.of(context).primaryColor.textColor()),
-              title: Text(
-                '${widget.configuration.screenTitle}',
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor.textColor()),
-              ),
-              leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).primaryColor.textColor(),
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        AppState appState = AppStateProvider.of(context)!.appState;
+        List<MenuItem> menuItems = appState.menuResponseObject.entries;
+
+        menuItems =
+            appState.screenManager.onMenu(SoMenuManager(menuItems)).menuItems;
+
+        return Scaffold(
+          key: scaffoldKey,
+          appBar: orientation == Orientation.portrait
+              ? AppBar(
+                  actionsIconTheme: IconThemeData(
+                      color: Theme.of(context).primaryColor.textColor()),
+                  title: Text(
+                    '${widget.configuration.screenTitle}',
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor.textColor()),
                   ),
-                  onPressed: () {
-                    widget.configuration
-                        .onPopPage!(widget.configuration.componentId);
-                  }),
-              actions: [
-                IconButton(
-                    icon: FaIcon(FontAwesomeIcons.ellipsisV),
-                    onPressed: () {
-                      if (scaffoldKey.currentState != null)
-                        scaffoldKey.currentState!.openEndDrawer();
-                    }),
-              ],
-            )
-          : null,
-      endDrawer: widget.configuration.drawer,
-      body: Center(child: rootComponent),
+                  leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Theme.of(context).primaryColor.textColor(),
+                      ),
+                      onPressed: () {
+                        widget.configuration
+                            .onPopPage!(widget.configuration.componentId);
+                      }),
+                  actions: [
+                    IconButton(
+                        icon: FaIcon(FontAwesomeIcons.ellipsisV),
+                        onPressed: () {
+                          if (scaffoldKey.currentState != null)
+                            scaffoldKey.currentState!.openEndDrawer();
+                        }),
+                  ],
+                )
+              : null,
+          endDrawer: widget.configuration.drawer,
+          body: orientation == Orientation.landscape
+              ? NavigationBarWidget(
+                  appState: appState,
+                  menuItems: menuItems,
+                  onLogoutPressed: () {},
+                  onMenuItemPressed: (MenuItem menuItem) {
+                    if (widget.configuration.onMenuItemPressed != null) {
+                      widget.configuration.onMenuItemPressed!(menuItem);
+                    }
+                  },
+                  child: rootComponent as Widget)
+              : rootComponent,
+        );
+      },
     );
   }
 }
