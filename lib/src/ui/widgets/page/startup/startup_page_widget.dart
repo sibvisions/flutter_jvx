@@ -157,8 +157,11 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       widget.appState.picSize = widget.manager.picSize!;
     }
 
-    widget.appState.mobileOnly = widget.manager.mobileOnly;
-    widget.appState.webOnly = widget.manager.webOnly;
+    if (!widget.appState.mobileOnly)
+      widget.appState.mobileOnly = widget.manager.mobileOnly;
+
+    if (!widget.appState.webOnly)
+      widget.appState.webOnly = widget.manager.webOnly;
 
     widget.appState.language = LanguageResponseObject(
         name: 'language',
@@ -179,8 +182,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           sl<SupportedLocaleManager>().value =
               widget.appState.translationConfig.supportedLocales);
     }
-
-    widget.appState.mobileOnly = widget.manager.mobileOnly;
   }
 
   void _setAppStyle(ApiResponse response) async {

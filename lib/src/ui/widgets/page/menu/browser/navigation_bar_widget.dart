@@ -92,7 +92,9 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
             child: Column(
           children: [
             Image.asset(
-              'assets/images/logo_small.png',
+              widget.appState.appConfig!.package
+                  ? 'packages/flutterclient/assets/images/logo_small.png'
+                  : 'assets/images/logo_small.png',
               height: 60,
             ),
             _getMenuWidget(context),
