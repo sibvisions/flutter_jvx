@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/logout_request.dart';
@@ -48,6 +49,16 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     SoMenuManager menuManager = SoMenuManager(_menuItems);
 
     widget.appState.screenManager.onMenu(menuManager);
+
+    if (widget.appState.listener != null) {
+      widget.appState.listener!
+          .fireAfterStartupListener(ApplicationApi(context));
+    }
+
+    if (widget.appState.socketHandler != null &&
+        !widget.appState.socketHandler!.isOn) {
+      widget.appState.socketHandler!.initCommunication();
+    }
 
     if (widget.response != null) {
       WidgetsBinding.instance!.addPostFrameCallback((_) => Navigator.of(context)
