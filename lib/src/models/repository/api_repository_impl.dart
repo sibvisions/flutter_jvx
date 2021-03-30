@@ -287,8 +287,15 @@ class ApiRepositoryImpl implements ApiRepository {
           baseUrl: appState.serverConfig!.baseUrl, translation: true);
     }
 
-    Archive archive = ZipDecoder().decodeBytes(
-        response.getObjectByType<DownloadResponseObject>()!.bodyBytes);
+    Archive? archive;
+
+    try {
+      archive = ZipDecoder().decodeBytes(
+          response.getObjectByType<DownloadResponseObject>()!.bodyBytes);
+    } catch (e) {
+      print(e);
+      return;
+    }
 
     late String localFilePath;
 
