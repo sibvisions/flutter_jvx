@@ -1,34 +1,30 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/delete_record_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/fetch_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/filter_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/insert_record_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/meta_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/save_data_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/select_record_request.dart';
-import 'package:flutterclient/src/models/api/requests/data/set_values_request.dart';
-import 'package:flutterclient/src/models/api/requests/download_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/upload_response_object.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/services/remote/rest/rest_client.dart';
 import 'package:http/http.dart' as http;
 
 import '../../services/remote/cubit/api_cubit.dart';
-import '../../services/remote/rest/http_client.dart';
+import '../../services/remote/rest/rest_client.dart';
+import '../state/app_state.dart';
 import 'data_source.dart';
 import 'errors/failure.dart';
 import 'request.dart';
 import 'requests/application_style_request.dart';
 import 'requests/change_request.dart';
 import 'requests/close_screen_request.dart';
+import 'requests/data/data_request.dart';
+import 'requests/data/delete_record_request.dart';
+import 'requests/data/fetch_data_request.dart';
+import 'requests/data/filter_data_request.dart';
+import 'requests/data/insert_record_request.dart';
+import 'requests/data/meta_data_request.dart';
+import 'requests/data/save_data_request.dart';
+import 'requests/data/select_record_request.dart';
+import 'requests/data/set_values_request.dart';
 import 'requests/device_status_request.dart';
 import 'requests/download_images_request.dart';
+import 'requests/download_request.dart';
 import 'requests/download_translation_request.dart';
 import 'requests/login_request.dart';
 import 'requests/logout_request.dart';
@@ -41,6 +37,8 @@ import 'requests/startup_request.dart';
 import 'requests/tab_close_request.dart';
 import 'requests/tab_select_request.dart';
 import 'requests/upload_request.dart';
+import 'response_objects/download_response_object.dart';
+import 'response_objects/upload_response_object.dart';
 
 class RemoteDataSourceImpl implements DataSource {
   final RestClient client;
@@ -252,7 +250,7 @@ class RemoteDataSourceImpl implements DataSource {
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) async {
       if (r.statusCode != 404) {
-        List decodedBody = _getDecodedBody(r);
+        List decodedBody = await compute(_getDecodedBody, r.body);
         Failure? failure = _getErrorIfExists(decodedBody);
 
         if (failure != null) {
@@ -336,25 +334,25 @@ class RemoteDataSourceImpl implements DataSource {
 
     return null;
   }
+}
 
-  List<dynamic> _getDecodedBody(http.Response response) {
-    String body = utf8Convert(response.body);
-
-    dynamic decodedBody = json.decode(body);
-
-    if (decodedBody is List)
-      return decodedBody;
-    else
-      return [decodedBody];
+String utf8Convert(String text) {
+  try {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
+  } catch (e) {
+    print("Failed to decode string to utf-8!");
+    return text;
   }
+}
 
-  String utf8Convert(String text) {
-    try {
-      List<int> bytes = text.toString().codeUnits;
-      return utf8.decode(bytes);
-    } catch (e) {
-      print("Failed to decode string to utf-8!");
-      return text;
-    }
-  }
+List<dynamic> _getDecodedBody(String jsonString) {
+  String body = utf8Convert(jsonString);
+
+  dynamic decodedBody = json.decode(body);
+
+  if (decodedBody is List)
+    return decodedBody;
+  else
+    return [decodedBody];
 }

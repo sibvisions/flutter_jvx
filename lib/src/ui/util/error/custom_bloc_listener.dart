@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/models/api/errors/failure.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
-import 'package:flutterclient/src/models/repository/api_repository.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
+
+import '../../../models/api/errors/failure.dart';
+import '../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../models/state/app_state.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
-import 'error_handler.dart';
 import '../../widgets/dialog/loading_indicator_dialog.dart';
+import 'error_handler.dart';
 
 class CustomCubitListener extends StatelessWidget {
   final Function(BuildContext, ApiState) listener;
@@ -16,15 +16,15 @@ class CustomCubitListener extends StatelessWidget {
   final bool handleLoading;
   final AppState appState;
 
-  const CustomCubitListener(
-      {Key? key,
-      required this.listener,
-      required this.bloc,
-      required this.child,
-      required this.appState,
-      this.handleError = true,
-      this.handleLoading = true})
-      : super(key: key);
+  const CustomCubitListener({
+    Key? key,
+    required this.listener,
+    required this.bloc,
+    required this.child,
+    required this.appState,
+    this.handleError = true,
+    this.handleLoading = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,7 @@ class CustomCubitListener extends StatelessWidget {
           if (state.stop) {
             hideLoading(context);
           } else {
-            if (modalRoute.isCurrent) {
-              showLoadingIndicator(context);
-            }
+            showLoadingIndicator(context);
           }
         }
 

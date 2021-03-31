@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 showLoadingIndicator(BuildContext context) {
   showDialog(
+      routeSettings: RouteSettings(name: '/loading'),
       context: context,
       barrierDismissible: false,
       builder: (context) {

@@ -81,8 +81,11 @@ class ApiCubit extends Cubit<ApiState> {
 
   Future<void> login(LoginRequest request) async {
     emit(ApiLoading());
+
+    final apiState = await repository.login(request);
+
     emit(ApiLoading(stop: true));
-    emit(await repository.login(request));
+    emit(apiState);
   }
 
   Future<void> logout(LogoutRequest request) async {
@@ -91,17 +94,28 @@ class ApiCubit extends Cubit<ApiState> {
 
   Future<void> openScreen(OpenScreenRequest request) async {
     emit(ApiLoading());
+
+    final apiState = await repository.openScreen(request);
+
     emit(ApiLoading(stop: true));
 
-    emit(await repository.openScreen(request));
+    emit(apiState);
   }
 
   Future<void> navigation(NavigationRequest request) async {
-    emit(await repository.navigation(request));
+    emit(ApiLoading());
+
+    final apiState = await repository.navigation(request);
+
+    emit(ApiLoading(stop: true));
+
+    emit(apiState);
   }
 
   Future<void> pressButton(PressButtonRequest request) async {
-    emit(await repository.pressButton(request));
+    ApiState apiState = await repository.pressButton(request);
+
+    emit(apiState);
   }
 
   Future<ApiState> data(DataRequest request) async {
