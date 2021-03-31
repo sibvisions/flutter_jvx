@@ -16,7 +16,7 @@ void main() async {
 
         if (snapshot.hasData) {
           return ApplicationWidget(
-            devConfig: snapshot.data,
+            // devConfig: snapshot.data,
           );
         } else {
           return Container();

@@ -141,7 +141,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
           } else {
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
-                if (orientation == Orientation.landscape) {
+                if (orientation == Orientation.landscape && kIsWeb) {
                   return BrowserMenuWidget(
                     listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
                     appState: widget.appState,

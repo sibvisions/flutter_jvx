@@ -21,7 +21,7 @@ class ErrorHandler {
     if (error.failure.name == sessionExpired) {
       showSessionExpiredDialog(context, error);
     } else if (error.failure.name == messageError) {
-      showErrorDialog(context, error);
+      showGoToSettingsDialog(context, error);
     } else if (error.failure.name == serverError) {
       showGoToSettingsDialog(context, error);
     } else if (error.failure.name == connectionError) {
@@ -29,7 +29,7 @@ class ErrorHandler {
     } else if (error.failure.name == timeoutError) {
       showGoToSettingsDialog(context, error);
     } else if (error.failure.name == internetError) {
-      showErrorDialog(context, error);
+      showGoToSettingsDialog(context, error);
     } else if (error.failure.name == offlineError) {
       showGoToSettingsDialog(context, error);
     } else {
