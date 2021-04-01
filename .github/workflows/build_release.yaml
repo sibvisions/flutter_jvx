@@ -51,9 +51,11 @@ jobs:
         with:
           channel: "stable"
 
+      - run: flutter clean
+
       - run: flutter pub get
 
-      - run: flutter build apk --release
+      - run: flutter build apk --release --dart-define=PROD=true
 
       - uses: actions/upload-artifact@v1
         with:

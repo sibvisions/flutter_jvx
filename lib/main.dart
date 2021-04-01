@@ -10,7 +10,8 @@ void main() async {
   runApp(FutureBuilder<DevConfig>(
       future: DevConfig.loadConfig(path: 'assets/env/dev.conf.json'),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
+        if (snapshot.hasError ||
+            bool.fromEnvironment('PROD', defaultValue: false)) {
           return ApplicationWidget();
         }
 
