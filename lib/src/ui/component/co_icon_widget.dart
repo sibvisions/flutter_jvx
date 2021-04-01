@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../injection_container.dart';
 import '../../models/api/requests/set_component_value.dart';
 import '../../services/remote/cubit/api_cubit.dart';
-import '../layout/I_alignment_constants.dart';
+import '../layout/i_alignment_constants.dart';
 import '../widgets/custom/custom_icon.dart';
 import 'component_widget.dart';
 import 'model/icon_component_model.dart';
