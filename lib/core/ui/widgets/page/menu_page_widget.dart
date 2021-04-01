@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,6 +16,7 @@ import 'package:jvx_flutterclient/core/services/local/local_database_manager.dar
 import 'package:jvx_flutterclient/core/ui/widgets/util/restart_widget.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/network/network_info.dart';
+import 'package:jvx_flutterclient/core/utils/theme/theme_manager.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/request.dart';
@@ -55,6 +58,8 @@ class MenuPageWidget extends StatefulWidget {
 }
 
 class _MenuPageWidgetState extends State<MenuPageWidget> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<MenuItem> items;
 
   double width;
@@ -62,7 +67,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   Orientation lastOrientation;
 
-  RestartableTimer _deviceStatusTimer;
+  Timer _deviceStatusTimer;
 
   String title;
 
@@ -103,33 +108,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    this.items = widget.menuItems;
-
-    if (widget.appState.appMode == 'preview' &&
-        this.items != null &&
-        this.items.length > 1) {
-      this.items = [this.items[0]];
-    }
-
-    SystemChrome.setApplicationSwitcherDescription(
-        ApplicationSwitcherDescription(
-            primaryColor: Theme.of(context).primaryColor.value,
-            label: widget.appState.appName ??
-                '' + ' - ' + widget.appState.username ??
-                ''));
-
-    if (widget.appState.appListener != null) {
-      widget.appState.appListener
-          .fireAfterStartupListener(ApplicationApi(context));
-    }
-
-    if (widget.appState.customSocketHandler != null &&
-        !widget.appState.customSocketHandler.isOn) {
-      widget.appState.customSocketHandler.initCommunication();
-    }
+  void initState() {
+    super.initState();
 
     if (widget.welcomeScreen != null) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -147,6 +127,36 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    this.items = widget.menuItems;
+
+    if (widget.appState.appMode == 'preview' &&
+        this.items != null &&
+        this.items.length > 1) {
+      this.items = [this.items[0]];
+    }
+
+    SystemChrome.setApplicationSwitcherDescription(
+        ApplicationSwitcherDescription(
+            primaryColor: sl<ThemeManager>().themeData.primaryColor.value,
+            label: widget.appState.appName ??
+                '' + ' - ' + widget.appState.username ??
+                ''));
+
+    if (widget.appState.appListener != null) {
+      widget.appState.appListener
+          .fireAfterStartupListener(ApplicationApi(context));
+    }
+
+    if (widget.appState.customSocketHandler != null &&
+        !widget.appState.customSocketHandler.isOn) {
+      widget.appState.customSocketHandler.initCommunication();
+    }
+  }
+
   _addDeviceStatusTimer(BuildContext context) {
     if (lastOrientation == null) {
       lastOrientation = MediaQuery.of(context).orientation;
@@ -155,36 +165,21 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     } else if (lastOrientation != MediaQuery.of(context).orientation ||
         width != MediaQuery.of(context).size.width ||
         height != MediaQuery.of(context).size.height) {
-      DeviceStatus deviceStatus = DeviceStatus(
-          screenSize: MediaQuery.of(context).size,
-          timeZoneCode: '',
-          langCode: '',
-          clientId: widget.appState.clientId);
+      if (_deviceStatusTimer != null && _deviceStatusTimer.isActive)
+        _deviceStatusTimer.cancel();
 
-      BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-      lastOrientation = MediaQuery.of(context).orientation;
-      width = MediaQuery.of(context).size.width;
-      height = MediaQuery.of(context).size.height;
+      _deviceStatusTimer = new Timer(const Duration(milliseconds: 300), () {
+        DeviceStatus deviceStatus = DeviceStatus(
+            screenSize: MediaQuery.of(context).size,
+            timeZoneCode: '',
+            langCode: '',
+            clientId: widget.appState.clientId);
 
-      // if (_deviceStatusTimer == null) {
-      //   _deviceStatusTimer = RestartableTimer(const Duration(seconds: 50), () {
-      //     DeviceStatus deviceStatus = DeviceStatus(
-      //         screenSize: MediaQuery.of(context).size,
-      //         timeZoneCode: '',
-      //         langCode: '',
-      //         clientId: widget.appState.clientId);
-
-      //     BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-      //     lastOrientation = MediaQuery.of(context).orientation;
-      //     width = MediaQuery.of(context).size.width;
-      //     height = MediaQuery.of(context).size.height;
-
-      //     _deviceStatusTimer.cancel();
-      //     _deviceStatusTimer = null;
-      //   });
-      // } else {
-      //   _deviceStatusTimer.reset();
-      // }
+        BlocProvider.of<ApiBloc>(context).add(deviceStatus);
+        lastOrientation = MediaQuery.of(context).orientation;
+        width = MediaQuery.of(context).size.width;
+        height = MediaQuery.of(context).size.height;
+      });
     }
   }
 
@@ -263,44 +258,27 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             items: items,
           ));
     } else {
-      Navigator.of(context)
-          .pushNamed(OpenScreenPage.route,
-              arguments: ScreenArguments(
-                response: response,
-                menuComponentId: menuComponentId,
-                title: title,
-                items: items,
-              ))
-          .then((_) => _onRoutePop());
+      ModalRoute r = ModalRoute.of(context);
+      if (r.isCurrent) {
+        Navigator.of(context)
+            .pushNamed(OpenScreenPage.route,
+                arguments: ScreenArguments(
+                  response: response,
+                  menuComponentId: menuComponentId,
+                  title: title,
+                  items: items,
+                ))
+            .then((_) => _onRoutePop());
+      }
     }
   }
 
   _onRoutePop() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-    //   DeviceStatus deviceStatus = DeviceStatus(
-    //       screenSize: MediaQuery.of(context).size,
-    //       timeZoneCode: '',
-    //       langCode: '',
-    //       clientId: widget.appState.clientId);
-
-    //   BlocProvider.of<ApiBloc>(context).add(deviceStatus);
-    //   lastOrientation = MediaQuery.of(context).orientation;
-    //   width = MediaQuery.of(context).size.width;
-    //   height = MediaQuery.of(context).size.height;
-    // });
+    if (widget.appState.isOffline) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
     _addDeviceStatusTimer(context);
 
     _screenManager();
@@ -394,8 +372,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             appBar: widget.appState.appFrame.showScreenHeader
                 ? AppBar(
                     backgroundColor: Theme.of(context).primaryColor,
-                    title: Text('Menu' +
-                        (widget.appState.isOffline ? ' - Offline' : '')),
+                    title: Text('Menu'),
                     automaticallyImplyLeading: false,
                     actions: [
                       widget.appState.isOffline
@@ -426,8 +403,11 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                                     BlocProvider.of<ApiBloc>(context)
                                         .add(Menu(widget.appState.clientId));
                                   } else {
-                                    showError(context, 'Sync error',
-                                        'Could not sync data to server');
+                                    handleError(
+                                        (sl<IOfflineDatabaseProvider>()
+                                                as OfflineDatabase)
+                                            .responseError,
+                                        context);
                                   }
                                 }
                               },
@@ -460,7 +440,31 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                 BlocProvider.of<ApiBloc>(context).add(menuRequest);
               },
               child: FractionallySizedBox(
-                  widthFactor: 1, heightFactor: 1, child: body),
+                  widthFactor: 1,
+                  heightFactor: 1,
+                  child: LayoutBuilder(builder: (context, constraint) {
+                    double maxmenuHeight = constraint.maxHeight -
+                        (widget.appState.isOffline ? 20 : 0);
+                    return ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraint.maxHeight),
+                        child: IntrinsicHeight(
+                            child: Column(
+                          children: [
+                            if (widget.appState.isOffline)
+                              Container(
+                                height: 20,
+                                color: Colors.grey.shade500,
+                                child: Text(
+                                  'OFFLINE',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                alignment: Alignment.center,
+                              ),
+                            Container(height: maxmenuHeight, child: body),
+                          ],
+                        )));
+                  })),
             )),
       ),
     );

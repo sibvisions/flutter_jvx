@@ -4,7 +4,7 @@ import 'package:jvx_flutterclient/core/models/api/so_action.dart';
 import 'models/action_component_model.dart';
 import 'component_widget.dart';
 
-typedef ActionCallback = void Function(BuildContext context, SoAction action, String classNameEventSourceRef);
+typedef ActionCallback = void Function(BuildContext context, SoAction action);
 
 abstract class CoActionComponentWidget extends ComponentWidget {
   final ActionComponentModel componentModel;

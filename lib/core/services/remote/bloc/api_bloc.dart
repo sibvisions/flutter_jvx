@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:archive/archive.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +12,6 @@ import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_d
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:w_common/func.dart';
 
 import '../../../models/api/request.dart';
 import '../../../models/api/request/application_style.dart';
@@ -182,6 +180,14 @@ class ApiBloc extends Bloc<Request, Response> {
   Stream<Response> startup(Startup event) async* {
     Response response = await processRequest(event);
 
+    if (event.userName != null &&
+        event.userName.isNotEmpty &&
+        event.password != null &&
+        event.password.isNotEmpty) {
+      this.manager.setOfflineLoginHash(
+          username: event.userName, password: event.password);
+    }
+
     yield response;
   }
 
@@ -192,12 +198,22 @@ class ApiBloc extends Bloc<Request, Response> {
       this
           .manager
           .setLoginData(username: event.username, password: event.password);
+    }
 
+    this
+        .manager
+        .setSyncLoginData(username: event.username, password: event.password);
+
+    Response response = await processRequest(event);
+
+    if (event.username != null &&
+        event.username.isNotEmpty &&
+        event.password != null &&
+        event.password.isNotEmpty &&
+        !response.hasError) {
       this.manager.setOfflineLoginHash(
           username: event.username, password: event.password);
     }
-
-    Response response = await processRequest(event);
 
     if (response.authenticationData != null) {
       this.manager.setAuthKey(response.authenticationData.authKey);
@@ -483,6 +499,9 @@ class ApiBloc extends Bloc<Request, Response> {
 
   Future<Response> processRequest(Request event) async {
     Response response;
+
+    if (this.appState.requestTimeout != null)
+      this.restClient.requestTimeout = this.appState.requestTimeout;
 
     if (kIsWeb || await this.networkInfo.isConnected) {
       switch (event.requestType) {

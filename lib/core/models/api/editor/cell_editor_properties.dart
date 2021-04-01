@@ -38,16 +38,16 @@ class CellEditorProperties {
 
   bool hasProperty(CellEditorProperty property) {
     return _properties
-        .hasProperty(_properties.propertyAsString(property.toString()));
+        .hasProperty(Properties.propertyAsString(property.toString()));
   }
 
   void removeProperty(CellEditorProperty property) {
     _properties
-        .removeProperty(_properties.propertyAsString(property.toString()));
+        .removeProperty(Properties.propertyAsString(property.toString()));
   }
 
   T getProperty<T>(CellEditorProperty property, [T defaultValue]) {
     return _properties.getProperty<T>(
-        _properties.propertyAsString(property.toString()), defaultValue);
+        Properties.propertyAsString(property.toString()), defaultValue);
   }
 }

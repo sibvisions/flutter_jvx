@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-typedef Disposer = void Function();
+typedef DisposerCallback = void Function();
 
 class CustomStatefulBuilder extends StatefulWidget {
   final StatefulWidgetBuilder builder;
-  final Disposer dispose;
+  final DisposerCallback dispose;
 
   const CustomStatefulBuilder(
       {Key key, @required this.builder, @required this.dispose})

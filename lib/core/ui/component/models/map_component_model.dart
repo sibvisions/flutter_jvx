@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:jvx_flutterclient/core/models/api/component/changed_component.dart';
-import 'package:jvx_flutterclient/core/models/api/component/component_properties.dart';
-import 'package:jvx_flutterclient/core/ui/component/models/component_model.dart';
-import 'package:jvx_flutterclient/core/utils/theme/hex_color.dart';
+import 'package:latlong/latlong.dart';
+import '../../../models/api/component/changed_component.dart';
+import '../../../models/api/component/component_properties.dart';
+import 'component_model.dart';
+import '../../../utils/theme/hex_color.dart';
 
 class MapComponentModel extends ComponentModel {
   String apiKey;
@@ -11,13 +12,16 @@ class MapComponentModel extends ComponentModel {
   String longitudeColumnName;
   String markerImageColumnName;
   bool pointSelectionLockedOnCenter;
-  int center;
+  LatLng center;
   int zoomLevel;
   bool pointSelectionEnabled;
   String marker;
   HexColor lineColor;
   HexColor fillColor;
   String tileProvider;
+
+  String groupDataBook;
+  String pointsDataBook;
 
   MapComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
@@ -36,11 +40,17 @@ class MapComponentModel extends ComponentModel {
         .getProperty<String>(ComponentProperty.MARKER_IMAGE_COLUMN_NAME);
     pointSelectionLockedOnCenter = changedComponent
         .getProperty<bool>(ComponentProperty.POINT_SELECTION_LOCKED_ON_CENTER);
-    center = changedComponent.getProperty<int>(ComponentProperty.CENTER);
     zoomLevel = changedComponent.getProperty<int>(ComponentProperty.ZOOM_LEVEL);
     pointSelectionEnabled = changedComponent
         .getProperty<bool>(ComponentProperty.POINT_SELECTION_ENABLED);
     marker = changedComponent.getProperty<String>(ComponentProperty.MARKER);
+
+    final newCenter = changedComponent
+        ?.getProperty<String>(ComponentProperty.CENTER)
+        ?.split(',');
+
+    if (newCenter != null)
+      center = LatLng(double.parse(newCenter[0]), double.parse(newCenter[1]));
 
     String newLineColor =
         changedComponent.getProperty<String>(ComponentProperty.LINE_COLOR);
@@ -57,6 +67,11 @@ class MapComponentModel extends ComponentModel {
 
     tileProvider =
         changedComponent.getProperty<String>(ComponentProperty.TILE_PROVIDER);
+
+    groupDataBook =
+        changedComponent.getProperty<String>(ComponentProperty.GROUP_DATA_BOOK);
+    pointsDataBook = changedComponent
+        .getProperty<String>(ComponentProperty.POINTS_DATA_BOOK);
 
     super.updateProperties(context, changedComponent);
   }

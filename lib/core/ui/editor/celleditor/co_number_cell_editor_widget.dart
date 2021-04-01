@@ -78,7 +78,7 @@ class CoNumberCellEditorWidgetState
                       .applicationStyle?.controlsOpacity)
                   : null,
           borderRadius: BorderRadius.circular(widget
-              .cellEditorModel.appState.applicationStyle?.cornerRadiusEditors),
+              .cellEditorModel.appState.applicationStyle?.cornerRadiusEditors ?? 5.0),
           border: widget.cellEditorModel.borderVisible &&
                   widget.cellEditorModel.editable != null &&
                   widget.cellEditorModel.editable

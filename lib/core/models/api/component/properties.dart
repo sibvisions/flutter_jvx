@@ -69,7 +69,7 @@ class Properties {
     return value;
   }
 
-  String propertyAsString(String property) {
+  static String propertyAsString(String property) {
     String result = property.split('.').last.toLowerCase();
 
     if (result.contains('___')) {

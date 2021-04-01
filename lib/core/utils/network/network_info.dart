@@ -31,13 +31,5 @@ class NetworkInfoImpl implements NetworkInfo {
       return false;
     }
     return false;
-
-    // ConnectivityResult result =
-    //     await this.connectionChecker.checkConnectivity();
-
-    // if (result != ConnectivityResult.none) {
-    //   return true;
-    // }
-    // return false;
   }
 }

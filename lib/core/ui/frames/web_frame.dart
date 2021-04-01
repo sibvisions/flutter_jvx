@@ -500,8 +500,10 @@ class _WebFrameState extends State<WebFrame> {
           (state.error == null || !state.hasError)) {
         Future.delayed(
             Duration.zero,
-            () => Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => LoginPage())));
+            () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (_) => LoginPage(
+                      appState: appState,
+                    ))));
       }
 
       return CustomDrawerHeader(

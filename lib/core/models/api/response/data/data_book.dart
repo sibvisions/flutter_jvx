@@ -78,7 +78,7 @@ class DataBook extends ResponseObject {
 
   List<dynamic> getValues(List<dynamic> columnNames, [int rowIndex]) {
     List<int> columnIndexes = getColumnIndexes(columnNames);
-    List<dynamic> values = new List<dynamic>();
+    List<dynamic> values = [];
 
     if (rowIndex == null) rowIndex = selectedRow;
 

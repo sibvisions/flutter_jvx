@@ -14,6 +14,7 @@ class Config {
   String password;
   String appMode = 'full';
   Widget startupWidget;
+  Map<String, dynamic> appVersion;
   Map<String, dynamic> _properties;
 
   Map<String, dynamic> get properties => _properties;
@@ -25,6 +26,7 @@ class Config {
       this.username,
       this.password,
       this.appMode,
+      this.appVersion,
       this.startupWidget});
 
   Config.fromJson(Map<String, dynamic> json)
@@ -34,6 +36,7 @@ class Config {
         username = json['username'],
         password = json['password'],
         appMode = json['appMode'],
+        appVersion = json['appVersion'],
         _properties = json;
 
   static Future<Config> loadFile({String path, Config conf}) async {

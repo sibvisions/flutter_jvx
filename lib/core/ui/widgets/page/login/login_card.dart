@@ -103,28 +103,32 @@ class _LoginCardState extends State<LoginCard>
                 ),
                 Row(
                   children: <Widget>[
-                    Checkbox(
-                      value: rememberMe,
-                      activeColor: Theme.of(context).primaryColor,
-                      onChanged: (bool val) {
-                        setState(() {
-                          rememberMe = val;
-                        });
-                      },
-                    ),
-                    FlatButton(
-                        onPressed: () {
+                    if (widget.appState.hideLoginCheckbox == null ||
+                        !widget.appState.hideLoginCheckbox)
+                      Checkbox(
+                        value: rememberMe,
+                        activeColor: Theme.of(context).primaryColor,
+                        onChanged: (bool val) {
                           setState(() {
-                            rememberMe = !rememberMe;
+                            rememberMe = val;
                           });
                         },
-                        padding: EdgeInsets.zero,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: Text(
-                          AppLocalizations.of(context).text('Remember me?'),
-                          style: Theme.of(context).textTheme.body2,
-                        )),
+                      ),
+                    if (widget.appState.hideLoginCheckbox == null ||
+                        !widget.appState.hideLoginCheckbox)
+                      FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              rememberMe = !rememberMe;
+                            });
+                          },
+                          padding: EdgeInsets.zero,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Text(
+                            AppLocalizations.of(context).text('Remember me?'),
+                            style: Theme.of(context).textTheme.body2,
+                          )),
                   ],
                 ),
                 SizedBox(
@@ -184,6 +188,8 @@ class _LoginCardState extends State<LoginCard>
   @override
   initState() {
     super.initState();
+    this.rememberMe = widget.appState.rememberMeChecked;
+
     username = widget.username;
     controller = new AnimationController(
         vsync: this, duration: new Duration(milliseconds: 1500));
@@ -201,7 +207,8 @@ class _LoginCardState extends State<LoginCard>
 
   _login(BuildContext context) {
     if (widget.appState.isOffline) {
-      bool loginSuccess = SharedPrefProvider.of(context)
+      bool loginSuccess = false;
+      loginSuccess = SharedPrefProvider.of(context)
           .manager
           .login(username?.trim(), password?.trim());
 

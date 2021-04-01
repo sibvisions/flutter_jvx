@@ -91,8 +91,10 @@ class _SplitViewState extends State<SplitView> {
   Stack _buildVerticalView(
       BuildContext context, BoxConstraints constraints, double w) {
     final double maxWidth = constraints.maxWidth == double.infinity
-        ? MediaQuery.of(context).size.width
-        : constraints.maxWidth;
+        ? MediaQuery.of(context).size.width -
+            widget.positionLimit -
+            widget.gripSize
+        : constraints.maxWidth - widget.positionLimit - widget.gripSize;
     final double maxHeight = constraints.maxHeight == double.infinity
         ? MediaQuery.of(context).size.height
         : constraints.maxHeight;
@@ -116,7 +118,7 @@ class _SplitViewState extends State<SplitView> {
         maxWidth:
             constraints.maxWidth == double.infinity ? 0 : constraints.maxWidth);
 
-    List<Widget> children = List<Widget>();
+    List<Widget> children = <Widget>[];
 
     this.updatePreferredSize(widget.view1, Size(maxWidth, top));
     this.updatePreferredSize(widget.view2, Size(maxWidth, bottom));
@@ -227,8 +229,10 @@ class _SplitViewState extends State<SplitView> {
         ? MediaQuery.of(context).size.width
         : constraints.maxWidth;
     final double maxHeight = constraints.maxHeight == double.infinity
-        ? MediaQuery.of(context).size.height
-        : constraints.maxHeight;
+        ? MediaQuery.of(context).size.height -
+            widget.positionLimit -
+            widget.gripSize
+        : constraints.maxHeight - widget.positionLimit - widget.gripSize;
 
     final double left = maxWidth * w;
     final double right = maxWidth * (1.0 - w);
@@ -253,7 +257,7 @@ class _SplitViewState extends State<SplitView> {
         minWidth: right,
         maxWidth: right);
 
-    List<Widget> children = List<Widget>();
+    List<Widget> children = <Widget>[];
 
     this.updatePreferredSize(widget.view1, Size(left, maxHeight));
     this.updatePreferredSize(widget.view2, Size(right, maxHeight));

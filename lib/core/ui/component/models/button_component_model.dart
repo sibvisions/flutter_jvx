@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/utils/app/so_text_align.dart';
 
 import '../../../models/api/component/changed_component.dart';
 import '../../../models/api/component/component_properties.dart';
@@ -11,8 +12,15 @@ class ButtonComponentModel extends ActionComponentModel {
   bool network = false;
   Size iconSize = Size(16, 16);
   double iconPadding = 10;
-  EdgeInsets margin = EdgeInsets.all(4);
+  EdgeInsets margin = EdgeInsets.all(0);
   String image;
+  int _horizontalTextPosition;
+
+  TextAlign get horizontalTextPosition {
+    if (_horizontalTextPosition != null)
+      return SoTextAlign.getTextAlignFromInt(_horizontalTextPosition);
+    return TextAlign.center;
+  }
 
   ButtonComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
@@ -41,7 +49,10 @@ class ButtonComponentModel extends ActionComponentModel {
       BuildContext context, ChangedComponent changedComponent) {
     style =
         changedComponent.getProperty<String>(ComponentProperty.STYLE, style);
-    image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
+    image =
+        changedComponent.getProperty<String>(ComponentProperty.IMAGE, image);
+    _horizontalTextPosition = changedComponent.getProperty<int>(
+        ComponentProperty.HORIZONTAL_TEXT_POSITION, _horizontalTextPosition);
 
     super.updateProperties(context, changedComponent);
   }

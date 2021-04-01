@@ -93,6 +93,9 @@ enum ComponentProperty {
   FILL_COLOR,
   TILE_PROVIDER,
   CLASS_NAME_EVENT_SOURCE_REF,
+  HORIZONTAL_TEXT_POSITION,
+  GROUP_DATA_BOOK,
+  POINTS_DATA_BOOK
 }
 
 class ComponentProperties {
@@ -104,16 +107,16 @@ class ComponentProperties {
 
   bool hasProperty(ComponentProperty property) {
     return _properties
-        .hasProperty(_properties.propertyAsString(property.toString()));
+        .hasProperty(Properties.propertyAsString(property.toString()));
   }
 
   void removeProperty(ComponentProperty property) {
     _properties
-        .removeProperty(_properties.propertyAsString(property.toString()));
+        .removeProperty(Properties.propertyAsString(property.toString()));
   }
 
   T getProperty<T>(ComponentProperty property, [T defaultValue]) {
     return _properties.getProperty<T>(
-        _properties.propertyAsString(property.toString()), defaultValue);
+        Properties.propertyAsString(property.toString()), defaultValue);
   }
 }

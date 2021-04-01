@@ -21,7 +21,7 @@ class AppState {
   /// `preview`: Only one menu item will be shown.
   ///
   /// `full`: Every menu item will be shown.
-  String appMode;
+  String appMode = 'full';
 
   /// Current language of the application.
   String language;
@@ -35,7 +35,7 @@ class AppState {
   String appVersion;
 
   /// States how many lines can be fetched ahead in lazy loading.
-  int readAheadLimit = 5000;
+  int readAheadLimit = 100;
 
   /// Avaible translations and their file locations.
   Map<String, dynamic> translation = <String, dynamic>{};
@@ -86,6 +86,11 @@ class AppState {
   Config config;
   bool offline = false;
   ApplicationParameters applicationParameters;
+  bool rememberMeChecked;
+  bool hideLoginCheckbox;
+
+  /// Request timeout in seconds
+  int requestTimeout;
 
   bool get isOffline => offline != null ? offline : false;
 
@@ -123,5 +128,7 @@ class AppState {
     this.config = state.config;
     this.offline = state.offline;
     this.applicationParameters = state.applicationParameters;
+    this.rememberMeChecked = state.rememberMeChecked;
+    this.requestTimeout = state.requestTimeout;
   }
 }

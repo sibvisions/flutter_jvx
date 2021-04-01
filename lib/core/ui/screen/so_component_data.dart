@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,9 +11,11 @@ import '../../models/api/request/data/insert_record.dart';
 import '../../models/api/request/data/save_data.dart';
 import '../../models/api/request/data/select_record.dart';
 import '../../models/api/request/data/set_values.dart';
+import '../../models/api/response.dart';
 import '../../models/api/response/data/data_book.dart';
 import '../../models/api/response/data/dataprovider_changed.dart';
 import '../../models/api/response/data/filter.dart';
+import '../../models/api/response/data/filter_condition.dart';
 import '../../models/api/response/meta_data/data_book_meta_data.dart';
 import '../../models/api/response/meta_data/data_book_meta_data_column.dart';
 import '../../models/app/app_state.dart';
@@ -77,8 +81,9 @@ class SoComponentData {
     if (data == null || overrideData) {
       if (data != null &&
           pData != null &&
-          data.selectedRow != pData.selectedRow)
+          data.selectedRow != pData.selectedRow) if (context != null) {
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
+      }
       data = pData;
     } else if (true /*data.isAllFetched*/) {
       if (pData.records.length > 0) {
@@ -110,8 +115,12 @@ class SoComponentData {
           }
         }
       }
-      data.isAllFetched = pData.isAllFetched;
-      if (data.selectedRow != pData.selectedRow)
+      if (pData.isAllFetched != null) {
+        data.isAllFetched = pData.isAllFetched;
+      } else if (data.isAllFetched == null) {
+        data.isAllFetched = false;
+      }
+      if (data.selectedRow != pData.selectedRow && context != null)
         _onSelectedRowChanged.forEach((d) => d(context, pData.selectedRow));
       data.selectedRow = pData.selectedRow;
     }
@@ -266,6 +275,39 @@ class SoComponentData {
     BlocProvider.of<ApiBloc>(context).add(filter);
   }
 
+  void filterDataExtended(BuildContext context, int reload, int rowCountNeeded,
+      [Filter filter, FilterCondition filterCondition]) {
+    this.isFetching = true;
+    FilterData filterData =
+        FilterData(dataProvider, null, null, sl<AppState>().clientId);
+
+    if (reload != null && reload >= 0) {
+      filterData.fromRow = reload;
+      filterData.rowCount = 1;
+    } else if (reload != null && reload == -1 && rowCountNeeded != -1) {
+      filterData.fromRow = 0;
+      filterData.rowCount = rowCountNeeded - data.records.length;
+    } else if (data != null &&
+        data.isAllFetched != null &&
+        !data.isAllFetched &&
+        rowCountNeeded != -1) {
+      filterData.fromRow = data.records.length;
+      filterData.rowCount = rowCountNeeded - data.records.length;
+    }
+
+    filterData.filter = filter;
+    filterData.condition = filterCondition;
+    filterData.reload = (reload == -1);
+
+    if (this.metaData == null) {
+      filterData.includeMetaData = true;
+      isFetchingMetaData = true;
+    }
+
+    // sl<ApiBloc>().add(fetch);
+    BlocProvider.of<ApiBloc>(context).add(filterData);
+  }
+
   void setValues(BuildContext context, List<dynamic> values,
       [List<dynamic> columnNames, Filter filter, bool isTextfield = false]) {
     SetValues setValues = SetValues(
@@ -290,9 +332,14 @@ class SoComponentData {
     } else if (data != null &&
         data.selectedRow != null &&
         data.selectedRow >= 0) {
-      setValues.filter = Filter(
-          columnNames: this.primaryKeyColumns,
-          values: data.getRow(data.selectedRow, this.primaryKeyColumns));
+      final values = data.getRow(data.selectedRow, this.primaryKeyColumns);
+
+      if (values != null && values.isNotEmpty) {
+        setValues.filter = Filter(
+            compareOperator: [FilterCompareOperator.EQUAL],
+            columnNames: this.primaryKeyColumns,
+            values: values);
+      }
     }
 
     setValues.offlineSelectedRow = data?.selectedRow;
@@ -344,6 +391,63 @@ class SoComponentData {
 
     // sl<ApiBloc>().add(fetch);
     BlocProvider.of<ApiBloc>(context).add(fetch);
+  }
+
+  Future<Response> fetchAll(ApiBloc bloc, int recordsPerRequest) async {
+    Response result;
+    log('Start fetching all records for ${this.dataProvider}.');
+    if (data == null || data.isAllFetched == null || !data.isAllFetched) {
+      bool reload = true;
+      this.isFetching = true;
+
+      while (
+          (data == null || data.isAllFetched == null || !data.isAllFetched) &&
+              result == null) {
+        result = await _fetchAllSingle(bloc, recordsPerRequest, reload);
+        reload = false;
+        if (result != null) break;
+      }
+    }
+
+    if (result == null)
+      log('Finished fetching all records for ${this.dataProvider}. Records: ${data.records.length}');
+    else
+      log('Finished fetching all records for ${this.dataProvider} with error: ${result.error?.message}');
+
+    return result;
+  }
+
+  Future<Response> _fetchAllSingle(
+      ApiBloc bloc, int recordsPerRequest, bool reload) async {
+    Response result;
+    if (reload && data != null) data.records = [];
+    FetchData fetch = FetchData(dataProvider, sl<AppState>().clientId);
+    fetch.fromRow = reload ? 0 : data.records.length;
+    fetch.rowCount = recordsPerRequest;
+    fetch.clientId = bloc.appState.clientId;
+    fetch.includeMetaData = reload;
+    fetch.reload = reload;
+
+    await for (Response response in bloc.data(fetch)) {
+      if (response.error != null)
+        result = response;
+      else {
+        response?.responseData?.dataBookMetaData?.forEach((m) {
+          if (m.dataProvider == this.dataProvider) this.updateMetaData(m);
+        });
+        response?.responseData?.dataBooks?.forEach((dataBook) {
+          if (dataBook.dataProvider == this.dataProvider) {
+            if (dataBook.records == null || dataBook.records.length == 0) {
+              if (this.data == null) this.data = dataBook;
+              this.data.isAllFetched = true;
+            } else
+              this.updateData(null, dataBook);
+          }
+        });
+      }
+    }
+
+    return result;
   }
 
   dynamic _getColumnValue(String columnName) {

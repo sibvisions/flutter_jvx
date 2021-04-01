@@ -6,7 +6,8 @@ import '../component/component_widget.dart';
 import 'container_component_model.dart';
 
 class CoContainerWidget extends ComponentWidget {
-  ContainerComponentModel componentModel;
+  final ContainerComponentModel componentModel;
+
   CoContainerWidget({this.componentModel})
       : super(componentModel: componentModel);
 
@@ -18,6 +19,10 @@ class CoContainerWidget extends ComponentWidget {
 }
 
 class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
+  _onComponentChange() {
+    if (mounted) setState(() {});
+  }
+
   @override
   void didUpdateWidget(CoContainerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -74,6 +79,8 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
             component, component.componentModel.constraints);
       }
     });
+
+    widget.componentModel.onComponentChange = _onComponentChange;
   }
 
   @override

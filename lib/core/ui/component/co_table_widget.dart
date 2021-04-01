@@ -58,7 +58,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         .scrollPositionListener
         .itemPositions
         .value
-        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 0,
+        .lastWhere((itemPosition) => itemPosition.itemTrailingEdge > 1,
             orElse: () => null);
 
     if (pos != null &&
@@ -364,8 +364,9 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   @override
   Widget build(BuildContext context) {
     int itemCount = widget.componentModel.tableHeaderVisible ? 1 : 0;
-    widget.componentModel.data
-        ?.getData(context, widget.componentModel.pageSize);
+    if (widget.componentModel.data.data == null)
+      widget.componentModel.data
+          ?.getData(context, widget.componentModel.pageSize);
 
     if (widget.componentModel.data?.data != null &&
         widget.componentModel.data?.data?.records != null)

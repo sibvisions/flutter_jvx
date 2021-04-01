@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jvx_flutterclient/core/ui/pages/menu_page.dart';
@@ -15,8 +17,10 @@ import 'login_widgets.dart';
 
 class LoginPageWidget extends StatefulWidget {
   final String lastUsername;
+  final AppState appState;
 
-  const LoginPageWidget({Key key, this.lastUsername}) : super(key: key);
+  const LoginPageWidget({Key key, this.lastUsername, @required this.appState})
+      : super(key: key);
 
   @override
   _LoginPageWidgetState createState() => _LoginPageWidgetState();
@@ -25,8 +29,6 @@ class LoginPageWidget extends StatefulWidget {
 class _LoginPageWidgetState extends State<LoginPageWidget> {
   @override
   Widget build(BuildContext context) {
-    AppState appState = AppStateProvider.of(context).appState;
-
     return WillPopScope(
       onWillPop: () async {
         if (Navigator.of(context).canPop()) {
@@ -52,10 +54,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                 state.request.requestType == RequestType.LOGIN &&
                 state.menu != null) {
               if (state.userData != null) {
-                appState.username = state.userData.userName;
-                appState.displayName = state.userData.displayName;
-                appState.profileImage = state.userData.profileImage;
-                appState.roles = state.userData.roles;
+                widget.appState.username = state.userData.userName;
+                widget.appState.displayName = state.userData.displayName;
+                widget.appState.profileImage = state.userData.profileImage;
+                widget.appState.roles = state.userData.roles;
               }
 
               Navigator.of(context).pushReplacementNamed(MenuPage.route,
@@ -66,9 +68,37 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              LoginBackground(appState),
+              if (widget.appState.applicationStyle?.loginIcon != null)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: FileImage(File(
+                                '${widget.appState.dir}${widget.appState.applicationStyle?.loginIcon}')))),
+                  ),
+                )
+              else
+                LoginBackground(widget.appState),
+              if (widget.appState.applicationStyle?.loginLogo != null)
+                Positioned(
+                  top: 100,
+                  left: 20,
+                  right: 20,
+                  child: Align(
+                    child: Image.file(
+                      File(
+                          '${widget.appState.dir}${widget.appState.applicationStyle?.loginLogo}'),
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                ),
               LoginWidgets(
-                appState: appState,
+                appState: widget.appState,
                 username: widget.lastUsername,
               )
             ],

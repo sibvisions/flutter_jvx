@@ -291,7 +291,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
 
     //username = 'Max Mustermann Junior';
 
-    return AutoSizeText(username,
+    return AutoSizeText(username ?? '',
         maxLines: 2,
         overflow: TextOverflow.clip,
         style: TextStyle(

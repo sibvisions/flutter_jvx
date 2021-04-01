@@ -16,7 +16,7 @@ class LabelComponentModel extends ComponentModel {
   @override
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
-
+    // todo: wenn maxsize gesetzt in berechnung miteinbeziehen
     Size size = TextUtils.getTextSize(text, fontStyle);
     return Size(size.width, max(size.height, getBaseline() + 4));
   }
@@ -34,7 +34,8 @@ class LabelComponentModel extends ComponentModel {
       : super(changedComponent);
 
   @override
-  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
     super.updateProperties(context, changedComponent);
     this.text =
         changedComponent.getProperty<String>(ComponentProperty.TEXT, this.text);

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:async/async.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,8 @@ import 'http_client.dart';
 
 class RestClient {
   final HttpClient _client;
+  bool debug = true;
+  int requestTimeout = 10;
 
   final Map<String, String> headers = <String, String>{
     'Content-Type': 'application/json',
@@ -26,15 +29,26 @@ class RestClient {
   Future<Response> post(String path, dynamic data) async {
     final content = json.encode(data);
 
+    if (debug) {
+      log("Request: $content");
+    }
+
     var response;
 
     Response finalResponse;
+
+    if (data != null &&
+        data['forceNewSession'] != null &&
+        data['forceNewSession']) {
+      this.headers.clear();
+      this.headers['Content-Type'] = 'application/json';
+    }
 
     try {
       response = await this
           ._client
           .post(path, body: content, headers: headers)
-          .timeout(const Duration(seconds: 10));
+          .timeout(Duration(seconds: requestTimeout));
     } on TimeoutException {
       finalResponse = Response()
         ..error = ErrorResponse('Timeout Error', 'Timeout Error',
@@ -65,6 +79,10 @@ class RestClient {
       String body = this.utf8convert(response?.body);
       dynamic decodedBody = json.decode(body);
 
+      if (debug) {
+        log("Response: $body");
+      }
+
       try {
         if (decodedBody is List) {
           finalResponse = Response.fromJson(decodedBody);
@@ -94,7 +112,7 @@ class RestClient {
       response = await this
           ._client
           .post(path, body: content, headers: headers)
-          .timeout(const Duration(seconds: 10));
+          .timeout(Duration(seconds: requestTimeout));
     } catch (e) {
       print(e);
     }
@@ -157,7 +175,7 @@ class RestClient {
       final streamedResponse = await request.send();
 
       response = await http.Response.fromStream(streamedResponse)
-          .timeout(const Duration(seconds: 10));
+          .timeout(Duration(seconds: requestTimeout));
     } catch (e) {
       print('EXCEPTION: $e');
 

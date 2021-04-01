@@ -1,17 +1,25 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jvx_flutterclient/core/models/api/request/close_screen.dart';
 import 'package:jvx_flutterclient/core/models/api/request/navigation.dart';
 import 'package:jvx_flutterclient/core/models/api/request/set_component_value.dart';
+import 'package:jvx_flutterclient/core/models/api/response.dart';
+import 'package:jvx_flutterclient/core/models/api/response/error_response.dart';
+import 'package:jvx_flutterclient/core/models/app/app_state.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/i_offline_database_provider.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/local_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database/offline_database.dart';
 import 'package:jvx_flutterclient/core/services/local/local_database_manager.dart';
+import 'package:jvx_flutterclient/core/ui/screen/so_screen.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/dialogs/dialogs.dart';
+import 'package:jvx_flutterclient/core/ui/widgets/util/error_handling.dart';
 import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:jvx_flutterclient/core/utils/app/text_utils.dart';
+import 'package:jvx_flutterclient/core/utils/translation/app_localizations.dart';
 import 'package:jvx_flutterclient/injection_container.dart';
 
 import '../../models/api/request.dart';
@@ -64,10 +72,11 @@ mixin SoDataScreen {
       pData.dataBooks?.forEach((element) {
         SoComponentData cData = getComponentData(element.dataProvider);
         cData.updateData(context, pData.dataBooks[0]);
-        if (request.filter != null &&
-            request.filter.values != null &&
-            request.filter.values.length > 0)
-          cData.updateSelectedRow(context, request.filter.values[0]);
+        // Commented out by Jürgen: Not sure if we need this?
+        // if (request.filter != null &&
+        //     request.filter.values != null &&
+        //     request.filter.values.length > 0)
+        //   cData.updateSelectedRow(context, request.filter.values[0]);
       });
     }
 
@@ -150,54 +159,115 @@ mixin SoDataScreen {
     return data;
   }
 
-  void goOffline(BuildContext context) async {
+  Future<void> showOfflineError(
+      BuildContext context, ErrorResponse response) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(response.title),
+            content: Text(response.message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(AppLocalizations.of(context).text('Close')),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        });
+  }
+
+  void goOffline(BuildContext context, Response response) async {
     BlocProvider.of<ApiBloc>(context).removeAllCallbacks();
 
-    showLinearProgressIndicator(context);
+    response.responseData.dataproviderChanged?.forEach((d) {
+      getComponentData(d.dataProvider);
+    });
+    response.responseData.dataBooks?.forEach((d) {
+      SoComponentData cData = getComponentData(d.dataProvider);
+      cData.updateData(context, d, response.request.reload);
+    });
 
-    String path = AppStateProvider.of(context).appState.dir + "/offlineDB.db";
+    WidgetsBinding.instance.addPostFrameCallback((_) => hideProgress(context));
 
-    await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+    try {
+      if (!response.hasError) {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => showLinearProgressIndicator(context));
+        String path =
+            AppStateProvider.of(context).appState.dir + "/offlineDB.db";
 
-    bool importSuccess =
+        bool importSuccess =
+            await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+        if (importSuccess)
+          importSuccess = importSuccess &
+              await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                  .importComponents(context, componentData);
+
+        (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+            .removeAllProgressCallbacks();
+
+        if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
+            null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            hideLinearProgressIndicator(context);
+            showOfflineError(
+                context,
+                (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                    .responseError
+                    .error);
+          });
+
+          await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+              .cleanupDatabase();
+        } else if (importSuccess) {
+          hideLinearProgressIndicator(context);
+
+          SharedPrefProvider.of(context).manager.setOffline(true);
+          AppState appState = AppStateProvider.of(context).appState;
+
+          appState.offline = true;
+
+          BlocProvider.of<ApiBloc>(context).add(CloseScreen(
+            clientId: appState.clientId,
+            componentId: appState.currentScreenComponentId,
+            requestType: RequestType.CLOSE_SCREEN,
+          ));
+          BlocProvider.of<ApiBloc>(context).add(Navigation());
+        }
+      } else {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+      }
+    } catch (e) {
+      try {
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideProgress(context));
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => hideLinearProgressIndicator(context));
+        SharedPrefProvider.of(context).manager.setOffline(false);
+        AppState appState = AppStateProvider.of(context).appState;
+
+        appState.offline = false;
         await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-            .importComponents(componentData);
-
-    (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-        .removeAllProgressCallbacks();
-
-    hideLinearProgressIndicator(context);
-
-    if (importSuccess) {
-      SharedPrefProvider.of(context).manager.setOffline(true);
-      AppStateProvider.of(context).appState.offline = true;
-
-      BlocProvider.of<ApiBloc>(context).add(Navigation());
-    } else {
-      showError(context, 'Offline error',
-          'Could\'t import component data into offline db');
+            .cleanupDatabase();
+      } catch (ee) {}
+      rethrow;
     }
   }
 
-  void onAction(BuildContext context, SoAction action,
-      String classNameEventSourceRef) async {
+  void onAction(BuildContext context, SoAction action) async {
     TextUtils.unfocusCurrentTextfield(context);
 
-    if (classNameEventSourceRef == 'OfflineButton' && !kIsWeb) {
-      if (BlocProvider.of<ApiBloc>(context).isAwaitingResponse) {
-        BlocProvider.of<ApiBloc>(context)
-            .addOnResponseFinishedCallback(goOffline);
-      } else {
-        this.goOffline(context);
-      }
-    } else {
-      // wait until textfields focus lost. 10 millis should do it.
-      Future.delayed(const Duration(milliseconds: 100), () {
-        PressButton pressButton =
-            PressButton(action, AppStateProvider.of(context).appState.clientId);
-        BlocProvider.of<ApiBloc>(context).add(pressButton);
-      });
-    }
+    // wait until textfields focus lost. 10 millis should do it.
+    Future.delayed(const Duration(milliseconds: 100), () {
+      PressButton pressButton =
+          PressButton(action, AppStateProvider.of(context).appState.clientId);
+      BlocProvider.of<ApiBloc>(context).add(pressButton);
+    });
   }
 
   void onComponetValueChanged(

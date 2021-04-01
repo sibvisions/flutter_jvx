@@ -232,31 +232,31 @@ class CoFormLayoutContainerWidget extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    this._layoutConstraints.forEach((k, v) {
-      if (k.componentModel.isVisible &&
-          children.firstWhere(
-                  (constraintData) =>
-                      (constraintData.child as ComponentWidget)
-                          .componentModel
-                          .componentId ==
-                      k.componentModel.componentId,
-                  orElse: () => null) ==
-              null) {
-        CoFormLayoutConstraint constraint = this.getConstraintsFromString(v);
+    // this._layoutConstraints.forEach((k, v) {
+    //   if (k.componentModel.isVisible &&
+    //       children.firstWhere(
+    //               (constraintData) =>
+    //                   (constraintData.child as ComponentWidget)
+    //                       .componentModel
+    //                       .componentId ==
+    //                   k.componentModel.componentId,
+    //               orElse: () => null) ==
+    //           null) {
+    //     CoFormLayoutConstraint constraint = this.getConstraintsFromString(v);
 
-        Key key = this.getKeyByComponentId(k.componentModel.componentId);
+    //     Key key = this.getKeyByComponentId(k.componentModel.componentId);
 
-        if (key == null) {
-          key = createKey(k.componentModel.componentId);
-        }
+    //     if (key == null) {
+    //       key = createKey(k.componentModel.componentId);
+    //     }
 
-        if (constraint != null) {
-          constraint.comp = k;
-          children.add(
-              CoFormLayoutConstraintData(key: key, child: k, id: constraint));
-        }
-      }
-    });
+    //     if (constraint != null) {
+    //       constraint.comp = k;
+    //       children.add(
+    //           CoFormLayoutConstraintData(key: key, child: k, id: constraint));
+    //     }
+    //   }
+    // });
 
     return CustomStatefulBuilder(
       dispose: () => super.setState = null,
@@ -267,12 +267,36 @@ class CoFormLayoutContainerWidget extends StatelessWidget
         //     this._layoutConstraints.length.toString());
         super.setState = setState;
 
+        // children.removeWhere((f) => !f.id.comp.componentModel.isVisible);
+
+        List<CoFormLayoutConstraintData> _newChildren =
+            <CoFormLayoutConstraintData>[];
+
+        this._layoutConstraints.forEach((k, v) {
+          if (k.componentModel.isVisible) {
+            CoFormLayoutConstraint constraint =
+                this.getConstraintsFromString(v);
+
+            Key key = this.getKeyByComponentId(k.componentModel.componentId);
+
+            if (key == null) {
+              key = createKey(k.componentModel.componentId);
+            }
+
+            if (constraint != null) {
+              constraint.comp = k;
+              _newChildren.add(CoFormLayoutConstraintData(
+                  key: key, child: k, id: constraint));
+            }
+          }
+        });
+
         return Container(
             child: CoFormLayoutWidget(
                 key: key,
                 container: container,
                 valid: this._valid,
-                children: children,
+                children: _newChildren,
                 hgap: this.horizontalGap,
                 vgap: this.verticalGap,
                 horizontalAlignment: this.horizontalAlignment,

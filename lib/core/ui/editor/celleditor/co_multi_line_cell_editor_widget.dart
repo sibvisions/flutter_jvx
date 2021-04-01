@@ -96,10 +96,12 @@ class CoMultiLineCellEditorWidgetState
       decoration: BoxDecoration(
           color: widget.cellEditorModel.background != null
               ? widget.cellEditorModel.background
-              : Colors.white.withOpacity(widget
-                  .cellEditorModel.appState.applicationStyle?.controlsOpacity),
-          borderRadius: BorderRadius.circular(widget
-              .cellEditorModel.appState.applicationStyle?.cornerRadiusEditors),
+              : Colors.white.withOpacity(widget.cellEditorModel.appState
+                      .applicationStyle?.controlsOpacity ??
+                  1),
+          borderRadius: BorderRadius.circular(widget.cellEditorModel.appState
+                  .applicationStyle?.cornerRadiusEditors ??
+              5),
           border: widget.cellEditorModel.borderVisible
               ? Border.all(color: Theme.of(context).primaryColor)
               : null),

@@ -13,10 +13,12 @@ class LocalDatabase implements IDatabaseProvider {
 
   bool get isOpen => db != null;
 
-  Future<void> openCreateDatabase(String path) async {
+  Future<bool> openCreateDatabase(String path) async {
     if (this.debug) log('SQLite openCreateDatabase:' + path);
     this.db = await openDatabase(path, version: 1);
     this.path = path;
+
+    return this.db?.isOpen ?? false;
   }
 
   Future<void> closeDatabase() async {
@@ -31,10 +33,12 @@ class LocalDatabase implements IDatabaseProvider {
     if (this.debug) {
       log('SQLite createTable:' + sql);
     }
-
-    await this.db.execute(sql);
-
-    return true;
+    try {
+      await this.db.execute(sql);
+      return true;
+    } catch (ee) {
+      rethrow;
+    }
   }
 
   Future<bool> dropTable(String tableName) async {

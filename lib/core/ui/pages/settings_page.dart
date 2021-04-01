@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:barras/barras.dart';
 import 'package:intl/intl.dart';
 
 import '../../../injection_container.dart';
@@ -188,9 +188,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                               AppLocalizations.of(context).text('Language')),
                           trailing: FaIcon(FontAwesomeIcons.arrowRight),
-                          subtitle: Text(widget.appState.language != null
-                              ? widget.appState.language
-                              : ''),
+                          subtitle: Text((this.selectedLanguage != null &&
+                                      this.selectedLanguage.isNotEmpty
+                                  ? this.selectedLanguage
+                                  : widget.appState.language) ??
+                              ''),
                           onTap: () {
                             if (!widget.appState.isOffline)
                               showLanguagePicker(context);
@@ -255,10 +257,12 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   loadVersion() async {
-    Map<String, dynamic> buildversion = json.decode(await rootBundle.loadString(
-        widget.appState.package
-            ? 'packages/jvx_flutterclient/env/app_version.json'
-            : 'env/app_version.json'));
+    Map<String, dynamic> buildversion =
+        widget.appState.config.appVersion != null
+            ? widget.appState.config.appVersion
+            : json.decode(await rootBundle.loadString(widget.appState.package
+                ? 'packages/jvx_flutterclient/env/app_version.json'
+                : 'env/app_version.json'));
 
     setState(() {
       version = buildversion['version'];
@@ -344,10 +348,9 @@ class _SettingsPageState extends State<SettingsPage> {
         cancelTextStyle:
             TextStyle(color: sl<ThemeManager>().themeData.primaryColor),
         onConfirm: (Picker picker, List value) async {
-          selectedLanguage =
-              picker.getSelectedValues()[0].toString().toLowerCase();
-
           setState(() {
+            selectedLanguage =
+                picker.getSelectedValues()[0].toString().toLowerCase();
             isDialogOpen = false;
           });
         },
@@ -419,6 +422,14 @@ class _SettingsPageState extends State<SettingsPage> {
           baseUrl: this.baseUrl,
           language: this.language,
           picSize: widget.appState.picSize);
+
+      widget.manager
+          .setLoginData(username: null, password: null, override: true);
+      widget.manager.setAuthKey(null);
+
+      widget.manager.setSyncLoginData(username: null, password: null);
+
+      widget.manager.setOfflineLoginHash(username: null, password: null);
     } else {
       showError(context, 'App name or base URL are null or empty',
           'Please enter a valid app name and base URL');
@@ -442,7 +453,7 @@ class _SettingsPageState extends State<SettingsPage> {
     // String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
     //     "#ff6666", AppLocalizations.of(context).text("Cancel"), true, ScanMode.QR);
 
-    var result = await BarcodeScanner.scan();
+    final result = await Barras.scan(context);
 
     Map<String, dynamic> properties = getProperties(result);
 

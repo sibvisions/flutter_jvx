@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jvx_flutterclient/core/ui/widgets/util/shared_pref_provider.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import '../../../injection_container.dart';
 import '../../utils/theme/theme_manager.dart';
+import '../widgets/dialogs/dialogs.dart';
 import '../widgets/util/fontAwesomeChanger.dart';
 import 'co_action_component_widget.dart';
 import 'models/button_component_model.dart';
@@ -26,7 +26,13 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
       if (checkFontAwesome(widget.componentModel.image)) {
         widget.componentModel.icon = convertFontAwesomeTextToIcon(
             widget.componentModel.image,
-            sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
+            !widget.componentModel.enabled
+                ? Colors.grey.shade500
+                : sl<ThemeManager>()
+                    .themeData
+                    .primaryTextTheme
+                    .bodyText1
+                    .color);
       } else {
         List strinArr =
             List<String>.from(widget.componentModel.image.split(','));
@@ -109,18 +115,29 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
 
     if (widget.componentModel.text?.isNotEmpty ?? true) {
       if (widget.componentModel.image != null) {
-        child = Row(
-          children: <Widget>[
-            widget.componentModel.icon != null
-                ? widget.componentModel.icon
-                : SizedBox(
-                    width: widget.componentModel.iconSize.width,
-                    height: widget.componentModel.iconSize.height),
-            SizedBox(width: widget.componentModel.iconPadding),
-            textWidget
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
+        Widget icon = widget.componentModel.icon != null
+            ? widget.componentModel.icon
+            : SizedBox(
+                width: widget.componentModel.iconSize.width,
+                height: widget.componentModel.iconSize.height);
+        if (widget.componentModel.horizontalTextPosition != TextAlign.left)
+          child = Row(
+            children: <Widget>[
+              icon,
+              SizedBox(width: widget.componentModel.iconPadding),
+              textWidget
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
+        else
+          child = Row(
+            children: <Widget>[
+              textWidget,
+              SizedBox(width: widget.componentModel.iconPadding),
+              icon,
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
       } else {
         child = textWidget;
       }
@@ -148,10 +165,8 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
         child: GestureDetector(
           onTap: () {
             widget.componentModel.enabled
-                ? widget.componentModel.onAction(
-                    context,
-                    widget.componentModel.action,
-                    widget.componentModel.classNameEventSourceRef)
+                ? widget.componentModel
+                    .onAction(context, widget.componentModel.action)
                 : null;
           },
           child: SizedBox(
@@ -187,14 +202,18 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             child: SizedBox(
                 height: 50,
                 child: RaisedButton(
-                  onPressed: widget.componentModel.enabled
-                      ? () {
-                          widget.componentModel.onAction(
-                              context,
-                              widget.componentModel.action,
-                              widget.componentModel.classNameEventSourceRef);
-                        }
-                      : null,
+                  onPressed: () {
+                    if (widget.componentModel.enabled) {
+                      if (widget
+                              .componentModel.action?.classNameEventSourceRef ==
+                          "OfflineButton") {
+                        showProgress(context);
+                        //showLinearProgressIndicator(context);
+                      }
+                      widget.componentModel
+                          .onAction(context, widget.componentModel.action);
+                    }
+                  },
                   color: widget.componentModel.background != null
                       ? widget.componentModel.background
                       : Theme.of(context).primaryColor,

@@ -31,10 +31,8 @@ class CoPopupMenuButtonWidgetState
     TextUtils.unfocusCurrentTextfield(context);
 
     if (widget.componentModel.onAction != null)
-      widget.componentModel.onAction(
-          context,
-          SoAction(componentId: value, label: null),
-          widget.componentModel.classNameEventSourceRef);
+      widget.componentModel
+          .onAction(context, SoAction(componentId: value, label: null));
   }
 
   PopupMenuButton<String> _getPopupMenu(ColorScheme colorScheme) {
@@ -129,12 +127,12 @@ class CoPopupMenuButtonWidgetState
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Flexible(
-                          fit: FlexFit.loose,
-                          flex: 10,
+                          // fit: FlexFit.loose,
+                          flex: 5,
                           child: Center(child: child)),
                       Flexible(
-                          fit: FlexFit.loose,
-                          flex: 1,
+                          // fit: FlexFit.loose,
+                          flex: 5,
                           child: _getPopupMenu(colorScheme)),
                     ]),
                 splashColor: widget.componentModel.background,
@@ -142,4 +140,3 @@ class CoPopupMenuButtonWidgetState
     );
   }
 }
-  

@@ -16,7 +16,7 @@ import 'injection_container.dart';
 import 'mobile_app.dart';
 
 /// Entrypoint for the application.
-/// 
+///
 /// Gets wrapped by [CustomApplicationWidget]
 class ApplicationWidget extends StatelessWidget {
   final Config config;
@@ -25,6 +25,9 @@ class ApplicationWidget extends StatelessWidget {
   final AppListener appListener;
   final bool package;
   final Widget welcomeWidget;
+  final bool rememberMeChecked;
+  final bool hideLoginCheckbox;
+  final int requestTimeout;
 
   const ApplicationWidget(
       {Key key,
@@ -33,7 +36,10 @@ class ApplicationWidget extends StatelessWidget {
       this.handleSessionTimeout,
       this.appListener,
       this.package = false,
-      this.welcomeWidget})
+      this.welcomeWidget,
+      this.rememberMeChecked,
+      this.hideLoginCheckbox,
+      this.requestTimeout = 10})
       : super(key: key);
 
   @override
@@ -47,17 +53,20 @@ class ApplicationWidget extends StatelessWidget {
     // Initializing screen manager
     appState.screenManager.init();
 
-    // Setting app parameters
-    appState.handleSessionTimeout = handleSessionTimeout ?? true;
-    appState.appListener = this.appListener;
-    appState.package = this.package;
-
     return RestartWidget(
       loadConfigBuilder: (bool shouldLoadConfig) =>
           ValueListenableBuilder<ThemeData>(
               valueListenable: sl<ThemeManager>(),
               builder:
                   (BuildContext context, ThemeData themeData, Widget child) {
+                // Setting app parameters
+                appState.handleSessionTimeout = handleSessionTimeout ?? true;
+                appState.rememberMeChecked = this.rememberMeChecked ?? false;
+                appState.hideLoginCheckbox = this.hideLoginCheckbox ?? false;
+                appState.requestTimeout = this.requestTimeout ?? 10;
+                appState.appListener = this.appListener;
+                appState.package = this.package;
+
                 return SharedPrefProvider(
                   manager: sl<SharedPreferencesManager>(),
                   child: AppStateProvider(

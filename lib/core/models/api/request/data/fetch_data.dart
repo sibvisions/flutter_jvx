@@ -1,6 +1,5 @@
-import 'package:jvx_flutterclient/core/models/api/response/data/filter.dart';
-
 import '../../request.dart';
+import '../../response/data/filter.dart';
 
 class FetchData extends Request {
   String dataProvider;
@@ -13,10 +12,9 @@ class FetchData extends Request {
   @override
   String get debugInfo {
     return dataProvider +
-        ", From: " +
-        fromRow.toString() +
-        ", rowCount: " +
-        rowCount.toString();
+        ", From: $fromRow" +
+        ", rowCount: $rowCount" +
+        ", reload: $reload";
   }
 
   FetchData(this.dataProvider, String clientId,
@@ -33,6 +31,7 @@ class FetchData extends Request {
         'columnNames': columnNames,
         'fromRow': fromRow,
         'rowCount': rowCount,
+        "reload": reload,
         'includeMetaData': includeMetaData,
         'filter': filter?.toJson()
       };
