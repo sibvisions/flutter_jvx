@@ -76,6 +76,7 @@ class ScreenManager implements IScreenManager {
   SoScreen createScreen({
     required ApiResponse response,
     Function(String componentId)? onPopPage,
+    Function(MenuItem menuItem)? onMenuItemPressed,
     MenuDrawerWidget? drawer,
   }) {
     ScreenGenericResponseObject? screenGeneric =
@@ -91,7 +92,8 @@ class ScreenManager implements IScreenManager {
           screenTitle: screenGeneric.screenTitle!,
           withServer: true,
           offlineScreen: false,
-          onPopPage: onPopPage),
+          onPopPage: onPopPage,
+          onMenuItemPressed: onMenuItemPressed),
     );
 
     return screen;

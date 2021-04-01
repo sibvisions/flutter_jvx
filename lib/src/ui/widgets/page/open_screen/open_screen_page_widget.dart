@@ -120,6 +120,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           if (screenToUpdate == null) {
             addPage(widget.appState.screenManager.createScreen(
                 onPopPage: _onPopPage,
+                onMenuItemPressed: _onMenuItemPressed,
                 response: state,
                 drawer: getMenuDrawer(state
                     .getObjectByType<ScreenGenericResponseObject>()!
@@ -290,12 +291,12 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
     if (screen.configuration.value != null)
       _response = screen.configuration.value as ApiResponse;
 
-    if (screen.configuration.onPopPage == null) {
-      screen.configuration.onPopPage = _onPopPage;
-    }
-
     if (screen.configuration.onMenuItemPressed == null) {
       screen.configuration.onMenuItemPressed = _onMenuItemPressed;
+    }
+
+    if (screen.configuration.onPopPage == null) {
+      screen.configuration.onPopPage = _onPopPage;
     }
 
     screen.configuration.drawer =

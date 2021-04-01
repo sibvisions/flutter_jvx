@@ -197,12 +197,10 @@ class BrowserApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // home: AuthNavigator(
+      debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       onGenerateRoute: _onGenerateRoute,
       onUnknownRoute: _onGenerateRoute,
-      //   isRouteAllowed: _isRouteAllowed,
-      // ),
       onGenerateTitle: _onGenerateTitle,
       theme: themeData,
       supportedLocales: this.supportedLocales,

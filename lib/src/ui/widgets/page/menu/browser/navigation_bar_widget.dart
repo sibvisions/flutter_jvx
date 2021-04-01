@@ -29,6 +29,8 @@ class NavigationBarWidget extends StatefulWidget {
 }
 
 class _NavigationBarWidgetState extends State<NavigationBarWidget> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   Uint8List? _decodedImg;
   bool isShowingMenu = true;
 
@@ -114,8 +116,15 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Row(
+    return Scaffold(
+      key: scaffoldKey,
+      endDrawer: SizedBox(
+        width: MediaQuery.of(context).size.width / 4,
+        child: SettingsPage(
+          canPop: false,
+        ),
+      ),
+      body: Row(
         children: [
           AnimatedContainer(
               duration: const Duration(seconds: 1),
@@ -141,17 +150,44 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
                                 isShowingMenu = !isShowingMenu;
                               });
                             }),
-                        CircleAvatar(
-                          backgroundImage: _getImageProvider(),
-                          child: widget.appState.userData?.profileImage ==
-                                      null ||
-                                  widget.appState.userData!.profileImage.isEmpty
-                              ? FaIcon(
-                                  FontAwesomeIcons.userTie,
-                                  color: Theme.of(context).primaryColor,
-                                  size: MediaQuery.of(context).size.height / 10,
-                                )
-                              : Container(),
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: FaIcon(FontAwesomeIcons.signOutAlt),
+                                color:
+                                    Theme.of(context).primaryColor.textColor(),
+                                onPressed: () {
+                                  widget.onLogoutPressed();
+                                }),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            IconButton(
+                                icon: FaIcon(FontAwesomeIcons.cog),
+                                color:
+                                    Theme.of(context).primaryColor.textColor(),
+                                onPressed: () {
+                                  scaffoldKey.currentState?.openEndDrawer();
+                                }),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            CircleAvatar(
+                              backgroundImage: _getImageProvider(),
+                              child: widget.appState.userData?.profileImage ==
+                                          null ||
+                                      widget.appState.userData!.profileImage
+                                          .isEmpty
+                                  ? FaIcon(
+                                      FontAwesomeIcons.userTie,
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .textColor(),
+                                      size: 40,
+                                    )
+                                  : Container(),
+                            ),
+                          ],
                         )
                       ],
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
 import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
 import 'package:flutterclient/src/ui/widgets/drawer/menu_drawer_widget.dart';
 
@@ -50,5 +51,6 @@ abstract class IScreenManager {
   SoScreen createScreen(
       {required ApiResponse response,
       Function(String componentId)? onPopPage,
+      Function(MenuItem menuItem)? onMenuItemPressed,
       MenuDrawerWidget? drawer});
 }
