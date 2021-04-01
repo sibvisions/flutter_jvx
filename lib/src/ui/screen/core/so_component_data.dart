@@ -312,7 +312,8 @@ class SoComponentData {
     if (columnNames != null) {
       columnNames.asMap().forEach((i, f) {
         if (i < values.length &&
-            (filter == null || data?.selectedRow == filter.values![0])) {
+            (filter == null || data?.selectedRow == filter.values![0]) &&
+            f != null) {
           _setColumnValue(f, values[i]);
         }
       });

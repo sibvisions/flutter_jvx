@@ -1,11 +1,21 @@
 import 'dart:convert';
+import 'dart:io' as io;
 
 import 'package:http/http.dart' as prefHttp;
+import 'package:http/io_client.dart';
 
 import 'http_client.dart';
 
 class MobileClient implements HttpClient {
-  prefHttp.Client client = prefHttp.Client();
+  prefHttp.Client client;
+
+  MobileClient()
+      : client = IOClient(
+            io.HttpClient()..badCertificateCallback = _certificateCheck);
+
+  static bool _certificateCheck(
+          io.X509Certificate cert, String host, int port) =>
+      true;
 
   @override
   void close() {

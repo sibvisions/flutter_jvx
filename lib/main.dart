@@ -14,9 +14,11 @@ void main() async {
           return ApplicationWidget();
         }
 
+        const prod = bool.fromEnvironment('PROD', defaultValue: false);
+
         if (snapshot.hasData) {
           return ApplicationWidget(
-            devConfig: bool.fromEnvironment('PROD', defaultValue: false) ? null : snapshot.data,
+            devConfig: prod ? null : snapshot.data,
           );
         } else {
           return Container();
