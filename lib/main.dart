@@ -14,7 +14,11 @@ void main() async {
 
   await di.init();
 
-  runApp(FutureBuilder<DevConfig>(
+  runApp(_getRunnableWidget());
+}
+
+Widget _getRunnableWidget() {
+  return FutureBuilder<DevConfig>(
       future: DevConfig.loadConfig(path: 'assets/env/dev.conf.json'),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -30,5 +34,5 @@ void main() async {
         } else {
           return Container();
         }
-      }));
+      });
 }

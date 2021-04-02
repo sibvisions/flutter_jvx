@@ -382,14 +382,19 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           child: _pages.isNotEmpty
               ? Navigator(
                   pages: [..._pages],
-                  onPopPage: (Route<dynamic> route, dynamic val) {
-                    NavigationRequest request = NavigationRequest(
-                        clientId: widget.appState.applicationMetaData!.clientId,
-                        componentId: (_pages.last.child as SoScreen)
-                            .configuration
-                            .componentId);
+                  onPopPage: (Route<dynamic> route, dynamic? shouldNotRequest) {
+                    if (shouldNotRequest == null || !shouldNotRequest) {
+                      NavigationRequest request = NavigationRequest(
+                          clientId:
+                              widget.appState.applicationMetaData!.clientId,
+                          componentId: (_pages.last.child as SoScreen)
+                              .configuration
+                              .componentId);
 
-                    sl<ApiCubit>().navigation(request);
+                      sl<ApiCubit>().navigation(request);
+                    } else {
+                      Navigator.of(context).pop();
+                    }
 
                     return false;
                   },

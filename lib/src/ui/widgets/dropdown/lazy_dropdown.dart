@@ -64,18 +64,18 @@ class _LazyDropdownState extends State<LazyDropdown> {
   }
 
   void _onCancel() {
-    Navigator.of(this.widget.context).pop();
+    Navigator.of(this.widget.context).pop(true);
     if (this.widget.onCancel != null) this.widget.onCancel!();
   }
 
   void _onDelete() {
-    Navigator.of(this.widget.context).pop();
+    Navigator.of(this.widget.context).pop(true);
     if (this.widget.onSave != null)
       this.widget.onSave!(new MapEntry<int, dynamic>(-1, null));
   }
 
   void _onRowTapped(int index) {
-    Navigator.of(this.widget.context).pop();
+    Navigator.of(this.widget.context).pop(true);
     if (this.widget.onSave != null) {
       dynamic value = widget.data.data!.getRow(index, null);
       this.widget.onSave!(new MapEntry<int, dynamic>(index, value));

@@ -206,7 +206,10 @@ class TableComponentModel extends EditorComponentModel {
               columnName,
             );
         if (editor != null) {
-          if (editor.cellEditor!.cellEditorModel is LinkedCellEditorModel) {
+          if (editor.cellEditor!.cellEditorModel is LinkedCellEditorModel &&
+              editor.cellEditor!.cellEditorModel.cellEditor.linkReference!
+                      .dataProvider !=
+                  null) {
             (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
                     .referencedData =
                 SoScreen.of(context)!.getComponentData(editor.cellEditor!

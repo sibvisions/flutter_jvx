@@ -250,7 +250,7 @@ class RemoteDataSourceImpl implements DataSource {
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) async {
       if (r.statusCode != 404) {
-        List decodedBody = await compute(_getDecodedBody, r.body);
+        List decodedBody = _getDecodedBody(r.body);
         Failure? failure = _getErrorIfExists(decodedBody);
 
         if (failure != null) {

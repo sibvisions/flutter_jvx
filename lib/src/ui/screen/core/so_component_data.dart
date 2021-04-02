@@ -167,7 +167,7 @@ class SoComponentData {
   }
 
   DataBook? getData(BuildContext context, int rowCountNeeded) {
-    if (isFetching == false && (data == null || !data!.isAllFetched!)) {
+    if (!isFetching && (data == null || !data!.isAllFetched!)) {
       if (rowCountNeeded >= 0 &&
           data != null &&
           data!.records.length >= rowCountNeeded) {
@@ -444,7 +444,7 @@ class SoComponentData {
     log('Start fetching all records for ${this.dataProvider}.');
     if (data == null || data!.isAllFetched == null || !data!.isAllFetched!) {
       bool reload = true;
-      this.isFetching = true;
+      isFetching = true;
 
       while ((data == null ||
               data!.isAllFetched == null ||

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/meta_data/data_book_meta_data_column.dart';
-import 'package:flutterclient/src/ui/component/model/table_component_model.dart';
-import 'package:flutterclient/src/ui/component/so_table_column_calculator.dart';
-import 'package:flutterclient/src/ui/editor/co_editor_widget.dart';
-import 'package:flutterclient/src/ui/screen/core/so_component_creator.dart';
-import 'package:flutterclient/src/util/translation/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+
+import '../../models/api/response_objects/response_data/data/data_book.dart';
+import '../../models/api/response_objects/response_data/meta_data/data_book_meta_data_column.dart';
+import '../../util/translation/app_localizations.dart';
+import '../editor/co_editor_widget.dart';
+import '../screen/core/so_component_creator.dart';
+import 'model/table_component_model.dart';
+import 'so_table_column_calculator.dart';
 
 enum ContextMenuCommand { INSERT, DELETE }
 

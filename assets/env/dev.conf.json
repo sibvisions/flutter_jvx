@@ -1,5 +1,5 @@
 {
-    "baseUrl": "https://192.168.0.80:8443/services/mobile",
-    "appName": "TestApplication2529",
+    "baseUrl": "http://192.168.0.60/services/mobile",
+    "appName": "demo",
     "appMode": "full"
 }
