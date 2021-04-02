@@ -25,7 +25,7 @@ class NumberCellEditorModel extends CellEditorModel {
 
   @override
   set data(SoComponentData? newData) {
-    data = newData;
+    super.data = newData;
     updateMetadataNumberformat();
   }
 

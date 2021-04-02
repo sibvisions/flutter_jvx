@@ -3,9 +3,9 @@ import 'data_request.dart';
 
 class FetchDataRequest extends DataRequest {
   List<dynamic> columnNames;
-  int fromRow;
-  int rowCount;
-  bool includeMetaData;
+  int? fromRow;
+  int? rowCount;
+  bool? includeMetaData;
   Filter? filter;
 
   FetchDataRequest(
@@ -14,9 +14,9 @@ class FetchDataRequest extends DataRequest {
       String? debugInfo,
       bool reload = false,
       this.columnNames = const <dynamic>[],
-      this.fromRow = -1,
-      this.rowCount = -1,
-      this.includeMetaData = false,
+      this.fromRow,
+      this.rowCount,
+      this.includeMetaData,
       this.filter})
       : super(
             clientId: clientId,

@@ -8,9 +8,6 @@
             "name": "Flutter",
             "request": "launch",
             "type": "dart",
-            "args": [
-                "--dart-define=PROD=true"
-            ]
         }
     ]
 }

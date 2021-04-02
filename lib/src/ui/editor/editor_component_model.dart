@@ -57,6 +57,9 @@ class EditorComponentModel extends ComponentModel {
     if (cellEditor != null && !cellEditor!.cellEditorModel.isTableView) {
       cellEditor?.cellEditorModel.cellEditorValue =
           _data?.getColumnData(null, columnName!);
+
+      cellEditor!.cellEditorModel.columnName = columnName;
+      cellEditor!.cellEditorModel.data = data;
     }
   }
 

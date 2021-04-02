@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:flutterclient/src/models/api/errors/failure.dart';
+
+import '../../models/api/errors/failure.dart';
 
 class DevConfig {
   final String baseUrl;
