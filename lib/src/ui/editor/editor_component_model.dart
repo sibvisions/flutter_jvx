@@ -72,6 +72,8 @@ class EditorComponentModel extends ComponentModel {
     _cellEditorWidget?.cellEditorModel.onEndEditing = onEndEditing;
     _cellEditorWidget?.cellEditorModel.onValueChanged = onValueChanged;
     _cellEditorWidget?.cellEditorModel.onFilter = onFilter;
+
+    setEditorProperties();
   }
 
   @override
@@ -114,17 +116,17 @@ class EditorComponentModel extends ComponentModel {
 
   EditorComponentModel.withoutChangedComponent(
     dynamic value,
-    String? columnName,
-    int? indexInTable,
+    String? colName,
+    int? index,
     Function(int index)? onRowTapped,
     bool editable,
   ) : super(changedComponent: ChangedComponent()) {
     _withChangedComponent = false;
     if (cellEditor != null) cellEditor!.cellEditorModel.cellEditorValue = value;
-    columnName = columnName;
+    columnName = colName;
     onRowTapped = onRowTapped;
     editable = editable;
-    indexInTable = indexInTable;
+    indexInTable = index;
   }
 
   @override
@@ -207,7 +209,7 @@ class EditorComponentModel extends ComponentModel {
       data!.setValues(
           context,
           (value is List) ? value : [value],
-          [this.columnName],
+          [columnName],
           index != null && index > -1
               ? Filter(
                   columnNames: data!.primaryKeyColumns,
@@ -253,7 +255,7 @@ class EditorComponentModel extends ComponentModel {
     }
   }
 
-  void setEditorProperties(BuildContext context) {
+  void setEditorProperties() {
     if (cellEditor != null) {
       cellEditor!.cellEditorModel.editable = cellEditorEditable ?? true;
       cellEditor!.cellEditorModel.backgroundColor = cellEditorBackground;

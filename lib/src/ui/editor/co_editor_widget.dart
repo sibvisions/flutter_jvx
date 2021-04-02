@@ -57,9 +57,6 @@ class CoEditorWidgetState<T extends CoEditorWidget>
 
   @override
   Widget build(BuildContext context) {
-    (widget.componentModel as EditorComponentModel)
-        .setEditorProperties(context);
-
     CoCellEditorWidget? cellEditor =
         (widget.componentModel as EditorComponentModel).cellEditor;
 
