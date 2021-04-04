@@ -64,8 +64,9 @@ class _WebFrameState extends State<WebFrame> {
     AppState appState = sl<AppState>();
 
     if (appState.screenManager != null &&
+        appState.screenManager.findScreen(menuItem.componentId) != null &&
         !appState.screenManager
-            .getScreen(menuItem.componentId, templateName: menuItem.text)
+            .findScreen(menuItem.componentId)
             .configuration
             .withServer) {
       SoScreen screen = appState.screenManager
