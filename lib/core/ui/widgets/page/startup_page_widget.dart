@@ -61,6 +61,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (config.onlyLoadOnWelcome && manager.warmWelcome) {
       appState.baseUrl = config.baseUrl;
       appState.appName = config.appName;
+      manager.warmWelcome = false;
     }
 
     if ((config?.debug != null && config.debug)) {
