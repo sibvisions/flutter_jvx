@@ -58,7 +58,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
     this.appState.config = config;
 
-    if (config?.debug != null && config.debug) {
+    if (config.onlyLoadOnWelcome && manager.warmWelcome) {
+      appState.baseUrl = config.baseUrl;
+      appState.appName = config.appName;
+    }
+
+    if ((config?.debug != null && config.debug)) {
       if (config.appName == null || !config.appName.isNotEmpty) {
         await showError(context, 'Error in Config',
             'Please enter a valid application name in conf.json and restart the app.');
