@@ -122,6 +122,11 @@ class SharedPreferencesManager {
     }
   }
 
+  bool get warmWelcome => sharedPreferences.getBool('warmWelcome') ?? true;
+
+  set warmWelcome(bool warmWelcome) =>
+      sharedPreferences.setBool('warmWelcome', warmWelcome);
+
   void setAppData(
       {String appName,
       String baseUrl,

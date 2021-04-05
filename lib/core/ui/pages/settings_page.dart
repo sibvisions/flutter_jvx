@@ -127,7 +127,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? widget.appState.appName
                         : ''),
                     onTap: () {
-                      if (!widget.appState.isOffline)
+                      if (!widget.appState.isOffline &&
+                          widget.appState.appMode != 'prod') {
                         showTextInputDialog(
                             context,
                             AppLocalizations.of(context).text('App name'),
@@ -144,6 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             });
                           }
                         });
+                      }
                     },
                   ),
                   ListTile(
@@ -157,7 +159,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ? widget.appState.baseUrl
                         : ''),
                     onTap: () {
-                      if (!widget.appState.isOffline)
+                      if (!widget.appState.isOffline &&
+                          widget.appState.appMode != 'prod')
                         showTextInputDialog(
                             context,
                             AppLocalizations.of(context).text('Base Url'),
@@ -416,7 +419,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   savePreferences() async {
-    if (_checkString(this.appName) && _checkString(this.baseUrl)) {
+    if (_checkString(this.appName) || _checkString(this.baseUrl)) {
       widget.manager.setAppData(
           appName: this.appName,
           baseUrl: this.baseUrl,

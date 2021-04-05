@@ -58,7 +58,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
     this.appState.config = config;
 
-    if (config?.debug != null && config.debug) {
+    if (config.onlyLoadOnWelcome && manager.warmWelcome) {
+      appState.baseUrl = config.baseUrl;
+      appState.appName = config.appName;
+      manager.warmWelcome = false;
+    }
+
+    if ((config?.debug != null && config.debug)) {
       if (config.appName == null || !config.appName.isNotEmpty) {
         await showError(context, 'Error in Config',
             'Please enter a valid application name in conf.json and restart the app.');
@@ -119,6 +125,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (this.manager.appData['picSize'] != null) {
       appState.picSize = this.manager.appData['picSize'];
     }
+
     if (this.manager.mobileOnly != null) {
       appState.mobileOnly = this.manager.mobileOnly;
     }

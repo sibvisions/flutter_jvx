@@ -14,6 +14,7 @@ class Config {
   String password;
   String appMode = 'full';
   Widget startupWidget;
+  bool onlyLoadOnWelcome = false;
   Map<String, dynamic> appVersion;
   Map<String, dynamic> _properties;
 
@@ -27,7 +28,8 @@ class Config {
       this.password,
       this.appMode,
       this.appVersion,
-      this.startupWidget});
+      this.startupWidget,
+      this.onlyLoadOnWelcome});
 
   Config.fromJson(Map<String, dynamic> json)
       : baseUrl = json['baseUrl'],

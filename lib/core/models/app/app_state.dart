@@ -21,6 +21,8 @@ class AppState {
   /// `preview`: Only one menu item will be shown.
   ///
   /// `full`: Every menu item will be shown.
+  ///
+  /// `prod`: Every menu item will be shown and settings will be read only
   String appMode = 'full';
 
   /// Current language of the application.
