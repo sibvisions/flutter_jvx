@@ -119,6 +119,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (this.manager.appData['picSize'] != null) {
       appState.picSize = this.manager.appData['picSize'];
     }
+
     if (this.manager.mobileOnly != null) {
       appState.mobileOnly = this.manager.mobileOnly;
     }

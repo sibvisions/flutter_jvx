@@ -66,9 +66,10 @@ class MobileApp extends StatelessWidget {
 
           if (params.length > 0) {
             for (final param in params) {
-              if (param.contains("appName=")) {
+              if (param.contains("appName=") && appState.appMode != 'prod') {
                 appState.appName = param.split("=")[1];
-              } else if (param.contains("baseUrl=")) {
+              } else if (param.contains("baseUrl=") &&
+                  appState.appMode != 'prod') {
                 var baseUrl = param.split("=")[1];
                 appState.baseUrl = Uri.decodeFull(baseUrl);
               } else if (param.contains("language=")) {
