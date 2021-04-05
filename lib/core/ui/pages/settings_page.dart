@@ -419,7 +419,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   savePreferences() async {
-    if (_checkString(this.appName) && _checkString(this.baseUrl)) {
+    if (_checkString(this.appName) || _checkString(this.baseUrl)) {
       widget.manager.setAppData(
           appName: this.appName,
           baseUrl: this.baseUrl,
