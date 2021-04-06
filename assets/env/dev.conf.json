@@ -1,5 +1,5 @@
 {
-    "baseUrl": "http://192.168.0.60:8080/JVx.mobile/services/mobile",
-    "appName": "demo",
+    "baseUrl": "http://192.168.0.80/services/mobile",
+    "appName": "Einkaufsliste",
     "appMode": "full"
 }

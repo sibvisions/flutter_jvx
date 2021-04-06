@@ -51,6 +51,7 @@ class ApplicationWidget extends StatelessWidget {
     if (manager.initialStart &&
         appState.appConfig != null &&
         appState.appConfig!.initialConfig != null) {
+      manager.initialStart = false;
       return appState.appConfig!.initialConfig;
     }
 
@@ -70,9 +71,9 @@ class ApplicationWidget extends StatelessWidget {
         manager.appName != null ||
         manager.appMode != null) {
       return ServerConfig(
-        baseUrl: manager.baseUrl ?? '',
-        appName: manager.appName ?? '',
-      );
+          baseUrl: manager.baseUrl ?? '',
+          appName: manager.appName ?? '',
+          appMode: manager.appMode ?? 'full');
     } else {
       return null;
     }
@@ -141,6 +142,12 @@ class ApplicationWidget extends StatelessWidget {
             return RestartWidget(builder: (context) {
               appState.devConfig = devConfig;
               appState.serverConfig = _getServerConfig(appState, manager);
+
+              if (appState.serverConfig != null) {
+                manager.baseUrl = appState.serverConfig!.baseUrl;
+                manager.appName = appState.serverConfig!.appName;
+                manager.appMode = appState.serverConfig!.appMode;
+              }
 
               if (appState.serverConfig == null ||
                   (appState.serverConfig!.baseUrl.isEmpty ||

@@ -53,11 +53,14 @@ class BrowserApp extends StatelessWidget {
                 appName: param.split('=')[1]);
           }
 
-          if (param.contains("appName=") && !appState.serverConfig!.isProd) {
+          if (param.contains("appName=") &&
+              (!appState.serverConfig!.isProd ||
+                  !appState.serverConfig!.isPreview)) {
             appState.serverConfig!.appName = param.split("=")[1];
             manager.appName = appState.serverConfig!.appName;
           } else if (param.contains("baseUrl=") &&
-              !appState.serverConfig!.isProd) {
+              (!appState.serverConfig!.isProd ||
+                  !appState.serverConfig!.isPreview)) {
             var baseUrl = param.split("=")[1];
             appState.serverConfig!.baseUrl = Uri.decodeFull(baseUrl);
 

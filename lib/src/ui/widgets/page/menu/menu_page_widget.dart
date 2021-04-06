@@ -44,7 +44,13 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   @override
   void initState() {
-    _menuItems = widget.menuItems;
+    if (!widget.appState.serverConfig!.isPreview) {
+      _menuItems = widget.menuItems;
+    } else if (widget.menuItems.isNotEmpty) {
+      _menuItems = <MenuItem>[widget.menuItems.first];
+    } else {
+      _menuItems = <MenuItem>[];
+    }
 
     SoMenuManager menuManager = SoMenuManager(_menuItems);
 

@@ -254,7 +254,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       subtitle: Text(appName ?? ''),
                       onTap: () async {
                         if (widget.appState.serverConfig != null &&
-                            widget.appState.serverConfig!.isProd) {
+                            (widget.appState.serverConfig!.isProd ||
+                                widget.appState.serverConfig!.isPreview)) {
                           return;
                         }
 
@@ -284,7 +285,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       subtitle: Text(baseUrl ?? ''),
                       onTap: () async {
                         if (widget.appState.serverConfig != null &&
-                            widget.appState.serverConfig!.isProd) {
+                            (widget.appState.serverConfig!.isProd ||
+                                widget.appState.serverConfig!.isPreview)) {
                           return;
                         }
 
