@@ -86,7 +86,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           appVersion: deviceInfo.appVersion,
           deviceType: deviceInfo.deviceType,
           deviceTypeModel: deviceInfo.deviceTypeModel,
-          authKey: widget.manager.authKey);
+          authKey: widget.manager.authKey,
+          username: widget.appState.serverConfig!.username,
+          password: widget.appState.serverConfig!.password);
+
+      widget.appState.serverConfig!.username = null;
+      widget.appState.serverConfig!.password = null;
 
       sl<ApiCubit>().startup(request);
     }

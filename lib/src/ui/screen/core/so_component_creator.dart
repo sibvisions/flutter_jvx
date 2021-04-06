@@ -245,8 +245,6 @@ class SoComponentCreator implements IComponentCreator {
         EditorComponentModel.withoutChangedComponent(
             value, columnName, indexInTable, null, editable);
 
-    // componentModel.indexInTable = indexInTable;
-
     CoEditorWidget editor = CoEditorWidget(
       key: ValueKey(uuid.v4()),
       cellEditor: cellEditor,

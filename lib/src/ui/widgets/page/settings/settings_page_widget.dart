@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutterclient/src/ui/widgets/page/settings/picture_size_picker.dart';
+import 'picture_size_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -253,6 +253,11 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                           Text(AppLocalizations.of(context)!.text('App name')),
                       subtitle: Text(appName ?? ''),
                       onTap: () async {
+                        if (widget.appState.serverConfig != null &&
+                            widget.appState.serverConfig!.isProd) {
+                          return;
+                        }
+
                         String? newAppName = await showDialog(
                             context: context,
                             builder: (context) {
@@ -278,6 +283,11 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                           Text(AppLocalizations.of(context)!.text('Base Url')),
                       subtitle: Text(baseUrl ?? ''),
                       onTap: () async {
+                        if (widget.appState.serverConfig != null &&
+                            widget.appState.serverConfig!.isProd) {
+                          return;
+                        }
+
                         String? newBaseUrl = await showDialog<String>(
                             context: context,
                             builder: (context) {

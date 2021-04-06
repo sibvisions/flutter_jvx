@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import '../../models/api/errors/failure.dart';
 import 'package:yaml/yaml.dart';
 
+import 'server_config.dart';
+
 class AppConfig {
   final bool package;
   final bool rememberMeChecked;
@@ -12,6 +14,7 @@ class AppConfig {
   final bool handleSessionTimeout;
   final bool loginColorsInverted;
   final int requestTimeout;
+  final ServerConfig? initialConfig;
 
   AppConfig(
       {required this.package,
@@ -19,7 +22,8 @@ class AppConfig {
       required this.hideLoginCheckbox,
       required this.handleSessionTimeout,
       required this.loginColorsInverted,
-      required this.requestTimeout});
+      required this.requestTimeout,
+      this.initialConfig});
 
   AppConfig.fromJson({required Map<String, dynamic> map})
       : package = map['package'],
@@ -27,7 +31,8 @@ class AppConfig {
         hideLoginCheckbox = map['hideLoginCheckbox'],
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
-        requestTimeout = map['requestTimeout'];
+        requestTimeout = map['requestTimeout'],
+        initialConfig = ServerConfig.fromJson(map: map['initialConfig']);
 
   AppConfig.fromYaml({required YamlMap map})
       : package = map['package'],
@@ -35,7 +40,8 @@ class AppConfig {
         hideLoginCheckbox = map['hideLoginCheckbox'],
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
-        requestTimeout = map['requestTimeout'];
+        requestTimeout = map['requestTimeout'],
+        initialConfig = ServerConfig.fromYaml(map: map['initialConfig']);
 
   static Future<Either<Failure, AppConfig>> loadConfig(
       {required String path, bool package = false}) async {

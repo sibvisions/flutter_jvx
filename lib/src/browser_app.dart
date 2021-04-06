@@ -53,10 +53,11 @@ class BrowserApp extends StatelessWidget {
                 appName: param.split('=')[1]);
           }
 
-          if (param.contains("appName=")) {
+          if (param.contains("appName=") && !appState.serverConfig!.isProd) {
             appState.serverConfig!.appName = param.split("=")[1];
             manager.appName = appState.serverConfig!.appName;
-          } else if (param.contains("baseUrl=")) {
+          } else if (param.contains("baseUrl=") &&
+              !appState.serverConfig!.isProd) {
             var baseUrl = param.split("=")[1];
             appState.serverConfig!.baseUrl = Uri.decodeFull(baseUrl);
 
@@ -72,9 +73,9 @@ class BrowserApp extends StatelessWidget {
 
             manager.language = appState.language!.language;
           } else if (param.contains("username=")) {
-            // appState.username = param.split("=")[1];
+            appState.serverConfig!.username = param.split("=")[1];
           } else if (param.contains("password=")) {
-            // appState.password = param.split("=")[1];
+            appState.serverConfig!.password = param.split("=")[1];
           } else if (param.contains("mobileOnly=")) {
             appState.mobileOnly = param.split("=")[1] == 'true';
             manager.mobileOnly = appState.mobileOnly;

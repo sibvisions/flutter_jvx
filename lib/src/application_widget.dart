@@ -46,7 +46,16 @@ class ApplicationWidget extends StatelessWidget {
       : assert(appConfig != null || appConfigPath != null),
         super(key: key);
 
-  ServerConfig? _getServerConfig(SharedPreferencesManager manager) {
+  ServerConfig? _getServerConfig(
+      AppState appState, SharedPreferencesManager manager) {
+    if (manager.initialStart &&
+        appState.appConfig != null &&
+        appState.appConfig!.initialConfig != null) {
+      return appState.appConfig!.initialConfig;
+    }
+
+    manager.initialStart = false;
+
     if (devConfig != null &&
         manager.loadConfig &&
         devConfig!.baseUrl.isNotEmpty &&
@@ -131,7 +140,7 @@ class ApplicationWidget extends StatelessWidget {
 
             return RestartWidget(builder: (context) {
               appState.devConfig = devConfig;
-              appState.serverConfig = _getServerConfig(manager);
+              appState.serverConfig = _getServerConfig(appState, manager);
 
               if (appState.serverConfig == null ||
                   (appState.serverConfig!.baseUrl.isEmpty ||

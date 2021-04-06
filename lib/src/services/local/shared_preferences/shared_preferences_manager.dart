@@ -115,6 +115,11 @@ class SharedPreferencesManager {
 
   String? get offlinePassword => sharedPreferences.getString('offlinePassword');
 
+  bool get initialStart => sharedPreferences.getBool('initialStart') ?? true;
+
+  set initialStart(bool initialStart) =>
+      sharedPreferences.setBool('initialStart', initialStart);
+
   set isOffline(bool isOffline) =>
       sharedPreferences.setBool('isOffline', isOffline);
 
