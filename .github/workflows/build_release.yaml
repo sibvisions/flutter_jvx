@@ -2,7 +2,7 @@ name: Build Release
 
 on:
   push:
-    branches: [master]
+    branches: [master, feature/2608]
   pull_request:
     branches: [master]
 
@@ -55,7 +55,21 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build apk --release --dart-define=PROD=true
+      - name: get version
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with:
+          path: "assets/version/app_version.json"
+          prop_path: "version"
+
+      - name: split version
+        id: split
+        uses: jungwinter/split@v1
+        with:
+          msg: ${{ steps.version.outputs.prop }}
+          seperator: "+"
+
+      - run: flutter build apk --release --dart-define=PROD=true --build-name=${{ steps.split.outputs._0 }} --build-number=${{ steps.split.outputs._1 }}
 
       - uses: actions/upload-artifact@v1
         with:

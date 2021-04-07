@@ -1,9 +1,12 @@
 name: flutterclient
-description: A new Flutter project.
+description: A generic Flutter app for JVx applications.
+homepage: https://www.sibvisions.com
+repository: https://github.com/sibvisions/flutterclient.git
+issue_tracker: https://github.com/sibvisions/flutterclient/issues
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.0.1+8
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
