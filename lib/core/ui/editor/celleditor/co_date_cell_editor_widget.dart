@@ -151,7 +151,7 @@ class CoDateCellEditorWidgetState
                           : TextStyle(
                               fontSize: 16,
                               color: Colors.grey[700],
-                              fontWeight: FontWeight.normal),
+                            ),
                     ),
                   ),
                 ),
@@ -238,12 +238,12 @@ class CoDateCellEditorWidgetState
                         ? TextStyle(
                             fontSize: 16,
                             color: widget.cellEditorModel.foreground == null
-                                ? Colors.grey[700]
+                                ? Colors.black
                                 : widget.cellEditorModel.foreground)
                         : TextStyle(
                             fontSize: 16,
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.normal),
+                            color: Colors.black,
+                          ),
                   ),
                 ),
               ),
