@@ -58,6 +58,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
     this.appState.config = config;
 
+    if (config != null &&
+        config.baseUrl != null &&
+        !config.baseUrl.endsWith('/services/mobile')) {
+      config.baseUrl += '/services/mobile';
+    }
+
     if (config.onlyLoadOnWelcome && manager.warmWelcome) {
       appState.baseUrl = config.baseUrl;
       appState.appName = config.appName;
