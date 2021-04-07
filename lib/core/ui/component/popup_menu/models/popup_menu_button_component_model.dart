@@ -30,7 +30,7 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
     double width =
         TextUtils.getTextWidth(TextUtils.averageCharactersTextField, fontStyle)
             .toDouble();
-    return Size(width, 50);
+    return Size(width, 60);
   }
 
   @override

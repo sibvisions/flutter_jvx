@@ -143,9 +143,7 @@ class _LoginCardState extends State<LoginCard>
                               TextUtils.unfocusCurrentTextfield(context);
                               _login(context);
                             },
-                            text: AppLocalizations.of(context)
-                                .text('Login')
-                                .toUpperCase()))),
+                            text: AppLocalizations.of(context).text('Login')))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
