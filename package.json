@@ -1,55 +1,25 @@
 {
   "name": "flutterclient",
   "version": "1.0.0",
-  "description": "The Flutter Client is a mobile app for the [JVx framework](https://doc.sibvisions.com/jvx). It's super generic and renders work-screens dynamically. The app supports all layout features of JVx and comes with a default menu and login mechanism. It's designed as standalone app and also as library. This means that you can easily extend the library and create your own app.",
+  "description": "Flutter Client\r The Flutter Client is a mobile app for the JVx framework. It's super generic and renders work-screens dynamically. The app supports all layout features of JVx and comes with a default menu and login mechanism. It's designed as standalone app and also as library. This means that you can easily extend the library and create your own app.",
   "main": "index.js",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
+  "dependencies": {},
+  "devDependencies": {},
   "scripts": {
-    "increasebuildnumber": "run-s increaseBuildNumberPubspecYaml && run-s setBuildDate && run-s increaseBuildNumberAppVersionJson",
-    "increasebuildnumberwin": "run-s increaseBuildNumberPubspecYamlWin & run-s setBuildDateWin & run-s increaseBuildNumberAppVersionJsonWin",
-    "increaseBuildNumberPubspecYaml": "perl -i -pe 's/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e' pubspec.yaml",
-    "increaseBuildNumberPubspecYamlWin": "perl -i -pe \"s/^(version:\\s+\\d+\\.\\d+\\.\\d+\\+)(\\d+)$/$1.($2+1)/e\" pubspec.yaml",
-    "increaseBuildNumberAppVersionJson": "node update_app_version.js version",
-    "increaseBuildNumberAppVersionJsonWin": "node update_app_version.js version",
-    "updateCommitAppVersionJson": "node update_app_version.js commit",
-    "setBuildDate": "node update_app_version.js build_date",
-    "setBuildDateWin": "node update_app_version.js build_date",
-    "copyBuildWeb": "del-cli deploy/web && st-cp build/web deploy/",
-    "copyBuildAndroid": "del-cli deploy/android && st-cp build/app/outputs/apk/release/ deploy/android/",
-    "copyBuildIos": "del-cli deploy/ios && st-cp ios deploy/ios",
-    "xcodeBuildStep1": "xcodebuild -workspace ios/runner.xcworkspace -scheme Runner -destination generic/platform=iOS build",
-    "xcodeBuildStep2": "xcodebuild -workspace ios/runner.xcworkspace -scheme Runner -sdk iphoneos -configuration AppStoreDistribution archive -archivePath $PWD/deploy/ios/Runner.xcarchive",
-    "xcodeBuildStep3": "xcodebuild -exportArchive -archivePath $PWD/deploy/ios/Runner.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath $PWD/deploy/ios",
-    "prebuildios": "del-cli deploy/ios",
-    "buildios": "flutter clean && rm ios/Podfile && flutter build ios && run-s xcodeBuildStep1 && run-s xcodeBuildStep2 && run-s xcodeBuildStep3",
-    "postbuildios": "el-cli deploy/ios/Runner.xcarchive",
-    "uploadios": "xcrun altool --upload-app -f deploy/ios/Runner.ipa -u ",
-    "buildandroid": "flutter clean && run-s setBuildDate && run-s updateCommitAppVersionJson && run-s increasebuildnumber && flutter build apk --release",
-    "postbuildandroid": "run-s copyBuildAndroid",
-    "buildweb": "flutter clean && flutter build web",
-    "postbuildweb": "run-s copyBuildWeb",
-    "updateVersion": "run-s setBuildDate && run-s updateCommitAppVersionJson && run-s increaseBuildNumberAppVersionJson"
+    "update-version": "node scripts/update_app_version.js commit && node scripts/update_app_version.js version && node scripts/update_app_version.js build_date"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sibvisions/flutterclient.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sibvisions/flutterclient/issues"
   },
-  "homepage": "https://github.com/sibvisions/flutterclient#readme",
-  "devDependencies": {
-    "npm-run-all": "^4.1.5"
-  },
-  "dependencies": {
-    "del-cli": "^3.0.1",
-    "replace-in-files-cli": "^0.3.1",
-    "st-cp": "^2.0.0-beta.2"
-  }
+  "homepage": "https://github.com/sibvisions/flutterclient#readme"
 }

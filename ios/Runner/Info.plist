@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>JVx Mobile</string>
+	<string>flutterclient</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -41,17 +41,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>Can I use the camera please?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Can I use the photo library please?</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Can I use the mic please?</string>
+	<string>Need permission to pick photos from gallery</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Need permision to use camera</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

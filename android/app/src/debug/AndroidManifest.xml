@@ -1,11 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jvx_mobile_v3">
-    <!-- Flutter needs it to communicate with the running application
-         to allow setting breakpoints, to provide hot reload, etc.
-    -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA" />
+    package="com.sibvisions.flutterclient">
 
-    <application android:usesCleartextTraffic="true">
-    </application>
+    <application android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
