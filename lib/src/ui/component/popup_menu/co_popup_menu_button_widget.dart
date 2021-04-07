@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/util/app/text_utils.dart';
-import 'package:flutterclient/src/util/color/color_extension.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../util/app/text_utils.dart';
+import '../../../util/color/color_extension.dart';
 import '../component_widget.dart';
 import 'models/popup_menu_button_component_model.dart';
 import 'models/popup_menu_component_model.dart';
@@ -44,7 +44,7 @@ class CoPopupMenuButtonWidgetState
                 as PopupMenuComponentModel)
             .menuItems;
       },
-      padding: EdgeInsets.only(bottom: 8, left: 16),
+      padding: EdgeInsets.only(bottom: 8, right: 16),
       icon: FaIcon(
         FontAwesomeIcons.sortDown,
         color: Theme.of(context).primaryColor.textColor(),
@@ -128,16 +128,16 @@ class CoPopupMenuButtonWidgetState
                     overlayColor: MaterialStateProperty.all(
                         widget.componentModel.background)),
                 child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    // mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Flexible(
                           // fit: FlexFit.loose,
-                          flex: 5,
+                          flex: 4,
                           child: Center(child: child)),
                       Flexible(
                           // fit: FlexFit.loose,
-                          flex: 5,
+                          flex: 1,
                           child: _getPopupMenu(colorScheme)),
                     ]),
               ))),

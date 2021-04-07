@@ -2,14 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutterclient/injection_container.dart';
-import 'package:flutterclient/src/models/api/requests/login_request.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/util/color/color_extension.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../../injection_container.dart';
+import '../../../../models/api/requests/login_request.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/routes.dart';
+import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../../util/app/text_utils.dart';
 import '../../../../util/translation/app_localizations.dart';
 import 'gradient_button.dart';
@@ -109,7 +108,8 @@ class _LoginCardState extends State<LoginCard>
                           });
                         },
                         style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all(Colors.black),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.black),
                           padding: MaterialStateProperty.all(EdgeInsets.zero),
                           overlayColor:
                               MaterialStateProperty.all(Colors.transparent),
@@ -131,9 +131,7 @@ class _LoginCardState extends State<LoginCard>
                             TextUtils.unfocusCurrentTextfield(context);
                             _login(context);
                           },
-                          text: AppLocalizations.of(context)!
-                              .text('Login')
-                              .toUpperCase()))),
+                          text: AppLocalizations.of(context)!.text('Login')))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[

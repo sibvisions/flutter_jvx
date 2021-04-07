@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/data/delete_record_request.dart';
 import 'package:flutterclient/src/models/repository/api_repository.dart';
 
 import '../../../../injection_container.dart';
@@ -215,7 +216,7 @@ class SoComponentData {
 
   void deleteRecord(BuildContext context, int index, [Filter? filter]) {
     if (index < data!.records.length) {
-      SelectRecordRequest request = SelectRecordRequest(
+      DeleteRecordRequest request = DeleteRecordRequest(
           dataProvider: dataProvider,
           filter: filter != null
               ? filter

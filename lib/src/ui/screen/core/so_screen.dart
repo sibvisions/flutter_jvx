@@ -480,7 +480,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
         return Scaffold(
           key: scaffoldKey,
-          appBar: orientation == Orientation.portrait
+          appBar: orientation == Orientation.portrait || !kIsWeb
               ? AppBar(
                   actionsIconTheme: IconThemeData(
                       color: Theme.of(context).primaryColor.textColor()),
@@ -509,7 +509,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                 )
               : null,
           endDrawer: widget.configuration.drawer,
-          body: orientation == Orientation.landscape
+          body: orientation == Orientation.landscape && kIsWeb
               ? NavigationBarWidget(
                   appState: appState,
                   menuItems: menuItems,

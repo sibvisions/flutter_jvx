@@ -76,6 +76,10 @@ class BaseUrlDialog extends StatelessWidget {
                     ),
                     TextButton(
                         onPressed: () {
+                          if (!toSave.endsWith('/services/mobile')) {
+                            toSave += '/services/mobile';
+                          }
+
                           Navigator.of(context).pop(toSave);
                         },
                         child: Text(
