@@ -125,7 +125,7 @@ class CoPopupMenuButtonWidgetState
                 children: <Widget>[
                   Flexible(
                       // fit: FlexFit.loose,
-                      flex: 5,
+                      flex: 4,
                       child: Center(child: child)),
                   Flexible(
                       // fit: FlexFit.loose,
