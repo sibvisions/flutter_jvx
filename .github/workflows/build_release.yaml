@@ -14,6 +14,10 @@ jobs:
       matrix:
         node-version: [12.x]
 
+    outputs:
+      buildName: ${{ steps.setBuildName.outputs.build_name }}
+      buildNumber: ${{ steps.setBuildNumber.outputs.build_number }}
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -30,6 +34,29 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Updated version" -a
+
+      - name: get version
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with:
+          path: "assets/version/app_version.json"
+          prop_path: "version"
+
+      - name: split version
+        id: split
+        uses: jungwinter/split@v1
+        with:
+          msg: ${{ steps.version.outputs.prop }}
+          seperator: "+"
+
+      - name: set build name
+        id: setBuildName
+        run: echo '::set-output name=build_name::${{steps.split.outputs._0}}'
+
+      - name: set build number
+        id: setBuildNumber
+        run: echo '::set-output name=build_number::${{steps.split.outputs._1}}'
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -55,21 +82,7 @@ jobs:
 
       - run: flutter pub get
 
-      - name: get version
-        id: version
-        uses: notiz-dev/github-action-json-property@release
-        with:
-          path: "assets/version/app_version.json"
-          prop_path: "version"
-
-      - name: split version
-        id: split
-        uses: jungwinter/split@v1
-        with:
-          msg: ${{ steps.version.outputs.prop }}
-          seperator: "+"
-
-      - run: flutter build apk --release --dart-define=PROD=true --build-name=${{ steps.split.outputs._0 }} --build-number=${{ steps.split.outputs._1 }}
+      - run: flutter build apk --release --dart-define=PROD=true --build-name=${{ needs.update-version.outputs.buildName }} --build-number=${{ needs.update-version.outputs.buildNumber }}
 
       - uses: actions/upload-artifact@v1
         with:
