@@ -45,7 +45,7 @@ class CoPopupMenuButtonWidgetState
                 as PopupMenuComponentModel)
             ?.menuItems;
       },
-      padding: EdgeInsets.only(bottom: 8, left: 16),
+      padding: EdgeInsets.only(bottom: 8, right: 16),
       icon: FaIcon(
         FontAwesomeIcons.sortDown,
         color: Theme.of(context).primaryTextTheme.bodyText1.color,
@@ -120,7 +120,7 @@ class CoPopupMenuButtonWidgetState
             color: Theme.of(context).primaryColor,
             shape: widget.componentModel.appState.applicationStyle?.buttonShape,
             child: Row(
-                mainAxisSize: MainAxisSize.min,
+                // mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Flexible(
@@ -129,7 +129,7 @@ class CoPopupMenuButtonWidgetState
                       child: Center(child: child)),
                   Flexible(
                       // fit: FlexFit.loose,
-                      flex: 5,
+                      flex: 1,
                       child: _getPopupMenu(colorScheme)),
                 ]),
             splashColor: widget.componentModel.background,
