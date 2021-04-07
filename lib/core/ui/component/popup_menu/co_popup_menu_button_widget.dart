@@ -110,33 +110,30 @@ class CoPopupMenuButtonWidgetState
     }
 
     return Container(
+      height: 60,
       margin: EdgeInsets.all(4),
       child: ButtonTheme(
           minWidth: 44,
-          child: SizedBox(
-              height: 50,
-              child: RaisedButton(
-                onPressed: () => widget.componentModel.enabled
-                    ? buttonPressed(context)
-                    : null,
-                color: Theme.of(context).primaryColor,
-                shape: widget
-                    .componentModel.appState.applicationStyle?.buttonShape,
-                child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Flexible(
-                          // fit: FlexFit.loose,
-                          flex: 5,
-                          child: Center(child: child)),
-                      Flexible(
-                          // fit: FlexFit.loose,
-                          flex: 5,
-                          child: _getPopupMenu(colorScheme)),
-                    ]),
-                splashColor: widget.componentModel.background,
-              ))),
+          child: RaisedButton(
+            onPressed: () =>
+                widget.componentModel.enabled ? buttonPressed(context) : null,
+            color: Theme.of(context).primaryColor,
+            shape: widget.componentModel.appState.applicationStyle?.buttonShape,
+            child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Flexible(
+                      // fit: FlexFit.loose,
+                      flex: 5,
+                      child: Center(child: child)),
+                  Flexible(
+                      // fit: FlexFit.loose,
+                      flex: 5,
+                      child: _getPopupMenu(colorScheme)),
+                ]),
+            splashColor: widget.componentModel.background,
+          )),
     );
   }
 }
