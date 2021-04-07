@@ -21,10 +21,9 @@ class CoTextCellEditorWidgetState
   bool shouldShowSuffixIcon = false;
 
   void onTextFieldValueChanged(dynamic newValue) {
+    value = newValue;
+    widget.cellEditorModel.valueChanged = true;
     if (value != newValue) {
-      value = newValue;
-      widget.cellEditorModel.valueChanged = true;
-
       if (newValue != null && newValue.isNotEmpty) {
         setState(() {
           shouldShowSuffixIcon = true;
