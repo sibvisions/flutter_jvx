@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterclient/src/models/state/routes/export_routes.dart';
+import 'package:flutterclient/src/ui/widgets/page/settings/qr_code_view_widget.dart';
 import 'picture_size_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../../models/state/app_state.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
@@ -172,10 +175,10 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
       if (_checkQRString(result[1]))
         properties['URL'] = result[1]?.substring(result[1]!.indexOf(': ') + 2);
 
-      if (_checkQRString(result[2]))
+      if (result.length >= 3 && _checkQRString(result[2]))
         properties['USER'] = result[2]?.substring(result[2]!.indexOf(': ') + 2);
 
-      if (_checkQRString(result[3]))
+      if (result.length >= 4 && _checkQRString(result[3]))
         properties['PWD'] = result[3]?.substring(result[3]!.indexOf(': ') + 2);
     }
 
@@ -187,24 +190,27 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   }
 
   Future<void> scanBarcode() async {
-    final result = '';
+    final Barcode? result = await Navigator.of(context)
+        .push(DefaultPageRoute(builder: (_) => QrCodeViewWidget()));
 
-    Map<String, dynamic> _properties = _getPropertiesFromQR(result);
+    if (result != null) {
+      Map<String, dynamic> _properties = _getPropertiesFromQR(result.code);
 
-    setState(() {
-      if (_properties['APPNAME'] != null) {
-        appName = _properties['APPNAME'];
-      }
+      setState(() {
+        if (_properties['APPNAME'] != null) {
+          appName = _properties['APPNAME'];
+        }
 
-      if (_properties['URL'] != null) {
-        baseUrl = _properties['URL'];
-      }
+        if (_properties['URL'] != null) {
+          baseUrl = _properties['URL'];
+        }
 
-      if (_properties['USER'] != null && _properties['PWD'] != null) {
-        username = _properties['USER'];
-        password = _properties['PWD'];
-      }
-    });
+        if (_properties['USER'] != null && _properties['PWD'] != null) {
+          username = _properties['USER'];
+          password = _properties['PWD'];
+        }
+      });
+    }
   }
 
   @override
@@ -231,8 +237,10 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   color: Theme.of(context).primaryColor.textColor(),
                 ),
                 onPressed: () async {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('QR Code scanning will be enabled soon!')));
+                  await scanBarcode();
+
+                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //     content: Text('QR Code scanning will be enabled soon!')));
                 },
               )
             : null,
@@ -268,6 +276,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
                     widget.appState.serverConfig!.username = username;
                     widget.appState.serverConfig!.password = password;
+
+                    widget.manager.loadConfig = false;
 
                     RestartWidget.restart(context);
                   } else {

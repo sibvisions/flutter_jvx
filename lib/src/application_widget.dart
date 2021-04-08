@@ -71,11 +71,15 @@ class ApplicationWidget extends StatelessWidget {
     } else if (manager.baseUrl != null ||
         manager.appName != null ||
         manager.appMode != null) {
+      manager.loadConfig = true;
+
       return ServerConfig(
           baseUrl: manager.baseUrl ?? '',
           appName: manager.appName ?? '',
           appMode: manager.appMode ?? 'full');
     } else {
+      manager.loadConfig = true;
+
       return null;
     }
   }
