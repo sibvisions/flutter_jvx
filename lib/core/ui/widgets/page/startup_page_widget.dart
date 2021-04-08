@@ -64,7 +64,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       config.baseUrl += '/services/mobile';
     }
 
-    if (config.onlyLoadOnWelcome && manager.warmWelcome) {
+    if (config.onlyLoadOnWelcome != null &&
+         config.onlyLoadOnWelcome &&
+        manager.warmWelcome) {
       appState.baseUrl = config.baseUrl;
       appState.appName = config.appName;
       manager.warmWelcome = false;
