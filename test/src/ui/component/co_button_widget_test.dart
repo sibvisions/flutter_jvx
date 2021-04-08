@@ -6,12 +6,14 @@ import 'package:flutterclient/injection_container.dart' as di;
 import 'package:flutterclient/src/ui/component/co_button_widget.dart';
 import 'package:flutterclient/src/ui/component/model/button_component_model.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   setUpAll(() async {
     WidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
     await di.init();
   });
 
