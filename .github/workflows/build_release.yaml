@@ -95,22 +95,22 @@ jobs:
       - run: flutter test test/
 
       - run: flutter config --enable-web
-        if: matrix.platform == "web"
+        if: matrix.platform == 'web'
 
       - run: flutter build apk --release --dart-define=PROD=true --build-name=${{ needs.update-version.outputs.buildName }} --build-number=${{ needs.update-version.outputs.buildNumber }}
-        if: matrix.platform == "android"
+        if: matrix.platform == 'android'
 
       - run: flutter build web --release --dart-define=PROD=true --build-name=${{ needs.update-version.outputs.buildName }} --build-number=${{ needs.update-version.outputs.buildNumber }}
-        if: matrix.platform == "web"
+        if: matrix.platform == 'web'
 
       - uses: actions/upload-artifact@v1
-        if: matrix.platform == "android"
+        if: matrix.platform == 'android'
         with:
           name: release-apk
           path: build/app/outputs/apk/release/app-release.apk
 
       - uses: actions/upload-artifact@v1
-        if: matrix.platform == "web"
+        if: matrix.platform == 'web'
         with:
           name: release-web
           path: build/web/
