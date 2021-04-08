@@ -63,10 +63,11 @@ class ApplicationWidget extends StatelessWidget {
         devConfig!.appName.isNotEmpty &&
         devConfig!.appMode.isNotEmpty) {
       return ServerConfig(
-        baseUrl: devConfig!.baseUrl,
-        appName: devConfig!.appName,
-        appMode: devConfig!.appMode,
-      );
+          baseUrl: devConfig!.baseUrl,
+          appName: devConfig!.appName,
+          appMode: devConfig!.appMode,
+          username: devConfig!.username,
+          password: devConfig!.password);
     } else if (manager.baseUrl != null ||
         manager.appName != null ||
         manager.appMode != null) {
