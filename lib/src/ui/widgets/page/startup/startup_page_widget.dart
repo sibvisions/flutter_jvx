@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../injection_container.dart';
@@ -243,7 +244,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
             arguments: MenuPageArguments(
                 menuItems:
                     response.getObjectByType<MenuResponseObject>()!.entries,
-                listMenuItemsInDrawer: true));
+                listMenuItemsInDrawer: true,
+                response: response.hasObject<ScreenGenericResponseObject>()
+                    ? response
+                    : null));
       } else {
         Navigator.of(context).pushReplacementNamed(Routes.login,
             arguments: LoginPageArguments(

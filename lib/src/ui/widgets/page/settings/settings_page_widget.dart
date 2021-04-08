@@ -40,7 +40,7 @@ class SettingsPageWidget extends StatefulWidget {
 class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  String? baseUrl, appName, language;
+  String? baseUrl, appName, language, username, password;
 
   int? picSize = 320;
 
@@ -159,6 +159,54 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     }
   }
 
+  Map<String, dynamic> _getPropertiesFromQR(String data) {
+    Map<String, dynamic> properties = <String, dynamic>{};
+
+    if (data.isNotEmpty && data != '-1') {
+      List<String?> result = data.split('\n');
+
+      if (_checkQRString(result[0]))
+        properties['APPNAME'] =
+            result[0]?.substring(result[0]!.indexOf(': ') + 2);
+
+      if (_checkQRString(result[1]))
+        properties['URL'] = result[1]?.substring(result[1]!.indexOf(': ') + 2);
+
+      if (_checkQRString(result[2]))
+        properties['USER'] = result[2]?.substring(result[2]!.indexOf(': ') + 2);
+
+      if (_checkQRString(result[3]))
+        properties['PWD'] = result[3]?.substring(result[3]!.indexOf(': ') + 2);
+    }
+
+    return properties;
+  }
+
+  bool _checkQRString(String? qrString) {
+    return (qrString != null && qrString.isNotEmpty && qrString.contains(': '));
+  }
+
+  Future<void> scanBarcode() async {
+    final result = '';
+
+    Map<String, dynamic> _properties = _getPropertiesFromQR(result);
+
+    setState(() {
+      if (_properties['APPNAME'] != null) {
+        appName = _properties['APPNAME'];
+      }
+
+      if (_properties['URL'] != null) {
+        baseUrl = _properties['URL'];
+      }
+
+      if (_properties['USER'] != null && _properties['PWD'] != null) {
+        username = _properties['USER'];
+        password = _properties['PWD'];
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -182,7 +230,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                   FontAwesomeIcons.qrcode,
                   color: Theme.of(context).primaryColor.textColor(),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('QR Code scanning will be enabled soon!')));
                 },
@@ -217,6 +265,9 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       widget.manager.language = language;
                     }
                     widget.manager.picSize = picSize;
+
+                    widget.appState.serverConfig!.username = username;
+                    widget.appState.serverConfig!.password = password;
 
                     RestartWidget.restart(context);
                   } else {

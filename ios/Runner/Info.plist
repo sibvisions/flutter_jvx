@@ -45,6 +45,8 @@
 	<string>Need permission to pick photos from gallery</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Need permision to use camera</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

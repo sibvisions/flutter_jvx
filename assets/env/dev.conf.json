@@ -1,8 +1,7 @@
 {
-    "baseUrl": "http://192.168.0.241:8888/JVx.mobile/services/mobile",
-    "appName": "demo",
-    "username": "features",
-    "password": "features",
-    "debug": true,
+    "baseUrl": "http://192.168.0.80/services/mobile",
+    "appName": "Einkaufsliste",
+    "username": "admin",
+    "password": "admin",
     "appMode": "full"
 }
