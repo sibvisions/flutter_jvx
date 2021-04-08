@@ -81,25 +81,44 @@ class CoPopupMenuButtonWidgetState
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
     Widget child;
     Widget textWidget = new Text(
         widget.componentModel.text != null ? widget.componentModel.text : "",
         style: TextStyle(
             fontSize: widget.componentModel.fontStyle.fontSize,
-            color: Theme.of(context).primaryTextTheme.bodyText1.color));
-
+            color: !widget.componentModel.enabled
+                ? Colors.grey.shade500
+                : widget.componentModel.foreground != null
+                    ? widget.componentModel.foreground
+                    : Theme.of(context).primaryTextTheme.bodyText1.color));
+    widget.componentModel.fontStyle = DefaultTextStyle.of(context)
+        .style
+        .merge(widget.componentModel.fontStyle);
     if (widget.componentModel.text?.isNotEmpty ?? true) {
       if (widget.componentModel.icon != null) {
-        child = Row(
-          children: <Widget>[
-            widget.componentModel.icon,
-            SizedBox(width: 10),
-            textWidget
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
+        Widget icon = widget.componentModel.icon != null
+            ? widget.componentModel.icon
+            : SizedBox(
+                width: widget.componentModel.iconSize.width,
+                height: widget.componentModel.iconSize.height);
+        if (widget.componentModel.horizontalTextPosition != TextAlign.left)
+          child = Row(
+            children: <Widget>[
+              icon,
+              SizedBox(width: widget.componentModel.iconPadding),
+              textWidget
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
+        else
+          child = Row(
+            children: <Widget>[
+              textWidget,
+              SizedBox(width: widget.componentModel.iconPadding),
+              icon,
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
       } else {
         child = textWidget;
       }
@@ -109,29 +128,40 @@ class CoPopupMenuButtonWidgetState
       child = textWidget;
     }
 
+    double minWidth = 44;
+    EdgeInsets padding;
+
+    if (widget.componentModel.isPreferredSizeSet &&
+        widget.componentModel.preferredSize.width < minWidth) {
+      padding = EdgeInsets.symmetric(horizontal: 0);
+      minWidth = widget.componentModel.preferredSize.width;
+    }
+
     return Container(
-      height: 60,
-      margin: EdgeInsets.all(4),
+      margin: widget.componentModel.margin,
       child: ButtonTheme(
-          minWidth: 44,
+          minWidth: minWidth,
+          padding: padding,
           child: RaisedButton(
             onPressed: () =>
                 widget.componentModel.enabled ? buttonPressed(context) : null,
             color: Theme.of(context).primaryColor,
             shape: widget.componentModel.appState.applicationStyle?.buttonShape,
-            child: Row(
-                // mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Flexible(
-                      // fit: FlexFit.loose,
-                      flex: 4,
-                      child: Center(child: child)),
-                  Flexible(
-                      // fit: FlexFit.loose,
-                      flex: 1,
-                      child: _getPopupMenu(colorScheme)),
-                ]),
+            child: SizedBox(
+                height: 50,
+                child: Row(
+                    // mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                          // fit: FlexFit.loose,
+                          flex: 4,
+                          child: Center(child: child)),
+                      Flexible(
+                          // fit: FlexFit.loose,
+                          flex: 1,
+                          child: _getPopupMenu(Theme.of(context).colorScheme)),
+                    ])),
             splashColor: widget.componentModel.background,
           )),
     );

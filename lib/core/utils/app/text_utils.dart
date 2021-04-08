@@ -24,10 +24,11 @@ class TextUtils {
       TextDirection textDirection = TextDirection.ltr]) {
     TextSpan span = new TextSpan(style: style, text: text);
     TextPainter tp = new TextPainter(
-        text: span,
-        textAlign: align,
-        textDirection: textDirection,
-        textScaleFactor: kIsWeb ? 1.15 : 1.1);
+      text: span,
+      textAlign: align,
+      textDirection: textDirection,
+      //textScaleFactor: kIsWeb ? 1.15 : 1.0
+    );
     tp.layout();
 
     //print('ColumnSize: ' + tp.size.toString() + ':' + text);

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jvx_flutterclient/core/core.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/component/changed_component.dart';
@@ -21,16 +22,32 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
   Size iconSize = Size(16, 16);
   Widget icon;
   bool network = false;
+  double iconPadding = 10;
+  int _horizontalTextPosition;
+  EdgeInsets margin = EdgeInsets.all(0);
+
+  TextAlign get horizontalTextPosition {
+    if (_horizontalTextPosition != null)
+      return SoTextAlign.getTextAlignFromInt(_horizontalTextPosition);
+    return TextAlign.center;
+  }
 
   PopupMenuButtonComponentModel(ChangedComponent changedComponent)
       : super(changedComponent);
 
   @override
   get preferredSize {
-    double width =
-        TextUtils.getTextWidth(TextUtils.averageCharactersTextField, fontStyle)
-            .toDouble();
-    return Size(width, 60);
+    //if (super.isPreferredSizeSet) return super.preferredSize;
+    double width = 35;
+    double height = 36;
+
+    if (this.image != null) {
+      width += iconSize.width + iconPadding;
+    }
+
+    Size size = TextUtils.getTextSize(text, fontStyle);
+    return Size(size.width + width + margin.horizontal,
+        size.height + height + margin.vertical);
   }
 
   @override
@@ -47,14 +64,15 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
     defaultMenuItem = changedComponent.getProperty<String>(
         ComponentProperty.DEFAULT_MENU_ITEM, defaultMenuItem);
     image = changedComponent.getProperty<String>(ComponentProperty.IMAGE);
+    _horizontalTextPosition = changedComponent.getProperty<int>(
+        ComponentProperty.HORIZONTAL_TEXT_POSITION, _horizontalTextPosition);
 
     if (this.image != null) {
       if (checkFontAwesome(this.image)) {
         icon = convertFontAwesomeTextToIcon(this.image,
             sl<ThemeManager>().themeData.primaryTextTheme.bodyText1.color);
       } else {
-        List strinArr =
-            List<String>.from(this.image.split(','));
+        List strinArr = List<String>.from(this.image.split(','));
         if (kIsWeb) {
           if (appState.files.containsKey(strinArr[0])) {
             if (strinArr.length >= 3 &&

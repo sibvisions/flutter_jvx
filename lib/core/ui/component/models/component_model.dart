@@ -89,6 +89,7 @@ class ComponentModel extends ValueNotifier {
     fontStyle = SoTextStyle.addFontToTextStyle(
         changedComponent.getProperty<String>(ComponentProperty.FONT, ""),
         fontStyle);
+    fontStyle = DefaultTextStyle.of(context).style.merge(fontStyle);
     foreground = changedComponent.getProperty<HexColor>(
         ComponentProperty.FOREGROUND, null);
     fontStyle = SoTextStyle.addForecolorToTextStyle(foreground, fontStyle);
