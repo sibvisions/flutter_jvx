@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
@@ -252,6 +253,12 @@ class RemoteDataSourceImpl implements DataSource {
       if (r.statusCode != 404) {
         List decodedBody = _getDecodedBody(r.body);
         Failure? failure = _getErrorIfExists(decodedBody);
+
+        bool isProd = bool.fromEnvironment('PROD', defaultValue: false);
+
+        if (!isProd) {
+          log('RESPONSE ${uri.path}: $decodedBody');
+        }
 
         if (failure != null) {
           return Left(ApiError(failure: failure));

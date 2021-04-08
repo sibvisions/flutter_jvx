@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/screen/core/so_component_data.dart';
 
+import '../../../../../flutterclient.dart';
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/response_data/editor/cell_editor.dart';
 import '../../../../models/api/response_objects/response_data/editor/cell_editor_properties.dart';
 import '../../../../models/api/response_objects/response_data/editor/popup_size.dart';
 import '../../../../models/state/app_state.dart';
-import '../../../../models/state/app_state.dart';
+import '../../../screen/core/so_component_data.dart';
 
 class CellEditorModel extends ChangeNotifier {
   CellEditor cellEditor;

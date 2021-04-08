@@ -174,9 +174,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   void _addComponent(ChangedComponent changedComponent,
       Map<String, ComponentWidget> container) {
-    late ComponentWidget componentWidget;
+    ComponentWidget? componentWidget;
 
-    if (!container.containsKey(changedComponent.id)) {
+    if (!container.containsKey(changedComponent.id) &&
+        changedComponent.className != null &&
+        changedComponent.className!.isNotEmpty) {
       ComponentModel componentModel = _componentModelManager.addComponentModel(
           changedComponent,
           onAction: onAction,
@@ -228,7 +230,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
               .updateMenuItem(componentWidget);
         }
       }
-    } else {
+    } else if (container.containsKey(changedComponent.id)) {
       componentWidget = container[changedComponent.id]!;
 
       if (componentWidget is CoEditorWidget) {
@@ -250,9 +252,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       }
     }
 
-    componentWidget.componentModel.state = CoState.Added;
-    container.putIfAbsent(changedComponent.id!, () => componentWidget);
-    _addToParent(componentWidget, container);
+    if (componentWidget != null) {
+      componentWidget.componentModel.state = CoState.Added;
+      container.putIfAbsent(changedComponent.id!, () => componentWidget!);
+      _addToParent(componentWidget, container);
+    }
   }
 
   void _addToParent(

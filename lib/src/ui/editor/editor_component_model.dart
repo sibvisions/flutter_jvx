@@ -165,6 +165,8 @@ class EditorComponentModel extends ComponentModel {
 
     if (dataProvider == null) dataProvider = dataRow;
 
+    setEditorProperties();
+
     super.updateProperties(context, changedComponent);
   }
 

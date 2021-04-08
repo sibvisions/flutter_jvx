@@ -51,14 +51,18 @@ class RestClientImpl implements RestClient {
       {required Uri uri,
       required Map<String, dynamic> data,
       int timeout = 10}) async {
+    bool isProd = bool.fromEnvironment('PROD', defaultValue: false);
+
     if (data['forceNewSession'] != null && data['forceNewSession']) {
       headers?.clear();
       headers?['Content-Type'] = 'application/json';
     }
 
     try {
-      log('HEADERS: $headers');
-      log('REQUEST ${uri.path}: $data');
+      if (!isProd) {
+        log('HEADERS: $headers');
+        log('REQUEST ${uri.path}: $data');
+      }
 
       final response = await client
           .post(uri, body: json.encode(data), headers: headers)
