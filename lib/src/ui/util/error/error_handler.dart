@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/show_error_dialog.dart';
 
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/app/text_utils.dart';
@@ -20,7 +21,7 @@ class ErrorHandler {
     if (error.failure.name == sessionExpired) {
       showSessionExpiredDialog(context, error);
     } else if (error.failure.name == messageError) {
-      showGoToSettingsDialog(context, error);
+      showErrorDialog(context, error);
     } else if (error.failure.name == serverError) {
       showGoToSettingsDialog(context, error);
     } else if (error.failure.name == connectionError) {
