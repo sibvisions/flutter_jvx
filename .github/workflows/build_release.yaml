@@ -2,7 +2,7 @@ name: Build Release
 
 on:
   push:
-    branches: [master]
+    branches: [master, dev]
   pull_request:
     branches: [master]
 
@@ -68,6 +68,10 @@ jobs:
 
     needs: [update-version]
 
+    strategy:
+      matrix:
+        platform: [android, web]
+
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
@@ -90,9 +94,23 @@ jobs:
 
       - run: flutter test test/
 
+      - run: flutter config --enable-web
+        if: matrix.platform == "web"
+
       - run: flutter build apk --release --dart-define=PROD=true --build-name=${{ needs.update-version.outputs.buildName }} --build-number=${{ needs.update-version.outputs.buildNumber }}
+        if: matrix.platform == "android"
+
+      - run: flutter build web --release --dart-define=PROD=true --build-name=${{ needs.update-version.outputs.buildName }} --build-number=${{ needs.update-version.outputs.buildNumber }}
+        if: matrix.platform == "web"
 
       - uses: actions/upload-artifact@v1
+        if: matrix.platform == "android"
         with:
           name: release-apk
           path: build/app/outputs/apk/release/app-release.apk
+
+      - uses: actions/upload-artifact@v1
+        if: matrix.platform == "web"
+        with:
+          name: release-web
+          path: build/web/
