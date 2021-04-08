@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutterclient/src/models/state/routes/arguments/settings_page_arguments.dart';
 
 import 'models/state/app_state.dart';
 import 'models/state/routes/arguments/login_page_arguments.dart';
@@ -51,11 +52,15 @@ class MobileApp extends StatelessWidget {
                   manager: manager,
                 ));
       case Routes.settings:
+        SettingsPageArguments? arguments =
+            settings.arguments as SettingsPageArguments?;
+
         return DefaultPageRoute(
             settings: RouteSettings(
                 name: Routes.settings, arguments: settings.arguments),
             builder: (_) => SettingsPage(
                   canPop: initialRoute == Routes.settings ? false : true,
+                  hasError: arguments?.hasError ?? false,
                 ));
       case Routes.login:
         LoginPageArguments arguments = settings.arguments as LoginPageArguments;

@@ -23,12 +23,14 @@ class SettingsPageWidget extends StatefulWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
   final bool canPop;
+  final bool hasError;
 
   const SettingsPageWidget(
       {Key? key,
       required this.appState,
       required this.manager,
-      this.canPop = true})
+      this.canPop = true,
+      this.hasError = false})
       : super(key: key);
 
   @override
@@ -305,7 +307,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                         }
                       },
                     ),
-                    if (widget.canPop)
+                    if (widget.canPop && !widget.hasError)
                       ListTile(
                         leading: FaIcon(
                           FontAwesomeIcons.language,

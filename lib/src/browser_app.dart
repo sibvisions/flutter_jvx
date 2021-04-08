@@ -10,6 +10,7 @@ import 'package:flutterclient/src/util/config/server_config.dart';
 import 'models/state/app_state.dart';
 import 'models/state/routes/arguments/login_page_arguments.dart';
 import 'models/state/routes/arguments/menu_page_arguments.dart';
+import 'models/state/routes/arguments/settings_page_arguments.dart';
 import 'models/state/routes/arguments/startup_page_arguments.dart';
 import 'models/state/routes/routes.dart';
 import 'services/local/shared_preferences/shared_preferences_manager.dart';
@@ -103,11 +104,15 @@ class BrowserApp extends StatelessWidget {
                     manager: manager,
                   ));
         case Routes.settings:
+          SettingsPageArguments? arguments =
+              settings.arguments as SettingsPageArguments?;
+
           return MaterialPageRoute(
               settings: RouteSettings(
                   name: Routes.settings, arguments: settings.arguments),
               builder: (_) => SettingsPage(
                     canPop: initialRoute == Routes.settings ? false : true,
+                    hasError: arguments?.hasError ?? false,
                   ));
         case Routes.login:
           LoginPageArguments? arguments;

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/errors/failure.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/show_error_dialog.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/show_go_to_settings_dialog.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/show_session_expired_dialog.dart';
-import 'package:flutterclient/src/util/app/text_utils.dart';
+
+import '../../../services/remote/cubit/api_cubit.dart';
+import '../../../util/app/text_utils.dart';
+import '../../widgets/dialog/show_go_to_settings_dialog.dart';
+import '../../widgets/dialog/show_session_expired_dialog.dart';
 
 class ErrorHandler {
   static const String sessionExpired = 'message.sessionexpired';

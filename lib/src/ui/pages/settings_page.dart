@@ -10,8 +10,10 @@ import '../widgets/page/settings/settings_page_widget.dart';
 
 class SettingsPage extends StatelessWidget {
   final bool canPop;
+  final bool hasError;
 
-  const SettingsPage({Key? key, required this.canPop}) : super(key: key);
+  const SettingsPage({Key? key, required this.canPop, this.hasError = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
