@@ -17,12 +17,14 @@ void main() {
 
   testWidgets('CoButtonWidget has Text', (WidgetTester tester) async {
     final componentModel = ButtonComponentModel(
-        changedComponent: ChangedComponent.fromJson(
-            {'text': 'Hello Test!', 'id': 'B123', 'className': 'Button', 'name': 'B235-Sysntwea'}),
+        changedComponent: ChangedComponent.fromJson({
+          'text': 'Hello Test!',
+          'id': 'B123',
+          'className': 'Button',
+          'name': 'B235-Sysntwea'
+        }),
         onAction: (BuildContext context, String componentId,
-            String? classNameEventSourceRef) {
-          debugPrint('BUTTON PRESSED');
-        });
+            String? classNameEventSourceRef) {});
 
     componentModel.updateProperties(
         MockBuildContext(), componentModel.changedComponent);
