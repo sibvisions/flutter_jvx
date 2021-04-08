@@ -18,7 +18,11 @@ class CustomIcon extends StatelessWidget {
         return convertFontAwesomeTextToIcon(
             image, color != null ? color! : Theme.of(context).primaryColor);
       } else {
-        return _iconBuilder(formatFontAwesomeText(image), image, context);
+        return _iconBuilder(
+          formatFontAwesomeText(image),
+          image,
+          context,
+        );
       }
     }
     Image? imgWidget = getImage(context, image);
@@ -58,11 +62,12 @@ class CustomIcon extends StatelessWidget {
 
   FaIcon _iconBuilder(Map data, String contentString, BuildContext context) {
     double? widgetSize = getSize(contentString)?.height;
-    if (data['size'] != null && prefferedSize == null) {
+
+    if (widgetSize == null && data['size'] != null && prefferedSize == null) {
       List<String> arr = data['size'].split(',');
       if (arr.length > 0 && double.tryParse(arr[0]) != null)
         widgetSize = double.parse(arr[0]);
-    } else {
+    } else if (widgetSize == null) {
       widgetSize = prefferedSize?.height ?? 32;
     }
 

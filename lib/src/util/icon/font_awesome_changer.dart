@@ -68,7 +68,9 @@ String convertToMethodName(String text) {
     }
   }
 
-  return strinArr.join();
+  String toReturn = strinArr.join();
+
+  return toReturn.split(',')[0];
 }
 
 IconData chooseIcon(String icon) {
