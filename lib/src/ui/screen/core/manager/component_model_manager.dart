@@ -1,24 +1,24 @@
-import 'package:flutterclient/src/ui/component/model/icon_component_model.dart';
-import 'package:flutterclient/src/ui/component/model/selectable_component_model.dart';
-import 'package:flutterclient/src/ui/component/model/table_component_model.dart';
-import 'package:flutterclient/src/ui/component/model/text_area_component_model.dart';
-import 'package:flutterclient/src/ui/component/model/text_field_component_model.dart';
-import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/menu_item_component_model.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_button_component_model.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
-import 'package:flutterclient/src/ui/container/models/group_panel_component_model.dart';
-import 'package:flutterclient/src/ui/container/models/split_panel_component_model.dart';
-import 'package:flutterclient/src/ui/editor/editor_component_model.dart';
+import 'package:flutterclient/src/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
 
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
-import '../../../component/co_action_component_widget.dart';
 import '../../../component/co_action_component_widget.dart';
 import '../../../component/model/button_component_model.dart';
 import '../../../component/model/component_model.dart';
 import '../../../component/model/editable_component_model.dart';
+import '../../../component/model/icon_component_model.dart';
 import '../../../component/model/label_component_model.dart';
+import '../../../component/model/selectable_component_model.dart';
+import '../../../component/model/table_component_model.dart';
+import '../../../component/model/text_area_component_model.dart';
+import '../../../component/model/text_field_component_model.dart';
+import '../../../component/model/toggle_button_component_model.dart';
+import '../../../component/popup_menu/models/menu_item_component_model.dart';
+import '../../../component/popup_menu/models/popup_menu_button_component_model.dart';
+import '../../../component/popup_menu/models/popup_menu_component_model.dart';
 import '../../../container/models/container_component_model.dart';
+import '../../../container/models/group_panel_component_model.dart';
+import '../../../container/models/split_panel_component_model.dart';
+import '../../../editor/editor_component_model.dart';
 
 class ComponentModelManager {
   Map<String, ComponentModel> _componentModels = <String, ComponentModel>{};
@@ -88,11 +88,11 @@ class ComponentModelManager {
           changedComponent: changedComponent,
         );
         break;
-      // case 'TabsetPanel':
-      //   componentModel = TabsetPanelComponentModel(
-      //       changedComponent: changedComponent,
-      //       componentId: changedComponent.id);
-      //   break;
+      case 'TabsetPanel':
+        componentModel = TabsetPanelComponentModel(
+          changedComponent: changedComponent,
+        );
+        break;
       case 'SplitPanel':
         componentModel = SplitPanelComponentModel(
           changedComponent: changedComponent,

@@ -8,6 +8,8 @@ import 'package:flutterclient/src/ui/container/co_scroll_panel_widget.dart';
 import 'package:flutterclient/src/ui/container/co_split_panel_widget.dart';
 import 'package:flutterclient/src/ui/container/models/group_panel_component_model.dart';
 import 'package:flutterclient/src/ui/container/models/split_panel_component_model.dart';
+import 'package:flutterclient/src/ui/container/tabset_panel/co_tabset_panel_widget.dart';
+import 'package:flutterclient/src/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_checkbox_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_choice_cell_editor_widget.dart';
 import 'package:flutterclient/src/ui/editor/cell_editor/co_date_cell_editor_widget.dart';
@@ -76,6 +78,8 @@ class SoComponentCreator implements IComponentCreator {
         componentModel: componentModel as GroupPanelComponentModel),
     'SplitPanel': (ComponentModel componentModel) => CoSplitPanelWidget(
         componentModel: componentModel as SplitPanelComponentModel),
+    'TabsetPanel': (ComponentModel componentModel) => CoTabsetPanelWidget(
+        componentModel: componentModel as TabsetPanelComponentModel),
 
     // Components
     'Label': (ComponentModel componentModel) =>
