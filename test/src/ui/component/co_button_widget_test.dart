@@ -5,6 +5,9 @@ import 'package:flutterclient/src/models/api/response_objects/response_data/comp
 import 'package:flutterclient/injection_container.dart' as di;
 import 'package:flutterclient/src/ui/component/co_button_widget.dart';
 import 'package:flutterclient/src/ui/component/model/button_component_model.dart';
+import 'package:mockito/mockito.dart';
+
+class MockBuildContext extends Mock implements BuildContext {}
 
 void main() {
   setUpAll(() async {
@@ -15,11 +18,14 @@ void main() {
   testWidgets('CoButtonWidget has Text', (WidgetTester tester) async {
     final componentModel = ButtonComponentModel(
         changedComponent: ChangedComponent.fromJson(
-            {'text': 'Hello Test!', 'id': 'B123', 'className': 'Button'}),
+            {'text': 'Hello Test!', 'id': 'B123', 'className': 'Button', 'name': 'B235-Sysntwea'}),
         onAction: (BuildContext context, String componentId,
             String? classNameEventSourceRef) {
           debugPrint('BUTTON PRESSED');
         });
+
+    componentModel.updateProperties(
+        MockBuildContext(), componentModel.changedComponent);
 
     await tester.pumpWidget(MaterialApp(
         home: CoButtonWidget(
