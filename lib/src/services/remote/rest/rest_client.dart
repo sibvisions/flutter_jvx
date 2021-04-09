@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,7 +42,7 @@ class RestClientImpl implements RestClient {
       return Left(ServerFailure(
           title: 'Connection Problems',
           details: '',
-          name: 'message.error',
+          name: ErrorHandler.timeoutError,
           message: e.toString()));
     }
   }
@@ -73,7 +74,7 @@ class RestClientImpl implements RestClient {
       return Left(ServerFailure(
           title: 'Connection Problems',
           details: '',
-          name: 'message.error',
+          name: ErrorHandler.timeoutError,
           message: e.toString()));
     }
   }
@@ -107,7 +108,7 @@ class RestClientImpl implements RestClient {
       return Left(ServerFailure(
           title: 'Connection Problems',
           details: '',
-          name: 'message.error',
+          name: ErrorHandler.timeoutError,
           message: e.toString()));
     }
   }
