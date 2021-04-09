@@ -22,6 +22,7 @@ class ComponentModel with ChangeNotifier {
   Color? background;
   Color? foreground;
   TextStyle fontStyle = TextStyle(fontSize: 16.0, color: Colors.black);
+  double textScaleFactor = 1.0;
 
   Size? _preferredSize;
   Size? _minimumSize;
@@ -98,7 +99,10 @@ class ComponentModel with ChangeNotifier {
         changedComponent.getProperty<String>(ComponentProperty.FONT, null),
         fontStyle);
 
-    // fontStyle = DefaultTextStyle.of(context).style.merge(fontStyle);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      fontStyle = DefaultTextStyle.of(context).style.merge(fontStyle);
+      textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    });
 
     foreground = changedComponent.getProperty<Color>(
         ComponentProperty.FOREGROUND, foreground);

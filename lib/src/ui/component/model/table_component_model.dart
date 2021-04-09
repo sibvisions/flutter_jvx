@@ -84,6 +84,7 @@ class TableComponentModel extends EditorComponentModel {
         itemTextStyle,
         componentCreator!,
         autoResize,
+        textScaleFactor,
         16.0,
         16.0);
     if (columnInfo != null)

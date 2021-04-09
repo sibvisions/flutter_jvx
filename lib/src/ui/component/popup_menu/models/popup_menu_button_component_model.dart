@@ -46,7 +46,7 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
       width += iconSize.width + iconPadding;
     }
 
-    Size size = TextUtils.getTextSize(text, fontStyle);
+    Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);
     return Size(size.width + width + margin.horizontal,
         size.height + height + margin.vertical);
   }

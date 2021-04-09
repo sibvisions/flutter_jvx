@@ -16,7 +16,7 @@ class MenuItemComponentModel extends ComponentModel {
 
   @override
   get preferredSize {
-    Size size = TextUtils.getTextSize(text, fontStyle);
+    Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);
     return Size(size.width, size.height);
   }
 

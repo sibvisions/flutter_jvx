@@ -16,7 +16,7 @@ class LabelComponentModel extends ComponentModel {
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
 
-    Size size = TextUtils.getTextSize(text, fontStyle);
+    Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);
     return Size(size.width, max(size.height, getBaseline() + 4));
   }
 

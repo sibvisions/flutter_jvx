@@ -20,11 +20,13 @@ class TextFieldComponentModel extends TextComponentModel {
   get preferredSize {
     double iconWidth = this.enabled ? iconSize + iconPadding.vertical : 0;
 
-    double width = TextUtils.getTextWidth(text, fontStyle);
+    double width = TextUtils.getTextWidth(text, fontStyle, textScaleFactor);
 
     if (columns != null) {
       width = TextUtils.getTextWidth(
-              TextUtils.getCharactersWithLength(columns!), fontStyle)
+              TextUtils.getCharactersWithLength(columns!),
+              fontStyle,
+              textScaleFactor)
           .toDouble();
     }
 

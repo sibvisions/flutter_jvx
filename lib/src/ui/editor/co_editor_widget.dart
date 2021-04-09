@@ -64,7 +64,9 @@ class CoEditorWidgetState<T extends CoEditorWidget>
       return Container(
         margin: EdgeInsets.only(top: 9, bottom: 9),
         width: TextUtils.getTextWidth(
-            TextUtils.averageCharactersTextField, TextStyle()),
+            TextUtils.averageCharactersTextField,
+            Theme.of(context).textTheme.button ?? TextStyle(),
+            MediaQuery.of(context).textScaleFactor),
         height: 50,
         child: DecoratedBox(
           decoration: BoxDecoration(

@@ -365,6 +365,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 widget.componentModel.itemTextStyle,
                 widget.componentModel.componentCreator!,
                 widget.componentModel.autoResize,
+                widget.componentModel.textScaleFactor,
                 constraints.maxWidth,
                 16.0,
                 16.0);
@@ -375,6 +376,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             widget.componentModel.columnLabels ?? <String>[],
             widget.componentModel.itemTextStyle,
             widget.componentModel.tableHeaderVisible,
+            widget.componentModel.textScaleFactor,
             30,
             30);
 

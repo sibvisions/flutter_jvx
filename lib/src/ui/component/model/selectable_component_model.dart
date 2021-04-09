@@ -23,7 +23,7 @@ class SelectableComponentModel extends EditableComponentModel {
   get preferredSize {
     double checkSize = 48;
 
-    Size size = TextUtils.getTextSize(text, fontStyle);
+    Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);
     return Size(size.width + checkSize, checkSize);
   }
 
