@@ -53,19 +53,25 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   SharedPreferencesManager manager;
   AppState appState;
 
+  String _formatUrl(String baseUrl) {
+    List<String> splittedUrl = baseUrl.split('/');
+
+    if (splittedUrl.length >= 3 && splittedUrl.length <= 4) {
+      return baseUrl + '/services/mobile';
+    }
+
+    return baseUrl;
+  }
+
   Future<void> _updateDataFromConfig(Future<Config> configFuture) async {
     Config config = await configFuture;
 
     this.appState.config = config;
 
-    if (config != null &&
-        config.baseUrl != null &&
-        !config.baseUrl.endsWith('/services/mobile')) {
-      config.baseUrl += '/services/mobile';
-    }
+    config.baseUrl = _formatUrl(config.baseUrl);
 
     if (config.onlyLoadOnWelcome != null &&
-         config.onlyLoadOnWelcome &&
+        config.onlyLoadOnWelcome &&
         manager.warmWelcome) {
       appState.baseUrl = config.baseUrl;
       appState.appName = config.appName;
