@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../injection_container.dart';
@@ -16,6 +15,7 @@ import '../../../../models/api/response_objects/device_status_response_object.da
 import '../../../../models/api/response_objects/language_response_object.dart';
 import '../../../../models/api/response_objects/login_response_object.dart';
 import '../../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/login_page_arguments.dart';

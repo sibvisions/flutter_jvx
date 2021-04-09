@@ -62,8 +62,10 @@ class ApplicationWidget extends StatelessWidget {
         devConfig!.baseUrl.isNotEmpty &&
         devConfig!.appName.isNotEmpty &&
         devConfig!.appMode.isNotEmpty) {
+      final formattedUrl = _formatUrl(devConfig!.baseUrl);
+
       return ServerConfig(
-          baseUrl: devConfig!.baseUrl,
+          baseUrl: formattedUrl,
           appName: devConfig!.appName,
           appMode: devConfig!.appMode,
           username: devConfig!.username,
@@ -117,6 +119,16 @@ class ApplicationWidget extends StatelessWidget {
             requestTimeout: 10);
       }
     }
+  }
+
+  String _formatUrl(String baseUrl) {
+    List<String> splittedUrl = baseUrl.split('/');
+
+    if (splittedUrl.length >= 3 && splittedUrl.length <= 4) {
+      return baseUrl + '/services/mobile';
+    }
+
+    return baseUrl;
   }
 
   @override
