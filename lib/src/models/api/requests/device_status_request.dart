@@ -20,5 +20,6 @@ class DeviceStatusRequest extends Request {
         'screenHeight': screenSize.height.round(),
         'timeZoneCode': timeZoneCode,
         'langCode': langCode,
+        ...super.toJson()
       };
 }

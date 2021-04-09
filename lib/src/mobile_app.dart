@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutterclient/src/models/state/routes/arguments/settings_page_arguments.dart';
 
 import 'models/state/app_state.dart';
 import 'models/state/routes/arguments/login_page_arguments.dart';
 import 'models/state/routes/arguments/menu_page_arguments.dart';
-import 'models/state/routes/arguments/menu_page_arguments.dart';
 import 'models/state/routes/arguments/open_screen_page_arguments.dart';
-import 'models/state/routes/arguments/open_screen_page_arguments.dart';
-import 'models/state/routes/arguments/open_screen_page_arguments.dart';
+import 'models/state/routes/arguments/settings_page_arguments.dart';
 import 'models/state/routes/arguments/startup_page_arguments.dart';
-import 'models/state/routes/default_page_route.dart';
 import 'models/state/routes/default_page_route.dart';
 import 'models/state/routes/routes.dart';
 import 'services/local/shared_preferences/shared_preferences_manager.dart';

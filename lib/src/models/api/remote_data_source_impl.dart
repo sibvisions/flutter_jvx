@@ -183,15 +183,23 @@ class RemoteDataSourceImpl implements DataSource {
   }
 
   @override
-  Future<ApiState> tabClose(TabCloseRequest request) {
-    // TODO: implement tabClose
-    throw UnimplementedError();
+  Future<ApiState> tabClose(TabCloseRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/comp/closeTab';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override
-  Future<ApiState> tabSelect(TabSelectRequest request) {
-    // TODO: implement tabSelect
-    throw UnimplementedError();
+  Future<ApiState> tabSelect(TabSelectRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/comp/selectTab';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
   }
 
   @override

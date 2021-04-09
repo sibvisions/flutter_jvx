@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/flutterclient.dart';
@@ -42,6 +44,48 @@ class MenuPageWidget extends StatefulWidget {
 class _MenuPageWidgetState extends State<MenuPageWidget> {
   List<MenuItem> _menuItems = <MenuItem>[];
 
+  Size? _lastScreenSize;
+  Timer? _deviceStatusTimer;
+
+  void _addDeviceStatusTimer(BuildContext context) {
+    Size currentSize = MediaQuery.of(context).size;
+
+    if (_lastScreenSize?.height != currentSize.height ||
+        _lastScreenSize?.width != currentSize.width) {
+      if (_deviceStatusTimer != null && _deviceStatusTimer!.isActive) {
+        _deviceStatusTimer!.cancel();
+      }
+
+      _deviceStatusTimer = Timer(const Duration(milliseconds: 300), () {
+        DeviceStatusRequest request = DeviceStatusRequest(
+            clientId: widget.appState.applicationMetaData!.clientId,
+            screenSize: currentSize,
+            timeZoneCode: '',
+            langCode: '');
+
+        _lastScreenSize = currentSize;
+
+        sl<ApiCubit>().deviceStatus(request);
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_lastScreenSize == null) {
+      _lastScreenSize = MediaQuery.of(context).size;
+    }
+  }
+
+  @override
+  void dispose() {
+    _deviceStatusTimer?.cancel();
+
+    super.dispose();
+  }
+
   @override
   void initState() {
     if (!widget.appState.serverConfig!.isPreview) {
@@ -79,6 +123,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _addDeviceStatusTimer(context);
+
     return CustomCubitListener(
       appState: widget.appState,
       bloc: sl<ApiCubit>(),

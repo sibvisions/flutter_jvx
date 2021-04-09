@@ -3,42 +3,36 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/requests/download_request.dart';
-import 'package:flutterclient/src/models/api/requests/upload_request.dart';
-import 'package:flutterclient/src/models/api/response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/download_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/dataprovider_changed.dart';
-import 'package:flutterclient/src/models/api/response_objects/upload_response_object.dart';
-import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/file_picker_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/close_screen_request.dart';
 import '../../../../models/api/requests/device_status_request.dart';
+import '../../../../models/api/requests/download_request.dart';
 import '../../../../models/api/requests/logout_request.dart';
 import '../../../../models/api/requests/navigation_request.dart';
 import '../../../../models/api/requests/open_screen_request.dart';
+import '../../../../models/api/requests/upload_request.dart';
 import '../../../../models/api/response_objects/close_screen_action_response_object.dart';
 import '../../../../models/api/response_objects/device_status_response_object.dart';
 import '../../../../models/api/response_objects/download_action_response_object.dart';
+import '../../../../models/api/response_objects/download_response_object.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
 import '../../../../models/api/response_objects/upload_action_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/login_page_arguments.dart';
+import '../../../../models/state/routes/arguments/open_screen_page_arguments.dart';
 import '../../../../models/state/routes/default_page.dart';
 import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../../util/app/listener/listener.dart';
 import '../../../../util/app/text_utils.dart';
-import '../../../screen/core/configuration/so_screen_configuration.dart';
-import '../../../screen/core/so_component_creator.dart';
 import '../../../screen/core/so_screen.dart';
 import '../../../util/error/custom_bloc_listener.dart';
+import '../../dialog/file_picker_dialog.dart';
 import '../../drawer/menu_drawer_widget.dart';
 
 class OpenScreenPageWidget extends StatefulWidget {
@@ -65,8 +59,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   late String _currentComponentId;
   ApiResponse? _response;
 
-  late Size _lastScreenSize;
-  late Timer _deviceStatusTimer;
+  Size? _lastScreenSize;
+  Timer? _deviceStatusTimer;
 
   MenuDrawerWidget getMenuDrawer(String title) => MenuDrawerWidget(
         appState: widget.appState,
@@ -310,10 +304,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   void _addDeviceStatusTimer(BuildContext context) {
     Size currentSize = MediaQuery.of(context).size;
 
-    if (_lastScreenSize.height != currentSize.height ||
-        _lastScreenSize.width != currentSize.width) {
-      if (_deviceStatusTimer.isActive) {
-        _deviceStatusTimer.cancel();
+    if (_lastScreenSize?.height != currentSize.height ||
+        _lastScreenSize?.width != currentSize.width) {
+      if (_deviceStatusTimer != null && _deviceStatusTimer!.isActive) {
+        _deviceStatusTimer!.cancel();
       }
 
       _deviceStatusTimer = Timer(const Duration(milliseconds: 300), () {
@@ -345,17 +339,21 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    _lastScreenSize = MediaQuery.of(context).size;
-  }
-
-  @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
 
+    _deviceStatusTimer?.cancel();
+
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_lastScreenSize == null) {
+      _lastScreenSize = MediaQuery.of(context).size;
+    }
   }
 
   @override
