@@ -21,15 +21,12 @@ class SettingsPage extends StatelessWidget {
     SharedPreferencesManager manager =
         SharedPreferencesProvider.of(context)!.manager;
 
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: Theme(
-          data: sl<ThemeManager>().value,
-          child: SettingsPageWidget(
-            appState: appState,
-            manager: manager,
-            canPop: canPop,
-          )),
-    );
+    return Theme(
+        data: sl<ThemeManager>().value,
+        child: SettingsPageWidget(
+          appState: appState,
+          manager: manager,
+          canPop: canPop,
+        ));
   }
 }

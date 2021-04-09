@@ -26,17 +26,14 @@ class MenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-      child: Theme(
-          data: sl<ThemeManager>().value,
-          child: MenuPageWidget(
-            menuItems: menuItems,
-            listMenuItemsInDrawer: listMenuItemsInDrawer,
-            response: response,
-            appState: appState,
-            manager: manager,
-          )),
-    );
+    return Theme(
+        data: sl<ThemeManager>().value,
+        child: MenuPageWidget(
+          menuItems: menuItems,
+          listMenuItemsInDrawer: listMenuItemsInDrawer,
+          response: response,
+          appState: appState,
+          manager: manager,
+        ));
   }
 }
