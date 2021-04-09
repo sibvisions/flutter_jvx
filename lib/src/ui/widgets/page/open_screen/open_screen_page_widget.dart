@@ -357,6 +357,13 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   @override
+  void didChangeTextScaleFactor() {
+    super.didChangeTextScaleFactor();
+
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     _addDeviceStatusTimer(context);
 
