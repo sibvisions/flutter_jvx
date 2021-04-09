@@ -17,7 +17,7 @@ class MenuItemComponentModel extends ComponentModel {
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
 
-    Size size = TextUtils.getTextSize(text, fontStyle);
+    Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);
     return Size(size.width, size.height);
   }
 
@@ -30,7 +30,8 @@ class MenuItemComponentModel extends ComponentModel {
     return preferredSize;
   }
 
-  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
     super.updateProperties(context, changedComponent);
 
     eventAction = changedComponent.getProperty<bool>(

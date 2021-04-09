@@ -72,8 +72,10 @@ class CoEditorWidgetState<T extends StatefulWidget>
     if (cellEditor == null) {
       return Container(
         margin: EdgeInsets.only(top: 9, bottom: 9),
-        width: TextUtils.getTextWidth(TextUtils.averageCharactersTextField,
-            Theme.of(context).textTheme.button),
+        width: TextUtils.getTextWidth(
+            TextUtils.averageCharactersTextField,
+            Theme.of(context).textTheme.button,
+            MediaQuery.of(context).textScaleFactor),
         height: 50,
         child: DecoratedBox(
           decoration: BoxDecoration(

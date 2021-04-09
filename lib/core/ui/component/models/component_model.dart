@@ -17,6 +17,7 @@ class ComponentModel extends ValueNotifier {
   Color background = Colors.transparent;
   Color foreground;
   TextStyle fontStyle = new TextStyle(fontSize: 16.0, color: Colors.black);
+  double textScaleFactor = 1.0;
   Size _preferredSize;
   Size _minimumSize;
   Size _maximumSize;
@@ -90,6 +91,7 @@ class ComponentModel extends ValueNotifier {
         changedComponent.getProperty<String>(ComponentProperty.FONT, ""),
         fontStyle);
     fontStyle = DefaultTextStyle.of(context).style.merge(fontStyle);
+    textScaleFactor = MediaQuery.of(context).textScaleFactor;
     foreground = changedComponent.getProperty<HexColor>(
         ComponentProperty.FOREGROUND, null);
     fontStyle = SoTextStyle.addForecolorToTextStyle(foreground, fontStyle);

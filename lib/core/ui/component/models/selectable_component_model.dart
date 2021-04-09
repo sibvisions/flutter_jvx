@@ -20,11 +20,12 @@ class SelectableComponentModel extends EditableComponentModel {
     //if (super.isPreferredSizeSet) return super.preferredSize;
     double checkSize = 48;
 
-    Size size = TextUtils.getTextSize(text, fontStyle);
+    Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);
     return Size(size.width + checkSize, checkSize);
   }
 
-  void updateProperties(BuildContext context, ChangedComponent changedComponent) {
+  void updateProperties(
+      BuildContext context, ChangedComponent changedComponent) {
     super.updateProperties(context, changedComponent);
 
     eventAction = changedComponent.getProperty<bool>(

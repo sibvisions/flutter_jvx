@@ -16,6 +16,7 @@ class SoTableColumnCalculator {
       TextStyle textStyle,
       SoComponentCreator componentCreator,
       bool autoResize,
+      double textScaleFactor,
       [double containerWidth,
       double headerPadding = 13,
       double itemPadding = 8,
@@ -29,16 +30,20 @@ class SoTableColumnCalculator {
 
     if (columnLabels != null && columnLabels.length > 0) {
       columnLabels.forEach((l) {
-        double textWidth = TextUtils.getTextWidth(l, textStyle) + headerPadding;
+        double textWidth =
+            TextUtils.getTextWidth(l, textStyle, textScaleFactor) +
+                headerPadding;
         columns.add(SoTableColumn(textWidth + headerPadding, defaultMinWidh));
       });
     } else {
       columns.add(SoTableColumn(
-          TextUtils.getTextWidth('User', textStyle) + headerPadding,
+          TextUtils.getTextWidth('User', textStyle, textScaleFactor) +
+              headerPadding,
           defaultMinWidh));
 
       columns.add(SoTableColumn(
-          TextUtils.getTextWidth('Active', textStyle) + headerPadding,
+          TextUtils.getTextWidth('Active', textStyle, textScaleFactor) +
+              headerPadding,
           defaultMinWidh));
     }
 
@@ -54,8 +59,8 @@ class SoTableColumnCalculator {
             DataBookMetaDataColumn metaDataColumn =
                 componentData.getMetaDataColumn(columnNames[i]);
             if (metaDataColumn != null && metaDataColumn.cellEditor != null) {
-              editor = componentCreator
-                  .createCellEditorForTable(metaDataColumn.cellEditor, componentData);
+              editor = componentCreator.createCellEditorForTable(
+                  metaDataColumn.cellEditor, componentData);
             }
           }
 
@@ -69,7 +74,8 @@ class SoTableColumnCalculator {
           } else {
             String value = c != null ? c.toString() : "";
             columns[i].preferredWidth =
-                TextUtils.getTextWidth(value, textStyle) + itemPadding;
+                TextUtils.getTextWidth(value, textStyle, textScaleFactor) +
+                    itemPadding;
           }
         });
       }
@@ -87,8 +93,12 @@ class SoTableColumnCalculator {
     return columns;
   }
 
-  static double getPreferredTableHeight(SoComponentData componentData,
-      List<String> columnLabels, TextStyle textStyle, bool tableHeaderVisible,
+  static double getPreferredTableHeight(
+      SoComponentData componentData,
+      List<String> columnLabels,
+      TextStyle textStyle,
+      bool tableHeaderVisible,
+      double textScaleFactor,
       [double headerPadding = 13,
       double itemPadding = 8,
       double borderWidth = 1,
@@ -98,7 +108,8 @@ class SoTableColumnCalculator {
     int recordCount = calculateForRecordCount;
 
     if (columnLabels != null && columnLabels.length > 0) {
-      double textHeight = TextUtils.getTextHeight(columnLabels[0], textStyle);
+      double textHeight =
+          TextUtils.getTextHeight(columnLabels[0], textStyle, textScaleFactor);
       if (tableHeaderVisible) headerHeight = textHeight + headerPadding;
       itemHeight = textHeight + itemPadding;
     }

@@ -80,8 +80,16 @@ class TableComponentModel extends EditorComponentModel {
     if (super.preferredSize != null) return super.preferredSize;
 
     double columnWidth;
-    columnInfo = SoTableColumnCalculator.getColumnFlex(data, columnLabels,
-        columnNames, itemTextStyle, componentCreator, autoResize, 16.0, 16.0);
+    columnInfo = SoTableColumnCalculator.getColumnFlex(
+        data,
+        columnLabels,
+        columnNames,
+        itemTextStyle,
+        componentCreator,
+        autoResize,
+        textScaleFactor,
+        16.0,
+        16.0);
     if (columnInfo != null)
       columnWidth = SoTableColumnCalculator.getColumnWidthSum(columnInfo);
 

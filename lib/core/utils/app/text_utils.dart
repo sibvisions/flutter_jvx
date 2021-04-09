@@ -8,18 +8,24 @@ class TextUtils {
   static String averageCharactersDateField = "31. November 2020 15:";
 
   static double getTextWidth(dynamic text, TextStyle style,
-      [TextAlign align = TextAlign.left,
+      [double textScaleFactor = 1.0,
+      TextAlign align = TextAlign.left,
       TextDirection textDirection = TextDirection.ltr]) {
-    return TextUtils.getTextSize(text, style, align, textDirection).width;
+    return TextUtils.getTextSize(
+            text, style, textScaleFactor, align, textDirection)
+        .width;
   }
 
   static double getTextHeight(dynamic text, TextStyle style,
-      [TextAlign align = TextAlign.left,
+      [double textScaleFactor = 1.0,
+      TextAlign align = TextAlign.left,
       TextDirection textDirection = TextDirection.ltr]) {
-    return TextUtils.getTextSize(text, style, align, textDirection).height;
+    return TextUtils.getTextSize(
+            text, style, textScaleFactor, align, textDirection)
+        .height;
   }
 
-  static Size getTextSize(dynamic text, TextStyle style,
+  static Size getTextSize(dynamic text, TextStyle style, double textScaleFactor,
       [TextAlign align = TextAlign.left,
       TextDirection textDirection = TextDirection.ltr]) {
     TextSpan span = new TextSpan(style: style, text: text);
@@ -27,7 +33,7 @@ class TextUtils {
       text: span,
       textAlign: align,
       textDirection: textDirection,
-      //textScaleFactor: kIsWeb ? 1.15 : 1.0
+      textScaleFactor: textScaleFactor,
     );
     tp.layout();
 
