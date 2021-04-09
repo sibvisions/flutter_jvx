@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/component/changed_component.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/component/component_properties.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
-import 'package:flutterclient/src/util/app/so_text_style.dart';
+import 'package:flutter_html/style.dart';
 
 import '../../../../injection_container.dart';
+import '../../../models/api/response_objects/response_data/component/changed_component.dart';
+import '../../../models/api/response_objects/response_data/component/component_properties.dart';
 import '../../../models/state/app_state.dart';
-import '../../../models/state/app_state.dart';
+import '../../../util/app/so_text_style.dart';
+import '../../screen/core/so_screen.dart';
 
 class ComponentModel with ChangeNotifier {
   ChangedComponent _changedComponent;
@@ -98,6 +98,9 @@ class ComponentModel with ChangeNotifier {
     fontStyle = SoTextStyle.addFontToTextStyle(
         changedComponent.getProperty<String>(ComponentProperty.FONT, null),
         fontStyle);
+
+    // fontStyle = DefaultTextStyle.of(context).style.merge(fontStyle);
+
     foreground = changedComponent.getProperty<Color>(
         ComponentProperty.FOREGROUND, foreground);
     fontStyle = SoTextStyle.addForecolorToTextStyle(foreground, fontStyle)!;

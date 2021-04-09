@@ -113,7 +113,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                     : Theme.of(context).primaryColor.textColor()));
 
     if (widget.componentModel.text?.isNotEmpty ?? true) {
-      if (widget.componentModel.image != null) {
+      if (widget.componentModel.icon != null) {
         Widget icon = widget.componentModel.icon ??
             SizedBox(
                 width: widget.componentModel.iconSize.width,

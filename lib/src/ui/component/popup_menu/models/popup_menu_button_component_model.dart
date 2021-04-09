@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/util/app/so_text_align.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -23,6 +24,13 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
   Size iconSize = Size(16, 16);
   Widget? icon;
   bool network = false;
+  double iconPadding = 10;
+  int _horizontalTextPosition = 1;
+  EdgeInsets margin = EdgeInsets.zero;
+
+  TextAlign get horizontalTextPosition {
+    return SoTextAlign.getTextAlignFromInt(_horizontalTextPosition);
+  }
 
   PopupMenuButtonComponentModel(
       {required ChangedComponent changedComponent,
@@ -31,10 +39,16 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
 
   @override
   get preferredSize {
-    double width =
-        TextUtils.getTextWidth(TextUtils.averageCharactersTextField, fontStyle)
-            .toDouble();
-    return Size(width, 57);
+    double width = 35;
+    double height = 36;
+
+    if (this.image != null) {
+      width += iconSize.width + iconPadding;
+    }
+
+    Size size = TextUtils.getTextSize(text, fontStyle);
+    return Size(size.width + width + margin.horizontal,
+        size.height + height + margin.vertical);
   }
 
   @override
@@ -52,6 +66,8 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
         ComponentProperty.DEFAULT_MENU_ITEM, defaultMenuItem);
     image =
         changedComponent.getProperty<String>(ComponentProperty.IMAGE, image);
+    _horizontalTextPosition = changedComponent.getProperty<int>(
+        ComponentProperty.HORIZONTAL_TEXT_POSITION, _horizontalTextPosition)!;
 
     if (this.image != null) {
       if (checkFontAwesome(image!)) {

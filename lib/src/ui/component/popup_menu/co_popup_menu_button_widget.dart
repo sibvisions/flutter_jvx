@@ -78,26 +78,44 @@ class CoPopupMenuButtonWidgetState
     });
   }
 
+  _getCurrentTextColor() {
+    if (!widget.componentModel.enabled) {
+      return Colors.grey.shade500;
+    } else if (widget.componentModel.foreground != null) {
+      return widget.componentModel.foreground;
+    } else {
+      return Theme.of(context).primaryColor.textColor();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-    ColorScheme colorScheme = theme.colorScheme;
     Widget child;
     Widget textWidget = new Text(widget.componentModel.text ?? "",
         style: TextStyle(
             fontSize: widget.componentModel.fontStyle.fontSize,
-            color: Theme.of(context).primaryColor.textColor()));
+            color: _getCurrentTextColor()));
 
     if (widget.componentModel.text?.isNotEmpty ?? true) {
       if (widget.componentModel.icon != null) {
-        child = Row(
-          children: <Widget>[
-            widget.componentModel.icon!,
-            SizedBox(width: 10),
-            textWidget
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        );
+        if (widget.componentModel.horizontalTextPosition != TextAlign.left)
+          child = Row(
+            children: <Widget>[
+              widget.componentModel.icon!,
+              SizedBox(width: widget.componentModel.iconPadding),
+              textWidget
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
+        else
+          child = Row(
+            children: <Widget>[
+              textWidget,
+              SizedBox(width: widget.componentModel.iconPadding),
+              widget.componentModel.icon!,
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          );
       } else {
         child = textWidget;
       }
@@ -107,10 +125,20 @@ class CoPopupMenuButtonWidgetState
       child = textWidget;
     }
 
+    double minWidth = 44;
+    EdgeInsets padding = EdgeInsets.zero;
+
+    if (widget.componentModel.isPreferredSizeSet &&
+        widget.componentModel.preferredSize!.width < minWidth) {
+      padding = EdgeInsets.symmetric(horizontal: 0);
+      minWidth = widget.componentModel.preferredSize!.width;
+    }
+
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: widget.componentModel.margin,
       child: ButtonTheme(
-          minWidth: 44,
+          minWidth: minWidth,
+          padding: padding,
           child: SizedBox(
               height: 50,
               child: ElevatedButton(
@@ -127,19 +155,18 @@ class CoPopupMenuButtonWidgetState
                         ?.buttonShape as OutlinedBorder),
                     overlayColor: MaterialStateProperty.all(
                         widget.componentModel.background)),
-                child: Row(
-                    // mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Flexible(
-                          // fit: FlexFit.loose,
-                          flex: 4,
-                          child: Center(child: child)),
-                      Flexible(
-                          // fit: FlexFit.loose,
-                          flex: 1,
-                          child: _getPopupMenu(colorScheme)),
-                    ]),
+                child: SizedBox(
+                  height: 50,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(flex: 4, child: Center(child: child)),
+                        Flexible(
+                            flex: 1,
+                            child:
+                                _getPopupMenu(Theme.of(context).colorScheme)),
+                      ]),
+                ),
               ))),
     );
   }
