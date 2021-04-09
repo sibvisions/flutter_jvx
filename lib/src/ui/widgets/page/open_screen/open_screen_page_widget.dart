@@ -351,6 +351,9 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
+    widget.appState.applicationStyle!.textScaleFactor =
+        MediaQuery.of(context).textScaleFactor;
+
     if (_lastScreenSize == null) {
       _lastScreenSize = MediaQuery.of(context).size;
     }
@@ -360,7 +363,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   void didChangeTextScaleFactor() {
     super.didChangeTextScaleFactor();
 
-    setState(() {});
+    setState(() {
+      widget.appState.applicationStyle!.textScaleFactor =
+          MediaQuery.of(context).textScaleFactor;
+    });
   }
 
   @override

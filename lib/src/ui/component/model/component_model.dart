@@ -99,10 +99,7 @@ class ComponentModel with ChangeNotifier {
         changedComponent.getProperty<String>(ComponentProperty.FONT, null),
         fontStyle);
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      fontStyle = DefaultTextStyle.of(context).style.merge(fontStyle);
-      textScaleFactor = MediaQuery.of(context).textScaleFactor;
-    });
+    textScaleFactor = appState.applicationStyle!.textScaleFactor;
 
     foreground = changedComponent.getProperty<Color>(
         ComponentProperty.FOREGROUND, foreground);
