@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/flutterclient.dart';
 
+import '../../../../flutterclient.dart';
 import '../../widgets/custom/custom_icon.dart';
 import '../co_container_widget.dart';
 import 'models/tabset_panel_component_model.dart';

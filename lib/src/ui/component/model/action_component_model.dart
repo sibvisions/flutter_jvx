@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
-import '../../../models/api/response_objects/response_data/component/changed_component.dart';
-import '../co_action_component_widget.dart';
 import '../co_action_component_widget.dart';
 import 'component_model.dart';
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';

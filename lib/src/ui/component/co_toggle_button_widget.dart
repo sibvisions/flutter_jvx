@@ -3,16 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/models/api/requests/press_button_request.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/ui/widgets/custom/custom_toggle_button.dart';
-import 'package:flutterclient/src/util/app/text_utils.dart';
-import 'package:flutterclient/src/util/color/color_extension.dart';
-import 'package:flutterclient/src/util/icon/font_awesome_changer.dart';
-import 'package:flutterclient/src/util/theme/theme_manager.dart';
 
 import '../../../injection_container.dart';
+import '../../models/api/requests/press_button_request.dart';
+import '../../services/remote/cubit/api_cubit.dart';
+import '../../util/app/text_utils.dart';
+import '../../util/color/color_extension.dart';
+import '../../util/icon/font_awesome_changer.dart';
+import '../../util/theme/theme_manager.dart';
+import '../widgets/custom/custom_toggle_button.dart';
 import 'co_action_component_widget.dart';
 import 'model/toggle_button_component_model.dart';
 

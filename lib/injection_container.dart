@@ -13,9 +13,7 @@ import 'package:flutterclient/src/services/remote/rest/http_client.dart';
 import 'package:flutterclient/src/services/remote/rest/rest_client.dart';
 import 'package:flutterclient/src/util/theme/theme_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
-import 'package:universal_html/html.dart';
 
 final sl = GetIt.instance;
 

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutterclient/src/models/api/response_objects/language_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
-import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
-import 'package:flutterclient/src/ui/pages/open_screen_page.dart';
-import 'package:flutterclient/src/ui/util/navigator/custom_navigator.dart';
-import 'package:flutterclient/src/util/config/server_config.dart';
 
+import 'models/api/response_objects/language_response_object.dart';
+import 'models/api/response_objects/menu/menu_item.dart';
 import 'models/state/app_state.dart';
 import 'models/state/routes/arguments/login_page_arguments.dart';
 import 'models/state/routes/arguments/menu_page_arguments.dart';
+import 'models/state/routes/arguments/open_screen_page_arguments.dart';
 import 'models/state/routes/arguments/settings_page_arguments.dart';
 import 'models/state/routes/arguments/startup_page_arguments.dart';
 import 'models/state/routes/routes.dart';
 import 'services/local/shared_preferences/shared_preferences_manager.dart';
 import 'ui/pages/login_page.dart';
 import 'ui/pages/menu_page.dart';
+import 'ui/pages/open_screen_page.dart';
 import 'ui/pages/settings_page.dart';
 import 'ui/pages/startup_page.dart';
+import 'util/config/server_config.dart';
 import 'util/translation/app_localizations.dart';
 
 class BrowserApp extends StatelessWidget {

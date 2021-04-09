@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
 import 'package:flutterclient/src/ui/widgets/custom/custom_dropdown_button.dart'
     as custom;
 import 'package:flutterclient/src/ui/widgets/dropdown/lazy_dropdown.dart';
 import 'package:flutterclient/src/util/app/text_utils.dart';
+
+import '../../../models/api/response_objects/response_data/data/data_book.dart';
+import '../../screen/core/so_screen.dart';
 import 'co_referenced_cell_editor_widget.dart';
 import 'models/linked_cell_editor_model.dart';
 
