@@ -196,7 +196,7 @@ class CoFormLayoutContainerWidget extends StatelessWidget
     //   print("FormLayoutContainerWidget RemoveLayoutComponent:" +
     //       pComponent.componentModel.componentId);
     _layoutConstraints.removeWhere((c, s) =>
-        pComponent.componentModel.componentId.toString() ==
+        c.componentModel.componentId.toString() ==
         pComponent.componentModel.componentId.toString());
     children.removeWhere((element) =>
         (element.child as ComponentWidget).componentModel.componentId ==
