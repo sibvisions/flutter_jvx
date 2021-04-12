@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutterclient/src/ui/component/model/table_component_model.dart';
-import 'package:flutterclient/src/ui/screen/core/so_component_data.dart';
-import 'package:flutterclient/src/util/translation/app_localizations.dart';
+
+import '../../../util/translation/app_localizations.dart';
 import '../../component/co_table_widget.dart';
+import '../../component/model/table_component_model.dart';
+import '../../screen/core/so_component_data.dart';
 
 class LazyDropdown extends StatefulWidget {
   final allowNull;

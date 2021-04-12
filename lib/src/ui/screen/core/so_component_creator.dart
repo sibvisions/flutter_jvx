@@ -1,28 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/co_radio_button_widget.dart';
-import 'package:flutterclient/src/ui/component/co_text_field_widget.dart';
-import 'package:flutterclient/src/ui/component/co_toggle_button_widget.dart';
-import 'package:flutterclient/src/ui/component/model/toggle_button_component_model.dart';
-import 'package:flutterclient/src/ui/container/co_group_panel_widget.dart';
-import 'package:flutterclient/src/ui/container/co_scroll_panel_widget.dart';
-import 'package:flutterclient/src/ui/container/co_split_panel_widget.dart';
-import 'package:flutterclient/src/ui/container/models/group_panel_component_model.dart';
-import 'package:flutterclient/src/ui/container/models/split_panel_component_model.dart';
-import 'package:flutterclient/src/ui/container/tabset_panel/co_tabset_panel_widget.dart';
-import 'package:flutterclient/src/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_checkbox_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_choice_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_date_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_image_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_linked_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_number_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/checkbox_cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/choice_cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/date_cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/image_cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/linked_cell_editor_model.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/number_cell_editor_model.dart';
+import 'package:flutterclient/src/ui/component/co_map_widget.dart';
+import 'package:flutterclient/src/ui/component/model/map_component_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -32,8 +10,11 @@ import '../../component/co_checkbox_component_widget.dart';
 import '../../component/co_icon_widget.dart';
 import '../../component/co_label_widget.dart';
 import '../../component/co_password_field_widget.dart';
+import '../../component/co_radio_button_widget.dart';
 import '../../component/co_table_widget.dart';
 import '../../component/co_text_area_widget.dart';
+import '../../component/co_text_field_widget.dart';
+import '../../component/co_toggle_button_widget.dart';
 import '../../component/component_widget.dart';
 import '../../component/model/button_component_model.dart';
 import '../../component/model/component_model.dart';
@@ -43,16 +24,37 @@ import '../../component/model/selectable_component_model.dart';
 import '../../component/model/table_component_model.dart';
 import '../../component/model/text_area_component_model.dart';
 import '../../component/model/text_field_component_model.dart';
+import '../../component/model/toggle_button_component_model.dart';
 import '../../component/popup_menu/co_menu_item_widget.dart';
 import '../../component/popup_menu/co_popup_menu_button_widget.dart';
 import '../../component/popup_menu/co_popup_menu_widget.dart';
 import '../../component/popup_menu/models/menu_item_component_model.dart';
 import '../../component/popup_menu/models/popup_menu_button_component_model.dart';
 import '../../component/popup_menu/models/popup_menu_component_model.dart';
+import '../../container/co_group_panel_widget.dart';
 import '../../container/co_panel_widget.dart';
+import '../../container/co_scroll_panel_widget.dart';
+import '../../container/co_split_panel_widget.dart';
 import '../../container/models/container_component_model.dart';
+import '../../container/models/group_panel_component_model.dart';
+import '../../container/models/split_panel_component_model.dart';
+import '../../container/tabset_panel/co_tabset_panel_widget.dart';
+import '../../container/tabset_panel/models/tabset_panel_component_model.dart';
 import '../../editor/cell_editor/co_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_checkbox_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_choice_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_date_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_image_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_linked_cell_editor_widget.dart';
+import '../../editor/cell_editor/co_number_cell_editor_widget.dart';
 import '../../editor/cell_editor/co_text_cell_editor_widget.dart';
+import '../../editor/cell_editor/models/cell_editor_model.dart';
+import '../../editor/cell_editor/models/checkbox_cell_editor_model.dart';
+import '../../editor/cell_editor/models/choice_cell_editor_model.dart';
+import '../../editor/cell_editor/models/date_cell_editor_model.dart';
+import '../../editor/cell_editor/models/image_cell_editor_model.dart';
+import '../../editor/cell_editor/models/linked_cell_editor_model.dart';
+import '../../editor/cell_editor/models/number_cell_editor_model.dart';
 import '../../editor/cell_editor/models/text_cell_editor_model.dart';
 import '../../editor/co_editor_widget.dart';
 import '../../editor/editor_component_model.dart';
@@ -114,6 +116,8 @@ class SoComponentCreator implements IComponentCreator {
         componentModel: componetModel as ToggleButtonComponentModel),
     'RadioButton': (ComponentModel componentModel) => CoRadioButtonWidget(
         componentModel: componentModel as SelectableComponentModel),
+    'Map': (ComponentModel componentModel) =>
+        CoMapWidget(componentModel: componentModel as MapComponentModel),
   };
 
   Map<String, CellEditorWidgetBuilder> standardCellEditors = {

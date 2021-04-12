@@ -1,5 +1,3 @@
-import 'package:flutterclient/src/ui/container/tabset_panel/models/tabset_panel_component_model.dart';
-
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../component/co_action_component_widget.dart';
 import '../../../component/model/button_component_model.dart';
@@ -7,6 +5,7 @@ import '../../../component/model/component_model.dart';
 import '../../../component/model/editable_component_model.dart';
 import '../../../component/model/icon_component_model.dart';
 import '../../../component/model/label_component_model.dart';
+import '../../../component/model/map_component_model.dart';
 import '../../../component/model/selectable_component_model.dart';
 import '../../../component/model/table_component_model.dart';
 import '../../../component/model/text_area_component_model.dart';
@@ -18,6 +17,7 @@ import '../../../component/popup_menu/models/popup_menu_component_model.dart';
 import '../../../container/models/container_component_model.dart';
 import '../../../container/models/group_panel_component_model.dart';
 import '../../../container/models/split_panel_component_model.dart';
+import '../../../container/tabset_panel/models/tabset_panel_component_model.dart';
 import '../../../editor/editor_component_model.dart';
 
 class ComponentModelManager {
@@ -150,12 +150,9 @@ class ComponentModelManager {
         componentModel = ToggleButtonComponentModel(
             changedComponent: changedComponent, onAction: onAction);
         break;
-      // case 'Map':
-      //   componentModel = MapComponentModel(changedComponent);
-      //   break;
-      // default:
-      //   componentModel = ComponentModel(changedComponent: changedComponent);
-      //   break;
+      case 'Map':
+        componentModel = MapComponentModel(changedComponent: changedComponent);
+        break;
     }
 
     if (componentModel != null) {

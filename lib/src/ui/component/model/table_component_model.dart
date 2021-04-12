@@ -188,6 +188,13 @@ class TableComponentModel extends EditorComponentModel {
     }
   }
 
+  @override
+  void onServerDataChanged(BuildContext context) {
+    if (onServerDataChangedCallback != null) {
+      onServerDataChangedCallback!();
+    }
+  }
+
   String _getEditorIdentifier(String columnName, int index) {
     return '${columnName}_$index';
   }

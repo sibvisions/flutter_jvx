@@ -137,7 +137,13 @@ class ApiCubit extends Cubit<ApiState> {
   }
 
   Future<void> deviceStatus(DeviceStatusRequest request) async {
-    emit(await repository.deviceStatus(request));
+    emit(ApiLoading());
+
+    final response = await repository.deviceStatus(request);
+
+    emit(ApiLoading(stop: true));
+
+    emit(response);
   }
 
   Future<void> menu(MenuRequest request) async {

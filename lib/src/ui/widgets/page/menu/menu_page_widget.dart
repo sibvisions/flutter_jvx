@@ -65,7 +65,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
         _lastScreenSize = currentSize;
 
-        sl<ApiCubit>().deviceStatus(request);
+        if (ModalRoute.of(context)!.isCurrent)
+          sl<ApiCubit>().deviceStatus(request);
       });
     }
   }
