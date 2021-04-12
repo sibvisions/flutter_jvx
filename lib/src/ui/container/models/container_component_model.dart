@@ -144,8 +144,6 @@ class ContainerComponentModel extends ComponentModel {
         .components
         .firstWhere((c) => c.componentModel.componentId == componentId);
 
-    pComponent.componentModel.updateProperties(context, changedComponent);
-
     preferredSize = changedComponent.getProperty<Size>(
         ComponentProperty.PREFERRED_SIZE, null);
     maximumSize = changedComponent.getProperty<Size>(

@@ -65,10 +65,6 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
     if (widget.componentModel.isMaximumSizeSet)
       overflow = TextOverflow.ellipsis;
 
-    if (widget.componentModel.text.isEmpty)
-      widget.componentModel
-          .updateProperties(context, widget.componentModel.changedComponent);
-
     Widget child = Container(
       padding: EdgeInsets.only(top: 0.5),
       color: widget.componentModel.background,

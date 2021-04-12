@@ -88,6 +88,16 @@ class CoPopupMenuButtonWidgetState
     }
   }
 
+  _getSplashColor() {
+    if (widget.componentModel.isBackgroundSet) {
+      return widget.componentModel.background.withOpacity(widget.componentModel
+              .appState.applicationStyle?.opacity?.controlsOpacity ??
+          1.0);
+    } else {
+      return Colors.black.withOpacity(0.1);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget child;
@@ -153,8 +163,7 @@ class CoPopupMenuButtonWidgetState
                         .appState
                         .applicationStyle
                         ?.buttonShape as OutlinedBorder),
-                    overlayColor: MaterialStateProperty.all(
-                        widget.componentModel.background)),
+                    overlayColor: MaterialStateProperty.all(_getSplashColor())),
                 child: SizedBox(
                   height: 50,
                   child: Row(
