@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
 import 'package:latlong/latlong.dart';
 
 import '../../screen/core/so_component_data.dart';
@@ -27,6 +28,9 @@ class MapComponentModel extends ComponentModel {
   String tileProvider = 'OpenStreetMap';
 
   int zoomLevel = 13;
+
+  String? groupsDataBook;
+  String? pointsDataBook;
 
   SoComponentData? groupsComponentData;
   SoComponentData? pointsComponentData;
@@ -61,29 +65,19 @@ class MapComponentModel extends ComponentModel {
     center =
         changedComponent.getProperty<String>(ComponentProperty.CENTER, center);
 
-    lineColor = changedComponent.getProperty<Color>(
-        ComponentProperty.LINE_COLOR, lineColor)!;
+    // lineColor = changedComponent.getProperty<Color>(
+    //     ComponentProperty.LINE_COLOR, lineColor)!;
 
-    fillColor = changedComponent.getProperty<Color>(
-        ComponentProperty.FILL_COLOR, fillColor)!;
+    // fillColor = changedComponent.getProperty<Color>(
+    //     ComponentProperty.FILL_COLOR, fillColor)!;
 
     tileProvider = changedComponent.getProperty<String>(
         ComponentProperty.TILE_PROVIDER, tileProvider)!;
 
-    final groupsDataBook = changedComponent.getProperty<String>(
+    groupsDataBook = changedComponent.getProperty<String>(
         ComponentProperty.GROUP_DATA_BOOK, '');
-    final pointsDataBook = changedComponent.getProperty<String>(
+    pointsDataBook = changedComponent.getProperty<String>(
         ComponentProperty.POINTS_DATA_BOOK, '');
-
-    if (groupsDataBook != null)
-      groupsComponentData = SoComponentData(
-          dataProvider: groupsDataBook,
-          soDataScreen: context.widget as SoDataScreen);
-
-    if (pointsDataBook != null)
-      pointsComponentData = SoComponentData(
-          dataProvider: pointsDataBook,
-          soDataScreen: context.widget as SoDataScreen);
 
     super.updateProperties(context, changedComponent);
   }
@@ -97,7 +91,7 @@ class MapComponentModel extends ComponentModel {
     }
   }
 
-  void onGroupDataChanged() {
+  void onGroupDataChanged(BuildContext context) {
     List<LatLng> pointsForGroup = <LatLng>[];
 
     if (groupsComponentData != null && groupsComponentData?.data != null) {
@@ -130,5 +124,5 @@ class MapComponentModel extends ComponentModel {
     notifyListeners();
   }
 
-  void onPointDataChanged() => notifyListeners();
+  void onPointDataChanged(BuildContext context) => notifyListeners();
 }
