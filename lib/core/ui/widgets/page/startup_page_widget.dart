@@ -68,11 +68,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
     this.appState.config = config;
 
-    config.baseUrl = _formatUrl(config.baseUrl);
-
     if (config.onlyLoadOnWelcome != null &&
         config.onlyLoadOnWelcome &&
         manager.warmWelcome) {
+      config.baseUrl = _formatUrl(config.baseUrl);
       appState.baseUrl = config.baseUrl;
       appState.appName = config.appName;
       manager.warmWelcome = false;
@@ -89,6 +88,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       } else if (config.baseUrl.endsWith('/'))
         await showError(context, 'Config Error',
             'Please delete the "/" at the end of the baseUrl and restart the App.');
+
+      config.baseUrl = _formatUrl(config.baseUrl);
 
       this.manager.setAppData(appName: config.appName, baseUrl: config.baseUrl);
       appState.appName = config.appName;
