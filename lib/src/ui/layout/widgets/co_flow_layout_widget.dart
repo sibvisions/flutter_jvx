@@ -261,7 +261,7 @@ class RenderFlowLayoutWidget extends RenderBox
     for (int i = 0, anz = constraintMap.length; i < anz; i++) {
       comp = constraintMap.values.elementAt(i);
 
-      if (comp.componentModel.isVisible ?? true) {
+      if (comp.componentModel.isVisible) {
         Size size =
             this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
 
@@ -429,7 +429,7 @@ class RenderFlowLayoutWidget extends RenderBox
     for (int i = 0, anz = constraintMap.length; i < anz; i++) {
       comp = constraintMap.values.elementAt(i);
 
-      if (comp.componentModel.isVisible ?? true) {
+      if (comp.componentModel.isVisible) {
         Size dimPref =
             this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
 

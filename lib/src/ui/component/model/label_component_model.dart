@@ -36,8 +36,8 @@ class LabelComponentModel extends ComponentModel {
   void updateProperties(
       BuildContext context, ChangedComponent changedComponent) {
     super.updateProperties(context, changedComponent);
-    this.text =
-        changedComponent.getProperty<String>(ComponentProperty.TEXT, this.text);
+    this.text = changedComponent.getProperty<String>(
+        ComponentProperty.TEXT, this.text)!;
   }
 
   double getBaseline() {

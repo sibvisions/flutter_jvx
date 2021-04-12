@@ -10,7 +10,7 @@ class PopupMenuComponentModel extends ComponentModel {
   List<PopupMenuItem<String>> get menuItems {
     List<PopupMenuItem<String>> items = <PopupMenuItem<String>>[];
     _items.forEach((k, i) => items.add(PopupMenuItem<String>(
-          child: Text(i.componentModel.text ?? ''),
+          child: Text(i.componentModel.text),
           enabled: i.componentModel.enabled,
           value: i.componentModel.name,
         )));
@@ -21,7 +21,7 @@ class PopupMenuComponentModel extends ComponentModel {
       : super(changedComponent: changedComponent);
 
   void updateMenuItem(CoMenuItemWidget item) {
-    _items.putIfAbsent(item.componentModel.componentId!, () => item);
+    _items.putIfAbsent(item.componentModel.componentId, () => item);
   }
 
   void removeMenuItem(CoMenuItemWidget item) {

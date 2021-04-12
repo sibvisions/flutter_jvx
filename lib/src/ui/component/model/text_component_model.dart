@@ -7,7 +7,6 @@ import 'editable_component_model.dart';
 class TextComponentModel extends EditableComponentModel {
   bool eventAction = false;
   bool? border;
-  int? horizontalAlignment;
   int? columns;
   bool valueChanged = false;
   double iconSize = 24;
@@ -42,8 +41,8 @@ class TextComponentModel extends EditableComponentModel {
   }
 
   void onTextFieldEndEditing(BuildContext context) {
-    if (valueChanged && rawComponentId != null) {
-      onComponentValueChanged(context, rawComponentId!, text);
+    if (valueChanged && rawComponentId.isNotEmpty) {
+      onComponentValueChanged(context, rawComponentId, text);
       valueChanged = false;
     }
   }

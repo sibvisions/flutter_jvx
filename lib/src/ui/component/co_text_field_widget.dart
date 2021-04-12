@@ -42,16 +42,14 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String controllerValue = (widget.componentModel.text != null
-        ? widget.componentModel.text.toString()
-        : "");
+    String controllerValue = widget.componentModel.text;
     this.textController.value = this.textController.value.copyWith(
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: widget.componentModel.background != null
+          color: widget.componentModel.isBackgroundSet
               ? widget.componentModel.background
               : Colors.white.withOpacity(widget.componentModel.appState
                       .applicationStyle?.controlsOpacity ??
@@ -68,7 +66,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
         width: 100,
         child: TextField(
           textAlign: SoTextAlign.getTextAlignFromInt(
-              widget.componentModel.horizontalAlignment ?? 0),
+              widget.componentModel.horizontalAlignment),
           decoration: InputDecoration(
               hintText: widget.componentModel.placeholder,
               contentPadding: widget.componentModel.textPadding,
@@ -79,7 +77,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
                       child: GestureDetector(
                         onTap: () {
                           if (this.textController.text.isNotEmpty) {
-                            widget.componentModel.text = null;
+                            widget.componentModel.text = '';
                             widget.componentModel.valueChanged = true;
                             widget.componentModel.onTextFieldValueChanged(
                                 widget.componentModel.text);
@@ -98,7 +96,7 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
                   : null),
           style: TextStyle(
               color: widget.componentModel.enabled
-                  ? (widget.componentModel.foreground != null
+                  ? (widget.componentModel.isForegroundSet
                       ? widget.componentModel.foreground
                       : Colors.black)
                   : Colors.grey[700]),

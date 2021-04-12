@@ -5,15 +5,15 @@ import '../../../models/api/response_objects/response_data/component/component_p
 import 'component_model.dart';
 
 class IconComponentModel extends ComponentModel {
-  String? text;
+  String text = '';
   bool selected = false;
   bool eventAction = false;
-  String? image;
+  String image = '';
 
   @override
-  int? verticalAlignment = 2;
+  int verticalAlignment = 2;
   @override
-  int? horizontalAlignment = 1;
+  int horizontalAlignment = 1;
 
   IconComponentModel({required ChangedComponent changedComponent})
       : super(changedComponent: changedComponent);
@@ -27,6 +27,6 @@ class IconComponentModel extends ComponentModel {
     selected = changedComponent.getProperty<bool>(
         ComponentProperty.SELECTED, selected)!;
     image =
-        changedComponent.getProperty<String>(ComponentProperty.IMAGE, image);
+        changedComponent.getProperty<String>(ComponentProperty.IMAGE, image)!;
   }
 }

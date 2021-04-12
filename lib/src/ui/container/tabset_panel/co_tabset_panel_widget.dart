@@ -25,7 +25,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
     componentModel.isClosable = <bool>[];
 
     componentModel.components.forEach((comp) {
-      List splittedConstr = comp.componentModel.constraints?.split(';') ?? [];
+      List splittedConstr = comp.componentModel.constraints.split(';');
       bool enabled = (splittedConstr[0]?.toLowerCase() == 'true');
       bool closable = (splittedConstr[1]?.toLowerCase() == 'true');
       String text = splittedConstr[2] ?? '';
@@ -104,7 +104,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
             componentModel.components.removeAt(index);
 
             sl<ApiCubit>().tabClose(TabCloseRequest(
-                componentId: componentModel.name!,
+                componentId: componentModel.name,
                 clientId: componentModel.appState.applicationMetaData!.clientId,
                 index: index));
           }
@@ -117,7 +117,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
         this.tabController.animateTo(this.tabController.previousIndex);
       } else {
         sl<ApiCubit>().tabSelect(TabSelectRequest(
-            componentId: componentModel.name!,
+            componentId: componentModel.name,
             index: tabController.index,
             clientId: componentModel.appState.applicationMetaData!.clientId));
       }

@@ -21,7 +21,7 @@ class CoIconWidget extends ComponentWidget {
 class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
   void valueChanged(dynamic value) {
     SetComponentValueRequest setComponentValue = SetComponentValueRequest(
-        componentId: widget.componentModel.name!,
+        componentId: widget.componentModel.name,
         value: value,
         clientId: widget.componentModel.appState.applicationMetaData!.clientId);
 
@@ -33,15 +33,15 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
     return Container(
         child: Row(
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-                widget.componentModel.horizontalAlignment!),
+                widget.componentModel.horizontalAlignment),
             crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(
-                widget.componentModel.verticalAlignment!),
+                widget.componentModel.verticalAlignment),
             children: <Widget>[
           Padding(
               padding: EdgeInsets.only(bottom: 3),
               child: Container(
                   decoration: BoxDecoration(
-                      color: widget.componentModel.background != null
+                      color: widget.componentModel.isBackgroundSet
                           ? widget.componentModel.background
                           : Colors.white.withOpacity(widget.componentModel
                                   .appState.applicationStyle?.controlsOpacity ??
@@ -50,7 +50,7 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
                               .appState.applicationStyle?.cornerRadiusEditors ??
                           5)),
                   child: CustomIcon(
-                    image: widget.componentModel.image ?? '',
+                    image: widget.componentModel.image,
                     color: widget.componentModel.foreground,
                     prefferedSize: widget.componentModel.preferredSize,
                   )))

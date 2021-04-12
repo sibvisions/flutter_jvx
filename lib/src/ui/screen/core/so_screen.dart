@@ -1,31 +1,31 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/flutterclient.dart';
-import 'package:flutterclient/src/models/api/requests/press_button_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/co_menu_item_widget.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_button_widget.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/co_popup_menu_widget.dart';
-import 'package:flutterclient/src/ui/component/popup_menu/models/popup_menu_component_model.dart';
-import 'package:flutterclient/src/ui/container/co_panel_widget.dart';
-import 'package:flutterclient/src/ui/util/inherited_widgets/app_state_provider.dart';
-import 'package:flutterclient/src/ui/widgets/page/menu/browser/navigation_bar_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../flutterclient.dart';
+import '../../../models/api/requests/press_button_request.dart';
 import '../../../models/api/response_objects/close_screen_action_response_object.dart';
+import '../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../models/api/response_objects/response_data/component/component.dart';
 import '../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
+import '../../../models/state/app_state.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/color/color_extension.dart';
 import '../../component/component_widget.dart';
 import '../../component/model/component_model.dart';
+import '../../component/popup_menu/co_menu_item_widget.dart';
+import '../../component/popup_menu/co_popup_menu_button_widget.dart';
+import '../../component/popup_menu/co_popup_menu_widget.dart';
+import '../../component/popup_menu/models/popup_menu_component_model.dart';
 import '../../container/co_container_widget.dart';
+import '../../container/co_panel_widget.dart';
 import '../../container/models/container_component_model.dart';
 import '../../editor/cell_editor/co_referenced_cell_editor_widget.dart';
 import '../../editor/co_editor_widget.dart';
 import '../../editor/editor_component_model.dart';
+import '../../util/inherited_widgets/app_state_provider.dart';
+import '../../widgets/page/menu/browser/navigation_bar_widget.dart';
 import 'configuration/so_screen_configuration.dart';
 import 'manager/component_model_manager.dart';
 import 'so_component_creator.dart';
@@ -147,9 +147,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         componentWidget.componentModel
             .updateProperties(context, changedComponent);
 
-        if (componentWidget.componentModel.parentComponentId != null &&
-            container.containsKey(
-                componentWidget.componentModel.parentComponentId)) {
+        if (container
+            .containsKey(componentWidget.componentModel.parentComponentId)) {
           ComponentWidget parentComponentWidget =
               container[componentWidget.componentModel.parentComponentId]!;
 
@@ -157,7 +156,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             (parentComponentWidget.componentModel as ContainerComponentModel)
                 .updateComponentProperties(
                     context,
-                    componentWidget.componentModel.componentId!,
+                    componentWidget.componentModel.componentId,
                     changedComponent);
           }
         }
@@ -261,8 +260,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   void _addToParent(
       ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
-    if (componentWidget.componentModel.parentComponentId != null &&
-        componentWidget.componentModel.parentComponentId!.isNotEmpty) {
+    if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
       ComponentWidget? parentComponentWidget =
           container[componentWidget.componentModel.parentComponentId];
 
@@ -270,7 +268,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           parentComponentWidget is CoContainerWidget) {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .addWithConstraints(
-                componentWidget, componentWidget.componentModel.constraints!);
+                componentWidget, componentWidget.componentModel.constraints);
       }
     }
   }
@@ -290,8 +288,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   void _removeFromParent(
       ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
-    if (componentWidget.componentModel.parentComponentId != null &&
-        componentWidget.componentModel.parentComponentId!.isNotEmpty) {
+    if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
       ComponentWidget? parentComponentWidget =
           container[componentWidget.componentModel.parentComponentId];
 
@@ -333,7 +330,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (parent != null &&
         parent.isNotEmpty &&
         componentWidget.componentModel.parentComponentId != parent) {
-      if (componentWidget.componentModel.parentComponentId != null) {
+      if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
         _removeFromParent(componentWidget, container);
       }
 
@@ -346,9 +343,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         constraints != componentWidget.componentModel.constraints) {
       componentWidget.componentModel.constraints = constraints;
 
-      if (componentWidget.componentModel.parentComponentId != null &&
-          container
-              .containsKey(componentWidget.componentModel.parentComponentId)) {
+      if (container
+          .containsKey(componentWidget.componentModel.parentComponentId)) {
         ComponentWidget parentComponentWidget =
             container[componentWidget.componentModel.parentComponentId]!;
 
@@ -363,7 +359,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     try {
       rootComponent = _components.values.firstWhere(
         (componentWidget) =>
-            componentWidget.componentModel.parentComponentId == null &&
+            componentWidget.componentModel.parentComponentId.isEmpty &&
             componentWidget.componentModel.state == CoState.Added,
       );
     } catch (e) {
@@ -384,7 +380,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             HEADER_FOOTER_PANEL_COMPONENT_ID;
         header!.componentModel.constraints = 'North';
         header!.componentModel.state = CoState.Added;
-        _components[header!.componentModel.componentId!] = header!;
+        _components[header!.componentModel.componentId] = header!;
       }
 
       if (rootComponent != null) {
@@ -398,19 +394,19 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             HEADER_FOOTER_PANEL_COMPONENT_ID;
         footer!.componentModel.constraints = 'South';
         footer!.componentModel.state = CoState.Added;
-        _components[footer!.componentModel.componentId!] = footer!;
+        _components[footer!.componentModel.componentId] = footer!;
       }
 
       _components[HEADER_FOOTER_PANEL_COMPONENT_ID] = headerFooterPanel;
 
       if (rootComponent != null) {
         (headerFooterPanel.componentModel as ContainerComponentModel)
-            .addWithConstraints(header!, header!.componentModel.constraints!);
+            .addWithConstraints(header!, header!.componentModel.constraints);
         (headerFooterPanel.componentModel as ContainerComponentModel)
             .addWithConstraints(
-                rootComponent, rootComponent.componentModel.constraints!);
+                rootComponent, rootComponent.componentModel.constraints);
         (headerFooterPanel.componentModel as ContainerComponentModel)
-            .addWithConstraints(footer!, footer!.componentModel.constraints!);
+            .addWithConstraints(footer!, footer!.componentModel.constraints);
       }
 
       return headerFooterPanel;

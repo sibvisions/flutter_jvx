@@ -103,16 +103,16 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    Widget textWidget = new Text(widget.componentModel.text ?? '',
+    Widget textWidget = new Text(widget.componentModel.text,
         style: TextStyle(
             fontSize: widget.componentModel.fontStyle.fontSize,
             color: !widget.componentModel.enabled
                 ? Colors.grey.shade500
-                : widget.componentModel.foreground != null
+                : widget.componentModel.isForegroundSet
                     ? widget.componentModel.foreground
                     : Theme.of(context).primaryColor.textColor()));
 
-    if (widget.componentModel.text?.isNotEmpty ?? true) {
+    if (widget.componentModel.text.isNotEmpty) {
       if (widget.componentModel.icon != null) {
         Widget icon = widget.componentModel.icon ??
             SizedBox(
@@ -165,7 +165,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             if (widget.componentModel.enabled) {
               widget.componentModel.onAction(
                   context,
-                  widget.componentModel.name!,
+                  widget.componentModel.name,
                   widget.componentModel.classNameEventSourceRef);
             }
           },
@@ -173,13 +173,13 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             height: 40,
             child: Center(
               child: Text(
-                widget.componentModel.text ?? '',
+                widget.componentModel.text,
                 style: TextStyle(
                     decoration: TextDecoration.underline,
                     fontSize: widget.componentModel.fontStyle.fontSize,
                     color: !widget.componentModel.enabled
                         ? Colors.grey.shade500
-                        : widget.componentModel.foreground != null
+                        : widget.componentModel.isForegroundSet
                             ? widget.componentModel.foreground
                             : Colors.blue),
               ),
@@ -209,18 +209,20 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
 
                       widget.componentModel.onAction(
                           context,
-                          widget.componentModel.name!,
+                          widget.componentModel.name,
                           widget.componentModel.classNameEventSourceRef);
                     }
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                          widget.componentModel.background ??
-                              Theme.of(context).primaryColor),
+                          widget.componentModel.isBackgroundSet
+                              ? widget.componentModel.background
+                              : Theme.of(context).primaryColor),
                       elevation: MaterialStateProperty.all(2),
-                      overlayColor: MaterialStateProperty.all(
-                          widget.componentModel.background?.withOpacity(0.1) ??
-                              Theme.of(context).primaryColor)),
+                      overlayColor: MaterialStateProperty.all(widget
+                              .componentModel.isBackgroundSet
+                          ? widget.componentModel.background.withOpacity(0.1)
+                          : Theme.of(context).primaryColor)),
                   child: child,
                 ))));
   }

@@ -21,7 +21,7 @@ class CoRadioButtonWidgetState
     return Container(
       child: Row(
         mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-            widget.componentModel.horizontalAlignment ?? 0),
+            widget.componentModel.horizontalAlignment),
         children: <Widget>[
           Radio<String>(
               value: widget.componentModel.selected
@@ -38,16 +38,16 @@ class CoRadioButtonWidgetState
 
                 if (widget.componentModel.eventAction) {
                   widget.componentModel.onComponentValueChanged(
-                      context, widget.componentModel.name!, change);
+                      context, widget.componentModel.name, change);
                 }
               }),
-          widget.componentModel.text != null
+          widget.componentModel.text.isNotEmpty
               ? SizedBox(
                   width: 0,
                 )
               : Container(),
-          widget.componentModel.text != null
-              ? Text(widget.componentModel.text ?? '')
+          widget.componentModel.text.isNotEmpty
+              ? Text(widget.componentModel.text)
               : Container(),
         ],
       ),

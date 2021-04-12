@@ -176,10 +176,10 @@ class CoFormLayoutContainerWidget extends StatelessWidget
       CoFormLayoutConstraint? constraint =
           this.getConstraintsFromString(pConstraint);
       Key? key =
-          this.getKeyByComponentId(pComponent.componentModel.componentId!);
+          this.getKeyByComponentId(pComponent.componentModel.componentId);
 
       if (key == null) {
-        key = createKey(pComponent.componentModel.componentId!);
+        key = createKey(pComponent.componentModel.componentId);
       }
 
       if (constraint != null) {
@@ -268,14 +268,14 @@ class CoFormLayoutContainerWidget extends StatelessWidget
             <CoFormLayoutConstraintData>[];
 
         this._layoutConstraints.forEach((k, v) {
-          if (k.componentModel.isVisible!) {
+          if (k.componentModel.isVisible) {
             CoFormLayoutConstraint? constraint =
                 this.getConstraintsFromString(v);
 
-            Key? key = this.getKeyByComponentId(k.componentModel.componentId!);
+            Key? key = this.getKeyByComponentId(k.componentModel.componentId);
 
             if (key == null) {
-              key = createKey(k.componentModel.componentId!);
+              key = createKey(k.componentModel.componentId);
             }
 
             if (constraint != null) {

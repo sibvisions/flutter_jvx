@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/services/remote/rest/cert_http_overrides.dart';
 
 import 'injection_container.dart' as di;
 import 'src/application_widget.dart';
+import 'src/services/remote/rest/cert_http_overrides.dart';
 import 'src/util/config/dev_config.dart';
 
 void main() async {

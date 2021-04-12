@@ -35,7 +35,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
       if (componentModel.layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(
-                component.componentModel.constraints!);
+                component.componentModel.constraints);
 
         componentModel.layout?.addLayoutComponent(component, contraints);
       } else {
@@ -63,7 +63,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
       if (componentModel.layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(
-                component.componentModel.constraints!);
+                component.componentModel.constraints);
 
         componentModel.layout?.addLayoutComponent(component, contraints);
       } else {

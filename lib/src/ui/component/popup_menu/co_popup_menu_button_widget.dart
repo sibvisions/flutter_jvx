@@ -81,7 +81,7 @@ class CoPopupMenuButtonWidgetState
   _getCurrentTextColor() {
     if (!widget.componentModel.enabled) {
       return Colors.grey.shade500;
-    } else if (widget.componentModel.foreground != null) {
+    } else if (widget.componentModel.isForegroundSet) {
       return widget.componentModel.foreground;
     } else {
       return Theme.of(context).primaryColor.textColor();
@@ -91,12 +91,12 @@ class CoPopupMenuButtonWidgetState
   @override
   Widget build(BuildContext context) {
     Widget child;
-    Widget textWidget = new Text(widget.componentModel.text ?? "",
+    Widget textWidget = new Text(widget.componentModel.text,
         style: TextStyle(
             fontSize: widget.componentModel.fontStyle.fontSize,
             color: _getCurrentTextColor()));
 
-    if (widget.componentModel.text?.isNotEmpty ?? true) {
+    if (widget.componentModel.text.isNotEmpty) {
       if (widget.componentModel.icon != null) {
         if (widget.componentModel.horizontalTextPosition != TextAlign.left)
           child = Row(

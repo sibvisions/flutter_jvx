@@ -28,7 +28,7 @@ class ToggleButtonComponentModel extends ActionComponentModel {
       BuildContext context, ChangedComponent changedComponent) {
     image =
         changedComponent.getProperty<String>(ComponentProperty.IMAGE, image);
-    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text);
+    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text)!;
     textStyle = changedComponent.getProperty<String>(
         ComponentProperty.STYLE, textStyle);
 

@@ -20,7 +20,7 @@ class CoCheckBoxWidgetState extends ComponentWidgetState<CoCheckBoxWidget> {
     return Container(
       child: Row(
         mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-            widget.componentModel.horizontalAlignment ?? 0),
+            widget.componentModel.horizontalAlignment),
         children: <Widget>[
           Checkbox(
             value: widget.componentModel.selected,
@@ -32,19 +32,19 @@ class CoCheckBoxWidgetState extends ComponentWidgetState<CoCheckBoxWidget> {
 
                 if (widget.componentModel.eventAction) {
                   widget.componentModel.onComponentValueChanged(
-                      context, widget.componentModel.name!, change);
+                      context, widget.componentModel.name, change);
                 }
               }
             },
             tristate: false,
           ),
-          widget.componentModel.text != null
+          widget.componentModel.text.isNotEmpty
               ? SizedBox(
                   width: 0,
                 )
               : Container(),
-          widget.componentModel.text != null
-              ? Text(widget.componentModel.text ?? '')
+          widget.componentModel.text.isNotEmpty
+              ? Text(widget.componentModel.text)
               : Container(),
         ],
       ),

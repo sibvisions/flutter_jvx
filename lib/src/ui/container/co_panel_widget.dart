@@ -15,7 +15,7 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     List<Widget> children = <Widget>[];
 
     components.forEach((element) {
-      if (element.componentModel.isVisible!) {
+      if (element.componentModel.isVisible) {
         children.add(element);
       }
     });

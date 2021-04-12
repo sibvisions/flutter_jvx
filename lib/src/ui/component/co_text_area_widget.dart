@@ -42,9 +42,8 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String controllerValue = (widget.componentModel.text != null
-        ? widget.componentModel.text.toString()
-        : "");
+    String controllerValue = widget.componentModel.text;
+
     this.textController.value = this.textController.value.copyWith(
         text: controllerValue,
         selection: TextSelection.collapsed(offset: controllerValue.length));
@@ -52,7 +51,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
     return Container(
       child: DecoratedBox(
         decoration: BoxDecoration(
-            color: widget.componentModel.background != null
+            color: widget.componentModel.isBackgroundSet
                 ? widget.componentModel.background
                 : Colors.white.withOpacity(widget.componentModel.appState
                         .applicationStyle?.controlsOpacity ??
@@ -69,7 +68,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
           width: 100,
           child: TextField(
             textAlign: SoTextAlign.getTextAlignFromInt(
-                widget.componentModel.horizontalAlignment ?? 0),
+                widget.componentModel.horizontalAlignment),
             decoration: InputDecoration(
                 hintText: widget.componentModel.placeholder,
                 contentPadding: widget.componentModel.textPadding,
@@ -80,7 +79,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
                         child: GestureDetector(
                           onTap: () {
                             if (this.textController.text.isNotEmpty) {
-                              widget.componentModel.text = null;
+                              widget.componentModel.text = '';
                               widget.componentModel.valueChanged = true;
                               widget.componentModel.onTextFieldValueChanged(
                                   widget.componentModel.text);
@@ -99,7 +98,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
                     : null),
             style: TextStyle(
                 color: widget.componentModel.enabled
-                    ? (widget.componentModel.foreground != null
+                    ? (widget.componentModel.isForegroundSet
                         ? widget.componentModel.foreground
                         : Colors.black)
                     : Colors.grey[700]),

@@ -17,7 +17,7 @@ class CoMenuItemWidgetState extends ComponentWidgetState<CoMenuItemWidget> {
   Widget build(BuildContext context) {
     return PopupMenuItem<String>(
         value: widget.componentModel.name,
-        child: Text(widget.componentModel.text ?? ''),
+        child: Text(widget.componentModel.text),
         enabled: widget.componentModel.enabled);
   }
 }

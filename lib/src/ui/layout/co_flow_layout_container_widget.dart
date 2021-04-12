@@ -132,11 +132,11 @@ class CoFlowLayoutContainerWidget extends StatelessWidget
         this.children = <CoFlowLayoutConstraintData>[];
 
         this._constraintMap.forEach((k, v) {
-          if (k.componentModel.isVisible!) {
-            Key? key = this.getKeyByComponentId(k.componentModel.componentId!);
+          if (k.componentModel.isVisible) {
+            Key? key = this.getKeyByComponentId(k.componentModel.componentId);
 
             if (key == null) {
-              key = this.createKey(k.componentModel.componentId!);
+              key = this.createKey(k.componentModel.componentId);
             }
 
             children.add(new CoFlowLayoutConstraintData(

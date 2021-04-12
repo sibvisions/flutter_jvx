@@ -65,7 +65,7 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
     if (widget.componentModel.isMaximumSizeSet)
       overflow = TextOverflow.ellipsis;
 
-    if (widget.componentModel.text!.isEmpty)
+    if (widget.componentModel.text.isEmpty)
       widget.componentModel
           .updateProperties(context, widget.componentModel.changedComponent);
 
@@ -73,15 +73,15 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
       padding: EdgeInsets.only(top: 0.5),
       color: widget.componentModel.background,
       child: Align(
-        alignment: getLabelAlignment(widget.componentModel.horizontalAlignment!,
-            widget.componentModel.verticalAlignment!),
+        alignment: getLabelAlignment(widget.componentModel.horizontalAlignment,
+            widget.componentModel.verticalAlignment),
         child: Baseline(
           baselineType: TextBaseline.alphabetic,
           baseline: widget.componentModel.getBaseline(),
-          child: widget.componentModel.text!.trim().startsWith('<html>')
-              ? Html(data: widget.componentModel.text!)
+          child: widget.componentModel.text.trim().startsWith('<html>')
+              ? Html(data: widget.componentModel.text)
               : Text(
-                  widget.componentModel.text!,
+                  widget.componentModel.text,
                   style: widget.componentModel.fontStyle,
                   overflow: overflow,
                 ),

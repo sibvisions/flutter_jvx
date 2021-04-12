@@ -63,7 +63,7 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
                       width: 10,
                     ),
                     Text(
-                      componentModel.text!,
+                      componentModel.text,
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center,
                     ),

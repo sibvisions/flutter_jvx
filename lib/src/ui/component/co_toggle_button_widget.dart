@@ -103,7 +103,7 @@ class CoToggleButtonWidgetState
 
     Future.delayed(const Duration(milliseconds: 100), () {
       PressButtonRequest pressButton = PressButtonRequest(
-          componentId: widget.componentModel.name ?? '',
+          componentId: widget.componentModel.name,
           classNameEventSourceRef:
               widget.componentModel.classNameEventSourceRef,
           clientId:
@@ -113,18 +113,26 @@ class CoToggleButtonWidgetState
     });
   }
 
+  Color _getTextColor() {
+    if (widget.componentModel.enabled &&
+        widget.componentModel.isForegroundSet) {
+      return widget.componentModel.foreground;
+    } else if (widget.componentModel.enabled) {
+      return Theme.of(context).primaryColor.textColor();
+    } else {
+      return Colors.grey.shade500;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget child;
-    Widget textWidget = new Text(widget.componentModel.text ?? '',
+    Widget textWidget = new Text(widget.componentModel.text,
         style: TextStyle(
             fontSize: widget.componentModel.fontStyle.fontSize,
-            color: !widget.componentModel.enabled
-                ? Colors.grey.shade500
-                : widget.componentModel.foreground ??
-                    Theme.of(context).primaryColor.textColor()));
+            color: _getTextColor()));
 
-    if (widget.componentModel.text?.isNotEmpty ?? true) {
+    if (widget.componentModel.text.isNotEmpty) {
       if (widget.componentModel.image != null) {
         child = Row(
           children: <Widget>[

@@ -4,7 +4,7 @@ hideLoginCheckbox: false
 handleSessionTimeout: true
 loginColorsInverted: true
 requestTimeout: 10
-initialConfig:
-  baseUrl: http://192.168.0.80/services/mobile
-  appName: Einkaufsliste
-  appMode: full
+# initialConfig:
+#   baseUrl: http://192.168.0.80/services/mobile
+#   appName: Einkaufsliste
+#   appMode: full

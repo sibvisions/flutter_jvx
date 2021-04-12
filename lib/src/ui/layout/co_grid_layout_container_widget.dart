@@ -118,13 +118,13 @@ class CoGridLayoutContainerWidget extends StatelessWidget
         List<CoGridLayoutConstraintData> children =
             <CoGridLayoutConstraintData>[];
         this._constraintMap.forEach((k, v) {
-          if (k.componentModel.isVisible ?? true) {
+          if (k.componentModel.isVisible) {
             CoGridLayoutConstraints? constraint =
                 this.getConstraintsFromString(v);
-            Key? key = this.getKeyByComponentId(k.componentModel.componentId!);
+            Key? key = this.getKeyByComponentId(k.componentModel.componentId);
 
             if (key == null) {
-              key = this.createKey(k.componentModel.componentId!);
+              key = this.createKey(k.componentModel.componentId);
             }
 
             if (constraint != null) {
