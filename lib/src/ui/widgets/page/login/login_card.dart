@@ -120,7 +120,7 @@ class _LoginCardState extends State<LoginCard>
                 ],
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15),
