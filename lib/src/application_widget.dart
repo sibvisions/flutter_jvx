@@ -17,6 +17,7 @@ import 'ui/util/inherited_widgets/app_state_provider.dart';
 import 'ui/util/inherited_widgets/shared_preferences_provider.dart';
 import 'ui/util/restart_widget.dart';
 import 'util/app/listener/app_listener.dart';
+import 'util/app/version/app_version.dart';
 import 'util/config/app_config.dart';
 import 'util/config/dev_config.dart';
 import 'util/config/server_config.dart';
@@ -31,6 +32,7 @@ class ApplicationWidget extends StatelessWidget {
   final IScreenManager? screenManager;
   final Widget? welcomeWidget;
   final Widget? startupWidget;
+  final AppVersion? appVersion;
   final bool package;
 
   const ApplicationWidget(
@@ -42,7 +44,8 @@ class ApplicationWidget extends StatelessWidget {
       this.devConfig,
       this.welcomeWidget,
       this.startupWidget,
-      this.package = false})
+      this.package = false,
+      this.appVersion})
       : assert(appConfig != null || appConfigPath != null),
         super(key: key);
 
@@ -136,6 +139,10 @@ class ApplicationWidget extends StatelessWidget {
     AppState appState = sl<AppState>();
     SharedPreferencesManager manager = sl<SharedPreferencesManager>();
     String initialRoute = '/';
+
+    if (appState.appVersion == null && appVersion != null) {
+      appState.appVersion = appVersion;
+    }
 
     if (screenManager != null) {
       appState.screenManager = screenManager!;

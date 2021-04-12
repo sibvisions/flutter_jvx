@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../application_widget.dart';
 import '../../../util/app/listener/app_listener.dart';
+import '../../../util/app/version/app_version.dart';
 import '../../../util/config/app_config.dart';
 import '../../../util/config/dev_config.dart';
 import '../core/manager/i_screen_manager.dart';
@@ -39,6 +40,9 @@ class CustomApplicationWidget extends StatelessWidget {
   /// One of [appConfig] and [appConfigPath] must be not null
   final String? appConfigPath;
 
+  /// Optional app version if you want to version the app
+  final AppVersion? appVersion;
+
   const CustomApplicationWidget(
       {Key? key,
       required this.screenManager,
@@ -47,7 +51,8 @@ class CustomApplicationWidget extends StatelessWidget {
       this.welcomeWidget,
       this.startupWidget,
       this.appConfig,
-      this.appConfigPath})
+      this.appConfigPath,
+      this.appVersion})
       : super(key: key);
 
   @override
@@ -60,6 +65,7 @@ class CustomApplicationWidget extends StatelessWidget {
       devConfig: config,
       appConfig: appConfig,
       appConfigPath: appConfigPath,
+      appVersion: appVersion,
       package: true,
     );
   }

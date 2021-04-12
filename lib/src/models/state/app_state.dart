@@ -1,8 +1,8 @@
-import 'package:flutterclient/src/ui/screen/core/manager/screen_manager.dart';
-
 import '../../services/remote/handler/i_socket_handler.dart';
 import '../../ui/screen/core/manager/i_screen_manager.dart';
+import '../../ui/screen/core/manager/screen_manager.dart';
 import '../../util/app/listener/app_listener.dart';
+import '../../util/app/version/app_version.dart';
 import '../../util/config/app_config.dart';
 import '../../util/config/dev_config.dart';
 import '../../util/config/server_config.dart';
@@ -29,6 +29,8 @@ class AppState {
   FileConfig fileConfig = FileConfig();
   MenuResponseObject menuResponseObject =
       MenuResponseObject(name: 'menu', entries: <MenuItem>[]);
+
+  AppVersion? appVersion;
 
   bool mobileOnly = false;
   bool webOnly = false;

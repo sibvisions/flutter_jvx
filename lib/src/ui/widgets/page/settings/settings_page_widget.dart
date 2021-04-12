@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterclient/src/util/app/version/app_version.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -76,30 +77,21 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   }
 
   void _loadVersion() async {
-    Map<String, dynamic> versionMap =
-        await rootBundle.loadStructuredData<Map<String, dynamic>>(
-            getPackageString(
-                widget.appState, 'assets/version/app_version.json'),
-            (String toParse) async =>
-                Map<String, dynamic>.from(json.decode(toParse)));
+    AppVersion? appVersion;
 
-    if (mounted) {
+    if (widget.appState.appVersion != null) {
+      appVersion = widget.appState.appVersion;
+    } else {
+      appVersion = await AppVersion.loadFile(
+          package: widget.appState.appConfig!.package);
+    }
+
+    if (mounted && appVersion != null) {
       setState(() {
-        if (versionMap.containsKey('version') &&
-            versionMap.containsKey('commit') &&
-            versionMap.containsKey('date')) {
-          if (versionMap['version'] != null) {
-            List<String> splitted = versionMap['version'].split('+');
-            version = splitted[0];
-            buildNumber = splitted[1];
-          }
-          commit = versionMap['commit'];
-
-          DateTime date =
-              DateTime.fromMillisecondsSinceEpoch(versionMap['date']);
-
-          buildDate = DateFormat('dd.MM.yyyy').format(date);
-        }
+        version = appVersion!.buildName;
+        buildNumber = appVersion.buildNumber;
+        commit = appVersion.commit;
+        buildDate = appVersion.date;
       });
     }
   }
