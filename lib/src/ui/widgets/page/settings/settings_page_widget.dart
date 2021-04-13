@@ -158,24 +158,31 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     Map<String, dynamic> properties = <String, dynamic>{};
 
     if (data.isNotEmpty && data != '-1') {
-      List<String?> result = data.split('\n');
+      try {
+        properties = json.decode(data);
+      } catch (e) {
+        List<String?> result = data.split('\n');
 
-      if (data.contains('APPNAME') && _checkQRString(result[0]))
-        properties['APPNAME'] =
-            result[0]?.substring(result[0]!.indexOf(': ') + 2);
+        if (data.contains('APPNAME') && _checkQRString(result[0]))
+          properties['APPNAME'] =
+              result[0]?.substring(result[0]!.indexOf(': ') + 2);
 
-      if (data.contains('URL') && _checkQRString(result[1]))
-        properties['URL'] = result[1]?.substring(result[1]!.indexOf(': ') + 2);
+        if (data.contains('URL') && _checkQRString(result[1]))
+          properties['URL'] =
+              result[1]?.substring(result[1]!.indexOf(': ') + 2);
 
-      if (data.contains('USER') &&
-          result.length >= 3 &&
-          _checkQRString(result[2]))
-        properties['USER'] = result[2]?.substring(result[2]!.indexOf(': ') + 2);
+        if (data.contains('USER') &&
+            result.length >= 3 &&
+            _checkQRString(result[2]))
+          properties['USER'] =
+              result[2]?.substring(result[2]!.indexOf(': ') + 2);
 
-      if (data.contains('PWD') &&
-          result.length >= 4 &&
-          _checkQRString(result[3]))
-        properties['PWD'] = result[3]?.substring(result[3]!.indexOf(': ') + 2);
+        if (data.contains('PWD') &&
+            result.length >= 4 &&
+            _checkQRString(result[3]))
+          properties['PWD'] =
+              result[3]?.substring(result[3]!.indexOf(': ') + 2);
+      }
     }
 
     return properties;
