@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterclient/src/models/api/response_objects/application_parameters_response_object.dart';
 
 import '../../../models/api/errors/failure.dart';
 import '../../../models/api/response_objects/menu/menu_response_object.dart';
@@ -57,6 +58,11 @@ class CustomCubitListener extends StatelessWidget {
           if (state.hasObject<MenuResponseObject>()) {
             appState.menuResponseObject =
                 state.getObjectByType<MenuResponseObject>()!;
+          }
+
+          if (state.hasObject<ApplicationParametersResponseObject>()) {
+            appState.parameters.updateFromResponseObject(
+                state.getObjectByType<ApplicationParametersResponseObject>()!);
           }
         }
 
