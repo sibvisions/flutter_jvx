@@ -139,10 +139,10 @@ class SoTableColumnCalculator {
 
       for (int i = 0; i < columns.length; i++) {
         SoTableColumn c = columns[i];
-        if (c.isFlexColumn || flexReduceFactor > 0) {
+        if (c.isFlexColumn) {
           c.reducePreferredWidth(flexReduceFactor);
 
-          if (c.isFlexColumn || flexReduceFactor > 0) moreFlexAvailable = true;
+          if (c.isFlexColumn) moreFlexAvailable = true;
         }
       }
 

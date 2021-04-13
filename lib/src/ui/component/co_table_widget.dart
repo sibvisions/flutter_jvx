@@ -411,8 +411,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         width: columnWidth +
-                            (2 * widget.componentModel.borderWidth) +
-                            100,
+                            (2 * widget.componentModel.borderWidth),
                         height: constraints.maxHeight == double.infinity
                             ? tableHeight
                             : constraints.maxHeight,
@@ -429,8 +428,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                     )
                   : Container(
                       width: (columnWidth +
-                              (2 * widget.componentModel.borderWidth) +
-                              100) -
+                              (2 * widget.componentModel.borderWidth)) -
                           widget.componentModel.borderWidth,
                       height: constraints.maxHeight == double.infinity
                           ? tableHeight - widget.componentModel.borderWidth
