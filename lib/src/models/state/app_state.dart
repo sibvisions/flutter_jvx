@@ -15,36 +15,78 @@ import '../api/response_objects/language_response_object.dart';
 import '../api/response_objects/menu/menu_item.dart';
 import '../api/response_objects/menu/menu_response_object.dart';
 import '../api/response_objects/user_data_response_object.dart';
+import 'application_parameters.dart';
 
+/// State of the application
 class AppState {
+  /// Config for the app
   AppConfig? appConfig;
+
+  /// Config for the connection to the server
   ServerConfig? serverConfig;
+
+  /// Config for developers
   DevConfig? devConfig;
+
+  /// App Meta Data from the server
   ApplicationMetaDataResponseObject? applicationMetaData;
+
+  /// UserData from the server
   UserDataResponseObject? userData;
+
+  /// DeviceStatus object
   DeviceStatusResponseObject? deviceStatus;
+
+  /// Language Response from the server
   LanguageResponseObject? language;
+
+  /// Translation files
   TranslationConfig translationConfig = TranslationConfig();
+
+  /// App Style response from the server
   ApplicationStyleResponseObject? applicationStyle;
+
+  /// File locations
   FileConfig fileConfig = FileConfig();
+
+  /// Current Menu entries
   MenuResponseObject menuResponseObject =
       MenuResponseObject(name: 'menu', entries: <MenuItem>[]);
 
+  /// Application Parameters from the server
+  ApplicationParameters parameters = ApplicationParameters();
+
+  /// App version for custom apps
   AppVersion? appVersion;
 
+  /// Only show mobile frame
   bool mobileOnly = false;
+
+  /// Only show web frame
   bool webOnly = false;
 
+  /// How many records the app should fetch ahead
   int readAheadLimit = 100;
+
+  /// Directory of the flutter app
   String baseDirectory = '';
+
+  /// Picsize which will be used to scale taken images
   int picSize = 320;
 
+  /// When the app is in offline mode
   bool isOffline = false;
 
+  /// Manager for custom screens
   IScreenManager screenManager = ScreenManager();
+
+  /// Listener for events from server
   AppListener? listener;
+
+  /// Socket Handler manages connections
   ISocketHandler? socketHandler;
 
+  /// Current screen menu comp id
   String? currentMenuComponentId;
 
   AppState();

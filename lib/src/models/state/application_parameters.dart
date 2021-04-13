@@ -1,4 +1,4 @@
-import 'package:flutterclient/src/models/api/response_objects/application_parameters_response_object.dart';
+import '../api/response_objects/application_parameters_response_object.dart';
 
 class ApplicationParameters {
   Map<String, dynamic> parameters = <String, dynamic>{};
