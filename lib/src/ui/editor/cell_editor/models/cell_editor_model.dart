@@ -44,6 +44,7 @@ class CellEditorModel extends ChangeNotifier {
   int indexInTable = -1;
   TextStyle fontStyle = TextStyle(fontSize: 16, color: Colors.black);
   Size? tableMinimumSize;
+  Size? tablePreferredSize;
 
   Size? preferredSize;
   Size? minimumSize;
@@ -64,6 +65,7 @@ class CellEditorModel extends ChangeNotifier {
   bool get isMinimumSizeSet => minimumSize != null;
   bool get isMaximumSizeSet => maximumSize != null;
   bool get isTableMinimumSizeSet => tableMinimumSize != null;
+  bool get isTablePreferredSizeSet => tablePreferredSize != null;
 
   set cellEditorValue(dynamic value) {
     _value = value;

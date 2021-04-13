@@ -56,20 +56,22 @@ class SoTableColumnCalculator {
           CoCellEditorWidget? editor;
           DataBookMetaDataColumn? metaDataColumn =
               componentData.getMetaDataColumn(columnNames[i]);
+          String value = c != null ? c.toString() : "";
+
           if (metaDataColumn != null && metaDataColumn.cellEditor != null) {
             editor = componentCreator.createCellEditorForTable(
                 metaDataColumn.cellEditor!, componentData);
+            editor?.cellEditorModel.cellEditorValue = value;
           }
 
           if (editor != null && editor.cellEditorModel.isTableMinimumSizeSet) {
             columns[i].minWidth =
                 editor.cellEditorModel.tableMinimumSize!.width + itemPadding;
           } else if (editor != null &&
-              editor.cellEditorModel.isPreferredSizeSet) {
+              editor.cellEditorModel.isTablePreferredSizeSet) {
             columns[i].preferredWidth =
-                editor.cellEditorModel.preferredSize!.width;
+                editor.cellEditorModel.tablePreferredSize!.width;
           } else {
-            String value = c != null ? c.toString() : "";
             columns[i].preferredWidth =
                 TextUtils.getTextWidth(value, textStyle, textScaleFactor) +
                     itemPadding;
@@ -79,7 +81,8 @@ class SoTableColumnCalculator {
 
       // Autp resize columns
       if (containerWidth != null && containerWidth != double.infinity) {
-        if (autoResize) {
+        double columnWidthSum = getColumnWidthSum(columns);
+        if (autoResize || containerWidth > columnWidthSum) {
           _calculateAutoSizeColumnWidths(columns, containerWidth);
         }
       } else {
@@ -136,10 +139,10 @@ class SoTableColumnCalculator {
 
       for (int i = 0; i < columns.length; i++) {
         SoTableColumn c = columns[i];
-        if (c.isFlexColumn) {
+        if (c.isFlexColumn || flexReduceFactor > 0) {
           c.reducePreferredWidth(flexReduceFactor);
 
-          if (c.isFlexColumn) moreFlexAvailable = true;
+          if (c.isFlexColumn || flexReduceFactor > 0) moreFlexAvailable = true;
         }
       }
 

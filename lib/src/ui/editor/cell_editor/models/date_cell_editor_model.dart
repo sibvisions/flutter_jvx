@@ -12,13 +12,7 @@ class DateCellEditorModel extends CellEditorModel {
 
   @override
   get preferredSize {
-    String text = DateFormat(this.dateFormat)
-        .format(DateTime.parse("2020-12-31 22:22:22Z"));
-
-    if (text.isEmpty) text = TextUtils.averageCharactersDateField;
-
-    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
-    return Size(width + 110, 50);
+    return _getPreferredSize();
   }
 
   @override
@@ -27,8 +21,13 @@ class DateCellEditorModel extends CellEditorModel {
   }
 
   @override
+  get tablePreferredSize {
+    return _getPreferredSize(cellEditorValue);
+  }
+
+  @override
   get tableMinimumSize {
-    return this.preferredSize;
+    return this.tablePreferredSize;
   }
 
   get isTimeFormat {
@@ -39,6 +38,20 @@ class DateCellEditorModel extends CellEditorModel {
     return this.dateFormat!.contains("d") ||
         this.dateFormat!.contains("M") ||
         this.dateFormat!.contains("y");
+  }
+
+  Size _getPreferredSize([dynamic value]) {
+    String text = DateFormat(this.dateFormat)
+        .format(DateTime.parse("2020-12-31 22:22:22Z"));
+
+    if (value != null && int.tryParse(value) != null)
+      text = DateFormat(this.dateFormat)
+          .format(DateTime.fromMillisecondsSinceEpoch(int.parse(value)));
+
+    if (text.isEmpty) text = TextUtils.averageCharactersDateField;
+
+    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+    return Size(width + (isTableView ? 65 : 110), 50);
   }
 
   DateCellEditorModel({required CellEditor cellEditor})

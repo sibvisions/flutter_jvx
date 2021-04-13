@@ -359,6 +359,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         //print(this.rawComponentId + "- Constraints:" + constraints.toString());
+        widget.componentModel.containerWidth = constraints.maxWidth;
         widget.componentModel.columnInfo =
             SoTableColumnCalculator.getColumnFlex(
                 widget.componentModel.data!,

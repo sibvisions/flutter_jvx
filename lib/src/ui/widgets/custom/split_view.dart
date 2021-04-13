@@ -222,7 +222,7 @@ class _SplitViewState extends State<SplitView> {
   Widget _buildHorizontalView(
       BuildContext context, BoxConstraints constraints, double w) {
     final double maxWidth = constraints.maxWidth == double.infinity
-        ? MediaQuery.of(context).size.width
+        ? (MediaQuery.of(context).size.width - widget.positionLimit)
         : constraints.maxWidth;
     final double maxHeight = constraints.maxHeight == double.infinity
         ? MediaQuery.of(context).size.height

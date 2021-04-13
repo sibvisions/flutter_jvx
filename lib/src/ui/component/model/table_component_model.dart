@@ -52,6 +52,7 @@ class TableComponentModel extends EditorComponentModel {
   bool autoResize = false;
   bool hasHorizontalScroller = false;
   Function(int index)? onRowTapped;
+  double containerWidth = double.infinity;
 
   OnSelectedRowChanged? onSelectedRowChangedCallback;
 
@@ -85,6 +86,7 @@ class TableComponentModel extends EditorComponentModel {
         componentCreator!,
         autoResize,
         textScaleFactor,
+        null,
         16.0,
         16.0);
     if (columnInfo != null)
