@@ -39,11 +39,11 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
 
   @override
   get preferredSize {
-    double width = 35;
+    double width = 44;
     double height = 36;
 
     if (this.image != null) {
-      width += iconSize.width + iconPadding;
+      width += iconSize.width + iconPadding * 2;
     }
 
     Size size = TextUtils.getTextSize(text, fontStyle, textScaleFactor);

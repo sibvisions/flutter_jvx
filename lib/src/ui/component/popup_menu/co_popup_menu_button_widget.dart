@@ -44,7 +44,7 @@ class CoPopupMenuButtonWidgetState
                 as PopupMenuComponentModel)
             .menuItems;
       },
-      padding: EdgeInsets.only(bottom: 8, right: 16),
+      padding: EdgeInsets.only(bottom: 8),
       icon: FaIcon(
         FontAwesomeIcons.sortDown,
         color: Theme.of(context).primaryColor.textColor(),
@@ -147,36 +147,40 @@ class CoPopupMenuButtonWidgetState
     return Container(
       margin: widget.componentModel.margin,
       child: ButtonTheme(
-          minWidth: minWidth,
-          padding: padding,
-          child: SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () => widget.componentModel.enabled
-                    ? buttonPressed(context)
-                    : null,
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColor),
-                    shape: MaterialStateProperty.all(widget
-                        .componentModel
-                        .appState
-                        .applicationStyle
-                        ?.buttonShape as OutlinedBorder),
-                    overlayColor: MaterialStateProperty.all(_getSplashColor())),
-                child: SizedBox(
-                  height: 50,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(flex: 4, child: Center(child: child)),
-                        Flexible(
-                            flex: 1,
-                            child:
-                                _getPopupMenu(Theme.of(context).colorScheme)),
-                      ]),
-                ),
-              ))),
+        minWidth: minWidth,
+        padding: padding,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: SizedBox(
+          height: 50,
+          child: ElevatedButton(
+              onPressed: () =>
+                  widget.componentModel.enabled ? buttonPressed(context) : null,
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Theme.of(context).primaryColor),
+                  shape: MaterialStateProperty.all(widget
+                      .componentModel
+                      .appState
+                      .applicationStyle
+                      ?.buttonShape as OutlinedBorder),
+                  overlayColor: MaterialStateProperty.all(_getSplashColor()),
+                  padding: MaterialStateProperty.all(EdgeInsets.zero)),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                        child: Container(
+                            alignment: Alignment.center,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: minWidth / 2),
+                                child: child))),
+                    Container(
+                        width: minWidth,
+                        height: minWidth,
+                        child: _getPopupMenu(Theme.of(context).colorScheme)),
+                  ])),
+        ),
+      ),
     );
   }
 }
