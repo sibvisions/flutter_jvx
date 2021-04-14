@@ -105,7 +105,8 @@ class CoTextCellEditorWidgetState
   }
 
   void _focusListener() {
-    if (!widget.cellEditorModel.focusNode.hasFocus) onTextFieldEndEditing();
+    widget.cellEditorModel.hasFocus = widget.cellEditorModel.focusNode.hasFocus;
+    if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
   }
 
   @override
@@ -113,9 +114,7 @@ class CoTextCellEditorWidgetState
     super.initState();
 
     value = widget.cellEditorModel.cellEditorValue;
-
     widget.cellEditorModel.focusNode = FocusNode();
-
     widget.cellEditorModel.focusNode.addListener(_focusListener);
   }
 
@@ -128,6 +127,10 @@ class CoTextCellEditorWidgetState
   @override
   Widget build(BuildContext context) {
     if (value != null && value.isNotEmpty) shouldShowSuffixIcon = true;
+
+    if (widget.cellEditorModel.hasFocus &&
+        !widget.cellEditorModel.focusNode.hasFocus)
+      widget.cellEditorModel.focusNode.requestFocus();
 
     return DecoratedBox(
       decoration: BoxDecoration(

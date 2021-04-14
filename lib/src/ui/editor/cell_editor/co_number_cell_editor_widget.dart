@@ -45,7 +45,7 @@ class CoNumberCellEditorWidgetState
   void onTextFieldEndEditing() {
     NumberCellEditorModel cellEditorModel = widget.cellEditorModel;
 
-    cellEditorModel.node.unfocus();
+    cellEditorModel.focusNode.unfocus();
 
     if (cellEditorModel.valueChanged) {
       intl.NumberFormat format =
@@ -60,18 +60,31 @@ class CoNumberCellEditorWidgetState
     }
   }
 
+  void _focusListener() {
+    widget.cellEditorModel.hasFocus = widget.cellEditorModel.focusNode.hasFocus;
+    if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
+  }
+
   @override
   void initState() {
     super.initState();
 
-    widget.cellEditorModel.node.addListener(() {
-      if (!widget.cellEditorModel.node.hasFocus) onTextFieldEndEditing();
+    widget.cellEditorModel.focusNode = FocusNode();
+    widget.cellEditorModel.focusNode.addListener(() {
+      widget.cellEditorModel.hasFocus =
+          widget.cellEditorModel.focusNode.hasFocus;
+
+      if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     TextDirection direction = TextDirection.ltr;
+
+    if (widget.cellEditorModel.hasFocus &&
+        !widget.cellEditorModel.focusNode.hasFocus)
+      widget.cellEditorModel.focusNode.requestFocus();
 
     widget.cellEditorModel.textInputType =
         widget.cellEditorModel.numericTextFormatter!.getKeyboardType();
@@ -137,7 +150,7 @@ class CoNumberCellEditorWidgetState
                       : Colors.black)
                   : Colors.grey[700]),
           controller: widget.cellEditorModel.controller,
-          focusNode: widget.cellEditorModel.node,
+          focusNode: widget.cellEditorModel.focusNode,
           keyboardType: widget.cellEditorModel.textInputType,
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,
@@ -151,7 +164,7 @@ class CoNumberCellEditorWidgetState
 
   @override
   void dispose() {
-    // (widget.cellEditorModel as NumberCellEditorModel).node.dispose();
+    widget.cellEditorModel.focusNode.removeListener(_focusListener);
 
     super.dispose();
   }

@@ -10,6 +10,7 @@ class TextCellEditorModel extends CellEditorModel {
   double iconSize = 24;
   EdgeInsets textPadding = EdgeInsets.only(left: 12);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
+  bool hasFocus = false;
 
   bool password = false;
   bool valueChanged = false;

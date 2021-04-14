@@ -21,7 +21,8 @@ class NumberCellEditorModel extends CellEditorModel {
   List<TextInputFormatter> textInputFormatter = <TextInputFormatter>[];
   TextInputType? textInputType;
   String? tempValue;
-  FocusNode node = FocusNode();
+  FocusNode focusNode = FocusNode();
+  bool hasFocus = false;
 
   @override
   set data(SoComponentData? newData) {
