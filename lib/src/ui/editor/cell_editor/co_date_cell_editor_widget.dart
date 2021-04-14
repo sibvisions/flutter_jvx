@@ -132,7 +132,7 @@ class CoDateCellEditorWidgetState
                 elevation: MaterialStateProperty.all(0.0),
                 backgroundColor: MaterialStateProperty.all(Colors.white),
                 padding: MaterialStateProperty.all(
-                    EdgeInsets.fromLTRB(10, 8, 10, 10))),
+                    EdgeInsets.fromLTRB(10, 10, 10, 10))),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
