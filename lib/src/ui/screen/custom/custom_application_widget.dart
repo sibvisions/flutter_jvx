@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/util/config/widget_config.dart';
 
 import '../../../application_widget.dart';
 import '../../../util/app/listener/app_listener.dart';
@@ -24,11 +25,8 @@ class CustomApplicationWidget extends StatelessWidget {
   /// The AppListener to react to certain events during app usage
   final AppListener? appListener;
 
-  /// Widget that will be shown first when app opens
-  final Widget? welcomeWidget;
-
-  /// Widget that will be show while startup
-  final Widget? startupWidget;
+  /// Config for startup and welcome widget
+  final WidgetConfig? widgetConfig;
 
   /// Optional appconfig parameter
   ///
@@ -48,8 +46,7 @@ class CustomApplicationWidget extends StatelessWidget {
       required this.screenManager,
       this.config,
       this.appListener,
-      this.welcomeWidget,
-      this.startupWidget,
+      this.widgetConfig,
       this.appConfig,
       this.appConfigPath,
       this.appVersion})
@@ -60,8 +57,7 @@ class CustomApplicationWidget extends StatelessWidget {
     return ApplicationWidget(
       appListener: appListener,
       screenManager: screenManager,
-      welcomeWidget: welcomeWidget,
-      startupWidget: startupWidget,
+      widgetConfig: widgetConfig,
       devConfig: config,
       appConfig: appConfig,
       appConfigPath: appConfigPath,

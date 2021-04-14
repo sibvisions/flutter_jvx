@@ -34,6 +34,7 @@ class StartupPage extends StatelessWidget {
       return OfflineStartupPageWidget(
         appState: appState,
         manager: manager,
+        startupWidget: startupWidget,
       );
     } else {
       return StartupPageWidget(

@@ -1,3 +1,5 @@
+import 'package:flutterclient/src/util/config/widget_config.dart';
+
 import '../../services/remote/handler/i_socket_handler.dart';
 import '../../ui/screen/core/manager/i_screen_manager.dart';
 import '../../ui/screen/core/manager/screen_manager.dart';
@@ -88,6 +90,9 @@ class AppState {
 
   /// Current screen menu comp id
   String? currentMenuComponentId;
+
+  /// Config for widgets
+  WidgetConfig widgetConfig = WidgetConfig();
 
   AppState();
 }

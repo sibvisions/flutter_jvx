@@ -21,6 +21,7 @@ import 'util/app/version/app_version.dart';
 import 'util/config/app_config.dart';
 import 'util/config/dev_config.dart';
 import 'util/config/server_config.dart';
+import 'util/config/widget_config.dart';
 import 'util/download/download_helper.dart';
 import 'util/theme/theme_manager.dart';
 
@@ -30,9 +31,8 @@ class ApplicationWidget extends StatelessWidget {
   final String? appConfigPath;
   final AppListener? appListener;
   final IScreenManager? screenManager;
-  final Widget? welcomeWidget;
-  final Widget? startupWidget;
   final AppVersion? appVersion;
+  final WidgetConfig? widgetConfig;
   final bool package;
 
   const ApplicationWidget(
@@ -42,9 +42,8 @@ class ApplicationWidget extends StatelessWidget {
       this.appListener,
       this.screenManager,
       this.devConfig,
-      this.welcomeWidget,
-      this.startupWidget,
       this.package = false,
+      this.widgetConfig,
       this.appVersion})
       : assert(appConfig != null || appConfigPath != null),
         super(key: key);
@@ -139,6 +138,10 @@ class ApplicationWidget extends StatelessWidget {
     AppState appState = sl<AppState>();
     SharedPreferencesManager manager = sl<SharedPreferencesManager>();
     String initialRoute = '/';
+
+    if (widgetConfig != null) {
+      appState.widgetConfig = widgetConfig!;
+    }
 
     if (appState.appVersion == null && appVersion != null) {
       appState.appVersion = appVersion;

@@ -227,6 +227,10 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.appState.widgetConfig.welcomeWidget != null) {
+      return widget.appState.widgetConfig.welcomeWidget!;
+    }
+
     return WillPopScope(
       onWillPop: () async => widget.canPop,
       child: Scaffold(
