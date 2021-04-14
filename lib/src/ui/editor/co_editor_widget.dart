@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../util/app/text_utils.dart';
 import '../component/component_widget.dart';
 import 'cell_editor/co_cell_editor_widget.dart';
 import 'editor_component_model.dart';
-import '../../util/app/text_utils.dart';
 
 class CoEditorWidget extends ComponentWidget {
   final CoCellEditorWidget? cellEditor;
