@@ -40,9 +40,13 @@ class CoPopupMenuButtonWidgetState
         valueChanged(item);
       },
       itemBuilder: (BuildContext context) {
-        return (widget.componentModel.menu?.componentModel
-                as PopupMenuComponentModel)
-            .menuItems;
+        if (widget.componentModel.enabled) {
+          return (widget.componentModel.menu?.componentModel
+                  as PopupMenuComponentModel)
+              .menuItems;
+        } else {
+          return <PopupMenuEntry<String>>[];
+        }
       },
       padding: EdgeInsets.only(bottom: 8),
       icon: FaIcon(
