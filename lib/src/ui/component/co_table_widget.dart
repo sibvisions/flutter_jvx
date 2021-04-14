@@ -392,31 +392,48 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 widget.componentModel.tapPosition = details.globalPosition,
             onLongPress: () => showContextMenu(context, -1),
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                border: Border.all(
-                    width: widget.componentModel.borderWidth,
-                    color: Theme.of(context).primaryColor.withOpacity(widget
-                            .componentModel
-                            .appState
-                            .applicationStyle
-                            ?.controlsOpacity ??
-                        1.0)),
-                color: Colors.white.withOpacity(widget.componentModel.appState
-                        .applicationStyle?.controlsOpacity ??
-                    1.0),
-              ),
-              child: widget.componentModel.hasHorizontalScroller
-                  ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        width: columnWidth +
-                            (2 * widget.componentModel.borderWidth),
-                        height: constraints.maxHeight == double.infinity
-                            ? tableHeight
-                            : constraints.maxHeight,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                      width: widget.componentModel.borderWidth,
+                      color: Theme.of(context).primaryColor.withOpacity(widget
+                              .componentModel
+                              .appState
+                              .applicationStyle
+                              ?.controlsOpacity ??
+                          1.0)),
+                  color: Colors.white.withOpacity(widget.componentModel.appState
+                          .applicationStyle?.controlsOpacity ??
+                      1.0),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: widget.componentModel.hasHorizontalScroller
+                      ? SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Container(
+                            width: columnWidth +
+                                (2 * widget.componentModel.borderWidth),
+                            height: constraints.maxHeight == double.infinity
+                                ? tableHeight
+                                : constraints.maxHeight,
+                            child: ScrollablePositionedList.builder(
+                              itemScrollController: this.scrollController,
+                              itemPositionsListener:
+                                  this.scrollPositionListener,
+                              itemCount: itemCount,
+                              itemBuilder: itemBuilder,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: (columnWidth +
+                                  (2 * widget.componentModel.borderWidth)) -
+                              widget.componentModel.borderWidth,
+                          height: constraints.maxHeight == double.infinity
+                              ? tableHeight - widget.componentModel.borderWidth
+                              : constraints.maxHeight -
+                                  widget.componentModel.borderWidth,
                           child: ScrollablePositionedList.builder(
                             itemScrollController: this.scrollController,
                             itemPositionsListener: this.scrollPositionListener,
@@ -424,27 +441,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                             itemBuilder: itemBuilder,
                           ),
                         ),
-                      ),
-                    )
-                  : Container(
-                      width: (columnWidth +
-                              (2 * widget.componentModel.borderWidth)) -
-                          widget.componentModel.borderWidth,
-                      height: constraints.maxHeight == double.infinity
-                          ? tableHeight - widget.componentModel.borderWidth
-                          : constraints.maxHeight -
-                              widget.componentModel.borderWidth,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: ScrollablePositionedList.builder(
-                          itemScrollController: this.scrollController,
-                          itemPositionsListener: this.scrollPositionListener,
-                          itemCount: itemCount,
-                          itemBuilder: itemBuilder,
-                        ),
-                      ),
-                    ),
-            ));
+                )));
 
         return child;
       },
