@@ -62,6 +62,7 @@ class SoTableColumnCalculator {
             editor = componentCreator.createCellEditorForTable(
                 metaDataColumn.cellEditor!, componentData);
             editor?.cellEditorModel.cellEditorValue = value;
+            editor?.cellEditorModel.textScaleFactor = textScaleFactor;
           }
 
           if (editor != null && editor.cellEditorModel.isTableMinimumSizeSet) {

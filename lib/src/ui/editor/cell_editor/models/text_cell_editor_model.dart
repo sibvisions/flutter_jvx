@@ -46,7 +46,8 @@ class TextCellEditorModel extends CellEditorModel {
       text = cellEditorValue;
     }
 
-    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+    double width =
+        TextUtils.getTextWidth(text, fontStyle, textScaleFactor).toDouble();
 
     if (multiLine)
       return Size(18 + width + iconWidth + textPadding.horizontal, 100);

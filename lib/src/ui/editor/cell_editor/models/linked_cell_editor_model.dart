@@ -34,7 +34,8 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
 
     if (text == "") text = TextUtils.averageCharactersTextField;
 
-    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+    double width =
+        TextUtils.getTextWidth(text, fontStyle, textScaleFactor).toDouble();
 
     return Size(width + 100, 50);
   }
