@@ -66,7 +66,8 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (modalRoute.isCurrent) {
+        if (modalRoute.isCurrent ||
+            (state is ApiResponse && state.hasDataObject)) {
           listener(context, state);
         }
       },
