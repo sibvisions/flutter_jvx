@@ -115,21 +115,22 @@ class CoDateCellEditorWidgetState
         width: 100,
         height: 50,
         decoration: BoxDecoration(
-            color: widget.cellEditorModel.backgroundColor != null
-                ? widget.cellEditorModel.backgroundColor
-                : Colors.white.withOpacity(widget.cellEditorModel.appState
-                        .applicationStyle?.controlsOpacity ??
-                    1.0),
-            borderRadius:
-                widget.cellEditorModel.appState.applicationStyle != null
-                    ? BorderRadius.circular(widget.cellEditorModel.appState
-                            .applicationStyle?.cornerRadiusEditors ??
-                        5)
-                    : null,
-            border: _getBorder()),
+          color: widget.cellEditorModel.backgroundColor != null
+              ? widget.cellEditorModel.backgroundColor
+              : Colors.white.withOpacity(widget.cellEditorModel.appState
+                      .applicationStyle?.controlsOpacity ??
+                  1.0),
+          borderRadius: widget.cellEditorModel.appState.applicationStyle != null
+              ? BorderRadius.circular(widget.cellEditorModel.appState
+                      .applicationStyle?.cornerRadiusEditors ??
+                  5)
+              : null,
+          border: _getBorder(),
+        ),
         child: ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.white),
+                elevation: MaterialStateProperty.all(0.0),
+                backgroundColor: MaterialStateProperty.all(Colors.white),
                 padding: MaterialStateProperty.all(
                     EdgeInsets.fromLTRB(10, 8, 10, 10))),
             child: Row(
