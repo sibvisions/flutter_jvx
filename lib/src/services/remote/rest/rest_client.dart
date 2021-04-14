@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -70,12 +71,19 @@ class RestClientImpl implements RestClient {
           .timeout(Duration(seconds: timeout));
 
       return Right(response);
-    } catch (e) {
+    } on TimeoutException {
       return Left(ServerFailure(
-          title: 'Connection Problems',
+          title: 'Timeout Error',
           details: '',
           name: ErrorHandler.timeoutError,
-          message: e.toString()));
+          message:
+              'Couldn\'t connect to the server! Timeout after $timeout seconds'));
+    } on Exception {
+      return Left(ServerFailure(
+          title: 'Connection Error',
+          details: '',
+          name: ErrorHandler.serverError,
+          message: 'An Error while sending the Request occured'));
     }
   }
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutterclient/src/ui/util/error/error_handler.dart';
 import 'package:http/http.dart' as http;
 
 import '../../services/remote/cubit/api_cubit.dart';
@@ -293,8 +294,8 @@ class RemoteDataSourceImpl implements DataSource {
         return Left(ApiError(
             failure: Failure(
                 details: '',
-                message: 'App with appname not found',
-                name: 'message.error',
+                message: 'Could not fetch url',
+                name: ErrorHandler.serverError,
                 title: 'Not found')));
       }
     });
