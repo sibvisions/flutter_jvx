@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/component_widget.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/co_cell_editor_widget.dart';
-import 'package:flutterclient/src/ui/editor/editor_component_model.dart';
-import 'package:flutterclient/src/util/app/text_utils.dart';
+import '../component/component_widget.dart';
+import 'cell_editor/co_cell_editor_widget.dart';
+import 'editor_component_model.dart';
+import '../../util/app/text_utils.dart';
 
 class CoEditorWidget extends ComponentWidget {
   final CoCellEditorWidget? cellEditor;
@@ -34,7 +34,10 @@ class CoEditorWidgetState<T extends CoEditorWidget>
 
   void onFilter(dynamic value) {}
 
-  void onServerDataChanged() {}
+  void onServerDataChanged() {
+    if (widget.cellEditor != null &&
+        widget.cellEditor!.cellEditorModel.isTableView) setState(() {});
+  }
 
   void registerCallbacks() {
     EditorComponentModel editorComponentModel =

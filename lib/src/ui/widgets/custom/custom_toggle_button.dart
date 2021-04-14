@@ -35,12 +35,11 @@ class CustomToggleButton extends StatelessWidget {
                   onPressed: enabled ? onPressed : null,
                   style: ButtonStyle(
                       backgroundColor: enabled
-                          ? MaterialStateProperty.all(
-                              background ?? Theme.of(context).primaryColor)
+                          ? MaterialStateProperty.all(background)
                           : MaterialStateProperty.all(Colors.grey.shade300),
                       elevation: MaterialStateProperty.all(2),
                       overlayColor: MaterialStateProperty.all(
-                          background ?? Theme.of(context).primaryColor)),
+                          Colors.black12)),
                   child: child,
                 ))));
   }

@@ -167,7 +167,7 @@ class CoToggleButtonWidgetState
 
     return CustomToggleButton(
       background: widget.componentModel.selected
-          ? widget.componentModel.background
+          ? Theme.of(context).primaryColor
           : widget.componentModel.disabledColor,
       child: child,
       enabled: widget.componentModel.enabled,
