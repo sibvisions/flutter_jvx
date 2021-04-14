@@ -45,6 +45,7 @@ class CellEditorModel extends ChangeNotifier {
   TextStyle fontStyle = TextStyle(fontSize: 16, color: Colors.black);
   Size? tableMinimumSize;
   Size? tablePreferredSize;
+  double textScaleFactor = 1.0;
 
   Size? preferredSize;
   Size? minimumSize;

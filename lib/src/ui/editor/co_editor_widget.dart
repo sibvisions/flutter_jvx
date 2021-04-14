@@ -85,6 +85,8 @@ class CoEditorWidgetState<T extends CoEditorWidget>
       );
     }
 
+    cellEditor.cellEditorModel.textScaleFactor =
+        MediaQuery.of(context).textScaleFactor;
     return Container(
         height: cellEditor.cellEditorModel.preferredSize != null
             ? cellEditor.cellEditorModel.preferredSize!.height

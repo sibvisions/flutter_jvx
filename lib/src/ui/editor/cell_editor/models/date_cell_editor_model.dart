@@ -50,7 +50,8 @@ class DateCellEditorModel extends CellEditorModel {
 
     if (text.isEmpty) text = TextUtils.averageCharactersDateField;
 
-    double width = TextUtils.getTextWidth(text, fontStyle).toDouble();
+    double width =
+        TextUtils.getTextWidth(text, fontStyle, textScaleFactor).toDouble();
     return Size(width + (isTableView ? 65 : 110), 50);
   }
 
