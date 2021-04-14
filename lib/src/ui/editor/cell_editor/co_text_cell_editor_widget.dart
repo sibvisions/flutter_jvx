@@ -139,7 +139,7 @@ class CoTextCellEditorWidgetState
       child: Container(
         width: 100,
         height: (widget.cellEditorModel.multiLine ? 100 : 50),
-        child: TextField(
+        child: TextFormField(
           textAlign: SoTextAlign.getTextAlignFromInt(
               widget.cellEditorModel.horizontalAlignment),
           textAlignVertical: SoTextAlignVertical.getTextAlignFromInt(

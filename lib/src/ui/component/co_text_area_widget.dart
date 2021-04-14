@@ -66,7 +66,7 @@ class CoTextAreaWidgetState extends ComponentWidgetState<CoTextAreaWidget> {
                 : Border.all(color: Colors.grey)),
         child: Container(
           width: 100,
-          child: TextField(
+          child: TextFormField(
             textAlign: SoTextAlign.getTextAlignFromInt(
                 widget.componentModel.horizontalAlignment),
             decoration: InputDecoration(

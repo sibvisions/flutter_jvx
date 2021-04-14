@@ -73,7 +73,7 @@ class CoEditorWidgetState<T extends CoEditorWidget>
               color: Colors.red,
               borderRadius: BorderRadius.circular(5),
               border: Border.all(color: Colors.grey)),
-          child: TextField(
+          child: TextFormField(
             readOnly: true,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(12),
