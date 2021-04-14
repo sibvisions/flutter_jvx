@@ -34,20 +34,17 @@ class CoTextCellEditorWidgetState
 
   Widget? get suffixIcon {
     if (widget.cellEditorModel.editable && shouldShowSuffixIcon) {
-      return Padding(
-        padding: const EdgeInsets.only(right: 8),
-        child: GestureDetector(
-          onTap: () {
-            if (value != null && value.isNotEmpty) {
-              onTextFieldValueChanged('');
-              onTextFieldEndEditing();
-            }
-          },
-          child: Icon(
-            Icons.clear,
-            size: widget.cellEditorModel.iconSize,
-            color: Colors.grey[400],
-          ),
+      return GestureDetector(
+        onTap: () {
+          if (value != null && value.isNotEmpty) {
+            onTextFieldValueChanged('');
+            onTextFieldEndEditing();
+          }
+        },
+        child: Icon(
+          Icons.clear,
+          size: widget.cellEditorModel.iconSize,
+          color: Colors.grey[400],
         ),
       );
     } else {
