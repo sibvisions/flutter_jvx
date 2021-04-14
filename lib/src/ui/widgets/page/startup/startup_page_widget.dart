@@ -169,10 +169,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     if (!widget.appState.webOnly)
       widget.appState.webOnly = widget.manager.webOnly;
 
-    widget.appState.language = LanguageResponseObject(
-        name: 'language',
-        language: widget.manager.language ?? 'en',
-        languageResource: '');
+    if (widget.manager.language != null &&
+        widget.manager.language!.isNotEmpty) {
+      widget.appState.language = LanguageResponseObject(
+          name: 'language',
+          language: widget.manager.language!,
+          languageResource: '');
+    }
 
     if (widget.appState.translationConfig.possibleTranslations.isNotEmpty) {
       widget.appState.translationConfig.supportedLocales = List<Locale>.from(
@@ -293,40 +296,42 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                 }
               }
             },
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(getPackageString(
-                              widget.appState, 'assets/images/bg.png')),
-                          fit: BoxFit.cover)),
-                ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.only(top: 100),
-                          child: Center(
-                            child: Image.asset(
-                              getPackageString(
-                                  widget.appState, 'assets/images/ss.png'),
-                              width: 135,
-                            ),
-                          )),
+            child: widget.startupWidget != null
+                ? widget.startupWidget!
+                : Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(getPackageString(
+                                    widget.appState, 'assets/images/bg.png')),
+                                fit: BoxFit.cover)),
+                      ),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.only(top: 100),
-                              child: CircularProgressIndicator()),
-                          Padding(
-                              padding: EdgeInsets.only(top: 100),
-                              child: Text('Loading...'))
-                        ],
-                      )
-                    ])
-              ],
-            )));
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.only(top: 100),
+                                child: Center(
+                                  child: Image.asset(
+                                    getPackageString(widget.appState,
+                                        'assets/images/ss.png'),
+                                    width: 135,
+                                  ),
+                                )),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Padding(
+                                    padding: EdgeInsets.only(top: 100),
+                                    child: CircularProgressIndicator()),
+                                Padding(
+                                    padding: EdgeInsets.only(top: 100),
+                                    child: Text('Loading...'))
+                              ],
+                            )
+                          ])
+                    ],
+                  )));
   }
 }
