@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/ui/util/error/custom_bloc_listener.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/login_request.dart';
@@ -11,6 +10,7 @@ import '../../../../models/state/routes/arguments/menu_page_arguments.dart';
 import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
+import '../../../util/error/custom_bloc_listener.dart';
 import 'login_background.dart';
 import 'login_widgets.dart';
 
@@ -32,6 +32,7 @@ class LoginPageWidget extends StatefulWidget {
 
 class _LoginPageWidgetState extends State<LoginPageWidget> {
   bool colorsInverted = false;
+  ApiResponse? response;
 
   @override
   void initState() {
@@ -62,6 +63,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
               if (state is ApiResponse) {
                 if (state.request is LoginRequest &&
                     state.hasObject<MenuResponseObject>()) {
+                  if (state.hasObject<ScreenGenericResponseObject>()) {
+                    response = state;
+                  }
+
                   if (state.hasObject<UserDataResponseObject>()) {
                     UserDataResponseObject userData =
                         state.getObjectByType<UserDataResponseObject>()!;
@@ -74,7 +79,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           menuItems: state
                               .getObjectByType<MenuResponseObject>()!
                               .entries,
-                          listMenuItemsInDrawer: true));
+                          listMenuItemsInDrawer: true,
+                          response: response));
                 }
               }
             },
