@@ -36,13 +36,13 @@ class LoginBackground extends StatelessWidget {
         );
       } else {
         return Image.asset(
-          getPackageString(appState, 'assets/images/logo.jpg'),
+          getPackageString(appState, 'assets/images/logo.png'),
           fit: BoxFit.fitHeight,
         );
       }
     } else {
       return Image.asset(
-        getPackageString(appState, 'assets/images/logo.jpg'),
+        getPackageString(appState, 'assets/images/logo.png'),
         fit: BoxFit.fitHeight,
       );
     }
@@ -64,11 +64,11 @@ class LoginBackground extends StatelessWidget {
         return FileImage(file);
       } else {
         return AssetImage(
-            getPackageString(appState, 'assets/images/logo.jpg'));
+            getPackageString(appState, 'assets/images/logo.png'));
       }
     } else {
       return AssetImage(
-          getPackageString(appState, 'assets/images/logo.jpg'));
+          getPackageString(appState, 'assets/images/logo.png'));
     }
   }
 

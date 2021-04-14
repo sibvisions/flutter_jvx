@@ -95,8 +95,8 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
           children: [
             Image.asset(
               widget.appState.appConfig!.package
-                  ? 'packages/flutterclient/assets/images/logo.jpg'
-                  : 'assets/images/logo.jpg',
+                  ? 'packages/flutterclient/assets/images/logo.png'
+                  : 'assets/images/logo.png',
               height: 60,
             ),
             _getMenuWidget(context),
