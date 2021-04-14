@@ -139,6 +139,12 @@ class ApplicationWidget extends StatelessWidget {
     SharedPreferencesManager manager = sl<SharedPreferencesManager>();
     String initialRoute = '/';
 
+    //! Only for testing
+    appState.widgetConfig = WidgetConfig(
+        startupWidget: Center(
+      child: Text('HELLO MOTHERFUCKER'),
+    ));
+
     if (widgetConfig != null) {
       appState.widgetConfig = widgetConfig!;
     }

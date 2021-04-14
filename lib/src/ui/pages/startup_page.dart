@@ -21,9 +21,6 @@ class StartupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (startupWidget != null) {
-      return startupWidget!;
-    }
     return Theme(
         data: sl<ThemeManager>().value,
         child: _getStartupPageWidget(appState.isOffline));
