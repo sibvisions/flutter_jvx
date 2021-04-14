@@ -76,7 +76,8 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           leading: item.image != null
               ? new CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  child: CustomIcon(image: item.image!, prefferedSize: Size(32, 32)))
+                  child: CustomIcon(
+                      image: item.image!, prefferedSize: Size(32, 32)))
               : new CircleAvatar(
                   backgroundColor: Colors.transparent,
                   child: FaIcon(
@@ -198,18 +199,22 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
   }
 
   Widget _getUsername() {
-    String username = widget.appState.userData!.username;
-    if (widget.appState.userData?.displayName != null)
-      username = widget.appState.userData!.displayName;
+    if (widget.appState.userData != null) {
+      String username = widget.appState.userData!.username;
+      if (widget.appState.userData?.displayName != null)
+        username = widget.appState.userData!.displayName;
 
-    //username = 'Max Mustermann Junior';
+      //username = 'Max Mustermann Junior';
 
-    return AutoSizeText(username,
-        maxLines: 2,
-        overflow: TextOverflow.clip,
-        style: TextStyle(
-            color: Theme.of(context).primaryColor.textColor(), fontSize: 23),
-        minFontSize: 18);
+      return AutoSizeText(username,
+          maxLines: 2,
+          overflow: TextOverflow.clip,
+          style: TextStyle(
+              color: Theme.of(context).primaryColor.textColor(), fontSize: 23),
+          minFontSize: 18);
+    }
+
+    return Text('');
   }
 
   ImageProvider getProfileImage() {
