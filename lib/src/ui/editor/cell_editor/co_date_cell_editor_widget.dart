@@ -158,14 +158,16 @@ class CoDateCellEditorWidgetState
                               widget.cellEditorModel.cellEditorValue is int)
                           ? TextStyle(
                               fontSize: 16,
+                              fontWeight: FontWeight.w400,
                               color:
                                   widget.cellEditorModel.foregroundColor == null
-                                      ? Colors.grey[700]
+                                      ? Colors.black
                                       : widget.cellEditorModel.foregroundColor)
                           : TextStyle(
+                              fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.normal),
+                              color: Colors.black,
+                            ),
                     ),
                   ),
                 ),
@@ -250,14 +252,16 @@ class CoDateCellEditorWidgetState
                             widget.cellEditorModel.cellEditorValue is int)
                         ? TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.w400,
                             color:
                                 widget.cellEditorModel.foregroundColor == null
-                                    ? Colors.grey[700]
+                                    ? Colors.black
                                     : widget.cellEditorModel.foregroundColor)
                         : TextStyle(
                             fontSize: 16,
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.normal),
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
                   ),
                 ),
               ),
