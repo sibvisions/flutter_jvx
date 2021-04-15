@@ -76,6 +76,10 @@ class CoNumberCellEditorWidgetState
 
       if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
     });
+
+    widget.cellEditorModel.controller.addListener(() {
+      widget.cellEditorModel.tempValue = widget.cellEditorModel.cellEditorValue;
+    });
   }
 
   @override
