@@ -44,6 +44,7 @@ import 'response_objects/upload_response_object.dart';
 class RemoteDataSourceImpl implements DataSource {
   final RestClient client;
   final AppState appState;
+  final bool debugResponse = false;
 
   RemoteDataSourceImpl({required this.client, required this.appState});
 
@@ -264,7 +265,7 @@ class RemoteDataSourceImpl implements DataSource {
 
         bool isProd = bool.fromEnvironment('PROD', defaultValue: false);
 
-        if (!isProd) {
+        if (!isProd && debugResponse) {
           log('RESPONSE ${uri.path}: $decodedBody');
         }
 

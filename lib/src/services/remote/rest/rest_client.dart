@@ -26,6 +26,7 @@ abstract class RestClient {
 class RestClientImpl implements RestClient {
   Map<String, String>? headers = {'Content-Type': 'application/json'};
   final HttpClient client;
+  final bool debugRequest = false;
 
   @override
   RestClientImpl({Map<String, String>? headers, required this.client}) {
@@ -63,7 +64,7 @@ class RestClientImpl implements RestClient {
     try {
       if (!isProd) {
         log('HEADERS: $headers');
-        log('REQUEST ${uri.path}: $data');
+        if (debugRequest) log('REQUEST ${uri.path}: $data');
       }
 
       final response = await client

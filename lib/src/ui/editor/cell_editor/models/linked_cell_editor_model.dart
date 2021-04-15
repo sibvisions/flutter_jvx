@@ -19,7 +19,24 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
 
   @override
   get preferredSize {
-    String? text = "";
+    return _getPreferredSize();
+  }
+
+  @override
+  get minimumSize {
+    return preferredSize;
+  }
+
+  @override
+  get tablePreferredSize {
+    return _getPreferredSize(cellEditorValue);
+  }
+
+  @override
+  Size get tableMinimumSize => Size(130, 50);
+
+  Size _getPreferredSize([dynamic value]) {
+    String? text = value;
 
     // if ((referencedData?.data?.records != null) &&
     //     referencedData!.data!.records.length > 0) {
@@ -32,19 +49,11 @@ class LinkedCellEditorModel extends ReferencedCellEditorModel {
     //   }
     // }
 
-    if (text == "") text = TextUtils.averageCharactersTextField;
+    if (text == null || text == "") text = TextUtils.averageCharactersTextField;
 
     double width =
         TextUtils.getTextWidth(text, fontStyle, textScaleFactor).toDouble();
 
-    return Size(width + 100, 50);
+    return Size(width + 40, 50);
   }
-
-  @override
-  get minimumSize {
-    return preferredSize;
-  }
-
-  @override
-  Size get tableMinimumSize => Size(150, 50);
 }

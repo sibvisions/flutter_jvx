@@ -68,7 +68,8 @@ class SoTableColumnCalculator {
           if (editor != null && editor.cellEditorModel.isTableMinimumSizeSet) {
             columns[i].minWidth =
                 editor.cellEditorModel.tableMinimumSize!.width + itemPadding;
-          } else if (editor != null &&
+          }
+          if (editor != null &&
               editor.cellEditorModel.isTablePreferredSizeSet) {
             columns[i].preferredWidth =
                 editor.cellEditorModel.tablePreferredSize!.width;
