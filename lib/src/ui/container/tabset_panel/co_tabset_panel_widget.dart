@@ -165,22 +165,46 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        return Scaffold(
-          appBar: TabBar(
-              isScrollable: false,
-              controller: this.tabController,
-              tabs: (widget.componentModel as TabsetPanelComponentModel)
-                  .tabs
-                  .map((tab) => tab)
-                  .toList()),
-          body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-            return TabBarView(
-                controller: this.tabController,
-                children: (widget.componentModel as TabsetPanelComponentModel)
-                    .getTabsetComponents(constraints));
-          }),
+        return SizedBox(
+          height: constraints.maxHeight != double.infinity ? constraints.maxHeight : 0,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              TabBar(
+                  isScrollable: true,
+                  controller: this.tabController,
+                  tabs: (widget.componentModel as TabsetPanelComponentModel)
+                      .tabs
+                      .map((tab) => tab)
+                      .toList()),
+              Expanded(
+                flex: 1,
+                child: TabBarView(
+                    controller: this.tabController,
+                    children:
+                        (widget.componentModel as TabsetPanelComponentModel)
+                            .getTabsetComponents(constraints)),
+              )
+            ],
+          ),
         );
+
+        // return Scaffold(
+        //   appBar: TabBar(
+        //       isScrollable: true,
+        //       controller: this.tabController,
+        //       tabs: (widget.componentModel as TabsetPanelComponentModel)
+        //           .tabs
+        //           .map((tab) => tab)
+        //           .toList()),
+        //   body: LayoutBuilder(
+        //       builder: (BuildContext context, BoxConstraints constraints) {
+        //     return TabBarView(
+        //         controller: this.tabController,
+        //         children: (widget.componentModel as TabsetPanelComponentModel)
+        //             .getTabsetComponents(constraints));
+        //   }),
+        // );
       },
     );
   }
