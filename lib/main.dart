@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'injection_container.dart' as di;
@@ -25,7 +26,13 @@ Widget _getRunnableWidget() {
           return ApplicationWidget();
         }
 
-        const prod = bool.fromEnvironment('PROD', defaultValue: false);
+        late bool prod;
+
+        if (!kIsWeb) {
+          prod = bool.fromEnvironment('PROD', defaultValue: false);
+        } else {
+          prod = true;
+        }
 
         if (snapshot.hasData) {
           return ApplicationWidget(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutterclient/src/ui/util/error/error_handler.dart';
 import 'package:http/http.dart' as http;
 
@@ -262,7 +263,13 @@ class RemoteDataSourceImpl implements DataSource {
         List decodedBody = _getDecodedBody(r.body);
         Failure? failure = _getErrorIfExists(decodedBody);
 
-        bool isProd = bool.fromEnvironment('PROD', defaultValue: false);
+        late bool isProd;
+
+        if (!kIsWeb) {
+          isProd = bool.fromEnvironment('PROD', defaultValue: false);
+        } else {
+          isProd = true;
+        }
 
         if (!isProd) {
           log('RESPONSE ${uri.path}: $decodedBody');

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterclient/src/util/app/version/app_version.dart';
+import 'package:flutterclient/src/util/util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -280,6 +281,11 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       widget.manager.language = language;
                     }
                     widget.manager.picSize = picSize;
+
+                    if (widget.appState.serverConfig == null) {
+                      widget.appState.serverConfig =
+                          ServerConfig(baseUrl: baseUrl!, appName: appName!);
+                    }
 
                     widget.appState.serverConfig!.username = username;
                     widget.appState.serverConfig!.password = password;
