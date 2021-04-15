@@ -265,7 +265,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   void _onMenuItemPressed(MenuItem menuItem) {
-    if (menuItem.componentId != widget.appState.currentMenuComponentId) {
+    if (widget.appState.currentMenuComponentId != null) {
       if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
           !widget.appState.screenManager
               .findScreen(menuItem.componentId)!
