@@ -45,6 +45,9 @@ import 'response_objects/upload_response_object.dart';
 class RemoteDataSourceImpl implements DataSource {
   final RestClient client;
   final AppState appState;
+  final bool debugResponse = false;
+
+  bool debugRequest = true;
 
   RemoteDataSourceImpl({required this.client, required this.appState});
 
@@ -253,7 +256,7 @@ class RemoteDataSourceImpl implements DataSource {
 
   Future<Either<ApiError, ApiResponse>> _sendRequest(
       Uri uri, Request request) async {
-    if (request.debugInfo != null) {
+    if (debugRequest) {
       log('REQUEST ${uri.path}: ${request.debugInfo}');
     }
 
@@ -275,7 +278,7 @@ class RemoteDataSourceImpl implements DataSource {
           isProd = true;
         }
 
-        if (!isProd) {
+        if (!isProd && debugResponse) {
           log('RESPONSE ${uri.path}: $decodedBody');
         }
 

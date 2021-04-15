@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
@@ -54,14 +53,6 @@ class RestClientImpl implements RestClient {
       {required Uri uri,
       required Map<String, dynamic> data,
       int timeout = 10}) async {
-    late bool isProd;
-
-    if (!kIsWeb) {
-      isProd = bool.fromEnvironment('PROD', defaultValue: false);
-    } else {
-      isProd = true;
-    }
-
     if (data['forceNewSession'] != null && data['forceNewSession']) {
       headers?.clear();
       headers?['Content-Type'] = 'application/json';
