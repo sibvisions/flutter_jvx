@@ -323,7 +323,9 @@ class CoDateCellEditorWidgetState
                     widget.cellEditorModel.cellEditorValue))
             : '';
 
-        return Text(text);
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Text(text));
       }
     }
   }
