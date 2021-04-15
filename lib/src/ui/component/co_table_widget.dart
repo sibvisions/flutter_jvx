@@ -342,9 +342,6 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
         .scrollPositionListener
         .itemPositions
         .addListener(() => this.scrollListener(context));
-
-    WidgetsBinding.instance!
-        .addPostFrameCallback((timeStamp) => setState(() {}));
   }
 
   @override
