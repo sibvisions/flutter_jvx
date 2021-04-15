@@ -163,7 +163,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
       } catch (e) {
         List<String?> result = data.split('\n');
 
-        if (data.contains('APPNAME') && _checkQRString(result[0]))
+        if (data.contains('Application') && _checkQRString(result[0]))
           properties['APPNAME'] =
               result[0]?.substring(result[0]!.indexOf(': ') + 2);
 
