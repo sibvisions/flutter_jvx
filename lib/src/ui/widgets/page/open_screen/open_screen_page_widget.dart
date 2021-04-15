@@ -84,7 +84,9 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             arguments: LoginPageArguments(lastUsername: ''));
       } else if (state.request is NavigationRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
-        _pages.removeLast();
+        setState(() {
+          _pages.removeLast();
+        });
 
         if (_pages.isEmpty) {
           _screens.removeLast();
