@@ -96,10 +96,8 @@ class CoDateCellEditorWidgetState
     if (widget.cellEditorModel.borderVisible &&
         widget.cellEditorModel.editable) {
       return Border.all(color: Theme.of(context).primaryColor);
-    } else if (widget.cellEditorModel.editable) {
-      return Border.all(color: Colors.grey);
     } else {
-      return Border.all(color: Colors.transparent);
+      return Border.all(color: Colors.grey);
     }
   }
 

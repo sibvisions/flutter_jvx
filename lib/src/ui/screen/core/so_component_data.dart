@@ -157,7 +157,6 @@ class SoComponentData {
   dynamic getColumnData(BuildContext? context, String columnName) {
     if (data != null &&
         data!.selectedRow != null &&
-        data!.records.isNotEmpty &&
         data!.selectedRow! < data!.records.length) {
       return _getColumnValue(columnName);
     } else if (context != null) {
