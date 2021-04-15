@@ -86,9 +86,11 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                     color: Theme.of(context).primaryColor,
                   )),
           onTap: () {
-            Navigator.of(context).pop(false);
+            if (widget.appState.currentMenuComponentId != item.componentId) {
+              Navigator.of(context).pop(false);
 
-            widget.onMenuItemPressed(item);
+              widget.onMenuItemPressed(item);
+            }
           },
         ));
 

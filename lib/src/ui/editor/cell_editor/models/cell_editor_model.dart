@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 import '../../../../../flutterclient.dart';
 import '../../../../../injection_container.dart';
@@ -14,6 +15,7 @@ class CellEditorModel extends ChangeNotifier {
   SoComponentData? data;
 
   bool isTableView = false;
+  bool tableReadOnly = false;
   int horizontalAlignment = 0;
   int verticalAlignment = 0;
   int? preferredEditorMode;
@@ -27,7 +29,6 @@ class CellEditorModel extends ChangeNotifier {
   bool? tableHeaderVisible;
   bool? validationEnabled;
   bool? doNotClearColumnNames;
-  bool? tableReadonly;
   bool? directCellEditor = false;
   bool? autoOpenPopup;
   String? contentType;
@@ -98,5 +99,8 @@ class CellEditorModel extends ChangeNotifier {
     borderVisible = this
         .cellEditor
         .getProperty<bool>(CellEditorProperty.BORDER_VISIBLE, true)!;
+
+    tableReadOnly =
+        cellEditor.getProperty<bool>(CellEditorProperty.TABLE_READONLY, false)!;
   }
 }

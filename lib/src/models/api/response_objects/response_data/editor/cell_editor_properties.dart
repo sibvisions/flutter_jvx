@@ -26,7 +26,8 @@ enum CellEditorProperty {
   SCALE,
   LENGTH,
   SIGNED,
-  PRESERVE_ASPECT_RATIO
+  PRESERVE_ASPECT_RATIO,
+  TABLE_READONLY,
 }
 
 class CellEditorProperties {

@@ -36,7 +36,7 @@ class EditorComponentModel extends ComponentModel {
 
   int? indexInTable;
   Function(int index)? onRowTapped;
-  bool? editable;
+  bool editable = true;
 
   OnBeginEditing? onBeginEditingCallback;
   OnEndEditing? onEndEditingCallback;
@@ -124,8 +124,8 @@ class EditorComponentModel extends ComponentModel {
     _withChangedComponent = false;
     if (cellEditor != null) cellEditor!.cellEditorModel.cellEditorValue = value;
     columnName = colName;
-    onRowTapped = onRowTapped;
-    editable = editable;
+    this.onRowTapped = onRowTapped;
+    this.editable = editable;
     indexInTable = index;
   }
 
@@ -259,7 +259,7 @@ class EditorComponentModel extends ComponentModel {
 
   void setEditorProperties() {
     if (cellEditor != null) {
-      cellEditor!.cellEditorModel.editable = cellEditorEditable ?? true;
+      cellEditor!.cellEditorModel.editable = cellEditorEditable ?? editable;
       cellEditor!.cellEditorModel.backgroundColor = cellEditorBackground;
       cellEditor!.cellEditorModel.foregroundColor = cellEditorForeground;
       cellEditor!.cellEditorModel.placeholder = cellEditorPlaceholder;

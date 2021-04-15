@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../flutterclient.dart';
@@ -14,6 +15,8 @@ class CoTabsetPanelWidget extends CoContainerWidget {
 
 class CoTabsetPanelWidgetState extends CoContainerWidgetState
     with TickerProviderStateMixin {
+  double iconSize = 15;
+
   late TabController tabController;
 
   List<Tab> createTabs() {
@@ -34,14 +37,12 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
       componentModel.isEnabled.add(enabled);
       componentModel.isClosable.add(closable);
 
-      double iconSize = 15;
-
       Tab tab = new Tab(
         child: Column(
           children: [
             img.isNotEmpty
                 ? CustomIcon(
-                    image: img,
+                    image: img.split(',')[0],
                     prefferedSize: Size(iconSize, iconSize),
                     color: Colors.grey.shade700,
                   )
@@ -49,31 +50,37 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
             SizedBox(
               height: 5,
             ),
-            !closable
-                ? Text(
+            if (!closable)
+              AutoSizeText(
+                text,
+                style: !enabled
+                    ? TextStyle(color: Colors.grey)
+                    : TextStyle(color: Colors.black),
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AutoSizeText(
                     text,
-                    style: !enabled ? TextStyle(color: Colors.grey) : null,
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(text,
-                          style:
-                              !enabled ? TextStyle(color: Colors.grey) : null),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      GestureDetector(
-                        child: Icon(
-                          Icons.clear,
-                          size: 20,
-                        ),
-                        onTap: () {
-                          closeTab(componentModel.components.indexOf(comp));
-                        },
-                      ),
-                    ],
+                    style: !enabled
+                        ? TextStyle(color: Colors.grey)
+                        : TextStyle(color: Colors.black),
                   ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  GestureDetector(
+                    child: Icon(
+                      Icons.clear,
+                      size: 20,
+                    ),
+                    onTap: () {
+                      closeTab(componentModel.components.indexOf(comp));
+                    },
+                  ),
+                ],
+              ),
           ],
         ),
       );
