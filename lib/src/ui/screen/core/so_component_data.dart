@@ -119,13 +119,18 @@ class SoComponentData {
   void updateDataProviderChanged(
       BuildContext context, DataproviderChanged pDataProviderChanged,
       [Request? request]) {
-    if (pDataProviderChanged.reload != null ||
-        (request != null && request is UploadRequest)) {
+    // if (pDataProviderChanged.reload != null ||
+    //     (request != null && request is UploadRequest)) {
+    if (pDataProviderChanged.reload != null) {
       fetchData(context, pDataProviderChanged.reload, -1);
     }
 
     if (data != null && pDataProviderChanged.selectedRow != null) {
       updateSelectedRow(context, pDataProviderChanged.selectedRow!, true);
+    }
+
+    if (data != null && pDataProviderChanged.changedColumnNames != null) {
+      data!.columnNames = pDataProviderChanged.changedColumnNames!;
     }
   }
 
