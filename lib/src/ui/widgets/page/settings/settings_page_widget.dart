@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterclient/src/util/app/version/app_version.dart';
+import 'package:flutterclient/src/util/util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -163,25 +164,21 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
       } catch (e) {
         List<String?> result = data.split('\n');
 
-        if (data.contains('APPNAME') && _checkQRString(result[0]))
-          properties['APPNAME'] =
-              result[0]?.substring(result[0]!.indexOf(': ') + 2);
+        if (_checkQRString(result[0]))
+          properties['APPNAME'] = getStringFromQRData(result[0]!);
 
         if (data.contains('URL') && _checkQRString(result[1]))
-          properties['URL'] =
-              result[1]?.substring(result[1]!.indexOf(': ') + 2);
+          properties['URL'] = getStringFromQRData(result[1]!);
 
         if (data.contains('USER') &&
             result.length >= 3 &&
             _checkQRString(result[2]))
-          properties['USER'] =
-              result[2]?.substring(result[2]!.indexOf(': ') + 2);
+          properties['USER'] = getStringFromQRData(result[2]!);
 
         if (data.contains('PWD') &&
             result.length >= 4 &&
             _checkQRString(result[3]))
-          properties['PWD'] =
-              result[3]?.substring(result[3]!.indexOf(': ') + 2);
+          properties['PWD'] = getStringFromQRData(result[3]!);
       }
     }
 
@@ -192,6 +189,14 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     return (qrString != null && qrString.isNotEmpty && qrString.contains(': '));
   }
 
+  String getStringFromQRData(String data) {
+    try {
+      return data.substring(data.indexOf(': ') + 2);
+    } on Exception {
+      return data.substring(data.indexOf('=') + 1);
+    }
+  }
+
   Future<void> scanBarcode() async {
     final Barcode? result = await Navigator.of(context)
         .push(DefaultPageRoute(builder: (_) => QrCodeViewWidget()));
@@ -200,8 +205,9 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
       Map<String, dynamic> _properties = _getPropertiesFromQR(result.code);
 
       setState(() {
-        if (_properties['APPNAME'] != null) {
-          appName = _properties['APPNAME'];
+        if (_properties['APPNAME'] != null ||
+            _properties['Application'] != null) {
+          appName = _properties['APPNAME'] ?? _properties['Application'];
         }
 
         if (_properties['URL'] != null) {
@@ -275,6 +281,11 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                       widget.manager.language = language;
                     }
                     widget.manager.picSize = picSize;
+
+                    if (widget.appState.serverConfig == null) {
+                      widget.appState.serverConfig =
+                          ServerConfig(baseUrl: baseUrl!, appName: appName!);
+                    }
 
                     widget.appState.serverConfig!.username = username;
                     widget.appState.serverConfig!.password = password;

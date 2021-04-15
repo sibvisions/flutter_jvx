@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutterclient/flutterclient.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
@@ -54,7 +55,13 @@ class RestClientImpl implements RestClient {
       {required Uri uri,
       required Map<String, dynamic> data,
       int timeout = 10}) async {
-    bool isProd = bool.fromEnvironment('PROD', defaultValue: false);
+    late bool isProd;
+
+    if (!kIsWeb) {
+      isProd = bool.fromEnvironment('PROD', defaultValue: false);
+    } else {
+      isProd = true;
+    }
 
     if (data['forceNewSession'] != null && data['forceNewSession']) {
       headers?.clear();

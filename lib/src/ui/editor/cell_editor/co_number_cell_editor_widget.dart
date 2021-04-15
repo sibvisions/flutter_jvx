@@ -65,6 +65,10 @@ class CoNumberCellEditorWidgetState
     if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
   }
 
+  void onCellEditorValueChanged() {
+    widget.cellEditorModel.tempValue = widget.cellEditorModel.cellEditorValue;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +80,8 @@ class CoNumberCellEditorWidgetState
 
       if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
     });
+
+    widget.cellEditorModel.controller.addListener(onCellEditorValueChanged);
   }
 
   @override
@@ -165,6 +171,7 @@ class CoNumberCellEditorWidgetState
   @override
   void dispose() {
     widget.cellEditorModel.focusNode.removeListener(_focusListener);
+    widget.cellEditorModel.removeListener(onCellEditorValueChanged);
 
     super.dispose();
   }
