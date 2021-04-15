@@ -227,15 +227,13 @@ class TableComponentModel extends EditorComponentModel {
           }
 
           _editors[_getEditorIdentifier(columnName, index)] = editor;
-          return editor;
         }
-      } else {
-        _editors[_getEditorIdentifier(columnName, index)]
-            ?.cellEditor!
-            .cellEditorModel
-            .cellEditorValue = text;
-        return _editors[_getEditorIdentifier(columnName, index)];
       }
+      _editors[_getEditorIdentifier(columnName, index)]
+          ?.cellEditor!
+          .cellEditorModel
+          .cellEditorValue = text;
+      return _editors[_getEditorIdentifier(columnName, index)];
     }
     return null;
   }
