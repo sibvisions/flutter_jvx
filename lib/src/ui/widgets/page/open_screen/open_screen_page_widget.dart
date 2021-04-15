@@ -348,6 +348,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
     _deviceStatusTimer?.cancel();
 
+    widget.appState.currentMenuComponentId = null;
+
     super.dispose();
   }
 

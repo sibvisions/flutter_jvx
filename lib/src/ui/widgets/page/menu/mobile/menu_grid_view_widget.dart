@@ -48,7 +48,9 @@ class _MenuGridViewWidgetState extends State<MenuGridViewWidget> {
 
   Widget _buildGridView(List<MenuItem> menuItems) {
     return GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: widget.groupedMenuMode
+            ? NeverScrollableScrollPhysics()
+            : AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: menuItems.length,
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

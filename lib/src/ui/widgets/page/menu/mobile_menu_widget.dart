@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/requests/menu_request.dart';
-import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
-import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
-import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
-import 'package:flutterclient/src/ui/util/error/error_handler.dart';
-import 'package:flutterclient/src/ui/util/inherited_widgets/shared_preferences_provider.dart';
-import 'package:flutterclient/src/ui/widgets/page/menu/dialogs/sync_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../injection_container.dart';
+import '../../../../models/api/requests/menu_request.dart';
 import '../../../../models/api/requests/open_screen_request.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../../models/state/app_state.dart';
+import '../../../../models/state/routes/arguments/open_screen_page_arguments.dart';
 import '../../../../models/state/routes/routes.dart';
+import '../../../../services/local/local_database/i_offline_database_provider.dart';
+import '../../../../services/local/local_database/offline_database.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../../util/color/color_extension.dart';
 import '../../../../util/translation/app_localizations.dart';
+import '../../../util/error/error_handler.dart';
+import '../../../util/inherited_widgets/shared_preferences_provider.dart';
 import '../../drawer/menu_drawer_widget.dart';
+import 'dialogs/sync_dialog.dart';
 import 'mobile/menu_grid_view_widget.dart';
 import 'mobile/menu_list_view_widget.dart';
 
