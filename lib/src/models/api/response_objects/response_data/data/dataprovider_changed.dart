@@ -9,6 +9,7 @@ class DataproviderChanged extends ResponseObject {
   bool? deleteEnabled;
   bool? updateEnabled;
   bool? insertEnabled;
+  List<String>? changedColumnNames;
 
   DataproviderChanged(
       {required String name,
@@ -28,5 +29,6 @@ class DataproviderChanged extends ResponseObject {
     deleteEnabled = map['deleteEnabled'];
     updateEnabled = map['updateEnabled'];
     insertEnabled = map['insertEnabled'];
+    changedColumnNames = map['changedColumnNames'];
   }
 }
