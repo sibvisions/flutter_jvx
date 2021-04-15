@@ -156,18 +156,25 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
       tabController.animateTo(_idx >= 0 ? _idx : 0);
     }
 
-    return Scaffold(
-      appBar: TabBar(
-          isScrollable: true,
-          controller: this.tabController,
-          tabs: (widget.componentModel as TabsetPanelComponentModel)
-              .tabs
-              .map((tab) => tab)
-              .toList()),
-      body: TabBarView(
-          controller: this.tabController,
-          children:
-              (widget.componentModel as TabsetPanelComponentModel).components),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Scaffold(
+          appBar: TabBar(
+              isScrollable: false,
+              controller: this.tabController,
+              tabs: (widget.componentModel as TabsetPanelComponentModel)
+                  .tabs
+                  .map((tab) => tab)
+                  .toList()),
+          body: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return TabBarView(
+                controller: this.tabController,
+                children: (widget.componentModel as TabsetPanelComponentModel)
+                    .getTabsetComponents(constraints));
+          }),
+        );
+      },
     );
   }
 }

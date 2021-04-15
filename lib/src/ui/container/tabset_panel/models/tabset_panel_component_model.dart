@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/component/changed_component.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/component/component_properties.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
@@ -18,6 +19,23 @@ class TabsetPanelComponentModel extends ContainerComponentModel {
 
   TabsetPanelComponentModel({required ChangedComponent changedComponent})
       : super(changedComponent: changedComponent);
+
+  List<Widget> getTabsetComponents(BoxConstraints parentConstraints) {
+    List<Widget> comp = <Widget>[];
+    components.forEach((element) {
+      comp.add(SingleChildScrollView(
+          child: CoScrollPanelLayout(
+        preferredConstraints: CoScrollPanelConstraints(parentConstraints, this),
+        container: this,
+        children: [
+          CoScrollPanelLayoutId(
+              constraints: CoScrollPanelConstraints(parentConstraints, this),
+              child: element)
+        ],
+      )));
+    });
+    return comp;
+  }
 
   @override
   void updateProperties(
