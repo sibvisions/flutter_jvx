@@ -265,21 +265,23 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   void _onMenuItemPressed(MenuItem menuItem) {
-    if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
-        !widget.appState.screenManager
-            .findScreen(menuItem.componentId)!
-            .configuration
-            .withServer) {
-      Navigator.of(context).pushNamed(Routes.openScreen,
-          arguments: OpenScreenPageArguments(
-              screen: widget.appState.screenManager
-                  .findScreen(menuItem.componentId)!));
-    } else {
-      OpenScreenRequest request = OpenScreenRequest(
-          clientId: widget.appState.applicationMetaData!.clientId,
-          componentId: menuItem.componentId);
+    if (menuItem.componentId != widget.appState.currentMenuComponentId) {
+      if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
+          !widget.appState.screenManager
+              .findScreen(menuItem.componentId)!
+              .configuration
+              .withServer) {
+        Navigator.of(context).pushNamed(Routes.openScreen,
+            arguments: OpenScreenPageArguments(
+                screen: widget.appState.screenManager
+                    .findScreen(menuItem.componentId)!));
+      } else {
+        OpenScreenRequest request = OpenScreenRequest(
+            clientId: widget.appState.applicationMetaData!.clientId,
+            componentId: menuItem.componentId);
 
-      sl<ApiCubit>().openScreen(request);
+        sl<ApiCubit>().openScreen(request);
+      }
     }
   }
 
