@@ -253,6 +253,10 @@ class RemoteDataSourceImpl implements DataSource {
 
   Future<Either<ApiError, ApiResponse>> _sendRequest(
       Uri uri, Request request) async {
+    if (request.debugInfo != null) {
+      log('REQUEST ${uri.path}: ${request.debugInfo}');
+    }
+
     Either<Failure, http.Response> either = await client.post(
         uri: uri,
         data: request.toJson(),

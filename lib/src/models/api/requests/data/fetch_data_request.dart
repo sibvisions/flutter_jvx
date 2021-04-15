@@ -8,21 +8,20 @@ class FetchDataRequest extends DataRequest {
   bool? includeMetaData;
   Filter? filter;
 
+  @override
+  String get debugInfo =>
+      'clientId: $clientId, dataProvider: $dataProvider, columnNames: $columnNames, fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData,';
+
   FetchDataRequest(
       {required String dataProvider,
       required String clientId,
-      String? debugInfo,
       bool reload = false,
       this.columnNames = const <dynamic>[],
       this.fromRow,
       this.rowCount,
       this.includeMetaData,
       this.filter})
-      : super(
-            clientId: clientId,
-            debugInfo: debugInfo,
-            dataProvider: dataProvider,
-            reload: reload);
+      : super(clientId: clientId, dataProvider: dataProvider, reload: reload);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'columnNames': columnNames,

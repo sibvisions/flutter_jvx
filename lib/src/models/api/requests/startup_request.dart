@@ -22,6 +22,9 @@ class StartupRequest extends Request {
   final String language;
   final bool? forceNewSession;
 
+  @override
+  String get debugInfo => 'url: $url, appName: $appName, language: $language';
+
   StartupRequest(
       {required String clientId,
       required this.url,
@@ -43,9 +46,8 @@ class StartupRequest extends Request {
       this.deviceType,
       this.deviceTypeModel,
       this.deviceMode,
-      this.forceNewSession,
-      String debugInfo = ''})
-      : super(clientId: clientId, debugInfo: debugInfo);
+      this.forceNewSession})
+      : super(clientId: clientId);
 
   @override
   Map<String, dynamic> toJson() => <String, dynamic>{

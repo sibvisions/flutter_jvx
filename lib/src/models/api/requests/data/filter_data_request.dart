@@ -12,10 +12,13 @@ class FilterDataRequest extends DataRequest {
   Filter? filter = Filter();
   FilterCondition? condition;
 
+  @override
+  String get debugInfo =>
+      'clientId: $clientId, dataProvider: $dataProvider, columnNames: $columnNames, fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData,';
+
   FilterDataRequest({
     required String dataProvider,
     required String clientId,
-    String? debugInfo,
     bool reload = false,
     this.columnNames,
     this.value,
@@ -24,11 +27,7 @@ class FilterDataRequest extends DataRequest {
     this.fromRow = -1,
     this.rowCount = -1,
     this.includeMetaData = false,
-  }) : super(
-            dataProvider: dataProvider,
-            clientId: clientId,
-            debugInfo: debugInfo,
-            reload: reload);
+  }) : super(dataProvider: dataProvider, clientId: clientId, reload: reload);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'columnNames': columnNames,

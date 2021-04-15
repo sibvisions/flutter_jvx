@@ -68,11 +68,6 @@ class RestClientImpl implements RestClient {
     }
 
     try {
-      if (!isProd) {
-        log('HEADERS: $headers');
-        log('REQUEST ${uri.path}: $data');
-      }
-
       final response = await client
           .post(uri, body: json.encode(data), headers: headers)
           .timeout(Duration(seconds: timeout));

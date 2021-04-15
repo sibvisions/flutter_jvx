@@ -4,11 +4,6 @@ class SaveDataRequest extends DataRequest {
   SaveDataRequest(
       {required String dataProvider,
       required String clientId,
-      String? debugInfo,
       bool reload = false})
-      : super(
-            dataProvider: dataProvider,
-            clientId: clientId,
-            debugInfo: debugInfo,
-            reload: reload);
+      : super(dataProvider: dataProvider, clientId: clientId, reload: reload);
 }

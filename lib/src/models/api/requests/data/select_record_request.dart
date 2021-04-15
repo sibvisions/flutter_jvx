@@ -10,19 +10,18 @@ class SelectRecordRequest extends DataRequest {
   int selectedRow;
   SoComponentData? soComponentData;
 
+  @override
+  String get debugInfo =>
+      'clientId: $clientId, dataProvider: $dataProvider, selectedRow: $selectedRow';
+
   SelectRecordRequest(
       {required String clientId,
       required String dataProvider,
-      String? debugInfo,
       bool reload = false,
       required this.filter,
       required this.selectedRow,
       this.fetch = false})
-      : super(
-            clientId: clientId,
-            dataProvider: dataProvider,
-            debugInfo: debugInfo,
-            reload: reload);
+      : super(clientId: clientId, dataProvider: dataProvider, reload: reload);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'fetch': fetch,

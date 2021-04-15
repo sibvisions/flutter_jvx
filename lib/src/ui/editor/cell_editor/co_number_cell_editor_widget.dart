@@ -66,7 +66,8 @@ class CoNumberCellEditorWidgetState
   }
 
   void onCellEditorValueChanged() {
-    widget.cellEditorModel.tempValue = widget.cellEditorModel.cellEditorValue;
+    widget.cellEditorModel.tempValue =
+        widget.cellEditorModel.cellEditorValue.toString();
   }
 
   @override

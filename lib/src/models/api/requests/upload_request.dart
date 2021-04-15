@@ -6,13 +6,15 @@ class UploadRequest extends Request {
   String fileId;
   File file;
 
+  @override
+  String get debugInfo => 'clientId: $clientId, fileId: $fileId';
+
   UploadRequest(
       {required String clientId,
-      String? debugInfo,
       bool reload = false,
       required this.fileId,
       required this.file})
-      : super(clientId: clientId, debugInfo: debugInfo, reload: reload);
+      : super(clientId: clientId, reload: reload);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'fileId': fileId,

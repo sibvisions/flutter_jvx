@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +25,7 @@ import 'util/config/widget_config.dart';
 import 'util/download/download_helper.dart';
 import 'util/theme/theme_manager.dart';
 
-class ApplicationWidget extends StatelessWidget {
+class ApplicationWidget extends StatefulWidget {
   final AppConfig? appConfig;
   final DevConfig? devConfig;
   final String? appConfigPath;
@@ -48,6 +48,15 @@ class ApplicationWidget extends StatelessWidget {
       : assert(appConfig != null || appConfigPath != null),
         super(key: key);
 
+  @override
+  _ApplicationWidgetState createState() => _ApplicationWidgetState();
+}
+
+class _ApplicationWidgetState extends State<ApplicationWidget> {
+  late Future<AppConfig> appConfigFuture;
+  late AppState appState;
+  late SharedPreferencesManager manager;
+
   ServerConfig? _getServerConfig(
       AppState appState, SharedPreferencesManager manager) {
     if (manager.initialStart &&
@@ -59,19 +68,19 @@ class ApplicationWidget extends StatelessWidget {
 
     manager.initialStart = false;
 
-    if (devConfig != null &&
+    if (widget.devConfig != null &&
         manager.loadConfig &&
-        devConfig!.baseUrl.isNotEmpty &&
-        devConfig!.appName.isNotEmpty &&
-        devConfig!.appMode.isNotEmpty) {
-      final formattedUrl = _formatUrl(devConfig!.baseUrl);
+        widget.devConfig!.baseUrl.isNotEmpty &&
+        widget.devConfig!.appName.isNotEmpty &&
+        widget.devConfig!.appMode.isNotEmpty) {
+      final formattedUrl = _formatUrl(widget.devConfig!.baseUrl);
 
       return ServerConfig(
           baseUrl: formattedUrl,
-          appName: devConfig!.appName,
-          appMode: devConfig!.appMode,
-          username: devConfig!.username,
-          password: devConfig!.password);
+          appName: widget.devConfig!.appName,
+          appMode: widget.devConfig!.appMode,
+          username: widget.devConfig!.username,
+          password: widget.devConfig!.password);
     } else if (manager.baseUrl != null ||
         manager.appName != null ||
         manager.appMode != null) {
@@ -89,15 +98,15 @@ class ApplicationWidget extends StatelessWidget {
   }
 
   Future<AppConfig> _getAppConfig() async {
-    if (appConfig != null) {
-      return appConfig!;
+    if (widget.appConfig != null) {
+      return widget.appConfig!;
     } else {
       late AppConfig config;
 
-      Either<Failure, AppConfig>? either;
+      dartz.Either<Failure, AppConfig>? either;
 
       try {
-        either = await AppConfig.loadConfig(path: appConfigPath!);
+        either = await AppConfig.loadConfig(path: widget.appConfigPath!);
 
         either.fold((failure) {
           log('Couldn\'t load app config. Taking default app config');
@@ -106,14 +115,14 @@ class ApplicationWidget extends StatelessWidget {
               rememberMeChecked: false,
               hideLoginCheckbox: false,
               loginColorsInverted: false,
-              package: package,
+              package: widget.package,
               requestTimeout: 10);
         }, (appConfig) => config = appConfig);
 
         return config;
       } catch (e) {
         return AppConfig(
-            package: package,
+            package: widget.package,
             rememberMeChecked: false,
             hideLoginCheckbox: false,
             handleSessionTimeout: true,
@@ -134,40 +143,48 @@ class ApplicationWidget extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    AppState appState = sl<AppState>();
-    SharedPreferencesManager manager = sl<SharedPreferencesManager>();
-    String initialRoute = '/';
+  void initState() {
+    super.initState();
 
-    if (widgetConfig != null) {
-      appState.widgetConfig = widgetConfig!;
+    appState = sl<AppState>();
+    manager = sl<SharedPreferencesManager>();
+
+    appConfigFuture = _getAppConfig();
+
+    if (widget.widgetConfig != null) {
+      appState.widgetConfig = widget.widgetConfig!;
     }
 
-    if (appState.appVersion == null && appVersion != null) {
-      appState.appVersion = appVersion;
+    if (appState.appVersion == null && widget.appVersion != null) {
+      appState.appVersion = widget.appVersion;
     }
 
-    if (screenManager != null) {
-      appState.screenManager = screenManager!;
+    if (widget.screenManager != null) {
+      appState.screenManager = widget.screenManager!;
     }
 
     if (appState.listener == null) {
-      appState.listener = appListener;
+      appState.listener = widget.appListener;
     }
 
     if (!kIsWeb) {
       // TODO: refactor
       getBaseDir().then((value) => appState.baseDirectory = value);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String initialRoute = '/';
 
     return FutureBuilder<AppConfig>(
-        future: _getAppConfig(),
+        future: appConfigFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             appState.appConfig = snapshot.data!;
 
             return RestartWidget(builder: (context) {
-              appState.devConfig = devConfig;
+              appState.devConfig = widget.devConfig;
               appState.serverConfig = _getServerConfig(appState, manager);
 
               if (appState.serverConfig != null) {
