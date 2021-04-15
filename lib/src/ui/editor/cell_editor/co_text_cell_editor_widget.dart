@@ -109,7 +109,7 @@ class CoTextCellEditorWidgetState
     if (!widget.cellEditorModel.hasFocus) onTextFieldEndEditing();
   }
 
-  void onControllerChanged() {
+  void onCellEditorValueChanged() {
     value = widget.cellEditorModel.cellEditorValue;
   }
 
@@ -121,13 +121,13 @@ class CoTextCellEditorWidgetState
     widget.cellEditorModel.focusNode = FocusNode();
     widget.cellEditorModel.focusNode.addListener(_focusListener);
 
-    widget.cellEditorModel.textController.addListener(onControllerChanged);
+    widget.cellEditorModel.addListener(onCellEditorValueChanged);
   }
 
   @override
   void dispose() {
     widget.cellEditorModel.focusNode.removeListener(_focusListener);
-    widget.cellEditorModel.textController.removeListener(onControllerChanged);
+    widget.cellEditorModel.removeListener(onCellEditorValueChanged);
     super.dispose();
   }
 
