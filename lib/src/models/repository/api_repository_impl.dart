@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/util/error/error_handler.dart';
 
 import '../../../injection_container.dart';
 import '../../services/local/local_database/i_offline_database_provider.dart';
@@ -395,10 +396,10 @@ class ApiRepositoryImpl implements ApiRepository {
       if (!(await networkInfo.isConnected)) {
         return ApiError(
             failure: ServerFailure(
-                title: 'Internet problems.',
-                message: 'No connection to the internet!',
+                title: 'Connection problems.',
+                message: 'Could not ping server!',
                 details: '',
-                name: 'message.error'));
+                name: ErrorHandler.connectionError));
       }
     }
 
