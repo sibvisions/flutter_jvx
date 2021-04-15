@@ -163,7 +163,7 @@ class TableComponentModel extends EditorComponentModel {
     autoResize = changedComponent.getProperty<bool>(
         ComponentProperty.AUTO_RESIZE, autoResize)!;
     editable = changedComponent.getProperty<bool>(
-        ComponentProperty.AUTO_RESIZE, editable);
+        ComponentProperty.AUTO_RESIZE, editable)!;
 
     if (this.dataProvider == null)
       this.dataProvider = changedComponent.getProperty<String>(
@@ -210,7 +210,7 @@ class TableComponentModel extends EditorComponentModel {
         CoEditorWidget? editor = this.componentCreator!.createEditorForTable(
               column.cellEditor!,
               text,
-              editable ?? false,
+              editable,
               index,
               data!,
               columnName,

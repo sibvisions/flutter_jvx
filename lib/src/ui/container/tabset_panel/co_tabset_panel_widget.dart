@@ -163,21 +163,23 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
       tabController.animateTo(_idx >= 0 ? _idx : 0);
     }
 
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      child: Scaffold(
-        appBar: TabBar(
-            isScrollable: true,
-            controller: this.tabController,
-            tabs: (widget.componentModel as TabsetPanelComponentModel)
-                .tabs
-                .map((tab) => tab)
-                .toList()),
-        body: TabBarView(
-            controller: this.tabController,
-            children: (widget.componentModel as TabsetPanelComponentModel)
-                .components),
-      ),
+    return Scaffold(
+      appBar: TabBar(
+          isScrollable: true,
+          controller: this.tabController,
+          tabs: (widget.componentModel as TabsetPanelComponentModel)
+              .tabs
+              .map((tab) => tab)
+              .toList()),
+      body: TabBarView(
+          controller: this.tabController,
+          children: (widget.componentModel as TabsetPanelComponentModel)
+              .components
+              .map((component) => Container(
+                    height: MediaQuery.of(context).size.width - 50,
+                    child: component,
+                  ))
+              .toList()),
     );
   }
 }

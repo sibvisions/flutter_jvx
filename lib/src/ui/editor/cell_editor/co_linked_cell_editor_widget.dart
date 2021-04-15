@@ -162,28 +162,33 @@ class CoLinkedCellEditorWidgetState
           onChanged: valueChanged,
           editable: widget.cellEditorModel.editable,
           onDelete: () {
-            widget.cellEditorModel.cellEditorValue = null;
-            onLazyDropDownValueChanged(MapEntry<int, dynamic>(-1, null));
+            if (widget.cellEditorModel.editable) {
+              widget.cellEditorModel.cellEditorValue = null;
+              onLazyDropDownValueChanged(MapEntry<int, dynamic>(-1, null));
+            }
           },
           onOpen: () {
-            this.onFilter!(null);
-            TextUtils.unfocusCurrentTextfield(context);
-            showDialog(
-                context: context,
-                builder: (context) => LazyDropdown(
-                      editable: widget.cellEditorModel.editable,
-                      data: widget.cellEditorModel.referencedData!,
-                      context: this.context,
-                      displayColumnNames: dropDownColumnNames,
-                      fetchMoreYOffset: MediaQuery.of(context).size.height * 4,
-                      onSave: (value) {
-                        widget.cellEditorModel.cellEditorValue = value.value;
-                        onLazyDropDownValueChanged(value);
-                      },
-                      onFilter: onFilterDropDown,
-                      allowNull: true,
-                      onScrollToEnd: onScrollToEnd,
-                    ));
+            if (widget.cellEditorModel.editable) {
+              this.onFilter!(null);
+              TextUtils.unfocusCurrentTextfield(context);
+              showDialog(
+                  context: context,
+                  builder: (context) => LazyDropdown(
+                        editable: widget.cellEditorModel.editable,
+                        data: widget.cellEditorModel.referencedData!,
+                        context: this.context,
+                        displayColumnNames: dropDownColumnNames,
+                        fetchMoreYOffset:
+                            MediaQuery.of(context).size.height * 4,
+                        onSave: (value) {
+                          widget.cellEditorModel.cellEditorValue = value.value;
+                          onLazyDropDownValueChanged(value);
+                        },
+                        onFilter: onFilterDropDown,
+                        allowNull: true,
+                        onScrollToEnd: onScrollToEnd,
+                      ));
+            }
           },
         )),
       ),
