@@ -128,7 +128,10 @@ class CoDateCellEditorWidgetState
         child: ElevatedButton(
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0.0),
-                backgroundColor: MaterialStateProperty.all(Colors.white),
+                backgroundColor: MaterialStateProperty.all(
+                    widget.cellEditorModel.editable
+                        ? Colors.white
+                        : Colors.grey.shade200),
                 padding: MaterialStateProperty.all(
                     EdgeInsets.fromLTRB(10, 10, 10, 10))),
             child: Row(
@@ -204,12 +207,14 @@ class CoDateCellEditorWidgetState
                 )
               ],
             ),
-            onPressed: () =>
-                (widget.cellEditorModel as DateCellEditorModel).isTimeFormat &&
+            onPressed: widget.cellEditorModel.editable
+                ? () => ((widget.cellEditorModel as DateCellEditorModel)
+                            .isTimeFormat &&
                         !(widget.cellEditorModel as DateCellEditorModel)
-                            .isDateFormat
+                            .isDateFormat)
                     ? _getTimePopUp(context)
-                    : _getDateTimePopUp(context)),
+                    : _getDateTimePopUp(context)
+                : null),
       );
     } else {
       // Pref Editor Mode
