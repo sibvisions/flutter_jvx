@@ -29,6 +29,8 @@ class DataproviderChanged extends ResponseObject {
     deleteEnabled = map['deleteEnabled'];
     updateEnabled = map['updateEnabled'];
     insertEnabled = map['insertEnabled'];
-    changedColumnNames = map['changedColumnNames'];
+    changedColumnNames = map['changedColumnNames'] != null
+        ? List<String>.from(map['changedColumnNames'])
+        : null;
   }
 }
