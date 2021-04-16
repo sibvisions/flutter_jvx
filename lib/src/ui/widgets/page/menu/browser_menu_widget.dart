@@ -10,6 +10,7 @@ import 'package:flutterclient/src/ui/widgets/page/menu/browser/navigation_bar_wi
 import '../../../../../injection_container.dart';
 
 class BrowserMenuWidget extends StatefulWidget {
+  final ApiCubit cubit;
   final AppState appState;
   final Function onLogoutPressed;
   final List<MenuItem> menuItems;
@@ -21,6 +22,7 @@ class BrowserMenuWidget extends StatefulWidget {
     required this.onLogoutPressed,
     required this.menuItems,
     required this.listMenuItemsInDrawer,
+    required this.cubit,
   }) : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ class _BrowserMenuWidgetState extends State<BrowserMenuWidget> {
           clientId: widget.appState.applicationMetaData!.clientId,
           componentId: menuItem.componentId);
 
-      sl<ApiCubit>().openScreen(request);
+      widget.cubit.openScreen(request);
     }
   }
 

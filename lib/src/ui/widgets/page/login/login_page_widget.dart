@@ -34,11 +34,15 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
   bool colorsInverted = false;
   ApiResponse? response;
 
+  late ApiCubit cubit;
+
   @override
   void initState() {
     colorsInverted = widget.appState.appConfig!.loginColorsInverted;
 
     super.initState();
+
+    cubit = ApiCubit.withDependencies();
   }
 
   @override
@@ -58,7 +62,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
             appState: widget.appState,
             handleLoading: true,
             handleError: true,
-            bloc: sl<ApiCubit>(),
+            bloc: cubit,
             listener: (context, state) {
               if (state is ApiResponse) {
                 if (state.request is LoginRequest &&
@@ -92,8 +96,10 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   colorsInverted: colorsInverted,
                 ),
                 LoginWidgets(
-                    username: widget.lastUsername ?? '',
-                    appState: widget.appState)
+                  username: widget.lastUsername ?? '',
+                  appState: widget.appState,
+                  cubit: cubit,
+                )
               ],
             )),
       ),

@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/requests/download_request.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:meta/meta.dart';
 
 import '../../../models/api/errors/failure.dart';
@@ -12,6 +12,7 @@ import '../../../models/api/requests/close_screen_request.dart';
 import '../../../models/api/requests/data/data_request.dart';
 import '../../../models/api/requests/device_status_request.dart';
 import '../../../models/api/requests/download_images_request.dart';
+import '../../../models/api/requests/download_request.dart';
 import '../../../models/api/requests/download_translation_request.dart';
 import '../../../models/api/requests/login_request.dart';
 import '../../../models/api/requests/logout_request.dart';
@@ -62,6 +63,11 @@ class ApiCubit extends Cubit<ApiState> {
       required this.manager,
       required this.networkInfo})
       : super(ApiInitial());
+
+  factory ApiCubit.withDependencies() {
+    return ApiCubit(
+        repository: sl(), appState: sl(), manager: sl(), networkInfo: sl());
+  }
 
   Future<void> startup(StartupRequest request) async {
     emit(await repository.startup(request));

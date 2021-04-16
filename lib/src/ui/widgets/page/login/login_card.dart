@@ -16,9 +16,13 @@ import 'gradient_button.dart';
 class LoginCard extends StatefulWidget {
   final String lastUsername;
   final AppState appState;
+  final ApiCubit cubit;
 
   const LoginCard(
-      {Key? key, required this.lastUsername, required this.appState})
+      {Key? key,
+      required this.lastUsername,
+      required this.appState,
+      required this.cubit})
       : super(key: key);
 
   @override
@@ -179,7 +183,7 @@ class _LoginCardState extends State<LoginCard>
           username: loginUsername,
           password: loginPassword);
 
-      sl<ApiCubit>().login(request);
+      widget.cubit.login(request);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Please enter username and password!')));

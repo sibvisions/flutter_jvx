@@ -5,8 +5,12 @@ class DefaultPageRoute<T> extends MaterialPageRoute<T> {
   @override
   Duration get transitionDuration => const Duration(milliseconds: 200);
 
-  DefaultPageRoute({required WidgetBuilder builder, RouteSettings? settings})
-      : super(builder: builder, settings: settings);
+  DefaultPageRoute(
+      {required WidgetBuilder builder,
+      RouteSettings? settings,
+      bool maintainState = true})
+      : super(
+            builder: builder, settings: settings, maintainState: maintainState);
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,

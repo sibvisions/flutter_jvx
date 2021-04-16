@@ -47,6 +47,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   Size? _lastScreenSize;
   Timer? _deviceStatusTimer;
 
+  late ApiCubit cubit;
+
   void _addDeviceStatusTimer(BuildContext context) {
     Size currentSize = MediaQuery.of(context).size;
 
@@ -65,10 +67,16 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
         _lastScreenSize = currentSize;
 
-        if (ModalRoute.of(context)!.isCurrent)
-          sl<ApiCubit>().deviceStatus(request);
+        if (ModalRoute.of(context)!.isCurrent) cubit.deviceStatus(request);
       });
     }
+  }
+
+  void onLogout() {
+    LogoutRequest logoutRequest =
+        LogoutRequest(clientId: widget.appState.applicationMetaData!.clientId);
+
+    cubit.logout(logoutRequest);
   }
 
   @override
@@ -83,6 +91,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   @override
   void dispose() {
     _deviceStatusTimer?.cancel();
+
+    cubit.close();
 
     super.dispose();
   }
@@ -120,6 +130,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     }
 
     super.initState();
+
+    cubit = ApiCubit.withDependencies();
   }
 
   @override
@@ -128,7 +140,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
     return CustomCubitListener(
       appState: widget.appState,
-      bloc: sl<ApiCubit>(),
+      bloc: cubit,
       listener: (context, state) async {
         if (state is ApiResponse) {
           if (state.request is LogoutRequest) {
@@ -169,57 +181,37 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
         builder: (context) {
           if (widget.appState.webOnly) {
             return BrowserMenuWidget(
+              cubit: cubit,
               listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
               appState: widget.appState,
               menuItems: _menuItems,
-              onLogoutPressed: () {
-                LogoutRequest logoutRequest = LogoutRequest(
-                    clientId: widget.appState.applicationMetaData!.clientId);
-
-                sl<ApiCubit>().logout(logoutRequest);
-              },
+              onLogoutPressed: () {},
             );
           } else if (widget.appState.mobileOnly) {
             return MobileMenuWidget(
+              cubit: cubit,
               appState: widget.appState,
               menuItems: _menuItems,
               listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
-              onLogoutPressed: () {
-                LogoutRequest logoutRequest = LogoutRequest(
-                    clientId: widget.appState.applicationMetaData!.clientId);
-
-                sl<ApiCubit>().logout(logoutRequest);
-              },
+              onLogoutPressed: onLogout,
             );
           } else {
             return OrientationBuilder(
               builder: (BuildContext context, Orientation orientation) {
                 if (orientation == Orientation.landscape && kIsWeb) {
                   return BrowserMenuWidget(
-                    listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
-                    appState: widget.appState,
-                    menuItems: _menuItems,
-                    onLogoutPressed: () {
-                      LogoutRequest logoutRequest = LogoutRequest(
-                          clientId:
-                              widget.appState.applicationMetaData!.clientId);
-
-                      sl<ApiCubit>().logout(logoutRequest);
-                    },
-                  );
+                      cubit: cubit,
+                      listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
+                      appState: widget.appState,
+                      menuItems: _menuItems,
+                      onLogoutPressed: onLogout);
                 } else {
                   return MobileMenuWidget(
-                    appState: widget.appState,
-                    menuItems: _menuItems,
-                    listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
-                    onLogoutPressed: () {
-                      LogoutRequest logoutRequest = LogoutRequest(
-                          clientId:
-                              widget.appState.applicationMetaData!.clientId);
-
-                      sl<ApiCubit>().logout(logoutRequest);
-                    },
-                  );
+                      cubit: cubit,
+                      appState: widget.appState,
+                      menuItems: _menuItems,
+                      listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
+                      onLogoutPressed: onLogout);
                 }
               },
             );

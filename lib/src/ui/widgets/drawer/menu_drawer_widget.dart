@@ -87,7 +87,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   )),
           onTap: () {
             if (widget.appState.currentMenuComponentId != item.componentId) {
-              Navigator.of(context).pop(false);
+              Navigator.of(context).pop(true);
 
               widget.onMenuItemPressed(item);
             }

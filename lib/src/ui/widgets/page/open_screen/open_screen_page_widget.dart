@@ -79,29 +79,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       if (state.hasDataObject || state.hasObject<ScreenGenericResponseObject>())
         _updateScreens(state);
 
-      if (state.request is LogoutRequest) {
-        Navigator.of(context).pushNamed(Routes.login,
-            arguments: LoginPageArguments(lastUsername: ''));
-      } else if (state.request is NavigationRequest &&
-          !state.hasObject<ScreenGenericResponseObject>()) {
-        setState(() {
-          _pages.removeLast();
-        });
-
-        if (_pages.isEmpty) {
-          _screens.removeLast();
-          Navigator.of(context).pop();
-        }
-      } else if (state.request is CloseScreenRequest &&
-          !state.hasObject<ScreenGenericResponseObject>()) {
-        _pages.removeLast();
-
-        if (_pages.isEmpty) {
-          _screens.removeLast();
-          Navigator.of(context).pop();
-        }
-      }
-
       if (state.hasObject<ScreenGenericResponseObject>()) {
         ScreenGenericResponseObject screenGeneric =
             state.getObjectByType<ScreenGenericResponseObject>()!;
@@ -127,6 +104,29 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               screen.configuration.componentId == screenGeneric.componentId);
 
           addPage(soScreen, register: false);
+        }
+      }
+
+      if (state.request is LogoutRequest) {
+        Navigator.of(context).pushNamed(Routes.login,
+            arguments: LoginPageArguments(lastUsername: ''));
+      } else if (state.request is NavigationRequest &&
+          !state.hasObject<ScreenGenericResponseObject>()) {
+        setState(() {
+          _pages.removeLast();
+        });
+
+        if (_pages.isEmpty) {
+          _screens.removeLast();
+          Navigator.of(context).pop();
+        }
+      } else if (state.request is CloseScreenRequest &&
+          !state.hasObject<ScreenGenericResponseObject>()) {
+        _pages.removeLast();
+
+        if (_pages.isEmpty) {
+          _screens.removeLast();
+          Navigator.of(context).pop();
         }
       }
 
@@ -265,23 +265,21 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   void _onMenuItemPressed(MenuItem menuItem) {
-    if (widget.appState.currentMenuComponentId != null) {
-      if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
-          !widget.appState.screenManager
-              .findScreen(menuItem.componentId)!
-              .configuration
-              .withServer) {
-        Navigator.of(context).pushNamed(Routes.openScreen,
-            arguments: OpenScreenPageArguments(
-                screen: widget.appState.screenManager
-                    .findScreen(menuItem.componentId)!));
-      } else {
-        OpenScreenRequest request = OpenScreenRequest(
-            clientId: widget.appState.applicationMetaData!.clientId,
-            componentId: menuItem.componentId);
+    if (widget.appState.screenManager.hasScreen(menuItem.componentId) &&
+        !widget.appState.screenManager
+            .findScreen(menuItem.componentId)!
+            .configuration
+            .withServer) {
+      Navigator.of(context).pushNamed(Routes.openScreen,
+          arguments: OpenScreenPageArguments(
+              screen: widget.appState.screenManager
+                  .findScreen(menuItem.componentId)!));
+    } else {
+      OpenScreenRequest request = OpenScreenRequest(
+          clientId: widget.appState.applicationMetaData!.clientId,
+          componentId: menuItem.componentId);
 
-        sl<ApiCubit>().openScreen(request);
-      }
+      sl<ApiCubit>().openScreen(request);
     }
   }
 
@@ -409,7 +407,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                               .componentId);
 
                       sl<ApiCubit>().navigation(request);
-                    } else {
+                    } else if (shouldNotRequest == null) {
                       Navigator.of(context).pop();
                     }
 

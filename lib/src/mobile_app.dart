@@ -75,15 +75,16 @@ class MobileApp extends StatelessWidget {
         MenuPageArguments arguments = settings.arguments as MenuPageArguments;
 
         return DefaultPageRoute(
-            settings:
-                RouteSettings(name: Routes.menu, arguments: settings.arguments),
-            builder: (_) => MenuPage(
-                  listMenuItemsInDrawer: arguments.listMenuItemsInDrawer,
-                  menuItems: arguments.menuItems,
-                  response: arguments.response,
-                  appState: appState,
-                  manager: manager,
-                ));
+          settings:
+              RouteSettings(name: Routes.menu, arguments: settings.arguments),
+          builder: (_) => MenuPage(
+            listMenuItemsInDrawer: arguments.listMenuItemsInDrawer,
+            menuItems: arguments.menuItems,
+            response: arguments.response,
+            appState: appState,
+            manager: manager,
+          ),
+        );
       case Routes.openScreen:
         OpenScreenPageArguments arguments =
             settings.arguments as OpenScreenPageArguments;

@@ -51,6 +51,8 @@ class StartupPageWidget extends StatefulWidget {
 class _StartupPageWidgetState extends State<StartupPageWidget> {
   ApiResponse? startupResponse;
 
+  late ApiCubit cubit;
+
   void _sendStartupRequest() {
     String language = 'en';
 
@@ -94,7 +96,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       widget.appState.serverConfig!.username = null;
       widget.appState.serverConfig!.password = null;
 
-      sl<ApiCubit>().startup(request);
+      cubit.startup(request);
     }
   }
 
@@ -132,7 +134,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
         clientId: widget.appState.applicationMetaData!.clientId,
       );
 
-      sl<ApiCubit>().applicationStyle(applicationStyleRequest);
+      cubit.applicationStyle(applicationStyleRequest);
     }
   }
 
@@ -228,14 +230,14 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     DownloadTranslationRequest request = DownloadTranslationRequest(
         clientId: widget.appState.applicationMetaData!.clientId);
 
-    sl<ApiCubit>().downloadTranslation(request);
+    cubit.downloadTranslation(request);
   }
 
   void _downloadImages() {
     DownloadImagesRequest request = DownloadImagesRequest(
         clientId: widget.appState.applicationMetaData!.clientId);
 
-    sl<ApiCubit>().downloadImages(request);
+    cubit.downloadImages(request);
   }
 
   void _checkForLogin(ApiResponse response) {
@@ -269,13 +271,20 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    cubit = ApiCubit.withDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomCubitListener(
             handleError: true,
             handleLoading: false,
             appState: widget.appState,
-            bloc: sl<ApiCubit>(),
+            bloc: cubit,
             listener: (context, state) {
               if (state is ApiResponse) {
                 if (state.request is StartupRequest) {

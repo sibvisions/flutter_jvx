@@ -21,6 +21,7 @@ import 'mobile/menu_grid_view_widget.dart';
 import 'mobile/menu_list_view_widget.dart';
 
 class MobileMenuWidget extends StatefulWidget {
+  final ApiCubit cubit;
   final AppState appState;
   final Function onLogoutPressed;
   final List<MenuItem> menuItems;
@@ -28,6 +29,7 @@ class MobileMenuWidget extends StatefulWidget {
 
   const MobileMenuWidget(
       {Key? key,
+      required this.cubit,
       required this.appState,
       required this.onLogoutPressed,
       required this.menuItems,
@@ -56,7 +58,7 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
           clientId: widget.appState.applicationMetaData!.clientId,
           componentId: menuItem.componentId);
 
-      sl<ApiCubit>().openScreen(request);
+      widget.cubit.openScreen(request);
     }
   }
 
@@ -119,7 +121,7 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
 
               SharedPreferencesProvider.of(context)!.manager.isOffline = false;
 
-              sl<ApiCubit>().menu(MenuRequest(
+              widget.cubit.menu(MenuRequest(
                   clientId: widget.appState.applicationMetaData!.clientId));
             } else {
               if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase)
