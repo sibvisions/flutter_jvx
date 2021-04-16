@@ -278,6 +278,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   @override
+  void dispose() {
+    cubit.close();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomCubitListener(

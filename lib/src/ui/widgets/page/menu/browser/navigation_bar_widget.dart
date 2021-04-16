@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:flutterclient/src/ui/widgets/page/menu/browser/web_menu_list_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../flutterclient.dart';
@@ -35,47 +36,11 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
   bool isShowingMenu = true;
 
   Widget _getMenuWidget(BuildContext context) {
-    return MenuListViewWidget(
+    return WebMenuListWidget(
         menuItems: widget.menuItems,
         groupedMenuMode: true,
-        onPressed: widget.onMenuItemPressed,
+        onMenuItemPressed: widget.onMenuItemPressed,
         appState: widget.appState);
-    if (widget.appState.applicationStyle?.menuMode != null) {
-      switch (widget.appState.applicationStyle!.menuMode) {
-        case 'grid':
-          return MenuGridViewWidget(
-              items: widget.menuItems,
-              groupedMenuMode: false,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        case 'grid_grouped':
-          return MenuGridViewWidget(
-              items: widget.menuItems,
-              groupedMenuMode: true,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        case 'list':
-          return MenuListViewWidget(
-              menuItems: widget.menuItems,
-              groupedMenuMode: false,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        case 'list_grouped':
-          return MenuListViewWidget(
-              menuItems: widget.menuItems,
-              groupedMenuMode: true,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        default:
-          return MenuGridViewWidget(
-              items: widget.menuItems,
-              groupedMenuMode: false,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-      }
-    } else {
-      return Container();
-    }
   }
 
   ImageProvider? _getImageProvider() {
@@ -93,13 +58,21 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
         child: Container(
             child: Column(
           children: [
-            Image.asset(
-              widget.appState.appConfig!.package
-                  ? 'packages/flutterclient/assets/images/logo.png'
-                  : 'assets/images/logo.png',
+            Container(
+              color: Theme.of(context).primaryColor,
               height: 60,
+              child: Row(
+                children: [
+                  Image.asset(
+                    widget.appState.appConfig!.package
+                        ? 'packages/flutterclient/assets/images/logo.png'
+                        : 'assets/images/logo.png',
+                    fit: BoxFit.fitWidth,
+                  ),
+                ],
+              ),
             ),
-            _getMenuWidget(context),
+            Expanded(child: _getMenuWidget(context)),
           ],
         )));
   }
