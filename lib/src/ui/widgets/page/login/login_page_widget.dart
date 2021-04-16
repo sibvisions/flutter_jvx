@@ -46,6 +46,13 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
   }
 
   @override
+  void dispose() {
+    cubit.close();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
