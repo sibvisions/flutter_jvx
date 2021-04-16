@@ -41,42 +41,6 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
         groupedMenuMode: true,
         onMenuItemPressed: widget.onMenuItemPressed,
         appState: widget.appState);
-    if (widget.appState.applicationStyle?.menuMode != null) {
-      switch (widget.appState.applicationStyle!.menuMode) {
-        case 'grid':
-          return MenuGridViewWidget(
-              items: widget.menuItems,
-              groupedMenuMode: false,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        case 'grid_grouped':
-          return MenuGridViewWidget(
-              items: widget.menuItems,
-              groupedMenuMode: true,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        case 'list':
-          return MenuListViewWidget(
-              menuItems: widget.menuItems,
-              groupedMenuMode: false,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        case 'list_grouped':
-          return MenuListViewWidget(
-              menuItems: widget.menuItems,
-              groupedMenuMode: true,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-        default:
-          return MenuGridViewWidget(
-              items: widget.menuItems,
-              groupedMenuMode: false,
-              onPressed: widget.onMenuItemPressed,
-              appState: widget.appState);
-      }
-    } else {
-      return Container();
-    }
   }
 
   ImageProvider? _getImageProvider() {
@@ -103,7 +67,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
                     widget.appState.appConfig!.package
                         ? 'packages/flutterclient/assets/images/logo.png'
                         : 'assets/images/logo.png',
-                    height: 60,
+                    fit: BoxFit.fitWidth,
                   ),
                 ],
               ),
