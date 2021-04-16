@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/models/state/routes/arguments/open_screen_page_arguments.dart';
-import 'package:flutterclient/src/models/state/routes/routes.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/ui/widgets/page/menu/browser/navigation_bar_widget.dart';
 
-import '../../../../../injection_container.dart';
+import '../../../../models/api/requests/open_screen_request.dart';
+import '../../../../models/api/response_objects/menu/menu_item.dart';
+import '../../../../models/state/app_state.dart';
+import '../../../../models/state/routes/arguments/open_screen_page_arguments.dart';
+import '../../../../models/state/routes/routes.dart';
+import '../../../../services/remote/cubit/api_cubit.dart';
+import 'browser/navigation_bar_widget.dart';
 
 class BrowserMenuWidget extends StatefulWidget {
   final ApiCubit cubit;
@@ -52,13 +51,10 @@ class _BrowserMenuWidgetState extends State<BrowserMenuWidget> {
   @override
   Widget build(BuildContext context) {
     return NavigationBarWidget(
-      onMenuItemPressed: _onPressedMenuItem,
-      appState: widget.appState,
-      onLogoutPressed: widget.onLogoutPressed,
-      menuItems: widget.menuItems,
-      child: Center(
-        child: Text('HELLO'),
-      ),
-    );
+        onMenuItemPressed: _onPressedMenuItem,
+        appState: widget.appState,
+        onLogoutPressed: widget.onLogoutPressed,
+        menuItems: widget.menuItems,
+        child: Container());
   }
 }
