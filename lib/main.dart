@@ -36,7 +36,7 @@ Widget _getRunnableWidget() {
 
         if (snapshot.hasData) {
           return ApplicationWidget(
-            devConfig: prod ? null : snapshot.data,
+            devConfig: null, // prod ? null : snapshot.data,
           );
         } else {
           return Container();

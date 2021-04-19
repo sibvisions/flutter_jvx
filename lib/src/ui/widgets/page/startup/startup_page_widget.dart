@@ -265,9 +265,11 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _updateDataFromSystem();
+    if (ModalRoute.of(context)!.isCurrent) {
+      _updateDataFromSystem();
 
-    _sendStartupRequest();
+      _sendStartupRequest();
+    }
   }
 
   @override

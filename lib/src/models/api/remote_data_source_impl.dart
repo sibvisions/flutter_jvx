@@ -367,7 +367,7 @@ class RemoteDataSourceImpl implements DataSource {
 
 String utf8Convert(String text) {
   try {
-    List<int> bytes = text.toString().codeUnits;
+    List<int> bytes = text.codeUnits;
     return utf8.decode(bytes);
   } catch (e) {
     print("Failed to decode string to utf-8!");
