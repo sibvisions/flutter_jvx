@@ -129,9 +129,9 @@ class SoComponentData {
       updateSelectedRow(context, pDataProviderChanged.selectedRow!, true);
     }
 
-    if (data != null && pDataProviderChanged.changedColumnNames != null) {
-      data!.columnNames = pDataProviderChanged.changedColumnNames!;
-    }
+    // if (data != null && pDataProviderChanged.changedColumnNames != null) {
+    //   data!.columnNames = pDataProviderChanged.changedColumnNames!;
+    // }
   }
 
   void updateSelectedRow(BuildContext context, int selectedRow,

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor_properties.dart';
-import 'package:flutterclient/src/ui/editor/cell_editor/models/cell_editor_model.dart';
-import 'package:flutterclient/src/util/app/text_utils.dart';
+
+import '../../../../models/api/response_objects/response_data/editor/cell_editor.dart';
+import '../../../../models/api/response_objects/response_data/editor/cell_editor_properties.dart';
+import '../../../../util/app/text_utils.dart';
+import 'cell_editor_model.dart';
 
 class TextCellEditorModel extends CellEditorModel {
   String? dateFormat;

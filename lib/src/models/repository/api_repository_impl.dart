@@ -5,7 +5,9 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/show_document_response_object.dart';
 import 'package:flutterclient/src/ui/util/error/error_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../injection_container.dart';
 import '../../services/local/local_database/i_offline_database_provider.dart';
@@ -208,8 +210,24 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> pressButton(PressButtonRequest request) async {
-    return await _checkConnection(() {
-      return dataSource.pressButton(request);
+    return await _checkConnection(() async {
+      ApiState state = await dataSource.pressButton(request);
+
+      if (state is ApiResponse &&
+          state.hasObject<ShowDocumentResponseObject>()) {
+        ShowDocumentResponseObject showDocument =
+            state.getObjectByType<ShowDocumentResponseObject>()!;
+
+        if (showDocument.document != null &&
+            showDocument.document!.isNotEmpty &&
+            await canLaunch(showDocument.document!)) {
+          await launch(showDocument.document!);
+        } else {
+          throw 'Could not launch ${showDocument.document}';
+        }
+      }
+
+      return state;
     });
   }
 
