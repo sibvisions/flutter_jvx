@@ -905,17 +905,19 @@ class _CustomDropdownButtonState<T> extends State<CustomDropdownButton<T>>
                             child: widget.icon ?? defaultIcon,
                           ),
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: widget.onDelete,
-                          child: IconTheme(
-                            data: IconThemeData(
-                                color: Colors.grey[400], size: 24),
-                            child: Icon(Icons.clear),
+                        if (widget.value != null)
+                          SizedBox(
+                            width: 10,
                           ),
-                        ),
+                        if (widget.value != null)
+                          GestureDetector(
+                            onTap: widget.onDelete,
+                            child: IconTheme(
+                              data: IconThemeData(
+                                  color: Colors.grey[400], size: 24),
+                              child: Icon(Icons.clear),
+                            ),
+                          ),
                       ],
                     ),
                   ),

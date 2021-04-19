@@ -25,6 +25,7 @@ import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/login_page_arguments.dart';
 import '../../../../models/state/routes/arguments/open_screen_page_arguments.dart';
 import '../../../../models/state/routes/default_page.dart';
+import '../../../../models/state/routes/pop_arguments/open_screen_page_pop_style.dart';
 import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
@@ -397,18 +398,30 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           child: _pages.isNotEmpty
               ? Navigator(
                   pages: [..._pages],
-                  onPopPage: (Route<dynamic> route, dynamic? shouldNotRequest) {
-                    if (shouldNotRequest == null || !shouldNotRequest) {
-                      NavigationRequest request = NavigationRequest(
-                          clientId:
-                              widget.appState.applicationMetaData!.clientId,
-                          componentId: (_pages.last.child as SoScreen)
-                              .configuration
-                              .componentId);
+                  onPopPage: (Route<dynamic> route,
+                      dynamic? openScreenPagePopArguments) {
+                    if (openScreenPagePopArguments is OpenScreenPagePopStyle) {
+                      switch (openScreenPagePopArguments) {
+                        case OpenScreenPagePopStyle.POP:
+                          return route.didPop(openScreenPagePopArguments);
+                        case OpenScreenPagePopStyle.CLOSE:
+                          Navigator.of(context).pop();
+                          break;
+                        case OpenScreenPagePopStyle.STAY:
+                          return false;
+                        case OpenScreenPagePopStyle.REQUEST:
+                          NavigationRequest request = NavigationRequest(
+                              clientId:
+                                  widget.appState.applicationMetaData!.clientId,
+                              componentId: (_pages.last.child as SoScreen)
+                                  .configuration
+                                  .componentId);
 
-                      sl<ApiCubit>().navigation(request);
-                    } else if (shouldNotRequest == null) {
-                      Navigator.of(context).pop();
+                          sl<ApiCubit>().navigation(request);
+                          break;
+                      }
+                    } else if (openScreenPagePopArguments == null) {
+                      return route.didPop(openScreenPagePopArguments);
                     }
 
                     return false;

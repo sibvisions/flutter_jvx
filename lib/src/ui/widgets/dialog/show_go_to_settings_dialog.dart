@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/state/routes/arguments/settings_page_arguments.dart';
 
+import '../../../models/state/routes/arguments/settings_page_arguments.dart';
 import '../../../models/state/routes/routes.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/translation/app_localizations.dart';

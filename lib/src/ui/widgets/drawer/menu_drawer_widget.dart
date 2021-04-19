@@ -3,18 +3,16 @@ import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/widgets/custom/custom_drawer_header.dart';
-import 'package:flutterclient/src/ui/widgets/custom/custom_icon.dart';
-import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_grid_view_widget.dart';
-import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_list_view_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 import '../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../models/state/app_state.dart';
-import '../../../models/state/routes/routes.dart';
+import '../../../models/state/routes/pop_arguments/open_screen_page_pop_style.dart';
 import '../../../util/color/color_extension.dart';
 import '../../../util/translation/app_localizations.dart';
+import '../custom/custom_drawer_header.dart';
+import '../custom/custom_icon.dart';
 
 class MenuDrawerWidget extends StatefulWidget {
   final List<MenuItem> menuItems;
@@ -87,7 +85,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                   )),
           onTap: () {
             if (widget.appState.currentMenuComponentId != item.componentId) {
-              Navigator.of(context).pop(true);
+              Navigator.of(context).pop(OpenScreenPagePopStyle.POP);
 
               widget.onMenuItemPressed(item);
             }

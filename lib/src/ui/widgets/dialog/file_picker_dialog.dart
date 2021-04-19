@@ -48,8 +48,7 @@ Future<File?> openFilePicker(BuildContext context, AppState appState) async {
                     )
                   ],
                 ),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
+                InkWell(
                   onTap: () =>
                       pick(appState, UploadType.CAMERA).then((val) async {
                     if (val != null) file = val;
@@ -76,8 +75,7 @@ Future<File?> openFilePicker(BuildContext context, AppState appState) async {
                     ),
                   ),
                 ),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
+                InkWell(
                   onTap: () => pick(appState, UploadType.GALLERY).then((val) {
                     if (val != null) file = val;
                     Navigator.of(context).pop();
@@ -102,8 +100,7 @@ Future<File?> openFilePicker(BuildContext context, AppState appState) async {
                     ),
                   ),
                 ),
-                GestureDetector(
-                  behavior: HitTestBehavior.translucent,
+                InkWell(
                   onTap: () =>
                       pick(appState, UploadType.FILE_SYSTEM).then((val) {
                     if (val != null) file = val;
