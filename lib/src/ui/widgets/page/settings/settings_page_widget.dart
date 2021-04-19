@@ -235,7 +235,15 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     }
 
     return WillPopScope(
-      onWillPop: () async => widget.canPop,
+      onWillPop: () async {
+        if (isDialogOpen) {
+          setState(() {
+            isDialogOpen = !isDialogOpen;
+          });
+        }
+
+        return widget.canPop;
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.grey.shade300,
