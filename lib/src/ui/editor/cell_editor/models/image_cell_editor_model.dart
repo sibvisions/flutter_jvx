@@ -29,7 +29,7 @@ class ImageCellEditorModel extends CellEditorModel {
   @override
   set cellEditorValue(_value) {
     if (_value != super.cellEditorValue) {
-      if (_value != null && _value.toString().isNotEmpty) {
+      if (_value != null && _value.toString().isNotEmpty && _value is String) {
         defaultImage = null;
 
         currentImage = Image.memory(base64Decode(_value));
