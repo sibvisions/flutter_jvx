@@ -9,6 +9,8 @@ import '../../../../../util/color/color_extension.dart';
 class Properties {
   Map<String, dynamic> _properties = new Map<String, dynamic>();
 
+  String get debugString => _properties.toString();
+
   Properties(this._properties);
 
   bool hasProperty(String propertyName) {

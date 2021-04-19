@@ -101,6 +101,8 @@ enum ComponentProperty {
 class ComponentProperties {
   Properties _properties;
 
+  String get debugString => _properties.debugString;
+
   ComponentProperties(Map<String, dynamic> json)
       : _properties = Properties(json);
 

@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/show_error_dialog.dart';
 import 'package:flutterclient/src/util/translation/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:file_picker/file_picker.dart';
@@ -137,33 +139,37 @@ Future<File?> openFilePicker(BuildContext context, AppState appState) async {
 Future<File?> pick(AppState appState, UploadType type) async {
   File? file;
 
-  switch (type) {
-    case UploadType.FILE_SYSTEM:
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
+  try {
+    switch (type) {
+      case UploadType.FILE_SYSTEM:
+        FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-      if (result != null) {
-        file = File(result.files.single.path!);
-      }
-      break;
-    case UploadType.CAMERA:
-      ImagePicker picker = ImagePicker();
+        if (result != null) {
+          file = File(result.files.single.path!);
+        }
+        break;
+      case UploadType.CAMERA:
+        ImagePicker picker = ImagePicker();
 
-      final pickedFile = await picker.getImage(
-          source: ImageSource.camera, maxWidth: appState.picSize.toDouble());
+        final pickedFile = await picker.getImage(
+            source: ImageSource.camera, maxWidth: appState.picSize.toDouble());
 
-      if (pickedFile != null) {
-        file = File(pickedFile.path);
-      }
-      break;
-    case UploadType.GALLERY:
-      ImagePicker picker = ImagePicker();
+        if (pickedFile != null) {
+          file = File(pickedFile.path);
+        }
+        break;
+      case UploadType.GALLERY:
+        ImagePicker picker = ImagePicker();
 
-      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+        final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-      if (pickedFile != null) {
-        file = File(pickedFile.path);
-      }
-      break;
+        if (pickedFile != null) {
+          file = File(pickedFile.path);
+        }
+        break;
+    }
+  } on Exception catch (e) {
+    log(e.toString());
   }
 
   return file;
