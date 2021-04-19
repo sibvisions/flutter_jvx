@@ -52,11 +52,21 @@ class MobileApp extends StatelessWidget {
         SettingsPageArguments? arguments =
             settings.arguments as SettingsPageArguments?;
 
+        bool? canPop = arguments?.canPop;
+
+        if (canPop == null) {
+          if (initialRoute == Routes.settings) {
+            canPop = false;
+          } else {
+            canPop = true;
+          }
+        }
+
         return DefaultPageRoute(
             settings: RouteSettings(
                 name: Routes.settings, arguments: settings.arguments),
             builder: (_) => SettingsPage(
-                  canPop: initialRoute == Routes.settings ? false : true,
+                  canPop: canPop!,
                   hasError: arguments?.hasError ?? false,
                 ));
       case Routes.login:
