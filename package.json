@@ -10,7 +10,7 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
-    "update-version": "node scripts/update_app_version.js commit && node scripts/update_app_version.js version && node scripts/update_app_version.js build_date"
+    "update-version": "node scripts/update_app_version.js commit && node scripts/update_app_version.js version && node scripts/update_app_version.js date"
   },
   "repository": {
     "type": "git",

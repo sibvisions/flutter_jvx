@@ -44,11 +44,9 @@ if (process.argv[2] != null) {
     });
   } else if (process.argv[2] == "date") {
     setValue(path, (json) => {
-      var newDate = new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, "");
-      json.date = newDate.split(" ")[0];
+      var newDate = Date.now()
+
+      json.date = newDate;
 
       return json;
     });
