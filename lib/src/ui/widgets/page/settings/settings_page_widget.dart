@@ -2,19 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutterclient/src/util/app/version/app_version.dart';
-import 'package:flutterclient/src/util/util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/export_routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
-import '../../../../util/app/get_image_string.dart';
+import '../../../../util/app/version/app_version.dart';
 import '../../../../util/color/color_extension.dart';
 import '../../../../util/translation/app_localizations.dart';
+import '../../../../util/util.dart';
 import '../../../util/restart_widget.dart';
 import 'language_picker.dart';
 import 'picture_size_picker.dart';

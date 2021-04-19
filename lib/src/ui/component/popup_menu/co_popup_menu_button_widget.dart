@@ -160,8 +160,10 @@ class CoPopupMenuButtonWidgetState
               onPressed: () =>
                   widget.componentModel.enabled ? buttonPressed(context) : null,
               style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Theme.of(context).primaryColor),
+                  backgroundColor: widget.componentModel.enabled
+                      ? MaterialStateProperty.all(
+                          Theme.of(context).primaryColor)
+                      : MaterialStateProperty.all(Colors.grey),
                   shape: MaterialStateProperty.all(widget
                       .componentModel
                       .appState

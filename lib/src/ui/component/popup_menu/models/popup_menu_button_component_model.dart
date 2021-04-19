@@ -1,13 +1,14 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/util/app/so_text_align.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../../models/api/response_objects/response_data/component/component_properties.dart';
+import '../../../../util/app/so_text_align.dart';
 import '../../../../util/app/text_utils.dart';
 import '../../../../util/color/color_extension.dart';
 import '../../../../util/icon/font_awesome_changer.dart';
@@ -58,8 +59,6 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
 
   void updateProperties(
       BuildContext context, ChangedComponent changedComponent) {
-    super.updateProperties(context, changedComponent);
-
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction)!;
     defaultMenuItem = changedComponent.getProperty<String>(
@@ -118,5 +117,7 @@ class PopupMenuButtonComponentModel extends ActionComponentModel {
         }
       }
     }
+
+    super.updateProperties(context, changedComponent);
   }
 }
