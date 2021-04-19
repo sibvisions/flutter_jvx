@@ -375,9 +375,9 @@ class SoComponentData {
     int? columnIndex = _getColumnIndex(columnName);
     if (columnIndex != null &&
         data!.selectedRow != null &&
-        data!.records != null &&
         data!.selectedRow! >= 0 &&
-        data!.selectedRow! < data!.records.length) {
+        data!.selectedRow! < data!.records.length &&
+        columnIndex >= 0) {
       data!.records[data!.selectedRow!][columnIndex] = value;
     }
   }
