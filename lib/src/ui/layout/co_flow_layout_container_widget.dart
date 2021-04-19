@@ -152,6 +152,7 @@ class CoFlowLayoutContainerWidget extends StatelessWidget
         return Container(
             child: CoFlowLayoutWidget(
           key: key,
+          container: container,
           children: children,
           insMargin: margins,
           horizontalGap: horizontalGap,

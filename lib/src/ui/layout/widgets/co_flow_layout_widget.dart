@@ -1,8 +1,10 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutterclient/flutterclient.dart';
 
 import '../../component/component_widget.dart';
 import '../i_alignment_constants.dart';
@@ -38,9 +40,12 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   // all components (FlowLayout mode).
   final bool? autoWrap;
 
+  final CoContainerWidget? container;
+
   CoFlowLayoutWidget(
       {Key? key,
       List<CoFlowLayoutConstraintData> children: const [],
+      this.container,
       this.insMargin = EdgeInsets.zero,
       this.horizontalGap = 0,
       this.verticalGap = 0,
@@ -55,6 +60,7 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderFlowLayoutWidget(
+        this.container,
         this.horizontalAlignment,
         this.verticalAlignment,
         this.orientation,
@@ -136,7 +142,7 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   }
 }
 
-class RenderFlowLayoutWidget extends RenderBox
+class RenderFlowLayoutWidget extends CoLayoutRenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
@@ -165,6 +171,10 @@ class RenderFlowLayoutWidget extends RenderBox
   int? iHorizontalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
   int? iVerticalComponentAlignment = IAlignmentConstants.ALIGN_CENTER;
 
+  Rect? lastPreferredSizeCalculation;
+
+  CoContainerWidget? container;
+
   /* 
 	 * the mark to wrap the layout if there is not enough space to show 
 	 * all components (FlowLayout mode).
@@ -172,6 +182,7 @@ class RenderFlowLayoutWidget extends RenderBox
   bool bAutoWrap = false;
 
   RenderFlowLayoutWidget(
+      this.container,
       this.iHorizontalAlignment,
       this.iVerticalAlignment,
       this.iOrientation,
@@ -198,13 +209,20 @@ class RenderFlowLayoutWidget extends RenderBox
       child = childParentData.nextSibling;
     }
 
+    preferredLayoutSize = _preferredLayoutSize(
+        container?.componentModel as ContainerComponentModel);
+    minimumLayoutSize = _minimumLayoutSize(
+        container?.componentModel as ContainerComponentModel);
+    maximumLayoutSize = preferredLayoutSize;
+
     Size dimSize = this.constraints.biggest;
     dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
         dimSize.height - (insMargins!.top + insMargins!.bottom));
 
     //x stores the columns
     //y stores the rows
-    Rect rectCompInfo = calculateGrid();
+    Rect rectCompInfo =
+        calculateGrid(container?.componentModel as ContainerComponentModel);
 
     //ignore the insets!
     Size dimPref = new Size(
@@ -383,6 +401,7 @@ class RenderFlowLayoutWidget extends RenderBox
 
     this.size =
         this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
+    //dev.log("FlowLayout render size ${this.size.toString()}");
   }
 
   /*
@@ -393,7 +412,7 @@ class RenderFlowLayoutWidget extends RenderBox
 	 * @return a rectangle with width, height, column count (stored in x) and row count
 	 *         (stored in y)
 	 */
-  Rect calculateGrid() {
+  Rect calculateGrid(ContainerComponentModel pParent) {
     int iWidth = 0;
     int iHeight = 0;
 
@@ -504,20 +523,43 @@ class RenderFlowLayoutWidget extends RenderBox
     }
   }
 
+  // Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
+  //   if (!comp.componentModel.isPreferredSizeSet) {
+  //     renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+
+  //     if (!renderBox.hasSize) {
+  //       print("FlowLayout: RenderBox has no size after layout!");
+  //     }
+
+  //     if (renderBox.size.width == double.infinity ||
+  //         renderBox.size.height == double.infinity) {
+  //       print(
+  //           "FlowLayout: getPrefererredSize: Infinity height or width for FormLayout!");
+  //     }
+  //     return renderBox.size;
+  //   } else {
+  //     return comp.componentModel.preferredSize!;
+  //   }
+  // }
+
   Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
+      Size? size = getChildLayoutPreferredSize(renderBox);
+      if (size != null) {
+        return size;
+      } else {
+        if (renderBox.hasSize)
+          size = renderBox.size;
+        else
+          size = layoutRenderBox(renderBox, constraints);
+        //renderBox.layout(constraints, parentUsesSize: true);
 
-      if (!renderBox.hasSize) {
-        print("FlowLayout: RenderBox has no size after layout!");
+        if (size.width == double.infinity || size.height == double.infinity) {
+          print(
+              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+        }
+        return size;
       }
-
-      if (renderBox.size.width == double.infinity ||
-          renderBox.size.height == double.infinity) {
-        print(
-            "FlowLayout: getPrefererredSize: Infinity height or width for FormLayout!");
-      }
-      return renderBox.size;
     } else {
       return comp.componentModel.preferredSize!;
     }
@@ -564,6 +606,36 @@ class RenderFlowLayoutWidget extends RenderBox
         pConstraints, "The constraints must not be null.");
 
     constraintMap.putIfAbsent(pComponent, () => pConstraints);
+  }
+
+  Size _preferredLayoutSize(ContainerComponentModel pContainer) {
+    EdgeInsets insets = pContainer.layout != null
+        ? pContainer.layout!.margins
+        : EdgeInsets.all(0);
+
+    //x stores the columns
+    //y stores the rows
+    Rect rectCompInfo = calculateGrid(pContainer);
+    lastPreferredSizeCalculation = rectCompInfo;
+    return new Size(
+        rectCompInfo.width * rectCompInfo.left +
+            (iHorizontalGap != null ? iHorizontalGap! : 0) *
+                (rectCompInfo.left - 1) +
+            insets.left +
+            insets.right +
+            (insMargins != null ? insMargins!.left : 0) +
+            (insMargins != null ? insMargins!.right : 0),
+        rectCompInfo.height * rectCompInfo.top +
+            (iVerticalGap != null ? iVerticalGap! : 0) *
+                (rectCompInfo.top - 1) +
+            insets.top +
+            insets.bottom +
+            (insMargins != null ? insMargins!.top : 0) +
+            (insMargins != null ? insMargins!.bottom : 0));
+  }
+
+  Size _minimumLayoutSize(ContainerComponentModel target) {
+    return new Size(0, 0);
   }
 }
 
