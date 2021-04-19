@@ -6,8 +6,10 @@ import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/translation/app_localizations.dart';
 
 showGoToSettingsDialog(BuildContext context, ApiError error) async {
+  final bool canPop = ModalRoute.of(context)!.settings.name != '/';
   await showDialog(
       context: context,
+      barrierDismissible: canPop,
       builder: (context) {
         return AlertDialog(
           title: Text(
@@ -19,7 +21,7 @@ showGoToSettingsDialog(BuildContext context, ApiError error) async {
                 onPressed: () => Navigator.of(context).pushReplacementNamed(
                     Routes.settings,
                     arguments:
-                        SettingsPageArguments(canPop: true, hasError: true)),
+                        SettingsPageArguments(canPop: canPop, hasError: true)),
                 child: Text(AppLocalizations.of(context)!.text('To Settings'))),
           ],
         );

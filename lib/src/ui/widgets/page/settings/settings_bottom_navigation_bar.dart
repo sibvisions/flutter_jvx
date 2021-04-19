@@ -34,7 +34,9 @@ class _SettingsBottomAppBarState extends State<SettingsBottomAppBar> {
               Expanded(
                 child: InkWell(
                   radius: 50,
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     child: Text(
