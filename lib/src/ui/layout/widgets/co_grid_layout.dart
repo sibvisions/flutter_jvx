@@ -299,7 +299,7 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
 
         if (size.width == double.infinity || size.height == double.infinity) {
           print(
-              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+              "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");
         }
         return size;
       }
