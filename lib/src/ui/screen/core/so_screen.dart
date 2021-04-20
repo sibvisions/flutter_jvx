@@ -478,13 +478,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   void debugPrintComponent(ComponentWidget component, int level) {
     String debugString = " |" * level;
-    Size? size;
-    //_getSizes(component.componentModel.componentId);
-    String keyString = component.componentModel.componentId.toString();
-    keyString =
-        keyString.substring(keyString.indexOf(" ") + 1, keyString.length - 1);
     debugString += " id: " +
-        keyString +
+        component.componentModel.componentId.toString() +
         ", Name: " +
         component.componentModel.name.toString() +
         ", parent: " +
@@ -493,8 +488,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         component.runtimeType.toString() +
         ", constraints: " +
         component.componentModel.constraints +
-        ", size:" +
-        (size != null ? size.toString() : "nosize");
+        ", text:" +
+        component.componentModel.text;
     if (component is CoEditorWidget) {
       debugString += ", dataProvider: " +
           ((component.cellEditor?.cellEditorModel.dataProvider != null)
