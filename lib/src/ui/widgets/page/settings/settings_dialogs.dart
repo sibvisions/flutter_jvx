@@ -46,7 +46,9 @@ class BaseUrlDialog extends StatelessWidget {
                   height: 15,
                 ),
                 TextField(
-                  controller: TextEditingController(text: baseUrl),
+                  controller: TextEditingController(text: baseUrl)
+                    ..selection = TextSelection.fromPosition(
+                        TextPosition(offset: baseUrl.length)),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.text('Base Url'),
                     hintText: 'http://new.baseUrl/services/mobile',
@@ -157,7 +159,9 @@ class AppNameDialog extends StatelessWidget {
                   height: 15,
                 ),
                 TextField(
-                  controller: TextEditingController(text: appName),
+                  controller: TextEditingController(text: appName)
+                    ..selection = TextSelection.fromPosition(
+                        TextPosition(offset: appName.length)),
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.text('App name'),
                     hintText: AppLocalizations.of(context)!
