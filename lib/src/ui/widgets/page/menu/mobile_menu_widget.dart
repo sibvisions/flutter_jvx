@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_empty.dart';
+import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_swiper_view_widget.dart';
+import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_tabs_view_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../injection_container.dart';
@@ -89,6 +92,22 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
               groupedMenuMode: true,
               onPressed: _onPressedMenuItem,
               appState: widget.appState);
+        case 'drawer':
+          return MenuEmpty();
+        case 'swiper':
+          return MenuSwiperViewWidget(
+            groupedMenuMode: true,
+            items: widget.menuItems,
+            onPressed: _onPressedMenuItem,
+            appState: widget.appState,
+          );
+        case 'tabs':
+          return MenuTabsViewWidget(
+            groupedMenuMode: true,
+            items: widget.menuItems,
+            onPressed: _onPressedMenuItem,
+            appState: widget.appState,
+          );
         default:
           return MenuGridViewWidget(
               items: widget.menuItems,
