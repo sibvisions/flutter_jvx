@@ -18,10 +18,15 @@ showGoToSettingsDialog(BuildContext context, ApiError error) async {
               AppLocalizations.of(context)!.text('${error.failure.message}')),
           actions: [
             TextButton(
-                onPressed: () => Navigator.of(context).pushReplacementNamed(
-                    Routes.settings,
-                    arguments:
-                        SettingsPageArguments(canPop: canPop, hasError: true)),
+                onPressed: () {
+                  if (ModalRoute.of(context)!.isCurrent) {
+                    Navigator.of(context).pop();
+                  }
+
+                  Navigator.of(context).pushReplacementNamed(Routes.settings,
+                      arguments: SettingsPageArguments(
+                          canPop: canPop, hasError: true));
+                },
                 child: Text(AppLocalizations.of(context)!.text('To Settings'))),
           ],
         );

@@ -53,7 +53,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
   late ApiCubit cubit;
 
-  void _sendStartupRequest() {
+  String get _startupLanguage {
     String language = 'en';
 
     if (widget.appState.language?.language != null) {
@@ -66,6 +66,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       }
     }
 
+    return language;
+  }
+
+  void _sendStartupRequest() {
     DeviceInfo deviceInfo = DeviceInfo();
 
     if (widget.appState.serverConfig != null &&
@@ -80,7 +84,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           appMode: widget.appState.serverConfig!.appMode,
           readAheadLimit: widget.appState.readAheadLimit,
           deviceId: _getDeviceId(),
-          language: language,
+          language: _startupLanguage,
           clientId: '',
           deviceMode: kIsWeb ? 'desktop' : 'mobile',
           technology: deviceInfo.technology,
