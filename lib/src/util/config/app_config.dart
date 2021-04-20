@@ -41,7 +41,9 @@ class AppConfig {
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
-        initialConfig = ServerConfig.fromYaml(map: map['initialConfig']);
+        initialConfig = map['initialConfig'] != null
+            ? ServerConfig.fromYaml(map: map['initialConfig'])
+            : null;
 
   static Future<Either<Failure, AppConfig>> loadConfig(
       {required String path, bool package = false}) async {
