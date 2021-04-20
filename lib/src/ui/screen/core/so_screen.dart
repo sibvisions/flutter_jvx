@@ -65,6 +65,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   ComponentModelManager _componentModelManager = ComponentModelManager();
 
+  bool _debug = true;
+
   Map<String, ComponentWidget> get components => _components;
 
   void onState(ApiState? state) {
@@ -317,12 +319,22 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
     if (componentWidget is CoContainerWidget) {
       if (layoutData != null && layoutData.isNotEmpty) {
+        if (_debug) {
+          print(
+              'Update layoutData (id: ${changedComponent.id}, newLayoutData: $layoutData, className: ${changedComponent.className})');
+        }
+
         (componentWidget.componentModel as ContainerComponentModel)
             .layout
             ?.updateLayoutData(layoutData);
       }
 
       if (layout != null && layout.isNotEmpty) {
+        if (_debug) {
+          print(
+              'Update layoutString (id: ${changedComponent.id}, newLayoutString: $layout, className: ${changedComponent.className})');
+        }
+
         (componentWidget.componentModel as ContainerComponentModel)
             .layout
             ?.updateLayoutString(layout);
@@ -332,6 +344,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (parent != null &&
         parent.isNotEmpty &&
         componentWidget.componentModel.parentComponentId != parent) {
+      if (_debug) {
+        print(
+            'Move component (id: ${changedComponent.id}, oldParent: ${componentWidget.componentModel.parentComponentId}, newParent: $parent, className: ${changedComponent.className}');
+      }
+
       if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
         _removeFromParent(componentWidget, container);
       }
@@ -448,6 +465,69 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     return false;
   }
 
+  void debugPrintCurrentWidgetTree() {
+    ComponentWidget? component = getRootComponent();
+    if (_debug && component != null) {
+      print("--------------------");
+      print("Current widget tree:");
+      print("--------------------");
+      debugPrintComponent(component, 0);
+      print("--------------------");
+    }
+  }
+
+  void debugPrintComponent(ComponentWidget component, int level) {
+    String debugString = " |" * level;
+    Size? size;
+    //_getSizes(component.componentModel.componentId);
+    String keyString = component.componentModel.componentId.toString();
+    keyString =
+        keyString.substring(keyString.indexOf(" ") + 1, keyString.length - 1);
+    debugString += " id: " +
+        keyString +
+        ", Name: " +
+        component.componentModel.name.toString() +
+        ", parent: " +
+        component.componentModel.parentComponentId +
+        ", className: " +
+        component.runtimeType.toString() +
+        ", constraints: " +
+        component.componentModel.constraints +
+        ", size:" +
+        (size != null ? size.toString() : "nosize");
+    if (component is CoEditorWidget) {
+      debugString += ", dataProvider: " +
+          ((component.cellEditor?.cellEditorModel.dataProvider != null)
+              ? component.cellEditor!.cellEditorModel.dataProvider!
+              : "");
+    }
+    if (component is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          component.componentModel as ContainerComponentModel;
+
+      debugString += ", layout: " +
+          (containerComponentModel.layout != null &&
+                  containerComponentModel.layout?.rawLayoutString != null
+              ? containerComponentModel.layout!.rawLayoutString!
+              : "") +
+          ", layoutData: " +
+          (containerComponentModel.layout != null &&
+                  containerComponentModel.layout?.rawLayoutData != null
+              ? containerComponentModel.layout!.rawLayoutData!
+              : "") +
+          ", childCount: " +
+          containerComponentModel.components.length.toString();
+      print(debugString);
+      if (containerComponentModel.components.isNotEmpty) {
+        containerComponentModel.components.forEach((c) {
+          debugPrintComponent(c, (level + 1));
+        });
+      }
+    } else {
+      print(debugString);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -472,6 +552,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   @override
   Widget build(BuildContext context) {
+    debugPrintCurrentWidgetTree();
+
     return OrientationBuilder(
       builder: (context, orientation) {
         AppState appState = AppStateProvider.of(context)!.appState;

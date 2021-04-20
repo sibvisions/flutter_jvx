@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/screen/core/so_component_creator.dart';
 
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/app/listener/application_api.dart';
+import '../../component/component_widget.dart';
 import '../core/configuration/so_screen_configuration.dart';
+import '../core/so_component_creator.dart';
 import '../core/so_screen.dart';
 
 class CustomScreen extends SoScreen {
@@ -37,33 +38,33 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
     return ApplicationApi(context);
   }
 
-  // void setHeader(ComponentWidget header) {
-  //   this.header = header;
-  // }
+  void setHeader(ComponentWidget header) {
+    this.header = header;
+  }
 
-  // void setFooter(ComponentWidget footer) {
-  //   this.footer = footer;
-  // }
+  void setFooter(ComponentWidget footer) {
+    this.footer = footer;
+  }
 
   /// Method for replacing components in widget tree by name.
   ///
   /// Returns `true` if component could be replaced.
   ///
   /// Returns `false` if component could not be replaced.
-  // bool replaceComponentByName(String name, ComponentWidget newComponentWidget) {
-  //   ComponentWidget toReplaceComponent = this
-  //       .components
-  //       .values
-  //       .toList()
-  //       .firstWhere((component) => component.componentModel.name == name,
-  //           orElse: () => null);
+  bool replaceComponentByName(String name, ComponentWidget newComponentWidget) {
+    ComponentWidget? toReplaceComponent;
 
-  //   if (toReplaceComponent != null) {
-  //     this.replaceComponent(newComponentWidget, toReplaceComponent);
-  //     return true;
-  //   }
-  //   return false;
-  // }
+    try {
+      toReplaceComponent = components.values
+          .toList()
+          .firstWhere((component) => component.componentModel.name == name);
+    } on Exception {
+      return false;
+    }
+
+    replaceComponent(newComponentWidget, toReplaceComponent);
+    return true;
+  }
 
   String? getTemplateName() => widget.configuration.templateName;
 }
