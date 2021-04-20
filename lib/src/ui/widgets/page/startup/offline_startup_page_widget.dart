@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/injection_container.dart';
-import 'package:flutterclient/src/models/api/response_objects/application_style/application_style_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/language_response_object.dart';
-import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
-import 'package:flutterclient/src/services/local/locale/supported_locale_manager.dart';
-import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
-import 'package:flutterclient/src/util/app/get_image_string.dart';
-import 'package:flutterclient/src/util/color/get_color_from_app_style.dart';
-import 'package:flutterclient/src/util/theme/theme_manager.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
+import 'package:flutterclient/src/models/state/routes/arguments/login_page_arguments.dart';
+import 'package:flutterclient/src/models/state/routes/arguments/menu_page_arguments.dart';
+import 'package:flutterclient/src/models/state/routes/routes.dart';
+import '../../../../../injection_container.dart';
+import '../../../../models/api/response_objects/application_style/application_style_response_object.dart';
+import '../../../../models/api/response_objects/language_response_object.dart';
+import '../../../../models/api/response_objects/user_data_response_object.dart';
+import '../../../../models/state/app_state.dart';
+import '../../../../services/local/local_database/i_offline_database_provider.dart';
+import '../../../../services/local/locale/supported_locale_manager.dart';
+import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
+import '../../../../util/app/get_image_string.dart';
+import '../../../../util/color/get_color_from_app_style.dart';
+import '../../../../util/theme/theme_manager.dart';
 
 class OfflineStartupPageWidget extends StatefulWidget {
   final AppState appState;
@@ -81,10 +85,27 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
     final path = widget.appState.baseDirectory + '/offlineDB.db';
 
     sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+    _checkForLogin();
   }
 
   void _checkForLogin() {
-    if (widget.manager.authKey != null) {}
+    if (widget.manager.authKey != null) {
+      return _menu();
+    } else {
+      return _login();
+    }
+  }
+
+  void _menu() {
+    Navigator.of(context).pushReplacementNamed(Routes.menu,
+        arguments: MenuPageArguments(
+            listMenuItemsInDrawer: true, menuItems: <MenuItem>[]));
+  }
+
+  void _login() {
+    Navigator.of(context).pushReplacementNamed(Routes.login,
+        arguments: LoginPageArguments(lastUsername: ''));
   }
 
   @override
