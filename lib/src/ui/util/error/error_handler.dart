@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/show_error_dialog.dart';
 
+import '../../../models/state/routes/routes.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/app/text_utils.dart';
+import '../../widgets/dialog/show_error_dialog.dart';
 import '../../widgets/dialog/show_go_to_settings_dialog.dart';
 import '../../widgets/dialog/show_session_expired_dialog.dart';
 
@@ -21,7 +22,11 @@ class ErrorHandler {
     if (error.failure.name == sessionExpired) {
       showSessionExpiredDialog(context, error);
     } else if (error.failure.name == messageError) {
-      showErrorDialog(context, error);
+      if (ModalRoute.of(context)!.settings.name == Routes.startup) {
+        showGoToSettingsDialog(context, error);
+      } else {
+        showErrorDialog(context, error);
+      }
     } else if (error.failure.name == serverError) {
       showGoToSettingsDialog(context, error);
     } else if (error.failure.name == connectionError) {

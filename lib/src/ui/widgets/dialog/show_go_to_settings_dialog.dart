@@ -19,11 +19,8 @@ showGoToSettingsDialog(BuildContext context, ApiError error) async {
           actions: [
             TextButton(
                 onPressed: () {
-                  if (ModalRoute.of(context)!.isCurrent) {
-                    Navigator.of(context).pop();
-                  }
-
-                  Navigator.of(context).pushReplacementNamed(Routes.settings,
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      Routes.settings, (route) => false,
                       arguments: SettingsPageArguments(
                           canPop: canPop, hasError: true));
                 },

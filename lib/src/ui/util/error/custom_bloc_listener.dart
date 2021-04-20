@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterclient/src/models/api/response_objects/application_parameters_response_object.dart';
 
 import '../../../models/api/errors/failure.dart';
+import '../../../models/api/response_objects/application_parameters_response_object.dart';
 import '../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../models/api/response_objects/restart_response_object.dart';
 import '../../../models/state/app_state.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../widgets/dialog/loading_indicator_dialog.dart';
+import '../../widgets/dialog/show_restart_dialog.dart';
 import 'error_handler.dart';
 
 class CustomCubitListener extends StatelessWidget {
@@ -62,6 +64,11 @@ class CustomCubitListener extends StatelessWidget {
           if (state.hasObject<ApplicationParametersResponseObject>()) {
             appState.parameters.updateFromResponseObject(
                 state.getObjectByType<ApplicationParametersResponseObject>()!);
+          }
+
+          if (state.hasObject<RestartResponseObject>()) {
+            showRestartDialog(
+                context, state.getObjectByType<RestartResponseObject>()!.info);
           }
         }
 
