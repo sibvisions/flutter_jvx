@@ -1,16 +1,10 @@
-import 'dart:developer';
+import 'package:flutter/material.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import '../../../../../injection_container.dart';
-import '../../../../models/api/requests/open_screen_request.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
-import '../../../../models/state/app_state.dart';
-import '../../custom/test/test_custom_screen.dart';
-import '../../custom/test/test_online_custom_screen.dart';
-
 import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
+import '../../../../models/state/app_state.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../widgets/drawer/menu_drawer_widget.dart';
 import '../configuration/so_screen_configuration.dart';
@@ -47,7 +41,7 @@ class ScreenManager implements IScreenManager {
 
   @override
   void registerScreen(SoScreen screen) {
-    _screens.addAll({screen.configuration.componentId: screen});
+    _screens.addAll({screen.configuration.screenComponentId: screen});
   }
 
   @override

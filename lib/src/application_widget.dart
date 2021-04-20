@@ -161,6 +161,8 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
 
     if (widget.screenManager != null) {
       appState.screenManager = widget.screenManager!;
+
+      appState.screenManager.init();
     }
 
     if (appState.listener == null) {
