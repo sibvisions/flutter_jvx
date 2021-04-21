@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -6,11 +8,14 @@ class CoLayoutRenderBox extends RenderBox {
   Size? preferredLayoutSize;
   Size? minimumLayoutSize;
   Size? maximumLayoutSize;
+  bool valid = false;
+  String debugInfo = "";
 
   Size? getChildLayoutPreferredSize(RenderBox renderBox) {
     if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
       CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
 
+      log("$debugInfo returns preferredLayoutSize ${childLayout.preferredLayoutSize}");
       return childLayout.preferredLayoutSize;
     }
 

@@ -297,6 +297,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
   @override
   void performLayout() {
+    this.debugInfo =
+        "FormLayout in container ${container.componentModel.componentId}";
     // Set components
     layoutConstraints = <RenderBox, CoFormLayoutConstraint>{};
     RenderBox? child = firstChild;
@@ -365,8 +367,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
     this.valid = true;
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
-    //dev.log(
-    //    "FormLayout in Container ${container.componentModel.componentId} with ${layoutConstraints.length} items and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
+    dev.log(
+        "FormLayout in Container ${container.componentModel.componentId} with ${layoutConstraints.length} items and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
   }
 
   /*

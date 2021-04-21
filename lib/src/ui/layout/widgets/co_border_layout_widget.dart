@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -127,6 +128,9 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
   @override
   void performLayout() {
+    this.debugInfo =
+        "BorderLayout in container ${container!.componentModel.componentId}";
+
     Size size = this.constraints.biggest;
     /*if (size.width==double.infinity || size.height==double.infinity) {
       if (container.isPreferredSizeSet)
@@ -384,6 +388,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
     // borderLayout uses max space available
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
+    dev.log(
+        "BorderLayout in Container ${container!.componentModel.componentId} with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   @override
