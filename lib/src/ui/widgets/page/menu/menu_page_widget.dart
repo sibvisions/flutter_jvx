@@ -47,8 +47,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   Size? _lastScreenSize;
   Timer? _deviceStatusTimer;
 
-  late ApiCubit cubit;
-
   void _addDeviceStatusTimer(BuildContext context) {
     Size currentSize = MediaQuery.of(context).size;
 
@@ -67,7 +65,8 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
         _lastScreenSize = currentSize;
 
-        if (ModalRoute.of(context)!.isCurrent) cubit.deviceStatus(request);
+        if (ModalRoute.of(context)!.isCurrent)
+          sl<ApiCubit>().deviceStatus(request);
       });
     }
   }
@@ -76,7 +75,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     LogoutRequest logoutRequest =
         LogoutRequest(clientId: widget.appState.applicationMetaData!.clientId);
 
-    cubit.logout(logoutRequest);
+    sl<ApiCubit>().logout(logoutRequest);
   }
 
   @override
@@ -91,8 +90,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
   @override
   void dispose() {
     _deviceStatusTimer?.cancel();
-
-    cubit.close();
 
     super.dispose();
   }
@@ -130,8 +127,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
     }
 
     super.initState();
-
-    cubit = ApiCubit.withDependencies();
   }
 
   @override
@@ -140,7 +135,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
 
     return CustomCubitListener(
       appState: widget.appState,
-      bloc: cubit,
+      bloc: sl<ApiCubit>(),
       listener: (context, state) async {
         if (state is ApiResponse) {
           if (state.request is LogoutRequest) {
@@ -181,7 +176,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
         builder: (context) {
           if (widget.appState.webOnly) {
             return BrowserMenuWidget(
-              cubit: cubit,
+              cubit: sl<ApiCubit>(),
               listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
               appState: widget.appState,
               menuItems: _menuItems,
@@ -189,7 +184,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             );
           } else if (widget.appState.mobileOnly) {
             return MobileMenuWidget(
-              cubit: cubit,
+              cubit: sl<ApiCubit>(),
               appState: widget.appState,
               menuItems: _menuItems,
               listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
@@ -200,14 +195,14 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
               builder: (BuildContext context, Orientation orientation) {
                 if (orientation == Orientation.landscape && kIsWeb) {
                   return BrowserMenuWidget(
-                      cubit: cubit,
+                      cubit: sl<ApiCubit>(),
                       listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
                       appState: widget.appState,
                       menuItems: _menuItems,
                       onLogoutPressed: onLogout);
                 } else {
                   return MobileMenuWidget(
-                      cubit: cubit,
+                      cubit: sl<ApiCubit>(),
                       appState: widget.appState,
                       menuItems: _menuItems,
                       listMenuItemsInDrawer: widget.listMenuItemsInDrawer,
