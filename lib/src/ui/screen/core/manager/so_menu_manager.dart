@@ -24,8 +24,7 @@ class SoMenuManager {
       required String group,
       required String text,
       required String? image,
-      bool checkUnique = true,
-      required String templateName}) {
+      bool checkUnique = true}) {
     MenuItem itemToAdd =
         MenuItem(componentId: id, image: image, group: group, text: text);
 

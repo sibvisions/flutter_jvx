@@ -5,6 +5,7 @@ import '../../../models/api/errors/failure.dart';
 import '../../../models/api/response_objects/application_parameters_response_object.dart';
 import '../../../models/api/response_objects/menu/menu_response_object.dart';
 import '../../../models/api/response_objects/restart_response_object.dart';
+import '../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../models/state/app_state.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../widgets/dialog/loading_indicator_dialog.dart';
@@ -69,6 +70,10 @@ class CustomCubitListener extends StatelessWidget {
           if (state.hasObject<RestartResponseObject>()) {
             showRestartDialog(
                 context, state.getObjectByType<RestartResponseObject>()!.info);
+          }
+
+          if (state.hasObject<UserDataResponseObject>()) {
+            appState.userData = state.getObjectByType<UserDataResponseObject>();
           }
         }
 

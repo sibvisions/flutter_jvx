@@ -58,7 +58,7 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
       toReplaceComponent = components.values
           .toList()
           .firstWhere((component) => component.componentModel.name == name);
-    } on Exception {
+    } catch (e) {
       return false;
     }
 

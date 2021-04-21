@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-import 'package:flutterclient/src/ui/widgets/drawer/menu_drawer_widget.dart';
 
+import '../../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
+import '../../../../services/remote/cubit/api_cubit.dart';
+import '../../../widgets/drawer/menu_drawer_widget.dart';
 import '../so_screen.dart';
 import 'so_menu_manager.dart';
 
