@@ -15,12 +15,12 @@ class CoScrollPanelWidget extends CoContainerWidget {
 class CoScrollPanelWidgetState extends CoContainerWidgetState {
   late ScrollController _scrollController;
   double scrollOffset = 0;
-  BoxConstraints? constr;
+  // BoxConstraints? constr;
 
-  get preferredSize {
-    if (constr != null) return constr!.biggest;
-    return widget.componentModel.preferredSize;
-  }
+  // get preferredSize {
+  //   if (constr != null) return constr!.biggest;
+  //   return widget.componentModel.preferredSize;
+  // }
 
   _scrollListener() {
     this.scrollOffset = _scrollController.offset;
@@ -50,7 +50,7 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
 
     Widget scrollWidget = new LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      this.constr = constraints;
+      //this.constr = constraints;
 
       // return SingleChildScrollView(
       //     key: this.componentId,

@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/foundation.dart';
@@ -58,6 +60,8 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
 
   @override
   void performLayout() {
+    this.debugInfo = "ScrollLayout in container ${container!.componentId}";
+
     RenderBox? renderBox = firstChild;
     while (renderBox != null) {
       final MultiChildLayoutParentData childParentData =
@@ -148,6 +152,8 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
           this.preferredConstraints!.parentConstraints.biggest.width,
           this.preferredConstraints!.parentConstraints.biggest.height);
     }
+    dev.log(
+        "ScrollLayout in container ${container!.componentId} with constraints ${this.constraints}  render size ${this.size.toString()}");
   }
 
   @override
