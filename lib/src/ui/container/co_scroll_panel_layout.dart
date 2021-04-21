@@ -60,7 +60,7 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
 
   @override
   void performLayout() {
-    this.debugInfo = "ScrollLayout in container ${container!.componentId}";
+    this.debugInfo = "ScrollLayout in container ${container?.componentId}";
 
     RenderBox? renderBox = firstChild;
     while (renderBox != null) {
@@ -153,7 +153,7 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
           this.preferredConstraints!.parentConstraints.biggest.height);
     }
     dev.log(
-        "ScrollLayout in container ${container!.componentId} with constraints ${this.constraints}  render size ${this.size.toString()}");
+        "ScrollLayout in container ${container?.componentId} with constraints ${this.constraints}  render size ${this.size.toString()}");
   }
 
   @override
