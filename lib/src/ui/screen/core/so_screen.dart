@@ -73,11 +73,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (state is ApiResponse && widget.configuration.withServer) {
       _checkForCloseScreenAction(state);
 
-      if (mounted) {
-        setState(() {
-          update(state);
-        });
-      }
+      update(state);
 
       rootComponent = getRootComponent();
     }
@@ -298,8 +294,10 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
       if (parentComponentWidget != null &&
           parentComponentWidget is CoContainerWidget) {
-        (parentComponentWidget.componentModel as ContainerComponentModel)
-            .removeWithComponent(componentWidget);
+        setState(() {
+          (parentComponentWidget.componentModel as ContainerComponentModel)
+              .removeWithComponent(componentWidget);
+        });
       }
     }
   }

@@ -122,7 +122,7 @@ class SoComponentData {
     // if (pDataProviderChanged.reload != null ||
     //     (request != null && request is UploadRequest)) {
     if (pDataProviderChanged.reload != null) {
-      fetchData(context, pDataProviderChanged.reload, -1);
+      fetchData(pDataProviderChanged.reload, -1);
     }
 
     if (data != null && pDataProviderChanged.selectedRow != null) {
@@ -164,8 +164,8 @@ class SoComponentData {
         data!.selectedRow != null &&
         data!.selectedRow! < data!.records.length) {
       return _getColumnValue(columnName);
-    } else if (context != null) {
-      fetchData(context, null, -1);
+    } else {
+      fetchData(null, -1);
     }
 
     return "";
@@ -180,7 +180,7 @@ class SoComponentData {
       }
 
       if (!isFetching) {
-        fetchData(context, null, rowCountNeeded);
+        fetchData(null, rowCountNeeded);
       }
     }
 
@@ -394,8 +394,7 @@ class SoComponentData {
     }
   }
 
-  void fetchData(BuildContext context, int? reload, int rowCountNeeded,
-      [Filter? filter]) {
+  void fetchData(int? reload, int rowCountNeeded, [Filter? filter]) {
     isFetching = true;
 
     FetchDataRequest fetch = FetchDataRequest(

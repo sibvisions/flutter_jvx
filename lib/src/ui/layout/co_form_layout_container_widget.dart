@@ -184,8 +184,15 @@ class CoFormLayoutContainerWidget extends StatelessWidget
 
       if (constraint != null) {
         constraint.comp = pComponent;
-        children.add(CoFormLayoutConstraintData(
-            key: key, child: pComponent, id: constraint));
+        if (setState != null) {
+          setState!(() {
+            children.add(CoFormLayoutConstraintData(
+                key: key, child: pComponent, id: constraint));
+          });
+        } else {
+          children.add(CoFormLayoutConstraintData(
+              key: key, child: pComponent, id: constraint));
+        }
       }
     }
 
@@ -195,12 +202,24 @@ class CoFormLayoutContainerWidget extends StatelessWidget
   void removeLayoutComponent(ComponentWidget pComponent) {
     //   print("FormLayoutContainerWidget RemoveLayoutComponent:" +
     //       pComponent.componentModel.componentId);
-    _layoutConstraints.removeWhere((c, s) =>
-        c.componentModel.componentId.toString() ==
-        pComponent.componentModel.componentId.toString());
-    children.removeWhere((element) =>
-        (element.child as ComponentWidget).componentModel.componentId ==
-        pComponent.componentModel.componentId);
+
+    if (setState != null) {
+      setState!(() {
+        _layoutConstraints.removeWhere((c, s) =>
+            c.componentModel.componentId.toString() ==
+            pComponent.componentModel.componentId.toString());
+        children.removeWhere((element) =>
+            (element.child as ComponentWidget).componentModel.componentId ==
+            pComponent.componentModel.componentId);
+      });
+    } else {
+      _layoutConstraints.removeWhere((c, s) =>
+          c.componentModel.componentId.toString() ==
+          pComponent.componentModel.componentId.toString());
+      children.removeWhere((element) =>
+          (element.child as ComponentWidget).componentModel.componentId ==
+          pComponent.componentModel.componentId);
+    }
     _valid = false;
   }
 
