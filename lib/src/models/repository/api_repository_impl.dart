@@ -302,7 +302,11 @@ class ApiRepositoryImpl implements ApiRepository {
 
     if (!kIsWeb) {
       deleteOutdatedData(
-          baseUrl: appState.serverConfig!.baseUrl, translation: true);
+          baseUrl: appState.serverConfig!.baseUrl, translation: isTranslation);
+
+      if (isTranslation) {
+        manager.possibleTranslations = <String, dynamic>{};
+      }
     }
 
     Archive? archive;

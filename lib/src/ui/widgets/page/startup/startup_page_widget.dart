@@ -143,12 +143,25 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _setLocalData() {
-    if (widget.appState.applicationMetaData != null &&
-        widget.manager.appVersion !=
-            widget.appState.applicationMetaData?.version) {
-      widget.manager.previousAppVersion = widget.manager.appVersion;
-      widget.manager.appVersion = widget.appState.applicationMetaData?.version;
-    }
+    isDownloadNeded(getLocalFilePath(
+            baseUrl: widget.appState.serverConfig!.baseUrl,
+            appName: widget.appState.serverConfig!.appName,
+            appVersion: widget.appState.applicationMetaData!.version,
+            translation: true,
+            baseDir: widget.appState.baseDirectory))
+        .then((bool isNeeded) {
+      if (isNeeded) {
+        widget.manager.sharedPreferences.clear();
+      }
+
+      if (widget.appState.applicationMetaData != null &&
+          widget.manager.appVersion !=
+              widget.appState.applicationMetaData?.version) {
+        widget.manager.previousAppVersion = widget.manager.appVersion;
+        widget.manager.appVersion =
+            widget.appState.applicationMetaData?.version;
+      }
+    });
   }
 
   void _updateDataFromSystem() {

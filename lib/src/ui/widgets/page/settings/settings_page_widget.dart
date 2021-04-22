@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/util/app/qr_code_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -152,54 +153,14 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     }
   }
 
-  Map<String, dynamic> _getPropertiesFromQR(String data) {
-    Map<String, dynamic> properties = <String, dynamic>{};
-
-    if (data.isNotEmpty && data != '-1') {
-      try {
-        properties = json.decode(data);
-      } catch (e) {
-        List<String?> result = data.split('\n');
-
-        if (_checkQRString(result[0]))
-          properties['APPNAME'] = getStringFromQRData(result[0]!);
-
-        if (data.contains('URL') && _checkQRString(result[1]))
-          properties['URL'] = getStringFromQRData(result[1]!);
-
-        if (data.contains('USER') &&
-            result.length >= 3 &&
-            _checkQRString(result[2]))
-          properties['USER'] = getStringFromQRData(result[2]!);
-
-        if (data.contains('PWD') &&
-            result.length >= 4 &&
-            _checkQRString(result[3]))
-          properties['PWD'] = getStringFromQRData(result[3]!);
-      }
-    }
-
-    return properties;
-  }
-
-  bool _checkQRString(String? qrString) {
-    return (qrString != null && qrString.isNotEmpty && qrString.contains(': '));
-  }
-
-  String getStringFromQRData(String data) {
-    try {
-      return data.substring(data.indexOf(': ') + 2);
-    } on Exception {
-      return data.substring(data.indexOf('=') + 1);
-    }
-  }
-
   Future<void> scanBarcode() async {
     final Barcode? result = await Navigator.of(context)
         .push(DefaultPageRoute(builder: (_) => QrCodeViewWidget()));
 
     if (result != null) {
-      Map<String, dynamic> _properties = _getPropertiesFromQR(result.code);
+      // Using global instance of qr code formatter for devs to overwrite
+      Map<String, dynamic> _properties =
+          QRCodeFormatter.global.formatQRCode(result.code);
 
       setState(() {
         if (_properties['APPNAME'] != null ||
