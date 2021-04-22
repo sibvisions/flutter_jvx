@@ -6,6 +6,8 @@ import 'package:flutterclient/src/models/api/response_objects/response_data/comp
 import 'package:flutterclient/injection_container.dart' as di;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'co_button_widget_test.dart';
+
 void main() {
   setUpAll(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -14,14 +16,16 @@ void main() {
   });
 
   testWidgets('CoLabelWidget has Text', (WidgetTester tester) async {
+    LabelComponentModel componentModel =
+        LabelComponentModel(changedComponent: ChangedComponent());
+
+    componentModel.updateProperties(
+        MockBuildContext(),
+        ChangedComponent.fromJson(
+            {'text': 'Hello Test!', 'id': 'L123', 'className': 'Label'}));
+
     await tester.pumpWidget(MaterialApp(
-      home: CoLabelWidget(
-          componentModel: LabelComponentModel(
-              changedComponent: ChangedComponent.fromJson({
-        'text': 'Hello Test!',
-        'id': 'L123',
-        'className': 'Label'
-      }))),
+      home: CoLabelWidget(componentModel: componentModel),
     ));
 
     final textFinder = find.text('Hello Test!');

@@ -103,7 +103,7 @@ class ComponentModel with ChangeNotifier {
         changedComponent.getProperty<String>(ComponentProperty.FONT, null),
         fontStyle);
 
-    textScaleFactor = appState.applicationStyle!.textScaleFactor;
+    textScaleFactor = appState.applicationStyle?.textScaleFactor ?? 1.0;
 
     foreground = changedComponent.getProperty<Color>(
         ComponentProperty.FOREGROUND, foreground)!;
