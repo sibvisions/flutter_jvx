@@ -47,15 +47,17 @@ class QRCodeFormatter {
     List<String> result = qrString.split('\n');
 
     for (final res in result) {
-      if (_checkQRString(res)) {
-        if (res.contains('URL')) {
-          properties['URL'] = _getStringFromQRData(res);
-        } else if (res.contains('APPNAME') || res.contains('Application')) {
-          properties['APPNAME'] = _getStringFromQRData(res);
-        } else if (res.contains('USER')) {
-          properties['USER'] = _getStringFromQRData(res);
-        } else if (res.contains('URL')) {
-          properties['PWD'] = _getStringFromQRData(res);
+      final prop = res.trim();
+
+      if (_checkQRString(prop)) {
+        if (prop.contains('URL')) {
+          properties['URL'] = _getStringFromQRData(prop);
+        } else if (prop.contains('APPNAME') || prop.contains('Application')) {
+          properties['APPNAME'] = _getStringFromQRData(prop);
+        } else if (prop.contains('USER')) {
+          properties['USER'] = _getStringFromQRData(prop);
+        } else if (prop.contains('PWD')) {
+          properties['PWD'] = _getStringFromQRData(prop);
         }
       }
     }
