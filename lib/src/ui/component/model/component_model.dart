@@ -91,7 +91,11 @@ class ComponentModel with ChangeNotifier {
     rawComponentId = changedComponent.getProperty<String>(
         ComponentProperty.ID, rawComponentId)!;
     background = changedComponent.getProperty<Color>(
-        ComponentProperty.BACKGROUND, background)!;
+                ComponentProperty.BACKGROUND, background) !=
+            null
+        ? changedComponent.getProperty<Color>(
+            ComponentProperty.BACKGROUND, background)!
+        : Colors.white;
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name)!;
     isVisible = changedComponent.getProperty<bool>(
         ComponentProperty.VISIBLE, isVisible)!;
