@@ -194,7 +194,13 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                 (componentWidget.componentModel as EditorComponentModel)
                     .dataProvider!);
 
-        if (componentWidget.cellEditor is CoReferencedCellEditorWidget) {
+        if (componentWidget.cellEditor is CoReferencedCellEditorWidget &&
+            (componentWidget.cellEditor as CoReferencedCellEditorWidget)
+                    .cellEditorModel
+                    .cellEditor
+                    .linkReference
+                    ?.dataProvider !=
+                null) {
           (componentWidget.cellEditor as CoReferencedCellEditorWidget)
               .cellEditorModel
               .referencedData = getComponentData((componentWidget.cellEditor
@@ -238,7 +244,13 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                 (componentWidget.componentModel as EditorComponentModel)
                     .dataProvider!);
 
-        if (componentWidget.cellEditor is CoReferencedCellEditorWidget) {
+        if (componentWidget.cellEditor is CoReferencedCellEditorWidget &&
+            (componentWidget.cellEditor as CoReferencedCellEditorWidget)
+                    .cellEditorModel
+                    .cellEditor
+                    .linkReference
+                    ?.dataProvider !=
+                null) {
           (componentWidget.cellEditor as CoReferencedCellEditorWidget)
               .cellEditorModel
               .referencedData = getComponentData((componentWidget.cellEditor

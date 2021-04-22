@@ -15,6 +15,7 @@ class ErrorHandler {
   static const String timeoutError = 'timeout.error';
   static const String internetError = 'internet.error';
   static const String offlineError = 'offline.error';
+  static const String cacheError = 'cache.error';
 
   static Future<void> handleError(ApiError error, BuildContext context) async {
     TextUtils.unfocusCurrentTextfield(context);
@@ -37,6 +38,8 @@ class ErrorHandler {
       showGoToSettingsDialog(context, error);
     } else if (error.failure.name == offlineError) {
       showGoToSettingsDialog(context, error);
+    } else if (error.failure.name == cacheError) {
+      showErrorDialog(context, error);
     } else {
       showGoToSettingsDialog(context, error);
     }

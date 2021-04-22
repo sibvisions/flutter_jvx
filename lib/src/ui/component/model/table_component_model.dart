@@ -58,6 +58,7 @@ class TableComponentModel extends EditorComponentModel {
 
   // Properties for lazy dropdown
   dynamic? value;
+  SoScreenState? screenState;
 
   Map<String, CoEditorWidget> _editors = <String, CoEditorWidget>{};
 
@@ -220,10 +221,19 @@ class TableComponentModel extends EditorComponentModel {
               editor.cellEditor!.cellEditorModel.cellEditor.linkReference!
                       .dataProvider !=
                   null) {
-            (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
-                    .referencedData =
-                SoScreen.of(context)!.getComponentData(editor.cellEditor!
-                    .cellEditorModel.cellEditor.linkReference!.dataProvider!);
+            SoScreenState? screen = SoScreen.of(context);
+
+            if (screen != null) {
+              (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
+                      .referencedData =
+                  SoScreen.of(context)!.getComponentData(editor.cellEditor!
+                      .cellEditorModel.cellEditor.linkReference!.dataProvider!);
+            } else {
+              (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
+                      .referencedData =
+                  screenState?.getComponentData(editor.cellEditor!
+                      .cellEditorModel.cellEditor.linkReference!.dataProvider!);
+            }
           }
 
           _editors[_getEditorIdentifier(columnName, index)] = editor;

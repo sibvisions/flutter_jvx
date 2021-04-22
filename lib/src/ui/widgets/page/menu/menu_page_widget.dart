@@ -168,8 +168,6 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
               }
             }
           }
-        } else if (state is ApiError) {
-          await ErrorHandler.handleError(state, context);
         }
       },
       child: Builder(

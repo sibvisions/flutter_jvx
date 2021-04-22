@@ -171,23 +171,26 @@ class CoLinkedCellEditorWidgetState
             if (widget.cellEditorModel.editable) {
               this.onFilter!(null);
               TextUtils.unfocusCurrentTextfield(context);
-              showDialog(
-                  context: context,
-                  builder: (context) => LazyDropdown(
-                        editable: widget.cellEditorModel.editable,
-                        data: widget.cellEditorModel.referencedData!,
-                        context: this.context,
-                        displayColumnNames: dropDownColumnNames,
-                        fetchMoreYOffset:
-                            MediaQuery.of(context).size.height * 4,
-                        onSave: (value) {
-                          widget.cellEditorModel.cellEditorValue = value.value;
-                          onLazyDropDownValueChanged(value);
-                        },
-                        onFilter: onFilterDropDown,
-                        allowNull: true,
-                        onScrollToEnd: onScrollToEnd,
-                      ));
+              if (widget.cellEditorModel.referencedData != null)
+                showDialog(
+                    context: context,
+                    builder: (context) => LazyDropdown(
+                          editable: widget.cellEditorModel.editable,
+                          data: widget.cellEditorModel.referencedData!,
+                          context: this.context,
+                          displayColumnNames: dropDownColumnNames,
+                          fetchMoreYOffset:
+                              MediaQuery.of(context).size.height * 4,
+                          onSave: (value) {
+                            widget.cellEditorModel.cellEditorValue =
+                                value.value;
+                            onLazyDropDownValueChanged(value);
+                          },
+                          onFilter: onFilterDropDown,
+                          allowNull: true,
+                          onScrollToEnd: onScrollToEnd,
+                          screenState: SoScreen.of(context),
+                        ));
             }
           },
         )),

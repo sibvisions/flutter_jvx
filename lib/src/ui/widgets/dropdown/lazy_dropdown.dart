@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutterclient/flutterclient.dart';
 
 import '../../../util/translation/app_localizations.dart';
 import '../../component/co_table_widget.dart';
@@ -20,6 +21,7 @@ class LazyDropdown extends StatefulWidget {
   final SoComponentData data;
   final List<String>? displayColumnNames;
   final bool? editable;
+  final SoScreenState? screenState;
 
   LazyDropdown(
       {required this.allowNull,
@@ -31,7 +33,8 @@ class LazyDropdown extends StatefulWidget {
       this.onCancel,
       this.onScrollToEnd,
       this.onFilter,
-      this.fetchMoreYOffset = 0});
+      this.fetchMoreYOffset = 0,
+      this.screenState});
 
   @override
   _LazyDropdownState createState() => _LazyDropdownState();
@@ -157,7 +160,8 @@ class _LazyDropdownState extends State<LazyDropdown> {
 
     TableComponentModel tableComponentModel =
         TableComponentModel.withoutChangedComponent(null, null, _onRowTapped,
-            false, false, true, widget.displayColumnNames!, null);
+            false, false, true, widget.displayColumnNames!, null)
+          ..screenState = widget.screenState;
 
     tableComponentModel.data = widget.data;
 

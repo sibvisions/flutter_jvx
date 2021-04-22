@@ -1,3 +1,4 @@
+import 'package:archive/archive.dart';
 import 'package:flutterclient/src/models/api/data_source.dart';
 import 'package:flutterclient/src/models/api/remote_data_source_impl.dart';
 import 'package:flutterclient/src/models/repository/api_repository.dart';
@@ -26,7 +27,8 @@ Future<void> init({IOfflineDatabaseProvider? offlineDatabase}) async {
       networkInfo: sl(),
       appState: sl(),
       manager: sl(),
-      offlineDataSource: sl()));
+      offlineDataSource: sl(),
+      decoder: sl()));
 
   sl.registerLazySingleton<DataSource>(
       () => RemoteDataSourceImpl(client: sl(), appState: sl()));
@@ -46,6 +48,8 @@ Future<void> init({IOfflineDatabaseProvider? offlineDatabase}) async {
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
   sl.registerLazySingleton<HttpClient>(() => HttpClient());
+
+  sl.registerLazySingleton<ZipDecoder>(() => ZipDecoder());
 
   if (offlineDatabase != null) {
     sl.registerLazySingleton<IOfflineDatabaseProvider>(() => offlineDatabase);

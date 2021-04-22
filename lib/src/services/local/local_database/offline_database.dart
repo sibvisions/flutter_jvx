@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../../injection_container.dart';
@@ -80,7 +81,8 @@ class OfflineDatabase extends LocalDatabase
         dataSource: sl<DataSource>(),
         networkInfo: sl<NetworkInfo>(),
         appState: sl<AppState>(),
-        manager: sl<SharedPreferencesManager>());
+        manager: sl<SharedPreferencesManager>(),
+        decoder: sl<ZipDecoder>());
 
     log('Online sync started.');
 
@@ -252,7 +254,8 @@ class OfflineDatabase extends LocalDatabase
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
-        dataSource: sl<DataSource>());
+        dataSource: sl<DataSource>(),
+        decoder: sl<ZipDecoder>());
 
     //double freeDiscSpace = await DiskSpace.getFreeDiskSpace;
     log('Offline import started!');
@@ -373,7 +376,8 @@ class OfflineDatabase extends LocalDatabase
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
-        dataSource: sl<DataSource>());
+        dataSource: sl<DataSource>(),
+        decoder: sl<ZipDecoder>());
 
     FetchDataRequest fetch = FetchDataRequest(
         dataProvider: dataProvider,
@@ -445,7 +449,8 @@ class OfflineDatabase extends LocalDatabase
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
-        dataSource: sl<DataSource>());
+        dataSource: sl<DataSource>(),
+        decoder: sl<ZipDecoder>());
 
     InsertRecordRequest insert = InsertRecordRequest(
         dataProvider: dataProvider,
@@ -502,7 +507,8 @@ class OfflineDatabase extends LocalDatabase
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
-        dataSource: sl<DataSource>());
+        dataSource: sl<DataSource>(),
+        decoder: sl<ZipDecoder>());
 
     Map<String, dynamic> changedValues =
         OfflineDatabaseFormatter.getChangedValuesForUpdate(
@@ -543,7 +549,8 @@ class OfflineDatabase extends LocalDatabase
         manager: sl<SharedPreferencesManager>(),
         appState: sl<AppState>(),
         networkInfo: sl<NetworkInfo>(),
-        dataSource: sl<DataSource>());
+        dataSource: sl<DataSource>(),
+        decoder: sl<ZipDecoder>());
 
     SaveDataRequest saveData = SaveDataRequest(
         dataProvider: dataProvider,

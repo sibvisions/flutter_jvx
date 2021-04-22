@@ -65,15 +65,18 @@ class SoTableColumnCalculator {
             editor?.cellEditorModel.textScaleFactor = textScaleFactor;
           }
 
-          if (editor != null && editor.cellEditorModel.isTableMinimumSizeSet) {
+          if (editor != null &&
+              editor.cellEditorModel.isTableMinimumSizeSet &&
+              columns.length > i) {
             columns[i].minWidth =
                 editor.cellEditorModel.tableMinimumSize!.width + itemPadding;
           }
           if (editor != null &&
-              editor.cellEditorModel.isTablePreferredSizeSet) {
+              editor.cellEditorModel.isTablePreferredSizeSet &&
+              columns.length > i) {
             columns[i].preferredWidth =
                 editor.cellEditorModel.tablePreferredSize!.width;
-          } else {
+          } else if (columns.length > i) {
             columns[i].preferredWidth =
                 TextUtils.getTextWidth(value, textStyle, textScaleFactor) +
                     itemPadding;
