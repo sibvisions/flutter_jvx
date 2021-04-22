@@ -50,7 +50,7 @@ class CustomCubitListener extends StatelessWidget {
                 (state is ApiResponse && state.hasObject<Failure>()))) {
           if (state is ApiError) {
             ErrorHandler.handleError(state, context);
-          } else if (state is ApiResponse) {
+          } else if (state is ApiResponse && modalRoute.isCurrent) {
             ErrorHandler.handleError(
                 ApiError(failure: state.getObjectByType<Failure>()!), context);
           }
@@ -77,7 +77,7 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        listener(context, state);
+        if (modalRoute.isCurrent) listener(context, state);
       },
       child: child,
     );

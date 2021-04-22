@@ -57,7 +57,8 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.3
+  mockito: ^5.0.5
+  build_runner: ^2.0.1
 
 flutter:
   uses-material-design: true

@@ -51,13 +51,15 @@ class ApiRepositoryImpl implements ApiRepository {
   final NetworkInfo networkInfo;
   final AppState appState;
   final SharedPreferencesManager manager;
+  final ZipDecoder decoder;
 
   ApiRepositoryImpl(
       {required this.dataSource,
       required this.networkInfo,
       required this.appState,
       required this.manager,
-      required this.offlineDataSource});
+      required this.offlineDataSource,
+      required this.decoder});
 
   @override
   Future<ApiState> applicationStyle(ApplicationStyleRequest request) async {
@@ -297,7 +299,7 @@ class ApiRepositoryImpl implements ApiRepository {
     }
   }
 
-  Future<void> handleDownload(ApiResponse response) async {
+  Future<ApiError?> handleDownload(ApiResponse response) async {
     bool isTranslation = (response.request is DownloadTranslationRequest);
 
     if (!kIsWeb) {
@@ -312,11 +314,15 @@ class ApiRepositoryImpl implements ApiRepository {
     Archive? archive;
 
     try {
-      archive = ZipDecoder().decodeBytes(
+      archive = decoder.decodeBytes(
           response.getObjectByType<DownloadResponseObject>()!.bodyBytes);
-    } catch (e) {
-      print(e);
-      return;
+    } on ArchiveException {
+      return ApiError(
+          failure: CacheFailure(
+              name: ErrorHandler.cacheError,
+              details: '',
+              title: 'Download error',
+              message: 'Could not decode file'));
     }
 
     late String localFilePath;
