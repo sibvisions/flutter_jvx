@@ -67,11 +67,11 @@ class BaseUrlDialog extends StatelessWidget {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text(
+                        child: AutoSizeText(
                           AppLocalizations.of(context)!
                               .text('Close')
                               .toUpperCase(),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 16),
                         )),
                     SizedBox(
                       width: 10,
@@ -89,11 +89,11 @@ class BaseUrlDialog extends StatelessWidget {
 
                           Navigator.of(context).pop(toSave);
                         },
-                        child: Text(
+                        child: AutoSizeText(
                           AppLocalizations.of(context)!
                               .text('Save')
                               .toUpperCase(),
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(fontSize: 16),
                         )),
                   ],
                 ),
