@@ -25,14 +25,40 @@ import 'util/config/widget_config.dart';
 import 'util/download/download_helper.dart';
 import 'util/theme/theme_manager.dart';
 
+/// Widget the runs the whole application.
+///
+/// Takes a list of parameters which can customize the application.
 class ApplicationWidget extends StatefulWidget {
+  /// Config for the application
+  ///
+  /// Either [appConfig] or [appConfigPath] must not be null.
   final AppConfig? appConfig;
+
+  /// For developing to force the baseUrl and appName on the application.
   final DevConfig? devConfig;
+
+  /// Path to the [AppConfig].
+  ///
+  /// Either [appConfig] or [appConfigPath] must not be null.
   final String? appConfigPath;
+
+  /// Instance for controlling the application on special events.
+  ///
+  /// Such as starting the application or opening a screen.
   final AppListener? appListener;
+
+  /// Instance for managing [CustomScreen]s and [MenuItem]s.
   final IScreenManager? screenManager;
+
+  /// For defining the own version
+  ///
+  /// Will be shown in the [SettingsPageWidget].
   final AppVersion? appVersion;
+
+  /// Config for defining `startupWidget` and `welcomeWidget`.
   final WidgetConfig? widgetConfig;
+
+  /// `true` if the application is used as a package.
   final bool package;
 
   const ApplicationWidget(
@@ -57,8 +83,12 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   late AppState appState;
   late SharedPreferencesManager manager;
 
+  /// Method for loading the [ServerConfig].
   ServerConfig? _getServerConfig(
       AppState appState, SharedPreferencesManager manager) {
+    // If the app is started the first time
+    // and the AppConfig defined has an initial ServerConfig,
+    // the application will save them in the SharedPreferences
     if (manager.initialStart &&
         appState.appConfig != null &&
         appState.appConfig!.initialConfig != null) {
@@ -97,6 +127,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     }
   }
 
+  /// Method for loading the [AppConfig] when no one is set.
   Future<AppConfig> _getAppConfig() async {
     if (widget.appConfig != null) {
       return widget.appConfig!;
@@ -146,6 +177,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   void initState() {
     super.initState();
 
+    // Getting dependency injected instances
     appState = sl<AppState>();
     manager = sl<SharedPreferencesManager>();
 
@@ -170,7 +202,6 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     }
 
     if (!kIsWeb) {
-      // TODO: refactor
       getBaseDir().then((value) => appState.baseDirectory = value);
     }
   }
@@ -186,6 +217,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
             appState.appConfig = snapshot.data!;
 
             return RestartWidget(builder: (context) {
+              // When the app gets started or restarted the configs wil be overwritten.
               appState.devConfig = widget.devConfig;
               appState.serverConfig = _getServerConfig(appState, manager);
 
@@ -195,6 +227,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                 manager.appMode = appState.serverConfig!.appMode;
               }
 
+              // When ServerConfig is null the initial Route will be the Settings Route.
               if (appState.serverConfig == null ||
                   (appState.serverConfig!.baseUrl.isEmpty ||
                       appState.serverConfig!.appName.isEmpty)) {

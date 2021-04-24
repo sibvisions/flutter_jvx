@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'application_widget.dart';
 import 'util/config/dev_config.dart';
 
+/// This widget is a wraps the [ApplicationWidget] with a [FutureBuilder]
+/// to load the [DevConfig]
 class RunnableWidget extends StatefulWidget {
   @override
   _RunnableWidgetState createState() => _RunnableWidgetState();
@@ -28,6 +30,7 @@ class _RunnableWidgetState extends State<RunnableWidget> {
             return ApplicationWidget();
           }
 
+          // Prod variable defined when building
           late bool prod;
 
           if (!kIsWeb) {

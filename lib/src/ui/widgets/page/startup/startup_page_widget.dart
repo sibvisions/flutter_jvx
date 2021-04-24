@@ -51,8 +51,10 @@ class StartupPageWidget extends StatefulWidget {
 class _StartupPageWidgetState extends State<StartupPageWidget> {
   ApiResponse? startupResponse;
 
+  /// Own cubit instance to avoid multiple calls on the listener.
   late ApiCubit cubit;
 
+  /// Getter for initial language which gets send to the server.
   String get _startupLanguage {
     String language = 'en';
 
@@ -69,6 +71,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     return language;
   }
 
+  /// Method for sending the [Startup] request.
   void _sendStartupRequest() {
     DeviceInfo deviceInfo = DeviceInfo();
 
@@ -97,6 +100,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           username: widget.appState.serverConfig!.username,
           password: widget.appState.serverConfig!.password);
 
+      // For handling the initial Config
       widget.appState.serverConfig!.username = null;
       widget.appState.serverConfig!.password = null;
 
@@ -104,6 +108,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     }
   }
 
+  /// Returns the device id generated on first start.
   String _getDeviceId() {
     if (widget.manager.deviceId != null) {
       return widget.manager.deviceId!;
@@ -114,6 +119,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     return generatedDeviceId;
   }
 
+  /// Sets data returned from the [Startup] request.
   void _setAppStateData(ApiResponse response) {
     widget.appState.applicationMetaData =
         response.getObjectByType<ApplicationMetaDataResponseObject>();
@@ -150,7 +156,11 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
             translation: true,
             baseDir: widget.appState.baseDirectory))
         .then((bool isNeeded) {
-      if (isNeeded) {
+      // If download is needed that means,
+      // that the server changed so all left local data gets deleted.
+      if (isNeeded &&
+          widget.manager.appVersion !=
+              widget.appState.applicationMetaData?.version) {
         widget.manager.sharedPreferences.clear();
       }
 
@@ -217,6 +227,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       widget.appState.applicationStyle =
           response.getObjectByType<ApplicationStyleResponseObject>();
 
+      // Setting theme for the whole application.
       sl<ThemeManager>().value = ThemeData(
         primaryColor: widget.appState.applicationStyle!.themeColor,
         primarySwatch: getColorFromAppStyle(widget.appState.applicationStyle!),
