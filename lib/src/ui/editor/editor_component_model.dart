@@ -227,13 +227,12 @@ class EditorComponentModel extends ComponentModel {
   }
 
   void onFilter(dynamic value) {
-    /*
-    if (cellEditor is CoReferencedCellEditor) {
-      (cellEditor as CoReferencedCellEditor)
-          .data
-          .filterData(context, value, this.name);
+    if (cellEditor is CoReferencedCellEditorWidget) {
+      (cellEditor as CoReferencedCellEditorWidget)
+          .cellEditorModel
+          .referencedData
+          ?.filterData(value, this.name);
     }
-    */
     if (this.onFilterCallback != null) {
       onFilterCallback!(value);
     }

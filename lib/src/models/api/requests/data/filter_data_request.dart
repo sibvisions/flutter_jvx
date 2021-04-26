@@ -14,7 +14,7 @@ class FilterDataRequest extends DataRequest {
 
   @override
   String get debugInfo =>
-      'clientId: $clientId, dataProvider: $dataProvider, columnNames: $columnNames, fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData,';
+      'clientId: $clientId, dataProvider: $dataProvider, columnNames: $columnNames, value: $value, fromRow: $fromRow, rowCount: $rowCount, includeMetaData: $includeMetaData,';
 
   FilterDataRequest({
     required String dataProvider,
