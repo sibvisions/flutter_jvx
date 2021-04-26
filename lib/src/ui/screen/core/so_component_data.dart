@@ -250,16 +250,13 @@ class SoComponentData {
     sl<ApiCubit>().data(saveDataRequest);
   }
 
-  void filterData(
-      BuildContext context, String value, String editorComponentId) {
+  void filterData(String value, String editorComponentId) {
     FilterDataRequest request = FilterDataRequest(
+        columnNames: data?.columnNames,
         dataProvider: dataProvider,
         value: value,
         editorComponentId: editorComponentId,
-        clientId: AppStateProvider.of(context)!
-            .appState
-            .applicationMetaData!
-            .clientId,
+        clientId: sl<AppState>().applicationMetaData!.clientId,
         fromRow: 0,
         rowCount: 100,
         reload: true);
