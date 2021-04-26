@@ -369,7 +369,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                 widget.componentModel.textScaleFactor,
                 constraints.maxWidth,
                 16.0,
-                16.0);
+                16.0,
+                4.0);
         double columnWidth = SoTableColumnCalculator.getColumnWidthSum(
             widget.componentModel.columnInfo!);
         double tableHeight = SoTableColumnCalculator.getPreferredTableHeight(
@@ -379,7 +380,8 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
             widget.componentModel.tableHeaderVisible,
             widget.componentModel.textScaleFactor,
             30,
-            30);
+            30,
+            4.0);
 
         widget.componentModel.hasHorizontalScroller =
             (columnWidth + (2 * widget.componentModel.borderWidth) >
