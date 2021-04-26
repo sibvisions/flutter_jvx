@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/util/app/get_image_string.dart';
+import 'package:flutterclient/src/util/app/get_package_string.dart';
 import 'dart:io';
 
 import '../../../../models/state/app_state.dart';

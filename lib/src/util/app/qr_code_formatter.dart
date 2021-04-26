@@ -2,8 +2,14 @@ import 'dart:convert';
 
 /// Global qr code formatter
 ///
-/// If you want to use your own just overwrite the class
-/// and set the global instance
+/// If you want to use your own just overwrite the class.
+///
+/// In main.dart before calling `runApp(SomeApp());`
+/// , set the global instance like this:
+///
+/// ````dart
+/// QRCodeFormatter.global = OverwrittenQRCodeFormatter();
+/// ````
 class QRCodeFormatter {
   static final errorMsg = 'Couldn\'t parse qr code!';
   static QRCodeFormatter global = QRCodeFormatter();

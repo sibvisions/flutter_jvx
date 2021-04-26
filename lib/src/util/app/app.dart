@@ -1,4 +1,4 @@
-export 'get_image_string.dart';
+export 'get_package_string.dart';
 export 'listener/listener.dart';
 export 'so_alignment.dart';
 export 'so_text_align.dart';

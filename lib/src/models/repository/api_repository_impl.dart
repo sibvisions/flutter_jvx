@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/request.dart';
 import 'package:flutterclient/src/models/api/response_objects/show_document_response_object.dart';
 import 'package:flutterclient/src/ui/util/error/error_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -63,35 +64,35 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> applicationStyle(ApplicationStyleRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.applicationStyle(request);
     });
   }
 
   @override
   Future<ApiState> change(ChangeRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.change(request);
     });
   }
 
   @override
   Future<ApiState> closeScreen(CloseScreenRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.closeScreen(request);
     });
   }
 
   @override
   Future<ApiState> deviceStatus(DeviceStatusRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.deviceStatus(request);
     });
   }
 
   @override
   Future<ApiState> downloadImages(DownloadImagesRequest request) async {
-    ApiState state = await _checkConnection(() {
+    ApiState state = await _checkConnection(request, () {
       return dataSource.downloadImages(request);
     });
 
@@ -105,7 +106,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<ApiState> downloadTranslation(
       DownloadTranslationRequest request) async {
-    ApiState state = await _checkConnection(() {
+    ApiState state = await _checkConnection(request, () {
       return dataSource.downloadTranslation(request);
     });
 
@@ -119,7 +120,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<ApiState> login(LoginRequest request) async {
     if (!appState.isOffline) {
-      ApiState state = await _checkConnection(() {
+      ApiState state = await _checkConnection(request, () {
         return dataSource.login(request);
       });
 
@@ -162,7 +163,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<ApiState> logout(LogoutRequest request) async {
     if (!appState.isOffline) {
-      ApiState state = await _checkConnection(() {
+      ApiState state = await _checkConnection(request, () {
         return dataSource.logout(request);
       });
 
@@ -181,7 +182,7 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> menu(MenuRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.menu(request);
     });
   }
@@ -189,7 +190,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<ApiState> navigation(NavigationRequest request) async {
     if (!appState.isOffline) {
-      return await _checkConnection(() {
+      return await _checkConnection(request, () {
         return dataSource.navigation(request);
       });
     } else {
@@ -199,7 +200,7 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> openScreen(OpenScreenRequest request) async {
-    ApiState state = await _checkConnection(() {
+    ApiState state = await _checkConnection(request, () {
       return dataSource.openScreen(request);
     });
 
@@ -212,7 +213,7 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> pressButton(PressButtonRequest request) async {
-    return await _checkConnection(() async {
+    return await _checkConnection(request, () async {
       ApiState state = await dataSource.pressButton(request);
 
       if (state is ApiResponse &&
@@ -235,42 +236,42 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> setComponentValue(SetComponentValueRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.setComponentValue(request);
     });
   }
 
   @override
   Future<ApiState> startup(StartupRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.startup(request);
     });
   }
 
   @override
   Future<ApiState> tabClose(TabCloseRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.tabClose(request);
     });
   }
 
   @override
   Future<ApiState> tabSelect(TabSelectRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.tabSelect(request);
     });
   }
 
   @override
   Future<ApiState> upload(UploadRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.upload(request);
     });
   }
 
   @override
   Future<ApiState> download(DownloadRequest request) async {
-    return await _checkConnection(() {
+    return await _checkConnection(request, () {
       return dataSource.download(request);
     });
   }
@@ -280,7 +281,7 @@ class ApiRepositoryImpl implements ApiRepository {
     if (!appState.isOffline) {
       List<ApiState> states = <ApiState>[];
 
-      ApiState state = await _checkConnection(() {
+      ApiState state = await _checkConnection(request, () {
         return dataSource.data(request);
       });
 
@@ -419,7 +420,7 @@ class ApiRepositoryImpl implements ApiRepository {
     }
   }
 
-  _checkConnection(Future Function() onConnection) async {
+  _checkConnection(Request request, Future Function() onConnection) async {
     if (!kIsWeb) {
       if (!(await networkInfo.isConnected)) {
         return ApiError(
@@ -428,6 +429,8 @@ class ApiRepositoryImpl implements ApiRepository {
                 message: 'Could not ping server!',
                 details: '',
                 name: ErrorHandler.connectionError));
+      } else if (appState.isOffline) {
+        return await offlineDataSource.request(request);
       }
     }
 

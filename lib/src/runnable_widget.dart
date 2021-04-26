@@ -39,6 +39,8 @@ class _RunnableWidgetState extends State<RunnableWidget> {
             prod = true;
           }
 
+          prod = false;
+
           if (snapshot.hasData) {
             return ApplicationWidget(
               devConfig: prod ? null : snapshot.data,

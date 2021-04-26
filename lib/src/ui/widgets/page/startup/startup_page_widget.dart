@@ -24,7 +24,7 @@ import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/locale/supported_locale_manager.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
-import '../../../../util/app/get_image_string.dart';
+import '../../../../util/app/get_package_string.dart';
 import '../../../../util/color/get_color_from_app_style.dart';
 import '../../../../util/device_info/device_info.dart';
 import '../../../../util/download/download_helper.dart';
