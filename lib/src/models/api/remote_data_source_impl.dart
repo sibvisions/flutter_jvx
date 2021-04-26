@@ -270,15 +270,7 @@ class RemoteDataSourceImpl implements DataSource {
         List decodedBody = _getDecodedBody(r.body);
         Failure? failure = _getErrorIfExists(decodedBody);
 
-        late bool isProd;
-
-        if (!kIsWeb) {
-          isProd = bool.fromEnvironment('PROD', defaultValue: false);
-        } else {
-          isProd = true;
-        }
-
-        if (!isProd && debugResponse) {
+        if (!kReleaseMode && debugResponse) {
           log('RESPONSE ${uri.path}: $decodedBody');
         }
 

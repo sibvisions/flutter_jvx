@@ -23,6 +23,10 @@ class _RunnableWidgetState extends State<RunnableWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (kReleaseMode) {
+      return ApplicationWidget();
+    }
+
     return FutureBuilder<DevConfig>(
         future: _configFuture,
         builder: (context, snapshot) {
@@ -30,20 +34,9 @@ class _RunnableWidgetState extends State<RunnableWidget> {
             return ApplicationWidget();
           }
 
-          // Prod variable defined when building
-          late bool prod;
-
-          if (!kIsWeb) {
-            prod = bool.fromEnvironment('PROD', defaultValue: false);
-          } else {
-            prod = true;
-          }
-
-          prod = false;
-
           if (snapshot.hasData) {
             return ApplicationWidget(
-              devConfig: prod ? null : snapshot.data,
+              devConfig: snapshot.data,
             );
           } else {
             return Container();

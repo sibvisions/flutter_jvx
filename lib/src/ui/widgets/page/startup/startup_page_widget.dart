@@ -49,6 +49,7 @@ class StartupPageWidget extends StatefulWidget {
 }
 
 class _StartupPageWidgetState extends State<StartupPageWidget> {
+  /// Variable holding the welcome screen if a welcome screen is in the response.
   ApiResponse? startupResponse;
 
   /// Own cubit instance to avoid multiple calls on the listener.
@@ -157,7 +158,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
             baseDir: widget.appState.baseDirectory))
         .then((bool isNeeded) {
       // If download is needed that means,
-      // that the server changed so all left local data gets deleted.
+      // that the server changed so all left over local data gets deleted.
       if (isNeeded &&
           widget.manager.appVersion !=
               widget.appState.applicationMetaData?.version) {

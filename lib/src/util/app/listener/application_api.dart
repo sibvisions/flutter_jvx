@@ -18,7 +18,7 @@ class ApplicationApi {
   addListener(void Function(ApiState response) onState) {
     if (!listeners.contains(onState)) {
       listeners.add(onState);
-      sl<ApiCubit>().listen(onState);
+      sl<ApiCubit>().stream.listen(onState);
     }
   }
 
