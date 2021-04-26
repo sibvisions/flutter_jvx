@@ -138,7 +138,7 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   @override
   void performLayout() {
     this.debugInfo =
-        "GridLayout in container ${container.componentModel.componentId}";
+        "GridLayout in container ${container.componentModel.name} (${container.componentModel.componentId})";
     // Set components
     constraintMap = <RenderBox, CoGridLayoutConstraints>{};
     RenderBox? child = firstChild;

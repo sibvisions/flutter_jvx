@@ -12,6 +12,8 @@ class CoLayoutRenderBox extends RenderBox {
   String debugInfo = "";
 
   Size? getChildLayoutPreferredSize(RenderBox renderBox) {
+    renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
+
     if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
       CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
 
@@ -46,7 +48,8 @@ class CoLayoutRenderBox extends RenderBox {
     if (constraints.maxHeight == double.infinity &&
         constraints.maxWidth == double.infinity) {
       try {
-        if (renderBox.hasSize) return renderBox.size;
+        if (renderBox.hasSize)
+          return renderBox.size;
         renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
         return renderBox.size;
       } catch (e) {
