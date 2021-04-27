@@ -58,20 +58,23 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
       return Container(
           color: widget.componentModel.background,
           child: SingleChildScrollView(
-              controller: _scrollController,
-              // key: this.componentId,
-              child: CoScrollPanelLayout(
-                preferredConstraints:
-                    CoScrollPanelConstraints(constraints, componentModel),
-                container: widget.componentModel as ContainerComponentModel,
-                children: [
-                  CoScrollPanelLayoutId(
-                      // key: ValueKey(widget.key),
-                      constraints:
-                          CoScrollPanelConstraints(constraints, componentModel),
-                      child: child ?? Container())
-                ],
-              )));
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _scrollController,
+                  // key: this.componentId,
+                  child: CoScrollPanelLayout(
+                    preferredConstraints: CoScrollPanelConstraints(
+                        constraints, componentModel, constraints.biggest),
+                    container: widget.componentModel as ContainerComponentModel,
+                    children: [
+                      CoScrollPanelLayoutId(
+                          // key: ValueKey(widget.key),
+                          constraints: CoScrollPanelConstraints(
+                              constraints, componentModel, constraints.biggest),
+                          child: child ?? Container())
+                    ],
+                  ))));
     });
 
     if (child != null) {
