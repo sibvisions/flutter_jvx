@@ -98,7 +98,8 @@ class BrowserApp extends StatelessWidget {
               settings: RouteSettings(
                   name: Routes.startup, arguments: settings.arguments),
               builder: (_) => StartupPage(
-                    startupWidget: arguments?.startupWidget,
+                    startupWidget: arguments?.startupWidget ??
+                        appState.widgetConfig.startupWidget,
                     appState: appState,
                     manager: manager,
                   ));

@@ -92,7 +92,7 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter test test/
+      - run: flutter test --no-sound-null-safety test/
 
       - run: flutter config --enable-web
         if: matrix.platform == 'web'

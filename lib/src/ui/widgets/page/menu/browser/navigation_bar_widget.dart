@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/ui/widgets/page/menu/browser/web_menu_list_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../../flutterclient.dart';
+import '../../../../../models/api/response_objects/menu/menu_item.dart';
+import '../../../../../models/state/app_state.dart';
+import 'web_menu_list_widget.dart';
 
 class NavigationBarWidget extends StatefulWidget {
   final Widget child;
@@ -94,7 +94,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
       endDrawer: SizedBox(
         width: MediaQuery.of(context).size.width / 4,
         child: SettingsPage(
-          canPop: false,
+          canPop: true,
         ),
       ),
       body: Row(

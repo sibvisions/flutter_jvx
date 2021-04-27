@@ -18,9 +18,9 @@ class TranslationHelper {
 
     try {
       if (kIsWeb) {
-        return handleWeb(appState, locale);
+        return _handleWeb(appState, locale);
       } else {
-        return handleMobile(appState, locale);
+        return _handleMobile(appState, locale);
       }
     } on Exception catch (e) {
       log('${e.toString()}');
@@ -28,7 +28,7 @@ class TranslationHelper {
     }
   }
 
-  static Map<String, dynamic> handleWeb(AppState appState, Locale locale) {
+  static Map<String, dynamic> _handleWeb(AppState appState, Locale locale) {
     String keyString = '/translation_${locale.languageCode}.json';
 
     Map<String, dynamic> _localizedValues = <String, dynamic>{};
@@ -40,17 +40,22 @@ class TranslationHelper {
       throw Exception('Could not load translation.');
     }
 
-    List<dynamic> jsonList = json.decode(appState.fileConfig.files[keyString]!);
+    if (appState.fileConfig.files.containsKey(keyString)) {
+      List<dynamic> jsonList =
+          json.decode(appState.fileConfig.files[keyString]!);
 
-    for (final translation in jsonList) {
-      _localizedValues.putIfAbsent(
-          translation[textKey], () => translation[translationKey]);
+      for (final translation in jsonList) {
+        _localizedValues.putIfAbsent(
+            translation[textKey], () => translation[translationKey]);
+      }
+
+      return _localizedValues;
+    } else {
+      return <String, dynamic>{};
     }
-
-    return _localizedValues;
   }
 
-  static Map<String, dynamic> handleMobile(AppState appState, Locale locale) {
+  static Map<String, dynamic> _handleMobile(AppState appState, Locale locale) {
     String keyString = 'translation_${locale.languageCode}.json';
 
     if (appState.translationConfig.possibleTranslations.isNotEmpty &&

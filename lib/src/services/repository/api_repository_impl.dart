@@ -304,7 +304,7 @@ class ApiRepositoryImpl implements ApiRepository {
     bool isTranslation = (response.request is DownloadTranslationRequest);
 
     if (!kIsWeb) {
-      deleteOutdatedData(
+      DownloadHelper.deleteOutdatedData(
           baseUrl: appState.serverConfig!.baseUrl, translation: isTranslation);
 
       if (isTranslation) {
@@ -329,7 +329,7 @@ class ApiRepositoryImpl implements ApiRepository {
     late String localFilePath;
 
     if (!kIsWeb) {
-      localFilePath = getLocalFilePath(
+      localFilePath = DownloadHelper.getLocalFilePath(
             baseDir: appState.baseDirectory,
             baseUrl: appState.serverConfig!.baseUrl,
             appName: appState.serverConfig!.appName,

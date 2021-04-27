@@ -150,7 +150,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _setLocalData() {
-    isDownloadNeded(getLocalFilePath(
+    DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
             baseUrl: widget.appState.serverConfig!.baseUrl,
             appName: widget.appState.serverConfig!.appName,
             appVersion: widget.appState.applicationMetaData!.version,
@@ -239,7 +239,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
 
       if (widget.appState.applicationStyle?.hash !=
               widget.manager.applicationStyleHash ||
-          await isDownloadNeded(getLocalFilePath(
+          await DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
               baseUrl: widget.appState.serverConfig!.baseUrl,
               appName: widget.appState.serverConfig!.appName,
               appVersion: widget.appState.applicationMetaData!.version,

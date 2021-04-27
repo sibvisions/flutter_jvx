@@ -3,63 +3,65 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
-String getLocalFilePath(
-    {required String baseUrl,
-    required String appName,
-    required String appVersion,
-    required bool translation,
-    required String baseDir}) {
-  String trimmedBaseUrl = baseUrl.split('/')[2];
+class DownloadHelper {
+  static String getLocalFilePath(
+      {required String baseUrl,
+      required String appName,
+      required String appVersion,
+      required bool translation,
+      required String baseDir}) {
+    String trimmedBaseUrl = baseUrl.split('/')[2];
 
-  if (translation)
-    return '$baseDir/translation/$trimmedBaseUrl/$appName/$appVersion';
-  else
-    return '$baseDir/images/$trimmedBaseUrl/$appName/$appVersion';
-}
-
-Future<String> getBaseDir() async {
-  return (await getApplicationDocumentsDirectory()).path;
-}
-
-Future<void> deleteOutdatedData(
-    {bool translation = true, required String baseUrl}) async {
-  String trimmedBaseUrl = baseUrl.split('/')[2];
-
-  Directory directory;
-
-  String baseDir = await getBaseDir();
-
-  String identifier;
-
-  if (translation) {
-    identifier = 'translation';
-  } else {
-    identifier = 'images';
+    if (translation)
+      return '$baseDir/translation/$trimmedBaseUrl/$appName/$appVersion';
+    else
+      return '$baseDir/images/$trimmedBaseUrl/$appName/$appVersion';
   }
 
-  directory = Directory('$baseDir/$identifier/');
+  static Future<String> getBaseDir() async {
+    return (await getApplicationDocumentsDirectory()).path;
+  }
 
-  if (directory.existsSync()) {
-    List<FileSystemEntity> fileSystemEntities = directory.listSync();
+  static Future<void> deleteOutdatedData(
+      {bool translation = true, required String baseUrl}) async {
+    String trimmedBaseUrl = baseUrl.split('/')[2];
 
-    for (final entity in fileSystemEntities) {
-      if (entity.path != '$baseDir/$identifier/$trimmedBaseUrl') {
-        Directory baseUrlDir = Directory(entity.path);
+    Directory directory;
 
-        baseUrlDir.deleteSync(recursive: true);
+    String baseDir = await getBaseDir();
+
+    String identifier;
+
+    if (translation) {
+      identifier = 'translation';
+    } else {
+      identifier = 'images';
+    }
+
+    directory = Directory('$baseDir/$identifier/');
+
+    if (directory.existsSync()) {
+      List<FileSystemEntity> fileSystemEntities = directory.listSync();
+
+      for (final entity in fileSystemEntities) {
+        if (entity.path != '$baseDir/$identifier/$trimmedBaseUrl') {
+          Directory baseUrlDir = Directory(entity.path);
+
+          baseUrlDir.deleteSync(recursive: true);
+        }
       }
     }
   }
-}
 
-Future<bool> isDownloadNeded(String dir) async {
-  if (kIsWeb) return true;
+  static Future<bool> isDownloadNeded(String dir) async {
+    if (kIsWeb) return true;
 
-  Directory directory = Directory(dir);
+    Directory directory = Directory(dir);
 
-  if (directory.existsSync()) {
-    return false;
+    if (directory.existsSync()) {
+      return false;
+    }
+
+    return true;
   }
-
-  return true;
 }

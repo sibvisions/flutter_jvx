@@ -202,7 +202,8 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     }
 
     if (!kIsWeb) {
-      getBaseDir().then((value) => appState.baseDirectory = value);
+      DownloadHelper.getBaseDir()
+          .then((value) => appState.baseDirectory = value);
     }
   }
 

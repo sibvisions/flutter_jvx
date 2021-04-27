@@ -31,7 +31,7 @@ class LoginBackground extends StatelessWidget {
       } else if (!kIsWeb) {
         return Image.file(
           File(
-              '${getLocalFilePath(baseUrl: appState.serverConfig!.baseUrl, appName: appState.serverConfig!.appName, appVersion: appState.applicationMetaData!.version, translation: false, baseDir: appState.baseDirectory)}${appState.applicationStyle!.loginStyle!.logo}'),
+              '${DownloadHelper.getLocalFilePath(baseUrl: appState.serverConfig!.baseUrl, appName: appState.serverConfig!.appName, appVersion: appState.applicationMetaData!.version, translation: false, baseDir: appState.baseDirectory)}${appState.applicationStyle!.loginStyle!.logo}'),
           fit: BoxFit.fitHeight,
         );
       } else {
@@ -63,12 +63,10 @@ class LoginBackground extends StatelessWidget {
       if (file.existsSync()) {
         return FileImage(file);
       } else {
-        return AssetImage(
-            getPackageString(appState, 'assets/images/logo.png'));
+        return AssetImage(getPackageString(appState, 'assets/images/logo.png'));
       }
     } else {
-      return AssetImage(
-          getPackageString(appState, 'assets/images/logo.png'));
+      return AssetImage(getPackageString(appState, 'assets/images/logo.png'));
     }
   }
 

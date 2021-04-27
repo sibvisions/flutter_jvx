@@ -84,7 +84,7 @@ class ImageCellEditorModel extends CellEditorModel {
         defaultImage = Image.memory(
             base64Decode(this.appState.fileConfig.files[defaultImageName]!));
       } else {
-        final path = getLocalFilePath(
+        final path = DownloadHelper.getLocalFilePath(
             baseUrl: appState.serverConfig!.baseUrl,
             appName: appState.serverConfig!.appName,
             appVersion: appState.applicationMetaData!.version,

@@ -593,7 +593,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
         return Scaffold(
           key: scaffoldKey,
-          appBar: orientation == Orientation.portrait || !kIsWeb
+          appBar: shouldShowAppBar(appState, orientation)
               ? AppBar(
                   actionsIconTheme: IconThemeData(
                       color: Theme.of(context).primaryColor.textColor()),
@@ -622,7 +622,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                 )
               : null,
           endDrawer: widget.configuration.drawer,
-          body: orientation == Orientation.landscape && kIsWeb
+          body: shouldShowNavigationBar(appState, orientation)
               ? NavigationBarWidget(
                   appState: appState,
                   menuItems: menuItems,
@@ -637,5 +637,28 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         );
       },
     );
+  }
+
+  bool shouldShowNavigationBar(AppState appState, Orientation orientation) {
+    if (appState.mobileOnly) return false;
+
+    if (appState.webOnly) return true;
+
+    if (kIsWeb && orientation == Orientation.landscape)
+      return true;
+    else
+      return false;
+  }
+
+  bool shouldShowAppBar(AppState appState, Orientation orientation) {
+    if (appState.mobileOnly) return true;
+
+    if (appState.webOnly) return false;
+
+    if (!kIsWeb) return true;
+
+    if (kIsWeb && orientation == Orientation.portrait) return true;
+
+    return false;
   }
 }
