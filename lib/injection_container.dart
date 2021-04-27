@@ -4,8 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/models/api/data_source.dart';
 import 'src/models/api/remote_data_source_impl.dart';
-import 'src/models/repository/api_repository.dart';
-import 'src/models/repository/api_repository_impl.dart';
 import 'src/models/state/app_state.dart';
 import 'src/services/local/local_database/i_offline_database_provider.dart';
 import 'src/services/local/local_database/offline_database.dart';
@@ -15,10 +13,12 @@ import 'src/services/remote/cubit/api_cubit.dart';
 import 'src/services/remote/network_info/network_info.dart';
 import 'src/services/remote/rest/http_client.dart';
 import 'src/services/remote/rest/rest_client.dart';
+import 'src/services/repository/api_repository.dart';
+import 'src/services/repository/api_repository_impl.dart';
 import 'src/util/theme/theme_manager.dart';
 
 /// Dependency locator instance.
-/// 
+///
 /// Usage:
 /// ````dart
 /// TypeOfInstance instance = sl<TypeOfInstance>();
@@ -26,7 +26,7 @@ import 'src/util/theme/theme_manager.dart';
 final sl = GetIt.instance;
 
 /// Initializes all dependencies for the application.
-/// 
+///
 /// If needed register instances like this:
 /// ````dart
 /// sl.registerLazySingleton<TypeOfInstance>(() => yourInstance);

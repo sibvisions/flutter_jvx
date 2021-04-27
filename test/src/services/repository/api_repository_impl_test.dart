@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/models/api/data_source.dart';
 import 'package:flutterclient/src/models/api/requests/download_translation_request.dart';
-import 'package:flutterclient/src/models/repository/api_repository_impl.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
 import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
 import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
@@ -56,7 +55,8 @@ void main() {
 
       final tBodyBytes = Uint8List.fromList('test'.codeUnits);
 
-      test('should call decodeBytes and data source when getting valid data', () async {
+      test('should call decodeBytes and data source when getting valid data',
+          () async {
         when(mockDataSource.downloadTranslation(tRequest))
             .thenAnswer((_) async => ApiResponse(request: tRequest, objects: [
                   DownloadResponseObject(

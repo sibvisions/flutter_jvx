@@ -1,5 +1,6 @@
 import 'package:flutterclient/src/models/api/response_object.dart';
 
+/// Standard wrapper for errors and exceptions.
 class Failure extends ResponseObject {
   final String? message;
   final String? details;
@@ -19,6 +20,7 @@ class Failure extends ResponseObject {
         super.fromJson(map: map);
 }
 
+/// This [Failure] handles all server related errors and exceptions.
 class ServerFailure extends Failure {
   ServerFailure(
       {required String message,
@@ -30,6 +32,7 @@ class ServerFailure extends Failure {
   ServerFailure.fromJson(Map<String, dynamic> map) : super.fromJson(map: map);
 }
 
+/// This [Failure] handles all cache related errors and exceptions.
 class CacheFailure extends Failure {
   CacheFailure(
       {required String message,

@@ -44,7 +44,6 @@ import '../../../models/api/response_objects/restart_response_object.dart';
 import '../../../models/api/response_objects/show_document_response_object.dart';
 import '../../../models/api/response_objects/upload_action_response_object.dart';
 import '../../../models/api/response_objects/user_data_response_object.dart';
-import '../../../models/repository/api_repository.dart';
 import '../../../models/state/app_state.dart';
 import '../../local/shared_preferences/shared_preferences_manager.dart';
 import '../network_info/network_info.dart';

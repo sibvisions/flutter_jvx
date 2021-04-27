@@ -3,11 +3,11 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutterclient/src/ui/util/error/error_handler.dart';
 import 'package:http/http.dart' as http;
 
 import '../../services/remote/cubit/api_cubit.dart';
 import '../../services/remote/rest/rest_client.dart';
+import '../../ui/util/error/error_handler.dart';
 import '../state/app_state.dart';
 import 'data_source.dart';
 import 'errors/failure.dart';

@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutterclient/src/services/repository/api_repository.dart';
+import 'package:flutterclient/src/services/repository/api_repository_impl.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/data_source.dart';
@@ -32,8 +34,6 @@ import '../../../models/api/response_objects/response_data/data/filter.dart';
 import '../../../models/api/response_objects/response_data/data/filter_condition.dart';
 import '../../../models/api/response_objects/response_data/meta_data/data_book_meta_data.dart';
 import '../../../models/api/response_objects/user_data_response_object.dart';
-import '../../../models/repository/api_repository.dart';
-import '../../../models/repository/api_repository_impl.dart';
 import '../../../models/state/app_state.dart';
 import '../../../ui/screen/core/so_component_data.dart';
 import '../../../ui/screen/core/so_screen.dart';

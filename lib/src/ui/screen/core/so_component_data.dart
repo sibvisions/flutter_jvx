@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/requests/data/delete_record_request.dart';
-import 'package:flutterclient/src/models/repository/api_repository.dart';
+import '../../../models/api/requests/data/delete_record_request.dart';
+import '../../../services/repository/api_repository.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/errors/failure.dart';

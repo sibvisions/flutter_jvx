@@ -1,3 +1,4 @@
+/// An enum used to identify all response object sent from the server.
 enum ResponseObjectType {
   APPLICATIONMETADATA,
   APPLICATION_STYLE,
@@ -20,6 +21,7 @@ enum ResponseObjectType {
   APPLICATIONPARAMETERS
 }
 
+/// Method to get the response object type from a string.
 ResponseObjectType? getResponseObjectTypeEnum(String responseObjectType) {
   if (responseObjectType == 'message.error' ||
       responseObjectType == 'message.information') {
