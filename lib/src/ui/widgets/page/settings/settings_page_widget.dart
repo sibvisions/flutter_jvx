@@ -243,6 +243,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
                     widget.manager.appName = appName;
                     widget.manager.baseUrl = baseUrl;
+
                     if (widget.manager.language != language) {
                       widget.manager.language = language;
                     }
@@ -253,6 +254,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                           ServerConfig(baseUrl: baseUrl!, appName: appName!);
                     }
 
+                    widget.appState.serverConfig!.appName = appName!;
+                    widget.appState.serverConfig!.baseUrl = baseUrl!;
                     widget.appState.serverConfig!.username = username;
                     widget.appState.serverConfig!.password = password;
 

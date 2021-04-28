@@ -58,7 +58,7 @@ class QRCodeFormatter {
       if (_checkQRString(prop)) {
         if (prop.contains('URL')) {
           properties['URL'] = _getStringFromQRData(prop);
-        } else if (prop.contains('APPNAME') || prop.contains('Application')) {
+        } else if (prop.contains('APPNAME') || prop.contains('Application') || prop.contains('Applikation')) {
           properties['APPNAME'] = _getStringFromQRData(prop);
         } else if (prop.contains('USER')) {
           properties['USER'] = _getStringFromQRData(prop);
