@@ -166,8 +166,12 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return SizedBox(
-          height: constraints.maxHeight != double.infinity ? constraints.maxHeight : 0,
-          width: MediaQuery.of(context).size.width,
+          height: constraints.maxHeight != double.infinity
+              ? constraints.maxHeight
+              : MediaQuery.of(context).size.height,
+          width: constraints.maxWidth != double.infinity
+              ? constraints.maxWidth
+              : MediaQuery.of(context).size.width - 20,
           child: Column(
             children: [
               TabBar(
