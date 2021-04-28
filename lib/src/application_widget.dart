@@ -89,14 +89,14 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     // If the app is started the first time
     // and the AppConfig defined has an initial ServerConfig,
     // the application will save them in the SharedPreferences
-    if (manager.initialStart &&
-        appState.appConfig != null &&
-        appState.appConfig!.initialConfig != null) {
+    if (manager.initialStart) {
       manager.initialStart = false;
-      return appState.appConfig!.initialConfig;
-    }
 
-    manager.initialStart = false;
+      if (appState.appConfig != null &&
+          appState.appConfig!.initialConfig != null) {
+        return appState.appConfig!.initialConfig;
+      }
+    }
 
     if (widget.devConfig != null &&
         manager.loadConfig &&
@@ -215,10 +215,10 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
         future: appConfigFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            appState.appConfig = snapshot.data!;
+            if (appState.appConfig == null) {
+              appState.appConfig = snapshot.data!;
 
-            return RestartWidget(builder: (context) {
-              // When the app gets started or restarted the configs wil be overwritten.
+              // When the app gets started the configs wil be overwritten.
               appState.devConfig = widget.devConfig;
               appState.serverConfig = _getServerConfig(appState, manager);
 
@@ -227,7 +227,9 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                 manager.appName = appState.serverConfig!.appName;
                 manager.appMode = appState.serverConfig!.appMode;
               }
+            }
 
+            return RestartWidget(builder: (context) {
               // When ServerConfig is null the initial Route will be the Settings Route.
               if (appState.serverConfig == null ||
                   (appState.serverConfig!.baseUrl.isEmpty ||

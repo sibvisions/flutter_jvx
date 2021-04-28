@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -35,6 +37,8 @@ class _RunnableWidgetState extends State<RunnableWidget> {
           }
 
           if (snapshot.hasData) {
+            log('DevConfig loaded: \n\tBaseUrl: ${snapshot.data?.baseUrl}, \n\tAppname: ${snapshot.data?.appName},\n\tAppmode: ${snapshot.data?.appMode}');
+
             return ApplicationWidget(
               devConfig: snapshot.data,
             );
