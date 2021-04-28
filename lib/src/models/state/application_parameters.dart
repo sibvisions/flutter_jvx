@@ -13,8 +13,12 @@ class ApplicationParameters {
     return parameters[key];
   }
 
-  dynamic updateFromResponseObject(
+  void updateFromResponseObject(
       ApplicationParametersResponseObject appParameters) {
     parameters.addAll(appParameters.parameters!);
+  }
+
+  void updateFromMap({required Map<String, dynamic> map}) {
+    parameters.addAll(map);
   }
 }
