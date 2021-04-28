@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/login_request.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/routes.dart';
