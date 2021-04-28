@@ -173,16 +173,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     return baseUrl;
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    // Getting dependency injected instances
-    appState = sl<AppState>();
-    manager = sl<SharedPreferencesManager>();
-
-    appConfigFuture = _getAppConfig();
-
+  void _setAppState(AppState appState) {
     if (widget.widgetConfig != null) {
       appState.widgetConfig = widget.widgetConfig!;
     }
@@ -208,28 +199,33 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    appConfigFuture = _getAppConfig();
+
+    // Getting dependency injected instances
+    appState = sl<AppState>();
+    manager = sl<SharedPreferencesManager>();
+
+    _setAppState(appState);
+  }
+
+  @override
   Widget build(BuildContext context) {
     String initialRoute = '/';
 
-    return FutureBuilder<AppConfig>(
-        future: appConfigFuture,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            if (appState.appConfig == null) {
-              appState.appConfig = snapshot.data!;
+    return RestartWidget(builder: (context) {
+      return FutureBuilder<AppConfig>(
+          future: appConfigFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (appState.appConfig == null) {
+                appState.appConfig = snapshot.data!;
+              }
 
-              // When the app gets started the configs wil be overwritten.
-              appState.devConfig = widget.devConfig;
               appState.serverConfig = _getServerConfig(appState, manager);
 
-              if (appState.serverConfig != null) {
-                manager.baseUrl = appState.serverConfig!.baseUrl;
-                manager.appName = appState.serverConfig!.appName;
-                manager.appMode = appState.serverConfig!.appMode;
-              }
-            }
-
-            return RestartWidget(builder: (context) {
               // When ServerConfig is null the initial Route will be the Settings Route.
               if (appState.serverConfig == null ||
                   (appState.serverConfig!.baseUrl.isEmpty ||
@@ -272,10 +268,10 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                   ),
                 ),
               );
-            });
-          } else {
-            return Container();
-          }
-        });
+            } else {
+              return Container();
+            }
+          });
+    });
   }
 }

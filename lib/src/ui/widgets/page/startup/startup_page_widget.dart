@@ -150,29 +150,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _setLocalData() {
-    DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
-            baseUrl: widget.appState.serverConfig!.baseUrl,
-            appName: widget.appState.serverConfig!.appName,
-            appVersion: widget.appState.applicationMetaData!.version,
-            translation: true,
-            baseDir: widget.appState.baseDirectory))
-        .then((bool isNeeded) {
-      // If download is needed that means,
-      // that the server changed so all left over local data gets deleted.
-      if (isNeeded &&
-          widget.manager.appVersion !=
-              widget.appState.applicationMetaData?.version) {
-        widget.manager.sharedPreferences.clear();
-      }
-
-      if (widget.appState.applicationMetaData != null &&
-          widget.manager.appVersion !=
-              widget.appState.applicationMetaData?.version) {
-        widget.manager.previousAppVersion = widget.manager.appVersion;
-        widget.manager.appVersion =
-            widget.appState.applicationMetaData?.version;
-      }
-    });
+    if (widget.appState.applicationMetaData != null &&
+        widget.manager.appVersion !=
+            widget.appState.applicationMetaData?.version) {
+      widget.manager.previousAppVersion = widget.manager.appVersion;
+      widget.manager.appVersion = widget.appState.applicationMetaData?.version;
+    }
   }
 
   void _updateDataFromSystem() {

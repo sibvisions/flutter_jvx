@@ -1,7 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
+import 'package:flutterclient/src/models/state/application_parameters.dart';
 import 'package:flutterclient/src/util/app/qr_code_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -180,6 +180,85 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     }
   }
 
+  void _removeState(AppState appState, SharedPreferencesManager manager) {
+    appState.translationConfig = TranslationConfig();
+
+    appState.applicationMetaData = null;
+
+    appState.applicationStyle = null;
+
+    appState.currentMenuComponentId = null;
+
+    appState.fileConfig = FileConfig();
+
+    appState.menuResponseObject = MenuResponseObject(name: 'menu', entries: []);
+
+    appState.parameters = ApplicationParameters();
+
+    appState.userData = null;
+
+    manager.setSyncLoginData(username: null, password: null);
+
+    manager.possibleTranslations = null;
+
+    manager.applicationStyle = null;
+
+    manager.applicationStyleHash = null;
+
+    manager.appVersion = null;
+
+    manager.authKey = null;
+
+    manager.offlinePassword = null;
+
+    manager.offlineUsername = null;
+
+    manager.savedImages = null;
+    manager.userData = null;
+  }
+
+  void _changeServer(AppState appState, SharedPreferencesManager manager) {
+    manager.appName = appName;
+    manager.baseUrl = baseUrl;
+
+    appState.serverConfig!.appName = appName!;
+    appState.serverConfig!.baseUrl = baseUrl!;
+    appState.serverConfig!.username = username;
+    appState.serverConfig!.password = password;
+  }
+
+  void _saveSettings(BuildContext context) {
+    if (appName != null &&
+        appName!.isNotEmpty &&
+        baseUrl != null &&
+        baseUrl!.isNotEmpty) {
+      if (appName != widget.appState.serverConfig?.appName ||
+          baseUrl != widget.appState.serverConfig?.baseUrl) {
+        _removeState(widget.appState, widget.manager);
+
+        _changeServer(widget.appState, widget.manager);
+      }
+
+      if (widget.appState.serverConfig == null) {
+        widget.appState.serverConfig =
+            ServerConfig(baseUrl: baseUrl!, appName: appName!);
+      }
+
+      if (widget.manager.language != language) {
+        widget.manager.language = language;
+      }
+
+      widget.manager.picSize = picSize;
+
+      widget.manager.loadConfig = false;
+
+      RestartWidget.restart(context);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please fill out all fields!')));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -230,43 +309,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         bottomNavigationBar: !isDialogOpen
             ? SettingsBottomAppBar(
                 canPop: widget.canPop,
-                onSave: () {
-                  if (appName != null &&
-                      appName!.isNotEmpty &&
-                      baseUrl != null &&
-                      baseUrl!.isNotEmpty) {
-                    if (appName != widget.appState.serverConfig?.appName ||
-                        baseUrl != widget.appState.serverConfig?.baseUrl) {
-                      widget.manager
-                          .setSyncLoginData(username: null, password: null);
-                    }
-
-                    widget.manager.appName = appName;
-                    widget.manager.baseUrl = baseUrl;
-
-                    if (widget.manager.language != language) {
-                      widget.manager.language = language;
-                    }
-                    widget.manager.picSize = picSize;
-
-                    if (widget.appState.serverConfig == null) {
-                      widget.appState.serverConfig =
-                          ServerConfig(baseUrl: baseUrl!, appName: appName!);
-                    }
-
-                    widget.appState.serverConfig!.appName = appName!;
-                    widget.appState.serverConfig!.baseUrl = baseUrl!;
-                    widget.appState.serverConfig!.username = username;
-                    widget.appState.serverConfig!.password = password;
-
-                    widget.manager.loadConfig = false;
-
-                    RestartWidget.restart(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please fill out all fields!')));
-                  }
-                },
+                onSave: () => _saveSettings(context),
               )
             : null,
         body: SingleChildScrollView(
