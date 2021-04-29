@@ -32,7 +32,7 @@ import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../../util/app/listener/listener.dart';
 import '../../../../util/app/text_utils.dart';
 import '../../../screen/core/so_screen.dart';
-import '../../../util/error/custom_bloc_listener.dart';
+import '../../../util/custom_cubit_listener.dart';
 import '../../dialog/file_picker_dialog.dart';
 import '../../drawer/menu_drawer_widget.dart';
 

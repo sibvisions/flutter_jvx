@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../models/api/errors/failure.dart';
-import '../../../models/api/response_objects/application_parameters_response_object.dart';
-import '../../../models/api/response_objects/menu/menu_response_object.dart';
-import '../../../models/api/response_objects/restart_response_object.dart';
-import '../../../models/api/response_objects/user_data_response_object.dart';
-import '../../../models/state/app_state.dart';
-import '../../../services/remote/cubit/api_cubit.dart';
-import '../../widgets/dialog/loading_indicator_dialog.dart';
-import '../../widgets/dialog/show_restart_dialog.dart';
-import 'error_handler.dart';
+import '../../models/api/errors/failure.dart';
+import '../../models/api/response_objects/application_parameters_response_object.dart';
+import '../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../models/api/response_objects/restart_response_object.dart';
+import '../../models/api/response_objects/user_data_response_object.dart';
+import '../../models/state/app_state.dart';
+import '../../services/remote/cubit/api_cubit.dart';
+import '../widgets/dialog/loading_indicator_dialog.dart';
+import '../widgets/dialog/show_restart_dialog.dart';
+import 'error/error_handler.dart';
 
 class CustomCubitListener extends StatelessWidget {
   final Function(BuildContext, ApiState) listener;
@@ -77,7 +77,9 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (modalRoute.isCurrent) listener(context, state);
+        if (modalRoute.isCurrent ||
+            (state is ApiResponse && state.hasDataObject))
+          listener(context, state);
       },
       child: child,
     );
