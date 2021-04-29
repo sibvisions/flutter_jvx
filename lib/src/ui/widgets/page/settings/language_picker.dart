@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutterclient/src/util/translation/app_localizations.dart';
 
-showLanguagePicker(BuildContext context, GlobalKey<ScaffoldState> key,
-    List<String> possibleLanguages, Function(String?) onLanguageChosen) {
+showLanguagePicker(
+    BuildContext context,
+    GlobalKey<ScaffoldState> key,
+    List<String> possibleLanguages,
+    Function(String?) onLanguageChosen,
+    int selected) {
   Picker picker = Picker(
+      selecteds: [selected],
       confirmText: AppLocalizations.of(context)!.text('Confirm'),
       confirmTextStyle: TextStyle(fontSize: 14),
       cancel: Padding(

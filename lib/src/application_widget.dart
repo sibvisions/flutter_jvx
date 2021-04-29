@@ -94,6 +94,10 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
 
       if (appState.appConfig != null &&
           appState.appConfig!.initialConfig != null) {
+        manager.baseUrl = appState.appConfig?.initialConfig?.baseUrl;
+        manager.appName = appState.appConfig?.initialConfig?.appName;
+        manager.appMode = appState.appConfig?.initialConfig?.appMode ?? 'full';
+
         return appState.appConfig!.initialConfig;
       }
     }

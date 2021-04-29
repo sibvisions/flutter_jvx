@@ -108,6 +108,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
       List<String> langsToChoose = <String>[];
 
+      int selected = 0;
+
       for (final lang in widget
           .appState.translationConfig.possibleTranslations.keys
           .toList()) {
@@ -120,6 +122,13 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
           if (toAdd.isNotEmpty) {
             langsToChoose.add(toAdd);
+
+            if (toAdd == widget.appState.language?.language) {
+              selected = widget
+                  .appState.translationConfig.possibleTranslations.keys
+                  .toList()
+                  .indexOf(lang);
+            }
           }
         }
       }
@@ -133,7 +142,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
 
           isDialogOpen = false;
         });
-      });
+      }, selected);
     }
   }
 
