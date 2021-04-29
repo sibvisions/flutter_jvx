@@ -30,7 +30,7 @@ import '../../../../util/device_info/device_info.dart';
 import '../../../../util/download/download_helper.dart';
 import '../../../../util/theme/theme_manager.dart';
 import '../../../../util/translation/app_localizations.dart';
-import '../../../util/error/custom_bloc_listener.dart';
+import '../../../util/custom_cubit_listener.dart';
 
 class StartupPageWidget extends StatefulWidget {
   final AppState appState;

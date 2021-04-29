@@ -10,7 +10,7 @@ import '../../../../models/state/routes/arguments/menu_page_arguments.dart';
 import '../../../../models/state/routes/routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
-import '../../../util/error/custom_bloc_listener.dart';
+import '../../../util/custom_cubit_listener.dart';
 import 'login_background.dart';
 import 'login_widgets.dart';
 
