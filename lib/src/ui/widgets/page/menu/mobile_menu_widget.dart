@@ -127,6 +127,8 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
           bool shouldSync = await showSyncDialog(context);
 
           if (shouldSync) {
+            widget.appState.isOffline = false;
+
             bool syncSuccess =
                 await sl<IOfflineDatabaseProvider>().syncOnline(context);
 
@@ -143,6 +145,8 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
               widget.cubit.menu(MenuRequest(
                   clientId: widget.appState.applicationMetaData!.clientId));
             } else {
+              widget.appState.isOffline = true;
+
               if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase)
                       .responseError !=
                   null) {
@@ -160,6 +164,8 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
         key: scaffoldKey,
         endDrawer: MenuDrawerWidget(
@@ -173,11 +179,10 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
           title: '',
         ),
         appBar: AppBar(
-          actionsIconTheme:
-              IconThemeData(color: Theme.of(context).primaryColor.textColor()),
+          actionsIconTheme: IconThemeData(color: primaryColor.textColor()),
           title: Text(
             AppLocalizations.of(context)!.text('Menu'),
-            style: TextStyle(color: Theme.of(context).primaryColor.textColor()),
+            style: TextStyle(color: primaryColor.textColor()),
           ),
           actions: [
             if (widget.appState.isOffline) _getOfflineIcon(),

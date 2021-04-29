@@ -119,7 +119,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
         if (_pages.isEmpty) {
           _screens.removeLast();
-          Navigator.of(context).pop();
+          Navigator.of(context)
+              .popUntil((route) => route.settings.name == Routes.menu);
         }
       } else if (state.request is CloseScreenRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
@@ -127,7 +128,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
         if (_pages.isEmpty) {
           _screens.removeLast();
-          Navigator.of(context).pop();
+          Navigator.of(context)
+              .popUntil((route) => route.settings.name == Routes.menu);
         }
       }
 
@@ -147,7 +149,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         });
 
         if (_pages.isEmpty) {
-          Navigator.of(context).pop();
+          Navigator.of(context)
+              .popUntil((route) => route.settings.name == Routes.menu);
         }
       }
 
@@ -252,8 +255,10 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   void _onPopPage(String componentId) {
     NavigationRequest request = NavigationRequest(
-        clientId: widget.appState.applicationMetaData!.clientId,
-        componentId: (_pages.last.child as SoScreen).configuration.componentId);
+        clientId: widget.appState.applicationMetaData?.clientId ?? '',
+        componentId: _pages.isNotEmpty
+            ? (_pages.last.child as SoScreen).configuration.componentId
+            : '');
 
     sl<ApiCubit>().navigation(request);
   }
@@ -411,8 +416,9 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
                           return false;
                         case OpenScreenPagePopStyle.REQUEST:
                           NavigationRequest request = NavigationRequest(
-                              clientId:
-                                  widget.appState.applicationMetaData!.clientId,
+                              clientId: widget
+                                      .appState.applicationMetaData?.clientId ??
+                                  '',
                               componentId: (_pages.last.child as SoScreen)
                                   .configuration
                                   .componentId);

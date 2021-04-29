@@ -557,6 +557,33 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     }
   }
 
+  AppBar getDefaultAppBar() {
+    return AppBar(
+      actionsIconTheme:
+          IconThemeData(color: Theme.of(context).primaryColor.textColor()),
+      title: Text(
+        '${widget.configuration.screenTitle}',
+        style: TextStyle(color: Theme.of(context).primaryColor.textColor()),
+      ),
+      leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).primaryColor.textColor(),
+          ),
+          onPressed: () {
+            widget.configuration.onPopPage!(widget.configuration.componentId);
+          }),
+      actions: [
+        IconButton(
+            icon: FaIcon(FontAwesomeIcons.ellipsisV),
+            onPressed: () {
+              if (scaffoldKey.currentState != null)
+                scaffoldKey.currentState!.openEndDrawer();
+            }),
+      ],
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -594,32 +621,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         return Scaffold(
           key: scaffoldKey,
           appBar: shouldShowAppBar(appState, orientation)
-              ? AppBar(
-                  actionsIconTheme: IconThemeData(
-                      color: Theme.of(context).primaryColor.textColor()),
-                  title: Text(
-                    '${widget.configuration.screenTitle}',
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.textColor()),
-                  ),
-                  leading: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Theme.of(context).primaryColor.textColor(),
-                      ),
-                      onPressed: () {
-                        widget.configuration
-                            .onPopPage!(widget.configuration.componentId);
-                      }),
-                  actions: [
-                    IconButton(
-                        icon: FaIcon(FontAwesomeIcons.ellipsisV),
-                        onPressed: () {
-                          if (scaffoldKey.currentState != null)
-                            scaffoldKey.currentState!.openEndDrawer();
-                        }),
-                  ],
-                )
+              ? getDefaultAppBar()
               : null,
           endDrawer: widget.configuration.drawer,
           body: shouldShowNavigationBar(appState, orientation)

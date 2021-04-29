@@ -138,6 +138,18 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
       bloc: sl<ApiCubit>(),
       listener: (context, state) async {
         if (state is ApiResponse) {
+          if (state.hasObject<MenuResponseObject>()) {
+            widget.appState.menuResponseObject =
+                state.getObjectByType<MenuResponseObject>()!;
+
+            setState(() {
+              _menuItems = widget.appState.screenManager
+                  .onMenu(
+                      SoMenuManager(widget.appState.menuResponseObject.entries))
+                  .menuItems;
+            });
+          }
+
           if (state.request is LogoutRequest) {
             Navigator.of(context).pushReplacementNamed(Routes.login,
                 arguments: LoginPageArguments(
@@ -155,16 +167,26 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
                     .configuration
                     .value = state;
 
-                Navigator.of(context).pushNamed(Routes.openScreen,
-                    arguments: OpenScreenPageArguments(
-                        screen: widget.appState.screenManager.findScreen(
-                            (state.request as OpenScreenRequest)
-                                .componentId)!));
+                Navigator.of(context)
+                    .pushNamed(Routes.openScreen,
+                        arguments: OpenScreenPageArguments(
+                            screen: widget.appState.screenManager.findScreen(
+                                (state.request as OpenScreenRequest)
+                                    .componentId)!))
+                    .then((_) => setState(() {
+                          widget.appState.screenManager
+                              .onMenu(SoMenuManager(_menuItems));
+                        }));
               } else {
-                Navigator.of(context).pushNamed(Routes.openScreen,
-                    arguments: OpenScreenPageArguments(
-                        screen: widget.appState.screenManager
-                            .createScreen(response: state)));
+                Navigator.of(context)
+                    .pushNamed(Routes.openScreen,
+                        arguments: OpenScreenPageArguments(
+                            screen: widget.appState.screenManager
+                                .createScreen(response: state)))
+                    .then((_) => setState(() {
+                          widget.appState.screenManager
+                              .onMenu(SoMenuManager(_menuItems));
+                        }));
               }
             }
           }

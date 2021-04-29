@@ -3,6 +3,7 @@ import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dar
 import 'package:flutterclient/src/models/state/routes/arguments/login_page_arguments.dart';
 import 'package:flutterclient/src/models/state/routes/arguments/menu_page_arguments.dart';
 import 'package:flutterclient/src/models/state/routes/routes.dart';
+import 'package:flutterclient/src/util/download/download_helper.dart';
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/application_style/application_style_response_object.dart';
 import '../../../../models/api/response_objects/language_response_object.dart';
@@ -39,11 +40,14 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
     if (appStyle != null) {
       widget.appState.applicationStyle = appStyle;
 
-      sl<ThemeManager>().value = ThemeData(
-        primaryColor: widget.appState.applicationStyle!.themeColor,
-        primarySwatch: getColorFromAppStyle(widget.appState.applicationStyle!),
-        brightness: Brightness.light,
-      );
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        sl<ThemeManager>().value = ThemeData(
+          primaryColor: widget.appState.applicationStyle!.themeColor,
+          primarySwatch:
+              getColorFromAppStyle(widget.appState.applicationStyle!),
+          brightness: Brightness.light,
+        );
+      });
     }
 
     widget.appState.language = LanguageResponseObject(
@@ -68,8 +72,10 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
           return Locale('en');
       }));
 
-      sl<SupportedLocaleManager>().value =
-          widget.appState.translationConfig.supportedLocales;
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        sl<SupportedLocaleManager>().value =
+            widget.appState.translationConfig.supportedLocales;
+      });
     }
 
     UserDataResponseObject? userData = widget.manager.userData;
@@ -82,11 +88,15 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
   void _setAppState() {
     widget.appState.isOffline = widget.manager.isOffline;
 
-    final path = widget.appState.baseDirectory + '/offlineDB.db';
+    DownloadHelper.getBaseDir().then((value) {
+      widget.appState.baseDirectory = value;
 
-    sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+      final path = widget.appState.baseDirectory + '/offlineDB.db';
 
-    _checkForLogin();
+      sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
+
+      _checkForLogin();
+    });
   }
 
   void _checkForLogin() {
