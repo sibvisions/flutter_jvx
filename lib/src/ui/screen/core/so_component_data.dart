@@ -404,7 +404,8 @@ class SoComponentData {
       fetch.rowCount = 1;
     } else if (reload == -1 && rowCountNeeded == -1) {
       fetch.fromRow = 0;
-      fetch.rowCount = rowCountNeeded - data!.records.length;
+      fetch.rowCount =
+          rowCountNeeded - (data != null ? data!.records.length : 0);
     } else if (data != null &&
         data!.isAllFetched != null &&
         !data!.isAllFetched!) {
