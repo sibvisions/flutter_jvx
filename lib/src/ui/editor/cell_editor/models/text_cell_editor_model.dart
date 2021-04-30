@@ -8,6 +8,8 @@ import 'cell_editor_model.dart';
 class TextCellEditorModel extends CellEditorModel {
   String? dateFormat;
   bool multiLine = false;
+  int columns = 10;
+  int rows = 4;
   double iconSize = 24;
   EdgeInsets textPadding = EdgeInsets.only(left: 12);
   EdgeInsets iconPadding = EdgeInsets.only(right: 8);
@@ -29,6 +31,11 @@ class TextCellEditorModel extends CellEditorModel {
             .getProperty<String>(CellEditorProperty.CONTENT_TYPE, null)
             ?.contains('password') ??
         false;
+
+    columns = cellEditor.getProperty<int>(CellEditorProperty.COLUMNS, null) ??
+        columns;
+
+    rows = cellEditor.getProperty<int>(CellEditorProperty.ROWS, null) ?? rows;
   }
 
   @override
@@ -40,21 +47,11 @@ class TextCellEditorModel extends CellEditorModel {
   @override
   get preferredSize {
     double iconWidth = editable ? iconSize + iconPadding.horizontal : 0;
-    String text = TextUtils.averageCharactersTextField;
 
-    if (!multiLine &&
-        cellEditorValue != null &&
-        cellEditorValue.toString().length > 0) {
-      text = cellEditorValue;
-    }
-
-    double width =
-        TextUtils.getTextWidth(text, fontStyle, textScaleFactor).toDouble();
-
-    if (multiLine)
-      return Size(18 + width + iconWidth + textPadding.horizontal, 100);
-    else
-      return Size(18 + width + iconWidth + textPadding.horizontal, 50);
+    Size size = TextUtils.getTextFieldSize(
+        cellEditorValue, columns, rows, multiLine, fontStyle, textScaleFactor);
+    return Size(
+        18 + size.width + iconWidth + textPadding.horizontal, size.height + 31);
   }
 
   @override

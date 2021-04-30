@@ -7,7 +7,8 @@ import 'editable_component_model.dart';
 class TextComponentModel extends EditableComponentModel {
   bool eventAction = false;
   bool? border;
-  int? columns;
+  int columns = 10;
+  int rows = 4;
   bool valueChanged = false;
   double iconSize = 24;
   EdgeInsets textPadding = EdgeInsets.fromLTRB(12, 15, 12, 5);
@@ -27,7 +28,10 @@ class TextComponentModel extends EditableComponentModel {
         ComponentProperty.EVENT_ACTION, eventAction)!;
     border = changedComponent.getProperty<bool>(ComponentProperty.BORDER, true);
     columns =
-        changedComponent.getProperty<int>(ComponentProperty.COLUMNS, columns);
+        changedComponent.getProperty<int>(ComponentProperty.COLUMNS, columns) ??
+            columns;
+    rows = changedComponent.getProperty<int>(ComponentProperty.COLUMNS, rows) ??
+        rows;
     placeholder = changedComponent.getProperty<String>(
         ComponentProperty.PLACEHOLDER, placeholder)!;
     super.updateProperties(context, changedComponent);

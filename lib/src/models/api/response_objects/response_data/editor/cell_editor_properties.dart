@@ -28,6 +28,8 @@ enum CellEditorProperty {
   SIGNED,
   PRESERVE_ASPECT_RATIO,
   TABLE_READONLY,
+  COLUMNS,
+  ROWS
 }
 
 class CellEditorProperties {

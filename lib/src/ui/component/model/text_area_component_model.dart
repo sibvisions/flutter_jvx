@@ -19,18 +19,10 @@ class TextAreaComponentModel extends TextComponentModel {
   @override
   get preferredSize {
     double iconWidth = this.enabled ? iconSize + iconPadding.vertical : 0;
-
-    double width = TextUtils.getTextWidth(text, fontStyle, textScaleFactor);
-
-    if (columns != null) {
-      width = TextUtils.getTextWidth(
-              TextUtils.getCharactersWithLength(columns!),
-              fontStyle,
-              textScaleFactor)
-          .toDouble();
-    }
-
-    return Size(width + iconWidth + textPadding.horizontal, 50);
+    Size size = TextUtils.getTextFieldSize(
+        text, columns, rows, true, fontStyle, textScaleFactor);
+    return Size(
+        18 + size.width + iconWidth + textPadding.horizontal, size.height + 31);
   }
 
   @override
