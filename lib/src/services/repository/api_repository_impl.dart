@@ -189,13 +189,9 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<ApiState> navigation(NavigationRequest request) async {
-    if (!appState.isOffline) {
-      return await _checkConnection(request, () {
-        return dataSource.navigation(request);
-      });
-    } else {
-      return ApiResponse(request: request, objects: []);
-    }
+    return await _checkConnection(request, () {
+      return dataSource.navigation(request);
+    });
   }
 
   @override
@@ -278,26 +274,22 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<List<ApiState>> data(DataRequest request) async {
-    if (!appState.isOffline) {
-      List<ApiState> states = <ApiState>[];
+    List<ApiState> states = <ApiState>[];
 
-      ApiState state = await _checkConnection(request, () {
-        return dataSource.data(request);
-      });
+    ApiState state = await _checkConnection(request, () {
+      return dataSource.data(request);
+    });
 
-      states.add(state);
+    states.add(state);
 
-      if (request is InsertRecordRequest &&
-          request.setValues != null &&
-          state is ApiResponse &&
-          !state.hasError) {
-        states.add(await dataSource.data(request.setValues as DataRequest));
-      }
-
-      return states;
-    } else {
-      return [await offlineDataSource.request(request)];
+    if (request is InsertRecordRequest &&
+        request.setValues != null &&
+        state is ApiResponse &&
+        !state.hasError) {
+      states.add(await dataSource.data(request.setValues as DataRequest));
     }
+
+    return states;
   }
 
   Future<ApiError?> handleDownload(ApiResponse response) async {
@@ -422,6 +414,10 @@ class ApiRepositoryImpl implements ApiRepository {
 
   _checkConnection(Request request, Future Function() onConnection) async {
     if (!kIsWeb) {
+      if (appState.isOffline) {
+        return await offlineDataSource.request(request);
+      }
+
       if (!(await networkInfo.isConnected)) {
         return ApiError(
             failure: ServerFailure(
@@ -429,8 +425,6 @@ class ApiRepositoryImpl implements ApiRepository {
                 message: 'Could not ping server!',
                 details: '',
                 name: ErrorHandler.connectionError));
-      } else if (appState.isOffline) {
-        return await offlineDataSource.request(request);
       }
     }
 

@@ -5,6 +5,8 @@ import 'package:flutterclient/src/models/api/requests/close_screen_request.dart'
 import 'package:flutterclient/src/models/api/requests/navigation_request.dart';
 import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
+import 'package:flutterclient/src/models/state/routes/pop_arguments/open_screen_page_pop_style.dart';
+import 'package:flutterclient/src/models/state/routes/routes.dart';
 import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
 import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
 import 'package:flutterclient/src/ui/util/inherited_widgets/shared_preferences_provider.dart';
@@ -64,9 +66,10 @@ mixin SoDataScreen {
           MetaDataRequest meta = MetaDataRequest(
               dataProvider: d.dataProvider,
               clientId: AppStateProvider.of(context)!
-                  .appState
-                  .applicationMetaData!
-                  .clientId);
+                      .appState
+                      .applicationMetaData
+                      ?.clientId ??
+                  '');
 
           sl<ApiCubit>().data(meta);
         }
@@ -159,6 +162,7 @@ mixin SoDataScreen {
 
     Future.delayed(const Duration(milliseconds: 100), () {
       PressButtonRequest pressButtonRequest = PressButtonRequest(
+          classNameEventSourceRef: classNameEventSourceRef,
           clientId: AppStateProvider.of(context)!
               .appState
               .applicationMetaData!
@@ -196,6 +200,8 @@ mixin SoDataScreen {
   }
 
   void goOffline(BuildContext context, ApiResponse response) async {
+    final appState = AppStateProvider.of(context)!.appState;
+
     if (response.hasDataProviderChanged) {
       for (final dpc in response.getAllObjectsByType<DataproviderChanged>()) {
         getComponentData(dpc.dataProvider!);
@@ -211,11 +217,12 @@ mixin SoDataScreen {
 
     try {
       if (!response.hasError) {
-        WidgetsBinding.instance!
-            .addPostFrameCallback((_) => showLinearProgressDialog(context));
+        // WidgetsBinding.instance!
+        //     .addPostFrameCallback((_) => showLinearProgressDialog(context));
 
-        String path = AppStateProvider.of(context)!.appState.baseDirectory +
-            '/offlineDB.db';
+        showLinearProgressDialog(context);
+
+        String path = appState.baseDirectory + '/offlineDB.db';
 
         bool importSuccess =
             await sl<IOfflineDatabaseProvider>().openCreateDatabase(path);
@@ -227,8 +234,11 @@ mixin SoDataScreen {
 
         if ((sl<IOfflineDatabaseProvider>() as OfflineDatabase).responseError !=
             null) {
-          WidgetsBinding.instance!
-              .addPostFrameCallback((_) => hideLinearProgressDialog(context));
+          // WidgetsBinding.instance!
+          //     .addPostFrameCallback((_) => hideLinearProgressDialog(context));
+
+          hideLinearProgressDialog(context);
+
           await showOfflineError(
               context,
               (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
@@ -237,11 +247,12 @@ mixin SoDataScreen {
           await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
               .cleanupDatabase();
         } else if (importSuccess) {
-          WidgetsBinding.instance!
-              .addPostFrameCallback((_) => hideLinearProgressDialog(context));
+          // WidgetsBinding.instance!
+          //     .addPostFrameCallback((_) => hideLinearProgressDialog(context));
+
+          hideLinearProgressDialog(context);
 
           SharedPreferencesProvider.of(context)!.manager.isOffline = true;
-          AppState appState = AppStateProvider.of(context)!.appState;
 
           appState.isOffline = true;
 

@@ -272,8 +272,7 @@ class SoComponentData {
       dataProvider: dataProvider,
       value: null,
       editorComponentId: null,
-      clientId:
-          AppStateProvider.of(context)!.appState.applicationMetaData!.clientId,
+      clientId: sl<AppState>().applicationMetaData?.clientId ?? '',
       reload: (reload == -1),
       condition: filterCondition,
     );

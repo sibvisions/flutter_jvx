@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../models/state/routes/routes.dart';
 import '../../models/api/errors/failure.dart';
 import '../../models/api/response_objects/application_parameters_response_object.dart';
 import '../../models/api/response_objects/menu/menu_response_object.dart';
@@ -78,7 +79,7 @@ class CustomCubitListener extends StatelessWidget {
         }
 
         if (modalRoute.isCurrent ||
-            (state is ApiResponse && state.hasDataObject))
+            modalRoute.settings.name == Routes.openScreen)
           listener(context, state);
       },
       child: child,

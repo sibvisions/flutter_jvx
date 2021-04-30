@@ -46,6 +46,11 @@ class CustomScreenState extends SoScreenState<CustomScreen> {
     this.footer = footer;
   }
 
+  @override
+  AppBar getDefaultAppBar() {
+    return super.getDefaultAppBar();
+  }
+
   /// Method for replacing components in widget tree by name.
   ///
   /// Returns `true` if component could be replaced.

@@ -9,38 +9,40 @@ void showLinearProgressDialog(BuildContext context) {
       barrierDismissible: false,
       builder: (context) => WillPopScope(
             onWillPop: () async => false,
-            child: ValueListenableBuilder(
-              valueListenable: sl<IOfflineDatabaseProvider>().progress,
-              builder: (BuildContext context, double? value, Widget? child) {
-                return Container(
-                  child: Center(
-                      child: Container(
-                    width: 200,
-                    height: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!
-                                    .text('Gehe offline...') +
-                                ' ${((value ?? 0) * 100).round()}%',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          LinearProgressIndicator(
-                            value: value,
-                          )
-                        ],
+            child: Material(
+              child: ValueListenableBuilder(
+                valueListenable: sl<IOfflineDatabaseProvider>().progress,
+                builder: (BuildContext context, double? value, Widget? child) {
+                  return Container(
+                    child: Center(
+                        child: Container(
+                      width: 200,
+                      height: 200,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)!
+                                      .text('Gehe offline...') +
+                                  ' ${((value ?? 0) * 100).round()}%',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            LinearProgressIndicator(
+                              value: value,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )),
-                );
-              },
+                    )),
+                  );
+                },
+              ),
             ),
           ));
 }

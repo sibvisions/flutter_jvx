@@ -23,7 +23,7 @@ class StartupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
         data: sl<ThemeManager>().value,
-        child: _getStartupPageWidget(appState.isOffline));
+        child: _getStartupPageWidget(manager.isOffline));
   }
 
   Widget _getStartupPageWidget(bool isOffline) {

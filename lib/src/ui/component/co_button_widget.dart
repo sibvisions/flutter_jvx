@@ -204,7 +204,7 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                     if (widget.componentModel.enabled) {
                       if (widget.componentModel.classNameEventSourceRef ==
                           "OfflineButton") {
-                        showLoadingIndicator(context);
+                        // showLoadingIndicator(context);
                       }
 
                       widget.componentModel.onAction(

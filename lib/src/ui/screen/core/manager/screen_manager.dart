@@ -47,7 +47,13 @@ class ScreenManager implements IScreenManager {
   @override
   SoScreen? findScreen(String name) {
     SoScreen? result;
-    _screens.forEach((key, value) => name == key ? result = value : null);
+
+    try {
+      result = screens.values
+          .toList()
+          .firstWhere((screen) => screen.configuration.componentId == name);
+    } catch (e) {}
+
     return result;
   }
 
@@ -95,9 +101,19 @@ class ScreenManager implements IScreenManager {
 
   @override
   bool hasScreen(String componentId) {
-    if (screens.containsKey(componentId)) {
+    SoScreen? screen;
+
+    try {
+      screen = screens.values.firstWhere(
+          (element) => element.configuration.componentId == componentId);
+    } catch (e) {
+      return false;
+    }
+
+    if (screen != null) {
       return true;
     }
+
     return false;
   }
 }
