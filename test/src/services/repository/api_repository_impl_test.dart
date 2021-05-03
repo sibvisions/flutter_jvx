@@ -77,6 +77,38 @@ void main() {
         verify(mockNetworkInfo.isConnected);
       });
     });
+
+    group('images', () {
+      final tRequest = DownloadImagesRequest(
+          clientId: 'test_client_id',
+          applicationImages: true,
+          libraryImages: true,
+          name: 'images');
+
+      final tBodyBytes = Uint8List.fromList('test'.codeUnits);
+
+      test('should call decodeBytes and data source when getting valid data',
+          () async {
+        when(mockDataSource.downloadImages(tRequest))
+            .thenAnswer((_) async => ApiResponse(request: tRequest, objects: [
+                  DownloadResponseObject(
+                      name: 'download',
+                      translation: false,
+                      bodyBytes: tBodyBytes)
+                ]));
+
+        when(mockZipDecoder.decodeBytes(tBodyBytes))
+            .thenAnswer((_) => Archive());
+
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+
+        await repository.downloadImages(tRequest);
+
+        verify(mockDataSource.downloadImages(tRequest));
+        verify(mockZipDecoder.decodeBytes(tBodyBytes));
+        verify(mockNetworkInfo.isConnected);
+      });
+    });
   });
 }
 

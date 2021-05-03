@@ -100,7 +100,7 @@ jobs:
       - run: flutter build apk --release --bundle-sksl-path flutter_01.sksl.json --no-sound-null-safety --dart-define=PROD=true --build-name=${{ needs.update-version.outputs.buildName }} --build-number=${{ needs.update-version.outputs.buildNumber }}
         if: matrix.platform == 'android'
 
-      - run: flutter build web --release --dart-define=PROD=true
+      - run: flutter build web --release --no-sound-null-safety --dart-define=PROD=true
         if: matrix.platform == 'web'
 
       - uses: actions/upload-artifact@v1
