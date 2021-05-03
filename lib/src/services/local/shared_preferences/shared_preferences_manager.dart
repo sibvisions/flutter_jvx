@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutterclient/src/models/api/response_objects/application_meta_data_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/application_style/application_style_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -122,6 +123,27 @@ class SharedPreferencesManager {
       iv: iv);
 
   bool get initialStart => sharedPreferences.getBool('initialStart') ?? true;
+
+  ApplicationMetaDataResponseObject? get applicationMetaData {
+    String? jsonString = sharedPreferences.getString('applicationMetaData');
+
+    if (jsonString != null) {
+      return ApplicationMetaDataResponseObject.fromJson(
+          map: json.decode(jsonString));
+    }
+
+    return null;
+  }
+
+  set applicationMetaData(
+      ApplicationMetaDataResponseObject? applicationMetaData) {
+    if (applicationMetaData != null) {
+      sharedPreferences.setString(
+          'applicationMetaData', json.encode(applicationMetaData.toJson()));
+    } else {
+      sharedPreferences.remove('applicationMetaData');
+    }
+  }
 
   set initialStart(bool initialStart) =>
       sharedPreferences.setBool('initialStart', initialStart);

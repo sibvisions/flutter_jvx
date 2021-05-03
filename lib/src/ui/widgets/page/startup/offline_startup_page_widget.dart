@@ -58,6 +58,8 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
     widget.appState.mobileOnly = widget.manager.mobileOnly;
     widget.appState.webOnly = widget.manager.webOnly;
 
+    widget.appState.applicationMetaData = widget.manager.applicationMetaData;
+
     Map<String, String>? translations = widget.manager.possibleTranslations;
 
     if (translations != null && translations.isNotEmpty) {

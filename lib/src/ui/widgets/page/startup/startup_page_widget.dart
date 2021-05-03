@@ -152,11 +152,15 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   void _setLocalData() {
-    if (widget.appState.applicationMetaData != null &&
-        widget.manager.appVersion !=
-            widget.appState.applicationMetaData?.version) {
-      widget.manager.previousAppVersion = widget.manager.appVersion;
-      widget.manager.appVersion = widget.appState.applicationMetaData?.version;
+    if (widget.appState.applicationMetaData != null) {
+      widget.manager.applicationMetaData = widget.appState.applicationMetaData;
+
+      if (widget.manager.appVersion !=
+          widget.appState.applicationMetaData?.version) {
+        widget.manager.previousAppVersion = widget.manager.appVersion;
+        widget.manager.appVersion =
+            widget.appState.applicationMetaData?.version;
+      }
     }
   }
 
