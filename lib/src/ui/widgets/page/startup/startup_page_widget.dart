@@ -99,7 +99,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           deviceTypeModel: deviceInfo.deviceTypeModel,
           authKey: widget.manager.authKey,
           username: widget.appState.serverConfig!.username,
-          password: widget.appState.serverConfig!.password);
+          password: widget.appState.serverConfig!.password,
+          parameter: widget.appState.appConfig?.startupParameter ??
+              <String, dynamic>{});
 
       // For handling the initial Config
       widget.appState.serverConfig!.username = null;

@@ -15,6 +15,7 @@ class AppConfig {
   final bool loginColorsInverted;
   final int requestTimeout;
   final ServerConfig? initialConfig;
+  final Map<String, dynamic>? startupParameter;
 
   AppConfig(
       {required this.package,
@@ -23,7 +24,8 @@ class AppConfig {
       required this.handleSessionTimeout,
       required this.loginColorsInverted,
       required this.requestTimeout,
-      this.initialConfig});
+      this.initialConfig,
+      this.startupParameter});
 
   AppConfig.fromJson({required Map<String, dynamic> map})
       : package = map['package'],
@@ -32,7 +34,8 @@ class AppConfig {
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
-        initialConfig = ServerConfig.fromJson(map: map['initialConfig']);
+        initialConfig = ServerConfig.fromJson(map: map['initialConfig']),
+        startupParameter = map['startupParameter'];
 
   AppConfig.fromYaml({required YamlMap map})
       : package = map['package'],
@@ -43,7 +46,8 @@ class AppConfig {
         requestTimeout = map['requestTimeout'],
         initialConfig = map['initialConfig'] != null
             ? ServerConfig.fromYaml(map: map['initialConfig'])
-            : null;
+            : null,
+        startupParameter = map['startupParameter'].cast<String, dynamic>();
 
   static Future<Either<Failure, AppConfig>> loadConfig(
       {required String path, bool package = false}) async {
@@ -55,9 +59,9 @@ class AppConfig {
 
           final YamlMap map = loadYaml(configString);
 
-          final AppConfig devConfig = AppConfig.fromYaml(map: map);
+          final AppConfig appConfig = AppConfig.fromYaml(map: map);
 
-          return Right(devConfig);
+          return Right(appConfig);
         }
       } else {
         final String configString = await rootBundle
@@ -65,9 +69,9 @@ class AppConfig {
 
         final Map<String, dynamic> map = json.decode(configString);
 
-        final AppConfig devConfig = AppConfig.fromJson(map: map);
+        final AppConfig appConfig = AppConfig.fromJson(map: map);
 
-        return Right(devConfig);
+        return Right(appConfig);
       }
     } catch (e) {
       return Left(CacheFailure(

@@ -21,6 +21,7 @@ class StartupRequest extends Request {
   final String? deviceMode;
   final String language;
   final bool? forceNewSession;
+  final Map<String, dynamic> parameter;
 
   @override
   String get debugInfo => 'url: $url, appName: $appName, language: $language';
@@ -46,7 +47,8 @@ class StartupRequest extends Request {
       this.deviceType,
       this.deviceTypeModel,
       this.deviceMode,
-      this.forceNewSession})
+      this.forceNewSession,
+      this.parameter = const <String, dynamic>{}})
       : super(clientId: clientId);
 
   @override
@@ -71,5 +73,6 @@ class StartupRequest extends Request {
         'deviceMode': this.deviceMode,
         'langCode': this.language,
         'forceNewSession': this.forceNewSession,
+        ...parameter.map((key, value) => MapEntry('custom_$key', value))
       };
 }
