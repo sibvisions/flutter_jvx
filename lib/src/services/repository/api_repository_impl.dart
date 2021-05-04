@@ -285,7 +285,8 @@ class ApiRepositoryImpl implements ApiRepository {
     if (request is InsertRecordRequest &&
         request.setValues != null &&
         state is ApiResponse &&
-        !state.hasError) {
+        !state.hasError &&
+        !appState.isOffline) {
       states.add(await dataSource.data(request.setValues as DataRequest));
     }
 
