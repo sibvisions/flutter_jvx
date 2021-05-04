@@ -160,8 +160,11 @@ class RemoteDataSourceImpl implements DataSource {
   Future<ApiState> pressButton(PressButtonRequest request) async {
     final path = appState.serverConfig!.baseUrl + '/api/v2/pressButton';
 
+    bool isGoOfflineRequest =
+        request.classNameEventSourceRef == "OfflineButton";
+
     Either<ApiError, ApiResponse> either =
-        await _sendRequest(Uri.parse(path), request);
+        await _sendRequest(Uri.parse(path), request, isGoOfflineRequest);
 
     return either.fold((l) => l, (r) => r);
   }
@@ -254,8 +257,8 @@ class RemoteDataSourceImpl implements DataSource {
     return either.fold((l) => l, (r) => r);
   }
 
-  Future<Either<ApiError, ApiResponse>> _sendRequest(
-      Uri uri, Request request) async {
+  Future<Either<ApiError, ApiResponse>> _sendRequest(Uri uri, Request request,
+      [bool isGoOfflineRequest = false]) async {
     if (debugRequest) {
       log('REQUEST ${uri.path}: ${request.debugInfo}');
     }
@@ -263,7 +266,9 @@ class RemoteDataSourceImpl implements DataSource {
     Either<Failure, http.Response> either = await client.post(
         uri: uri,
         data: request.toJson(),
-        timeout: appState.appConfig!.requestTimeout);
+        timeout: isGoOfflineRequest
+            ? appState.appConfig!.goOfflineRequestTimeout
+            : appState.appConfig!.requestTimeout);
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) async {
       if (r.statusCode != 404) {

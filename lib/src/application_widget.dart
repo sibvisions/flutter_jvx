@@ -151,7 +151,8 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
               hideLoginCheckbox: false,
               loginColorsInverted: false,
               package: widget.package,
-              requestTimeout: 10);
+              requestTimeout: 10,
+              goOfflineRequestTimeout: 30);
         }, (appConfig) => config = appConfig);
 
         return config;
@@ -162,7 +163,8 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
             hideLoginCheckbox: false,
             handleSessionTimeout: true,
             loginColorsInverted: false,
-            requestTimeout: 10);
+            requestTimeout: 10,
+            goOfflineRequestTimeout: 30);
       }
     }
   }

@@ -14,6 +14,7 @@ class AppConfig {
   final bool handleSessionTimeout;
   final bool loginColorsInverted;
   final int requestTimeout;
+  final int goOfflineRequestTimeout;
   final ServerConfig? initialConfig;
   final Map<String, dynamic>? startupParameter;
 
@@ -24,6 +25,7 @@ class AppConfig {
       required this.handleSessionTimeout,
       required this.loginColorsInverted,
       required this.requestTimeout,
+      required this.goOfflineRequestTimeout,
       this.initialConfig,
       this.startupParameter});
 
@@ -34,6 +36,7 @@ class AppConfig {
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
+        goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
         initialConfig = ServerConfig.fromJson(map: map['initialConfig']),
         startupParameter = map['startupParameter'];
 
@@ -44,6 +47,7 @@ class AppConfig {
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
+        goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
         initialConfig = map['initialConfig'] != null
             ? ServerConfig.fromYaml(map: map['initialConfig'])
             : null,
