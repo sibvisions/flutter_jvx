@@ -397,6 +397,7 @@ class OfflineDatabase extends LocalDatabase
 
         if (dataBook?.records.length == 1) {
           DeleteRecordRequest delete = DeleteRecordRequest(
+            selectedRow: null,
             dataProvider: dataProvider,
             filter: filter,
             clientId: repository.appState.applicationMetaData!.clientId,
