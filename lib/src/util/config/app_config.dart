@@ -25,7 +25,7 @@ class AppConfig {
       required this.handleSessionTimeout,
       required this.loginColorsInverted,
       required this.requestTimeout,
-      required this.goOfflineRequestTimeout,
+      this.goOfflineRequestTimeout = 30,
       this.initialConfig,
       this.startupParameter});
 
