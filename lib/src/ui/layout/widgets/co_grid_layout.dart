@@ -297,8 +297,6 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
           size = renderBox.size;
         else
           size = layoutRenderBox(renderBox, constraints);
-        //renderBox.layout(constraints, parentUsesSize: true);
-
         if (size.width == double.infinity || size.height == double.infinity) {
           print(
               "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");

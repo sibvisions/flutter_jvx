@@ -771,7 +771,10 @@ class OfflineDatabase extends LocalDatabase
           OfflineDatabaseFormatter.formatTableName(dataProvider);
       String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
       String limit = "";
-      if (fromRow != null && fromRow >= 0) {
+      if (fromRow != null &&
+          fromRow >= 0 &&
+          rowCount != null &&
+          rowCount >= 0) {
         limit = fromRow.toString();
         if (rowCount! >= 0) limit = ", " + rowCount.toString();
       } else if (rowCount != null && rowCount >= 0) {

@@ -403,8 +403,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
     this.size =
         this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
-    dev.log(
-        "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
+    //dev.log(
+    //    "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   /*
@@ -526,25 +526,6 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     }
   }
 
-  // Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
-  //   if (!comp.componentModel.isPreferredSizeSet) {
-  //     renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
-
-  //     if (!renderBox.hasSize) {
-  //       print("FlowLayout: RenderBox has no size after layout!");
-  //     }
-
-  //     if (renderBox.size.width == double.infinity ||
-  //         renderBox.size.height == double.infinity) {
-  //       print(
-  //           "FlowLayout: getPrefererredSize: Infinity height or width for FormLayout!");
-  //     }
-  //     return renderBox.size;
-  //   } else {
-  //     return comp.componentModel.preferredSize!;
-  //   }
-  // }
-
   Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
       Size? size = getChildLayoutPreferredSize(renderBox);
@@ -555,11 +536,10 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
           size = renderBox.size;
         else
           size = layoutRenderBox(renderBox, constraints);
-        //renderBox.layout(constraints, parentUsesSize: true);
 
         if (size.width == double.infinity || size.height == double.infinity) {
           print(
-              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+              "CoFlowLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
         }
         return size;
       }
