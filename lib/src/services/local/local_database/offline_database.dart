@@ -156,19 +156,17 @@ class OfflineDatabase extends LocalDatabase
                   if (state is ApiResponse) {
                     currentScreenComponentId = '';
                   }
+                }
 
-                  OpenScreenRequest openScreenRequest = OpenScreenRequest(
-                      clientId:
-                          repository.appState.applicationMetaData!.clientId,
-                      componentId: metaData.offlineScreenComponentId!);
+                OpenScreenRequest openScreenRequest = OpenScreenRequest(
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                    componentId: metaData.offlineScreenComponentId!);
 
-                  ApiState openScreenState =
-                      await repository.openScreen(openScreenRequest);
+                ApiState openScreenState =
+                    await repository.openScreen(openScreenRequest);
 
-                  if (openScreenState is ApiResponse) {
-                    currentScreenComponentId =
-                        metaData.offlineScreenComponentId!;
-                  }
+                if (openScreenState is ApiResponse) {
+                  currentScreenComponentId = metaData.offlineScreenComponentId!;
                 }
               }
 
