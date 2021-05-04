@@ -772,8 +772,7 @@ class OfflineDatabase extends LocalDatabase
           fromRow >= 0 &&
           rowCount != null &&
           rowCount >= 0) {
-        limit = fromRow.toString();
-        if (rowCount! >= 0) limit = ", " + rowCount.toString();
+        limit = "$fromRow, $rowCount";
       } else if (rowCount != null && rowCount >= 0) {
         limit = rowCount.toString();
       }
