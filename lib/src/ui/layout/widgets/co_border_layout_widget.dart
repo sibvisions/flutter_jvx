@@ -132,17 +132,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
         "BorderLayout in container ${container!.componentModel.componentId}";
 
     Size size = this.constraints.biggest;
-    /*if (size.width==double.infinity || size.height==double.infinity) {
-      if (container.isPreferredSizeSet)
-        size = this.container.preferredSize;
-    }*/
-
-    /*if (size.width==double.infinity || size.height==double.infinity) {
-      print("Infinity height or width for BorderLayout");
-      size = Size((size.width==double.infinity?double.maxFinite:size.width),
-                  (size.height==double.infinity?double.maxFinite:size.height));
-    }*/
-
     double x = this.insMargin!.left;
     double y = this.insMargin!.top;
 
@@ -190,7 +179,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       if (northComp!.componentModel.isPreferredSizeSet) {
         maxHeight = northComp!.componentModel.preferredSize!.height;
-        //minHeight = maxHeight;
       }
 
       if (minWidth == double.infinity) minWidth = 0;
@@ -202,13 +190,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
               maxWidth: width,
               minHeight: minHeight,
               maxHeight: maxHeight));
-      // north.layout(
-      //     BoxConstraints(
-      //         minWidth: minWidth,
-      //         maxWidth: width,
-      //         minHeight: minHeight,
-      //         maxHeight: maxHeight),
-      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData =
           north!.parentData as MultiChildLayoutParentData;
       childParentData.offset = Offset(x, y);
@@ -230,7 +211,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       if (southComp!.componentModel.isPreferredSizeSet) {
         maxHeight = southComp!.componentModel.preferredSize!.height;
-        //minHeight = maxHeight;
       }
 
       if (minWidth == double.infinity) minWidth = 0;
@@ -242,13 +222,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
               maxWidth: width,
               minHeight: minHeight,
               maxHeight: maxHeight));
-      // south.layout(
-      //     normalizeConstraints(BoxConstraints(
-      //         minWidth: minWidth,
-      //         maxWidth: width,
-      //         minHeight: minHeight,
-      //         maxHeight: maxHeight)),
-      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData =
           south!.parentData as MultiChildLayoutParentData;
       childParentData.offset = Offset(x, y + height - size.height);
@@ -268,7 +241,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       if (westComp!.componentModel.isPreferredSizeSet) {
         maxWidth = westComp!.componentModel.preferredSize!.width;
-        //minHeight = maxHeight;
       }
 
       if (minHeight == double.infinity) minHeight = 0;
@@ -280,13 +252,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
               maxWidth: maxWidth,
               minHeight: minHeight,
               maxHeight: height));
-      // west.layout(
-      //     normalizeConstraints(BoxConstraints(
-      //         minWidth: minWidth,
-      //         maxWidth: maxWidth,
-      //         minHeight: minHeight,
-      //         maxHeight: height)),
-      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData =
           west!.parentData as MultiChildLayoutParentData;
       childParentData.offset = Offset(x, y);
@@ -306,7 +271,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       if (eastComp!.componentModel.isPreferredSizeSet) {
         maxWidth = eastComp!.componentModel.preferredSize!.width;
-        //minHeight = maxHeight;
       }
 
       if (minHeight == double.infinity) minHeight = 0;
@@ -318,13 +282,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
               maxWidth: maxWidth,
               minHeight: minHeight,
               maxHeight: height));
-      // east.layout(
-      //     normalizeConstraints(BoxConstraints(
-      //         minWidth: minWidth,
-      //         maxWidth: maxWidth,
-      //         minHeight: minHeight,
-      //         maxHeight: height)),
-      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData =
           east!.parentData as MultiChildLayoutParentData;
       childParentData.offset = Offset(x + width - size.width, y);
@@ -368,14 +325,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
               maxWidth: width,
               minHeight: minHeight,
               maxHeight: height));
-
-      // center.layout(
-      //     normalizeConstraints(BoxConstraints(
-      //         minWidth: minWidth,
-      //         maxWidth: width,
-      //         minHeight: minHeight,
-      //         maxHeight: height)),
-      //     parentUsesSize: true);
       final MultiChildLayoutParentData childParentData =
           center!.parentData as MultiChildLayoutParentData;
       childParentData.offset = Offset(x, y);
@@ -388,8 +337,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
     // borderLayout uses max space available
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
-    dev.log(
-        "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
+    //dev.log(
+    //    "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   @override
@@ -593,11 +542,6 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
           size = renderBox.size;
         else
           size = layoutRenderBox(renderBox, constraints);
-        //renderBox.layout(constraints, parentUsesSize: true);
-
-        if (size == null) {
-          print("CoBorderLayout: RenderBox has no size after layout!");
-        }
 
         if (size.width == double.infinity || size.height == double.infinity) {
           print(

@@ -367,8 +367,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
     this.valid = true;
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
-    dev.log(
-        "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
+    //dev.log(
+    //    "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
   }
 
   /*
@@ -539,8 +539,6 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
         if (renderBox.hasSize)
           return renderBox.size;
         else {
-          //renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
-
           int margin = constraint.leftAnchor!.getAbsolutePosition()! +
               constraint.rightAnchor!.getAbsolutePosition()!;
           BoxConstraints constraints = BoxConstraints(
@@ -552,20 +550,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
                   : this.constraints.maxWidth - margin);
 
           return layoutRenderBox(renderBox, constraints);
-          //renderBox.layout(constraints, parentUsesSize: true);
         }
       }
-
-      // if (!renderBox.hasSize) {
-      //   print("CoFormLayout: RenderBox has no size after layout!");
-      // }
-
-      // if (renderBox.size.width == double.infinity ||
-      //     renderBox.size.height == double.infinity) {
-      //   print(
-      //       "CoFormLayout: getPrefererredSize: Infinity height or width for FormLayout!");
-      // }
-      // return renderBox.size;
     } else {
       return constraint.comp!.componentModel.preferredSize!;
     }
@@ -582,14 +568,6 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
           return renderBox.size;
         else {
           return layoutRenderBox(renderBox, BoxConstraints.tightFor());
-          // renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
-
-          // if (renderBox.size.width == double.infinity ||
-          //     renderBox.size.height == double.infinity) {
-          //   print(
-          //       "CoFormLayout: getMinimumSize: Infinity height or width for FormLayout!");
-          // }
-          // return renderBox.size;
         }
       }
     } else {

@@ -76,12 +76,12 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
     this.maximumLayoutSize = this.constraints.biggest;
     this.minimumLayoutSize = this.constraints.biggest;
 
-    Size? preferredSize;
+    //Size? preferredSize;
 
     if (child != null) {
       this.layoutRenderBox(child!, BoxConstraints.tightForFinite());
 
-      if (child is RenderShiftedBox &&
+      /*if (child is RenderShiftedBox &&
           (child as RenderShiftedBox).child is CoLayoutRenderBox) {
         CoLayoutRenderBox childLayout =
             (child as RenderShiftedBox).child as CoLayoutRenderBox;
@@ -98,7 +98,7 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
         if (child.hasSize) print("child:" + child.size.toString());
 
         print("pref:" + preferredSize.toString());*/
-      }
+      }*/
 
       //print("split_pref:" + preferredConstraints.preferredSize.toString());
 
@@ -127,8 +127,6 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
                 (newHeight != null ? newHeight : this.constraints.maxHeight));
 
         this.layoutRenderBox(child!, newConstraints);
-
-        //if (child.hasSize) print("childAfter1:" + child.size.toString());
       } else {
         this.layoutRenderBox(
             child!,
@@ -145,15 +143,13 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
       this.size = this
           .constraints
           .constrainDimensions(child!.size.width, child!.size.height);
-      //if (child.hasSize) print("childAfter2:" + child.size.toString());
-      //print("returnSize:" + this.size.toString());
     } else {
       this.size = this.constraints.constrainDimensions(
           this.preferredConstraints!.parentConstraints.biggest.width,
           this.preferredConstraints!.parentConstraints.biggest.height);
     }
-    dev.log(
-        "ScrollLayout in container ${container?.name} (${container?.componentId}) with constraints ${this.constraints}  render size ${this.size.toString()}");
+    //dev.log(
+    //    "ScrollLayout in container ${container?.name} (${container?.componentId}) with constraints ${this.constraints}  render size ${this.size.toString()}");
   }
 
   @override
