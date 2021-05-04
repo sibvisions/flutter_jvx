@@ -54,7 +54,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   String get versionText {
     String v = 'AppVersion v$version Build $buildNumber';
 
-    if (widget.appState.applicationMetaData != null &&
+    if (widget.appState.applicationMetaData?.version != null &&
         widget.appState.applicationMetaData!.version.isNotEmpty) {
       v += '\nServer v${widget.appState.applicationMetaData!.version}';
     }
