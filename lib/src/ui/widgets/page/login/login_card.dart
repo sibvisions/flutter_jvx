@@ -204,7 +204,7 @@ class _LoginCardState extends State<LoginCard>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    onLogin();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => onLogin());
   }
 
   @override
