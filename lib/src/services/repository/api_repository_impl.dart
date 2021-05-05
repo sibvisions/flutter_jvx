@@ -141,12 +141,8 @@ class ApiRepositoryImpl implements ApiRepository {
       final offlineUsername = manager.offlineUsername;
       final offlinePassword = manager.offlinePassword;
 
-      String usernameHash =
-          sha256.convert(utf8.encode(request.username)).toString();
-      String passwordHash =
-          sha256.convert(utf8.encode(request.password)).toString();
-
-      if (usernameHash == offlineUsername && passwordHash == offlinePassword) {
+      if (request.username == offlineUsername &&
+          request.password == offlinePassword) {
         return ApiResponse(request: request, objects: [
           LoginResponseObject(name: 'login', username: request.username),
           MenuResponseObject(name: 'menu', entries: [])
