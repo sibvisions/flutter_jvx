@@ -1,4 +1,6 @@
 
+import 'package:flutter/material.dart';
+
 import '../../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
@@ -33,10 +35,10 @@ abstract class IScreenManager {
   void onUserData(UserDataResponseObject userData);
 
   /// Will be called after a successful login
-  void onLogin();
+  Future<bool> onLogin(BuildContext context);
 
   /// Will be called when going online from offline mode
-  void onSync();
+  Future<bool> onSync(BuildContext context);
 
   /// Used to register a screen for the Screen Manager
   void registerScreen(SoScreen screen);

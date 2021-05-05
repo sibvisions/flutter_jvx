@@ -73,8 +73,6 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
               if (state is ApiResponse) {
                 if (state.request is LoginRequest &&
                     state.hasObject<MenuResponseObject>()) {
-                  widget.appState.screenManager.onLogin();
-
                   if (state.hasObject<ScreenGenericResponseObject>()) {
                     response = state;
                   }

@@ -118,8 +118,12 @@ class ScreenManager implements IScreenManager {
   }
 
   @override
-  void onLogin() {}
+  Future<bool> onLogin(BuildContext context) async {
+    return true;
+  }
 
   @override
-  void onSync() {}
+  Future<bool> onSync(BuildContext context) async {
+    return true;
+  }
 }

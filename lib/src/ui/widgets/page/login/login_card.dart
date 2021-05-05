@@ -174,18 +174,20 @@ class _LoginCardState extends State<LoginCard>
     );
   }
 
-  void _login(BuildContext context) {
-    if (loginUsername.trim().isNotEmpty && loginPassword.trim().isNotEmpty) {
-      LoginRequest request = LoginRequest(
-          clientId: widget.appState.applicationMetaData?.clientId ?? '',
-          createAuthKey: rememberMe,
-          username: loginUsername,
-          password: loginPassword);
+  void _login(BuildContext context) async {
+    if (await widget.appState.screenManager.onLogin(context)) {
+      if (loginUsername.trim().isNotEmpty && loginPassword.trim().isNotEmpty) {
+        LoginRequest request = LoginRequest(
+            clientId: widget.appState.applicationMetaData?.clientId ?? '',
+            createAuthKey: rememberMe,
+            username: loginUsername,
+            password: loginPassword);
 
-      widget.cubit.login(request);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please enter username and password!')));
+        widget.cubit.login(request);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please enter username and password!')));
+      }
     }
   }
 
