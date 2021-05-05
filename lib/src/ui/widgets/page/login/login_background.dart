@@ -71,6 +71,8 @@ class LoginBackground extends StatelessWidget {
   }
 
   Widget topHalf(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Flexible(
       flex: 2,
       child: ClipPath(
@@ -87,8 +89,11 @@ class LoginBackground extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: _getImage(),
-              ),
+                  child: size.width > size.height
+                      ? ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: size.width / 2),
+                          child: _getImage())
+                      : _getImage()),
             )
           ],
         ),
