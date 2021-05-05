@@ -272,7 +272,22 @@ class RemoteDataSourceImpl implements DataSource {
 
     return either.fold((l) => Left(ApiError(failure: l)), (r) async {
       if (r.statusCode != 404) {
-        List decodedBody = _getDecodedBody(r.body);
+        List decodedBody = [];
+
+        try {
+          if (kReleaseMode)
+            decodedBody = await compute(_getDecodedBody, r.body);
+          else
+            decodedBody = _getDecodedBody(r.body);
+        } on FormatException {
+          return Left(ApiError(
+              failure: ServerFailure(
+                  name: 'message.error',
+                  details: '',
+                  message: 'Could not parse response',
+                  title: 'Parsing error')));
+        }
+
         Failure? failure = _getErrorIfExists(decodedBody);
 
         if (!kReleaseMode && debugResponse) {

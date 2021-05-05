@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutterclient/flutterclient.dart';
-import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 
 import '../../../models/api/errors/failure.dart';
+import '../../../ui/util/error/error_handler.dart';
 import 'http_client.dart';
 
 abstract class RestClient {

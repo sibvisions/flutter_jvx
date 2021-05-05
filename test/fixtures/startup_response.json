@@ -1,0 +1,44 @@
+[
+    {
+        "clientId": "a833f78b-cf82-4a65-9e23-24413fc6b86e",
+        "langCode": "en",
+        "name": "applicationMetaData",
+        "version": "1.0",
+        "languageResource": "translation.xml"
+    },
+    {
+        "layoutMode": "Mini",
+        "name": "deviceStatus"
+    },
+    {
+        "langCode": "en",
+        "name": "language",
+        "languageResource": "translation.xml"
+    },
+    {
+        "displayName": "admin",
+        "roles": [
+            "Administrator"
+        ],
+        "name": "userData",
+        "userName": "admin"
+    },
+    {
+        "entries": [
+            {
+                "componentId": "com.sibvisions.apps.kabinenstatuspflege.screens.SynchronizeDataWorkScreen:L1_MI_DOOPENWORKSCREEN_COM-SIB-APP-KAB-SCR-SYNDATWORSCR",
+                "group": "MENU",
+                "text": "Synchronize Data",
+                "image": null
+            },
+            {
+                "componentId": "com.sibvisions.apps.kabinenstatuspflege.screens.ShowCabinsWorkScreen:L1_MI_DOOPENWORKSCREEN_COM-SIB-APP-KAB-SCR-SHOCABWORSCR",
+                "group": "MENU",
+                "text": "Show Cabins",
+                "image": null
+            }
+        ],
+        "componentId": "L1_MB1",
+        "name": "menu"
+    }
+]

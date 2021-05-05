@@ -72,6 +72,8 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncOnline(BuildContext context) async {
+    sl<AppState>().screenManager.onSync();
+
     bool result = false;
     int rowsToSync = 0;
     int rowsSynced = 0;
@@ -396,6 +398,7 @@ class OfflineDatabase extends LocalDatabase
 
         if (dataBook?.records.length == 1) {
           DeleteRecordRequest delete = DeleteRecordRequest(
+            selectedRow: null,
             dataProvider: dataProvider,
             filter: filter,
             clientId: repository.appState.applicationMetaData!.clientId,

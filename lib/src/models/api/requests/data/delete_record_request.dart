@@ -11,7 +11,7 @@ class DeleteRecordRequest extends DataRequest {
       required String dataProvider,
       bool reload = false,
       required this.filter,
-      this.selectedRow,
+      required this.selectedRow,
       this.fetch = false})
       : super(clientId: clientId, dataProvider: dataProvider, reload: reload);
 

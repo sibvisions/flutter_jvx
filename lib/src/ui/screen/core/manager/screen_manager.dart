@@ -116,4 +116,10 @@ class ScreenManager implements IScreenManager {
 
     return false;
   }
+
+  @override
+  void onLogin() {}
+
+  @override
+  void onSync() {}
 }

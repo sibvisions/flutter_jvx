@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/util/app/state/state_helper.dart';
 
 import '../../models/state/routes/routes.dart';
 import '../../models/api/errors/failure.dart';
@@ -46,35 +48,17 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (handleError &&
-            (state is ApiError ||
-                (state is ApiResponse && state.hasObject<Failure>()))) {
-          if (state is ApiError) {
-            ErrorHandler.handleError(state, context);
-          } else if (state is ApiResponse && modalRoute.isCurrent) {
-            ErrorHandler.handleError(
-                ApiError(failure: state.getObjectByType<Failure>()!), context);
-          }
+        if (handleError) {
+          ErrorHandler.handleResponse(context, state);
         }
 
         if (state is ApiResponse) {
-          if (state.hasObject<MenuResponseObject>()) {
-            appState.menuResponseObject =
-                state.getObjectByType<MenuResponseObject>()!;
-          }
-
-          if (state.hasObject<ApplicationParametersResponseObject>()) {
-            appState.parameters.updateFromResponseObject(
-                state.getObjectByType<ApplicationParametersResponseObject>()!);
-          }
+          StateHelper.updateAppStateAndLocalDataWithResponse(
+              appState, SharedPreferencesProvider.of(context)!.manager, state);
 
           if (state.hasObject<RestartResponseObject>()) {
             showRestartDialog(
                 context, state.getObjectByType<RestartResponseObject>()!.info);
-          }
-
-          if (state.hasObject<UserDataResponseObject>()) {
-            appState.userData = state.getObjectByType<UserDataResponseObject>();
           }
         }
 
