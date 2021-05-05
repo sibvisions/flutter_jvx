@@ -156,19 +156,17 @@ class OfflineDatabase extends LocalDatabase
                   if (state is ApiResponse) {
                     currentScreenComponentId = '';
                   }
+                }
 
-                  OpenScreenRequest openScreenRequest = OpenScreenRequest(
-                      clientId:
-                          repository.appState.applicationMetaData!.clientId,
-                      componentId: metaData.offlineScreenComponentId!);
+                OpenScreenRequest openScreenRequest = OpenScreenRequest(
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                    componentId: metaData.offlineScreenComponentId!);
 
-                  ApiState openScreenState =
-                      await repository.openScreen(openScreenRequest);
+                ApiState openScreenState =
+                    await repository.openScreen(openScreenRequest);
 
-                  if (openScreenState is ApiResponse) {
-                    currentScreenComponentId =
-                        metaData.offlineScreenComponentId!;
-                  }
+                if (openScreenState is ApiResponse) {
+                  currentScreenComponentId = metaData.offlineScreenComponentId!;
                 }
               }
 
@@ -775,8 +773,7 @@ class OfflineDatabase extends LocalDatabase
           fromRow >= 0 &&
           rowCount != null &&
           rowCount >= 0) {
-        limit = fromRow.toString();
-        if (rowCount >= 0) limit = ", " + rowCount.toString();
+        limit = "$fromRow, $rowCount";
       } else if (rowCount != null && rowCount >= 0) {
         limit = rowCount.toString();
       }
