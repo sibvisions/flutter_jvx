@@ -33,6 +33,8 @@ class _LoginCardState extends State<LoginCard>
   bool rememberMe = false;
   String loginUsername = '', loginPassword = '';
 
+  bool canLogin = true;
+
   late AnimationController controller;
   late Animation<double> animation;
 
@@ -175,7 +177,7 @@ class _LoginCardState extends State<LoginCard>
   }
 
   void _login(BuildContext context) async {
-    if (await widget.appState.screenManager.onLogin(context)) {
+    if (canLogin) {
       if (loginUsername.trim().isNotEmpty && loginPassword.trim().isNotEmpty) {
         LoginRequest request = LoginRequest(
             clientId: widget.appState.applicationMetaData?.clientId ?? '',
@@ -188,7 +190,21 @@ class _LoginCardState extends State<LoginCard>
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Please enter username and password!')));
       }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Login is not allowed!')));
     }
+  }
+
+  onLogin() async {
+    canLogin = await widget.appState.screenManager.onLogin(context);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    onLogin();
   }
 
   @override
