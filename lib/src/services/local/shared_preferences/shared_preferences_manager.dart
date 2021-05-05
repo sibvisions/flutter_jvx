@@ -154,7 +154,7 @@ class SharedPreferencesManager {
   set offlineUsername(String? username) {
     if (username != null && username.isNotEmpty) {
       sharedPreferences.setString(
-          'offlinePassword', encrypter.encrypt(username, iv: iv).base64);
+          'offlineUsername', encrypter.encrypt(username, iv: iv).base64);
     } else {
       sharedPreferences.remove('offlineUsername');
     }
