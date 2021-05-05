@@ -127,6 +127,8 @@ class ApiRepositoryImpl implements ApiRepository {
       if (state is ApiResponse) {
         manager.setSyncLoginData(
             username: request.username, password: request.password);
+        manager.offlineUsername = request.username;
+        manager.offlinePassword = request.password;
 
         if (state.hasObject<AuthenticationDataResponseObject>())
           manager.authKey = state
