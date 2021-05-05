@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../../../flutterclient.dart';
 import '../../../../injection_container.dart';
 import '../../../models/api/data_source.dart';
 import '../../../models/api/errors/failure.dart';
@@ -1078,6 +1079,8 @@ class OfflineDatabase extends LocalDatabase
       } else if (request is NavigationRequest) {
         return ApiResponse(request: request, objects: []);
       } else if (request is LogoutRequest) {
+        return ApiResponse(request: request, objects: []);
+      } else if (request is DeviceStatusRequest) {
         return ApiResponse(request: request, objects: []);
       } else {
         return ApiError(
