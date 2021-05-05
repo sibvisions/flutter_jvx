@@ -4,9 +4,8 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutterclient/src/services/repository/api_repository.dart';
-import 'package:flutterclient/src/services/repository/api_repository_impl.dart';
 
+import '../../../../flutterclient.dart';
 import '../../../../injection_container.dart';
 import '../../../models/api/data_source.dart';
 import '../../../models/api/errors/failure.dart';
@@ -40,6 +39,8 @@ import '../../../ui/screen/core/so_screen.dart';
 import '../../../util/translation/app_localizations.dart';
 import '../../remote/cubit/api_cubit.dart';
 import '../../remote/network_info/network_info.dart';
+import '../../repository/api_repository.dart';
+import '../../repository/api_repository_impl.dart';
 import '../shared_preferences/shared_preferences_manager.dart';
 import 'i_offline_database_provider.dart';
 import 'local_database.dart';
@@ -1068,6 +1069,8 @@ class OfflineDatabase extends LocalDatabase
       } else if (request is NavigationRequest) {
         return ApiResponse(request: request, objects: []);
       } else if (request is LogoutRequest) {
+        return ApiResponse(request: request, objects: []);
+      } else if (request is DeviceStatusRequest) {
         return ApiResponse(request: request, objects: []);
       } else {
         return ApiError(
