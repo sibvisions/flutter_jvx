@@ -94,5 +94,7 @@ class AppState {
   /// Config for widgets
   WidgetConfig widgetConfig = WidgetConfig();
 
+  bool showsLoading = false;
+
   AppState();
 }

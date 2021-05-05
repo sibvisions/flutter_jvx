@@ -776,7 +776,7 @@ class OfflineDatabase extends LocalDatabase
           rowCount != null &&
           rowCount >= 0) {
         limit = fromRow.toString();
-        if (rowCount! >= 0) limit = ", " + rowCount.toString();
+        if (rowCount >= 0) limit = ", " + rowCount.toString();
       } else if (rowCount != null && rowCount >= 0) {
         limit = rowCount.toString();
       }

@@ -2,12 +2,10 @@ import 'package:flutterclient/src/models/api/response_object.dart';
 
 class LanguageResponseObject extends ResponseObject {
   final String language;
-  final String languageResource;
+  final String? languageResource;
 
   LanguageResponseObject(
-      {String name = 'language',
-      required this.language,
-      required this.languageResource})
+      {String name = 'language', required this.language, this.languageResource})
       : super(name: name);
 
   LanguageResponseObject.fromJson({required Map<String, dynamic> map})

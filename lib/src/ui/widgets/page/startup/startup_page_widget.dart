@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/util/app/state/state_helper.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../injection_container.dart';
@@ -123,24 +124,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   /// Sets data returned from the [Startup] request.
-  void _setAppStateData(ApiResponse response) {
-    widget.appState.applicationMetaData =
-        response.getObjectByType<ApplicationMetaDataResponseObject>();
-    widget.appState.language =
-        response.getObjectByType<LanguageResponseObject>();
-    widget.appState.deviceStatus =
-        response.getObjectByType<DeviceStatusResponseObject>();
+  void _handleStartupResponse(ApiResponse response) {
+    StateHelper.updateAppStateWithStartupResponse(widget.appState, response);
 
-    widget.appState.userData =
-        response.getObjectByType<UserDataResponseObject>();
-    widget.manager.userData =
-        response.getObjectByType<UserDataResponseObject>();
-
-    if (widget.appState.language != null &&
-        widget.appState.language!.language.isNotEmpty) {
-      widget.manager.language = widget.appState.language!.language;
-      AppLocalizations.load(Locale(widget.appState.language!.language));
-    }
+    StateHelper.updateLocalDataWithStartupResponse(widget.manager, response);
 
     if (widget.appState.applicationMetaData != null) {
       ApplicationStyleRequest applicationStyleRequest = ApplicationStyleRequest(
@@ -151,96 +138,28 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     }
   }
 
-  void _setLocalData() {
-    if (widget.appState.applicationMetaData != null) {
-      widget.manager.applicationMetaData = widget.appState.applicationMetaData;
-
-      if (widget.manager.appVersion !=
-          widget.appState.applicationMetaData?.version) {
-        widget.manager.previousAppVersion = widget.manager.appVersion;
-        widget.manager.appVersion =
-            widget.appState.applicationMetaData?.version;
-      }
-    }
-  }
-
   void _updateDataFromSystem() {
-    if (widget.manager.possibleTranslations != null) {
-      widget.appState.translationConfig.possibleTranslations =
-          widget.manager.possibleTranslations!;
-    }
-
-    if (widget.manager.savedImages != null) {
-      widget.appState.fileConfig.images = widget.manager.savedImages!;
-    }
-
-    if (widget.manager.userData != null) {
-      widget.appState.userData = widget.manager.userData;
-    }
-
-    if (widget.manager.picSize != null) {
-      widget.appState.picSize = widget.manager.picSize!;
-    }
-
-    if (!widget.appState.mobileOnly)
-      widget.appState.mobileOnly = widget.manager.mobileOnly;
-
-    if (!widget.appState.webOnly)
-      widget.appState.webOnly = widget.manager.webOnly;
-
-    if (widget.manager.language != null &&
-        widget.manager.language!.isNotEmpty) {
-      widget.appState.language = LanguageResponseObject(
-          name: 'language',
-          language: widget.manager.language!,
-          languageResource: '');
-    }
-
-    if (widget.appState.translationConfig.possibleTranslations.isNotEmpty) {
-      widget.appState.translationConfig.supportedLocales = List<Locale>.from(
-          widget.appState.translationConfig.possibleTranslations.keys
-              .map((key) {
-        if (key.contains('_'))
-          return Locale(key.substring(key.indexOf('_') + 1, key.indexOf('.')));
-        else
-          return Locale('en');
-      }));
-
-      WidgetsBinding.instance!.addPostFrameCallback((_) =>
-          sl<SupportedLocaleManager>().value =
-              widget.appState.translationConfig.supportedLocales);
-    }
+    StateHelper.updateAppStateWithLocalData(widget.manager, widget.appState);
   }
 
-  void _setAppStyle(ApiResponse response) async {
-    if (response.hasObject<ApplicationStyleResponseObject>()) {
-      widget.appState.applicationStyle =
-          response.getObjectByType<ApplicationStyleResponseObject>();
+  void _handleAppStyleResponse(ApiResponse response) async {
+    StateHelper.updateAppStateAndLocalDataWithApplicationStyleResponse(
+        widget.appState, widget.manager, response);
 
-      // Setting theme for the whole application.
-      sl<ThemeManager>().value = ThemeData(
-        primaryColor: widget.appState.applicationStyle!.themeColor,
-        primarySwatch: getColorFromAppStyle(widget.appState.applicationStyle!),
-        brightness: Brightness.light,
-      );
+    if (widget.appState.applicationStyle?.hash !=
+            widget.manager.applicationStyleHash ||
+        await DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
+            baseUrl: widget.appState.serverConfig!.baseUrl,
+            appName: widget.appState.serverConfig!.appName,
+            appVersion: widget.appState.applicationMetaData!.version,
+            translation: true,
+            baseDir: widget.appState.baseDirectory))) {
+      widget.manager.applicationStyleHash =
+          widget.appState.applicationStyle?.hash;
 
-      widget.manager.applicationStyle = widget.appState.applicationStyle;
-
-      if (widget.appState.applicationStyle?.hash !=
-              widget.manager.applicationStyleHash ||
-          await DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
-              baseUrl: widget.appState.serverConfig!.baseUrl,
-              appName: widget.appState.serverConfig!.appName,
-              appVersion: widget.appState.applicationMetaData!.version,
-              translation: true,
-              baseDir: widget.appState.baseDirectory))) {
-        widget.manager.applicationStyleHash =
-            widget.appState.applicationStyle?.hash;
-
-        _downloadTranslation();
-      } else {
-        _checkForLogin(startupResponse!);
-      }
+      _downloadTranslation();
+    } else {
+      _checkForLogin(startupResponse!);
     }
   }
 
@@ -317,11 +236,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                 if (state.request is StartupRequest) {
                   startupResponse = state;
 
-                  _setAppStateData(state);
-
-                  _setLocalData();
+                  _handleStartupResponse(state);
                 } else if (state.request is ApplicationStyleRequest) {
-                  _setAppStyle(state);
+                  _handleAppStyleResponse(state);
                 } else if (state.request is DownloadTranslationRequest) {
                   AppLocalizations.load(
                       Locale(widget.appState.language!.language));

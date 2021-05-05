@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 
 import '../../../models/state/routes/routes.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
@@ -42,6 +43,16 @@ class ErrorHandler {
       showErrorDialog(context, error);
     } else {
       showGoToSettingsDialog(context, error);
+    }
+  }
+
+  static Future<void> handleResponse(
+      BuildContext context, ApiState state) async {
+    if (state is ApiError) {
+      await handleError(state, context);
+    } else if (state is ApiResponse && state.hasObject<Failure>()) {
+      await handleError(
+          ApiError(failure: state.getObjectByType<Failure>()!), context);
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
 import 'package:flutterclient/src/models/state/application_parameters.dart';
 import 'package:flutterclient/src/util/app/qr_code_formatter.dart';
+import 'package:flutterclient/src/util/app/state/state_helper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -189,43 +190,6 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     }
   }
 
-  void _removeState(AppState appState, SharedPreferencesManager manager) {
-    appState.translationConfig = TranslationConfig();
-
-    appState.applicationMetaData = null;
-
-    appState.applicationStyle = null;
-
-    appState.currentMenuComponentId = null;
-
-    appState.fileConfig = FileConfig();
-
-    appState.menuResponseObject = MenuResponseObject(name: 'menu', entries: []);
-
-    appState.parameters = ApplicationParameters();
-
-    appState.userData = null;
-
-    manager.setSyncLoginData(username: null, password: null);
-
-    manager.possibleTranslations = null;
-
-    manager.applicationStyle = null;
-
-    manager.applicationStyleHash = null;
-
-    manager.appVersion = null;
-
-    manager.authKey = null;
-
-    manager.offlinePassword = null;
-
-    manager.offlineUsername = null;
-
-    manager.savedImages = null;
-    manager.userData = null;
-  }
-
   void _changeServer(AppState appState, SharedPreferencesManager manager) {
     manager.appName = appName;
     manager.baseUrl = baseUrl;
@@ -243,7 +207,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         baseUrl!.isNotEmpty) {
       if (appName != widget.appState.serverConfig?.appName ||
           baseUrl != widget.appState.serverConfig?.baseUrl) {
-        _removeState(widget.appState, widget.manager);
+        StateHelper.clearServerData(widget.appState, widget.manager);
 
         _changeServer(widget.appState, widget.manager);
       }

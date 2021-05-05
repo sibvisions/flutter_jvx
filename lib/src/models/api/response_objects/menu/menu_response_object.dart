@@ -13,6 +13,10 @@ class MenuResponseObject extends ResponseObject {
             : <MenuItem>[],
         super.fromJson(map: map);
 
+  MenuResponseObject.empty()
+      : entries = [],
+        super(name: '');
+
   static getEntries({required List<dynamic> entries}) {
     List<MenuItem> menuEntries = <MenuItem>[];
 
