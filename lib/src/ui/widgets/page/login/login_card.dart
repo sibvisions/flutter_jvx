@@ -201,13 +201,6 @@ class _LoginCardState extends State<LoginCard>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    WidgetsBinding.instance!.addPostFrameCallback((_) => onLogin());
-  }
-
-  @override
   void initState() {
     super.initState();
 
@@ -226,6 +219,8 @@ class _LoginCardState extends State<LoginCard>
     animation.addListener(() => setState(() {}));
 
     controller.forward();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => onLogin());
   }
 
   @override

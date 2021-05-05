@@ -132,7 +132,15 @@ class CoBorderLayoutContainerWidget extends StatelessWidget
         _east?.componentModel.componentId) {
       return CoBorderLayoutConstraints.East;
     }
-    return null;
+
+    try {
+      CoBorderLayoutConstraints constraints =
+          getBorderLayoutConstraintsFromString(comp.componentModel.constraints);
+
+      return constraints;
+    } on Exception {
+      return null;
+    }
   }
 
   @override
