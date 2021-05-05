@@ -25,6 +25,7 @@ class ImageLoaderMobile implements ImageLoader {
     } else {
       return Image.network(
         '${appState.serverConfig!.baseUrl}/resource/${appState.serverConfig!.appName}$path',
+        fit: BoxFit.contain,
         height: height,
         width: width,
         loadingBuilder: (BuildContext context, Widget child,

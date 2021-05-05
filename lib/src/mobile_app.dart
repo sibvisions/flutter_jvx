@@ -121,6 +121,7 @@ class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: themeData,
       initialRoute: initialRoute,
       onGenerateRoute: _onGenerateRoute,
