@@ -32,6 +32,12 @@ abstract class IScreenManager {
   /// Will be called after a successful login with the current [UserData].
   void onUserData(UserDataResponseObject userData);
 
+  /// Will be called after a successful login
+  void onLogin();
+
+  /// Will be called when going online from offline mode
+  void onSync();
+
   /// Used to register a screen for the Screen Manager
   void registerScreen(SoScreen screen);
 

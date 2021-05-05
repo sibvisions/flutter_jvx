@@ -18,5 +18,5 @@ if [ $# -eq 2 ]
 
     echo "Version $1+$2"
 
-    flutter build apk --release --no-sound-null-safety --bundle-sksl-path flutter_01.sksl.json --dart-define=PROD=true --build-name=$1 --build-number=$2
+    flutter build apk --release --no-sound-null-safety --dart-define=PROD=true --build-name=$1 --build-number=$2
 fi

@@ -275,7 +275,10 @@ class RemoteDataSourceImpl implements DataSource {
         List decodedBody = [];
 
         try {
-          decodedBody = _getDecodedBody(r.body);
+          if (kReleaseMode)
+            decodedBody = await compute(_getDecodedBody, r.body);
+          else
+            decodedBody = _getDecodedBody(r.body);
         } on FormatException {
           return Left(ApiError(
               failure: ServerFailure(

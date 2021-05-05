@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutterclient/src/services/repository/api_repository.dart';
-import 'package:flutterclient/src/services/repository/api_repository_impl.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/data_source.dart';
@@ -40,6 +38,8 @@ import '../../../ui/screen/core/so_screen.dart';
 import '../../../util/translation/app_localizations.dart';
 import '../../remote/cubit/api_cubit.dart';
 import '../../remote/network_info/network_info.dart';
+import '../../repository/api_repository.dart';
+import '../../repository/api_repository_impl.dart';
 import '../shared_preferences/shared_preferences_manager.dart';
 import 'i_offline_database_provider.dart';
 import 'local_database.dart';
@@ -71,6 +71,8 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncOnline(BuildContext context) async {
+    sl<AppState>().screenManager.onSync();
+
     bool result = false;
     int rowsToSync = 0;
     int rowsSynced = 0;

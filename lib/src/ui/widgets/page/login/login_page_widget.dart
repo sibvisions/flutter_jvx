@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
 
-import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/login_request.dart';
 import '../../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/menu_page_arguments.dart';
@@ -74,6 +73,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
               if (state is ApiResponse) {
                 if (state.request is LoginRequest &&
                     state.hasObject<MenuResponseObject>()) {
+                  widget.appState.screenManager.onLogin();
+
                   if (state.hasObject<ScreenGenericResponseObject>()) {
                     response = state;
                   }

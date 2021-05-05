@@ -113,12 +113,15 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
             arguments: LoginPageArguments(lastUsername: ''));
       } else if (state.request is NavigationRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
-        setState(() {
-          _pages.removeLast();
-        });
+        if (_pages.isNotEmpty) {
+          setState(() {
+            _pages.removeLast();
+          });
+        }
 
         if (_pages.isEmpty) {
-          _screens.removeLast();
+          if (_screens.isNotEmpty) _screens.removeLast();
+
           Navigator.of(context)
               .popUntil((route) => route.settings.name == Routes.menu);
         }
