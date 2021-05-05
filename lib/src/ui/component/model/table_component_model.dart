@@ -164,7 +164,7 @@ class TableComponentModel extends EditorComponentModel {
     autoResize = changedComponent.getProperty<bool>(
         ComponentProperty.AUTO_RESIZE, autoResize)!;
     editable = changedComponent.getProperty<bool>(
-        ComponentProperty.AUTO_RESIZE, editable)!;
+        ComponentProperty.EDITABLE, editable)!;
 
     if (this.dataProvider == null)
       this.dataProvider = changedComponent.getProperty<String>(
