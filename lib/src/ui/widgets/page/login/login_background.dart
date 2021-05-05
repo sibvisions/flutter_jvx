@@ -31,7 +31,7 @@ class LoginBackground extends StatelessWidget {
       } else if (!kIsWeb) {
         return Image.file(
           File(
-              '${DownloadHelper.getLocalFilePath(baseUrl: appState.serverConfig!.baseUrl, appName: appState.serverConfig!.appName, appVersion: appState.applicationMetaData!.version, translation: false, baseDir: appState.baseDirectory)}${appState.applicationStyle!.loginStyle!.logo}'),
+              '${DownloadHelper.getLocalFilePath(baseUrl: appState.serverConfig!.baseUrl, appName: appState.serverConfig!.appName, appVersion: "1.0", translation: false, baseDir: appState.baseDirectory)}${appState.applicationStyle!.loginStyle!.logo}'),
           fit: BoxFit.fitHeight,
         );
       } else {
