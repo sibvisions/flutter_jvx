@@ -6,6 +6,10 @@ class DeleteRecordRequest extends DataRequest {
   Filter? filter = Filter();
   int? selectedRow;
 
+  @override
+  String get debugInfo =>
+      'clientId: $clientId, dataProvider: $dataProvider, selectedRow: $selectedRow, filter: ${filter?.toJson()}';
+
   DeleteRecordRequest(
       {required String clientId,
       required String dataProvider,
