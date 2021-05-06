@@ -427,7 +427,7 @@ class SoComponentData {
     SelectRecordRequest select = SelectRecordRequest(
         dataProvider: dataProvider,
         filter: Filter(
-            columnNames: this.primaryKeyColumns,
+            columnNames: this.primaryKeyColumns ?? data?.columnNames,
             values: data!.getRow(index, this.primaryKeyColumns)),
         selectedRow: index,
         clientId: AppStateProvider.of(context)!

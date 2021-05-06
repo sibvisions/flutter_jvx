@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
@@ -14,7 +15,9 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutterclient/injection_container.dart' as di;
+import 'package:universal_html/html.dart';
 
+import '../../../fixtures/fixture_reader.dart';
 import 'api_repository_impl_test.mocks.dart';
 
 @GenerateMocks([DataSource, ZipDecoder, NetworkInfo],
@@ -26,7 +29,7 @@ void main() {
   late MockSharedPreferences mockSharedPreferences;
   late MockZipDecoder mockZipDecoder;
 
-  setUp(() async {
+  setUpAll(() async {
     await di.init();
 
     mockDataSource = MockDataSource();
@@ -42,6 +45,8 @@ void main() {
         networkInfo: mockNetworkInfo,
         offlineDataSource: OfflineDatabase(),
         decoder: mockZipDecoder);
+
+    when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
   });
 
   group('download', () {
@@ -92,9 +97,7 @@ void main() {
         when(mockDataSource.downloadImages(tRequest))
             .thenAnswer((_) async => ApiResponse(request: tRequest, objects: [
                   DownloadResponseObject(
-                      name: 'download',
-                      translation: false,
-                      bodyBytes: tBodyBytes)
+                      name: 'images', translation: false, bodyBytes: tBodyBytes)
                 ]));
 
         when(mockZipDecoder.decodeBytes(tBodyBytes))
@@ -108,6 +111,46 @@ void main() {
         verify(mockZipDecoder.decodeBytes(tBodyBytes));
         verify(mockNetworkInfo.isConnected);
       });
+    });
+  });
+
+  group('startup', () {
+    final tStartup = StartupRequest(
+        appMode: 'full',
+        appName: 'test',
+        clientId: 'test_clientId',
+        deviceId: 'test_deviceId',
+        language: 'en',
+        layoutMode: 'generic',
+        readAheadLimit: 100,
+        screenHeight: 200,
+        screenWidth: 200,
+        url: 'test.com');
+
+    final tResponse = ApiResponse.fromJson(
+        tStartup, json.decode(fixture('startup_response.json')));
+
+    final tError = ApiError(
+        failure: ServerFailure(
+            name: 'message.error',
+            details: '',
+            message: 'Could not parse response',
+            title: 'Parsing error'));
+
+    test('should return ApiResponse with valid data', () async {
+      when(mockDataSource.startup(tStartup)).thenAnswer((_) async => tResponse);
+
+      final result = await repository.startup(tStartup);
+
+      expect(result, tResponse);
+    });
+
+    test('should return ApiError with invalid data', () async {
+      when(mockDataSource.startup(tStartup)).thenAnswer((_) async => tError);
+
+      final result = await repository.startup(tStartup);
+
+      expect(result, tError);
     });
   });
 }

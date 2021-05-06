@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/component_widget.dart';
-import 'package:flutterclient/src/ui/container/co_container_widget.dart';
-import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
+
+import '../component/component_widget.dart';
+import 'co_container_widget.dart';
+import 'models/container_component_model.dart';
 
 class CoPanelWidget extends CoContainerWidget {
   CoPanelWidget({required ContainerComponentModel componentModel})
