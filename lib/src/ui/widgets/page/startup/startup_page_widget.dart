@@ -2,34 +2,26 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/util/app/state/state_helper.dart';
+import 'package:flutterclient/src/util/device_info/device_info_mobile.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/application_style_request.dart';
 import '../../../../models/api/requests/download_images_request.dart';
 import '../../../../models/api/requests/download_translation_request.dart';
 import '../../../../models/api/requests/startup_request.dart';
-import '../../../../models/api/response_objects/application_meta_data_response_object.dart';
-import '../../../../models/api/response_objects/application_style/application_style_response_object.dart';
-import '../../../../models/api/response_objects/device_status_response_object.dart';
-import '../../../../models/api/response_objects/language_response_object.dart';
 import '../../../../models/api/response_objects/login_response_object.dart';
 import '../../../../models/api/response_objects/menu/menu_response_object.dart';
 import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
-import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/login_page_arguments.dart';
 import '../../../../models/state/routes/arguments/menu_page_arguments.dart';
 import '../../../../models/state/routes/routes.dart';
-import '../../../../services/local/locale/supported_locale_manager.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../../util/app/get_package_string.dart';
-import '../../../../util/color/get_color_from_app_style.dart';
+import '../../../../util/app/state/state_helper.dart';
 import '../../../../util/device_info/device_info.dart';
 import '../../../../util/download/download_helper.dart';
-import '../../../../util/theme/theme_manager.dart';
 import '../../../../util/translation/app_localizations.dart';
 import '../../../util/custom_cubit_listener.dart';
 
@@ -74,8 +66,12 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   /// Method for sending the [Startup] request.
-  void _sendStartupRequest() {
+  void _sendStartupRequest() async {
     DeviceInfo deviceInfo = DeviceInfo();
+
+    if (!kIsWeb) {
+      await (deviceInfo as DeviceInfoMobile).setSystemInfo();
+    }
 
     if (widget.appState.serverConfig != null &&
         widget.appState.serverConfig!.baseUrl.isNotEmpty &&

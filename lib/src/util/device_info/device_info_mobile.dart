@@ -12,16 +12,14 @@ class DeviceInfoMobile implements DeviceInfo {
   String? deviceTypeModel;
   String? technology;
 
-  DeviceInfoMobile() {
-    _setSystemInfo();
-  }
+  DeviceInfoMobile();
 
-  Future<void> _setSystemInfo() async {
+  Future<void> setSystemInfo() async {
     this.technology = "FlutterMobile";
 
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      appVersion = '${packageInfo.version}.${packageInfo.buildNumber}';
-    });
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
     if (Platform.isAndroid) {
       var androidInfo = await DeviceInfoPlugin().androidInfo;
