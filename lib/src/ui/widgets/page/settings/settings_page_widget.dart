@@ -194,10 +194,11 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     manager.appName = appName;
     manager.baseUrl = baseUrl;
 
-    appState.serverConfig!.appName = appName!;
-    appState.serverConfig!.baseUrl = baseUrl!;
-    appState.serverConfig!.username = username;
-    appState.serverConfig!.password = password;
+    appState.serverConfig = ServerConfig(
+        appName: appName!,
+        baseUrl: baseUrl!,
+        username: username,
+        password: password);
   }
 
   void _saveSettings(BuildContext context) {
