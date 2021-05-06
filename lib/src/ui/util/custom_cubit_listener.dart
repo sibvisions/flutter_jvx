@@ -37,7 +37,7 @@ class CustomCubitListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ApiCubit, ApiState>(
       bloc: bloc,
-      listener: (BuildContext context, ApiState state) {
+      listener: (BuildContext context, ApiState state) async {
         ModalRoute modalRoute = ModalRoute.of(context)!;
 
         if (handleLoading && state is ApiLoading) {
@@ -48,8 +48,10 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (handleError) {
-          ErrorHandler.handleResponse(context, state);
+        if (handleError && !appState.showsError) {
+          appState.showsError = true;
+          await ErrorHandler.handleResponse(context, state);
+          appState.showsError = false;
         }
 
         if (state is ApiResponse) {

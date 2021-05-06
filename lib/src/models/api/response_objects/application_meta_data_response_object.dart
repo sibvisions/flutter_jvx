@@ -21,4 +21,12 @@ class ApplicationMetaDataResponseObject extends ResponseObject {
         clientId = map['clientId'],
         version = map['version'],
         super.fromJson(map: map);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'langCode': langCode,
+        'languageResource': languageResource,
+        'clientId': clientId,
+        'version': version,
+        ...super.toJson()
+      };
 }
