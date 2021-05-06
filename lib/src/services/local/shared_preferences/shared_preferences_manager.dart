@@ -153,9 +153,8 @@ class SharedPreferencesManager {
 
   set offlineUsername(String? username) {
     if (username != null && username.isNotEmpty) {
-      final hash = sha256.convert(utf8.encode(username)).toString();
-
-      sharedPreferences.setString('offlineUsername', hash);
+      sharedPreferences.setString(
+          'offlineUsername', encrypter.encrypt(username, iv: iv).base64);
     } else {
       sharedPreferences.remove('offlineUsername');
     }
@@ -163,9 +162,8 @@ class SharedPreferencesManager {
 
   set offlinePassword(String? password) {
     if (password != null && password.isNotEmpty) {
-      final hash = sha256.convert(utf8.encode(password)).toString();
-
-      sharedPreferences.setString('offlinePassword', hash);
+      sharedPreferences.setString(
+          'offlinePassword', encrypter.encrypt(password, iv: iv).base64);
     } else {
       sharedPreferences.remove('offlinePassword');
     }

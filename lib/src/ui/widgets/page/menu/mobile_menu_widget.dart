@@ -126,6 +126,9 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
         onPressed: () async {
           bool shouldSync = await showSyncDialog(context);
 
+          if (shouldSync)
+            shouldSync = await sl<AppState>().screenManager.onSync(context);
+
           if (shouldSync) {
             widget.appState.isOffline = false;
 

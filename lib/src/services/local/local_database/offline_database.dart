@@ -72,182 +72,173 @@ class OfflineDatabase extends LocalDatabase
   }
 
   Future<bool> syncOnline(BuildContext context) async {
-    if (await sl<AppState>().screenManager.onSync(context)) {
-      bool result = false;
-      int rowsToSync = 0;
-      int rowsSynced = 0;
-      responseError = null;
+    bool result = false;
+    int rowsToSync = 0;
+    int rowsSynced = 0;
+    responseError = null;
 
-      ApiRepository repository = ApiRepositoryImpl(
-          offlineDataSource: this,
-          dataSource: sl<DataSource>(),
-          networkInfo: sl<NetworkInfo>(),
-          appState: sl<AppState>(),
-          manager: sl<SharedPreferencesManager>(),
-          decoder: sl<ZipDecoder>());
+    ApiRepository repository = ApiRepositoryImpl(
+        offlineDataSource: this,
+        dataSource: sl<DataSource>(),
+        networkInfo: sl<NetworkInfo>(),
+        appState: sl<AppState>(),
+        manager: sl<SharedPreferencesManager>(),
+        decoder: sl<ZipDecoder>());
 
-      log('Online sync started.');
+    log('Online sync started.');
 
-      String? authUsername = repository.manager.syncLoginData?['username'];
-      String? authPassword = repository.manager.syncLoginData?['password'];
-      String? authKey = repository.manager.authKey;
+    String? authUsername = repository.manager.syncLoginData?['username'];
+    String? authPassword = repository.manager.syncLoginData?['password'];
+    String? authKey = repository.manager.authKey;
 
-      if (authKey != null || (authUsername != null && authPassword != null)) {
-        StartupRequest startup = StartupRequest(
-            clientId: '',
-            url: repository.appState.serverConfig!.baseUrl,
-            appName: repository.appState.serverConfig!.appName,
-            screenHeight: MediaQuery.of(context).size.height.toInt(),
-            screenWidth: MediaQuery.of(context).size.width.toInt(),
-            appMode: repository.appState.serverConfig!.appMode,
-            readAheadLimit: repository.appState.readAheadLimit,
-            deviceId: repository.manager.deviceId!,
-            username: authUsername,
-            password: authPassword,
-            authKey: authKey,
-            layoutMode: 'generic',
-            language: repository.appState.language!.language,
-            forceNewSession: true);
+    if (authKey != null || (authUsername != null && authPassword != null)) {
+      StartupRequest startup = StartupRequest(
+          clientId: '',
+          url: repository.appState.serverConfig!.baseUrl,
+          appName: repository.appState.serverConfig!.appName,
+          screenHeight: MediaQuery.of(context).size.height.toInt(),
+          screenWidth: MediaQuery.of(context).size.width.toInt(),
+          appMode: repository.appState.serverConfig!.appMode,
+          readAheadLimit: repository.appState.readAheadLimit,
+          deviceId: repository.manager.deviceId!,
+          username: authUsername,
+          password: authPassword,
+          authKey: authKey,
+          layoutMode: 'generic',
+          language: repository.appState.language!.language,
+          forceNewSession: true);
 
-        ApiState state = await repository.startup(startup);
+      ApiState state = await repository.startup(startup);
 
-        if (state is ApiResponse) {
-          setProperties(repository, state);
+      if (state is ApiResponse) {
+        setProperties(repository, state);
 
-          ApplicationStyleRequest appStyle = ApplicationStyleRequest(
-            clientId: repository.appState.applicationMetaData!.clientId,
-          );
+        ApplicationStyleRequest appStyle = ApplicationStyleRequest(
+          clientId: repository.appState.applicationMetaData!.clientId,
+        );
 
-          ApiState appStyleState = await repository.applicationStyle(appStyle);
+        ApiState appStyleState = await repository.applicationStyle(appStyle);
 
-          if (appStyleState is ApiResponse) {
-            setProperties(repository, appStyleState);
+        if (appStyleState is ApiResponse) {
+          setProperties(repository, appStyleState);
 
-            String currentScreenComponentId = "";
+          String currentScreenComponentId = "";
 
-            List<String> syncDataProvider =
-                await this.getOnlineSyncDataProvider();
-            Map<String, List<Map<String, dynamic>>?> syncData =
-                <String, List<Map<String, dynamic>>>{};
+          List<String> syncDataProvider =
+              await this.getOnlineSyncDataProvider();
+          Map<String, List<Map<String, dynamic>>?> syncData =
+              <String, List<Map<String, dynamic>>>{};
 
-            await Future.forEach(syncDataProvider,
-                (String? dataProvider) async {
-              if (dataProvider != null) {
-                syncData[dataProvider] =
-                    await getSyncData(context, dataProvider);
+          await Future.forEach(syncDataProvider, (String? dataProvider) async {
+            if (dataProvider != null) {
+              syncData[dataProvider] = await getSyncData(context, dataProvider);
 
-                if (syncData[dataProvider] != null) {
-                  rowsToSync += syncData[dataProvider]!.length;
-                }
-              }
-            });
-
-            await Future.forEach(syncData.entries, (MapEntry entry) async {
-              if (entry.value.length > 0) {
-                DataBookMetaData? metaData = await getMetaDataBook(entry.key);
-
-                if (metaData!.offlineScreenComponentId !=
-                    currentScreenComponentId) {
-                  if (currentScreenComponentId.isNotEmpty) {
-                    CloseScreenRequest closeScreenRequest = CloseScreenRequest(
-                      componentId: currentScreenComponentId,
-                      clientId:
-                          repository.appState.applicationMetaData!.clientId,
-                    );
-
-                    ApiState state =
-                        await repository.closeScreen(closeScreenRequest);
-
-                    if (state is ApiResponse) {
-                      currentScreenComponentId = '';
-                    }
-                  }
-
-                  OpenScreenRequest openScreenRequest = OpenScreenRequest(
-                      clientId:
-                          repository.appState.applicationMetaData!.clientId,
-                      componentId: metaData.offlineScreenComponentId!);
-
-                  ApiState openScreenState =
-                      await repository.openScreen(openScreenRequest);
-
-                  if (openScreenState is ApiResponse) {
-                    currentScreenComponentId =
-                        metaData.offlineScreenComponentId!;
-                  }
-                }
-
-                await Future.forEach(entry.value,
-                    (Map<String, dynamic> element) async {
-                  String? state = OfflineDatabaseFormatter.getRowState(element);
-                  Map<String, dynamic> primaryKeyValues =
-                      OfflineDatabaseFormatter.getDataColumns(
-                          element, metaData.primaryKeyColumns);
-                  Filter primaryKeyFilter = Filter(
-                      columnNames: primaryKeyValues.keys.toList(),
-                      values: primaryKeyValues.values.toList());
-                  if (state == OFFLINE_ROW_STATE_DELETED) {
-                    if (await syncDelete(context, entry.key, primaryKeyFilter,
-                        metaData.columnNames, element)) rowsSynced++;
-                  } else if (state == OFFLINE_ROW_STATE_INSERTED) {
-                    if (await syncInsert(context, entry.key, primaryKeyFilter,
-                        metaData.columnNames, element)) {
-                      rowsSynced++;
-                    }
-                  } else if (state == OFFLINE_ROW_STATE_UPDATED) {
-                    if (await syncUpdate(context, entry.key, primaryKeyFilter,
-                        metaData.columnNames, element)) {
-                      rowsSynced++;
-                    }
-                  }
-                  setRowProgress(rowsToSync, rowsSynced);
-                });
-              }
-            });
-
-            if (currentScreenComponentId.isNotEmpty) {
-              CloseScreenRequest closeScreen = CloseScreenRequest(
-                  componentId: currentScreenComponentId,
-                  clientId: repository.appState.applicationMetaData!.clientId);
-
-              ApiState closeState = await repository.closeScreen(closeScreen);
-
-              if (closeState is ApiResponse) {
-                currentScreenComponentId = '';
+              if (syncData[dataProvider] != null) {
+                rowsToSync += syncData[dataProvider]!.length;
               }
             }
+          });
+
+          await Future.forEach(syncData.entries, (MapEntry entry) async {
+            if (entry.value.length > 0) {
+              DataBookMetaData? metaData = await getMetaDataBook(entry.key);
+
+              if (metaData!.offlineScreenComponentId !=
+                  currentScreenComponentId) {
+                if (currentScreenComponentId.isNotEmpty) {
+                  CloseScreenRequest closeScreenRequest = CloseScreenRequest(
+                    componentId: currentScreenComponentId,
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                  );
+
+                  ApiState state =
+                      await repository.closeScreen(closeScreenRequest);
+
+                  if (state is ApiResponse) {
+                    currentScreenComponentId = '';
+                  }
+                }
+
+                OpenScreenRequest openScreenRequest = OpenScreenRequest(
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                    componentId: metaData.offlineScreenComponentId!);
+
+                ApiState openScreenState =
+                    await repository.openScreen(openScreenRequest);
+
+                if (openScreenState is ApiResponse) {
+                  currentScreenComponentId = metaData.offlineScreenComponentId!;
+                }
+              }
+
+              await Future.forEach(entry.value,
+                  (Map<String, dynamic> element) async {
+                String? state = OfflineDatabaseFormatter.getRowState(element);
+                Map<String, dynamic> primaryKeyValues =
+                    OfflineDatabaseFormatter.getDataColumns(
+                        element, metaData.primaryKeyColumns);
+                Filter primaryKeyFilter = Filter(
+                    columnNames: primaryKeyValues.keys.toList(),
+                    values: primaryKeyValues.values.toList());
+                if (state == OFFLINE_ROW_STATE_DELETED) {
+                  if (await syncDelete(context, entry.key, primaryKeyFilter,
+                      metaData.columnNames, element)) rowsSynced++;
+                } else if (state == OFFLINE_ROW_STATE_INSERTED) {
+                  if (await syncInsert(context, entry.key, primaryKeyFilter,
+                      metaData.columnNames, element)) {
+                    rowsSynced++;
+                  }
+                } else if (state == OFFLINE_ROW_STATE_UPDATED) {
+                  if (await syncUpdate(context, entry.key, primaryKeyFilter,
+                      metaData.columnNames, element)) {
+                    rowsSynced++;
+                  }
+                }
+                setRowProgress(rowsToSync, rowsSynced);
+              });
+            }
+          });
+
+          if (currentScreenComponentId.isNotEmpty) {
+            CloseScreenRequest closeScreen = CloseScreenRequest(
+                componentId: currentScreenComponentId,
+                clientId: repository.appState.applicationMetaData!.clientId);
+
+            ApiState closeState = await repository.closeScreen(closeScreen);
+
+            if (closeState is ApiResponse) {
+              currentScreenComponentId = '';
+            }
           }
-
-          if (rowsSynced == rowsToSync) result = true;
         }
-      } else {
-        responseError = Failure(
-            name: 'offline.error',
-            title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
-            message: AppLocalizations.of(context)!
-                .text('Authentifizierung fehlgeschlagen.'),
-            details: '');
+
+        if (rowsSynced == rowsToSync) result = true;
       }
-
-      if (result)
-        log("Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
-      else
-        log("Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${responseError?.message}");
-
-      // set general error
-      if (!result && responseError == null) {
-        responseError = Failure(
-            title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
-            details: '',
-            message: AppLocalizations.of(context)!.text(
-                'Leider ist ein Fehler beim synchronisieren der Daten aufgetreten.'),
-            name: 'offline.error');
-      }
-
-      return result;
     } else {
-      return false;
+      responseError = Failure(
+          name: 'offline.error',
+          title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
+          message: AppLocalizations.of(context)!
+              .text('Authentifizierung fehlgeschlagen.'),
+          details: '');
     }
+
+    if (result)
+      log("Online sync finished successfully! Synced records: $rowsSynced/$rowsToSync");
+    else
+      log("Online sync finished with error! Synced records: $rowsSynced/$rowsToSync ErrorDetail: ${responseError?.message}");
+
+    // set general error
+    if (!result && responseError == null) {
+      responseError = Failure(
+          title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
+          details: '',
+          message: AppLocalizations.of(context)!.text(
+              'Leider ist ein Fehler beim synchronisieren der Daten aufgetreten.'),
+          name: 'offline.error');
+    }
+
+    return result;
   }
 
   Future<bool> importComponents(
