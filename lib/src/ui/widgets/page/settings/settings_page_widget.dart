@@ -1,15 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
-import 'package:flutterclient/src/models/state/application_parameters.dart';
-import 'package:flutterclient/src/util/app/qr_code_formatter.dart';
-import 'package:flutterclient/src/util/app/state/state_helper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/export_routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
+import '../../../../util/app/qr_code_formatter.dart';
+import '../../../../util/app/state/state_helper.dart';
 import '../../../../util/app/version/app_version.dart';
 import '../../../../util/color/color_extension.dart';
 import '../../../../util/translation/app_localizations.dart';
@@ -256,7 +254,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           });
         }
 
-        return widget.canPop;
+        return widget.canPop && Navigator.of(context).canPop();
       },
       child: Scaffold(
         key: scaffoldKey,
@@ -272,7 +270,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
               )
             : null,
         appBar: AppBar(
-          automaticallyImplyLeading: widget.canPop,
+          automaticallyImplyLeading:
+              widget.canPop && Navigator.of(context).canPop(),
           iconTheme:
               IconThemeData(color: Theme.of(context).primaryColor.textColor()),
           title: Text(
@@ -282,7 +281,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         ),
         bottomNavigationBar: !isDialogOpen
             ? SettingsBottomAppBar(
-                canPop: widget.canPop,
+                canPop: widget.canPop && Navigator.of(context).canPop(),
                 onSave: () => _saveSettings(context),
               )
             : null,
