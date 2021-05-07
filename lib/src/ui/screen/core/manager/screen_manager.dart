@@ -129,7 +129,7 @@ class ScreenManager implements IScreenManager {
   }
 
   @override
-  Future<String> onCookie(String cookie) async {
+  String onCookie(String cookie) {
     return cookie;
   }
 

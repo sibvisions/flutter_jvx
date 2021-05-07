@@ -42,7 +42,7 @@ abstract class IScreenManager {
   Future<bool> onSync(BuildContext context);
 
   /// Is called when a cookie is returned
-  Future<String> onCookie(String cookie);
+  String onCookie(String cookie);
 
   /// Is called when a response is returned
   Future<ApiResponse> onResponse(Request request, List<dynamic> decodedBody);

@@ -181,6 +181,12 @@ class RemoteDataSourceImpl implements DataSource {
 
   @override
   Future<ApiState> startup(StartupRequest request) async {
+    if (client.headers == null) {
+      client.headers = <String, String>{'Content-Type': 'application/json'};
+    }
+
+    client.headers!['cookie'] = appState.screenManager.onCookie('');
+
     final path = appState.serverConfig!.baseUrl + '/api/startup';
 
     Either<ApiError, ApiResponse> either =
@@ -311,7 +317,8 @@ class RemoteDataSourceImpl implements DataSource {
             client.headers!['cookie'] =
                 (index == -1) ? cookie : cookie.substring(0, index);
 
-            appState.screenManager.onCookie(client.headers!['cookie']!);
+            client.headers!['cookie'] =
+                appState.screenManager.onCookie(client.headers!['cookie']!);
           }
 
           ApiResponse response =
