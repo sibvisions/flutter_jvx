@@ -165,6 +165,13 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
 
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
+        BoxConstraints contentConstraints = BoxConstraints(
+            minWidth: constraints.minWidth,
+            maxWidth: constraints.maxWidth,
+            minHeight: constraints.minHeight,
+            maxHeight: constraints.maxHeight != double.infinity
+                ? constraints.maxHeight - 48
+                : constraints.maxHeight);
         return SizedBox(
           height: constraints.maxHeight != double.infinity
               ? constraints.maxHeight
@@ -187,7 +194,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
                     controller: this.tabController,
                     children:
                         (widget.componentModel as TabsetPanelComponentModel)
-                            .getTabsetComponents(constraints)),
+                            .getTabsetComponents(contentConstraints)),
               )
             ],
           ),
