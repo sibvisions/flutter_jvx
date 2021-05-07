@@ -310,9 +310,12 @@ class RemoteDataSourceImpl implements DataSource {
 
             client.headers!['cookie'] =
                 (index == -1) ? cookie : cookie.substring(0, index);
+
+            appState.screenManager.onCookie(client.headers!['cookie']!);
           }
 
-          ApiResponse response = ApiResponse.fromJson(request, decodedBody);
+          ApiResponse response =
+              await appState.screenManager.onResponse(request, decodedBody);
 
           return Right(response);
         }

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/request.dart';
 
 import '../../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
@@ -39,6 +40,12 @@ abstract class IScreenManager {
 
   /// Will be called when going online from offline mode
   Future<bool> onSync(BuildContext context);
+
+  /// Is called when a cookie is returned
+  Future<String> onCookie(String cookie);
+
+  /// Is called when a response is returned
+  Future<ApiResponse> onResponse(Request request, List<dynamic> decodedBody);
 
   /// Used to register a screen for the Screen Manager
   void registerScreen(SoScreen screen);

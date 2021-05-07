@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/request.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
@@ -125,5 +126,15 @@ class ScreenManager implements IScreenManager {
   @override
   Future<bool> onSync(BuildContext context) async {
     return true;
+  }
+
+  @override
+  Future<String> onCookie(String cookie) async {
+    return cookie;
+  }
+
+  @override
+  Future<ApiResponse> onResponse(Request request, List<dynamic> decodedBody) async {
+    return ApiResponse.fromJson(request, decodedBody);
   }
 }
