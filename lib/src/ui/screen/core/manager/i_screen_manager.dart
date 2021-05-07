@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/request.dart';
 
@@ -45,7 +44,7 @@ abstract class IScreenManager {
   String onCookie(String cookie);
 
   /// Is called when a response is returned
-  Future<ApiResponse> onResponse(Request request, List<dynamic> decodedBody);
+  Future<bool> onResponse(Request request, String responseBody);
 
   /// Used to register a screen for the Screen Manager
   void registerScreen(SoScreen screen);

@@ -280,52 +280,54 @@ class RemoteDataSourceImpl implements DataSource {
       if (r.statusCode != 404) {
         List decodedBody = [];
 
-        try {
-          if (kReleaseMode)
-            decodedBody = await compute(_getDecodedBody, r.body);
-          else
-            decodedBody = _getDecodedBody(r.body);
-        } on FormatException {
-          return Left(ApiError(
-              failure: ServerFailure(
-                  name: 'message.error',
-                  details: '',
-                  message: 'Could not parse response',
-                  title: 'Parsing error')));
-        }
-
-        Failure? failure = _getErrorIfExists(decodedBody);
-
-        if (!kReleaseMode && debugResponse) {
-          log('RESPONSE ${uri.path}: $decodedBody');
-        }
-
-        if (failure != null) {
-          return Left(ApiError(failure: failure));
-        } else {
-          final cookie = r.headers['set-cookie'];
-
-          if (cookie != null && cookie.isNotEmpty) {
-            final index = cookie.indexOf(';');
-
-            if (client.headers == null) {
-              client.headers = <String, String>{
-                'Content-Type': 'application/json'
-              };
-            }
-
-            client.headers!['cookie'] =
-                (index == -1) ? cookie : cookie.substring(0, index);
-
-            client.headers!['cookie'] =
-                appState.screenManager.onCookie(client.headers!['cookie']!);
+        if (await appState.screenManager.onResponse(request, r.body)) {
+          try {
+            if (kReleaseMode)
+              decodedBody = await compute(_getDecodedBody, r.body);
+            else
+              decodedBody = _getDecodedBody(r.body);
+          } on FormatException {
+            return Left(ApiError(
+                failure: ServerFailure(
+                    name: 'message.error',
+                    details: '',
+                    message: 'Could not parse response',
+                    title: 'Parsing error')));
           }
 
-          ApiResponse response =
-              await appState.screenManager.onResponse(request, decodedBody);
+          Failure? failure = _getErrorIfExists(decodedBody);
 
-          return Right(response);
+          if (!kReleaseMode && debugResponse) {
+            log('RESPONSE ${uri.path}: $decodedBody');
+          }
+
+          if (failure != null) {
+            return Left(ApiError(failure: failure));
+          } else {
+            final cookie = r.headers['set-cookie'];
+
+            if (cookie != null && cookie.isNotEmpty) {
+              final index = cookie.indexOf(';');
+
+              if (client.headers == null) {
+                client.headers = <String, String>{
+                  'Content-Type': 'application/json'
+                };
+              }
+
+              client.headers!['cookie'] =
+                  (index == -1) ? cookie : cookie.substring(0, index);
+
+              client.headers!['cookie'] =
+                  appState.screenManager.onCookie(client.headers!['cookie']!);
+            }
+
+            ApiResponse response = ApiResponse.fromJson(request, decodedBody);
+
+            return Right(response);
+          }
         }
+        return Right(ApiResponse(request: request, objects: []));
       } else {
         return Left(ApiError(
             failure: Failure(
