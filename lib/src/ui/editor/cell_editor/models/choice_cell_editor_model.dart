@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/util/icon/font_awesome_changer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../models/api/response_objects/response_data/editor/cell_editor.dart';
 import '../../../../models/api/response_objects/response_data/editor/cell_editor_properties.dart';
@@ -13,6 +15,7 @@ class ChoiceCellEditorModel extends CellEditorModel {
   List<String>? imageNames;
   ChoiceCellEditorImage? selectedImage;
   Size? tableMinimumSize = Size(50, 40);
+  FaIcon? icon;
 
   ChoiceCellEditorModel({required CellEditor cellEditor})
       : super(cellEditor: cellEditor) {
@@ -44,7 +47,6 @@ class ChoiceCellEditorModel extends CellEditorModel {
   }
 
   ChoiceCellEditorImage loadImage(String? path) {
-    Image image = ImageLoader().loadImage('$path');
     String val;
     try {} catch (e) {
       this.selectedImage = this.defaultImage;
@@ -58,15 +60,23 @@ class ChoiceCellEditorModel extends CellEditorModel {
       val = this.allowedValues![indx >= 0 ? indx : 0];
     }
 
+    Image? image;
+
+    if (path != null && checkFontAwesome(path)) {
+      icon = convertFontAwesomeTextToIcon(path, Colors.black);
+    } else {
+      image = ImageLoader().loadImage('$path');
+    }
+
     ChoiceCellEditorImage choiceCellEditorImage =
-        ChoiceCellEditorImage(value: val, image: image);
+        ChoiceCellEditorImage(value: val, image: image ?? icon);
     return choiceCellEditorImage;
   }
 }
 
 class ChoiceCellEditorImage {
   String value;
-  Image image;
+  dynamic image;
 
   ChoiceCellEditorImage({required this.value, required this.image});
 }
