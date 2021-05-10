@@ -269,6 +269,9 @@ class RemoteDataSourceImpl implements DataSource {
       log('REQUEST ${uri.path}: ${request.debugInfo}');
     }
 
+    client.headers!['cookie'] =
+        appState.screenManager.onCookie(client.headers!['cookie']!);
+
     Either<Failure, http.Response> either = await client.post(
         uri: uri,
         data: request.toJson(),
@@ -322,9 +325,6 @@ class RemoteDataSourceImpl implements DataSource {
 
               client.headers!['cookie'] =
                   (index == -1) ? cookie : cookie.substring(0, index);
-
-              client.headers!['cookie'] =
-                  appState.screenManager.onCookie(client.headers!['cookie']!);
             }
 
             ApiResponse internResponse =
