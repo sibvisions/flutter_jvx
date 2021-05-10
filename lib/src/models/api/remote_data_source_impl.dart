@@ -280,7 +280,10 @@ class RemoteDataSourceImpl implements DataSource {
       if (r.statusCode != 404) {
         List decodedBody = [];
 
-        if (await appState.screenManager.onResponse(request, r.body)) {
+        ApiResponse? response =
+            await appState.screenManager.onResponse(request, r.body);
+
+        if (response == null) {
           try {
             if (kReleaseMode)
               decodedBody = await compute(_getDecodedBody, r.body);
@@ -322,12 +325,14 @@ class RemoteDataSourceImpl implements DataSource {
                   appState.screenManager.onCookie(client.headers!['cookie']!);
             }
 
-            ApiResponse response = ApiResponse.fromJson(request, decodedBody);
+            ApiResponse internResponse =
+                ApiResponse.fromJson(request, decodedBody);
 
-            return Right(response);
+            return Right(internResponse);
           }
+        } else {
+          return Right(response);
         }
-        return Right(ApiResponse(request: request, objects: []));
       } else {
         return Left(ApiError(
             failure: Failure(
