@@ -18,7 +18,7 @@ abstract class IScreenManager {
   /// Will be called before [getScreen] is called.
   ///
   /// The method is for registering all kinds of screens
-  void init();
+  void init(Key navigatorKey);
 
   /// Returns an [IScreen] with the given [componentId].
   ///

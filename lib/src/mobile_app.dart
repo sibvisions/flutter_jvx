@@ -23,6 +23,7 @@ class MobileApp extends StatelessWidget {
   final SharedPreferencesManager manager;
   final String initialRoute;
   final List<Locale> supportedLocales;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   const MobileApp({
     Key? key,
@@ -31,6 +32,7 @@ class MobileApp extends StatelessWidget {
     required this.manager,
     required this.supportedLocales,
     this.initialRoute = Routes.startup,
+    required this.navigatorKey,
   }) : super(key: key);
 
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
@@ -121,6 +123,7 @@ class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: themeData,
       initialRoute: initialRoute,

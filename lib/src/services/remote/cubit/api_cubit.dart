@@ -118,7 +118,11 @@ class ApiCubit extends Cubit<ApiState> {
   }
 
   Future<void> pressButton(PressButtonRequest request) async {
+    emit(ApiLoading());
+
     ApiState apiState = await repository.pressButton(request);
+
+    emit(ApiLoading(stop: true));
 
     emit(apiState);
   }

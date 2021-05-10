@@ -82,6 +82,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   late Future<AppConfig> appConfigFuture;
   late AppState appState;
   late SharedPreferencesManager manager;
+  late GlobalKey<NavigatorState> navigatorKey;
 
   /// Method for loading the [ServerConfig].
   ServerConfig? _getServerConfig(
@@ -189,7 +190,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     if (widget.screenManager != null) {
       appState.screenManager = widget.screenManager!;
 
-      appState.screenManager.init();
+      appState.screenManager.init(navigatorKey);
     }
 
     if (appState.listener == null) {
@@ -205,6 +206,8 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   @override
   void initState() {
     super.initState();
+
+    navigatorKey = GlobalKey<NavigatorState>();
 
     appConfigFuture = _getAppConfig();
 
@@ -253,6 +256,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                             Widget? child) {
                           if (kIsWeb) {
                             return BrowserApp(
+                                navigatorKey: navigatorKey,
                                 appState: appState,
                                 themeData: themeData,
                                 initialRoute: initialRoute,
@@ -260,6 +264,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
                                 supportedLocales: locales);
                           } else {
                             return MobileApp(
+                                navigatorKey: navigatorKey,
                                 appState: appState,
                                 themeData: themeData,
                                 initialRoute: initialRoute,

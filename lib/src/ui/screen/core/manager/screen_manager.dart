@@ -64,7 +64,7 @@ class ScreenManager implements IScreenManager {
   }
 
   @override
-  void init() {}
+  void init(Key navigatorKey) {}
 
   @override
   void updateScreen(SoScreen screen) {

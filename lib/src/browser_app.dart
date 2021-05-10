@@ -25,6 +25,7 @@ class BrowserApp extends StatelessWidget {
   final SharedPreferencesManager manager;
   final String initialRoute;
   final List<Locale> supportedLocales;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   const BrowserApp({
     Key? key,
@@ -32,6 +33,7 @@ class BrowserApp extends StatelessWidget {
     required this.appState,
     required this.manager,
     required this.supportedLocales,
+    required this.navigatorKey,
     this.initialRoute = Routes.startup,
   }) : super(key: key);
 
@@ -206,6 +208,7 @@ class BrowserApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       onGenerateRoute: _onGenerateRoute,
