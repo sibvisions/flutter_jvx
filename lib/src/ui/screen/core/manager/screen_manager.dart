@@ -134,7 +134,8 @@ class ScreenManager implements IScreenManager {
   }
 
   @override
-  Future<ApiResponse?> onResponse(Request request, String responseBody) async {
-    return null;
+  Future<ApiState?> onResponse(Request request, String responseBody,
+      Future<ApiState> Function() callback) async {
+    return callback();
   }
 }

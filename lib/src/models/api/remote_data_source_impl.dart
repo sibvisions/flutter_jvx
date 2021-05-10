@@ -280,8 +280,10 @@ class RemoteDataSourceImpl implements DataSource {
       if (r.statusCode != 404) {
         List decodedBody = [];
 
-        ApiResponse? response =
-            await appState.screenManager.onResponse(request, r.body);
+        ApiState? response =
+            await appState.screenManager.onResponse(request, r.body, () async {
+          return (await _sendRequest(uri, request)).fold((l) => l, (r) => r);
+        });
 
         if (response == null) {
           try {
@@ -330,8 +332,17 @@ class RemoteDataSourceImpl implements DataSource {
 
             return Right(internResponse);
           }
-        } else {
+        } else if (response is ApiResponse) {
           return Right(response);
+        } else if (response is ApiError) {
+          return Left(response);
+        } else {
+          return Left(ApiError(
+              failure: ServerFailure(
+                  name: 'message.error',
+                  message: 'Something went wrong',
+                  title: 'Error',
+                  details: '')));
         }
       } else {
         return Left(ApiError(

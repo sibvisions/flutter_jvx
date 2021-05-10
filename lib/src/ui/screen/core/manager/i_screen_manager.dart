@@ -44,7 +44,7 @@ abstract class IScreenManager {
   String onCookie(String cookie);
 
   /// Is called when a response is returned
-  Future<ApiResponse?> onResponse(Request request, String responseBody);
+  Future<ApiState?> onResponse(Request request, String responseBody, Future<ApiState> Function() callback);
 
   /// Used to register a screen for the Screen Manager
   void registerScreen(SoScreen screen);
