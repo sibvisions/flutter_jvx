@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/loading_indicator_dialog.dart';
 import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_empty.dart';
 import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_swiper_view_widget.dart';
 import 'package:flutterclient/src/ui/widgets/page/menu/mobile/menu_tabs_view_widget.dart';
@@ -126,14 +127,16 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
         onPressed: () async {
           bool shouldSync = await showSyncDialog(context);
 
-          if (shouldSync != null && shouldSync)
+          if (shouldSync)
             shouldSync = await sl<AppState>().screenManager.onSync(context);
 
-          if (shouldSync != null && shouldSync) {
+          if (shouldSync) {
             widget.appState.isOffline = false;
 
+            showLoadingIndicator(context);
             bool syncSuccess =
                 await sl<IOfflineDatabaseProvider>().syncOnline(context);
+            hideLoading(context);
 
             if (syncSuccess) {
               await (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
