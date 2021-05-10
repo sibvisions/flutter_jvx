@@ -54,8 +54,9 @@ class RestClientImpl implements RestClient {
       required Map<String, dynamic> data,
       int timeout = 10}) async {
     if (data['forceNewSession'] != null && data['forceNewSession']) {
-      headers?.clear();
-      headers?['Content-Type'] = 'application/json';
+      clearSessionCookie();
+      //headers?.clear();
+      //headers?['Content-Type'] = 'application/json';
     }
 
     try {
@@ -111,6 +112,27 @@ class RestClientImpl implements RestClient {
           details: '',
           name: ErrorHandler.timeoutError,
           message: e.toString()));
+    }
+  }
+
+  void clearSessionCookie() {
+    if (headers != null) {
+      String newCookies = "";
+      String? cookie = headers!["cookie"];
+
+      if (cookie != null) {
+        List<String> cookies = cookie!.split(";");
+
+        for (var cookieItem in cookies) {
+          List c = cookieItem.split("=");
+          if (c.length == 2 && c[0] != 'JSESSIONID')
+            newCookies += "${c[0]}=${c[1]};";
+        }
+        if (newCookies.length > 0)
+          newCookies = newCookies.substring(0, newCookies.length - 1);
+
+        headers!["cookie"] = newCookies;
+      }
     }
   }
 }
