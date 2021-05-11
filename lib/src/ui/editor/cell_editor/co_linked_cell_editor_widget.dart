@@ -148,11 +148,13 @@ class CoLinkedCellEditorWidgetState
           borderRadius: BorderRadius.circular(widget.cellEditorModel.appState
                   .applicationStyle?.cornerRadiusEditors ??
               10),
-          border: widget.cellEditorModel.editable
-              ? (widget.cellEditorModel.borderVisible
-                  ? Border.all(color: Theme.of(context).primaryColor)
-                  : null)
-              : Border.all(color: Colors.grey)),
+          border: !widget.cellEditorModel.isTableView
+              ? widget.cellEditorModel.editable
+                  ? (widget.cellEditorModel.borderVisible
+                      ? Border.all(color: Theme.of(context).primaryColor)
+                      : null)
+                  : Border.all(color: Colors.grey)
+              : null),
       child: Container(
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(
