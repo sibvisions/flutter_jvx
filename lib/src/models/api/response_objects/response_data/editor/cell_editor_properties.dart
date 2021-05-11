@@ -29,7 +29,9 @@ enum CellEditorProperty {
   PRESERVE_ASPECT_RATIO,
   TABLE_READONLY,
   COLUMNS,
-  ROWS
+  ROWS,
+  IS_DATE_EDITOR,
+  IS_TIME_EDITOR
 }
 
 class CellEditorProperties {

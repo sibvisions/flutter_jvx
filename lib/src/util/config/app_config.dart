@@ -15,11 +15,13 @@ class AppConfig {
   final bool loginColorsInverted;
   final int requestTimeout;
   final int goOfflineRequestTimeout;
+  final String title;
   final ServerConfig? initialConfig;
   final Map<String, dynamic>? startupParameter;
 
   AppConfig(
-      {required this.package,
+      {required this.title,
+      required this.package,
       required this.rememberMeChecked,
       required this.hideLoginCheckbox,
       required this.handleSessionTimeout,
@@ -38,7 +40,8 @@ class AppConfig {
         requestTimeout = map['requestTimeout'],
         goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
         initialConfig = ServerConfig.fromJson(map: map['initialConfig']),
-        startupParameter = map['startupParameter'];
+        startupParameter = map['startupParameter'],
+        title = map['title'];
 
   AppConfig.fromYaml({required YamlMap map})
       : package = map['package'],
@@ -51,7 +54,8 @@ class AppConfig {
         initialConfig = map['initialConfig'] != null
             ? ServerConfig.fromYaml(map: map['initialConfig'])
             : null,
-        startupParameter = map['startupParameter'].cast<String, dynamic>();
+        startupParameter = map['startupParameter'].cast<String, dynamic>(),
+        title = map['title'];
 
   static Future<Either<Failure, AppConfig>> loadConfig(
       {required String path, bool package = false}) async {

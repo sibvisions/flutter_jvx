@@ -9,6 +9,12 @@ import 'cell_editor_model.dart';
 class DateCellEditorModel extends CellEditorModel {
   String? dateFormat;
   dynamic? toUpdate;
+  bool isDateEditor = false;
+  bool isSecondEditor = false;
+  bool isHourEditor = false;
+  bool isMinuteEditor = false;
+  bool isAmPmEditor = false;
+  bool isTimeEditor = false;
 
   @override
   get preferredSize {

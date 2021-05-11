@@ -141,34 +141,37 @@ class CoDateCellEditorWidgetState
                 Flexible(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Text(
-                      (widget.cellEditorModel.cellEditorValue != null &&
-                              (widget.cellEditorModel.cellEditorValue is int ||
-                                  int.tryParse(widget
-                                          .cellEditorModel.cellEditorValue) !=
-                                      null))
-                          ? DateFormat((widget.cellEditorModel
-                                      as DateCellEditorModel)
-                                  .dateFormat)
-                              .format(DateTime.fromMillisecondsSinceEpoch(widget
-                                      .cellEditorModel.cellEditorValue is String
-                                  ? int.parse(widget.cellEditorModel.cellEditorValue)
-                                  : widget.cellEditorModel.cellEditorValue))
-                          : widget.cellEditorModel.placeholder ?? '',
-                      style: (widget.cellEditorModel.cellEditorValue != null &&
-                              widget.cellEditorModel.cellEditorValue is int)
-                          ? TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color:
-                                  widget.cellEditorModel.foregroundColor == null
-                                      ? Colors.black
-                                      : widget.cellEditorModel.foregroundColor)
-                          : TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: Text(
+                        (widget.cellEditorModel.cellEditorValue != null &&
+                                (widget.cellEditorModel.cellEditorValue is int ||
+                                    int.tryParse(widget
+                                            .cellEditorModel.cellEditorValue) !=
+                                        null))
+                            ? DateFormat((widget.cellEditorModel
+                                        as DateCellEditorModel)
+                                    .dateFormat)
+                                .format(DateTime.fromMillisecondsSinceEpoch(widget
+                                        .cellEditorModel.cellEditorValue is String
+                                    ? int.parse(widget.cellEditorModel.cellEditorValue)
+                                    : widget.cellEditorModel.cellEditorValue))
+                            : widget.cellEditorModel.placeholder ?? '',
+                        style: (widget.cellEditorModel.cellEditorValue != null &&
+                                widget.cellEditorModel.cellEditorValue is int)
+                            ? TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color:
+                                    widget.cellEditorModel.foregroundColor == null
+                                        ? Colors.black
+                                        : widget.cellEditorModel.foregroundColor)
+                            : TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                      ),
                     ),
                   ),
                 ),

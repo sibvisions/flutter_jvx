@@ -140,11 +140,13 @@ class CoLinkedCellEditorWidgetState
     return Container(
       height: 50,
       decoration: BoxDecoration(
-          color: widget.cellEditorModel.backgroundColor != null
-              ? widget.cellEditorModel.backgroundColor
-              : Colors.white.withOpacity(widget.cellEditorModel.appState
-                      .applicationStyle?.controlsOpacity ??
-                  1.0),
+          color: !widget.cellEditorModel.isTableView
+              ? widget.cellEditorModel.backgroundColor != null
+                  ? widget.cellEditorModel.backgroundColor
+                  : Colors.white.withOpacity(widget.cellEditorModel.appState
+                          .applicationStyle?.controlsOpacity ??
+                      1.0)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(widget.cellEditorModel.appState
                   .applicationStyle?.cornerRadiusEditors ??
               10),

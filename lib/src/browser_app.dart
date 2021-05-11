@@ -202,7 +202,7 @@ class BrowserApp extends StatelessWidget {
   }
 
   String _onGenerateTitle(BuildContext context) {
-    return 'JVx mobile';
+    return appState.appConfig?.title ?? '';
   }
 
   @override
