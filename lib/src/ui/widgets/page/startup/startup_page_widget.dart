@@ -246,42 +246,48 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                 }
               }
             },
-            child: widget.startupWidget != null
-                ? widget.startupWidget!
-                : Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(getPackageString(
-                                    widget.appState, 'assets/images/bg.png')),
-                                fit: BoxFit.cover)),
-                      ),
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(top: 100),
-                                child: Center(
-                                  child: Image.asset(
-                                    getPackageString(widget.appState,
-                                        'assets/images/ss.png'),
-                                    width: 135,
-                                  ),
-                                )),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.only(top: 100),
-                                    child: CircularProgressIndicator()),
-                                Padding(
-                                    padding: EdgeInsets.only(top: 100),
-                                    child: Text('Loading...'))
-                              ],
-                            )
-                          ])
-                    ],
-                  )));
+            child: Builder(
+              builder: (context) {
+                if (widget.appState.widgetConfig.startupWidget != null) {
+                  return widget.appState.widgetConfig.startupWidget!;
+                }
+
+                return Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(getPackageString(
+                                  widget.appState, 'assets/images/bg.png')),
+                              fit: BoxFit.cover)),
+                    ),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.only(top: 100),
+                              child: Center(
+                                child: Image.asset(
+                                  getPackageString(
+                                      widget.appState, 'assets/images/ss.png'),
+                                  width: 135,
+                                ),
+                              )),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Padding(
+                                  padding: EdgeInsets.only(top: 100),
+                                  child: CircularProgressIndicator()),
+                              Padding(
+                                  padding: EdgeInsets.only(top: 100),
+                                  child: Text('Loading...'))
+                            ],
+                          )
+                        ])
+                  ],
+                );
+              },
+            )));
   }
 }

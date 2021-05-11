@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:universal_html/html.dart';
 
 import '../../services/remote/cubit/api_cubit.dart';
 import '../../services/remote/rest/rest_client.dart';
@@ -185,7 +186,8 @@ class RemoteDataSourceImpl implements DataSource {
       client.headers = <String, String>{'Content-Type': 'application/json'};
     }
 
-    client.headers!['cookie'] = appState.screenManager.onCookie('');
+    if (!kIsWeb)
+      client.headers!['cookie'] = appState.screenManager.onCookie('');
 
     final path = appState.serverConfig!.baseUrl + '/api/startup';
 
@@ -269,8 +271,10 @@ class RemoteDataSourceImpl implements DataSource {
       log('REQUEST ${uri.path}: ${request.debugInfo}');
     }
 
-    client.headers!['cookie'] =
-        appState.screenManager.onCookie(client.headers!['cookie']!);
+    if (!kIsWeb) {
+      client.headers!['cookie'] =
+          appState.screenManager.onCookie(client.headers!['cookie']!);
+    }
 
     Either<Failure, http.Response> either = await client.post(
         uri: uri,
@@ -323,8 +327,13 @@ class RemoteDataSourceImpl implements DataSource {
                 };
               }
 
-              client.headers!['cookie'] =
-                  (index == -1) ? cookie : cookie.substring(0, index);
+              if (kIsWeb) {
+                document.cookie =
+                    (index == -1) ? cookie : cookie.substring(0, index);
+              } else {
+                client.headers!['cookie'] =
+                    (index == -1) ? cookie : cookie.substring(0, index);
+              }
             }
 
             ApiResponse internResponse =

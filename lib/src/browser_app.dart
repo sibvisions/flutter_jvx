@@ -93,15 +93,11 @@ class BrowserApp extends StatelessWidget {
 
       switch (settings.name) {
         case Routes.startup:
-          StartupPageArguments? arguments;
-          if (settings.arguments != null)
-            arguments = settings.arguments as StartupPageArguments;
           return MaterialPageRoute(
               settings: RouteSettings(
                   name: Routes.startup, arguments: settings.arguments),
               builder: (_) => StartupPage(
-                    startupWidget: arguments?.startupWidget ??
-                        appState.widgetConfig.startupWidget,
+                    startupWidget: appState.widgetConfig.startupWidget,
                     appState: appState,
                     manager: manager,
                   ));
@@ -183,11 +179,20 @@ class BrowserApp extends StatelessWidget {
                     manager: manager,
                   ));
       }
+    } else {
+      return MaterialPageRoute(
+          settings: RouteSettings(
+              name: Routes.startup, arguments: settings.arguments),
+          builder: (_) => StartupPage(
+                startupWidget: null,
+                appState: appState,
+                manager: manager,
+              ));
     }
   }
 
   RouteSettings? _isRouteAllowed(RouteSettings settings) {
-    if (settings.name == Routes.login &&
+    if ((settings.name == Routes.login || settings.name == Routes.menu) &&
         appState.applicationStyle == null &&
         appState.fileConfig.images.isEmpty) {
       return null;
