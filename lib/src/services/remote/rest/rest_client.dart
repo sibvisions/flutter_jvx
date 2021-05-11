@@ -121,7 +121,7 @@ class RestClientImpl implements RestClient {
       String? cookie = headers!["cookie"];
 
       if (cookie != null) {
-        List<String> cookies = cookie!.split(";");
+        List<String> cookies = cookie.split(";");
 
         for (var cookieItem in cookies) {
           List c = cookieItem.split("=");

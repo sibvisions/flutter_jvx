@@ -290,7 +290,7 @@ class RemoteDataSourceImpl implements DataSource {
 
         if (response == null) {
           try {
-            if (kReleaseMode)
+            if (kReleaseMode && !kIsWeb)
               decodedBody = await compute(_getDecodedBody, r.body);
             else
               decodedBody = _getDecodedBody(r.body);

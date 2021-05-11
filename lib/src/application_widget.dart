@@ -110,6 +110,12 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
         widget.devConfig!.appMode.isNotEmpty) {
       final formattedUrl = _formatUrl(widget.devConfig!.baseUrl);
 
+      if (manager.baseUrl == null && manager.appName == null) {
+        manager.baseUrl = widget.devConfig!.baseUrl;
+        manager.appName = widget.devConfig!.appName;
+        manager.appMode = widget.devConfig!.appMode;
+      }
+
       return ServerConfig(
           baseUrl: formattedUrl,
           appName: widget.devConfig!.appName,

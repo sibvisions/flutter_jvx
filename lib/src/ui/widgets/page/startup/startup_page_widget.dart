@@ -48,6 +48,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   /// Own cubit instance to avoid multiple calls on the listener.
   late ApiCubit cubit;
 
+  late Future startupFuture;
+
   /// Getter for initial language which gets send to the server.
   String get _startupLanguage {
     String language = 'en';
@@ -66,7 +68,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   /// Method for sending the [Startup] request.
-  void _sendStartupRequest() async {
+  Future<void> _sendStartupRequest() async {
+    _updateDataFromSystem();
+
     DeviceInfo deviceInfo = DeviceInfo();
 
     if (!kIsWeb) {
@@ -198,16 +202,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (ModalRoute.of(context)!.isCurrent) {
-      _updateDataFromSystem();
-
-      _sendStartupRequest();
-    }
   }
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _sendStartupRequest());
 
     cubit = ApiCubit.withDependencies();
   }
