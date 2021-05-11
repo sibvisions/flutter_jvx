@@ -576,7 +576,8 @@ class OfflineDatabase extends LocalDatabase
           OfflineDatabaseFormatter.formatTableName(metaData.dataProvider);
       if (!await tableExists(tablename)) {
         String columns = "";
-        metaData.columns!.forEach((column) {
+        await Future.forEach(metaData.columns!,
+            (DataBookMetaDataColumn column) async {
           columns += OfflineDatabaseFormatter.formatColumnForCreateTable(
               column.name!,
               OfflineDatabaseFormatter.getDataType(column.cellEditor!));
@@ -648,7 +649,7 @@ class OfflineDatabase extends LocalDatabase
     List<Map<String, dynamic>>? result =
         await this.selectRows(OFFLINE_META_DATA_TABLE);
     if (result != null && result.length > 0) {
-      result.forEach((row) {
+      await Future.forEach(result, (Map<String, dynamic> row) async {
         if (row.containsKey(OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER)) {
           offlineDataProvider
               .add(row[OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]);
@@ -667,7 +668,7 @@ class OfflineDatabase extends LocalDatabase
       if (await tableExists(tableName)) {
         List<String> sqlStatements = <String>[];
 
-        data.records.forEach((element) {
+        await Future.forEach(data.records, (dynamic element) async {
           String columnString =
               OfflineDatabaseFormatter.getInsertColumnList(data.columnNames);
           String valueString =
@@ -792,11 +793,13 @@ class OfflineDatabase extends LocalDatabase
 
       List<List<dynamic>> records = <List<dynamic>>[];
 
-      result?.forEach((element) {
-        records.add(OfflineDatabaseFormatter.removeOfflineColumns(element)
-            .values
-            .toList());
-      });
+      if (result != null) {
+        await Future.forEach(result, (Map<String, dynamic> element) async {
+          records.add(OfflineDatabaseFormatter.removeOfflineColumns(element)
+              .values
+              .toList());
+        });
+      }
 
       ApiResponse response = ApiResponse(request: request, objects: []);
       DataBook dataBook = DataBook(
