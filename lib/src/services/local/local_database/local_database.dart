@@ -122,7 +122,7 @@ class LocalDatabase implements IDatabaseProvider {
     return 0;
   }
 
-  Future<List<Map<String, dynamic?>>?> selectRows(String? tableName,
+  Future<List<Map<String, dynamic>>?> selectRows(String? tableName,
       [String? where, String? orderBy, String? limit]) async {
     if (tableName == null || this.db == null || !this.db!.isOpen) {
       return null;
@@ -146,7 +146,14 @@ class LocalDatabase implements IDatabaseProvider {
       log('SQLite selectRows:' + sql);
     }
 
-    return await this.db!.rawQuery(sql);
+    List<Map<String, Object?>> result = await this.db!.rawQuery(sql);
+    List<Map<String, dynamic>> dynamicResult = <Map<String, dynamic>>[];
+
+    Future.forEach(result, (Map<String, Object?> element) {
+      dynamicResult.add(element);
+    });
+
+    return dynamicResult;
   }
 
   Future<bool> insert(
