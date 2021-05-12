@@ -10,6 +10,10 @@ class IconComponentModel extends ComponentModel {
   bool eventAction = false;
   String image = '';
 
+  bool isSignaturePad = false;
+  String? dataProvider;
+  String? columnName;
+
   @override
   int verticalAlignment = 2;
   @override
@@ -28,5 +32,19 @@ class IconComponentModel extends ComponentModel {
         ComponentProperty.SELECTED, selected)!;
     image =
         changedComponent.getProperty<String>(ComponentProperty.IMAGE, image)!;
+
+    String classNameEventSourceRef = changedComponent.getProperty<String>(
+        ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF, '')!;
+
+    if (classNameEventSourceRef == 'SignaturePad') {
+      isSignaturePad = true;
+
+      dataProvider = changedComponent.getProperty<String>(
+              ComponentProperty.DATA_PROVIDER, null) ??
+          changedComponent.getProperty(ComponentProperty.DATA_ROW, null);
+
+      columnName = changedComponent.getProperty<String>(
+          ComponentProperty.COLUMN_NAME, null);
+    }
   }
 }

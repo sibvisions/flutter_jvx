@@ -1,4 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/ui/screen/core/so_component_data.dart';
+import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
+import 'package:signature/signature.dart';
 
 import '../../../injection_container.dart';
 import '../../models/api/requests/set_component_value.dart';
@@ -19,6 +25,24 @@ class CoIconWidget extends ComponentWidget {
 }
 
 class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
+  late SignatureController _signatureController;
+
+  Future<void> _onEndDrawing() async {
+    if (widget.componentModel.dataProvider != null &&
+        _signatureController.isNotEmpty) {
+      SoComponentData data = SoScreen.of(context)!
+          .getComponentData(widget.componentModel.dataProvider!);
+
+      Uint8List? pngBytes = await _signatureController.toPngBytes();
+
+      await data.setValues(
+        context,
+        [pngBytes],
+        [widget.componentModel.columnName],
+      );
+    }
+  }
+
   void valueChanged(dynamic value) {
     SetComponentValueRequest setComponentValue = SetComponentValueRequest(
         componentId: widget.componentModel.name,
@@ -29,7 +53,31 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.componentModel.isSignaturePad) {
+      _signatureController = SignatureController(
+          exportBackgroundColor: widget.componentModel.background,
+          onDrawEnd: () => _onEndDrawing(),
+          penStrokeWidth: 5,
+          penColor: Colors.black);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (widget.componentModel.isSignaturePad) {
+      return LayoutBuilder(
+        builder: (context, constraints) => Signature(
+          controller: _signatureController,
+          backgroundColor: widget.componentModel.background,
+          height: widget.componentModel.preferredSize?.height ?? 300,
+          width: widget.componentModel.preferredSize?.width ?? 300,
+        ),
+      );
+    }
+
     return Container(
         child: Row(
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(

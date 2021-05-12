@@ -298,8 +298,10 @@ class SoComponentData {
     sl<ApiCubit>().data(filterDataRequest);
   }
 
-  void setValues(BuildContext context, List<dynamic> values,
-      [List<dynamic>? columnNames, Filter? filter, bool isTextField = false]) {
+  Future<void> setValues(BuildContext context, List<dynamic> values,
+      [List<dynamic>? columnNames,
+      Filter? filter,
+      bool isTextField = false]) async {
     SetValuesRequest setValues = SetValuesRequest(
         columnNames: columnNames ?? data!.columnNames,
         dataProvider: dataProvider,
@@ -342,11 +344,11 @@ class SoComponentData {
     if (!isTextField) {
       TextUtils.unfocusCurrentTextfield(context);
 
-      Future.delayed(const Duration(milliseconds: 100), () {
-        sl<ApiCubit>().data(setValues);
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        await sl<ApiCubit>().data(setValues);
       });
     } else {
-      sl<ApiCubit>().data(setValues);
+      await sl<ApiCubit>().data(setValues);
     }
   }
 
