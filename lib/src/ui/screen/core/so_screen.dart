@@ -603,6 +603,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     widget.configuration
         .removeListener(() => onState(widget.configuration.value));
 
+    widget.configuration.value = null;
+
     super.dispose();
   }
 
