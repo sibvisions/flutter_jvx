@@ -149,7 +149,7 @@ class LocalDatabase implements IDatabaseProvider {
     List<Map<String, Object?>> result = await this.db!.rawQuery(sql);
     List<Map<String, dynamic>> dynamicResult = <Map<String, dynamic>>[];
 
-    Future.forEach(result, (Map<String, Object?> element) {
+    await Future.forEach(result, (Map<String, Object?> element) async {
       dynamicResult.add(element);
     });
 
@@ -215,7 +215,7 @@ class LocalDatabase implements IDatabaseProvider {
       log('SQLite update:' + sql);
     }
 
-    this.db!.execute(sql);
+    await this.db!.execute(sql);
     return true;
   }
 
