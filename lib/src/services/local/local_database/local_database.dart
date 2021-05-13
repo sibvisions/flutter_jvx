@@ -190,7 +190,13 @@ class LocalDatabase implements IDatabaseProvider {
     int insertedIndex = -1;
     await this.db!.transaction((txn) async {
       await txn.execute(sql);
-      insertedIndex = await rowCount(tableName) - 1;
+      List<Map<String, dynamic?>> result =
+          await txn.rawQuery("SELECT COUNT(*) FROM [$tableName]");
+      if (result.length > 0 &&
+          result[0].length > 0 &&
+          result[0].containsKey('COUNT(*)')) {
+        insertedIndex = result[0]['COUNT(*)'];
+      }
     });
 
     return insertedIndex;
