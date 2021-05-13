@@ -176,9 +176,9 @@ class LocalDatabase implements IDatabaseProvider {
     return dynamicResult;
   }
 
-  Future<bool> insert(
+  Future<int> insert(
       String? tableName, String? columnString, String? valueString) async {
-    if (tableName == null || this.db == null || !this.db!.isOpen) return false;
+    if (tableName == null || this.db == null || !this.db!.isOpen) return -1;
 
     String sql =
         "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)";
@@ -186,11 +186,14 @@ class LocalDatabase implements IDatabaseProvider {
     if (this.debug) {
       log('SQLite insert:' + sql);
     }
+
+    int insertedIndex = -1;
     await this.db!.transaction((txn) async {
       await txn.execute(sql);
+      insertedIndex = await rowCount(tableName) - 1;
     });
 
-    return true;
+    return insertedIndex;
   }
 
   Future<void> bulk(List<String> sqlStatements,

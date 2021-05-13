@@ -990,9 +990,8 @@ class OfflineDatabase extends LocalDatabase
           "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
       String valueString =
           "'$OFFLINE_ROW_STATE_INSERTED'${INSERT_INTO_DATA_SEPERATOR}datetime('now')";
-      if (await insert(tableName, columnString, valueString)) {
-        int count = await this.rowCount(tableName);
-
+      int count = await insert(tableName, columnString, valueString);
+      if (count >= 0) {
         ApiResponse response = ApiResponse(request: request, objects: []);
         DataBook dataBook = new DataBook(
           dataProvider: request.dataProvider,
@@ -1112,7 +1111,8 @@ class OfflineDatabase extends LocalDatabase
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA]";
       String valueString =
           "'$dataProvider'$INSERT_INTO_DATA_SEPERATOR'$tableName'$INSERT_INTO_DATA_SEPERATOR'$screenComponentId'$INSERT_INTO_DATA_SEPERATOR'$metaData'";
-      return await insert(OFFLINE_META_DATA_TABLE, columnString, valueString);
+      return await insert(OFFLINE_META_DATA_TABLE, columnString, valueString) >=
+          0;
     }
   }
 
