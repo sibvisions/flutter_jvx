@@ -34,7 +34,9 @@ class LocalDatabase implements IDatabaseProvider {
       log('SQLite createTable:' + sql);
     }
     try {
-      await this.db!.execute(sql);
+      await this.db!.transaction((txn) async {
+        await txn.execute(sql);
+      });
       return true;
     } catch (ee) {
       rethrow;
@@ -46,7 +48,9 @@ class LocalDatabase implements IDatabaseProvider {
 
     if (await this.tableExists(tableName)) {
       String sql = "DROP TABLE [$tableName];";
-      await this.db!.execute(sql);
+      await this.db!.transaction((txn) async {
+        await txn.execute(sql);
+      });
 
       if (this.debug) {
         log('SQLite dropTable:' + sql);
@@ -63,7 +67,9 @@ class LocalDatabase implements IDatabaseProvider {
 
     if (await this.tableExists(tableName)) {
       String sql = "DELETE FROM [$tableName];";
-      await this.db!.execute(sql);
+      await this.db!.transaction((txn) async {
+        await txn.execute(sql);
+      });
 
       if (this.debug) {
         log('SQLite cleanTable:' + sql);
@@ -78,13 +84,16 @@ class LocalDatabase implements IDatabaseProvider {
   Future<bool> tableExists(String? tableName) async {
     if (tableName == null || this.db == null || !this.db!.isOpen) return false;
 
-    List<Map<String, dynamic?>> result = await this.db!.rawQuery(
-        "SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?",
-        ['table', tableName]);
+    List<Map<String, dynamic?>>? result;
+    await this.db!.transaction((txn) async {
+      result = await txn.rawQuery(
+          "SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?",
+          ['table', tableName]);
+    });
 
-    return (result.length > 0 &&
-        result[0].length > 0 &&
-        result[0]['COUNT(*)'] >
+    return (result!.length > 0 &&
+        result![0].length > 0 &&
+        result![0]['COUNT(*)'] >
             0); // && result[0] is QueryRow && result[0].row[0]>0);
   }
 
@@ -103,20 +112,26 @@ class LocalDatabase implements IDatabaseProvider {
       log('SQLite rowExists:' + sql);
     }
 
-    List<Map<String, dynamic>> result = await this.db!.rawQuery(sql);
-    return result.length > 0;
+    List<Map<String, dynamic>>? result;
+    await this.db!.transaction((txn) async {
+      result = await txn.rawQuery(sql);
+    });
+
+    return result!.length > 0;
   }
 
   Future<int> rowCount(String? tableName) async {
     if (tableName == null || this.db == null || !this.db!.isOpen) return 0;
 
-    List<Map<String, dynamic?>> result =
-        await this.db!.rawQuery("SELECT COUNT(*) FROM [$tableName]");
+    List<Map<String, dynamic?>>? result;
+    await this.db!.transaction((txn) async {
+      result = await txn.rawQuery("SELECT COUNT(*) FROM [$tableName]");
+    });
 
-    if (result.length > 0 &&
-        result[0].length > 0 &&
-        result[0].containsKey('COUNT(*)')) {
-      return result[0]['COUNT(*)'];
+    if (result!.length > 0 &&
+        result![0].length > 0 &&
+        result![0].containsKey('COUNT(*)')) {
+      return result![0]['COUNT(*)'];
     }
 
     return 0;
@@ -146,10 +161,15 @@ class LocalDatabase implements IDatabaseProvider {
       log('SQLite selectRows:' + sql);
     }
 
-    List<Map<String, Object?>> result = await this.db!.rawQuery(sql);
-    List<Map<String, dynamic>> dynamicResult = <Map<String, dynamic>>[];
+    List<Map<String, Object?>>? result;
+    await this.db!.transaction((txn) async {
+      result = await txn.rawQuery(sql);
+    });
 
-    await Future.forEach(result, (Map<String, Object?> element) async {
+    List<Map<String, dynamic>> dynamicResult = <Map<String, dynamic>>[];
+    await Future.forEach(result!, (Map<String, Object?> element) async {
+      Map<String, dynamic> item = Map<String, dynamic>();
+      element.forEach((key, value) => item[key] = value);
       dynamicResult.add(element);
     });
 
@@ -166,8 +186,9 @@ class LocalDatabase implements IDatabaseProvider {
     if (this.debug) {
       log('SQLite insert:' + sql);
     }
-
-    await this.db!.execute(sql);
+    await this.db!.transaction((txn) async {
+      await txn.execute(sql);
+    });
 
     return true;
   }
@@ -214,8 +235,10 @@ class LocalDatabase implements IDatabaseProvider {
     if (this.debug) {
       log('SQLite update:' + sql);
     }
+    await this.db!.transaction((txn) async {
+      await txn.execute(sql);
+    });
 
-    await this.db!.execute(sql);
     return true;
   }
 
@@ -228,7 +251,9 @@ class LocalDatabase implements IDatabaseProvider {
       log('SQLite delete:' + sql);
     }
 
-    this.db!.execute(sql);
+    await this.db!.transaction((txn) async {
+      txn.execute(sql);
+    });
 
     return true;
   }
