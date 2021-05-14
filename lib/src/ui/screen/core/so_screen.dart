@@ -626,18 +626,25 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
               ? getDefaultAppBar()
               : null,
           endDrawer: widget.configuration.drawer,
-          body: shouldShowNavigationBar(appState, orientation)
-              ? NavigationBarWidget(
-                  appState: appState,
-                  menuItems: menuItems,
-                  onLogoutPressed: () {},
-                  onMenuItemPressed: (MenuItem menuItem) {
-                    if (widget.configuration.onMenuItemPressed != null) {
-                      widget.configuration.onMenuItemPressed!(menuItem);
-                    }
-                  },
-                  child: rootComponent as Widget)
-              : rootComponent,
+          body: RefreshIndicator(
+            onRefresh: () async {
+              for (final cd in componentData) {
+                cd.getData(context, -1);
+              }
+            },
+            child: shouldShowNavigationBar(appState, orientation)
+                ? NavigationBarWidget(
+                    appState: appState,
+                    menuItems: menuItems,
+                    onLogoutPressed: () {},
+                    onMenuItemPressed: (MenuItem menuItem) {
+                      if (widget.configuration.onMenuItemPressed != null) {
+                        widget.configuration.onMenuItemPressed!(menuItem);
+                      }
+                    },
+                    child: rootComponent as Widget)
+                : rootComponent!,
+          ),
         );
       },
     );
