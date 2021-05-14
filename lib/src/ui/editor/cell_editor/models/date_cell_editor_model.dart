@@ -10,10 +10,6 @@ class DateCellEditorModel extends CellEditorModel {
   String? dateFormat;
   dynamic? toUpdate;
   bool isDateEditor = false;
-  bool isSecondEditor = false;
-  bool isHourEditor = false;
-  bool isMinuteEditor = false;
-  bool isAmPmEditor = false;
   bool isTimeEditor = false;
 
   @override
@@ -69,6 +65,12 @@ class DateCellEditorModel extends CellEditorModel {
     dateFormat = this
         .cellEditor
         .getProperty<String>(CellEditorProperty.DATE_FORMAT, dateFormat ?? '');
+
+    isDateEditor =
+        cellEditor.getProperty<bool>(CellEditorProperty.IS_DATE_EDITOR, isDateEditor)!;
+
+    isTimeEditor =
+        cellEditor.getProperty<bool>(CellEditorProperty.IS_TIME_EDITOR, isTimeEditor)!;
 
     if (dateFormat?.contains('Y') ?? false)
       dateFormat = dateFormat?.replaceAll('Y', 'y');
