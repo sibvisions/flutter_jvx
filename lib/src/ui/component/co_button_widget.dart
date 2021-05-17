@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/injection_container.dart';
+import 'package:flutterclient/src/util/download/download_helper.dart';
 import 'package:flutterclient/src/util/theme/theme_manager.dart';
 
 import '../../util/color/color_extension.dart';
@@ -69,8 +71,16 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             }
           }
         } else {
-          File file = File(
-              '${widget.componentModel.appState.baseDirectory}${strinArr[0]}');
+          AppState appState = widget.componentModel.appState;
+
+          final path = DownloadHelper.getLocalFilePath(
+              baseUrl: appState.serverConfig!.baseUrl,
+              appName: appState.serverConfig!.appName,
+              appVersion: appState.applicationMetaData!.version,
+              translation: false,
+              baseDir: appState.baseDirectory);
+
+          File file = File('$path${strinArr[0]}');
           if (file.existsSync()) {
             Size size = Size(16, 16);
 
