@@ -574,6 +574,17 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             widget.configuration.onPopPage!(widget.configuration.componentId);
           }),
       actions: [
+        if (componentData.isNotEmpty)
+          IconButton(
+              icon: FaIcon(
+                FontAwesomeIcons.redo,
+                size: 19,
+              ),
+              onPressed: () async {
+                for (final cd in componentData) {
+                  cd.getData(context, -1);
+                }
+              }),
         IconButton(
             icon: FaIcon(FontAwesomeIcons.ellipsisV),
             onPressed: () {
@@ -626,25 +637,18 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
               ? getDefaultAppBar()
               : null,
           endDrawer: widget.configuration.drawer,
-          body: RefreshIndicator(
-            onRefresh: () async {
-              for (final cd in componentData) {
-                cd.getData(context, -1);
-              }
-            },
-            child: shouldShowNavigationBar(appState, orientation)
-                ? NavigationBarWidget(
-                    appState: appState,
-                    menuItems: menuItems,
-                    onLogoutPressed: () {},
-                    onMenuItemPressed: (MenuItem menuItem) {
-                      if (widget.configuration.onMenuItemPressed != null) {
-                        widget.configuration.onMenuItemPressed!(menuItem);
-                      }
-                    },
-                    child: rootComponent as Widget)
-                : rootComponent!,
-          ),
+          body: shouldShowNavigationBar(appState, orientation)
+              ? NavigationBarWidget(
+                  appState: appState,
+                  menuItems: menuItems,
+                  onLogoutPressed: () {},
+                  onMenuItemPressed: (MenuItem menuItem) {
+                    if (widget.configuration.onMenuItemPressed != null) {
+                      widget.configuration.onMenuItemPressed!(menuItem);
+                    }
+                  },
+                  child: rootComponent as Widget)
+              : rootComponent!,
         );
       },
     );
