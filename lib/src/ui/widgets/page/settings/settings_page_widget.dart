@@ -366,20 +366,21 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                         }
                       },
                     ),
-                    if (widget.canPop && !widget.hasError)
-                      ListTile(
-                        leading: FaIcon(
-                          FontAwesomeIcons.language,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        title: Text(
-                            AppLocalizations.of(context)!.text('Language')),
-                        trailing: FaIcon(FontAwesomeIcons.arrowRight),
-                        subtitle: Text(language ?? ''),
-                        onTap: () {
-                          _showLanguageDialog();
-                        },
+                    ListTile(
+                      leading: FaIcon(
+                        FontAwesomeIcons.language,
+                        color: Theme.of(context).primaryColor,
                       ),
+                      title:
+                          Text(AppLocalizations.of(context)!.text('Language')),
+                      trailing: FaIcon(FontAwesomeIcons.arrowRight),
+                      subtitle: Text(language ?? ''),
+                      onTap: () {
+                        if (widget.canPop && !widget.hasError) {
+                          _showLanguageDialog();
+                        }
+                      },
+                    ),
                     ListTile(
                       leading: FaIcon(
                         FontAwesomeIcons.image,
