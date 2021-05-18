@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 class TextUtils {
+  static String averageCharactersNumberField = "1299,99";
   static String averageCharactersTextField = "EARIOTNSLCaeiou";
   static String averageCharactersDateField = "31. November 2020 15:";
 

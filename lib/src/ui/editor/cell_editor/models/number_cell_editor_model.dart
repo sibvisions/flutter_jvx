@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor_properties.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/meta_data/data_book_meta_data_column.dart';
@@ -34,14 +35,14 @@ class NumberCellEditorModel extends CellEditorModel {
   get preferredSize {
     //if (super.isPreferredSizeSet) return super.preferredSize;
     double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
-    String text = TextUtils.averageCharactersTextField;
+    String text = TextUtils.averageCharactersNumberField;
 
-    if (numberFormat != null && numberFormat!.length < text.length)
-      text = text.substring(0, numberFormat!.length);
+    // if (numberFormat != null && numberFormat!.length < text.length)
+    //   text = text.substring(0, numberFormat!.length);
 
-    if (cellEditorValue != null && cellEditorValue.toString().length > 0) {
-      text = cellEditorValue.toString();
-    }
+    // if (cellEditorValue != null && cellEditorValue.toString().length > 0) {
+    //   text = cellEditorValue.toString();
+    // }
 
     double width =
         TextUtils.getTextWidth(text, fontStyle, textScaleFactor).toDouble();
@@ -51,9 +52,9 @@ class NumberCellEditorModel extends CellEditorModel {
   @override
   get minimumSize {
     //if (super.isMinimumSizeSet) return super.minimumSize;
-    return preferredSize;
-    //double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
-    //return Size(10 + iconWidth + textPadding.horizontal, 100);
+    //return preferredSize;
+    double iconWidth = this.editable ? iconSize + iconPadding.horizontal : 0;
+    return Size(10 + iconWidth + textPadding.horizontal, 100);
   }
 
   @override
@@ -81,16 +82,15 @@ class NumberCellEditorModel extends CellEditorModel {
       if (data?.metaData != null) {
         DataBookMetaDataColumn? column = data!.metaData!.getColumn(columnName!);
 
-        if (column?.cellEditor != null) {
-          numericTextFormatter!.precision = column!.cellEditor!
-              .getProperty<int>(CellEditorProperty.PRECISION,
-                  numericTextFormatter!.precision);
-          numericTextFormatter!.length = column.cellEditor!.getProperty<int>(
-              CellEditorProperty.LENGTH, numericTextFormatter!.length);
-          numericTextFormatter!.scale = column.cellEditor!.getProperty<int>(
-              CellEditorProperty.SCALE, numericTextFormatter!.scale);
-          numericTextFormatter!.signed = column.cellEditor!.getProperty<bool>(
-              CellEditorProperty.SIGNED, numericTextFormatter!.signed);
+        if (column != null) {
+          numericTextFormatter!.precision = column.getProperty<int>(
+              ComponentProperty.PRECISION, numericTextFormatter!.precision);
+          numericTextFormatter!.length = column.getProperty<int>(
+              ComponentProperty.LENGTH, numericTextFormatter!.length);
+          numericTextFormatter!.scale = column.getProperty<int>(
+              ComponentProperty.SCALE, numericTextFormatter!.scale);
+          numericTextFormatter!.signed = column.getProperty<bool>(
+              ComponentProperty.SIGNED, numericTextFormatter!.signed);
         }
       }
     }
