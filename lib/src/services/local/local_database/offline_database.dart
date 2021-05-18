@@ -160,6 +160,9 @@ class OfflineDatabase extends LocalDatabase
                 }
 
                 OpenScreenRequest openScreenRequest = OpenScreenRequest(
+                    parameter: {
+                      'mobile.onlineSync': true
+                    },
                     clientId: repository.appState.applicationMetaData!.clientId,
                     componentId: metaData.offlineScreenComponentId!);
 
