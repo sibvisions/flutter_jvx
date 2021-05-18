@@ -250,9 +250,9 @@ class SoComponentData {
     sl<ApiCubit>().data(saveDataRequest);
   }
 
-  void filterData(String value, String editorComponentId) {
+  void filterData(String value, String editorComponentId, List<String>? columnNames) {
     FilterDataRequest request = FilterDataRequest(
-        columnNames: data?.columnNames,
+        columnNames: columnNames,
         dataProvider: dataProvider,
         value: value,
         editorComponentId: editorComponentId,

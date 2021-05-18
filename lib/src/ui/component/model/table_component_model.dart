@@ -224,6 +224,8 @@ class TableComponentModel extends EditorComponentModel {
             SoScreenState? screen = SoScreen.of(context);
 
             if (screen != null) {
+              editor.componentModel.name = name;
+
               (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
                       .referencedData =
                   SoScreen.of(context)!.getComponentData(editor.cellEditor!
