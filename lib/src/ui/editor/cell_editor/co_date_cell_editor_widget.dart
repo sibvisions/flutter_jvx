@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutterclient/src/util/app/text_utils.dart';
@@ -144,7 +145,7 @@ class CoDateCellEditorWidgetState
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
+                      padding: kIsWeb ? const EdgeInsets.only(left: 8) : EdgeInsets.zero,
                       child: Text(
                         (widget.cellEditorModel.cellEditorValue != null &&
                                 (widget.cellEditorModel.cellEditorValue is int ||
