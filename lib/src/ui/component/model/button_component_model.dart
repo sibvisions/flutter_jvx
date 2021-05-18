@@ -17,6 +17,10 @@ class ButtonComponentModel extends ActionComponentModel {
   String? image;
   int? _horizontalTextPosition;
 
+  // For QRCodeButton
+  String? dataProvider;
+  String? columnName;
+
   TextAlign get horizontalTextPosition {
     if (_horizontalTextPosition != null)
       return SoTextAlign.getTextAlignFromInt(_horizontalTextPosition!);
@@ -56,6 +60,15 @@ class ButtonComponentModel extends ActionComponentModel {
         changedComponent.getProperty<String>(ComponentProperty.IMAGE, image);
     _horizontalTextPosition = changedComponent.getProperty<int>(
         ComponentProperty.HORIZONTAL_TEXT_POSITION, _horizontalTextPosition);
+
+    if (classNameEventSourceRef == 'QRScannerButton') {
+      dataProvider = changedComponent.getProperty<String>(
+              ComponentProperty.DATA_PROVIDER, null) ??
+          changedComponent.getProperty(ComponentProperty.DATA_ROW, null);
+
+      columnName = changedComponent.getProperty<String>(
+          ComponentProperty.COLUMN_NAME, null);
+    }
 
     super.updateProperties(context, changedComponent);
   }

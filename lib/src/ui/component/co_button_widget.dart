@@ -5,8 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/injection_container.dart';
+import 'package:flutterclient/src/ui/widgets/page/settings/qr_code_view_widget.dart';
 import 'package:flutterclient/src/util/download/download_helper.dart';
 import 'package:flutterclient/src/util/theme/theme_manager.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../util/color/color_extension.dart';
 import '../../util/icon/font_awesome_changer.dart';
@@ -210,11 +213,30 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
             child: SizedBox(
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (widget.componentModel.enabled) {
                       if (widget.componentModel.classNameEventSourceRef ==
-                          "OfflineButton") {
+                          'OfflineButton') {
                         // showLoadingIndicator(context);
+                      } else if (widget
+                              .componentModel.classNameEventSourceRef ==
+                          'QRScannerButton') {
+                        final Barcode? result = await Navigator.of(context)
+                            .push(DefaultPageRoute(
+                                builder: (_) => QrCodeViewWidget()));
+
+                        if (result != null) {
+                          SoComponentData data = SoScreen.of(context)!
+                              .getComponentData(
+                                  widget.componentModel.dataProvider ?? '');
+
+                          data.setValues(context, [result.code],
+                              [widget.componentModel.columnName]);
+                        }
+                      } else if (widget
+                              .componentModel.classNameEventSourceRef ==
+                          'CallButton') {
+                        await launch('tel://');
                       }
 
                       widget.componentModel.onAction(
