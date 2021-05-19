@@ -94,7 +94,7 @@ class TextUtils {
         textAlign: align,
         textDirection: textDirection,
         textScaleFactor: textScaleFactor);
-    tp.layout();
+    tp.layout(minWidth: 0.0, maxWidth: maxWidth);
 
     return tp.size;
   }
