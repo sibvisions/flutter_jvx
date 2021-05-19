@@ -632,24 +632,25 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             appState.screenManager.onMenu(SoMenuManager(menuItems)).menuItems;
 
         return Scaffold(
-          key: scaffoldKey,
-          appBar: shouldShowAppBar(appState, orientation)
-              ? getDefaultAppBar()
-              : null,
-          endDrawer: widget.configuration.drawer,
-          body: shouldShowNavigationBar(appState, orientation)
-              ? NavigationBarWidget(
-                  appState: appState,
-                  menuItems: menuItems,
-                  onLogoutPressed: () {},
-                  onMenuItemPressed: (MenuItem menuItem) {
-                    if (widget.configuration.onMenuItemPressed != null) {
-                      widget.configuration.onMenuItemPressed!(menuItem);
-                    }
-                  },
-                  child: rootComponent as Widget)
-              : rootComponent!,
-        );
+            key: scaffoldKey,
+            appBar: shouldShowAppBar(appState, orientation)
+                ? getDefaultAppBar()
+                : null,
+            endDrawer: widget.configuration.drawer,
+            body: SafeArea(
+              child: shouldShowNavigationBar(appState, orientation)
+                  ? NavigationBarWidget(
+                      appState: appState,
+                      menuItems: menuItems,
+                      onLogoutPressed: () {},
+                      onMenuItemPressed: (MenuItem menuItem) {
+                        if (widget.configuration.onMenuItemPressed != null) {
+                          widget.configuration.onMenuItemPressed!(menuItem);
+                        }
+                      },
+                      child: rootComponent as Widget)
+                  : rootComponent!,
+            ));
       },
     );
   }
