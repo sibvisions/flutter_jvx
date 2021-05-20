@@ -128,11 +128,11 @@ class ApiCubit extends Cubit<ApiState> {
   }
 
   Future<ApiState> data(DataRequest request) async {
-    emit(ApiLoading());
+    if (request.showLoading) emit(ApiLoading());
 
     List<ApiState> states = await repository.data(request);
 
-    emit(ApiLoading(stop: true));
+    if (request.showLoading) emit(ApiLoading(stop: true));
 
     for (final state in states) {
       emit(state);

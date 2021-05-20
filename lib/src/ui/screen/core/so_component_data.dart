@@ -250,7 +250,8 @@ class SoComponentData {
     sl<ApiCubit>().data(saveDataRequest);
   }
 
-  void filterData(String value, String editorComponentId, List<String>? columnNames) {
+  void filterData(
+      String value, String editorComponentId, List<String>? columnNames) {
     FilterDataRequest request = FilterDataRequest(
         columnNames: columnNames,
         dataProvider: dataProvider,
@@ -266,16 +267,18 @@ class SoComponentData {
 
   void filterDataExtended(
       BuildContext context, int? reload, int? rowCountedNeeded,
-      [Filter? filter, FilterCondition? filterCondition]) {
+      [Filter? filter,
+      FilterCondition? filterCondition,
+      bool showLoading = true]) {
     isFetching = true;
     FilterDataRequest filterDataRequest = FilterDataRequest(
-      dataProvider: dataProvider,
-      value: null,
-      editorComponentId: null,
-      clientId: sl<AppState>().applicationMetaData?.clientId ?? '',
-      reload: (reload == -1),
-      condition: filterCondition,
-    );
+        dataProvider: dataProvider,
+        value: null,
+        editorComponentId: null,
+        clientId: sl<AppState>().applicationMetaData?.clientId ?? '',
+        reload: (reload == -1),
+        condition: filterCondition,
+        showLoading: showLoading);
 
     if (reload != null && reload >= 0) {
       filterDataRequest.fromRow = reload;
