@@ -54,6 +54,7 @@ class OfflineDatabase extends LocalDatabase
   int rowsToImport = 0;
   int rowsImported = 0;
   int fetchOfflineRecordsPerRequest = 100;
+  int insertOfflineRecordsPerBatchOperation = 100;
   Failure? responseError;
   Filter? _lastFetchFilter;
   FilterCondition? _lastFetchFilterCondition;
@@ -325,7 +326,12 @@ class OfflineDatabase extends LocalDatabase
         if (result) {
           await Future.forEach(componentData, (SoComponentData element) async {
             if (element.data != null && element.metaData != null && result) {
-              result = result & await _importRows(element.data);
+              try {
+                result = result & await _importRows(element.data);
+              } catch (e) {
+                result = false;
+                log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, ErrorDetail: ${e.toString()}");
+              }
               if (!result) {
                 responseError = Failure(
                     title: AppLocalizations.of(context)!.text('Importfehler'),
@@ -660,7 +666,7 @@ class OfflineDatabase extends LocalDatabase
     return offlineDataProvider;
   }
 
-  Future<bool> _importRows(DataBook? data) async {
+  Future<bool> _importRows(DataBook? data, {bool batchInsert = true}) async {
     if (data != null && data.dataProvider != null) {
       String? tableName =
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
@@ -677,13 +683,35 @@ class OfflineDatabase extends LocalDatabase
               "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)");
         });
 
-        await this.bulk(sqlStatements, () {
-          rowsImported++;
-          setProgress(rowsToImport == 0
-              ? 0.5
-              : 0.5 + (rowsImported / 2 / rowsToImport));
-        });
-        //await this.batch(sqlStatements);
+        if (batchInsert) {
+          // batch insert with a package of insertOfflineRecordsPerBatchOperation
+          int index = 0;
+          int importRows = 0;
+
+          while (index < sqlStatements.length) {
+            importRows += insertOfflineRecordsPerBatchOperation;
+            if (importRows > sqlStatements.length)
+              importRows = sqlStatements.length;
+            List<String> batchStatements =
+                sqlStatements.getRange(index, importRows).toList();
+            await this.batch(batchStatements);
+            rowsImported += importRows - index;
+            index = importRows;
+            //index += importRows;
+
+            setProgress(rowsToImport == 0
+                ? 0.5
+                : 0.5 + (rowsImported / 2 / rowsToImport));
+          }
+        } else {
+          // single bulk insert
+          await this.bulk(sqlStatements, () {
+            rowsImported++;
+            setProgress(rowsToImport == 0
+                ? 0.5
+                : 0.5 + (rowsImported / 2 / rowsToImport));
+          });
+        }
 
         return true;
       }
