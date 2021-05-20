@@ -666,7 +666,7 @@ class OfflineDatabase extends LocalDatabase
     return offlineDataProvider;
   }
 
-  Future<bool> _importRows(DataBook? data, {bool batchInsert = true}) async {
+  Future<bool> _importRows(DataBook? data, {bool batchInsert = false}) async {
     if (data != null && data.dataProvider != null) {
       String? tableName =
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
