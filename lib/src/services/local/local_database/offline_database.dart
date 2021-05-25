@@ -53,7 +53,6 @@ class OfflineDatabase extends LocalDatabase
   ValueNotifier<double?> progress = ValueNotifier<double>(0.0);
   int rowsToImport = 0;
   int rowsImported = 0;
-  int fetchOfflineRecordsPerRequest = 100;
   int insertOfflineRecordsPerBatchOperation = 100;
   Failure? responseError;
   Filter? _lastFetchFilter;
@@ -285,8 +284,8 @@ class OfflineDatabase extends LocalDatabase
       // fetch all data to prepare offline sync
       await Future.forEach(componentData, (SoComponentData element) async {
         if (result) {
-          ApiState? state =
-              await element.fetchAll(repository, fetchOfflineRecordsPerRequest);
+          ApiState? state = await element.fetchAll(
+              repository, sl<AppState>().appConfig!.goOfflineReadAheadLimit);
 
           if (state != null && state is ApiError)
             result = false;

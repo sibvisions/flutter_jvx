@@ -15,6 +15,7 @@ class AppConfig {
   final bool loginColorsInverted;
   final int requestTimeout;
   final int goOfflineRequestTimeout;
+  final int goOfflineReadAheadLimit;
   final String title;
   final ServerConfig? initialConfig;
   final Map<String, dynamic>? startupParameter;
@@ -28,6 +29,7 @@ class AppConfig {
       required this.loginColorsInverted,
       required this.requestTimeout,
       this.goOfflineRequestTimeout = 30,
+      this.goOfflineReadAheadLimit = 100,
       this.initialConfig,
       this.startupParameter});
 
@@ -39,6 +41,7 @@ class AppConfig {
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
         goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
+        goOfflineReadAheadLimit = map['goOfflineReadAheadLimit'],
         initialConfig = ServerConfig.fromJson(map: map['initialConfig']),
         startupParameter = map['startupParameter'],
         title = map['title'];
@@ -51,6 +54,7 @@ class AppConfig {
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
         goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
+        goOfflineReadAheadLimit = map['goOfflineReadAheadLimit'],
         initialConfig = map['initialConfig'] != null
             ? ServerConfig.fromYaml(map: map['initialConfig'])
             : null,
