@@ -418,6 +418,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                                 ? tableHeight
                                 : constraints.maxHeight,
                             child: ScrollablePositionedList.builder(
+                              physics: ClampingScrollPhysics(),
                               itemScrollController: this.scrollController,
                               itemPositionsListener:
                                   this.scrollPositionListener,
@@ -435,6 +436,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
                               : constraints.maxHeight -
                                   widget.componentModel.borderWidth,
                           child: ScrollablePositionedList.builder(
+                            physics: ClampingScrollPhysics(),
                             itemScrollController: this.scrollController,
                             itemPositionsListener: this.scrollPositionListener,
                             itemCount: itemCount,

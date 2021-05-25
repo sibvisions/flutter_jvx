@@ -53,7 +53,6 @@ class OfflineDatabase extends LocalDatabase
   ValueNotifier<double?> progress = ValueNotifier<double>(0.0);
   int rowsToImport = 0;
   int rowsImported = 0;
-  int fetchOfflineRecordsPerRequest = 100;
   Failure? responseError;
   Filter? _lastFetchFilter;
   FilterCondition? _lastFetchFilterCondition;
@@ -287,8 +286,8 @@ class OfflineDatabase extends LocalDatabase
       // fetch all data to prepare offline sync
       await Future.forEach(componentData, (SoComponentData element) async {
         if (result) {
-          ApiState? state =
-              await element.fetchAll(repository, fetchOfflineRecordsPerRequest);
+          ApiState? state = await element.fetchAll(
+              repository, sl<AppState>().appConfig!.goOfflineReadAheadLimit);
 
           if (state != null && state is ApiError)
             result = false;
@@ -328,7 +327,19 @@ class OfflineDatabase extends LocalDatabase
         if (result) {
           await Future.forEach(componentData, (SoComponentData element) async {
             if (element.data != null && element.metaData != null && result) {
-              result = result & await _importRows(element.data);
+              try {
+                result = result &
+                    await _importRows(element.data,
+                        batchInsert: sl<AppState>()
+                            .appConfig!
+                            .goOfflineEnableBatchInsert,
+                        recordsPerBatch: sl<AppState>()
+                            .appConfig!
+                            .goOfflineBatchInsertAmount);
+              } catch (e) {
+                result = false;
+                log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, ErrorDetail: ${e.toString()}");
+              }
               if (!result) {
                 responseError = Failure(
                     title: AppLocalizations.of(context)!.text('Importfehler'),
@@ -663,7 +674,8 @@ class OfflineDatabase extends LocalDatabase
     return offlineDataProvider;
   }
 
-  Future<bool> _importRows(DataBook? data) async {
+  Future<bool> _importRows(DataBook? data,
+      {bool batchInsert = false, int recordsPerBatch = 100}) async {
     if (data != null && data.dataProvider != null) {
       String? tableName =
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
@@ -680,13 +692,35 @@ class OfflineDatabase extends LocalDatabase
               "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)");
         });
 
-        await this.bulk(sqlStatements, () {
-          rowsImported++;
-          setProgress(rowsToImport == 0
-              ? 0.5
-              : 0.5 + (rowsImported / 2 / rowsToImport));
-        });
-        //await this.batch(sqlStatements);
+        if (batchInsert) {
+          // batch insert with a package of insertOfflineRecordsPerBatchOperation
+          int index = 0;
+          int importRows = 0;
+
+          while (index < sqlStatements.length) {
+            importRows += recordsPerBatch;
+            if (importRows > sqlStatements.length)
+              importRows = sqlStatements.length;
+            List<String> batchStatements =
+                sqlStatements.getRange(index, importRows).toList();
+            await this.batch(batchStatements);
+            rowsImported += importRows - index;
+            index = importRows;
+            //index += importRows;
+
+            setProgress(rowsToImport == 0
+                ? 0.5
+                : 0.5 + (rowsImported / 2 / rowsToImport));
+          }
+        } else {
+          // single bulk insert
+          await this.bulk(sqlStatements, () {
+            rowsImported++;
+            setProgress(rowsToImport == 0
+                ? 0.5
+                : 0.5 + (rowsImported / 2 / rowsToImport));
+          });
+        }
 
         return true;
       }

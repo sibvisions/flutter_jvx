@@ -141,7 +141,7 @@ class NumericTextFormatter extends TextInputFormatter {
       if (this.scale == 0) return TextInputType.number;
     }
 
-    return TextInputType.numberWithOptions(decimal: true);
+    return TextInputType.numberWithOptions(decimal: true, signed: this.signed);
   }
 
   String _cutDigits(String formatString, int cutAt) {

@@ -29,14 +29,6 @@ class LabelComponentModel extends ComponentModel {
   LabelComponentModel({required ChangedComponent changedComponent})
       : super(changedComponent: changedComponent);
 
-  @override
-  void updateProperties(
-      BuildContext context, ChangedComponent changedComponent) {
-    this.text = changedComponent.getProperty<String>(
-        ComponentProperty.TEXT, this.text)!;
-    super.updateProperties(context, changedComponent);
-  }
-
   double getBaseline() {
     double labelBaseline = 30;
 

@@ -7,7 +7,7 @@ import 'i_database_provider.dart';
 typedef ProgressCallback();
 
 class LocalDatabase implements IDatabaseProvider {
-  bool debug = true;
+  bool debug = false;
   Database? db;
   String? path;
 
@@ -225,7 +225,7 @@ class LocalDatabase implements IDatabaseProvider {
         batch.execute(sql);
       });
 
-      batch.commit(noResult: true);
+      await batch.commit(noResult: true);
     });
   }
 
