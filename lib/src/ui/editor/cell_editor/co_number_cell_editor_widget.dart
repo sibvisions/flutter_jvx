@@ -173,7 +173,7 @@ class CoNumberCellEditorWidgetState
   void dispose() {
     widget.cellEditorModel.focusNode.removeListener(_focusListener);
     widget.cellEditorModel.removeListener(onCellEditorValueChanged);
-
+    widget.cellEditorModel.focusNode.dispose();
     super.dispose();
   }
 }

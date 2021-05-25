@@ -89,7 +89,14 @@ class NumericTextFormatter extends TextInputFormatter {
 
       //newString = this.getFormattedString(number);
 
-      if (addTrailingDecSep) newString += numberFormatter!.symbols.DECIMAL_SEP;
+      if (addTrailingDecSep) {
+        if (scale == null || scale! > 0)
+          newString += numberFormatter!.symbols.DECIMAL_SEP;
+        else
+          return newValue.copyWith(
+              text: newString, selection: oldValue.selection);
+      }
+
       // if (textLengthChange < 0 && newString.length >= oldValue.text.length) {
       //   TextSelection selection = oldValue.selection;
       //   return newValue.copyWith(
@@ -103,6 +110,7 @@ class NumericTextFormatter extends TextInputFormatter {
       //       text: newString,
       //       selection: TextSelection.collapsed(offset: selection.baseOffset));
       // }
+
       return newValue.copyWith(text: newString);
     } else {
       return newValue;
@@ -124,6 +132,7 @@ class NumericTextFormatter extends TextInputFormatter {
   dynamic convertToNumber(dynamic pValue) {
     dynamic number;
     if (pValue is String) {
+      if (pValue.isEmpty) return null;
       number = numberFormatter!.parse(pValue);
 
       if (scale == 0 && (number is double)) {
@@ -135,13 +144,14 @@ class NumericTextFormatter extends TextInputFormatter {
   }
 
   TextInputType getKeyboardType() {
-    if (this._numberFormat != null && this._numberFormat!.isNotEmpty) {
-      if (!this.numberFormat!.contains(".")) return TextInputType.number;
+    // if (this._numberFormat != null && this._numberFormat!.isNotEmpty) {
+    //   if (!this.numberFormat!.contains(".")) return TextInputType.number;
 
-      if (this.scale == 0) return TextInputType.number;
-    }
+    //   if (this.scale == 0) return TextInputType.number;
+    // }
 
-    return TextInputType.numberWithOptions(decimal: true, signed: this.signed);
+    return TextInputType.numberWithOptions(
+        decimal: this.scale != 0, signed: this.signed);
   }
 
   String _cutDigits(String formatString, int cutAt) {
