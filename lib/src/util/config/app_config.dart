@@ -16,6 +16,8 @@ class AppConfig {
   final int requestTimeout;
   final int goOfflineRequestTimeout;
   final int goOfflineReadAheadLimit;
+  final bool goOfflineEnableBatchInsert;
+  final int goOfflineBatchInsertAmount;
   final String title;
   final ServerConfig? initialConfig;
   final Map<String, dynamic>? startupParameter;
@@ -30,6 +32,8 @@ class AppConfig {
       required this.requestTimeout,
       this.goOfflineRequestTimeout = 30,
       this.goOfflineReadAheadLimit = 100,
+      this.goOfflineEnableBatchInsert = false,
+      this.goOfflineBatchInsertAmount = 100,
       this.initialConfig,
       this.startupParameter});
 
@@ -42,6 +46,8 @@ class AppConfig {
         requestTimeout = map['requestTimeout'],
         goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
         goOfflineReadAheadLimit = map['goOfflineReadAheadLimit'],
+        goOfflineEnableBatchInsert = map['goOfflineEnableBatchInsert'],
+        goOfflineBatchInsertAmount = map['goOfflineBatchInsertAmount'],
         initialConfig = ServerConfig.fromJson(map: map['initialConfig']),
         startupParameter = map['startupParameter'],
         title = map['title'];
@@ -55,6 +61,8 @@ class AppConfig {
         requestTimeout = map['requestTimeout'],
         goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
         goOfflineReadAheadLimit = map['goOfflineReadAheadLimit'],
+        goOfflineEnableBatchInsert = map['goOfflineEnableBatchInsert'],
+        goOfflineBatchInsertAmount = map['goOfflineBatchInsertAmount'],
         initialConfig = map['initialConfig'] != null
             ? ServerConfig.fromYaml(map: map['initialConfig'])
             : null,

@@ -53,7 +53,6 @@ class OfflineDatabase extends LocalDatabase
   ValueNotifier<double?> progress = ValueNotifier<double>(0.0);
   int rowsToImport = 0;
   int rowsImported = 0;
-  int insertOfflineRecordsPerBatchOperation = 100;
   Failure? responseError;
   Filter? _lastFetchFilter;
   FilterCondition? _lastFetchFilterCondition;
@@ -326,7 +325,14 @@ class OfflineDatabase extends LocalDatabase
           await Future.forEach(componentData, (SoComponentData element) async {
             if (element.data != null && element.metaData != null && result) {
               try {
-                result = result & await _importRows(element.data);
+                result = result &
+                    await _importRows(element.data,
+                        batchInsert: sl<AppState>()
+                            .appConfig!
+                            .goOfflineEnableBatchInsert,
+                        recordsPerBatch: sl<AppState>()
+                            .appConfig!
+                            .goOfflineBatchInsertAmount);
               } catch (e) {
                 result = false;
                 log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, ErrorDetail: ${e.toString()}");
@@ -665,7 +671,8 @@ class OfflineDatabase extends LocalDatabase
     return offlineDataProvider;
   }
 
-  Future<bool> _importRows(DataBook? data, {bool batchInsert = false}) async {
+  Future<bool> _importRows(DataBook? data,
+      {bool batchInsert = false, int recordsPerBatch = 100}) async {
     if (data != null && data.dataProvider != null) {
       String? tableName =
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
@@ -688,7 +695,7 @@ class OfflineDatabase extends LocalDatabase
           int importRows = 0;
 
           while (index < sqlStatements.length) {
-            importRows += insertOfflineRecordsPerBatchOperation;
+            importRows += recordsPerBatch;
             if (importRows > sqlStatements.length)
               importRows = sqlStatements.length;
             List<String> batchStatements =
