@@ -448,6 +448,12 @@ class SoComponentData {
       ApiRepository repository, int recordsPerRequest) async {
     ApiState? result;
     log('Start fetching all records for ${this.dataProvider}.');
+
+    if (data != null) {
+      data!.isAllFetched = false;
+      data!.records = <dynamic>[];
+    }
+
     if (data == null || data!.isAllFetched == null || !data!.isAllFetched!) {
       bool reload = true;
       isFetching = true;
