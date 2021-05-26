@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -138,13 +140,16 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             (componentWidget.componentModel as ContainerComponentModel);
         if (model.layout != null &&
             model.layout?.setState != null &&
-            model.layout is CoFormLayoutContainerWidget) {
+            (model.layout is CoFormLayoutContainerWidget ||
+                model.layout is CoBorderLayoutContainerWidget)) {
+          log('Relayout $componentId');
           model.layout!.setState!(() {});
           _formLayoutFound = true;
         }
       }
-      if (componentWidget.componentModel.parentComponentId.isNotEmpty &&
-          !_formLayoutFound) {
+      if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
+        //&&
+        //  !_formLayoutFound) {
         relayoutParentLayouts(componentWidget.componentModel.parentComponentId);
       }
     }
@@ -166,6 +171,15 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           _addComponent(changedComponent, container);
         }
 
+        bool relayoutParent = false;
+        bool? visible =
+            changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, null);
+
+        if (visible != null &&
+            visible != componentWidget.componentModel.isVisible) {
+          relayoutParent = true;
+        }
+
         componentWidget.componentModel
             .updateProperties(context, changedComponent);
 
@@ -181,6 +195,10 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     componentWidget.componentModel.componentId,
                     changedComponent);
           }
+        }
+
+        if (relayoutParent) {
+          relayoutParentLayouts(componentWidget.componentModel.componentId);
         }
       }
     } else {
