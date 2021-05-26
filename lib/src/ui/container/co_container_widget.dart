@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/component_widget.dart';
-import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
-import 'package:flutterclient/src/ui/layout/co_border_layout_container_widget.dart';
-import 'package:flutterclient/src/ui/layout/widgets/co_border_layout_constraint.dart';
+
+import '../component/component_widget.dart';
+import '../layout/co_border_layout_container_widget.dart';
+import '../layout/widgets/co_border_layout_constraint.dart';
+import 'models/container_component_model.dart';
 
 class CoContainerWidget extends ComponentWidget {
   CoContainerWidget({required ContainerComponentModel componentModel})

@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/container/models/custom_container_component_model.dart';
+
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../component/co_action_component_widget.dart';
 import '../../../component/model/button_component_model.dart';
@@ -98,6 +101,10 @@ class ComponentModelManager {
           changedComponent: changedComponent,
         );
         break;
+      case 'CustomContainer':
+        componentModel =
+            CustomContainerComponentModel(changedComponent: changedComponent);
+        break;
       case 'PopupMenu':
         componentModel =
             PopupMenuComponentModel(changedComponent: changedComponent);
@@ -158,7 +165,8 @@ class ComponentModelManager {
     if (componentModel != null) {
       return componentModel;
     } else {
-      throw Exception('Couldn\'t create component model.');
+      throw FlutterError(
+          'Couldn\'t create component model.\nIt seems that this component is not yet supported in mobile');
     }
   }
 }

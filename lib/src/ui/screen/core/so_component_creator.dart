@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/ui/component/co_map_widget.dart';
 import 'package:flutterclient/src/ui/component/model/map_component_model.dart';
+import 'package:flutterclient/src/ui/container/co_custom_container_widget.dart';
+import 'package:flutterclient/src/ui/container/models/custom_container_component_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
@@ -82,6 +84,9 @@ class SoComponentCreator implements IComponentCreator {
         componentModel: componentModel as SplitPanelComponentModel),
     'TabsetPanel': (ComponentModel componentModel) => CoTabsetPanelWidget(
         componentModel: componentModel as TabsetPanelComponentModel),
+    'CustomContainer': (ComponentModel componentModel) =>
+        CoCustomContainerWidget(
+            componentModel: componentModel as CustomContainerComponentModel),
 
     // Components
     'Label': (ComponentModel componentModel) =>
