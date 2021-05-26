@@ -55,20 +55,25 @@ class CoMapWidgetState extends ComponentWidgetState<CoMapWidget> {
     if (widget.componentModel.pointsComponentData?.data != null &&
         widget.componentModel.groupsComponentData?.data != null) {
       return FlutterMap(
+        layers: [
+          if (widget.componentModel.points.isNotEmpty)
+            MarkerLayerOptions(markers: widget.componentModel.points),
+          if (widget.componentModel.groups.isNotEmpty)
+            PolygonLayerOptions(polygons: widget.componentModel.groups),
+        ],
         mapController: _controller,
         options: MapOptions(
-            onTap: (LatLng latlng) =>
-                widget.componentModel.onPointSelection(context, latlng),
-            zoom: widget.componentModel.zoomLevel.toDouble()),
+            onTap: (LatLng latlng) {
+              if (widget.componentModel.pointSelectionLockedOnCenter) {
+                widget.componentModel
+                    .onPointSelection(context, _controller.center);
+              } else {
+                widget.componentModel.onPointSelection(context, latlng);
+              }
+            },
+            zoom: widget.componentModel.zoomLevel.toDouble(),
+            center: widget.componentModel.center),
         children: [
-          if (widget.componentModel.points.isNotEmpty)
-            MarkerLayerWidget(
-                options:
-                    MarkerLayerOptions(markers: widget.componentModel.points)),
-          if (widget.componentModel.groups.isNotEmpty)
-            PolygonLayerWidget(
-                options: PolygonLayerOptions(
-                    polygons: widget.componentModel.groups)),
           TileLayerWidget(
               options: TileLayerOptions(
                   urlTemplate:
