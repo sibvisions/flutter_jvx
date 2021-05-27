@@ -61,7 +61,10 @@ class ButtonComponentModel extends ActionComponentModel {
     _horizontalTextPosition = changedComponent.getProperty<int>(
         ComponentProperty.HORIZONTAL_TEXT_POSITION, _horizontalTextPosition);
 
-    if (classNameEventSourceRef == 'QRScannerButton') {
+    String classNameEventSourceRef = changedComponent.getProperty<String>(
+        ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF, '')!;
+
+    if (classNameEventSourceRef == 'QRScannerButton' || classNameEventSourceRef == 'CallButton') {
       dataProvider = changedComponent.getProperty<String>(
               ComponentProperty.DATA_PROVIDER, null) ??
           changedComponent.getProperty(ComponentProperty.DATA_ROW, null);

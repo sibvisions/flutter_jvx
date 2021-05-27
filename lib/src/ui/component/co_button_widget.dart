@@ -234,9 +234,21 @@ class CoButtonWidgetState extends CoActionComponentWidgetState<CoButtonWidget> {
                               [widget.componentModel.columnName]);
                         }
                       } else if (widget
-                              .componentModel.classNameEventSourceRef ==
-                          'CallButton') {
-                        await launch('tel://');
+                                  .componentModel.classNameEventSourceRef ==
+                              'CallButton' &&
+                          widget.componentModel.columnName != null) {
+                        SoComponentData data = SoScreen.of(context)!
+                            .getComponentData(
+                                widget.componentModel.dataProvider ?? '');
+
+                        String tel = data.getColumnData(
+                            context, widget.componentModel.columnName!);
+
+                        if (tel.isNotEmpty) {
+                          await launch('tel://$tel');
+                        } else {
+                          await launch('tel://');
+                        }
                       }
 
                       widget.componentModel.onAction(
