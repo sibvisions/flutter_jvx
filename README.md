@@ -4,9 +4,9 @@ The Flutter Client is a mobile app for the [JVx framework](https://doc.sibvision
 
 # Requirements
 
-* [Flutter dev environment](https://flutter.dev/docs/get-started/install)
-* Java 6 or later (for the JVx application)
-* A JVx application, running on a Java application (Jetty, Tomcat, ...) server, using [JVx mobile UI](https://sourceforge.net/projects/jvxmobile/) 
+- [Flutter dev environment](https://flutter.dev/docs/get-started/install)
+- Java 6 or later (for the JVx application)
+- A JVx application, running on a Java application (Jetty, Tomcat, ...) server, using [JVx mobile UI](https://sourceforge.net/projects/jvxmobile/)
 
 # Build
 
@@ -18,8 +18,35 @@ We recommend that you use the client as library and create your own app. We have
 
 Following dependency is required in your pubspec.yaml:
 
-    jvx_flutterclient:
+    flutterclient:
         git:
         url: https://github.com/sibvisions/flutterclient.git
-        
+
+
 It's also possible to use the app itself - standalone and not as library. You have the choice.
+
+Currently not all packages we use are migrated to null-safety,
+therefore you'll need `--no-sound-null-safety` as an additional argument.
+
+## VSCode
+
+In .vscode/launch.json your configuration should look like this:
+
+```
+    {
+        "name": "Flutter",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+            "--no-sound-null-safety"
+        ]
+    }
+```
+
+## Android Studio
+
+In Android Studio add `--no-sound-null-safety` to Configurations -> Edit Configuration -> Additional Arguments.
+
+## Terminal command
+
+`flutter run --no-sound-null-safety`

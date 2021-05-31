@@ -21,28 +21,30 @@ class ErrorHandler {
   static Future<void> handleError(ApiError error, BuildContext context) async {
     TextUtils.unfocusCurrentTextfield(context);
 
-    if (error.failure.name == sessionExpired) {
-      showSessionExpiredDialog(context, error);
-    } else if (error.failure.name == messageError) {
-      if (ModalRoute.of(context)!.settings.name == Routes.startup) {
+    if (!error.failure.silentAbort) {
+      if (error.failure.name == sessionExpired) {
+        showSessionExpiredDialog(context, error);
+      } else if (error.failure.name == messageError) {
+        if (ModalRoute.of(context)!.settings.name == Routes.startup) {
+          showGoToSettingsDialog(context, error);
+        } else {
+          showErrorDialog(context, error);
+        }
+      } else if (error.failure.name == serverError) {
         showGoToSettingsDialog(context, error);
-      } else {
+      } else if (error.failure.name == connectionError) {
+        showGoToSettingsDialog(context, error);
+      } else if (error.failure.name == timeoutError) {
+        showGoToSettingsDialog(context, error);
+      } else if (error.failure.name == internetError) {
+        showGoToSettingsDialog(context, error);
+      } else if (error.failure.name == offlineError) {
+        showGoToSettingsDialog(context, error);
+      } else if (error.failure.name == cacheError) {
         showErrorDialog(context, error);
+      } else {
+        showGoToSettingsDialog(context, error);
       }
-    } else if (error.failure.name == serverError) {
-      showGoToSettingsDialog(context, error);
-    } else if (error.failure.name == connectionError) {
-      showGoToSettingsDialog(context, error);
-    } else if (error.failure.name == timeoutError) {
-      showGoToSettingsDialog(context, error);
-    } else if (error.failure.name == internetError) {
-      showGoToSettingsDialog(context, error);
-    } else if (error.failure.name == offlineError) {
-      showGoToSettingsDialog(context, error);
-    } else if (error.failure.name == cacheError) {
-      showErrorDialog(context, error);
-    } else {
-      showGoToSettingsDialog(context, error);
     }
   }
 

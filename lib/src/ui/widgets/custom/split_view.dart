@@ -86,7 +86,7 @@ class _SplitViewState extends State<SplitView> {
     }
   }
 
-  Stack _buildVerticalView(
+  Widget _buildVerticalView(
       BuildContext context, BoxConstraints constraints, double w) {
     final double maxWidth = constraints.maxWidth == double.infinity
         ? MediaQuery.of(context).size.width
@@ -214,9 +214,18 @@ class _SplitViewState extends State<SplitView> {
       );
     }
 
-    return Stack(
-      children: children,
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return SizedBox(
+        width:
+            constraints.maxWidth != double.infinity ? constraints.maxWidth : 0,
+        height: constraints.maxHeight != double.infinity
+            ? constraints.maxHeight
+            : 0,
+        child: Stack(
+          children: children,
+        ),
+      );
+    });
   }
 
   Widget _buildHorizontalView(

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/co_map_widget.dart';
-import 'package:flutterclient/src/ui/component/model/map_component_model.dart';
-import 'package:flutterclient/src/ui/container/co_custom_container_widget.dart';
-import 'package:flutterclient/src/ui/container/models/custom_container_component_model.dart';
+import 'package:flutterclient/src/ui/component/co_gauge_widget.dart';
+import 'package:flutterclient/src/ui/component/model/gauge_component_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../models/api/response_objects/response_data/editor/cell_editor.dart';
 import '../../component/co_button_widget.dart';
+import '../../component/co_chart_widget.dart';
 import '../../component/co_checkbox_component_widget.dart';
 import '../../component/co_icon_widget.dart';
 import '../../component/co_label_widget.dart';
+import '../../component/co_map_widget.dart';
 import '../../component/co_password_field_widget.dart';
 import '../../component/co_radio_button_widget.dart';
 import '../../component/co_table_widget.dart';
@@ -19,9 +19,11 @@ import '../../component/co_text_field_widget.dart';
 import '../../component/co_toggle_button_widget.dart';
 import '../../component/component_widget.dart';
 import '../../component/model/button_component_model.dart';
+import '../../component/model/chart_component_model.dart';
 import '../../component/model/component_model.dart';
 import '../../component/model/icon_component_model.dart';
 import '../../component/model/label_component_model.dart';
+import '../../component/model/map_component_model.dart';
 import '../../component/model/selectable_component_model.dart';
 import '../../component/model/table_component_model.dart';
 import '../../component/model/text_area_component_model.dart';
@@ -33,11 +35,13 @@ import '../../component/popup_menu/co_popup_menu_widget.dart';
 import '../../component/popup_menu/models/menu_item_component_model.dart';
 import '../../component/popup_menu/models/popup_menu_button_component_model.dart';
 import '../../component/popup_menu/models/popup_menu_component_model.dart';
+import '../../container/co_custom_container_widget.dart';
 import '../../container/co_group_panel_widget.dart';
 import '../../container/co_panel_widget.dart';
 import '../../container/co_scroll_panel_widget.dart';
 import '../../container/co_split_panel_widget.dart';
 import '../../container/models/container_component_model.dart';
+import '../../container/models/custom_container_component_model.dart';
 import '../../container/models/group_panel_component_model.dart';
 import '../../container/models/split_panel_component_model.dart';
 import '../../container/tabset_panel/co_tabset_panel_widget.dart';
@@ -123,6 +127,10 @@ class SoComponentCreator implements IComponentCreator {
         componentModel: componentModel as SelectableComponentModel),
     'Map': (ComponentModel componentModel) =>
         CoMapWidget(componentModel: componentModel as MapComponentModel),
+    'Chart': (ComponentModel componentModel) =>
+        CoChartWidget(componentModel: componentModel as ChartComponentModel),
+    'Gauge': (ComponentModel componentModel) =>
+        CoGaugeWidget(componentModel: componentModel as GaugeComponentModel),
   };
 
   Map<String, CellEditorWidgetBuilder> standardCellEditors = {

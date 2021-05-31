@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/data/filter.dart';
 import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
+import 'package:flutterclient/src/ui/widgets/custom/custom_icon.dart';
+import 'package:flutterclient/src/util/color/color_extension.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong/latlong.dart';
 
 import '../../screen/core/so_component_data.dart';
@@ -21,7 +25,7 @@ class MapComponentModel extends ComponentModel {
   Color fillColor = Colors.white;
   Color lineColor = Colors.black;
 
-  String? center;
+  LatLng center = LatLng(48, 17);
 
   String? marker;
 
@@ -62,14 +66,21 @@ class MapComponentModel extends ComponentModel {
     marker =
         changedComponent.getProperty<String>(ComponentProperty.MARKER, marker);
 
-    center =
-        changedComponent.getProperty<String>(ComponentProperty.CENTER, center);
+    String? centerString =
+        changedComponent.getProperty<String>(ComponentProperty.CENTER, null);
 
-    // lineColor = changedComponent.getProperty<Color>(
-    //     ComponentProperty.LINE_COLOR, lineColor)!;
+    if (centerString != null) {
+      List<String> split = centerString.split(';');
 
-    // fillColor = changedComponent.getProperty<Color>(
-    //     ComponentProperty.FILL_COLOR, fillColor)!;
+      center =
+          LatLng(double.tryParse(split.first), double.tryParse(split.last));
+    }
+
+    lineColor = HexColor.fromHex(changedComponent.getProperty<String>(
+        ComponentProperty.LINE_COLOR, '')!);
+
+    fillColor = HexColor.fromHex(changedComponent.getProperty<String>(
+        ComponentProperty.FILL_COLOR, '')!);
 
     tileProvider = changedComponent.getProperty<String>(
         ComponentProperty.TILE_PROVIDER, tileProvider)!;
@@ -92,6 +103,8 @@ class MapComponentModel extends ComponentModel {
   }
 
   void onGroupDataChanged(BuildContext context) {
+    groups.clear();
+
     List<LatLng> pointsForGroup = <LatLng>[];
 
     if (groupsComponentData != null && groupsComponentData?.data != null) {
@@ -119,10 +132,59 @@ class MapComponentModel extends ComponentModel {
     }
 
     groups.add(Polygon(
-        points: pointsForGroup, color: fillColor, borderColor: lineColor));
+        points: pointsForGroup,
+        color: fillColor,
+        borderColor: lineColor,
+        borderStrokeWidth: 1.0));
 
     notifyListeners();
   }
 
-  void onPointDataChanged(BuildContext context) => notifyListeners();
+  void onPointDataChanged(BuildContext context) {
+    points.clear();
+
+    if (pointsComponentData != null && pointsComponentData?.data != null) {
+      for (final record in pointsComponentData!.data!.records) {
+        int latIndex =
+            pointsComponentData!.data!.getColumnIndex(latitudeColumnName);
+
+        int longIndex =
+            pointsComponentData!.data!.getColumnIndex(longitudeColumnName);
+
+        if (latIndex >= 0 && longIndex >= 0) {
+          double lat = record[latIndex] is int
+              ? record[latIndex].toDouble()
+              : record[latIndex];
+
+          double long = record[longIndex] is int
+              ? record[longIndex].toDouble()
+              : record[longIndex];
+
+          LatLng point = LatLng(lat, long);
+
+          String? image = pointsComponentData!.data!.getValue(
+              markerImageColumnName,
+              pointsComponentData!.data!.records.indexOf(record));
+
+          points.add(Marker(
+              point: point,
+              width: 64,
+              height: 64,
+              builder: (_) => Container(
+                    child: image != null
+                        ? CustomIcon(
+                            image: image,
+                            prefferedSize: Size(64, 64),
+                          )
+                        : CustomIcon(
+                            image: marker ?? 'FontAwesome.mapMarker',
+                            prefferedSize: Size(64, 64),
+                          ),
+                  )));
+        }
+      }
+
+      notifyListeners();
+    }
+  }
 }

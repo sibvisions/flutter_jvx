@@ -99,7 +99,14 @@ enum ComponentProperty {
   LENGTH,
   PRECISION,
   SCALE,
-  SIGNED
+  SIGNED,
+  X_COLUMN_NAME,
+  Y_COLUMN_NAMES,
+  X_COLUMN_LABEL,
+  Y_COLUMN_LABELS,
+  X_AXIS_TITLE,
+  Y_AXIS_TITLE,
+  TITLE,
 }
 
 class ComponentProperties {

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/component/co_chart_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutterclient.dart';
