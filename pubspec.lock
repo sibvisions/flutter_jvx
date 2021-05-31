@@ -141,6 +141,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  charts_common:
+    dependency: transitive
+    description:
+      name: charts_common
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.0"
+  charts_flutter:
+    dependency: "direct main"
+    description:
+      name: charts_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.0"
   checked_yaml:
     dependency: transitive
     description:
@@ -314,6 +328,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
+  flutter_gauge:
+    dependency: "direct main"
+    description:
+      name: flutter_gauge
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.8"
   flutter_html:
     dependency: "direct main"
     description:
@@ -742,6 +763,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.27.1"
   scrollable_positioned_list:
     dependency: "direct main"
     description:

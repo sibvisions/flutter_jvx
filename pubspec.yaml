@@ -50,6 +50,8 @@ dependencies:
   url_launcher: ^6.0.3
   flutter_swiper: ^1.1.6
   signature: ^4.1.1
+  charts_flutter: ^0.10.0
+  flutter_gauge: ^1.0.8
 
 dependency_overrides:
   quiver: ^3.0.0-nullsafety.3
