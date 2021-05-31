@@ -390,13 +390,15 @@ class OfflineDatabase extends LocalDatabase
         dataSource: sl<DataSource>(),
         decoder: sl<ZipDecoder>());
 
-    FetchDataRequest fetch = FetchDataRequest(
+    FilterDataRequest filterRequest = FilterDataRequest(
         dataProvider: dataProvider,
         clientId: repository.appState.applicationMetaData!.clientId,
         columnNames: columnNames,
-        filter: filter);
+        fromRow: 0,
+        rowCount: -1);
+    filterRequest.filter = filter;
 
-    List<ApiState> states = await repository.data(fetch);
+    List<ApiState> states = await repository.data(filterRequest);
 
     if (states.isNotEmpty && states.first is ApiResponse) {
       ApiResponse response = states.first as ApiResponse;
@@ -421,30 +423,46 @@ class OfflineDatabase extends LocalDatabase
 
             if (await syncSave(
                 context, dataProvider, filter, columnNames, row)) {
-              String? tableName =
-                  OfflineDatabaseFormatter.formatTableName(dataProvider);
-
-              if (await tableExists(tableName)) {
-                Map<String, dynamic>? record =
-                    await getRowWithFilter(tableName, filter, false);
-                dynamic offlinePrimaryKey =
-                    OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
-                String where =
-                    "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
-
-                return await this.delete(tableName, where);
-              }
+              return await setDeletedSynced(dataProvider, filter);
             }
           }
+        } else {
+          return await onSyncDeleteRecordNotFound(
+              context, dataProvider, filter, columnNames, row);
         }
       }
-    } else {
-      responseError = Failure(
-          title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
-          details: '',
-          message: AppLocalizations.of(context)!
-              .text('Der zu löschende Datensatz wurde nicht gefunden.'),
-          name: 'offline.error');
+    }
+
+    return false;
+  }
+
+  Future<bool> onSyncDeleteRecordNotFound(
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
+    responseError = Failure(
+        title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
+        details: '',
+        message: AppLocalizations.of(context)!
+            .text('Der zu löschende Datensatz wurde nicht gefunden.'),
+        name: 'offline.error');
+
+    return false;
+  }
+
+  Future<bool> setDeletedSynced(String dataProvider, Filter filter) async {
+    String? tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
+    if (await tableExists(tableName)) {
+      Map<String, dynamic>? record =
+          await getRowWithFilter(tableName, filter, false);
+      dynamic offlinePrimaryKey =
+          OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
+      String where =
+          "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
+
+      return await this.delete(tableName, where);
     }
 
     return false;
@@ -464,46 +482,97 @@ class OfflineDatabase extends LocalDatabase
         dataSource: sl<DataSource>(),
         decoder: sl<ZipDecoder>());
 
-    InsertRecordRequest insert = InsertRecordRequest(
+    FilterDataRequest filterRequest = FilterDataRequest(
         dataProvider: dataProvider,
-        clientId: repository.appState.applicationMetaData!.clientId);
+        clientId: repository.appState.applicationMetaData!.clientId,
+        columnNames: columnNames,
+        fromRow: 0,
+        rowCount: -1);
+    filterRequest.filter = filter;
 
-    List<ApiState> states = await repository.data(insert);
+    List<ApiState> states = await repository.data(filterRequest);
 
     if (states.isNotEmpty && states.first is ApiResponse) {
       ApiResponse response = states.first as ApiResponse;
+
       setProperties(repository, response);
 
       if (response.hasDataBook) {
         DataBook? dataBook = response.getDataBookByProvider(dataProvider);
 
-        if (dataBook != null && dataBook.records.isNotEmpty) {
-          Map<String, dynamic> changedInsertValues =
-              OfflineDatabaseFormatter.getChangedValues(
-                  dataBook.records[0], columnNames, row, filter.columnNames);
-
-          SetValuesRequest setValues = SetValuesRequest(
+        if (dataBook?.records.length == 0) {
+          InsertRecordRequest insert = InsertRecordRequest(
               dataProvider: dataProvider,
-              values: changedInsertValues.values.toList(),
-              columnNames: changedInsertValues.keys.toList(),
-              clientId: repository.appState.applicationMetaData!.clientId,
-              offlineSelectedRow: null);
+              clientId: repository.appState.applicationMetaData!.clientId);
 
-          List<ApiState> states = await repository.data(setValues);
+          List<ApiState> states = await repository.data(insert);
 
           if (states.isNotEmpty && states.first is ApiResponse) {
-            if (await syncSave(
-                context, dataProvider, filter, columnNames, row)) {
-              dynamic offlinePrimaryKey =
-                  OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-              if (await setOfflineState(
-                  dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
-                return true;
+            ApiResponse response = states.first as ApiResponse;
+            setProperties(repository, response);
+
+            if (response.hasDataBook) {
+              DataBook? dataBook = response.getDataBookByProvider(dataProvider);
+
+              if (dataBook != null && dataBook.records.isNotEmpty) {
+                Map<String, dynamic> changedInsertValues =
+                    OfflineDatabaseFormatter.getChangedValues(
+                        dataBook.records[0],
+                        columnNames,
+                        row,
+                        filter.columnNames);
+
+                SetValuesRequest setValues = SetValuesRequest(
+                    dataProvider: dataProvider,
+                    values: changedInsertValues.values.toList(),
+                    columnNames: changedInsertValues.keys.toList(),
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                    offlineSelectedRow: null);
+
+                List<ApiState> states = await repository.data(setValues);
+
+                if (states.isNotEmpty && states.first is ApiResponse) {
+                  if (await syncSave(
+                      context, dataProvider, filter, columnNames, row)) {
+                    return await setInsertedSynced(dataProvider, row);
+                  }
+                }
+              }
             }
           }
+        } else {
+          return await onSyncInsertRecordExists(
+              context, dataProvider, filter, columnNames, row);
         }
       }
     }
+
+    return false;
+  }
+
+  Future<bool> onSyncInsertRecordExists(
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
+    responseError = Failure(
+        title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
+        details: '',
+        message: AppLocalizations.of(context)!
+            .text('Der einzufügende Datensatz ist bereits vorhanden.'),
+        name: 'offline.error');
+
+    return false;
+  }
+
+  Future<bool> setInsertedSynced(
+      String dataProvider, Map<String, dynamic> row) async {
+    dynamic offlinePrimaryKey =
+        OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+    if (await setOfflineState(
+        dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
+      return true;
 
     return false;
   }
