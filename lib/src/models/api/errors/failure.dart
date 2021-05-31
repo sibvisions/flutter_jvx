@@ -5,18 +5,21 @@ class Failure extends ResponseObject {
   final String? message;
   final String? details;
   final String? title;
+  final bool silentAbort;
 
   Failure(
       {required String name,
       required this.details,
       required this.message,
-      required this.title})
+      required this.title,
+      this.silentAbort = false})
       : super(name: name);
 
   Failure.fromJson({required Map<String, dynamic> map})
       : message = map['message'],
         details = map['details'],
         title = map['title'],
+        silentAbort = map['silentAbort'] ?? false,
         super.fromJson(map: map);
 }
 
