@@ -128,30 +128,30 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     }
   }
 
-  void relayoutParentLayouts(String componentId) {
-    bool _formLayoutFound = false;
+  // void relayoutParentLayouts(String componentId) {
+  //   bool _formLayoutFound = false;
 
-    if (_components.containsKey(componentId)) {
-      ComponentWidget componentWidget = _components[componentId]!;
-      if (componentWidget.componentModel is ContainerComponentModel) {
-        ContainerComponentModel model =
-            (componentWidget.componentModel as ContainerComponentModel);
-        // if (model.layout != null &&
-        //     model.layout?.setState != null &&
-        //     (model.layout is CoFormLayoutContainerWidget ||
-        //         model.layout is CoBorderLayoutContainerWidget)) {
-        //   log('Relayout $componentId');
-        //   model.layout!.setState!(() {});
-        //   _formLayoutFound = true;
-        // }
-      }
-      if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
-        //&&
-        //  !_formLayoutFound) {
-        relayoutParentLayouts(componentWidget.componentModel.parentComponentId);
-      }
-    }
-  }
+  //   if (_components.containsKey(componentId)) {
+  //     ComponentWidget componentWidget = _components[componentId]!;
+  //     if (componentWidget.componentModel is ContainerComponentModel) {
+  //       ContainerComponentModel model =
+  //           (componentWidget.componentModel as ContainerComponentModel);
+  //       // if (model.layout != null &&
+  //       //     model.layout?.setState != null &&
+  //       //     (model.layout is CoFormLayoutContainerWidget ||
+  //       //         model.layout is CoBorderLayoutContainerWidget)) {
+  //       //   log('Relayout $componentId');
+  //       //   model.layout!.setState!(() {});
+  //       //   _formLayoutFound = true;
+  //       // }
+  //     }
+  //     if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
+  //       //&&
+  //       //  !_formLayoutFound) {
+  //       relayoutParentLayouts(componentWidget.componentModel.parentComponentId);
+  //     }
+  //   }
+  // }
 
   void _updateComponent(ChangedComponent changedComponent,
       Map<String, ComponentWidget> container) {
@@ -320,7 +320,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             .addWithConstraints(
                 componentWidget, componentWidget.componentModel.constraints);
 
-        relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
+        // relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
       }
     }
   }
@@ -349,7 +349,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .removeWithComponent(componentWidget);
 
-        relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
+        // relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
       }
     }
   }
