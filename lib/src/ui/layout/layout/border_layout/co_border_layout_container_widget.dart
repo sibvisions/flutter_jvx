@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/co_border_layout_constraint.dart';
-import '../widgets/co_border_layout_widget.dart';
+import '../../widgets/co_border_layout_constraint.dart';
+import '../../widgets/co_border_layout_widget.dart';
+import '../co_layout_widget.dart';
 import 'border_layout_model.dart';
 
-class CoBorderLayoutContainerWidget extends StatefulWidget {
+class CoBorderLayoutContainerWidget extends CoLayoutWidget {
   final BorderLayoutModel layoutModel;
 
   const CoBorderLayoutContainerWidget({Key? key, required this.layoutModel})
-      : super(key: key);
+      : super(key: key, layoutModel: layoutModel);
 
   @override
-  _CoBorderLayoutContainerWidgetState createState() =>
-      _CoBorderLayoutContainerWidgetState();
+  CoBorderLayoutContainerWidgetState createState() =>
+      CoBorderLayoutContainerWidgetState();
 }
 
-class _CoBorderLayoutContainerWidgetState
-    extends State<CoBorderLayoutContainerWidget> {
-  late GlobalKey layoutKey;
-
+class CoBorderLayoutContainerWidgetState
+    extends CoLayoutWidgetState<CoBorderLayoutContainerWidget> {
   @override
   void initState() {
     super.initState();
-
-    layoutKey = GlobalKey(
-        debugLabel: widget.layoutModel.container?.componentModel.componentId);
   }
 
   @override
@@ -49,27 +45,25 @@ class _CoBorderLayoutContainerWidgetState
               widget.layoutModel.north!.componentModel.isVisible)
             CoBorderLayoutId(
                 pConstraints: CoBorderLayoutConstraintData(
-                    CoBorderLayoutConstraints.Center,
-                    widget.layoutModel.north!),
+                    CoBorderLayoutConstraints.North, widget.layoutModel.north!),
                 child: widget.layoutModel.north!),
           if (widget.layoutModel.south != null &&
               widget.layoutModel.south!.componentModel.isVisible)
             CoBorderLayoutId(
                 pConstraints: CoBorderLayoutConstraintData(
-                    CoBorderLayoutConstraints.Center,
-                    widget.layoutModel.south!),
+                    CoBorderLayoutConstraints.South, widget.layoutModel.south!),
                 child: widget.layoutModel.south!),
           if (widget.layoutModel.west != null &&
               widget.layoutModel.west!.componentModel.isVisible)
             CoBorderLayoutId(
                 pConstraints: CoBorderLayoutConstraintData(
-                    CoBorderLayoutConstraints.Center, widget.layoutModel.west!),
+                    CoBorderLayoutConstraints.West, widget.layoutModel.west!),
                 child: widget.layoutModel.west!),
           if (widget.layoutModel.east != null &&
               widget.layoutModel.east!.componentModel.isVisible)
             CoBorderLayoutId(
                 pConstraints: CoBorderLayoutConstraintData(
-                    CoBorderLayoutConstraints.Center, widget.layoutModel.east!),
+                    CoBorderLayoutConstraints.East, widget.layoutModel.east!),
                 child: widget.layoutModel.east!),
         ],
       ),

@@ -2,7 +2,7 @@
 // Subclass definition
 //****************************************************************
 
-import '../co_form_layout_container_widget.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 ///
 /// The Anchor gives the possible horizontal and vertical positions.
@@ -21,7 +21,7 @@ class CoFormLayoutAnchor {
   String name;
 
   /// The layout for this anchor.
-  CoFormLayoutContainerWidget? layout;
+  LayoutModel? layout;
 
   /// The orientation of this anchor.
   int? orientation = 0;

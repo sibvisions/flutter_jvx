@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutterclient/src/ui/component/component_widget.dart';
-import 'package:flutterclient/src/ui/container/co_container_widget.dart';
-import 'package:flutterclient/src/ui/layout/co_layout.dart';
-import 'package:flutterclient/src/ui/layout/widgets/co_border_layout_constraint.dart';
+import '../../../component/component_widget.dart';
+import '../../../container/co_container_widget.dart';
+import '../../widgets/co_border_layout_constraint.dart';
+import '../layout_model.dart';
 
-class BorderLayoutModel extends ChangeNotifier
-    with CoLayout<CoBorderLayoutConstraints> {
+class BorderLayoutModel extends LayoutModel<CoBorderLayoutConstraints> {
   ComponentWidget? north;
   ComponentWidget? south;
   ComponentWidget? east;
@@ -61,8 +59,8 @@ class BorderLayoutModel extends ChangeNotifier
 
   @override
   void updateLayoutString(String layoutString) {
-    super.updateLayoutString(layoutString);
     parseFromString(layoutString);
+    super.updateLayoutString(layoutString);
   }
 
   @override

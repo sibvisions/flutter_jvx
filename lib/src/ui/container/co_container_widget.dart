@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../component/component_widget.dart';
-import '../layout/co_border_layout_container_widget.dart';
+import '../layout/layout/border_layout/co_border_layout_container_widget.dart';
 import '../layout/widgets/co_border_layout_constraint.dart';
 import 'models/container_component_model.dart';
 
@@ -38,9 +38,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
             getBorderLayoutConstraintsFromString(
                 component.componentModel.constraints);
 
-        componentModel.layout?.addLayoutComponent(component, contraints);
+        componentModel.layout?.layoutModel
+            .addLayoutComponent(component, contraints);
       } else {
-        componentModel.layout?.addLayoutComponent(
+        componentModel.layout?.layoutModel.addLayoutComponent(
             component, component.componentModel.constraints);
       }
     });
@@ -66,9 +67,10 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
             getBorderLayoutConstraintsFromString(
                 component.componentModel.constraints);
 
-        componentModel.layout?.addLayoutComponent(component, contraints);
+        componentModel.layout?.layoutModel
+            .addLayoutComponent(component, contraints);
       } else {
-        componentModel.layout?.addLayoutComponent(
+        componentModel.layout?.layoutModel.addLayoutComponent(
             component, component.componentModel.constraints);
       }
     });

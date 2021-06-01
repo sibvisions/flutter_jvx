@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
 
 import 'co_container_widget.dart';
 import 'co_scroll_panel_layout.dart';
+import 'models/container_component_model.dart';
 import 'models/group_panel_component_model.dart';
 
 class CoGroupPanelWidget extends CoContainerWidget {
@@ -34,10 +34,7 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
 
     Widget? child;
     if (componentModel.layout != null) {
-      child = componentModel.layout as Widget;
-      if (componentModel.layout!.setState != null) {
-        componentModel.layout!.setState!(() {});
-      }
+      child = componentModel.layout;
     } else if (componentModel.components.isNotEmpty) {
       child = Column(
         children: componentModel.components,

@@ -48,8 +48,7 @@ class CoLayoutRenderBox extends RenderBox {
     if (constraints.maxHeight == double.infinity &&
         constraints.maxWidth == double.infinity) {
       try {
-        if (renderBox.hasSize)
-          return renderBox.size;
+        if (renderBox.hasSize) return renderBox.size;
         renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
         return renderBox.size;
       } catch (e) {

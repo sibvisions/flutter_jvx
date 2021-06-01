@@ -1,11 +1,9 @@
-import 'dart:developer' as dev;
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutterclient/src/ui/component/model/component_model.dart';
-import 'package:flutterclient/src/ui/layout/widgets/co_layout_render_box.dart';
 
+import '../component/model/component_model.dart';
+import '../layout/widgets/co_layout_render_box.dart';
 import 'models/container_component_model.dart';
 
 class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
