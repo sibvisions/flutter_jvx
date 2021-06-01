@@ -33,6 +33,8 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
 
   String rawLayoutString = '';
 
+  Map<String, Key> keys = <String, Key>{};
+
   @override
   bool get isMaximumSizeSet => maximumSize != null;
 
@@ -41,6 +43,15 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
 
   @override
   bool get isPreferredSizeSet => preferredSize != null;
+
+  Key? getKeyByComponentId(String componentId) {
+    return keys[componentId];
+  }
+
+  Key? createKey(String componentId) {
+    keys[componentId] = GlobalKey(debugLabel: componentId);
+    return keys[componentId];
+  }
 
   @override
   void addLayoutComponent(ComponentWidget pComponent, E pConstraint) {

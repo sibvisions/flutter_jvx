@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import '../../widgets/co_form_layout_constraint.dart';
@@ -30,8 +28,16 @@ class CoFormLayoutContainerWidgetState
           widget.layoutModel.getConstraintsFromString(v);
 
       if (constraint != null && k.componentModel.isVisible) {
+        Key? key = widget.layoutModel
+            .getKeyByComponentId(k.componentModel.componentId);
+
+        if (key == null) {
+          key = widget.layoutModel.createKey(k.componentModel.componentId);
+        }
+
         constraint.comp = k;
-        data.add(CoFormLayoutConstraintData(id: constraint, child: k));
+        data.add(
+            CoFormLayoutConstraintData(key: key, id: constraint, child: k));
       }
     });
 

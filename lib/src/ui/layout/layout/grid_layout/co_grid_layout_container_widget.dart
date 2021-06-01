@@ -26,8 +26,16 @@ class CoGridLayoutWidgetState
           widget.layoutModel.getConstraintsFromString(v);
 
       if (constraint != null && k.componentModel.isVisible) {
+        Key? key = widget.layoutModel
+            .getKeyByComponentId(k.componentModel.componentId);
+
+        if (key == null) {
+          key = widget.layoutModel.createKey(k.componentModel.componentId);
+        }
+
         constraint.comp = k;
-        data.add(CoGridLayoutConstraintData(id: constraint, child: k));
+        data.add(
+            CoGridLayoutConstraintData(key: key, id: constraint, child: k));
       }
     });
 
