@@ -1,0 +1,2 @@
+Application: meycabinprogress
+URL: https://devmeyvisionxapp.meyershipbuilding.com/Meycabinprogress/services/mobile

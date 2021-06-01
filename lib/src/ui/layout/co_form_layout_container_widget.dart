@@ -90,36 +90,36 @@ class CoFormLayoutContainerWidget extends StatelessWidget
               pAnchor);
     }
 
-    CoFormLayoutAnchor anchor;
+    // CoFormLayoutAnchor? anchor;
 
-    if (anchors.containsKey(values[0])) {
-      anchor = anchors[values[0]]!;
-    } else {
-      int orientation = CoFormLayoutAnchor.VERTICAL;
+    // if (anchors.containsKey(values[0])) {
+    //   anchor = anchors[values[0]]!;
+    // } else {
+    //   int orientation = CoFormLayoutAnchor.VERTICAL;
 
-      if (values[0].startsWith("h") ||
-          values[0].startsWith("l") ||
-          values[0].startsWith("r")) {
-        orientation = CoFormLayoutAnchor.HORIZONTAL;
-      }
+    //   if (values[0].startsWith("h") ||
+    //       values[0].startsWith("l") ||
+    //       values[0].startsWith("r")) {
+    //     orientation = CoFormLayoutAnchor.HORIZONTAL;
+    //   }
 
-      anchor = CoFormLayoutAnchor(this, orientation, values[0]);
-    }
+    //   anchor = CoFormLayoutAnchor(this, orientation, values[0]);
+    // }
 
-    if (values[3] == "a") {
-      if (values.length > 4 && values[4].length > 0) {
-        anchor.position = int.parse(values[4]);
-      }
-      anchor.autoSize = true;
-    } else {
-      anchor.position = int.parse(values[3]);
-    }
+    // if (values[3] == "a") {
+    //   if (values.length > 4 && values[4].length > 0) {
+    //     anchor.position = int.parse(values[4]);
+    //   }
+    //   anchor.autoSize = true;
+    // } else {
+    //   anchor.position = int.parse(values[3]);
+    // }
 
-    if (values[1] != "-" && anchors.containsKey(values[1])) {
-      anchor.relatedAnchor = anchors[values[1]];
-    }
+    // if (values[1] != "-" && anchors.containsKey(values[1])) {
+    //   anchor.relatedAnchor = anchors[values[1]];
+    // }
 
-    anchors.putIfAbsent(values[0], () => anchor);
+    // anchors.putIfAbsent(values[0], () => anchor);
   }
 
   void updateRelatedAnchorFromString(String pAnchor) {
@@ -139,14 +139,14 @@ class CoFormLayoutContainerWidget extends StatelessWidget
   }
 
   void addDefaultAnchors() {
-    defaultAnchors.putIfAbsent("l",
-        () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.HORIZONTAL, "l"));
-    defaultAnchors.putIfAbsent("r",
-        () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.HORIZONTAL, "r"));
-    defaultAnchors.putIfAbsent(
-        "t", () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.VERTICAL, "t"));
-    defaultAnchors.putIfAbsent(
-        "b", () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.VERTICAL, "b"));
+    // defaultAnchors.putIfAbsent("l",
+    //     () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.HORIZONTAL, "l"));
+    // defaultAnchors.putIfAbsent("r",
+    //     () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.HORIZONTAL, "r"));
+    // defaultAnchors.putIfAbsent(
+    //     "t", () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.VERTICAL, "t"));
+    // defaultAnchors.putIfAbsent(
+    //     "b", () => CoFormLayoutAnchor(this, CoFormLayoutAnchor.VERTICAL, "b"));
     defaultAnchors.putIfAbsent(
         "lm",
         () => CoFormLayoutAnchor.fromAnchorAndPosition(

@@ -593,7 +593,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   Size _preferredLayoutSize(ContainerComponentModel pContainer) {
     EdgeInsets insets = pContainer.layout != null
-        ? pContainer.layout!.margins
+        ? pContainer.layout!.layoutModel.margins
         : EdgeInsets.all(0);
 
     //x stores the columns

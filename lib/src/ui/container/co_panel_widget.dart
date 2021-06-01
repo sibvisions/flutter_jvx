@@ -32,10 +32,7 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     late Widget child;
 
     if (componentModel.layout != null) {
-      child = componentModel.layout as Widget;
-      if (componentModel.layout!.setState != null) {
-        componentModel.layout!.setState!(() {});
-      }
+      child = componentModel.layout!;
     } else if (componentModel.components.isNotEmpty) {
       child = Column(children: _getNullLayout(componentModel.components));
     } else {

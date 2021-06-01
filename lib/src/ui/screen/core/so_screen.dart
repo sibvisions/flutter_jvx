@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/co_chart_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutterclient.dart';
@@ -139,14 +136,14 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       if (componentWidget.componentModel is ContainerComponentModel) {
         ContainerComponentModel model =
             (componentWidget.componentModel as ContainerComponentModel);
-        if (model.layout != null &&
-            model.layout?.setState != null &&
-            (model.layout is CoFormLayoutContainerWidget ||
-                model.layout is CoBorderLayoutContainerWidget)) {
-          log('Relayout $componentId');
-          model.layout!.setState!(() {});
-          _formLayoutFound = true;
-        }
+        // if (model.layout != null &&
+        //     model.layout?.setState != null &&
+        //     (model.layout is CoFormLayoutContainerWidget ||
+        //         model.layout is CoBorderLayoutContainerWidget)) {
+        //   log('Relayout $componentId');
+        //   model.layout!.setState!(() {});
+        //   _formLayoutFound = true;
+        // }
       }
       if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
         //&&
@@ -199,7 +196,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         }
 
         if (relayoutParent) {
-          relayoutParentLayouts(componentWidget.componentModel.componentId);
+          // relayoutParentLayouts(componentWidget.componentModel.componentId);
         }
       }
     } else {
@@ -379,7 +376,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
         (componentWidget.componentModel as ContainerComponentModel)
             .layout
-            ?.updateLayoutData(layoutData);
+            ?.layoutModel
+            .updateLayoutData(layoutData);
       }
 
       if (layout != null && layout.isNotEmpty) {
@@ -390,7 +388,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
         (componentWidget.componentModel as ContainerComponentModel)
             .layout
-            ?.updateLayoutString(layout);
+            ?.layoutModel
+            .updateLayoutString(layout);
       }
     }
 
@@ -555,13 +554,15 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
       debugString += ", layout: " +
           (containerComponentModel.layout != null &&
-                  containerComponentModel.layout?.rawLayoutString != null
-              ? containerComponentModel.layout!.rawLayoutString!
+                  containerComponentModel.layout?.layoutModel.rawLayoutString !=
+                      null
+              ? containerComponentModel.layout!.layoutModel.rawLayoutString
               : "") +
           ", layoutData: " +
           (containerComponentModel.layout != null &&
-                  containerComponentModel.layout?.rawLayoutData != null
-              ? containerComponentModel.layout!.rawLayoutData!
+                  containerComponentModel.layout?.layoutModel.rawLayoutData !=
+                      null
+              ? containerComponentModel.layout!.layoutModel.rawLayoutData
               : "") +
           ", childCount: " +
           containerComponentModel.components.length.toString();
