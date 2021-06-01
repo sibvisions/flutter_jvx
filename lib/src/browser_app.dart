@@ -8,7 +8,6 @@ import 'models/state/routes/arguments/login_page_arguments.dart';
 import 'models/state/routes/arguments/menu_page_arguments.dart';
 import 'models/state/routes/arguments/open_screen_page_arguments.dart';
 import 'models/state/routes/arguments/settings_page_arguments.dart';
-import 'models/state/routes/arguments/startup_page_arguments.dart';
 import 'models/state/routes/routes.dart';
 import 'services/local/shared_preferences/shared_preferences_manager.dart';
 import 'ui/pages/login_page.dart';
