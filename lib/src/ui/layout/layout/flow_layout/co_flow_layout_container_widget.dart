@@ -22,7 +22,14 @@ class CoFlowLayoutContainerWidgetState
 
     widget.layoutModel.layoutConstraints.forEach((k, v) {
       if (k.componentModel.isVisible) {
-        data.add(CoFlowLayoutConstraintData(id: k, child: k));
+        Key? key = widget.layoutModel
+            .getKeyByComponentId(k.componentModel.componentId);
+
+        if (key == null) {
+          key = widget.layoutModel.createKey(k.componentModel.componentId);
+        }
+
+        data.add(CoFlowLayoutConstraintData(key: key, id: k, child: k));
       }
     });
 
