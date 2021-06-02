@@ -46,12 +46,12 @@ class CoGridLayoutWidgetState
   }
 
   @override
-  void registerListener(LayoutModel layoutModel) {
-    layoutModel.addListener(() {
+  onChange() {
+    if (mounted) {
       setState(() {
         data = _getConstraintData();
       });
-    });
+    }
   }
 
   @override

@@ -22,8 +22,7 @@ class TranslationHelper {
       } else {
         return _handleMobile(appState, locale);
       }
-    } on Exception catch (e) {
-      log('${e.toString()}');
+    } on Exception {
       return <String, dynamic>{};
     }
   }

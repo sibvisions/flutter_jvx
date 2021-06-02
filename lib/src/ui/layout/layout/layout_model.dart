@@ -109,4 +109,9 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
 
     return null;
   }
+
+  @override
+  void onChildVisibilityChange() {
+    notifyListeners();
+  }
 }

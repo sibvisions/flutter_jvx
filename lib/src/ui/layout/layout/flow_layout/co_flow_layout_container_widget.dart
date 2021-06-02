@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/co_flow_layout_widget.dart';
 import '../co_layout_widget.dart';
-import '../layout_model.dart';
 import 'flow_layout_model.dart';
 
 class CoFlowLayoutContainerWidget extends CoLayoutWidget {
@@ -40,12 +39,12 @@ class CoFlowLayoutContainerWidgetState
   }
 
   @override
-  void registerListener(LayoutModel layoutModel) {
-    layoutModel.addListener(() {
+  onChange() {
+    if (mounted) {
       setState(() {
         data = _getConstraintData();
       });
-    });
+    }
   }
 
   @override
