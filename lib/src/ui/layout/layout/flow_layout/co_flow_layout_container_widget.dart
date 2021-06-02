@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/co_flow_layout_widget.dart';
 import '../co_layout_widget.dart';
+import '../layout_model.dart';
 import 'flow_layout_model.dart';
 
 class CoFlowLayoutContainerWidget extends CoLayoutWidget {
@@ -17,6 +18,8 @@ class CoFlowLayoutContainerWidget extends CoLayoutWidget {
 
 class CoFlowLayoutContainerWidgetState
     extends CoLayoutWidgetState<CoFlowLayoutContainerWidget> {
+  List<CoFlowLayoutConstraintData> data = <CoFlowLayoutConstraintData>[];
+
   List<CoFlowLayoutConstraintData> _getConstraintData() {
     List<CoFlowLayoutConstraintData> data = <CoFlowLayoutConstraintData>[];
 
@@ -37,12 +40,28 @@ class CoFlowLayoutContainerWidgetState
   }
 
   @override
+  void registerListener(LayoutModel layoutModel) {
+    layoutModel.addListener(() {
+      setState(() {
+        data = _getConstraintData();
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    data = _getConstraintData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: CoFlowLayoutWidget(
         key: layoutKey,
         container: widget.layoutModel.container,
-        children: _getConstraintData(),
+        children: data,
         insMargin: widget.layoutModel.margins,
         horizontalGap: widget.layoutModel.horizontalGap,
         verticalGap: widget.layoutModel.verticalGap,

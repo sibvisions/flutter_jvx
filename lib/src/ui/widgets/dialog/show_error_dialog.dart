@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../services/remote/cubit/api_cubit.dart';
+
+import '../../../models/api/errors/failure.dart';
 import '../../../util/translation/app_localizations.dart';
 
-showErrorDialog(BuildContext context, ApiError error) async {
+showErrorDialog(BuildContext context, Failure failure) async {
   await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
-              AppLocalizations.of(context)!.text('${error.failure.title}')),
-          content: Text(
-              AppLocalizations.of(context)!.text('${error.failure.message}')),
+          title: Text(AppLocalizations.of(context)!.text('${failure.title}')),
+          content:
+              Text(AppLocalizations.of(context)!.text('${failure.message}')),
           actions: [
             TextButton(
                 onPressed: () => Navigator.of(context).pop(),

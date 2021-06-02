@@ -148,12 +148,13 @@ class ApiRepositoryImpl implements ApiRepository {
           MenuResponseObject(name: 'menu', entries: [])
         ]);
       } else {
-        return ApiError(
-            failure: Failure(
-                title: 'Login error',
-                details: '',
-                message: 'False username or password',
-                name: 'message.error'));
+        return ApiError(failures: [
+          Failure(
+              title: 'Login error',
+              details: '',
+              message: 'False username or password',
+              name: 'message.error')
+        ]);
       }
     }
   }
@@ -309,12 +310,13 @@ class ApiRepositoryImpl implements ApiRepository {
       archive = decoder.decodeBytes(
           response.getObjectByType<DownloadResponseObject>()!.bodyBytes);
     } on ArchiveException {
-      return ApiError(
-          failure: CacheFailure(
-              name: ErrorHandler.cacheError,
-              details: '',
-              title: 'Download error',
-              message: 'Could not decode file'));
+      return ApiError(failures: [
+        CacheFailure(
+            name: ErrorHandler.cacheError,
+            details: '',
+            title: 'Download error',
+            message: 'Could not decode file')
+      ]);
     }
 
     late String localFilePath;
@@ -418,12 +420,13 @@ class ApiRepositoryImpl implements ApiRepository {
       }
 
       if (!(await networkInfo.isConnected)) {
-        return ApiError(
-            failure: ServerFailure(
-                title: 'Connection problems.',
-                message: 'Could not ping server!',
-                details: '',
-                name: ErrorHandler.connectionError));
+        return ApiError(failures: [
+          ServerFailure(
+              title: 'Connection problems.',
+              message: 'Could not ping server!',
+              details: '',
+              name: ErrorHandler.connectionError)
+        ]);
       }
     }
 
