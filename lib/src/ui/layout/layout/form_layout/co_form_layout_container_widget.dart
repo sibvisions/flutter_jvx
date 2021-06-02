@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/co_form_layout_constraint.dart';
 import '../../widgets/co_form_layout_widget.dart';
 import '../co_layout_widget.dart';
+import '../layout_model.dart';
 import 'form_layout_model.dart';
 
 class CoFormLayoutContainerWidget extends CoLayoutWidget {
@@ -18,7 +19,7 @@ class CoFormLayoutContainerWidget extends CoLayoutWidget {
 
 class CoFormLayoutContainerWidgetState
     extends CoLayoutWidgetState<CoFormLayoutContainerWidget> {
-  int count = 0;
+  List<CoFormLayoutConstraintData> data = <CoFormLayoutConstraintData>[];
 
   List<CoFormLayoutConstraintData> _getConstraintData() {
     List<CoFormLayoutConstraintData> data = <CoFormLayoutConstraintData>[];
@@ -45,13 +46,29 @@ class CoFormLayoutContainerWidgetState
   }
 
   @override
+  void registerListener(LayoutModel layoutModel) {
+    layoutModel.addListener(() {
+      setState(() {
+        data = _getConstraintData();
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    data = _getConstraintData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       key: layoutKey,
       child: CoFormLayoutWidget(
           container: widget.layoutModel.container,
           valid: widget.layoutModel.valid,
-          children: _getConstraintData(),
+          children: data,
           hgap: widget.layoutModel.horizontalGap,
           vgap: widget.layoutModel.verticalGap,
           horizontalAlignment: widget.layoutModel.horizontalAlignment,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/co_grid_layout.dart';
 import '../../widgets/co_grid_layout_constraint.dart';
 import '../co_layout_widget.dart';
+import '../layout_model.dart';
 import 'grid_layout_model.dart';
 
 class CoGridLayoutContainerWidget extends CoLayoutWidget {
@@ -18,6 +19,8 @@ class CoGridLayoutContainerWidget extends CoLayoutWidget {
 
 class CoGridLayoutWidgetState
     extends CoLayoutWidgetState<CoGridLayoutContainerWidget> {
+  List<CoGridLayoutConstraintData> data = <CoGridLayoutConstraintData>[];
+
   List<CoGridLayoutConstraintData> _getConstraintData() {
     List<CoGridLayoutConstraintData> data = <CoGridLayoutConstraintData>[];
 
@@ -43,12 +46,28 @@ class CoGridLayoutWidgetState
   }
 
   @override
+  void registerListener(LayoutModel layoutModel) {
+    layoutModel.addListener(() {
+      setState(() {
+        data = _getConstraintData();
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    data = _getConstraintData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: CoGridLayoutWidget(
         key: layoutKey,
         container: widget.layoutModel.container!,
-        children: _getConstraintData(),
+        children: data,
         rows: widget.layoutModel.rows,
         columns: widget.layoutModel.columns,
         margins: widget.layoutModel.margins,

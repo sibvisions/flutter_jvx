@@ -157,10 +157,10 @@ class _MobileMenuWidgetState extends State<MobileMenuWidget> {
                       .responseError !=
                   null) {
                 ErrorHandler.handleError(
-                    ApiError(
-                        failure:
-                            (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
-                                .responseError!),
+                    ApiError(failures: [
+                      (sl<IOfflineDatabaseProvider>() as OfflineDatabase)
+                          .responseError!
+                    ]),
                     context);
               }
             }

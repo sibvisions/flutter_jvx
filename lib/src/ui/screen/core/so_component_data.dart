@@ -472,8 +472,8 @@ class SoComponentData {
       log('Finished fetching all records for ${this.dataProvider}. Records: ${data!.records.length}');
     else if (result is ApiResponse && result.hasError)
       log('Finished fetching all records for ${this.dataProvider} with error: ${result.getObjectByType<Failure>()!.message}');
-    else if (result is ApiError)
-      log('Finished fetching all records for ${this.dataProvider} with error: ${result.failure.message}');
+    else if (result is ApiError && result.failures.isNotEmpty)
+      log('Finished fetching all records for ${this.dataProvider} with error: ${result.failures.first.message}');
 
     return result;
   }

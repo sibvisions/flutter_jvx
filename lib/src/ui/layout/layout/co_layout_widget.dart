@@ -13,6 +13,14 @@ class CoLayoutWidget extends StatefulWidget {
 class CoLayoutWidgetState<T extends StatefulWidget> extends State<T> {
   late GlobalKey layoutKey;
 
+  void registerListener(LayoutModel layoutModel) {
+    layoutModel.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -24,11 +32,7 @@ class CoLayoutWidgetState<T extends StatefulWidget> extends State<T> {
             ?.componentModel
             .componentId);
 
-    (widget as CoLayoutWidget).layoutModel.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    registerListener((widget as CoLayoutWidget).layoutModel);
   }
 
   @override
