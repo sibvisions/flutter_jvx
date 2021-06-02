@@ -14,11 +14,20 @@ class CoLayoutWidgetState<T extends StatefulWidget> extends State<T> {
   late GlobalKey layoutKey;
 
   void registerListener(LayoutModel layoutModel) {
-    layoutModel.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
+    layoutModel.addListener(onChange);
+  }
+
+  onChange() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    (widget as CoLayoutWidget).layoutModel.removeListener(onChange);
+
+    super.dispose();
   }
 
   @override

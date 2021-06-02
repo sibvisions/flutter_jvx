@@ -169,13 +169,13 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           _addComponent(changedComponent, container);
         }
 
-        bool relayoutParent = false;
+        bool rebuildParent = false;
         bool? visible =
             changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, null);
 
         if (visible != null &&
             visible != componentWidget.componentModel.isVisible) {
-          relayoutParent = true;
+          rebuildParent = true;
         }
 
         componentWidget.componentModel
@@ -192,11 +192,12 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     context,
                     componentWidget.componentModel.componentId,
                     changedComponent);
-          }
-        }
 
-        if (relayoutParent) {
-          // relayoutParentLayouts(componentWidget.componentModel.componentId);
+            (parentComponentWidget.componentModel as ContainerComponentModel)
+                .layout
+                ?.layoutModel
+                .onChildVisibilityChange();
+          }
         }
       }
     } else {
@@ -319,8 +320,6 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .addWithConstraints(
                 componentWidget, componentWidget.componentModel.constraints);
-
-        // relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
       }
     }
   }
@@ -348,8 +347,6 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           parentComponentWidget is CoContainerWidget) {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .removeWithComponent(componentWidget);
-
-        // relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
       }
     }
   }

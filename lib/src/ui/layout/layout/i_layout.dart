@@ -30,4 +30,5 @@ abstract class ILayoutModel<E> {
   void removeLayoutComponent(ComponentWidget pComponent);
   void updateLayoutData(String layoutData);
   void updateLayoutString(String layoutString);
+  void onChildVisibilityChange();
 }

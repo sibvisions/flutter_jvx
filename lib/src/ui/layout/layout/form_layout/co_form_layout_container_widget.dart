@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../widgets/co_form_layout_constraint.dart';
 import '../../widgets/co_form_layout_widget.dart';
 import '../co_layout_widget.dart';
-import '../layout_model.dart';
 import 'form_layout_model.dart';
 
 class CoFormLayoutContainerWidget extends CoLayoutWidget {
@@ -46,12 +45,12 @@ class CoFormLayoutContainerWidgetState
   }
 
   @override
-  void registerListener(LayoutModel layoutModel) {
-    layoutModel.addListener(() {
+  onChange() {
+    if (mounted) {
       setState(() {
         data = _getConstraintData();
       });
-    });
+    }
   }
 
   @override

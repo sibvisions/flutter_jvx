@@ -41,6 +41,8 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
     Widget? child;
     if (componentModel.layout != null) {
       child = componentModel.layout;
+
+      return SingleChildScrollView(child: child);
     } else if (componentModel.components.isNotEmpty) {
       child = Column(children: componentModel.components);
     }
