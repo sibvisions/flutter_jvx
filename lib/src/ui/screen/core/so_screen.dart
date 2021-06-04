@@ -125,7 +125,22 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           _updateComponent(changedComponent, _components);
         }
       }
+
+      _getLayoutsToRebuild();
     }
+  }
+
+  _getLayoutsToRebuild() {
+    List<CoContainerWidget> containers = <CoContainerWidget>[];
+
+    containers = List<CoContainerWidget>.from(
+        components.values.where((element) => element is CoContainerWidget));
+
+    containers.forEach((container) =>
+        (container.componentModel as ContainerComponentModel)
+            .layout
+            ?.layoutModel
+            .performRebuild());
   }
 
   // void relayoutParentLayouts(String componentId) {
