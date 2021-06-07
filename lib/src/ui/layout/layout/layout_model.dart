@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
-import 'i_layout.dart';
+import 'i_layout_model.dart';
 
 class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
+  @override
+  LayoutState layoutState = LayoutState.CREATED;
+
   @override
   CoContainerWidget? container;
 
@@ -57,7 +60,7 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   void addLayoutComponent(ComponentWidget pComponent, E pConstraint) {
     layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
 
-    notifyListeners();
+    markNeedsRebuild();
   }
 
   @override
@@ -71,21 +74,21 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
         comp.componentModel.componentId ==
         pComponent.componentModel.componentId);
 
-    notifyListeners();
+    markNeedsRebuild();
   }
 
   @override
   void updateLayoutData(String layoutData) {
     rawLayoutData = layoutData;
 
-    notifyListeners();
+    markNeedsRebuild();
   }
 
   @override
   void updateLayoutString(String layoutString) {
     rawLayoutString = layoutString;
 
-    notifyListeners();
+    markNeedsRebuild();
   }
 
   void parseFromString(String layout) {
@@ -112,6 +115,19 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
 
   @override
   void onChildVisibilityChange() {
-    notifyListeners();
+    markNeedsRebuild();
+  }
+
+  @override
+  void markNeedsRebuild() {
+    layoutState = LayoutState.DIRTY;
+  }
+
+  @override
+  void performRebuild() {
+    if (layoutState == LayoutState.DIRTY) {
+      layoutState = LayoutState.RENDERED;
+      notifyListeners();
+    }
   }
 }

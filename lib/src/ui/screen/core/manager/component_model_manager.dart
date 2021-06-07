@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/model/gauge_component_model.dart';
-
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../component/co_action_component_widget.dart';
 import '../../../component/model/button_component_model.dart';
 import '../../../component/model/chart_component_model.dart';
 import '../../../component/model/component_model.dart';
 import '../../../component/model/editable_component_model.dart';
+import '../../../component/model/gauge_component_model.dart';
 import '../../../component/model/icon_component_model.dart';
 import '../../../component/model/label_component_model.dart';
 import '../../../component/model/map_component_model.dart';

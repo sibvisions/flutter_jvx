@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
+
+import 'layout_model.dart';
 
 class CoLayoutWidget extends StatefulWidget {
   final LayoutModel layoutModel;

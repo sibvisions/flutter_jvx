@@ -20,7 +20,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
   @override
   void didUpdateWidget(covariant CoContainerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-
+    
     ContainerComponentModel componentModel =
         widget.componentModel as ContainerComponentModel;
 
@@ -77,6 +77,11 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
               component, component.componentModel.constraints);
         }
       });
+<<<<<<< HEAD
+=======
+
+      componentModel.layout?.layoutModel.performRebuild();
+>>>>>>> dd7cb1d7d326dd80d09ee739ff930508d7ca156c
     }
   }
 
