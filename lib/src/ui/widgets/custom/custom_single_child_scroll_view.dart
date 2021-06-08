@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 
 // import 'basic.dart';
 // import 'framework.dart';
@@ -212,6 +213,7 @@ class CustomSingleChildScrollView extends StatelessWidget {
   /// Creates a box in which a single widget can be scrolled.
   const CustomSingleChildScrollView({
     Key? key,
+    required this.layoutState,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.padding,
@@ -311,6 +313,8 @@ class CustomSingleChildScrollView extends StatelessWidget {
 
   final BoxConstraints? parentConstraints;
 
+  final LayoutState layoutState;
+
   AxisDirection _getDirection(BuildContext context) {
     return getAxisDirectionFromAxisReverseAndDirectionality(
         context, scrollDirection, reverse);
@@ -331,6 +335,7 @@ class CustomSingleChildScrollView extends StatelessWidget {
       restorationId: restorationId,
       viewportBuilder: (BuildContext context, ViewportOffset offset) {
         return _SingleChildViewport(
+          layoutState: layoutState,
           axisDirection: axisDirection,
           offset: offset,
           child: contents,
@@ -351,13 +356,15 @@ class _SingleChildViewport extends SingleChildRenderObjectWidget {
     required this.offset,
     Widget? child,
     required this.clipBehavior,
-  })  : assert(axisDirection != null),
+    required this.layoutState,
+  })   : assert(axisDirection != null),
         assert(clipBehavior != null),
         super(key: key, child: child);
 
   final AxisDirection axisDirection;
   final ViewportOffset offset;
   final Clip clipBehavior;
+  final LayoutState layoutState;
 
   @override
   _RenderSingleChildViewport createRenderObject(BuildContext context) {
@@ -376,6 +383,11 @@ class _SingleChildViewport extends SingleChildRenderObjectWidget {
       ..axisDirection = axisDirection
       ..offset = offset
       ..clipBehavior = clipBehavior;
+
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
   }
 }
 
@@ -388,7 +400,7 @@ class _RenderSingleChildViewport extends RenderBox
     double cacheExtent = RenderAbstractViewport.defaultCacheExtent,
     RenderBox? child,
     required Clip clipBehavior,
-  })  : assert(axisDirection != null),
+  })   : assert(axisDirection != null),
         assert(offset != null),
         assert(cacheExtent != null),
         assert(clipBehavior != null),
