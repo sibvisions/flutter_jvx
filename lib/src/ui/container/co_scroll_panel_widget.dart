@@ -70,8 +70,17 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
         child: Container(
             color: widget.componentModel.background,
             child: CustomSingleChildScrollView(
+                layoutState: (widget.componentModel as ContainerComponentModel)
+                    .layout!
+                    .layoutModel
+                    .layoutState,
                 scrollDirection: Axis.vertical,
                 child: CustomSingleChildScrollView(
+                    layoutState:
+                        (widget.componentModel as ContainerComponentModel)
+                            .layout!
+                            .layoutModel
+                            .layoutState,
                     scrollDirection: Axis.horizontal,
                     controller: _scrollController,
                     // key: this.componentId,
