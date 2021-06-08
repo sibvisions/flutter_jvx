@@ -222,6 +222,7 @@ class CustomSingleChildScrollView extends StatelessWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
+    this.parentConstraints,
   })  : assert(scrollDirection != null),
         assert(dragStartBehavior != null),
         assert(clipBehavior != null),
@@ -307,6 +308,8 @@ class CustomSingleChildScrollView extends StatelessWidget {
 
   /// {@macro flutter.widgets.scrollable.restorationId}
   final String? restorationId;
+
+  final BoxConstraints? parentConstraints;
 
   AxisDirection _getDirection(BuildContext context) {
     return getAxisDirectionFromAxisReverseAndDirectionality(
