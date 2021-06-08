@@ -44,8 +44,6 @@ class CoFlowLayoutContainerWidgetState
     if (mounted) {
       setState(() {
         data = _getConstraintData();
-
-        LayoutNotification().dispatch(context);
       });
     }
   }
