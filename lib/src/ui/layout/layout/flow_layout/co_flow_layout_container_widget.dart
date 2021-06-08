@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_notification.dart';
 
 import '../../widgets/co_flow_layout_widget.dart';
 import '../co_layout_widget.dart';
@@ -43,6 +44,8 @@ class CoFlowLayoutContainerWidgetState
     if (mounted) {
       setState(() {
         data = _getConstraintData();
+
+        LayoutNotification().dispatch(context);
       });
     }
   }
