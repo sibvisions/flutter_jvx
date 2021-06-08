@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/widgets/custom/custom_single_child_scroll_view.dart';
 
 import 'co_container_widget.dart';
 import 'co_scroll_panel_layout.dart';
@@ -56,9 +57,9 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
       //     child: Container(color: this.background, child: child));
       return Container(
           color: widget.componentModel.background,
-          child: SingleChildScrollView(
+          child: CustomSingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
+              child: CustomSingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   controller: _scrollController,
                   // key: this.componentId,
