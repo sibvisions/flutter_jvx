@@ -6,7 +6,7 @@ import 'i_layout_model.dart';
 
 class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   @override
-  LayoutState layoutState = LayoutState.CREATED;
+  LayoutState layoutState = LayoutState.DIRTY;
 
   @override
   CoContainerWidget? container;

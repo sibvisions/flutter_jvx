@@ -3,14 +3,10 @@ import 'package:flutter/material.dart';
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
 
-enum LayoutState {
-  DIRTY,
-  CREATED,
-  RENDERED
-}
+enum LayoutState { DIRTY, RENDERED }
 
 abstract class ILayoutModel<E> {
-  LayoutState layoutState = LayoutState.CREATED;
+  LayoutState layoutState = LayoutState.DIRTY;
 
   Map<ComponentWidget, E> layoutConstraints = <ComponentWidget, E>{};
 
