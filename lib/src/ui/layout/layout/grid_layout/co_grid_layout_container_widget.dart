@@ -65,6 +65,7 @@ class CoGridLayoutWidgetState
   Widget build(BuildContext context) {
     return Container(
       child: CoGridLayoutWidget(
+        layoutState: widget.layoutModel.layoutState,
         key: layoutKey,
         container: widget.layoutModel.container!,
         children: data,

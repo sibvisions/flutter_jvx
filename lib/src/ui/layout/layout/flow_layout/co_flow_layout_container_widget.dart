@@ -58,6 +58,7 @@ class CoFlowLayoutContainerWidgetState
   Widget build(BuildContext context) {
     return Container(
       child: CoFlowLayoutWidget(
+        layoutState: widget.layoutModel.layoutState,
         key: layoutKey,
         container: widget.layoutModel.container,
         children: data,

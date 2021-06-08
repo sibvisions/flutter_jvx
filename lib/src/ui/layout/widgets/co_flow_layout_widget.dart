@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 
 import '../../component/component_widget.dart';
 import '../i_alignment_constants.dart';
@@ -42,6 +43,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
 
   final CoContainerWidget? container;
 
+  final LayoutState layoutState;
+
   CoFlowLayoutWidget(
       {Key? key,
       List<CoFlowLayoutConstraintData> children: const [],
@@ -54,7 +57,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
       this.orientation = 0,
       this.horizontalComponentAlignment = 1,
       this.verticalComponentAlignment,
-      this.autoWrap = false})
+      this.autoWrap = false,
+      required this.layoutState})
       : super(key: key, children: children);
 
   @override
@@ -75,6 +79,11 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, RenderFlowLayoutWidget renderObject) {
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
+
     /// Force Layout, if some of the settings have changed
     if (renderObject.iHorizontalAlignment != this.horizontalAlignment) {
       renderObject.iHorizontalAlignment = this.horizontalAlignment;

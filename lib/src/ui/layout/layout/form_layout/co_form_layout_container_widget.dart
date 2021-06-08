@@ -65,6 +65,7 @@ class CoFormLayoutContainerWidgetState
     return Container(
       key: layoutKey,
       child: CoFormLayoutWidget(
+          layoutState: widget.layoutModel.layoutState,
           container: widget.layoutModel.container,
           valid: widget.layoutModel.valid,
           children: data,

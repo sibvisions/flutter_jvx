@@ -29,6 +29,7 @@ class CoBorderLayoutContainerWidgetState
       margin: widget.layoutModel.margins,
       child: CoBorderLayoutWidget(
         key: layoutKey,
+        layoutState: widget.layoutModel.layoutState,
         container: widget.layoutModel.container,
         insMargin: widget.layoutModel.margins,
         iHorizontalGap: widget.layoutModel.horizontalGap,

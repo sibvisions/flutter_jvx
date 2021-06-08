@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 
 import '../../container/co_container_widget.dart';
 import 'co_grid_layout_constraint.dart';
@@ -34,6 +35,8 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
 
   final CoContainerWidget container;
 
+  final LayoutState layoutState;
+
   CoGridLayoutWidget(
       {Key? key,
       required this.container,
@@ -42,7 +45,8 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
       this.columns = 1,
       this.margins = EdgeInsets.zero,
       this.horizontalGap = 0,
-      this.verticalGap = 0})
+      this.verticalGap = 0,
+      required this.layoutState})
       : super(key: key, children: children);
 
   @override
@@ -60,6 +64,11 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, RenderGridLayoutWidget renderObject) {
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
+
     /// Force Layout, if some of the settings have changed
     if (renderObject.rows != this.rows) {
       renderObject.rows = this.rows;

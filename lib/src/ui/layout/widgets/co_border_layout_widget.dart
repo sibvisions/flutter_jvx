@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
@@ -27,6 +28,7 @@ class CoBorderLayoutWidget extends MultiChildRenderObjectWidget {
   final int iVerticalGap;
   final EdgeInsets insMargin;
   final CoContainerWidget? container;
+  final LayoutState layoutState;
 
   CoBorderLayoutWidget(
       {Key? key,
@@ -34,7 +36,8 @@ class CoBorderLayoutWidget extends MultiChildRenderObjectWidget {
       this.container,
       this.insMargin = EdgeInsets.zero,
       this.iHorizontalGap = 0,
-      this.iVerticalGap = 0})
+      this.iVerticalGap = 0,
+      required this.layoutState})
       : super(key: key, children: children);
 
   @override
@@ -46,6 +49,11 @@ class CoBorderLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, RenderBorderLayoutWidget renderObject) {
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
+
     /// Force Layout, if some of the settings have changed
     if (renderObject.iHorizontalGap != this.iHorizontalGap) {
       renderObject.iHorizontalGap = this.iHorizontalGap;

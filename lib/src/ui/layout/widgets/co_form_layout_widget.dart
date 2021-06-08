@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 
 import '../../container/co_container_widget.dart';
 import 'co_form_layout_anchor.dart';
@@ -58,6 +59,8 @@ class CoFormLayoutWidget extends MultiChildRenderObjectWidget {
 
   final CoContainerWidget? container;
 
+  final LayoutState layoutState;
+
   CoFormLayoutWidget(
       {Key? key,
       List<CoFormLayoutConstraintData> children: const [],
@@ -74,7 +77,8 @@ class CoFormLayoutWidget extends MultiChildRenderObjectWidget {
       this.leftMarginAnchor,
       this.rightMarginAnchor,
       this.topMarginAnchor,
-      this.bottomMarginAnchor})
+      this.bottomMarginAnchor,
+      required this.layoutState})
       : super(key: key, children: children);
 
   @override
@@ -99,6 +103,11 @@ class CoFormLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, RenderFormLayoutWidget renderObject) {
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
+
     /// Force Layout, if some of the settings have changed
     if (renderObject.valid != this.valid) {
       renderObject.valid = this.valid!;
