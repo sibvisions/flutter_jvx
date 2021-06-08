@@ -403,8 +403,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
     this.size =
         this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
-    //dev.log(
-    //    "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
+    dev.log(
+        "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   /*

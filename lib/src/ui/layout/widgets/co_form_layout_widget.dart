@@ -367,8 +367,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
     this.valid = true;
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
-    //dev.log(
-    //    "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
+    dev.log(
+        "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
   }
 
   /*

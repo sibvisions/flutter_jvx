@@ -337,8 +337,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
     // borderLayout uses max space available
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
-    //dev.log(
-    //    "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
+    dev.log(
+        "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   @override

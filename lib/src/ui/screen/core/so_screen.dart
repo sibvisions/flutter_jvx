@@ -65,7 +65,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   ComponentModelManager _componentModelManager = ComponentModelManager();
 
-  bool _debug = false;
+  bool _debug = true;
 
   Map<String, ComponentWidget> get components => _components;
 
