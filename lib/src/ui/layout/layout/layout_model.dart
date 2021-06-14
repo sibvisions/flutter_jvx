@@ -137,6 +137,10 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   @override
   void performRebuild() {
     if (layoutState == LayoutState.DIRTY) {
+      layoutPreferredSize = null;
+      layoutMinimumSize = null;
+      layoutMaximumSize = null;
+
       log('Performing rebuild for ${getLayoutName(rawLayoutString)}');
       notifyListeners();
     }

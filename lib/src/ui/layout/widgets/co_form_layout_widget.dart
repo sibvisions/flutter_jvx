@@ -327,26 +327,28 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
     preferredLayoutSize = _preferredLayoutSize(
         container.componentModel as ContainerComponentModel);
 
-    (container.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutPreferredSize = preferredLayoutSize;
-
     minimumLayoutSize =
         _minimumLayoutSize(container.componentModel as ContainerComponentModel);
-
-    (container.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutMinimumSize = minimumLayoutSize;
 
     maximumLayoutSize =
         _maximumLayoutSize(container.componentModel as ContainerComponentModel);
 
-    (container.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutMaximumSize = maximumLayoutSize;
+    if (this.constraints.hasBoundedHeight || this.constraints.hasBoundedWidth) {
+      (container.componentModel as ContainerComponentModel)
+          .layout!
+          .layoutModel
+          .layoutPreferredSize = preferredLayoutSize;
+
+      (container.componentModel as ContainerComponentModel)
+          .layout!
+          .layoutModel
+          .layoutMinimumSize = minimumLayoutSize;
+
+      (container.componentModel as ContainerComponentModel)
+          .layout!
+          .layoutModel
+          .layoutMaximumSize = maximumLayoutSize;
+    }
 
     calculateAnchors(container.componentModel as ContainerComponentModel);
 
