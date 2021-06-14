@@ -97,7 +97,8 @@ class CoFormLayoutWidget extends MultiChildRenderObjectWidget {
         this.leftMarginAnchor,
         this.rightMarginAnchor,
         this.topMarginAnchor,
-        this.bottomMarginAnchor);
+        this.bottomMarginAnchor,
+        this.layoutState);
   }
 
   @override
@@ -251,6 +252,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
   CoContainerWidget container;
 
+  LayoutState layoutState;
+
   RenderFormLayoutWidget(
       this.container,
       this.valid,
@@ -266,6 +269,7 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       this.rightMarginAnchor,
       this.topMarginAnchor,
       this.bottomMarginAnchor,
+      this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
 
@@ -322,10 +326,27 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
     // calculate preferred, minimum and maximum layout sizes for parent layouts
     preferredLayoutSize = _preferredLayoutSize(
         container.componentModel as ContainerComponentModel);
+
+    (container.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutPreferredSize = preferredLayoutSize;
+
     minimumLayoutSize =
         _minimumLayoutSize(container.componentModel as ContainerComponentModel);
+
+    (container.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMinimumSize = minimumLayoutSize;
+
     maximumLayoutSize =
         _maximumLayoutSize(container.componentModel as ContainerComponentModel);
+
+    (container.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMaximumSize = maximumLayoutSize;
 
     calculateAnchors(container.componentModel as ContainerComponentModel);
 
@@ -372,12 +393,26 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       final MultiChildLayoutParentData childParentData =
           comp.parentData as MultiChildLayoutParentData;
       childParentData.offset = Offset(x, y);
+
+      if (this.constraints.hasBoundedHeight &&
+          this.constraints.hasBoundedWidth &&
+          constraint.comp is CoContainerWidget) {
+        (constraint.comp!.componentModel as ContainerComponentModel)
+            .layout!
+            .layoutModel
+            .layoutState = LayoutState.RENDERED;
+      }
       // dev.log(
       //     "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) final layouts child ${constraint.comp!.componentModel.componentId}/${constraint.comp!.componentModel.name} with width $width and height $height");
     }
 
     this.valid = true;
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
+
+    if (this.constraints.hasBoundedHeight && this.constraints.hasBoundedWidth) {
+      layoutState = LayoutState.RENDERED;
+    }
+
     dev.log(
         "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
   }
@@ -548,10 +583,10 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
     // }
 
     if (!constraint.comp!.componentModel.isPreferredSizeSet) {
-      size = getChildLayoutPreferredSize(renderBox);
+      size = getChildLayoutPreferredSize(constraint.comp!);
 
       if (size == null) {
-        if (renderBox.hasSize)
+        if (renderBox.hasSize && !_isLayoutDirty(constraint))
           size = renderBox.size;
         else {
           int margin = constraint.leftAnchor!.getAbsolutePosition()! +
@@ -579,20 +614,37 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
   Size getMinimumSize(RenderBox renderBox, CoFormLayoutConstraint constraint) {
     if (!constraint.comp!.componentModel.isMinimumSizeSet) {
-      Size? size = getChildLayoutMinimumSize(renderBox);
+      Size? size = getChildLayoutMinimumSize(constraint.comp!);
 
       if (size != null) {
         return size;
       } else {
-        // if (renderBox.hasSize)
-        //   return renderBox.size;
-        // else {
-        return layoutRenderBox(renderBox, BoxConstraints.tightFor());
-        // }
+        if (renderBox.hasSize && !_isLayoutDirty(constraint))
+          return renderBox.size;
+        else {
+          return layoutRenderBox(renderBox, BoxConstraints.tightFor());
+        }
       }
     } else {
       return constraint.comp!.componentModel.minimumSize!;
     }
+  }
+
+  bool _isLayoutDirty(CoFormLayoutConstraint constraint) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null &&
+          containerComponentModel.layout!.layoutModel.layoutState ==
+              LayoutState.DIRTY) {
+        // containerComponentModel.layout!.layoutModel.layoutState =
+        //     LayoutState.RENDERED;
+        return true;
+      }
+    }
+
+    return false;
   }
 
   ///
@@ -660,52 +712,111 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
   }
 
   void calculateAnchors(ContainerComponentModel? pContainer) {
-    //if (!valid) {
-    // reset border anchors
-    leftAnchor?.position = 0;
-    rightAnchor?.position = 0;
-    topAnchor?.position = 0;
-    bottomAnchor?.position = 0;
-    // reset preferred size;
-    preferredWidth = 0;
-    preferredHeight = 0;
-    // reset minimum size;
-    minimumWidth = 0;
-    minimumHeight = 0;
-    // reset List of Anchors;
-    horizontalAnchors?.clear();
-    verticalAnchors?.clear();
+    if (layoutState == LayoutState.DIRTY) {
+      // reset border anchors
+      leftAnchor?.position = 0;
+      rightAnchor?.position = 0;
+      topAnchor?.position = 0;
+      bottomAnchor?.position = 0;
+      // reset preferred size;
+      preferredWidth = 0;
+      preferredHeight = 0;
+      // reset minimum size;
+      minimumWidth = 0;
+      minimumHeight = 0;
+      // reset List of Anchors;
+      horizontalAnchors?.clear();
+      verticalAnchors?.clear();
 
-    // clear auto size anchors.
-    for (int i = 0; i < this.layoutConstraints.length; i++) {
-      CoFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
+      // clear auto size anchors.
+      for (int i = 0; i < this.layoutConstraints.length; i++) {
+        CoFormLayoutConstraint constraint =
+            layoutConstraints.values.elementAt(i);
 
-      clearAutoSize(horizontalAnchors!, constraint.leftAnchor);
-      clearAutoSize(horizontalAnchors!, constraint.rightAnchor);
-      clearAutoSize(verticalAnchors!, constraint.topAnchor);
-      clearAutoSize(verticalAnchors!, constraint.bottomAnchor);
-    }
-    horizontalAnchors?.forEach((anchor) {
-      initAutoSizeWithAnchor(anchor);
-    });
+        clearAutoSize(horizontalAnchors!, constraint.leftAnchor);
+        clearAutoSize(horizontalAnchors!, constraint.rightAnchor);
+        clearAutoSize(verticalAnchors!, constraint.topAnchor);
+        clearAutoSize(verticalAnchors!, constraint.bottomAnchor);
+      }
+      horizontalAnchors?.forEach((anchor) {
+        initAutoSizeWithAnchor(anchor);
+      });
 
-    verticalAnchors?.forEach((anchor) {
-      initAutoSizeWithAnchor(anchor);
-    });
+      verticalAnchors?.forEach((anchor) {
+        initAutoSizeWithAnchor(anchor);
+      });
 
-    // init component auto size anchors.
-    for (int i = 0; i < this.layoutConstraints.length; i++) {
-      CoFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
+      // init component auto size anchors.
+      for (int i = 0; i < this.layoutConstraints.length; i++) {
+        CoFormLayoutConstraint constraint =
+            layoutConstraints.values.elementAt(i);
 
-      initAutoSize(constraint.leftAnchor!, constraint.rightAnchor!);
-      initAutoSize(constraint.rightAnchor!, constraint.leftAnchor!);
-      initAutoSize(constraint.topAnchor!, constraint.bottomAnchor!);
-      initAutoSize(constraint.bottomAnchor!, constraint.topAnchor!);
-    }
-    int autoSizeCount = 1;
+        initAutoSize(constraint.leftAnchor!, constraint.rightAnchor!);
+        initAutoSize(constraint.rightAnchor!, constraint.leftAnchor!);
+        initAutoSize(constraint.topAnchor!, constraint.bottomAnchor!);
+        initAutoSize(constraint.bottomAnchor!, constraint.topAnchor!);
+      }
+      int autoSizeCount = 1;
 
-    do {
-      // calculate component auto size anchors.
+      do {
+        // calculate component auto size anchors.
+        for (int i = 0; i < this.layoutConstraints.length; i++) {
+          RenderBox comp = this.layoutConstraints.keys.elementAt(i);
+          //if (comp.isVisible())
+          //{
+          CoFormLayoutConstraint constraint =
+              layoutConstraints.values.elementAt(i);
+
+          Size preferredSize = this.getPreferredSize(comp, constraint);
+
+          calculateAutoSize(constraint.topAnchor!, constraint.bottomAnchor!,
+              preferredSize.height.round(), autoSizeCount);
+          calculateAutoSize(constraint.leftAnchor!, constraint.rightAnchor!,
+              preferredSize.width.round(), autoSizeCount);
+          //}
+        }
+        autoSizeCount = intMax;
+        for (int i = 0; i < this.layoutConstraints.length; i++) {
+          //RenderBox comp = this.layoutConstraints.keys.elementAt(i);
+          //if (comp.isVisible())
+          //{
+          CoFormLayoutConstraint constraint =
+              layoutConstraints.values.elementAt(i);
+
+          int count = finishAutoSizeCalculation(
+              constraint.leftAnchor!, constraint.rightAnchor!);
+          if (count > 0 && count < autoSizeCount) {
+            autoSizeCount = count;
+          }
+          count = finishAutoSizeCalculation(
+              constraint.rightAnchor!, constraint.leftAnchor!);
+          if (count > 0 && count < autoSizeCount) {
+            autoSizeCount = count;
+          }
+          count = finishAutoSizeCalculation(
+              constraint.topAnchor!, constraint.bottomAnchor!);
+          if (count > 0 && count < autoSizeCount) {
+            autoSizeCount = count;
+          }
+          count = finishAutoSizeCalculation(
+              constraint.bottomAnchor!, constraint.topAnchor!);
+          if (count > 0 && count < autoSizeCount) {
+            autoSizeCount = count;
+          }
+          //}
+        }
+      } while (autoSizeCount > 0 && autoSizeCount < intMax);
+
+      leftBorderUsed = false;
+      rightBorderUsed = false;
+      topBorderUsed = false;
+      bottomBorderUsed = false;
+      int leftWidth = 0;
+      int rightWidth = 0;
+      int topHeight = 0;
+      int bottomHeight = 0;
+
+      // calculate preferredSize.
       for (int i = 0; i < this.layoutConstraints.length; i++) {
         RenderBox comp = this.layoutConstraints.keys.elementAt(i);
         //if (comp.isVisible())
@@ -713,187 +824,131 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
         CoFormLayoutConstraint constraint =
             layoutConstraints.values.elementAt(i);
 
-        Size preferredSize = this.getPreferredSize(comp, constraint);
+        Size preferredSize = getPreferredSize(comp, constraint);
+        Size minimumSize = getMinimumSize(comp, constraint);
 
-        calculateAutoSize(constraint.topAnchor!, constraint.bottomAnchor!,
-            preferredSize.height.round(), autoSizeCount);
-        calculateAutoSize(constraint.leftAnchor!, constraint.rightAnchor!,
-            preferredSize.width.round(), autoSizeCount);
+        if (constraint.rightAnchor!.getBorderAnchor() == leftAnchor) {
+          int w = constraint.rightAnchor!.getAbsolutePosition()!;
+          if (w > leftWidth) {
+            leftWidth = w;
+          }
+          leftBorderUsed = true;
+        }
+        if (constraint.leftAnchor!.getBorderAnchor() == rightAnchor) {
+          int w = -constraint.leftAnchor!.getAbsolutePosition()!;
+          if (w > rightWidth) {
+            rightWidth = w;
+          }
+          rightBorderUsed = true;
+        }
+        if (constraint.bottomAnchor!.getBorderAnchor() == topAnchor) {
+          int h = constraint.bottomAnchor!.getAbsolutePosition()!;
+          if (h > topHeight) {
+            topHeight = h;
+          }
+          topBorderUsed = true;
+        }
+        if (constraint.topAnchor!.getBorderAnchor() == bottomAnchor) {
+          int h = -constraint.topAnchor!.getAbsolutePosition()!;
+          if (h > bottomHeight) {
+            bottomHeight = h;
+          }
+          bottomBorderUsed = true;
+        }
+        if (constraint.leftAnchor!.getBorderAnchor() == leftAnchor &&
+            constraint.rightAnchor!.getBorderAnchor() == rightAnchor) {
+          if (!constraint.leftAnchor!.autoSize! ||
+              !constraint.rightAnchor!.autoSize!) {
+            int w = constraint.leftAnchor!.getAbsolutePosition()! -
+                constraint.rightAnchor!.getAbsolutePosition()! +
+                preferredSize.width.round();
+            if (w > preferredWidth) {
+              preferredWidth = w;
+            }
+            w = constraint.leftAnchor!.getAbsolutePosition()! -
+                constraint.rightAnchor!.getAbsolutePosition()! +
+                minimumSize.width.round();
+            if (w > minimumWidth) {
+              minimumWidth = w;
+            }
+          }
+          leftBorderUsed = true;
+          rightBorderUsed = true;
+        }
+        if (constraint.topAnchor!.getBorderAnchor() == topAnchor &&
+            constraint.bottomAnchor!.getBorderAnchor() == bottomAnchor) {
+          if (!constraint.topAnchor!.autoSize! ||
+              !constraint.bottomAnchor!.autoSize!) {
+            int h = constraint.topAnchor!.getAbsolutePosition()! -
+                constraint.bottomAnchor!.getAbsolutePosition()! +
+                preferredSize.height.round();
+            if (h > preferredHeight) {
+              preferredHeight = h;
+            }
+            h = constraint.topAnchor!.getAbsolutePosition()! -
+                constraint.bottomAnchor!.getAbsolutePosition()! +
+                minimumSize.height.round();
+            if (h > minimumHeight) {
+              minimumHeight = h;
+            }
+          }
+          topBorderUsed = true;
+          bottomBorderUsed = true;
+        }
         //}
       }
-      autoSizeCount = intMax;
-      for (int i = 0; i < this.layoutConstraints.length; i++) {
-        //RenderBox comp = this.layoutConstraints.keys.elementAt(i);
-        //if (comp.isVisible())
-        //{
-        CoFormLayoutConstraint constraint =
-            layoutConstraints.values.elementAt(i);
+      if (leftWidth != 0 && rightWidth != 0) {
+        int w = leftWidth + rightWidth + hgap;
+        if (w > preferredWidth) {
+          preferredWidth = w;
+        }
+        if (w > minimumWidth) {
+          minimumWidth = w;
+        }
+      } else if (leftWidth != 0) {
+        int w = leftWidth - rightMarginAnchor!.position!;
+        if (w > preferredWidth) {
+          preferredWidth = w;
+        }
+        if (w > minimumWidth) {
+          minimumWidth = w;
+        }
+      } else {
+        int w = rightWidth + leftMarginAnchor!.position!;
+        if (w > preferredWidth) {
+          preferredWidth = w;
+        }
+        if (w > minimumWidth) {
+          minimumWidth = w;
+        }
+      }
+      if (topHeight != 0 && bottomHeight != 0) {
+        int h = topHeight + bottomHeight + vgap;
+        if (h > preferredHeight) {
+          preferredHeight = h;
+        }
+        if (h > minimumHeight) {
+          minimumHeight = h;
+        }
+      } else if (topHeight != 0) {
+        int h = topHeight - bottomMarginAnchor!.position!;
+        if (h > preferredHeight) {
+          preferredHeight = h;
+        }
+        if (h > minimumHeight) {
+          minimumHeight = h;
+        }
+      } else {
+        int h = bottomHeight + topMarginAnchor!.position!;
+        if (h > preferredHeight) {
+          preferredHeight = h;
+        }
+        if (h > minimumHeight) {
+          minimumHeight = h;
+        }
+      }
 
-        int count = finishAutoSizeCalculation(
-            constraint.leftAnchor!, constraint.rightAnchor!);
-        if (count > 0 && count < autoSizeCount) {
-          autoSizeCount = count;
-        }
-        count = finishAutoSizeCalculation(
-            constraint.rightAnchor!, constraint.leftAnchor!);
-        if (count > 0 && count < autoSizeCount) {
-          autoSizeCount = count;
-        }
-        count = finishAutoSizeCalculation(
-            constraint.topAnchor!, constraint.bottomAnchor!);
-        if (count > 0 && count < autoSizeCount) {
-          autoSizeCount = count;
-        }
-        count = finishAutoSizeCalculation(
-            constraint.bottomAnchor!, constraint.topAnchor!);
-        if (count > 0 && count < autoSizeCount) {
-          autoSizeCount = count;
-        }
-        //}
-      }
-    } while (autoSizeCount > 0 && autoSizeCount < intMax);
-
-    leftBorderUsed = false;
-    rightBorderUsed = false;
-    topBorderUsed = false;
-    bottomBorderUsed = false;
-    int leftWidth = 0;
-    int rightWidth = 0;
-    int topHeight = 0;
-    int bottomHeight = 0;
-
-    // calculate preferredSize.
-    for (int i = 0; i < this.layoutConstraints.length; i++) {
-      RenderBox comp = this.layoutConstraints.keys.elementAt(i);
-      //if (comp.isVisible())
-      //{
-      CoFormLayoutConstraint constraint = layoutConstraints.values.elementAt(i);
-
-      Size preferredSize = getPreferredSize(comp, constraint);
-      Size minimumSize = getMinimumSize(comp, constraint);
-
-      if (constraint.rightAnchor!.getBorderAnchor() == leftAnchor) {
-        int w = constraint.rightAnchor!.getAbsolutePosition()!;
-        if (w > leftWidth) {
-          leftWidth = w;
-        }
-        leftBorderUsed = true;
-      }
-      if (constraint.leftAnchor!.getBorderAnchor() == rightAnchor) {
-        int w = -constraint.leftAnchor!.getAbsolutePosition()!;
-        if (w > rightWidth) {
-          rightWidth = w;
-        }
-        rightBorderUsed = true;
-      }
-      if (constraint.bottomAnchor!.getBorderAnchor() == topAnchor) {
-        int h = constraint.bottomAnchor!.getAbsolutePosition()!;
-        if (h > topHeight) {
-          topHeight = h;
-        }
-        topBorderUsed = true;
-      }
-      if (constraint.topAnchor!.getBorderAnchor() == bottomAnchor) {
-        int h = -constraint.topAnchor!.getAbsolutePosition()!;
-        if (h > bottomHeight) {
-          bottomHeight = h;
-        }
-        bottomBorderUsed = true;
-      }
-      if (constraint.leftAnchor!.getBorderAnchor() == leftAnchor &&
-          constraint.rightAnchor!.getBorderAnchor() == rightAnchor) {
-        if (!constraint.leftAnchor!.autoSize! ||
-            !constraint.rightAnchor!.autoSize!) {
-          int w = constraint.leftAnchor!.getAbsolutePosition()! -
-              constraint.rightAnchor!.getAbsolutePosition()! +
-              preferredSize.width.round();
-          if (w > preferredWidth) {
-            preferredWidth = w;
-          }
-          w = constraint.leftAnchor!.getAbsolutePosition()! -
-              constraint.rightAnchor!.getAbsolutePosition()! +
-              minimumSize.width.round();
-          if (w > minimumWidth) {
-            minimumWidth = w;
-          }
-        }
-        leftBorderUsed = true;
-        rightBorderUsed = true;
-      }
-      if (constraint.topAnchor!.getBorderAnchor() == topAnchor &&
-          constraint.bottomAnchor!.getBorderAnchor() == bottomAnchor) {
-        if (!constraint.topAnchor!.autoSize! ||
-            !constraint.bottomAnchor!.autoSize!) {
-          int h = constraint.topAnchor!.getAbsolutePosition()! -
-              constraint.bottomAnchor!.getAbsolutePosition()! +
-              preferredSize.height.round();
-          if (h > preferredHeight) {
-            preferredHeight = h;
-          }
-          h = constraint.topAnchor!.getAbsolutePosition()! -
-              constraint.bottomAnchor!.getAbsolutePosition()! +
-              minimumSize.height.round();
-          if (h > minimumHeight) {
-            minimumHeight = h;
-          }
-        }
-        topBorderUsed = true;
-        bottomBorderUsed = true;
-      }
-      //}
-    }
-    if (leftWidth != 0 && rightWidth != 0) {
-      int w = leftWidth + rightWidth + hgap;
-      if (w > preferredWidth) {
-        preferredWidth = w;
-      }
-      if (w > minimumWidth) {
-        minimumWidth = w;
-      }
-    } else if (leftWidth != 0) {
-      int w = leftWidth - rightMarginAnchor!.position!;
-      if (w > preferredWidth) {
-        preferredWidth = w;
-      }
-      if (w > minimumWidth) {
-        minimumWidth = w;
-      }
-    } else {
-      int w = rightWidth + leftMarginAnchor!.position!;
-      if (w > preferredWidth) {
-        preferredWidth = w;
-      }
-      if (w > minimumWidth) {
-        minimumWidth = w;
-      }
-    }
-    if (topHeight != 0 && bottomHeight != 0) {
-      int h = topHeight + bottomHeight + vgap;
-      if (h > preferredHeight) {
-        preferredHeight = h;
-      }
-      if (h > minimumHeight) {
-        minimumHeight = h;
-      }
-    } else if (topHeight != 0) {
-      int h = topHeight - bottomMarginAnchor!.position!;
-      if (h > preferredHeight) {
-        preferredHeight = h;
-      }
-      if (h > minimumHeight) {
-        minimumHeight = h;
-      }
-    } else {
-      int h = bottomHeight + topMarginAnchor!.position!;
-      if (h > preferredHeight) {
-        preferredHeight = h;
-      }
-      if (h > minimumHeight) {
-        minimumHeight = h;
-      }
-    }
-
-    /*EdgeInsets ins = pTarget.getInsets();
+      /*EdgeInsets ins = pTarget.getInsets();
 
       preferredWidth += ins.left + ins.right;
       preferredHeight += ins.top + ins.bottom;
@@ -902,9 +957,10 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       minimumHeight += ins.top + ins.bottom;
       */
 
-    calculateTargetDependentAnchors = true;
-    valid = true;
-    //}
+      calculateTargetDependentAnchors = true;
+      valid = true;
+      // layoutState = LayoutState.RENDERED;
+    }
   }
 
   ///

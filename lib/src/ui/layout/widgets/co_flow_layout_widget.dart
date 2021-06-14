@@ -73,7 +73,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
         this.insMargin,
         this.horizontalGap,
         this.verticalGap,
-        this.autoWrap!);
+        this.autoWrap!,
+        this.layoutState);
   }
 
   @override
@@ -184,6 +185,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   CoContainerWidget? container;
 
+  LayoutState layoutState;
+
   /* 
 	 * the mark to wrap the layout if there is not enough space to show 
 	 * all components (FlowLayout mode).
@@ -201,6 +204,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       this.iHorizontalGap,
       this.iVerticalGap,
       this.bAutoWrap,
+      this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
   }
@@ -222,9 +226,26 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
     preferredLayoutSize = _preferredLayoutSize(
         container?.componentModel as ContainerComponentModel);
+
+    (container?.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutPreferredSize = preferredLayoutSize;
+
     minimumLayoutSize = _minimumLayoutSize(
         container?.componentModel as ContainerComponentModel);
+
+    (container?.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMinimumSize = minimumLayoutSize;
+
     maximumLayoutSize = preferredLayoutSize;
+
+    (container?.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMaximumSize = maximumLayoutSize;
 
     Size dimSize = this.constraints.biggest;
     dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
@@ -408,10 +429,25 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
           y += (size.height + iVerticalGap!).round();
         }
       }
+
+      if (this.constraints.hasBoundedHeight &&
+          this.constraints.hasBoundedWidth &&
+          constraintMap.values.elementAt(i) is CoContainerWidget) {
+        (constraintMap.values.elementAt(i).componentModel
+                as ContainerComponentModel)
+            .layout!
+            .layoutModel
+            .layoutState = LayoutState.RENDERED;
+      }
     }
 
     this.size =
         this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
+
+    if (this.constraints.hasBoundedHeight && this.constraints.hasBoundedWidth) {
+      layoutState = LayoutState.RENDERED;
+    }
+
     dev.log(
         "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
   }
@@ -537,11 +573,11 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(renderBox);
+      Size? size = getChildLayoutPreferredSize(comp);
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize)
+        if (renderBox.hasSize && !_isLayoutDirty(comp))
           size = renderBox.size;
         else
           size = layoutRenderBox(renderBox, constraints);
@@ -555,6 +591,23 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     } else {
       return comp.componentModel.preferredSize!;
     }
+  }
+
+  bool _isLayoutDirty(ComponentWidget componentWidget) {
+    if (componentWidget is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          componentWidget.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null &&
+          containerComponentModel.layout!.layoutModel.layoutState ==
+              LayoutState.DIRTY) {
+        // containerComponentModel.layout!.layoutModel.layoutState =
+        //     LayoutState.RENDERED;
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @override

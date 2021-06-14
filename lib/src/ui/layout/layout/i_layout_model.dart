@@ -22,6 +22,10 @@ abstract class ILayoutModel<E> {
   Size? minimumSize;
   Size? maximumSize;
 
+  Size? layoutPreferredSize;
+  Size? layoutMinimumSize;
+  Size? layoutMaximumSize;
+
   bool get isPreferredSizeSet;
   bool get isMinimumSizeSet;
   bool get isMaximumSizeSet;

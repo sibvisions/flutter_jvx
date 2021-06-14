@@ -43,7 +43,7 @@ class CoBorderLayoutWidget extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderBorderLayoutWidget(this.container!, this.insMargin,
-        this.iHorizontalGap, this.iVerticalGap);
+        this.iHorizontalGap, this.iVerticalGap, this.layoutState);
   }
 
   @override
@@ -99,8 +99,10 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   int? iVerticalGap;
   CoContainerWidget? container;
 
-  RenderBorderLayoutWidget(
-      this.container, this.insMargin, this.iHorizontalGap, this.iVerticalGap,
+  LayoutState layoutState;
+
+  RenderBorderLayoutWidget(this.container, this.insMargin, this.iHorizontalGap,
+      this.iVerticalGap, this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
   }
@@ -174,10 +176,27 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
     // calculate preferred, minimum and maximum layout sizes for parent layouts
     preferredLayoutSize = _preferredLayoutSize(
         container?.componentModel as ContainerComponentModel);
+
+    (container?.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutPreferredSize = preferredLayoutSize;
+
     minimumLayoutSize = _minimumLayoutSize(
         container?.componentModel as ContainerComponentModel);
+
+    (container?.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMinimumSize = minimumLayoutSize;
+
     maximumLayoutSize = _maximumLayoutSize(
         container?.componentModel as ContainerComponentModel);
+
+    (container?.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMaximumSize = maximumLayoutSize;
 
     // layout NORTH
     if (north != null) {
@@ -345,6 +364,11 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
     // borderLayout uses max space available
     this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
+
+    if (this.constraints.hasBoundedHeight && this.constraints.hasBoundedWidth) {
+      layoutState = LayoutState.RENDERED;
+    }
+
     dev.log(
         "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
   }
@@ -542,11 +566,11 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   Size? getPreferredSize(
       RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(renderBox);
+      Size? size = getChildLayoutPreferredSize(comp);
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize)
+        if (renderBox.hasSize && !_isLayoutDirty(comp))
           size = renderBox.size;
         else
           size = layoutRenderBox(renderBox, constraints);
@@ -565,7 +589,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   Size? getMinimumSize(
       RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
     if (!comp.componentModel.isMinimumSizeSet) {
-      Size? size = getChildLayoutMinimumSize(renderBox);
+      Size? size = getChildLayoutMinimumSize(comp);
       if (size != null)
         return size;
       else {
@@ -581,6 +605,23 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
     } else {
       return comp.componentModel.minimumSize;
     }
+  }
+
+  bool _isLayoutDirty(ComponentWidget comp) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null &&
+          containerComponentModel.layout!.layoutModel.layoutState ==
+              LayoutState.DIRTY) {
+        // containerComponentModel.layout!.layoutModel.layoutState =
+        //     LayoutState.RENDERED;
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 

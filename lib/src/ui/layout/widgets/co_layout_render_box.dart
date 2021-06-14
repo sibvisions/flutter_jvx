@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/ui/component/component_widget.dart';
+import 'package:flutterclient/src/ui/container/co_container_widget.dart';
 
 class CoLayoutRenderBox extends RenderBox {
   // only used in parent layouts
@@ -11,37 +14,64 @@ class CoLayoutRenderBox extends RenderBox {
   bool valid = false;
   String debugInfo = "";
 
-  Size? getChildLayoutPreferredSize(RenderBox renderBox) {
-    //renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
+  // Size? getChildLayoutPreferredSize(RenderBox renderBox) {
+  //   //renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
 
-    if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
-      CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
+  //   if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
+  //     CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
 
-      log("$debugInfo returns preferredLayoutSize ${childLayout.preferredLayoutSize}");
-      return childLayout.preferredLayoutSize;
+  //     log("$debugInfo returns preferredLayoutSize ${childLayout.preferredLayoutSize}");
+  //     return childLayout.preferredLayoutSize;
+  //   }
+
+  //   return null;
+  // }
+
+  Size? getChildLayoutPreferredSize(ComponentWidget componentWidget) {
+    if (componentWidget is CoContainerWidget) {
+      return (componentWidget.componentModel as ContainerComponentModel)
+          .layout
+          ?.layoutModel
+          .layoutPreferredSize;
     }
-
-    return null;
   }
 
-  Size? getChildLayoutMinimumSize(RenderBox renderBox) {
-    if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
-      CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
+  // Size? getChildLayoutMinimumSize(RenderBox renderBox) {
+  //   if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
+  //     CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
 
-      return childLayout.minimumLayoutSize;
+  //     return childLayout.minimumLayoutSize;
+  //   }
+
+  //   return null;
+  // }
+
+  Size? getChildLayoutMinimumSize(ComponentWidget componentWidget) {
+    if (componentWidget is CoContainerWidget) {
+      return (componentWidget.componentModel as ContainerComponentModel)
+          .layout
+          ?.layoutModel
+          .layoutMinimumSize;
     }
-
-    return null;
   }
 
-  Size? getChildLayoutMaximumSize(RenderBox renderBox) {
-    if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
-      CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
+  // Size? getChildLayoutMaximumSize(RenderBox renderBox) {
+  //   if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
+  //     CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
 
-      return childLayout.maximumLayoutSize;
+  //     return childLayout.maximumLayoutSize;
+  //   }
+
+  //   return null;
+  // }
+
+  Size? getChildLayoutMaximumSize(ComponentWidget componentWidget) {
+    if (componentWidget is CoContainerWidget) {
+      return (componentWidget.componentModel as ContainerComponentModel)
+          .layout!
+          .layoutModel
+          .layoutMaximumSize;
     }
-
-    return null;
   }
 
   Size layoutRenderBox(RenderBox renderBox, BoxConstraints constraints) {

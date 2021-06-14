@@ -58,6 +58,7 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
       this.margins,
       this.horizontalGap,
       this.verticalGap,
+      this.layoutState,
     );
   }
 
@@ -138,8 +139,10 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
 
   CoContainerWidget container;
 
+  LayoutState layoutState;
+
   RenderGridLayoutWidget(this.container, this.rows, this.columns, this.margins,
-      this.horizontalGap, this.verticalGap,
+      this.horizontalGap, this.verticalGap, this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
   }
@@ -161,10 +164,27 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
 
     preferredLayoutSize = _preferredLayoutSize(
         container.componentModel as ContainerComponentModel);
+
+    (container.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutPreferredSize = preferredLayoutSize;
+
     minimumLayoutSize =
         _minimumLayoutSize(container.componentModel as ContainerComponentModel);
+
+    (container.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMinimumSize = minimumLayoutSize;
+
     maximumLayoutSize =
         _maximumLayoutSize(container.componentModel as ContainerComponentModel);
+
+    (container.componentModel as ContainerComponentModel)
+        .layout!
+        .layoutModel
+        .layoutMaximumSize = maximumLayoutSize;
 
     Size size = constraints.biggest;
     int targetColumns = columns;
@@ -289,7 +309,21 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
         final MultiChildLayoutParentData childParentData =
             component.parentData as MultiChildLayoutParentData;
         childParentData.offset = Offset(x, y);
+
+        if (this.constraints.hasBoundedHeight &&
+            this.constraints.hasBoundedWidth &&
+            constraints.comp is CoContainerWidget) {
+          (constraints.comp!.componentModel as ContainerComponentModel)
+              .layout!
+              .layoutModel
+              .layoutState = LayoutState.RENDERED;
+        }
       });
+
+      if (this.constraints.hasBoundedHeight &&
+          this.constraints.hasBoundedWidth) {
+        layoutState = LayoutState.RENDERED;
+      }
 
       this.size = size;
     }
@@ -298,11 +332,11 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   Size getPreferredSize(
       RenderBox renderBox, CoGridLayoutConstraints constraint) {
     if (!constraint.comp!.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(renderBox);
+      Size? size = getChildLayoutPreferredSize(constraint.comp!);
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize)
+        if (renderBox.hasSize && _isLayoutDirty(constraint))
           size = renderBox.size;
         else
           size = layoutRenderBox(renderBox, constraints);
@@ -315,6 +349,23 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
     } else {
       return constraint.comp!.componentModel.preferredSize!;
     }
+  }
+
+  bool _isLayoutDirty(CoGridLayoutConstraints constraint) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null &&
+          containerComponentModel.layout!.layoutModel.layoutState ==
+              LayoutState.DIRTY) {
+        // containerComponentModel.layout!.layoutModel.layoutState =
+        //     LayoutState.RENDERED;
+        return true;
+      }
+    }
+
+    return false;
   }
 
   Size _preferredLayoutSize(ContainerComponentModel pParent) {

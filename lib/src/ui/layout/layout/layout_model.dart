@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../../component/component_widget.dart';
@@ -37,6 +39,15 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   String rawLayoutString = '';
 
   Map<String, Key> keys = <String, Key>{};
+
+  @override
+  Size? layoutMaximumSize;
+
+  @override
+  Size? layoutMinimumSize;
+
+  @override
+  Size? layoutPreferredSize;
 
   @override
   bool get isMaximumSizeSet => maximumSize != null;
@@ -126,7 +137,7 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   @override
   void performRebuild() {
     if (layoutState == LayoutState.DIRTY) {
-      layoutState = LayoutState.RENDERED;
+      log('Performing rebuild for ${getLayoutName(rawLayoutString)}');
       notifyListeners();
     }
   }
