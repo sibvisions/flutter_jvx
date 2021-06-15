@@ -189,7 +189,7 @@ class RemoteDataSourceImpl implements DataSource {
     if (!kIsWeb)
       client.headers!['cookie'] = appState.screenManager.onCookie('');
 
-    final path = appState.serverConfig!.baseUrl + '/api/startup';
+    final path = appState.serverConfig!.baseUrl + '/api/v3/startup';
 
     Either<ApiError, ApiResponse> either =
         await _sendRequest(Uri.parse(path), request);

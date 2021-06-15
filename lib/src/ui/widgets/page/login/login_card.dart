@@ -12,16 +12,24 @@ import '../../../../util/app/text_utils.dart';
 import '../../../../util/translation/app_localizations.dart';
 import 'gradient_button.dart';
 
+enum LoginMode {
+  DEFAULT,
+  FORGOT_PASSWORD,
+  CHANGE_PASSWORD,
+}
+
 class LoginCard extends StatefulWidget {
   final String lastUsername;
   final AppState appState;
   final ApiCubit cubit;
+  final LoginMode loginMode;
 
   const LoginCard(
       {Key? key,
       required this.lastUsername,
       required this.appState,
-      required this.cubit})
+      required this.cubit,
+      this.loginMode = LoginMode.DEFAULT})
       : super(key: key);
 
   @override
@@ -40,6 +48,8 @@ class _LoginCardState extends State<LoginCard>
 
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
+  TextEditingController? _changePasswordController;
+  TextEditingController? _retypeNewPasswordController;
 
   String get title {
     if (widget.appState.applicationStyle?.loginStyle?.title != null)
@@ -74,25 +84,63 @@ class _LoginCardState extends State<LoginCard>
                         labelStyle: TextStyle(
                             fontSize: 14.0, fontWeight: FontWeight.w600)),
                   )),
-              new SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
-              Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+              if (widget.loginMode != LoginMode.FORGOT_PASSWORD) ...[
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: TextFormField(
+                      controller: _passwordController,
+                      onChanged: (password) => loginPassword = password,
+                      style: new TextStyle(fontSize: 14.0, color: Colors.black),
+                      decoration: new InputDecoration(
+                          labelText:
+                              AppLocalizations.of(context)!.text('Password:'),
+                          labelStyle: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.w600)),
+                      obscureText: true,
+                    )),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+              if (widget.loginMode == LoginMode.CHANGE_PASSWORD) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: TextFormField(
-                    controller: _passwordController,
-                    onChanged: (password) => loginPassword = password,
-                    style: new TextStyle(fontSize: 14.0, color: Colors.black),
-                    decoration: new InputDecoration(
+                    controller: _changePasswordController,
+                    onChanged: (String changedPassword) {},
+                    style: TextStyle(fontSize: 14.0, color: Colors.black),
+                    decoration: InputDecoration(
                         labelText:
-                            AppLocalizations.of(context)!.text('Password:'),
+                            AppLocalizations.of(context)!.text('New Password:'),
                         labelStyle: TextStyle(
                             fontSize: 14.0, fontWeight: FontWeight.w600)),
                     obscureText: true,
-                  )),
-              SizedBox(
-                height: 10,
-              ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: TextFormField(
+                    controller: _retypeNewPasswordController,
+                    onChanged: (String retypedPassword) {},
+                    style: TextStyle(fontSize: 14.0, color: Colors.black),
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!
+                            .text('Repeat Password:'),
+                        labelStyle: TextStyle(
+                            fontSize: 14.0, fontWeight: FontWeight.w600)),
+                    obscureText: true,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                )
+              ],
               Row(
                 children: <Widget>[
                   if (!widget.appState.appConfig!.hideLoginCheckbox)
@@ -209,6 +257,11 @@ class _LoginCardState extends State<LoginCard>
 
     _usernameController = TextEditingController(text: loginUsername);
     _passwordController = TextEditingController();
+
+    if (widget.loginMode == LoginMode.CHANGE_PASSWORD) {
+      _changePasswordController = TextEditingController();
+      _retypeNewPasswordController = TextEditingController();
+    }
 
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 1500));

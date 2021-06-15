@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/models/api/response_objects/menu/menu_item.dart';
 import 'package:flutterclient/src/models/state/routes/arguments/login_page_arguments.dart';
 import 'package:flutterclient/src/models/state/routes/arguments/menu_page_arguments.dart';
@@ -117,7 +118,8 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
 
   void _login() {
     Navigator.of(context).pushReplacementNamed(Routes.login,
-        arguments: LoginPageArguments(lastUsername: ''));
+        arguments:
+            LoginPageArguments(lastUsername: '', loginMode: LoginMode.DEFAULT));
   }
 
   @override

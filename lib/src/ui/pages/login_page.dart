@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/services/local/shared_preferences/shared_preferences_manager.dart';
-import 'package:flutterclient/src/ui/widgets/page/login/login_page_widget.dart';
 
 import '../../../injection_container.dart';
+import '../../models/state/app_state.dart';
+import '../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../util/theme/theme_manager.dart';
+import '../widgets/page/login/login_card.dart';
+import '../widgets/page/login/login_page_widget.dart';
 
 class LoginPage extends StatelessWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
   final String? lastUsername;
+  final LoginMode loginMode;
 
   const LoginPage(
       {Key? key,
       required this.appState,
       required this.manager,
+      required this.loginMode,
       this.lastUsername})
       : super(key: key);
 
@@ -28,6 +31,7 @@ class LoginPage extends StatelessWidget {
           appState: appState,
           manager: manager,
           lastUsername: lastUsername,
+          loginMode: loginMode,
         ),
       ),
     );

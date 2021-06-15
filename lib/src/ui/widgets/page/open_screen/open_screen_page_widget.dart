@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 
@@ -110,7 +111,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
       if (state.request is LogoutRequest) {
         Navigator.of(context).pushNamed(Routes.login,
-            arguments: LoginPageArguments(lastUsername: ''));
+            arguments: LoginPageArguments(
+                lastUsername: '', loginMode: LoginMode.DEFAULT));
       } else if (state.request is NavigationRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
         if (_pages.isNotEmpty) {

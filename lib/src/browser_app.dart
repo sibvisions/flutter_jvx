@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutterclient/src/ui/widgets/page/login/login_card.dart';
 
 import 'models/api/response_objects/language_response_object.dart';
 import 'models/api/response_objects/menu/menu_item.dart';
@@ -125,6 +126,7 @@ class BrowserApp extends StatelessWidget {
               appState: appState,
               manager: manager,
               lastUsername: arguments?.lastUsername,
+              loginMode: arguments?.loginMode ?? LoginMode.DEFAULT,
             ),
           );
         case Routes.menu:
@@ -199,7 +201,9 @@ class BrowserApp extends StatelessWidget {
 
     if (settings.name == Routes.menu && appState.userData == null) {
       return RouteSettings(
-          name: Routes.login, arguments: LoginPageArguments(lastUsername: ''));
+          name: Routes.login,
+          arguments: LoginPageArguments(
+              lastUsername: '', loginMode: LoginMode.DEFAULT));
     }
 
     return settings;

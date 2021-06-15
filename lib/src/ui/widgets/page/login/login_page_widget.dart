@@ -11,17 +11,20 @@ import '../../../../services/local/shared_preferences/shared_preferences_manager
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/custom_cubit_listener.dart';
 import 'login_background.dart';
+import 'login_card.dart';
 import 'login_widgets.dart';
 
 class LoginPageWidget extends StatefulWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
   final String? lastUsername;
+  final LoginMode loginMode;
 
   const LoginPageWidget(
       {Key? key,
       required this.appState,
       required this.manager,
+      required this.loginMode,
       this.lastUsername})
       : super(key: key);
 
@@ -105,6 +108,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   username: widget.lastUsername ?? '',
                   appState: widget.appState,
                   cubit: cubit,
+                  loginMode: widget.loginMode,
                 )
               ],
             )),

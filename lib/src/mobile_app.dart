@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutterclient/flutterclient.dart';
 
 import 'models/state/app_state.dart';
 import 'models/state/routes/arguments/login_page_arguments.dart';
@@ -81,6 +82,7 @@ class MobileApp extends StatelessWidget {
             appState: appState,
             manager: manager,
             lastUsername: arguments.lastUsername,
+            loginMode: arguments.loginMode,
           ),
         );
       case Routes.menu:
