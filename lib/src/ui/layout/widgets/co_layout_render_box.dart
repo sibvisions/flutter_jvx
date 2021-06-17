@@ -27,12 +27,13 @@ class CoLayoutRenderBox extends RenderBox {
   //   return null;
   // }
 
-  Size? getChildLayoutPreferredSize(ComponentWidget componentWidget) {
+  Size? getChildLayoutPreferredSize(
+      ComponentWidget componentWidget, BoxConstraints constraints) {
     if (componentWidget is CoContainerWidget) {
       return (componentWidget.componentModel as ContainerComponentModel)
           .layout
           ?.layoutModel
-          .layoutPreferredSize;
+          .layoutPreferredSize[constraints];
     }
   }
 
@@ -46,12 +47,13 @@ class CoLayoutRenderBox extends RenderBox {
   //   return null;
   // }
 
-  Size? getChildLayoutMinimumSize(ComponentWidget componentWidget) {
+  Size? getChildLayoutMinimumSize(
+      ComponentWidget componentWidget, BoxConstraints constraints) {
     if (componentWidget is CoContainerWidget) {
       return (componentWidget.componentModel as ContainerComponentModel)
           .layout
           ?.layoutModel
-          .layoutMinimumSize;
+          .layoutMinimumSize[constraints];
     }
   }
 
@@ -65,12 +67,13 @@ class CoLayoutRenderBox extends RenderBox {
   //   return null;
   // }
 
-  Size? getChildLayoutMaximumSize(ComponentWidget componentWidget) {
+  Size? getChildLayoutMaximumSize(
+      ComponentWidget componentWidget, BoxConstraints constraints) {
     if (componentWidget is CoContainerWidget) {
       return (componentWidget.componentModel as ContainerComponentModel)
           .layout!
           .layoutModel
-          .layoutMaximumSize;
+          .layoutMaximumSize[constraints];
     }
   }
 

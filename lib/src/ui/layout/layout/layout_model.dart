@@ -41,13 +41,16 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   Map<String, Key> keys = <String, Key>{};
 
   @override
-  Size? layoutMaximumSize;
+  Map<BoxConstraints, Size> layoutMaximumSize = Map<BoxConstraints, Size>();
+  //Size? layoutMaximumSize;
 
   @override
-  Size? layoutMinimumSize;
+  Map<BoxConstraints, Size> layoutMinimumSize = Map<BoxConstraints, Size>();
+  //Size? layoutMinimumSize;
 
   @override
-  Size? layoutPreferredSize;
+  Map<BoxConstraints, Size> layoutPreferredSize = Map<BoxConstraints, Size>();
+  //Size? layoutPreferredSize;
 
   @override
   bool get isMaximumSizeSet => maximumSize != null;
@@ -137,12 +140,24 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   @override
   void performRebuild() {
     if (layoutState == LayoutState.DIRTY) {
-      layoutPreferredSize = null;
-      layoutMinimumSize = null;
-      layoutMaximumSize = null;
+      layoutPreferredSize = Map<BoxConstraints, Size>();
+      layoutMinimumSize = Map<BoxConstraints, Size>();
+      layoutMaximumSize = Map<BoxConstraints, Size>();
 
       log('Performing rebuild for ${getLayoutName(rawLayoutString)}');
       notifyListeners();
     }
+  }
+}
+
+class LayoutData {
+  Map<BoxConstraints, Size> _data = Map<BoxConstraints, Size>();
+
+  Size? get(BoxConstraints constraints) {
+    return _data[constraints];
+  }
+
+  void set(BoxConstraints constraints, Size size) {
+    _data[constraints] = size;
   }
 }

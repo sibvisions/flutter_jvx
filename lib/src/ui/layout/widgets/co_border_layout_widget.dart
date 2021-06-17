@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
 import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
@@ -173,32 +174,37 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       child = childParentData.nextSibling;
     }
 
+    LayoutModel layoutModel =
+        (container?.componentModel as ContainerComponentModel)
+            .layout!
+            .layoutModel;
+
     // calculate preferred, minimum and maximum layout sizes for parent layouts
-    preferredLayoutSize = _preferredLayoutSize(
-        container?.componentModel as ContainerComponentModel);
-
-    minimumLayoutSize = _minimumLayoutSize(
-        container?.componentModel as ContainerComponentModel);
-
-    maximumLayoutSize = _maximumLayoutSize(
-        container?.componentModel as ContainerComponentModel);
-
-    if (this.constraints.hasBoundedHeight || this.constraints.hasBoundedWidth) {
-      (container?.componentModel as ContainerComponentModel)
-          .layout!
-          .layoutModel
-          .layoutPreferredSize = preferredLayoutSize;
-
-      (container?.componentModel as ContainerComponentModel)
-          .layout!
-          .layoutModel
-          .layoutMinimumSize = minimumLayoutSize;
-
-      (container?.componentModel as ContainerComponentModel)
-          .layout!
-          .layoutModel
-          .layoutMaximumSize = maximumLayoutSize;
+    preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+    if (preferredLayoutSize == null) {
+      preferredLayoutSize = _preferredLayoutSize(
+          container?.componentModel as ContainerComponentModel);
+      if (preferredLayoutSize != null)
+        layoutModel.layoutPreferredSize[this.constraints] =
+            preferredLayoutSize!;
     }
+
+    minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+    if (minimumLayoutSize == null) {
+      minimumLayoutSize = _minimumLayoutSize(
+          container?.componentModel as ContainerComponentModel);
+      if (minimumLayoutSize != null)
+        layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+    }
+
+    maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+    if (maximumLayoutSize == null) {
+      maximumLayoutSize = _maximumLayoutSize(
+          container?.componentModel as ContainerComponentModel);
+      if (maximumLayoutSize != null)
+        layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
+    }
+
     // layout NORTH
     if (north != null) {
       double minWidth = width;
@@ -567,7 +573,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   Size? getPreferredSize(
       RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(comp);
+      Size? size = getChildLayoutPreferredSize(comp, this.constraints);
       if (size != null) {
         return size;
       } else {
@@ -590,7 +596,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   Size? getMinimumSize(
       RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
     if (!comp.componentModel.isMinimumSizeSet) {
-      Size? size = getChildLayoutMinimumSize(comp);
+      Size? size = getChildLayoutMinimumSize(comp, this.constraints);
       if (size != null)
         return size;
       else {

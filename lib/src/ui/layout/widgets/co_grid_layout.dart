@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
 import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 import '../../container/co_container_widget.dart';
 import 'co_grid_layout_constraint.dart';
@@ -162,29 +163,36 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
       child = childParentData.nextSibling;
     }
 
-    preferredLayoutSize = _preferredLayoutSize(
-        container.componentModel as ContainerComponentModel);
+    LayoutModel layoutModel =
+        (container.componentModel as ContainerComponentModel)
+            .layout!
+            .layoutModel;
 
-    (container.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutPreferredSize = preferredLayoutSize;
+    // calculate preferred, minimum and maximum layout sizes for parent layouts
+    preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+    if (preferredLayoutSize == null) {
+      preferredLayoutSize = _preferredLayoutSize(
+          container.componentModel as ContainerComponentModel);
+      if (preferredLayoutSize != null)
+        layoutModel.layoutPreferredSize[this.constraints] =
+            preferredLayoutSize!;
+    }
 
-    minimumLayoutSize =
-        _minimumLayoutSize(container.componentModel as ContainerComponentModel);
+    minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+    if (minimumLayoutSize == null) {
+      minimumLayoutSize = _minimumLayoutSize(
+          container.componentModel as ContainerComponentModel);
+      if (minimumLayoutSize != null)
+        layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+    }
 
-    (container.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutMinimumSize = minimumLayoutSize;
-
-    maximumLayoutSize =
-        _maximumLayoutSize(container.componentModel as ContainerComponentModel);
-
-    (container.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutMaximumSize = maximumLayoutSize;
+    maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+    if (maximumLayoutSize == null) {
+      maximumLayoutSize = _maximumLayoutSize(
+          container.componentModel as ContainerComponentModel);
+      if (maximumLayoutSize != null)
+        layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
+    }
 
     Size size = constraints.biggest;
     int targetColumns = columns;
@@ -332,7 +340,8 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   Size getPreferredSize(
       RenderBox renderBox, CoGridLayoutConstraints constraint) {
     if (!constraint.comp!.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(constraint.comp!);
+      Size? size =
+          getChildLayoutPreferredSize(constraint.comp!, this.constraints);
       if (size != null) {
         return size;
       } else {

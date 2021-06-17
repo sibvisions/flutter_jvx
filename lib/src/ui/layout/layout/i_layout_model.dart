@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
+import 'layout_model.dart';
 
 enum LayoutState { DIRTY, RENDERED }
 
@@ -22,9 +23,13 @@ abstract class ILayoutModel<E> {
   Size? minimumSize;
   Size? maximumSize;
 
-  Size? layoutPreferredSize;
-  Size? layoutMinimumSize;
-  Size? layoutMaximumSize;
+  Map<BoxConstraints, Size> layoutMaximumSize = Map<BoxConstraints, Size>();
+  Map<BoxConstraints, Size> layoutMinimumSize = Map<BoxConstraints, Size>();
+  Map<BoxConstraints, Size> layoutPreferredSize = Map<BoxConstraints, Size>();
+
+  // Size? layoutPreferredSize;
+  // Size? layoutMinimumSize;
+  // Size? layoutMaximumSize;
 
   bool get isPreferredSizeSet;
   bool get isMinimumSizeSet;

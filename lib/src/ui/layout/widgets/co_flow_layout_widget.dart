@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 import '../../component/component_widget.dart';
 import '../i_alignment_constants.dart';
@@ -224,28 +225,28 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       child = childParentData.nextSibling;
     }
 
-    preferredLayoutSize = _preferredLayoutSize(
-        container?.componentModel as ContainerComponentModel);
+    LayoutModel layoutModel =
+        (container?.componentModel as ContainerComponentModel)
+            .layout!
+            .layoutModel;
 
-    (container?.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutPreferredSize = preferredLayoutSize;
+    // calculate preferred, minimum and maximum layout sizes for parent layouts
+    preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+    if (preferredLayoutSize == null) {
+      preferredLayoutSize = _preferredLayoutSize(
+          container?.componentModel as ContainerComponentModel);
+      if (preferredLayoutSize != null)
+        layoutModel.layoutPreferredSize[this.constraints] =
+            preferredLayoutSize!;
+    }
 
-    minimumLayoutSize = _minimumLayoutSize(
-        container?.componentModel as ContainerComponentModel);
-
-    (container?.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutMinimumSize = minimumLayoutSize;
-
-    maximumLayoutSize = preferredLayoutSize;
-
-    (container?.componentModel as ContainerComponentModel)
-        .layout!
-        .layoutModel
-        .layoutMaximumSize = maximumLayoutSize;
+    minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+    if (minimumLayoutSize == null) {
+      minimumLayoutSize = _minimumLayoutSize(
+          container?.componentModel as ContainerComponentModel);
+      if (minimumLayoutSize != null)
+        layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+    }
 
     Size dimSize = this.constraints.biggest;
     dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
@@ -573,7 +574,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(comp);
+      Size? size = getChildLayoutPreferredSize(comp, this.constraints);
       if (size != null) {
         return size;
       } else {
