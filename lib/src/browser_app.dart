@@ -126,7 +126,7 @@ class BrowserApp extends StatelessWidget {
               appState: appState,
               manager: manager,
               lastUsername: arguments?.lastUsername,
-              loginMode: arguments?.loginMode ?? LoginMode.DEFAULT,
+              loginMode: arguments?.loginMode ?? LoginMode.MANUAL,
             ),
           );
         case Routes.menu:
@@ -203,7 +203,7 @@ class BrowserApp extends StatelessWidget {
       return RouteSettings(
           name: Routes.login,
           arguments: LoginPageArguments(
-              lastUsername: '', loginMode: LoginMode.DEFAULT));
+              lastUsername: '', loginMode: LoginMode.MANUAL));
     }
 
     return settings;

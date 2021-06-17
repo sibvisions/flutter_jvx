@@ -112,7 +112,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       if (state.request is LogoutRequest) {
         Navigator.of(context).pushNamed(Routes.login,
             arguments: LoginPageArguments(
-                lastUsername: '', loginMode: LoginMode.DEFAULT));
+                lastUsername: '', loginMode: LoginMode.MANUAL));
       } else if (state.request is NavigationRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
         if (_pages.isNotEmpty) {

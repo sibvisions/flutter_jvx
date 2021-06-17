@@ -13,9 +13,28 @@ import '../../../../util/translation/app_localizations.dart';
 import 'gradient_button.dart';
 
 enum LoginMode {
-  DEFAULT,
-  FORGOT_PASSWORD,
+  MANUAL,
+  LOST_PASSWORD,
   CHANGE_PASSWORD,
+  CHANGE_ONE_TIME_PASSWORD,
+  AUTOMATIC,
+}
+
+LoginMode getLoginMode(String mode) {
+  switch (mode) {
+    case 'manual':
+      return LoginMode.MANUAL;
+    case 'changePassword':
+      return LoginMode.CHANGE_PASSWORD;
+    case 'changeOneTimePassword':
+      return LoginMode.CHANGE_ONE_TIME_PASSWORD;
+    case 'automatic':
+      return LoginMode.AUTOMATIC;
+    case 'lostPassword':
+      return LoginMode.LOST_PASSWORD;
+    default:
+      return LoginMode.MANUAL;
+  }
 }
 
 class LoginCard extends StatefulWidget {
@@ -29,7 +48,7 @@ class LoginCard extends StatefulWidget {
       required this.lastUsername,
       required this.appState,
       required this.cubit,
-      this.loginMode = LoginMode.DEFAULT})
+      this.loginMode = LoginMode.MANUAL})
       : super(key: key);
 
   @override
@@ -87,7 +106,7 @@ class _LoginCardState extends State<LoginCard>
               const SizedBox(
                 height: 10.0,
               ),
-              if (widget.loginMode != LoginMode.FORGOT_PASSWORD) ...[
+              if (widget.loginMode != LoginMode.LOST_PASSWORD) ...[
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: TextFormField(

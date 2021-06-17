@@ -5,7 +5,7 @@ import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
 import 'package:flutterclient/src/ui/widgets/custom/custom_icon.dart';
 import 'package:flutterclient/src/util/color/color_extension.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../screen/core/so_component_data.dart';
 import '../../screen/core/so_data_screen.dart';
@@ -72,8 +72,8 @@ class MapComponentModel extends ComponentModel {
     if (centerString != null) {
       List<String> split = centerString.split(';');
 
-      center =
-          LatLng(double.tryParse(split.first), double.tryParse(split.last));
+      center = LatLng(
+          double.tryParse(split.first) ?? 0, double.tryParse(split.last) ?? 0);
     }
 
     lineColor = HexColor.fromHex(changedComponent.getProperty<String>(

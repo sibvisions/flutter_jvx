@@ -154,7 +154,7 @@ class _MenuPageWidgetState extends State<MenuPageWidget> {
             Navigator.of(context).pushReplacementNamed(Routes.login,
                 arguments: LoginPageArguments(
                     lastUsername: widget.appState.userData?.username ?? '',
-                    loginMode: LoginMode.DEFAULT));
+                    loginMode: LoginMode.MANUAL));
           } else if (state.request is OpenScreenRequest) {
             ScreenGenericResponseObject? screenGeneric =
                 state.getObjectByType<ScreenGenericResponseObject>();

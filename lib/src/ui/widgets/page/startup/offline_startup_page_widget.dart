@@ -119,7 +119,7 @@ class _OfflineStartupPageWidgetState extends State<OfflineStartupPageWidget> {
   void _login() {
     Navigator.of(context).pushReplacementNamed(Routes.login,
         arguments:
-            LoginPageArguments(lastUsername: '', loginMode: LoginMode.DEFAULT));
+            LoginPageArguments(lastUsername: '', loginMode: LoginMode.MANUAL));
   }
 
   @override

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/flutterclient.dart';
-import 'package:flutterclient/src/util/device_info/device_info_mobile.dart';
+import '../login/login_card.dart';
+import '../../../../util/device_info/device_info_mobile.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/api/requests/application_style_request.dart';
@@ -194,9 +194,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       } else {
         final loginResponse = response.getObjectByType<LoginResponseObject>()!;
 
-        final loginMode = loginResponse.changePassword
-            ? LoginMode.CHANGE_PASSWORD
-            : LoginMode.DEFAULT;
+        final loginMode = getLoginMode(loginResponse.mode);
 
         Navigator.of(context).pushReplacementNamed(Routes.login,
             arguments: LoginPageArguments(
