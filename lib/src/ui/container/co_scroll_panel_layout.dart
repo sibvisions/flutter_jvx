@@ -2,6 +2,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 import '../component/model/component_model.dart';
 import '../layout/widgets/co_layout_render_box.dart';
@@ -75,10 +76,24 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
     this.maximumLayoutSize = this.constraints.biggest;
     this.minimumLayoutSize = this.constraints.biggest;
 
-    //Size? preferredSize;
+    Size? preferredSize;
 
     if (child != null) {
-      this.layoutRenderBox(child!, BoxConstraints.tightForFinite());
+      if (preferredConstraints!.componentModel is ContainerComponentModel &&
+          (preferredConstraints!.componentModel as ContainerComponentModel)
+                  .layout !=
+              null) {
+        LayoutModel layoutModel =
+            (preferredConstraints!.componentModel as ContainerComponentModel)
+                .layout!
+                .layoutModel;
+
+        preferredSize =
+            layoutModel.layoutPreferredSize[BoxConstraints.tightForFinite()];
+      }
+
+      if (!child!.hasSize || child!.size != preferredSize)
+        this.layoutRenderBox(child!, BoxConstraints.tightForFinite());
 
       /*if (child is RenderShiftedBox &&
           (child as RenderShiftedBox).child is CoLayoutRenderBox) {

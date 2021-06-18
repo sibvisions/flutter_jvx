@@ -578,6 +578,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                       null
               ? containerComponentModel.layout!.layoutModel.rawLayoutData
               : "") +
+          ", layoutState: " +
+          (containerComponentModel.layout != null
+              ? containerComponentModel.layout!.layoutModel.layoutState
+                  .toString()
+              : "") +
           ", childCount: " +
           containerComponentModel.components.length.toString();
       print(debugString);
