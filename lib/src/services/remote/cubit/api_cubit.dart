@@ -1,12 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/flutterclient.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../flutterclient.dart';
 import '../../../models/api/errors/failure.dart';
 import '../../../models/api/request.dart';
 import '../../../models/api/requests/application_style_request.dart';
+import '../../../models/api/requests/change_password_request.dart';
 import '../../../models/api/requests/change_request.dart';
 import '../../../models/api/requests/close_screen_request.dart';
 import '../../../models/api/requests/data/data_request.dart';
@@ -181,5 +182,9 @@ class ApiCubit extends Cubit<ApiState> {
 
   Future<void> download(DownloadRequest request) async {
     emit(await repository.download(request));
+  }
+
+  Future<void> changePassword(ChangePasswordRequest request) async {
+    emit(await repository.changePassword(request));
   }
 }

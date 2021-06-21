@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutterclient/src/ui/widgets/page/login/login_page_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../models/api/requests/login_request.dart';
@@ -67,8 +68,6 @@ class _LoginCardState extends State<LoginCard>
 
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
-  TextEditingController? _changePasswordController;
-  TextEditingController? _retypeNewPasswordController;
 
   String get title {
     if (widget.appState.applicationStyle?.loginStyle?.title != null)
@@ -88,25 +87,28 @@ class _LoginCardState extends State<LoginCard>
                 title,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _usernameController,
-                    textInputAction: TextInputAction.next,
-                    autocorrect: false,
-                    onChanged: (username) => loginUsername = username,
-                    style: TextStyle(fontSize: 14.0, color: Colors.black),
-                    decoration: InputDecoration(
-                        hintStyle: TextStyle(color: Colors.green),
-                        labelText:
-                            AppLocalizations.of(context)!.text('Username:'),
-                        labelStyle: TextStyle(
-                            fontSize: 14.0, fontWeight: FontWeight.w600)),
-                  )),
+              if (widget.loginMode == LoginMode.MANUAL ||
+                  widget.loginMode == LoginMode.LOST_PASSWORD)
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: TextFormField(
+                      controller: _usernameController,
+                      textInputAction: TextInputAction.next,
+                      autocorrect: false,
+                      onChanged: (username) => loginUsername = username,
+                      style: TextStyle(fontSize: 14.0, color: Colors.black),
+                      decoration: InputDecoration(
+                          hintStyle: TextStyle(color: Colors.green),
+                          labelText:
+                              AppLocalizations.of(context)!.text('Username:'),
+                          labelStyle: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.w600)),
+                    )),
               const SizedBox(
                 height: 10.0,
               ),
-              if (widget.loginMode != LoginMode.LOST_PASSWORD) ...[
+              if (widget.loginMode != LoginMode.CHANGE_ONE_TIME_PASSWORD &&
+                  widget.loginMode != LoginMode.CHANGE_PASSWORD) ...[
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: TextFormField(
@@ -124,45 +126,10 @@ class _LoginCardState extends State<LoginCard>
                   height: 10,
                 ),
               ],
-              if (widget.loginMode == LoginMode.CHANGE_PASSWORD) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _changePasswordController,
-                    onChanged: (String changedPassword) {},
-                    style: TextStyle(fontSize: 14.0, color: Colors.black),
-                    decoration: InputDecoration(
-                        labelText:
-                            AppLocalizations.of(context)!.text('New Password:'),
-                        labelStyle: TextStyle(
-                            fontSize: 14.0, fontWeight: FontWeight.w600)),
-                    obscureText: true,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: TextFormField(
-                    controller: _retypeNewPasswordController,
-                    onChanged: (String retypedPassword) {},
-                    style: TextStyle(fontSize: 14.0, color: Colors.black),
-                    decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!
-                            .text('Repeat Password:'),
-                        labelStyle: TextStyle(
-                            fontSize: 14.0, fontWeight: FontWeight.w600)),
-                    obscureText: true,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                )
-              ],
-              Row(
-                children: <Widget>[
-                  if (!widget.appState.appConfig!.hideLoginCheckbox)
+              if (!widget.appState.appConfig!.hideLoginCheckbox &&
+                  widget.loginMode == LoginMode.MANUAL)
+                Row(
+                  children: <Widget>[
                     Checkbox(
                       value: rememberMe,
                       activeColor: Theme.of(context).primaryColor,
@@ -172,7 +139,6 @@ class _LoginCardState extends State<LoginCard>
                         });
                       },
                     ),
-                  if (!widget.appState.appConfig!.hideLoginCheckbox)
                     TextButton(
                         onPressed: () {
                           setState(() {
@@ -189,8 +155,8 @@ class _LoginCardState extends State<LoginCard>
                         child: Text(
                           AppLocalizations.of(context)!.text('Remember me?'),
                         )),
-                ],
-              ),
+                  ],
+                ),
               SizedBox(
                 height: 10,
               ),
@@ -200,8 +166,12 @@ class _LoginCardState extends State<LoginCard>
                       child: GradientButton(
                           appState: widget.appState,
                           onPressed: () {
-                            TextUtils.unfocusCurrentTextfield(context);
-                            _login(context);
+                            if (widget.loginMode != LoginMode.CHANGE_PASSWORD &&
+                                widget.loginMode !=
+                                    LoginMode.CHANGE_ONE_TIME_PASSWORD) {
+                              TextUtils.unfocusCurrentTextfield(context);
+                              _login(context);
+                            }
                           },
                           text: AppLocalizations.of(context)!.text('Login')))),
               Row(
@@ -246,6 +216,14 @@ class _LoginCardState extends State<LoginCard>
   void _login(BuildContext context) async {
     if (canLogin) {
       if (loginUsername.trim().isNotEmpty && loginPassword.trim().isNotEmpty) {
+        final loginPageWidgetState = LoginPageWidget.of(context);
+
+        if (loginPageWidgetState != null) {
+          loginPageWidgetState.username = loginUsername;
+          loginPageWidgetState.password = loginPassword;
+          loginPageWidgetState.rememberMe = rememberMe;
+        }
+
         LoginRequest request = LoginRequest(
             clientId: widget.appState.applicationMetaData?.clientId ?? '',
             createAuthKey: rememberMe,
@@ -276,11 +254,6 @@ class _LoginCardState extends State<LoginCard>
 
     _usernameController = TextEditingController(text: loginUsername);
     _passwordController = TextEditingController();
-
-    if (widget.loginMode == LoginMode.CHANGE_PASSWORD) {
-      _changePasswordController = TextEditingController();
-      _retypeNewPasswordController = TextEditingController();
-    }
 
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 1500));

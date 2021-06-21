@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/data/filter.dart';
-import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
-import 'package:flutterclient/src/ui/widgets/custom/custom_icon.dart';
-import 'package:flutterclient/src/util/color/color_extension.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../screen/core/so_component_data.dart';
-import '../../screen/core/so_data_screen.dart';
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../models/api/response_objects/response_data/component/component_properties.dart';
+import '../../../util/color/color_extension.dart';
+import '../../screen/core/so_component_data.dart';
+import '../../widgets/custom/custom_icon.dart';
 import 'component_model.dart';
 
 class MapComponentModel extends ComponentModel {

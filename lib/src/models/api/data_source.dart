@@ -1,12 +1,12 @@
-import 'package:flutterclient/src/models/api/requests/data/data_request.dart';
-import 'package:flutterclient/src/models/api/requests/download_request.dart';
-import 'package:flutterclient/src/services/remote/cubit/api_cubit.dart';
-
+import '../../services/remote/cubit/api_cubit.dart';
 import 'requests/application_style_request.dart';
+import 'requests/change_password_request.dart';
 import 'requests/change_request.dart';
 import 'requests/close_screen_request.dart';
+import 'requests/data/data_request.dart';
 import 'requests/device_status_request.dart';
 import 'requests/download_images_request.dart';
+import 'requests/download_request.dart';
 import 'requests/download_translation_request.dart';
 import 'requests/login_request.dart';
 import 'requests/logout_request.dart';
@@ -40,4 +40,5 @@ abstract class DataSource {
   Future<ApiState> tabSelect(TabSelectRequest request);
   Future<ApiState> upload(UploadRequest request);
   Future<ApiState> data(DataRequest request);
+  Future<ApiState> changePassword(ChangePasswordRequest request);
 }

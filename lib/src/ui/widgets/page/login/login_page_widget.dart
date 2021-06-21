@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/login_response_object.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/change_password_dialog.dart';
 
 import '../../../../models/api/requests/login_request.dart';
 import '../../../../models/api/response_objects/menu/menu_response_object.dart';
@@ -30,13 +32,22 @@ class LoginPageWidget extends StatefulWidget {
 
   @override
   _LoginPageWidgetState createState() => _LoginPageWidgetState();
+
+  static _LoginPageWidgetState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_LoginPageWidgetState>();
 }
 
 class _LoginPageWidgetState extends State<LoginPageWidget> {
   bool colorsInverted = false;
   ApiResponse? response;
 
+  late LoginMode _loginMode;
+
   late ApiCubit cubit;
+
+  String username = '';
+  String password = '';
+  bool rememberMe = false;
 
   @override
   void initState() {
@@ -45,6 +56,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     super.initState();
 
     cubit = ApiCubit.withDependencies();
+
+    _loginMode = widget.loginMode;
   }
 
   @override
@@ -72,7 +85,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
             handleLoading: true,
             handleError: true,
             bloc: cubit,
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state is ApiResponse) {
                 if (state.request is LoginRequest &&
                     state.hasObject<MenuResponseObject>()) {
@@ -95,6 +108,28 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           listMenuItemsInDrawer: true,
                           response: response));
                 }
+
+                if (state.hasObject<LoginResponseObject>()) {
+                  final loginResponse =
+                      state.getObjectByType<LoginResponseObject>()!;
+
+                  final loginMode = getLoginMode(loginResponse.mode);
+
+                  if (loginMode == LoginMode.CHANGE_PASSWORD ||
+                      loginMode == LoginMode.CHANGE_ONE_TIME_PASSWORD) {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => ChangePasswordDialog(
+                            appState: widget.appState,
+                            manager: widget.manager,
+                            username: loginResponse.username,
+                            clientId:
+                                widget.appState.applicationMetaData!.clientId,
+                            rememberMe: rememberMe,
+                            password: password,
+                            login: true));
+                  }
+                }
               }
             },
             child: Stack(
@@ -108,7 +143,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   username: widget.lastUsername ?? '',
                   appState: widget.appState,
                   cubit: cubit,
-                  loginMode: widget.loginMode,
+                  loginMode: _loginMode,
                 )
               ],
             )),
