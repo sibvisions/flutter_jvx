@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutterclient/flutterclient.dart';
 
@@ -20,6 +22,8 @@ class ErrorHandler {
 
   static Future<void> handleError(ApiError error, BuildContext context) async {
     TextUtils.unfocusCurrentTextfield(context);
+
+    log('ERROR VIEW RESPONSE: ${error.failure.message}');
 
     if (!error.failure.silentAbort) {
       if (error.failure.name == sessionExpired) {
