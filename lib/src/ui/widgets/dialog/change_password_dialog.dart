@@ -13,6 +13,7 @@ class ChangePasswordDialog extends StatefulWidget {
   final SharedPreferencesManager? manager;
   final bool? rememberMe;
   final String? password;
+  final bool oneTime;
 
   const ChangePasswordDialog(
       {Key? key,
@@ -22,7 +23,8 @@ class ChangePasswordDialog extends StatefulWidget {
       this.appState,
       this.manager,
       this.password,
-      this.rememberMe})
+      this.rememberMe,
+      this.oneTime = false})
       : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   late TextEditingController _passwordController;
   late TextEditingController _newPasswordController;
   late TextEditingController _repeatNewPasswordController;
+  late TextEditingController _usernameController;
 
   String _password = '';
   String _newPassword = '';
@@ -46,8 +49,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
     _passwordController =
         TextEditingController(text: widget.login ? widget.password : '');
+    _password = widget.password ?? '';
+
     _newPasswordController = TextEditingController();
     _repeatNewPasswordController = TextEditingController();
+    _usernameController = TextEditingController(text: widget.username);
   }
 
   @override
@@ -72,9 +78,15 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               _error = state;
             });
           } else if (state is ApiResponse) {
-            setState(() {
-              _error = null;
-            });
+            if (state.hasObject<Failure>()) {
+              setState(() {
+                _error = ApiError(failure: state.getObjectByType<Failure>()!);
+              });
+            } else {
+              setState(() {
+                _error = null;
+              });
+            }
 
             if (widget.login) {
               if (state.request is LoginRequest &&
@@ -98,6 +110,12 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               }
             } else {
               Navigator.of(context).pop();
+
+              if (state.hasObject<Failure>()) {
+                setState(() {
+                  _error = ApiError(failure: state.getObjectByType<Failure>()!);
+                });
+              }
             }
           }
         },
@@ -109,106 +127,120 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(5),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AutoSizeText(
-                AppLocalizations.of(context)!.text('Change Password'),
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              if (_error != null) ...[
-                Text(
-                  _error!.failure.message ?? 'An error occured',
-                  style: TextStyle(color: Colors.red),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AutoSizeText(
+                  AppLocalizations.of(context)!.text('Change Password'),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                if (_error != null) ...[
+                  Text(
+                    _error!.failure.message ?? 'An error occured',
+                    style: TextStyle(
+                        color: _error?.failure.name == ErrorHandler.messageInfo
+                            ? Colors.white
+                            : Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  )
+                ],
+                TextField(
+                  enabled: widget.oneTime,
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.text('Username'),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5))),
                 ),
                 const SizedBox(
                   height: 10,
+                ),
+                TextField(
+                  enabled: !widget.login,
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.text(
+                          !widget.oneTime ? 'Password' : 'One Time Password'),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5))),
+                  onChanged: (String changed) => _password = changed,
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: _newPasswordController,
+                  decoration: InputDecoration(
+                      labelText:
+                          AppLocalizations.of(context)!.text('New Password'),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5))),
+                  onChanged: (String changed) => _newPassword = changed,
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: _repeatNewPasswordController,
+                  decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!
+                          .text('Repeat New Password'),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5))),
+                  onChanged: (String changed) => _repeatNewPassword = changed,
+                  obscureText: true,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                        child:
+                            Text(AppLocalizations.of(context)!.text('Close'))),
+                    TextButton(
+                        onPressed: () async {
+                          if (_password.isNotEmpty &&
+                              _newPassword.isNotEmpty &&
+                              _repeatNewPassword == _newPassword) {
+                            if (widget.login || widget.oneTime) {
+                              await sl<ApiCubit>().login(LoginRequest(
+                                  clientId: widget.clientId,
+                                  username: _usernameController.text,
+                                  password: _password,
+                                  createAuthKey: widget.rememberMe ?? false,
+                                  newPassword: _newPassword,
+                                  mode: widget.oneTime
+                                      ? 'changeOneTimePassword'
+                                      : 'changePassword'));
+                            } else {
+                              await sl<ApiCubit>().changePassword(
+                                  ChangePasswordRequest(
+                                      clientId: widget.clientId,
+                                      password: _password,
+                                      newPassword: _newPassword,
+                                      username: _usernameController.text));
+                            }
+                          }
+                        },
+                        child: Text(AppLocalizations.of(context)!
+                            .text('Change Password'))),
+                  ],
                 )
               ],
-              TextField(
-                enabled: false,
-                controller: TextEditingController(text: widget.username),
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.text('Username'),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5))),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextField(
-                enabled: !widget.login,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.text('Password'),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5))),
-                onChanged: (String changed) => _password = changed,
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextField(
-                controller: _newPasswordController,
-                decoration: InputDecoration(
-                    labelText:
-                        AppLocalizations.of(context)!.text('New Password'),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5))),
-                onChanged: (String changed) => _newPassword = changed,
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextField(
-                controller: _repeatNewPasswordController,
-                decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!
-                        .text('Repeat New Password'),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5))),
-                onChanged: (String changed) => _repeatNewPassword = changed,
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(AppLocalizations.of(context)!.text('Close'))),
-                  TextButton(
-                      onPressed: () async {
-                        if (widget.login) {
-                          await sl<ApiCubit>().login(LoginRequest(
-                              clientId: widget.clientId,
-                              username: widget.username,
-                              password: _password,
-                              createAuthKey: widget.rememberMe ?? false,
-                              newPassword: _newPassword));
-                        } else {
-                          await sl<ApiCubit>().changePassword(
-                              ChangePasswordRequest(
-                                  clientId: widget.clientId,
-                                  password: _password,
-                                  newPassword: _newPassword,
-                                  username: widget.username));
-                        }
-                      },
-                      child: Text(AppLocalizations.of(context)!
-                          .text('Change Password'))),
-                ],
-              )
-            ],
+            ),
           ),
         ),
       ),

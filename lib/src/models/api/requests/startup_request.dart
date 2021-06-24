@@ -2,7 +2,6 @@ import '../request.dart';
 
 class StartupRequest extends Request {
   final String appName;
-  final String layoutMode;
   final String url;
   final int screenWidth;
   final int screenHeight;
@@ -30,7 +29,6 @@ class StartupRequest extends Request {
       {required String clientId,
       required this.url,
       required this.appName,
-      required this.layoutMode,
       required this.screenWidth,
       required this.screenHeight,
       required this.appMode,
@@ -55,7 +53,6 @@ class StartupRequest extends Request {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'applicationName': appName,
         'authKey': authKey,
-        'layoutMode': layoutMode,
         'screenWidth': screenWidth,
         'screenHeight': screenHeight,
         'appMode': appMode,

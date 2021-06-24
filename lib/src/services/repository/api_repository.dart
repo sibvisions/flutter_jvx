@@ -13,6 +13,7 @@ import '../../models/api/requests/menu_request.dart';
 import '../../models/api/requests/navigation_request.dart';
 import '../../models/api/requests/open_screen_request.dart';
 import '../../models/api/requests/press_button_request.dart';
+import '../../models/api/requests/reset_password_request.dart';
 import '../../models/api/requests/set_component_value.dart';
 import '../../models/api/requests/startup_request.dart';
 import '../../models/api/requests/tab_close_request.dart';
@@ -51,4 +52,5 @@ abstract class ApiRepository {
   Future<ApiState> upload(UploadRequest request);
   Future<List<ApiState>> data(DataRequest request);
   Future<ApiState> changePassword(ChangePasswordRequest request);
+  Future<ApiState> resetPassword(ResetPasswordRequest request);
 }

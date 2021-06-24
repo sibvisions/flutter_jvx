@@ -5,12 +5,14 @@ class LoginRequest extends Request {
   final String password;
   final bool createAuthKey;
   final String newPassword;
+  final String mode;
 
   LoginRequest(
       {required String clientId,
       required this.username,
       required this.password,
       required this.createAuthKey,
+      required this.mode,
       this.newPassword = ''})
       : super(clientId: clientId);
 
@@ -18,6 +20,7 @@ class LoginRequest extends Request {
         'username': username,
         'password': password,
         'createAuthKey': createAuthKey,
+        'mode': mode,
         if (newPassword.isNotEmpty) 'newPassword': newPassword,
         ...super.toJson()
       };

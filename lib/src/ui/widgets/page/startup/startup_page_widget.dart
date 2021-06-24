@@ -84,7 +84,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       StartupRequest request = StartupRequest(
           url: widget.appState.serverConfig!.baseUrl,
           appName: widget.appState.serverConfig!.appName,
-          layoutMode: 'generic',
           screenWidth: MediaQuery.of(context).size.width.toInt(),
           screenHeight: MediaQuery.of(context).size.height.toInt(),
           appMode: widget.appState.serverConfig!.appMode,

@@ -11,6 +11,7 @@ import '../../widgets/dialog/show_session_expired_dialog.dart';
 class ErrorHandler {
   static const String sessionExpired = 'message.sessionexpired';
   static const String messageError = 'message.error';
+  static const String messageInfo = 'message.information';
   static const String serverError = 'server.error';
   static const String connectionError = 'connection.error';
   static const String timeoutError = 'timeout.error';
@@ -41,6 +42,8 @@ class ErrorHandler {
       } else if (error.failure.name == offlineError) {
         showGoToSettingsDialog(context, error);
       } else if (error.failure.name == cacheError) {
+        showErrorDialog(context, error);
+      } else if (error.failure.name == messageInfo) {
         showErrorDialog(context, error);
       } else {
         showGoToSettingsDialog(context, error);

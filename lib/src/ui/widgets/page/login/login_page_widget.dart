@@ -115,8 +115,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
 
                   final loginMode = getLoginMode(loginResponse.mode);
 
-                  if (loginMode == LoginMode.CHANGE_PASSWORD ||
-                      loginMode == LoginMode.CHANGE_ONE_TIME_PASSWORD) {
+                  if (loginMode == LoginMode.CHANGE_PASSWORD) {
                     await showDialog(
                         context: context,
                         builder: (_) => ChangePasswordDialog(
@@ -128,6 +127,17 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                             rememberMe: rememberMe,
                             password: password,
                             login: true));
+                  } else if (loginMode == LoginMode.CHANGE_ONE_TIME_PASSWORD) {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => ChangePasswordDialog(
+                              username: '',
+                              clientId:
+                                  widget.appState.applicationMetaData!.clientId,
+                              login: false,
+                              oneTime: true,
+                              rememberMe: rememberMe,
+                            ));
                   }
                 }
               }

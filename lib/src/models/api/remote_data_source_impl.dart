@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
+import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
 import 'package:http/http.dart' as http;
 import 'package:universal_html/html.dart';
 
@@ -241,6 +242,16 @@ class RemoteDataSourceImpl implements DataSource {
   @override
   Future<ApiState> changePassword(ChangePasswordRequest request) async {
     final path = appState.serverConfig!.baseUrl + '/api/changePassword';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
+  }
+
+  @override
+  Future<ApiState> resetPassword(ResetPasswordRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/resetPassword';
 
     Either<ApiError, ApiResponse> either =
         await _sendRequest(Uri.parse(path), request);

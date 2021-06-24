@@ -6,6 +6,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
+import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../injection_container.dart';
@@ -296,6 +297,12 @@ class ApiRepositoryImpl implements ApiRepository {
   Future<ApiState> changePassword(ChangePasswordRequest request) async {
     return await _checkConnection(
         request, () => dataSource.changePassword(request));
+  }
+
+  @override
+  Future<ApiState> resetPassword(ResetPasswordRequest request) async {
+    return await _checkConnection(
+        request, () => dataSource.resetPassword(request));
   }
 
   Future<ApiError?> handleDownload(ApiResponse response) async {

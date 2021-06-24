@@ -276,24 +276,6 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                 ),
                 ListTile(
                   title: Text(
-                    AppLocalizations.of(context)!.text('Settings'),
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.textColor()),
-                  ),
-                  leading: FaIcon(
-                    FontAwesomeIcons.cog,
-                    color: Theme.of(context).primaryColor.textColor(),
-                  ),
-                  onTap: () {
-                    widget.onSettingsPressed();
-                  },
-                ),
-                Divider(
-                  height: 1,
-                  color: Theme.of(context).primaryColor.textColor(),
-                ),
-                ListTile(
-                  title: Text(
                     AppLocalizations.of(context)!.text('Change Password'),
                     style: TextStyle(
                         color: Theme.of(context).primaryColor.textColor()),
@@ -312,6 +294,24 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
                                   widget.appState.applicationMetaData!.clientId,
                               login: false,
                             ));
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  color: Theme.of(context).primaryColor.textColor(),
+                ),
+                ListTile(
+                  title: Text(
+                    AppLocalizations.of(context)!.text('Settings'),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor.textColor()),
+                  ),
+                  leading: FaIcon(
+                    FontAwesomeIcons.cog,
+                    color: Theme.of(context).primaryColor.textColor(),
+                  ),
+                  onTap: () {
+                    widget.onSettingsPressed();
                   },
                 ),
                 Divider(

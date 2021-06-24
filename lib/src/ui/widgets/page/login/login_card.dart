@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutterclient/src/ui/widgets/page/login/login_page_widget.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/reset_password_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../models/api/requests/login_request.dart';
@@ -83,121 +84,138 @@ class _LoginCardState extends State<LoginCard>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              AutoSizeText(
-                title,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              if (widget.loginMode == LoginMode.MANUAL ||
-                  widget.loginMode == LoginMode.LOST_PASSWORD)
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: TextFormField(
-                      controller: _usernameController,
-                      textInputAction: TextInputAction.next,
-                      autocorrect: false,
-                      onChanged: (username) => loginUsername = username,
-                      style: TextStyle(fontSize: 14.0, color: Colors.black),
-                      decoration: InputDecoration(
-                          hintStyle: TextStyle(color: Colors.green),
-                          labelText:
-                              AppLocalizations.of(context)!.text('Username:'),
-                          labelStyle: TextStyle(
-                              fontSize: 14.0, fontWeight: FontWeight.w600)),
-                    )),
-              const SizedBox(
-                height: 10.0,
-              ),
-              if (widget.loginMode != LoginMode.CHANGE_ONE_TIME_PASSWORD &&
-                  widget.loginMode != LoginMode.CHANGE_PASSWORD) ...[
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      onChanged: (password) => loginPassword = password,
-                      style: new TextStyle(fontSize: 14.0, color: Colors.black),
-                      decoration: new InputDecoration(
-                          labelText:
-                              AppLocalizations.of(context)!.text('Password:'),
-                          labelStyle: TextStyle(
-                              fontSize: 14.0, fontWeight: FontWeight.w600)),
-                      obscureText: true,
-                    )),
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
-              if (!widget.appState.appConfig!.hideLoginCheckbox &&
-                  widget.loginMode == LoginMode.MANUAL)
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                      value: rememberMe,
-                      activeColor: Theme.of(context).primaryColor,
-                      onChanged: (bool? val) {
-                        setState(() {
-                          rememberMe = val!;
-                        });
-                      },
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            rememberMe = !rememberMe;
-                          });
-                        },
-                        style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all(Colors.black),
-                          padding: MaterialStateProperty.all(EdgeInsets.zero),
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.transparent),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.text('Remember me?'),
-                        )),
-                  ],
-                ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Container(
-                      child: GradientButton(
-                          appState: widget.appState,
-                          onPressed: () {
-                            if (widget.loginMode != LoginMode.CHANGE_PASSWORD &&
-                                widget.loginMode !=
-                                    LoginMode.CHANGE_ONE_TIME_PASSWORD) {
-                              TextUtils.unfocusCurrentTextfield(context);
-                              _login(context);
-                            }
-                          },
-                          text: AppLocalizations.of(context)!.text('Login')))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.only(top: 10),
-                      child: new TextButton.icon(
-                        onPressed: () {
-                          if (mounted) {
-                            Navigator.of(context).pushNamed(Routes.settings);
-                          }
-                        },
-                        label: Text(
-                            AppLocalizations.of(context)!.text('Settings')),
-                        icon: FaIcon(
-                          FontAwesomeIcons.cog,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      )),
-                ],
-              ),
+              AutoSizeText(title,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              if (widget.loginMode == LoginMode.CHANGE_ONE_TIME_PASSWORD)
+                ..._changeOneTimePasswordLogin()
+              else
+                ..._manualLogin()
             ],
           ),
         ),
       );
+
+  List<Widget> _changeOneTimePasswordLogin() => <Widget>[];
+
+  List<Widget> _manualLogin() => <Widget>[
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: TextFormField(
+              controller: _usernameController,
+              textInputAction: TextInputAction.next,
+              autocorrect: false,
+              onChanged: (username) => loginUsername = username,
+              style: TextStyle(fontSize: 14.0, color: Colors.black),
+              decoration: InputDecoration(
+                  hintStyle: TextStyle(color: Colors.green),
+                  labelText: AppLocalizations.of(context)!.text('Username:'),
+                  labelStyle:
+                      TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
+            )),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: TextFormField(
+              controller: _passwordController,
+              onChanged: (password) => loginPassword = password,
+              style: new TextStyle(fontSize: 14.0, color: Colors.black),
+              decoration: new InputDecoration(
+                  labelText: AppLocalizations.of(context)!.text('Password:'),
+                  labelStyle:
+                      TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
+              obscureText: true,
+            )),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: <Widget>[
+            Checkbox(
+              value: rememberMe,
+              activeColor: Theme.of(context).primaryColor,
+              onChanged: (bool? val) {
+                setState(() {
+                  rememberMe = val!;
+                });
+              },
+            ),
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    rememberMe = !rememberMe;
+                  });
+                },
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(Colors.black),
+                  padding: MaterialStateProperty.all(EdgeInsets.zero),
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.text('Remember me?'),
+                )),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Container(
+                child: GradientButton(
+                    appState: widget.appState,
+                    onPressed: () {
+                      if (widget.loginMode != LoginMode.CHANGE_PASSWORD &&
+                          widget.loginMode !=
+                              LoginMode.CHANGE_ONE_TIME_PASSWORD) {
+                        TextUtils.unfocusCurrentTextfield(context);
+                        _login(context);
+                      }
+                    },
+                    text: AppLocalizations.of(context)!.text('Login')))),
+        Row(
+          mainAxisAlignment:
+              widget.appState.applicationMetaData!.lostPasswordEnabled
+                  ? MainAxisAlignment.spaceBetween
+                  : MainAxisAlignment.end,
+          children: <Widget>[
+            if (widget.appState.applicationMetaData!.lostPasswordEnabled)
+              Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: TextButton(
+                  onPressed: () async {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => ResetPasswordDialog(
+                              clientId:
+                                  widget.appState.applicationMetaData!.clientId,
+                              username: loginUsername,
+                              cubit: widget.cubit,
+                            ));
+                  },
+                  child: Text(
+                      AppLocalizations.of(context)!.text('Forgot Password') +
+                          '?'),
+                ),
+              ),
+            Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: new TextButton.icon(
+                  onPressed: () {
+                    if (mounted) {
+                      Navigator.of(context).pushNamed(Routes.settings);
+                    }
+                  },
+                  label: Text(AppLocalizations.of(context)!.text('Settings')),
+                  icon: FaIcon(
+                    FontAwesomeIcons.cog,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                )),
+          ],
+        ),
+      ];
 
   Widget loginCard() {
     return Opacity(
@@ -228,7 +246,8 @@ class _LoginCardState extends State<LoginCard>
             clientId: widget.appState.applicationMetaData?.clientId ?? '',
             createAuthKey: rememberMe,
             username: loginUsername,
-            password: loginPassword);
+            password: loginPassword,
+            mode: 'manual');
 
         widget.cubit.login(request);
       } else {

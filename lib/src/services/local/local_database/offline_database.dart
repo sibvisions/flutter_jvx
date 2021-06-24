@@ -103,7 +103,6 @@ class OfflineDatabase extends LocalDatabase
           username: authUsername,
           password: authPassword,
           authKey: authKey,
-          layoutMode: 'generic',
           language: repository.appState.language!.language,
           forceNewSession: true);
 

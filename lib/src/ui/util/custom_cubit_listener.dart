@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
 import 'package:flutterclient/src/util/app/state/state_helper.dart';
 
 import '../../models/state/routes/routes.dart';
@@ -48,7 +49,7 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (handleError && !appState.showsError) {
+        if (handleError && !appState.showsError && state is ApiError) {
           appState.showsError = true;
           await ErrorHandler.handleResponse(context, state);
           appState.showsError = false;
@@ -64,9 +65,17 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (modalRoute.isCurrent ||
-            modalRoute.settings.name == Routes.openScreen)
+        if (((modalRoute.isCurrent ||
+                    modalRoute.settings.name == Routes.openScreen) ||
+                (state is ApiResponse && state.hasObject<Failure>())) &&
+            (state is ApiResponse && !(state.request is ChangePasswordRequest)))
           listener(context, state);
+
+        if (state is ApiResponse && state.hasObject<Failure>()) {
+          appState.showsError = true;
+          await ErrorHandler.handleResponse(context, state);
+          appState.showsError = false;
+        }
       },
       child: child,
     );

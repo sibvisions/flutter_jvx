@@ -5,6 +5,8 @@ class ChangePasswordRequest extends Request {
   final String newPassword;
   final String username;
 
+  String get debugInfo => '${super.debugInfo}';
+
   ChangePasswordRequest(
       {required String clientId,
       required this.password,

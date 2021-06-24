@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../flutterclient.dart';
@@ -186,5 +187,11 @@ class ApiCubit extends Cubit<ApiState> {
 
   Future<void> changePassword(ChangePasswordRequest request) async {
     emit(await repository.changePassword(request));
+  }
+
+  Future<void> resetPassword(ResetPasswordRequest request) async {
+    final response = await repository.resetPassword(request);
+
+    emit(response);
   }
 }

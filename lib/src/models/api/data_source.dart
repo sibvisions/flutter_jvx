@@ -14,6 +14,7 @@ import 'requests/menu_request.dart';
 import 'requests/navigation_request.dart';
 import 'requests/open_screen_request.dart';
 import 'requests/press_button_request.dart';
+import 'requests/reset_password_request.dart';
 import 'requests/set_component_value.dart';
 import 'requests/startup_request.dart';
 import 'requests/tab_close_request.dart';
@@ -41,4 +42,5 @@ abstract class DataSource {
   Future<ApiState> upload(UploadRequest request);
   Future<ApiState> data(DataRequest request);
   Future<ApiState> changePassword(ChangePasswordRequest request);
+  Future<ApiState> resetPassword(ResetPasswordRequest request);
 }
