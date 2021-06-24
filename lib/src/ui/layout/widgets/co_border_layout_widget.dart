@@ -99,6 +99,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   int? iHorizontalGap;
   int? iVerticalGap;
   CoContainerWidget? container;
+  Map<BoxConstraints, Size> layoutSize = Map<BoxConstraints, Size>();
 
   LayoutState layoutState;
 
@@ -106,6 +107,12 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       this.iVerticalGap, this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
+  }
+
+  @override
+  void markNeedsLayout() {
+    layoutSize = Map<BoxConstraints, Size>();
+    super.markNeedsLayout();
   }
 
   void addLayoutComponent(
@@ -174,210 +181,221 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       child = childParentData.nextSibling;
     }
 
-    LayoutModel layoutModel =
-        (container?.componentModel as ContainerComponentModel)
-            .layout!
-            .layoutModel;
+    if (layoutSize[this.constraints] != null)
+      this.size = layoutSize[this.constraints]!;
+    else {
+      LayoutModel layoutModel =
+          (container?.componentModel as ContainerComponentModel)
+              .layout!
+              .layoutModel;
 
-    // calculate preferred, minimum and maximum layout sizes for parent layouts
-    preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
-    if (preferredLayoutSize == null) {
-      preferredLayoutSize = _preferredLayoutSize(
-          container?.componentModel as ContainerComponentModel);
-      if (preferredLayoutSize != null)
-        layoutModel.layoutPreferredSize[this.constraints] =
-            preferredLayoutSize!;
-    }
-
-    minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
-    if (minimumLayoutSize == null) {
-      minimumLayoutSize = _minimumLayoutSize(
-          container?.componentModel as ContainerComponentModel);
-      if (minimumLayoutSize != null)
-        layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
-    }
-
-    maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
-    if (maximumLayoutSize == null) {
-      maximumLayoutSize = _maximumLayoutSize(
-          container?.componentModel as ContainerComponentModel);
-      if (maximumLayoutSize != null)
-        layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
-    }
-
-    // layout NORTH
-    if (north != null) {
-      double minWidth = width;
-      double minHeight = 0;
-      double maxHeight = double.infinity;
-
-      if (northComp!.componentModel.isPreferredSizeSet) {
-        maxHeight = northComp!.componentModel.preferredSize!.height;
+      // calculate preferred, minimum and maximum layout sizes for parent layouts
+      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      if (preferredLayoutSize == null) {
+        preferredLayoutSize = _preferredLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null)
+          layoutModel.layoutPreferredSize[this.constraints] =
+              preferredLayoutSize!;
       }
 
-      if (minWidth == double.infinity) minWidth = 0;
-
-      Size size = layoutRenderBox(
-          north!,
-          BoxConstraints(
-              minWidth: minWidth,
-              maxWidth: width,
-              minHeight: minHeight,
-              maxHeight: maxHeight));
-      final MultiChildLayoutParentData childParentData =
-          north!.parentData as MultiChildLayoutParentData;
-      childParentData.offset = Offset(x, y);
-
-      y += size.height + iVerticalGap!;
-      height -= size.height + iVerticalGap!;
-      layoutWidth += size.width;
-      layoutHeight += size.height;
-      globalMaxWidth = size.width;
-    }
-
-    // layout SOUTH
-    if (south != null) {
-      double minWidth = width;
-      double minHeight = 0;
-      double maxHeight = double.infinity;
-
-      if (globalMaxWidth > minHeight) minHeight = globalMaxWidth;
-
-      if (southComp!.componentModel.isPreferredSizeSet) {
-        maxHeight = southComp!.componentModel.preferredSize!.height;
+      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      if (minimumLayoutSize == null) {
+        minimumLayoutSize = _minimumLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null)
+          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
       }
 
-      if (minWidth == double.infinity) minWidth = 0;
-
-      Size size = layoutRenderBox(
-          south!,
-          BoxConstraints(
-              minWidth: minWidth,
-              maxWidth: width,
-              minHeight: minHeight,
-              maxHeight: maxHeight));
-      final MultiChildLayoutParentData childParentData =
-          south!.parentData as MultiChildLayoutParentData;
-      childParentData.offset = Offset(x, y + height - size.height);
-
-      height -= size.height + iVerticalGap!;
-      layoutWidth = max(size.width, layoutWidth);
-      layoutHeight += size.height;
-
-      if (size.width > globalMaxWidth) globalMaxWidth = size.width;
-    }
-
-    // layout WEST
-    if (west != null) {
-      double minHeight = height;
-      double minWidth = 0;
-      double maxWidth = double.infinity;
-
-      if (westComp!.componentModel.isPreferredSizeSet) {
-        maxWidth = westComp!.componentModel.preferredSize!.width;
+      maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+      if (maximumLayoutSize == null) {
+        maximumLayoutSize = _maximumLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (maximumLayoutSize != null)
+          layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
       }
 
-      if (minHeight == double.infinity) minHeight = 0;
+      // layout NORTH
+      if (north != null) {
+        double minWidth = width;
+        double minHeight = 0;
+        double maxHeight = double.infinity;
 
-      Size size = layoutRenderBox(
-          west!,
-          BoxConstraints(
-              minWidth: minWidth,
-              maxWidth: maxWidth,
-              minHeight: minHeight,
-              maxHeight: height));
-      final MultiChildLayoutParentData childParentData =
-          west!.parentData as MultiChildLayoutParentData;
-      childParentData.offset = Offset(x, y);
+        if (northComp!.componentModel.isPreferredSizeSet) {
+          maxHeight = northComp!.componentModel.preferredSize!.height;
+        }
 
-      x += size.width + iHorizontalGap!;
-      width -= size.width + iHorizontalGap!;
-      layoutMiddleWidth += size.width + iHorizontalGap!;
-      layoutMiddleHeight = max(size.height + iVerticalGap!, layoutMiddleHeight);
-      globalMaxWidthCenterRow = size.width;
-    }
+        if (minWidth == double.infinity) minWidth = 0;
 
-    // layout EAST
-    if (east != null) {
-      double minHeight = height;
-      double minWidth = 0;
-      double maxWidth = double.infinity;
+        Size size = layoutRenderBox(
+            north!,
+            BoxConstraints(
+                minWidth: minWidth,
+                maxWidth: width,
+                minHeight: minHeight,
+                maxHeight: maxHeight));
+        final MultiChildLayoutParentData childParentData =
+            north!.parentData as MultiChildLayoutParentData;
+        childParentData.offset = Offset(x, y);
 
-      if (eastComp!.componentModel.isPreferredSizeSet) {
-        maxWidth = eastComp!.componentModel.preferredSize!.width;
+        y += size.height + iVerticalGap!;
+        height -= size.height + iVerticalGap!;
+        layoutWidth += size.width;
+        layoutHeight += size.height;
+        globalMaxWidth = size.width;
       }
 
-      if (minHeight == double.infinity) minHeight = 0;
+      // layout SOUTH
+      if (south != null) {
+        double minWidth = width;
+        double minHeight = 0;
+        double maxHeight = double.infinity;
 
-      Size size = layoutRenderBox(
-          east!,
-          BoxConstraints(
-              minWidth: minWidth,
-              maxWidth: maxWidth,
-              minHeight: minHeight,
-              maxHeight: height));
-      final MultiChildLayoutParentData childParentData =
-          east!.parentData as MultiChildLayoutParentData;
-      childParentData.offset = Offset(x + width - size.width, y);
+        if (globalMaxWidth > minHeight) minHeight = globalMaxWidth;
 
-      width -= size.width + iHorizontalGap!;
-      layoutMiddleWidth += size.width + iHorizontalGap!;
-      layoutMiddleHeight = max(size.height + iVerticalGap!, layoutMiddleHeight);
-      globalMaxWidthCenterRow += size.width;
-    }
+        if (southComp!.componentModel.isPreferredSizeSet) {
+          maxHeight = southComp!.componentModel.preferredSize!.height;
+        }
 
-    // layout CENTER
-    if (center != null) {
-      double minHeight = height;
-      double minWidth = width;
+        if (minWidth == double.infinity) minWidth = 0;
 
-      if (minHeight == double.infinity) minHeight = 0;
+        Size size = layoutRenderBox(
+            south!,
+            BoxConstraints(
+                minWidth: minWidth,
+                maxWidth: width,
+                minHeight: minHeight,
+                maxHeight: maxHeight));
+        final MultiChildLayoutParentData childParentData =
+            south!.parentData as MultiChildLayoutParentData;
+        childParentData.offset = Offset(x, y + height - size.height);
 
-      if (minWidth == double.infinity) minWidth = 0;
+        height -= size.height + iVerticalGap!;
+        layoutWidth = max(size.width, layoutWidth);
+        layoutHeight += size.height;
 
-      if (height == double.infinity &&
-          centerComp!.componentModel.isPreferredSizeSet) {
-        height = centerComp!.componentModel.preferredSize!.height;
-        minHeight = height;
+        if (size.width > globalMaxWidth) globalMaxWidth = size.width;
       }
 
-      if (width == double.infinity &&
-          centerComp!.componentModel.isPreferredSizeSet) {
-        width = centerComp!.componentModel.preferredSize!.width;
-        minWidth = width;
+      // layout WEST
+      if (west != null) {
+        double minHeight = height;
+        double minWidth = 0;
+        double maxWidth = double.infinity;
+
+        if (westComp!.componentModel.isPreferredSizeSet) {
+          maxWidth = westComp!.componentModel.preferredSize!.width;
+        }
+
+        if (minHeight == double.infinity) minHeight = 0;
+
+        Size size = layoutRenderBox(
+            west!,
+            BoxConstraints(
+                minWidth: minWidth,
+                maxWidth: maxWidth,
+                minHeight: minHeight,
+                maxHeight: height));
+        final MultiChildLayoutParentData childParentData =
+            west!.parentData as MultiChildLayoutParentData;
+        childParentData.offset = Offset(x, y);
+
+        x += size.width + iHorizontalGap!;
+        width -= size.width + iHorizontalGap!;
+        layoutMiddleWidth += size.width + iHorizontalGap!;
+        layoutMiddleHeight =
+            max(size.height + iVerticalGap!, layoutMiddleHeight);
+        globalMaxWidthCenterRow = size.width;
       }
 
-      if (globalMaxWidth - globalMaxWidthCenterRow > minWidth) {
-        minWidth = globalMaxWidth - globalMaxWidthCenterRow;
-        if (width < minWidth) width = minWidth;
+      // layout EAST
+      if (east != null) {
+        double minHeight = height;
+        double minWidth = 0;
+        double maxWidth = double.infinity;
+
+        if (eastComp!.componentModel.isPreferredSizeSet) {
+          maxWidth = eastComp!.componentModel.preferredSize!.width;
+        }
+
+        if (minHeight == double.infinity) minHeight = 0;
+
+        Size size = layoutRenderBox(
+            east!,
+            BoxConstraints(
+                minWidth: minWidth,
+                maxWidth: maxWidth,
+                minHeight: minHeight,
+                maxHeight: height));
+        final MultiChildLayoutParentData childParentData =
+            east!.parentData as MultiChildLayoutParentData;
+        childParentData.offset = Offset(x + width - size.width, y);
+
+        width -= size.width + iHorizontalGap!;
+        layoutMiddleWidth += size.width + iHorizontalGap!;
+        layoutMiddleHeight =
+            max(size.height + iVerticalGap!, layoutMiddleHeight);
+        globalMaxWidthCenterRow += size.width;
       }
 
-      Size size = layoutRenderBox(
-          center!,
-          BoxConstraints(
-              minWidth: minWidth,
-              maxWidth: width,
-              minHeight: minHeight,
-              maxHeight: height));
-      final MultiChildLayoutParentData childParentData =
-          center!.parentData as MultiChildLayoutParentData;
-      childParentData.offset = Offset(x, y);
-      layoutMiddleWidth += size.width + iHorizontalGap!;
-      layoutMiddleHeight = max(size.height + iVerticalGap!, layoutMiddleHeight);
+      // layout CENTER
+      if (center != null) {
+        double minHeight = height;
+        double minWidth = width;
+
+        if (minHeight == double.infinity) minHeight = 0;
+
+        if (minWidth == double.infinity) minWidth = 0;
+
+        if (height == double.infinity &&
+            centerComp!.componentModel.isPreferredSizeSet) {
+          height = centerComp!.componentModel.preferredSize!.height;
+          minHeight = height;
+        }
+
+        if (width == double.infinity &&
+            centerComp!.componentModel.isPreferredSizeSet) {
+          width = centerComp!.componentModel.preferredSize!.width;
+          minWidth = width;
+        }
+
+        if (globalMaxWidth - globalMaxWidthCenterRow > minWidth) {
+          minWidth = globalMaxWidth - globalMaxWidthCenterRow;
+          if (width < minWidth) width = minWidth;
+        }
+
+        Size size = layoutRenderBox(
+            center!,
+            BoxConstraints(
+                minWidth: minWidth,
+                maxWidth: width,
+                minHeight: minHeight,
+                maxHeight: height));
+        final MultiChildLayoutParentData childParentData =
+            center!.parentData as MultiChildLayoutParentData;
+        childParentData.offset = Offset(x, y);
+        layoutMiddleWidth += size.width + iHorizontalGap!;
+        layoutMiddleHeight =
+            max(size.height + iVerticalGap!, layoutMiddleHeight);
+      }
+
+      layoutWidth = max(layoutWidth, layoutMiddleWidth);
+      layoutHeight += layoutMiddleHeight;
+
+      // borderLayout uses max space available
+      this.size =
+          this.constraints.constrainDimensions(layoutWidth, layoutHeight);
+
+      if (this.constraints.hasBoundedHeight &&
+          this.constraints.hasBoundedWidth) {
+        layoutState = LayoutState.RENDERED;
+      }
+
+      layoutSize[this.constraints] = Size(this.size.width, this.size.height);
+
+      dev.log(
+          "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
     }
-
-    layoutWidth = max(layoutWidth, layoutMiddleWidth);
-    layoutHeight += layoutMiddleHeight;
-
-    // borderLayout uses max space available
-    this.size = this.constraints.constrainDimensions(layoutWidth, layoutHeight);
-
-    if (this.constraints.hasBoundedHeight && this.constraints.hasBoundedWidth) {
-      layoutState = LayoutState.RENDERED;
-    }
-
-    dev.log(
-        "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   @override
