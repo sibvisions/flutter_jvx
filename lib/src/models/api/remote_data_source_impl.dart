@@ -335,29 +335,36 @@ class RemoteDataSourceImpl implements DataSource {
             log('RESPONSE ${uri.path}: $decodedBody');
           }
 
-          if (failure != null) {
-            return Left(ApiError(failure: failure));
-          } else {
-            final cookie = r.headers['set-cookie'];
+          final cookie = r.headers['set-cookie'];
 
-            if (cookie != null && cookie.isNotEmpty) {
-              final index = cookie.indexOf(';');
+          if (cookie != null && cookie.isNotEmpty) {
+            final index = cookie.indexOf(';');
 
-              if (client.headers == null) {
-                client.headers = <String, String>{
-                  'Content-Type': 'application/json'
-                };
-              }
-
-              if (kIsWeb) {
-                document.cookie =
-                    (index == -1) ? cookie : cookie.substring(0, index);
-              } else {
-                client.headers!['cookie'] =
-                    (index == -1) ? cookie : cookie.substring(0, index);
-              }
+            if (client.headers == null) {
+              client.headers = <String, String>{
+                'Content-Type': 'application/json'
+              };
             }
 
+            if (kIsWeb) {
+              document.cookie =
+                  (index == -1) ? cookie : cookie.substring(0, index);
+            } else {
+              client.headers!['cookie'] =
+                  (index == -1) ? cookie : cookie.substring(0, index);
+            }
+          }
+
+          if (failure != null) {
+            if (decodedBody.length == 1) {
+              return Left(ApiError(failure: failure));
+            } else {
+              ApiResponse internResponse =
+                  ApiResponse.fromJson(request, decodedBody);
+
+              return Right(internResponse);
+            }
+          } else {
             ApiResponse internResponse =
                 ApiResponse.fromJson(request, decodedBody);
 
