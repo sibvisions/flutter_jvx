@@ -169,13 +169,18 @@ class ComponentModelManager {
       case 'Gauge':
         componentModel =
             GaugeComponentModel(changedComponent: changedComponent);
+        break;
+      default:
+        componentModel = ComponentModel(changedComponent: changedComponent);
     }
 
-    if (componentModel != null) {
-      return componentModel;
-    } else {
-      throw Exception(
-          'Couldn\'t create component model ${changedComponent.className}.\nIt seems that this component is not yet supported in mobile');
-    }
+    return componentModel;
+
+    // if (componentModel != null) {
+    //   return componentModel;
+    // } else {
+    //   throw Exception(
+    //       'Couldn\'t create component model ${changedComponent.className}.\nIt seems that this component is not yet supported in mobile');
+    // }
   }
 }
