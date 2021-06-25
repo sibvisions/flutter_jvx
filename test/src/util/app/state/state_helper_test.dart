@@ -27,7 +27,6 @@ void main() {
           appName: 'test',
           deviceId: '',
           language: '',
-          layoutMode: '',
           readAheadLimit: 100,
           screenHeight: 213,
           screenWidth: 123,
