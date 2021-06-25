@@ -121,7 +121,6 @@ void main() {
         clientId: 'test_clientId',
         deviceId: 'test_deviceId',
         language: 'en',
-        layoutMode: 'generic',
         readAheadLimit: 100,
         screenHeight: 200,
         screenWidth: 200,
@@ -164,5 +163,6 @@ _getAppState() {
         langCode: 'en',
         languageResource: 'test',
         clientId: 'test_clientId',
+        lostPasswordEnabled: false,
         version: '1.0.0');
 }
