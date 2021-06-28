@@ -155,7 +155,7 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   void markNeedsLayout() {
     layoutSize = Map<BoxConstraints, Size>();
     LayoutModel layoutModel =
-        (container!.componentModel as ContainerComponentModel)
+        (container.componentModel as ContainerComponentModel)
             .layout!
             .layoutModel;
     layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
