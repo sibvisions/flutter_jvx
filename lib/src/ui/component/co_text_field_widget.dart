@@ -43,9 +43,11 @@ class CoTextFieldWidgetState extends ComponentWidgetState<CoTextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     String controllerValue = widget.componentModel.text;
-    this.textController.value = this.textController.value.copyWith(
-        text: controllerValue,
-        selection: TextSelection.collapsed(offset: controllerValue.length));
+    try {
+      this.textController.value = this.textController.value.copyWith(
+          text: controllerValue,
+          selection: TextSelection.collapsed(offset: controllerValue.length));
+    } on Exception {}
 
     return DecoratedBox(
       decoration: BoxDecoration(

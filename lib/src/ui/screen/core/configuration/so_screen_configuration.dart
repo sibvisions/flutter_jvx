@@ -12,17 +12,19 @@ class SoScreenConfiguration extends ValueNotifier<ApiState?> {
   Widget drawer;
   Function(String componentId)? onPopPage;
   Function(MenuItem)? onMenuItemPressed;
+  ApiState firstResponse;
 
-  SoScreenConfiguration(
-      {ApiState? response,
-      required this.componentId,
-      required this.screenTitle,
-      required this.screenComponentId,
-      this.onMenuItemPressed,
-      this.onPopPage,
-      this.drawer = const SizedBox(),
-      this.templateName,
-      this.offlineScreen = false,
-      this.withServer = true})
-      : super(response);
+  SoScreenConfiguration({
+    required ApiState response,
+    required this.componentId,
+    required this.screenTitle,
+    required this.screenComponentId,
+    this.onMenuItemPressed,
+    this.onPopPage,
+    this.drawer = const SizedBox(),
+    this.templateName,
+    this.offlineScreen = false,
+    this.withServer = true,
+  })  : firstResponse = response,
+        super(response);
 }

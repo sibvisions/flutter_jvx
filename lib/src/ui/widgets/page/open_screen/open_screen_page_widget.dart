@@ -82,30 +82,36 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
         _updateScreens(state);
 
       if (state.hasObject<ScreenGenericResponseObject>()) {
-        ScreenGenericResponseObject screenGeneric =
-            state.getObjectByType<ScreenGenericResponseObject>()!;
+        List<ScreenGenericResponseObject> screenGenerics =
+            state.getAllObjectsByType<ScreenGenericResponseObject>();
 
-        if (screenGeneric.changedComponents.isNotEmpty) {
-          SoScreen? screenToUpdate;
-          try {
-            screenToUpdate = _screens.firstWhere((screen) =>
-                screen.configuration.componentId == screenGeneric.componentId);
-          } catch (_) {}
+        if (screenGenerics.isNotEmpty) {
+          for (final screenGeneric in screenGenerics) {
+            if (screenGeneric.changedComponents.isNotEmpty) {
+              SoScreen? screenToUpdate;
+              try {
+                screenToUpdate = _screens.firstWhere((screen) =>
+                    screen.configuration.componentId ==
+                    screenGeneric.componentId);
+              } catch (_) {}
 
-          if (screenToUpdate == null) {
-            addPage(widget.appState.screenManager.createScreen(
-                onPopPage: _onPopPage,
-                onMenuItemPressed: _onMenuItemPressed,
-                response: state,
-                drawer: getMenuDrawer(state
-                    .getObjectByType<ScreenGenericResponseObject>()!
-                    .screenTitle!)));
+              if (screenToUpdate == null) {
+                addPage(widget.appState.screenManager.createScreen(
+                    onPopPage: _onPopPage,
+                    onMenuItemPressed: _onMenuItemPressed,
+                    response: state,
+                    drawer: getMenuDrawer(state
+                        .getObjectByType<ScreenGenericResponseObject>()!
+                        .screenTitle!)));
+              }
+            } else if (!screenGeneric.update) {
+              SoScreen soScreen = _screens.firstWhere((screen) =>
+                  screen.configuration.componentId ==
+                  screenGeneric.componentId);
+
+              addPage(soScreen, register: false);
+            }
           }
-        } else if (!screenGeneric.update) {
-          SoScreen soScreen = _screens.firstWhere((screen) =>
-              screen.configuration.componentId == screenGeneric.componentId);
-
-          addPage(soScreen, register: false);
         }
       }
 
@@ -409,7 +415,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               ? Navigator(
                   pages: [..._pages],
                   onPopPage: (Route<dynamic> route,
-                      dynamic? openScreenPagePopArguments) {
+                      dynamic openScreenPagePopArguments) {
                     if (openScreenPagePopArguments is OpenScreenPagePopStyle) {
                       switch (openScreenPagePopArguments) {
                         case OpenScreenPagePopStyle.POP:

@@ -99,15 +99,32 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (_isOfflineRequest(response)) {
       goOffline(context, response);
     } else if (response.hasDataObject) {
-      updateData(context, response.request, response.getAllDataObjects());
+      try {
+        updateData(context, response.request, response.getAllDataObjects());
+      } catch (e) {
+        log('Exception occured in screen: $e');
+      }
     }
 
-    ScreenGenericResponseObject? screenGeneric =
-        response.getObjectByType<ScreenGenericResponseObject>();
+    List<ScreenGenericResponseObject> screenGenerics =
+        response.getAllObjectsByType<ScreenGenericResponseObject>();
 
-    if (screenGeneric != null) {
-      if (screenGeneric.componentId == widget.configuration.componentId) {
-        updateComponents(screenGeneric.changedComponents);
+    if (screenGenerics.isNotEmpty) {
+      for (final screenGeneric in screenGenerics) {
+        if (screenGeneric.componentId == widget.configuration.componentId) {
+          updateComponents(screenGeneric.changedComponents);
+        }
+      }
+    }
+
+    if (components.isEmpty &&
+        widget.configuration.firstResponse is ApiResponse) {
+      for (final screenGeneric
+          in (widget.configuration.firstResponse as ApiResponse)
+              .getAllObjectsByType<ScreenGenericResponseObject>()) {
+        if (screenGeneric.componentId == widget.configuration.componentId) {
+          updateComponents(screenGeneric.changedComponents);
+        }
       }
     }
   }
@@ -668,7 +685,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                         }
                       },
                       child: rootComponent as Widget)
-                  : rootComponent!,
+                  : rootComponent ?? Container(),
             ));
       },
     );
