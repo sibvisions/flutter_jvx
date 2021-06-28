@@ -357,7 +357,7 @@ class _SingleChildViewport extends SingleChildRenderObjectWidget {
     Widget? child,
     required this.clipBehavior,
     required this.layoutState,
-  })   : assert(axisDirection != null),
+  })  : assert(axisDirection != null),
         assert(clipBehavior != null),
         super(key: key, child: child);
 
@@ -400,7 +400,7 @@ class _RenderSingleChildViewport extends RenderBox
     double cacheExtent = RenderAbstractViewport.defaultCacheExtent,
     RenderBox? child,
     required Clip clipBehavior,
-  })   : assert(axisDirection != null),
+  })  : assert(axisDirection != null),
         assert(offset != null),
         assert(cacheExtent != null),
         assert(clipBehavior != null),
@@ -559,6 +559,12 @@ class _RenderSingleChildViewport extends RenderBox
   }
 
   @override
+  void markNeedsLayout() {
+    super.markNeedsLayout();
+    markParentNeedsLayout();
+  }
+
+  @override
   void performLayout() {
     final BoxConstraints constraints = this.constraints;
     if (child == null) {
@@ -566,6 +572,9 @@ class _RenderSingleChildViewport extends RenderBox
     } else {
       child!.layout(_getInnerConstraints(constraints), parentUsesSize: true);
       size = constraints.constrain(child!.size);
+      // if (this.parent != null) {
+      //   (this.parent as RenderObject).markNeedsLayout();
+      // }
     }
 
     offset.applyViewportDimension(_viewportExtent);

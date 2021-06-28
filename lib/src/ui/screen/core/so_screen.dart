@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutterclient.dart';
@@ -133,14 +134,45 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
   _getLayoutsToRebuild() {
     List<CoContainerWidget> containers = <CoContainerWidget>[];
 
-    containers = List<CoContainerWidget>.from(
-        components.values.where((element) => element is CoContainerWidget));
+    containers = List<CoContainerWidget>.from(components.values.where(
+        (element) =>
+            element is CoContainerWidget &&
+            (element.componentModel as ContainerComponentModel)
+                    .layout
+                    ?.layoutModel
+                    .layoutState ==
+                LayoutState.DIRTY));
+
+    containers.forEach((container) => _setScrollPanelAboveDirty(container));
+
+    containers = List<CoContainerWidget>.from(components.values.where(
+        (element) =>
+            element is CoContainerWidget &&
+            (element.componentModel as ContainerComponentModel)
+                    .layout
+                    ?.layoutModel
+                    .layoutState ==
+                LayoutState.DIRTY));
 
     containers.forEach((container) =>
         (container.componentModel as ContainerComponentModel)
             .layout
             ?.layoutModel
             .performRebuild());
+  }
+
+  _setScrollPanelAboveDirty(ComponentWidget comp) {
+    if (comp is CoScrollPanelWidget) {
+      (comp.componentModel as ContainerComponentModel)
+          .layout
+          ?.layoutModel
+          .layoutState = LayoutState.DIRTY;
+    }
+    if (comp.componentModel.parentComponentId.isNotEmpty) {
+      ComponentWidget parent =
+          components[comp.componentModel.parentComponentId]!;
+      _setScrollPanelAboveDirty(parent);
+    }
   }
 
   // void relayoutParentLayouts(String componentId) {

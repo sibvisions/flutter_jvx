@@ -79,18 +79,18 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
     Size? preferredSize;
 
     if (child != null) {
-      if (preferredConstraints!.componentModel is ContainerComponentModel &&
-          (preferredConstraints!.componentModel as ContainerComponentModel)
-                  .layout !=
-              null) {
-        LayoutModel layoutModel =
-            (preferredConstraints!.componentModel as ContainerComponentModel)
-                .layout!
-                .layoutModel;
+      // if (preferredConstraints!.componentModel is ContainerComponentModel &&
+      //     (preferredConstraints!.componentModel as ContainerComponentModel)
+      //             .layout !=
+      //         null) {
+      //   LayoutModel layoutModel =
+      //       (preferredConstraints!.componentModel as ContainerComponentModel)
+      //           .layout!
+      //           .layoutModel;
 
-        preferredSize =
-            layoutModel.layoutPreferredSize[BoxConstraints.tightForFinite()];
-      }
+      //   preferredSize =
+      //       layoutModel.layoutPreferredSize[BoxConstraints.tightForFinite()];
+      // }
 
       if (!child!.hasSize || child!.size != preferredSize)
         this.layoutRenderBox(child!, BoxConstraints.tightForFinite());

@@ -7,7 +7,7 @@ import 'layout_model.dart';
 enum LayoutState { DIRTY, RENDERED }
 
 abstract class ILayoutModel<E> {
-  LayoutState layoutState = LayoutState.DIRTY;
+  LayoutState layoutState = LayoutState.RENDERED;
 
   Map<ComponentWidget, E> layoutConstraints = <ComponentWidget, E>{};
 

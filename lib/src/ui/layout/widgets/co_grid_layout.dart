@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -153,6 +154,13 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   @override
   void markNeedsLayout() {
     layoutSize = Map<BoxConstraints, Size>();
+    LayoutModel layoutModel =
+        (container!.componentModel as ContainerComponentModel)
+            .layout!
+            .layoutModel;
+    layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
     super.markNeedsLayout();
   }
 
@@ -180,30 +188,30 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
               .layoutModel;
 
       // calculate preferred, minimum and maximum layout sizes for parent layouts
-      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
-      if (preferredLayoutSize == null) {
-        preferredLayoutSize = _preferredLayoutSize(
-            container.componentModel as ContainerComponentModel);
-        if (preferredLayoutSize != null)
-          layoutModel.layoutPreferredSize[this.constraints] =
-              preferredLayoutSize!;
-      }
+      // preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      // if (preferredLayoutSize == null) {
+      //   preferredLayoutSize = _preferredLayoutSize(
+      //       container.componentModel as ContainerComponentModel);
+      //   if (preferredLayoutSize != null)
+      //     layoutModel.layoutPreferredSize[this.constraints] =
+      //         preferredLayoutSize!;
+      // }
 
-      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
-      if (minimumLayoutSize == null) {
-        minimumLayoutSize = _minimumLayoutSize(
-            container.componentModel as ContainerComponentModel);
-        if (minimumLayoutSize != null)
-          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
-      }
+      // minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      // if (minimumLayoutSize == null) {
+      //   minimumLayoutSize = _minimumLayoutSize(
+      //       container.componentModel as ContainerComponentModel);
+      //   if (minimumLayoutSize != null)
+      //     layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+      // }
 
-      maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
-      if (maximumLayoutSize == null) {
-        maximumLayoutSize = _maximumLayoutSize(
-            container.componentModel as ContainerComponentModel);
-        if (maximumLayoutSize != null)
-          layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
-      }
+      // maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+      // if (maximumLayoutSize == null) {
+      //   maximumLayoutSize = _maximumLayoutSize(
+      //       container.componentModel as ContainerComponentModel);
+      //   if (maximumLayoutSize != null)
+      //     layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
+      // }
 
       Size size = constraints.biggest;
       int targetColumns = columns;
@@ -329,22 +337,25 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
               component.parentData as MultiChildLayoutParentData;
           childParentData.offset = Offset(x, y);
 
-          if (this.constraints.hasBoundedHeight &&
-              this.constraints.hasBoundedWidth &&
-              constraints.comp is CoContainerWidget) {
-            (constraints.comp!.componentModel as ContainerComponentModel)
-                .layout!
-                .layoutModel
-                .layoutState = LayoutState.RENDERED;
-          }
+          // if (this.constraints.hasBoundedHeight &&
+          //     this.constraints.hasBoundedWidth &&
+          //     constraints.comp is CoContainerWidget) {
+          //   (constraints.comp!.componentModel as ContainerComponentModel)
+          //       .layout!
+          //       .layoutModel
+          //       .layoutState = LayoutState.RENDERED;
+          // }
         });
 
-        if (this.constraints.hasBoundedHeight &&
-            this.constraints.hasBoundedWidth) {
-          layoutState = LayoutState.RENDERED;
-        }
+        // if (this.constraints.hasBoundedHeight &&
+        //     this.constraints.hasBoundedWidth) {
+        //   layoutState = LayoutState.RENDERED;
+        // }
 
         this.size = size;
+
+        dev.log(
+            "GridLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
       }
     }
   }

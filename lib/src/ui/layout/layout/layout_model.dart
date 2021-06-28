@@ -8,7 +8,7 @@ import 'i_layout_model.dart';
 
 class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   @override
-  LayoutState layoutState = LayoutState.DIRTY;
+  LayoutState layoutState = LayoutState.RENDERED;
 
   @override
   CoContainerWidget? container;
@@ -49,6 +49,7 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   //Size? layoutMinimumSize;
 
   @override
+  Size? layoutSize = null;
   Map<BoxConstraints, Size> layoutPreferredSize = Map<BoxConstraints, Size>();
   //Size? layoutPreferredSize;
 
@@ -143,9 +144,11 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
       layoutPreferredSize = Map<BoxConstraints, Size>();
       layoutMinimumSize = Map<BoxConstraints, Size>();
       layoutMaximumSize = Map<BoxConstraints, Size>();
+      layoutSize = null;
 
       log('Performing rebuild for ${getLayoutName(rawLayoutString)}');
       notifyListeners();
+      layoutState = LayoutState.RENDERED;
     }
   }
 }

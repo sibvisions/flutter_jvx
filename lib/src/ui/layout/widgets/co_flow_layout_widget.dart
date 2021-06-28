@@ -215,6 +215,13 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
   @override
   void markNeedsLayout() {
     layoutSize = Map<BoxConstraints, Size>();
+    LayoutModel layoutModel =
+        (container!.componentModel as ContainerComponentModel)
+            .layout!
+            .layoutModel;
+    layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
     super.markNeedsLayout();
   }
 
@@ -242,22 +249,22 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
               .layoutModel;
 
       // calculate preferred, minimum and maximum layout sizes for parent layouts
-      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
-      if (preferredLayoutSize == null) {
-        preferredLayoutSize = _preferredLayoutSize(
-            container?.componentModel as ContainerComponentModel);
-        if (preferredLayoutSize != null)
-          layoutModel.layoutPreferredSize[this.constraints] =
-              preferredLayoutSize!;
-      }
+      // preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      // if (preferredLayoutSize == null) {
+      //   preferredLayoutSize = _preferredLayoutSize(
+      //       container?.componentModel as ContainerComponentModel);
+      //   if (preferredLayoutSize != null)
+      //     layoutModel.layoutPreferredSize[this.constraints] =
+      //         preferredLayoutSize!;
+      // }
 
-      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
-      if (minimumLayoutSize == null) {
-        minimumLayoutSize = _minimumLayoutSize(
-            container?.componentModel as ContainerComponentModel);
-        if (minimumLayoutSize != null)
-          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
-      }
+      // minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      // if (minimumLayoutSize == null) {
+      //   minimumLayoutSize = _minimumLayoutSize(
+      //       container?.componentModel as ContainerComponentModel);
+      //   if (minimumLayoutSize != null)
+      //     layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+      // }
 
       Size dimSize = this.constraints.biggest;
       dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
@@ -461,11 +468,10 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
         layoutState = LayoutState.RENDERED;
       }
 
-      layoutSize[this.constraints] = Size(this.size.width, this.size.height);
+      //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
+      dev.log(
+          "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
     }
-
-    dev.log(
-        "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
   }
 
   /*
@@ -593,8 +599,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize && !_isLayoutDirty(comp))
-          size = renderBox.size;
+        if (renderBox.hasSize && _childSize(comp) != null)
+          size = _childSize(comp)!;
         else
           size = layoutRenderBox(renderBox, constraints);
 
@@ -602,6 +608,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
           print(
               "CoFlowLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
         }
+
+        _setChildSize(comp, size);
         return size;
       }
     } else {
@@ -624,6 +632,30 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     }
 
     return false;
+  }
+
+  Size? _childSize(ComponentWidget comp) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        return containerComponentModel.layout!.layoutModel.layoutSize;
+      }
+    }
+
+    return null;
+  }
+
+  void _setChildSize(ComponentWidget comp, Size size) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        containerComponentModel.layout!.layoutModel.layoutSize = size;
+      }
+    }
   }
 
   @override
