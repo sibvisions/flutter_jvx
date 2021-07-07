@@ -7,7 +7,9 @@ import 'models/container_component_model.dart';
 
 class CoScrollPanelWidget extends CoContainerWidget {
   CoScrollPanelWidget({required ContainerComponentModel componentModel})
-      : super(componentModel: componentModel);
+      : super(componentModel: componentModel) {
+    componentModel.isScrollable = true;
+  }
 
   @override
   CoScrollPanelWidgetState createState() => CoScrollPanelWidgetState();

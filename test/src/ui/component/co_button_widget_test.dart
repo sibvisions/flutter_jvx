@@ -24,7 +24,7 @@ void main() {
           'id': 'B123',
           'className': 'Button',
           'name': 'B235-Sysntwea'
-        }),
+        }, DateTime.now()),
         onAction: (BuildContext context, String componentId,
             String? classNameEventSourceRef) {});
 

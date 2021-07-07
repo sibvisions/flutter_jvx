@@ -75,7 +75,7 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   void addLayoutComponent(ComponentWidget pComponent, E pConstraint) {
     layoutConstraints.putIfAbsent(pComponent, () => pConstraint);
 
-    markNeedsRebuild();
+    //markNeedsRebuild();
   }
 
   @override
@@ -89,21 +89,21 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
         comp.componentModel.componentId ==
         pComponent.componentModel.componentId);
 
-    markNeedsRebuild();
+    //markNeedsRebuild();
   }
 
   @override
   void updateLayoutData(String layoutData) {
     rawLayoutData = layoutData;
 
-    markNeedsRebuild();
+    //markNeedsRebuild();
   }
 
   @override
   void updateLayoutString(String layoutString) {
     rawLayoutString = layoutString;
 
-    markNeedsRebuild();
+    //markNeedsRebuild();
   }
 
   void parseFromString(String layout) {
@@ -128,10 +128,10 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
     return null;
   }
 
-  @override
-  void onChildVisibilityChange() {
-    markNeedsRebuild();
-  }
+  // @override
+  // void onChildVisibilityChange() {
+  //   markNeedsRebuild();
+  // }
 
   @override
   void markNeedsRebuild() {

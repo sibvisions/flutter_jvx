@@ -78,7 +78,7 @@ class CoContainerWidgetState extends ComponentWidgetState<CoContainerWidget> {
         }
       });
 
-      componentModel.layout?.layoutModel.performRebuild();
+      //componentModel.layout?.layoutModel.performRebuild();
     }
   }
 

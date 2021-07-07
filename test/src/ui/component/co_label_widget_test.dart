@@ -22,7 +22,8 @@ void main() {
     componentModel.updateProperties(
         MockBuildContext(),
         ChangedComponent.fromJson(
-            {'text': 'Hello Test!', 'id': 'L123', 'className': 'Label'}));
+            {'text': 'Hello Test!', 'id': 'L123', 'className': 'Label'},
+            DateTime.now()));
 
     await tester.pumpWidget(MaterialApp(
       home: CoLabelWidget(componentModel: componentModel),

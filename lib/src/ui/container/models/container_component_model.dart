@@ -25,6 +25,8 @@ class ContainerComponentModel extends ComponentModel {
 
   CoLayoutWidget? layout;
 
+  bool isScrollable = false;
+
   get layoutName {
     List<String>? parameter = layoutString?.split(",");
     if (parameter != null && parameter.length > 0) {

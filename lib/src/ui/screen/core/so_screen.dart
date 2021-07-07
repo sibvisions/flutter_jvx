@@ -143,7 +143,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     .layoutState ==
                 LayoutState.DIRTY));
 
-    containers.forEach((container) => _setScrollPanelAboveDirty(container));
+    containers.forEach((container) => _setScrollableContainerDirty(container));
 
     containers = List<CoContainerWidget>.from(components.values.where(
         (element) =>
@@ -161,8 +161,22 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             .performRebuild());
   }
 
-  _setScrollPanelAboveDirty(ComponentWidget comp) {
-    if (comp is CoScrollPanelWidget) {
+  _checkMarkNeedsLayout(ComponentWidget comp, ComponentWidget parent) {
+    if (parent.componentModel is ContainerComponentModel) {
+      if (parent.componentModel.lastLayout!
+          .isBefore(comp.componentModel.lastLayout!)) {
+        (parent.componentModel as ContainerComponentModel)
+            .layout
+            ?.layoutModel
+            .markNeedsRebuild();
+        comp.componentModel.lastLayout = DateTime.now();
+      }
+    }
+  }
+
+  _setScrollableContainerDirty(ComponentWidget comp) {
+    if (comp.componentModel is ContainerComponentModel &&
+        (comp.componentModel as ContainerComponentModel).isScrollable) {
       (comp.componentModel as ContainerComponentModel)
           .layout
           ?.layoutModel
@@ -171,7 +185,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (comp.componentModel.parentComponentId.isNotEmpty) {
       ComponentWidget parent =
           components[comp.componentModel.parentComponentId]!;
-      _setScrollPanelAboveDirty(parent);
+      _setScrollableContainerDirty(parent);
     }
   }
 
@@ -223,6 +237,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         if (visible != null &&
             visible != componentWidget.componentModel.isVisible) {
           rebuildLayout = true;
+          componentWidget.componentModel.lastLayout = DateTime.now();
         }
 
         componentWidget.componentModel
@@ -241,10 +256,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     changedComponent);
 
             if (rebuildLayout) {
-              (parentComponentWidget.componentModel as ContainerComponentModel)
-                  .layout
-                  ?.layoutModel
-                  .onChildVisibilityChange();
+              // (parentComponentWidget.componentModel as ContainerComponentModel)
+              //     .layout
+              //     ?.layoutModel
+              //     .onChildVisibilityChange();
+              _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
             }
           }
         }
@@ -369,6 +385,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .addWithConstraints(
                 componentWidget, componentWidget.componentModel.constraints);
+
+        _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
       }
     }
   }
@@ -396,6 +414,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           parentComponentWidget is CoContainerWidget) {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .removeWithComponent(componentWidget);
+        _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
       }
     }
   }

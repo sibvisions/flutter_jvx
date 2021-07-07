@@ -7,7 +7,9 @@ import 'models/group_panel_component_model.dart';
 
 class CoGroupPanelWidget extends CoContainerWidget {
   CoGroupPanelWidget({required ContainerComponentModel componentModel})
-      : super(componentModel: componentModel);
+      : super(componentModel: componentModel) {
+    componentModel.isScrollable = true;
+  }
 
   State<StatefulWidget> createState() => CoGroupPanelWidgetState();
 }
