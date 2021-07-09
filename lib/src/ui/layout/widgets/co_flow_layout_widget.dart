@@ -249,22 +249,22 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
               .layoutModel;
 
       // calculate preferred, minimum and maximum layout sizes for parent layouts
-      // preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
-      // if (preferredLayoutSize == null) {
-      //   preferredLayoutSize = _preferredLayoutSize(
-      //       container?.componentModel as ContainerComponentModel);
-      //   if (preferredLayoutSize != null)
-      //     layoutModel.layoutPreferredSize[this.constraints] =
-      //         preferredLayoutSize!;
-      // }
+      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      if (preferredLayoutSize == null) {
+        preferredLayoutSize = _preferredLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null)
+          layoutModel.layoutPreferredSize[this.constraints] =
+              preferredLayoutSize!;
+      }
 
-      // minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
-      // if (minimumLayoutSize == null) {
-      //   minimumLayoutSize = _minimumLayoutSize(
-      //       container?.componentModel as ContainerComponentModel);
-      //   if (minimumLayoutSize != null)
-      //     layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
-      // }
+      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      if (minimumLayoutSize == null) {
+        minimumLayoutSize = _minimumLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null)
+          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+      }
 
       Size dimSize = this.constraints.biggest;
       dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
@@ -463,14 +463,14 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       this.size =
           this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
 
-      if (this.constraints.hasBoundedHeight &&
-          this.constraints.hasBoundedWidth) {
-        layoutState = LayoutState.RENDERED;
-      }
+      // if (this.constraints.hasBoundedHeight &&
+      //     this.constraints.hasBoundedWidth) {
+      //   layoutState = LayoutState.RENDERED;
+      // }
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
-      dev.log(
-          "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
+      // dev.log(
+      //     "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
     }
   }
 

@@ -71,12 +71,12 @@ class CoGroupPanelWidgetState extends CoContainerWidgetState {
               ),
               CoScrollPanelLayout(
                 preferredConstraints:
-                    CoScrollPanelConstraints(constraints, componentModel),
+                    CoScrollPanelConstraints(constraints, widget),
                 container: widget.componentModel as ContainerComponentModel,
                 children: [
                   CoScrollPanelLayoutId(
                       constraints:
-                          CoScrollPanelConstraints(constraints, componentModel),
+                          CoScrollPanelConstraints(constraints, widget),
                       child: Card(
                           color:
                               componentModel.appState.applicationStyle != null

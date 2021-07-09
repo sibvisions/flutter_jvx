@@ -132,15 +132,13 @@ class _SplitViewState extends State<SplitView> {
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: CoScrollPanelLayout(
-                    preferredConstraints: CoScrollPanelConstraints(constraints,
-                        widget.view1.componentModel, view1Constraints.biggest),
+                    preferredConstraints: CoScrollPanelConstraints(
+                        constraints, widget.view1, view1Constraints.biggest),
                     container: null,
                     children: [
                       CoScrollPanelLayoutId(
-                          constraints: CoScrollPanelConstraints(
-                              constraints,
-                              widget.view1.componentModel,
-                              view1Constraints.biggest),
+                          constraints: CoScrollPanelConstraints(constraints,
+                              widget.view1, view1Constraints.biggest),
                           child: widget.view1)
                     ],
                   ))),
@@ -159,14 +157,12 @@ class _SplitViewState extends State<SplitView> {
               child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: CoScrollPanelLayout(
-                    preferredConstraints: CoScrollPanelConstraints(constraints,
-                        widget.view2.componentModel, view2Constraints.biggest),
+                    preferredConstraints: CoScrollPanelConstraints(
+                        constraints, widget.view2, view2Constraints.biggest),
                     children: [
                       CoScrollPanelLayoutId(
-                          constraints: CoScrollPanelConstraints(
-                              constraints,
-                              widget.view2.componentModel,
-                              view2Constraints.biggest),
+                          constraints: CoScrollPanelConstraints(constraints,
+                              widget.view2, view2Constraints.biggest),
                           child: widget.view2)
                     ],
                   ))),
@@ -278,15 +274,13 @@ class _SplitViewState extends State<SplitView> {
           child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: CoScrollPanelLayout(
-                preferredConstraints: CoScrollPanelConstraints(constraints,
-                    widget.view1.componentModel, view1Constraints.biggest),
+                preferredConstraints: CoScrollPanelConstraints(
+                    constraints, widget.view1, view1Constraints.biggest),
                 container: null,
                 children: [
                   CoScrollPanelLayoutId(
                       constraints: CoScrollPanelConstraints(
-                          constraints,
-                          widget.view1.componentModel,
-                          view1Constraints.biggest),
+                          constraints, widget.view1, view1Constraints.biggest),
                       child: widget.view1)
                 ],
               ))),
@@ -303,14 +297,12 @@ class _SplitViewState extends State<SplitView> {
           child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: CoScrollPanelLayout(
-                preferredConstraints: CoScrollPanelConstraints(constraints,
-                    widget.view2.componentModel, view2Constraints.biggest),
+                preferredConstraints: CoScrollPanelConstraints(
+                    constraints, widget.view2, view2Constraints.biggest),
                 children: [
                   CoScrollPanelLayoutId(
                       constraints: CoScrollPanelConstraints(
-                          constraints,
-                          widget.view2.componentModel,
-                          view2Constraints.biggest),
+                          constraints, widget.view2, view2Constraints.biggest),
                       child: widget.view2)
                 ],
               ))),

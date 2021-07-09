@@ -111,10 +111,10 @@ class CoFormLayoutWidget extends MultiChildRenderObjectWidget {
     }
 
     /// Force Layout, if some of the settings have changed
-    if (renderObject.valid != this.valid) {
-      renderObject.valid = this.valid!;
-      renderObject.markNeedsLayout();
-    }
+    // if (renderObject.valid != this.valid) {
+    //   renderObject.valid = this.valid!;
+    //   renderObject.markNeedsLayout();
+    // }
 
     if (renderObject.horizontalAlignment != this.horizontalAlignment) {
       renderObject.horizontalAlignment = this.horizontalAlignment!;
@@ -350,30 +350,30 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
               .layoutModel;
 
       // calculate preferred, minimum and maximum layout sizes for parent layouts
-      // preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
-      // if (preferredLayoutSize == null) {
-      //   preferredLayoutSize = _preferredLayoutSize(
-      //       container.componentModel as ContainerComponentModel);
-      //   if (preferredLayoutSize != null)
-      //     layoutModel.layoutPreferredSize[this.constraints] =
-      //         preferredLayoutSize!;
-      // }
+      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      if (preferredLayoutSize == null) {
+        preferredLayoutSize = _preferredLayoutSize(
+            container.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null)
+          layoutModel.layoutPreferredSize[this.constraints] =
+              preferredLayoutSize!;
+      }
 
-      // minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
-      // if (minimumLayoutSize == null) {
-      //   minimumLayoutSize = _minimumLayoutSize(
-      //       container.componentModel as ContainerComponentModel);
-      //   if (minimumLayoutSize != null)
-      //     layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
-      // }
+      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      if (minimumLayoutSize == null) {
+        minimumLayoutSize = _minimumLayoutSize(
+            container.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null)
+          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+      }
 
-      // maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
-      // if (maximumLayoutSize == null) {
-      //   maximumLayoutSize = _maximumLayoutSize(
-      //       container.componentModel as ContainerComponentModel);
-      //   if (maximumLayoutSize != null)
-      //     layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
-      // }
+      maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+      if (maximumLayoutSize == null) {
+        maximumLayoutSize = _maximumLayoutSize(
+            container.componentModel as ContainerComponentModel);
+        if (maximumLayoutSize != null)
+          layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
+      }
 
       calculateAnchors(container.componentModel as ContainerComponentModel);
 
@@ -445,8 +445,8 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-      dev.log(
-          "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
+      // dev.log(
+      //     "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
     }
 
     //layoutState = LayoutState.RENDERED;

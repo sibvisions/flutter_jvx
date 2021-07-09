@@ -197,30 +197,30 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
               .layoutModel;
 
       // calculate preferred, minimum and maximum layout sizes for parent layouts
-      // preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
-      // if (preferredLayoutSize == null) {
-      //   preferredLayoutSize = _preferredLayoutSize(
-      //       container?.componentModel as ContainerComponentModel);
-      //   if (preferredLayoutSize != null)
-      //     layoutModel.layoutPreferredSize[this.constraints] =
-      //         preferredLayoutSize!;
-      // }
+      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      if (preferredLayoutSize == null) {
+        preferredLayoutSize = _preferredLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null)
+          layoutModel.layoutPreferredSize[this.constraints] =
+              preferredLayoutSize!;
+      }
 
-      // minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
-      // if (minimumLayoutSize == null) {
-      //   minimumLayoutSize = _minimumLayoutSize(
-      //       container?.componentModel as ContainerComponentModel);
-      //   if (minimumLayoutSize != null)
-      //     layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
-      // }
+      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      if (minimumLayoutSize == null) {
+        minimumLayoutSize = _minimumLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null)
+          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+      }
 
-      // maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
-      // if (maximumLayoutSize == null) {
-      //   maximumLayoutSize = _maximumLayoutSize(
-      //       container?.componentModel as ContainerComponentModel);
-      //   if (maximumLayoutSize != null)
-      //     layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
-      // }
+      maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+      if (maximumLayoutSize == null) {
+        maximumLayoutSize = _maximumLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (maximumLayoutSize != null)
+          layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
+      }
 
       // layout NORTH
       if (north != null) {
@@ -400,8 +400,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-      dev.log(
-          "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
+      // dev.log(
+      //     "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
     }
   }
 
@@ -509,27 +509,13 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
     double maxWidth = 0;
     double maxHeight = 0;
     if (north != null) {
-      Size size = this.getPreferredSize(
-          north!,
-          BoxConstraints(
-              minHeight: 0,
-              minWidth: 0,
-              maxHeight: double.infinity,
-              maxWidth: double.infinity),
-          northComp!)!;
+      Size size = this.getPreferredSize(north!, northComp!)!;
 
       maxWidth = size.width;
       height += size.height + iVerticalGap!;
     }
     if (south != null) {
-      Size size = this.getPreferredSize(
-          south!,
-          BoxConstraints(
-              minHeight: 0,
-              minWidth: 0,
-              maxHeight: double.infinity,
-              maxWidth: double.infinity),
-          southComp!)!;
+      Size size = this.getPreferredSize(south!, southComp!)!;
 
       if (size.width > maxWidth) {
         maxWidth = size.width;
@@ -537,27 +523,13 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       height += size.height + iVerticalGap!;
     }
     if (west != null) {
-      Size size = this.getPreferredSize(
-          west!,
-          BoxConstraints(
-              minHeight: 0,
-              minWidth: 0,
-              maxHeight: double.infinity,
-              maxWidth: double.infinity),
-          westComp!)!;
+      Size size = this.getPreferredSize(west!, westComp!)!;
 
       maxHeight = size.height;
       width += size.width + iHorizontalGap!;
     }
     if (east != null) {
-      Size size = this.getPreferredSize(
-          east!,
-          BoxConstraints(
-              minHeight: 0,
-              minWidth: 0,
-              maxHeight: double.infinity,
-              maxWidth: double.infinity),
-          eastComp!)!;
+      Size size = this.getPreferredSize(east!, eastComp!)!;
 
       if (size.height > maxHeight) {
         maxHeight = size.height;
@@ -565,14 +537,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       width += size.width + iHorizontalGap!;
     }
     if (center != null) {
-      Size size = this.getPreferredSize(
-          center!,
-          BoxConstraints(
-              minHeight: 0,
-              minWidth: 0,
-              maxHeight: double.infinity,
-              maxWidth: double.infinity),
-          centerComp!)!;
+      Size size = this.getPreferredSize(center!, centerComp!)!;
       if (size.height > maxHeight) {
         maxHeight = size.height;
       }
@@ -595,17 +560,28 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
             insMargin!.bottom);
   }
 
-  Size? getPreferredSize(
-      RenderBox renderBox, BoxConstraints constraints, ComponentWidget comp) {
+  Size? getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(comp, this.constraints);
+      Size? size = getChildLayoutPreferredSize(
+          comp,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity));
       if (size != null) {
         return size;
       } else {
         if (renderBox.hasSize && _childSize(comp) != null)
           size = renderBox.size;
         else
-          size = layoutRenderBox(renderBox, constraints);
+          size = layoutRenderBox(
+              renderBox,
+              BoxConstraints(
+                  minHeight: 0,
+                  minWidth: 0,
+                  maxHeight: double.infinity,
+                  maxWidth: double.infinity));
 
         if (size.width == double.infinity || size.height == double.infinity) {
           print(

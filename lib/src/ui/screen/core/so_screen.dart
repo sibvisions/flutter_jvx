@@ -66,7 +66,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   ComponentModelManager _componentModelManager = ComponentModelManager();
 
-  bool _debug = true;
+  bool _debug = false;
 
   Map<String, ComponentWidget> get components => _components;
 
@@ -143,7 +143,11 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     .layoutState ==
                 LayoutState.DIRTY));
 
-    containers.forEach((container) => _setScrollableContainerDirty(container));
+    containers.forEach((container) {
+      String topMostScrollableName =
+          _getTopMostScrollableContainer(container, "");
+      _setScrollableContainerDirty(container, topMostScrollableName);
+    });
 
     containers = List<CoContainerWidget>.from(components.values.where(
         (element) =>
@@ -165,28 +169,51 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     if (parent.componentModel is ContainerComponentModel) {
       if (parent.componentModel.lastLayout!
           .isBefore(comp.componentModel.lastLayout!)) {
-        (parent.componentModel as ContainerComponentModel)
-            .layout
-            ?.layoutModel
-            .markNeedsRebuild();
+        String topMostScrollableName = _getTopMostScrollableContainer(comp, "");
+
+        if (topMostScrollableName.isNotEmpty)
+          (parent.componentModel as ContainerComponentModel)
+              .layout
+              ?.layoutModel
+              .markNeedsRebuild();
         comp.componentModel.lastLayout = DateTime.now();
       }
     }
   }
 
-  _setScrollableContainerDirty(ComponentWidget comp) {
-    if (comp.componentModel is ContainerComponentModel &&
-        (comp.componentModel as ContainerComponentModel).isScrollable) {
+  _setScrollableContainerDirty(ComponentWidget comp, String componentName) {
+    if (comp.componentModel is ContainerComponentModel
+        //&&
+        //  (comp.componentModel as ContainerComponentModel).isScrollable)
+        ) {
       (comp.componentModel as ContainerComponentModel)
           .layout
           ?.layoutModel
           .layoutState = LayoutState.DIRTY;
     }
+
+    if (comp.componentModel.name == componentName) return;
+
     if (comp.componentModel.parentComponentId.isNotEmpty) {
       ComponentWidget parent =
           components[comp.componentModel.parentComponentId]!;
-      _setScrollableContainerDirty(parent);
+      _setScrollableContainerDirty(parent, componentName);
     }
+  }
+
+  String _getTopMostScrollableContainer(
+      ComponentWidget comp, String componentName) {
+    if (comp.componentModel is ContainerComponentModel &&
+        (comp.componentModel as ContainerComponentModel).isScrollable) {
+      componentName = (comp.componentModel as ContainerComponentModel).name;
+    }
+    if (comp.componentModel.parentComponentId.isNotEmpty) {
+      ComponentWidget parent =
+          components[comp.componentModel.parentComponentId]!;
+      return _getTopMostScrollableContainer(parent, componentName);
+    }
+
+    return componentName;
   }
 
   // void relayoutParentLayouts(String componentId) {
