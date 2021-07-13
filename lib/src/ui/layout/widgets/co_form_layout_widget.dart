@@ -284,13 +284,13 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
   @override
   void markNeedsLayout() {
     layoutSize = Map<BoxConstraints, Size>();
-    LayoutModel layoutModel =
-        (container.componentModel as ContainerComponentModel)
-            .layout!
-            .layoutModel;
-    layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
-    layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
-    layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
+    // LayoutModel layoutModel =
+    //     (container.componentModel as ContainerComponentModel)
+    //         .layout!
+    //         .layoutModel;
+    // layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
     //setLayoutState(LayoutState.DIRTY);
     super.markNeedsLayout();
   }
@@ -445,8 +445,9 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-      // dev.log(
-      //     "FormLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with ${layoutConstraints.length} children and constraints ${this.constraints} calculates size ${this.size} with layoutSize $layoutWidth x $layoutHeight");
+      dev.log(DateTime.now().toString() +
+          ';' +
+          "FormLayout;${container.componentModel.name};${container.componentModel.componentId};${this.constraints};${layoutConstraints.length};${this.size};$layoutWidth x $layoutHeight");
     }
 
     //layoutState = LayoutState.RENDERED;

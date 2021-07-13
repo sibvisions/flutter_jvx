@@ -215,13 +215,13 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
   @override
   void markNeedsLayout() {
     layoutSize = Map<BoxConstraints, Size>();
-    LayoutModel layoutModel =
-        (container!.componentModel as ContainerComponentModel)
-            .layout!
-            .layoutModel;
-    layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
-    layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
-    layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
+    // LayoutModel layoutModel =
+    //     (container!.componentModel as ContainerComponentModel)
+    //         .layout!
+    //         .layoutModel;
+    // layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
     super.markNeedsLayout();
   }
 
@@ -469,8 +469,9 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       // }
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
-      // dev.log(
-      //     "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
+      dev.log(DateTime.now().toString() +
+          ';' +
+          "FlowLayout;${container!.componentModel.name};${container!.componentModel.componentId};${this.constraints};${constraintMap.length};${this.size}");
     }
   }
 

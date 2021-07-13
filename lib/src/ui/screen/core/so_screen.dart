@@ -66,7 +66,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   ComponentModelManager _componentModelManager = ComponentModelManager();
 
-  bool _debug = false;
+  bool _debug = true;
 
   Map<String, ComponentWidget> get components => _components;
 
@@ -152,6 +152,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     containers = List<CoContainerWidget>.from(components.values.where(
         (element) =>
             element is CoContainerWidget &&
+            // (element.componentModel as ContainerComponentModel).isScrollable &&
             (element.componentModel as ContainerComponentModel)
                     .layout
                     ?.layoutModel

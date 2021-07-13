@@ -355,8 +355,9 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
         this.size = size;
         //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-        // dev.log(
-        //     "GridLayout in Container ${container.componentModel.name} (${container.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
+        dev.log(DateTime.now().toString() +
+            ';' +
+            "GridLayout;${container.componentModel.name};${container.componentModel.componentId};${this.constraints};${constraintMap.length};${this.size}");
       }
     }
   }
@@ -364,15 +365,15 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
   Size getPreferredSize(
       RenderBox renderBox, CoGridLayoutConstraints constraint) {
     if (!constraint.comp!.componentModel.isPreferredSizeSet) {
-      Size? size =
-          getChildLayoutPreferredSize(constraint.comp!, this.constraints);
+      Size? size = getChildLayoutPreferredSize(
+          constraint.comp!, BoxConstraints.tightForFinite());
       if (size != null) {
         return size;
       } else {
         if (renderBox.hasSize && _isLayoutDirty(constraint))
           size = renderBox.size;
         else
-          size = layoutRenderBox(renderBox, constraints);
+          size = layoutRenderBox(renderBox, BoxConstraints.tightForFinite());
         if (size.width == double.infinity || size.height == double.infinity) {
           print(
               "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");

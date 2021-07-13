@@ -141,9 +141,9 @@ class LayoutModel<E> extends ChangeNotifier implements ILayoutModel<E> {
   @override
   void performRebuild() {
     if (layoutState == LayoutState.DIRTY) {
-      // layoutPreferredSize = Map<BoxConstraints, Size>();
-      // layoutMinimumSize = Map<BoxConstraints, Size>();
-      // layoutMaximumSize = Map<BoxConstraints, Size>();
+      layoutPreferredSize = Map<BoxConstraints, Size>();
+      layoutMinimumSize = Map<BoxConstraints, Size>();
+      layoutMaximumSize = Map<BoxConstraints, Size>();
       layoutSize = null;
 
       log('Performing rebuild for ${this.container?.componentModel.name} ${this.container?.componentModel.componentId} ${getLayoutName(rawLayoutString)}');

@@ -134,8 +134,9 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
           this.preferredConstraints!.parentConstraints.biggest.width,
           this.preferredConstraints!.parentConstraints.biggest.height);
     }
-    // dev.log(
-    //     "ScrollLayout in container ${container?.name} (${container?.componentId}) with constraints ${this.constraints}  render size ${this.size.toString()}");
+    dev.log(DateTime.now().toString() +
+        ';' +
+        "ScrollLayout;${container?.name};${container?.componentId};${this.constraints};1;${this.size}");
   }
 
   Size? getPreferredSize(RenderBox renderBox, ComponentWidget comp) {

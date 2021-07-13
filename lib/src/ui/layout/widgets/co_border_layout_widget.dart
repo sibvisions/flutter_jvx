@@ -112,13 +112,13 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
   @override
   void markNeedsLayout() {
     layoutSize = Map<BoxConstraints, Size>();
-    LayoutModel layoutModel =
-        (container!.componentModel as ContainerComponentModel)
-            .layout!
-            .layoutModel;
-    layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
-    layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
-    layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
+    // LayoutModel layoutModel =
+    //     (container!.componentModel as ContainerComponentModel)
+    //         .layout!
+    //         .layoutModel;
+    // layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
     super.markNeedsLayout();
   }
 
@@ -177,6 +177,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
     this.east = null;
     this.west = null;
     this.center = null;
+    int childCount = 0;
 
     RenderBox? child = firstChild;
     while (child != null) {
@@ -186,6 +187,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
           child, childParentData.id as CoBorderLayoutConstraintData);
 
       child = childParentData.nextSibling;
+      childCount++;
     }
 
     if (layoutSize[this.constraints] != null)
@@ -400,8 +402,9 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-      // dev.log(
-      //     "BorderLayout in Container ${container!.componentModel.name} (${container!.componentModel.componentId}) with constraints ${this.constraints} render size ${this.size.toString()}");
+      dev.log(DateTime.now().toString() +
+          ';' +
+          "BorderLayout;${container!.componentModel.name};${container!.componentModel.componentId};${this.constraints};$childCount;${this.size}");
     }
   }
 
