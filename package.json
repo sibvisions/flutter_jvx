@@ -8,7 +8,11 @@
     "test": "test"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "hosted-git-info": ">=2.8.9",
+    "glob-parent": ">=5.1.2",
+    "trim-newlines": ">=3.0.1"
+  },
   "scripts": {
     "update-version": "node scripts/update_app_version.js commit && node scripts/update_app_version.js version && node scripts/update_app_version.js date"
   },
