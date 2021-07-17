@@ -623,7 +623,7 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       RenderBox renderBox, CoFormLayoutConstraint constraint) {
     Size? size;
 
-    // if (constraint.comp!.componentModel.name == "CT_todos-wrapper") {
+    // if (container.componentModel.name == "CT_todos_1") {
     //   int breakhere = 1;
     // }
 
@@ -635,17 +635,18 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
           size = _childSize(constraint)!;
           //renderBox.size;
         } else {
-          int margin = constraint.leftAnchor!.getAbsolutePosition()! +
-              constraint.rightAnchor!.getAbsolutePosition()!;
-          BoxConstraints constraints = BoxConstraints(
-              minHeight: 0,
-              maxHeight: this.constraints.maxHeight,
-              minWidth: 0,
-              maxWidth: this.constraints.maxWidth - margin < 0
-                  ? this.constraints.maxWidth
-                  : this.constraints.maxWidth - margin);
+          // int margin = constraint.leftAnchor!.getAbsolutePosition()! +
+          //     constraint.rightAnchor!.getAbsolutePosition()!;
+          // BoxConstraints constraints = BoxConstraints(
+          //     minHeight: 0,
+          //     maxHeight: this.constraints.maxHeight,
+          //     minWidth: 0,
+          //     maxWidth: this.constraints.maxWidth - margin < 0
+          //         ? this.constraints.maxWidth
+          //         : this.constraints.maxWidth - margin);
 
-          size = layoutRenderBox(renderBox, constraints);
+          size = layoutRenderBox(renderBox, BoxConstraints.tightForFinite());
+          _setChildSize(constraint, size);
         }
       }
     } else {
