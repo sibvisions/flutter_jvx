@@ -631,7 +631,7 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       size = getChildLayoutPreferredSize(constraint.comp!, this.constraints);
 
       if (size == null) {
-        if (renderBox.hasSize && _childSize(constraint) != null) {
+        if (_childSize(constraint) != null) {
           size = _childSize(constraint)!;
           //renderBox.size;
         } else {
@@ -667,10 +667,12 @@ class RenderFormLayoutWidget extends CoLayoutRenderBox
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize && !_isLayoutDirty(constraint))
-          return renderBox.size;
-        else {
-          return layoutRenderBox(renderBox, BoxConstraints.tightFor());
+        if (_childSize(constraint) != null) {
+          return _childSize(constraint)!;
+        } else {
+          size = layoutRenderBox(renderBox, BoxConstraints.tightFor());
+          _setChildSize(constraint, size);
+          return size;
         }
       }
     } else {

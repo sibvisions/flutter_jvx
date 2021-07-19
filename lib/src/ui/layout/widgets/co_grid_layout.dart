@@ -370,13 +370,15 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize && _isLayoutDirty(constraint))
-          size = renderBox.size;
-        else
+        if (_childSize(constraint) != null)
+          size = _childSize(constraint)!;
+        else {
           size = layoutRenderBox(renderBox, BoxConstraints.tightForFinite());
-        if (size.width == double.infinity || size.height == double.infinity) {
-          print(
-              "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");
+          if (size.width == double.infinity || size.height == double.infinity) {
+            print(
+                "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");
+          }
+          _setChildSize(constraint, size);
         }
         return size;
       }
@@ -400,6 +402,30 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
     }
 
     return false;
+  }
+
+  Size? _childSize(CoGridLayoutConstraints constraint) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+      if (containerComponentModel.layout != null) {
+        return containerComponentModel.layout!.layoutModel.layoutSize;
+      }
+    }
+
+    return null;
+  }
+
+  Size? _setChildSize(CoGridLayoutConstraints constraint, Size size) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+      if (containerComponentModel.layout != null) {
+        containerComponentModel.layout!.layoutModel.layoutSize = size;
+      }
+    }
+
+    return null;
   }
 
   Size _preferredLayoutSize(ContainerComponentModel pParent) {

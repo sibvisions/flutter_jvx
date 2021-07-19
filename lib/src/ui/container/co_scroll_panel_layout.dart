@@ -151,9 +151,9 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize && _childSize(comp) != null)
-          size = renderBox.size;
-        else
+        if (_childSize(comp) != null)
+          size = _childSize(comp)!;
+        else {
           size = layoutRenderBox(
               renderBox,
               BoxConstraints(
@@ -162,11 +162,12 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
                   maxHeight: double.infinity,
                   maxWidth: double.infinity));
 
-        if (size.width == double.infinity || size.height == double.infinity) {
-          print(
-              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+          if (size.width == double.infinity || size.height == double.infinity) {
+            print(
+                "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+          }
+          _setChildSize(comp, size);
         }
-        //_setChildSize(comp, size);
         return size;
       }
     } else {
@@ -185,6 +186,17 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
     }
 
     return null;
+  }
+
+  void _setChildSize(ComponentWidget comp, Size size) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        containerComponentModel.layout!.layoutModel.layoutSize = size;
+      }
+    }
   }
 
   @override

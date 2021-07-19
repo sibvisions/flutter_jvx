@@ -575,8 +575,8 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize && _childSize(comp) != null)
-          size = renderBox.size;
+        if (_childSize(comp) != null)
+          size = _childSize(comp)!;
         else
           size = layoutRenderBox(
               renderBox,
@@ -590,7 +590,7 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
           print(
               "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
         }
-        //_setChildSize(comp, size);
+        _setChildSize(comp, size);
         return size;
       }
     } else {
@@ -605,12 +605,16 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
       if (size != null)
         return size;
       else {
-        Size size = layoutRenderBox(renderBox, constraints);
-        //renderBox.layout(constraints, parentUsesSize: true);
+        if (_childSize(comp) != null)
+          size = _childSize(comp)!;
+        else {
+          size = layoutRenderBox(renderBox, constraints);
 
-        if (size.width == double.infinity || size.height == double.infinity) {
-          print(
-              "CoBorderLayout: getMinimumSize: Infinity height or width for BorderLayout!");
+          if (size.width == double.infinity || size.height == double.infinity) {
+            print(
+                "CoBorderLayout: getMinimumSize: Infinity height or width for BorderLayout!");
+          }
+          _setChildSize(comp, size);
         }
         return size;
       }
