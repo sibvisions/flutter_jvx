@@ -402,9 +402,9 @@ class RenderBorderLayoutWidget extends CoLayoutRenderBox
 
       //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-      dev.log(DateTime.now().toString() +
-          ';' +
-          "BorderLayout;${container!.componentModel.name};${container!.componentModel.componentId};${this.constraints};$childCount;${this.size}");
+      // dev.log(DateTime.now().toString() +
+      //     ';' +
+      //     "BorderLayout;${container!.componentModel.name};${container!.componentModel.componentId};${this.constraints};$childCount;${this.size}");
     }
   }
 

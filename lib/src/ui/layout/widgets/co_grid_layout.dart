@@ -355,9 +355,9 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
         this.size = size;
         //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
 
-        dev.log(DateTime.now().toString() +
-            ';' +
-            "GridLayout;${container.componentModel.name};${container.componentModel.componentId};${this.constraints};${constraintMap.length};${this.size}");
+        // dev.log(DateTime.now().toString() +
+        //     ';' +
+        //     "GridLayout;${container.componentModel.name};${container.componentModel.componentId};${this.constraints};${constraintMap.length};${this.size}");
       }
     }
   }
