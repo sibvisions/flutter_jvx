@@ -52,6 +52,9 @@ class ButtonComponentModel extends ActionComponentModel {
   }
 
   @override
+  Size? get minimumSize => this.preferredSize;
+
+  @override
   void updateProperties(
       BuildContext context, ChangedComponent changedComponent) {
     style =
@@ -64,7 +67,8 @@ class ButtonComponentModel extends ActionComponentModel {
     String classNameEventSourceRef = changedComponent.getProperty<String>(
         ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF, '')!;
 
-    if (classNameEventSourceRef == 'QRScannerButton' || classNameEventSourceRef == 'CallButton') {
+    if (classNameEventSourceRef == 'QRScannerButton' ||
+        classNameEventSourceRef == 'CallButton') {
       dataProvider = changedComponent.getProperty<String>(
               ComponentProperty.DATA_PROVIDER, null) ??
           changedComponent.getProperty(ComponentProperty.DATA_ROW, null);

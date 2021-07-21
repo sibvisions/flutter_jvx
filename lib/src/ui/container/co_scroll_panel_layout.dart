@@ -1,11 +1,12 @@
 import 'dart:developer' as dev;
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutterclient/src/ui/component/model/component_model.dart';
-import 'package:flutterclient/src/ui/layout/widgets/co_layout_render_box.dart';
+import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
+import '../component/model/component_model.dart';
+import '../layout/widgets/co_layout_render_box.dart';
 import 'models/container_component_model.dart';
 
 class CoScrollPanelLayout extends MultiChildRenderObjectWidget {
@@ -76,36 +77,20 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
     this.maximumLayoutSize = this.constraints.biggest;
     this.minimumLayoutSize = this.constraints.biggest;
 
-    //Size? preferredSize;
+    Size? preferredSize;
 
     if (child != null) {
-      this.layoutRenderBox(child!, BoxConstraints.tightForFinite());
-
-      /*if (child is RenderShiftedBox &&
-          (child as RenderShiftedBox).child is CoLayoutRenderBox) {
-        CoLayoutRenderBox childLayout =
-            (child as RenderShiftedBox).child as CoLayoutRenderBox;
-
-        preferredSize = childLayout.preferredLayoutSize;
-
-        /*if (this.preferredConstraints.componentModel != null)
-          print(this.preferredConstraints.componentModel.componentId +
-              ";" +
-              this.preferredConstraints.componentModel.constraints +
-              ";" +
-              this.preferredConstraints.componentModel.toString());
-
-        if (child.hasSize) print("child:" + child.size.toString());
-
-        print("pref:" + preferredSize.toString());*/
-      }*/
-
-      //print("split_pref:" + preferredConstraints.preferredSize.toString());
+      preferredSize =
+          getPreferredSize(child!, preferredConstraints!.componentModel);
+      if (preferredSize == null) {
+        this.layoutRenderBox(child!, BoxConstraints.tightForFinite());
+        preferredSize = child!.size;
+      }
 
       double? newHeight;
       double? newWidth;
 
-      if (child!.size.height <
+      if (preferredSize.height <
               preferredConstraints!.parentConstraints.maxHeight &&
           preferredConstraints!.parentConstraints.maxHeight !=
               double.infinity) {
@@ -113,7 +98,8 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
       }
 
       if (this.preferredConstraints?.preferredSize != null &&
-          child!.size.width < this.preferredConstraints!.preferredSize!.width) {
+          preferredSize.width <
+              this.preferredConstraints!.preferredSize!.width) {
         newWidth = this.preferredConstraints!.preferredSize!.width;
       }
 
@@ -148,8 +134,69 @@ class RenderScrollPanelLayout extends CoLayoutRenderBox
           this.preferredConstraints!.parentConstraints.biggest.width,
           this.preferredConstraints!.parentConstraints.biggest.height);
     }
-    //dev.log(
-    //    "ScrollLayout in container ${container?.name} (${container?.componentId}) with constraints ${this.constraints}  render size ${this.size.toString()}");
+    dev.log(DateTime.now().toString() +
+        ';' +
+        "ScrollLayout;${container?.name};${container?.componentId};${this.constraints};1;${this.size}");
+  }
+
+  Size? getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
+    if (!comp.componentModel.isPreferredSizeSet) {
+      Size? size = getChildLayoutPreferredSize(
+          comp,
+          BoxConstraints(
+              minHeight: 0,
+              minWidth: 0,
+              maxHeight: double.infinity,
+              maxWidth: double.infinity));
+      if (size != null) {
+        return size;
+      } else {
+        if (_childSize(comp) != null)
+          size = _childSize(comp)!;
+        else {
+          size = layoutRenderBox(
+              renderBox,
+              BoxConstraints(
+                  minHeight: 0,
+                  minWidth: 0,
+                  maxHeight: double.infinity,
+                  maxWidth: double.infinity));
+
+          if (size.width == double.infinity || size.height == double.infinity) {
+            print(
+                "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+          }
+          _setChildSize(comp, size);
+        }
+        return size;
+      }
+    } else {
+      return comp.componentModel.preferredSize;
+    }
+  }
+
+  Size? _childSize(ComponentWidget comp) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        return containerComponentModel.layout!.layoutModel.layoutSize;
+      }
+    }
+
+    return null;
+  }
+
+  void _setChildSize(ComponentWidget comp, Size size) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        containerComponentModel.layout!.layoutModel.layoutSize = size;
+      }
+    }
   }
 
   @override
@@ -195,7 +242,7 @@ class CoScrollPanelLayoutId
 
 class CoScrollPanelConstraints {
   BoxConstraints parentConstraints;
-  ComponentModel componentModel;
+  ComponentWidget componentModel;
   Size? preferredSize;
 
   CoScrollPanelConstraints(this.parentConstraints, this.componentModel,

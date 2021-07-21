@@ -1,7 +1,10 @@
+import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 import '../../container/co_container_widget.dart';
 import 'co_grid_layout_constraint.dart';
@@ -34,6 +37,8 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
 
   final CoContainerWidget container;
 
+  final LayoutState layoutState;
+
   CoGridLayoutWidget(
       {Key? key,
       required this.container,
@@ -42,7 +47,8 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
       this.columns = 1,
       this.margins = EdgeInsets.zero,
       this.horizontalGap = 0,
-      this.verticalGap = 0})
+      this.verticalGap = 0,
+      required this.layoutState})
       : super(key: key, children: children);
 
   @override
@@ -54,12 +60,18 @@ class CoGridLayoutWidget extends MultiChildRenderObjectWidget {
       this.margins,
       this.horizontalGap,
       this.verticalGap,
+      this.layoutState,
     );
   }
 
   @override
   void updateRenderObject(
       BuildContext context, RenderGridLayoutWidget renderObject) {
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
+
     /// Force Layout, if some of the settings have changed
     if (renderObject.rows != this.rows) {
       renderObject.rows = this.rows;
@@ -129,10 +141,27 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
 
   CoContainerWidget container;
 
+  LayoutState layoutState;
+
+  Map<BoxConstraints, Size> layoutSize = Map<BoxConstraints, Size>();
+
   RenderGridLayoutWidget(this.container, this.rows, this.columns, this.margins,
-      this.horizontalGap, this.verticalGap,
+      this.horizontalGap, this.verticalGap, this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
+  }
+
+  @override
+  void markNeedsLayout() {
+    layoutSize = Map<BoxConstraints, Size>();
+    // LayoutModel layoutModel =
+    //     (container.componentModel as ContainerComponentModel)
+    //         .layout!
+    //         .layoutModel;
+    // layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
+    super.markNeedsLayout();
   }
 
   @override
@@ -150,162 +179,253 @@ class RenderGridLayoutWidget extends CoLayoutRenderBox
       child = childParentData.nextSibling;
     }
 
-    preferredLayoutSize = _preferredLayoutSize(
-        container.componentModel as ContainerComponentModel);
-    minimumLayoutSize =
-        _minimumLayoutSize(container.componentModel as ContainerComponentModel);
-    maximumLayoutSize =
-        _maximumLayoutSize(container.componentModel as ContainerComponentModel);
+    if (layoutSize[this.constraints] != null)
+      this.size = layoutSize[this.constraints]!;
+    else {
+      LayoutModel layoutModel =
+          (container.componentModel as ContainerComponentModel)
+              .layout!
+              .layoutModel;
 
-    Size size = constraints.biggest;
-    int targetColumns = columns;
-    int targetRows = rows;
-
-    if (size.width == double.infinity || size.height == double.infinity)
-      size = preferredLayoutSize!;
-
-    if (columns <= 0 || rows <= 0) {
-      constraintMap.forEach((component, constraints) {
-        if (columns <= 0 &&
-            constraints.gridX! + constraints.gridWidth! > targetColumns) {
-          targetColumns = constraints.gridX! + constraints.gridWidth!;
-        }
-        if (rows <= 0 &&
-            constraints.gridY! + constraints.gridHeight! > targetRows) {
-          targetRows = constraints.gridY! + constraints.gridHeight!;
-        }
-      });
-    }
-
-    if (targetColumns > 0 && targetRows > 0) {
-      int leftInsets = margins.left.round();
-      int topInsets = margins.top.round();
-
-      int totalGapsWidth = (targetColumns - 1) * horizontalGap;
-      int totalGapsHeight = (targetRows - 1) * verticalGap;
-
-      int totalWidth = size.width.round() -
-          leftInsets -
-          margins.right.round() -
-          totalGapsWidth;
-      int totalHeight = size.height.round() -
-          topInsets -
-          margins.bottom.round() -
-          totalGapsHeight;
-
-      int columnSize = (totalWidth / targetColumns).round();
-      int rowSize = (totalHeight / targetRows).round();
-
-      int widthCalcError = totalWidth - columnSize * targetColumns;
-      int heightCalcError = totalHeight - rowSize * targetRows;
-      int xMiddle = 0;
-      if (widthCalcError > 0) {
-        xMiddle = ((targetColumns / widthCalcError + 1) / 2).round();
-      }
-      int yMiddle = 0;
-      if (heightCalcError > 0) {
-        yMiddle = ((targetRows / heightCalcError + 1) / 2).round();
+      // calculate preferred, minimum and maximum layout sizes for parent layouts
+      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      if (preferredLayoutSize == null) {
+        preferredLayoutSize = _preferredLayoutSize(
+            container.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null)
+          layoutModel.layoutPreferredSize[this.constraints] =
+              preferredLayoutSize!;
       }
 
-      if (xPosition == null || xPosition!.length != targetColumns + 1) {
-        xPosition = <int>[targetColumns + 1];
-      }
-      xPosition![0] = leftInsets;
-      int corrX = 0;
-      for (int i = 0; i < targetColumns; i++) {
-        if ((i + 1) >= xPosition!.length) {
-          xPosition?.add(xPosition![i] + columnSize + horizontalGap);
-        } else {
-          xPosition?[i + 1] = xPosition![i] + columnSize + horizontalGap;
-        }
-        if (widthCalcError > 0 &&
-            corrX * targetColumns / widthCalcError + xMiddle == i) {
-          xPosition![i + 1]++;
-          corrX++;
-        }
+      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      if (minimumLayoutSize == null) {
+        minimumLayoutSize = _minimumLayoutSize(
+            container.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null)
+          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
       }
 
-      if (yPosition == null || yPosition!.length != targetRows + 1) {
-        yPosition = <int>[targetRows + 1];
-      }
-      yPosition![0] = topInsets;
-      int corrY = 0;
-      for (int i = 0; i < targetRows; i++) {
-        if ((i + 1) >= yPosition!.length) {
-          yPosition?.add(yPosition![i] + rowSize + verticalGap);
-        } else {
-          yPosition![i + 1] = yPosition![i] + rowSize + verticalGap;
-        }
-        if (heightCalcError > 0 &&
-            corrY * targetRows / heightCalcError + yMiddle == i) {
-          yPosition![i + 1]++;
-          corrY++;
-        }
+      maximumLayoutSize = layoutModel.layoutMaximumSize[this.constraints];
+      if (maximumLayoutSize == null) {
+        maximumLayoutSize = _maximumLayoutSize(
+            container.componentModel as ContainerComponentModel);
+        if (maximumLayoutSize != null)
+          layoutModel.layoutMaximumSize[this.constraints] = maximumLayoutSize!;
       }
 
-      constraintMap.forEach((component, constraints) {
-        EdgeInsets insets = constraints.insets!;
+      Size size = constraints.biggest;
+      int targetColumns = columns;
+      int targetRows = rows;
 
-        double x = getPosition(
-                xPosition!, constraints.gridX!, columnSize, horizontalGap) +
-            insets.left;
-        double y =
-            getPosition(yPosition!, constraints.gridY!, rowSize, verticalGap) +
-                insets.top;
-        double width = getPosition(
-                xPosition!,
-                constraints.gridX! + constraints.gridWidth!,
-                columnSize,
-                horizontalGap) -
-            horizontalGap -
-            x -
-            insets.right;
-        double height = getPosition(
-                yPosition!,
-                constraints.gridY! + constraints.gridHeight!,
-                rowSize,
-                verticalGap) -
-            verticalGap -
-            y -
-            insets.bottom;
+      if (size.width == double.infinity || size.height == double.infinity)
+        size = preferredLayoutSize!;
 
-        component.layout(
-            BoxConstraints(
-                minWidth: width,
-                maxWidth: width,
-                minHeight: height,
-                maxHeight: height),
-            parentUsesSize: true);
+      if (columns <= 0 || rows <= 0) {
+        constraintMap.forEach((component, constraints) {
+          if (columns <= 0 &&
+              constraints.gridX! + constraints.gridWidth! > targetColumns) {
+            targetColumns = constraints.gridX! + constraints.gridWidth!;
+          }
+          if (rows <= 0 &&
+              constraints.gridY! + constraints.gridHeight! > targetRows) {
+            targetRows = constraints.gridY! + constraints.gridHeight!;
+          }
+        });
+      }
 
-        final MultiChildLayoutParentData childParentData =
-            component.parentData as MultiChildLayoutParentData;
-        childParentData.offset = Offset(x, y);
-      });
+      if (targetColumns > 0 && targetRows > 0) {
+        int leftInsets = margins.left.round();
+        int topInsets = margins.top.round();
 
-      this.size = size;
+        int totalGapsWidth = (targetColumns - 1) * horizontalGap;
+        int totalGapsHeight = (targetRows - 1) * verticalGap;
+
+        int totalWidth = size.width.round() -
+            leftInsets -
+            margins.right.round() -
+            totalGapsWidth;
+        int totalHeight = size.height.round() -
+            topInsets -
+            margins.bottom.round() -
+            totalGapsHeight;
+
+        int columnSize = (totalWidth / targetColumns).round();
+        int rowSize = (totalHeight / targetRows).round();
+
+        int widthCalcError = totalWidth - columnSize * targetColumns;
+        int heightCalcError = totalHeight - rowSize * targetRows;
+        int xMiddle = 0;
+        if (widthCalcError > 0) {
+          xMiddle = ((targetColumns / widthCalcError + 1) / 2).round();
+        }
+        int yMiddle = 0;
+        if (heightCalcError > 0) {
+          yMiddle = ((targetRows / heightCalcError + 1) / 2).round();
+        }
+
+        if (xPosition == null || xPosition!.length != targetColumns + 1) {
+          xPosition = <int>[targetColumns + 1];
+        }
+        xPosition![0] = leftInsets;
+        int corrX = 0;
+        for (int i = 0; i < targetColumns; i++) {
+          if ((i + 1) >= xPosition!.length) {
+            xPosition?.add(xPosition![i] + columnSize + horizontalGap);
+          } else {
+            xPosition?[i + 1] = xPosition![i] + columnSize + horizontalGap;
+          }
+          if (widthCalcError > 0 &&
+              corrX * targetColumns / widthCalcError + xMiddle == i) {
+            xPosition![i + 1]++;
+            corrX++;
+          }
+        }
+
+        if (yPosition == null || yPosition!.length != targetRows + 1) {
+          yPosition = <int>[targetRows + 1];
+        }
+        yPosition![0] = topInsets;
+        int corrY = 0;
+        for (int i = 0; i < targetRows; i++) {
+          if ((i + 1) >= yPosition!.length) {
+            yPosition?.add(yPosition![i] + rowSize + verticalGap);
+          } else {
+            yPosition![i + 1] = yPosition![i] + rowSize + verticalGap;
+          }
+          if (heightCalcError > 0 &&
+              corrY * targetRows / heightCalcError + yMiddle == i) {
+            yPosition![i + 1]++;
+            corrY++;
+          }
+        }
+
+        constraintMap.forEach((component, constraints) {
+          EdgeInsets insets = constraints.insets!;
+
+          double x = getPosition(
+                  xPosition!, constraints.gridX!, columnSize, horizontalGap) +
+              insets.left;
+          double y = getPosition(
+                  yPosition!, constraints.gridY!, rowSize, verticalGap) +
+              insets.top;
+          double width = getPosition(
+                  xPosition!,
+                  constraints.gridX! + constraints.gridWidth!,
+                  columnSize,
+                  horizontalGap) -
+              horizontalGap -
+              x -
+              insets.right;
+          double height = getPosition(
+                  yPosition!,
+                  constraints.gridY! + constraints.gridHeight!,
+                  rowSize,
+                  verticalGap) -
+              verticalGap -
+              y -
+              insets.bottom;
+
+          component.layout(
+              BoxConstraints(
+                  minWidth: width,
+                  maxWidth: width,
+                  minHeight: height,
+                  maxHeight: height),
+              parentUsesSize: true);
+
+          final MultiChildLayoutParentData childParentData =
+              component.parentData as MultiChildLayoutParentData;
+          childParentData.offset = Offset(x, y);
+
+          // if (this.constraints.hasBoundedHeight &&
+          //     this.constraints.hasBoundedWidth &&
+          //     constraints.comp is CoContainerWidget) {
+          //   (constraints.comp!.componentModel as ContainerComponentModel)
+          //       .layout!
+          //       .layoutModel
+          //       .layoutState = LayoutState.RENDERED;
+          // }
+        });
+
+        // if (this.constraints.hasBoundedHeight &&
+        //     this.constraints.hasBoundedWidth) {
+        //   layoutState = LayoutState.RENDERED;
+        // }
+
+        this.size = size;
+        //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
+
+        // dev.log(DateTime.now().toString() +
+        //     ';' +
+        //     "GridLayout;${container.componentModel.name};${container.componentModel.componentId};${this.constraints};${constraintMap.length};${this.size}");
+      }
     }
   }
 
   Size getPreferredSize(
       RenderBox renderBox, CoGridLayoutConstraints constraint) {
     if (!constraint.comp!.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(renderBox);
+      Size? size = getChildLayoutPreferredSize(
+          constraint.comp!, BoxConstraints.tightForFinite());
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize)
-          size = renderBox.size;
-        else
-          size = layoutRenderBox(renderBox, constraints);
-        if (size.width == double.infinity || size.height == double.infinity) {
-          print(
-              "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");
+        if (_childSize(constraint) != null)
+          size = _childSize(constraint)!;
+        else {
+          size = layoutRenderBox(renderBox, BoxConstraints.tightForFinite());
+          if (size.width == double.infinity || size.height == double.infinity) {
+            print(
+                "CoGridLayoutLayout: getPrefererredSize: Infinity height or width!");
+          }
+          _setChildSize(constraint, size);
         }
         return size;
       }
     } else {
       return constraint.comp!.componentModel.preferredSize!;
     }
+  }
+
+  bool _isLayoutDirty(CoGridLayoutConstraints constraint) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null &&
+          containerComponentModel.layout!.layoutModel.layoutState ==
+              LayoutState.DIRTY) {
+        // containerComponentModel.layout!.layoutModel.layoutState =
+        //     LayoutState.RENDERED;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Size? _childSize(CoGridLayoutConstraints constraint) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+      if (containerComponentModel.layout != null) {
+        return containerComponentModel.layout!.layoutModel.layoutSize;
+      }
+    }
+
+    return null;
+  }
+
+  Size? _setChildSize(CoGridLayoutConstraints constraint, Size size) {
+    if (constraint.comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          constraint.comp!.componentModel as ContainerComponentModel;
+      if (containerComponentModel.layout != null) {
+        containerComponentModel.layout!.layoutModel.layoutSize = size;
+      }
+    }
+
+    return null;
   }
 
   Size _preferredLayoutSize(ContainerComponentModel pParent) {

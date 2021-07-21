@@ -43,6 +43,8 @@ class ComponentModel with ChangeNotifier {
   String parentComponentId = '';
   List<Key>? childComponentIds;
 
+  DateTime? lastLayout;
+
   late AppState appState;
 
   ChangedComponent get changedComponent => _changedComponent;
@@ -124,5 +126,6 @@ class ComponentModel with ChangeNotifier {
         ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF, classNameEventSourceRef);
 
     this.changedComponent = changedComponent;
+    this.lastLayout = changedComponent.created;
   }
 }

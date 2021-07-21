@@ -30,9 +30,10 @@ class ScreenGenericResponseObject extends ResponseObject {
 
   static List<ChangedComponent> getComponents({required List<dynamic> list}) {
     List<ChangedComponent> comps = [];
+    DateTime created = DateTime.now();
 
-    list.forEach(
-        (component) => comps.add(ChangedComponent.fromJson(component)));
+    list.forEach((component) =>
+        comps.add(ChangedComponent.fromJson(component, created)));
 
     return comps;
   }

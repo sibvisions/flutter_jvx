@@ -13,6 +13,7 @@ class ChangedComponent extends ComponentProperties {
   String? screenTitle;
   String? screenNavigationName;
   bool? screenModal;
+  DateTime? created;
 
   ChangedComponent(
       {this.id,
@@ -36,7 +37,8 @@ class ChangedComponent extends ComponentProperties {
     return null;
   }
 
-  ChangedComponent.fromJson(Map<String, dynamic> json) : super(json) {
+  ChangedComponent.fromJson(Map<String, dynamic> json, DateTime created)
+      : super(json) {
     id = this.getProperty<String>(ComponentProperty.ID, '');
     name = this.getProperty<String>(ComponentProperty.NAME, '');
     className = this.getProperty<String>(ComponentProperty.CLASS_NAME, '');
@@ -52,5 +54,7 @@ class ChangedComponent extends ComponentProperties {
 
     if (json[_cellEditorIdentifier] != null)
       cellEditor = CellEditor.fromJson(json[_cellEditorIdentifier]);
+
+    this.created = created;
   }
 }

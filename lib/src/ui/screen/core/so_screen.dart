@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/co_chart_widget.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../flutterclient.dart';
@@ -145,33 +145,121 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           _updateComponent(changedComponent, _components);
         }
       }
+
+      _getLayoutsToRebuild();
     }
   }
 
-  void relayoutParentLayouts(String componentId) {
-    bool _formLayoutFound = false;
+  _getLayoutsToRebuild() {
+    List<CoContainerWidget> containers = <CoContainerWidget>[];
 
-    if (_components.containsKey(componentId)) {
-      ComponentWidget componentWidget = _components[componentId]!;
-      if (componentWidget.componentModel is ContainerComponentModel) {
-        ContainerComponentModel model =
-            (componentWidget.componentModel as ContainerComponentModel);
-        if (model.layout != null &&
-            model.layout?.setState != null &&
-            (model.layout is CoFormLayoutContainerWidget ||
-                model.layout is CoBorderLayoutContainerWidget)) {
-          log('Relayout $componentId');
-          model.layout!.setState!(() {});
-          _formLayoutFound = true;
-        }
+    containers = List<CoContainerWidget>.from(components.values.where(
+        (element) =>
+            element is CoContainerWidget &&
+            (element.componentModel as ContainerComponentModel)
+                    .layout
+                    ?.layoutModel
+                    .layoutState ==
+                LayoutState.DIRTY));
+
+    containers.forEach((container) {
+      String topMostScrollableName =
+          _getTopMostScrollableContainer(container, "");
+      _setScrollableContainerDirty(container, topMostScrollableName);
+    });
+
+    containers = List<CoContainerWidget>.from(components.values.where(
+        (element) =>
+            element is CoContainerWidget &&
+            // (element.componentModel as ContainerComponentModel).isScrollable &&
+            (element.componentModel as ContainerComponentModel)
+                    .layout
+                    ?.layoutModel
+                    .layoutState ==
+                LayoutState.DIRTY));
+
+    containers.forEach((container) =>
+        (container.componentModel as ContainerComponentModel)
+            .layout
+            ?.layoutModel
+            .performRebuild());
+  }
+
+  _checkMarkNeedsLayout(ComponentWidget comp, ComponentWidget parent) {
+    if (parent.componentModel is ContainerComponentModel) {
+      if (parent.componentModel.lastLayout!
+          .isBefore(comp.componentModel.lastLayout!)) {
+        String topMostScrollableName = _getTopMostScrollableContainer(comp, "");
+
+        if (topMostScrollableName.isNotEmpty)
+          (parent.componentModel as ContainerComponentModel)
+              .layout
+              ?.layoutModel
+              .markNeedsRebuild();
+        comp.componentModel.lastLayout = DateTime.now();
       }
-      if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
+    }
+  }
+
+  _setScrollableContainerDirty(ComponentWidget comp, String componentName) {
+    if (comp.componentModel is ContainerComponentModel
         //&&
-        //  !_formLayoutFound) {
-        relayoutParentLayouts(componentWidget.componentModel.parentComponentId);
-      }
+        //  (comp.componentModel as ContainerComponentModel).isScrollable)
+        ) {
+      (comp.componentModel as ContainerComponentModel)
+          .layout
+          ?.layoutModel
+          .layoutState = LayoutState.DIRTY;
+    }
+
+    if (comp.componentModel.name == componentName) return;
+
+    if (comp.componentModel.parentComponentId.isNotEmpty) {
+      ComponentWidget parent =
+          components[comp.componentModel.parentComponentId]!;
+      _setScrollableContainerDirty(parent, componentName);
     }
   }
+
+  String _getTopMostScrollableContainer(
+      ComponentWidget comp, String componentName) {
+    if (comp.componentModel is ContainerComponentModel &&
+        (comp.componentModel as ContainerComponentModel).isScrollable) {
+      componentName = (comp.componentModel as ContainerComponentModel).name;
+    }
+    if (comp.componentModel.parentComponentId.isNotEmpty) {
+      ComponentWidget parent =
+          components[comp.componentModel.parentComponentId]!;
+      return _getTopMostScrollableContainer(parent, componentName);
+    }
+
+    return componentName;
+  }
+
+  // void relayoutParentLayouts(String componentId) {
+  //   bool _formLayoutFound = false;
+
+  //   if (_components.containsKey(componentId)) {
+  //     ComponentWidget componentWidget = _components[componentId]!;
+  //     if (componentWidget.componentModel is ContainerComponentModel) {
+  //       ContainerComponentModel model =
+  //           (componentWidget.componentModel as ContainerComponentModel);
+  //       // if (model.layout != null &&
+  //       //     model.layout?.setState != null &&
+  //       //     (model.layout is CoFormLayoutContainerWidget ||
+  //       //         model.layout is CoBorderLayoutContainerWidget)) {
+  //       //   log('Relayout $componentId');
+  //       //   model.layout!.setState!(() {});
+  //       //   _formLayoutFound = true;
+  //       // }
+  //     }
+  //     if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
+  //       //&&
+  //       //  !_formLayoutFound) {
+  //       relayoutParentLayouts(componentWidget.componentModel.parentComponentId);
+  //     }
+  //   }
+  // }
 
   void _updateComponent(ChangedComponent changedComponent,
       Map<String, ComponentWidget> container) {
@@ -189,13 +277,14 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           _addComponent(changedComponent, container);
         }
 
-        bool relayoutParent = false;
         bool? visible =
             changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, null);
+        bool rebuildLayout = false;
 
         if (visible != null &&
             visible != componentWidget.componentModel.isVisible) {
-          relayoutParent = true;
+          rebuildLayout = true;
+          componentWidget.componentModel.lastLayout = DateTime.now();
         }
 
         componentWidget.componentModel
@@ -212,11 +301,15 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
                     context,
                     componentWidget.componentModel.componentId,
                     changedComponent);
-          }
-        }
 
-        if (relayoutParent) {
-          relayoutParentLayouts(componentWidget.componentModel.componentId);
+            if (rebuildLayout) {
+              // (parentComponentWidget.componentModel as ContainerComponentModel)
+              //     .layout
+              //     ?.layoutModel
+              //     .onChildVisibilityChange();
+              _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
+            }
+          }
         }
       }
     } else {
@@ -340,7 +433,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             .addWithConstraints(
                 componentWidget, componentWidget.componentModel.constraints);
 
-        relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
+        _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
       }
     }
   }
@@ -368,8 +461,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
           parentComponentWidget is CoContainerWidget) {
         (parentComponentWidget.componentModel as ContainerComponentModel)
             .removeWithComponent(componentWidget);
-
-        relayoutParentLayouts(parentComponentWidget.componentModel.componentId);
+        _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
       }
     }
   }
@@ -396,7 +488,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
         (componentWidget.componentModel as ContainerComponentModel)
             .layout
-            ?.updateLayoutData(layoutData);
+            ?.layoutModel
+            .updateLayoutData(layoutData);
       }
 
       if (layout != null && layout.isNotEmpty) {
@@ -407,7 +500,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
         (componentWidget.componentModel as ContainerComponentModel)
             .layout
-            ?.updateLayoutString(layout);
+            ?.layoutModel
+            .updateLayoutString(layout);
       }
     }
 
@@ -572,13 +666,20 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
       debugString += ", layout: " +
           (containerComponentModel.layout != null &&
-                  containerComponentModel.layout?.rawLayoutString != null
-              ? containerComponentModel.layout!.rawLayoutString!
+                  containerComponentModel.layout?.layoutModel.rawLayoutString !=
+                      null
+              ? containerComponentModel.layout!.layoutModel.rawLayoutString
               : "") +
           ", layoutData: " +
           (containerComponentModel.layout != null &&
-                  containerComponentModel.layout?.rawLayoutData != null
-              ? containerComponentModel.layout!.rawLayoutData!
+                  containerComponentModel.layout?.layoutModel.rawLayoutData !=
+                      null
+              ? containerComponentModel.layout!.layoutModel.rawLayoutData
+              : "") +
+          ", layoutState: " +
+          (containerComponentModel.layout != null
+              ? containerComponentModel.layout!.layoutModel.layoutState
+                  .toString()
               : "") +
           ", childCount: " +
           containerComponentModel.components.length.toString();

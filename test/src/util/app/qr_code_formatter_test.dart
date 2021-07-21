@@ -40,5 +40,19 @@ void main() {
 
       expect(result, tProperties);
     });
+
+    test('valid properties string with only two properties given', () async {
+      final tResult = <String, dynamic>{
+        'APPNAME': 'meycabinprogress',
+        'URL':
+            'https://devmeyvisionxapp.meyershipbuilding.com/Meycabinprogress/services/mobile'
+      };
+
+      final qrString = fixture('qr_code_string_meyer.txt');
+
+      final result = formatter.formatQRCode(qrString);
+
+      expect(result, tResult);
+    });
   });
 }

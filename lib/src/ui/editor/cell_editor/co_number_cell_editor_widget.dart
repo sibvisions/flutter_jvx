@@ -171,9 +171,11 @@ class CoNumberCellEditorWidgetState
 
   @override
   void dispose() {
-    widget.cellEditorModel.focusNode.removeListener(_focusListener);
-    widget.cellEditorModel.removeListener(onCellEditorValueChanged);
-    widget.cellEditorModel.focusNode.dispose();
+    if (mounted) {
+      // widget.cellEditorModel.focusNode.removeListener(_focusListener);
+      widget.cellEditorModel.removeListener(onCellEditorValueChanged);
+      // widget.cellEditorModel.focusNode.dispose();
+    }
     super.dispose();
   }
 }
