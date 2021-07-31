@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../../../models/state/routes/arguments/settings_page_arguments.dart';
 import '../../../models/state/routes/routes.dart';
-import '../../../services/remote/cubit/api_cubit.dart';
+import '../../../models/api/errors/failure.dart';
+
 import '../../../util/translation/app_localizations.dart';
 
-showGoToSettingsDialog(BuildContext context, ApiError error) async {
+showGoToSettingsDialog(BuildContext context, Failure failure) async {
   final bool canPop = ModalRoute.of(context)!.settings.name != '/';
   await showDialog(
       context: context,
       barrierDismissible: canPop,
       builder: (context) {
         return AlertDialog(
-          title: Text(
-              AppLocalizations.of(context)!.text('${error.failure.title}')),
-          content: Text(
-              AppLocalizations.of(context)!.text('${error.failure.message}')),
+          title: Text(AppLocalizations.of(context)!.text('${failure.title}')),
+          content:
+              Text(AppLocalizations.of(context)!.text('${failure.message}')),
           actions: [
             TextButton(
                 onPressed: () {

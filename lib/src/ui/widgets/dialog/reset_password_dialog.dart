@@ -50,7 +50,8 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
           if (state is ApiResponse) {
             if (state.hasObject<Failure>()) {
               setState(() {
-                _error = ApiError(failure: state.getObjectByType<Failure>()!);
+                _error =
+                    ApiError(failures: [state.getObjectByType<Failure>()!]);
               });
             }
 

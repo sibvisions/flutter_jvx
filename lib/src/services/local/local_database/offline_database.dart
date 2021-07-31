@@ -692,12 +692,14 @@ class OfflineDatabase extends LocalDatabase
     if (metaData != null) {
       return ApiResponse(request: request, objects: [metaData]);
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: 'offline.error',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '',
+          message: 'An error occured',
+          name: 'offline.error',
+          title: 'Error')
+    ]);
   }
 
   Future<DataBookMetaData?> getMetaDataBook(String dataProvider) async {
@@ -927,12 +929,13 @@ class OfflineDatabase extends LocalDatabase
       return response;
     }
 
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error happended',
-            name: 'offline.error',
-            title: 'Error'));
+    return ApiError(failures: [
+      Failure(
+          details: '',
+          message: 'An error happended',
+          name: 'offline.error',
+          title: 'Error')
+    ]);
   }
 
   Future<ApiState> setValues(SetValuesRequest? request) async {
@@ -994,12 +997,11 @@ class OfflineDatabase extends LocalDatabase
       throw new Exception(
           'Offline database exception: SetValues columnNames and values does not match or null!');
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> selectRecord(SelectRecordRequest? request) async {
@@ -1028,12 +1030,11 @@ class OfflineDatabase extends LocalDatabase
       response.addResponseObject(dataBook);
       return response;
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> deleteRecord(DeleteRecordRequest? request,
@@ -1077,12 +1078,11 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> insertRecord(InsertRecordRequest? request) async {
@@ -1119,12 +1119,10 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> request(Request? request) async {
@@ -1179,20 +1177,19 @@ class OfflineDatabase extends LocalDatabase
       } else if (request is DeviceStatusRequest) {
         return ApiResponse(request: request, objects: []);
       } else {
-        return ApiError(
-            failure: Failure(
-                details: '',
-                message: 'Request could not be parsed',
-                name: '',
-                title: 'Error'));
+        return ApiError(failures: [
+          Failure(
+              details: '',
+              message: 'Request could not be parsed',
+              name: '',
+              title: 'Error')
+        ]);
       }
     } else {
-      return ApiError(
-          failure: Failure(
-              details: '',
-              message: 'An error occured',
-              name: '',
-              title: 'Error'));
+      return ApiError(failures: [
+        Failure(
+            details: '', message: 'An error occured', name: '', title: 'Error')
+      ]);
     }
   }
 

@@ -80,7 +80,8 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
           } else if (state is ApiResponse) {
             if (state.hasObject<Failure>()) {
               setState(() {
-                _error = ApiError(failure: state.getObjectByType<Failure>()!);
+                _error =
+                    ApiError(failures: [state.getObjectByType<Failure>()!]);
               });
             } else {
               setState(() {
@@ -113,7 +114,8 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
               if (state.hasObject<Failure>()) {
                 setState(() {
-                  _error = ApiError(failure: state.getObjectByType<Failure>()!);
+                  _error =
+                      ApiError(failures: [state.getObjectByType<Failure>()!]);
                 });
               }
             }
@@ -138,13 +140,14 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 const SizedBox(
                   height: 15,
                 ),
-                if (_error != null) ...[
+                if (_error != null && _error!.failures.isNotEmpty) ...[
                   Text(
-                    _error!.failure.message ?? 'An error occured',
+                    _error!.failures[0].message ?? 'An error occured',
                     style: TextStyle(
-                        color: _error?.failure.name == ErrorHandler.messageInfo
-                            ? Colors.white
-                            : Colors.black),
+                        color:
+                            _error!.failures[0].name == ErrorHandler.messageInfo
+                                ? Colors.white
+                                : Colors.black),
                   ),
                   const SizedBox(
                     height: 10,

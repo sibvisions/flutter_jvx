@@ -129,12 +129,13 @@ void main() {
     final tResponse = ApiResponse.fromJson(
         tStartup, json.decode(fixture('startup_response.json')));
 
-    final tError = ApiError(
-        failure: ServerFailure(
-            name: 'message.error',
-            details: '',
-            message: 'Could not parse response',
-            title: 'Parsing error'));
+    final tError = ApiError(failures: [
+      ServerFailure(
+          name: 'message.error',
+          details: '',
+          message: 'Could not parse response',
+          title: 'Parsing error')
+    ]);
 
     test('should return ApiResponse with valid data', () async {
       when(mockDataSource.startup(tStartup)).thenAnswer((_) async => tResponse);

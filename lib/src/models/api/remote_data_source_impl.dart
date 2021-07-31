@@ -305,7 +305,7 @@ class RemoteDataSourceImpl implements DataSource {
             ? appState.appConfig!.goOfflineRequestTimeout
             : appState.appConfig!.requestTimeout);
 
-    return either.fold((l) => Left(ApiError(failure: l)), (r) async {
+    return either.fold((l) => Left(ApiError(failures: [l])), (r) async {
       if (r.statusCode != 404) {
         List decodedBody = [];
 
@@ -321,15 +321,16 @@ class RemoteDataSourceImpl implements DataSource {
             else
               decodedBody = _getDecodedBody(r.body);
           } on FormatException {
-            return Left(ApiError(
-                failure: ServerFailure(
-                    name: 'message.error',
-                    details: '',
-                    message: 'Could not parse response',
-                    title: 'Parsing error')));
+            return Left(ApiError(failures: [
+              ServerFailure(
+                  name: 'message.error',
+                  details: '',
+                  message: 'Could not parse response',
+                  title: 'Parsing error')
+            ]));
           }
 
-          Failure? failure = _getErrorIfExists(decodedBody);
+          List<Failure> failures = _getErrorsIfExists(decodedBody);
 
           if (!kReleaseMode && debugResponse) {
             log('RESPONSE ${uri.path}: $decodedBody');
@@ -355,9 +356,9 @@ class RemoteDataSourceImpl implements DataSource {
             }
           }
 
-          if (failure != null) {
+          if (failures.isNotEmpty) {
             if (decodedBody.length == 1) {
-              return Left(ApiError(failure: failure));
+              return Left(ApiError(failures: failures));
             } else {
               ApiResponse internResponse =
                   ApiResponse.fromJson(request, decodedBody);
@@ -375,20 +376,22 @@ class RemoteDataSourceImpl implements DataSource {
         } else if (response is ApiError) {
           return Left(response);
         } else {
-          return Left(ApiError(
-              failure: ServerFailure(
-                  name: 'message.error',
-                  message: 'Something went wrong',
-                  title: 'Error',
-                  details: '')));
+          return Left(ApiError(failures: [
+            ServerFailure(
+                name: 'message.error',
+                message: 'Something went wrong',
+                title: 'Error',
+                details: '')
+          ]));
         }
       } else {
-        return Left(ApiError(
-            failure: Failure(
-                details: '',
-                message: 'Could not fetch url',
-                name: ErrorHandler.serverError,
-                title: 'Not found')));
+        return Left(ApiError(failures: [
+          Failure(
+              details: '',
+              message: 'Could not fetch url',
+              name: ErrorHandler.serverError,
+              title: 'Not found')
+        ]));
       }
     });
   }
@@ -400,7 +403,7 @@ class RemoteDataSourceImpl implements DataSource {
         data: request.toJson(),
         timeout: appState.appConfig!.requestTimeout);
 
-    return either.fold((l) => Left(ApiError(failure: l)), (r) {
+    return either.fold((l) => Left(ApiError(failures: [l])), (r) {
       ApiResponse response = ApiResponse(request: request, objects: []);
 
       response.addResponseObject(DownloadResponseObject(
@@ -418,7 +421,7 @@ class RemoteDataSourceImpl implements DataSource {
     Either<Failure, http.Response> either =
         await client.upload(uri: uri, data: request.toJson());
 
-    return either.fold((l) => Left(ApiError(failure: l)), (r) {
+    return either.fold((l) => Left(ApiError(failures: [l])), (r) {
       ApiResponse response = ApiResponse.fromJson(request, json.decode(r.body));
 
       response.addResponseObject(
@@ -428,18 +431,20 @@ class RemoteDataSourceImpl implements DataSource {
     });
   }
 
-  Failure? _getErrorIfExists(List<dynamic> responses) {
+  List<Failure> _getErrorsIfExists(List<dynamic> responses) {
+    List<Failure> failures = <Failure>[];
+
     if (responses.isNotEmpty) {
       for (final response in responses) {
         if (response['name'] == 'message.error' ||
             response['name'] == 'server.error' ||
             response['name'] == 'message.sessionexpired') {
-          return ServerFailure.fromJson(response);
+          failures.add(ServerFailure.fromJson(response));
         }
       }
     }
 
-    return null;
+    return failures;
   }
 }
 
