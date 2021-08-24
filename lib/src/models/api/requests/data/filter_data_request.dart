@@ -27,7 +27,12 @@ class FilterDataRequest extends DataRequest {
     this.fromRow = -1,
     this.rowCount = -1,
     this.includeMetaData = false,
-  }) : super(dataProvider: dataProvider, clientId: clientId, reload: reload);
+    bool showLoading = true,
+  }) : super(
+            dataProvider: dataProvider,
+            clientId: clientId,
+            reload: reload,
+            showLoading: showLoading);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'columnNames': columnNames,

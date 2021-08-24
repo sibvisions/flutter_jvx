@@ -3,6 +3,9 @@ import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/change_password_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
@@ -270,6 +273,32 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
               children: [
                 Divider(
                   height: 1,
+                ),
+                ListTile(
+                  title: Text(
+                    AppLocalizations.of(context)!.text('Change Password'),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor.textColor()),
+                  ),
+                  leading: FaIcon(
+                    FontAwesomeIcons.key,
+                    color: Theme.of(context).primaryColor.textColor(),
+                  ),
+                  onTap: () async {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => ChangePasswordDialog(
+                              username:
+                                  widget.appState.userData?.username ?? '',
+                              clientId:
+                                  widget.appState.applicationMetaData!.clientId,
+                              login: false,
+                            ));
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  color: Theme.of(context).primaryColor.textColor(),
                 ),
                 ListTile(
                   title: Text(

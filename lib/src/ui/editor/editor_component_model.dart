@@ -231,7 +231,13 @@ class EditorComponentModel extends ComponentModel {
       (cellEditor as CoReferencedCellEditorWidget)
           .cellEditorModel
           .referencedData
-          ?.filterData(value, this.name);
+          ?.filterData(
+              value,
+              this.name,
+              (cellEditor as CoReferencedCellEditorWidget)
+                  .cellEditorModel
+                  .columnView
+                  ?.columnNames);
     }
     if (this.onFilterCallback != null) {
       onFilterCallback!(value);

@@ -45,8 +45,8 @@ class TextComponentModel extends EditableComponentModel {
   }
 
   void onTextFieldEndEditing(BuildContext context) {
-    if (valueChanged && rawComponentId.isNotEmpty) {
-      onComponentValueChanged(context, rawComponentId, text);
+    if (valueChanged && name.isNotEmpty) {
+      onComponentValueChanged(context, name, text);
       valueChanged = false;
     }
   }

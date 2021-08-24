@@ -20,13 +20,13 @@ class IconComponentModel extends ComponentModel {
 
   void updateProperties(
       BuildContext context, ChangedComponent changedComponent) {
-    super.updateProperties(context, changedComponent);
-
     eventAction = changedComponent.getProperty<bool>(
         ComponentProperty.EVENT_ACTION, eventAction)!;
     selected = changedComponent.getProperty<bool>(
         ComponentProperty.SELECTED, selected)!;
     image =
         changedComponent.getProperty<String>(ComponentProperty.IMAGE, image)!;
+
+    super.updateProperties(context, changedComponent);
   }
 }

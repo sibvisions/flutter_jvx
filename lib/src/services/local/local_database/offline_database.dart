@@ -4,9 +4,8 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutterclient/src/services/repository/api_repository.dart';
-import 'package:flutterclient/src/services/repository/api_repository_impl.dart';
 
+import '../../../../flutterclient.dart';
 import '../../../../injection_container.dart';
 import '../../../models/api/data_source.dart';
 import '../../../models/api/errors/failure.dart';
@@ -40,6 +39,8 @@ import '../../../ui/screen/core/so_screen.dart';
 import '../../../util/translation/app_localizations.dart';
 import '../../remote/cubit/api_cubit.dart';
 import '../../remote/network_info/network_info.dart';
+import '../../repository/api_repository.dart';
+import '../../repository/api_repository_impl.dart';
 import '../shared_preferences/shared_preferences_manager.dart';
 import 'i_offline_database_provider.dart';
 import 'local_database.dart';
@@ -52,7 +53,6 @@ class OfflineDatabase extends LocalDatabase
   ValueNotifier<double?> progress = ValueNotifier<double>(0.0);
   int rowsToImport = 0;
   int rowsImported = 0;
-  int fetchOfflineRecordsPerRequest = 100;
   Failure? responseError;
   Filter? _lastFetchFilter;
   FilterCondition? _lastFetchFilterCondition;
@@ -103,7 +103,6 @@ class OfflineDatabase extends LocalDatabase
           username: authUsername,
           password: authPassword,
           authKey: authKey,
-          layoutMode: 'generic',
           language: repository.appState.language!.language,
           forceNewSession: true);
 
@@ -156,19 +155,18 @@ class OfflineDatabase extends LocalDatabase
                   if (state is ApiResponse) {
                     currentScreenComponentId = '';
                   }
+                }
 
-                  OpenScreenRequest openScreenRequest = OpenScreenRequest(
-                      clientId:
-                          repository.appState.applicationMetaData!.clientId,
-                      componentId: metaData.offlineScreenComponentId!);
+                OpenScreenRequest openScreenRequest = OpenScreenRequest(
+                    parameter: {'mobile.onlineSync': true},
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                    componentId: metaData.offlineScreenComponentId!);
 
-                  ApiState openScreenState =
-                      await repository.openScreen(openScreenRequest);
+                ApiState openScreenState =
+                    await repository.openScreen(openScreenRequest);
 
-                  if (openScreenState is ApiResponse) {
-                    currentScreenComponentId =
-                        metaData.offlineScreenComponentId!;
-                  }
+                if (openScreenState is ApiResponse) {
+                  currentScreenComponentId = metaData.offlineScreenComponentId!;
                 }
               }
 
@@ -285,8 +283,8 @@ class OfflineDatabase extends LocalDatabase
       // fetch all data to prepare offline sync
       await Future.forEach(componentData, (SoComponentData element) async {
         if (result) {
-          ApiState? state =
-              await element.fetchAll(repository, fetchOfflineRecordsPerRequest);
+          ApiState? state = await element.fetchAll(
+              repository, sl<AppState>().appConfig!.goOfflineReadAheadLimit);
 
           if (state != null && state is ApiError)
             result = false;
@@ -326,7 +324,19 @@ class OfflineDatabase extends LocalDatabase
         if (result) {
           await Future.forEach(componentData, (SoComponentData element) async {
             if (element.data != null && element.metaData != null && result) {
-              result = result & await _importRows(element.data);
+              try {
+                result = result &
+                    await _importRows(element.data,
+                        batchInsert: sl<AppState>()
+                            .appConfig!
+                            .goOfflineEnableBatchInsert,
+                        recordsPerBatch: sl<AppState>()
+                            .appConfig!
+                            .goOfflineBatchInsertAmount);
+              } catch (e) {
+                result = false;
+                log("Offline import finished with error! Importes records: $rowsImported/$rowsToImport, ErrorDetail: ${e.toString()}");
+              }
               if (!result) {
                 responseError = Failure(
                     title: AppLocalizations.of(context)!.text('Importfehler'),
@@ -379,13 +389,15 @@ class OfflineDatabase extends LocalDatabase
         dataSource: sl<DataSource>(),
         decoder: sl<ZipDecoder>());
 
-    FetchDataRequest fetch = FetchDataRequest(
+    FilterDataRequest filterRequest = FilterDataRequest(
         dataProvider: dataProvider,
         clientId: repository.appState.applicationMetaData!.clientId,
         columnNames: columnNames,
-        filter: filter);
+        fromRow: 0,
+        rowCount: -1);
+    filterRequest.filter = filter;
 
-    List<ApiState> states = await repository.data(fetch);
+    List<ApiState> states = await repository.data(filterRequest);
 
     if (states.isNotEmpty && states.first is ApiResponse) {
       ApiResponse response = states.first as ApiResponse;
@@ -397,6 +409,7 @@ class OfflineDatabase extends LocalDatabase
 
         if (dataBook?.records.length == 1) {
           DeleteRecordRequest delete = DeleteRecordRequest(
+            selectedRow: null,
             dataProvider: dataProvider,
             filter: filter,
             clientId: repository.appState.applicationMetaData!.clientId,
@@ -409,30 +422,46 @@ class OfflineDatabase extends LocalDatabase
 
             if (await syncSave(
                 context, dataProvider, filter, columnNames, row)) {
-              String? tableName =
-                  OfflineDatabaseFormatter.formatTableName(dataProvider);
-
-              if (await tableExists(tableName)) {
-                Map<String, dynamic>? record =
-                    await getRowWithFilter(tableName, filter, false);
-                dynamic offlinePrimaryKey =
-                    OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
-                String where =
-                    "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
-
-                return await this.delete(tableName, where);
-              }
+              return await setDeletedSynced(dataProvider, filter);
             }
           }
+        } else {
+          return await onSyncDeleteRecordNotFound(
+              context, dataProvider, filter, columnNames, row);
         }
       }
-    } else {
-      responseError = Failure(
-          title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
-          details: '',
-          message: AppLocalizations.of(context)!
-              .text('Der zu löschende Datensatz wurde nicht gefunden.'),
-          name: 'offline.error');
+    }
+
+    return false;
+  }
+
+  Future<bool> onSyncDeleteRecordNotFound(
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
+    responseError = Failure(
+        title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
+        details: '',
+        message: AppLocalizations.of(context)!
+            .text('Der zu löschende Datensatz wurde nicht gefunden.'),
+        name: 'offline.error');
+
+    return false;
+  }
+
+  Future<bool> setDeletedSynced(String dataProvider, Filter filter) async {
+    String? tableName = OfflineDatabaseFormatter.formatTableName(dataProvider);
+    if (await tableExists(tableName)) {
+      Map<String, dynamic>? record =
+          await getRowWithFilter(tableName, filter, false);
+      dynamic offlinePrimaryKey =
+          OfflineDatabaseFormatter.getOfflinePrimaryKey(record);
+      String where =
+          "$OFFLINE_COLUMNS_PRIMARY_KEY='${offlinePrimaryKey.toString()}'";
+
+      return await this.delete(tableName, where);
     }
 
     return false;
@@ -452,46 +481,97 @@ class OfflineDatabase extends LocalDatabase
         dataSource: sl<DataSource>(),
         decoder: sl<ZipDecoder>());
 
-    InsertRecordRequest insert = InsertRecordRequest(
+    FilterDataRequest filterRequest = FilterDataRequest(
         dataProvider: dataProvider,
-        clientId: repository.appState.applicationMetaData!.clientId);
+        clientId: repository.appState.applicationMetaData!.clientId,
+        columnNames: columnNames,
+        fromRow: 0,
+        rowCount: -1);
+    filterRequest.filter = filter;
 
-    List<ApiState> states = await repository.data(insert);
+    List<ApiState> states = await repository.data(filterRequest);
 
     if (states.isNotEmpty && states.first is ApiResponse) {
       ApiResponse response = states.first as ApiResponse;
+
       setProperties(repository, response);
 
       if (response.hasDataBook) {
         DataBook? dataBook = response.getDataBookByProvider(dataProvider);
 
-        if (dataBook != null && dataBook.records.isNotEmpty) {
-          Map<String, dynamic> changedInsertValues =
-              OfflineDatabaseFormatter.getChangedValues(
-                  dataBook.records[0], columnNames, row, filter.columnNames);
-
-          SetValuesRequest setValues = SetValuesRequest(
+        if (dataBook?.records.length == 0) {
+          InsertRecordRequest insert = InsertRecordRequest(
               dataProvider: dataProvider,
-              values: changedInsertValues.values.toList(),
-              columnNames: changedInsertValues.keys.toList(),
-              clientId: repository.appState.applicationMetaData!.clientId,
-              offlineSelectedRow: null);
+              clientId: repository.appState.applicationMetaData!.clientId);
 
-          List<ApiState> states = await repository.data(setValues);
+          List<ApiState> states = await repository.data(insert);
 
           if (states.isNotEmpty && states.first is ApiResponse) {
-            if (await syncSave(
-                context, dataProvider, filter, columnNames, row)) {
-              dynamic offlinePrimaryKey =
-                  OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-              if (await setOfflineState(
-                  dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
-                return true;
+            ApiResponse response = states.first as ApiResponse;
+            setProperties(repository, response);
+
+            if (response.hasDataBook) {
+              DataBook? dataBook = response.getDataBookByProvider(dataProvider);
+
+              if (dataBook != null && dataBook.records.isNotEmpty) {
+                Map<String, dynamic> changedInsertValues =
+                    OfflineDatabaseFormatter.getChangedValues(
+                        dataBook.records[0],
+                        columnNames,
+                        row,
+                        filter.columnNames);
+
+                SetValuesRequest setValues = SetValuesRequest(
+                    dataProvider: dataProvider,
+                    values: changedInsertValues.values.toList(),
+                    columnNames: changedInsertValues.keys.toList(),
+                    clientId: repository.appState.applicationMetaData!.clientId,
+                    offlineSelectedRow: null);
+
+                List<ApiState> states = await repository.data(setValues);
+
+                if (states.isNotEmpty && states.first is ApiResponse) {
+                  if (await syncSave(
+                      context, dataProvider, filter, columnNames, row)) {
+                    return await setInsertedSynced(dataProvider, row);
+                  }
+                }
+              }
             }
           }
+        } else {
+          return await onSyncInsertRecordExists(
+              context, dataProvider, filter, columnNames, row);
         }
       }
     }
+
+    return false;
+  }
+
+  Future<bool> onSyncInsertRecordExists(
+      BuildContext context,
+      String dataProvider,
+      Filter filter,
+      List<dynamic> columnNames,
+      Map<String, dynamic> row) async {
+    responseError = Failure(
+        title: AppLocalizations.of(context)!.text('Online Sync Fehler'),
+        details: '',
+        message: AppLocalizations.of(context)!
+            .text('Der einzufügende Datensatz ist bereits vorhanden.'),
+        name: 'offline.error');
+
+    return false;
+  }
+
+  Future<bool> setInsertedSynced(
+      String dataProvider, Map<String, dynamic> row) async {
+    dynamic offlinePrimaryKey =
+        OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+    if (await setOfflineState(
+        dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED))
+      return true;
 
     return false;
   }
@@ -576,7 +656,8 @@ class OfflineDatabase extends LocalDatabase
           OfflineDatabaseFormatter.formatTableName(metaData.dataProvider);
       if (!await tableExists(tablename)) {
         String columns = "";
-        metaData.columns!.forEach((column) {
+        await Future.forEach(metaData.columns!,
+            (DataBookMetaDataColumn column) async {
           columns += OfflineDatabaseFormatter.formatColumnForCreateTable(
               column.name!,
               OfflineDatabaseFormatter.getDataType(column.cellEditor!));
@@ -611,12 +692,14 @@ class OfflineDatabase extends LocalDatabase
     if (metaData != null) {
       return ApiResponse(request: request, objects: [metaData]);
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: 'offline.error',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '',
+          message: 'An error occured',
+          name: 'offline.error',
+          title: 'Error')
+    ]);
   }
 
   Future<DataBookMetaData?> getMetaDataBook(String dataProvider) async {
@@ -648,7 +731,7 @@ class OfflineDatabase extends LocalDatabase
     List<Map<String, dynamic>>? result =
         await this.selectRows(OFFLINE_META_DATA_TABLE);
     if (result != null && result.length > 0) {
-      result.forEach((row) {
+      await Future.forEach(result, (Map<String, dynamic> row) async {
         if (row.containsKey(OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER)) {
           offlineDataProvider
               .add(row[OFFLINE_META_DATA_TABLE_COLUMN_DATA_PROVIDER]);
@@ -659,7 +742,8 @@ class OfflineDatabase extends LocalDatabase
     return offlineDataProvider;
   }
 
-  Future<bool> _importRows(DataBook? data) async {
+  Future<bool> _importRows(DataBook? data,
+      {bool batchInsert = false, int recordsPerBatch = 100}) async {
     if (data != null && data.dataProvider != null) {
       String? tableName =
           OfflineDatabaseFormatter.formatTableName(data.dataProvider);
@@ -667,7 +751,7 @@ class OfflineDatabase extends LocalDatabase
       if (await tableExists(tableName)) {
         List<String> sqlStatements = <String>[];
 
-        data.records.forEach((element) {
+        await Future.forEach(data.records, (dynamic element) async {
           String columnString =
               OfflineDatabaseFormatter.getInsertColumnList(data.columnNames);
           String valueString =
@@ -676,13 +760,35 @@ class OfflineDatabase extends LocalDatabase
               "INSERT INTO [$tableName] ($columnString) VALUES ($valueString)");
         });
 
-        await this.bulk(sqlStatements, () {
-          rowsImported++;
-          setProgress(rowsToImport == 0
-              ? 0.5
-              : 0.5 + (rowsImported / 2 / rowsToImport));
-        });
-        //await this.batch(sqlStatements);
+        if (batchInsert) {
+          // batch insert with a package of insertOfflineRecordsPerBatchOperation
+          int index = 0;
+          int importRows = 0;
+
+          while (index < sqlStatements.length) {
+            importRows += recordsPerBatch;
+            if (importRows > sqlStatements.length)
+              importRows = sqlStatements.length;
+            List<String> batchStatements =
+                sqlStatements.getRange(index, importRows).toList();
+            await this.batch(batchStatements);
+            rowsImported += importRows - index;
+            index = importRows;
+            //index += importRows;
+
+            setProgress(rowsToImport == 0
+                ? 0.5
+                : 0.5 + (rowsImported / 2 / rowsToImport));
+          }
+        } else {
+          // single bulk insert
+          await this.bulk(sqlStatements, () {
+            rowsImported++;
+            setProgress(rowsToImport == 0
+                ? 0.5
+                : 0.5 + (rowsImported / 2 / rowsToImport));
+          });
+        }
 
         return true;
       }
@@ -770,9 +876,11 @@ class OfflineDatabase extends LocalDatabase
           OfflineDatabaseFormatter.formatTableName(dataProvider);
       String orderBy = "[$OFFLINE_COLUMNS_PRIMARY_KEY]";
       String limit = "";
-      if (fromRow != null && fromRow >= 0) {
-        limit = fromRow.toString();
-        if (rowCount! >= 0) limit = ", " + rowCount.toString();
+      if (fromRow != null &&
+          fromRow >= 0 &&
+          rowCount != null &&
+          rowCount >= 0) {
+        limit = "$fromRow, $rowCount";
       } else if (rowCount != null && rowCount >= 0) {
         limit = rowCount.toString();
       }
@@ -790,11 +898,13 @@ class OfflineDatabase extends LocalDatabase
 
       List<List<dynamic>> records = <List<dynamic>>[];
 
-      result?.forEach((element) {
-        records.add(OfflineDatabaseFormatter.removeOfflineColumns(element)
-            .values
-            .toList());
-      });
+      if (result != null) {
+        await Future.forEach(result, (Map<String, dynamic> element) async {
+          records.add(OfflineDatabaseFormatter.removeOfflineColumns(element)
+              .values
+              .toList());
+        });
+      }
 
       ApiResponse response = ApiResponse(request: request, objects: []);
       DataBook dataBook = DataBook(
@@ -819,12 +929,13 @@ class OfflineDatabase extends LocalDatabase
       return response;
     }
 
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error happended',
-            name: 'offline.error',
-            title: 'Error'));
+    return ApiError(failures: [
+      Failure(
+          details: '',
+          message: 'An error happended',
+          name: 'offline.error',
+          title: 'Error')
+    ]);
   }
 
   Future<ApiState> setValues(SetValuesRequest? request) async {
@@ -886,12 +997,11 @@ class OfflineDatabase extends LocalDatabase
       throw new Exception(
           'Offline database exception: SetValues columnNames and values does not match or null!');
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> selectRecord(SelectRecordRequest? request) async {
@@ -920,12 +1030,11 @@ class OfflineDatabase extends LocalDatabase
       response.addResponseObject(dataBook);
       return response;
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> deleteRecord(DeleteRecordRequest? request,
@@ -969,12 +1078,11 @@ class OfflineDatabase extends LocalDatabase
         }
       }
     }
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> insertRecord(InsertRecordRequest? request) async {
@@ -985,9 +1093,8 @@ class OfflineDatabase extends LocalDatabase
           "[$OFFLINE_COLUMNS_STATE]$INSERT_INTO_DATA_SEPERATOR[$OFFLINE_COLUMNS_CHANGED]";
       String valueString =
           "'$OFFLINE_ROW_STATE_INSERTED'${INSERT_INTO_DATA_SEPERATOR}datetime('now')";
-      if (await insert(tableName, columnString, valueString)) {
-        int count = await this.rowCount(tableName);
-
+      int count = await insert(tableName, columnString, valueString);
+      if (count >= 0) {
         ApiResponse response = ApiResponse(request: request, objects: []);
         DataBook dataBook = new DataBook(
           dataProvider: request.dataProvider,
@@ -1012,12 +1119,10 @@ class OfflineDatabase extends LocalDatabase
       }
     }
 
-    return ApiError(
-        failure: Failure(
-            details: '',
-            message: 'An error occured',
-            name: '',
-            title: 'Error'));
+    return ApiError(failures: [
+      Failure(
+          details: '', message: 'An error occured', name: '', title: 'Error')
+    ]);
   }
 
   Future<ApiState> request(Request? request) async {
@@ -1069,21 +1174,22 @@ class OfflineDatabase extends LocalDatabase
         return ApiResponse(request: request, objects: []);
       } else if (request is LogoutRequest) {
         return ApiResponse(request: request, objects: []);
+      } else if (request is DeviceStatusRequest) {
+        return ApiResponse(request: request, objects: []);
       } else {
-        return ApiError(
-            failure: Failure(
-                details: '',
-                message: 'Request could not be parsed',
-                name: '',
-                title: 'Error'));
+        return ApiError(failures: [
+          Failure(
+              details: '',
+              message: 'Request could not be parsed',
+              name: '',
+              title: 'Error')
+        ]);
       }
     } else {
-      return ApiError(
-          failure: Failure(
-              details: '',
-              message: 'An error occured',
-              name: '',
-              title: 'Error'));
+      return ApiError(failures: [
+        Failure(
+            details: '', message: 'An error occured', name: '', title: 'Error')
+      ]);
     }
   }
 
@@ -1105,7 +1211,8 @@ class OfflineDatabase extends LocalDatabase
               "[$OFFLINE_META_DATA_TABLE_COLUMN_DATA]";
       String valueString =
           "'$dataProvider'$INSERT_INTO_DATA_SEPERATOR'$tableName'$INSERT_INTO_DATA_SEPERATOR'$screenComponentId'$INSERT_INTO_DATA_SEPERATOR'$metaData'";
-      return await insert(OFFLINE_META_DATA_TABLE, columnString, valueString);
+      return await insert(OFFLINE_META_DATA_TABLE, columnString, valueString) >=
+          0;
     }
   }
 

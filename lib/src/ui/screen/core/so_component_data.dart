@@ -250,9 +250,10 @@ class SoComponentData {
     sl<ApiCubit>().data(saveDataRequest);
   }
 
-  void filterData(String value, String editorComponentId) {
+  void filterData(
+      String value, String editorComponentId, List<String>? columnNames) {
     FilterDataRequest request = FilterDataRequest(
-        columnNames: data?.columnNames,
+        columnNames: columnNames,
         dataProvider: dataProvider,
         value: value,
         editorComponentId: editorComponentId,
@@ -266,16 +267,18 @@ class SoComponentData {
 
   void filterDataExtended(
       BuildContext context, int? reload, int? rowCountedNeeded,
-      [Filter? filter, FilterCondition? filterCondition]) {
+      [Filter? filter,
+      FilterCondition? filterCondition,
+      bool showLoading = true]) {
     isFetching = true;
     FilterDataRequest filterDataRequest = FilterDataRequest(
-      dataProvider: dataProvider,
-      value: null,
-      editorComponentId: null,
-      clientId: sl<AppState>().applicationMetaData?.clientId ?? '',
-      reload: (reload == -1),
-      condition: filterCondition,
-    );
+        dataProvider: dataProvider,
+        value: null,
+        editorComponentId: null,
+        clientId: sl<AppState>().applicationMetaData?.clientId ?? '',
+        reload: (reload == -1),
+        condition: filterCondition,
+        showLoading: showLoading);
 
     if (reload != null && reload >= 0) {
       filterDataRequest.fromRow = reload;
@@ -298,8 +301,10 @@ class SoComponentData {
     sl<ApiCubit>().data(filterDataRequest);
   }
 
-  void setValues(BuildContext context, List<dynamic> values,
-      [List<dynamic>? columnNames, Filter? filter, bool isTextField = false]) {
+  Future<void> setValues(BuildContext context, List<dynamic> values,
+      [List<dynamic>? columnNames,
+      Filter? filter,
+      bool isTextField = false]) async {
     SetValuesRequest setValues = SetValuesRequest(
         columnNames: columnNames ?? data!.columnNames,
         dataProvider: dataProvider,
@@ -342,11 +347,11 @@ class SoComponentData {
     if (!isTextField) {
       TextUtils.unfocusCurrentTextfield(context);
 
-      Future.delayed(const Duration(milliseconds: 100), () {
-        sl<ApiCubit>().data(setValues);
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        await sl<ApiCubit>().data(setValues);
       });
     } else {
-      sl<ApiCubit>().data(setValues);
+      await sl<ApiCubit>().data(setValues);
     }
   }
 
@@ -427,7 +432,7 @@ class SoComponentData {
     SelectRecordRequest select = SelectRecordRequest(
         dataProvider: dataProvider,
         filter: Filter(
-            columnNames: this.primaryKeyColumns,
+            columnNames: this.primaryKeyColumns ?? data?.columnNames,
             values: data!.getRow(index, this.primaryKeyColumns)),
         selectedRow: index,
         clientId: AppStateProvider.of(context)!
@@ -443,6 +448,12 @@ class SoComponentData {
       ApiRepository repository, int recordsPerRequest) async {
     ApiState? result;
     log('Start fetching all records for ${this.dataProvider}.');
+
+    if (data != null) {
+      data!.isAllFetched = false;
+      data!.records = <dynamic>[];
+    }
+
     if (data == null || data!.isAllFetched == null || !data!.isAllFetched!) {
       bool reload = true;
       isFetching = true;
@@ -461,8 +472,8 @@ class SoComponentData {
       log('Finished fetching all records for ${this.dataProvider}. Records: ${data!.records.length}');
     else if (result is ApiResponse && result.hasError)
       log('Finished fetching all records for ${this.dataProvider} with error: ${result.getObjectByType<Failure>()!.message}');
-    else if (result is ApiError)
-      log('Finished fetching all records for ${this.dataProvider} with error: ${result.failure.message}');
+    else if (result is ApiError && result.failures.isNotEmpty)
+      log('Finished fetching all records for ${this.dataProvider} with error: ${result.failures.first.message}');
 
     return result;
   }

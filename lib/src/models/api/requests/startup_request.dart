@@ -2,7 +2,6 @@ import '../request.dart';
 
 class StartupRequest extends Request {
   final String appName;
-  final String layoutMode;
   final String url;
   final int screenWidth;
   final int screenHeight;
@@ -21,6 +20,7 @@ class StartupRequest extends Request {
   final String? deviceMode;
   final String language;
   final bool? forceNewSession;
+  final Map<String, dynamic> parameter;
 
   @override
   String get debugInfo => 'url: $url, appName: $appName, language: $language';
@@ -29,7 +29,6 @@ class StartupRequest extends Request {
       {required String clientId,
       required this.url,
       required this.appName,
-      required this.layoutMode,
       required this.screenWidth,
       required this.screenHeight,
       required this.appMode,
@@ -46,14 +45,14 @@ class StartupRequest extends Request {
       this.deviceType,
       this.deviceTypeModel,
       this.deviceMode,
-      this.forceNewSession})
+      this.forceNewSession,
+      this.parameter = const <String, dynamic>{}})
       : super(clientId: clientId);
 
   @override
   Map<String, dynamic> toJson() => <String, dynamic>{
         'applicationName': appName,
         'authKey': authKey,
-        'layoutMode': layoutMode,
         'screenWidth': screenWidth,
         'screenHeight': screenHeight,
         'appMode': appMode,
@@ -71,5 +70,6 @@ class StartupRequest extends Request {
         'deviceMode': this.deviceMode,
         'langCode': this.language,
         'forceNewSession': this.forceNewSession,
+        ...parameter.map((key, value) => MapEntry('custom_$key', value))
       };
 }

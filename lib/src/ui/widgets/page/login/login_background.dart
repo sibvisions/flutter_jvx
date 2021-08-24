@@ -31,7 +31,7 @@ class LoginBackground extends StatelessWidget {
       } else if (!kIsWeb) {
         return Image.file(
           File(
-              '${DownloadHelper.getLocalFilePath(baseUrl: appState.serverConfig!.baseUrl, appName: appState.serverConfig!.appName, appVersion: appState.applicationMetaData!.version, translation: false, baseDir: appState.baseDirectory)}${appState.applicationStyle!.loginStyle!.logo}'),
+              '${DownloadHelper.getLocalFilePath(baseUrl: appState.serverConfig!.baseUrl, appName: appState.serverConfig!.appName, appVersion: appState.applicationMetaData?.version ?? '1.0', translation: false, baseDir: appState.baseDirectory)}${appState.applicationStyle!.loginStyle!.logo}'),
           fit: BoxFit.fitHeight,
         );
       } else {
@@ -71,6 +71,8 @@ class LoginBackground extends StatelessWidget {
   }
 
   Widget topHalf(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Flexible(
       flex: 2,
       child: ClipPath(
@@ -87,8 +89,11 @@ class LoginBackground extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
-                child: _getImage(),
-              ),
+                  child: size.width > size.height
+                      ? ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: size.width / 2),
+                          child: _getImage())
+                      : _getImage()),
             )
           ],
         ),

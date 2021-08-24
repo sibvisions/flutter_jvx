@@ -11,6 +11,24 @@ class Filter {
       : columnNames = json['columnNames'],
         values = json['values'];
 
-  Map<String, dynamic> toJson() =>
-      <String, dynamic>{'columnNames': columnNames, 'values': values};
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        if (_checkListForNull(columnNames) && _checkListForNull(values))
+          'columnNames': columnNames,
+        if (_checkListForNull(values) && _checkListForNull(columnNames))
+          'values': values
+      };
+
+  bool _checkListForNull(List? list) {
+    if (list != null) {
+      try {
+        list.firstWhere((element) => element == null);
+
+        return false;
+      } on StateError {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
 }

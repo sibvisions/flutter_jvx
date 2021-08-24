@@ -53,6 +53,23 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
     return Alignment.centerLeft;
   }
 
+  Widget _getText() {
+    if (widget.componentModel.text.trim().startsWith('<html>')) {
+      return Html(data: widget.componentModel.text);
+    }
+
+    TextOverflow? overflow;
+
+    if (widget.componentModel.isMaximumSizeSet)
+      overflow = TextOverflow.ellipsis;
+
+    return Text(
+      widget.componentModel.text,
+      style: widget.componentModel.fontStyle,
+      overflow: overflow,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -60,11 +77,6 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    TextOverflow? overflow;
-
-    if (widget.componentModel.isMaximumSizeSet)
-      overflow = TextOverflow.ellipsis;
-
     Widget child = Container(
       padding: EdgeInsets.only(top: 0.5),
       color: widget.componentModel.background,
@@ -72,16 +84,9 @@ class CoLabelWidgetState extends ComponentWidgetState<CoLabelWidget> {
         alignment: getLabelAlignment(widget.componentModel.horizontalAlignment,
             widget.componentModel.verticalAlignment),
         child: Baseline(
-          baselineType: TextBaseline.alphabetic,
-          baseline: widget.componentModel.getBaseline(),
-          child: widget.componentModel.text.trim().startsWith('<html>')
-              ? Html(data: widget.componentModel.text)
-              : Text(
-                  widget.componentModel.text,
-                  style: widget.componentModel.fontStyle,
-                  overflow: overflow,
-                ),
-        ),
+            baselineType: TextBaseline.alphabetic,
+            baseline: widget.componentModel.getBaseline(),
+            child: _getText()),
       ),
     );
 

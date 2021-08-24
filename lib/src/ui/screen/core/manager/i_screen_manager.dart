@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/request.dart';
 
 import '../../../../models/api/response_objects/menu/menu_item.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
@@ -16,7 +18,7 @@ abstract class IScreenManager {
   /// Will be called before [getScreen] is called.
   ///
   /// The method is for registering all kinds of screens
-  void init();
+  void init(Key navigatorKey);
 
   /// Returns an [IScreen] with the given [componentId].
   ///
@@ -31,6 +33,18 @@ abstract class IScreenManager {
 
   /// Will be called after a successful login with the current [UserData].
   void onUserData(UserDataResponseObject userData);
+
+  /// Will be called after a successful login
+  Future<bool> onLogin(BuildContext context);
+
+  /// Will be called when going online from offline mode
+  Future<bool> onSync(BuildContext context);
+
+  /// Is called when a cookie is returned
+  String onCookie(String cookie);
+
+  /// Is called when a response is returned
+  Future<ApiState?> onResponse(Request request, String responseBody, Future<ApiState> Function() callback);
 
   /// Used to register a screen for the Screen Manager
   void registerScreen(SoScreen screen);

@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutterclient/flutterclient.dart';
-import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 
 import '../../../models/api/errors/failure.dart';
+import '../../../ui/util/error/error_handler.dart';
 import 'http_client.dart';
 
 abstract class RestClient {
@@ -54,8 +54,9 @@ class RestClientImpl implements RestClient {
       required Map<String, dynamic> data,
       int timeout = 10}) async {
     if (data['forceNewSession'] != null && data['forceNewSession']) {
-      headers?.clear();
-      headers?['Content-Type'] = 'application/json';
+      clearSessionCookie();
+      //headers?.clear();
+      //headers?['Content-Type'] = 'application/json';
     }
 
     try {
@@ -111,6 +112,27 @@ class RestClientImpl implements RestClient {
           details: '',
           name: ErrorHandler.timeoutError,
           message: e.toString()));
+    }
+  }
+
+  void clearSessionCookie() {
+    if (headers != null) {
+      String newCookies = "";
+      String? cookie = headers!["cookie"];
+
+      if (cookie != null) {
+        List<String> cookies = cookie.split(";");
+
+        for (var cookieItem in cookies) {
+          List c = cookieItem.split("=");
+          if (c.length == 2 && c[0] != 'JSESSIONID')
+            newCookies += "${c[0]}=${c[1]};";
+        }
+        if (newCookies.length > 0)
+          newCookies = newCookies.substring(0, newCookies.length - 1);
+
+        headers!["cookie"] = newCookies;
+      }
     }
   }
 }

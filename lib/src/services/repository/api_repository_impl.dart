@@ -5,6 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
+import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../injection_container.dart';
@@ -127,6 +129,8 @@ class ApiRepositoryImpl implements ApiRepository {
       if (state is ApiResponse) {
         manager.setSyncLoginData(
             username: request.username, password: request.password);
+        manager.offlineUsername = request.username;
+        manager.offlinePassword = request.password;
 
         if (state.hasObject<AuthenticationDataResponseObject>())
           manager.authKey = state
@@ -139,23 +143,20 @@ class ApiRepositoryImpl implements ApiRepository {
       final offlineUsername = manager.offlineUsername;
       final offlinePassword = manager.offlinePassword;
 
-      String usernameHash =
-          sha256.convert(utf8.encode(request.username)).toString();
-      String passwordHash =
-          sha256.convert(utf8.encode(request.password)).toString();
-
-      if (usernameHash == offlineUsername && passwordHash == offlinePassword) {
+      if (request.username == offlineUsername &&
+          request.password == offlinePassword) {
         return ApiResponse(request: request, objects: [
           LoginResponseObject(name: 'login', username: request.username),
           MenuResponseObject(name: 'menu', entries: [])
         ]);
       } else {
-        return ApiError(
-            failure: Failure(
-                title: 'Login error',
-                details: '',
-                message: 'False username or password',
-                name: 'message.error'));
+        return ApiError(failures: [
+          Failure(
+              title: 'Login error',
+              details: '',
+              message: 'False username or password',
+              name: 'message.error')
+        ]);
       }
     }
   }
@@ -285,11 +286,24 @@ class ApiRepositoryImpl implements ApiRepository {
     if (request is InsertRecordRequest &&
         request.setValues != null &&
         state is ApiResponse &&
-        !state.hasError) {
+        !state.hasError &&
+        !appState.isOffline) {
       states.add(await dataSource.data(request.setValues as DataRequest));
     }
 
     return states;
+  }
+
+  @override
+  Future<ApiState> changePassword(ChangePasswordRequest request) async {
+    return await _checkConnection(
+        request, () => dataSource.changePassword(request));
+  }
+
+  @override
+  Future<ApiState> resetPassword(ResetPasswordRequest request) async {
+    return await _checkConnection(
+        request, () => dataSource.resetPassword(request));
   }
 
   Future<ApiError?> handleDownload(ApiResponse response) async {
@@ -310,12 +324,13 @@ class ApiRepositoryImpl implements ApiRepository {
       archive = decoder.decodeBytes(
           response.getObjectByType<DownloadResponseObject>()!.bodyBytes);
     } on ArchiveException {
-      return ApiError(
-          failure: CacheFailure(
-              name: ErrorHandler.cacheError,
-              details: '',
-              title: 'Download error',
-              message: 'Could not decode file'));
+      return ApiError(failures: [
+        CacheFailure(
+            name: ErrorHandler.cacheError,
+            details: '',
+            title: 'Download error',
+            message: 'Could not decode file')
+      ]);
     }
 
     late String localFilePath;
@@ -419,12 +434,13 @@ class ApiRepositoryImpl implements ApiRepository {
       }
 
       if (!(await networkInfo.isConnected)) {
-        return ApiError(
-            failure: ServerFailure(
-                title: 'Connection problems.',
-                message: 'Could not ping server!',
-                details: '',
-                name: ErrorHandler.connectionError));
+        return ApiError(failures: [
+          ServerFailure(
+              title: 'Connection problems.',
+              message: 'Could not ping server!',
+              details: '',
+              name: ErrorHandler.connectionError)
+        ]);
       }
     }
 

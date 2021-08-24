@@ -1,8 +1,10 @@
 import '../../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../component/co_action_component_widget.dart';
 import '../../../component/model/button_component_model.dart';
+import '../../../component/model/chart_component_model.dart';
 import '../../../component/model/component_model.dart';
 import '../../../component/model/editable_component_model.dart';
+import '../../../component/model/gauge_component_model.dart';
 import '../../../component/model/icon_component_model.dart';
 import '../../../component/model/label_component_model.dart';
 import '../../../component/model/map_component_model.dart';
@@ -15,6 +17,7 @@ import '../../../component/popup_menu/models/menu_item_component_model.dart';
 import '../../../component/popup_menu/models/popup_menu_button_component_model.dart';
 import '../../../component/popup_menu/models/popup_menu_component_model.dart';
 import '../../../container/models/container_component_model.dart';
+import '../../../container/models/custom_container_component_model.dart';
 import '../../../container/models/group_panel_component_model.dart';
 import '../../../container/models/split_panel_component_model.dart';
 import '../../../container/tabset_panel/models/tabset_panel_component_model.dart';
@@ -98,6 +101,10 @@ class ComponentModelManager {
           changedComponent: changedComponent,
         );
         break;
+      case 'CustomContainer':
+        componentModel =
+            CustomContainerComponentModel(changedComponent: changedComponent);
+        break;
       case 'PopupMenu':
         componentModel =
             PopupMenuComponentModel(changedComponent: changedComponent);
@@ -153,12 +160,25 @@ class ComponentModelManager {
       case 'Map':
         componentModel = MapComponentModel(changedComponent: changedComponent);
         break;
+      case 'Chart':
+        componentModel =
+            ChartComponentModel(changedComponent: changedComponent);
+        break;
+      case 'Gauge':
+        componentModel =
+            GaugeComponentModel(changedComponent: changedComponent);
+        break;
+      // default:
+      //   componentModel = ComponentModel(changedComponent: changedComponent);
     }
+
+    // return componentModel;
 
     if (componentModel != null) {
       return componentModel;
     } else {
-      throw Exception('Couldn\'t create component model.');
+      throw Exception(
+          'Couldn\'t create component model ${changedComponent.className}.\nIt seems that this component is not yet supported in mobile');
     }
   }
 }

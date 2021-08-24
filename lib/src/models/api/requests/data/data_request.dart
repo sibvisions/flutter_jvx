@@ -9,8 +9,9 @@ class DataRequest extends Request {
   DataRequest(
       {required String clientId,
       bool reload = false,
+      bool showLoading = true,
       required this.dataProvider})
-      : super(clientId: clientId, reload: reload);
+      : super(clientId: clientId, reload: reload, showLoading: showLoading);
 
   Map<String, dynamic> toJson() =>
       <String, dynamic>{'dataProvider': dataProvider, ...super.toJson()};

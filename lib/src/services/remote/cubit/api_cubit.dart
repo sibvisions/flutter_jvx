@@ -1,12 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../flutterclient.dart';
 import '../../../models/api/errors/failure.dart';
 import '../../../models/api/request.dart';
 import '../../../models/api/requests/application_style_request.dart';
+import '../../../models/api/requests/change_password_request.dart';
 import '../../../models/api/requests/change_request.dart';
 import '../../../models/api/requests/close_screen_request.dart';
 import '../../../models/api/requests/data/data_request.dart';
@@ -118,13 +120,21 @@ class ApiCubit extends Cubit<ApiState> {
   }
 
   Future<void> pressButton(PressButtonRequest request) async {
+    emit(ApiLoading());
+
     ApiState apiState = await repository.pressButton(request);
+
+    emit(ApiLoading(stop: true));
 
     emit(apiState);
   }
 
   Future<ApiState> data(DataRequest request) async {
+    if (request.showLoading) emit(ApiLoading());
+
     List<ApiState> states = await repository.data(request);
+
+    if (request.showLoading) emit(ApiLoading(stop: true));
 
     for (final state in states) {
       emit(state);
@@ -173,5 +183,15 @@ class ApiCubit extends Cubit<ApiState> {
 
   Future<void> download(DownloadRequest request) async {
     emit(await repository.download(request));
+  }
+
+  Future<void> changePassword(ChangePasswordRequest request) async {
+    emit(await repository.changePassword(request));
+  }
+
+  Future<void> resetPassword(ResetPasswordRequest request) async {
+    final response = await repository.resetPassword(request);
+
+    emit(response);
   }
 }

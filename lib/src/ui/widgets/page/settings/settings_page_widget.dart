@@ -1,14 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/menu/menu_response_object.dart';
-import 'package:flutterclient/src/models/state/application_parameters.dart';
-import 'package:flutterclient/src/util/app/qr_code_formatter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/export_routes.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
+import '../../../../util/app/qr_code_formatter.dart';
+import '../../../../util/app/state/state_helper.dart';
 import '../../../../util/app/version/app_version.dart';
 import '../../../../util/color/color_extension.dart';
 import '../../../../util/translation/app_localizations.dart';
@@ -54,7 +53,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
   String get versionText {
     String v = 'AppVersion v$version Build $buildNumber';
 
-    if (widget.appState.applicationMetaData != null &&
+    if (widget.appState.applicationMetaData?.version != null &&
         widget.appState.applicationMetaData!.version.isNotEmpty) {
       v += '\nServer v${widget.appState.applicationMetaData!.version}';
     }
@@ -189,51 +188,15 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
     }
   }
 
-  void _removeState(AppState appState, SharedPreferencesManager manager) {
-    appState.translationConfig = TranslationConfig();
-
-    appState.applicationMetaData = null;
-
-    appState.applicationStyle = null;
-
-    appState.currentMenuComponentId = null;
-
-    appState.fileConfig = FileConfig();
-
-    appState.menuResponseObject = MenuResponseObject(name: 'menu', entries: []);
-
-    appState.parameters = ApplicationParameters();
-
-    appState.userData = null;
-
-    manager.setSyncLoginData(username: null, password: null);
-
-    manager.possibleTranslations = null;
-
-    manager.applicationStyle = null;
-
-    manager.applicationStyleHash = null;
-
-    manager.appVersion = null;
-
-    manager.authKey = null;
-
-    manager.offlinePassword = null;
-
-    manager.offlineUsername = null;
-
-    manager.savedImages = null;
-    manager.userData = null;
-  }
-
   void _changeServer(AppState appState, SharedPreferencesManager manager) {
     manager.appName = appName;
     manager.baseUrl = baseUrl;
 
-    appState.serverConfig!.appName = appName!;
-    appState.serverConfig!.baseUrl = baseUrl!;
-    appState.serverConfig!.username = username;
-    appState.serverConfig!.password = password;
+    appState.serverConfig = ServerConfig(
+        appName: appName!,
+        baseUrl: baseUrl!,
+        username: username,
+        password: password);
   }
 
   void _saveSettings(BuildContext context) {
@@ -243,7 +206,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         baseUrl!.isNotEmpty) {
       if (appName != widget.appState.serverConfig?.appName ||
           baseUrl != widget.appState.serverConfig?.baseUrl) {
-        _removeState(widget.appState, widget.manager);
+        StateHelper.clearServerData(widget.appState, widget.manager);
 
         _changeServer(widget.appState, widget.manager);
       }
@@ -291,7 +254,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
           });
         }
 
-        return widget.canPop;
+        return widget.canPop && Navigator.of(context).canPop();
       },
       child: Scaffold(
         key: scaffoldKey,
@@ -307,7 +270,8 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
               )
             : null,
         appBar: AppBar(
-          automaticallyImplyLeading: widget.canPop,
+          automaticallyImplyLeading:
+              widget.canPop && Navigator.of(context).canPop(),
           iconTheme:
               IconThemeData(color: Theme.of(context).primaryColor.textColor()),
           title: Text(
@@ -317,7 +281,7 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
         ),
         bottomNavigationBar: !isDialogOpen
             ? SettingsBottomAppBar(
-                canPop: widget.canPop,
+                canPop: widget.canPop && Navigator.of(context).canPop(),
                 onSave: () => _saveSettings(context),
               )
             : null,
@@ -402,20 +366,21 @@ class _SettingsPageWidgetState extends State<SettingsPageWidget> {
                         }
                       },
                     ),
-                    if (widget.canPop && !widget.hasError)
-                      ListTile(
-                        leading: FaIcon(
-                          FontAwesomeIcons.language,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        title: Text(
-                            AppLocalizations.of(context)!.text('Language')),
-                        trailing: FaIcon(FontAwesomeIcons.arrowRight),
-                        subtitle: Text(language ?? ''),
-                        onTap: () {
-                          _showLanguageDialog();
-                        },
+                    ListTile(
+                      leading: FaIcon(
+                        FontAwesomeIcons.language,
+                        color: Theme.of(context).primaryColor,
                       ),
+                      title:
+                          Text(AppLocalizations.of(context)!.text('Language')),
+                      trailing: FaIcon(FontAwesomeIcons.arrowRight),
+                      subtitle: Text(language ?? ''),
+                      onTap: () {
+                        if (widget.canPop && !widget.hasError) {
+                          _showLanguageDialog();
+                        }
+                      },
+                    ),
                     ListTile(
                       leading: FaIcon(
                         FontAwesomeIcons.image,

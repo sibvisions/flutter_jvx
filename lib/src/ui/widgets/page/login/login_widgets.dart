@@ -8,12 +8,14 @@ class LoginWidgets extends StatelessWidget {
   final String username;
   final AppState appState;
   final ApiCubit cubit;
+  final LoginMode loginMode;
 
   const LoginWidgets(
       {Key? key,
       required this.username,
       required this.appState,
-      required this.cubit})
+      required this.cubit,
+      required this.loginMode})
       : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class LoginWidgets extends StatelessWidget {
                     lastUsername: username,
                     appState: appState,
                     cubit: cubit,
+                    loginMode: loginMode,
                   ))
             ],
           ),

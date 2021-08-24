@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
+import 'package:flutterclient/src/ui/layout/layout/layout_model.dart';
 
 import '../../component/component_widget.dart';
 import '../i_alignment_constants.dart';
@@ -42,6 +44,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
 
   final CoContainerWidget? container;
 
+  final LayoutState layoutState;
+
   CoFlowLayoutWidget(
       {Key? key,
       List<CoFlowLayoutConstraintData> children: const [],
@@ -54,7 +58,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
       this.orientation = 0,
       this.horizontalComponentAlignment = 1,
       this.verticalComponentAlignment,
-      this.autoWrap = false})
+      this.autoWrap = false,
+      required this.layoutState})
       : super(key: key, children: children);
 
   @override
@@ -69,12 +74,18 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
         this.insMargin,
         this.horizontalGap,
         this.verticalGap,
-        this.autoWrap!);
+        this.autoWrap!,
+        this.layoutState);
   }
 
   @override
   void updateRenderObject(
       BuildContext context, RenderFlowLayoutWidget renderObject) {
+    /// Force Layout, if some of the settings have changed
+    if (this.layoutState == LayoutState.DIRTY) {
+      renderObject.markNeedsLayout();
+    }
+
     /// Force Layout, if some of the settings have changed
     if (renderObject.iHorizontalAlignment != this.horizontalAlignment) {
       renderObject.iHorizontalAlignment = this.horizontalAlignment;
@@ -175,6 +186,10 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   CoContainerWidget? container;
 
+  LayoutState layoutState;
+
+  Map<BoxConstraints, Size> layoutSize = Map<BoxConstraints, Size>();
+
   /* 
 	 * the mark to wrap the layout if there is not enough space to show 
 	 * all components (FlowLayout mode).
@@ -192,8 +207,22 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       this.iHorizontalGap,
       this.iVerticalGap,
       this.bAutoWrap,
+      this.layoutState,
       {List<RenderBox>? children}) {
     addAll(children);
+  }
+
+  @override
+  void markNeedsLayout() {
+    layoutSize = Map<BoxConstraints, Size>();
+    // LayoutModel layoutModel =
+    //     (container!.componentModel as ContainerComponentModel)
+    //         .layout!
+    //         .layoutModel;
+    // layoutModel.layoutPreferredSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMaximumSize = Map<BoxConstraints, Size>();
+    // layoutModel.layoutMinimumSize = Map<BoxConstraints, Size>();
+    super.markNeedsLayout();
   }
 
   @override
@@ -211,200 +240,239 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       child = childParentData.nextSibling;
     }
 
-    preferredLayoutSize = _preferredLayoutSize(
-        container?.componentModel as ContainerComponentModel);
-    minimumLayoutSize = _minimumLayoutSize(
-        container?.componentModel as ContainerComponentModel);
-    maximumLayoutSize = preferredLayoutSize;
+    if (layoutSize[this.constraints] != null)
+      this.size = layoutSize[this.constraints]!;
+    else {
+      LayoutModel layoutModel =
+          (container?.componentModel as ContainerComponentModel)
+              .layout!
+              .layoutModel;
 
-    Size dimSize = this.constraints.biggest;
-    dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
-        dimSize.height - (insMargins!.top + insMargins!.bottom));
+      // calculate preferred, minimum and maximum layout sizes for parent layouts
+      preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
+      if (preferredLayoutSize == null) {
+        preferredLayoutSize = _preferredLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null)
+          layoutModel.layoutPreferredSize[this.constraints] =
+              preferredLayoutSize!;
+      }
 
-    //x stores the columns
-    //y stores the rows
-    Rect rectCompInfo =
-        calculateGrid(container?.componentModel as ContainerComponentModel);
+      minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
+      if (minimumLayoutSize == null) {
+        minimumLayoutSize = _minimumLayoutSize(
+            container?.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null)
+          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+      }
 
-    //ignore the insets!
-    Size dimPref = new Size(
-        rectCompInfo.width * rectCompInfo.left +
-            iHorizontalGap! * (rectCompInfo.left - 1),
-        rectCompInfo.height * rectCompInfo.top +
-            iVerticalGap! * (rectCompInfo.top - 1));
+      Size dimSize = this.constraints.biggest;
+      dimSize = Size(dimSize.width - (insMargins!.left + insMargins!.right),
+          dimSize.height - (insMargins!.top + insMargins!.bottom));
 
-    if (dimSize.height == double.infinity)
-      dimSize = Size(dimSize.width, dimPref.height);
-    if (dimSize.width == double.infinity)
-      dimSize = Size(dimPref.width, dimSize.height);
+      //x stores the columns
+      //y stores the rows
+      Rect rectCompInfo =
+          calculateGrid(container?.componentModel as ContainerComponentModel);
 
-    int iLeft;
-    int iWidth;
+      //ignore the insets!
+      Size dimPref = new Size(
+          rectCompInfo.width * rectCompInfo.left +
+              iHorizontalGap! * (rectCompInfo.left - 1),
+          rectCompInfo.height * rectCompInfo.top +
+              iVerticalGap! * (rectCompInfo.top - 1));
 
-    if (iHorizontalAlignment == IAlignmentConstants.ALIGN_STRETCH) {
-      iLeft = insMargins!.left.round();
-      iWidth = dimSize.width.round();
-    } else {
-      //align the layout in the container
-      iLeft = (((dimSize.width - dimPref.width) *
-                  getAlignmentFactor(iHorizontalAlignment!)) +
-              insMargins!.left)
-          .round();
-      iWidth = dimPref.width.round();
-    }
+      if (dimSize.height == double.infinity)
+        dimSize = Size(dimSize.width, dimPref.height);
+      if (dimSize.width == double.infinity)
+        dimSize = Size(dimPref.width, dimSize.height);
 
-    int iTop;
-    int iHeight;
+      int iLeft;
+      int iWidth;
 
-    if (iVerticalAlignment == IAlignmentConstants.ALIGN_STRETCH) {
-      iTop = insMargins!.top.round();
-      iHeight = dimSize.height.round();
-    } else {
-      //align the layout in the container
-      iTop = (((dimSize.height - dimPref.height) *
-                  getAlignmentFactor(iVerticalAlignment!)) +
-              insMargins!.top)
-          .round();
-      iHeight = dimPref.height.round();
-    }
+      if (iHorizontalAlignment == IAlignmentConstants.ALIGN_STRETCH) {
+        iLeft = insMargins!.left.round();
+        iWidth = dimSize.width.round();
+      } else {
+        //align the layout in the container
+        iLeft = (((dimSize.width - dimPref.width) *
+                    getAlignmentFactor(iHorizontalAlignment!)) +
+                insMargins!.left)
+            .round();
+        iWidth = dimPref.width.round();
+      }
 
-    int fW = max<int>(1, iWidth);
-    int fPW = max<int>(1, dimPref.width.round());
-    int fH = max<int>(1, iHeight);
-    int fPH = max<int>(1, dimPref.height.round());
-    int x = 0;
-    int y = 0;
+      int iTop;
+      int iHeight;
 
-    ComponentWidget comp;
+      if (iVerticalAlignment == IAlignmentConstants.ALIGN_STRETCH) {
+        iTop = insMargins!.top.round();
+        iHeight = dimSize.height.round();
+      } else {
+        //align the layout in the container
+        iTop = (((dimSize.height - dimPref.height) *
+                    getAlignmentFactor(iVerticalAlignment!)) +
+                insMargins!.top)
+            .round();
+        iHeight = dimPref.height.round();
+      }
 
-    bool bFirst = true;
-    for (int i = 0, anz = constraintMap.length; i < anz; i++) {
-      comp = constraintMap.values.elementAt(i);
+      int fW = max<int>(1, iWidth);
+      int fPW = max<int>(1, dimPref.width.round());
+      int fH = max<int>(1, iHeight);
+      int fPH = max<int>(1, dimPref.height.round());
+      int x = 0;
+      int y = 0;
 
-      if (comp.componentModel.isVisible) {
-        Size size =
-            this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
+      ComponentWidget comp;
 
-        if (iOrientation == 0) {
-          if (!bFirst &&
-              bAutoWrap &&
-              dimSize.width > 0 &&
-              x + size.width > dimSize.width) {
-            x = 0;
-            y += ((rectCompInfo.height + iVerticalGap!) * fH / fPH).round();
-          } else if (bFirst) {
-            bFirst = false;
-          }
+      bool bFirst = true;
+      for (int i = 0, anz = constraintMap.length; i < anz; i++) {
+        comp = constraintMap.values.elementAt(i);
 
-          if (iVerticalComponentAlignment ==
-              IAlignmentConstants.ALIGN_STRETCH) {
-            double offsetX = iLeft + x * fW / fPW;
-            double offsetY = (iTop + y).toDouble();
-            double width = size.width * fW / fPW;
-            double height = rectCompInfo.height * fH / fPH;
+        if (comp.componentModel.isVisible) {
+          Size size =
+              this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
 
-            constraintMap.keys.elementAt(i).layout(
-                BoxConstraints(
-                    minWidth: width,
-                    maxWidth: width,
-                    minHeight: height,
-                    maxHeight: height),
-                parentUsesSize: true);
+          if (iOrientation == 0) {
+            if (!bFirst &&
+                bAutoWrap &&
+                dimSize.width > 0 &&
+                x + size.width > dimSize.width) {
+              x = 0;
+              y += ((rectCompInfo.height + iVerticalGap!) * fH / fPH).round();
+            } else if (bFirst) {
+              bFirst = false;
+            }
 
-            final MultiChildLayoutParentData childParentData =
-                constraintMap.keys.elementAt(i).parentData
-                    as MultiChildLayoutParentData;
-            childParentData.offset = Offset(offsetX, offsetY);
+            if (iVerticalComponentAlignment ==
+                IAlignmentConstants.ALIGN_STRETCH) {
+              double offsetX = iLeft + x * fW / fPW;
+              double offsetY = (iTop + y).toDouble();
+              double width = size.width * fW / fPW;
+              double height = rectCompInfo.height * fH / fPH;
+
+              constraintMap.keys.elementAt(i).layout(
+                  BoxConstraints(
+                      minWidth: width,
+                      maxWidth: width,
+                      minHeight: height,
+                      maxHeight: height),
+                  parentUsesSize: true);
+
+              final MultiChildLayoutParentData childParentData =
+                  constraintMap.keys.elementAt(i).parentData
+                      as MultiChildLayoutParentData;
+              childParentData.offset = Offset(offsetX, offsetY);
+            } else {
+              double offsetX = iLeft + x * fW / fPW;
+              double offsetY = iTop +
+                  y +
+                  ((rectCompInfo.height - size.height) *
+                          getAlignmentFactor(iVerticalComponentAlignment!)) *
+                      fH /
+                      fPH;
+              double width = size.width * fW / fPW;
+              double height = size.height * fH / fPH;
+
+              constraintMap.keys.elementAt(i).layout(
+                  BoxConstraints(
+                      minWidth: width,
+                      maxWidth: width,
+                      minHeight: height,
+                      maxHeight: height),
+                  parentUsesSize: true);
+
+              final MultiChildLayoutParentData childParentData =
+                  constraintMap.keys.elementAt(i).parentData
+                      as MultiChildLayoutParentData;
+              childParentData.offset = Offset(offsetX, offsetY);
+            }
+
+            x += (size.width + iHorizontalGap!).round();
           } else {
-            double offsetX = iLeft + x * fW / fPW;
-            double offsetY = iTop +
-                y +
-                ((rectCompInfo.height - size.height) *
-                        getAlignmentFactor(iVerticalComponentAlignment!)) *
-                    fH /
-                    fPH;
-            double width = size.width * fW / fPW;
-            double height = size.height * fH / fPH;
+            if (!bFirst &&
+                bAutoWrap &&
+                dimSize.height > 0 &&
+                y + size.height > dimSize.height) {
+              y = 0;
+              x += ((rectCompInfo.width + iHorizontalGap!) * fW / fPW).round();
+            } else if (bFirst) {
+              bFirst = false;
+            }
 
-            constraintMap.keys.elementAt(i).layout(
-                BoxConstraints(
-                    minWidth: width,
-                    maxWidth: width,
-                    minHeight: height,
-                    maxHeight: height),
-                parentUsesSize: true);
+            if (iHorizontalComponentAlignment ==
+                IAlignmentConstants.ALIGN_STRETCH) {
+              double offsetX = (iLeft + x).toDouble();
+              double offsetY = iTop + y * fH / fPH;
+              double width = rectCompInfo.width * fW / fPW;
+              double height = size.height * fH / fPH;
 
-            final MultiChildLayoutParentData childParentData =
-                constraintMap.keys.elementAt(i).parentData
-                    as MultiChildLayoutParentData;
-            childParentData.offset = Offset(offsetX, offsetY);
+              constraintMap.keys.elementAt(i).layout(
+                  BoxConstraints(
+                      minWidth: width,
+                      maxWidth: width,
+                      minHeight: height,
+                      maxHeight: height),
+                  parentUsesSize: true);
+
+              final MultiChildLayoutParentData childParentData =
+                  constraintMap.keys.elementAt(i).parentData
+                      as MultiChildLayoutParentData;
+              childParentData.offset = Offset(offsetX, offsetY);
+            } else {
+              double offsetX = iLeft +
+                  x +
+                  ((rectCompInfo.width - size.width) *
+                          getAlignmentFactor(iHorizontalComponentAlignment!)) *
+                      fW /
+                      fPW;
+              double offsetY = iTop + y * fH / fPH;
+              double width = size.width * fW / fPW;
+              double height = size.height * fH / fPH;
+
+              constraintMap.keys.elementAt(i).layout(
+                  BoxConstraints(
+                      minWidth: width,
+                      maxWidth: width,
+                      minHeight: height,
+                      maxHeight: height),
+                  parentUsesSize: true);
+
+              final MultiChildLayoutParentData childParentData =
+                  constraintMap.keys.elementAt(i).parentData
+                      as MultiChildLayoutParentData;
+              childParentData.offset = Offset(offsetX, offsetY);
+            }
+
+            y += (size.height + iVerticalGap!).round();
           }
+        }
 
-          x += (size.width + iHorizontalGap!).round();
-        } else {
-          if (!bFirst &&
-              bAutoWrap &&
-              dimSize.height > 0 &&
-              y + size.height > dimSize.height) {
-            y = 0;
-            x += ((rectCompInfo.width + iHorizontalGap!) * fW / fPW).round();
-          } else if (bFirst) {
-            bFirst = false;
-          }
-
-          if (iHorizontalComponentAlignment ==
-              IAlignmentConstants.ALIGN_STRETCH) {
-            double offsetX = (iLeft + x).toDouble();
-            double offsetY = iTop + y * fH / fPH;
-            double width = rectCompInfo.width * fW / fPW;
-            double height = size.height * fH / fPH;
-
-            constraintMap.keys.elementAt(i).layout(
-                BoxConstraints(
-                    minWidth: width,
-                    maxWidth: width,
-                    minHeight: height,
-                    maxHeight: height),
-                parentUsesSize: true);
-
-            final MultiChildLayoutParentData childParentData =
-                constraintMap.keys.elementAt(i).parentData
-                    as MultiChildLayoutParentData;
-            childParentData.offset = Offset(offsetX, offsetY);
-          } else {
-            double offsetX = iLeft +
-                x +
-                ((rectCompInfo.width - size.width) *
-                        getAlignmentFactor(iHorizontalComponentAlignment!)) *
-                    fW /
-                    fPW;
-            double offsetY = iTop + y * fH / fPH;
-            double width = size.width * fW / fPW;
-            double height = size.height * fH / fPH;
-
-            constraintMap.keys.elementAt(i).layout(
-                BoxConstraints(
-                    minWidth: width,
-                    maxWidth: width,
-                    minHeight: height,
-                    maxHeight: height),
-                parentUsesSize: true);
-
-            final MultiChildLayoutParentData childParentData =
-                constraintMap.keys.elementAt(i).parentData
-                    as MultiChildLayoutParentData;
-            childParentData.offset = Offset(offsetX, offsetY);
-          }
-
-          y += (size.height + iVerticalGap!).round();
+        if (this.constraints.hasBoundedHeight &&
+            this.constraints.hasBoundedWidth &&
+            constraintMap.values.elementAt(i) is CoContainerWidget) {
+          (constraintMap.values.elementAt(i).componentModel
+                  as ContainerComponentModel)
+              .layout!
+              .layoutModel
+              .layoutState = LayoutState.RENDERED;
         }
       }
-    }
 
-    this.size =
-        this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
-    dev.log(
-        "FlowLayout in container ${container!.componentModel.name} (${container!.componentModel.componentId}) with ${constraintMap.length} children and with constraints ${this.constraints} render size ${this.size.toString()}");
+      this.size =
+          this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
+
+      // if (this.constraints.hasBoundedHeight &&
+      //     this.constraints.hasBoundedWidth) {
+      //   layoutState = LayoutState.RENDERED;
+      // }
+
+      //layoutSize[this.constraints] = Size(this.size.width, this.size.height);
+      // dev.log(DateTime.now().toString() +
+      //     ';' +
+      //     "FlowLayout;${container!.componentModel.name};${container!.componentModel.componentId};${this.constraints};${constraintMap.length};${this.size}");
+    }
   }
 
   /*
@@ -526,45 +594,68 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     }
   }
 
-  // Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
-  //   if (!comp.componentModel.isPreferredSizeSet) {
-  //     renderBox.layout(BoxConstraints.tightFor(), parentUsesSize: true);
-
-  //     if (!renderBox.hasSize) {
-  //       print("FlowLayout: RenderBox has no size after layout!");
-  //     }
-
-  //     if (renderBox.size.width == double.infinity ||
-  //         renderBox.size.height == double.infinity) {
-  //       print(
-  //           "FlowLayout: getPrefererredSize: Infinity height or width for FormLayout!");
-  //     }
-  //     return renderBox.size;
-  //   } else {
-  //     return comp.componentModel.preferredSize!;
-  //   }
-  // }
-
   Size getPreferredSize(RenderBox renderBox, ComponentWidget comp) {
     if (!comp.componentModel.isPreferredSizeSet) {
-      Size? size = getChildLayoutPreferredSize(renderBox);
+      Size? size = getChildLayoutPreferredSize(comp, this.constraints);
       if (size != null) {
         return size;
       } else {
-        if (renderBox.hasSize)
-          size = renderBox.size;
+        if (renderBox.hasSize && _childSize(comp) != null)
+          size = _childSize(comp)!;
         else
           size = layoutRenderBox(renderBox, constraints);
-        //renderBox.layout(constraints, parentUsesSize: true);
 
         if (size.width == double.infinity || size.height == double.infinity) {
           print(
-              "CoBorderLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+              "CoFlowLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
         }
+
+        _setChildSize(comp, size);
         return size;
       }
     } else {
       return comp.componentModel.preferredSize!;
+    }
+  }
+
+  bool _isLayoutDirty(ComponentWidget componentWidget) {
+    if (componentWidget is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          componentWidget.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null &&
+          containerComponentModel.layout!.layoutModel.layoutState ==
+              LayoutState.DIRTY) {
+        // containerComponentModel.layout!.layoutModel.layoutState =
+        //     LayoutState.RENDERED;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  Size? _childSize(ComponentWidget comp) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        return containerComponentModel.layout!.layoutModel.layoutSize;
+      }
+    }
+
+    return null;
+  }
+
+  void _setChildSize(ComponentWidget comp, Size size) {
+    if (comp is CoContainerWidget) {
+      ContainerComponentModel containerComponentModel =
+          comp.componentModel as ContainerComponentModel;
+
+      if (containerComponentModel.layout != null) {
+        containerComponentModel.layout!.layoutModel.layoutSize = size;
+      }
     }
   }
 
@@ -613,7 +704,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   Size _preferredLayoutSize(ContainerComponentModel pContainer) {
     EdgeInsets insets = pContainer.layout != null
-        ? pContainer.layout!.margins
+        ? pContainer.layout!.layoutModel.margins
         : EdgeInsets.all(0);
 
     //x stores the columns

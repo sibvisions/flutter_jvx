@@ -14,16 +14,28 @@ class AppConfig {
   final bool handleSessionTimeout;
   final bool loginColorsInverted;
   final int requestTimeout;
+  final int goOfflineRequestTimeout;
+  final int goOfflineReadAheadLimit;
+  final bool goOfflineEnableBatchInsert;
+  final int goOfflineBatchInsertAmount;
+  final String title;
   final ServerConfig? initialConfig;
+  final Map<String, dynamic>? startupParameter;
 
   AppConfig(
-      {required this.package,
+      {required this.title,
+      required this.package,
       required this.rememberMeChecked,
       required this.hideLoginCheckbox,
       required this.handleSessionTimeout,
       required this.loginColorsInverted,
       required this.requestTimeout,
-      this.initialConfig});
+      this.goOfflineRequestTimeout = 30,
+      this.goOfflineReadAheadLimit = 100,
+      this.goOfflineEnableBatchInsert = false,
+      this.goOfflineBatchInsertAmount = 100,
+      this.initialConfig,
+      this.startupParameter});
 
   AppConfig.fromJson({required Map<String, dynamic> map})
       : package = map['package'],
@@ -32,7 +44,13 @@ class AppConfig {
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
-        initialConfig = ServerConfig.fromJson(map: map['initialConfig']);
+        goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
+        goOfflineReadAheadLimit = map['goOfflineReadAheadLimit'],
+        goOfflineEnableBatchInsert = map['goOfflineEnableBatchInsert'],
+        goOfflineBatchInsertAmount = map['goOfflineBatchInsertAmount'],
+        initialConfig = ServerConfig.fromJson(map: map['initialConfig']),
+        startupParameter = map['startupParameter'],
+        title = map['title'];
 
   AppConfig.fromYaml({required YamlMap map})
       : package = map['package'],
@@ -41,9 +59,15 @@ class AppConfig {
         handleSessionTimeout = map['handleSessionTimeout'],
         loginColorsInverted = map['loginColorsInverted'],
         requestTimeout = map['requestTimeout'],
+        goOfflineRequestTimeout = map['goOfflineRequestTimeout'],
+        goOfflineReadAheadLimit = map['goOfflineReadAheadLimit'],
+        goOfflineEnableBatchInsert = map['goOfflineEnableBatchInsert'],
+        goOfflineBatchInsertAmount = map['goOfflineBatchInsertAmount'],
         initialConfig = map['initialConfig'] != null
             ? ServerConfig.fromYaml(map: map['initialConfig'])
-            : null;
+            : null,
+        startupParameter = map['startupParameter'].cast<String, dynamic>(),
+        title = map['title'];
 
   static Future<Either<Failure, AppConfig>> loadConfig(
       {required String path, bool package = false}) async {
@@ -55,9 +79,9 @@ class AppConfig {
 
           final YamlMap map = loadYaml(configString);
 
-          final AppConfig devConfig = AppConfig.fromYaml(map: map);
+          final AppConfig appConfig = AppConfig.fromYaml(map: map);
 
-          return Right(devConfig);
+          return Right(appConfig);
         }
       } else {
         final String configString = await rootBundle
@@ -65,9 +89,9 @@ class AppConfig {
 
         final Map<String, dynamic> map = json.decode(configString);
 
-        final AppConfig devConfig = AppConfig.fromJson(map: map);
+        final AppConfig appConfig = AppConfig.fromJson(map: map);
 
-        return Right(devConfig);
+        return Right(appConfig);
       }
     } catch (e) {
       return Left(CacheFailure(

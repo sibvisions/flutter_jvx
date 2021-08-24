@@ -2,33 +2,27 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../login/login_card.dart';
+import '../../../../util/device_info/device_info_mobile.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/application_style_request.dart';
 import '../../../../models/api/requests/download_images_request.dart';
 import '../../../../models/api/requests/download_translation_request.dart';
 import '../../../../models/api/requests/startup_request.dart';
-import '../../../../models/api/response_objects/application_meta_data_response_object.dart';
-import '../../../../models/api/response_objects/application_style/application_style_response_object.dart';
-import '../../../../models/api/response_objects/device_status_response_object.dart';
-import '../../../../models/api/response_objects/language_response_object.dart';
 import '../../../../models/api/response_objects/login_response_object.dart';
 import '../../../../models/api/response_objects/menu/menu_response_object.dart';
 import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
-import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/login_page_arguments.dart';
 import '../../../../models/state/routes/arguments/menu_page_arguments.dart';
 import '../../../../models/state/routes/routes.dart';
-import '../../../../services/local/locale/supported_locale_manager.dart';
 import '../../../../services/local/shared_preferences/shared_preferences_manager.dart';
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../../util/app/get_package_string.dart';
-import '../../../../util/color/get_color_from_app_style.dart';
+import '../../../../util/app/state/state_helper.dart';
 import '../../../../util/device_info/device_info.dart';
 import '../../../../util/download/download_helper.dart';
-import '../../../../util/theme/theme_manager.dart';
 import '../../../../util/translation/app_localizations.dart';
 import '../../../util/custom_cubit_listener.dart';
 
@@ -55,6 +49,8 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   /// Own cubit instance to avoid multiple calls on the listener.
   late ApiCubit cubit;
 
+  late Future startupFuture;
+
   /// Getter for initial language which gets send to the server.
   String get _startupLanguage {
     String language = 'en';
@@ -73,8 +69,14 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   /// Method for sending the [Startup] request.
-  void _sendStartupRequest() {
+  Future<void> _sendStartupRequest() async {
+    _updateDataFromSystem();
+
     DeviceInfo deviceInfo = DeviceInfo();
+
+    if (!kIsWeb) {
+      await (deviceInfo as DeviceInfoMobile).setSystemInfo();
+    }
 
     if (widget.appState.serverConfig != null &&
         widget.appState.serverConfig!.baseUrl.isNotEmpty &&
@@ -82,7 +84,6 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
       StartupRequest request = StartupRequest(
           url: widget.appState.serverConfig!.baseUrl,
           appName: widget.appState.serverConfig!.appName,
-          layoutMode: 'generic',
           screenWidth: MediaQuery.of(context).size.width.toInt(),
           screenHeight: MediaQuery.of(context).size.height.toInt(),
           appMode: widget.appState.serverConfig!.appMode,
@@ -99,7 +100,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           deviceTypeModel: deviceInfo.deviceTypeModel,
           authKey: widget.manager.authKey,
           username: widget.appState.serverConfig!.username,
-          password: widget.appState.serverConfig!.password);
+          password: widget.appState.serverConfig!.password,
+          parameter: widget.appState.appConfig?.startupParameter ??
+              <String, dynamic>{});
 
       // For handling the initial Config
       widget.appState.serverConfig!.username = null;
@@ -121,24 +124,10 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   }
 
   /// Sets data returned from the [Startup] request.
-  void _setAppStateData(ApiResponse response) {
-    widget.appState.applicationMetaData =
-        response.getObjectByType<ApplicationMetaDataResponseObject>();
-    widget.appState.language =
-        response.getObjectByType<LanguageResponseObject>();
-    widget.appState.deviceStatus =
-        response.getObjectByType<DeviceStatusResponseObject>();
+  void _handleStartupResponse(ApiResponse response) {
+    StateHelper.updateAppStateWithStartupResponse(widget.appState, response);
 
-    widget.appState.userData =
-        response.getObjectByType<UserDataResponseObject>();
-    widget.manager.userData =
-        response.getObjectByType<UserDataResponseObject>();
-
-    if (widget.appState.language != null &&
-        widget.appState.language!.language.isNotEmpty) {
-      widget.manager.language = widget.appState.language!.language;
-      AppLocalizations.load(Locale(widget.appState.language!.language));
-    }
+    StateHelper.updateLocalDataWithStartupResponse(widget.manager, response);
 
     if (widget.appState.applicationMetaData != null) {
       ApplicationStyleRequest applicationStyleRequest = ApplicationStyleRequest(
@@ -149,92 +138,28 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
     }
   }
 
-  void _setLocalData() {
-    if (widget.appState.applicationMetaData != null &&
-        widget.manager.appVersion !=
-            widget.appState.applicationMetaData?.version) {
-      widget.manager.previousAppVersion = widget.manager.appVersion;
-      widget.manager.appVersion = widget.appState.applicationMetaData?.version;
-    }
-  }
-
   void _updateDataFromSystem() {
-    if (widget.manager.possibleTranslations != null) {
-      widget.appState.translationConfig.possibleTranslations =
-          widget.manager.possibleTranslations!;
-    }
-
-    if (widget.manager.savedImages != null) {
-      widget.appState.fileConfig.images = widget.manager.savedImages!;
-    }
-
-    if (widget.manager.userData != null) {
-      widget.appState.userData = widget.manager.userData;
-    }
-
-    if (widget.manager.picSize != null) {
-      widget.appState.picSize = widget.manager.picSize!;
-    }
-
-    if (!widget.appState.mobileOnly)
-      widget.appState.mobileOnly = widget.manager.mobileOnly;
-
-    if (!widget.appState.webOnly)
-      widget.appState.webOnly = widget.manager.webOnly;
-
-    if (widget.manager.language != null &&
-        widget.manager.language!.isNotEmpty) {
-      widget.appState.language = LanguageResponseObject(
-          name: 'language',
-          language: widget.manager.language!,
-          languageResource: '');
-    }
-
-    if (widget.appState.translationConfig.possibleTranslations.isNotEmpty) {
-      widget.appState.translationConfig.supportedLocales = List<Locale>.from(
-          widget.appState.translationConfig.possibleTranslations.keys
-              .map((key) {
-        if (key.contains('_'))
-          return Locale(key.substring(key.indexOf('_') + 1, key.indexOf('.')));
-        else
-          return Locale('en');
-      }));
-
-      WidgetsBinding.instance!.addPostFrameCallback((_) =>
-          sl<SupportedLocaleManager>().value =
-              widget.appState.translationConfig.supportedLocales);
-    }
+    StateHelper.updateAppStateWithLocalData(widget.manager, widget.appState);
   }
 
-  void _setAppStyle(ApiResponse response) async {
-    if (response.hasObject<ApplicationStyleResponseObject>()) {
-      widget.appState.applicationStyle =
-          response.getObjectByType<ApplicationStyleResponseObject>();
+  void _handleAppStyleResponse(ApiResponse response) async {
+    StateHelper.updateAppStateAndLocalDataWithApplicationStyleResponse(
+        widget.appState, widget.manager, response);
 
-      // Setting theme for the whole application.
-      sl<ThemeManager>().value = ThemeData(
-        primaryColor: widget.appState.applicationStyle!.themeColor,
-        primarySwatch: getColorFromAppStyle(widget.appState.applicationStyle!),
-        brightness: Brightness.light,
-      );
+    if (widget.appState.applicationStyle?.hash !=
+            widget.manager.applicationStyleHash ||
+        await DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
+            baseUrl: widget.appState.serverConfig!.baseUrl,
+            appName: widget.appState.serverConfig!.appName,
+            appVersion: widget.appState.applicationMetaData!.version,
+            translation: true,
+            baseDir: widget.appState.baseDirectory))) {
+      widget.manager.applicationStyleHash =
+          widget.appState.applicationStyle?.hash;
 
-      widget.manager.applicationStyle = widget.appState.applicationStyle;
-
-      if (widget.appState.applicationStyle?.hash !=
-              widget.manager.applicationStyleHash ||
-          await DownloadHelper.isDownloadNeded(DownloadHelper.getLocalFilePath(
-              baseUrl: widget.appState.serverConfig!.baseUrl,
-              appName: widget.appState.serverConfig!.appName,
-              appVersion: widget.appState.applicationMetaData!.version,
-              translation: true,
-              baseDir: widget.appState.baseDirectory))) {
-        widget.manager.applicationStyleHash =
-            widget.appState.applicationStyle?.hash;
-
-        _downloadTranslation();
-      } else {
-        _checkForLogin(startupResponse!);
-      }
+      _downloadTranslation();
+    } else {
+      _checkForLogin(startupResponse!);
     }
   }
 
@@ -266,10 +191,15 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                     ? response
                     : null));
       } else {
+        final loginResponse = response.getObjectByType<LoginResponseObject>()!;
+
+        final loginMode = getLoginMode(loginResponse.mode);
+
         Navigator.of(context).pushReplacementNamed(Routes.login,
             arguments: LoginPageArguments(
                 lastUsername:
-                    response.getObjectByType<LoginResponseObject>()!.username));
+                    response.getObjectByType<LoginResponseObject>()!.username,
+                loginMode: loginMode));
       }
     }
   }
@@ -277,16 +207,13 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (ModalRoute.of(context)!.isCurrent) {
-      _updateDataFromSystem();
-
-      _sendStartupRequest();
-    }
   }
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _sendStartupRequest());
 
     cubit = ApiCubit.withDependencies();
   }
@@ -311,11 +238,9 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                 if (state.request is StartupRequest) {
                   startupResponse = state;
 
-                  _setAppStateData(state);
-
-                  _setLocalData();
+                  _handleStartupResponse(state);
                 } else if (state.request is ApplicationStyleRequest) {
-                  _setAppStyle(state);
+                  _handleAppStyleResponse(state);
                 } else if (state.request is DownloadTranslationRequest) {
                   AppLocalizations.load(
                       Locale(widget.appState.language!.language));
@@ -326,42 +251,48 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
                 }
               }
             },
-            child: widget.startupWidget != null
-                ? widget.startupWidget!
-                : Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(getPackageString(
-                                    widget.appState, 'assets/images/bg.png')),
-                                fit: BoxFit.cover)),
-                      ),
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.only(top: 100),
-                                child: Center(
-                                  child: Image.asset(
-                                    getPackageString(widget.appState,
-                                        'assets/images/ss.png'),
-                                    width: 135,
-                                  ),
-                                )),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.only(top: 100),
-                                    child: CircularProgressIndicator()),
-                                Padding(
-                                    padding: EdgeInsets.only(top: 100),
-                                    child: Text('Loading...'))
-                              ],
-                            )
-                          ])
-                    ],
-                  )));
+            child: Builder(
+              builder: (context) {
+                if (widget.appState.widgetConfig.startupWidget != null) {
+                  return widget.appState.widgetConfig.startupWidget!;
+                }
+
+                return Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(getPackageString(
+                                  widget.appState, 'assets/images/bg.png')),
+                              fit: BoxFit.cover)),
+                    ),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                              padding: EdgeInsets.only(top: 100),
+                              child: Center(
+                                child: Image.asset(
+                                  getPackageString(
+                                      widget.appState, 'assets/images/ss.png'),
+                                  width: 135,
+                                ),
+                              )),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Padding(
+                                  padding: EdgeInsets.only(top: 100),
+                                  child: CircularProgressIndicator()),
+                              Padding(
+                                  padding: EdgeInsets.only(top: 100),
+                                  child: Text('Loading...'))
+                            ],
+                          )
+                        ])
+                  ],
+                );
+              },
+            )));
   }
 }

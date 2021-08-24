@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/custom/custom_single_child_scroll_view.dart';
 import 'co_container_widget.dart';
 import 'co_scroll_panel_layout.dart';
 import 'models/container_component_model.dart';
 
 class CoScrollPanelWidget extends CoContainerWidget {
   CoScrollPanelWidget({required ContainerComponentModel componentModel})
-      : super(componentModel: componentModel);
+      : super(componentModel: componentModel) {
+    componentModel.isScrollable = true;
+  }
 
   @override
   CoScrollPanelWidgetState createState() => CoScrollPanelWidgetState();
@@ -40,10 +43,9 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
 
     Widget? child;
     if (componentModel.layout != null) {
-      child = componentModel.layout as Widget;
-      if (componentModel.layout!.setState != null) {
-        componentModel.layout!.setState!(() {});
-      }
+      child = componentModel.layout;
+
+      // return SingleChildScrollView(child: child);
     } else if (componentModel.components.isNotEmpty) {
       child = Column(children: componentModel.components);
     }
@@ -57,21 +59,30 @@ class CoScrollPanelWidgetState extends CoContainerWidgetState {
       //     child: Container(color: this.background, child: child));
       return Container(
           color: widget.componentModel.background,
-          child: SingleChildScrollView(
+          child: CustomSingleChildScrollView(
+              layoutState: (widget.componentModel as ContainerComponentModel)
+                  .layout!
+                  .layoutModel
+                  .layoutState,
               scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
+              child: CustomSingleChildScrollView(
+                  layoutState:
+                      (widget.componentModel as ContainerComponentModel)
+                          .layout!
+                          .layoutModel
+                          .layoutState,
                   scrollDirection: Axis.horizontal,
                   controller: _scrollController,
                   // key: this.componentId,
                   child: CoScrollPanelLayout(
                     preferredConstraints: CoScrollPanelConstraints(
-                        constraints, componentModel, constraints.biggest),
+                        constraints, widget, constraints.biggest),
                     container: widget.componentModel as ContainerComponentModel,
                     children: [
                       CoScrollPanelLayoutId(
                           // key: ValueKey(widget.key),
                           constraints: CoScrollPanelConstraints(
-                              constraints, componentModel, constraints.biggest),
+                              constraints, widget, constraints.biggest),
                           child: child ?? Container())
                     ],
                   ))));

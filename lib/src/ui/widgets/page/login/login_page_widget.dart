@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/screen_generic_response_object.dart';
+import 'package:flutterclient/src/models/api/response_objects/login_response_object.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/change_password_dialog.dart';
 
-import '../../../../../injection_container.dart';
 import '../../../../models/api/requests/login_request.dart';
 import '../../../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../../../models/api/response_objects/response_data/screen_generic_response_object.dart';
 import '../../../../models/api/response_objects/user_data_response_object.dart';
 import '../../../../models/state/app_state.dart';
 import '../../../../models/state/routes/arguments/menu_page_arguments.dart';
@@ -12,29 +13,41 @@ import '../../../../services/local/shared_preferences/shared_preferences_manager
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/custom_cubit_listener.dart';
 import 'login_background.dart';
+import 'login_card.dart';
 import 'login_widgets.dart';
 
 class LoginPageWidget extends StatefulWidget {
   final AppState appState;
   final SharedPreferencesManager manager;
   final String? lastUsername;
+  final LoginMode loginMode;
 
   const LoginPageWidget(
       {Key? key,
       required this.appState,
       required this.manager,
+      required this.loginMode,
       this.lastUsername})
       : super(key: key);
 
   @override
   _LoginPageWidgetState createState() => _LoginPageWidgetState();
+
+  static _LoginPageWidgetState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_LoginPageWidgetState>();
 }
 
 class _LoginPageWidgetState extends State<LoginPageWidget> {
   bool colorsInverted = false;
   ApiResponse? response;
 
+  late LoginMode _loginMode;
+
   late ApiCubit cubit;
+
+  String username = '';
+  String password = '';
+  bool rememberMe = false;
 
   @override
   void initState() {
@@ -43,6 +56,8 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
     super.initState();
 
     cubit = ApiCubit.withDependencies();
+
+    _loginMode = widget.loginMode;
   }
 
   @override
@@ -70,7 +85,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
             handleLoading: true,
             handleError: true,
             bloc: cubit,
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state is ApiResponse) {
                 if (state.request is LoginRequest &&
                     state.hasObject<MenuResponseObject>()) {
@@ -93,6 +108,38 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                           listMenuItemsInDrawer: true,
                           response: response));
                 }
+
+                if (state.hasObject<LoginResponseObject>()) {
+                  final loginResponse =
+                      state.getObjectByType<LoginResponseObject>()!;
+
+                  final loginMode = getLoginMode(loginResponse.mode);
+
+                  if (loginMode == LoginMode.CHANGE_PASSWORD) {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => ChangePasswordDialog(
+                            appState: widget.appState,
+                            manager: widget.manager,
+                            username: loginResponse.username,
+                            clientId:
+                                widget.appState.applicationMetaData!.clientId,
+                            rememberMe: rememberMe,
+                            password: password,
+                            login: true));
+                  } else if (loginMode == LoginMode.CHANGE_ONE_TIME_PASSWORD) {
+                    await showDialog(
+                        context: context,
+                        builder: (_) => ChangePasswordDialog(
+                              username: '',
+                              clientId:
+                                  widget.appState.applicationMetaData!.clientId,
+                              login: false,
+                              oneTime: true,
+                              rememberMe: rememberMe,
+                            ));
+                  }
+                }
               }
             },
             child: Stack(
@@ -106,6 +153,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                   username: widget.lastUsername ?? '',
                   appState: widget.appState,
                   cubit: cubit,
+                  loginMode: _loginMode,
                 )
               ],
             )),

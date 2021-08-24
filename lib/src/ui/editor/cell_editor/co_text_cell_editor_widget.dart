@@ -122,6 +122,10 @@ class CoTextCellEditorWidgetState
     widget.cellEditorModel.focusNode.addListener(_focusListener);
 
     widget.cellEditorModel.addListener(onCellEditorValueChanged);
+
+    if (widget.cellEditorModel.multiLine) {
+      widget.cellEditorModel.textPadding = const EdgeInsets.only(left: 12, top: 10);
+    }
   }
 
   @override

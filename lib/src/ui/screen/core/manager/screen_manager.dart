@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/request.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../models/api/response_objects/menu/menu_item.dart';
@@ -63,7 +64,7 @@ class ScreenManager implements IScreenManager {
   }
 
   @override
-  void init() {}
+  void init(Key navigatorKey) {}
 
   @override
   void updateScreen(SoScreen screen) {
@@ -116,4 +117,23 @@ class ScreenManager implements IScreenManager {
 
     return false;
   }
+
+  @override
+  Future<bool> onLogin(BuildContext context) async {
+    return true;
+  }
+
+  @override
+  Future<bool> onSync(BuildContext context) async {
+    return true;
+  }
+
+  @override
+  String onCookie(String cookie) {
+    return cookie;
+  }
+
+  @override
+  Future<ApiState?> onResponse(Request request, String responseBody,
+      Future<ApiState> Function() callback) async {}
 }

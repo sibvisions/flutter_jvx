@@ -3,7 +3,10 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
+import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
 import 'package:http/http.dart' as http;
+import 'package:universal_html/html.dart';
 
 import '../../services/remote/cubit/api_cubit.dart';
 import '../../services/remote/rest/rest_client.dart';
@@ -160,8 +163,11 @@ class RemoteDataSourceImpl implements DataSource {
   Future<ApiState> pressButton(PressButtonRequest request) async {
     final path = appState.serverConfig!.baseUrl + '/api/v2/pressButton';
 
+    bool isGoOfflineRequest =
+        request.classNameEventSourceRef == "OfflineButton";
+
     Either<ApiError, ApiResponse> either =
-        await _sendRequest(Uri.parse(path), request);
+        await _sendRequest(Uri.parse(path), request, isGoOfflineRequest);
 
     return either.fold((l) => l, (r) => r);
   }
@@ -178,7 +184,14 @@ class RemoteDataSourceImpl implements DataSource {
 
   @override
   Future<ApiState> startup(StartupRequest request) async {
-    final path = appState.serverConfig!.baseUrl + '/api/startup';
+    if (client.headers == null) {
+      client.headers = <String, String>{'Content-Type': 'application/json'};
+    }
+
+    if (!kIsWeb)
+      client.headers!['cookie'] = appState.screenManager.onCookie('');
+
+    final path = appState.serverConfig!.baseUrl + '/api/v3/startup';
 
     Either<ApiError, ApiResponse> either =
         await _sendRequest(Uri.parse(path), request);
@@ -227,6 +240,26 @@ class RemoteDataSourceImpl implements DataSource {
   }
 
   @override
+  Future<ApiState> changePassword(ChangePasswordRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/changePassword';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
+  }
+
+  @override
+  Future<ApiState> resetPassword(ResetPasswordRequest request) async {
+    final path = appState.serverConfig!.baseUrl + '/api/resetPassword';
+
+    Either<ApiError, ApiResponse> either =
+        await _sendRequest(Uri.parse(path), request);
+
+    return either.fold((l) => l, (r) => r);
+  }
+
+  @override
   Future<ApiState> data(DataRequest request) async {
     String path = appState.serverConfig!.baseUrl;
 
@@ -254,29 +287,55 @@ class RemoteDataSourceImpl implements DataSource {
     return either.fold((l) => l, (r) => r);
   }
 
-  Future<Either<ApiError, ApiResponse>> _sendRequest(
-      Uri uri, Request request) async {
+  Future<Either<ApiError, ApiResponse>> _sendRequest(Uri uri, Request request,
+      [bool isGoOfflineRequest = false]) async {
     if (debugRequest) {
       log('REQUEST ${uri.path}: ${request.debugInfo}');
+    }
+
+    if (!kIsWeb) {
+      client.headers!['cookie'] =
+          appState.screenManager.onCookie(client.headers!['cookie']!);
     }
 
     Either<Failure, http.Response> either = await client.post(
         uri: uri,
         data: request.toJson(),
-        timeout: appState.appConfig!.requestTimeout);
+        timeout: isGoOfflineRequest
+            ? appState.appConfig!.goOfflineRequestTimeout
+            : appState.appConfig!.requestTimeout);
 
-    return either.fold((l) => Left(ApiError(failure: l)), (r) async {
+    return either.fold((l) => Left(ApiError(failures: [l])), (r) async {
       if (r.statusCode != 404) {
-        List decodedBody = _getDecodedBody(r.body);
-        Failure? failure = _getErrorIfExists(decodedBody);
+        List decodedBody = [];
 
-        if (!kReleaseMode && debugResponse) {
-          log('RESPONSE ${uri.path}: $decodedBody');
-        }
+        ApiState? response =
+            await appState.screenManager.onResponse(request, r.body, () async {
+          return (await _sendRequest(uri, request)).fold((l) => l, (r) => r);
+        });
 
-        if (failure != null) {
-          return Left(ApiError(failure: failure));
-        } else {
+        if (response == null) {
+          try {
+            if (kReleaseMode && !kIsWeb)
+              decodedBody = await compute(_getDecodedBody, r.body);
+            else
+              decodedBody = _getDecodedBody(r.body);
+          } on FormatException {
+            return Left(ApiError(failures: [
+              ServerFailure(
+                  name: 'message.error',
+                  details: '',
+                  message: 'Could not parse response',
+                  title: 'Parsing error')
+            ]));
+          }
+
+          List<Failure> failures = _getErrorsIfExists(decodedBody);
+
+          if (!kReleaseMode && debugResponse) {
+            log('RESPONSE ${uri.path}: $decodedBody');
+          }
+
           final cookie = r.headers['set-cookie'];
 
           if (cookie != null && cookie.isNotEmpty) {
@@ -288,21 +347,51 @@ class RemoteDataSourceImpl implements DataSource {
               };
             }
 
-            client.headers!['cookie'] =
-                (index == -1) ? cookie : cookie.substring(0, index);
+            if (kIsWeb) {
+              document.cookie =
+                  (index == -1) ? cookie : cookie.substring(0, index);
+            } else {
+              client.headers!['cookie'] =
+                  (index == -1) ? cookie : cookie.substring(0, index);
+            }
           }
 
-          ApiResponse response = ApiResponse.fromJson(request, decodedBody);
+          if (failures.isNotEmpty) {
+            if (decodedBody.length == 1) {
+              return Left(ApiError(failures: failures));
+            } else {
+              ApiResponse internResponse =
+                  ApiResponse.fromJson(request, decodedBody);
 
+              return Right(internResponse);
+            }
+          } else {
+            ApiResponse internResponse =
+                ApiResponse.fromJson(request, decodedBody);
+
+            return Right(internResponse);
+          }
+        } else if (response is ApiResponse) {
           return Right(response);
+        } else if (response is ApiError) {
+          return Left(response);
+        } else {
+          return Left(ApiError(failures: [
+            ServerFailure(
+                name: 'message.error',
+                message: 'Something went wrong',
+                title: 'Error',
+                details: '')
+          ]));
         }
       } else {
-        return Left(ApiError(
-            failure: Failure(
-                details: '',
-                message: 'Could not fetch url',
-                name: ErrorHandler.serverError,
-                title: 'Not found')));
+        return Left(ApiError(failures: [
+          Failure(
+              details: '',
+              message: 'Could not fetch url',
+              name: ErrorHandler.serverError,
+              title: 'Not found')
+        ]));
       }
     });
   }
@@ -314,7 +403,7 @@ class RemoteDataSourceImpl implements DataSource {
         data: request.toJson(),
         timeout: appState.appConfig!.requestTimeout);
 
-    return either.fold((l) => Left(ApiError(failure: l)), (r) {
+    return either.fold((l) => Left(ApiError(failures: [l])), (r) {
       ApiResponse response = ApiResponse(request: request, objects: []);
 
       response.addResponseObject(DownloadResponseObject(
@@ -332,7 +421,7 @@ class RemoteDataSourceImpl implements DataSource {
     Either<Failure, http.Response> either =
         await client.upload(uri: uri, data: request.toJson());
 
-    return either.fold((l) => Left(ApiError(failure: l)), (r) {
+    return either.fold((l) => Left(ApiError(failures: [l])), (r) {
       ApiResponse response = ApiResponse.fromJson(request, json.decode(r.body));
 
       response.addResponseObject(
@@ -342,18 +431,20 @@ class RemoteDataSourceImpl implements DataSource {
     });
   }
 
-  Failure? _getErrorIfExists(List<dynamic> responses) {
+  List<Failure> _getErrorsIfExists(List<dynamic> responses) {
+    List<Failure> failures = <Failure>[];
+
     if (responses.isNotEmpty) {
       for (final response in responses) {
         if (response['name'] == 'message.error' ||
             response['name'] == 'server.error' ||
             response['name'] == 'message.sessionexpired') {
-          return ServerFailure.fromJson(response);
+          failures.add(ServerFailure.fromJson(response));
         }
       }
     }
 
-    return null;
+    return failures;
   }
 }
 

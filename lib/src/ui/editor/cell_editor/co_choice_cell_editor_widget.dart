@@ -26,15 +26,15 @@ class CoChoiceCellEditorWidgetState
     ChoiceCellEditorModel cellEditorModel =
         widget.cellEditorModel as ChoiceCellEditorModel;
 
-    if ((cellEditorModel.items.indexOf(cellEditorModel.selectedImage!) + 1) <
+    if ((cellEditorModel.items.indexOf(cellEditorModel.selectedImage) + 1) <
         cellEditorModel.items.length)
       cellEditorModel.selectedImage = cellEditorModel.items[
-          cellEditorModel.items.indexOf(cellEditorModel.selectedImage!) + 1];
+          cellEditorModel.items.indexOf(cellEditorModel.selectedImage) + 1];
     else
       cellEditorModel.selectedImage = cellEditorModel.items[0];
 
-    cellEditorModel.cellEditorValue = cellEditorModel.selectedImage!.value;
-    onValueChanged!(context, cellEditorModel.selectedImage!.value,
+    cellEditorModel.cellEditorValue = cellEditorModel.selectedImage.value;
+    onValueChanged!(context, cellEditorModel.selectedImage.value,
         cellEditorModel.indexInTable);
   }
 
@@ -57,9 +57,9 @@ class CoChoiceCellEditorWidgetState
       if (cellEditorModel.cellEditorValue != null &&
           (cellEditorModel.cellEditorValue as String).trim().isNotEmpty) {
         cellEditorModel.selectedImage = cellEditorModel.items[cellEditorModel
-            .allowedValues!
+            .allowedValues
             .indexOf(cellEditorModel.cellEditorValue)];
-      } else if (cellEditorModel.defaultImage != null) {
+      } else {
         cellEditorModel.selectedImage = cellEditorModel.defaultImage;
       }
     }
@@ -81,7 +81,7 @@ class CoChoiceCellEditorWidgetState
               //   child: cellEditorModel.selectedImage!.image,
               // ),
               child: GestureDetector(
-                child: cellEditorModel.selectedImage!.image,
+                child: cellEditorModel.selectedImage.image,
                 onTap: () => cellEditorModel.editable
                     ? setState(() => changeImage())
                     : null,

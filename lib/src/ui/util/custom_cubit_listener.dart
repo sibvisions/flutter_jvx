@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../models/state/routes/routes.dart';
+import '../../../flutterclient.dart';
 import '../../models/api/errors/failure.dart';
-import '../../models/api/response_objects/application_parameters_response_object.dart';
-import '../../models/api/response_objects/menu/menu_response_object.dart';
+import '../../models/api/requests/change_password_request.dart';
 import '../../models/api/response_objects/restart_response_object.dart';
-import '../../models/api/response_objects/user_data_response_object.dart';
 import '../../models/state/app_state.dart';
+import '../../models/state/routes/routes.dart';
 import '../../services/remote/cubit/api_cubit.dart';
+import '../../util/app/state/state_helper.dart';
 import '../widgets/dialog/loading_indicator_dialog.dart';
 import '../widgets/dialog/show_restart_dialog.dart';
 import 'error/error_handler.dart';
@@ -35,7 +35,7 @@ class CustomCubitListener extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<ApiCubit, ApiState>(
       bloc: bloc,
-      listener: (BuildContext context, ApiState state) {
+      listener: (BuildContext context, ApiState state) async {
         ModalRoute modalRoute = ModalRoute.of(context)!;
 
         if (handleLoading && state is ApiLoading) {
@@ -46,41 +46,33 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (handleError &&
-            (state is ApiError ||
-                (state is ApiResponse && state.hasObject<Failure>()))) {
-          if (state is ApiError) {
-            ErrorHandler.handleError(state, context);
-          } else if (state is ApiResponse && modalRoute.isCurrent) {
-            ErrorHandler.handleError(
-                ApiError(failure: state.getObjectByType<Failure>()!), context);
-          }
+        if (handleError && !appState.showsError && state is ApiError) {
+          appState.showsError = true;
+          await ErrorHandler.handleResponse(context, state);
+          appState.showsError = false;
         }
 
         if (state is ApiResponse) {
-          if (state.hasObject<MenuResponseObject>()) {
-            appState.menuResponseObject =
-                state.getObjectByType<MenuResponseObject>()!;
-          }
-
-          if (state.hasObject<ApplicationParametersResponseObject>()) {
-            appState.parameters.updateFromResponseObject(
-                state.getObjectByType<ApplicationParametersResponseObject>()!);
-          }
+          StateHelper.updateAppStateAndLocalDataWithResponse(
+              appState, SharedPreferencesProvider.of(context)!.manager, state);
 
           if (state.hasObject<RestartResponseObject>()) {
             showRestartDialog(
                 context, state.getObjectByType<RestartResponseObject>()!.info);
           }
-
-          if (state.hasObject<UserDataResponseObject>()) {
-            appState.userData = state.getObjectByType<UserDataResponseObject>();
-          }
         }
 
-        if (modalRoute.isCurrent ||
-            modalRoute.settings.name == Routes.openScreen)
+        if (((modalRoute.isCurrent ||
+                    modalRoute.settings.name == Routes.openScreen) ||
+                (state is ApiResponse && state.hasObject<Failure>())) &&
+            (state is ApiResponse && !(state.request is ChangePasswordRequest)))
           listener(context, state);
+
+        if (state is ApiResponse && state.hasObject<Failure>()) {
+          appState.showsError = true;
+          await ErrorHandler.handleResponse(context, state);
+          appState.showsError = false;
+        }
       },
       child: child,
     );

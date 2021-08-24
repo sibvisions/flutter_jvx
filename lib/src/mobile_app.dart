@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutterclient/flutterclient.dart';
 
 import 'models/state/app_state.dart';
 import 'models/state/routes/arguments/login_page_arguments.dart';
@@ -23,6 +24,7 @@ class MobileApp extends StatelessWidget {
   final SharedPreferencesManager manager;
   final String initialRoute;
   final List<Locale> supportedLocales;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   const MobileApp({
     Key? key,
@@ -31,6 +33,7 @@ class MobileApp extends StatelessWidget {
     required this.manager,
     required this.supportedLocales,
     this.initialRoute = Routes.startup,
+    required this.navigatorKey,
   }) : super(key: key);
 
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
@@ -79,6 +82,7 @@ class MobileApp extends StatelessWidget {
             appState: appState,
             manager: manager,
             lastUsername: arguments.lastUsername,
+            loginMode: arguments.loginMode,
           ),
         );
       case Routes.menu:
@@ -121,6 +125,8 @@ class MobileApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
       theme: themeData,
       initialRoute: initialRoute,
       onGenerateRoute: _onGenerateRoute,

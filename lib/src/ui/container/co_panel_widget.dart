@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/component/component_widget.dart';
-import 'package:flutterclient/src/ui/container/co_container_widget.dart';
-import 'package:flutterclient/src/ui/container/models/container_component_model.dart';
+
+import '../component/component_widget.dart';
+import 'co_container_widget.dart';
+import 'models/container_component_model.dart';
 
 class CoPanelWidget extends CoContainerWidget {
   CoPanelWidget({required ContainerComponentModel componentModel})
@@ -31,10 +32,7 @@ class CoPanelWidgetState extends CoContainerWidgetState {
     late Widget child;
 
     if (componentModel.layout != null) {
-      child = componentModel.layout as Widget;
-      if (componentModel.layout!.setState != null) {
-        componentModel.layout!.setState!(() {});
-      }
+      child = componentModel.layout!;
     } else if (componentModel.components.isNotEmpty) {
       child = Column(children: _getNullLayout(componentModel.components));
     } else {

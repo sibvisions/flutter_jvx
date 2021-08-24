@@ -43,6 +43,8 @@ class ComponentModel with ChangeNotifier {
   String parentComponentId = '';
   List<Key>? childComponentIds;
 
+  DateTime? lastLayout;
+
   late AppState appState;
 
   ChangedComponent get changedComponent => _changedComponent;
@@ -119,10 +121,11 @@ class ComponentModel with ChangeNotifier {
     _constraints = changedComponent.getProperty<String>(
         ComponentProperty.CONSTRAINTS, constraints)!;
     name = changedComponent.getProperty<String>(ComponentProperty.NAME, name)!;
-    text = _changedComponent.getProperty<String>(ComponentProperty.TEXT, text)!;
+    text = changedComponent.getProperty<String>(ComponentProperty.TEXT, text)!;
     classNameEventSourceRef = _changedComponent.getProperty<String>(
         ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF, classNameEventSourceRef);
 
     this.changedComponent = changedComponent;
+    this.lastLayout = changedComponent.created;
   }
 }

@@ -35,7 +35,9 @@ class SplitPanelComponentModel extends ContainerComponentModel {
   SplitPanelComponentModel({required ChangedComponent changedComponent})
       : super(
           changedComponent: changedComponent,
-        );
+        ) {
+    isScrollable = true;
+  }
 
   @override
   void updateProperties(

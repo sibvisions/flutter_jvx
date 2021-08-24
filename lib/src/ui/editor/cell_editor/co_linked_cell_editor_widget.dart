@@ -140,19 +140,23 @@ class CoLinkedCellEditorWidgetState
     return Container(
       height: 50,
       decoration: BoxDecoration(
-          color: widget.cellEditorModel.backgroundColor != null
-              ? widget.cellEditorModel.backgroundColor
-              : Colors.white.withOpacity(widget.cellEditorModel.appState
-                      .applicationStyle?.controlsOpacity ??
-                  1.0),
+          color: !widget.cellEditorModel.isTableView
+              ? widget.cellEditorModel.backgroundColor != null
+                  ? widget.cellEditorModel.backgroundColor
+                  : Colors.white.withOpacity(widget.cellEditorModel.appState
+                          .applicationStyle?.controlsOpacity ??
+                      1.0)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(widget.cellEditorModel.appState
                   .applicationStyle?.cornerRadiusEditors ??
               10),
-          border: widget.cellEditorModel.editable
-              ? (widget.cellEditorModel.borderVisible
-                  ? Border.all(color: Theme.of(context).primaryColor)
-                  : null)
-              : Border.all(color: Colors.grey)),
+          border: !widget.cellEditorModel.isTableView
+              ? widget.cellEditorModel.editable
+                  ? (widget.cellEditorModel.borderVisible
+                      ? Border.all(color: Theme.of(context).primaryColor)
+                      : null)
+                  : Border.all(color: Colors.grey)
+              : null),
       child: Container(
         child: DropdownButtonHideUnderline(
             child: custom.CustomDropdownButton(

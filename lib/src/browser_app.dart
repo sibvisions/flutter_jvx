@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutterclient/src/ui/widgets/page/login/login_card.dart';
 
 import 'models/api/response_objects/language_response_object.dart';
 import 'models/api/response_objects/menu/menu_item.dart';
@@ -8,7 +9,6 @@ import 'models/state/routes/arguments/login_page_arguments.dart';
 import 'models/state/routes/arguments/menu_page_arguments.dart';
 import 'models/state/routes/arguments/open_screen_page_arguments.dart';
 import 'models/state/routes/arguments/settings_page_arguments.dart';
-import 'models/state/routes/arguments/startup_page_arguments.dart';
 import 'models/state/routes/routes.dart';
 import 'services/local/shared_preferences/shared_preferences_manager.dart';
 import 'ui/pages/login_page.dart';
@@ -25,6 +25,7 @@ class BrowserApp extends StatelessWidget {
   final SharedPreferencesManager manager;
   final String initialRoute;
   final List<Locale> supportedLocales;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   const BrowserApp({
     Key? key,
@@ -32,6 +33,7 @@ class BrowserApp extends StatelessWidget {
     required this.appState,
     required this.manager,
     required this.supportedLocales,
+    required this.navigatorKey,
     this.initialRoute = Routes.startup,
   }) : super(key: key);
 
@@ -91,15 +93,11 @@ class BrowserApp extends StatelessWidget {
 
       switch (settings.name) {
         case Routes.startup:
-          StartupPageArguments? arguments;
-          if (settings.arguments != null)
-            arguments = settings.arguments as StartupPageArguments;
           return MaterialPageRoute(
               settings: RouteSettings(
                   name: Routes.startup, arguments: settings.arguments),
               builder: (_) => StartupPage(
-                    startupWidget: arguments?.startupWidget ??
-                        appState.widgetConfig.startupWidget,
+                    startupWidget: appState.widgetConfig.startupWidget,
                     appState: appState,
                     manager: manager,
                   ));
@@ -128,6 +126,7 @@ class BrowserApp extends StatelessWidget {
               appState: appState,
               manager: manager,
               lastUsername: arguments?.lastUsername,
+              loginMode: arguments?.loginMode ?? LoginMode.MANUAL,
             ),
           );
         case Routes.menu:
@@ -181,11 +180,20 @@ class BrowserApp extends StatelessWidget {
                     manager: manager,
                   ));
       }
+    } else {
+      return MaterialPageRoute(
+          settings: RouteSettings(
+              name: Routes.startup, arguments: settings.arguments),
+          builder: (_) => StartupPage(
+                startupWidget: null,
+                appState: appState,
+                manager: manager,
+              ));
     }
   }
 
   RouteSettings? _isRouteAllowed(RouteSettings settings) {
-    if (settings.name == Routes.login &&
+    if ((settings.name == Routes.login || settings.name == Routes.menu) &&
         appState.applicationStyle == null &&
         appState.fileConfig.images.isEmpty) {
       return null;
@@ -193,19 +201,22 @@ class BrowserApp extends StatelessWidget {
 
     if (settings.name == Routes.menu && appState.userData == null) {
       return RouteSettings(
-          name: Routes.login, arguments: LoginPageArguments(lastUsername: ''));
+          name: Routes.login,
+          arguments: LoginPageArguments(
+              lastUsername: '', loginMode: LoginMode.MANUAL));
     }
 
     return settings;
   }
 
   String _onGenerateTitle(BuildContext context) {
-    return 'JVx mobile';
+    return appState.appConfig?.title ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       initialRoute: initialRoute,
       onGenerateRoute: _onGenerateRoute,

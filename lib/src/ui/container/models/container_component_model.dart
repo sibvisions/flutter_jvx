@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/ui/layout/co_flow_layout_container_widget.dart';
-import 'package:flutterclient/src/ui/layout/co_grid_layout_container_widget.dart';
 
 import '../../../models/api/response_objects/response_data/component/changed_component.dart';
 import '../../../models/api/response_objects/response_data/component/component_properties.dart';
 import '../../component/component_widget.dart';
 import '../../component/model/component_model.dart';
-import '../../layout/co_border_layout_container_widget.dart';
-import '../../layout/co_form_layout_container_widget.dart';
-import '../../layout/co_layout.dart';
+import '../../layout/layout/border_layout/border_layout_model.dart';
+import '../../layout/layout/border_layout/co_border_layout_container_widget.dart';
+import '../../layout/layout/co_layout_widget.dart';
+import '../../layout/layout/flow_layout/co_flow_layout_container_widget.dart';
+import '../../layout/layout/flow_layout/flow_layout_model.dart';
+import '../../layout/layout/form_layout/co_form_layout_container_widget.dart';
+import '../../layout/layout/form_layout/form_layout_model.dart';
+import '../../layout/layout/grid_layout/co_grid_layout_container_widget.dart';
+import '../../layout/layout/grid_layout/grid_layout_model.dart';
 import '../../layout/widgets/co_border_layout_constraint.dart';
 import '../../screen/core/so_screen.dart';
 import '../co_container_widget.dart';
@@ -19,7 +23,9 @@ class ContainerComponentModel extends ComponentModel {
   String? layoutData;
   String? layoutString;
 
-  CoLayout? layout;
+  CoLayoutWidget? layout;
+
+  bool isScrollable = false;
 
   get layoutName {
     List<String>? parameter = layoutString?.split(",");
@@ -72,23 +78,23 @@ class ContainerComponentModel extends ComponentModel {
       if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(pConstraints!);
-        layout!.addLayoutComponent(pComponent, contraints);
+        layout!.layoutModel.addLayoutComponent(pComponent, contraints);
       } else if (layout is CoFormLayoutContainerWidget) {
-        layout!.addLayoutComponent(pComponent, pConstraints);
+        layout!.layoutModel.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is CoFlowLayoutContainerWidget) {
-        layout!.addLayoutComponent(pComponent, pConstraints);
+        layout!.layoutModel.addLayoutComponent(pComponent, pConstraints);
       } else if (layout is CoGridLayoutContainerWidget) {
-        layout!.addLayoutComponent(pComponent, pConstraints);
+        layout!.layoutModel.addLayoutComponent(pComponent, pConstraints);
       }
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void remove(int pIndex) {
     ComponentWidget pComponent = components[pIndex];
     if (layout != null) {
-      layout!.removeLayoutComponent(pComponent);
+      layout!.layoutModel.removeLayoutComponent(pComponent);
     }
     components.removeAt(pIndex);
   }
@@ -103,7 +109,7 @@ class ContainerComponentModel extends ComponentModel {
       pComponent.componentModel.state = CoState.Free;
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void removeAll() {
@@ -111,7 +117,7 @@ class ContainerComponentModel extends ComponentModel {
       remove(components.length - 1);
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   ComponentWidget getComponentWithContraint(String constraint) {
@@ -122,18 +128,18 @@ class ContainerComponentModel extends ComponentModel {
   void updateConstraintsWithWidget(
       ComponentWidget componentWidget, String newConstraints) {
     if (layout != null) {
-      layout!.removeLayoutComponent(componentWidget);
+      layout!.layoutModel.removeLayoutComponent(componentWidget);
 
       if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
             getBorderLayoutConstraintsFromString(newConstraints);
-        layout!.addLayoutComponent(componentWidget, contraints);
+        layout!.layoutModel.addLayoutComponent(componentWidget, contraints);
       } else if (layout is CoFormLayoutContainerWidget) {
-        layout!.addLayoutComponent(componentWidget, newConstraints);
+        layout!.layoutModel.addLayoutComponent(componentWidget, newConstraints);
       } else if (layout is CoFlowLayoutContainerWidget) {
-        layout!.addLayoutComponent(componentWidget, newConstraints);
+        layout!.layoutModel.addLayoutComponent(componentWidget, newConstraints);
       } else if (layout is CoGridLayoutContainerWidget) {
-        layout!.addLayoutComponent(componentWidget, newConstraints);
+        layout!.layoutModel.addLayoutComponent(componentWidget, newConstraints);
       }
     }
   }
@@ -152,22 +158,24 @@ class ContainerComponentModel extends ComponentModel {
     if (layout != null) {
       if (layout is CoBorderLayoutContainerWidget) {
         CoBorderLayoutConstraints contraints =
-            layout!.getConstraints(pComponent);
+            layout!.layoutModel.getConstraints(pComponent);
         (layout as CoBorderLayoutContainerWidget)
+            .layoutModel
             .addLayoutComponent(pComponent, contraints);
       }
     }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
-  CoLayout createLayoutForHeaderFooterPanel(
+  CoLayoutWidget createLayoutForHeaderFooterPanel(
       CoContainerWidget container, String layoutData) {
-    return CoBorderLayoutContainerWidget.fromLayoutString(
-        container, layoutData, null);
+    return CoBorderLayoutContainerWidget(
+        layoutModel:
+            BorderLayoutModel.fromLayoutString(container, layoutData, null));
   }
 
-  CoLayout? createLayout(
+  CoLayoutWidget? createLayout(
       CoContainerWidget container, ChangedComponent changedComponent) {
     if (changedComponent.hasProperty(ComponentProperty.LAYOUT) ||
         ((container.componentModel as ContainerComponentModel).layoutString !=
@@ -190,23 +198,29 @@ class ContainerComponentModel extends ComponentModel {
       switch (layoutName) {
         case "BorderLayout":
           {
-            return CoBorderLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw ?? '', layoutData);
+            return CoBorderLayoutContainerWidget(
+                layoutModel: BorderLayoutModel.fromLayoutString(
+                    container, layoutRaw ?? '', layoutData));
           }
         case "FormLayout":
           {
-            return CoFormLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw ?? '', layoutData ?? '');
+            return CoFormLayoutContainerWidget(
+                layoutModel: FormLayoutModel.fromLayoutString(
+                    container, layoutRaw ?? '', layoutData ?? ''));
           }
         case "FlowLayout":
           {
-            return CoFlowLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw ?? '', layoutData ?? '');
+            return CoFlowLayoutContainerWidget(
+              layoutModel: FlowLayoutModel.fromLayoutString(
+                  container, layoutRaw ?? '', layoutData ?? ''),
+            );
           }
         case "GridLayout":
           {
-            return CoGridLayoutContainerWidget.fromLayoutString(
-                container, layoutRaw ?? '', layoutData ?? '');
+            return CoGridLayoutContainerWidget(
+              layoutModel: GridLayoutModel.fromLayoutString(
+                  container, layoutRaw ?? '', layoutData ?? ''),
+            );
           }
       }
 

@@ -198,7 +198,7 @@ class ApiResponse extends ApiState {
 }
 
 class ApiError extends ApiState {
-  final Failure failure;
+  final List<Failure> failures;
 
-  ApiError({required this.failure});
+  ApiError({required this.failures});
 }

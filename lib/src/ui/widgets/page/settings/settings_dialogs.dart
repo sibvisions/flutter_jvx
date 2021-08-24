@@ -78,7 +78,7 @@ class BaseUrlDialog extends StatelessWidget {
                     ),
                     TextButton(
                         onPressed: () {
-                          if (!toSave.endsWith('/services/mobile')) {
+                          if (!toSave.endsWith('/services/mobile') && toSave.isNotEmpty) {
                             if (toSave.endsWith('/')) {
                               toSave = toSave.replaceRange(
                                   toSave.length - 1, toSave.length, '');

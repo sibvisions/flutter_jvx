@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterclient/injection_container.dart';
-import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
-import 'package:flutterclient/src/util/translation/app_localizations.dart';
+
+import '../../../../injection_container.dart';
+import '../../../models/state/routes/pop_arguments/open_screen_page_pop_style.dart';
+import '../../../services/local/local_database/i_offline_database_provider.dart';
+import '../../../util/translation/app_localizations.dart';
 
 void showLinearProgressDialog(BuildContext context) {
   showDialog(
@@ -48,5 +50,5 @@ void showLinearProgressDialog(BuildContext context) {
 }
 
 void hideLinearProgressDialog(BuildContext context) {
-  Navigator.of(context).pop();
+  Navigator.of(context).pop(OpenScreenPagePopStyle.CLOSE);
 }

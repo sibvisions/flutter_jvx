@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutterclient/src/models/api/response_objects/application_meta_data_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/application_style/application_style_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -123,6 +124,27 @@ class SharedPreferencesManager {
 
   bool get initialStart => sharedPreferences.getBool('initialStart') ?? true;
 
+  ApplicationMetaDataResponseObject? get applicationMetaData {
+    String? jsonString = sharedPreferences.getString('applicationMetaData');
+
+    if (jsonString != null) {
+      return ApplicationMetaDataResponseObject.fromJson(
+          map: json.decode(jsonString));
+    }
+
+    return null;
+  }
+
+  set applicationMetaData(
+      ApplicationMetaDataResponseObject? applicationMetaData) {
+    if (applicationMetaData != null) {
+      sharedPreferences.setString(
+          'applicationMetaData', json.encode(applicationMetaData.toJson()));
+    } else {
+      sharedPreferences.remove('applicationMetaData');
+    }
+  }
+
   set initialStart(bool initialStart) =>
       sharedPreferences.setBool('initialStart', initialStart);
 
@@ -131,9 +153,8 @@ class SharedPreferencesManager {
 
   set offlineUsername(String? username) {
     if (username != null && username.isNotEmpty) {
-      final hash = sha256.convert(utf8.encode(username)).toString();
-
-      sharedPreferences.setString('offlineUsername', hash);
+      sharedPreferences.setString(
+          'offlineUsername', encrypter.encrypt(username, iv: iv).base64);
     } else {
       sharedPreferences.remove('offlineUsername');
     }
@@ -141,9 +162,8 @@ class SharedPreferencesManager {
 
   set offlinePassword(String? password) {
     if (password != null && password.isNotEmpty) {
-      final hash = sha256.convert(utf8.encode(password)).toString();
-
-      sharedPreferences.setString('offlinePassword', hash);
+      sharedPreferences.setString(
+          'offlinePassword', encrypter.encrypt(password, iv: iv).base64);
     } else {
       sharedPreferences.remove('offlinePassword');
     }

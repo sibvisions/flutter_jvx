@@ -164,7 +164,7 @@ class TableComponentModel extends EditorComponentModel {
     autoResize = changedComponent.getProperty<bool>(
         ComponentProperty.AUTO_RESIZE, autoResize)!;
     editable = changedComponent.getProperty<bool>(
-        ComponentProperty.AUTO_RESIZE, editable)!;
+        ComponentProperty.EDITABLE, editable)!;
 
     if (this.dataProvider == null)
       this.dataProvider = changedComponent.getProperty<String>(
@@ -224,6 +224,8 @@ class TableComponentModel extends EditorComponentModel {
             SoScreenState? screen = SoScreen.of(context);
 
             if (screen != null) {
+              editor.componentModel.name = name;
+
               (editor.cellEditor!.cellEditorModel as LinkedCellEditorModel)
                       .referencedData =
                   SoScreen.of(context)!.getComponentData(editor.cellEditor!
