@@ -19,6 +19,7 @@ class CoTextCellEditorWidgetState
     extends CoCellEditorWidgetState<CoTextCellEditorWidget> {
   dynamic? value;
   bool shouldShowSuffixIcon = false;
+  bool obsureText = true;
 
   Color get backgroundColor =>
       widget.cellEditorModel.backgroundColor ?? Colors.white;
@@ -124,7 +125,8 @@ class CoTextCellEditorWidgetState
     widget.cellEditorModel.addListener(onCellEditorValueChanged);
 
     if (widget.cellEditorModel.multiLine) {
-      widget.cellEditorModel.textPadding = const EdgeInsets.only(left: 12, top: 10);
+      widget.cellEditorModel.textPadding =
+          const EdgeInsets.only(left: 12, top: 10);
     }
   }
 
@@ -162,7 +164,18 @@ class CoTextCellEditorWidgetState
               contentPadding: widget.cellEditorModel.textPadding,
               border: InputBorder.none,
               hintText: widget.cellEditorModel.placeholder,
-              suffixIcon: suffixIcon),
+              suffixIcon: widget.cellEditorModel.password
+                  ? InkWell(
+                      onTap: () {
+                        setState(() {
+                          obsureText = !obsureText;
+                        });
+                      },
+                      child: Icon(
+                        obsureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    )
+                  : suffixIcon),
           style: textStyle,
           controller: widget.cellEditorModel.textController,
           focusNode: widget.cellEditorModel.focusNode,
@@ -173,7 +186,7 @@ class CoTextCellEditorWidgetState
           onEditingComplete: onTextFieldEndEditing,
           onChanged: onTextFieldValueChanged,
           readOnly: !widget.cellEditorModel.editable,
-          obscureText: widget.cellEditorModel.password,
+          obscureText: widget.cellEditorModel.password ? obsureText : false,
         ),
       ),
     );

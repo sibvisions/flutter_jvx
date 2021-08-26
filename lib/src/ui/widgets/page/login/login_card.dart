@@ -63,6 +63,7 @@ class _LoginCardState extends State<LoginCard>
   String loginUsername = '', loginPassword = '';
 
   bool canLogin = true;
+  bool obsureText = true;
 
   late AnimationController controller;
   late Animation<double> animation;
@@ -122,10 +123,21 @@ class _LoginCardState extends State<LoginCard>
               onChanged: (password) => loginPassword = password,
               style: new TextStyle(fontSize: 14.0, color: Colors.black),
               decoration: new InputDecoration(
-                  labelText: AppLocalizations.of(context)!.text('Password:'),
-                  labelStyle:
-                      TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
-              obscureText: true,
+                labelText: AppLocalizations.of(context)!.text('Password:'),
+                labelStyle:
+                    TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
+                suffix: InkWell(
+                  onTap: () {
+                    setState(() {
+                      obsureText = !obsureText;
+                    });
+                  },
+                  child: Icon(
+                    obsureText ? Icons.visibility : Icons.visibility_off,
+                  ),
+                ),
+              ),
+              obscureText: obsureText,
             )),
         const SizedBox(
           height: 10,

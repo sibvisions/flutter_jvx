@@ -42,6 +42,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   String _repeatNewPassword = '';
 
   ApiError? _error;
+  bool obsureText = true;
 
   @override
   void initState() {
@@ -168,10 +169,21 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                   enabled: !widget.login,
                   controller: _passwordController,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.text(
-                          !widget.oneTime ? 'Password' : 'One Time Password'),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5))),
+                    labelText: AppLocalizations.of(context)!.text(
+                        !widget.oneTime ? 'Password' : 'One Time Password'),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    suffix: InkWell(
+                      onTap: () {
+                        setState(() {
+                          obsureText = !obsureText;
+                        });
+                      },
+                      child: Icon(
+                        obsureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
+                  ),
                   onChanged: (String changed) => _password = changed,
                   obscureText: true,
                 ),
@@ -181,10 +193,21 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 TextField(
                   controller: _newPasswordController,
                   decoration: InputDecoration(
-                      labelText:
-                          AppLocalizations.of(context)!.text('New Password'),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5))),
+                    labelText:
+                        AppLocalizations.of(context)!.text('New Password'),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    suffix: InkWell(
+                      onTap: () {
+                        setState(() {
+                          obsureText = !obsureText;
+                        });
+                      },
+                      child: Icon(
+                        obsureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
+                  ),
                   onChanged: (String changed) => _newPassword = changed,
                   obscureText: true,
                 ),
@@ -194,10 +217,21 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 TextField(
                   controller: _repeatNewPasswordController,
                   decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!
-                          .text('Repeat New Password'),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5))),
+                    labelText: AppLocalizations.of(context)!
+                        .text('Repeat New Password'),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    suffix: InkWell(
+                      onTap: () {
+                        setState(() {
+                          obsureText = !obsureText;
+                        });
+                      },
+                      child: Icon(
+                        obsureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
+                  ),
                   onChanged: (String changed) => _repeatNewPassword = changed,
                   obscureText: true,
                 ),
