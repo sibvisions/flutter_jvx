@@ -257,6 +257,73 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
     super.initState();
   }
 
+  List<Widget> getBottomMenuItems() {
+    List<Widget> items = <Widget>[];
+
+    items.add(Divider(
+      height: 1,
+    ));
+
+    if (!widget.appState.isOffline) {
+      items.add(ListTile(
+        title: Text(
+          AppLocalizations.of(context)!.text('Change Password'),
+          style: TextStyle(color: Theme.of(context).primaryColor.textColor()),
+        ),
+        leading: FaIcon(
+          FontAwesomeIcons.key,
+          color: Theme.of(context).primaryColor.textColor(),
+        ),
+        onTap: () async {
+          await showDialog(
+              context: context,
+              builder: (_) => ChangePasswordDialog(
+                    username: widget.appState.userData?.username ?? '',
+                    clientId: widget.appState.applicationMetaData!.clientId,
+                    login: false,
+                  ));
+        },
+      ));
+      items.add(Divider(
+        height: 1,
+        color: Theme.of(context).primaryColor.textColor(),
+      ));
+    }
+
+    items.add(ListTile(
+      title: Text(
+        AppLocalizations.of(context)!.text('Settings'),
+        style: TextStyle(color: Theme.of(context).primaryColor.textColor()),
+      ),
+      leading: FaIcon(
+        FontAwesomeIcons.cog,
+        color: Theme.of(context).primaryColor.textColor(),
+      ),
+      onTap: () {
+        widget.onSettingsPressed();
+      },
+    ));
+
+    items.add(Divider(
+      height: 1,
+      color: Theme.of(context).primaryColor.textColor(),
+    ));
+
+    items.add(ListTile(
+      title: Text(
+        AppLocalizations.of(context)!.text('Logout'),
+        style: TextStyle(color: Theme.of(context).primaryColor.textColor()),
+      ),
+      leading: FaIcon(
+        FontAwesomeIcons.signOutAlt,
+        color: Theme.of(context).primaryColor.textColor(),
+      ),
+      onTap: () => widget.onLogoutPressed(),
+    ));
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -269,69 +336,7 @@ class _MenuDrawerWidgetState extends State<MenuDrawerWidget> {
           ),
           Container(
             color: Theme.of(context).primaryColor,
-            child: Column(
-              children: [
-                Divider(
-                  height: 1,
-                ),
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.text('Change Password'),
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.textColor()),
-                  ),
-                  leading: FaIcon(
-                    FontAwesomeIcons.key,
-                    color: Theme.of(context).primaryColor.textColor(),
-                  ),
-                  onTap: () async {
-                    await showDialog(
-                        context: context,
-                        builder: (_) => ChangePasswordDialog(
-                              username:
-                                  widget.appState.userData?.username ?? '',
-                              clientId:
-                                  widget.appState.applicationMetaData!.clientId,
-                              login: false,
-                            ));
-                  },
-                ),
-                Divider(
-                  height: 1,
-                  color: Theme.of(context).primaryColor.textColor(),
-                ),
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.text('Settings'),
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.textColor()),
-                  ),
-                  leading: FaIcon(
-                    FontAwesomeIcons.cog,
-                    color: Theme.of(context).primaryColor.textColor(),
-                  ),
-                  onTap: () {
-                    widget.onSettingsPressed();
-                  },
-                ),
-                Divider(
-                  height: 1,
-                  color: Theme.of(context).primaryColor.textColor(),
-                ),
-                ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.text('Logout'),
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor.textColor()),
-                  ),
-                  leading: FaIcon(
-                    FontAwesomeIcons.signOutAlt,
-                    color: Theme.of(context).primaryColor.textColor(),
-                  ),
-                  onTap: () => widget.onLogoutPressed(),
-                )
-              ],
-            ),
+            child: Column(children: getBottomMenuItems()),
           )
         ],
       ),
