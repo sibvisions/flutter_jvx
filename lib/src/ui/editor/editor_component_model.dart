@@ -155,6 +155,8 @@ class EditorComponentModel extends ComponentModel {
         cellEditorHorizontalAlignment);
     cellEditorFont = changedComponent.getProperty<String>(
         ComponentProperty.CELL_EDITOR___FONT___, cellEditorFont);
+    classNameEventSourceRef = changedComponent.getProperty<String>(
+        ComponentProperty.CLASS_NAME_EVENT_SOURCE_REF, classNameEventSourceRef);
 
     if (dataProvider == null)
       dataProvider = changedComponent.getProperty<String>(
@@ -272,6 +274,8 @@ class EditorComponentModel extends ComponentModel {
           cellEditorHorizontalAlignment ?? 0;
       cellEditor!.cellEditorModel.font = cellEditorFont;
       cellEditor!.cellEditorModel.indexInTable = indexInTable ?? -1;
+      cellEditor!.cellEditorModel.classNameEventSourceRef =
+          classNameEventSourceRef;
     }
   }
 }

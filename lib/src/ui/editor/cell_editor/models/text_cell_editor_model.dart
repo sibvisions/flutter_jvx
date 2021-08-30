@@ -20,6 +20,12 @@ class TextCellEditorModel extends CellEditorModel {
   TextEditingController textController = TextEditingController();
   FocusNode focusNode = FocusNode();
 
+  bool get isPasswordEditor {
+    if (classNameEventSourceRef != null &&
+        classNameEventSourceRef == 'PasswordEditor') return true;
+    return false;
+  }
+
   TextCellEditorModel({required CellEditor cellEditor})
       : super(cellEditor: cellEditor) {
     multiLine = cellEditor

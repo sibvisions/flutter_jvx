@@ -124,6 +124,14 @@ class CoToggleButtonWidgetState
     }
   }
 
+  void initState() {
+    super.initState();
+
+    this.updateImage();
+
+    widget.componentModel.addListener(() => this.updateImage());
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget child;

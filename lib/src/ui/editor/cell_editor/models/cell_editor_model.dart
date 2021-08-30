@@ -47,6 +47,7 @@ class CellEditorModel extends ChangeNotifier {
   Size? tableMinimumSize;
   Size? tablePreferredSize;
   double textScaleFactor = 1.0;
+  String? classNameEventSourceRef;
 
   Size? preferredSize;
   Size? minimumSize;

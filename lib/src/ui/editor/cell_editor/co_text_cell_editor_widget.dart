@@ -164,7 +164,8 @@ class CoTextCellEditorWidgetState
               contentPadding: widget.cellEditorModel.textPadding,
               border: InputBorder.none,
               hintText: widget.cellEditorModel.placeholder,
-              suffixIcon: widget.cellEditorModel.password
+              suffixIcon: (widget.cellEditorModel.password &&
+                      !widget.cellEditorModel.isPasswordEditor)
                   ? InkWell(
                       onTap: () {
                         setState(() {
