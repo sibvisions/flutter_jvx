@@ -6,6 +6,7 @@ showErrorDialog(BuildContext context, Failure failure) async {
   await showDialog(
       context: context,
       builder: (context) {
+        failure.errorHandled = true;
         return AlertDialog(
           title: Text(AppLocalizations.of(context)!.text('${failure.title}')),
           content:

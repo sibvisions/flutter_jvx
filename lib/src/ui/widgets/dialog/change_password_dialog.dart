@@ -82,14 +82,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             });
           } else if (state is ApiResponse) {
             if (state.hasObject<Failure>()) {
-              setState(() {
-                _error =
-                    ApiError(failures: [state.getObjectByType<Failure>()!]);
-              });
-            } else {
-              setState(() {
-                _error = null;
-              });
+              ApiError? err =
+                  ApiError(failures: [state.getObjectByType<Failure>()!]);
+              if (err.failures.isNotEmpty && !err.failures[0].errorHandled) {
+                await ErrorHandler.handleResponse(context, state);
+              }
             }
 
             if (widget.login) {
@@ -143,19 +140,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 const SizedBox(
                   height: 15,
                 ),
-                if (_error != null && _error!.failures.isNotEmpty) ...[
-                  Text(
-                    _error!.failures[0].message ?? 'An error occured',
-                    style: TextStyle(
-                        color:
-                            _error!.failures[0].name == ErrorHandler.messageInfo
-                                ? Colors.white
-                                : Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  )
-                ],
                 TextField(
                   enabled: widget.oneTime,
                   controller: _usernameController,
