@@ -301,7 +301,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   void _addInitialScreen(SoScreen screen) {
-    if (screen.configuration.value != null)
+    if (screen.configuration.value != null &&
+        screen.configuration.value is ApiResponse)
       _response = screen.configuration.value as ApiResponse;
 
     if (screen.configuration.onMenuItemPressed == null) {

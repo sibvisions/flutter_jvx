@@ -27,6 +27,8 @@ class RestClientImpl implements RestClient {
   Map<String, String>? headers = {'Content-Type': 'application/json'};
   final HttpClient client;
 
+  bool debug = true;
+
   @override
   RestClientImpl({Map<String, String>? headers, required this.client}) {
     client.setWithCredentials(true);
@@ -38,6 +40,7 @@ class RestClientImpl implements RestClient {
           .get(uri, headers: headers)
           .timeout(const Duration(seconds: 10));
 
+      if (debug) log("Response:" + response.body);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(
@@ -60,9 +63,12 @@ class RestClientImpl implements RestClient {
     }
 
     try {
+      if (debug) log("Request:" + json.encode(data));
       final response = await client
           .post(uri, body: json.encode(data), headers: headers)
           .timeout(Duration(seconds: timeout));
+
+      if (debug) log("Response:" + response.body);
 
       return Right(response);
     } on TimeoutException {
