@@ -6,6 +6,7 @@ class Failure extends ResponseObject {
   final String? details;
   final String? title;
   final bool silentAbort;
+  bool errorHandled = false;
 
   Failure(
       {required String name,
