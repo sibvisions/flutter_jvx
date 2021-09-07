@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterclient/src/ui/widgets/dialog/show_error_dialog.dart';
 
 import '../../../../flutterclient.dart';
 import '../../../models/api/requests/change_password_request.dart';
@@ -64,6 +65,36 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     _passwordController.dispose();
 
     super.dispose();
+  }
+
+  void onPasswordChangePressed() async {
+    if (_repeatNewPassword == _newPassword) {
+      if (widget.login || widget.oneTime) {
+        await sl<ApiCubit>().login(LoginRequest(
+            clientId: widget.clientId,
+            username: _usernameController.text,
+            password: _password,
+            createAuthKey: widget.rememberMe ?? false,
+            newPassword: _newPassword,
+            mode: widget.oneTime ? 'changeOneTimePassword' : 'changePassword'));
+      } else {
+        await sl<ApiCubit>().changePassword(ChangePasswordRequest(
+            clientId: widget.clientId,
+            password: _password,
+            newPassword: _newPassword,
+            username: _usernameController.text));
+      }
+    } else {
+      this.setState(() {
+        Failure failure = new Failure(
+            name: 'message.error',
+            details: '',
+            message: AppLocalizations.of(context)!
+                .text('The passwords are different!'),
+            title: AppLocalizations.of(context)!.text('Error'));
+        showErrorDialog(context, failure);
+      });
+    }
   }
 
   @override
@@ -236,30 +267,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         child:
                             Text(AppLocalizations.of(context)!.text('Cancel'))),
                     TextButton(
-                        onPressed: () async {
-                          if (_password.isNotEmpty &&
-                              _newPassword.isNotEmpty &&
-                              _repeatNewPassword == _newPassword) {
-                            if (widget.login || widget.oneTime) {
-                              await sl<ApiCubit>().login(LoginRequest(
-                                  clientId: widget.clientId,
-                                  username: _usernameController.text,
-                                  password: _password,
-                                  createAuthKey: widget.rememberMe ?? false,
-                                  newPassword: _newPassword,
-                                  mode: widget.oneTime
-                                      ? 'changeOneTimePassword'
-                                      : 'changePassword'));
-                            } else {
-                              await sl<ApiCubit>().changePassword(
-                                  ChangePasswordRequest(
-                                      clientId: widget.clientId,
-                                      password: _password,
-                                      newPassword: _newPassword,
-                                      username: _usernameController.text));
-                            }
-                          }
-                        },
+                        onPressed: onPasswordChangePressed,
                         child: Text(AppLocalizations.of(context)!
                             .text('Change Password'))),
                   ],
