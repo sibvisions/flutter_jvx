@@ -27,7 +27,7 @@ class RestClientImpl implements RestClient {
   Map<String, String>? headers = {'Content-Type': 'application/json'};
   final HttpClient client;
 
-  bool debug = true;
+  bool debug = false;
 
   @override
   RestClientImpl({Map<String, String>? headers, required this.client}) {
