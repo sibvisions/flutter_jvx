@@ -9,12 +9,34 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "hosted-git-info": ">=2.8.9",
     "glob-parent": ">=5.1.2",
-    "trim-newlines": ">=3.0.1"
+    "hosted-git-info": ">=2.8.9",
+    "npm-run-all": "^4.1.5",
+    "replace-in-files-cli": "^1.0.0",
+    "st-cp": "^2.0.0-beta.2",
+    "trash-cli": "4.0.0",
+    "trim-newlines": ">=3.0.1",
+    "yaml": "^1.10.2"
   },
   "scripts": {
-    "update-version": "node scripts/update_app_version.js commit && node scripts/update_app_version.js version && node scripts/update_app_version.js date"
+    "copyBuildWeb": "trash deploy/web && st-cp build/web deploy/",
+    "copyBuildAndroid": "trash deploy/android && st-cp build/app/outputs/apk/release/ deploy/android/",
+    "copyBuildIos": "trash deploy/ios && st-cp ios deploy/ios",
+    "copyBuild": "run-s copyBuildWeb && run-s copyBuildAndroid && run-s copyBuildIos",
+    "buildIos": "flutter build ios --release --no-sound-null-safety --dart-define=PROD=true",
+    "buildAndroid": "flutter build apk --release --no-sound-null-safety --dart-define=PROD=true",
+    "buildWeb": "flutter build web --release --no-sound-null-safety --dart-define=PROD=true",
+    "update-version": "node scripts/update_app_version.js",
+
+    "//": 
+      ["build:", 
+       "    *) Updates version info from pubspec.yaml to app_version.json and sets current date and commit",
+       "    *) Builds iOS, Adnroid and Web to /deploy folder",
+       "buildAndroidAndWebOnly:", 
+       "    *) Updates version info from pubspec.yaml to app_version.json and sets current date and commit",
+       "    *) Builds Adnroid and Web only to /deploy folder"],
+    "build": "flutter clean && run-s update-version && run-s update-version && run-s buildAndroid && run-s buildIos && run-s buildWeb && run-s copyBuild",
+    "buildAndroidAndWebOnly": "flutter clean && run-s update-version && run-s buildAndroid && run-s buildWeb && run-s copyBuild"
   },
   "repository": {
     "type": "git",
