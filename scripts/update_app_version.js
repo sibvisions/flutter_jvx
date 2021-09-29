@@ -17,41 +17,39 @@ const setValue = (fn, callback) =>
     .catch((error) => console.warn(error));
 
 const getYamlValue = (fn, callback) =>
-  fs
-    .readFile(fn, 'utf-8')
-    .then((body) => YAML.parse(body))
-    .then((yaml) => {
-      return callback(yaml);
-    })
-    .catch((error) => console.warn(error));
+fs
+  .readFile(fn, 'utf-8')
+  .then((body) => YAML.parse(body))
+  .then((yaml) => {
+    return callback(yaml);
+  })
+  .catch((error) => console.warn(error));
 
+  var version;
+  var commit;
 
-var version;
-var commit;
+  exec("git rev-parse --short HEAD", (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+    }
 
-exec("git rev-parse --short HEAD", (error, stdout, stderr) => {
-  if (error) {
-    console.log(`error: ${error.message}`);
-  }
+    if (stderr) {
+      console.log(`stderr: ${stderr}`);
+    }
 
-  if (stderr) {
-    console.log(`stderr: ${stderr}`);
-  }
+    commit = stdout.trim();
 
-  commit = stdout.trim();
+    getYamlValue(yamlPath, (yaml) => {
+      version = yaml.version;
 
-  getYamlValue(yamlPath, (yaml) => {
-    version = yaml.version;
+      setValue(path, (json) => {
+        var newDate = Date.now()
+    
+        json.version = version;
+        json.date = newDate;
+        json.commit = commit;
+    
+        return json;
+      });
+    });
   });
-
-  setValue(path, (json) => {
-    var newDate = Date.now()
-
-    json.version = version;
-    json.date = newDate;
-    json.commit = commit;
-
-    return json;
-  });
-})
-
