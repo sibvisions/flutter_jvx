@@ -16,25 +16,14 @@ const setValue = (fn, callback) =>
     .then((body) => fs.writeFile(fn, body))
     .catch((error) => console.warn(error));
 
-const setYamlValue = (fn, callback) =>
-    fs
-      .readFile(fn, 'utf-8')
-      .then((body) => YAML.parse(body))
-      .then((yaml) => {
-        return callback(yaml);
-      })
-      .then((yaml) => YAML.stringify(yaml))
-      .then((body) => fs.writeFile(fn, body))
-      .catch((error) => console.warn(error));
-
 const getYamlValue = (fn, callback) =>
-fs
-  .readFile(fn, 'utf-8')
-  .then((body) => YAML.parse(body))
-  .then((yaml) => {
-    return callback(yaml);
-  })
-  .catch((error) => console.warn(error));
+  fs
+    .readFile(fn, 'utf-8')
+    .then((body) => YAML.parse(body))
+    .then((yaml) => {
+      return callback(yaml);
+    })
+    .catch((error) => console.warn(error));
 
 
 var version;
