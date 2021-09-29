@@ -31,7 +31,7 @@
     "//": 
       ["build:", 
        "    *) Updates version info from pubspec.yaml to app_version.json and sets current date and commit",
-       "    *) Builds iOS, Adnroid and Web to /deploy folder",
+       "    *) Builds Adnroid, iOS and Web to /deploy folder",
        "buildAndroidAndWebOnly:", 
        "    *) Updates version info from pubspec.yaml to app_version.json and sets current date and commit",
        "    *) Builds Adnroid and Web only to /deploy folder"],
