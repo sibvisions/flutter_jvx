@@ -116,22 +116,20 @@ class SoComponentData {
     if (context != null) _onDataChanged.forEach((d) => d(context));
   }
 
-  void updateDataProviderChanged(
-      BuildContext context, DataproviderChanged pDataProviderChanged,
-      [Request? request]) {
-    // if (pDataProviderChanged.reload != null ||
-    //     (request != null && request is UploadRequest)) {
+  void updateDataProviderChanged(BuildContext context, DataproviderChanged pDataProviderChanged, [Request? request]) {
+    if(pDataProviderChanged.reload == -1){
+      DataBook? dataBook = data;
+      if(dataBook != null){
+        dataBook.records.clear();
+      }
+    }
     if (pDataProviderChanged.reload != null) {
       fetchData(pDataProviderChanged.reload, -1);
     }
 
-    if (data != null && pDataProviderChanged.selectedRow != null) {
+    if (data != null && pDataProviderChanged.selectedRow != null)  {
       updateSelectedRow(context, pDataProviderChanged.selectedRow!, true);
     }
-
-    // if (data != null && pDataProviderChanged.changedColumnNames != null) {
-    //   data!.columnNames = pDataProviderChanged.changedColumnNames!;
-    // }
   }
 
   void updateSelectedRow(BuildContext context, int selectedRow,
@@ -185,6 +183,12 @@ class SoComponentData {
     }
 
     return data;
+  }
+
+  void reloadData(){
+    if(data != null){
+      fetchData(-1, -1);
+    }
   }
 
   void selectRecord(BuildContext context, int index, [bool fetch = false]) {

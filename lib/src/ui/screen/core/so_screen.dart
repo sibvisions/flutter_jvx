@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
 import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -719,7 +720,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
               ),
               onPressed: () async {
                 for (final cd in componentData) {
-                  cd.getData(context, -1);
+                  cd.reloadData();
                 }
               }),
         IconButton(
