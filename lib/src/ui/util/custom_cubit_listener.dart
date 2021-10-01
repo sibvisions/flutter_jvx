@@ -46,7 +46,10 @@ class CustomCubitListener extends StatelessWidget {
           }
         }
 
-        if (handleError && !appState.showsError && state is ApiError) {
+
+        if ((state is ApiResponse && state.hasObject<Failure>() && !appState.showsError)
+            ||
+            (state is ApiError && !appState.showsError)) {
           appState.showsError = true;
           await ErrorHandler.handleResponse(context, state);
           appState.showsError = false;
@@ -68,11 +71,7 @@ class CustomCubitListener extends StatelessWidget {
             (state is ApiResponse && !(state.request is ChangePasswordRequest)))
           listener(context, state);
 
-        if (state is ApiResponse && state.hasObject<Failure>()) {
-          appState.showsError = true;
-          await ErrorHandler.handleResponse(context, state);
-          appState.showsError = false;
-        }
+
       },
       child: child,
     );
