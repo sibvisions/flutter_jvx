@@ -63,7 +63,7 @@ class CoMapWidgetState extends ComponentWidgetState<CoMapWidget> {
         ],
         mapController: _controller,
         options: MapOptions(
-            onTap: (LatLng latlng) {
+            onTap: (position ,latlng) {
               if (widget.componentModel.pointSelectionLockedOnCenter) {
                 widget.componentModel
                     .onPointSelection(context, _controller.center);

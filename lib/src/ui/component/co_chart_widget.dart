@@ -42,8 +42,8 @@ class CoChartWidgetState extends ComponentWidgetState<CoChartWidget> {
     );
   }
 
-  List<Series> _createSeries() {
-    List<Series<List, int>> _series = <Series<List, int>>[];
+  List<Series<List,  int>> _createSeries() {
+    List<Series<List,  int>> _series = <Series<List, int>>[];
 
     return _series;
   }
