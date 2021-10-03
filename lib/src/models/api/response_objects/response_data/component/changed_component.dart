@@ -25,7 +25,9 @@ class ChangedComponent extends ComponentProperties {
       this.screenTitle,
       this.screenModal,
       this.screenNavigationName})
-      : super({});
+      : super({}) {
+    created = DateTime.now();
+  }
 
   get layoutName {
     List<String>? parameter =
