@@ -108,7 +108,7 @@ class OfflineDatabase extends LocalDatabase
 
       ApiState state = await repository.startup(startup);
 
-      if (state is ApiResponse) {
+      if (state is ApiResponse && !hasError(state)) {
         setProperties(repository, state);
 
         ApplicationStyleRequest appStyle = ApplicationStyleRequest(
@@ -117,7 +117,7 @@ class OfflineDatabase extends LocalDatabase
 
         ApiState appStyleState = await repository.applicationStyle(appStyle);
 
-        if (appStyleState is ApiResponse) {
+        if (appStyleState is ApiResponse && !hasError(appStyleState)) {
           setProperties(repository, appStyleState);
 
           String currentScreenComponentId = "";
@@ -152,7 +152,7 @@ class OfflineDatabase extends LocalDatabase
                   ApiState state =
                       await repository.closeScreen(closeScreenRequest);
 
-                  if (state is ApiResponse) {
+                  if (state is ApiResponse && !hasError(state)) {
                     currentScreenComponentId = '';
                   }
                 }
@@ -165,7 +165,8 @@ class OfflineDatabase extends LocalDatabase
                 ApiState openScreenState =
                     await repository.openScreen(openScreenRequest);
 
-                if (openScreenState is ApiResponse) {
+                if (openScreenState is ApiResponse &&
+                    !hasError(openScreenState)) {
                   currentScreenComponentId = metaData.offlineScreenComponentId!;
                 }
               }
@@ -205,7 +206,7 @@ class OfflineDatabase extends LocalDatabase
 
             ApiState closeState = await repository.closeScreen(closeScreen);
 
-            if (closeState is ApiResponse) {
+            if (closeState is ApiResponse && !hasError(closeState)) {
               currentScreenComponentId = '';
             }
           }
@@ -399,7 +400,9 @@ class OfflineDatabase extends LocalDatabase
 
     List<ApiState> states = await repository.data(filterRequest);
 
-    if (states.isNotEmpty && states.first is ApiResponse) {
+    if (states.isNotEmpty &&
+        states.first is ApiResponse &&
+        !hasError(states.first as ApiResponse)) {
       ApiResponse response = states.first as ApiResponse;
 
       setProperties(repository, response);
@@ -417,7 +420,9 @@ class OfflineDatabase extends LocalDatabase
 
           List<ApiState> states = await repository.data(delete);
 
-          if (states.isNotEmpty && states.first is ApiResponse) {
+          if (states.isNotEmpty &&
+              states.first is ApiResponse &&
+              !hasError(states.first as ApiResponse)) {
             setProperties(repository, response);
 
             if (await syncSave(
@@ -491,7 +496,9 @@ class OfflineDatabase extends LocalDatabase
 
     List<ApiState> states = await repository.data(filterRequest);
 
-    if (states.isNotEmpty && states.first is ApiResponse) {
+    if (states.isNotEmpty &&
+        states.first is ApiResponse &&
+        !hasError(states.first as ApiResponse)) {
       ApiResponse response = states.first as ApiResponse;
 
       setProperties(repository, response);
@@ -506,7 +513,9 @@ class OfflineDatabase extends LocalDatabase
 
           List<ApiState> states = await repository.data(insert);
 
-          if (states.isNotEmpty && states.first is ApiResponse) {
+          if (states.isNotEmpty &&
+              states.first is ApiResponse &&
+              !hasError(states.first as ApiResponse)) {
             ApiResponse response = states.first as ApiResponse;
             setProperties(repository, response);
 
@@ -530,7 +539,9 @@ class OfflineDatabase extends LocalDatabase
 
                 List<ApiState> states = await repository.data(setValues);
 
-                if (states.isNotEmpty && states.first is ApiResponse) {
+                if (states.isNotEmpty &&
+                    states.first is ApiResponse &&
+                    !hasError(states.first as ApiResponse)) {
                   if (await syncSave(
                       context, dataProvider, filter, columnNames, row)) {
                     return await setInsertedSynced(dataProvider, row);
@@ -603,7 +614,9 @@ class OfflineDatabase extends LocalDatabase
 
     List<ApiState> states = await repository.data(setValues);
 
-    if (states.isNotEmpty && states.first is ApiResponse) {
+    if (states.isNotEmpty &&
+        states.first is ApiResponse &&
+        !hasError(states.first as ApiResponse)) {
       setProperties(repository, states.first as ApiResponse);
       if (await syncSave(context, dataProvider, filter, columnNames, row)) {
         dynamic offlinePrimaryKey =
@@ -638,7 +651,9 @@ class OfflineDatabase extends LocalDatabase
 
     List<ApiState> state = await repository.data(saveData);
 
-    if (state.isNotEmpty && state.first is ApiResponse) {
+    if (state.isNotEmpty &&
+        state.first is ApiResponse &&
+        !hasError(state.first as ApiResponse)) {
       setProperties(repository, state.first as ApiResponse);
       return true;
     }
