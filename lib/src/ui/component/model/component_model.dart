@@ -79,6 +79,7 @@ class ComponentModel with ChangeNotifier {
   ComponentModel({required ChangedComponent changedComponent})
       : _changedComponent = changedComponent,
         componentId = changedComponent.id ?? '',
+        lastLayout = changedComponent.created,
         appState = sl<AppState>();
 
   @mustCallSuper
