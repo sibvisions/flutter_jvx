@@ -105,7 +105,7 @@ class ScreenManager implements IScreenManager {
 
     try {
       screen = screens.values.firstWhere(
-          (element) => element.configuration.componentId == componentId);
+          (element) => element.configuration.screenComponentId == componentId);
     } catch (e) {
       return false;
     }
