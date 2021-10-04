@@ -50,9 +50,8 @@ class ScreenManager implements IScreenManager {
     SoScreen? result;
 
     try {
-      result = screens.values
-          .toList()
-          .firstWhere((screen) => screen.configuration.componentId == name);
+      result = screens.values.toList().firstWhere(
+          (screen) => screen.configuration.screenComponentId == name);
     } catch (e) {}
 
     return result;
@@ -68,8 +67,8 @@ class ScreenManager implements IScreenManager {
 
   @override
   void updateScreen(SoScreen screen) {
-    if (_screens.containsKey(screen.configuration.componentId)) {
-      _screens[screen.configuration.componentId] = screen;
+    if (_screens.containsKey(screen.configuration.screenComponentId)) {
+      _screens[screen.configuration.screenComponentId] = screen;
     }
   }
 
