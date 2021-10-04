@@ -123,10 +123,21 @@ class SoComponentData {
         dataBook.records.clear();
       }
     }
+    //  DataProviderChanged
+    //    DeletedRow
+    int? deletedRow = pDataProviderChanged.deletedRow;
+    DataBook? dataBook = data;
+    if(deletedRow != null && dataBook != null){
+      if(deletedRow == -1)
+        dataBook.records.clear();
+      else
+        dataBook.records.removeAt(deletedRow);
+    }
+    //    Reload
     if (pDataProviderChanged.reload != null) {
       fetchData(pDataProviderChanged.reload, -1);
     }
-
+    //    SelectedRow
     if (data != null && pDataProviderChanged.selectedRow != null)  {
       updateSelectedRow(context, pDataProviderChanged.selectedRow!, true);
     }

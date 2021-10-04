@@ -1,8 +1,9 @@
 import '../../../response_object.dart';
 
 class DataproviderChanged extends ResponseObject {
-  String? dataProvider;
+  String dataProvider;
   int? reload;
+  int? deletedRow;
   int? selectedRow;
   List<String>? columnNames;
   bool? readOnly;
@@ -13,24 +14,24 @@ class DataproviderChanged extends ResponseObject {
 
   DataproviderChanged(
       {required String name,
-      this.dataProvider,
+      required this.dataProvider,
       this.reload,
       this.selectedRow,
       this.columnNames})
       : super(name: name);
 
-  DataproviderChanged.fromJson({required Map<String, dynamic> map})
-      : super.fromJson(map: map) {
-    dataProvider = map['dataProvider'];
-    reload = map['reload'];
-    selectedRow = map['selectedRow'];
-    columnNames = map['columnNames'];
-    readOnly = map['readOnly'];
-    deleteEnabled = map['deleteEnabled'];
-    updateEnabled = map['updateEnabled'];
-    insertEnabled = map['insertEnabled'];
+  DataproviderChanged.fromJson({required Map<String, dynamic> map}) :
+    dataProvider = map['dataProvider'],
+    reload = map['reload'],
+    deletedRow = map['deletedRow'],
+    selectedRow = map['selectedRow'],
+    columnNames = map['columnNames'],
+    readOnly = map['readOnly'],
+    deleteEnabled = map['deleteEnabled'],
+    updateEnabled = map['updateEnabled'],
+    insertEnabled = map['insertEnabled'],
     changedColumnNames = map['changedColumnNames'] != null
         ? List<String>.from(map['changedColumnNames'])
-        : null;
-  }
+        : null,
+    super.fromJson(map: map);
 }
