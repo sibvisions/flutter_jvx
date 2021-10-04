@@ -58,9 +58,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   List<DefaultPage> _pages = <DefaultPage>[];
   List<SoScreen> _screens = <SoScreen>[];
 
-  late String _currentComponentId;
-  ApiResponse? _response;
-
   Size? _lastScreenSize;
   Timer? _deviceStatusTimer;
 
@@ -76,49 +73,34 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
   void _listener(BuildContext context, ApiState state) {
     if (state is ApiResponse) {
-      _response = state;
 
       if (state.hasDataObject || state.hasObject<ScreenGenericResponseObject>())
         _updateScreens(state);
 
-      if (state.hasObject<ScreenGenericResponseObject>()) {
-        List<ScreenGenericResponseObject> screenGenerics =
-            state.getAllObjectsByType<ScreenGenericResponseObject>();
-
-        if (screenGenerics.isNotEmpty) {
-          for (final screenGeneric in screenGenerics) {
-            if (screenGeneric.changedComponents.isNotEmpty) {
-              SoScreen? screenToUpdate;
-              try {
-                screenToUpdate = _screens.firstWhere((screen) =>
-                    screen.configuration.componentId ==
-                    screenGeneric.componentId);
-              } catch (_) {}
-
-              if (screenToUpdate == null) {
-                addPage(widget.appState.screenManager.createScreen(
-                    onPopPage: _onPopPage,
-                    onMenuItemPressed: _onMenuItemPressed,
-                    response: state,
-                    drawer: getMenuDrawer(state
-                        .getObjectByType<ScreenGenericResponseObject>()!
-                        .screenTitle!)));
-              }
-            } else if (!screenGeneric.update) {
-              SoScreen soScreen = _screens.firstWhere((screen) =>
-                  screen.configuration.componentId ==
-                  screenGeneric.componentId);
-
-              addPage(soScreen, register: false);
-            }
-          }
+      //Screen Generic
+      for(final screenGeneric in state.getAllObjectsByType<ScreenGenericResponseObject>()) {
+        if (_screens.every((screen) => screen.configuration.componentId != screenGeneric.componentId)) {
+          addPage(widget.appState.screenManager.createScreen(
+              onPopPage: _onPopPage,
+              onMenuItemPressed: _onMenuItemPressed,
+              response: state,
+              drawer: getMenuDrawer(state
+                  .getObjectByType<ScreenGenericResponseObject>()!
+                  .screenTitle!)));
+        } else if (!screenGeneric.update) {
+          addPage(
+              _screens.firstWhere((screen) => screen.configuration.componentId == screenGeneric.componentId),
+              register: false);
         }
       }
 
+
+      //Logout Request
       if (state.request is LogoutRequest) {
         Navigator.of(context).pushNamed(Routes.login,
             arguments: LoginPageArguments(
                 lastUsername: '', loginMode: LoginMode.MANUAL));
+      // Navigation Request
       } else if (state.request is NavigationRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
         if (_pages.isNotEmpty) {
@@ -133,6 +115,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           Navigator.of(context)
               .popUntil((route) => route.settings.name == Routes.menu);
         }
+      //Close Screen Request
       } else if (state.request is CloseScreenRequest &&
           !state.hasObject<ScreenGenericResponseObject>()) {
         _pages.removeLast();
@@ -143,7 +126,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               .popUntil((route) => route.settings.name == Routes.menu);
         }
       }
-
+      //Close Screen Action Response
       if (state.hasObject<CloseScreenActionResponseObject>()) {
         setState(() {
           _screens.removeWhere((screen) {
@@ -164,14 +147,14 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
               .popUntil((route) => route.settings.name == Routes.menu);
         }
       }
-
+      //Device Status Response
       if (state.hasObject<DeviceStatusResponseObject>()) {
         setState(() {
           widget.appState.deviceStatus =
               state.getObjectByType<DeviceStatusResponseObject>()!;
         });
       }
-
+      //Download Action Response
       if (state.hasObject<DownloadActionResponseObject>()) {
         DownloadRequest request = DownloadRequest(
             clientId: widget.appState.applicationMetaData!.clientId,
@@ -180,7 +163,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
 
         sl<ApiCubit>().download(request);
       }
-
+      //Upload Action Response
       if (state.hasObject<UploadActionResponseObject>()) {
         openFilePicker(context, widget.appState).then((file) {
           if (file != null) {
@@ -195,7 +178,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
           }
         });
       }
-
+      //Download Response
       if (state.hasObject<DownloadResponseObject>()) {
         _downloadFile(state);
       }
@@ -301,10 +284,6 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   }
 
   void _addInitialScreen(SoScreen screen) {
-    if (screen.configuration.value != null &&
-        screen.configuration.value is ApiResponse)
-      _response = screen.configuration.value as ApiResponse;
-
     if (screen.configuration.onMenuItemPressed == null) {
       screen.configuration.onMenuItemPressed = _onMenuItemPressed;
     }
@@ -313,11 +292,7 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
       screen.configuration.onPopPage = _onPopPage;
     }
 
-    screen.configuration.drawer =
-        getMenuDrawer(screen.configuration.screenTitle);
-
-    _currentComponentId = screen.configuration.componentId;
-
+    screen.configuration.drawer = getMenuDrawer(screen.configuration.screenTitle);
     addPage(screen);
   }
 

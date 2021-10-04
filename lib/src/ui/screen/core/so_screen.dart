@@ -60,8 +60,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
   static const HEADER_FOOTER_PANEL_COMPONENT_ID = 'headerFooterPanel';
 
   Map<String, ComponentWidget> _components = <String, ComponentWidget>{};
-  Map<String, ComponentWidget> _additionalComponents =
-      <String, ComponentWidget>{};
+  Map<String, ComponentWidget> _additionalComponents = <String, ComponentWidget>{};
 
   ComponentWidget? rootComponent;
   ComponentWidget? header;
@@ -107,14 +106,9 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       }
     }
 
-    List<ScreenGenericResponseObject> screenGenerics =
-        response.getAllObjectsByType<ScreenGenericResponseObject>();
-
-    if (screenGenerics.isNotEmpty) {
-      for (final screenGeneric in screenGenerics) {
-        if (screenGeneric.componentId == widget.configuration.componentId) {
-          updateComponents(screenGeneric.changedComponents);
-        }
+    for (final screenGeneric in response.getAllObjectsByType<ScreenGenericResponseObject>()) {
+      if (screenGeneric.componentId == widget.configuration.componentId) {
+        updateComponents(screenGeneric.changedComponents);
       }
     }
 
@@ -131,24 +125,16 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
   }
 
   void updateComponents(List<ChangedComponent> changedComponents) {
-    if (changedComponents.isNotEmpty) {
-      for (final changedComponent in changedComponents) {
-        String? parent = changedComponent.getProperty<String>(
-            ComponentProperty.PARENT, null);
+    for (final changedComponent in changedComponents) {
+      String? parent = changedComponent.getProperty<String>(ComponentProperty.PARENT, null);
 
-        if (changedComponent.additional ||
-            (parent != null &&
-                parent.isNotEmpty &&
-                _additionalComponents.containsKey(parent)) ||
-            _additionalComponents.containsKey(changedComponent.id)) {
-          _updateComponent(changedComponent, _additionalComponents);
-        } else {
-          _updateComponent(changedComponent, _components);
-        }
+      if (changedComponent.additional || (parent != null && _additionalComponents.containsKey(parent)) || _additionalComponents.containsKey(changedComponent.id)) {
+        _updateComponent(changedComponent, _additionalComponents);
+      } else {
+        _updateComponent(changedComponent, _components);
       }
-
-      _getLayoutsToRebuild();
     }
+    _getLayoutsToRebuild();
   }
 
   _getLayoutsToRebuild() {
@@ -452,18 +438,13 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     _removeFromParent(componentWidget, container);
   }
 
-  void _removeFromParent(
-      ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
-    if (componentWidget.componentModel.parentComponentId.isNotEmpty) {
-      ComponentWidget? parentComponentWidget =
-          container[componentWidget.componentModel.parentComponentId];
+  void _removeFromParent(ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
+    ComponentWidget? parentComponentWidget = container[componentWidget.componentModel.parentComponentId];
 
-      if (parentComponentWidget != null &&
-          parentComponentWidget is CoContainerWidget) {
-        (parentComponentWidget.componentModel as ContainerComponentModel)
-            .removeWithComponent(componentWidget);
-        _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
-      }
+    if (parentComponentWidget != null && parentComponentWidget is CoContainerWidget) {
+      (parentComponentWidget.componentModel as ContainerComponentModel)
+          .removeWithComponent(componentWidget);
+      _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
     }
   }
 
