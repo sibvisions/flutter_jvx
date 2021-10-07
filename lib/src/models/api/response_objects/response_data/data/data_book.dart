@@ -22,7 +22,7 @@ class DataBook extends ResponseObject {
       this.columnNames = const <String>[]})
       : super(name: name);
 
-  List<dynamic>? getRow(int? rowIndex, List<String>? pColumnNames) {
+  List<dynamic> getRow(int? rowIndex, List<String>? pColumnNames) {
     List<dynamic> row = <dynamic>[];
 
     if (rowIndex == null) rowIndex = selectedRow;
@@ -128,6 +128,10 @@ class DataBook extends ResponseObject {
 
     return false;
   }
+
+
+
+
 
   DataBook.fromJson({required Map<String, dynamic> map})
       : selectedRow = map['selectedRow'],

@@ -270,7 +270,7 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
 
       data
           .getRow(index, widget.componentModel.columnNames)
-          ?.asMap()
+          .asMap()
           .forEach((i, c) {
         children.add(getTableColumn(c != null ? c.toString() : "", index, i,
             widget.componentModel.columnNames[i]));

@@ -189,7 +189,7 @@ class ComponentModel with ChangeNotifier {
     Color? tempTextForeground = changedComponent.getProperty<Color>(ComponentProperty.FOREGROUND, null);
     String? tempFont = changedComponent.getProperty<String>(ComponentProperty.FONT, null);
     if(tempTextForeground != null)
-      fontStyle = SoTextStyle.addForecolorToTextStyle(tempTextForeground, fontStyle);
+      fontStyle = SoTextStyle.addForecolorToTextStyle(tempTextForeground, fontStyle)!;
     if(tempFont != null)
       fontStyle = SoTextStyle.addFontToTextStyle(tempFont, fontStyle);
 

@@ -116,7 +116,7 @@ mixin SoDataScreen {
       }
 
       dataProviderChanged.forEach((dpc) {
-        SoComponentData cData = getComponentData(dpc.dataProvider!);
+        SoComponentData cData = getComponentData(dpc.dataProvider);
         cData.updateDataProviderChanged(context, dpc, request);
       });
 
@@ -127,7 +127,7 @@ mixin SoDataScreen {
     }
 
     for (final dpc in dataProviderChanged) {
-      SoComponentData cData = getComponentData(dpc.dataProvider!);
+      SoComponentData cData = getComponentData(dpc.dataProvider);
       cData.updateDataProviderChanged(context, dpc, request);
     }
 
@@ -204,7 +204,7 @@ mixin SoDataScreen {
 
     if (response.hasDataProviderChanged) {
       for (final dpc in response.getAllObjectsByType<DataproviderChanged>()) {
-        getComponentData(dpc.dataProvider!);
+        getComponentData(dpc.dataProvider);
       }
     }
 
