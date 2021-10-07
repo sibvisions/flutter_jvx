@@ -117,30 +117,29 @@ class SoComponentData {
   }
 
   void updateDataProviderChanged(BuildContext context, DataproviderChanged pDataProviderChanged, [Request? request]) {
+    DataBook? dataBook = data;
     if(pDataProviderChanged.reload == -1){
-      DataBook? dataBook = data;
       if(dataBook != null){
         dataBook.records.clear();
       }
     }
     //  DataProviderChanged
-    //    DeletedRow
-    int? deletedRow = pDataProviderChanged.deletedRow;
-    DataBook? dataBook = data;
-    if(deletedRow != null && dataBook != null){
-      if(deletedRow == -1)
-        dataBook.records.clear();
-      else
-        dataBook.records.removeAt(deletedRow);
-    }
-    //    Reload
-    if (pDataProviderChanged.reload != null) {
+    //    ChangedValues - if not - Reload
+    List<dynamic>? tempChangedValues = pDataProviderChanged.changedValues;
+    List<String>? tempColumnNames = pDataProviderChanged.changedColumnNames;
+    int? tempSelectedRow = pDataProviderChanged.selectedRow;
+    if(tempChangedValues != null && tempColumnNames != null &&  dataBook != null && tempSelectedRow != null){
+      List<dynamic> rowToUpdate = dataBook.getRow(tempSelectedRow, tempColumnNames);
+      for(int i = 0; i<rowToUpdate.length; i++){
+        rowToUpdate[i] = tempChangedValues[i];
+      }
+      dataBook.records[tempSelectedRow] = rowToUpdate;
+    } else if (pDataProviderChanged.reload != null)
       fetchData(pDataProviderChanged.reload, -1);
-    }
+
     //    SelectedRow
-    if (data != null && pDataProviderChanged.selectedRow != null)  {
+    if (data != null && pDataProviderChanged.selectedRow != null)
       updateSelectedRow(context, pDataProviderChanged.selectedRow!, true);
-    }
   }
 
   void updateSelectedRow(BuildContext context, int selectedRow,

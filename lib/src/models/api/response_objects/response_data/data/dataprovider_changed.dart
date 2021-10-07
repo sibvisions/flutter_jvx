@@ -3,7 +3,6 @@ import '../../../response_object.dart';
 class DataproviderChanged extends ResponseObject {
   String dataProvider;
   int? reload;
-  int? deletedRow;
   int? selectedRow;
   List<String>? columnNames;
   bool? readOnly;
@@ -11,6 +10,7 @@ class DataproviderChanged extends ResponseObject {
   bool? updateEnabled;
   bool? insertEnabled;
   List<String>? changedColumnNames;
+  List<dynamic>? changedValues;
 
   DataproviderChanged(
       {required String name,
@@ -23,7 +23,7 @@ class DataproviderChanged extends ResponseObject {
   DataproviderChanged.fromJson({required Map<String, dynamic> map}) :
     dataProvider = map['dataProvider'],
     reload = map['reload'],
-    deletedRow = map['deletedRow'],
+    changedValues = map['changedValues'],
     selectedRow = map['selectedRow'],
     columnNames = map['columnNames'],
     readOnly = map['readOnly'],
