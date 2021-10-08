@@ -109,13 +109,7 @@ class CoLayoutRenderBox extends RenderBox {
         }
       }
     } else {
-      if(constraints.hasInfiniteWidth){
-        renderBox.layout(normalizeConstraints(BoxConstraints(minHeight: constraints.maxHeight, maxHeight: constraints.maxHeight)), parentUsesSize: true);
-      } else if(constraints.hasBoundedHeight) {
-        renderBox.layout(normalizeConstraints(BoxConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth )), parentUsesSize: true);
-      } else {
-        renderBox.layout(normalizeConstraints(constraints), parentUsesSize: true);
-      }
+      renderBox.layout(normalizeConstraints(constraints), parentUsesSize: true);
       return renderBox.size;
     }
 
