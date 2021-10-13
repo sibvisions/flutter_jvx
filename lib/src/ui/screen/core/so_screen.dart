@@ -87,8 +87,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       CloseScreenActionResponseObject closeScreenAction =
           response.getObjectByType<CloseScreenActionResponseObject>()!;
 
-      if (closeScreenAction.componentId ==
-          rootComponent?.componentModel.componentId) {
+      if (closeScreenAction.componentId == rootComponent?.componentModel.componentId) {
         rootComponent = null;
         _components = <String, ComponentWidget>{};
       }
@@ -112,11 +111,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       }
     }
 
-    if (components.isEmpty &&
-        widget.configuration.firstResponse is ApiResponse) {
-      for (final screenGeneric
-          in (widget.configuration.firstResponse as ApiResponse)
-              .getAllObjectsByType<ScreenGenericResponseObject>()) {
+    if (components.isEmpty && widget.configuration.firstResponse is ApiResponse) {
+      for (final screenGeneric in (widget.configuration.firstResponse as ApiResponse).getAllObjectsByType<ScreenGenericResponseObject>()) {
         if (screenGeneric.componentId == widget.configuration.componentId) {
           updateComponents(screenGeneric.changedComponents);
         }
@@ -174,8 +170,9 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   _checkMarkNeedsLayout(ComponentWidget comp, ComponentWidget parent) {
     if (parent.componentModel is ContainerComponentModel) {
-      if (parent.componentModel.lastLayout!
-          .isBefore(comp.componentModel.lastLayout!)) {
+      if (parent.componentModel.lastLayout!.isBefore(comp.componentModel.lastLayout!) ||
+          parent.componentModel.lastLayout!.isAtSameMomentAs(comp.componentModel.lastLayout!))
+      {
         String topMostScrollableName = _getTopMostScrollableContainer(comp, "");
 
         if (topMostScrollableName.isNotEmpty)
@@ -268,10 +265,9 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, null);
         bool rebuildLayout = false;
 
-        if (visible != null &&
-            visible != componentWidget.componentModel.isVisible) {
+        if (visible != null && visible != componentWidget.componentModel.isVisible) {
           rebuildLayout = true;
-          componentWidget.componentModel.lastLayout = DateTime.now();
+          // componentWidget.componentModel.lastLayout = DateTime.now();
         }
 
         componentWidget.componentModel
@@ -433,8 +429,7 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     componentWidget.componentModel.state = CoState.Destroyed;
   }
 
-  void _removeComponent(
-      ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
+  void _removeComponent(ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
     _removeFromParent(componentWidget, container);
   }
 
@@ -442,8 +437,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     ComponentWidget? parentComponentWidget = container[componentWidget.componentModel.parentComponentId];
 
     if (parentComponentWidget != null && parentComponentWidget is CoContainerWidget) {
-      (parentComponentWidget.componentModel as ContainerComponentModel)
-          .removeWithComponent(componentWidget);
+      (parentComponentWidget.componentModel as ContainerComponentModel).removeWithComponent(componentWidget);
+      componentWidget.componentModel.lastLayout = DateTime.now();
       _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
     }
   }
