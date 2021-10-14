@@ -26,8 +26,6 @@ import '../../../editor/editor_component_model.dart';
 class ComponentModelManager {
   Map<String, ComponentModel> _componentModels = <String, ComponentModel>{};
 
-  ComponentModelManager();
-
   ComponentModel? getComponentModelById(String componentId) {
     return this._componentModels[componentId];
   }
@@ -61,124 +59,81 @@ class ComponentModelManager {
     this._componentModels = <String, ComponentModel>{};
   }
 
-  ComponentModel _getComponentModelByClassname(
-      ChangedComponent changedComponent,
-      {required ActionCallback onAction,
-      required ComponentValueChangedCallback onComponentValueChanged}) {
-    ComponentModel? componentModel;
+  ComponentModel _getComponentModelByClassname(ChangedComponent changedComponent, {required ActionCallback onAction, required ComponentValueChangedCallback onComponentValueChanged}) {
+
+    ComponentModel componentModel = TextFieldComponentModel(changedComponent: changedComponent, onComponentValueChanged: onComponentValueChanged);
 
     switch (changedComponent.className) {
       case 'Table':
-        componentModel =
-            TableComponentModel(changedComponent: changedComponent);
+        componentModel = TableComponentModel(changedComponent: changedComponent);
         break;
       case 'Editor':
-        componentModel =
-            EditorComponentModel(changedComponent: changedComponent);
+        componentModel = EditorComponentModel(changedComponent: changedComponent);
         break;
       case 'Panel':
-        componentModel = ContainerComponentModel(
-          changedComponent: changedComponent,
-        );
+        componentModel = ContainerComponentModel(changedComponent: changedComponent);
         break;
       case 'GroupPanel':
-        componentModel = GroupPanelComponentModel(
-          changedComponent: changedComponent,
-        );
+        componentModel = GroupPanelComponentModel(changedComponent: changedComponent);
         break;
       case 'ScrollPanel':
-        componentModel = ContainerComponentModel(
-          changedComponent: changedComponent,
-        );
+        componentModel = ContainerComponentModel(changedComponent: changedComponent);
         break;
       case 'TabsetPanel':
-        componentModel = TabsetPanelComponentModel(
-          changedComponent: changedComponent,
-        );
+        componentModel = TabsetPanelComponentModel(changedComponent: changedComponent,);
         break;
       case 'SplitPanel':
-        componentModel = SplitPanelComponentModel(
-          changedComponent: changedComponent,
-        );
+        componentModel = SplitPanelComponentModel(changedComponent: changedComponent);
         break;
       case 'CustomContainer':
-        componentModel =
-            CustomContainerComponentModel(changedComponent: changedComponent);
+        componentModel = CustomContainerComponentModel(changedComponent: changedComponent);
         break;
       case 'PopupMenu':
-        componentModel =
-            PopupMenuComponentModel(changedComponent: changedComponent);
+        componentModel = PopupMenuComponentModel(changedComponent: changedComponent);
         break;
       case 'PopupMenuButton':
-        componentModel = PopupMenuButtonComponentModel(
-            changedComponent: changedComponent, onAction: onAction);
+        componentModel = PopupMenuButtonComponentModel(changedComponent: changedComponent, onAction: onAction);
         break;
       case 'MenuItem':
-        componentModel =
-            MenuItemComponentModel(changedComponent: changedComponent);
+        componentModel = MenuItemComponentModel(changedComponent: changedComponent);
         break;
       case 'Label':
-        componentModel =
-            LabelComponentModel(changedComponent: changedComponent);
+        componentModel = LabelComponentModel(changedComponent: changedComponent);
         break;
       case 'Button':
-        componentModel = ButtonComponentModel(
-            changedComponent: changedComponent, onAction: onAction);
+        componentModel = ButtonComponentModel(changedComponent: changedComponent, onAction: onAction);
         break;
       case 'CheckBox':
-        componentModel = SelectableComponentModel(
-            changedComponent: changedComponent,
-            onComponentValueChanged: onComponentValueChanged);
+        componentModel = SelectableComponentModel(changedComponent: changedComponent, onComponentValueChanged: onComponentValueChanged);
         break;
       case 'RadioButton':
-        componentModel = SelectableComponentModel(
-            changedComponent: changedComponent,
-            onComponentValueChanged: onComponentValueChanged);
+        componentModel = SelectableComponentModel(changedComponent: changedComponent, onComponentValueChanged: onComponentValueChanged);
         break;
       case 'Icon':
         componentModel = IconComponentModel(changedComponent: changedComponent);
         break;
       case 'TextField':
-        componentModel = TextFieldComponentModel(
-            changedComponent: changedComponent,
-            onComponentValueChanged: onComponentValueChanged);
+        componentModel = TextFieldComponentModel(changedComponent: changedComponent, onComponentValueChanged: onComponentValueChanged);
         break;
       case 'TextArea':
-        componentModel = TextAreaComponentModel(
-            changedComponent: changedComponent,
-            onComponentValueChanged: onComponentValueChanged);
+        componentModel = TextAreaComponentModel(changedComponent: changedComponent, onComponentValueChanged: onComponentValueChanged);
         break;
       case 'PasswordField':
-        componentModel = TextFieldComponentModel(
-            changedComponent: changedComponent,
-            onComponentValueChanged: onComponentValueChanged);
+        componentModel = TextFieldComponentModel(changedComponent: changedComponent, onComponentValueChanged: onComponentValueChanged);
         break;
       case 'ToggleButton':
-        componentModel = ToggleButtonComponentModel(
-            changedComponent: changedComponent, onAction: onAction);
+        componentModel = ToggleButtonComponentModel(changedComponent: changedComponent, onAction: onAction);
         break;
       case 'Map':
         componentModel = MapComponentModel(changedComponent: changedComponent);
         break;
       case 'Chart':
-        componentModel =
-            ChartComponentModel(changedComponent: changedComponent);
+        componentModel = ChartComponentModel(changedComponent: changedComponent);
         break;
       case 'Gauge':
-        componentModel =
-            GaugeComponentModel(changedComponent: changedComponent);
+        componentModel = GaugeComponentModel(changedComponent: changedComponent);
         break;
-      // default:
-      //   componentModel = ComponentModel(changedComponent: changedComponent);
     }
-
-    // return componentModel;
-
-    if (componentModel != null) {
-      return componentModel;
-    } else {
-      throw Exception(
-          'Couldn\'t create component model ${changedComponent.className}.\nIt seems that this component is not yet supported in mobile');
-    }
+    return componentModel;
   }
 }
