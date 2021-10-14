@@ -14,19 +14,6 @@ class CoLayoutRenderBox extends RenderBox {
   bool valid = false;
   String debugInfo = "";
 
-  // Size? getChildLayoutPreferredSize(RenderBox renderBox) {
-  //   //renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
-
-  //   if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
-  //     CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
-
-  //     log("$debugInfo returns preferredLayoutSize ${childLayout.preferredLayoutSize}");
-  //     return childLayout.preferredLayoutSize;
-  //   }
-
-  //   return null;
-  // }
-
   Size? getChildLayoutPreferredSize(
       ComponentWidget componentWidget, BoxConstraints constraints) {
     if (componentWidget is CoContainerWidget) {
@@ -37,16 +24,6 @@ class CoLayoutRenderBox extends RenderBox {
     }
   }
 
-  // Size? getChildLayoutMinimumSize(RenderBox renderBox) {
-  //   if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
-  //     CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
-
-  //     return childLayout.minimumLayoutSize;
-  //   }
-
-  //   return null;
-  // }
-
   Size? getChildLayoutMinimumSize(
       ComponentWidget componentWidget, BoxConstraints constraints) {
     if (componentWidget is CoContainerWidget) {
@@ -56,16 +33,6 @@ class CoLayoutRenderBox extends RenderBox {
           .layoutMinimumSize[constraints];
     }
   }
-
-  // Size? getChildLayoutMaximumSize(RenderBox renderBox) {
-  //   if (renderBox is RenderShiftedBox && renderBox.child is CoLayoutRenderBox) {
-  //     CoLayoutRenderBox childLayout = renderBox.child as CoLayoutRenderBox;
-
-  //     return childLayout.maximumLayoutSize;
-  //   }
-
-  //   return null;
-  // }
 
   Size? getChildLayoutMaximumSize(
       ComponentWidget componentWidget, BoxConstraints constraints) {
@@ -78,10 +45,8 @@ class CoLayoutRenderBox extends RenderBox {
   }
 
   Size layoutRenderBox(RenderBox renderBox, BoxConstraints constraints) {
-    if (constraints.maxHeight == double.infinity &&
-        constraints.maxWidth == double.infinity) {
+    if (constraints.maxHeight == double.infinity && constraints.maxWidth == double.infinity) {
       try {
-        //if (renderBox.hasSize) return renderBox.size;
         renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
         return renderBox.size;
       } catch (e) {
@@ -91,33 +56,33 @@ class CoLayoutRenderBox extends RenderBox {
             maxHeight: double.maxFinite,
             maxWidth: constraints.maxWidth);
 
-        renderBox.layout(normalizeConstraints(boxConstraints),
-            parentUsesSize: true);
+        renderBox.layout(normalizeConstraints(boxConstraints), parentUsesSize: true);
         Size size = renderBox.size;
 
-        if (size != null) {
-          boxConstraints = BoxConstraints(
-              minHeight: constraints.minHeight,
-              minWidth: constraints.minWidth,
-              maxHeight: constraints.maxHeight,
-              maxWidth: double.maxFinite);
+        boxConstraints = BoxConstraints(
+            minHeight: constraints.minHeight,
+            minWidth: constraints.minWidth,
+            maxHeight: constraints.maxHeight,
+            maxWidth: double.maxFinite);
 
-          renderBox.layout(normalizeConstraints(boxConstraints),
-              parentUsesSize: true);
+        renderBox.layout(normalizeConstraints(boxConstraints), parentUsesSize: true);
+        size = Size(size.width, renderBox.size.height);
 
-          size = Size(size.width, renderBox.size.height);
-        }
       }
     } else {
-      renderBox.layout(normalizeConstraints(constraints), parentUsesSize: true);
+      BoxConstraints con = constraints;
+      if(constraints.hasInfiniteWidth)
+        con = BoxConstraints(minHeight: constraints.maxHeight, maxHeight: constraints.maxHeight, maxWidth: constraints.maxWidth);
+      if(constraints.hasInfiniteHeight)
+        con = BoxConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight);
+
+      renderBox.layout(normalizeConstraints(con), parentUsesSize: true);
       return renderBox.size;
     }
-
     return size;
   }
 
   BoxConstraints normalizeConstraints(BoxConstraints constraints) {
-    //return constraints;
     double minWidth = constraints.minWidth < 0 ? 0 : constraints.minWidth;
     double maxWidth = constraints.maxWidth < 0 ? 0 : constraints.maxWidth;
     double minHeight = constraints.minHeight < 0 ? 0 : constraints.minHeight;
