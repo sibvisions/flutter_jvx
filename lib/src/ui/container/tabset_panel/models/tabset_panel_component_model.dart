@@ -17,23 +17,22 @@ class TabsetPanelComponentModel extends ContainerComponentModel {
 
   int selectedIndex = 0;
 
-  TabsetPanelComponentModel({required ChangedComponent changedComponent})
-      : super(changedComponent: changedComponent);
+  TabsetPanelComponentModel({required ChangedComponent changedComponent}) : super(changedComponent: changedComponent);
 
-  List<Widget> getTabsetComponents(BoxConstraints parentConstraints) {
+  List<Widget> getTabsetComponents(BoxConstraints parentConstraints, ComponentWidget w) {
     List<Widget> comp = <Widget>[];
-    // components.forEach((element) {
-    //   comp.add(SingleChildScrollView(
-    //       child: CoScrollPanelLayout(
-    //     preferredConstraints: CoScrollPanelConstraints(parentConstraints, this),
-    //     container: this,
-    //     children: [
-    //       CoScrollPanelLayoutId(
-    //           constraints: CoScrollPanelConstraints(parentConstraints, this),
-    //           child: element)
-    //     ],
-    //   )));
-    // });
+    components.forEach((element) {
+      comp.add(SingleChildScrollView(
+          child: CoScrollPanelLayout(
+            preferredConstraints: CoScrollPanelConstraints(parentConstraints, w),
+            container: this,
+            children: [
+              CoScrollPanelLayoutId(
+                constraints: CoScrollPanelConstraints(parentConstraints, w),
+                child: element)
+        ],
+      )));
+    });
     return comp;
   }
 

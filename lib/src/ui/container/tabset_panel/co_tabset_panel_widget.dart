@@ -94,9 +94,7 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
     (widget.componentModel as TabsetPanelComponentModel).tabs = createTabs();
     this.tabController = TabController(
         initialIndex: index,
-        length:
-            (widget.componentModel as TabsetPanelComponentModel).tabs.length,
-        vsync: this)
+        length: (widget.componentModel as TabsetPanelComponentModel).tabs.length, vsync: this)
       ..addListener(_handleTabAnimation);
   }
 
@@ -169,16 +167,10 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
             minWidth: constraints.minWidth,
             maxWidth: constraints.maxWidth,
             minHeight: constraints.minHeight,
-            maxHeight: constraints.maxHeight != double.infinity
-                ? constraints.maxHeight - 48
-                : constraints.maxHeight);
+            maxHeight: constraints.maxHeight != double.infinity ? constraints.maxHeight - 48 : constraints.maxHeight);
         return SizedBox(
-          height: constraints.maxHeight != double.infinity
-              ? constraints.maxHeight
-              : MediaQuery.of(context).size.height,
-          width: constraints.maxWidth != double.infinity
-              ? constraints.maxWidth
-              : MediaQuery.of(context).size.width - 20,
+          height: constraints.maxHeight != double.infinity ? constraints.maxHeight : MediaQuery.of(context).size.height,
+          width: constraints.maxWidth != double.infinity ? constraints.maxWidth : MediaQuery.of(context).size.width - 20,
           child: Column(
             children: [
               TabBar(
@@ -192,30 +184,11 @@ class CoTabsetPanelWidgetState extends CoContainerWidgetState
                 flex: 1,
                 child: TabBarView(
                     controller: this.tabController,
-                    children:
-                        (widget.componentModel as TabsetPanelComponentModel)
-                            .getTabsetComponents(contentConstraints)),
+                    children: (widget.componentModel as TabsetPanelComponentModel).getTabsetComponents(contentConstraints, this.widget)),
               )
             ],
           ),
         );
-
-        // return Scaffold(
-        //   appBar: TabBar(
-        //       isScrollable: true,
-        //       controller: this.tabController,
-        //       tabs: (widget.componentModel as TabsetPanelComponentModel)
-        //           .tabs
-        //           .map((tab) => tab)
-        //           .toList()),
-        //   body: LayoutBuilder(
-        //       builder: (BuildContext context, BoxConstraints constraints) {
-        //     return TabBarView(
-        //         controller: this.tabController,
-        //         children: (widget.componentModel as TabsetPanelComponentModel)
-        //             .getTabsetComponents(constraints));
-        //   }),
-        // );
       },
     );
   }
