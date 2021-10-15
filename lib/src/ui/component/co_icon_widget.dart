@@ -31,29 +31,22 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+        decoration: BoxDecoration(
+            color: widget.componentModel.isBackgroundSet
+                ? widget.componentModel.background
+                : Colors.white.withOpacity(widget.componentModel.appState.applicationStyle?.controlsOpacity ?? 1.0),
+            borderRadius: BorderRadius.circular(widget.componentModel.appState.applicationStyle?.cornerRadiusEditors ?? 5)),
         child: Row(
-            mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(
-                widget.componentModel.horizontalAlignment),
-            crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(
-                widget.componentModel.verticalAlignment),
+            mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(widget.componentModel.horizontalAlignment),
+            crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(widget.componentModel.verticalAlignment),
             children: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(bottom: 3),
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: widget.componentModel.isBackgroundSet
-                          ? widget.componentModel.background
-                          : Colors.white.withOpacity(widget.componentModel
-                                  .appState.applicationStyle?.controlsOpacity ??
-                              1.0),
-                      borderRadius: BorderRadius.circular(widget.componentModel
-                              .appState.applicationStyle?.cornerRadiusEditors ??
-                          5)),
+              Container(
                   child: CustomIcon(
                     image: widget.componentModel.image,
                     color: widget.componentModel.foreground,
                     prefferedSize: widget.componentModel.preferredSize,
-                  )))
+                  )
+              )
         ]));
   }
 }
