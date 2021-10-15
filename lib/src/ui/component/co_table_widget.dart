@@ -27,12 +27,13 @@ class CoTableWidgetState extends CoEditorWidgetState<CoTableWidget> {
   late ItemPositionsListener scrollPositionListener;
 
   void onSelectedRowChanged(dynamic selectedRow) {
-    if (selectedRow is int && selectedRow >= 0 && scrollController.isAttached) {
-      scrollController.scrollTo(
-          index: selectedRow,
-          duration: Duration(milliseconds: 500),
-          curve: Curves.ease);
-    }
+    ///Scroll To selectedRow
+    // if (selectedRow is int && selectedRow >= 0 && scrollController.isAttached) {
+    //   scrollController.scrollTo(
+    //       index: selectedRow,
+    //       duration: Duration(milliseconds: 500),
+    //       curve: Curves.ease);
+    // }
   }
 
   @override
