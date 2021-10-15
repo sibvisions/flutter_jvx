@@ -40,12 +40,10 @@ class CoIconWidgetState extends ComponentWidgetState<CoIconWidget> {
             mainAxisAlignment: IAlignmentConstants.getMainAxisAlignment(widget.componentModel.horizontalAlignment),
             crossAxisAlignment: IAlignmentConstants.getCrossAxisAlignment(widget.componentModel.verticalAlignment),
             children: <Widget>[
-              Container(
-                  child: CustomIcon(
+              CustomIcon(
                     image: widget.componentModel.image,
                     color: widget.componentModel.foreground,
                     prefferedSize: widget.componentModel.preferredSize,
-                  )
               )
         ]));
   }
