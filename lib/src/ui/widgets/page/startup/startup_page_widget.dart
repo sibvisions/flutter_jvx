@@ -91,7 +91,7 @@ class _StartupPageWidgetState extends State<StartupPageWidget> {
           deviceId: _getDeviceId(),
           language: _startupLanguage,
           clientId: '',
-          deviceMode: kIsWeb ? 'desktop' : 'mobile',
+          deviceMode: 'mobile',
           technology: deviceInfo.technology,
           osName: deviceInfo.osName,
           osVersion: deviceInfo.osVersion,
