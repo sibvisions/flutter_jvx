@@ -25,9 +25,22 @@ fs
   })
   .catch((error) => console.warn(error));
 
-  var version;
-  var commit;
+const setYamlValue = (fn, callback) =>
+  fs
+    .readFile(fn, 'utf-8')
+    .then((body) => YAML.parse(body))
+    .then((yaml) => {
+      return callback(yaml);
+    })
+    .then((yaml) => YAML.stringify(yaml))
+    .then((body) => fs.writeFile(fn, body))
+    .catch((error) => console.warn(error));
 
+var version;
+var commit;
+
+if (process.argv[2] == null) {
+  console.log('Updating app version in: ' + path);
   exec("git rev-parse --short HEAD", (error, stdout, stderr) => {
     if (error) {
       console.log(`error: ${error.message}`);
@@ -53,3 +66,15 @@ fs
       });
     });
   });
+} else if (process.argv[2] == "increaseBuildNo") {
+  setYamlValue(yamlPath, (yaml) => {
+    const splittedVersion = yaml.version.split("+");
+    const updatedNumber = (parseInt(splittedVersion[1]) + 1).toString();
+    splittedVersion[1] = updatedNumber;
+
+    yaml.version = splittedVersion.join("+");
+    console.log('Increasing build no to version: ' + yaml.version);
+
+    return yaml;
+  });
+}
