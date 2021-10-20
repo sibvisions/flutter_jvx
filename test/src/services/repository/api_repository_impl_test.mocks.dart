@@ -195,7 +195,7 @@ class MockZipDecoder extends _i1.Mock implements _i26.ZipDecoder {
               #decodeBytes, [data], {#verify: verify, #password: password}),
           returnValue: _FakeArchive()) as _i4.Archive);
   @override
-  _i4.Archive decodeBuffer(_i27.InputStream? input,
+  _i4.Archive decodeBuffer(_i27.InputStreamBase? input,
           {bool? verify = false, String? password}) =>
       (super.noSuchMethod(
           Invocation.method(
