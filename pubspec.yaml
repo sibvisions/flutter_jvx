@@ -1,75 +1,26 @@
-name: flutterclient
-description: A generic Flutter app for JVx applications.
-homepage: https://www.sibvisions.com
-repository: https://github.com/sibvisions/flutterclient.git
-issue_tracker: https://github.com/sibvisions/flutterclient/issues
+name: flutter_jvx
+description: Generic Client
+publish_to: 'none'
 
-publish_to: "none"
-
-version: 1.1.0+22
+version: 1.0.0+1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
+
 dependencies:
+  # Flutter Dep
+  flutter_lints: ^1.0.0
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  bloc: ^7.0.0
-  flutter_bloc: ^7.0.0
-  http: ^0.13.0
-  dartz: ^0.10.0-nullsafety.1
-  get_it: ^7.1.3
-  shared_preferences: ^2.0.4
-  encrypt: ^5.0.0-beta.1
-  uuid: ^3.0.1
-  device_info: ^2.0.0
-  package_info: ^2.0.0
-  archive: ^3.1.2
+
+  #IOS Dep
   cupertino_icons: ^1.0.2
-  path_provider: ^2.0.1
-  intl: ^0.17.0
-  auto_size_text: ^3.0.0-nullsafety.0
-  font_awesome_flutter: ^9.0.0-nullsafety
-  flutter_picker: ^2.0.0
-  collection: ^1.15.0
-  sticky_headers: ^0.2.0
-  flutter_html: ^2.0.0-nullsafety.0
-  yaml: ^3.1.0
-  sqflite: ^2.0.0+3
-  logging: ^1.0.1
-  scrollable_positioned_list: ^0.2.0-nullsafety.0
-  flutter_slidable: ^0.6.0-nullsafety.0
-  path: ^1.8.0
-  file_picker: ^4.1.3
-  image_picker: ^0.8.0+3
-  universal_html: ^2.0.7
-  qr_code_scanner: ^0.5.1
-  flutter_map: ^0.14.0
-  url_launcher: ^6.0.3
-  flutter_swiper: ^1.1.6
-  signature: ^4.1.1
-  charts_flutter:
-    git:
-      url: https://github.com/google/charts
-      path: charts_flutter
-  flutter_gauge: ^1.0.8
 
-dependency_overrides:
-  logging: ^1.0.1
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  mockito: ^5.0.5
-  build_runner: ^2.0.1
+  #Custom  Dep
+  get_it: ^7.2.0
+  http: ^0.13.4
 
 flutter:
-  uses-material-design: true
 
-  assets:
-    - assets/config/
-    - assets/env/
-    - assets/images/
-    - assets/version/
+  uses-material-design: true

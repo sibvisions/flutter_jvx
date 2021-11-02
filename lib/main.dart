@@ -1,20 +1,26 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_jvx/src/init_app.dart';
+import 'package:flutter_jvx/src/masks/login/login.dart';
+import 'package:flutter_jvx/src/routing/jvx_information_parser.dart';
+import 'package:flutter_jvx/src/routing/jvx_router_delegate.dart';
 
-import 'injection_container.dart' as di;
-import 'src/runnable_widget.dart';
-import 'src/services/remote/rest/cert_http_overrides.dart';
+void main() {
+  initApp();
+  runApp(MyApp());
+}
 
-void main() async {
-  // Overwriting http certificate handling
-  HttpOverrides.global = CertHttpOverrides();
+class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
 
-  WidgetsFlutterBinding.ensureInitialized();
+  final JVxRouteInformationParser _parser = JVxRouteInformationParser();
+  final JVxRouterDelegate _delegate = JVxRouterDelegate();
 
-  // Initializing dependencies
-  await di.init();
-
-  // Running the application
-  runApp(RunnableWidget());
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+          routeInformationParser: _parser,
+          routerDelegate: _delegate,
+        title: "Flutter Demo",
+    );
+  }
 }
