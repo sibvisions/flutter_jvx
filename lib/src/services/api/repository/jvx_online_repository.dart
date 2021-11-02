@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_jvx/src/models/api/requests.dart';
 import 'package:flutter_jvx/src/models/api/requests/login_requests.dart';
+import 'package:flutter_jvx/src/models/api/requests/open_screen_request.dart';
 import 'package:flutter_jvx/src/models/config/i_config_api.dart';
 import 'package:flutter_jvx/src/services/api/i_repository.dart';
 import 'package:flutter_jvx/src/util/mixin/service/config_app_service_mixin.dart';
@@ -65,11 +66,17 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
     return _sendPostRequest(apiConfig.getLogin(), jsonEncode(req));
   }
 
-
-
+  @override
+  Future<Response> openScreen(String componentId) {
+    String clientId = _getClientId();
+    OpenScreenRequest req = OpenScreenRequest(
+        clientId: clientId,
+        componentId: componentId
+    );
+    return _sendPostRequest(apiConfig.getOpenScreen(), jsonEncode(req));
+  }
 
 }
-
 
 class RemoteEndpoints {
   static const startup = "startup";

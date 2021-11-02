@@ -23,4 +23,9 @@ class ConfigApiStatic implements IConfigApi{
   Uri getStartup() {
     return Uri.parse(urlConfig.basePath + endpointConfig.startup);
   }
+
+  @override
+  Uri getOpenScreen() {
+    return Uri.parse(urlConfig.basePath + endpointConfig.openScreen);
+  }
 }
