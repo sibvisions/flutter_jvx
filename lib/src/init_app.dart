@@ -8,6 +8,7 @@ import 'package:flutter_jvx/src/services/api/repository/jvx_online_repository.da
 import 'package:flutter_jvx/src/services/configs/app/config_app_static.dart';
 import 'package:flutter_jvx/src/services/configs/i_config_app.dart';
 import 'package:flutter_jvx/src/services/events/event_bus.dart';
+import 'package:flutter_jvx/src/services/events/ui/ui_event_service.dart';
 import 'package:flutter_jvx/src/services/menu/i_menu_service.dart';
 import 'package:flutter_jvx/src/services/menu/menu_service.dart';
 import 'package:flutter_jvx/src/services/routing/i_routing_service.dart';
@@ -43,4 +44,8 @@ void initApp(){
 
   IController apiController = JVxController();
   services.registerSingleton(apiController, signalsReady: true);
+
+
+  UiEventService uiEventService = UiEventService();
+  services.registerSingleton(uiEventService, signalsReady: true);
 }

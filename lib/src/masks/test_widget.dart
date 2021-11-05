@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_client_id_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/meta/on_client_id_event.dart';
 import 'package:flutter_jvx/src/util/mixin/service/api_service_mixin.dart';
 import 'package:http/http.dart';
 

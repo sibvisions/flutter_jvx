@@ -8,7 +8,7 @@ import 'package:flutter_jvx/src/models/api/custom/jvx_menu.dart';
 import 'package:flutter_jvx/src/models/events/menu/menu_changed_event.dart';
 import 'package:flutter_jvx/src/services/menu/i_menu_service.dart';
 import 'package:flutter_jvx/src/services/service.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_menu_changed_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/meta/on_menu_changed_event.dart';
 
 class Menu extends StatefulWidget{
 
@@ -30,7 +30,7 @@ class _MenuState extends State<Menu> with OnMenuChangedEvent {
     if(serviceMenu != null){
       menu = serviceMenu;
     }
-    menuChangedSubscription = menuChangedStream.listen(_receivedMenuChangedEvent);
+    // menuChangedSubscription = menuChangedStream.listen(_receivedMenuChangedEvent);
   }
 
 
@@ -61,11 +61,9 @@ class _MenuState extends State<Menu> with OnMenuChangedEvent {
   Widget build(BuildContext context) {
     return(
       Scaffold(
-        appBar: AppBar(
-
-        ),
-
-        body: JVxMenuWidget(menuGroups: menu.menuGroups,),
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+            child: JVxMenuWidget(menuGroups: menu.menuGroups,)),
       )
     );
   }

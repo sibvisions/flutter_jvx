@@ -1,23 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_jvx/src/util/mixin/service/api_service_mixin.dart';
+import 'package:flutter_jvx/src/models/events/meta/startup_event.dart';
+import 'package:flutter_jvx/src/models/events/ui/login_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/ui/on_login_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/ui/on_startup_event.dart';
 
-class Login extends StatelessWidget with ApiServiceMixin {
+class Login extends StatelessWidget with OnLoginEvent, OnStartupEvent {
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   Login({Key? key}) : super(key: key) {
-     var res = apiRepository.startUp();
-     apiController.determineResponse(res);
+    fireStartupEvent(StartupEvent(origin: this, reason: "Login Widget constructor loaded"));
   }
 
+
+
   void onLoginPressed() {
-     var response = apiRepository.login(
-         "features",
-         "features"
-     );
-     apiController.determineResponse(response);
+    var event = LoginEvent(
+        username: "features",
+        password: "features",
+        origin: this,
+        reason: "User clicked on Login Button"
+    );
+    fireLoginEvent(event);
   }
 
 

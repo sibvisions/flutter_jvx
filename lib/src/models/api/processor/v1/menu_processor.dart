@@ -4,7 +4,7 @@ import 'package:flutter_jvx/src/models/api/custom/jvx_menu.dart';
 import 'package:flutter_jvx/src/models/api/i_processor.dart';
 import 'package:flutter_jvx/src/models/api/responses/response_menu.dart';
 import 'package:flutter_jvx/src/models/events/menu/menu_added_event.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_menu_added_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/meta/on_menu_added_event.dart';
 
 class MenuProcessor with OnMenuAddedEvent implements IProcessor {
 

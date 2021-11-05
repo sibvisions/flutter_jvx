@@ -10,8 +10,8 @@ import 'package:flutter_jvx/src/models/events/routing/route_back_event.dart';
 import 'package:flutter_jvx/src/models/events/routing/route_event.dart';
 import 'package:flutter_jvx/src/routing/jvx_route_path.dart';
 import 'package:flutter_jvx/src/routing/routing_options.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_routing_back_event.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_routing_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/routing/on_routing_back_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/routing/on_routing_event.dart';
 
 class JVxRouterDelegate extends  RouterDelegate<JVxRoutePath>
   with ChangeNotifier, PopNavigatorRouterDelegateMixin, OnRoutingEvent, OnRoutingBackEvent {

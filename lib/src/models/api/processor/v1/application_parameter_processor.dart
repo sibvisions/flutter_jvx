@@ -1,7 +1,7 @@
 import 'package:flutter_jvx/src/models/api/i_processor.dart';
 import 'package:flutter_jvx/src/models/api/responses/response_application_parameters.dart';
 import 'package:flutter_jvx/src/models/events/meta/authentication_event.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_authentication_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/meta/on_authentication_event.dart';
 import 'package:flutter_jvx/src/util/mixin/service/config_app_service_mixin.dart';
 
 class ApplicationParameterProcessor with OnAuthenticationEvent, ConfigAppServiceMixin implements IProcessor {

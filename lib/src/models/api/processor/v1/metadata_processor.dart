@@ -1,6 +1,6 @@
 import 'package:flutter_jvx/src/models/api/i_processor.dart';
 import 'package:flutter_jvx/src/models/events/meta/client_id_changed_event.dart';
-import 'package:flutter_jvx/src/util/mixin/events/on_client_id_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/meta/on_client_id_event.dart';
 import 'package:flutter_jvx/src/util/mixin/service/config_app_service_mixin.dart';
 
 import '../../responses.dart';
