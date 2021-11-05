@@ -10,7 +10,7 @@ class ConfigApiEndpointsV1Static implements IConfigApiEndpoint {
   String get login => pLogin;
 
   @override
-  String get startup => pLogin;
+  String get startup => pStartup;
 
   @override
   String get openScreen => pOpenScreen;
