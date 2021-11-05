@@ -604,27 +604,36 @@ class OfflineDatabase extends LocalDatabase
     Map<String, dynamic> changedValues =
         OfflineDatabaseFormatter.getChangedValuesForUpdate(
             columnNames, row, filter.columnNames);
-    SetValuesRequest setValues = SetValuesRequest(
-        dataProvider: dataProvider,
-        columnNames: changedValues.keys.toList(),
-        values: changedValues.values.toList(),
-        clientId: repository.appState.applicationMetaData!.clientId,
-        filter: filter,
-        offlineSelectedRow: null);
+    if (changedValues.length > 0) {
+      SetValuesRequest setValues = SetValuesRequest(
+          dataProvider: dataProvider,
+          columnNames: changedValues.keys.toList(),
+          values: changedValues.values.toList(),
+          clientId: repository.appState.applicationMetaData!.clientId,
+          filter: filter,
+          offlineSelectedRow: null);
 
-    List<ApiState> states = await repository.data(setValues);
+      List<ApiState> states = await repository.data(setValues);
 
-    if (states.isNotEmpty &&
-        states.first is ApiResponse &&
-        !hasError(states.first as ApiResponse)) {
-      setProperties(repository, states.first as ApiResponse);
-      if (await syncSave(context, dataProvider, filter, columnNames, row)) {
-        dynamic offlinePrimaryKey =
-            OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
-        if (await setOfflineState(
-            dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED)) {
-          return true;
+      if (states.isNotEmpty &&
+          states.first is ApiResponse &&
+          !hasError(states.first as ApiResponse)) {
+        setProperties(repository, states.first as ApiResponse);
+        if (await syncSave(context, dataProvider, filter, columnNames, row)) {
+          dynamic offlinePrimaryKey =
+              OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+          if (await setOfflineState(
+              dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED)) {
+            return true;
+          }
         }
+      }
+    } else {
+      dynamic offlinePrimaryKey =
+          OfflineDatabaseFormatter.getOfflinePrimaryKey(row);
+      if (await setOfflineState(
+          dataProvider, offlinePrimaryKey, OFFLINE_ROW_STATE_UNCHANGED)) {
+        return true;
       }
     }
 
