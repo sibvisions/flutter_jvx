@@ -34,8 +34,8 @@ void initApp(){
   ConfigApiEndpointsV1Static apiEndpointsV1Static = ConfigApiEndpointsV1Static();
   ConfigApiUrlStatic apiUrlStatic = ConfigApiUrlStatic(
       pIsHttps: false,
-      pHost: "172.16.0.59",
-      pPort: 8081,
+      pHost: "192.168.0.87",
+      pPort: 8090,
       pPath: "/JVx.mobile/services/mobile"
   );
   ConfigApiStatic api = ConfigApiStatic(endpointConfig: apiEndpointsV1Static, urlConfig: apiUrlStatic);
