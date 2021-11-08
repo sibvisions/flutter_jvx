@@ -14,7 +14,7 @@ class JVxMenuGroup {
 
   JVxMenuGroup({
     required this.name,
-    this.items = const [],
+    required this.items,
   });
 }
 

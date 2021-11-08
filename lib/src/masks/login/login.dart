@@ -11,7 +11,7 @@ class Login extends StatelessWidget with OnLoginEvent, OnStartupEvent {
   final TextEditingController passwordController = TextEditingController();
 
   Login({Key? key}) : super(key: key) {
-    fireStartupEvent(StartupEvent(origin: this, reason: "Login Widget constructor loaded"));
+
   }
 
 
@@ -24,6 +24,10 @@ class Login extends StatelessWidget with OnLoginEvent, OnStartupEvent {
         reason: "User clicked on Login Button"
     );
     fireLoginEvent(event);
+  }
+
+  void startUp() {
+    fireStartupEvent(StartupEvent(origin: this, reason: "Login Widget constructor loaded"));
   }
 
 
@@ -50,6 +54,7 @@ class Login extends StatelessWidget with OnLoginEvent, OnStartupEvent {
                     onPressed: onLoginPressed,
                     child: const Text("Login"),
                   ),
+                  ElevatedButton(onPressed: startUp, child: const Text("startUp"))
                 ],
               ),
             ),

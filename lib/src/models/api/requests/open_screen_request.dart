@@ -12,7 +12,7 @@ class OpenScreenRequest {
   Map<String, dynamic> toJson() => {
     _POpenScreenRequest.clientId : clientId,
     _POpenScreenRequest.componentId : componentId,
-    _POpenScreenRequest.manualClose : manualClose
+    // _POpenScreenRequest.manualClose : manualClose
   };
 }
 

@@ -49,7 +49,7 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
   @override
   Future<Response> startUp() {
     String appName =  configAppService.appName;
-    StartUpRequest req = StartUpRequest(applicationName: appName);
+    StartUpRequest req = StartUpRequest(applicationName: appName, deviceMode: "desktop");
 
     return _sendPostRequest(apiConfig.getStartup(), jsonEncode(req));
   }

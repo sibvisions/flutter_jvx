@@ -13,23 +13,14 @@ class MenuProcessor with OnMenuAddedEvent implements IProcessor {
   void processResponse(json) {
     ResponseMenu menu = ResponseMenu.fromJson(json);
 
-
-
-    List<String> groups = [];
-
-    for(ResponseMenuItem menuItem in menu.responseMenuItems){
-      String groupName = menuItem.group;
-      if(groups.any((element) => element != groupName) || groups.isEmpty){
-        groups.add(groupName);
-      }
+    List<JVxMenuGroup> groups = _isolateGroups(menu);
+    for(JVxMenuGroup group in groups){
+      group.items.addAll(_getItemsByGroup(group.name, menu.responseMenuItems));
     }
 
-    List<JVxMenuGroup> jvxMenuGroups = groups.map((groupName) => JVxMenuGroup(
-        name: groupName,
-        items: _getMenuItemsByGroup(groupName, menu.responseMenuItems))
-    ).toList();
 
-    JVxMenu jVxMenu = JVxMenu(menuGroups: jvxMenuGroups);
+    JVxMenu jVxMenu = JVxMenu(menuGroups: groups);
+
 
 
     MenuAddedEvent event = MenuAddedEvent(
@@ -40,17 +31,26 @@ class MenuProcessor with OnMenuAddedEvent implements IProcessor {
     fireMenuAddedEvent(event);
   }
 
-
-  List<JVxMenuItem> _getMenuItemsByGroup(String groupName, List<ResponseMenuItem> items){
-    List<ResponseMenuItem> filteredItems = items.where((menuItem) => menuItem.group == groupName).toList();
-
-    List<JVxMenuItem> jvxMenuItems = filteredItems.map((e) => JVxMenuItem(
-        componentId: e.responseMenuItemAction.componentId,
-        image: e.image,
-        label: e.responseMenuItemAction.label)
-    ).toList();
-
-    return jvxMenuItems;
+  List<JVxMenuGroup> _isolateGroups(ResponseMenu menu) {
+    List<JVxMenuGroup> groups = [];
+    for(ResponseMenuEntry entry in menu.responseMenuItems){
+      if(!groups.any((element) => element.name == entry.group)){
+        groups.add(JVxMenuGroup(name: entry.group, items: []));
+      }
+    }
+    return groups;
   }
+
+  List<JVxMenuItem> _getItemsByGroup(String groupName, List<ResponseMenuEntry> entries) {
+    List<JVxMenuItem> menuItems = [];
+    for(ResponseMenuEntry responseMenuEntry in entries){
+      if(responseMenuEntry.group == groupName){
+        JVxMenuItem menuItem = JVxMenuItem(componentId: responseMenuEntry.componentId, label: responseMenuEntry.text);
+        menuItems.add(menuItem);
+      }
+    }
+    return menuItems;
+  }
+
 
 }
