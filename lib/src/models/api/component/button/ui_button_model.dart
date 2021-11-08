@@ -10,6 +10,6 @@ class UIButtonModel extends UiComponentModel {
     required String constraints,
     required String name,
     required String? parent
-  }) : super(constraints: constraints,className: className,componentId: componentId,name: name, parent: parent);
+  }) : super(constraints: constraints,className: className,id: componentId,name: name, parent: parent);
 
 }

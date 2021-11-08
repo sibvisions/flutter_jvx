@@ -4,4 +4,5 @@ abstract class IResponseNames {
   String get userData;
   String get menu;
   String get language;
+  String get screenGeneric;
 }

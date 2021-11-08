@@ -10,7 +10,7 @@ class ComponentStoreService implements IComponentStoreService {
 
   @override
   void saveComponent(UiComponentModel componentModel) {
-    if(!components.any((element) => element.componentId == componentModel.componentId)){
+    if(!components.any((element) => element.id == componentModel.id)){
       components.add(componentModel);
     }
   }
@@ -28,7 +28,7 @@ class ComponentStoreService implements IComponentStoreService {
   @override
   UiComponentModel? getComponentById(String id) {
     UiComponentModel model;
-    model = components.firstWhere((element) => element.componentId == id);
+    model = components.firstWhere((element) => element.id == id);
     return model;
   }
 

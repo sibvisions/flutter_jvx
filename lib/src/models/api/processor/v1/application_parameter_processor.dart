@@ -22,6 +22,8 @@ class ApplicationParameterProcessor with OnAuthenticationEvent, ConfigAppService
         fireAuthenticationEvent(event);
       }
     }
+
+
   }
 
 }

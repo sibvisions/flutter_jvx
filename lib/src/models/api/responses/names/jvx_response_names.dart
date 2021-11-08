@@ -8,7 +8,7 @@ class JVxResponseNames implements IResponseNames {
   String pLanguage = "language";
   String pMenu = "menu";
   String pUserData = "userData";
-
+  String pScreenGeneric = "screen.generic";
 
 
   @override
@@ -25,6 +25,9 @@ class JVxResponseNames implements IResponseNames {
 
   @override
   String get userData => pUserData;
+
+  @override
+  String get screenGeneric => pScreenGeneric;
 
 
 

@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_jvx/src/models/api/i_response_names.dart';
 import 'package:flutter_jvx/src/models/api/processor/v1/application_parameter_processor.dart';
 import 'package:flutter_jvx/src/models/api/processor/v1/menu_processor.dart';
 import 'package:flutter_jvx/src/models/api/processor/v1/metadata_processor.dart';
+import 'package:flutter_jvx/src/models/api/processor/v1/screen_generic_processort.dart';
 import 'package:flutter_jvx/src/models/api/responses.dart';
 import 'package:flutter_jvx/src/models/api/responses/names/jvx_response_names.dart';
-import 'package:flutter_jvx/src/models/api/responses/response_menu.dart';
 import 'package:flutter_jvx/src/services/api/i_controller.dart';
 import 'package:flutter_jvx/src/models/api/i_processor.dart';
 import 'package:http/http.dart';
@@ -17,6 +16,7 @@ class JVxController implements IController  {
   IProcessor metaDataProcessor = MetaDataProcessor();
   IProcessor applicationParameterProcessor = ApplicationParameterProcessor();
   IProcessor menuProcessor = MenuProcessor();
+  IProcessor screenGenericProcessor = ScreenGenericProcessor();
 
   IResponseNames responseNames = JVxResponseNames();
 
@@ -36,6 +36,8 @@ class JVxController implements IController  {
       applicationParameterProcessor.processResponse(json);
     } else if(res.name == responseNames.menu){
       menuProcessor.processResponse(json);
+    } else if(res.name == responseNames.screenGeneric){
+      screenGenericProcessor.processResponse(json);
     }
   }
 
