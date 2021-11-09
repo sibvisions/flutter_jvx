@@ -5,12 +5,16 @@ import 'package:flutter_jvx/src/services/api/controller/jvx_controller.dart';
 import 'package:flutter_jvx/src/services/api/i_controller.dart';
 import 'package:flutter_jvx/src/services/api/i_repository.dart';
 import 'package:flutter_jvx/src/services/api/repository/jvx_online_repository.dart';
+import 'package:flutter_jvx/src/services/component/i_component_store_service.dart';
+import 'package:flutter_jvx/src/services/component/v1/component_store_service.dart';
 import 'package:flutter_jvx/src/services/configs/app/config_app_static.dart';
 import 'package:flutter_jvx/src/services/configs/i_config_app.dart';
 import 'package:flutter_jvx/src/services/events/event_bus.dart';
 import 'package:flutter_jvx/src/services/events/ui/ui_event_service.dart';
 import 'package:flutter_jvx/src/services/menu/i_menu_service.dart';
 import 'package:flutter_jvx/src/services/menu/menu_service.dart';
+import 'package:flutter_jvx/src/services/render/i_render_service.dart';
+import 'package:flutter_jvx/src/services/render/render_servide.dart';
 import 'package:flutter_jvx/src/services/routing/i_routing_service.dart';
 import 'package:flutter_jvx/src/services/routing/routing_service.dart';
 import 'package:flutter_jvx/src/services/service.dart';
@@ -48,4 +52,10 @@ void initApp(){
 
   UiEventService uiEventService = UiEventService();
   services.registerSingleton(uiEventService, signalsReady: true);
+
+  IComponentStoreService componentStoreService = ComponentStoreService();
+  services.registerSingleton(componentStoreService, signalsReady: true);
+
+  IRenderService renderService = RenderService();
+  services.registerSingleton(renderService, signalsReady: true);
 }

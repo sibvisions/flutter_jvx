@@ -9,10 +9,12 @@ class ComponentStoreService implements IComponentStoreService {
   final List<UiComponentModel> removedComponents = [];
 
   @override
-  void saveComponent(UiComponentModel componentModel) {
+  bool saveComponent(UiComponentModel componentModel) {
     if(!components.any((element) => element.id == componentModel.id)){
       components.add(componentModel);
     }
+
+    return true;
   }
 
   @override
@@ -54,7 +56,7 @@ class ComponentStoreService implements IComponentStoreService {
   }
 
   @override
-  void activateRemovedComponentById(String id) {
+  void activateComponentById(String id) {
     // TODO: implement activateRemovedComponentById
   }
 
@@ -71,8 +73,10 @@ class ComponentStoreService implements IComponentStoreService {
   }
 
   @override
-  void updateComponent(UiComponentModel componentModel) {
-    // TODO: implement updateComponent
+  bool updateComponent(UiComponentModel componentModel) {
+
+
+    return true;
   }
 
 
