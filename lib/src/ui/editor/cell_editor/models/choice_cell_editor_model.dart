@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/ui/widgets/custom/custom_icon.dart';
-import 'package:flutterclient/src/util/icon/font_awesome_changer.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../models/api/response_objects/response_data/editor/cell_editor.dart';
 import '../../../../models/api/response_objects/response_data/editor/cell_editor_properties.dart';
-import '../../../../util/image/image_loader.dart';
 import 'cell_editor_model.dart';
 
 class ChoiceCellEditorModel extends CellEditorModel {

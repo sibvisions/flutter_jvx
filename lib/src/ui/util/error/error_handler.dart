@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import '../../../models/api/errors/failure.dart';
 
+import '../../../models/api/errors/failure.dart';
 import '../../../models/state/routes/routes.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 import '../../../util/app/text_utils.dart';

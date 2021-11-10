@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../widgets/co_grid_layout.dart';
 import '../../widgets/co_grid_layout_constraint.dart';
 import '../co_layout_widget.dart';
-import '../layout_model.dart';
 import 'grid_layout_model.dart';
 
 class CoGridLayoutContainerWidget extends CoLayoutWidget {

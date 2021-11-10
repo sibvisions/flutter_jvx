@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/editor/cell_editor.dart';
 import 'package:flutterclient/src/ui/layout/layout/i_layout_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -60,7 +59,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
   static const HEADER_FOOTER_PANEL_COMPONENT_ID = 'headerFooterPanel';
 
   Map<String, ComponentWidget> _components = <String, ComponentWidget>{};
-  Map<String, ComponentWidget> _additionalComponents = <String, ComponentWidget>{};
+  Map<String, ComponentWidget> _additionalComponents =
+      <String, ComponentWidget>{};
 
   ComponentWidget? rootComponent;
   ComponentWidget? header;
@@ -87,7 +87,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       CloseScreenActionResponseObject closeScreenAction =
           response.getObjectByType<CloseScreenActionResponseObject>()!;
 
-      if (closeScreenAction.componentId == rootComponent?.componentModel.componentId) {
+      if (closeScreenAction.componentId ==
+          rootComponent?.componentModel.componentId) {
         rootComponent = null;
         _components = <String, ComponentWidget>{};
       }
@@ -105,14 +106,18 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
       }
     }
 
-    for (final screenGeneric in response.getAllObjectsByType<ScreenGenericResponseObject>()) {
+    for (final screenGeneric
+        in response.getAllObjectsByType<ScreenGenericResponseObject>()) {
       if (screenGeneric.componentId == widget.configuration.componentId) {
         updateComponents(screenGeneric.changedComponents);
       }
     }
 
-    if (components.isEmpty && widget.configuration.firstResponse is ApiResponse) {
-      for (final screenGeneric in (widget.configuration.firstResponse as ApiResponse).getAllObjectsByType<ScreenGenericResponseObject>()) {
+    if (components.isEmpty &&
+        widget.configuration.firstResponse is ApiResponse) {
+      for (final screenGeneric
+          in (widget.configuration.firstResponse as ApiResponse)
+              .getAllObjectsByType<ScreenGenericResponseObject>()) {
         if (screenGeneric.componentId == widget.configuration.componentId) {
           updateComponents(screenGeneric.changedComponents);
         }
@@ -122,9 +127,12 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   void updateComponents(List<ChangedComponent> changedComponents) {
     for (final changedComponent in changedComponents) {
-      String? parent = changedComponent.getProperty<String>(ComponentProperty.PARENT, null);
+      String? parent =
+          changedComponent.getProperty<String>(ComponentProperty.PARENT, null);
 
-      if (changedComponent.additional || (parent != null && _additionalComponents.containsKey(parent)) || _additionalComponents.containsKey(changedComponent.id)) {
+      if (changedComponent.additional ||
+          (parent != null && _additionalComponents.containsKey(parent)) ||
+          _additionalComponents.containsKey(changedComponent.id)) {
         _updateComponent(changedComponent, _additionalComponents);
       } else {
         _updateComponent(changedComponent, _components);
@@ -170,9 +178,10 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
 
   _checkMarkNeedsLayout(ComponentWidget comp, ComponentWidget parent) {
     if (parent.componentModel is ContainerComponentModel) {
-      if (parent.componentModel.lastLayout!.isBefore(comp.componentModel.lastLayout!) ||
-          parent.componentModel.lastLayout!.isAtSameMomentAs(comp.componentModel.lastLayout!))
-      {
+      if (parent.componentModel.lastLayout!
+              .isBefore(comp.componentModel.lastLayout!) ||
+          parent.componentModel.lastLayout!
+              .isAtSameMomentAs(comp.componentModel.lastLayout!)) {
         String topMostScrollableName = _getTopMostScrollableContainer(comp, "");
 
         if (topMostScrollableName.isNotEmpty)
@@ -265,7 +274,8 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
             changedComponent.getProperty<bool>(ComponentProperty.VISIBLE, null);
         bool rebuildLayout = false;
 
-        if (visible != null && visible != componentWidget.componentModel.isVisible) {
+        if (visible != null &&
+            visible != componentWidget.componentModel.isVisible) {
           rebuildLayout = true;
           // componentWidget.componentModel.lastLayout = DateTime.now();
         }
@@ -429,15 +439,20 @@ class SoScreenState<T extends SoScreen> extends State<T> with SoDataScreen {
     componentWidget.componentModel.state = CoState.Destroyed;
   }
 
-  void _removeComponent(ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
+  void _removeComponent(
+      ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
     _removeFromParent(componentWidget, container);
   }
 
-  void _removeFromParent(ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
-    ComponentWidget? parentComponentWidget = container[componentWidget.componentModel.parentComponentId];
+  void _removeFromParent(
+      ComponentWidget componentWidget, Map<String, ComponentWidget> container) {
+    ComponentWidget? parentComponentWidget =
+        container[componentWidget.componentModel.parentComponentId];
 
-    if (parentComponentWidget != null && parentComponentWidget is CoContainerWidget) {
-      (parentComponentWidget.componentModel as ContainerComponentModel).removeWithComponent(componentWidget);
+    if (parentComponentWidget != null &&
+        parentComponentWidget is CoContainerWidget) {
+      (parentComponentWidget.componentModel as ContainerComponentModel)
+          .removeWithComponent(componentWidget);
       componentWidget.componentModel.lastLayout = DateTime.now();
       _checkMarkNeedsLayout(componentWidget, parentComponentWidget);
     }

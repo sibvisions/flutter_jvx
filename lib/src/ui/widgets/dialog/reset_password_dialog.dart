@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/models/api/requests/reset_password_request.dart';
-import 'package:flutterclient/src/models/api/response_objects/login_response_object.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/change_password_dialog.dart';
 import 'package:flutterclient/src/util/translation/app_localizations.dart';
 
-import '../../../../injection_container.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
 
 class ResetPasswordDialog extends StatefulWidget {

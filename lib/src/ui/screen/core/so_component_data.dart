@@ -1,19 +1,17 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import '../../../models/api/requests/data/delete_record_request.dart';
-import '../../../services/repository/api_repository.dart';
 
 import '../../../../injection_container.dart';
 import '../../../models/api/errors/failure.dart';
 import '../../../models/api/request.dart';
+import '../../../models/api/requests/data/delete_record_request.dart';
 import '../../../models/api/requests/data/fetch_data_request.dart';
 import '../../../models/api/requests/data/filter_data_request.dart';
 import '../../../models/api/requests/data/insert_record_request.dart';
 import '../../../models/api/requests/data/save_data_request.dart';
 import '../../../models/api/requests/data/select_record_request.dart';
 import '../../../models/api/requests/data/set_values_request.dart';
-import '../../../models/api/requests/upload_request.dart';
 import '../../../models/api/response_objects/response_data/data/data_book.dart';
 import '../../../models/api/response_objects/response_data/data/dataprovider_changed.dart';
 import '../../../models/api/response_objects/response_data/data/filter.dart';
@@ -22,6 +20,7 @@ import '../../../models/api/response_objects/response_data/meta_data/data_book_m
 import '../../../models/api/response_objects/response_data/meta_data/data_book_meta_data_column.dart';
 import '../../../models/state/app_state.dart';
 import '../../../services/remote/cubit/api_cubit.dart';
+import '../../../services/repository/api_repository.dart';
 import '../../../util/app/text_utils.dart';
 import '../../util/inherited_widgets/app_state_provider.dart';
 import 'so_data_screen.dart';
@@ -116,10 +115,12 @@ class SoComponentData {
     if (context != null) _onDataChanged.forEach((d) => d(context));
   }
 
-  void updateDataProviderChanged(BuildContext context, DataproviderChanged pDataProviderChanged, [Request? request]) {
+  void updateDataProviderChanged(
+      BuildContext context, DataproviderChanged pDataProviderChanged,
+      [Request? request]) {
     DataBook? dataBook = data;
-    if(pDataProviderChanged.reload == -1){
-      if(dataBook != null){
+    if (pDataProviderChanged.reload == -1) {
+      if (dataBook != null) {
         dataBook.records.clear();
       }
     }
@@ -128,9 +129,13 @@ class SoComponentData {
     List<dynamic>? tempChangedValues = pDataProviderChanged.changedValues;
     List<String>? tempColumnNames = pDataProviderChanged.changedColumnNames;
     int? tempSelectedRow = pDataProviderChanged.selectedRow;
-    if(tempChangedValues != null && tempColumnNames != null &&  dataBook != null && tempSelectedRow != null){
-      List<dynamic> rowToUpdate = dataBook.getRow(tempSelectedRow, tempColumnNames);
-      for(int i = 0; i<rowToUpdate.length; i++){
+    if (tempChangedValues != null &&
+        tempColumnNames != null &&
+        dataBook != null &&
+        tempSelectedRow != null) {
+      List<dynamic> rowToUpdate =
+          dataBook.getRow(tempSelectedRow, tempColumnNames);
+      for (int i = 0; i < rowToUpdate.length; i++) {
         rowToUpdate[i] = tempChangedValues[i];
       }
       dataBook.records[tempSelectedRow] = rowToUpdate;
@@ -195,8 +200,8 @@ class SoComponentData {
     return data;
   }
 
-  void reloadData(){
-    if(data != null){
+  void reloadData() {
+    if (data != null) {
       fetchData(-1, -1);
     }
   }

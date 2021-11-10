@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-
 import 'package:flutterclient/src/util/color/color_extension.dart';
 
 import '../../../../../util/app/so_alignment.dart';

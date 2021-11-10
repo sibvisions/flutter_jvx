@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterclient/flutterclient.dart';
 import 'package:flutterclient/src/util/app/state/state_helper.dart';
-import 'package:mockito/mockito.dart';
+
 import '../../../../fixtures/fixture_reader.dart';
 import '../../../services/repository/api_repository_impl_test.mocks.dart';
 
@@ -45,7 +44,6 @@ void main() {
       expect(appState.menuResponseObject.entries, isNotEmpty);
     });
 
-    test('with local data', () async {
-    });
+    test('with local data', () async {});
   });
 }

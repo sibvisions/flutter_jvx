@@ -1,13 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/ui/widgets/dialog/show_error_dialog.dart';
 import 'package:flutterclient/src/util/translation/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
 enum UploadType {

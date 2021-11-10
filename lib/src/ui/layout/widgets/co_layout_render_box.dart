@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutterclient/flutterclient.dart';
@@ -45,7 +43,8 @@ class CoLayoutRenderBox extends RenderBox {
   }
 
   Size layoutRenderBox(RenderBox renderBox, BoxConstraints constraints) {
-    if (constraints.maxHeight == double.infinity && constraints.maxWidth == double.infinity) {
+    if (constraints.maxHeight == double.infinity &&
+        constraints.maxWidth == double.infinity) {
       try {
         renderBox.layout(BoxConstraints.tightForFinite(), parentUsesSize: true);
         return renderBox.size;
@@ -56,7 +55,8 @@ class CoLayoutRenderBox extends RenderBox {
             maxHeight: double.maxFinite,
             maxWidth: constraints.maxWidth);
 
-        renderBox.layout(normalizeConstraints(boxConstraints), parentUsesSize: true);
+        renderBox.layout(normalizeConstraints(boxConstraints),
+            parentUsesSize: true);
         Size size = renderBox.size;
 
         boxConstraints = BoxConstraints(
@@ -65,16 +65,22 @@ class CoLayoutRenderBox extends RenderBox {
             maxHeight: constraints.maxHeight,
             maxWidth: double.maxFinite);
 
-        renderBox.layout(normalizeConstraints(boxConstraints), parentUsesSize: true);
+        renderBox.layout(normalizeConstraints(boxConstraints),
+            parentUsesSize: true);
         size = Size(size.width, renderBox.size.height);
-
       }
     } else {
       BoxConstraints con = constraints;
-      if(constraints.hasInfiniteWidth)
-        con = BoxConstraints(minHeight: constraints.maxHeight, maxHeight: constraints.maxHeight, maxWidth: constraints.maxWidth);
-      if(constraints.hasInfiniteHeight)
-        con = BoxConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight);
+      if (constraints.hasInfiniteWidth)
+        con = BoxConstraints(
+            minHeight: constraints.maxHeight,
+            maxHeight: constraints.maxHeight,
+            maxWidth: constraints.maxWidth);
+      if (constraints.hasInfiniteHeight)
+        con = BoxConstraints(
+            minWidth: constraints.minWidth,
+            maxWidth: constraints.maxWidth,
+            maxHeight: constraints.maxHeight);
 
       renderBox.layout(normalizeConstraints(con), parentUsesSize: true);
       return renderBox.size;

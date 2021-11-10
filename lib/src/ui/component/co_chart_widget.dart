@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
@@ -42,8 +40,8 @@ class CoChartWidgetState extends ComponentWidgetState<CoChartWidget> {
     );
   }
 
-  List<Series<List,  int>> _createSeries() {
-    List<Series<List,  int>> _series = <Series<List, int>>[];
+  List<Series<List, int>> _createSeries() {
+    List<Series<List, int>> _series = <Series<List, int>>[];
 
     return _series;
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutterclient/src/ui/screen/core/so_screen.dart';
-import 'package:latlong2/latlong.dart';
 
 import 'component_widget.dart';
 import 'model/map_component_model.dart';
@@ -63,7 +62,7 @@ class CoMapWidgetState extends ComponentWidgetState<CoMapWidget> {
         ],
         mapController: _controller,
         options: MapOptions(
-            onTap: (position ,latlng) {
+            onTap: (position, latlng) {
               if (widget.componentModel.pointSelectionLockedOnCenter) {
                 widget.componentModel
                     .onPointSelection(context, _controller.center);

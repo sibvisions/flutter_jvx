@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/component/changed_component.dart';
-import 'package:flutterclient/src/models/api/response_objects/response_data/component/component_properties.dart';
 import 'package:flutterclient/src/ui/component/model/component_model.dart';
 import 'package:flutterclient/src/util/app/text_utils.dart';
 

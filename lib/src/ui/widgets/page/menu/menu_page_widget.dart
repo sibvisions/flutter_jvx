@@ -17,7 +17,6 @@ import '../../../../services/local/shared_preferences/shared_preferences_manager
 import '../../../../services/remote/cubit/api_cubit.dart';
 import '../../../screen/core/manager/so_menu_manager.dart';
 import '../../../util/custom_cubit_listener.dart';
-import '../../../util/error/error_handler.dart';
 import 'browser_menu_widget.dart';
 import 'mobile_menu_widget.dart';
 

@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/flutterclient.dart';
-import 'package:flutterclient/src/models/api/requests/change_password_request.dart';
 import 'package:flutterclient/src/ui/widgets/dialog/change_password_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sticky_headers/sticky_headers.dart';

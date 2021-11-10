@@ -1,4 +1,3 @@
-import 'package:flutter_gauge/flutter_gauge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/ui/component/model/gauge_component_model.dart';
 

@@ -13,7 +13,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../util/color/color_extension.dart';
 import '../../util/icon/font_awesome_changer.dart';
-import '../widgets/dialog/loading_indicator_dialog.dart';
 import 'co_action_component_widget.dart';
 import 'model/button_component_model.dart';
 

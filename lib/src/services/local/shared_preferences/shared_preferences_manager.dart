@@ -1,11 +1,10 @@
 import 'dart:convert';
 
+import 'package:encrypt/encrypt.dart';
 import 'package:flutterclient/src/models/api/response_objects/application_meta_data_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/application_style/application_style_response_object.dart';
 import 'package:flutterclient/src/models/api/response_objects/user_data_response_object.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:encrypt/encrypt.dart';
-import 'package:crypto/crypto.dart';
 
 class SharedPreferencesManager {
   final SharedPreferences sharedPreferences;

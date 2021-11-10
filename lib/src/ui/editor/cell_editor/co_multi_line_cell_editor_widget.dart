@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterclient/src/models/api/response_objects/response_data/data/data_book.dart';
-import 'models/multi_line_cell_editor_model.dart';
-import 'models/referenced_cell_editor_model.dart';
 
 import 'co_referenced_cell_editor_widget.dart';
+import 'models/multi_line_cell_editor_model.dart';
+import 'models/referenced_cell_editor_model.dart';
 
 class CoMultiLineCellEditorWidget extends CoReferencedCellEditorWidget {
   final ReferencedCellEditorModel cellEditorModel;

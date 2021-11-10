@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterclient/flutterclient.dart';
+import 'package:flutterclient/injection_container.dart' as di;
 import 'package:flutterclient/src/models/api/data_source.dart';
 import 'package:flutterclient/src/models/api/requests/download_translation_request.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
@@ -14,8 +15,6 @@ import 'package:flutterclient/src/services/remote/network_info/network_info.dart
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutterclient/injection_container.dart' as di;
-import 'package:universal_html/html.dart';
 
 import '../../../fixtures/fixture_reader.dart';
 import 'api_repository_impl_test.mocks.dart';

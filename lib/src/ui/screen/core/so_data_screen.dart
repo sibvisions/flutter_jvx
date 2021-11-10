@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutterclient/src/models/api/errors/failure.dart';
-import 'package:flutterclient/src/models/api/requests/close_screen_request.dart';
 import 'package:flutterclient/src/models/api/requests/navigation_request.dart';
-import 'package:flutterclient/src/models/api/requests/open_screen_request.dart';
 import 'package:flutterclient/src/models/state/app_state.dart';
-import 'package:flutterclient/src/models/state/routes/pop_arguments/open_screen_page_pop_style.dart';
-import 'package:flutterclient/src/models/state/routes/routes.dart';
 import 'package:flutterclient/src/services/local/local_database/i_offline_database_provider.dart';
 import 'package:flutterclient/src/services/local/local_database/offline_database.dart';
 import 'package:flutterclient/src/ui/util/inherited_widgets/shared_preferences_provider.dart';

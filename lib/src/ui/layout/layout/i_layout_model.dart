@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../component/component_widget.dart';
 import '../../container/co_container_widget.dart';
-import 'layout_model.dart';
 
 enum LayoutState { DIRTY, RENDERED }
 
