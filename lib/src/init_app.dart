@@ -11,24 +11,25 @@ import 'package:flutter_jvx/src/services/configs/app/config_app_static.dart';
 import 'package:flutter_jvx/src/services/configs/i_config_app.dart';
 import 'package:flutter_jvx/src/services/events/event_bus.dart';
 import 'package:flutter_jvx/src/services/events/ui/ui_event_service.dart';
-import 'package:flutter_jvx/src/services/menu/i_menu_service.dart';
-import 'package:flutter_jvx/src/services/menu/menu_service.dart';
-import 'package:flutter_jvx/src/services/render/i_render_service.dart';
-import 'package:flutter_jvx/src/services/render/render_servide.dart';
-import 'package:flutter_jvx/src/services/routing/i_routing_service.dart';
-import 'package:flutter_jvx/src/services/routing/routing_service.dart';
+import 'package:flutter_jvx/src/services/events/i_menu_service.dart';
+import 'package:flutter_jvx/src/services/events/menu/menu_event_service.dart';
+import 'package:flutter_jvx/src/services/events/i_render_service.dart';
+import 'package:flutter_jvx/src/services/events/render/render_event_servide.dart';
+import 'package:flutter_jvx/src/services/events/i_routing_service.dart';
+import 'package:flutter_jvx/src/services/events/routing/routing_event_service.dart';
 import 'package:flutter_jvx/src/services/service.dart';
 
 void initApp(){
 
+  //Order of Registration is important as they may depend on another.
 
   EventBus eventBus = EventBus();
   services.registerSingleton(eventBus, signalsReady:  true);
 
-  IRoutingService routingService = RoutingService();
+  IRoutingService routingService = RoutingEventService();
   services.registerSingleton(routingService, signalsReady: true);
 
-  IMenuService menuService = MenuService();
+  IMenuService menuService = MenuEventService();
   services.registerSingleton(menuService, signalsReady: true);
 
 
@@ -42,6 +43,10 @@ void initApp(){
       pPort: 8090,
       pPath: "/JVx.mobile/services/mobile"
   );
+
+  IComponentStoreService componentStoreService = ComponentStoreService();
+  services.registerSingleton(componentStoreService, signalsReady: true);
+
   ConfigApiStatic api = ConfigApiStatic(endpointConfig: apiEndpointsV1Static, urlConfig: apiUrlStatic);
   IRepository apiRepository = JVxOnlineRepository(apiConfig: api);
   services.registerSingleton(apiRepository, signalsReady: true);
@@ -53,9 +58,11 @@ void initApp(){
   UiEventService uiEventService = UiEventService();
   services.registerSingleton(uiEventService, signalsReady: true);
 
-  IComponentStoreService componentStoreService = ComponentStoreService();
-  services.registerSingleton(componentStoreService, signalsReady: true);
 
-  IRenderService renderService = RenderService();
+
+
+
+  IRenderService renderService = RenderEventService();
   services.registerSingleton(renderService, signalsReady: true);
+
 }

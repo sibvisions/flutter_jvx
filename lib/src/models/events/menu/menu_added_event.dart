@@ -1,5 +1,5 @@
 import 'package:flutter_jvx/src/models/api/custom/jvx_menu.dart';
-import 'package:flutter_jvx/src/models/events/i_event.dart';
+import 'package:flutter_jvx/src/models/events/base_event.dart';
 
 class MenuAddedEvent extends BaseEvent {
 

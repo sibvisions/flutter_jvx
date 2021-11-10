@@ -1,4 +1,4 @@
-import 'package:flutter_jvx/src/models/events/i_event.dart';
+import 'package:flutter_jvx/src/models/events/base_event.dart';
 import 'package:flutter_jvx/src/routing/routing_options.dart';
 
 class RouteEvent extends BaseEvent {

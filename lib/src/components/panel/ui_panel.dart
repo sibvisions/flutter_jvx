@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_jvx/src/models/api/component/ui_component_model.dart';
-import 'package:flutter_jvx/src/services/render/render_servide.dart';
+import 'package:flutter_jvx/src/services/events/render/render_event_servide.dart';
 
 class UiPanel extends StatefulWidget {
 
@@ -14,7 +14,7 @@ class UiPanel extends StatefulWidget {
   _UiPanelState createState() => _UiPanelState();
 }
 
-class _UiPanelState extends State<UiPanel> with RenderService {
+class _UiPanelState extends State<UiPanel>{
 
 
 

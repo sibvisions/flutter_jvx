@@ -1,16 +1,16 @@
 import 'package:flutter_jvx/src/models/events/meta/authentication_event.dart';
 import 'package:flutter_jvx/src/models/events/routing/route_event.dart';
 import 'package:flutter_jvx/src/routing/routing_options.dart';
-import 'package:flutter_jvx/src/services/routing/i_routing_service.dart';
+import 'package:flutter_jvx/src/services/events/i_routing_service.dart';
 import 'package:flutter_jvx/src/util/mixin/events/meta/on_authentication_event.dart';
 import 'package:flutter_jvx/src/util/mixin/events/routing/on_routing_event.dart';
 
-class RoutingService with OnRoutingEvent, OnAuthenticationEvent implements IRoutingService {
+class RoutingEventService with OnRoutingEvent, OnAuthenticationEvent implements IRoutingService {
 
 
 
 
-  RoutingService() {
+  RoutingEventService() {
     authenticationEventStream.listen(onAuthentication);
   }
 

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_jvx/src/masks/menu/jvx_menu_widget.dart';
 import 'package:flutter_jvx/src/models/api/custom/jvx_menu.dart';
 import 'package:flutter_jvx/src/models/events/menu/menu_changed_event.dart';
-import 'package:flutter_jvx/src/services/menu/i_menu_service.dart';
+import 'package:flutter_jvx/src/services/events/i_menu_service.dart';
 import 'package:flutter_jvx/src/services/service.dart';
 import 'package:flutter_jvx/src/util/mixin/events/meta/on_menu_changed_event.dart';
 

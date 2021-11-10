@@ -1,6 +1,6 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
-abstract class FormLayout {
+abstract class FlowLayout {
 
   static void calculateLayout(Map<String, Size> preferredSizes, Size? constraints) {
 
