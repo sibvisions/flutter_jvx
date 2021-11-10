@@ -48,3 +48,4 @@ app.*.map.json
 /assets/env/
 
 node_modules/
+lib/generated_plugin_registrant.dart
