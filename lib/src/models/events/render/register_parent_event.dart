@@ -4,6 +4,7 @@ class RegisterParentEvent extends BaseEvent {
 
   final String id;
   final String layout;
+  final String? layoutData;
   final List<String> childrenIds;
 
   RegisterParentEvent({
@@ -11,6 +12,7 @@ class RegisterParentEvent extends BaseEvent {
     required String reason,
     required this.id,
     required this.layout,
+    required this.layoutData,
     required this.childrenIds
   }) : super(origin: origin, reason: reason);
 

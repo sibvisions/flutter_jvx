@@ -1,16 +1,19 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_jvx/src/layout/border_layout.dart';
+import 'package:flutter_jvx/src/layout/form_layout.dart';
 import 'package:flutter_jvx/src/models/events/render/register_parent_event.dart';
 import 'package:flutter_jvx/src/models/events/render/register_preferred_size_event.dart';
 import 'package:flutter_jvx/src/models/events/render/unregister_parent_event.dart';
+import 'package:flutter_jvx/src/models/layout/layout_child.dart';
+import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
 import 'package:flutter_jvx/src/services/events/i_render_service.dart';
 
 class RenderEventService extends IRenderService {
 
-  final List<Parent> parents = [];
+  final List<LayoutParent> parents = [];
+
 
   @override
   void receivedRegisterParentEvent(RegisterParentEvent event) {
@@ -19,26 +22,50 @@ class RenderEventService extends IRenderService {
 
     } else {
       //Builds Children with only Id, so the preferred Size can be added later.
-      List<Child> children = event.childrenIds.map((e) => Child(id: e)).toList();
-      parents.add(Parent(id: event.id, layout: event.layout, children: children));
+      List<LayoutChild> children = event.childrenIds.map((e) => LayoutChild(id: e)).toList();
+      parents.add(LayoutParent(id: event.id, layout: event.layout, children: children));
     }
   }
 
   @override
   void receivedRegisterPreferredSizeEvent(RegisterPreferredSizeEvent event) {
-    Parent parent = parents.firstWhere((element) => element.id == event.parent);
-    Child child = parent.children.firstWhere((element) => element.id == event.id);
+    LayoutParent parent = parents.firstWhere((element) => element.id == event.parent);
+    LayoutChild child = parent.children.firstWhere((element) => element.id == event.id);
 
     child.preferredSize = event.size;
     child.constraints = event.constraints;
 
-    Parent parentSnapShot = Parent(children: [...parent.children], id: parent.id, layout: parent.layout);
+    LayoutParent parentSnapShot = LayoutParent(children: [...parent.children], id: parent.id, layout: parent.layout);
 
+    bool legalLayoutState = parentSnapShot.children.every((element) => element.preferredSize != null);
+
+    if(legalLayoutState){
+      _performCalculation(parentSnapShot);
+    }
+  }
+
+
+  //TODO IF A PARENT SETS ITS CHILD SIZE AND HAS TO RE-LAYOUT ITSELF ACCORDINGLY THIS NEEDS TO BE IMPLEMENTED.!
+
+  _performCalculation(LayoutParent parent) {
+    Future? layoutData;
+
+
+    if(parent.layout == "BorderLayout") {
+      layoutData = compute(BorderLayout.calculateLayout, parent.children);
+    } else if(parent.layout =="FormLayout") {
+      layoutData = compute(FormLayout.calculateLayout, parent.children);
+    }
+
+
+    if(layoutData != null) {
+
+    }
   }
 
   @override
   void receivedUnregisterParentEvent(UnregisterParentEvent event) {
-
+    parents.removeWhere((element) => element.id == event.id);
   }
 
 
@@ -48,26 +75,8 @@ class RenderEventService extends IRenderService {
 }
 
 
-class Parent {
-  final String id;
-  String layout;
-  List<Child> children;
 
-  Parent({
-    required this.id,
-    required this.layout,
-    required this.children,
-  });
-}
 
-class Child {
-  final String id;
-  String? constraints;
-  Size? preferredSize;
 
-  Child({
-    required this.id,
-    this.constraints,
-    this.preferredSize
-  });
-}
+
+
