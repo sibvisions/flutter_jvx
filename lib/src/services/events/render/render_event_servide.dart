@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_jvx/src/models/events/render/register_parent_event.dart'
 import 'package:flutter_jvx/src/models/events/render/register_preferred_size_event.dart';
 import 'package:flutter_jvx/src/models/events/render/unregister_parent_event.dart';
 import 'package:flutter_jvx/src/models/layout/layout_child.dart';
+import 'package:flutter_jvx/src/models/layout/layout_data.dart';
 import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
 import 'package:flutter_jvx/src/services/events/i_render_service.dart';
 
@@ -29,12 +31,15 @@ class RenderEventService extends IRenderService {
 
   @override
   void receivedRegisterPreferredSizeEvent(RegisterPreferredSizeEvent event) {
+    //Find correct Child
     LayoutParent parent = parents.firstWhere((element) => element.id == event.parent);
     LayoutChild child = parent.children.firstWhere((element) => element.id == event.id);
 
+    //Set PreferredSize and constraints
     child.preferredSize = event.size;
     child.constraints = event.constraints;
 
+    //DeepCopy to make sure data can't be changed by other events while checks and calculation are running
     LayoutParent parentSnapShot = LayoutParent(children: [...parent.children], id: parent.id, layout: parent.layout);
 
     bool legalLayoutState = parentSnapShot.children.every((element) => element.preferredSize != null);
@@ -50,7 +55,7 @@ class RenderEventService extends IRenderService {
   _performCalculation(LayoutParent parent) {
     Future? layoutData;
 
-
+    //Use compute(new Isolate) to not lock app while layout is calculating
     if(parent.layout == "BorderLayout") {
       layoutData = compute(BorderLayout.calculateLayout, parent.children);
     } else if(parent.layout =="FormLayout") {
@@ -58,8 +63,11 @@ class RenderEventService extends IRenderService {
     }
 
 
+    //register callback on compute completion
     if(layoutData != null) {
-
+      layoutData.then((value) => {
+        log(value.toString())
+      });
     }
   }
 
@@ -69,7 +77,7 @@ class RenderEventService extends IRenderService {
   }
 
 
-  _sendLayoutCommand(String id, Size size) {
+  _sendLayoutCommand(String id, LayoutData layoutData) {
 
   }
 }
