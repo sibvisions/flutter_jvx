@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_jvx/src/models/api/requests.dart';
 import 'package:flutter_jvx/src/models/api/requests/login_requests.dart';
 import 'package:flutter_jvx/src/models/api/requests/open_screen_request.dart';
+import 'package:flutter_jvx/src/models/api/requests/startup_request.dart';
 import 'package:flutter_jvx/src/models/config/i_config_api.dart';
 import 'package:flutter_jvx/src/services/api/i_repository.dart';
 import 'package:flutter_jvx/src/util/mixin/service/config_app_service_mixin.dart';

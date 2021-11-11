@@ -1,4 +1,6 @@
-import '../responses.dart';
+
+
+import 'api_response.dart';
 
 class ResponseApplicationMetaData extends ApiResponse {
   String clientId;

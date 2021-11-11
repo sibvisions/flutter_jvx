@@ -42,17 +42,24 @@ class ComponentStoreService implements IComponentStoreService {
 
   @override
   UiComponentModel? getScreenByScreenClassName(String screenClassName) {
-    bool compareScreenClassName(UiComponentModel model){
-      UiPanelModel panelModel = model as UiPanelModel;
-      if(panelModel.screenClassName == screenClassName){
-        return true;
-      }
-      return false;
-    }
 
-    UiComponentModel? screen;
-    screen = components.firstWhere(compareScreenClassName);
-    return screen;
+    print(screenClassName);
+    print(components.toString());
+    //List.firstWhere throws Exception if none are found, this does not :|
+    int indexOfScreen = components.indexWhere((element) =>
+        _compareScreenClassName(element, screenClassName));
+    if(indexOfScreen != -1){
+      return components[indexOfScreen];
+    }
+    return null;
+  }
+
+  bool _compareScreenClassName(UiComponentModel model, String screenClassName){
+    UiPanelModel panelModel = model as UiPanelModel;
+    if(panelModel.screenClassName == screenClassName){
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -77,6 +84,11 @@ class ComponentStoreService implements IComponentStoreService {
 
 
     return true;
+  }
+
+  @override
+  List<UiComponentModel> getAll() {
+    return components;
   }
 
 

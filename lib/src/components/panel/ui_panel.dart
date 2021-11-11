@@ -17,6 +17,3 @@ class UIPanel extends StatelessWidget {
   }
 }
 
-
-}
-

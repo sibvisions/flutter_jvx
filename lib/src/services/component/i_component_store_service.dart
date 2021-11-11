@@ -24,4 +24,7 @@ abstract class IComponentStoreService{
   UiComponentModel? getScreenByScreenClassName(String screenClassName);
   bool doesComponentExistById(String id);
   bool isComponentRemovedById(String id);
+
+
+  List<UiComponentModel> getAll();
 }

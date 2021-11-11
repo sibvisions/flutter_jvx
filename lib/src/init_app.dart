@@ -15,8 +15,6 @@ import 'package:flutter_jvx/src/services/events/i_menu_service.dart';
 import 'package:flutter_jvx/src/services/events/menu/menu_event_service.dart';
 import 'package:flutter_jvx/src/services/events/i_render_service.dart';
 import 'package:flutter_jvx/src/services/events/render/render_event_servide.dart';
-import 'package:flutter_jvx/src/services/events/i_routing_service.dart';
-import 'package:flutter_jvx/src/services/events/routing/routing_event_service.dart';
 import 'package:flutter_jvx/src/services/service.dart';
 
 void initApp(){
@@ -26,8 +24,6 @@ void initApp(){
   EventBus eventBus = EventBus();
   services.registerSingleton(eventBus, signalsReady:  true);
 
-  IRoutingService routingService = RoutingEventService();
-  services.registerSingleton(routingService, signalsReady: true);
 
   IMenuService menuService = MenuEventService();
   services.registerSingleton(menuService, signalsReady: true);
@@ -39,7 +35,7 @@ void initApp(){
   ConfigApiEndpointsV1Static apiEndpointsV1Static = ConfigApiEndpointsV1Static();
   ConfigApiUrlStatic apiUrlStatic = ConfigApiUrlStatic(
       pIsHttps: false,
-      pHost: "172.16.0.59",
+      pHost: "192.168.0.87",
       pPort: 8090,
       pPath: "/JVx.mobile/services/mobile"
   );

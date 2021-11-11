@@ -3,12 +3,14 @@ import 'package:flutter_jvx/src/routing/routing_options.dart';
 
 class RouteEvent extends BaseEvent {
   final RoutingOptions routeTo;
+  final String? workScreenClassname;
 
 
   RouteEvent({
     required this.routeTo,
     required Object origin,
-    required String reason
+    required String reason,
+    this.workScreenClassname
   }) : super (reason: reason, origin: origin);
 
 

@@ -1,4 +1,4 @@
-import 'package:flutter_jvx/src/models/api/responses.dart';
+import 'api_response.dart';
 
 class ResponseApplicationParameters extends ApiResponse {
    String? authenticated;

@@ -1,4 +1,6 @@
-import 'package:flutter_jvx/src/models/api/responses.dart';
+
+
+import 'api_response.dart';
 
 class ResponseMenu extends ApiResponse {
   final String componentId;

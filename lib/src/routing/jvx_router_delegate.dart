@@ -4,17 +4,21 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_jvx/src/components/ui_components_factory.dart';
 import 'package:flutter_jvx/src/masks/login/login.dart';
 import 'package:flutter_jvx/src/masks/menu/menu.dart';
+import 'package:flutter_jvx/src/models/api/component/ui_component_model.dart';
 import 'package:flutter_jvx/src/models/events/routing/route_back_event.dart';
 import 'package:flutter_jvx/src/models/events/routing/route_event.dart';
 import 'package:flutter_jvx/src/routing/jvx_route_path.dart';
 import 'package:flutter_jvx/src/routing/routing_options.dart';
 import 'package:flutter_jvx/src/util/mixin/events/routing/on_routing_back_event.dart';
 import 'package:flutter_jvx/src/util/mixin/events/routing/on_routing_event.dart';
+import 'package:flutter_jvx/src/util/mixin/events/store/component_store_mixin.dart';
+import 'package:flutter_jvx/src/util/mixin/service/component_store_sevice_mixin.dart';
 
 class JVxRouterDelegate extends  RouterDelegate<JVxRoutePath>
-  with ChangeNotifier, PopNavigatorRouterDelegateMixin, OnRoutingEvent, OnRoutingBackEvent {
+  with ChangeNotifier, PopNavigatorRouterDelegateMixin, OnRoutingEvent, OnRoutingBackEvent, ComponentStoreServiceMixin {
 
   Page activePage = MaterialPage(child: Login());
   RoutingOptions activeRoute = RoutingOptions.login;
@@ -54,31 +58,41 @@ class JVxRouterDelegate extends  RouterDelegate<JVxRoutePath>
   }
 
   void _routingEventReceived(RouteEvent event) {
-    if(activeRoute != event.routeTo){
-      _routeTo(event.routeTo);
-    }
+    _routeTo(routeTo: event.routeTo, workScreenClassName: event.workScreenClassname);
   }
 
   void _routingBackEventReceived(RouteBackEvent event){
     if(activeRoute == RoutingOptions.menu){
-      _routeTo(RoutingOptions.login);
+      _routeTo(routeTo: RoutingOptions.login);
     }
   }
 
-  void _routeTo(RoutingOptions routeTo){
+  void _routeTo({required RoutingOptions routeTo, String? workScreenClassName}) {
     RoutingOptions? newRoute;
     MaterialPage? newPage;
-    if(routeTo == RoutingOptions.login){
+    if (routeTo == RoutingOptions.login) {
       newRoute = RoutingOptions.login;
       newPage = MaterialPage(child: Login());
-    } else if(routeTo == RoutingOptions.menu) {
+    } else if (routeTo == RoutingOptions.menu) {
       newRoute = RoutingOptions.menu;
       newPage = const MaterialPage(child: Menu());
+    } else if (routeTo == RoutingOptions.workScreen && workScreenClassName != null) {
+      UiComponentModel? screenModel = componentStoreService.getScreenByScreenClassName(workScreenClassName);
+      if(screenModel != null){
+        Widget screenWidget = UIComponentFactory.createWidgetFromModel(screenModel);
+        newRoute = RoutingOptions.workScreen;
+        newPage = MaterialPage(child: screenWidget);
+      }
+      
+      
+       
+
     }
     if(newRoute != null && newPage != null){
       activeRoute = newRoute;
       activePage = newPage;
     } else {
+      //ToDo Add more info
       throw Exception("New Route can not be found!");
     }
 
