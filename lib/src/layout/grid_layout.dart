@@ -2,7 +2,7 @@ import 'package:flutter_jvx/src/layout/i_layout.dart';
 import 'package:flutter_jvx/src/models/layout/layout_constraints.dart';
 import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
 
-class FlowLayout extends ILayout {
+class GridLayout extends ILayout {
   @override
   List<LayoutConstraints> calculateLayout(LayoutParent parent) {
     throw UnimplementedError();

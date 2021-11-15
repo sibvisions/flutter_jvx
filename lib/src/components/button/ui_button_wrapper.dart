@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_jvx/src/components/button/ui_button.dart';
 import 'package:flutter_jvx/src/models/api/component/ui_component_model.dart';
 
 class UIButtonWrapper extends StatefulWidget {
@@ -6,17 +7,13 @@ class UIButtonWrapper extends StatefulWidget {
 
   final UiComponentModel model;
 
-
   @override
   _UIButtonWrapperState createState() => _UIButtonWrapperState();
 }
 
 class _UIButtonWrapperState extends State<UIButtonWrapper> {
-
-
-
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const UiButton();
   }
 }

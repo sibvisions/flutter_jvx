@@ -13,42 +13,45 @@ import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
 import 'package:flutter_jvx/src/services/events/i_render_service.dart';
 
 class RenderEventService extends IRenderService {
-
   final List<LayoutParent> parents = [];
-
 
   @override
   void receivedRegisterParentEvent(RegisterParentEvent event) {
     //check if parent already exits
-    if(parents.every((element) => element.id == event.id)){
-
+    if (parents.every((element) => element.id == event.id)) {
     } else {
       //Builds Children with only Id, so the preferred Size can be added later.
-      List<LayoutChild> children = event.childrenIds.map((e) => LayoutChild(id: e)).toList();
-      parents.add(LayoutParent(id: event.id, layout: event.layout, children: children));
+      List<LayoutChild> children = event.childrenIds
+          .map((e) => LayoutChild(id: e, parentId: event.id))
+          .toList();
+      parents.add(
+          LayoutParent(id: event.id, layout: event.layout, children: children));
     }
   }
 
   @override
   void receivedRegisterPreferredSizeEvent(RegisterPreferredSizeEvent event) {
     //Find correct Child
-    LayoutParent parent = parents.firstWhere((element) => element.id == event.parent);
-    LayoutChild child = parent.children.firstWhere((element) => element.id == event.id);
+    LayoutParent parent =
+        parents.firstWhere((element) => element.id == event.parent);
+    LayoutChild child =
+        parent.children.firstWhere((element) => element.id == event.id);
 
     //Set PreferredSize and constraints
     child.preferredSize = event.size;
     child.constraints = event.constraints;
 
     //DeepCopy to make sure data can't be changed by other events while checks and calculation are running
-    LayoutParent parentSnapShot = LayoutParent(children: [...parent.children], id: parent.id, layout: parent.layout);
+    LayoutParent parentSnapShot = LayoutParent(
+        children: [...parent.children], id: parent.id, layout: parent.layout);
 
-    bool legalLayoutState = parentSnapShot.children.every((element) => element.preferredSize != null);
+    bool legalLayoutState = parentSnapShot.children
+        .every((element) => element.preferredSize != null);
 
-    if(legalLayoutState){
+    if (legalLayoutState) {
       _performCalculation(parentSnapShot);
     }
   }
-
 
   //TODO IF A PARENT SETS ITS CHILD SIZE AND HAS TO RE-LAYOUT ITSELF ACCORDINGLY THIS NEEDS TO BE IMPLEMENTED.!
 
@@ -56,18 +59,15 @@ class RenderEventService extends IRenderService {
     Future? layoutData;
 
     //Use compute(new Isolate) to not lock app while layout is calculating
-    if(parent.layout == "BorderLayout") {
-      layoutData = compute(BorderLayout.calculateLayout, parent.children);
-    } else if(parent.layout =="FormLayout") {
-      layoutData = compute(FormLayout.calculateLayout, parent.children);
+    if (parent.layout == "BorderLayout") {
+      layoutData = compute(BorderLayout.calculateLayout, parent);
+    } else if (parent.layout == "FormLayout") {
+      layoutData = compute(FormLayout.calculateLayout, parent);
     }
 
-
     //register callback on compute completion
-    if(layoutData != null) {
-      layoutData.then((value) => {
-        log(value.toString())
-      });
+    if (layoutData != null) {
+      layoutData.then((value) => {log(value.toString())});
     }
   }
 
@@ -76,15 +76,5 @@ class RenderEventService extends IRenderService {
     parents.removeWhere((element) => element.id == event.id);
   }
 
-
-  _sendLayoutCommand(String id, LayoutData layoutData) {
-
-  }
+  _sendLayoutCommand(String id, LayoutConstraints layoutData) {}
 }
-
-
-
-
-
-
-

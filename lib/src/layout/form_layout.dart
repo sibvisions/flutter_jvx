@@ -1,13 +1,10 @@
-import 'dart:ui';
+import 'package:flutter_jvx/src/layout/i_layout.dart';
+import 'package:flutter_jvx/src/models/layout/layout_constraints.dart';
+import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
 
-import 'package:flutter_jvx/src/models/layout/layout_child.dart';
-import 'package:flutter_jvx/src/models/layout/layout_data.dart';
-
-abstract class FormLayout {
-
-  static Map<String, LayoutData> calculateLayout(List<LayoutChild> children) {
-
-
-    return {};
+class FormLayout extends ILayout {
+  @override
+  List<LayoutConstraints> calculateLayout(LayoutParent parent) {
+    throw UnimplementedError();
   }
 }
