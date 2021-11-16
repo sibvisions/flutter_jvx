@@ -1,36 +1,30 @@
-import 'dart:developer';
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
+import 'package:flutter_jvx/src/models/api/action/component_action.dart';
+import 'package:flutter_jvx/src/models/api/action/processor_action.dart';
 import 'package:flutter_jvx/src/models/api/component/button/ui_button_model.dart';
 import 'package:flutter_jvx/src/models/api/component/panel/ui_panel_model.dart';
 import 'package:flutter_jvx/src/models/api/component/ui_component_model.dart';
 import 'package:flutter_jvx/src/models/api/i_processor.dart';
 import 'package:flutter_jvx/src/models/api/responses/response_screen_generic.dart';
-import 'package:flutter_jvx/src/util/mixin/service/component_store_sevice_mixin.dart';
 
-class ScreenGenericProcessor with ComponentStoreServiceMixin implements IProcessor {
+class ScreenGenericProcessor implements IProcessor {
 
   @override
-  void processResponse(json) {
-    //Parse to Response Object
+  List<ProcessorAction> processResponse(json) {
+    List<ProcessorAction>  actions = [];
     ResponseScreenGeneric screenGeneric = ResponseScreenGeneric.fromJson(json);
 
-    //Create ComponentModels out of changedComponents in separate isolate to not freeze ui.
-    Future<List<UiComponentModel>> ft =  compute(_createComponentModels, screenGeneric.changedComponents);
 
-    //Either save or update Component in ComponentStore once all components are parsed
-    ft.then((value) => {
-      for (UiComponentModel model in value) {
-        if (!componentStoreService.saveComponent(model)) {
-          componentStoreService.updateComponent(model)
-        }
-      },
-    });
+    List<UiComponentModel> componentModels = _createComponentModels(screenGeneric.changedComponents);
+
+    for(UiComponentModel componentModel in componentModels){
+      ComponentAction componentAction = ComponentAction(componentModel: componentModel);
+      actions.add(componentAction);
+    }
+    return actions;
   }
 
 
-  static List<UiComponentModel> _createComponentModels(List<dynamic> changedComponents) {
+  List<UiComponentModel> _createComponentModels(List<dynamic> changedComponents) {
     List<UiComponentModel> models = [];
     for (dynamic changedComponent in changedComponents) {
       UiComponentModel model = UiComponentModel.fromJson(changedComponent);

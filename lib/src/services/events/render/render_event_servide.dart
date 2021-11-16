@@ -1,14 +1,10 @@
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter_jvx/src/layout/border_layout.dart';
-import 'package:flutter_jvx/src/layout/form_layout.dart';
 import 'package:flutter_jvx/src/models/events/render/register_parent_event.dart';
 import 'package:flutter_jvx/src/models/events/render/register_preferred_size_event.dart';
 import 'package:flutter_jvx/src/models/events/render/unregister_parent_event.dart';
 import 'package:flutter_jvx/src/models/layout/layout_child.dart';
-import 'package:flutter_jvx/src/models/layout/layout_data.dart';
 import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
 import 'package:flutter_jvx/src/services/events/i_render_service.dart';
 
@@ -60,9 +56,9 @@ class RenderEventService extends IRenderService {
 
     //Use compute(new Isolate) to not lock app while layout is calculating
     if (parent.layout == "BorderLayout") {
-      layoutData = compute(BorderLayout.calculateLayout, parent);
+      // layoutData = compute(BorderLayout, parent);
     } else if (parent.layout == "FormLayout") {
-      layoutData = compute(FormLayout.calculateLayout, parent);
+      // layoutData = compute(FormLayout.calculateLayout, parent);
     }
 
     //register callback on compute completion
@@ -76,5 +72,5 @@ class RenderEventService extends IRenderService {
     parents.removeWhere((element) => element.id == event.id);
   }
 
-  _sendLayoutCommand(String id, LayoutConstraints layoutData) {}
+
 }

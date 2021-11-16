@@ -6,9 +6,9 @@ import 'package:flutter_jvx/src/models/events/ui/login_event.dart';
 import 'package:flutter_jvx/src/util/mixin/events/ui/on_login_event.dart';
 import 'package:flutter_jvx/src/util/mixin/events/ui/on_menu_button_pressed_event.dart';
 import 'package:flutter_jvx/src/util/mixin/events/ui/on_startup_event.dart';
-import 'package:flutter_jvx/src/util/mixin/service/api_service_mixin.dart';
+import 'package:flutter_jvx/src/util/mixin/service/api_mixin.dart';
 
-class UiEventService with OnStartupEvent, OnLoginEvent, OnMenuButtonPressedEvent, ApiServiceMixin {
+class UiEventService with OnStartupEvent, OnLoginEvent, OnMenuButtonPressedEvent, ApiMixin {
 
 
   UiEventService() {
@@ -18,18 +18,15 @@ class UiEventService with OnStartupEvent, OnLoginEvent, OnMenuButtonPressedEvent
   }
 
   _receivedStartupEvent(StartupEvent event) {
-    var a = apiRepository.startUp();
-    apiController.determineResponse(a);
+    apiService.startUp();
   }
 
   _receivedLoginEvent(LoginEvent event) {
-    var a = apiRepository.login(event.username, event.password);
-    apiController.determineResponse(a);
+
   }
 
   _receivedMenuButtonPressed(MenuButtonPressedEvent event) {
-    var a = apiRepository.openScreen(event.componentId);
-    apiController.determineResponse(a);
+
   }
 
 }

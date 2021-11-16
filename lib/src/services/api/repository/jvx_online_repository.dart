@@ -4,9 +4,10 @@ import 'package:flutter_jvx/src/models/api/requests/login_requests.dart';
 import 'package:flutter_jvx/src/models/api/requests/open_screen_request.dart';
 import 'package:flutter_jvx/src/models/api/requests/startup_request.dart';
 import 'package:flutter_jvx/src/models/config/i_config_api.dart';
-import 'package:flutter_jvx/src/services/api/i_repository.dart';
 import 'package:flutter_jvx/src/util/mixin/service/config_app_service_mixin.dart';
 import 'package:http/http.dart';
+
+import '../i_repository.dart';
 
 class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
 
@@ -14,7 +15,13 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
   final Map<String, String> _headers = {};
   final IConfigApi apiConfig;
 
-  JVxOnlineRepository({required this.apiConfig});
+  @override
+  String appName = "demo";
+
+
+  JVxOnlineRepository({
+    required this.apiConfig
+  });
 
 
 
@@ -76,8 +83,5 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
     return _sendPostRequest(apiConfig.getOpenScreen(), jsonEncode(req));
   }
 
-}
 
-class RemoteEndpoints {
-  static const startup = "startup";
 }

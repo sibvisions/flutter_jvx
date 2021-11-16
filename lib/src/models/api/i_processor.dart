@@ -1,3 +1,5 @@
+import 'package:flutter_jvx/src/models/api/action/processor_action.dart';
+
 abstract class IProcessor {
-  void processResponse(dynamic json);
+  List<ProcessorAction> processResponse(dynamic json);
 }

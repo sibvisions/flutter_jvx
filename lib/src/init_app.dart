@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter_jvx/src/api_isolate/request/app_name_change_message.dart';
 import 'package:flutter_jvx/src/models/config/api/config_api_static.dart';
 import 'package:flutter_jvx/src/models/config/endpoint/config_api_endpoints_v1_static.dart';
 import 'package:flutter_jvx/src/models/config/url/config_api_url_static.dart';
@@ -19,17 +20,16 @@ import 'package:flutter_jvx/src/services/isolate/api_isolate_service.dart';
 import 'package:flutter_jvx/src/services/service.dart';
 
 import 'api_isolate/init_api_isolate.dart';
-import 'api_isolate/messages_to_isolate/controller_change_message.dart';
-import 'api_isolate/messages_to_isolate/repository_change_message.dart';
+import 'api_isolate/request/controller_change_message.dart';
+import 'api_isolate/request/repository_change_message.dart';
 
-void initApp() {
+void initApp() async {
 
   //Order of Registration is important as they may depend on another.
 
   EventBus eventBus = EventBus();
   services.registerSingleton(eventBus, signalsReady:  true);
 
-  services.registerSingletonAsync(initApi);
 
   IMenuService menuService = MenuEventService();
   services.registerSingleton(menuService, signalsReady: true);
@@ -43,13 +43,16 @@ void initApp() {
   services.registerSingleton(componentStoreService, signalsReady: true);
 
 
+  ApiIsolateService isolateService = await initApi();
+  services.registerSingleton(isolateService, signalsReady: true);
+
+
   UiEventService uiEventService = UiEventService();
   services.registerSingleton(uiEventService, signalsReady: true);
 
 
   IRenderService renderService = RenderEventService();
   services.registerSingleton(renderService, signalsReady: true);
-
 }
 
 ///
@@ -74,16 +77,19 @@ Future<ApiIsolateService> initApi() async {
   SendPort isolateSendPort = await receivePort.first;
 
 
-  //Set the initial Repository and Controller
+  //Setup
   RepositoryChangeMessage repositoryChangeMessage = RepositoryChangeMessage(
       newRepository: JVxOnlineRepository(apiConfig: apiConfig), sendPort: isolateSendPort);
 
   ControllerChangeMessage controllerChangeMessage = ControllerChangeMessage(
       newController: JVxController(), sendPort: isolateSendPort);
 
+  AppNameChangeMessage appNameChangeMessage = AppNameChangeMessage(
+      sendPort: isolateSendPort, appName: "demo");
 
   isolateSendPort.send(repositoryChangeMessage);
   isolateSendPort.send(controllerChangeMessage);
+  isolateSendPort.send(appNameChangeMessage);
 
 
   //Build Service to send Messages to Isolate easier
