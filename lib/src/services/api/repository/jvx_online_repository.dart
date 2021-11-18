@@ -9,11 +9,13 @@ import 'package:http/http.dart';
 
 import '../i_repository.dart';
 
-class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
+class JVxOnlineRepository implements IRepository {
 
   final Client client = Client();
   final Map<String, String> _headers = {};
   final IConfigApi apiConfig;
+  String? _clientId;
+
 
   @override
   String appName = "demo";
@@ -42,20 +44,25 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
     }
   }
 
-  String _getClientId() {
-    String? clientId = configAppService.clientId;
-    if(clientId != null){
-      return clientId;
+  @override
+  String? getClientId() {
+    return _clientId;
+  }
+
+  String getClientIdOrException() {
+    String? localClientId = _clientId;
+    if(localClientId != null){
+      return localClientId;
     } else {
-      throw Exception("NO CLIENT_ID FOUND");
+      throw Exception("NO CLIENT ID FOUND");
     }
+
   }
 
   // ------------ REQUESTS ---------------
 
   @override
   Future<Response> startUp() {
-    String appName =  configAppService.appName;
     StartUpRequest req = StartUpRequest(applicationName: appName, deviceMode: "desktop");
 
     return _sendPostRequest(apiConfig.getStartup(), jsonEncode(req));
@@ -63,7 +70,7 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
 
   @override
   Future<Response> login(String username, String password) {
-    String clientId = _getClientId();
+    String clientId = getClientIdOrException();
     LoginRequest req = LoginRequest(
         username: username,
         password: password,
@@ -75,12 +82,17 @@ class JVxOnlineRepository with ConfigAppServiceMixin implements IRepository {
 
   @override
   Future<Response> openScreen(String componentId) {
-    String clientId = _getClientId();
+    String clientId = getClientIdOrException();
     OpenScreenRequest req = OpenScreenRequest(
         clientId: clientId,
         componentId: componentId
     );
     return _sendPostRequest(apiConfig.getOpenScreen(), jsonEncode(req));
+  }
+
+  @override
+  void setClientId(String clientId) {
+    _clientId = clientId;
   }
 
 

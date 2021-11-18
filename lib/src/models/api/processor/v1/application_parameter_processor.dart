@@ -12,7 +12,6 @@ class ApplicationParameterProcessor implements IProcessor {
     ResponseApplicationParameters applicationParameters = ResponseApplicationParameters.fromJson(json);
 
 
-
     //Authenticated is set
     String? isAuthenticated = applicationParameters.authenticated;
     if(isAuthenticated != null) {

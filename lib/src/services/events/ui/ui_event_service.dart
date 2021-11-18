@@ -26,7 +26,7 @@ class UiEventService with OnStartupEvent, OnLoginEvent, OnMenuButtonPressedEvent
   }
 
   _receivedMenuButtonPressed(MenuButtonPressedEvent event) {
-
+    apiService.openScreen(event.componentId);
   }
 
 }

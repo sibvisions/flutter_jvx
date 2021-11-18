@@ -83,10 +83,6 @@ class JVxRouterDelegate extends  RouterDelegate<JVxRoutePath>
         newRoute = RoutingOptions.workScreen;
         newPage = MaterialPage(child: screenWidget);
       }
-      
-      
-       
-
     }
     if(newRoute != null && newPage != null){
       activeRoute = newRoute;

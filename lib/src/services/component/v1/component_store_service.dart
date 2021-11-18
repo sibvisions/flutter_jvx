@@ -43,8 +43,6 @@ class ComponentStoreService implements IComponentStoreService {
   @override
   UiComponentModel? getScreenByScreenClassName(String screenClassName) {
 
-    print(screenClassName);
-    print(components.toString());
     //List.firstWhere throws Exception if none are found, this does not :|
     int indexOfScreen = components.indexWhere((element) =>
         _compareScreenClassName(element, screenClassName));
