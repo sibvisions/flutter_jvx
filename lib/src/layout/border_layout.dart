@@ -6,8 +6,6 @@ import 'package:flutter_jvx/src/util/i_clonable.dart';
 
 import '../util/extensions/list_extensions.dart';
 
-enum BorderLayoutData { horizontalGap, verticalGap }
-
 /// The BorderLayout allows the positioning of container in 5 different Positions.
 /// North, East, West, South and Center.
 /// North and South are above/underneath West, Center and East
