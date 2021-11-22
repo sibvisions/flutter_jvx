@@ -1,76 +1,84 @@
+import 'dart:collection';
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_jvx/src/models/events/render/register_parent_event.dart';
 import 'package:flutter_jvx/src/models/events/render/register_preferred_size_event.dart';
 import 'package:flutter_jvx/src/models/events/render/unregister_parent_event.dart';
-import 'package:flutter_jvx/src/models/layout/layout_child.dart';
-import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
-import 'package:flutter_jvx/src/services/events/i_render_service.dart';
+import 'package:flutter_jvx/src/models/layout/layout_data.dart';
+import 'package:flutter_jvx/src/models/layout/layout_position.dart';
+import 'package:flutter_jvx/src/util/extensions/list_extensions.dart';
 
-class RenderEventService extends IRenderService {
-  final List<LayoutParent> parents = [];
+/// [RenderEventService] handles the layouts of the containers 
+/// and evaluates if certain states of the component widgets have to be changed.
+// Author: Toni Heiss
+class RenderEventService {
+  /// The map of all registered parents (container).
+  final HashMap<String, LayoutData> parents = HashMap<String, LayoutData>();
 
-  @override
-  void receivedRegisterParentEvent(RegisterParentEvent event) {
-    //check if parent already exits
-    if (parents.every((element) => element.id == event.id)) {
-    } else {
-      //Builds Children with only Id, so the preferred Size can be added later.
-      List<LayoutChild> children = event.childrenIds
-          .map((e) => LayoutChild(id: e, parentId: event.id))
-          .toList();
-      parents.add(
-          LayoutParent(id: event.id, layout: event.layout, children: children));
+  /// Registers a parent for receiving child constraint changes.
+  /// 
+  /// Returns `true` if registered as a new parent and `false` if it was replaced.
+  bool registerAsParent(RegisterParentEvent pEvent) {
+    List<LayoutData>? children;
+    
+    LayoutData? ldRegisteredParent = parents[pEvent.id];
+    if (ldRegisteredParent != null) {
+      children = ldRegisteredParent.children?.where((element) => pEvent.childrenIds.contains(element.id)).toList();
+    }
+    else{
+       children = pEvent.childrenIds.map((childId) => LayoutData(id: childId, parentId: pEvent.id)).toList();
+    }
+
+    //Builds Children with only Id, so the preferred Size can be added later.
+    parents[pEvent.id] = LayoutData(id: pEvent.id, layout: pEvent.layout, children: children);
+
+    return ldRegisteredParent != null;
+  }
+
+  /// Removes a parent.
+  /// 
+  /// Returns `true` if removed and `false` if nothing was removed.
+  bool removeAsParent(String pParentId)
+  {
+    return parents.remove(pParentId) != null;
+  }
+
+  /// Registers a preferred size for a child element.
+  void registerPreferredSizeEvent(RegisterPreferredSizeEvent pEvent) {
+    LayoutData? parent = parents[pEvent.parent];
+    if(parent != null)
+    {
+      LayoutData? child = parent.children!.firstWhereOrNull((element) => element.id == pEvent.id);
+      if (child != null)
+      {
+        // Set PreferredSize and constraints
+        child.preferredSize = pEvent.size;
+        child.constraints = pEvent.constraints;
+
+        // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
+        LayoutData parentSnapShot = parent.clone();
+
+        bool legalLayoutState = parentSnapShot.children!.every((element) => element.preferredSize != null);
+
+        if (legalLayoutState) {
+          _performCalculation(parentSnapShot);
+        }
+      }
     }
   }
 
-  @override
-  void receivedRegisterPreferredSizeEvent(RegisterPreferredSizeEvent event) {
-    //Find correct Child
-    LayoutParent parent =
-        parents.firstWhere((element) => element.id == event.parent);
-    LayoutChild child =
-        parent.children.firstWhere((element) => element.id == event.id);
+  _performCalculation(LayoutData pParent) {
+    // Use compute(new Isolate) to not lock app while layout is calculating
+    Future? layoutData = compute(_calculateLayout, pParent);
 
-    //Set PreferredSize and constraints
-    child.preferredSize = event.size;
-    child.constraints = event.constraints;
-
-    //DeepCopy to make sure data can't be changed by other events while checks and calculation are running
-    LayoutParent parentSnapShot = LayoutParent(
-        children: [...parent.children], id: parent.id, layout: parent.layout);
-
-    bool legalLayoutState = parentSnapShot.children
-        .every((element) => element.preferredSize != null);
-
-    if (legalLayoutState) {
-      _performCalculation(parentSnapShot);
-    }
+    // register callback on compute completion
+    layoutData.then((value) => {log(value.toString())});
   }
+}
 
-  //TODO IF A PARENT SETS ITS CHILD SIZE AND HAS TO RE-LAYOUT ITSELF ACCORDINGLY THIS NEEDS TO BE IMPLEMENTED.!
-
-  _performCalculation(LayoutParent parent) {
-    Future? layoutData;
-
-    //Use compute(new Isolate) to not lock app while layout is calculating
-    if (parent.layout == "BorderLayout") {
-      // layoutData = compute(BorderLayout, parent);
-    } else if (parent.layout == "FormLayout") {
-      // layoutData = compute(FormLayout.calculateLayout, parent);
-    }
-
-    //register callback on compute completion
-    if (layoutData != null) {
-      layoutData.then((value) => {log(value.toString())});
-    }
-  }
-
-  @override
-  void receivedUnregisterParentEvent(UnregisterParentEvent event) {
-    parents.removeWhere((element) => element.id == event.id);
-  }
-
-
+/// Compute method to calculate the layout async.
+List<LayoutPosition> _calculateLayout(LayoutData pParent) {
+  return pParent.layout!.calculateLayout(pParent);
 }

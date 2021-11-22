@@ -1,17 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_jvx/src/layout/i_layout.dart';
-import 'package:flutter_jvx/src/models/layout/layout_child.dart';
-import 'package:flutter_jvx/src/models/layout/layout_constraints.dart';
-import 'package:flutter_jvx/src/models/layout/layout_parent.dart';
+import 'package:flutter_jvx/src/models/layout/layout_data.dart';
+import 'package:flutter_jvx/src/models/layout/layout_position.dart';
+import 'package:flutter_jvx/src/util/i_clonable.dart';
+
 import '../util/extensions/list_extensions.dart';
 
-/// Layout contraints to define widget position:
-///
-/// \_\_\_\_\_\_\_ NORTH \_\_\_\_\_\_\_\_
-///
-/// WEST \| CENTER \| EAST
-///
-/// ‾‾‾‾‾‾‾ SOUTH ‾‾‾‾‾‾‾‾
-enum BorderLayoutConstraint { north, east, south, west, center }
+enum BorderLayoutData { horizontalGap, verticalGap }
 
 /// The BorderLayout allows the positioning of container in 5 different Positions.
 /// North, East, West, South and Center.
@@ -24,58 +19,110 @@ enum BorderLayoutConstraint { north, east, south, west, center }
 ///
 /// ‾‾‾‾‾‾‾ SOUTH ‾‾‾‾‾‾‾‾
 ///
-class BorderLayout extends ILayout {
-  // ignore: constant_identifier_names
-  static const BorderLayoutConstraint NORTH = BorderLayoutConstraint.north;
-  // ignore: constant_identifier_names
-  static const BorderLayoutConstraint EAST = BorderLayoutConstraint.east;
-  // ignore: constant_identifier_names
-  static const BorderLayoutConstraint SOUTH = BorderLayoutConstraint.south;
-  // ignore: constant_identifier_names
-  static const BorderLayoutConstraint WEST = BorderLayoutConstraint.west;
-  // ignore: constant_identifier_names
-  static const BorderLayoutConstraint CENTER = BorderLayoutConstraint.center;
+// Author: Martin Handsteiner, ported by Toni Heiss.
+class BorderLayout implements ILayout, ICloneable {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  @override
-  List<LayoutConstraints> calculateLayout(LayoutParent parent) {
-    LayoutChild? north = parent.children.firstWhereOrNull(
-        (element) => NORTH == getLayout(element.constraints ?? "CENTER"));
+  /// The north layout constraint (top of container).
+  static const String NORTH = "NORTH";
 
-    LayoutChild? south = parent.children.firstWhereOrNull(
-        (element) => SOUTH == getLayout(element.constraints ?? "CENTER"));
+  /// The east layout constraint (right side of container). */
+  static const String EAST = "EAST";
 
-    LayoutChild? east = parent.children.firstWhereOrNull(
-        (element) => EAST == getLayout(element.constraints ?? "CENTER"));
+  /// The south layout constraint (bottom of container). */
+  static const String SOUTH = "SOUTH";
 
-    LayoutChild? west = parent.children.firstWhereOrNull(
-        (element) => WEST == getLayout(element.constraints ?? "CENTER"));
+  /// The west layout constraint (left side of container). */
+  static const String WEST = "WEST";
 
-    LayoutChild? center = parent.children.firstWhereOrNull(
-        (element) => NORTH == getLayout(element.constraints ?? "NORTH"));
+  /// The center layout constraint (middle of container).
+  static const String CENTER = "CENTER";
 
-    throw UnsupportedError("Not implemented yet");
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class Members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// the horizontal gap between components.
+  int iHorizontalGap = 0;
+
+  /// the vertical gap between components.
+  int iVerticalGap = 0;
+
+  /// the layout margins.
+  EdgeInsets eiMargins = const EdgeInsets.all(0);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Initializes a [BorderLayout].
+  BorderLayout(String pLayout) {
+    updateValuesFromString(pLayout);
   }
 
-  static BorderLayoutConstraint? getLayout(String constraint) {
-    switch (constraint) {
-      case "BorderLayoutConstraint.north":
-      case "NORTH":
-        return NORTH;
-      case "BorderLayoutConstraint.east":
-      case "EAST":
-        return EAST;
-      case "BorderLayoutConstraint.south":
-      case "SOUTH":
-        return SOUTH;
-      case "BorderLayoutConstraint.west":
-      case "WEST":
-        return WEST;
-      case "BorderLayoutConstraint.center":
-      case "CENTER":
-        return CENTER;
-      default:
-        throw UnsupportedError(
-            "The constraint \"$constraint\" was not vaild as a BorderLayoutConstraint");
-    }
+  BorderLayout.from(BorderLayout pLayout) {
+    eiMargins = pLayout.eiMargins.copyWith();
+    iVerticalGap = pLayout.iVerticalGap;
+    iHorizontalGap = pLayout.iHorizontalGap;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  List<LayoutPosition> calculateLayout(LayoutData pParent) {
+    List<LayoutPosition> constraints = List.empty(growable: true);
+
+    LayoutData? childNorth = pParent.children!.firstWhereOrNull((element) => NORTH == element.constraints);
+    LayoutData? childSouth = pParent.children!.firstWhereOrNull((element) => SOUTH == element.constraints);
+    LayoutData? childEast = pParent.children!.firstWhereOrNull((element) => EAST == element.constraints);
+    LayoutData? childWest = pParent.children!.firstWhereOrNull((element) => WEST == element.constraints);
+    LayoutData? childCenter = pParent.children!.firstWhereOrNull((element) => NORTH == element.constraints);
+
+    //parent.layoutData
+    return List.empty();
+  }
+
+  /// Makes a deep copy of this [BorderLayout].
+  @override
+  BorderLayout clone() {
+    return BorderLayout.from(this);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Updates values of this [BorderLayout] to match data in this string.
+  ///
+  /// String has to be: BorderLayout,[1],[2],[3],[4],[5],[6]
+  ///
+  /// Where:
+  ///
+  /// [1] = top margin in px (double)
+  ///
+  /// [2] = left margin in px (double)
+  ///
+  /// [3] = bottom margin in px (double)
+  ///
+  /// [4] = right margin in px (double)
+  ///
+  /// [5] = horizontal gap in px (int)
+  ///
+  /// [6] = vertical gap in px (int)
+  void updateValuesFromString(String layout) {
+    List<String> parameter = layout.split(",");
+
+    double top = double.parse(parameter[1]);
+    double left = double.parse(parameter[2]);
+    double bottom = double.parse(parameter[3]);
+    double right = double.parse(parameter[4]);
+
+    eiMargins = EdgeInsets.fromLTRB(left, top, right, bottom);
+    iHorizontalGap = int.parse(parameter[5]);
+    iVerticalGap = int.parse(parameter[6]);
   }
 }
