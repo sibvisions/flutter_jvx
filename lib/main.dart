@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_jvx/src/init_app.dart';
-import 'package:flutter_jvx/src/routing/jvx_information_parser.dart';
-import 'package:flutter_jvx/src/routing/jvx_router_delegate.dart';
+import 'package:flutter_client/src/routing/app_delegate.dart';
+import 'package:flutter_client/src/routing/app_information_parser.dart';
+
+import 'init_app.dart';
 
 void main() {
   initApp();
@@ -11,8 +12,8 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final JVxRouteInformationParser _parser = JVxRouteInformationParser();
-  final JVxRouterDelegate _delegate = JVxRouterDelegate();
+  final AppInformationParser _parser = AppInformationParser();
+  final AppDelegate _delegate = AppDelegate();
 
   @override
   Widget build(BuildContext context) {
