@@ -5,16 +5,28 @@ import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:flutter_client/src/service/storage/i_storage_service.dart';
+import 'package:flutter_client/util/extensions/list_extensions.dart';
 
+/// Contains all component & menu Data
+// Author: Michael Schober
 class StorageService implements IStorageService {
 
-  MenuModel _menuModel = MenuModel();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class Members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// MenuModel of current app.
+  MenuModel? _menuModel;
+
+  /// Map of all active components received from server, key set to id of [FlComponentModel].
   HashMap<String, FlComponentModel> componentMap = HashMap();
 
-
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  MenuModel getMenu() {
+  MenuModel? getMenu() {
     return _menuModel;
   }
 
@@ -35,24 +47,23 @@ class StorageService implements IStorageService {
   }
 
   @override
-  List<FlComponentModel> getScreenByScreenClassName(String screenClassName) {
+  List<FlComponentModel>? getScreenByScreenClassName(String screenClassName) {
+    // Get Screen (Top-most Panel)
+    FlComponentModel? screenModel = componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
 
-    //First Model is Screen Panel
-    List<FlComponentModel> screen = [];
+    if(screenModel != null){
+      List<FlComponentModel> screen = [];
 
-
-    // Only Panels can be screens, no need to check any other
-    try{
-      // Get Screen (Top-most Panel)
-      FlComponentModel screenModel = componentMap.values.firstWhere((componentModel) => _isScreen(screenClassName, componentModel) );
-      // Get All Components in Screen
       screen.add(screenModel);
       screen.addAll(_getAllComponentsBelow(screenModel.id));
-    } catch (e) {
-      throw Exception("No Screen corresponding to ScreenClassName: $screenClassName was found");
+      return screen;
     }
-    return screen;
+    return null;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns true if [componentModel] does have the [ApiObjectProperty.screenClassName] property
   /// and it matches the [screenClassName]
@@ -71,7 +82,7 @@ class StorageService implements IStorageService {
     return false;
   }
 
-  /// Gets all components below it
+  /// Returns List of all [FlComponentModel] below it, recursively.
   List<FlComponentModel> _getAllComponentsBelow(String id) {
     List<FlComponentModel> children = [];
 

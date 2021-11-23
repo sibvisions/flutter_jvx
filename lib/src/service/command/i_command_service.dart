@@ -1,10 +1,14 @@
 import 'package:flutter_client/src/model/command/base_command.dart';
 
-///
-/// All Services send Commands to to this Service which will call other Services in it's stead.
-///
+/// Defines the base construct of a [ICommandService]
+/// Command service is used to facilitate communication between different services.
+/// The Command Service is the only service to explicitly call other services.
+// Author: Michael Schober
 abstract class ICommandService {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// must check for all possible commands and process them accordingly.
+  /// Process the incoming [BaseCommand].
   sendCommand(BaseCommand command);
 }

@@ -1,21 +1,41 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter_client/src/mixin/command_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/login_command.dart';
 import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:flutter_client/src/model/routing/route_to_menu.dart';
 import 'package:flutter_client/src/model/routing/route_to_work_screen.dart';
+import 'package:flutter_client/src/routing/app_delegate.dart';
 import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 
+
+/// Manages all interactions with the UI
+// Author: Michael Schober
 class UiService with CommandServiceMixin implements IUiService {
 
-  StreamController routeStream = StreamController.broadcast();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class Members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Used to send Routing events to [AppDelegate].
+  final StreamController _routeStream = StreamController.broadcast();
+
+  /// Last open menuModel
   MenuModel? menuModel;
+
+  /// Last open Screen
   List<FlComponentModel> currentScreen = [];
+
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
   // Api Commands
@@ -43,25 +63,25 @@ class UiService with CommandServiceMixin implements IUiService {
   // Routing
   @override
   Stream getRouteChangeStream() {
-    return routeStream.stream;
+    return _routeStream.stream;
   }
 
   @override
   void routeToMenu(MenuModel menuModel) {
     this.menuModel = menuModel;
     RouteToMenu routeToMenu = RouteToMenu(menuModel: menuModel);
-    routeStream.sink.add(routeToMenu);
+    _routeStream.sink.add(routeToMenu);
   }
 
   @override
   void routeToWorkScreen(List<FlComponentModel> screenComponents) {
     RouteToWorkScreen routeToWorkScreen = RouteToWorkScreen(screen: screenComponents.first);
     currentScreen = screenComponents;
-    routeStream.sink.add(routeToWorkScreen);
+    _routeStream.sink.add(routeToWorkScreen);
   }
 
 
-  // Structure
+  // Content
   @override
   List<FlComponentModel> getChildrenModels(String id) {
     var children = currentScreen.where((element) => element.parent == id).toList();
@@ -71,12 +91,21 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   MenuModel getCurrentMenu() {
     MenuModel? tempMenuModel = menuModel;
-    if(tempMenuModel != null) {
+    if (tempMenuModel != null) {
       return tempMenuModel;
     } else {
       throw Exception("Menu was not found");
     }
+  }
 
+  @override
+  void registerPreferredSize(String id, Size size) {
+    PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
+        size: size,
+        componentId: id,
+        reason: "component has been rendered"
+    );
+    commandService.sendCommand(preferredSizeCommand);
   }
 
 

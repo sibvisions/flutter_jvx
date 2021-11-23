@@ -4,10 +4,12 @@ import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
 
+/// Used to process [StartupCommand], will call ApiService
+// Author: Michael Schober
 class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<StartupCommand> {
 
   @override
-  Future<List<BaseCommand>> processCommand(StartupCommand command) {
+  Future<List<BaseCommand>> processCommand(StartupCommand command) async {
     String? appName = configService.getAppName();
     if(appName != null) {
       return apiService.startUp(appName);

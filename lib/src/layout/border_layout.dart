@@ -12,10 +12,10 @@ import 'package:flutter_client/util/i_clonable.dart';
 /// East and West are left/right of center.
 ///
 /// \_\_\_\_\_\_\_ NORTH \_\_\_\_\_\_\_\_
-///
-/// WEST \| CENTER \| EAST
-///
-/// ‾‾‾‾‾‾‾ SOUTH ‾‾‾‾‾‾‾‾
+/// |          |            |           |
+/// |   WEST   |   CENTER   |    EAST   |
+/// |          |            |           |
+/// ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ SOUTH ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 ///
 // Author: Martin Handsteiner, ported by Toni Heiss.
 class BorderLayout implements ILayout, ICloneable {

@@ -11,11 +11,25 @@ import 'package:flutter_client/src/service/command/shared/processor/api/start_up
 ///
 /// Processes all [ApiCommand], delegates all commands to their respective [ICommandProcessor].
 ///
+// Author: Michael Schober
 class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class Members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ///Processes [StartupCommand]
   final StartUpCommandProcessor _startUpProcessorCommand = StartUpCommandProcessor();
+
+  ///Processes [LoginCommand]
   final LoginCommandProcessor _loginCommandProcessor = LoginCommandProcessor();
+
+  ///Processes [OpenScreenCommand]
   final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Future<List<BaseCommand>> processCommand(ApiCommand command) async {
@@ -31,6 +45,4 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return [];
     }
   }
-
-
 }
