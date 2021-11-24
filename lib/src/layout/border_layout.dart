@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'i_layout.dart';
 import '../model/layout/layout_data.dart';
@@ -71,8 +73,8 @@ class BorderLayout implements ILayout, ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<LayoutPosition> calculateLayout(LayoutData pParent) {
-    List<LayoutPosition> constraints = List.empty(growable: true);
+  Map<String, LayoutPosition> calculateLayout(LayoutData pParent) {
+    Map<String, LayoutPosition> constraints = HashMap<String, LayoutPosition>();
 
     LayoutData? childNorth = pParent.children!.firstWhereOrNull((element) => NORTH == element.constraints);
     LayoutData? childSouth = pParent.children!.firstWhereOrNull((element) => SOUTH == element.constraints);
@@ -81,7 +83,7 @@ class BorderLayout implements ILayout, ICloneable {
     LayoutData? childCenter = pParent.children!.firstWhereOrNull((element) => NORTH == element.constraints);
 
     //parent.layoutData
-    return List.empty();
+    return constraints;
   }
 
   /// Makes a deep copy of this [BorderLayout].
