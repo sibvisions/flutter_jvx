@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 import '../../layout/i_layout.dart';
 import '../../../util/i_clonable.dart';
 
@@ -35,6 +37,9 @@ class LayoutData implements ICloneable{
   /// The preferred size of the component.
   Size? preferredSize;
 
+  /// The insets of the component.  
+  EdgeInsets? insets; 
+
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
 
@@ -52,6 +57,7 @@ class LayoutData implements ICloneable{
       this.minSize,
       this.maxSize,
       this.preferredSize,
+      this.insets,
       this.layoutPosition});
 
   /// Clones [LayoutData] as a deep copy.
@@ -64,6 +70,7 @@ class LayoutData implements ICloneable{
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
         preferredSize = pLayoutData.preferredSize != null ? Size.copy(pLayoutData.preferredSize!) : null,
+        insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
         layoutPosition = pLayoutData.layoutPosition != null ? pLayoutData.layoutPosition!.clone() : null;
 
 
@@ -94,5 +101,100 @@ class LayoutData implements ICloneable{
   /// If this component has a position inside their parent.
   bool get hasPosition {
     return layoutPosition != null;
+  }
+
+  /// If this component has a [minSize];
+  bool get hasMinSize
+  {
+    return minSize != null;
+  }
+
+  /// If this component has a [maxSize];
+  bool get hasMaxSize
+  {
+    return maxSize != null;
+  }
+
+  /// If this component has a [preferredSize];
+  bool get hasPreferredSize
+  {
+    return preferredSize != null;
+  }
+
+  /// If this component has [insets];
+  bool get hasInsets
+  {
+    return insets != null;
+  }
+
+  /// Gets the preferred size of a component. The size is between the minimum and maximum size.
+  /// 
+  /// If no preferred size is set, returns the lowest size between the minimum and maximum size.
+  Size get bestSize
+  {
+    double width = 0;
+    double height = 0;
+
+    if (hasPreferredSize)
+    { 
+      width = preferredSize!.width;
+      height = preferredSize!.height;
+    }
+
+    if (hasMinSize)
+    {
+        if (minSize!.width > width)
+        {
+            width = minSize!.width;
+        }
+        
+        if (minSize!.height > height)
+        {
+            height = minSize!.height;
+        }
+    }
+    
+    if (hasMaxSize)
+    {
+        if (maxSize!.width < width)
+        {
+            width = maxSize!.width;
+        }
+        
+        if (maxSize!.height < height)
+        {
+            height = maxSize!.height;
+        }
+    }
+
+    return Size(width, height); 
+  }
+
+  /// Returns the minimum size. If maximum size is smaller than minimum, returns maximum size. If no minimum size is set, returns `0,0`
+  Size get bestMinSize
+  {
+    double width = 0;
+    double height = 0;
+    
+    if (hasMinSize)
+    { 
+      width = minSize!.width;
+      height = minSize!.height;
+    }
+
+    if (hasMaxSize)
+    {
+        if (maxSize!.width < width)
+        {
+            width = maxSize!.width;
+        }
+        
+        if (maxSize!.height < height)
+        {
+            height = maxSize!.height;
+        }
+    }
+
+    return Size(width, height); 
   }
 }

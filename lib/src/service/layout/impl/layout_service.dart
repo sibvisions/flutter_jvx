@@ -30,6 +30,7 @@ class LayoutService implements ILayoutService {
 
     LayoutData? ldRegisteredParent = _parents[pId];
     if (ldRegisteredParent != null) {
+      // TODO: Add non existing children!
       children = ldRegisteredParent.children?.where((element) => pChildrenIds.contains(element.id)).toList();
     }
     else{
@@ -63,7 +64,8 @@ class LayoutService implements ILayoutService {
         // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
         LayoutData parentSnapShot = parent.clone();
 
-        bool legalLayoutState = parentSnapShot.children!.every((element) => element.preferredSize != null);
+        // If the parent insets are not set (null) we can't layout.
+        bool legalLayoutState = parentSnapShot.hasInsets && parentSnapShot.children!.every((element) => element.preferredSize != null);
 
         if (legalLayoutState) {
           _performCalculation(parentSnapShot);
