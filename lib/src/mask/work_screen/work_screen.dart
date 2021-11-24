@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/components/components_factory.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import '../../components/components_factory.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/component/panel/fl_panel_model.dart';
 import 'package:flutter/material.dart';
 
 class WorkScreen extends StatefulWidget {

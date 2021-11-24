@@ -1,10 +1,10 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/storage/save_components_command.dart';
-import 'package:flutter_client/src/model/command/storage/save_menu_command.dart';
-import 'package:flutter_client/src/model/command/storage/storage_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/storage/save_components_commands_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/storage/save_menu_command_processor.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/storage/save_components_command.dart';
+import '../../../../../model/command/storage/save_menu_command.dart';
+import '../../../../../model/command/storage/storage_command.dart';
+import '../../i_command_processor.dart';
+import 'save_components_commands_processor.dart';
+import 'save_menu_command_processor.dart';
 
 class StorageProcessor implements ICommandProcessor<StorageCommand> {
 

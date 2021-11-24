@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/api/api_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
+import '../../../model/command/api/api_command.dart';
+import '../../../model/command/base_command.dart';
 
 /// Defines the base construct of a [ICommandProcessor].
 // Author: Michael Schober

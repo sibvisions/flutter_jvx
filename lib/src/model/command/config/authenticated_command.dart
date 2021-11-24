@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
+import '../base_command.dart';
 
 class AuthenticatedCommand extends BaseCommand {
   bool authenticated;

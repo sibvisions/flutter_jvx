@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/model/api/response/application_parameter_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_command.dart';
-import 'package:flutter_client/src/routing/app_routing_options.dart';
+import '../../../../model/api/response/application_parameter_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/ui/route_command.dart';
+import '../../../../routing/app_routing_options.dart';
 
 import '../i_processor.dart';
 

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/api/requests/login_request.dart';
-import 'package:flutter_client/src/model/api/requests/open_screen_request.dart';
-import 'package:flutter_client/src/model/api/requests/startup_request.dart';
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
+import '../../../../model/api/requests/login_request.dart';
+import '../../../../model/api/requests/open_screen_request.dart';
+import '../../../../model/api/requests/startup_request.dart';
+import '../../../../model/config/api/api_config.dart';
+import '../i_repository.dart';
 import 'package:http/http.dart';
 
 class OnlineApiRepository implements IRepository {

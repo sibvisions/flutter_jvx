@@ -1,10 +1,10 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/components/components_factory.dart';
-import 'package:flutter_client/src/components/panel/fl_panel_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import '../components_factory.dart';
+import 'fl_panel_widget.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/component/panel/fl_panel_model.dart';
 import 'package:flutter/material.dart';
 
 class FlPanelWrapper extends StatefulWidget {

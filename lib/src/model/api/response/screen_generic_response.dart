@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/response/api_response.dart';
+import '../api_object_property.dart';
+import 'api_response.dart';
 
 class ScreenGenericResponse extends ApiResponse {
 

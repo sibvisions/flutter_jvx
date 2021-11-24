@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/mixin/storage_service_mixin.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/storage/save_components_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
+import '../../../../../mixin/storage_service_mixin.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/storage/save_components_command.dart';
+import '../../i_command_processor.dart';
 
 class SaveComponentsCommandProcessor with StorageServiceMixin implements ICommandProcessor<SaveComponentsCommand> {
 

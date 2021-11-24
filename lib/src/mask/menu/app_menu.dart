@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/mask/menu/app_menu_widget.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import 'app_menu_widget.dart';
+import '../../model/menu/menu_model.dart';
+import '../../service/ui/i_ui_service.dart';
 import 'package:flutter/material.dart';
 
 class AppMenu extends StatelessWidget {

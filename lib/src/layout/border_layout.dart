@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/layout/i_layout.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
-import 'package:flutter_client/util/i_clonable.dart';
+import 'i_layout.dart';
+import '../model/layout/layout_data.dart';
+import '../model/layout/layout_position.dart';
+import '../../util/extensions/list_extensions.dart';
+import '../../util/i_clonable.dart';
 
 
 /// The BorderLayout allows the positioning of container in 5 different Positions.

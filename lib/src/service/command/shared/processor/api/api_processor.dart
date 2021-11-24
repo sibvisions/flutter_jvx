@@ -1,12 +1,12 @@
-import 'package:flutter_client/src/model/command/api/api_command.dart';
-import 'package:flutter_client/src/model/command/api/login_command.dart';
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/login_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/open_screen_commmand_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/start_up_command_processor.dart';
+import '../../../../../model/command/api/api_command.dart';
+import '../../../../../model/command/api/login_command.dart';
+import '../../../../../model/command/api/open_screen_command.dart';
+import '../../../../../model/command/api/startup_command.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../i_command_processor.dart';
+import 'login_command_processor.dart';
+import 'open_screen_commmand_processor.dart';
+import 'start_up_command_processor.dart';
 
 ///
 /// Processes all [ApiCommand], delegates all commands to their respective [ICommandProcessor].

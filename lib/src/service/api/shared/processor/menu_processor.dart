@@ -1,10 +1,10 @@
-import 'package:flutter_client/src/model/api/response/menu_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/storage/save_menu_command.dart';
-import 'package:flutter_client/src/model/menu/menu_group_model.dart';
-import 'package:flutter_client/src/model/menu/menu_item_model.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/response/menu_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/storage/save_menu_command.dart';
+import '../../../../model/menu/menu_group_model.dart';
+import '../../../../model/menu/menu_item_model.dart';
+import '../../../../model/menu/menu_model.dart';
+import '../i_processor.dart';
 
 class MenuProcessor implements IProcessor {
 

@@ -1,11 +1,11 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/storage/i_storage_service.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
+import '../../../model/api/api_object_property.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../model/component/panel/fl_panel_model.dart';
+import '../../../model/menu/menu_model.dart';
+import '../i_storage_service.dart';
+import '../../../../util/extensions/list_extensions.dart';
 
 /// Contains all component & menu Data
 // Author: Michael Schober

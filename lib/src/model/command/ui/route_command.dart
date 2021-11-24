@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
-import 'package:flutter_client/src/routing/app_routing_options.dart';
+import 'ui_command.dart';
+import '../../../routing/app_routing_options.dart';
 
 ///
 /// Issue this command to route to a new page.

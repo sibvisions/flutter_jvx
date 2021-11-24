@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/menu/menu_model.dart';
+import '../menu/menu_model.dart';
 
 class RouteToMenu {
   final MenuModel menuModel;

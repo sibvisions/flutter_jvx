@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/config/client_id_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/response/application_meta_data_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/config/client_id_command.dart';
+import '../i_processor.dart';
 
 
 class ApplicationMetaDataProcessor implements IProcessor {

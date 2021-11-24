@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/menu/menu_model.dart';
 
 /// Defines the base construct of a [IStorageService],
 /// Storage service is used to store & retrieve all Data of [FlComponentModel] & [MenuModel]

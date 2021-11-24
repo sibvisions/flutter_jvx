@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import '../component/fl_component_model.dart';
 
 class RouteToWorkScreen {
   final FlComponentModel screen;

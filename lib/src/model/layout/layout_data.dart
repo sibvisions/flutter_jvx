@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:flutter_client/src/layout/i_layout.dart';
-import 'package:flutter_client/util/i_clonable.dart';
+import '../../layout/i_layout.dart';
+import '../../../util/i_clonable.dart';
 
 import 'layout_position.dart';
 

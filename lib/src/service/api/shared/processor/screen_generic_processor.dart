@@ -1,12 +1,12 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/storage/save_components_command.dart';
-import 'package:flutter_client/src/model/component/button/fl_button_model.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/service/api/shared/fl_component_classname.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
+import '../../../../model/api/api_object_property.dart';
+import '../../../../model/api/response/screen_generic_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/command/storage/save_components_command.dart';
+import '../../../../model/component/button/fl_button_model.dart';
+import '../../../../model/component/fl_component_model.dart';
+import '../../../../model/component/panel/fl_panel_model.dart';
+import '../fl_component_classname.dart';
+import '../i_processor.dart';
 
 ///
 /// Processes [ScreenGenericResponse]

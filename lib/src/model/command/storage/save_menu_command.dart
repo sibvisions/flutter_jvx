@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/storage/storage_command.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
+import 'storage_command.dart';
+import '../../menu/menu_model.dart';
 
 class SaveMenuCommand extends StorageCommand {
 

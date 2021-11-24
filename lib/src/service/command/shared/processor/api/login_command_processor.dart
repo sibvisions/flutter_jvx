@@ -1,8 +1,8 @@
-import 'package:flutter_client/src/mixin/api_service_mixin.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/login_command.dart';
+import '../../../../../mixin/api_service_mixin.dart';
+import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../model/command/api/login_command.dart';
 
-import 'package:flutter_client/src/model/command/base_command.dart';
+import '../../../../../model/command/base_command.dart';
 
 import '../../i_command_processor.dart';
 

@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/config/api/endpoint_config.dart';
-import 'package:flutter_client/src/model/config/api/url_config.dart';
+import 'endpoint_config.dart';
+import 'url_config.dart';
 
 class ApiConfig {
   final UrlConfig urlConfig;

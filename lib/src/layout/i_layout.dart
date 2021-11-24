@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/util/i_clonable.dart';
+import '../model/layout/layout_data.dart';
+import '../model/layout/layout_position.dart';
+import '../../util/i_clonable.dart';
 
 import 'border_layout.dart';
 import 'flow_layout.dart';

@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/components/button/fl_button_wrapper.dart';
-import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
-import 'package:flutter_client/src/model/component/button/fl_button_model.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'button/fl_button_wrapper.dart';
+import 'panel/fl_panel_wrapper.dart';
+import '../model/component/button/fl_button_model.dart';
+import '../model/component/fl_component_model.dart';
+import '../model/component/panel/fl_panel_model.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class ComponentsFactory {

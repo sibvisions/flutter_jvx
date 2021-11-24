@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/api/i_api_service.dart';
-import 'package:flutter_client/src/service/api/shared/i_controller.dart';
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
+import '../../../../model/command/base_command.dart';
+import '../../i_api_service.dart';
+import '../../shared/i_controller.dart';
+import '../../shared/i_repository.dart';
 
 ///
 /// Will execute all actions on the main Isolate

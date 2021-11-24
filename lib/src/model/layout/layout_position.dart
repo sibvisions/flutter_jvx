@@ -1,4 +1,4 @@
-import 'package:flutter_client/util/i_clonable.dart';
+import '../../../util/i_clonable.dart';
 
 /// The [LayoutPosition] are the constraints actually getting applied to a component.
 // Author: Toni Heiss

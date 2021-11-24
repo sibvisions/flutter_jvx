@@ -1,7 +1,7 @@
-import 'dart:developer';
 
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter/material.dart';
+
+import '../../mixin/ui_service_mixin.dart';
 
 class AppLogin extends StatelessWidget with UiServiceMixin{
   AppLogin({Key? key}) : super(key: key);

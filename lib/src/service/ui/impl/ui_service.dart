@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:flutter_client/src/mixin/command_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/login_command.dart';
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/model/routing/route_to_menu.dart';
-import 'package:flutter_client/src/model/routing/route_to_work_screen.dart';
-import 'package:flutter_client/src/routing/app_delegate.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import '../../../mixin/command_service_mixin.dart';
+import '../../../model/command/api/login_command.dart';
+import '../../../model/command/api/open_screen_command.dart';
+import '../../../model/command/api/startup_command.dart';
+import '../../../model/command/layout/preferred_size_command.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../model/menu/menu_model.dart';
+import '../../../model/routing/route_to_menu.dart';
+import '../../../model/routing/route_to_work_screen.dart';
+import '../../../routing/app_delegate.dart';
+import '../i_ui_service.dart';
 
 
 /// Manages all interactions with the UI

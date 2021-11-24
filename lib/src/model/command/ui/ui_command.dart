@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import '../base_command.dart';
+import '../../../service/ui/i_ui_service.dart';
 
 
 ///

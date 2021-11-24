@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import '../../api/api_object_property.dart';
+import '../fl_component_model.dart';
 
 class FlPanelModel extends FlComponentModel {
   final String layout;

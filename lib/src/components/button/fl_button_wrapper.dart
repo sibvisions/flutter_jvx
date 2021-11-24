@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/components/button/fl_button_widget.dart';
-import 'package:flutter_client/src/model/component/button/fl_button_model.dart';
+import 'fl_button_widget.dart';
+import '../../model/component/button/fl_button_model.dart';
 import 'package:flutter/material.dart';
 
 class FlButtonWrapper extends StatefulWidget {

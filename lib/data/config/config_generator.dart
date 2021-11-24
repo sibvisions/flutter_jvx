@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/config/api/endpoint_config.dart';
-import 'package:flutter_client/src/model/config/api/url_config.dart';
+import '../../src/model/config/api/endpoint_config.dart';
+import '../../src/model/config/api/url_config.dart';
 
 class ConfigGenerator {
 

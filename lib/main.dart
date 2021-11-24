@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/routing/app_delegate.dart';
-import 'package:flutter_client/src/routing/app_information_parser.dart';
+import 'src/routing/app_delegate.dart';
+import 'src/routing/app_information_parser.dart';
 
 import 'init_app.dart';
 

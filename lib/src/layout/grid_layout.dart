@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/layout/i_layout.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
+import 'i_layout.dart';
+import '../model/layout/layout_data.dart';
+import '../model/layout/layout_position.dart';
 
 class GridLayout extends ILayout {
 

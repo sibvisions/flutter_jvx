@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/service/config/i_config_service.dart';
+import '../i_config_service.dart';
 
 /// Stores all config and session based data.
 // Author: Michael Schober

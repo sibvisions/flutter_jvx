@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/mixin/api_service_mixin.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
+import '../../../../../mixin/api_service_mixin.dart';
+import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../model/command/api/open_screen_command.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../i_command_processor.dart';
 
 class OpenScreenCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<OpenScreenCommand> {
 

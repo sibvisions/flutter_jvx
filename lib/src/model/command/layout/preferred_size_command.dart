@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/layout/layout_command.dart';
+import 'layout_command.dart';
 
 class PreferredSizeCommand extends LayoutCommand {
   final String componentId;

@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/api/api_response_names.dart';
-import 'package:flutter_client/src/model/api/response/api_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/api/shared/i_controller.dart';
-import 'package:flutter_client/src/service/api/shared/i_processor.dart';
-import 'package:flutter_client/src/service/api/shared/processor/application_meta_data_processor.dart';
-import 'package:flutter_client/src/service/api/shared/processor/application_parameters_processor.dart';
-import 'package:flutter_client/src/service/api/shared/processor/menu_processor.dart';
-import 'package:flutter_client/src/service/api/shared/processor/screen_generic_processor.dart';
+import '../../../../model/api/api_response_names.dart';
+import '../../../../model/api/response/api_response.dart';
+import '../../../../model/command/base_command.dart';
+import '../i_controller.dart';
+import '../i_processor.dart';
+import '../processor/application_meta_data_processor.dart';
+import '../processor/application_parameters_processor.dart';
+import '../processor/menu_processor.dart';
+import '../processor/screen_generic_processor.dart';
 import 'package:http/http.dart';
 
 

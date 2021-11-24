@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
+import '../../model/command/base_command.dart';
 
 /// Defines the base construct of a [ICommandService]
 /// Command service is used to facilitate communication between different services.

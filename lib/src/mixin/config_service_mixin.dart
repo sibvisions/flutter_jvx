@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/service/config/i_config_service.dart';
-import 'package:flutter_client/src/service/service.dart';
+import '../service/config/i_config_service.dart';
+import '../service/service.dart';
 
 ///
 ///  Provides an [IConfigService] instance from get.it service

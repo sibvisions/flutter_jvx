@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../i_command_processor.dart';
 
 class PreferredSizeProcessor implements ICommandProcessor{
 
