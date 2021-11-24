@@ -1,4 +1,3 @@
-import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
 
 /// Defines the base construct of a [ICommandProcessor].

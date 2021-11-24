@@ -1,17 +1,16 @@
 
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../mask/login/app_login.dart';
 import '../mask/menu/app_menu.dart';
 import '../mask/work_screen/work_screen.dart';
 import '../mixin/ui_service_mixin.dart';
 import '../model/routing/route_to_menu.dart';
 import '../model/routing/route_to_work_screen.dart';
-
 import 'app_route_path.dart';
 import 'app_routing_options.dart';
 

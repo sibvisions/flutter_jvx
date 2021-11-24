@@ -5,7 +5,7 @@ import '../model/layout/layout_position.dart';
 class GridLayout extends ILayout {
 
   @override
-  List<LayoutPosition> calculateLayout(LayoutData parent) {
+  List<LayoutPosition> calculateLayout(LayoutData pParent) {
     throw UnimplementedError();
   }
 
