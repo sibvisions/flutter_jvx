@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/base_command.dart';
+
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 
@@ -15,11 +17,7 @@ abstract class IStorageService {
   /// Returns current [menuModel], if none is set will return null.
   MenuModel? getMenu();
 
-  /// Saves all [FlComponentModel], if already present will update existing model.
-  void saveComponent(List<FlComponentModel> components);
-
-  /// Updates all [FlComponentModel] with supplied data
-  void updateComponent(List<dynamic> components);
+  List<BaseCommand> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents);
 
   /// Returns all [FlComponentModel] in the given [screenClassName],
   /// including all children recursively.

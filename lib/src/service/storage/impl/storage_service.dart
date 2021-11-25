@@ -1,6 +1,9 @@
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:flutter_client/src/model/command/base_command.dart';
+import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
+
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
@@ -36,42 +39,6 @@ class StorageService implements IStorageService {
     _menuModel = menuModel;
   }
 
-  @override
-  void saveComponent(List<FlComponentModel> components) {
-    for(FlComponentModel componentModel in components){
-      if(componentMap.containsKey(componentModel.id)){
-        var a = componentModel.updateComponent(componentMap[componentModel.id]!, componentModel);
-        log(a.toString());
-      } else {
-        // log(componentModel.toString());
-        componentMap[componentModel.id] = componentModel;
-      }
-    }
-  }
-
-  @override
-  void updateComponent(List<dynamic> components) {
-    List<FlComponentModel> affectedComponents = [];
-    for(dynamic component in components) {
-      FlComponentModel? componentModel = componentMap[component[ApiObjectProperty.id]];
-      if(componentModel != null){
-        FlComponentModel updatedComponent = componentModel.updateComponent(componentModel, component);
-        componentMap[updatedComponent.id] = updatedComponent;
-        affectedComponents.add(updatedComponent);
-
-        // Parent Changed, add all components below new one and add old model, as all of them are affected by this update
-        String? oldParent = componentModel.parent;
-        String? newParent = updatedComponent.parent;
-        if(oldParent != newParent && oldParent != null && newParent != null){
-          List<FlComponentModel> belowNewParent = _getAllComponentsBelow(newParent);
-          FlComponentModel old = componentMap[oldParent]!;
-          affectedComponents.addAll(belowNewParent);
-          affectedComponents.add(old);
-        }
-      }
-    }
-    affectedComponents.
-  }
 
   @override
   List<FlComponentModel>? getScreenByScreenClassName(String screenClassName) {
@@ -86,6 +53,35 @@ class StorageService implements IStorageService {
       return screen;
     }
     return null;
+  }
+
+  @override
+  List<BaseCommand> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents) {
+
+    List<FlComponentModel> oldModels = [];
+    List<BaseCommand> commands = [];
+
+    // Handle new Components
+    if(newComponents != null){
+      for(FlComponentModel componentModel in newComponents){
+        _addNewComponent(componentModel);
+      }
+    }
+
+    // Handle components to Update
+    if(componentsToUpdate != null){
+      for(dynamic changedData in componentsToUpdate){
+        oldModels.add(_updateExistingModels(changedData));
+      }
+    }
+    List<FlComponentModel> effectedComponents = _getEffectedComponentModels(componentsToUpdate, newComponents, oldModels);
+
+    UpdateComponentsCommand command = UpdateComponentsCommand(
+        affectedComponents: effectedComponents,
+        reason: "Components have been updated"
+    );
+    commands.add(command);
+    return commands;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,5 +120,60 @@ class StorageService implements IStorageService {
   }
 
 
+  /// Adds new Component
+  void _addNewComponent(FlComponentModel newComponent){
+    componentMap[newComponent.id] = newComponent;
+    newComponent;
+  }
 
+  /// Updates existing component models
+  FlComponentModel _updateExistingModels(dynamic updateData){
+    FlComponentModel? oldModel;
+    FlComponentModel? existingComponent = componentMap[updateData[ApiObjectProperty.id]];
+    if(existingComponent != null) {
+      FlComponentModel updatedComponent = existingComponent.updateComponent(existingComponent, updateData);
+      componentMap[updatedComponent.id] = updatedComponent;
+      oldModel = existingComponent;
+    }
+    if(oldModel != null){
+      return oldModel;
+    } else {
+      throw Exception("asdasd");
+    }
+
+  }
+
+  /// Returns all affected ComponentModel, called after [_addNewComponent] and [_updateExistingModels]
+  List<FlComponentModel> _getEffectedComponentModels(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, List<FlComponentModel>? oldModels){
+    List<FlComponentModel> effectedComponents = [];
+
+
+    if(newComponents != null){
+      effectedComponents.addAll(newComponents);
+    }
+
+    if(componentsToUpdate != null && oldModels != null){
+      for(dynamic updateData in componentsToUpdate){
+        FlComponentModel? newModel = componentMap[updateData[ApiObjectProperty.id]];
+        FlComponentModel? oldModel = oldModels.firstWhereOrNull((element) => element.id == updateData[ApiObjectProperty.id]);
+        if(newModel != null && oldModel != null){
+          // Model was changed in some way
+          effectedComponents.add(newModel);
+
+          // Parent of model was changed, means all possible effected components need to retrieved as it's possible that they are not currently rendered.
+          String? newParentId = updateData[ApiObjectProperty.parent];
+          String? oldParentId = oldModel.parent;
+          if(newParentId != oldParentId &&  newParentId != null && oldParentId != null){
+            FlComponentModel oldParentModel = componentMap[oldParentId]!;
+            FlComponentModel newParentModel = componentMap[newParentId]!;
+            List<FlComponentModel> myChildren = _getAllComponentsBelow(newModel.id);
+            effectedComponents.addAll([oldParentModel, newParentModel, ...myChildren]);
+          }
+        }
+
+
+      }
+    }
+    return effectedComponents;
+  }
 }

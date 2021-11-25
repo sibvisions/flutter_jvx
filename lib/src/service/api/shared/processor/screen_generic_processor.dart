@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/storage/update_component_command.dart';
 import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
 
 import '../../../../model/api/api_object_property.dart';
@@ -22,28 +20,21 @@ class ScreenGenericProcessor implements IProcessor {
     List<BaseCommand> commands = [];
     ScreenGenericResponse screenGenericResponse = ScreenGenericResponse.fromJson(json);
 
+
     //Check for new full components
-    List<FlComponentModel>? parsedNewComponent = _getNewComponents(screenGenericResponse.changedComponents);
-    if(parsedNewComponent != null){
+    List<FlComponentModel>? componentsToSave = _getNewComponents(screenGenericResponse.changedComponents);
+
+    //Check for changed Components
+    List<dynamic>? updatedComponent = _getChangedComponents(screenGenericResponse.changedComponents);
+
+    if(componentsToSave != null || updatedComponent != null){
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
-          componentsToSave: parsedNewComponent,
-          reason: "Components parsed from a Screen.Generic Request"
+        reason: "Api recieved screen.generic response",
+        componentsToSave: componentsToSave,
+        updatedComponent: updatedComponent
       );
       commands.add(saveComponentsCommand);
     }
-
-    //Check for changed Components
-    List<dynamic>? unparsedChangedComponent = _getChangedComponents(screenGenericResponse.changedComponents);
-    if(unparsedChangedComponent != null){
-      UpdateComponentCommand updateComponentCommand = UpdateComponentCommand(
-          changedComponents: unparsedChangedComponent,
-          reason: "Components updated in screen.generic response"
-      );
-      commands.add(updateComponentCommand);
-    }
-
-
-
     return commands;
   }
 

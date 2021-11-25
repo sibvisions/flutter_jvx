@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:ui';
 
 import '../../../mixin/command_service_mixin.dart';
@@ -30,6 +31,9 @@ class UiService with CommandServiceMixin implements IUiService {
 
   /// Last open Screen
   List<FlComponentModel> currentScreen = [];
+
+  /// Live Component Registration
+  HashMap<String, Function> registeredComponents = HashMap();
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,6 +111,37 @@ class UiService with CommandServiceMixin implements IUiService {
     commandService.sendCommand(preferredSizeCommand);
   }
 
+  @override
+  void updateComponentModels(List<FlComponentModel> modelsToUpdate) {
 
+    // Update All Models
+    for(FlComponentModel newModel in modelsToUpdate){
+      FlComponentModel? toBeReplaced;
+      for(FlComponentModel oldModel in currentScreen){
+        if(newModel.id == oldModel.id){
+          toBeReplaced = oldModel;
+        }
+      }
 
+      // Replace Old with new Model or Add as new one.
+      if(toBeReplaced != null){
+        toBeReplaced = newModel;
+      } else {
+        currentScreen.add(newModel);
+      }
+    }
+
+    // Call callbacks of active components
+    for(FlComponentModel newModel in modelsToUpdate){
+      Function? componentCallback =  registeredComponents[newModel.id];
+      if(componentCallback != null){
+        componentCallback.call();
+      }
+    }
+  }
+
+  @override
+  void registerAsLiveComponent(String id, Function callback) {
+    registeredComponents[id] = callback;
+  }
 }

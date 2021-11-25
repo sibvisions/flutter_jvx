@@ -48,4 +48,10 @@ abstract class IUiService {
   /// Register a Components preferred Size
   /// Will send [soon] Command.
   void registerPreferredSize(String id, Size size);
+
+  /// Updates Components Models, also tells affected Parents to re-build their children
+  void updateComponentModels(List<FlComponentModel> modelsToUpdate);
+
+  /// Register as an active Component, callback will be called when model changes or children should be rebuilt.
+  void registerAsLiveComponent(String id, Function callback);
 }

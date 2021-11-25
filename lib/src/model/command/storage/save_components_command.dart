@@ -3,10 +3,12 @@ import '../../component/fl_component_model.dart';
 
 class SaveComponentsCommand extends StorageCommand {
 
-  List<FlComponentModel> componentsToSave;
+  final List<FlComponentModel>? componentsToSave;
+  final List<dynamic>? updatedComponent;
 
   SaveComponentsCommand({
-    required this.componentsToSave,
+    this.updatedComponent,
+    this.componentsToSave,
     required String reason
   }) : super(reason: reason);
 
