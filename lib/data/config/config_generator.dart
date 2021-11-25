@@ -7,7 +7,8 @@ class ConfigGenerator {
     return EndpointConfig(
       startup: "/api/v3/startup",
       login: "/api/v2/login",
-      openScreen: "/api/v2/openScreen"
+      openScreen: "/api/v2/openScreen",
+      deviceStatus: "/api/deviceStatus"
     );
   }
 

@@ -38,4 +38,11 @@ class DefaultApi implements IApiService {
     return actions;
   }
 
+  @override
+  Future<List<BaseCommand>> deviceStatus(String clientId, double screenWidth, double screenHeight) {
+    var response = repository.deviceStatus(clientId, screenWidth, screenHeight);
+    var actions = controller.processResponse(response);
+    return actions;
+  }
+
 }

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -39,11 +40,37 @@ class StorageService implements IStorageService {
   void saveComponent(List<FlComponentModel> components) {
     for(FlComponentModel componentModel in components){
       if(componentMap.containsKey(componentModel.id)){
-        //Todo implement Component Update
+        var a = componentModel.updateComponent(componentMap[componentModel.id]!, componentModel);
+        log(a.toString());
       } else {
+        // log(componentModel.toString());
         componentMap[componentModel.id] = componentModel;
       }
     }
+  }
+
+  @override
+  void updateComponent(List<dynamic> components) {
+    List<FlComponentModel> affectedComponents = [];
+    for(dynamic component in components) {
+      FlComponentModel? componentModel = componentMap[component[ApiObjectProperty.id]];
+      if(componentModel != null){
+        FlComponentModel updatedComponent = componentModel.updateComponent(componentModel, component);
+        componentMap[updatedComponent.id] = updatedComponent;
+        affectedComponents.add(updatedComponent);
+
+        // Parent Changed, add all components below new one and add old model, as all of them are affected by this update
+        String? oldParent = componentModel.parent;
+        String? newParent = updatedComponent.parent;
+        if(oldParent != newParent && oldParent != null && newParent != null){
+          List<FlComponentModel> belowNewParent = _getAllComponentsBelow(newParent);
+          FlComponentModel old = componentMap[oldParent]!;
+          affectedComponents.addAll(belowNewParent);
+          affectedComponents.add(old);
+        }
+      }
+    }
+    affectedComponents.
   }
 
   @override
@@ -95,5 +122,7 @@ class StorageService implements IStorageService {
     }
     return children;
   }
+
+
 
 }

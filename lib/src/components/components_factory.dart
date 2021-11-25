@@ -10,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 abstract class ComponentsFactory {
 
   static Widget buildWidget(FlComponentModel model){
-    log(model.className);
     switch(model.className){
       case("Button") :
         return FlButtonWrapper(model: model as FlButtonModel);

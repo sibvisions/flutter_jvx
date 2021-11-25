@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:flutter_client/src/mixin/command_service_mixin.dart';
+import 'package:flutter_client/src/model/command/api/device_status_command.dart';
+
 import '../../components/components_factory.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
@@ -12,7 +17,7 @@ class WorkScreen extends StatefulWidget {
   _WorkScreenState createState() => _WorkScreenState();
 }
 
-class _WorkScreenState extends State<WorkScreen> {
+class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
 
 
   Widget screen = const Text("dummy");
@@ -23,11 +28,26 @@ class _WorkScreenState extends State<WorkScreen> {
     super.initState();
   }
 
+  _getScreenSize(double height, double width) {
+    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
+        screenWidth: width,
+        screenHeight: height,
+        reason: "Screen has been opened"
+    );
+    commandService.sendCommand(deviceStatusCommand);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
-      body: screen,
+      body: Scaffold(
+        body: LayoutBuilder(builder: (context, constraints) {
+            _getScreenSize(constraints.maxHeight, constraints.maxWidth);
+            return screen;
+          }
+        ),
+      )
     );
   }
 }

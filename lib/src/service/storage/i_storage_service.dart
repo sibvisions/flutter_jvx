@@ -18,6 +18,9 @@ abstract class IStorageService {
   /// Saves all [FlComponentModel], if already present will update existing model.
   void saveComponent(List<FlComponentModel> components);
 
+  /// Updates all [FlComponentModel] with supplied data
+  void updateComponent(List<dynamic> components);
+
   /// Returns all [FlComponentModel] in the given [screenClassName],
   /// including all children recursively.
   /// First Object of List is always screen (most top) component.

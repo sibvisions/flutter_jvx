@@ -21,4 +21,8 @@ class ApiConfig {
   Uri getOpenScreenUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.openScreen);
   }
+
+  Uri getDeviceStatusUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.deviceStatus);
+  }
 }

@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/model/command/api/device_status_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/device_status_processor.dart';
+
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
@@ -18,14 +21,17 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ///Processes [StartupCommand]
-  final StartUpCommandProcessor _startUpProcessorCommand = StartUpCommandProcessor();
+  /// Processes [StartupCommand]
+  final ICommandProcessor _startUpProcessorCommand = StartUpCommandProcessor();
 
-  ///Processes [LoginCommand]
-  final LoginCommandProcessor _loginCommandProcessor = LoginCommandProcessor();
+  /// Processes [LoginCommand]
+  final ICommandProcessor _loginCommandProcessor = LoginCommandProcessor();
 
-  ///Processes [OpenScreenCommand]
-  final OpenScreenCommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
+  /// Processes [OpenScreenCommand]
+  final ICommandProcessor _openScreenCommandProcessor = OpenScreenCommandProcessor();
+
+  /// Processes [DeviceStatusCommand]
+  final ICommandProcessor _deviceStatusProcessor = DeviceStatusProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -41,6 +47,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _loginCommandProcessor.processCommand(command);
     } else if(command is OpenScreenCommand) {
       return _openScreenCommandProcessor.processCommand(command);
+    } else if(command is DeviceStatusCommand){
+      return _deviceStatusProcessor.processCommand(command);
     } else {
       return [];
     }

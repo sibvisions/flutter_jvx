@@ -12,7 +12,6 @@ class OpenScreenCommandProcessor with ApiServiceMixin, ConfigServiceMixin implem
   Future<List<BaseCommand>> processCommand(OpenScreenCommand command) async {
     String? clientId = configService.getClientId();
     if(clientId != null) {
-      log("openSreen Command processed");
       return apiService.openScreen(command.componentId, clientId);
     } else {
       throw Exception("NO CLIENT ID FOUND, while trying to send openScreen request. CommandID: " + command.id.toString());

@@ -9,7 +9,6 @@ class SaveMenuCommandProcessor with StorageServiceMixin implements ICommandProce
 
   @override
   Future<List<BaseCommand>> processCommand(SaveMenuCommand command) async {
-    log("asdas");
     storageService.saveMenu(command.menu);
     return [];
   }

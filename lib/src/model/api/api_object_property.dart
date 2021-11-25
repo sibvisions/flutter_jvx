@@ -40,6 +40,8 @@ abstract class ApiObjectProperty {
   static const String manualClose = "manualClose";
   static const String action = "action";
   static const String label = "label";
+  static const String screenWidth = "screenWidth";
+  static const String screenHeight = "screenHeight";
 
 
   //Response Properties

@@ -3,6 +3,7 @@ class EndpointConfig{
   final String startup;
   final String login;
   final String openScreen;
+  final String deviceStatus;
 
 
 
@@ -10,6 +11,7 @@ class EndpointConfig{
   EndpointConfig({
     required this.startup,
     required this.login,
-    required this.openScreen
+    required this.openScreen,
+    required this.deviceStatus
   });
 }

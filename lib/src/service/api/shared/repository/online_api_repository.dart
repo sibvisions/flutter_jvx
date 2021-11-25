@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter_client/src/model/api/requests/device_status_request.dart';
+
 import '../../../../model/api/requests/login_request.dart';
 import '../../../../model/api/requests/open_screen_request.dart';
 import '../../../../model/api/requests/startup_request.dart';
@@ -59,6 +61,16 @@ class OnlineApiRepository implements IRepository {
     );
     return _sendPostRequest(apiConfig.getOpenScreenUri(), jsonEncode(openScreenRequest));
 
+  }
+
+  @override
+  Future<Response> deviceStatus(String clientId, double screenWidth, double screenHeight) {
+    DeviceStatusRequest deviceStatusRequest = DeviceStatusRequest(
+        clientId: clientId,
+        screenWidth: screenWidth,
+        screenHeight: screenHeight
+    );
+    return _sendPostRequest(apiConfig.getDeviceStatusUri(), jsonEncode(deviceStatusRequest));
   }
 
 
