@@ -1,5 +1,3 @@
-
-
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
@@ -16,11 +14,11 @@ import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
-import 'src/service/storage/impl/storage_service.dart';
+import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-initApp() {
+initAppWeb() {
   //API
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("192.168.0.164", 8090);
@@ -38,7 +36,7 @@ initApp() {
   services.registerSingleton(configService, signalsReady: true);
 
   //Storage
-  IStorageService storageService = StorageService();
+  IStorageService storageService = DefaultStorageService();
   services.registerSingleton(storageService, signalsReady: true);
 
   //Command

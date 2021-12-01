@@ -1,49 +1,52 @@
 import 'dart:collection';
-import 'dart:developer';
 
+import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/model/menu/menu_model.dart';
+import 'package:flutter_client/src/service/storage/i_storage_service.dart';
+import 'package:flutter_client/util/extensions/list_extensions.dart';
 
-import '../../../model/api/api_object_property.dart';
-import '../../../model/component/fl_component_model.dart';
-import '../../../model/component/panel/fl_panel_model.dart';
-import '../../../model/menu/menu_model.dart';
-import '../i_storage_service.dart';
-import '../../../../util/extensions/list_extensions.dart';
+class ComponentStore implements IStorageService {
 
-/// Contains all component & menu Data
-// Author: Michael Schober
-class StorageService implements IStorageService {
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// MenuModel of current app.
   MenuModel? _menuModel;
 
   /// Map of all active components received from server, key set to id of [FlComponentModel].
-  HashMap<String, FlComponentModel> componentMap = HashMap();
+  final HashMap<String, FlComponentModel> _componentMap = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  MenuModel? getMenu() {
-    return _menuModel;
+  Future<MenuModel> getMenu() async {
+    MenuModel? menuModel = _menuModel;
+    if(menuModel != null){
+      return menuModel;
+    } else {
+      throw Exception("No Menu was found");
+    }
   }
 
   @override
-  void saveMenu(MenuModel menuModel) {
+  Future<bool> saveMenu(MenuModel menuModel) async {
     _menuModel = menuModel;
+
+    return true;
   }
 
 
   @override
-  List<FlComponentModel>? getScreenByScreenClassName(String screenClassName) {
+  Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {
     // Get Screen (Top-most Panel)
-    FlComponentModel? screenModel = componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
+    FlComponentModel? screenModel = _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
 
     if(screenModel != null){
       List<FlComponentModel> screen = [];
@@ -52,11 +55,12 @@ class StorageService implements IStorageService {
       screen.addAll(_getAllComponentsBelow(screenModel.id));
       return screen;
     }
-    return null;
+
+    throw Exception("No Screen with screenClassName: $screenClassName was found");
   }
 
   @override
-  List<BaseCommand> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents) {
+  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents) async {
 
     List<FlComponentModel> oldModels = [];
     List<BaseCommand> commands = [];
@@ -109,7 +113,7 @@ class StorageService implements IStorageService {
   List<FlComponentModel> _getAllComponentsBelow(String id) {
     List<FlComponentModel> children = [];
 
-    for (FlComponentModel componentModel in componentMap.values) {
+    for (FlComponentModel componentModel in _componentMap.values) {
       String? parentId = componentModel.parent;
       if(parentId != null && parentId == id){
         children.add(componentModel);
@@ -122,17 +126,17 @@ class StorageService implements IStorageService {
 
   /// Adds new Component
   void _addNewComponent(FlComponentModel newComponent){
-    componentMap[newComponent.id] = newComponent;
+    _componentMap[newComponent.id] = newComponent;
     newComponent;
   }
 
   /// Updates existing component models
   FlComponentModel _updateExistingModels(dynamic updateData){
     FlComponentModel? oldModel;
-    FlComponentModel? existingComponent = componentMap[updateData[ApiObjectProperty.id]];
+    FlComponentModel? existingComponent = _componentMap[updateData[ApiObjectProperty.id]];
     if(existingComponent != null) {
       FlComponentModel updatedComponent = existingComponent.updateComponent(existingComponent, updateData);
-      componentMap[updatedComponent.id] = updatedComponent;
+      _componentMap[updatedComponent.id] = updatedComponent;
       oldModel = existingComponent;
     }
     if(oldModel != null){
@@ -154,7 +158,7 @@ class StorageService implements IStorageService {
 
     if(componentsToUpdate != null && oldModels != null){
       for(dynamic updateData in componentsToUpdate){
-        FlComponentModel? newModel = componentMap[updateData[ApiObjectProperty.id]];
+        FlComponentModel? newModel = _componentMap[updateData[ApiObjectProperty.id]];
         FlComponentModel? oldModel = oldModels.firstWhereOrNull((element) => element.id == updateData[ApiObjectProperty.id]);
         if(newModel != null && oldModel != null){
           // Model was changed in some way
@@ -164,8 +168,8 @@ class StorageService implements IStorageService {
           String? newParentId = updateData[ApiObjectProperty.parent];
           String? oldParentId = oldModel.parent;
           if(newParentId != oldParentId &&  newParentId != null && oldParentId != null){
-            FlComponentModel oldParentModel = componentMap[oldParentId]!;
-            FlComponentModel newParentModel = componentMap[newParentId]!;
+            FlComponentModel oldParentModel = _componentMap[oldParentId]!;
+            FlComponentModel newParentModel = _componentMap[newParentId]!;
             List<FlComponentModel> myChildren = _getAllComponentsBelow(newModel.id);
             effectedComponents.addAll([oldParentModel, newParentModel, ...myChildren]);
           }
@@ -176,4 +180,5 @@ class StorageService implements IStorageService {
     }
     return effectedComponents;
   }
+
 }

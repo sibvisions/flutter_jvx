@@ -1,12 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/init_app_mobile.dart';
 import 'src/routing/app_delegate.dart';
 import 'src/routing/app_information_parser.dart';
 
-import 'init_app.dart';
+import 'init_app_web.dart';
 
 void main() {
-  initApp();
-  runApp(MyApp());
+  if(kIsWeb){
+    initAppWeb();
+    runApp(MyApp());
+  } else {
+    initAppMobile().then((value) =>
+        runApp(MyApp()));
+  }
 }
 
 class MyApp extends StatelessWidget {

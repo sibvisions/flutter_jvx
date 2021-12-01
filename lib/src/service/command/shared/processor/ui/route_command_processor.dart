@@ -17,25 +17,18 @@ class RouteCommandProcessor with UiServiceGetterMixin, StorageServiceMixin imple
   Future<List<BaseCommand>> processCommand(RouteCommand command) async {
     // Menu
     if(command.routeTo == AppRoutingOptions.menu) {
-      MenuModel? menuModel = storageService.getMenu();
-      if(menuModel != null) {
-        getUiService().routeToMenu(menuModel);
-      } else {
-        throw Exception("Menu not found while trying to route to Menu");
-      }
+      MenuModel? menuModel = await storageService.getMenu();
+
+      getUiService().routeToMenu(menuModel);
     }
 
     // WorkScreen
     if(command.routeTo == AppRoutingOptions.workScreen) {
       String? screenName = command.screenName;
       if(screenName != null) {
-        List<FlComponentModel>? screen = storageService.getScreenByScreenClassName(screenName);
-        if(screen != null){
-          getUiService().routeToWorkScreen(screen);
-        } else {
-          throw Exception("Screen not found while trying to route to Work screen");
-        }
+        List<FlComponentModel> screen = await storageService.getScreenByScreenClassName(screenName);
 
+        getUiService().routeToWorkScreen(screen);
       }
     }
 
