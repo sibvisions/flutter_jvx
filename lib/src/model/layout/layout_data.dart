@@ -37,6 +37,9 @@ class LayoutData implements ICloneable{
   /// The preferred size of the component.
   Size? preferredSize;
 
+  /// The calculated size of the component.
+  Size? calculatedSize;
+
   /// The insets of the component.  
   EdgeInsets? insets; 
 
@@ -58,7 +61,8 @@ class LayoutData implements ICloneable{
       this.maxSize,
       this.preferredSize,
       this.insets,
-      this.layoutPosition});
+      this.layoutPosition,
+      this.calculatedSize});
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
@@ -70,6 +74,7 @@ class LayoutData implements ICloneable{
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
         preferredSize = pLayoutData.preferredSize != null ? Size.copy(pLayoutData.preferredSize!) : null,
+        calculatedSize = pLayoutData.calculatedSize != null ? Size.copy(pLayoutData.calculatedSize!) : null,
         insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
         layoutPosition = pLayoutData.layoutPosition != null ? pLayoutData.layoutPosition!.clone() : null;
 
@@ -83,6 +88,27 @@ class LayoutData implements ICloneable{
   LayoutData clone() {
     return LayoutData.from(this);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  bool operator == (Object other) {
+    if (identical(this, other))
+    {
+      return true;
+    }
+    if (other.runtimeType != runtimeType)
+    {
+      return false;
+    }
+    return other is LayoutData
+        && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -121,6 +147,12 @@ class LayoutData implements ICloneable{
     return preferredSize != null;
   }
 
+  /// If this component has a [calculatedSize];
+  bool get hasCalculatedSize
+  {
+    return calculatedSize != null;
+  }
+
   /// If this component has [insets];
   bool get hasInsets
   {
@@ -139,6 +171,11 @@ class LayoutData implements ICloneable{
     { 
       width = preferredSize!.width;
       height = preferredSize!.height;
+    }
+    else if (hasCalculatedSize)
+    {
+      width = calculatedSize!.width;
+      height = calculatedSize!.height;  
     }
 
     if (hasMinSize)
