@@ -26,15 +26,14 @@ class LayoutService implements ILayoutService {
 
   @override
   bool registerAsParent(String pId, List<String> pChildrenIds, ILayout pLayout) {
-    List<LayoutData>? children;
+    List<LayoutData>? children = pChildrenIds.map((childId) => LayoutData(id: childId, parentId: pId)).toList();
 
     LayoutData? ldRegisteredParent = _parents[pId];
     if (ldRegisteredParent != null) {
-      // TODO: Add non existing children!
-      children = ldRegisteredParent.children?.where((element) => pChildrenIds.contains(element.id)).toList();
-    }
-    else{
-      children = pChildrenIds.map((childId) => LayoutData(id: childId, parentId: pId)).toList();
+      var oldChildren = ldRegisteredParent.children!.where((element) => !pChildrenIds.contains(element.id)).toList();
+      
+      children.removeWhere((element) => oldChildren.contains(element));
+      children.addAll(oldChildren);
     }
 
     //Builds Children with only Id, so the preferred Size can be added later.

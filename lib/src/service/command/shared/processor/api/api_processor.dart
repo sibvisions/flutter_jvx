@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/api/device_status_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/device_status_processor.dart';
+import '../../../../../model/command/api/device_status_command.dart';
+import 'device_status_processor.dart';
 
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/login_command.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/layout/form_layout/form_layout_anchor.dart';
+import 'form_layout_anchor.dart';
 
 /// The Constraint stores the top, left, bottom and right Anchor for layouting a component
 class FormLayoutConstraints {

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/mixin/command_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/device_status_command.dart';
+import '../../mixin/command_service_mixin.dart';
+import '../../model/command/api/device_status_command.dart';
 
 import '../../components/components_factory.dart';
 import '../../model/component/fl_component_model.dart';

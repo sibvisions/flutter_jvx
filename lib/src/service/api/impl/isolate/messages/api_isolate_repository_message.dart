@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
+import '../../../shared/i_repository.dart';
 
 import 'api_isolate_message.dart';
 

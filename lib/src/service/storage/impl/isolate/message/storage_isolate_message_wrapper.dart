@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/storage/impl/isolate/message/storage_isolate_message.dart';
+import 'storage_isolate_message.dart';
 
 class StorageIsolateMessageWrapper {
 

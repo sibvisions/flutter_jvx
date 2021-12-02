@@ -1,12 +1,12 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_get_menu_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_get_screen_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_save_menu_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_update_components_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/storage_isolate_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/storage_isolate_message_wrapper.dart';
-import 'package:flutter_client/src/service/storage/shared/component_store.dart';
+import 'message/endpoint/storage_isolate_get_menu_message.dart';
+import 'message/endpoint/storage_isolate_get_screen_message.dart';
+import 'message/endpoint/storage_isolate_save_menu_message.dart';
+import 'message/endpoint/storage_isolate_update_components_message.dart';
+import 'message/storage_isolate_message.dart';
+import 'message/storage_isolate_message_wrapper.dart';
+import '../../shared/component_store.dart';
 
 void storageCallback(SendPort callerSendPort){
 

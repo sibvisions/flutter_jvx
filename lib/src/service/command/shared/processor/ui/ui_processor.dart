@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/ui/update_components_processor.dart';
+import '../../../../../model/command/ui/update_components_command.dart';
+import 'update_components_processor.dart';
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/route_command.dart';

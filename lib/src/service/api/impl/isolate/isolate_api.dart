@@ -2,16 +2,16 @@
 
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/api/i_api_service.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_controller_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_device_status_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_login_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_open_screen_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_startup_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_repository_message.dart';
-import 'package:flutter_client/src/service/api/shared/i_controller.dart';
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
+import '../../../../model/command/base_command.dart';
+import '../../i_api_service.dart';
+import 'messages/api_isolate_controller_message.dart';
+import 'messages/endpoint/api_isolate_device_status_message.dart';
+import 'messages/endpoint/api_isolate_login_message.dart';
+import 'messages/endpoint/api_isolate_open_screen_message.dart';
+import 'messages/endpoint/api_isolate_startup_message.dart';
+import 'messages/api_isolate_repository_message.dart';
+import '../../shared/i_controller.dart';
+import '../../shared/i_repository.dart';
 
 import 'api_isolate_callback.dart';
 import 'messages/api_isolate_message.dart';

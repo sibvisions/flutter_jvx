@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/layout/form_layout/form_layout_anchor.dart';
+import '../../../src/model/layout/form_layout/form_layout_anchor.dart';
 
 class FormLayoutCalculateAnchorsUtil {
 

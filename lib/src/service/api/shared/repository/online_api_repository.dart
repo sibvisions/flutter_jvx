@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/api/requests/device_status_request.dart';
+import '../../../../model/api/requests/device_status_request.dart';
 
 import '../../../../model/api/requests/login_request.dart';
 import '../../../../model/api/requests/open_screen_request.dart';

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import '../../mixin/ui_service_mixin.dart';
 
 import 'fl_button_widget.dart';
 import '../../model/component/button/fl_button_model.dart';

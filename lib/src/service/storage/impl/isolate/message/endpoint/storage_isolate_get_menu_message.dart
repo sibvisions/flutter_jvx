@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/storage_isolate_message.dart';
+import '../../../../../../model/menu/menu_model.dart';
+import '../storage_isolate_message.dart';
 
 class StorageIsolateGetMenuMessage extends StorageIsolateMessage<MenuModel> {
 

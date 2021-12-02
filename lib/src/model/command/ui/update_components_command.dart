@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'ui_command.dart';
+import '../../component/fl_component_model.dart';
 
 class UpdateComponentsCommand extends UiCommand {
 

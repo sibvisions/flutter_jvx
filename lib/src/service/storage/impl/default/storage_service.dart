@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/storage/shared/component_store.dart';
+import '../../../../model/command/base_command.dart';
+import '../../shared/component_store.dart';
 
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_model.dart';

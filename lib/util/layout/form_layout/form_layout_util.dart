@@ -1,9 +1,9 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/layout/form_layout.dart';
-import 'package:flutter_client/src/model/layout/form_layout/form_layout_anchor.dart';
-import 'package:flutter_client/src/model/layout/form_layout/form_layout_constraints.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
+import '../../../src/layout/form_layout.dart';
+import '../../../src/model/layout/form_layout/form_layout_anchor.dart';
+import '../../../src/model/layout/form_layout/form_layout_constraints.dart';
+import '../../../src/model/layout/layout_data.dart';
 
 /// Util Methods for [FormLayout]
 class FormLayoutUtil {

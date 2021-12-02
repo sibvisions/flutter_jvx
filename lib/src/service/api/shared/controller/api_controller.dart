@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+
 import '../../../../model/api/api_response_names.dart';
 import '../../../../model/api/response/api_response.dart';
 import '../../../../model/command/base_command.dart';
@@ -9,7 +11,6 @@ import '../processor/application_meta_data_processor.dart';
 import '../processor/application_parameters_processor.dart';
 import '../processor/menu_processor.dart';
 import '../processor/screen_generic_processor.dart';
-import 'package:http/http.dart';
 
 
 class ApiController implements IController {

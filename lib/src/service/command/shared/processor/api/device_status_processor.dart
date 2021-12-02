@@ -1,10 +1,10 @@
-import 'package:flutter_client/src/mixin/api_service_mixin.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/device_status_command.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/service/api/i_api_service.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
-import 'package:flutter_client/src/service/config/i_config_service.dart';
+import '../../../../../mixin/api_service_mixin.dart';
+import '../../../../../mixin/config_service_mixin.dart';
+import '../../../../../model/command/api/device_status_command.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../api/i_api_service.dart';
+import '../../i_command_processor.dart';
+import '../../../../config/i_config_service.dart';
 
 /// Calls [IApiService] deviceStatus and [IConfigService] for current clientId
 // Author: Michael Schober

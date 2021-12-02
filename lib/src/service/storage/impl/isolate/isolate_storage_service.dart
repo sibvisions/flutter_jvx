@@ -1,17 +1,17 @@
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/storage/i_storage_service.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_get_menu_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_get_screen_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_save_menu_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_update_components_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/storage_isolate_message.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/storage_isolate_message_wrapper.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/storage_isolate_callback.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/component/fl_component_model.dart';
+import '../../../../model/menu/menu_model.dart';
+import '../../i_storage_service.dart';
+import 'message/endpoint/storage_isolate_get_menu_message.dart';
+import 'message/endpoint/storage_isolate_get_screen_message.dart';
+import 'message/endpoint/storage_isolate_save_menu_message.dart';
+import 'message/endpoint/storage_isolate_update_components_message.dart';
+import 'message/storage_isolate_message.dart';
+import 'message/storage_isolate_message_wrapper.dart';
+import 'storage_isolate_callback.dart';
 
 class IsolateStorageService implements IStorageService {
 

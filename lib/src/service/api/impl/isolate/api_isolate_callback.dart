@@ -1,9 +1,9 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_device_status_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_open_screen_message.dart';
-import 'package:flutter_client/src/service/api/shared/i_controller.dart';
-import 'package:flutter_client/src/service/api/shared/i_repository.dart';
+import 'messages/endpoint/api_isolate_device_status_message.dart';
+import 'messages/endpoint/api_isolate_open_screen_message.dart';
+import '../../shared/i_controller.dart';
+import '../../shared/i_repository.dart';
 import 'package:http/http.dart';
 
 import 'messages/api_isolate_controller_message.dart';

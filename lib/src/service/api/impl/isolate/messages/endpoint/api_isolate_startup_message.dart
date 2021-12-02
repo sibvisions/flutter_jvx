@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/command/base_command.dart';
+import '../../../../../../model/command/base_command.dart';
 
 import '../api_isolate_message.dart';
 

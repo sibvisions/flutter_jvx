@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
-import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
+import '../../../../../mixin/ui_service_getter_mixin.dart';
+import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/ui/update_components_command.dart';
+import '../../i_command_processor.dart';
 
 class UpdateComponentsProcessor with UiServiceGetterMixin implements ICommandProcessor<UpdateComponentsCommand>{
 

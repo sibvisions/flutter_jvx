@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/init_app_mobile.dart';
+import 'init_app_mobile.dart';
 import 'src/routing/app_delegate.dart';
 import 'src/routing/app_information_parser.dart';
 

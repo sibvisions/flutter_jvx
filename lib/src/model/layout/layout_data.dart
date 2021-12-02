@@ -2,9 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../layout/i_layout.dart';
 import '../../../util/i_clonable.dart';
-
+import '../../layout/i_layout.dart';
 import 'layout_position.dart';
 
 /// [LayoutData] represents the data relevant for layout calculations of a widget.

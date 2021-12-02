@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/base_command.dart';
+import '../../model/command/base_command.dart';
 
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';

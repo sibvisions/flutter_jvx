@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
+import '../../../../model/component/dummy/fl_dummy_model.dart';
 
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';

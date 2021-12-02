@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import '../fl_component_model.dart';
 
 class FlDummyModel extends FlComponentModel {
 
