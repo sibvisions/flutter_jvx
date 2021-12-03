@@ -12,7 +12,6 @@ import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
-
 /// The BorderLayout allows the positioning of container in 5 different Positions.
 /// North, East, West, South and Center.
 /// North and South are above/underneath West, Center and East
@@ -107,88 +106,78 @@ class BorderLayout implements ILayout, ICloneable {
     _positions.clear();
 
     _parentData = pParent;
-    _childNorth   = _parentData.children!.firstWhereOrNull((element) => NORTH == element.constraints);
-    _childSouth   = _parentData.children!.firstWhereOrNull((element) => SOUTH == element.constraints);
-    _childEast    = _parentData.children!.firstWhereOrNull((element) => EAST  == element.constraints);
-    _childWest    = _parentData.children!.firstWhereOrNull((element) => WEST  == element.constraints);
-    _childCenter  = _parentData.children!.firstWhereOrNull((element) => NORTH == element.constraints);
+    _childNorth = _parentData.children!.firstWhereOrNull((element) => NORTH == element.constraints);
+    _childSouth = _parentData.children!.firstWhereOrNull((element) => SOUTH == element.constraints);
+    _childEast = _parentData.children!.firstWhereOrNull((element) => EAST == element.constraints);
+    _childWest = _parentData.children!.firstWhereOrNull((element) => WEST == element.constraints);
+    _childCenter = _parentData.children!.firstWhereOrNull((element) => NORTH == element.constraints);
 
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
-    
+
     double x = _parentData.insets!.left + eiMargins.left;
-		double y = _parentData.insets!.top + eiMargins.top;
-		double width = preferredSize.width - x - _parentData.insets!.right + eiMargins.right;
-		double height = preferredSize.height - y - _parentData.insets!.bottom + eiMargins.bottom;
+    double y = _parentData.insets!.top + eiMargins.top;
+    double width = preferredSize.width - x - _parentData.insets!.right + eiMargins.right;
+    double height = preferredSize.height - y - _parentData.insets!.bottom + eiMargins.bottom;
 
     // If parent has forced this into a size, cant exceed these values.
-    if (_parentData.hasPosition)
-    {
+    if (_parentData.hasPosition) {
       width = _parentData.layoutPosition!.width - x - _parentData.insets!.right + eiMargins.right;
       height = _parentData.layoutPosition!.height - y - _parentData.insets!.bottom + eiMargins.bottom;
     }
 
-    if (_childNorth != null)
-    {
+    if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
-      
-      // If we have to relayout because it may take up more in height and it could take more in heigth.
-      if ((_childNorth!.hasPreferredSize && _childNorth!.preferredSize!.width > width)
-          || (_childNorth!.hasCalculatedSize && _childNorth!.calculatedSize!.width > width))
-      {
-        LayoutData cloneChildNorth = _childNorth!.clone();
-        
-        // TODO calculations
-        listChildsToRedraw.add(cloneChildNorth);
-      }
 
-      _positions[_childNorth!.id] = LayoutPosition(top: x, left: y, height: bestSize.height, width: width, isComponentSize: true);
+      markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
+
+      _positions[_childNorth!.id] =
+          LayoutPosition(top: x, left: y, width: width, height: bestSize.height, isComponentSize: true);
 
       y += bestSize.height + iVerticalGap;
-			height -= bestSize.height + iVerticalGap;
-    }
-    
-    // Position south child.
-//		if (south != null && south.isVisible())
-//		{
-//			Dimension southDim = JVxUtil.getPreferredSize(south);
-//			
-//			south.setBounds(x, y + height - southDim.height, width, southDim.height);
-//
-//			height -= southDim.height + iVerticalGap;
-//		}
-    if (_childSouth != null)
-    {
-      double southHeight = _childSouth!.bestSize.height;
-
-      _positions[_childNorth!.id] = LayoutPosition(top: eiMargins.top, left: eiMargins.left, height: southHeight, width: maxWidth, isComponentSize: true);
-
-      occupiedHeight += southHeight + iVerticalGap;
+      height -= bestSize.height + iVerticalGap;
     }
 
-//		if (west != null && west.isVisible())
-//		{
-//			Dimension westDim = JVxUtil.getPreferredSize(west);
-//			
-//			west.setBounds(x, y, westDim.width, height);
-//
-//			x += westDim.width + iHorizontalGap;
-//			width -= westDim.width + iHorizontalGap;
-//		}
+    if (_childSouth != null) {
+      Size bestSize = _childSouth!.bestSize;
 
-//		if (east != null && east.isVisible())
-//		{
-//			Dimension eastDim = JVxUtil.getPreferredSize(east);
-//			
-//			east.setBounds(x + width - eastDim.width, y, eastDim.width, height);
-//
-//			width -= eastDim.width + iHorizontalGap;
-//		}
+      markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
-//		if (center != null && center.isVisible())
-//		{
-//			center.setBounds(x, y, width, height);
-//		}
+      _positions[_childSouth!.id] = LayoutPosition(
+          top: x, left: eiMargins.left, width: width, height: y + height - bestSize.height, isComponentSize: true);
+
+      height -= bestSize.height + iVerticalGap;
+    }
+
+    if (_childWest != null) {
+      Size bestSize = _childWest!.bestSize;
+
+      markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
+
+      _positions[_childWest!.id] =
+          LayoutPosition(top: x, left: y, width: bestSize.width, height: height, isComponentSize: true);
+
+      x += bestSize.width + iHorizontalGap;
+      width -= bestSize.width + iHorizontalGap;
+    }
+
+    if (_childEast != null) {
+      Size bestSize = _childEast!.bestSize;
+
+      markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
+
+      _positions[_childEast!.id] = LayoutPosition(
+          top: x + width - bestSize.width, left: y, width: bestSize.width, height: height, isComponentSize: true);
+
+      width -= bestSize.width + iHorizontalGap;
+    }
+
+    if (_childCenter != null) {
+      markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
+
+      _positions[_childCenter!.id] =
+          LayoutPosition(top: x, left: y, width: width, height: height, isComponentSize: true);
+    }
 
     //parent.layoutData
     return _positions;
@@ -235,8 +224,7 @@ class BorderLayout implements ILayout, ICloneable {
   }
 
   Size _maximumLayoutSize() {
-    if (_parentData.maxSize != null)
-    {
+    if (_parentData.maxSize != null) {
       return _parentData.maxSize!;
     }
     return const Size(double.infinity, double.infinity);
@@ -245,32 +233,25 @@ class BorderLayout implements ILayout, ICloneable {
   Size _minimumLayoutSize() {
     if (_parentData.hasMinSize) {
       return _parentData.minSize!;
-    } 
-    else 
-    {
+    } else {
       Size n = const Size(0, 0);
-      if (_childNorth != null && _childNorth!.hasMinSize)
-      {
+      if (_childNorth != null && _childNorth!.hasMinSize) {
         n = _childNorth!.bestMinSize;
       }
       Size e = const Size(0, 0);
-      if (_childEast != null && _childEast!.hasMinSize)
-      {
+      if (_childEast != null && _childEast!.hasMinSize) {
         e = _childEast!.bestMinSize;
       }
       Size s = const Size(0, 0);
-      if (_childSouth != null && _childSouth!.hasMinSize)
-      {
+      if (_childSouth != null && _childSouth!.hasMinSize) {
         s = _childSouth!.bestMinSize;
       }
       Size w = const Size(0, 0);
-      if (_childWest != null && _childWest!.hasMinSize)
-      {
+      if (_childWest != null && _childWest!.hasMinSize) {
         w = _childWest!.bestMinSize;
       }
       Size c = const Size(0, 0);
-      if (_childCenter != null && _childCenter!.hasMinSize)
-      {
+      if (_childCenter != null && _childCenter!.hasMinSize) {
         c = _childCenter!.bestMinSize;
       }
 
@@ -282,9 +263,7 @@ class BorderLayout implements ILayout, ICloneable {
   Size _preferredLayoutSize() {
     if (_parentData.hasPreferredSize) {
       return _parentData.preferredSize!;
-    } 
-    else
-    {
+    } else {
       double width = 0;
       double height = 0;
 
@@ -330,8 +309,17 @@ class BorderLayout implements ILayout, ICloneable {
         width = maxWidth;
       }
 
-      return Size(width + eiMargins.left + eiMargins.right,
-          height + eiMargins.top + eiMargins.bottom);
+      return Size(width + eiMargins.left + eiMargins.right, height + eiMargins.top + eiMargins.bottom);
+    }
+  }
+
+  void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
+    if (!pChild.hasPreferredSize &&
+        pChild.hasCalculatedSize &&
+        (pChild.calculatedSize!.width > pNewCalcSize.width || pChild.calculatedSize!.height > pNewCalcSize.height)) {
+      LayoutData cloneChildNorth = pChild.clone();
+      cloneChildNorth.calculatedSize = pNewCalcSize;
+      listChildsToRedraw.add(cloneChildNorth);
     }
   }
 }

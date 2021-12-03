@@ -30,12 +30,10 @@ class LayoutService implements ILayoutService {
 
     LayoutData? ldRegisteredParent = _parents[pId];
     if (ldRegisteredParent != null) {
-      for (LayoutData oldChild in ldRegisteredParent.children!)
-      {
-        // LayoutData implements == and Hashcode therefore we can remove an 'old' 
+      for (LayoutData oldChild in ldRegisteredParent.children!) {
+        // LayoutData implements == and Hashcode therefore we can remove an 'old'
         // child by id even though theoretically it does not exist in that list.
-        if (children.remove(oldChild))
-        {
+        if (children.remove(oldChild)) {
           children.add(oldChild);
         }
       }
@@ -48,8 +46,7 @@ class LayoutService implements ILayoutService {
   }
 
   @override
-  bool removeAsParent(String pParentId)
-  {
+  bool removeAsParent(String pParentId) {
     return _parents.remove(pParentId) != null;
   }
 
@@ -58,11 +55,9 @@ class LayoutService implements ILayoutService {
     DateTime startOfCall = DateTime.now();
 
     LayoutData? parent = _parents[pParentId];
-    if(parent != null)
-    {
+    if (parent != null) {
       LayoutData? child = parent.children!.firstWhereOrNull((element) => element.id == pId);
-      if (child != null)
-      {
+      if (child != null) {
         // Set PreferredSize and constraints
         child.preferredSize = pSize;
         child.constraints = pConstraints;
@@ -71,7 +66,8 @@ class LayoutService implements ILayoutService {
         LayoutData parentSnapShot = parent.clone();
 
         // If the parent insets are not set (null) we can't layout.
-        bool legalLayoutState = parentSnapShot.hasInsets && parentSnapShot.children!.every((element) => element.preferredSize != null);
+        bool legalLayoutState =
+            parentSnapShot.hasInsets && parentSnapShot.children!.every((element) => element.preferredSize != null);
 
         if (legalLayoutState) {
           _performCalculation(parentSnapShot, startOfCall);
@@ -82,10 +78,8 @@ class LayoutService implements ILayoutService {
 
   @override
   void applyLayoutConstraints(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall) {
-    for (LayoutData child in _parents[pParentId]!.children!)
-    {
-      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall))
-      {
+    for (LayoutData child in _parents[pParentId]!.children!) {
+      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
         LayoutPosition position = pPositions[child.id]!;
         position.timeOfCall = pStartOfCall;
         child.layoutPosition = position;

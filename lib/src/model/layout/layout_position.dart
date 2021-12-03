@@ -2,7 +2,7 @@ import '../../../util/i_clonable.dart';
 
 /// The [LayoutPosition] are the constraints actually getting applied to a component.
 // Author: Toni Heiss
-class LayoutPosition implements ICloneable{
+class LayoutPosition implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +25,7 @@ class LayoutPosition implements ICloneable{
   /// The position of the top left component corner from the right in px.
   double? right;
 
-  /// Whether the component has this as its size or as a constraint. 
+  /// Whether the component has this as its size or as a constraint.
   /// (Fixed size or not, e.g. [BorderLayout] has this always `true`)
   bool isComponentSize;
 
@@ -37,18 +37,26 @@ class LayoutPosition implements ICloneable{
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutPosition].
-  LayoutPosition({required this.width, required this.height, this.top, this.left, this.right, this.bottom, required this.isComponentSize, this.timeOfCall});
+  LayoutPosition(
+      {required this.width,
+      required this.height,
+      this.top,
+      this.left,
+      this.right,
+      this.bottom,
+      required this.isComponentSize,
+      this.timeOfCall});
 
   /// Clones [LayoutPosition] as a deep copy.
-  LayoutPosition.from(LayoutPosition pLayoutPosition) :
-    width = pLayoutPosition.width,
-    height = pLayoutPosition.height,
-    top = pLayoutPosition.top,
-    left = pLayoutPosition.left,
-    bottom = pLayoutPosition.bottom,
-    right = pLayoutPosition.right,
-    isComponentSize = pLayoutPosition.isComponentSize,
-    timeOfCall = pLayoutPosition.timeOfCall != null ? DateTime.parse(pLayoutPosition.timeOfCall.toString()) : null;
+  LayoutPosition.from(LayoutPosition pLayoutPosition)
+      : width = pLayoutPosition.width,
+        height = pLayoutPosition.height,
+        top = pLayoutPosition.top,
+        left = pLayoutPosition.left,
+        bottom = pLayoutPosition.bottom,
+        right = pLayoutPosition.right,
+        isComponentSize = pLayoutPosition.isComponentSize,
+        timeOfCall = pLayoutPosition.timeOfCall != null ? DateTime.parse(pLayoutPosition.timeOfCall.toString()) : null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
