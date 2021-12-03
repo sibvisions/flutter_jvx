@@ -97,11 +97,11 @@ class FormLayoutAnchor {
 
   /// Gets the related border anchor to this anchor.
   FormLayoutAnchor getBorderAnchor() {
-    FormLayoutAnchor? iRelatedAnchor = relatedAnchor;
-    while(iRelatedAnchor != null){
-      iRelatedAnchor = iRelatedAnchor.relatedAnchor;
+    FormLayoutAnchor start = this;
+    while(start.relatedAnchor != null){
+      start = start.relatedAnchor!;
     }
-    return iRelatedAnchor ?? this;
+    return start;
   }
 
   /// Gets the related unused auto size anchor.
