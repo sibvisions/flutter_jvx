@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/layout/form_layout.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
+
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
 import 'src/model/config/api/url_config.dart';
@@ -25,7 +28,7 @@ Future<bool> initAppMobile() async {
 
   // API
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("192.168.0.164", 8090);
+  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
@@ -51,6 +54,10 @@ Future<bool> initAppMobile() async {
   // UI
   IUiService uiService = UiService();
   services.registerSingleton(uiService, signalsReady: true);
+  
+  
+  FormLayout f = FormLayout();
+  f.calculateLayout(LayoutData(id: "awsd"));
 
   return true;
 }
