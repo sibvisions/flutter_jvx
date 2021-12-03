@@ -6,7 +6,7 @@ import '../../../src/model/layout/form_layout/form_layout_constraints.dart';
 import '../../../src/model/layout/layout_data.dart';
 
 /// Util Methods for [FormLayout]
-class FormLayoutUtil {
+class FLUtil {
 
   /// Parses all anchors from layoutData and establishes relatedAnchors
   static HashMap<String, FormLayoutAnchor> getAnchors(String layoutData) {

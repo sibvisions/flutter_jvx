@@ -1,8 +1,9 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import '../../../src/model/layout/form_layout/form_layout_anchor.dart';
 
-class FormLayoutCalculateAnchorsUtil {
+class FLCalculateAnchorsUtil {
 
 
   /// Gets all non-calculated auto size anchors between start and end anchor
@@ -32,16 +33,31 @@ class FormLayoutCalculateAnchorsUtil {
   }
 
   /// Calculates the preferred size of component auto size anchors.
-  static void calculateAutoSize({required FormLayoutAnchor leftTopAnchor, required FormLayoutAnchor rightBottomAnchor, required double? preferredSize,
+  static void calculateAutoSize({required FormLayoutAnchor leftTopAnchor, required FormLayoutAnchor rightBottomAnchor, required double preferredSize,
       required double autoSizeCount, required HashMap<String, FormLayoutAnchor> pAnchors }) {
 
     List<FormLayoutAnchor> autoSizeAnchors = getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
-    if(autoSizeAnchors.length == autoSizeCount && preferredSize != null){
+    if(autoSizeAnchors.length == autoSizeCount){
+      double fixedSize = rightBottomAnchor.getAbsolutePosition() - leftTopAnchor.getAbsolutePosition();
+      for(FormLayoutAnchor anchor in autoSizeAnchors){
+        fixedSize += anchor.position;
+      }
+      double diffSize = (preferredSize - fixedSize + autoSizeCount -1) / autoSizeCount;
+      for (FormLayoutAnchor anchor in autoSizeAnchors) {
+        if(diffSize > -anchor.position){
+          anchor.position = -diffSize;
+        }
+        anchor.firstCalculation = false;
+      }
+    }
+
+    autoSizeAnchors = getAutoSizeAnchorsBetween(pStartAnchor: rightBottomAnchor, pEndAnchor: leftTopAnchor, pAnchors: pAnchors);
+    if(autoSizeAnchors.length == autoSizeCount){
       double fixedSize = rightBottomAnchor.getAbsolutePosition() - leftTopAnchor.getAbsolutePosition();
       for(FormLayoutAnchor anchor in autoSizeAnchors){
         fixedSize -= anchor.position;
       }
-      double diffSize = (preferredSize - fixedSize - autoSizeCount -1) / autoSizeCount;
+      double diffSize = (preferredSize - fixedSize + autoSizeCount - 1) /autoSizeCount;
       for (FormLayoutAnchor anchor in autoSizeAnchors) {
         if(diffSize > anchor.position){
           anchor.position = diffSize;

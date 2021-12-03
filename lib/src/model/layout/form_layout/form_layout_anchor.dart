@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 enum Orientation {
   HORIZONTAL,
   VERTICAL
@@ -97,7 +99,7 @@ class FormLayoutAnchor {
   FormLayoutAnchor getBorderAnchor() {
     FormLayoutAnchor? iRelatedAnchor = relatedAnchor;
     while(iRelatedAnchor != null){
-      iRelatedAnchor = iRelatedAnchor;
+      iRelatedAnchor = iRelatedAnchor.relatedAnchor;
     }
     return iRelatedAnchor ?? this;
   }
@@ -106,6 +108,7 @@ class FormLayoutAnchor {
   FormLayoutAnchor getRelativeAnchor() {
     FormLayoutAnchor? start = this;
     while(start != null && !start.relative && start.relatedAnchor != null){
+      log("Get Relative");
       start = start.relatedAnchor;
     }
     return start ?? this;
