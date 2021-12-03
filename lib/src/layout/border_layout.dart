@@ -223,6 +223,7 @@ class BorderLayout implements ILayout, ICloneable {
     iVerticalGap = int.parse(parameter[6]);
   }
 
+  /// Returns the maximum layout size
   Size _maximumLayoutSize() {
     if (_parentData.maxSize != null) {
       return _parentData.maxSize!;
@@ -230,6 +231,7 @@ class BorderLayout implements ILayout, ICloneable {
     return const Size(double.infinity, double.infinity);
   }
 
+  /// Returns the minimum layout size
   Size _minimumLayoutSize() {
     if (_parentData.hasMinSize) {
       return _parentData.minSize!;
@@ -260,6 +262,7 @@ class BorderLayout implements ILayout, ICloneable {
     }
   }
 
+  /// Returns the preferred layout size
   Size _preferredLayoutSize() {
     if (_parentData.hasPreferredSize) {
       return _parentData.preferredSize!;
@@ -313,6 +316,8 @@ class BorderLayout implements ILayout, ICloneable {
     }
   }
 
+  /// Checks if the new size constraint of either width or height would
+  /// be needed for a redraw, if the component only has a calculated size.
   void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
     if (!pChild.hasPreferredSize &&
         pChild.hasCalculatedSize &&
