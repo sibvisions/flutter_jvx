@@ -30,10 +30,15 @@ class LayoutService implements ILayoutService {
 
     LayoutData? ldRegisteredParent = _parents[pId];
     if (ldRegisteredParent != null) {
-      var oldChildren = ldRegisteredParent.children!.where((element) => !pChildrenIds.contains(element.id)).toList();
-      
-      children.removeWhere((element) => oldChildren.contains(element));
-      children.addAll(oldChildren);
+      for (LayoutData oldChild in ldRegisteredParent.children!)
+      {
+        // LayoutData implements == and Hashcode therefore we can remove an 'old' 
+        // child by id even though theoretically it does not exist in that list.
+        if (children.remove(oldChild))
+        {
+          children.add(oldChild);
+        }
+      }
     }
 
     //Builds Children with only Id, so the preferred Size can be added later.
@@ -50,6 +55,8 @@ class LayoutService implements ILayoutService {
 
   @override
   void registerPreferredSize(String pId, String pParentId, Size pSize, String pConstraints) {
+    DateTime startOfCall = DateTime.now();
+
     LayoutData? parent = _parents[pParentId];
     if(parent != null)
     {
@@ -67,27 +74,39 @@ class LayoutService implements ILayoutService {
         bool legalLayoutState = parentSnapShot.hasInsets && parentSnapShot.children!.every((element) => element.preferredSize != null);
 
         if (legalLayoutState) {
-          _performCalculation(parentSnapShot);
+          _performCalculation(parentSnapShot, startOfCall);
         }
       }
     }
   }
 
   @override
-  void applyLayoutConstraints(String pParentId, Map<String, LayoutPosition> pPositions) {
-    // TODO: implement applyLayoutConstraints
+  void applyLayoutConstraints(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall) {
+    for (LayoutData child in _parents[pParentId]!.children!)
+    {
+      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall))
+      {
+        LayoutPosition position = pPositions[child.id]!;
+        position.timeOfCall = pStartOfCall;
+        child.layoutPosition = position;
+
+        // TODO send data to child component.
+      }
+    }
+
+    // TODO send data to parent component.
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _performCalculation(LayoutData pParent) {
+  _performCalculation(LayoutData pParent, DateTime pStartOfCall) {
     // Use compute(new Isolate) to not lock app while layout is calculating
     Future<Map<String, LayoutPosition>>? layoutData = compute(_calculateLayout, pParent);
 
     // register callback on compute completion
-    layoutData.then((layoutPositions) => {applyLayoutConstraints(pParent.id, layoutPositions)});
+    layoutData.then((layoutPositions) => {applyLayoutConstraints(pParent.id, layoutPositions, pStartOfCall)});
   }
 }
 

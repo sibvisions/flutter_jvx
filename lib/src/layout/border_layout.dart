@@ -2,6 +2,9 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/button/fl_button_widget.dart';
+import 'package:flutter_client/src/components/panel/fl_panel_widget.dart';
+import 'package:flutter_client/src/model/component/button/fl_button_model.dart';
 
 import '../../util/extensions/list_extensions.dart';
 import '../../util/i_clonable.dart';
@@ -76,6 +79,9 @@ class BorderLayout implements ILayout, ICloneable {
   /// Child with layout constraint [CENTER];
   LayoutData? _childCenter;
 
+  @override
+  List<LayoutData> listChildsToRedraw = [];
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,48 +115,80 @@ class BorderLayout implements ILayout, ICloneable {
 
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
-    double maxWidth = preferredSize.width;
-    double maxHeight = preferredSize.height;
-
-    double occupiedWidth = 0;
-    double occupiedHeight = 0;
+    
+    double x = _parentData.insets!.left + eiMargins.left;
+		double y = _parentData.insets!.top + eiMargins.top;
+		double width = preferredSize.width - x - _parentData.insets!.right + eiMargins.right;
+		double height = preferredSize.height - y - _parentData.insets!.bottom + eiMargins.bottom;
 
     // If parent has forced this into a size, cant exceed these values.
     if (_parentData.hasPosition)
     {
-      maxWidth = _parentData.layoutPosition!.width - _parentData.insets!.left - _parentData.insets!.right;
-      maxHeight = _parentData.layoutPosition!.height - _parentData.insets!.top - _parentData.insets!.bottom;
+      width = _parentData.layoutPosition!.width - x - _parentData.insets!.right + eiMargins.right;
+      height = _parentData.layoutPosition!.height - y - _parentData.insets!.bottom + eiMargins.bottom;
     }
 
-    // Position north child.
     if (_childNorth != null)
     {
-      double northHeight = _childNorth!.bestSize.height;
+      Size bestSize = _childNorth!.bestSize;
       
-      if (northHeight > (maxHeight))
+      // If we have to relayout because it may take up more in height and it could take more in heigth.
+      if ((_childNorth!.hasPreferredSize && _childNorth!.preferredSize!.width > width)
+          || (_childNorth!.hasCalculatedSize && _childNorth!.calculatedSize!.width > width))
       {
-        northHeight = (maxHeight); 
+        LayoutData cloneChildNorth = _childNorth!.clone();
+        
+        // TODO calculations
+        listChildsToRedraw.add(cloneChildNorth);
       }
 
-      _positions[_childNorth!.id] = LayoutPosition(top: eiMargins.top, left: eiMargins.left, height: northHeight, width: maxWidth);
+      _positions[_childNorth!.id] = LayoutPosition(top: x, left: y, height: bestSize.height, width: width, isComponentSize: true);
 
-      occupiedHeight += northHeight + iVerticalGap;
+      y += bestSize.height + iVerticalGap;
+			height -= bestSize.height + iVerticalGap;
     }
     
     // Position south child.
+//		if (south != null && south.isVisible())
+//		{
+//			Dimension southDim = JVxUtil.getPreferredSize(south);
+//			
+//			south.setBounds(x, y + height - southDim.height, width, southDim.height);
+//
+//			height -= southDim.height + iVerticalGap;
+//		}
     if (_childSouth != null)
     {
       double southHeight = _childSouth!.bestSize.height;
-      
-      if (southHeight > (maxHeight - occupiedHeight))
-      {
-        southHeight = (maxHeight - occupiedHeight); 
-      }
 
-      _positions[_childNorth!.id] = LayoutPosition(top: eiMargins.top, left: eiMargins.left, height: southHeight, width: maxWidth);
+      _positions[_childNorth!.id] = LayoutPosition(top: eiMargins.top, left: eiMargins.left, height: southHeight, width: maxWidth, isComponentSize: true);
 
       occupiedHeight += southHeight + iVerticalGap;
     }
+
+//		if (west != null && west.isVisible())
+//		{
+//			Dimension westDim = JVxUtil.getPreferredSize(west);
+//			
+//			west.setBounds(x, y, westDim.width, height);
+//
+//			x += westDim.width + iHorizontalGap;
+//			width -= westDim.width + iHorizontalGap;
+//		}
+
+//		if (east != null && east.isVisible())
+//		{
+//			Dimension eastDim = JVxUtil.getPreferredSize(east);
+//			
+//			east.setBounds(x + width - eastDim.width, y, eastDim.width, height);
+//
+//			width -= eastDim.width + iHorizontalGap;
+//		}
+
+//		if (center != null && center.isVisible())
+//		{
+//			center.setBounds(x, y, width, height);
+//		}
 
     //parent.layoutData
     return _positions;

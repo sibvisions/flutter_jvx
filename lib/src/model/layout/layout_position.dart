@@ -25,18 +25,19 @@ class LayoutPosition implements ICloneable{
   /// The position of the top left component corner from the right in px.
   double? right;
 
-  /// Whether the component has this as its size or as a constraint.
+  /// Whether the component has this as its size or as a constraint. 
+  /// (Fixed size or not, e.g. [BorderLayout] has this always `true`)
   bool isComponentSize;
 
   /// The time of the initial layout call to determine if the [LayoutPosition] is still relevant for components.
-  DateTime timeOfCall;
+  DateTime? timeOfCall;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutPosition].
-  LayoutPosition({required this.width, required this.height, this.top, this.left, this.right, this.bottom, required this.isComponentSize, required this.timeOfCall});
+  LayoutPosition({required this.width, required this.height, this.top, this.left, this.right, this.bottom, required this.isComponentSize, this.timeOfCall});
 
   /// Clones [LayoutPosition] as a deep copy.
   LayoutPosition.from(LayoutPosition pLayoutPosition) :
@@ -47,7 +48,7 @@ class LayoutPosition implements ICloneable{
     bottom = pLayoutPosition.bottom,
     right = pLayoutPosition.right,
     isComponentSize = pLayoutPosition.isComponentSize,
-    timeOfCall = DateTime.parse(pLayoutPosition.timeOfCall.toString());
+    timeOfCall = pLayoutPosition.timeOfCall != null ? DateTime.parse(pLayoutPosition.timeOfCall.toString()) : null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

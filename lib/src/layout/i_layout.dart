@@ -24,6 +24,9 @@ abstract class ILayout implements ICloneable {
   @override
   ILayout clone();
 
+  /// Returns a list of children with new constraints to recalculate its size.
+  List<LayoutData> get listChildsToRedraw; 
+
   /// Returns the correct [ILayout] implementation depending on the data in [pLayout].
   ///
   /// Current implementations are:
