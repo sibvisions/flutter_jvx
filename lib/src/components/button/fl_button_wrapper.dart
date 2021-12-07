@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:html';
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
@@ -45,6 +46,8 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     );
 
     return Positioned(
+      top: _getTopForPositioned(),
+      left: _getLeftForPositioned(),
       width: _getWidthForPositioned(),
       height: _getHeigthForPositioned(),
       child: buttonWidget,
@@ -70,6 +73,10 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   double? _getWidthForComponent() {
     if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
       return layoutData.layoutPosition!.width;
+    } else if (layoutData.hasPreferredSize) {
+      return layoutData.preferredSize!.width;
+    } else if (layoutData.hasCalculatedSize) {
+      return layoutData.calculatedSize!.width;
     } else {
       return null;
     }
@@ -78,9 +85,21 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   double? _getHeigthForComponent() {
     if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
       return layoutData.layoutPosition!.height;
+    } else if (layoutData.hasPreferredSize) {
+      return layoutData.preferredSize!.height;
+    } else if (layoutData.hasCalculatedSize) {
+      return layoutData.calculatedSize!.height;
     } else {
       return null;
     }
+  }
+
+  double _getTopForPositioned() {
+    return layoutData.hasPosition ? layoutData.layoutPosition!.top : 0.0;
+  }
+
+  double _getLeftForPositioned() {
+    return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
   void postFrameCallback(Duration time) {}
