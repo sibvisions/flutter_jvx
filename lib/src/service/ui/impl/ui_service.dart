@@ -14,11 +14,9 @@ import '../../../model/routing/route_to_work_screen.dart';
 import '../../../routing/app_delegate.dart';
 import '../i_ui_service.dart';
 
-
 /// Manages all interactions with the UI
 // Author: Michael Schober
 class UiService with CommandServiceMixin implements IUiService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,11 +33,9 @@ class UiService with CommandServiceMixin implements IUiService {
   /// Live Component Registration
   HashMap<String, Function> registeredComponents = HashMap();
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
   // Api Commands
   @override
@@ -57,8 +53,8 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void openScreen(String componentId) {
     OpenScreenCommand openScreenCommand = OpenScreenCommand(
-        componentId: componentId,
-        reason: "UI component clicked menu item",
+      componentId: componentId,
+      reason: "UI component clicked menu item",
     );
     commandService.sendCommand(openScreenCommand);
   }
@@ -83,7 +79,6 @@ class UiService with CommandServiceMixin implements IUiService {
     _routeStream.sink.add(routeToWorkScreen);
   }
 
-
   // Content
   @override
   List<FlComponentModel> getChildrenModels(String id) {
@@ -103,28 +98,24 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void registerPreferredSize(String id, Size size) {
-    PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
-        size: size,
-        componentId: id,
-        reason: "component has been rendered"
-    );
+    PreferredSizeCommand preferredSizeCommand =
+        PreferredSizeCommand(size: size, componentId: id, reason: "component has been rendered");
     commandService.sendCommand(preferredSizeCommand);
   }
 
   @override
   void updateComponentModels(List<FlComponentModel> modelsToUpdate) {
-
     // Update All Models
-    for(FlComponentModel newModel in modelsToUpdate){
+    for (FlComponentModel newModel in modelsToUpdate) {
       FlComponentModel? toBeReplaced;
-      for(FlComponentModel oldModel in currentScreen){
-        if(newModel.id == oldModel.id){
+      for (FlComponentModel oldModel in currentScreen) {
+        if (newModel.id == oldModel.id) {
           toBeReplaced = oldModel;
         }
       }
 
       // Replace Old with new Model or Add as new one.
-      if(toBeReplaced != null){
+      if (toBeReplaced != null) {
         toBeReplaced = newModel;
       } else {
         currentScreen.add(newModel);
@@ -132,10 +123,10 @@ class UiService with CommandServiceMixin implements IUiService {
     }
 
     // Call callbacks of active components
-    for(FlComponentModel newModel in modelsToUpdate){
-      Function? componentCallback =  registeredComponents[newModel.id];
-      if(componentCallback != null){
-        componentCallback.call();
+    for (FlComponentModel newModel in modelsToUpdate) {
+      Function? componentCallback = registeredComponents[newModel.id];
+      if (componentCallback != null) {
+        componentCallback.call(newModel);
       }
     }
   }

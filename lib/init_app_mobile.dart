@@ -25,10 +25,9 @@ import 'src/service/ui/impl/ui_service.dart';
 import 'data/config/config_generator.dart';
 
 Future<bool> initAppMobile() async {
-
   // API
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
+  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("172.16.0.34", 8888);
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
@@ -54,10 +53,6 @@ Future<bool> initAppMobile() async {
   // UI
   IUiService uiService = UiService();
   services.registerSingleton(uiService, signalsReady: true);
-  
-  
-  FormLayout f = FormLayout();
-  f.calculateLayout(LayoutData(id: "awsd"));
 
   return true;
 }

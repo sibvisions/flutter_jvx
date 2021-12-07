@@ -19,15 +19,13 @@ abstract class ApiObjectProperty {
   static const String screenModel = "screen_modal_";
   static const String screenClassName = "screen_className_";
 
-
   //Common Properties -- these may be used by many different Components
   static const String text = "text";
   static const String horizontalAlignment = "horizontalAlignment";
   static const String verticalAlignment = "verticalAlignment";
-
-
-
-
+  static const String visible = "visible";
+  static const String enabled = "enabled";
+  
   //Can occur in both request & response
   static const String clientId = "clientId";
   static const String componentId = "componentId";
@@ -43,7 +41,6 @@ abstract class ApiObjectProperty {
   static const String screenWidth = "screenWidth";
   static const String screenHeight = "screenHeight";
 
-
   //Response Properties
   static const String authenticated = "authenticated";
   static const String openScreen = "openScreen";
@@ -52,4 +49,8 @@ abstract class ApiObjectProperty {
   static const String entries = "entries";
   static const String changedComponents = "changedComponents";
 
+  // Sizes
+  static const String preferredSize = "preferredSize";
+  static const String minimumSize = "minimumSize";
+  static const String maximumSize = "maximumSize";
 }
