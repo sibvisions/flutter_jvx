@@ -14,16 +14,10 @@ class LayoutPosition implements ICloneable {
   double height;
 
   /// The position of the top left component corner from the top in px.
-  double? top;
+  double top;
 
   /// The position of the top left component corner from the left in px.
-  double? left;
-
-  /// The position of the top left component corner from the bottom in px.
-  double? bottom;
-
-  /// The position of the top left component corner from the right in px.
-  double? right;
+  double left;
 
   /// Whether the component has this as its size or as a constraint.
   /// (Fixed size or not, e.g. [BorderLayout] has this always `true`)
@@ -40,10 +34,8 @@ class LayoutPosition implements ICloneable {
   LayoutPosition(
       {required this.width,
       required this.height,
-      this.top,
-      this.left,
-      this.right,
-      this.bottom,
+      required this.top,
+      required this.left,
       required this.isComponentSize,
       this.timeOfCall});
 
@@ -53,8 +45,6 @@ class LayoutPosition implements ICloneable {
         height = pLayoutPosition.height,
         top = pLayoutPosition.top,
         left = pLayoutPosition.left,
-        bottom = pLayoutPosition.bottom,
-        right = pLayoutPosition.right,
         isComponentSize = pLayoutPosition.isComponentSize,
         timeOfCall = pLayoutPosition.timeOfCall != null ? DateTime.parse(pLayoutPosition.timeOfCall.toString()) : null;
 
