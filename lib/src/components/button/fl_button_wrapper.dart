@@ -28,14 +28,14 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   @override
   void initState() {
     uiService.registerAsLiveComponent(widget.model.id, () {
-      log("oi there");
+
     });
     layoutData = LayoutData(
+        constraints: widget.model.constraints,
         id: widget.model.id,
         preferredSize: widget.model.preferredSize,
         minSize: widget.model.minimumSize,
         maxSize: widget.model.maximumSize);
-
     super.initState();
   }
 
@@ -68,7 +68,6 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
   double? _getHeightForPositioned() {
     if (layoutData.hasPosition && !layoutData.layoutPosition!.isComponentSize) {
-      log("asd");
       return layoutData.layoutPosition!.height;
     } else {
       return null;

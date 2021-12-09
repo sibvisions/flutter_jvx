@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter_client/src/layout/i_layout.dart';
 import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
+import 'package:flutter_client/src/model/layout/layout_position.dart';
 
 import '../components_factory.dart';
 import 'fl_panel_widget.dart';
@@ -22,6 +23,8 @@ class FlPanelWrapper extends StatefulWidget {
 class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
 
   HashMap<String, Widget> children = HashMap();
+
+  LayoutPosition? layoutPosition;
 
   @override
   void initState() {
@@ -50,6 +53,10 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    return  FlPanelWidget(children: children.values.toList());
+    return Positioned(
+
+      child: FlPanelWidget(children: children.values.toList())
+    );
+
   }
 }

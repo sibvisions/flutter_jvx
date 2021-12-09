@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter_client/src/model/command/base_command.dart';
+import 'package:flutter_client/src/model/layout/layout_position.dart';
 
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/command/api/login_command.dart';
@@ -69,30 +70,37 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void updateComponentModels(List<FlComponentModel> modelsToUpdate) {
+  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, List<LayoutPosition>? layoutPositions}) {
     // Update All Models
-    for (FlComponentModel newModel in modelsToUpdate) {
-      FlComponentModel? toBeReplaced;
-      for (FlComponentModel oldModel in currentScreen) {
-        if (newModel.id == oldModel.id) {
-          toBeReplaced = oldModel;
+    if(modelsToUpdate != null){
+      for (FlComponentModel newModel in modelsToUpdate) {
+        FlComponentModel? toBeReplaced;
+        for (FlComponentModel oldModel in currentScreen) {
+          if (newModel.id == oldModel.id) {
+            toBeReplaced = oldModel;
+          }
+        }
+
+        // Replace Old with new Model or Add as new one.
+        if (toBeReplaced != null) {
+          toBeReplaced = newModel;
+        } else {
+          currentScreen.add(newModel);
         }
       }
 
-      // Replace Old with new Model or Add as new one.
-      if (toBeReplaced != null) {
-        toBeReplaced = newModel;
-      } else {
-        currentScreen.add(newModel);
+      // Call callbacks of active components
+      for (FlComponentModel newModel in modelsToUpdate) {
+        Function? componentCallback = registeredComponents[newModel.id];
+        if (componentCallback != null) {
+          componentCallback.call(newModel);
+        }
       }
     }
 
-    // Call callbacks of active components
-    for (FlComponentModel newModel in modelsToUpdate) {
-      Function? componentCallback = registeredComponents[newModel.id];
-      if (componentCallback != null) {
-        componentCallback.call(newModel);
-      }
+
+    if(layoutPositions != null){
+
     }
   }
 

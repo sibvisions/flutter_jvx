@@ -10,8 +10,7 @@ class UpdateComponentsProcessor with UiServiceGetterMixin implements ICommandPro
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
 
-    log("in Update Processor");
-    getUiService().updateComponentModels(command.affectedComponents);
+    getUiService().updateComponentModels(modelsToUpdate: command.affectedComponents);
     return [];
   }
 

@@ -55,8 +55,6 @@ class FormLayout extends ILayout {
   Map<String, LayoutPosition> calculateLayout(LayoutData pParent) {
     // Needed from Outside
 
-
-
     /// Data of children components
     final HashMap<String, LayoutData> componentData = mapFromChildren(children: pParent.children!);
 
@@ -158,7 +156,7 @@ class FormLayout extends ILayout {
         //Todo LayoutData needs Visible - if(component.isVisible)
         if (true) {
           FormLayoutConstraints constraint = pComponentConstraints[componentId]!;
-          Size preferredSize = component.preferredSize!;
+          Size preferredSize = component.calculatedSize!;
           FLCalculateAnchorsUtil.calculateAutoSize(
               leftTopAnchor: constraint.topAnchor,
               rightBottomAnchor: constraint.bottomAnchor,
@@ -212,7 +210,7 @@ class FormLayout extends ILayout {
     pComponentData.forEach((componentId, component) {
       FormLayoutConstraints constraint = pComponentConstraints[componentId]!;
 
-      Size preferredComponentSize = component.preferredSize!;
+      Size preferredComponentSize = component.calculatedSize!;
       Size minimumComponentSize = component.minSize ?? const Size(0, 0);
 
       if (constraint.rightAnchor.getBorderAnchor().name == "l") {
@@ -478,7 +476,7 @@ class FormLayout extends ILayout {
       ///ToDo Component Visible here
       if (true) {
         FormLayoutConstraints constraints = pComponentConstraints[componentId]!;
-        Size preferredComponentSize = component.preferredSize!;
+        Size preferredComponentSize = component.calculatedSize!;
 
         FLCalculateDependentUtil.calculateRelativeAnchor(
             leftTopAnchor: constraints.leftAnchor,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
+import 'package:flutter_client/src/model/layout/layout_position.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/open_screen_command.dart';
 import '../../model/command/api/startup_command.dart';
@@ -38,7 +39,7 @@ abstract class IUiService {
   List<FlComponentModel> getChildrenModels(String id);
 
   /// Updates Components Models, also tells affected Parents to re-build their children
-  void updateComponentModels(List<FlComponentModel> modelsToUpdate);
+  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, List<LayoutPosition>? layoutPositions});
 
   /// Register as an active Component, callback will be called when model changes or children should be rebuilt.
   void registerAsLiveComponent(String id, Function callback);

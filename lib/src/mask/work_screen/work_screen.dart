@@ -1,6 +1,11 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/model/command/ui/set_size_command.dart';
+
+import 'package:flutter_client/src/layout/i_layout.dart';
+import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
+import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
+import 'package:flutter_client/src/model/command/layout/set_size_command.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../mixin/command_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -39,11 +44,14 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
     commandService.sendCommand(deviceStatusCommand);
 
     SetSizeCommand setSizeCommand = SetSizeCommand(
-        size: Size(width, height),
         componentId: widget.screen.id,
-        reason: "Screen Space in WorkScreen"
+        size: Size(width, height),
+        reason: "Work Screen Screen Size"
     );
     commandService.sendCommand(setSizeCommand);
+
+
+
   }
 
   @override
@@ -53,7 +61,7 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
       body: Scaffold(
         body: LayoutBuilder(builder: (context, constraints) {
             _getScreenSize(constraints.maxHeight, constraints.maxWidth);
-            return screen;
+            return Stack(children: [screen],);
           }
         ),
       )

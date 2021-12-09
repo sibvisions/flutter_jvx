@@ -108,7 +108,6 @@ class FormLayoutAnchor {
   FormLayoutAnchor getRelativeAnchor() {
     FormLayoutAnchor? start = this;
     while(start != null && !start.relative && start.relatedAnchor != null){
-      log("Get Relative");
       start = start.relatedAnchor;
     }
     return start ?? this;
