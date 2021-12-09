@@ -13,7 +13,7 @@ import '../mixin/ui_service_mixin.dart';
 import '../model/routing/route_to_menu.dart';
 import '../model/routing/route_to_work_screen.dart';
 import 'app_route_path.dart';
-import 'app_routing_options.dart';
+import 'app_routing_type.dart';
 
 
 ///
@@ -21,7 +21,7 @@ import 'app_routing_options.dart';
 ///
 class AppDelegate extends RouterDelegate<AppRoutePath> with ChangeNotifier, PopNavigatorRouterDelegateMixin, UiServiceMixin {
   Page activePage = MaterialPage(child: AppLogin());
-  AppRoutingOptions activeRoute = AppRoutingOptions.login;
+  AppRoutingType activeRoute = AppRoutingType.login;
 
   StreamSubscription? routeSubscription;
 
@@ -32,10 +32,10 @@ class AppDelegate extends RouterDelegate<AppRoutePath> with ChangeNotifier, PopN
   _routeChanged(dynamic event) {
     if(event is RouteToMenu){
       activePage = MaterialPage(child: AppMenu(menuModel: event.menuModel, uiService: uiService,));
-      activeRoute = AppRoutingOptions.menu;
+      activeRoute = AppRoutingType.menu;
     } else if (event is RouteToWorkScreen) {
       activePage = MaterialPage(child: WorkScreen(screen: event.screen));
-      activeRoute = AppRoutingOptions.workScreen;
+      activeRoute = AppRoutingType.workScreen;
     }
     notifyListeners();
   }
@@ -52,18 +52,18 @@ class AppDelegate extends RouterDelegate<AppRoutePath> with ChangeNotifier, PopN
   @override
   Future<bool> popRoute() {
     //don't close app if pressing back on login
-    if(activeRoute == AppRoutingOptions.login){
+    if(activeRoute == AppRoutingType.login){
       return SynchronousFuture(false);
     }
     //if OS Back pressed go back to Login
-    if(activeRoute == AppRoutingOptions.menu){
+    if(activeRoute == AppRoutingType.menu){
       activePage = MaterialPage(child: AppLogin());
-      activeRoute = AppRoutingOptions.menu;
+      activeRoute = AppRoutingType.menu;
       notifyListeners();
     }
 
-    if(activeRoute == AppRoutingOptions.workScreen){
-      RouteCommand command = RouteCommand(routeTo: AppRoutingOptions.menu, reason: "backButton");
+    if(activeRoute == AppRoutingType.workScreen){
+      RouteCommand command = RouteCommand(routeType: AppRoutingType.menu, reason: "backButton");
       uiService.sendCommand(command);
     }
 

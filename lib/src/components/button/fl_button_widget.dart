@@ -5,15 +5,16 @@ import '../../model/component/button/fl_button_model.dart';
 import 'package:flutter/material.dart';
 
 class FlButtonWidget extends StatelessWidget {
-  const FlButtonWidget({Key? key, required this.buttonModel, this.width, this.heigth}) : super(key: key);
+  const FlButtonWidget({Key? key, required this.buttonModel, required this.onPress, this.width, this.heigth}) : super(key: key);
 
   final FlButtonModel buttonModel;
   final double? width;
   final double? heigth;
+  final VoidCallback onPress;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: width, height: heigth, child: ElevatedButton(onPressed: () {}, child: _getTextWidget()));
+    return SizedBox(width: width, height: heigth, child: ElevatedButton(onPressed: onPress, child: _getTextWidget()));
   }
 
   Text _getTextWidget() {

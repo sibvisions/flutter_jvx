@@ -1,23 +1,23 @@
 
-import 'app_routing_options.dart';
+import 'app_routing_type.dart';
 
 class AppRoutePath{
-  final AppRoutingOptions page;
+  final AppRoutingType page;
   final String? workScreen;
 
 
   AppRoutePath.login() :
-        page = AppRoutingOptions.login,
+        page = AppRoutingType.login,
         workScreen = null;
 
   AppRoutePath.menu() :
-        page = AppRoutingOptions.menu,
+        page = AppRoutingType.menu,
         workScreen = null;
 
   AppRoutePath.screen({required this.workScreen}) :
-        page = AppRoutingOptions.workScreen;
+        page = AppRoutingType.workScreen;
 
   AppRoutePath.settings() :
-        page = AppRoutingOptions.settings,
+        page = AppRoutingType.settings,
         workScreen = null;
 }

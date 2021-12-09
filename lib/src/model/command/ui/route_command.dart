@@ -1,17 +1,35 @@
 import 'ui_command.dart';
-import '../../../routing/app_routing_options.dart';
+import '../../../routing/app_routing_type.dart';
 
 ///
 /// Issue this command to route to a new page.
 ///
 class RouteCommand extends UiCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppRoutingOptions routeTo;
+  /// The routing type.
+  AppRoutingType routeType;
+
+  /// The screen name to route to.
   String? screenName;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Initializes a [RouteCommand].
   RouteCommand({
     this.screenName,
-    required this.routeTo,
+    required this.routeType,
     required String reason,
   }) : super(reason: reason);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String get logString => "RouteCommand | Screen: $screenName | Route type: $routeType | Reason: $reason";
 }

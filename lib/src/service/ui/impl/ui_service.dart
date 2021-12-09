@@ -37,8 +37,6 @@ class UiService with CommandServiceMixin implements IUiService {
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
   @override
   void sendCommand(BaseCommand command) {
     commandService.sendCommand(command);

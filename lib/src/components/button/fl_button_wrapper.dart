@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
 import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
+import 'package:flutter_client/src/service/service.dart';
+import 'package:flutter_client/src/service/ui/impl/ui_service.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 
@@ -41,6 +44,7 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {postFrameCallback(timeStamp, context);});
     final FlButtonWidget buttonWidget = FlButtonWidget(
       buttonModel: widget.model,
+      onPress: buttonPressed,
       width: _getWidthForComponent(),
       heigth: _getHeightForComponent(),
     );
@@ -113,5 +117,10 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
         reason: "Component has been rendered"
     );
     uiService.sendCommand(preferredSizeCommand);
+  }
+
+  void buttonPressed()
+  {
+    uiService.sendCommand(ButtonPressedCommand(componentId: widget.model.id, reason: "Button has been pressed"));
   }
 }
