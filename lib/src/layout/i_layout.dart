@@ -40,7 +40,7 @@ abstract class ILayout implements ICloneable {
         case "BorderLayout":
           return BorderLayout(pLayout);
         case "FormLayout":
-          return FormLayout();
+          return FormLayout(layoutData: pLayoutData!, layoutString: pLayout);
         case "GridLayout":
           return GridLayout();
         case "FlowLayout":

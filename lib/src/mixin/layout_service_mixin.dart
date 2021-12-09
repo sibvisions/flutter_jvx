@@ -7,5 +7,5 @@ import '../service/service.dart';
 ///  Provides an [ILayoutService] instance from get.it service
 ///
 mixin LayoutServiceMixin {
-  final ILayoutService uiService = services<ILayoutService>();
+  final ILayoutService layoutService = services<ILayoutService>();
 }

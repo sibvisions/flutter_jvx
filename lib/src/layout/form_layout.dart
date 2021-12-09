@@ -24,38 +24,58 @@ enum HorizontalAlignment { left, center, right, stretch }
 enum VerticalAlignment { top, center, bottom, stretch }
 
 class FormLayout extends ILayout {
+
+
+  final String layoutString;
+  final String layoutData;
+
+  FormLayout({
+    required this.layoutData,
+    required this.layoutString
+  });
+
+  HashMap<String, LayoutData> mapFromChildren({required List<LayoutData> children}){
+    HashMap<String, LayoutData> map = HashMap();
+    for (LayoutData data in children) {
+      map[data.id] = data;
+    }
+
+    return map;
+  }
+
+  Size? getSize(LayoutData pParent){
+    LayoutPosition? pos = pParent.layoutPosition;
+    if(pos != null){
+      return Size(pos.width, pos.height);
+    }
+    return null;
+  }
+
   @override
   Map<String, LayoutPosition> calculateLayout(LayoutData pParent) {
     // Needed from Outside
 
-    /// Data of children components
-    final HashMap<String, LayoutData> componentData = HashMap();
 
-    LayoutData button1 = LayoutData(id: "B102", constraints: "t1;l1;b1;r1", preferredSize: const Size(80, 25));
-    LayoutData button2 = LayoutData(id: "B151", constraints: "t3;l1;b3;r1", preferredSize: const Size(80, 25));
-    componentData[button1.id] = button1;
-    componentData[button2.id] = button2;
+
+    /// Data of children components
+    final HashMap<String, LayoutData> componentData = mapFromChildren(children: pParent.children!);
 
     /// LayoutData, Anchor String
-    const String layoutData =
-        "b0,tm,-,0,0;b1,t1,-,a,0;b2,t2,-,0,0;tm,t,-,10,10;t,-,-,0,0;l1,r0,-,0,0;bm,b,-,-10,-10;b,-,-,0,0;b3,t3,-,a,0;r0,lm,-,0,0;r1,l1,-,a,0;t3,b2,-,0,0;t1,b0,-,0,0;t2,b1,-,5,5;r,-,-,0,0;rm,r,-,-10,-10;lm,l,-,10,10;l,-,-,0,0";
+    String layoutData = this.layoutData;
 
     /// LayoutString
-    const String layout = "FormLayout,10,10,10,10,10,5,1,1";
+    String layout = layoutString;
 
-    /// Position set by Parent
-    final LayoutPosition? setPosition =
-        LayoutPosition(height: 1080, width: 1920, top: 0, left: 0, isComponentSize: false);
+    /// Size set by Parent
+    final Size? setPosition = getSize(pParent);
 
     // init and derived variables
 
     /// Margins
-    final Margins margins =
-        Margins.fromList(marginList: layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(0, 4));
+    final Margins margins = Margins.fromList(marginList: layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(0, 4));
 
     /// Gaps
-    final Gaps gaps = Gaps.createFromList(
-        gapsList: layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(4, 6));
+    final Gaps gaps = Gaps.createFromList(gapsList: layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(4, 6));
 
     /// Raw alignments
     final List<String> alignment = layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(6, 8);
@@ -95,9 +115,7 @@ class FormLayout extends ILayout {
         pComponentConstraints: componentConstraints,
         pGivenSize: setPosition);
 
-    buildComponents(pAnchors: anchors, pComponentConstraints: componentConstraints, pMargins: margins);
-
-    return {};
+    return buildComponents(pAnchors: anchors, pComponentConstraints: componentConstraints, pMargins: margins, id: pParent.id);
   }
 
   void calculateAnchors(
@@ -150,7 +168,7 @@ class FormLayout extends ILayout {
           FLCalculateAnchorsUtil.calculateAutoSize(
               leftTopAnchor: constraint.leftAnchor,
               rightBottomAnchor: constraint.rightAnchor,
-              preferredSize: preferredSize.height,
+              preferredSize: preferredSize.width,
               autoSizeCount: autoSizeCount,
               pAnchors: pAnchors);
         }
@@ -334,13 +352,13 @@ class FormLayout extends ILayout {
       required Margins pMargins,
       required HashMap<String, LayoutData> pComponentData,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
-      LayoutPosition? pGivenSize}) {
+      Size? pGivenSize}) {
     /// ToDo SetSizes from server
     Size maxLayoutSize = const Size(100000000, 100000000);
     Size minLayoutSize = const Size(50, 50);
 
     /// Available Size, set to setSize from parent by default
-    LayoutPosition calcSize = pGivenSize ?? LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+    Size calcSize = pGivenSize ?? const Size(0, 0);
 
     /// Not smaller than Minimum
     // double newMinWidth = calcSize.width;
@@ -474,10 +492,11 @@ class FormLayout extends ILayout {
     });
   }
 
-  void buildComponents(
+  Map<String, LayoutPosition> buildComponents(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
-      required Margins pMargins}) {
+      required Margins pMargins,
+      required String id}) {
     /// Get Border- and Margin Anchors for calculation
     FormLayoutAnchor lba = pAnchors["l"]!;
     FormLayoutAnchor rba = pAnchors["r"]!;
@@ -497,22 +516,17 @@ class FormLayout extends ILayout {
     FormLayoutConstraints borderConstraints =
         FormLayoutConstraints(bottomAnchor: bba, leftAnchor: lba, rightAnchor: rba, topAnchor: tba);
 
-    HashMap<String, LayoutPosition> sizeMap = HashMap();
+    // Sizes of Children
+    Map<String, LayoutPosition> sizeMap = HashMap();
 
     pComponentConstraints.forEach((componentId, constraint) {
-      double left = constraint.leftAnchor.getAbsolutePosition() -
-          marginConstraints.leftAnchor.getAbsolutePosition() +
-          pMargins.marginLeft;
-      double top = constraint.topAnchor.getAbsolutePosition() -
-          marginConstraints.topAnchor.getAbsolutePosition() +
-          pMargins.marginTop;
+      double left = constraint.leftAnchor.getAbsolutePosition() - marginConstraints.leftAnchor.getAbsolutePosition() + pMargins.marginLeft;
+      double top = constraint.topAnchor.getAbsolutePosition() - marginConstraints.topAnchor.getAbsolutePosition() + pMargins.marginTop;
       double width = constraint.rightAnchor.getAbsolutePosition() - constraint.leftAnchor.getAbsolutePosition();
       double height = constraint.bottomAnchor.getAbsolutePosition() - constraint.topAnchor.getAbsolutePosition();
 
-      LayoutPosition layoutPosition =
-          LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
+      LayoutPosition layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: false, left: left, top: top);
       sizeMap[componentId] = layoutPosition;
-      log("id: $componentId, height: $height, width: $width");
     });
 
     double height = borderConstraints.bottomAnchor.position - borderConstraints.topAnchor.position;
@@ -520,13 +534,17 @@ class FormLayout extends ILayout {
     double left = marginConstraints.leftAnchor.getAbsolutePosition();
     double top = marginConstraints.topAnchor.getAbsolutePosition();
 
-    log("height: $height, width: $width");
+    // LayoutPosition
+    LayoutPosition layoutPosition = LayoutPosition(width: width, height: height, top: top, left: left, isComponentSize: false);
+
+    sizeMap[id] = layoutPosition;
+
+    return sizeMap;
   }
 
   @override
   ILayout clone() {
-    // TODO: implement clone
-    throw UnimplementedError();
+    return this;
   }
 
   @override

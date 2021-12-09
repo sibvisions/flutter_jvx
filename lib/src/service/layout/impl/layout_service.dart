@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import '../../../model/layout/layout_position.dart';
 
 import '../../../layout/i_layout.dart';
@@ -65,12 +64,22 @@ class LayoutService implements ILayoutService {
         // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
         LayoutData parentSnapShot = parent.clone();
 
-        // If the parent insets are not set (null) we can't layout.
-        bool legalLayoutState =
-            parentSnapShot.hasInsets && parentSnapShot.children!.every((element) => element.preferredSize != null);
+        //
+        bool legalLayoutState = parentSnapShot.children!.every((element) => element.preferredSize != null);
 
         if (legalLayoutState) {
-          _performCalculation(parentSnapShot, startOfCall);
+          var sizes = _calculateLayout(parent);
+
+          LayoutPosition? position = parent.layoutPosition;
+          if(position != null){
+            applyLayoutConstraints(pParentId, sizes, startOfCall);
+          } else {
+            String? parentId = parent.parentId;
+            if(parentId != null){
+              LayoutPosition data = sizes[parentId]!;
+              registerPreferredSize(parent.id, parentId, Size(data.width, data.height), parent.constraints!);
+            }
+          }
         }
       }
     }
@@ -91,20 +100,19 @@ class LayoutService implements ILayoutService {
     // TODO send data to parent component.
   }
 
+  @override
+  void setSize({required Size setSize, required String id}){
+    LayoutData layoutData = _parents[id]!;
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _performCalculation(LayoutData pParent, DateTime pStartOfCall) {
-    // Use compute(new Isolate) to not lock app while layout is calculating
-    Future<Map<String, LayoutPosition>>? layoutData = compute(_calculateLayout, pParent);
-
-    // register callback on compute completion
-    layoutData.then((layoutPositions) => {applyLayoutConstraints(pParent.id, layoutPositions, pStartOfCall)});
+  /// Compute method to calculate the layout async.
+  Map<String, LayoutPosition> _calculateLayout(LayoutData pParent) {
+    return pParent.layout!.calculateLayout(pParent);
   }
 }
 
-/// Compute method to calculate the layout async.
-Map<String, LayoutPosition> _calculateLayout(LayoutData pParent) {
-  return pParent.layout!.calculateLayout(pParent);
-}
+

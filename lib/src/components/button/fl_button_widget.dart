@@ -19,7 +19,7 @@ class FlButtonWidget extends StatelessWidget {
   Text _getTextWidget() {
     return Text(buttonModel.text,
         style: TextStyle(
-            fontSize: buttonModel.fontStyle.fontSize,
-            color: buttonModel.enabled ? buttonModel.foreground : IColorConstants.COMPONENT_DISABLED));
+            fontSize: buttonModel.fontStyle.fontSize)
+    );
   }
 }

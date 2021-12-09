@@ -10,13 +10,16 @@ class FlButtonModel extends FlComponentModel {
   final Color foreground = Colors.black;
   final TextStyle fontStyle = const TextStyle(fontSize: 16.0, color: Colors.black);
   final double textScaleFactor = 1.0;
+  final bool? enabled;
 
   FlButtonModel.fromJson(Map<String, dynamic> json)
       : text = json[ApiObjectProperty.text],
+        enabled = json[ApiObjectProperty.enabled],
         super.fromJson(json);
 
   FlButtonModel.updatedProperties(FlButtonModel oldModel, dynamic json)
       : text = json[ApiObjectProperty.text] ?? oldModel.text,
+        enabled = json[ApiObjectProperty.enabled] ?? oldModel.enabled,
         super.updatedProperties(oldModel, json);
 
   @override

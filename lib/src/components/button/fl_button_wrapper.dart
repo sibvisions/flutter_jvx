@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'dart:html';
 
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../mixin/ui_service_mixin.dart';
@@ -38,18 +38,18 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance!.addPostFrameCallback(postFrameCallback);
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {postFrameCallback(timeStamp, context);});
     final FlButtonWidget buttonWidget = FlButtonWidget(
       buttonModel: widget.model,
       width: _getWidthForComponent(),
-      heigth: _getHeigthForComponent(),
+      heigth: _getHeightForComponent(),
     );
 
     return Positioned(
       top: _getTopForPositioned(),
       left: _getLeftForPositioned(),
       width: _getWidthForPositioned(),
-      height: _getHeigthForPositioned(),
+      height: _getHeightForPositioned(),
       child: buttonWidget,
     );
   }
@@ -62,8 +62,9 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     }
   }
 
-  double? _getHeigthForPositioned() {
+  double? _getHeightForPositioned() {
     if (layoutData.hasPosition && !layoutData.layoutPosition!.isComponentSize) {
+      log("asd");
       return layoutData.layoutPosition!.height;
     } else {
       return null;
@@ -82,7 +83,7 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     }
   }
 
-  double? _getHeigthForComponent() {
+  double? _getHeightForComponent() {
     if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
       return layoutData.layoutPosition!.height;
     } else if (layoutData.hasPreferredSize) {
@@ -102,5 +103,14 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
-  void postFrameCallback(Duration time) {}
+  void postFrameCallback(Duration time, BuildContext context) {
+    PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
+        constraints: widget.model.constraints ?? "",
+        parentId: widget.model.parent ?? "",
+        size: context.size ?? const Size(0, 0),
+        componentId: widget.model.id,
+        reason: "Component has been rendered"
+    );
+    uiService.sendCommand(preferredSizeCommand);
+  }
 }

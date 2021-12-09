@@ -7,7 +7,7 @@ class FlPanelWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Stack(
       children: children
     );
   }

@@ -1,12 +1,16 @@
+import 'package:flutter_client/src/mixin/layout_service_mixin.dart';
+import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
+
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class PreferredSizeProcessor implements ICommandProcessor{
+class PreferredSizeProcessor with LayoutServiceMixin implements ICommandProcessor<PreferredSizeCommand>{
 
   @override
-  Future<List<BaseCommand>> processCommand(BaseCommand command) {
-    // TODO: implement processCommand
-    throw UnimplementedError();
+  Future<List<BaseCommand>> processCommand(PreferredSizeCommand command) async {
+    layoutService.registerPreferredSize(command.componentId, command.parentId, command.size, command.constraints);
+
+    return [];
   }
 
 }

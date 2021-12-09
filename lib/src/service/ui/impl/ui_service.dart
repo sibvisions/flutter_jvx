@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
 import 'dart:ui';
+
+import 'package:flutter_client/src/model/command/base_command.dart';
 
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/command/api/login_command.dart';
@@ -24,9 +27,6 @@ class UiService with CommandServiceMixin implements IUiService {
   /// Used to send Routing events to [AppDelegate].
   final StreamController _routeStream = StreamController.broadcast();
 
-  /// Last open menuModel
-  MenuModel? menuModel;
-
   /// Last open Screen
   List<FlComponentModel> currentScreen = [];
 
@@ -37,26 +37,11 @@ class UiService with CommandServiceMixin implements IUiService {
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  // Api Commands
-  @override
-  void login(String userName, String password) {
-    LoginCommand loginCommand = LoginCommand(userName: userName, password: password, reason: "User clicked on Login");
-    commandService.sendCommand(loginCommand);
-  }
+
 
   @override
-  void startUp() {
-    StartupCommand startupCommand = StartupCommand(reason: "App Started for 1st Time");
-    commandService.sendCommand(startupCommand);
-  }
-
-  @override
-  void openScreen(String componentId) {
-    OpenScreenCommand openScreenCommand = OpenScreenCommand(
-      componentId: componentId,
-      reason: "UI component clicked menu item",
-    );
-    commandService.sendCommand(openScreenCommand);
+  void sendCommand(BaseCommand command) {
+    commandService.sendCommand(command);
   }
 
   // Routing
@@ -67,7 +52,6 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void routeToMenu(MenuModel menuModel) {
-    this.menuModel = menuModel;
     RouteToMenu routeToMenu = RouteToMenu(menuModel: menuModel);
     _routeStream.sink.add(routeToMenu);
   }
@@ -84,23 +68,6 @@ class UiService with CommandServiceMixin implements IUiService {
   List<FlComponentModel> getChildrenModels(String id) {
     var children = currentScreen.where((element) => element.parent == id).toList();
     return children;
-  }
-
-  @override
-  MenuModel getCurrentMenu() {
-    MenuModel? tempMenuModel = menuModel;
-    if (tempMenuModel != null) {
-      return tempMenuModel;
-    } else {
-      throw Exception("Menu was not found");
-    }
-  }
-
-  @override
-  void registerPreferredSize(String id, Size size) {
-    PreferredSizeCommand preferredSizeCommand =
-        PreferredSizeCommand(size: size, componentId: id, reason: "component has been rendered");
-    commandService.sendCommand(preferredSizeCommand);
   }
 
   @override
@@ -135,4 +102,5 @@ class UiService with CommandServiceMixin implements IUiService {
   void registerAsLiveComponent(String id, Function callback) {
     registeredComponents[id] = callback;
   }
+
 }

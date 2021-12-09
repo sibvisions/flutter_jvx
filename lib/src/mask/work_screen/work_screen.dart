@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:flutter_client/src/model/command/ui/set_size_command.dart';
+
 import '../../mixin/command_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
 
@@ -35,6 +37,13 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
         reason: "Screen has been opened"
     );
     commandService.sendCommand(deviceStatusCommand);
+
+    SetSizeCommand setSizeCommand = SetSizeCommand(
+        size: Size(width, height),
+        componentId: widget.screen.id,
+        reason: "Screen Space in WorkScreen"
+    );
+    commandService.sendCommand(setSizeCommand);
   }
 
   @override

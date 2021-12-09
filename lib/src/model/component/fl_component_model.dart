@@ -26,9 +26,7 @@ abstract class FlComponentModel {
 
   // Styling
   /// If the component is visible.
-  final bool isVisible;
-  /// If the component is enabled.
-  final bool enabled;
+  final bool? isVisible;
 
   /// Creates a [FlComponentModel] from a json.
   FlComponentModel.fromJson(Map<String, dynamic> json) :
@@ -40,8 +38,7 @@ abstract class FlComponentModel {
     preferredSize = json[ApiObjectProperty.preferredSize],
     minimumSize = json[ApiObjectProperty.minimumSize],
     maximumSize = json[ApiObjectProperty.maximumSize],
-    isVisible = json[ApiObjectProperty.visible],
-    enabled = json[ApiObjectProperty.enabled];
+    isVisible = json[ApiObjectProperty.visible];
 
   /// Updates the component model with new properties. If no property is passed, uses the old value.
   FlComponentModel.updatedProperties(FlComponentModel oldModel, dynamic json) :
@@ -53,8 +50,7 @@ abstract class FlComponentModel {
     preferredSize = json[ApiObjectProperty.preferredSize] ?? oldModel.preferredSize,
     minimumSize = json[ApiObjectProperty.minimumSize] ?? oldModel.minimumSize,
     maximumSize = json[ApiObjectProperty.maximumSize] ?? oldModel.maximumSize,
-    isVisible = json[ApiObjectProperty.visible] ?? oldModel.isVisible,
-    enabled = json[ApiObjectProperty.enabled] ?? oldModel.enabled;
+    isVisible = json[ApiObjectProperty.visible] ?? oldModel.isVisible;
 
   FlComponentModel updateComponent(FlComponentModel oldModel, dynamic json);
 

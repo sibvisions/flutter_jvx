@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/ui/route_command.dart';
 
 import '../mask/login/app_login.dart';
 import '../mask/menu/app_menu.dart';
@@ -62,9 +63,8 @@ class AppDelegate extends RouterDelegate<AppRoutePath> with ChangeNotifier, PopN
     }
 
     if(activeRoute == AppRoutingOptions.workScreen){
-      activeRoute = AppRoutingOptions.menu;
-      activePage = MaterialPage(child: AppMenu(uiService: uiService, menuModel: uiService.getCurrentMenu()));
-      notifyListeners();
+      RouteCommand command = RouteCommand(routeTo: AppRoutingOptions.menu, reason: "backButton");
+      uiService.sendCommand(command);
     }
 
     return SynchronousFuture(true);

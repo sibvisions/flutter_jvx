@@ -21,4 +21,7 @@ abstract class ILayoutService {
 
   /// Applies the [LayoutPosition]s to a parent and their children.
   void applyLayoutConstraints(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall);
+
+  /// Set the size of component
+  void setSize({required Size setSize, required String id});
 }

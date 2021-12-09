@@ -45,13 +45,17 @@ class LayoutData implements ICloneable{
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
 
+  /// LayoutData for FormLayout Anchors
+  String? layoutData;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutData].
-  LayoutData(
-      {required this.id,
+  LayoutData({
+      required this.id,
+      this.layoutData,
       this.parentId,
       this.layout,
       this.children,
@@ -61,11 +65,13 @@ class LayoutData implements ICloneable{
       this.preferredSize,
       this.insets,
       this.layoutPosition,
-      this.calculatedSize});
+      this.calculatedSize
+  });
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
       : id = pLayoutData.id,
+        layoutData = pLayoutData.layoutData,
         parentId = pLayoutData.parentId,
         layout = pLayoutData.layout?.clone(),
         children = pLayoutData.children != null ? List.from(pLayoutData.children!) : null,

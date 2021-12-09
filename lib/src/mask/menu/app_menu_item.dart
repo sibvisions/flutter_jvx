@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
+
 import '../../model/menu/menu_item_model.dart';
 import '../../service/ui/i_ui_service.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,11 @@ class AppMenuItem extends StatelessWidget {
   final MenuItemModel menuItemModel;
 
   _onMenuItemClick() {
-    uiService.openScreen(menuItemModel.componentId);
+    OpenScreenCommand openScreenCommand = OpenScreenCommand(
+        componentId: menuItemModel.componentId,
+        reason: "MenuItem pressed"
+    );
+    uiService.sendCommand(openScreenCommand);
   }
 
   @override

@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/api/login_command.dart';
+import 'package:flutter_client/src/model/command/api/startup_command.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 
@@ -12,11 +14,17 @@ class AppLogin extends StatelessWidget with UiServiceMixin{
 
 
   void onLoginPressed() {
-    uiService.login("features", "features");
+    LoginCommand loginCommand = LoginCommand(
+        userName: "features",
+        password: "features",
+        reason: "LoginButton"
+    );
+    uiService.sendCommand(loginCommand);
   }
 
   void onStartUpPressed() {
-    uiService.startUp();
+    StartupCommand startupCommand = StartupCommand(reason: "StartupButton");
+    uiService.sendCommand(startupCommand);
   }
 
 

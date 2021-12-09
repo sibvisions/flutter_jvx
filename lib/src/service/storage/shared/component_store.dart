@@ -142,7 +142,7 @@ class ComponentStore implements IStorageService {
     if(oldModel != null){
       return oldModel;
     } else {
-      throw Exception("asdasd");
+      throw Exception("Model to Update  does not exist");
     }
 
   }

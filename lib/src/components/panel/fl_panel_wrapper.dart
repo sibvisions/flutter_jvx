@@ -1,5 +1,8 @@
 import 'dart:collection';
 
+import 'package:flutter_client/src/layout/i_layout.dart';
+import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
+
 import '../components_factory.dart';
 import 'fl_panel_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
@@ -30,6 +33,18 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
       tempChildren[componentModel.id] = widget;
     }
     children = tempChildren;
+
+
+
+    RegisterParentCommand registerParentCommand = RegisterParentCommand(
+        layout: ILayout.getLayout(widget.model.layout, widget.model.layoutData)!,
+        childrenIds: tempChildren.keys.toList(),
+        parentId: widget.model.id,
+        reason: "Parent widget rendered"
+    );
+    uiService.sendCommand(registerParentCommand);
+
+
     super.initState();
   }
 

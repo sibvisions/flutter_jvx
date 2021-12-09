@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import '../../../../../mixin/storage_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -27,7 +29,6 @@ class RouteCommandProcessor with UiServiceGetterMixin, StorageServiceMixin imple
       String? screenName = command.screenName;
       if(screenName != null) {
         List<FlComponentModel> screen = await storageService.getScreenByScreenClassName(screenName);
-
         getUiService().routeToWorkScreen(screen);
       }
     }
