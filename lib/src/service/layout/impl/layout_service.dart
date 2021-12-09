@@ -123,8 +123,7 @@ class LayoutService implements ILayoutService {
     {
       applyLayoutConstraints(pParentId);  
     }
-
-    if (parentParent == null)
+    else
     {
       registerPreferredSize(parent.id, parent.parentId!, parent);
     }
