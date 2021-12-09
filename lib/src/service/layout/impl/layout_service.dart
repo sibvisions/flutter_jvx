@@ -50,68 +50,84 @@ class LayoutService implements ILayoutService {
   }
 
   @override
-  void registerPreferredSize(String pId, String pParentId, Size pSize, String pConstraints) {
-    DateTime startOfCall = DateTime.now();
+  bool registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData) {
+    LayoutData? itselfAsParent = _parents[pId];
+    if (itselfAsParent != null)
+    {
+      var children = itselfAsParent.children;
+      pLayoutData.children = children;
+      _parents[pId] = pLayoutData;
+    }
 
     LayoutData? parent = _parents[pParentId];
     if (parent != null) {
       LayoutData? child = parent.children!.firstWhereOrNull((element) => element.id == pId);
       if (child != null) {
         // Set PreferredSize and constraints
-        child.preferredSize = pSize;
-        child.constraints = pConstraints;
+        parent.children!.remove(child);
+        parent.children!.add(pLayoutData);
 
-        // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
-        LayoutData parentSnapShot = parent.clone();
-
-        //
-        bool legalLayoutState = parentSnapShot.children!.every((element) => element.preferredSize != null);
-
+        bool legalLayoutState = parent.children!.every((element) => element.preferredSize != null);
         if (legalLayoutState) {
-          var sizes = _calculateLayout(parent);
-
-          LayoutPosition? position = parent.layoutPosition;
-          if(position != null){
-            applyLayoutConstraints(pParentId, sizes, startOfCall);
-          } else {
-            String? parentId = parent.parentId;
-            if(parentId != null){
-              LayoutPosition data = sizes[parentId]!;
-              registerPreferredSize(parent.id, parentId, Size(data.width, data.height), parent.constraints!);
-            }
-          }
+          calculateLayout(pParentId);
         }
+        return legalLayoutState;
       }
     }
+
+    return false;
   }
 
   @override
-  void applyLayoutConstraints(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall) {
+  void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall){
     for (LayoutData child in _parents[pParentId]!.children!) {
       if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
         LayoutPosition position = pPositions[child.id]!;
         position.timeOfCall = pStartOfCall;
         child.layoutPosition = position;
-
-        // TODO send data to child component.
       }
     }
 
-    // TODO send data to parent component.
+    LayoutData parent = _parents[pParentId]!;
+    if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
+      parent.layoutPosition = pPositions[pParentId];
+    }
   }
 
   @override
-  void setSize({required Size setSize, required String id}){
-    LayoutData layoutData = _parents[id]!;
+  void applyLayoutConstraints(String pParentId) {
+    throw UnimplementedError("TODO");
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  @override
+  void calculateLayout(String pParentId)
+  {
+    // Time the start of the layout call.
+    DateTime startOfCall = DateTime.now();
 
-  /// Compute method to calculate the layout async.
-  Map<String, LayoutPosition> _calculateLayout(LayoutData pParent) {
-    return pParent.layout!.calculateLayout(pParent);
+    // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
+    LayoutData parentSnapShot = _parents[pParentId]!.clone();
+
+    // Returns a bunch of layout positions.
+    var sizes = parentSnapShot.layout!.calculateLayout(parentSnapShot);
+
+    // Saves all layout positions.
+    saveLayoutPositions(pParentId, sizes, startOfCall);
+
+    // Get real parent object again.
+    LayoutData parent = _parents[pParentId]!;
+
+    // Does parent already have positions? If yes, means we already have completely layouted everything.
+    LayoutData? parentParent = _parents[parent.parentId];
+    if (parentParent == null || (parentParent.hasPosition && !startOfCall.isBefore(parentParent.layoutPosition!.timeOfCall!)))
+    {
+      applyLayoutConstraints(pParentId);  
+    }
+
+    if (parentParent == null)
+    {
+      registerPreferredSize(parent.id, parent.parentId!, parent);
+    }
   }
 }
 

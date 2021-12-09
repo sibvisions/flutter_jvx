@@ -1,5 +1,5 @@
 
-import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../model/layout/layout_position.dart';
 import '../../layout/i_layout.dart';
@@ -17,11 +17,16 @@ abstract class ILayoutService {
   bool removeAsParent(String pParentId);
 
   /// Registers a preferred size for a child element.
-  void registerPreferredSize(String pId, String pParentId, Size pSize, String pConstraints);
+  /// 
+  /// Returns `true` if layouting happened and `false` if nothing was layouted.
+  bool registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData);
+
+  /// Saves the [LayoutPosition]s to a parent and their children.
+  void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall);
 
   /// Applies the [LayoutPosition]s to a parent and their children.
-  void applyLayoutConstraints(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall);
+  void applyLayoutConstraints(String pParentId);
 
-  /// Set the size of component
-  void setSize({required Size setSize, required String id});
+  /// Calculates the layout.
+  void calculateLayout(String pParentId);
 }

@@ -2,9 +2,6 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/button/fl_button_widget.dart';
-import 'package:flutter_client/src/components/panel/fl_panel_widget.dart';
-import 'package:flutter_client/src/model/component/button/fl_button_model.dart';
 
 import '../../util/extensions/list_extensions.dart';
 import '../../util/i_clonable.dart';
@@ -121,7 +118,7 @@ class BorderLayout implements ILayout, ICloneable {
     double height = preferredSize.height - y - _parentData.insets!.bottom + eiMargins.bottom;
 
     // If parent has forced this into a size, cant exceed these values.
-    if (_parentData.hasPosition) {
+    if (_parentData.hasPosition && !_parentData.hasPreferredSize) {
       width = _parentData.layoutPosition!.width - x - _parentData.insets!.right + eiMargins.right;
       height = _parentData.layoutPosition!.height - y - _parentData.insets!.bottom + eiMargins.bottom;
     }

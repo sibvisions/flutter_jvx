@@ -8,7 +8,7 @@ class PreferredSizeProcessor with LayoutServiceMixin implements ICommandProcesso
 
   @override
   Future<List<BaseCommand>> processCommand(PreferredSizeCommand command) async {
-    layoutService.registerPreferredSize(command.componentId, command.parentId, command.size, command.constraints);
+    layoutService.registerPreferredSize(command.componentId, command.parentId, command.layoutData);
 
     return [];
   }
