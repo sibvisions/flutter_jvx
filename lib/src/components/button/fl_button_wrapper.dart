@@ -96,11 +96,11 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   }
 
   double _getTopForPositioned() {
-    return layoutData.hasPosition ? layoutData.layoutPosition!.top! : 0.0;
+    return layoutData.hasPosition ? layoutData.layoutPosition!.top : 0.0;
   }
 
   double _getLeftForPositioned() {
-    return layoutData.hasPosition ? layoutData.layoutPosition!.left! : 0.0;
+    return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
   void postFrameCallback(Duration time, BuildContext context) {
