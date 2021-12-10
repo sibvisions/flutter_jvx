@@ -98,16 +98,16 @@ class BorderLayout implements ILayout, ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent) {
+  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Clear constraint map.
     _positions.clear();
 
     _parentData = pParent;
-    _childNorth = _parentData.children!.firstWhereOrNull((element) => NORTH == element.constraints);
-    _childSouth = _parentData.children!.firstWhereOrNull((element) => SOUTH == element.constraints);
-    _childEast = _parentData.children!.firstWhereOrNull((element) => EAST == element.constraints);
-    _childWest = _parentData.children!.firstWhereOrNull((element) => WEST == element.constraints);
-    _childCenter = _parentData.children!.firstWhereOrNull((element) => NORTH == element.constraints);
+    _childNorth = pChildren.firstWhereOrNull((element) => NORTH == element.constraints);
+    _childSouth = pChildren.firstWhereOrNull((element) => SOUTH == element.constraints);
+    _childEast = pChildren.firstWhereOrNull((element) => EAST == element.constraints);
+    _childWest = pChildren.firstWhereOrNull((element) => WEST == element.constraints);
+    _childCenter = pChildren.firstWhereOrNull((element) => NORTH == element.constraints);
 
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
