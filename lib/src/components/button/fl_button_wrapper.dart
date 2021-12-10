@@ -34,6 +34,7 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
       if(position != null){
         setState(() {
+          sentPrefSize = false;
           layoutData.layoutPosition = position;
         });
       }

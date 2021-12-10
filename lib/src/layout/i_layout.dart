@@ -19,7 +19,7 @@ abstract class ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Calculates the constraints and widths and heigths of the children components and those of the [pParent].
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent);
+  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren);
 
   @override
   ILayout clone();

@@ -38,6 +38,10 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
     );
     commandService.sendCommand(deviceStatusCommand);
 
+
+
+
+
   }
 
   @override

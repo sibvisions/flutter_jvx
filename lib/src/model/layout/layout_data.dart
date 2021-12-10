@@ -22,7 +22,7 @@ class LayoutData implements ICloneable{
   final ILayout? layout;
 
   /// The children of the component.
-  List<LayoutData>? children;
+  List<String>? children;
 
   /// The constraints as sent by the server.
   String? constraints;
@@ -83,6 +83,8 @@ class LayoutData implements ICloneable{
         insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
         layoutPosition = pLayoutData.layoutPosition != null ? pLayoutData.layoutPosition!.clone() : null;
 
+  /// Creates a bare-bones [LayoutData] object for retrieving in a set.
+  LayoutData.fromId({required this.id}) : layout = null, parentId = null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

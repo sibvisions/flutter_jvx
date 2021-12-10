@@ -22,7 +22,9 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The map of all registered parents (container).
-  final HashMap<String, LayoutData> _parents = HashMap<String, LayoutData>();
+  final HashMap<String, LayoutData> setLayoutData = HashMap<String, LayoutData>();
+
+  Size? screenSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -30,52 +32,34 @@ class LayoutService implements ILayoutService {
 
   @override
   bool registerAsParent(String pId, List<String> pChildrenIds, ILayout pLayout) {
-    List<LayoutData>? children = pChildrenIds.map((childId) => LayoutData(id: childId, parentId: pId)).toList();
+    LayoutData newParentData = LayoutData(id: pId, layout: pLayout, children: pChildrenIds);
 
-    LayoutData? ldRegisteredParent = _parents[pId];
-    if (ldRegisteredParent != null) {
-      for (LayoutData oldChild in ldRegisteredParent.children!) {
-        // LayoutData implements == and Hashcode therefore we can remove an 'old'
-        // child by id even though theoretically it does not exist in that list.
-        if (children.remove(oldChild)) {
-          children.add(oldChild);
-        }
-      }
-    }
+    LayoutData? ldRegisteredParent = setLayoutData[pId];
+    setLayoutData[pId] = newParentData;
 
-    //Builds Children with only Id, so the preferred Size can be added later.
-    _parents[pId] = LayoutData(id: pId, layout: pLayout, children: children);
+    pChildrenIds.map((e) => LayoutData(id: e, parentId: pId)).forEach((element) {setLayoutData[element.id] = element;});
 
     return ldRegisteredParent != null;
   }
 
   @override
   bool removeAsParent(String pParentId) {
-    return _parents.remove(pParentId) != null;
+    return setLayoutData.remove(pParentId) != null;
   }
 
   @override
   List<BaseCommand> registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData) {
-    LayoutData? itselfAsParent = _parents[pId];
-    if (itselfAsParent != null) {
-      var children = itselfAsParent.children;
-      pLayoutData.children = children;
-      _parents[pId] = pLayoutData;
-    }
+    setLayoutData[pId] = pLayoutData;
 
-    LayoutData? parent = _parents[pParentId];
+    LayoutData? parent = setLayoutData[pParentId];
     if (parent != null) {
-      LayoutData? child = parent.children!.firstWhereOrNull((element) => element.id == pId);
-      if (child != null) {
-        // Set PreferredSize and constraints
-        parent.children!.remove(child);
-        parent.children!.add(pLayoutData);
-
-        bool legalLayoutState =
-            parent.children!.every((element) => element.hasCalculatedSize || element.hasPreferredSize);
-        if (legalLayoutState) {
-          return calculateLayout(pParentId);
-        }
+      bool legalLayoutState = true;
+      for (int index = 0; legalLayoutState && index < parent.children!.length; index++) {
+        LayoutData child = setLayoutData[parent.children![index]]!;
+        legalLayoutState = child.hasCalculatedSize || child.hasPreferredSize;
+      }
+      if (legalLayoutState) {
+        return calculateLayout(pParentId);
       }
     }
 
@@ -84,14 +68,16 @@ class LayoutService implements ILayoutService {
 
   @override
   void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall) {
-    for (LayoutData child in _parents[pParentId]!.children!) {
+    LayoutData parent = setLayoutData[pParentId]!;
+
+    for (int index = 0; index < parent.children!.length; index++) {
+      LayoutData child = setLayoutData[parent.children![index]]!;
       if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
         child.layoutPosition = pPositions[child.id]!;
         child.layoutPosition!.timeOfCall = pStartOfCall;
       }
     }
 
-    LayoutData parent = _parents[pParentId]!;
     if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
       parent.layoutPosition = pPositions[pParentId];
       parent.layoutPosition!.timeOfCall = pStartOfCall;
@@ -100,11 +86,17 @@ class LayoutService implements ILayoutService {
 
   @override
   List<BaseCommand> applyLayoutConstraints(String pParentId) {
+    // TODO switch to LayoutData
+
+    LayoutData parent = setLayoutData[pParentId]!;
     Map<String, LayoutPosition> positions = {};
-    for (LayoutData data in _parents[pParentId]!.children!) {
-      positions[data.id] = data.layoutPosition!;
+
+    positions[pParentId] = parent.layoutPosition!;
+
+    for (int index = 0; index < parent.children!.length; index++) {
+      LayoutData child = setLayoutData[parent.children![index]]!;
+      positions[child.id] = child.layoutPosition!;
     }
-    positions[pParentId] = _parents[pParentId]!.layoutPosition!;
 
     UpdateLayoutPositionCommand updateComponentsCommand =
         UpdateLayoutPositionCommand(layoutPosition: positions, reason: "Layout has finished");
@@ -117,19 +109,24 @@ class LayoutService implements ILayoutService {
     DateTime startOfCall = DateTime.now();
 
     // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
-    LayoutData parentSnapShot = _parents[pParentId]!.clone();
+    LayoutData parentSnapShot = setLayoutData[pParentId]!.clone();
+
+    List<LayoutData> children = [];
+    for (int index = 0; index < parentSnapShot.children!.length; index++) {
+      children.add(setLayoutData[parentSnapShot.children![index]]!);
+    }
 
     // Returns a bunch of layout positions.
-    var sizes = parentSnapShot.layout!.calculateLayout(parentSnapShot);
+    var sizes = parentSnapShot.layout!.calculateLayout(parentSnapShot, children);
 
     // Saves all layout positions.
     saveLayoutPositions(pParentId, sizes, startOfCall);
 
     // Get real parent object again.
-    LayoutData parent = _parents[pParentId]!;
+    LayoutData parent = setLayoutData[pParentId]!;
 
     // Does parent already have positions? If yes, means we already have completely layouted everything.
-    LayoutData? parentParent = _parents[parent.parentId];
+    LayoutData? parentParent = setLayoutData[parent.parentId];
     if (parentParent == null ||
         (parentParent.hasPosition && !startOfCall.isBefore(parentParent.layoutPosition!.timeOfCall!))) {
       return applyLayoutConstraints(pParentId);
