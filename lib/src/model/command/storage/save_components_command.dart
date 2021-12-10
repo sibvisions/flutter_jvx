@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 
 import 'storage_command.dart';

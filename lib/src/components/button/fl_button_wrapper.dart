@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
 import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
+import 'package:flutter_client/src/model/layout/layout_position.dart';
 import 'package:flutter_client/src/service/service.dart';
 import 'package:flutter_client/src/service/ui/impl/ui_service.dart';
 
@@ -25,10 +26,17 @@ class FlButtonWrapper extends StatefulWidget {
 class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   late LayoutData layoutData;
 
+  bool sentPrefSize = false;
+
   @override
   void initState() {
-    uiService.registerAsLiveComponent(widget.model.id, () {
+    uiService.registerAsLiveComponent(widget.model.id, (FlButtonModel? btnModel, LayoutPosition? position) {
 
+      if(position != null){
+        setState(() {
+          layoutData.layoutPosition = position;
+        });
+      }
     });
     layoutData = LayoutData(
         constraints: widget.model.constraints,
@@ -115,7 +123,10 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
         componentId: widget.model.id,
         reason: "Component has been rendered"
     );
-    uiService.sendCommand(preferredSizeCommand);
+    if(!sentPrefSize){
+      uiService.sendCommand(preferredSizeCommand);
+    }
+    sentPrefSize = true;
   }
 
   void buttonPressed()

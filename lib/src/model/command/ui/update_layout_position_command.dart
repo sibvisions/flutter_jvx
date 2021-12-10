@@ -5,8 +5,7 @@ class UpdateLayoutPositionCommand extends UiCommand {
 
 
   /// List of position data
-  List<LayoutPosition> layoutPosition;
-
+  Map<String, LayoutPosition> layoutPosition;
 
   UpdateLayoutPositionCommand({
     required this.layoutPosition,

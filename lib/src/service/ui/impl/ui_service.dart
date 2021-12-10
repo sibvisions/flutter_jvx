@@ -7,10 +7,6 @@ import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/layout/layout_position.dart';
 
 import '../../../mixin/command_service_mixin.dart';
-import '../../../model/command/api/login_command.dart';
-import '../../../model/command/api/open_screen_command.dart';
-import '../../../model/command/api/startup_command.dart';
-import '../../../model/command/layout/preferred_size_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../model/routing/route_to_menu.dart';
@@ -70,7 +66,7 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, List<LayoutPosition>? layoutPositions}) {
+  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, Map<String, LayoutPosition>? layoutPositions}) {
     // Update All Models
     if(modelsToUpdate != null){
       for (FlComponentModel newModel in modelsToUpdate) {
@@ -100,7 +96,12 @@ class UiService with CommandServiceMixin implements IUiService {
 
 
     if(layoutPositions != null){
-
+      layoutPositions.forEach((key, value) {
+        Function? callback = registeredComponents[key];
+        if(callback != null){
+          callback(null, value);
+        }
+      });
     }
   }
 

@@ -1,11 +1,6 @@
 import 'dart:developer';
 
 
-import 'package:flutter_client/src/layout/i_layout.dart';
-import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
-import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
-import 'package:flutter_client/src/model/command/layout/set_size_command.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../mixin/command_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -42,15 +37,6 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
         reason: "Screen has been opened"
     );
     commandService.sendCommand(deviceStatusCommand);
-
-    SetSizeCommand setSizeCommand = SetSizeCommand(
-        componentId: widget.screen.id,
-        size: Size(width, height),
-        reason: "Work Screen Screen Size"
-    );
-    commandService.sendCommand(setSizeCommand);
-
-
 
   }
 

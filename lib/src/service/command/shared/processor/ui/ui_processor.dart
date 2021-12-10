@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/model/command/ui/update_layout_position_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/ui/update_layout_position_processor.dart';
+
 import '../../../../../model/command/ui/update_components_command.dart';
 import 'update_components_processor.dart';
 
@@ -14,6 +17,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
 
   final ICommandProcessor _routeCommandProcessor = RouteCommandProcessor();
   final ICommandProcessor _updateComponentsProcessor = UpdateComponentsProcessor();
+  final ICommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionProcessor();
 
   @override
   Future<List<BaseCommand>> processCommand(UiCommand command) async {
@@ -22,6 +26,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _routeCommandProcessor.processCommand(command);
     } else if(command is UpdateComponentsCommand) {
       return _updateComponentsProcessor.processCommand(command);
+    } else if(command is UpdateLayoutPositionCommand){
+      return _updateLayoutPositionProcessor.processCommand(command);
     }
 
 

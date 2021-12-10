@@ -2,6 +2,11 @@ import 'dart:collection';
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:flutter_client/src/mixin/command_service_mixin.dart';
+import 'package:flutter_client/src/model/command/base_command.dart';
+import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
+import 'package:flutter_client/src/model/command/ui/update_layout_position_command.dart';
+
 import '../../../model/layout/layout_position.dart';
 
 import '../../../layout/i_layout.dart';
@@ -50,7 +55,7 @@ class LayoutService implements ILayoutService {
   }
 
   @override
-  bool registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData) {
+  List<BaseCommand> registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData) {
     LayoutData? itselfAsParent = _parents[pId];
     if (itselfAsParent != null)
     {
@@ -67,21 +72,21 @@ class LayoutService implements ILayoutService {
         parent.children!.remove(child);
         parent.children!.add(pLayoutData);
 
-        bool legalLayoutState = parent.children!.every((element) => element.preferredSize != null);
+        bool legalLayoutState = parent.children!.every((element) => element.calculatedSize != null);
         if (legalLayoutState) {
-          calculateLayout(pParentId);
+          return calculateLayout(pParentId);
         }
-        return legalLayoutState;
       }
     }
 
-    return false;
+    return [];
   }
 
   @override
   void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall){
     for (LayoutData child in _parents[pParentId]!.children!) {
-      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
+      // || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)
+      if (child.layoutPosition == null) {
         LayoutPosition position = pPositions[child.id]!;
         position.timeOfCall = pStartOfCall;
         child.layoutPosition = position;
@@ -89,18 +94,30 @@ class LayoutService implements ILayoutService {
     }
 
     LayoutData parent = _parents[pParentId]!;
-    if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
-      parent.layoutPosition = pPositions[pParentId];
+    // if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
+    //   parent.layoutPosition = pPositions[pParentId];
+    // }
+    parent.layoutPosition ??= pPositions[pParentId];
+  }
+
+  @override
+  List<BaseCommand> applyLayoutConstraints(String pParentId) {
+
+    Map<String, LayoutPosition> positions = {};
+    for(LayoutData data in _parents[pParentId]!.children!){
+      positions[data.id] = data.layoutPosition!;
     }
+    positions[pParentId] = _parents[pParentId]!.layoutPosition!;
+
+    UpdateLayoutPositionCommand updateComponentsCommand = UpdateLayoutPositionCommand(
+        layoutPosition: positions,
+        reason: "Layout has finished"
+    );
+    return [updateComponentsCommand];
   }
 
   @override
-  void applyLayoutConstraints(String pParentId) {
-    throw UnimplementedError("TODO");
-  }
-
-  @override
-  void calculateLayout(String pParentId)
+  List<BaseCommand> calculateLayout(String pParentId)
   {
     // Time the start of the layout call.
     DateTime startOfCall = DateTime.now();
@@ -121,12 +138,14 @@ class LayoutService implements ILayoutService {
     LayoutData? parentParent = _parents[parent.parentId];
     if (parentParent == null || (parentParent.hasPosition && !startOfCall.isBefore(parentParent.layoutPosition!.timeOfCall!)))
     {
-      applyLayoutConstraints(pParentId);  
+      return applyLayoutConstraints(pParentId);
     }
     else
     {
       registerPreferredSize(parent.id, parent.parentId!, parent);
     }
+
+    return [];
   }
 }
 

@@ -28,6 +28,16 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
 
   @override
   void initState() {
+    uiService.registerAsLiveComponent(widget.model.id, (FlPanelModel? btnModel, LayoutPosition? position) {
+
+      if(position != null){
+        setState(() {
+          layoutPosition = position;
+        });
+      }
+    });
+
+
     HashMap<String, Widget> tempChildren = HashMap();
     var models = uiService.getChildrenModels(widget.model.id);
 
@@ -54,9 +64,35 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-
+      left: getLeft(),
+      top: getTop(),
+      width: getWidth(),
+      height: getHeight(),
       child: FlPanelWidget(children: children.values.toList())
     );
-
   }
+
+
+  double? getLeft(){
+    if(layoutPosition != null){
+      return layoutPosition!.left;
+    }
+  }
+
+  double? getTop(){
+    if(layoutPosition != null){
+      return layoutPosition!.top;
+    }
+  }
+  double? getWidth(){
+    if(layoutPosition != null){
+      return layoutPosition!.width;
+    }
+  }
+  double? getHeight(){
+    if(layoutPosition != null){
+      return layoutPosition!.height;
+    }
+  }
+
 }

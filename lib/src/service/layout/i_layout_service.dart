@@ -1,4 +1,5 @@
 
+import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../model/layout/layout_position.dart';
@@ -19,14 +20,14 @@ abstract class ILayoutService {
   /// Registers a preferred size for a child element.
   /// 
   /// Returns `true` if layouting happened and `false` if nothing was layouted.
-  bool registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData);
+  List<BaseCommand> registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData);
 
   /// Saves the [LayoutPosition]s to a parent and their children.
   void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall);
 
   /// Applies the [LayoutPosition]s to a parent and their children.
-  void applyLayoutConstraints(String pParentId);
+  List<BaseCommand> applyLayoutConstraints(String pParentId);
 
   /// Calculates the layout.
-  void calculateLayout(String pParentId);
+  List<BaseCommand> calculateLayout(String pParentId);
 }

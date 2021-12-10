@@ -39,7 +39,7 @@ abstract class IUiService {
   List<FlComponentModel> getChildrenModels(String id);
 
   /// Updates Components Models, also tells affected Parents to re-build their children
-  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, List<LayoutPosition>? layoutPositions});
+  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, Map<String, LayoutPosition>? layoutPositions});
 
   /// Register as an active Component, callback will be called when model changes or children should be rebuilt.
   void registerAsLiveComponent(String id, Function callback);

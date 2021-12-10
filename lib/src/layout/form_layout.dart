@@ -356,7 +356,7 @@ class FormLayout extends ILayout {
     Size minLayoutSize = const Size(50, 50);
 
     /// Available Size, set to setSize from parent by default
-    Size calcSize = pGivenSize ?? const Size(0, 0);
+    Size calcSize = pGivenSize ?? Size(pMinPrefSize.minimumWidth, pMinPrefSize.minimumHeight);
 
     /// Not smaller than Minimum
     // double newMinWidth = calcSize.width;
@@ -531,6 +531,7 @@ class FormLayout extends ILayout {
     double width = borderConstraints.rightAnchor.position - borderConstraints.leftAnchor.position;
     double left = marginConstraints.leftAnchor.getAbsolutePosition();
     double top = marginConstraints.topAnchor.getAbsolutePosition();
+
 
     // LayoutPosition
     LayoutPosition layoutPosition = LayoutPosition(width: width, height: height, top: top, left: left, isComponentSize: false);
