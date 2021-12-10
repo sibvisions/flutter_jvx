@@ -5,8 +5,6 @@ import 'package:flutter_client/src/model/command/api/button_pressed_command.dart
 import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/src/service/service.dart';
-import 'package:flutter_client/src/service/ui/impl/ui_service.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 
@@ -34,7 +32,6 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
       if(position != null){
         setState(() {
-          sentPrefSize = false;
           layoutData.layoutPosition = position;
         });
       }
@@ -50,14 +47,14 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {postFrameCallback(timeStamp, context);});
     final FlButtonWidget buttonWidget = FlButtonWidget(
       buttonModel: widget.model,
       onPress: buttonPressed,
       width: _getWidthForComponent(),
-      heigth: _getHeightForComponent(),
+      height: _getHeightForComponent(),
     );
-
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {postFrameCallback(timeStamp, context);});
+    log(buttonWidget.width.toString() + " | " + buttonWidget.height.toString());
     return Positioned(
       top: _getTopForPositioned(),
       left: _getLeftForPositioned(),
@@ -68,18 +65,14 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   }
 
   double? _getWidthForPositioned() {
-    if (layoutData.hasPosition && !layoutData.layoutPosition!.isComponentSize) {
+    if (layoutData.hasPosition) {
       return layoutData.layoutPosition!.width;
-    } else {
-      return null;
     }
   }
 
   double? _getHeightForPositioned() {
-    if (layoutData.hasPosition && !layoutData.layoutPosition!.isComponentSize) {
+    if (layoutData.hasPosition) {
       return layoutData.layoutPosition!.height;
-    } else {
-      return null;
     }
   }
 
@@ -88,7 +81,7 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
       return layoutData.layoutPosition!.width;
     } else if (layoutData.hasPreferredSize) {
       return layoutData.preferredSize!.width;
-    } else if (layoutData.hasCalculatedSize) {
+    } else if (layoutData.hasCalculatedSize && layoutData.calculatedSize!.width != double.infinity) {
       return layoutData.calculatedSize!.width;
     } else {
       return null;
@@ -100,7 +93,7 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
       return layoutData.layoutPosition!.height;
     } else if (layoutData.hasPreferredSize) {
       return layoutData.preferredSize!.height;
-    } else if (layoutData.hasCalculatedSize) {
+    } else if (layoutData.hasCalculatedSize && layoutData.calculatedSize!.height != double.infinity) {
       return layoutData.calculatedSize!.height;
     } else {
       return null;
@@ -116,7 +109,13 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   }
 
   void postFrameCallback(Duration time, BuildContext context) {
-    layoutData.calculatedSize = context.size;
+    if (!layoutData.hasCalculatedSize) {
+      var width = context.size!.width.ceilToDouble();
+      var height = context.size!.height.ceilToDouble();
+      layoutData.calculatedSize = Size(width, height);
+    }
+
+    log(context.size.toString());
 
     PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
         parentId: widget.model.parent ?? "",

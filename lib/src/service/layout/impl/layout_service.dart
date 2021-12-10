@@ -24,6 +24,9 @@ class LayoutService implements ILayoutService {
   /// The map of all registered parents (container).
   final HashMap<String, LayoutData> setLayoutData = HashMap<String, LayoutData>();
 
+  String? topPanelId;
+
+  @override
   Size? screenSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,8 +36,30 @@ class LayoutService implements ILayoutService {
   @override
   bool registerAsParent(String pId, List<String> pChildrenIds, ILayout pLayout) {
     LayoutData newParentData = LayoutData(id: pId, layout: pLayout, children: pChildrenIds);
-
     LayoutData? ldRegisteredParent = setLayoutData[pId];
+
+    if(setLayoutData.isEmpty){
+      if (screenSize != null)
+      {
+        newParentData.layoutPosition = LayoutPosition(width: screenSize!.width, height: screenSize!.height, top: 0, left: 0, isComponentSize: true, timeOfCall: DateTime.now());
+      }
+      else
+      {
+          throw ArgumentError("Screen size is not set!");
+      }
+    }
+    // TODO find a better way.
+    else if (ldRegisteredParent != null && ldRegisteredParent.parentId == null)
+    {
+      if (screenSize != null)
+      {
+        newParentData.layoutPosition = LayoutPosition(width: screenSize!.width, height: screenSize!.height, top: 0, left: 0, isComponentSize: true, timeOfCall: DateTime.now());
+      }
+      else {
+        throw ArgumentError("Screen size is not set!");
+      }
+    }
+
     setLayoutData[pId] = newParentData;
 
     pChildrenIds.map((e) => LayoutData(id: e, parentId: pId)).forEach((element) {setLayoutData[element.id] = element;});
@@ -70,15 +95,16 @@ class LayoutService implements ILayoutService {
   void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall) {
     LayoutData parent = setLayoutData[pParentId]!;
 
+        //
     for (int index = 0; index < parent.children!.length; index++) {
       LayoutData child = setLayoutData[parent.children![index]]!;
-      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
+      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall) ) {
         child.layoutPosition = pPositions[child.id]!;
         child.layoutPosition!.timeOfCall = pStartOfCall;
       }
     }
-
-    if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
+      //
+    if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall) ) {
       parent.layoutPosition = pPositions[pParentId];
       parent.layoutPosition!.timeOfCall = pStartOfCall;
     }
@@ -98,8 +124,7 @@ class LayoutService implements ILayoutService {
       positions[child.id] = child.layoutPosition!;
     }
 
-    UpdateLayoutPositionCommand updateComponentsCommand =
-        UpdateLayoutPositionCommand(layoutPosition: positions, reason: "Layout has finished");
+    UpdateLayoutPositionCommand updateComponentsCommand = UpdateLayoutPositionCommand(layoutPosition: positions, reason: "Layout has finished");
     return [updateComponentsCommand];
   }
 

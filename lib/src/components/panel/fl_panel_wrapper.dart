@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter_client/src/layout/i_layout.dart';
 import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 import 'package:flutter_client/src/model/layout/layout_position.dart';
 
 import '../components_factory.dart';
@@ -24,15 +25,25 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
 
   HashMap<String, Widget> children = HashMap();
 
-  LayoutPosition? layoutPosition;
+  late LayoutData layoutData;
+
+  bool registered = false;
 
   @override
   void initState() {
+
+    layoutData = LayoutData(
+        constraints: widget.model.constraints,
+        id: widget.model.id,
+        preferredSize: widget.model.preferredSize,
+        minSize: widget.model.minimumSize,
+        maxSize: widget.model.maximumSize);
+
     uiService.registerAsLiveComponent(widget.model.id, (FlPanelModel? btnModel, LayoutPosition? position) {
 
       if(position != null){
         setState(() {
-          layoutPosition = position;
+          layoutData.layoutPosition = position;
         });
       }
     });
@@ -55,7 +66,10 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
         parentId: widget.model.id,
         reason: "Parent widget rendered"
     );
-    uiService.sendCommand(registerParentCommand);
+    if(!registered){
+      registered = true;
+      uiService.sendCommand(registerParentCommand);
+    }
 
 
     super.initState();
@@ -64,35 +78,53 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: getLeft(),
-      top: getTop(),
-      width: getWidth(),
-      height: getHeight(),
-      child: FlPanelWidget(children: children.values.toList())
+      top: _getTopForPositioned(),
+      left: _getLeftForPositioned(),
+      width: _getWidthForPositioned() ?? 0,
+      height: _getHeightForPositioned() ?? 0,
+      child: FlPanelWidget(children: children.values.toList(), width: _getWidthForComponent(), height: _getHeightForComponent())
     );
   }
 
 
-  double? getLeft(){
-    if(layoutPosition != null){
-      return layoutPosition!.left;
+  double? _getWidthForPositioned() {
+    if (layoutData.hasPosition) {
+      return layoutData.layoutPosition!.width;
     }
   }
 
-  double? getTop(){
-    if(layoutPosition != null){
-      return layoutPosition!.top;
+  double? _getHeightForPositioned() {
+    if (layoutData.hasPosition) {
+      return layoutData.layoutPosition!.height;
     }
   }
-  double? getWidth(){
-    if(layoutPosition != null){
-      return layoutPosition!.width;
+
+  double? _getWidthForComponent() {
+    if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
+      return layoutData.layoutPosition!.width;
+    } else if (layoutData.hasPreferredSize) {
+      return layoutData.preferredSize!.width;
+    } else if (layoutData.hasCalculatedSize) {
+      return layoutData.calculatedSize!.width;
     }
   }
-  double? getHeight(){
-    if(layoutPosition != null){
-      return layoutPosition!.height;
+
+  double? _getHeightForComponent() {
+    if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
+      return layoutData.layoutPosition!.height;
+    } else if (layoutData.hasPreferredSize) {
+      return layoutData.preferredSize!.height;
+    } else if (layoutData.hasCalculatedSize) {
+      return layoutData.calculatedSize!.height;
     }
+  }
+
+  double _getTopForPositioned() {
+    return layoutData.hasPosition ? layoutData.layoutPosition!.top : 0.0;
+  }
+
+  double _getLeftForPositioned() {
+    return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
 }

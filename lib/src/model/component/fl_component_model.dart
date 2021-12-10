@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../api/api_object_property.dart';
+import '../../../util/size_util.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
@@ -35,9 +36,9 @@ abstract class FlComponentModel {
     parent = json[ApiObjectProperty.parent],
     id = json[ApiObjectProperty.id],
     constraints = json[ApiObjectProperty.constraints],
-    preferredSize = json[ApiObjectProperty.preferredSize],
-    minimumSize = json[ApiObjectProperty.minimumSize],
-    maximumSize = json[ApiObjectProperty.maximumSize],
+    preferredSize = SizeUtil.fromString(json[ApiObjectProperty.preferredSize]),
+    minimumSize = SizeUtil.fromString(json[ApiObjectProperty.minimumSize]),
+    maximumSize = SizeUtil.fromString(json[ApiObjectProperty.maximumSize]),
     isVisible = json[ApiObjectProperty.visible];
 
   /// Updates the component model with new properties. If no property is passed, uses the old value.

@@ -1,4 +1,6 @@
 
+import 'dart:ui';
+
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 
@@ -30,4 +32,6 @@ abstract class ILayoutService {
 
   /// Calculates the layout.
   List<BaseCommand> calculateLayout(String pParentId);
+
+  Size? screenSize;
 }

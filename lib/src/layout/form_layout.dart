@@ -52,11 +52,11 @@ class FormLayout extends ILayout {
   }
 
   @override
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent) {
+  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Needed from Outside
 
     /// Data of children components
-    final HashMap<String, LayoutData> componentData = mapFromChildren(children: pParent.children!);
+    final HashMap<String, LayoutData> componentData = mapFromChildren(children: pChildren);
 
     /// LayoutData, Anchor String
     String layoutData = this.layoutData;
@@ -523,7 +523,7 @@ class FormLayout extends ILayout {
       double width = constraint.rightAnchor.getAbsolutePosition() - constraint.leftAnchor.getAbsolutePosition();
       double height = constraint.bottomAnchor.getAbsolutePosition() - constraint.topAnchor.getAbsolutePosition();
 
-      LayoutPosition layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: false, left: left, top: top);
+      LayoutPosition layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
       sizeMap[componentId] = layoutPosition;
     });
 
