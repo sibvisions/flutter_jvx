@@ -34,4 +34,9 @@ class DefaultStorageService implements IStorageService {
     return componentStore.updateComponents(componentsToUpdate, newComponents, screenName);
   }
 
+  @override
+  Future<void> deleteScreen({required String screenName}) {
+    return componentStore.deleteScreen(screenName: screenName);
+  }
+
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_client/src/service/api/shared/processor/close_screen_processor.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/api_response_names.dart';
@@ -20,6 +21,7 @@ class ApiController implements IController {
   final IProcessor _applicationMetaDataProcessor = ApplicationMetaDataProcessor();
   final IProcessor _menuProcessor = MenuProcessor();
   final IProcessor _screenGenericProcessor = ScreenGenericProcessor();
+  final IProcessor _closeScreenProcessor = CloseScreenProcessor();
 
 
 
@@ -46,6 +48,8 @@ class ApiController implements IController {
           return _menuProcessor.processResponse(json);
       case(ApiResponseNames.screenGeneric) :
           return _screenGenericProcessor.processResponse(json);
+      case(ApiResponseNames.closeScreen) :
+          return _closeScreenProcessor.processResponse(json);
       default :
         return [];
     }

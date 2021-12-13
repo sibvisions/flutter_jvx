@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_delete_screen_message.dart';
+
 import 'message/endpoint/storage_isolate_get_menu_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
 import 'message/endpoint/storage_isolate_save_menu_message.dart';
@@ -35,6 +37,8 @@ void storageCallback(SendPort callerSendPort){
       response = await componentStore.saveMenu(isolateMessage.menuModel);
     } else if(isolateMessage is StorageIsolateUpdateComponentsMessage){
       response = await componentStore.updateComponents(isolateMessage.componentsToUpdate, isolateMessage.newComponents, isolateMessage.screenClassName);
+    } else if(isolateMessage is StorageIsolateDeleteScreenMessage){
+      componentStore.deleteScreen(screenName: isolateMessage.screenName);
     }
 
 

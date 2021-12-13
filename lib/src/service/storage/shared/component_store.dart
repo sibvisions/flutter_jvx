@@ -163,6 +163,11 @@ class ComponentStore implements IStorageService {
     return [updateComponentsCommand];
   }
 
+  @override
+  Future<void> deleteScreen({required String screenName}) async {
+    _componentMap.removeWhere((key, value) => value.name == screenName);
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -222,4 +227,6 @@ class ComponentStore implements IStorageService {
     _componentMap[newComponent.id] = newComponent;
     newComponent;
   }
+
+
 }

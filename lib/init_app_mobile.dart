@@ -27,7 +27,7 @@ import 'data/config/config_generator.dart';
 Future<bool> initAppMobile() async {
   // API
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("192.168.0.164", 8090);
+  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();

@@ -1,38 +1,30 @@
-import 'dart:developer';
-
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
-import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-
-import '../../mixin/ui_service_mixin.dart';
-
-import 'fl_button_widget.dart';
-import '../../model/component/button/fl_button_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/components/dummy/dummy_widget.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
+import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
-class FlButtonWrapper extends StatefulWidget {
-  const FlButtonWrapper({Key? key, required this.model}) : super(key: key);
+class DummyWrapper extends StatefulWidget {
+  const DummyWrapper({Key? key, required this.dummyModel}) : super(key: key);
 
-  final FlButtonModel model;
+  final FlDummyModel dummyModel;
 
   @override
-  _FlButtonWrapperState createState() => _FlButtonWrapperState();
+  _DummyWrapperState createState() => _DummyWrapperState();
 }
+class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
 
-class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
-
-  late FlButtonModel buttonModel;
   late LayoutData layoutData;
-
+  late FlDummyModel dummyModel;
   bool sentPrefSize = false;
 
   @override
   void initState() {
-    buttonModel = widget.model;
-    uiService.registerAsLiveComponent(id: buttonModel.id, callback: ({newModel, position}) {
+    dummyModel = widget.dummyModel;
+
+    uiService.registerAsLiveComponent(id: dummyModel.id, callback: ({newModel, position}) {
       if(position != null){
         setState(() {
           layoutData.layoutPosition = position;
@@ -41,41 +33,35 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
       if(newModel != null){
         setState(() {
-          buttonModel = newModel as FlButtonModel;
+          dummyModel = newModel as FlDummyModel;
           sentPrefSize = false;
 
           layoutData = LayoutData(
-              constraints: buttonModel.constraints,
-              id: buttonModel.id,
-              preferredSize: buttonModel.preferredSize,
-              minSize: buttonModel.minimumSize,
-              maxSize: buttonModel.maximumSize,
-              parentId: buttonModel.parent
+              constraints: dummyModel.constraints,
+              id: dummyModel.id,
+              preferredSize: dummyModel.preferredSize,
+              minSize: dummyModel.minimumSize,
+              maxSize: dummyModel.maximumSize,
+              parentId: dummyModel.parent
           );
         });
       }
     });
 
     layoutData = LayoutData(
-        constraints: buttonModel.constraints,
-        id: buttonModel.id,
-        preferredSize: buttonModel.preferredSize,
-        minSize: buttonModel.minimumSize,
-        maxSize: buttonModel.maximumSize,
-        parentId: buttonModel.parent
+        constraints: dummyModel.constraints,
+        id: dummyModel.id,
+        preferredSize: dummyModel.preferredSize,
+        minSize: dummyModel.minimumSize,
+        maxSize: dummyModel.maximumSize,
+        parentId: dummyModel.parent
     );
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final FlButtonWidget buttonWidget = FlButtonWidget(
-      buttonModel: buttonModel,
-      onPress: buttonPressed,
-      width: _getWidthForComponent(),
-      height: _getHeightForComponent(),
-    );
+    const DummyWidget dummyWidget = DummyWidget();
     SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {postFrameCallback(timeStamp, context);});
 
     return Positioned(
@@ -83,9 +69,10 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
       left: _getLeftForPositioned(),
       width: _getWidthForPositioned(),
       height: _getHeightForPositioned(),
-      child: buttonWidget,
+      child: dummyWidget,
     );
   }
+
 
   double? _getWidthForPositioned() {
     if (layoutData.hasPosition) {
@@ -104,10 +91,8 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
       return layoutData.layoutPosition!.width;
     } else if (layoutData.hasPreferredSize) {
       return layoutData.preferredSize!.width;
-    } else if (layoutData.hasCalculatedSize && layoutData.calculatedSize!.width != double.infinity) {
+    } else if (layoutData.hasCalculatedSize) {
       return layoutData.calculatedSize!.width;
-    } else {
-      return null;
     }
   }
 
@@ -116,10 +101,8 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
       return layoutData.layoutPosition!.height;
     } else if (layoutData.hasPreferredSize) {
       return layoutData.preferredSize!.height;
-    } else if (layoutData.hasCalculatedSize && layoutData.calculatedSize!.height != double.infinity) {
+    } else if (layoutData.hasCalculatedSize) {
       return layoutData.calculatedSize!.height;
-    } else {
-      return null;
     }
   }
 
@@ -140,19 +123,14 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
 
     PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
-        parentId: buttonModel.parent ?? "",
+        parentId: dummyModel.parent ?? "",
         layoutData: layoutData,
-        componentId: buttonModel.id,
+        componentId: dummyModel.id,
         reason: "Component has been rendered"
     );
     if(!sentPrefSize){
       uiService.sendCommand(preferredSizeCommand);
     }
     sentPrefSize = true;
-  }
-
-  void buttonPressed()
-  {
-    uiService.sendCommand(ButtonPressedCommand(componentId: buttonModel.id, reason: "Button has been pressed"));
   }
 }

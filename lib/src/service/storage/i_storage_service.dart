@@ -27,4 +27,7 @@ abstract class IStorageService {
   /// First Object of List is always screen (most top) component.
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName);
 
+  /// Deletes Screen Model, and all descendants.
+  Future<void> deleteScreen({required String screenName});
+
 }

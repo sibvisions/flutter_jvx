@@ -3,4 +3,5 @@ abstract class ApiResponseNames {
   static const String applicationMetaData = "applicationMetaData";
   static const String menu = "menu";
   static const String screenGeneric = "screen.generic";
+  static const String closeScreen = "closeScreen";
 }

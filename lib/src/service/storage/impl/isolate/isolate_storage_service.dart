@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_delete_screen_message.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_model.dart';
@@ -67,6 +68,13 @@ class IsolateStorageService implements IStorageService {
     return await _sendMessage(updateComponentsMessage);
   }
 
+  @override
+  Future<void> deleteScreen({required String screenName}) async {
+    StorageIsolateDeleteScreenMessage deleteScreenMessage = StorageIsolateDeleteScreenMessage(screenName: screenName);
+    return await _sendMessage(deleteScreenMessage);
+  }
+
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,5 +110,4 @@ class IsolateStorageService implements IStorageService {
 
     return true;
   }
-
 }
