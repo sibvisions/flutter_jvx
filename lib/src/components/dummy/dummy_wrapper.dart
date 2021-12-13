@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/dummy/dummy_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
-import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
+import 'dummy_widget.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/layout/preferred_size_command.dart';
+import '../../model/component/dummy/fl_dummy_model.dart';
+import '../../model/layout/layout_data.dart';
 
 class DummyWrapper extends StatefulWidget {
   const DummyWrapper({Key? key, required this.dummyModel}) : super(key: key);
@@ -14,8 +14,8 @@ class DummyWrapper extends StatefulWidget {
   @override
   _DummyWrapperState createState() => _DummyWrapperState();
 }
-class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
 
+class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
   late LayoutData layoutData;
   late FlDummyModel dummyModel;
   bool sentPrefSize = false;
@@ -24,29 +24,30 @@ class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
   void initState() {
     dummyModel = widget.dummyModel;
 
-    uiService.registerAsLiveComponent(id: dummyModel.id, callback: ({newModel, position}) {
-      if(position != null){
-        setState(() {
-          layoutData.layoutPosition = position;
-        });
-      }
+    uiService.registerAsLiveComponent(
+        id: dummyModel.id,
+        callback: ({newModel, position}) {
+          if (position != null) {
+            setState(() {
+              layoutData.layoutPosition = position;
+            });
+          }
 
-      if(newModel != null){
-        setState(() {
-          dummyModel = newModel as FlDummyModel;
-          sentPrefSize = false;
+          if (newModel != null) {
+            setState(() {
+              dummyModel = newModel as FlDummyModel;
+              sentPrefSize = false;
 
-          layoutData = LayoutData(
-              constraints: dummyModel.constraints,
-              id: dummyModel.id,
-              preferredSize: dummyModel.preferredSize,
-              minSize: dummyModel.minimumSize,
-              maxSize: dummyModel.maximumSize,
-              parentId: dummyModel.parent
-          );
+              layoutData = LayoutData(
+                  constraints: dummyModel.constraints,
+                  id: dummyModel.id,
+                  preferredSize: dummyModel.preferredSize,
+                  minSize: dummyModel.minimumSize,
+                  maxSize: dummyModel.maximumSize,
+                  parentId: dummyModel.parent);
+            });
+          }
         });
-      }
-    });
 
     layoutData = LayoutData(
         constraints: dummyModel.constraints,
@@ -54,15 +55,16 @@ class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
         preferredSize: dummyModel.preferredSize,
         minSize: dummyModel.minimumSize,
         maxSize: dummyModel.maximumSize,
-        parentId: dummyModel.parent
-    );
+        parentId: dummyModel.parent);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     const DummyWidget dummyWidget = DummyWidget();
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {postFrameCallback(timeStamp, context);});
+    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+      postFrameCallback(timeStamp, context);
+    });
 
     return Positioned(
       top: _getTopForPositioned(),
@@ -72,7 +74,6 @@ class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
       child: dummyWidget,
     );
   }
-
 
   double? _getWidthForPositioned() {
     if (layoutData.hasPosition) {
@@ -121,14 +122,12 @@ class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
       layoutData.calculatedSize = Size(width, height);
     }
 
-
     PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
         parentId: dummyModel.parent ?? "",
         layoutData: layoutData,
         componentId: dummyModel.id,
-        reason: "Component has been rendered"
-    );
-    if(!sentPrefSize){
+        reason: "Component has been rendered");
+    if (!sentPrefSize) {
       uiService.sendCommand(preferredSizeCommand);
     }
     sentPrefSize = true;

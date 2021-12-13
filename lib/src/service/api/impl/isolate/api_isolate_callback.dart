@@ -1,16 +1,16 @@
 import 'dart:isolate';
 
-import 'messages/endpoint/api_isolate_device_status_message.dart';
-import 'messages/endpoint/api_isolate_open_screen_message.dart';
-import '../../shared/i_controller.dart';
-import '../../shared/i_repository.dart';
 import 'package:http/http.dart';
 
+import '../../shared/i_controller.dart';
+import '../../shared/i_repository.dart';
 import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_message.dart';
 import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_repository_message.dart';
+import 'messages/endpoint/api_isolate_device_status_message.dart';
 import 'messages/endpoint/api_isolate_login_message.dart';
+import 'messages/endpoint/api_isolate_open_screen_message.dart';
 import 'messages/endpoint/api_isolate_startup_message.dart';
 
 void apiCallback(SendPort callerSendPort) {
@@ -48,15 +48,14 @@ void apiCallback(SendPort callerSendPort) {
       if (apiMessage is ApiIsolateStartUpMessage) {
         response = repo.startUp(apiMessage.appName);
       } else if (apiMessage is ApiIsolateLoginMessage) {
-        response = repo.login( apiMessage.userName, apiMessage.password, apiMessage.clientId);
-      } else if (apiMessage is ApiIsolateDeviceStatusMessage){
+        response = repo.login(apiMessage.userName, apiMessage.password, apiMessage.clientId);
+      } else if (apiMessage is ApiIsolateDeviceStatusMessage) {
         response = repo.deviceStatus(apiMessage.clientId, apiMessage.screenWidth, apiMessage.screenHeight);
-      } else if (apiMessage is ApiIsolateOpenScreenMessage){
+      } else if (apiMessage is ApiIsolateOpenScreenMessage) {
         response = repo.openScreen(apiMessage.componentId, apiMessage.clientId);
       }
 
-
-      if(response != null){
+      if (response != null) {
         var actions = await cont.processResponse(response);
         apiMessage.sendResponse(response: actions, sendPort: message.sendPort);
       }

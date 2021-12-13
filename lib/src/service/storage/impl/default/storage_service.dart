@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import '../../../../model/command/base_command.dart';
 import '../../shared/component_store.dart';
 
@@ -7,11 +5,9 @@ import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../../i_storage_service.dart';
 
-
 /// Contains all component & menu Data
 // Author: Michael Schober
 class DefaultStorageService implements IStorageService {
-
   final ComponentStore componentStore = ComponentStore();
 
   @override
@@ -30,7 +26,8 @@ class DefaultStorageService implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) {
+  Future<List<BaseCommand>> updateComponents(
+      List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) {
     return componentStore.updateComponents(componentsToUpdate, newComponents, screenName);
   }
 
@@ -38,5 +35,4 @@ class DefaultStorageService implements IStorageService {
   Future<void> deleteScreen({required String screenName}) {
     return componentStore.deleteScreen(screenName: screenName);
   }
-
 }

@@ -1,5 +1,5 @@
-import 'ui_command.dart';
 import '../../component/fl_component_model.dart';
+import 'ui_command.dart';
 
 /// Command to update components.
 class UpdateComponentsCommand extends UiCommand {
@@ -19,30 +19,27 @@ class UpdateComponentsCommand extends UiCommand {
   /// The affected component models.
   final Set<String> affectedComponents;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  UpdateComponentsCommand(
+      {this.affectedComponents = const {},
+      this.newComponents = const [],
+      this.changedComponents = const [],
+      this.deletedComponents = const {},
+      required String reason})
+      : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	// Initialization
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  UpdateComponentsCommand({
-    this.affectedComponents = const {},
-    this.newComponents = const [],
-    this.changedComponents = const [],
-    this.deletedComponents = const {},
-    required String reason
-  }) : super(reason: reason);
-
+  // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	// Overridden methods
-	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   @override
   String get logString {
     String allAffectedComponentIds = "[";
 
-    for (FlComponentModel element in newComponents)
-    {
+    for (FlComponentModel element in newComponents) {
       allAffectedComponentIds += " " + element.id + ";";
     }
 

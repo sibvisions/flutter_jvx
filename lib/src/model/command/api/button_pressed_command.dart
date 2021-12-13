@@ -1,10 +1,9 @@
-import './api_command.dart';
+import 'api_command.dart';
 
 ///
 /// Issue this command to signify an action has been done.
 ///
 class ButtonPressedCommand extends ApiCommand {
-  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,7 +14,7 @@ class ButtonPressedCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   /// Initializes a [ButtonPressedCommand].
   ButtonPressedCommand({
     required this.componentId,

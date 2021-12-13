@@ -1,8 +1,7 @@
-import 'storage_command.dart';
 import '../../menu/menu_model.dart';
+import 'storage_command.dart';
 
 class SaveMenuCommand extends StorageCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,10 +14,7 @@ class SaveMenuCommand extends StorageCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [SaveMenuCommand].
-  SaveMenuCommand({
-    required String reason,
-    required this.menu
-  }) : super(reason:  reason);
+  SaveMenuCommand({required String reason, required this.menu}) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

@@ -1,6 +1,4 @@
-import 'package:flutter_client/src/layout/form_layout.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-
+import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
 import 'src/model/config/api/url_config.dart';
@@ -21,8 +19,6 @@ import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
-
-import 'data/config/config_generator.dart';
 
 Future<bool> initAppMobile() async {
   // API

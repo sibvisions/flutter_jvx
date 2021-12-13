@@ -1,5 +1,4 @@
 import '../../model/command/base_command.dart';
-
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 
@@ -7,7 +6,6 @@ import '../../model/menu/menu_model.dart';
 /// Storage service is used to store & retrieve all Data of [FlComponentModel] & [MenuModel]
 //Author: Michael Schober
 abstract class IStorageService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,7 +18,8 @@ abstract class IStorageService {
 
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.
-  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName);
+  Future<List<BaseCommand>> updateComponents(
+      List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName);
 
   /// Returns all [FlComponentModel] in the given [screenClassName],
   /// including all children recursively.
@@ -29,5 +28,4 @@ abstract class IStorageService {
 
   /// Deletes Screen Model, and all descendants.
   Future<void> deleteScreen({required String screenName});
-
 }

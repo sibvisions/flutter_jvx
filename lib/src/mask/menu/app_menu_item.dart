@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
+import '../../model/command/api/open_screen_command.dart';
 
 import '../../model/menu/menu_item_model.dart';
 import '../../service/ui/i_ui_service.dart';
@@ -15,10 +15,8 @@ class AppMenuItem extends StatelessWidget {
   final MenuItemModel menuItemModel;
 
   _onMenuItemClick() {
-    OpenScreenCommand openScreenCommand = OpenScreenCommand(
-        componentId: menuItemModel.componentId,
-        reason: "MenuItem pressed"
-    );
+    OpenScreenCommand openScreenCommand =
+        OpenScreenCommand(componentId: menuItemModel.componentId, reason: "MenuItem pressed");
     uiService.sendCommand(openScreenCommand);
   }
 
@@ -26,13 +24,10 @@ class AppMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 182,
-      child: (
-          GestureDetector(
-            onTap: _onMenuItemClick,
-            child: Text(menuItemModel.label),
-          )
-      ),
+      child: (GestureDetector(
+        onTap: _onMenuItemClick,
+        child: Text(menuItemModel.label),
+      )),
     );
   }
 }
-

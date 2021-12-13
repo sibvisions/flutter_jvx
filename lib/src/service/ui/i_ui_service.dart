@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/util/type_def/callback_def.dart';
+import '../../model/command/base_command.dart';
+import '../../model/layout/layout_position.dart';
+import '../../../util/type_def/callback_def.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/routing/route_to_menu.dart';
@@ -13,7 +13,6 @@ import '../command/i_command_service.dart';
 /// Used to manage all interactions to and from the ui.
 // Author: Michael Schober
 abstract class IUiService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

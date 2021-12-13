@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/layout/layout_command.dart';
+import 'layout_command.dart';
 
 class SetComponentSizeCommand extends LayoutCommand {
-
   /// Id of component to set Size.
   final String componentId;
 
@@ -13,14 +12,9 @@ class SetComponentSizeCommand extends LayoutCommand {
     required this.componentId,
     required this.size,
     required String reason,
-  }) : super(reason:  reason);
+  }) : super(reason: reason);
 
   @override
   // TODO: implement logString
   String get logString => throw UnimplementedError();
-
-
-
-
-
 }

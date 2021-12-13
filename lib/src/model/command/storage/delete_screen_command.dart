@@ -1,12 +1,9 @@
-import 'package:flutter_client/src/model/command/storage/storage_command.dart';
+import 'storage_command.dart';
 
-class DeleteScreenCommand extends StorageCommand{
+class DeleteScreenCommand extends StorageCommand {
   final String screenName;
 
-  DeleteScreenCommand({
-    required this.screenName,
-    required String reason
-  }): super(reason: reason);
+  DeleteScreenCommand({required this.screenName, required String reason}) : super(reason: reason);
 
   @override
   // TODO: implement logString

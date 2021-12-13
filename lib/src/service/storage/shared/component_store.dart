@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
-import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
+import '../../../model/command/ui/update_components_command.dart';
+import '../../../model/command/ui/update_components_command.dart';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/command/base_command.dart';
@@ -12,7 +12,6 @@ import '../i_storage_service.dart';
 import '../../../../util/extensions/list_extensions.dart';
 
 class ComponentStore implements IStorageService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -30,7 +29,7 @@ class ComponentStore implements IStorageService {
   @override
   Future<MenuModel> getMenu() async {
     MenuModel? menuModel = _menuModel;
-    if(menuModel != null){
+    if (menuModel != null) {
       return menuModel;
     } else {
       throw Exception("No Menu was found");
@@ -44,13 +43,13 @@ class ComponentStore implements IStorageService {
     return true;
   }
 
-
   @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {
     // Get Screen (Top-most Panel)
-    FlComponentModel? screenModel = _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
+    FlComponentModel? screenModel =
+        _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
 
-    if(screenModel != null){
+    if (screenModel != null) {
       List<FlComponentModel> screen = [];
 
       screen.add(screenModel);
@@ -62,8 +61,8 @@ class ComponentStore implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
-
+  Future<List<BaseCommand>> updateComponents(
+      List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
     // List of all changed models
     Set<String> changedModels = {};
     // List of all deleted models
@@ -74,10 +73,10 @@ class ComponentStore implements IStorageService {
     List<BaseCommand> commands = [];
 
     // Handle new Components
-    if(newComponents != null){
-      for(FlComponentModel componentModel in newComponents){
+    if (newComponents != null) {
+      for (FlComponentModel componentModel in newComponents) {
         String? parentId = componentModel.parent;
-        if(parentId != null){
+        if (parentId != null) {
           affectedModels.add(parentId);
         }
 
@@ -88,8 +87,8 @@ class ComponentStore implements IStorageService {
     List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName);
 
     // Handle components to Update
-    if(componentsToUpdate != null){
-      for(dynamic changedData in componentsToUpdate){
+    if (componentsToUpdate != null) {
+      for (dynamic changedData in componentsToUpdate) {
         // Get old Model
         FlComponentModel oldModel = _componentMap[changedData[ApiObjectProperty.id]]!;
         // Update Component and add to changedModels
@@ -98,7 +97,7 @@ class ComponentStore implements IStorageService {
         _componentMap[newModel.id] = newModel;
 
         // Handle parent change, notify old parent of change
-        if(newModel.parent != oldModel.parent){
+        if (newModel.parent != oldModel.parent) {
           var oldParent = _componentMap[oldModel.parent]!;
           affectedModels.add(oldParent.id);
         }
@@ -114,40 +113,40 @@ class ComponentStore implements IStorageService {
 
     // Build UI Notification
     // Check for new or changed active components
-    for(FlComponentModel newModel in newScreenComps){
+    for (FlComponentModel newModel in newScreenComps) {
       // Was model already sent once, present in oldScreen
       bool isExisting = oldScreenComps.any((oldModel) => oldModel.id == newModel.id);
 
-      if(oldScreenComps.isEmpty){
+      if (oldScreenComps.isEmpty) {
         isExisting = false;
       }
 
       // IF component has not been rendered before it is new.
-      if(!isExisting){
+      if (!isExisting) {
         newUiComponents.add(newModel);
       } else {
         // IF component has been rendered, check if it had been changed.
         bool hasChanged = changedModels.any((changedModels) => changedModels == newModel.id);
-        if(hasChanged){
+        if (hasChanged) {
           changedUiComponents.add(newModel);
         }
       }
     }
 
     // Check for components which are not active anymore, but may not deleted in storage
-    for(FlComponentModel oldModel in oldScreenComps){
+    for (FlComponentModel oldModel in oldScreenComps) {
       bool isExisting = newScreenComps.any((newModel) => newModel.id == oldModel.id);
 
-      if(!isExisting){
+      if (!isExisting) {
         deletedUiComponents.add(oldModel.id);
       }
     }
 
     // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
-    for(String affectedModel in affectedModels){
+    for (String affectedModel in affectedModels) {
       bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
       bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
-      if(!isChanged && !isNew){
+      if (!isChanged && !isNew) {
         affectedUiComponents.add(affectedModel);
       }
     }
@@ -157,8 +156,7 @@ class ComponentStore implements IStorageService {
         changedComponents: changedUiComponents,
         deletedComponents: deletedUiComponents,
         newComponents: newUiComponents,
-        reason: "Server Changed Components"
-    );
+        reason: "Server Changed Components");
 
     return [updateComponentsCommand];
   }
@@ -177,12 +175,12 @@ class ComponentStore implements IStorageService {
   bool _isScreen(String screenClassName, FlComponentModel componentModel) {
     FlPanelModel? componentPanelModel;
 
-    if(componentModel is FlPanelModel){
+    if (componentModel is FlPanelModel) {
       componentPanelModel = componentModel;
     }
 
-    if(componentPanelModel != null) {
-      if(componentPanelModel.screenClassName == screenClassName) {
+    if (componentPanelModel != null) {
+      if (componentPanelModel.screenClassName == screenClassName) {
         return true;
       }
     }
@@ -195,7 +193,7 @@ class ComponentStore implements IStorageService {
 
     for (FlComponentModel componentModel in _componentMap.values) {
       String? parentId = componentModel.parent;
-      if(parentId != null && parentId == id){
+      if (parentId != null && parentId == id) {
         children.add(componentModel);
         children.addAll(_getAllComponentsBelow(componentModel.id));
       }
@@ -203,16 +201,15 @@ class ComponentStore implements IStorageService {
     return children;
   }
 
-  List<FlComponentModel> _getAllComponentsBelowByName({required String name}){
-
+  List<FlComponentModel> _getAllComponentsBelowByName({required String name}) {
     FlComponentModel? componentModel;
     _componentMap.forEach((key, value) {
-      if(value.name == name){
+      if (value.name == name) {
         componentModel = value;
       }
     });
 
-    if(componentModel != null){
+    if (componentModel != null) {
       var list = _getAllComponentsBelow(componentModel!.id);
       list.add(componentModel!);
       return list;
@@ -221,12 +218,9 @@ class ComponentStore implements IStorageService {
     }
   }
 
-
   /// Adds new Component
-  void _addNewComponent(FlComponentModel newComponent){
+  void _addNewComponent(FlComponentModel newComponent) {
     _componentMap[newComponent.id] = newComponent;
     newComponent;
   }
-
-
 }

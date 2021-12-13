@@ -1,13 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
+import '../../layout/layout_data.dart';
 import 'layout_command.dart';
 
 class PreferredSizeCommand extends LayoutCommand {
-  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   /// Component id.
   final String componentId;
 
@@ -31,8 +29,7 @@ class PreferredSizeCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   @override
   String get logString => "PreferredSizeCommand | Component: $componentId | Parent: $parentId | Reason $reason";
-
 }

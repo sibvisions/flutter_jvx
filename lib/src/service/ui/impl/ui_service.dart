@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
-import 'dart:ui';
 
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/util/extensions/list_extensions.dart';
-import 'package:flutter_client/util/type_def/callback_def.dart';
+import '../../../model/command/base_command.dart';
+import '../../../model/layout/layout_position.dart';
+import '../../../../util/type_def/callback_def.dart';
 
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -83,9 +80,9 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {
-    for(String affectedId in affectedIds){
+    for (String affectedId in affectedIds) {
       ComponentCallback? callback = _registeredComponents[affectedId];
-      if(callback != null){
+      if (callback != null) {
         callback.call();
       }
     }
@@ -93,7 +90,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
-    for(FlComponentModel updatedModel in updatedModels){
+    for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
       int indexOfOld = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
       _currentScreen.removeAt(indexOfOld);
@@ -101,7 +98,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
       // Notify active component
       ComponentCallback? callback = _registeredComponents[updatedModel.id];
-      if(callback != null){
+      if (callback != null) {
         callback.call(newModel: updatedModel);
       } else {
         throw Exception("Component To Update not found");
@@ -117,11 +114,10 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void setLayoutPosition({required String id, required LayoutPosition layoutPosition}) {
     ComponentCallback? callback = _registeredComponents[id];
-    if(callback != null){
+    if (callback != null) {
       callback.call(position: layoutPosition);
     } else {
       throw Exception("Component to set position not found");
     }
   }
-
 }

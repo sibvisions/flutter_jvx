@@ -1,13 +1,6 @@
-
-import 'dart:developer';
-
-enum Orientation {
-  HORIZONTAL,
-  VERTICAL
-}
+enum Orientation { HORIZONTAL, VERTICAL }
 
 class FormLayoutAnchor {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,42 +35,36 @@ class FormLayoutAnchor {
   /// The position of this anchor.
   double position;
 
+  FormLayoutAnchor(
+      {required this.name,
+      required this.orientation,
+      required this.autoSize,
+      required this.position,
+      required this.firstCalculation,
+      required this.autoSizeCalculated,
+      required this.anchorData,
+      required this.relative,
+      this.relatedAnchor,
+      this.relatedAnchorName});
 
-  FormLayoutAnchor({
-    required this.name,
-    required this.orientation,
-    required this.autoSize,
-    required this.position,
-    required this.firstCalculation,
-    required this.autoSizeCalculated,
-    required this.anchorData,
-    required this.relative,
-    this.relatedAnchor,
-    this.relatedAnchorName
-  });
-
-  FormLayoutAnchor.fromAnchorData({required String pAnchorData}) :
-      anchorData = pAnchorData,
-      name = pAnchorData.split(",")[0],
-      relatedAnchorName = pAnchorData.split(",")[1],
-      autoSize = pAnchorData.split(",")[3] == "a",
-
-      autoSizeCalculated = false,
-      firstCalculation = true,
-      relative = false,
-      position = double.parse(pAnchorData.split(",")[4]),
-      orientation = getOrientationFromData(anchorName: pAnchorData.split(",")[0]);
-
-
-
+  FormLayoutAnchor.fromAnchorData({required String pAnchorData})
+      : anchorData = pAnchorData,
+        name = pAnchorData.split(",")[0],
+        relatedAnchorName = pAnchorData.split(",")[1],
+        autoSize = pAnchorData.split(",")[3] == "a",
+        autoSizeCalculated = false,
+        firstCalculation = true,
+        relative = false,
+        position = double.parse(pAnchorData.split(",")[4]),
+        orientation = getOrientationFromData(anchorName: pAnchorData.split(",")[0]);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns wether the orientation of the anchor is horizontal or vertical
-  static Orientation getOrientationFromData({required String anchorName}){
-    if(anchorName.startsWith("l") || anchorName.startsWith("r")){
+  static Orientation getOrientationFromData({required String anchorName}) {
+    if (anchorName.startsWith("l") || anchorName.startsWith("r")) {
       return Orientation.HORIZONTAL;
     } else {
       return Orientation.VERTICAL;
@@ -88,7 +75,7 @@ class FormLayoutAnchor {
   /// The position is only correct if the layout is valid.
   double getAbsolutePosition() {
     FormLayoutAnchor? iRelatedAnchor = relatedAnchor;
-    if(iRelatedAnchor != null){
+    if (iRelatedAnchor != null) {
       return iRelatedAnchor.getAbsolutePosition() + position;
     } else {
       return position;
@@ -98,7 +85,7 @@ class FormLayoutAnchor {
   /// Gets the related border anchor to this anchor.
   FormLayoutAnchor getBorderAnchor() {
     FormLayoutAnchor start = this;
-    while(start.relatedAnchor != null){
+    while (start.relatedAnchor != null) {
       start = start.relatedAnchor!;
     }
     return start;
@@ -107,16 +94,9 @@ class FormLayoutAnchor {
   /// Gets the related unused auto size anchor.
   FormLayoutAnchor getRelativeAnchor() {
     FormLayoutAnchor? start = this;
-    while(start != null && !start.relative && start.relatedAnchor != null){
+    while (start != null && !start.relative && start.relatedAnchor != null) {
       start = start.relatedAnchor;
     }
     return start ?? this;
   }
-
-
-
-
-
-
-
 }

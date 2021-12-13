@@ -1,12 +1,10 @@
-import 'package:flutter_client/src/layout/i_layout.dart';
-import 'package:flutter_client/src/model/command/layout/layout_command.dart';
+import 'layout_command.dart';
 
-class RegisterParentCommand extends LayoutCommand{
-  
+class RegisterParentCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   /// The parent id.
   String parentId;
 
@@ -21,7 +19,7 @@ class RegisterParentCommand extends LayoutCommand{
 
   /// Constraints of this layout in relation of other layouts.
   String? constraints;
-  
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,12 +32,12 @@ class RegisterParentCommand extends LayoutCommand{
     this.constraints,
     required String reason,
   }) : super(reason: reason);
-  
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
-  @override
-  String get logString => "RegisterParentCommand | Component: $parentId | Childrens: ${childrenIds.toString()} | Reason $reason";
 
+  @override
+  String get logString =>
+      "RegisterParentCommand | Component: $parentId | Childrens: ${childrenIds.toString()} | Reason $reason";
 }

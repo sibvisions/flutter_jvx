@@ -1,6 +1,5 @@
 import '../service/layout/i_layout_service.dart';
 
-import '../service/config/i_config_service.dart';
 import '../service/service.dart';
 
 ///

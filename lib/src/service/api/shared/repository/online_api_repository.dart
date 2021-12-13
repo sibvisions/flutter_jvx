@@ -1,17 +1,15 @@
 import 'dart:convert';
-import 'dart:developer';
+
+import 'package:http/http.dart';
 
 import '../../../../model/api/requests/device_status_request.dart';
-
 import '../../../../model/api/requests/login_request.dart';
 import '../../../../model/api/requests/open_screen_request.dart';
 import '../../../../model/api/requests/startup_request.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
-import 'package:http/http.dart';
 
 class OnlineApiRepository implements IRepository {
-
   final ApiConfig apiConfig;
   final Client client = Client();
   final Map<String, String> _headers = {};
@@ -20,8 +18,7 @@ class OnlineApiRepository implements IRepository {
     required this.apiConfig,
   });
 
-
-  Future<Response> _sendPostRequest(Uri uri, String body){
+  Future<Response> _sendPostRequest(Uri uri, String body) {
     Future<Response> res = client.post(uri, headers: _headers, body: body);
     res.then(_extractCookie);
     return res;
@@ -32,7 +29,7 @@ class OnlineApiRepository implements IRepository {
     if (rawCookie != null) {
       String cookie = rawCookie.substring(0, rawCookie.indexOf(";"));
       _headers.putIfAbsent("Cookie", () => cookie);
-      if(_headers.containsKey("Cookie")){
+      if (_headers.containsKey("Cookie")) {
         _headers.update("Cookie", (value) => cookie);
       }
     }
@@ -46,33 +43,24 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<Response> startUp(String appName) {
-    StartUpRequest startUpRequest = StartUpRequest(
-        deviceMode: "mobile",
-        applicationName: appName
-    );
+    StartUpRequest startUpRequest = StartUpRequest(deviceMode: "mobile", applicationName: appName);
     return _sendPostRequest(apiConfig.getStartupUri(), jsonEncode(startUpRequest));
   }
 
   @override
   Future<Response> openScreen(String componentId, String clientId) {
     OpenScreenRequest openScreenRequest = OpenScreenRequest(
-        manualClose: false,
-        componentId: componentId,
-        clientId: clientId,
+      manualClose: false,
+      componentId: componentId,
+      clientId: clientId,
     );
     return _sendPostRequest(apiConfig.getOpenScreenUri(), jsonEncode(openScreenRequest));
-
   }
 
   @override
   Future<Response> deviceStatus(String clientId, double screenWidth, double screenHeight) {
-    DeviceStatusRequest deviceStatusRequest = DeviceStatusRequest(
-        clientId: clientId,
-        screenWidth: screenWidth,
-        screenHeight: screenHeight
-    );
+    DeviceStatusRequest deviceStatusRequest =
+        DeviceStatusRequest(clientId: clientId, screenWidth: screenWidth, screenHeight: screenHeight);
     return _sendPostRequest(apiConfig.getDeviceStatusUri(), jsonEncode(deviceStatusRequest));
   }
-
-
 }

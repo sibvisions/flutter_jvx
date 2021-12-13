@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_delete_screen_message.dart';
+import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 
 import 'message/endpoint/storage_isolate_get_menu_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
@@ -10,8 +10,7 @@ import 'message/storage_isolate_message.dart';
 import 'message/storage_isolate_message_wrapper.dart';
 import '../../shared/component_store.dart';
 
-void storageCallback(SendPort callerSendPort){
-
+void storageCallback(SendPort callerSendPort) {
   // Instantiate a SendPort to receive message from the caller
   ReceivePort isolateReceivePort = ReceivePort();
 
@@ -21,31 +20,26 @@ void storageCallback(SendPort callerSendPort){
   // Storage instance holds all logic and data.
   final ComponentStore componentStore = ComponentStore();
 
-
   isolateReceivePort.listen((message) async {
-
     StorageIsolateMessageWrapper isolateMessageWrapper = (message as StorageIsolateMessageWrapper);
     StorageIsolateMessage isolateMessage = isolateMessageWrapper.message;
     dynamic response;
 
-
-    if(isolateMessage is StorageIsolateGetMenuMessage){
+    if (isolateMessage is StorageIsolateGetMenuMessage) {
       response = await componentStore.getMenu();
-    } else if(isolateMessage is StorageIsolateGetScreenMessage){
+    } else if (isolateMessage is StorageIsolateGetScreenMessage) {
       response = await componentStore.getScreenByScreenClassName(isolateMessage.screenClassName);
-    } else if(isolateMessage is StorageIsolateSaveMenuMessage){
+    } else if (isolateMessage is StorageIsolateSaveMenuMessage) {
       response = await componentStore.saveMenu(isolateMessage.menuModel);
-    } else if(isolateMessage is StorageIsolateUpdateComponentsMessage){
-      response = await componentStore.updateComponents(isolateMessage.componentsToUpdate, isolateMessage.newComponents, isolateMessage.screenClassName);
-    } else if(isolateMessage is StorageIsolateDeleteScreenMessage){
+    } else if (isolateMessage is StorageIsolateUpdateComponentsMessage) {
+      response = await componentStore.updateComponents(
+          isolateMessage.componentsToUpdate, isolateMessage.newComponents, isolateMessage.screenClassName);
+    } else if (isolateMessage is StorageIsolateDeleteScreenMessage) {
       componentStore.deleteScreen(screenName: isolateMessage.screenName);
     }
 
-
-    if(response != null){
+    if (response != null) {
       isolateMessage.sendResponse(response: response, sendPort: isolateMessageWrapper.sendPort);
     }
   });
-
-
 }

@@ -1,9 +1,4 @@
-import 'dart:developer';
-
-
-
-import 'package:flutter_client/src/mixin/layout_service_mixin.dart';
-import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
+import '../../model/command/layout/set_component_size_command.dart';
 
 import '../../mixin/command_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -23,7 +18,6 @@ class WorkScreen extends StatefulWidget {
 }
 
 class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
-
   Widget screen = const Text("dummy");
 
   @override
@@ -33,32 +27,26 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
   }
 
   _getScreenSize(double height, double width) {
-    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
-        screenWidth: width,
-        screenHeight: height,
-        reason: "Screen has been opened"
-    );
+    DeviceStatusCommand deviceStatusCommand =
+        DeviceStatusCommand(screenWidth: width, screenHeight: height, reason: "Screen has been opened");
     commandService.sendCommand(deviceStatusCommand);
 
     SetComponentSizeCommand command = SetComponentSizeCommand(
-        componentId: widget.screen.id,
-        size: Size(width, height),
-        reason: "Set First Panel Size"
-    );
+        componentId: widget.screen.id, size: Size(width, height), reason: "Set First Panel Size");
     commandService.sendCommand(command);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
-      body: Scaffold(
-        body: LayoutBuilder(builder: (context, constraints) {
+        appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
+        body: Scaffold(
+          body: LayoutBuilder(builder: (context, constraints) {
             _getScreenSize(constraints.maxHeight, constraints.maxWidth);
-            return Stack(children: [screen],);
-          }
-        ),
-      )
-    );
+            return Stack(
+              children: [screen],
+            );
+          }),
+        ));
   }
 }

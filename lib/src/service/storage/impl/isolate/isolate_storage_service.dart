@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_client/src/service/storage/impl/isolate/message/endpoint/storage_isolate_delete_screen_message.dart';
+import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_model.dart';
@@ -15,7 +14,6 @@ import 'message/storage_isolate_message_wrapper.dart';
 import 'storage_isolate_callback.dart';
 
 class IsolateStorageService implements IStorageService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,7 +26,6 @@ class IsolateStorageService implements IStorageService {
     return isolateStorageService;
   }
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,7 +35,6 @@ class IsolateStorageService implements IStorageService {
 
   /// [SendPort] used to send & receive messages from the isolate.
   SendPort? _apiSendPort;
-
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -63,8 +59,10 @@ class IsolateStorageService implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
-    StorageIsolateUpdateComponentsMessage updateComponentsMessage = StorageIsolateUpdateComponentsMessage(componentsToUpdate: componentsToUpdate, newComponents: newComponents, screenClassName: screenName);
+  Future<List<BaseCommand>> updateComponents(
+      List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
+    StorageIsolateUpdateComponentsMessage updateComponentsMessage = StorageIsolateUpdateComponentsMessage(
+        componentsToUpdate: componentsToUpdate, newComponents: newComponents, screenClassName: screenName);
     return await _sendMessage(updateComponentsMessage);
   }
 
@@ -74,7 +72,6 @@ class IsolateStorageService implements IStorageService {
     return await _sendMessage(deleteScreenMessage);
   }
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,11 +79,12 @@ class IsolateStorageService implements IStorageService {
   /// Sends the [message] to the api Isolate and returns a Future containing the first answer.
   Future _sendMessage(StorageIsolateMessage message) async {
     SendPort? apiPort = _apiSendPort;
-    if(apiPort != null){
+    if (apiPort != null) {
       // Response will come to this receivePort
       ReceivePort receivePort = ReceivePort();
       // Wrap message
-      StorageIsolateMessageWrapper wrapper = StorageIsolateMessageWrapper(sendPort: receivePort.sendPort, message: message);
+      StorageIsolateMessageWrapper wrapper =
+          StorageIsolateMessageWrapper(sendPort: receivePort.sendPort, message: message);
       // send message to isolate
       apiPort.send(wrapper);
       // Needs to be casted, response type is assured by message itself (sendResponse method)
@@ -96,9 +94,7 @@ class IsolateStorageService implements IStorageService {
     }
   }
 
-
   Future<bool> initStorageIsolate() async {
-
     // Local and temporary ReceivePort to retrieve the new isolate's SendPort
     ReceivePort receivePort = ReceivePort();
 

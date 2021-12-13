@@ -1,10 +1,9 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
+import '../../api/api_object_property.dart';
 
-import 'storage_command.dart';
 import '../../component/fl_component_model.dart';
+import 'storage_command.dart';
 
 class SaveComponentsCommand extends StorageCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,12 +21,9 @@ class SaveComponentsCommand extends StorageCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SaveComponentsCommand({
-    this.updatedComponent,
-    this.componentsToSave,
-    required this.screenName,
-    required String reason
-  }) : super(reason: reason);
+  SaveComponentsCommand(
+      {this.updatedComponent, this.componentsToSave, required this.screenName, required String reason})
+      : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -38,37 +34,27 @@ class SaveComponentsCommand extends StorageCommand {
     String saveCompIds = " Components to save: [";
     String updateCompIds = " Components to update: [";
 
-    if (componentsToSave != null)
-    {
-      for (FlComponentModel element in componentsToSave!)
-      {
+    if (componentsToSave != null) {
+      for (FlComponentModel element in componentsToSave!) {
         saveCompIds += " " + element.id + ";";
       }
 
       saveCompIds += "]";
-    }
-    else
-    {
+    } else {
       saveCompIds = "";
     }
 
-    if (updatedComponent != null)
-    {
-      for (var element in updatedComponent!)
-      {
-        if (element is Map)
-        {
+    if (updatedComponent != null) {
+      for (var element in updatedComponent!) {
+        if (element is Map) {
           updateCompIds += " " + element[ApiObjectProperty.id] + ";";
         }
       }
       updateCompIds += "]";
-    }
-    else
-    {
+    } else {
       updateCompIds = "";
     }
 
     return "SaveComponentsCommand | " + saveCompIds + updateCompIds + " | Reason : $reason";
   }
-
 }
