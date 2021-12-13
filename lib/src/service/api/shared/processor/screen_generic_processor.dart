@@ -13,6 +13,11 @@ import '../i_processor.dart';
 /// Processes [ScreenGenericResponse]
 ///
 class ScreenGenericProcessor implements IProcessor {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   List<BaseCommand> processResponse(json) {
     List<BaseCommand> commands = [];
@@ -26,7 +31,7 @@ class ScreenGenericProcessor implements IProcessor {
 
     if (componentsToSave != null || updatedComponent != null) {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
-          reason: "Api recieved screen.generic response",
+          reason: "Api received screen.generic response",
           componentsToSave: componentsToSave,
           updatedComponent: updatedComponent,
           screenName: screenGenericResponse.componentId);
@@ -34,6 +39,10 @@ class ScreenGenericProcessor implements IProcessor {
     }
     return commands;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   List<dynamic>? _getChangedComponents(List<dynamic> pChangedComponents) {
     List<dynamic> changedComponents = [];

@@ -53,6 +53,7 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToWorkScreen(List<FlComponentModel> screenComponents) {
     RouteToWorkScreen routeToWorkScreen = RouteToWorkScreen(screen: screenComponents.first);
+    _currentScreen.clear();
     _currentScreen.addAll(screenComponents);
     _routeStream.sink.add(routeToWorkScreen);
   }

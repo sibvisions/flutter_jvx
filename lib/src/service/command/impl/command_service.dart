@@ -1,4 +1,8 @@
 
+import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
+import 'package:flutter_client/src/model/routing/route_to_menu.dart';
+import 'package:flutter_client/src/routing/app_routing_type.dart';
+
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/storage_service_mixin.dart';
@@ -75,9 +79,17 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         for (var value1 in executeFirst) {
           sendCommand(value1);
         }
+
         var routeCommand = value.whereType<RouteCommand>();
         for (var value2 in routeCommand) {
           sendCommand(value2);
+        }
+
+        if(value.any((element) => element is DeleteScreenCommand)){
+          if(!value.any((element) => element is RouteCommand)){
+            RouteCommand routeCommand = RouteCommand(routeType: AppRoutingType.menu, reason: "Last screen was closed and no other routing was passeed");
+            sendCommand(routeCommand);
+          }
         }
       });
     }

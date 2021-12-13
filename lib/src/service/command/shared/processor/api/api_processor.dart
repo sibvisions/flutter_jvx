@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
+
 import '../../../../../model/command/api/press_button_command.dart';
 import 'press_button_processor.dart';
 
@@ -52,7 +54,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _openScreenCommandProcessor.processCommand(command);
     } else if (command is DeviceStatusCommand) {
       return _deviceStatusProcessor.processCommand(command);
-    } else if (command is PressButtonCommand) {
+    } else if (command is ButtonPressedCommand) {
       return _pressButtonProcessor.processCommand(command);
     } else {
       return [];

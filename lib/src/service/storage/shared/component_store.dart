@@ -75,11 +75,11 @@ class ComponentStore implements IStorageService {
     // Handle new Components
     if (newComponents != null) {
       for (FlComponentModel componentModel in newComponents) {
+        // Notify parent that a new component has been added.
         String? parentId = componentModel.parent;
         if (parentId != null) {
           affectedModels.add(parentId);
         }
-
         _addNewComponent(componentModel);
       }
     }
@@ -90,17 +90,21 @@ class ComponentStore implements IStorageService {
     if (componentsToUpdate != null) {
       for (dynamic changedData in componentsToUpdate) {
         // Get old Model
-        FlComponentModel oldModel = _componentMap[changedData[ApiObjectProperty.id]]!;
-        // Update Component and add to changedModels
-        FlComponentModel newModel = oldModel.updateComponent(oldModel, changedData);
-        changedModels.add(newModel.id);
-        _componentMap[newModel.id] = newModel;
+        FlComponentModel? oldModel = _componentMap[changedData[ApiObjectProperty.id]];
+        if(oldModel != null){
+          // Update Component and add to changedModels
+          FlComponentModel newModel = oldModel.updateComponent(oldModel, changedData);
+          changedModels.add(newModel.id);
+          _componentMap[newModel.id] = newModel;
 
-        // Handle parent change, notify old parent of change
-        if (newModel.parent != oldModel.parent) {
-          var oldParent = _componentMap[oldModel.parent]!;
-          affectedModels.add(oldParent.id);
+
+          // Handle parent change, notify old parent of change
+          if (newModel.parent != oldModel.parent) {
+            var oldParent = _componentMap[oldModel.parent]!;
+            affectedModels.add(oldParent.id);
+          }
         }
+
       }
     }
 

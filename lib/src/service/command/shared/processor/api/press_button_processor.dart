@@ -1,12 +1,14 @@
+import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
-import '../../../../../model/command/api/press_button_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
-class PressButtonProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<PressButtonCommand> {
+class PressButtonProcessor with ApiServiceMixin, ConfigServiceMixin implements ICommandProcessor<ButtonPressedCommand> {
+
   @override
-  Future<List<BaseCommand>> processCommand(PressButtonCommand command) async {
+  Future<List<BaseCommand>> processCommand(ButtonPressedCommand command) async {
     String? clientId = configService.getClientId();
 
     if (clientId != null) {

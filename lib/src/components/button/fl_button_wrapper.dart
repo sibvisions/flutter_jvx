@@ -146,6 +146,6 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   }
 
   void buttonPressed() {
-    uiService.sendCommand(ButtonPressedCommand(componentId: buttonModel.id, reason: "Button has been pressed"));
+    uiService.sendCommand(ButtonPressedCommand(componentId: buttonModel.name, reason: "Button has been pressed"));
   }
 }
