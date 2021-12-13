@@ -15,6 +15,9 @@ class SaveComponentsCommand extends StorageCommand {
   /// List of maps representing the changes done to a component.
   final List<dynamic>? updatedComponent;
 
+  /// Name of Screen to Update
+  final String screenName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,6 +25,7 @@ class SaveComponentsCommand extends StorageCommand {
   SaveComponentsCommand({
     this.updatedComponent,
     this.componentsToSave,
+    required this.screenName,
     required String reason
   }) : super(reason: reason);
 

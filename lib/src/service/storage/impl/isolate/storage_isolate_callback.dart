@@ -34,7 +34,7 @@ void storageCallback(SendPort callerSendPort){
     } else if(isolateMessage is StorageIsolateSaveMenuMessage){
       response = await componentStore.saveMenu(isolateMessage.menuModel);
     } else if(isolateMessage is StorageIsolateUpdateComponentsMessage){
-      response = await componentStore.updateComponents(isolateMessage.componentsToUpdate, isolateMessage.newComponents);
+      response = await componentStore.updateComponents(isolateMessage.componentsToUpdate, isolateMessage.newComponents, isolateMessage.screenClassName);
     }
 
 

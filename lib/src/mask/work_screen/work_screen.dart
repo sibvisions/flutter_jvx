@@ -3,6 +3,7 @@ import 'dart:developer';
 
 
 import 'package:flutter_client/src/mixin/layout_service_mixin.dart';
+import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 
 import '../../mixin/command_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -38,6 +39,13 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
         reason: "Screen has been opened"
     );
     commandService.sendCommand(deviceStatusCommand);
+
+    SetComponentSizeCommand command = SetComponentSizeCommand(
+        componentId: widget.screen.id,
+        size: Size(width, height),
+        reason: "Set First Panel Size"
+    );
+    commandService.sendCommand(command);
   }
 
   @override

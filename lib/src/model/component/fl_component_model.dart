@@ -16,7 +16,6 @@ abstract class FlComponentModel {
   final String? constraints;
   /// The id of the parent component.
   final String? parent;
-
   // Sizes
   /// The preferred size of the component as sent by the server.
   final Size? preferredSize;

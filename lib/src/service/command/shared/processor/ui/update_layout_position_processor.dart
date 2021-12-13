@@ -8,8 +8,11 @@ class UpdateLayoutPositionProcessor with UiServiceGetterMixin implements IComman
   
   @override
   Future<List<BaseCommand>> processCommand(UpdateLayoutPositionCommand command) async {
-    
-    getUiService().updateComponentModels(layoutPositions: command.layoutPosition);
+
+    var uiService = getUiService();
+    command.layoutPosition.forEach((key, value) {
+      uiService.setLayoutPosition(id: key, layoutPosition: value);
+    });
     
     return [];
   }

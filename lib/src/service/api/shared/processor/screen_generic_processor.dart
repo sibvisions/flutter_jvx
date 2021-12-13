@@ -31,7 +31,8 @@ class ScreenGenericProcessor implements IProcessor {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
         reason: "Api recieved screen.generic response",
         componentsToSave: componentsToSave,
-        updatedComponent: updatedComponent
+        updatedComponent: updatedComponent,
+        screenName: screenGenericResponse.componentId
       );
       commands.add(saveComponentsCommand);
     }

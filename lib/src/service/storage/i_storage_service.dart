@@ -20,7 +20,7 @@ abstract class IStorageService {
 
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.
-  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents);
+  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName);
 
   /// Returns all [FlComponentModel] in the given [screenClassName],
   /// including all children recursively.

@@ -1,8 +1,10 @@
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
+import 'package:flutter_client/src/model/command/ui/update_components_command.dart';
+
 import '../../../model/api/api_object_property.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/command/ui/update_components_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
 import '../../../model/menu/menu_model.dart';
@@ -60,32 +62,105 @@ class ComponentStore implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents) async {
+  Future<List<BaseCommand>> updateComponents(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
 
-    List<FlComponentModel> oldModels = [];
+    // List of all changed models
+    Set<String> changedModels = {};
+    // List of all deleted models
+    Set<String> deletedModels = {};
+    // List of all affected models
+    Set<String> affectedModels = {};
+
     List<BaseCommand> commands = [];
 
     // Handle new Components
     if(newComponents != null){
       for(FlComponentModel componentModel in newComponents){
+        String? parentId = componentModel.parent;
+        if(parentId != null){
+          affectedModels.add(parentId);
+        }
+
         _addNewComponent(componentModel);
       }
     }
 
+    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName);
+
     // Handle components to Update
     if(componentsToUpdate != null){
       for(dynamic changedData in componentsToUpdate){
-        oldModels.add(_updateExistingModels(changedData));
+        // Get old Model
+        FlComponentModel oldModel = _componentMap[changedData[ApiObjectProperty.id]]!;
+        // Update Component and add to changedModels
+        FlComponentModel newModel = oldModel.updateComponent(oldModel, changedData);
+        changedModels.add(newModel.id);
+        _componentMap[newModel.id] = newModel;
+
+        // Handle parent change, notify old parent of change
+        if(newModel.parent != oldModel.parent){
+          var oldParent = _componentMap[oldModel.parent]!;
+          affectedModels.add(oldParent.id);
+        }
       }
     }
-    List<FlComponentModel> effectedComponents = _getEffectedComponentModels(componentsToUpdate, newComponents, oldModels);
 
-    UpdateComponentsCommand command = UpdateComponentsCommand(
-        affectedComponents: effectedComponents,
-        reason: "Components have been updated"
+    List<FlComponentModel> newScreenComps = _getAllComponentsBelowByName(name: screenName);
+
+    List<FlComponentModel> newUiComponents = [];
+    List<FlComponentModel> changedUiComponents = [];
+    Set<String> deletedUiComponents = {};
+    Set<String> affectedUiComponents = {};
+
+    // Build UI Notification
+    // Check for new or changed active components
+    for(FlComponentModel newModel in newScreenComps){
+      // Was model already sent once, present in oldScreen
+      bool isExisting = oldScreenComps.any((oldModel) => oldModel.id == newModel.id);
+
+      if(oldScreenComps.isEmpty){
+        isExisting = false;
+      }
+
+      // IF component has not been rendered before it is new.
+      if(!isExisting){
+        newUiComponents.add(newModel);
+      } else {
+        // IF component has been rendered, check if it had been changed.
+        bool hasChanged = changedModels.any((changedModels) => changedModels == newModel.id);
+        if(hasChanged){
+          changedUiComponents.add(newModel);
+        }
+      }
+    }
+
+    // Check for components which are not active anymore, but may not deleted in storage
+    for(FlComponentModel oldModel in oldScreenComps){
+      bool isExisting = newScreenComps.any((newModel) => newModel.id == oldModel.id);
+
+      if(!isExisting){
+        deletedUiComponents.add(oldModel.id);
+      }
+    }
+
+    // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
+    for(String affectedModel in affectedModels){
+      bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
+      bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
+      if(!isChanged && !isNew){
+        affectedUiComponents.add(affectedModel);
+      }
+    }
+
+    UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
+        affectedComponents: affectedUiComponents,
+        changedComponents: changedUiComponents,
+        deletedComponents: deletedUiComponents,
+        newComponents: newUiComponents,
+        reason: "Server Changed Components"
     );
-    commands.add(command);
-    return commands;
+
+    return [updateComponentsCommand];
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,62 +198,28 @@ class ComponentStore implements IStorageService {
     return children;
   }
 
+  List<FlComponentModel> _getAllComponentsBelowByName({required String name}){
+
+    FlComponentModel? componentModel;
+    _componentMap.forEach((key, value) {
+      if(value.name == name){
+        componentModel = value;
+      }
+    });
+
+    if(componentModel != null){
+      var list = _getAllComponentsBelow(componentModel!.id);
+      list.add(componentModel!);
+      return list;
+    } else {
+      return [];
+    }
+  }
+
 
   /// Adds new Component
   void _addNewComponent(FlComponentModel newComponent){
     _componentMap[newComponent.id] = newComponent;
     newComponent;
   }
-
-  /// Updates existing component models
-  FlComponentModel _updateExistingModels(dynamic updateData){
-    FlComponentModel? oldModel;
-    FlComponentModel? existingComponent = _componentMap[updateData[ApiObjectProperty.id]];
-    if(existingComponent != null) {
-      FlComponentModel updatedComponent = existingComponent.updateComponent(existingComponent, updateData);
-      _componentMap[updatedComponent.id] = updatedComponent;
-      oldModel = existingComponent;
-    }
-    if(oldModel != null){
-      return oldModel;
-    } else {
-      throw Exception("Model to Update  does not exist");
-    }
-
-  }
-
-  /// Returns all affected ComponentModel, called after [_addNewComponent] and [_updateExistingModels]
-  List<FlComponentModel> _getEffectedComponentModels(List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, List<FlComponentModel>? oldModels){
-    List<FlComponentModel> effectedComponents = [];
-
-
-    if(newComponents != null){
-      effectedComponents.addAll(newComponents);
-    }
-
-    if(componentsToUpdate != null && oldModels != null){
-      for(dynamic updateData in componentsToUpdate){
-        FlComponentModel? newModel = _componentMap[updateData[ApiObjectProperty.id]];
-        FlComponentModel? oldModel = oldModels.firstWhereOrNull((element) => element.id == updateData[ApiObjectProperty.id]);
-        if(newModel != null && oldModel != null){
-          // Model was changed in some way
-          effectedComponents.add(newModel);
-
-          // Parent of model was changed, means all possible effected components need to retrieved as it's possible that they are not currently rendered.
-          String? newParentId = updateData[ApiObjectProperty.parent];
-          String? oldParentId = oldModel.parent;
-          if(newParentId != oldParentId &&  newParentId != null && oldParentId != null){
-            FlComponentModel oldParentModel = _componentMap[oldParentId]!;
-            FlComponentModel newParentModel = _componentMap[newParentId]!;
-            List<FlComponentModel> myChildren = _getAllComponentsBelow(newModel.id);
-            effectedComponents.addAll([oldParentModel, newParentModel, ...myChildren]);
-          }
-        }
-
-
-      }
-    }
-    return effectedComponents;
-  }
-
 }

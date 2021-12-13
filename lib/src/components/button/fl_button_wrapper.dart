@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
 import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 import 'package:flutter_client/src/model/layout/layout_position.dart';
 
@@ -22,33 +23,55 @@ class FlButtonWrapper extends StatefulWidget {
 }
 
 class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
+
+  late FlButtonModel buttonModel;
   late LayoutData layoutData;
 
   bool sentPrefSize = false;
 
   @override
   void initState() {
-    uiService.registerAsLiveComponent(widget.model.id, (FlButtonModel? btnModel, LayoutPosition? position) {
-
+    buttonModel = widget.model;
+    uiService.registerAsLiveComponent(id: buttonModel.id, callback: ({newModel, position}) {
       if(position != null){
         setState(() {
           layoutData.layoutPosition = position;
         });
       }
+
+      if(newModel != null){
+        setState(() {
+          buttonModel = newModel as FlButtonModel;
+          sentPrefSize = false;
+
+          layoutData = LayoutData(
+              constraints: buttonModel.constraints,
+              id: buttonModel.id,
+              preferredSize: buttonModel.preferredSize,
+              minSize: buttonModel.minimumSize,
+              maxSize: buttonModel.maximumSize,
+              parentId: buttonModel.parent
+          );
+        });
+      }
     });
+
     layoutData = LayoutData(
-        constraints: widget.model.constraints,
-        id: widget.model.id,
-        preferredSize: widget.model.preferredSize,
-        minSize: widget.model.minimumSize,
-        maxSize: widget.model.maximumSize);
+        constraints: buttonModel.constraints,
+        id: buttonModel.id,
+        preferredSize: buttonModel.preferredSize,
+        minSize: buttonModel.minimumSize,
+        maxSize: buttonModel.maximumSize,
+        parentId: buttonModel.parent
+    );
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
-      buttonModel: widget.model,
+      buttonModel: buttonModel,
       onPress: buttonPressed,
       width: _getWidthForComponent(),
       height: _getHeightForComponent(),
@@ -115,12 +138,11 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
       layoutData.calculatedSize = Size(width, height);
     }
 
-    log(context.size.toString());
 
     PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
-        parentId: widget.model.parent ?? "",
+        parentId: buttonModel.parent ?? "",
         layoutData: layoutData,
-        componentId: widget.model.id,
+        componentId: buttonModel.id,
         reason: "Component has been rendered"
     );
     if(!sentPrefSize){
@@ -131,6 +153,6 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
   void buttonPressed()
   {
-    uiService.sendCommand(ButtonPressedCommand(componentId: widget.model.id, reason: "Button has been pressed"));
+    uiService.sendCommand(ButtonPressedCommand(componentId: buttonModel.id, reason: "Button has been pressed"));
   }
 }

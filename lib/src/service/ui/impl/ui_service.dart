@@ -5,6 +5,8 @@ import 'dart:ui';
 
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/layout/layout_position.dart';
+import 'package:flutter_client/util/extensions/list_extensions.dart';
+import 'package:flutter_client/util/type_def/callback_def.dart';
 
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -25,10 +27,10 @@ class UiService with CommandServiceMixin implements IUiService {
   final StreamController _routeStream = StreamController.broadcast();
 
   /// Last open Screen
-  List<FlComponentModel> currentScreen = [];
+  final List<FlComponentModel> _currentScreen = [];
 
   /// Live Component Registration
-  HashMap<String, Function> registeredComponents = HashMap();
+  final HashMap<String, ComponentCallback> _registeredComponents = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -54,60 +56,72 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToWorkScreen(List<FlComponentModel> screenComponents) {
     RouteToWorkScreen routeToWorkScreen = RouteToWorkScreen(screen: screenComponents.first);
-    currentScreen = screenComponents;
+    _currentScreen.addAll(screenComponents);
     _routeStream.sink.add(routeToWorkScreen);
   }
 
   // Content
   @override
   List<FlComponentModel> getChildrenModels(String id) {
-    var children = currentScreen.where((element) => element.parent == id).toList();
+    var children = _currentScreen.where((element) => element.parent == id).toList();
     return children;
   }
 
+  // Active UI Management
   @override
-  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, Map<String, LayoutPosition>? layoutPositions}) {
-    // Update All Models
-    if(modelsToUpdate != null){
-      for (FlComponentModel newModel in modelsToUpdate) {
-        FlComponentModel? toBeReplaced;
-        for (FlComponentModel oldModel in currentScreen) {
-          if (newModel.id == oldModel.id) {
-            toBeReplaced = oldModel;
-          }
-        }
+  void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
+    _registeredComponents[id] = callback;
+  }
 
-        // Replace Old with new Model or Add as new one.
-        if (toBeReplaced != null) {
-          toBeReplaced = newModel;
-        } else {
-          currentScreen.add(newModel);
-        }
-      }
-
-      // Call callbacks of active components
-      for (FlComponentModel newModel in modelsToUpdate) {
-        Function? componentCallback = registeredComponents[newModel.id];
-        if (componentCallback != null) {
-          componentCallback.call(newModel);
-        }
-      }
-    }
-
-
-    if(layoutPositions != null){
-      layoutPositions.forEach((key, value) {
-        Function? callback = registeredComponents[key];
-        if(callback != null){
-          callback(null, value);
-        }
-      });
+  @override
+  void deleteInactiveComponent({required Set<String> inactiveIds}) {
+    for (String inactiveId in inactiveIds) {
+      _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
+      _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
     }
   }
 
   @override
-  void registerAsLiveComponent(String id, Function callback) {
-    registeredComponents[id] = callback;
+  void notifyAffectedComponents({required Set<String> affectedIds}) {
+    for(String affectedId in affectedIds){
+      ComponentCallback? callback = _registeredComponents[affectedId];
+      if(callback != null){
+        callback.call();
+      }
+    }
+  }
+
+  @override
+  void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
+    for(FlComponentModel updatedModel in updatedModels){
+      // Change to new Model
+      int indexOfOld = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
+      _currentScreen.removeAt(indexOfOld);
+      _currentScreen.add(updatedModel);
+
+      // Notify active component
+      ComponentCallback? callback = _registeredComponents[updatedModel.id];
+      if(callback != null){
+        callback.call(newModel: updatedModel);
+      } else {
+        throw Exception("Component To Update not found");
+      }
+    }
+  }
+
+  @override
+  void saveNewComponents({required List<FlComponentModel> newModels}) {
+    newModels.addAll(newModels);
+  }
+
+  @override
+  void setLayoutPosition({required String id, required LayoutPosition layoutPosition}) {
+    ComponentCallback? callback = _registeredComponents[id];
+    if(callback != null){
+      callback.call(position: layoutPosition);
+    } else {
+      throw Exception("Component to set position not found");
+    }
   }
 
 }

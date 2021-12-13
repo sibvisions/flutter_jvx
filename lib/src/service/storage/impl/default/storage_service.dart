@@ -30,8 +30,8 @@ class DefaultStorageService implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents) {
-    return componentStore.updateComponents(componentsToUpdate, newComponents);
+  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) {
+    return componentStore.updateComponents(componentsToUpdate, newComponents, screenName);
   }
 
 }

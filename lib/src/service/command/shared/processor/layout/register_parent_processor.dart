@@ -6,8 +6,13 @@ import 'package:flutter_client/src/service/command/shared/i_command_processor.da
 class RegisterParentProcessor with LayoutServiceMixin implements ICommandProcessor<RegisterParentCommand> {
   @override
   Future<List<BaseCommand>> processCommand(RegisterParentCommand command) async {
-    layoutService.registerAsParent(command.parentId, command.childrenIds, command.layout);
-    return [];
+    return layoutService.registerAsParent(
+        pId: command.parentId,
+        pChildrenIds: command.childrenIds,
+        pLayout: command.layout,
+        pLayoutData: command.layoutData,
+        pConstraints: command.constraints
+    );
   }
 
 }

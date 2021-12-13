@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/layout/layout_position.dart';
-import '../../model/command/api/login_command.dart';
-import '../../model/command/api/open_screen_command.dart';
-import '../../model/command/api/startup_command.dart';
+import 'package:flutter_client/util/type_def/callback_def.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/menu/menu_model.dart';
 import '../../model/routing/route_to_menu.dart';
@@ -38,9 +35,21 @@ abstract class IUiService {
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
-  /// Updates Components Models, also tells affected Parents to re-build their children
-  void updateComponentModels({List<FlComponentModel>? modelsToUpdate, Map<String, LayoutPosition>? layoutPositions});
-
   /// Register as an active Component, callback will be called when model changes or children should be rebuilt.
-  void registerAsLiveComponent(String id, Function callback);
+  void registerAsLiveComponent({required String id, required ComponentCallback callback});
+
+  /// Notify affected Parents that their children changed, should only be used when parent model hasn't been changed as well.
+  void notifyAffectedComponents({required Set<String> affectedIds});
+
+  /// Notify changed Live components that their model has changed, will give them their new model.
+  void notifyChangedComponents({required List<FlComponentModel> updatedModels});
+
+  /// Save new Components to active components, used for saving components which have not been previously been rendered.
+  void saveNewComponents({required List<FlComponentModel> newModels});
+
+  /// Deletes unused component models from local cache.
+  void deleteInactiveComponent({required Set<String> inactiveIds});
+
+  /// Notify component of new [LayoutPosition].
+  void setLayoutPosition({required String id, required LayoutPosition layoutPosition});
 }

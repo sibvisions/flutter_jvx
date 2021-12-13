@@ -14,7 +14,13 @@ class RegisterParentCommand extends LayoutCommand{
   List<String> childrenIds;
 
   /// The layout of this container.
-  ILayout layout;
+  String layout;
+
+  /// Additional layout data e.g. Anchors in form-layout
+  String? layoutData;
+
+  /// Constraints of this layout in relation of other layouts.
+  String? constraints;
   
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -24,6 +30,8 @@ class RegisterParentCommand extends LayoutCommand{
     required this.layout,
     required this.childrenIds,
     required this.parentId,
+    this.layoutData,
+    this.constraints,
     required String reason,
   }) : super(reason: reason);
   

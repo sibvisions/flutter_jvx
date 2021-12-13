@@ -62,8 +62,8 @@ class IsolateStorageService implements IStorageService {
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents) async {
-    StorageIsolateUpdateComponentsMessage updateComponentsMessage = StorageIsolateUpdateComponentsMessage(componentsToUpdate: componentsToUpdate, newComponents: newComponents);
+  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
+    StorageIsolateUpdateComponentsMessage updateComponentsMessage = StorageIsolateUpdateComponentsMessage(componentsToUpdate: componentsToUpdate, newComponents: newComponents, screenClassName: screenName);
     return await _sendMessage(updateComponentsMessage);
   }
 

@@ -7,15 +7,29 @@ class UpdateComponentsCommand extends UiCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// List of components whose model changed
+  final List<FlComponentModel> changedComponents;
+
+  /// List of new components
+  final List<FlComponentModel> newComponents;
+
+  /// List of components to delete
+  final Set<String> deletedComponents;
+
   /// The affected component models.
-  final List<FlComponentModel> affectedComponents;
+  final Set<String> affectedComponents;
+
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	// Initialization
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UpdateComponentsCommand({
-    required this.affectedComponents,
+    this.affectedComponents = const {},
+    this.newComponents = const [],
+    this.changedComponents = const [],
+    this.deletedComponents = const {},
     required String reason
   }) : super(reason: reason);
 
@@ -27,7 +41,7 @@ class UpdateComponentsCommand extends UiCommand {
   String get logString {
     String allAffectedComponentIds = "[";
 
-    for (FlComponentModel element in affectedComponents) 
+    for (FlComponentModel element in newComponents)
     {
       allAffectedComponentIds += " " + element.id + ";";
     }

@@ -6,11 +6,16 @@ import '../../../util/i_clonable.dart';
 import '../../layout/i_layout.dart';
 import 'layout_position.dart';
 
+enum LayoutState {dirty, valid}
+
 /// [LayoutData] represents the data relevant for layout calculations of a widget.
 class LayoutData implements ICloneable{
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// State of layout
+  LayoutState layoutState = LayoutState.valid;
 
   /// The id of the component.
   final String id;
@@ -19,7 +24,7 @@ class LayoutData implements ICloneable{
   final String? parentId;
 
   /// The layout of the component.
-  final ILayout? layout;
+  ILayout? layout;
 
   /// The children of the component.
   List<String>? children;
@@ -48,6 +53,9 @@ class LayoutData implements ICloneable{
   /// LayoutData for FormLayout Anchors
   String? layoutData;
 
+  /// LayoutString
+  String? layoutString;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,7 +73,8 @@ class LayoutData implements ICloneable{
       this.preferredSize,
       this.insets,
       this.layoutPosition,
-      this.calculatedSize
+      this.calculatedSize,
+      this.layoutString
   });
 
   /// Clones [LayoutData] as a deep copy.
@@ -81,6 +90,8 @@ class LayoutData implements ICloneable{
         preferredSize = pLayoutData.preferredSize != null ? Size.copy(pLayoutData.preferredSize!) : null,
         calculatedSize = pLayoutData.calculatedSize != null ? Size.copy(pLayoutData.calculatedSize!) : null,
         insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
+        layoutState = pLayoutData.layoutState,
+        layoutString = pLayoutData.layoutString,
         layoutPosition = pLayoutData.layoutPosition != null ? pLayoutData.layoutPosition!.clone() : null;
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.

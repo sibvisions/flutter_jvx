@@ -26,53 +26,64 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
   HashMap<String, Widget> children = HashMap();
 
   late LayoutData layoutData;
+  late FlPanelModel panelModel;
 
   bool registered = false;
 
   @override
   void initState() {
-
-    layoutData = LayoutData(
-        constraints: widget.model.constraints,
-        id: widget.model.id,
-        preferredSize: widget.model.preferredSize,
-        minSize: widget.model.minimumSize,
-        maxSize: widget.model.maximumSize);
-
-    uiService.registerAsLiveComponent(widget.model.id, (FlPanelModel? btnModel, LayoutPosition? position) {
+    panelModel = widget.model;
+    uiService.registerAsLiveComponent(id: panelModel.id, callback: ({newModel, position}) {
 
       if(position != null){
         setState(() {
           layoutData.layoutPosition = position;
         });
       }
+
+      if(newModel != null){
+        setState(() {
+          panelModel = newModel as FlPanelModel;
+          registered = false;
+          sendRegister();
+        });
+      }
     });
 
-
-    HashMap<String, Widget> tempChildren = HashMap();
-    var models = uiService.getChildrenModels(widget.model.id);
+    var models = uiService.getChildrenModels(panelModel.id);
 
     for(FlComponentModel componentModel in models) {
       Widget widget = ComponentsFactory.buildWidget(componentModel);
-      tempChildren[componentModel.id] = widget;
+      children[componentModel.id] = widget;
     }
-    children = tempChildren;
+
+    layoutData = LayoutData(
+        constraints: panelModel.constraints,
+        id: panelModel.id,
+        preferredSize: panelModel.preferredSize,
+        minSize: panelModel.minimumSize,
+        maxSize: panelModel.maximumSize);
 
 
 
+    sendRegister();
+
+    super.initState();
+  }
+
+  void sendRegister(){
     RegisterParentCommand registerParentCommand = RegisterParentCommand(
-        layout: ILayout.getLayout(widget.model.layout, widget.model.layoutData)!,
-        childrenIds: tempChildren.keys.toList(),
-        parentId: widget.model.id,
+        layout: panelModel.layout!,
+        layoutData: panelModel.layoutData,
+        childrenIds: children.keys.toList(),
+        parentId: panelModel.id,
+        constraints: panelModel.constraints,
         reason: "Parent widget rendered"
     );
     if(!registered){
       registered = true;
       uiService.sendCommand(registerParentCommand);
     }
-
-
-    super.initState();
   }
 
   @override

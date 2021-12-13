@@ -11,8 +11,9 @@ import '../../layout/i_layout.dart';
 abstract class ILayoutService {
   /// Registers a parent for receiving child constraint changes.
   ///
-  /// Returns `true` if registered as a new parent and `false` if it was replaced.
-  bool registerAsParent(String pId, List<String> pChildrenIds, ILayout pLayout);
+  /// Returns Command to update UI if, layout has been newly calculated, returns an empty list if nothing happened.
+  List<BaseCommand> registerAsParent({required String pId, required List<String> pChildrenIds,
+    required String pLayout, String? pLayoutData, String? pConstraints});
 
   /// Removes a parent.
   ///
@@ -21,17 +22,17 @@ abstract class ILayoutService {
 
   /// Registers a preferred size for a child element.
   /// 
-  /// Returns `true` if layouting happened and `false` if nothing was layouted.
+  /// Returns Command to update UI if, layout has been newly calculated.
   List<BaseCommand> registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData);
 
-  /// Saves the [LayoutPosition]s to a parent and their children.
-  void saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall);
 
-  /// Applies the [LayoutPosition]s to a parent and their children.
-  List<BaseCommand> applyLayoutConstraints(String pParentId);
+  /// Register a fixed size of a component
+  ///
+  /// Returns Command to update UI if, layout has been newly calculated.
+  List<BaseCommand> setComponentSize({required String id, required Size size});
 
-  /// Calculates the layout.
-  List<BaseCommand> calculateLayout(String pParentId);
 
-  Size? screenSize;
+  /// Marks Layout as Dirty, used to wait for all changing components to re-register themselves to avoid unnecessary re-renders.
+  void markLayoutAsDirty({required String id});
+
 }

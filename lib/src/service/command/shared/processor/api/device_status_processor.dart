@@ -16,9 +16,6 @@ class DeviceStatusProcessor with ApiServiceMixin, ConfigServiceMixin, LayoutServ
 
   @override
   Future<List<BaseCommand>> processCommand(DeviceStatusCommand command) async {
-
-    layoutService.screenSize = Size(command.screenWidth, command.screenHeight);
-
     String? clientId = configService.getClientId();
     if(clientId != null){
       return apiService.deviceStatus(clientId, command.screenWidth, command.screenHeight);

@@ -9,7 +9,6 @@ class SaveComponentsProcessor with StorageServiceMixin implements ICommandProces
   @override
   Future<List<BaseCommand>> processCommand(SaveComponentsCommand command) async {
     // Handle newly added components
-    var a = storageService.updateComponents(command.updatedComponent, command.componentsToSave);
-    return a;
+    return storageService.updateComponents(command.updatedComponent, command.componentsToSave, command.screenName);
   }
 }
