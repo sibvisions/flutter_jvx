@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'messages/endpoint/api_isolate_press_button_message.dart';
+
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
@@ -74,6 +76,11 @@ class IsolateApi implements IApiService {
   @override
   Future<List<BaseCommand>> startUp(String appName) async {
     return await _sendRequest(ApiIsolateStartUpMessage(appName: appName));
+  }
+
+  @override
+  Future<List<BaseCommand>> pressButton(String clientId, String componentId) async {
+    return await _sendRequest(ApiIsoltePressButtonMessage(clientId: clientId, componentId: componentId));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

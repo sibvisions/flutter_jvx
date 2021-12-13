@@ -1,10 +1,10 @@
 import 'dart:isolate';
 
-import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../../i_storage_service.dart';
+import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 import 'message/endpoint/storage_isolate_get_menu_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
 import 'message/endpoint/storage_isolate_save_menu_message.dart';

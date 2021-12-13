@@ -7,15 +7,10 @@ import '../../shared/i_repository.dart';
 /// Will execute all actions on the main Isolate
 ///
 class DefaultApi implements IApiService {
-
   IRepository repository;
   IController controller;
 
-
-  DefaultApi({
-    required this.repository,
-    required this.controller
-  });
+  DefaultApi({required this.repository, required this.controller});
 
   @override
   Future<List<BaseCommand>> login(String username, String password, String clientId) {
@@ -45,4 +40,10 @@ class DefaultApi implements IApiService {
     return actions;
   }
 
+  @override
+  Future<List<BaseCommand>> pressButton(String clientId, String componentId) {
+    var response = repository.pressButton(componentId, clientId);
+    var actions = controller.processResponse(response);
+    return actions;
+  }
 }

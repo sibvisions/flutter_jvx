@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'messages/endpoint/api_isolate_press_button_message.dart';
 import 'package:http/http.dart';
 
 import '../../shared/i_controller.dart';
@@ -53,6 +54,8 @@ void apiCallback(SendPort callerSendPort) {
         response = repo.deviceStatus(apiMessage.clientId, apiMessage.screenWidth, apiMessage.screenHeight);
       } else if (apiMessage is ApiIsolateOpenScreenMessage) {
         response = repo.openScreen(apiMessage.componentId, apiMessage.clientId);
+      } else if (apiMessage is ApiIsoltePressButtonMessage) {
+        response = repo.pressButton(apiMessage.componentId, apiMessage.clientId);
       }
 
       if (response != null) {

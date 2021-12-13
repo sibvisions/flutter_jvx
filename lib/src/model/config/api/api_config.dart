@@ -5,10 +5,7 @@ class ApiConfig {
   final UrlConfig urlConfig;
   final EndpointConfig endpointConfig;
 
-  ApiConfig({
-    required this.urlConfig,
-    required this.endpointConfig
-  });
+  ApiConfig({required this.urlConfig, required this.endpointConfig});
 
   Uri getStartupUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.startup);
@@ -24,5 +21,9 @@ class ApiConfig {
 
   Uri getDeviceStatusUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.deviceStatus);
+  }
+
+  Uri getButtonPressedUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.pressButton);
   }
 }

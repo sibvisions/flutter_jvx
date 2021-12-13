@@ -1,5 +1,3 @@
-import '../../../../routing/app_routing_type.dart';
-
 import '../../../../model/api/response/application_parameter_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/ui/route_command.dart';

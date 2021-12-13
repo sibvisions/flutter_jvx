@@ -1,10 +1,9 @@
 import '../../../../../mixin/layout_service_mixin.dart';
-import '../../../../../model/component/fl_component_model.dart';
-import '../../../../ui/i_ui_service.dart';
-
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
+import '../../../../../model/component/fl_component_model.dart';
+import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
 class UpdateComponentsProcessor

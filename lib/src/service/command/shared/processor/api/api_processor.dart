@@ -1,3 +1,6 @@
+import '../../../../../model/command/api/press_button_command.dart';
+import 'press_button_processor.dart';
+
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/api/login_command.dart';
@@ -31,6 +34,9 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [DeviceStatusCommand]
   final ICommandProcessor _deviceStatusProcessor = DeviceStatusProcessor();
 
+  /// Processes [PressButtonCommand]
+  final ICommandProcessor _pressButtonProcessor = PressButtonProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +52,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _openScreenCommandProcessor.processCommand(command);
     } else if (command is DeviceStatusCommand) {
       return _deviceStatusProcessor.processCommand(command);
+    } else if (command is PressButtonCommand) {
+      return _pressButtonProcessor.processCommand(command);
     } else {
       return [];
     }
