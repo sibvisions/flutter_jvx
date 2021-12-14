@@ -1,5 +1,6 @@
+import 'dart:collection';
+
 import '../model/layout/layout_data.dart';
-import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
 class FlowLayout extends ILayout {
@@ -10,11 +11,7 @@ class FlowLayout extends ILayout {
   }
 
   @override
-  // TODO: implement listChildsToRedraw
-  List<LayoutData> get listChildsToRedraw => throw UnimplementedError();
-
-  @override
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // TODO: implement calculateLayout
     throw UnimplementedError();
   }
