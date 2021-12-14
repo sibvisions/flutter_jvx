@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_client/src/model/layout/layout_data.dart';
+
 import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
@@ -50,5 +52,5 @@ abstract class IUiService {
   void deleteInactiveComponent({required Set<String> inactiveIds});
 
   /// Notify component of new [LayoutPosition].
-  void setLayoutPosition({required String id, required LayoutPosition layoutPosition});
+  void setLayoutPosition({required String id, required LayoutData layoutData});
 }

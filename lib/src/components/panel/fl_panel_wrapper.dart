@@ -32,10 +32,10 @@ class _FlPanelWrapperState extends State<FlPanelWrapper> with UiServiceMixin {
     panelModel = widget.model;
     uiService.registerAsLiveComponent(
         id: panelModel.id,
-        callback: ({newModel, position}) {
-          if (position != null) {
+        callback: ({newModel, data}) {
+          if (data != null) {
             setState(() {
-              layoutData.layoutPosition = position;
+              layoutData = data;
             });
           }
 

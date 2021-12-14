@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/layout/layout_data.dart';
+
 import '../../../model/command/base_command.dart';
 import '../../../model/layout/layout_position.dart';
 import '../../../../util/type_def/callback_def.dart';
@@ -113,10 +115,10 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void setLayoutPosition({required String id, required LayoutPosition layoutPosition}) {
+  void setLayoutPosition({required String id, required LayoutData layoutData}) {
     ComponentCallback? callback = _registeredComponents[id];
     if (callback != null) {
-      callback.call(position: layoutPosition);
+      callback.call(data: layoutData);
     } else {
       throw Exception("Component to set position not found");
     }

@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,10 +30,10 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     buttonModel = widget.model;
     uiService.registerAsLiveComponent(
         id: buttonModel.id,
-        callback: ({newModel, position}) {
-          if (position != null) {
+        callback: ({newModel, data}) {
+          if (data != null) {
             setState(() {
-              layoutData.layoutPosition = position;
+              layoutData = data;
             });
           }
 
@@ -48,7 +48,8 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
                   preferredSize: buttonModel.preferredSize,
                   minSize: buttonModel.minimumSize,
                   maxSize: buttonModel.maximumSize,
-                  parentId: buttonModel.parent);
+                  parentId: buttonModel.parent
+              );
             });
           }
         });
@@ -149,13 +150,17 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
 
     if (isNewCalcSize()) {
       layoutData.calculatedSize = potentialNewCalcSize;
+
+      log("New calc for ${buttonModel.text} size is: ${layoutData.calculatedSize}");
+
+      if (layoutData.hasNewCalculatedSize) {
+        sendCommand = true;
+      } else {
+        rebuild = true;
+      }
     }
 
-    if (layoutData.hasNewCalculatedSize) {
-      sendCommand = true;
-    } else {
-      rebuild = true;
-    }
+    layoutData.lastCalculatedSize = layoutData.calculatedSize;
 
     if (sendCommand) {
       PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(

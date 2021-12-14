@@ -38,15 +38,17 @@ class FormLayout extends ILayout {
   }
 
   Size? getSize(LayoutData pParent) {
-    LayoutPosition? pos = pParent.layoutPosition;
-    if (pos != null) {
-      return Size(pos.width, pos.height);
+
+    if (!pParent.hasPreferredSize && pParent.hasPosition) {
+      double width = pParent.layoutPosition!.width;
+      double height = pParent.layoutPosition!.height;
+      return Size(width, height);
     }
     return null;
   }
 
   @override
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Needed from Outside
 
     /// Data of children components
@@ -110,7 +112,13 @@ class FormLayout extends ILayout {
         pGivenSize: setPosition);
 
     return buildComponents(
-        pAnchors: anchors, pComponentConstraints: componentConstraints, pMargins: margins, id: pParent.id);
+        pAnchors: anchors,
+        pComponentConstraints: componentConstraints,
+        pMargins: margins,
+        id: pParent.id,
+        pChildrenData: pChildren,
+        pParent: pParent
+    );
   }
 
   void calculateAnchors(
@@ -487,11 +495,13 @@ class FormLayout extends ILayout {
     });
   }
 
-  Map<String, LayoutPosition> buildComponents(
+  HashMap<String, LayoutData> buildComponents(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       required Margins pMargins,
-      required String id}) {
+      required String id,
+      required List<LayoutData> pChildrenData,
+      required LayoutData pParent}) {
     /// Get Border- and Margin Anchors for calculation
     FormLayoutAnchor lba = pAnchors["l"]!;
     FormLayoutAnchor rba = pAnchors["r"]!;
@@ -512,7 +522,7 @@ class FormLayout extends ILayout {
         FormLayoutConstraints(bottomAnchor: bba, leftAnchor: lba, rightAnchor: rba, topAnchor: tba);
 
     // Sizes of Children
-    Map<String, LayoutPosition> sizeMap = HashMap();
+    HashMap<String, LayoutData> sizeMap = HashMap();
 
     // This layout has additional margins to add.
     double additionalLeft = marginConstraints.leftAnchor.getAbsolutePosition();
@@ -523,20 +533,27 @@ class FormLayout extends ILayout {
           marginConstraints.leftAnchor.getAbsolutePosition() +
           pMargins.marginLeft +
           additionalLeft;
+
       double top = constraint.topAnchor.getAbsolutePosition() -
           marginConstraints.topAnchor.getAbsolutePosition() +
           pMargins.marginTop +
           additionalTop;
+
       double width = constraint.rightAnchor.getAbsolutePosition() - constraint.leftAnchor.getAbsolutePosition();
       double height = constraint.bottomAnchor.getAbsolutePosition() - constraint.topAnchor.getAbsolutePosition();
 
-      LayoutPosition layoutPosition =
-          LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
-      sizeMap[componentId] = layoutPosition;
-    });
+      LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
+      layoutData.layoutPosition =
+        LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
+
+      sizeMap[componentId] = layoutData;
+    });
     double height = borderConstraints.bottomAnchor.position - borderConstraints.topAnchor.position;
     double width = borderConstraints.rightAnchor.position - borderConstraints.leftAnchor.position;
+    pParent.calculatedSize = Size(width, height);
+
+
 
     return sizeMap;
   }

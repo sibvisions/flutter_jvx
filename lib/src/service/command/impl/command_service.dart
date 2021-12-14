@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
 import 'package:flutter_client/src/model/routing/route_to_menu.dart';
 import 'package:flutter_client/src/routing/app_routing_type.dart';
@@ -80,11 +82,31 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
           sendCommand(value1);
         }
 
-        var routeCommand = value.whereType<RouteCommand>();
-        for (var value2 in routeCommand) {
-          sendCommand(value2);
+        List<RouteCommand> routeCommands = value.whereType<RouteCommand>().toList();
+        Map<String, List<RouteCommand>> sameRouteCommands = {};
+
+        // Find WorkScreen Commands that direct to the same workScreen
+        for (RouteCommand routeCommand in routeCommands) {
+          String? screenName = routeCommand.screenName;
+          if(screenName != null){
+            var commands = sameRouteCommands[screenName];
+
+            if(commands != null){
+              commands.add(routeCommand);
+            } else {
+              sameRouteCommands[screenName] = [routeCommand];
+            }
+          } else {
+            sendCommand(routeCommand);
+          }
         }
 
+        // Only send one command if multiple are sent
+        sameRouteCommands.forEach((key, value) {
+          sendCommand(value.first);
+        });
+
+        // Route to menu if current screen is to be closed (deleted) and no new RouteCommand was provided.
         if(value.any((element) => element is DeleteScreenCommand)){
           if(!value.any((element) => element is RouteCommand)){
             RouteCommand routeCommand = RouteCommand(routeType: AppRoutingType.menu, reason: "Last screen was closed and no other routing was passeed");

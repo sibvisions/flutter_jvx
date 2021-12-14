@@ -1,3 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter_client/src/mixin/storage_service_mixin.dart';
+import 'package:flutter_client/src/model/command/ui/route_command.dart';
+import 'package:flutter_client/src/routing/app_routing_type.dart';
+
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
@@ -9,9 +15,10 @@ import '../../../../model/component/panel/fl_panel_model.dart';
 import '../fl_component_classname.dart';
 import '../i_processor.dart';
 
+/// Processes [ScreenGenericResponse], will separate (and parse) new and changed components, can also open screens
+/// based on the 'update' property of the request.
 ///
-/// Processes [ScreenGenericResponse]
-///
+/// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
 class ScreenGenericProcessor implements IProcessor {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,10 +30,11 @@ class ScreenGenericProcessor implements IProcessor {
     List<BaseCommand> commands = [];
     ScreenGenericResponse screenGenericResponse = ScreenGenericResponse.fromJson(json);
 
-    //Check for new full components
+    // Handle New & Changed Components
+    // Get new full components
     List<FlComponentModel>? componentsToSave = _getNewComponents(screenGenericResponse.changedComponents);
 
-    //Check for changed Components
+    // Get changed Components
     List<dynamic>? updatedComponent = _getChangedComponents(screenGenericResponse.changedComponents);
 
     if (componentsToSave != null || updatedComponent != null) {
@@ -34,8 +42,22 @@ class ScreenGenericProcessor implements IProcessor {
           reason: "Api received screen.generic response",
           componentsToSave: componentsToSave,
           updatedComponent: updatedComponent,
-          screenName: screenGenericResponse.componentId);
+          screenName: screenGenericResponse.componentId
+      );
       commands.add(saveComponentsCommand);
+    }
+
+    // Handle Screen Opening
+    if(!screenGenericResponse.update){
+      dynamic json = screenGenericResponse.changedComponents.firstWhere((element) => element[ApiObjectProperty.screenClassName] != null);
+      String screenClassName = json[ApiObjectProperty.screenClassName];
+
+      RouteCommand routeCommand = RouteCommand(
+          routeType: AppRoutingType.workScreen,
+          reason: "Screen generic update was set to false.",
+          screenName: screenClassName
+      );
+      commands.add(routeCommand);
     }
     return commands;
   }
@@ -44,6 +66,7 @@ class ScreenGenericProcessor implements IProcessor {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns List of all changed components json, or null if none are found.
   List<dynamic>? _getChangedComponents(List<dynamic> pChangedComponents) {
     List<dynamic> changedComponents = [];
 
@@ -58,6 +81,7 @@ class ScreenGenericProcessor implements IProcessor {
     }
   }
 
+  /// Returns List of new [FlComponentModel] models parsed from json, only components with a [ApiObjectProperty.className] are considered new, if none are found will return null.
   List<FlComponentModel>? _getNewComponents(List<dynamic> changedComponents) {
     List<FlComponentModel> models = [];
     for (dynamic changedComponent in changedComponents) {
@@ -72,6 +96,7 @@ class ScreenGenericProcessor implements IProcessor {
     }
   }
 
+  /// Parses json component into its appropriate [FlComponentModel], which is termite by its [ApiObjectProperty.className].
   FlComponentModel _parseFlComponentModel(dynamic json, String className) {
     switch (className) {
       case (FlComponentClassname.panel):

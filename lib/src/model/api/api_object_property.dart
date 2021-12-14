@@ -48,6 +48,8 @@ abstract class ApiObjectProperty {
   static const String image = "image";
   static const String entries = "entries";
   static const String changedComponents = "changedComponents";
+  static const String update = "update";
+  static const String home = "home";
 
   // Sizes
   static const String preferredSize = "preferredSize";

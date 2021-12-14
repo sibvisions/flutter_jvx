@@ -27,10 +27,10 @@ class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
 
     uiService.registerAsLiveComponent(
         id: dummyModel.id,
-        callback: ({newModel, position}) {
-          if (position != null) {
+        callback: ({newModel, data}) {
+          if (data != null) {
             setState(() {
-              layoutData.layoutPosition = position;
+              layoutData = data;
             });
           }
 
@@ -45,7 +45,9 @@ class _DummyWrapperState extends State<DummyWrapper> with UiServiceMixin {
                   preferredSize: dummyModel.preferredSize,
                   minSize: dummyModel.minimumSize,
                   maxSize: dummyModel.maximumSize,
-                  parentId: dummyModel.parent);
+                  parentId: dummyModel.parent,
+                  layoutPosition: layoutData.layoutPosition
+              );
             });
           }
         });

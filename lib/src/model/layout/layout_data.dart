@@ -92,7 +92,7 @@ class LayoutData implements ICloneable {
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
         preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null,
         calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
-        lastCalculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
+        // lastCalculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
         insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
         layoutState = pLayoutData.layoutState,
         layoutString = pLayoutData.layoutString,

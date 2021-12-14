@@ -73,11 +73,9 @@ class LayoutService implements ILayoutService {
     _layoutDataSet[pId] = pLayoutData;
     pLayoutData.layoutState = LayoutState.VALID;
 
-    if (pLayoutData.hasNewCalculatedSize) {
-      bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
-      if (isLegalState) {
-        return _performLayout(pLayoutData.parentId!);
-      }
+    bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
+    if (isLegalState) {
+      return _performLayout(pLayoutData.parentId!);
     }
 
     return [];
