@@ -514,13 +514,19 @@ class FormLayout extends ILayout {
     // Sizes of Children
     Map<String, LayoutPosition> sizeMap = HashMap();
 
+    // This layout has additional margins to add.
+    double additionalLeft = marginConstraints.leftAnchor.getAbsolutePosition();
+    double additionalTop = marginConstraints.topAnchor.getAbsolutePosition();
+
     pComponentConstraints.forEach((componentId, constraint) {
       double left = constraint.leftAnchor.getAbsolutePosition() -
           marginConstraints.leftAnchor.getAbsolutePosition() +
-          pMargins.marginLeft;
+          pMargins.marginLeft +
+          additionalLeft;
       double top = constraint.topAnchor.getAbsolutePosition() -
           marginConstraints.topAnchor.getAbsolutePosition() +
-          pMargins.marginTop;
+          pMargins.marginTop +
+          additionalTop;
       double width = constraint.rightAnchor.getAbsolutePosition() - constraint.leftAnchor.getAbsolutePosition();
       double height = constraint.bottomAnchor.getAbsolutePosition() - constraint.topAnchor.getAbsolutePosition();
 
@@ -531,24 +537,12 @@ class FormLayout extends ILayout {
 
     double height = borderConstraints.bottomAnchor.position - borderConstraints.topAnchor.position;
     double width = borderConstraints.rightAnchor.position - borderConstraints.leftAnchor.position;
-    double left = marginConstraints.leftAnchor.getAbsolutePosition();
-    double top = marginConstraints.topAnchor.getAbsolutePosition();
-
-    // LayoutPosition
-    LayoutPosition layoutPosition =
-        LayoutPosition(width: width, height: height, top: top, left: left, isComponentSize: false);
-
-    sizeMap[id] = layoutPosition;
 
     return sizeMap;
   }
 
   @override
   ILayout clone() {
-    return this;
+    return FormLayout(layoutData: layoutData, layoutString: layoutString);
   }
-
-  @override
-  // TODO: implement listChildsToRedraw
-  List<LayoutData> get listChildsToRedraw => throw UnimplementedError();
 }

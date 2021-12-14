@@ -26,20 +26,17 @@ class LayoutService implements ILayoutService {
 
   @override
   List<BaseCommand> registerAsParent(
-      {required String pId,
-      required List<String> pChildrenIds,
-      required String pLayout,
-      String? pLayoutData,
-      String? pConstraints}) {
+      {required String pId, required List<String> pChildrenIds, required String pLayout, String? pLayoutData}) {
     LayoutData? ldRegisteredParent = _layoutDataSet[pId];
 
     // If Size has been set do NOT override it, used to set sizes from outside, e.g. First-Screen, Split-Screen.
     if (ldRegisteredParent != null) {
-      ldRegisteredParent.layoutState = LayoutState.valid;
+      ldRegisteredParent.layoutState = LayoutState.VALID;
       ldRegisteredParent.layout = ILayout.getLayout(pLayout, pLayoutData);
       ldRegisteredParent.children = pChildrenIds;
       ldRegisteredParent.layoutData = pLayoutData;
       ldRegisteredParent.layoutString = pLayout;
+      ldRegisteredParent.calculatedSize = null;
     } else {
       _layoutDataSet[pId] = LayoutData(
           id: pId,
@@ -60,7 +57,7 @@ class LayoutService implements ILayoutService {
     bool legalState = _isLegalState(componentId: pId);
 
     if (legalState) {
-      return _calculateLayout(pId);
+      return _performLayout(pId);
     }
 
     return [];
@@ -72,13 +69,15 @@ class LayoutService implements ILayoutService {
   }
 
   @override
-  List<BaseCommand> registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData) {
+  List<BaseCommand> registerPreferredSize(String pId, LayoutData pLayoutData) {
     _layoutDataSet[pId] = pLayoutData;
-    pLayoutData.layoutState = LayoutState.valid;
+    pLayoutData.layoutState = LayoutState.VALID;
 
-    bool isLegalState = _isLegalState(componentId: pParentId);
-    if (isLegalState) {
-      return _calculateLayout(pParentId);
+    if (pLayoutData.hasNewCalculatedSize) {
+      bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
+      if (isLegalState) {
+        return _performLayout(pLayoutData.parentId!);
+      }
     }
 
     return [];
@@ -113,7 +112,7 @@ class LayoutService implements ILayoutService {
     LayoutData? layoutData = _layoutDataSet[id];
 
     if (layoutData != null) {
-      layoutData.layoutState = LayoutState.dirty;
+      layoutData.layoutState = LayoutState.DIRTY;
     }
   }
 
@@ -121,38 +120,23 @@ class LayoutService implements ILayoutService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _saveLayoutPositions(String pParentId, Map<String, LayoutPosition> pPositions, DateTime pStartOfCall) {
-    LayoutData parent = _layoutDataSet[pParentId]!;
-    for (int index = 0; index < parent.children!.length; index++) {
-      LayoutData child = _layoutDataSet[parent.children![index]]!;
-      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
-        child.layoutPosition = pPositions[child.id]!;
-        child.layoutPosition!.timeOfCall = pStartOfCall;
+  /// Returns true if conditions to perform the layout are met.
+  bool _isLegalState({required String componentId}) {
+    bool legalLayoutState = true;
+    LayoutData? parent = _layoutDataSet[componentId];
+
+    if (parent != null && parent.layoutState == LayoutState.VALID) {
+      for (int index = 0; legalLayoutState && index < parent.children!.length; index++) {
+        LayoutData child = _layoutDataSet[parent.children![index]]!;
+        legalLayoutState =
+            (child.hasCalculatedSize || child.hasPreferredSize) && child.layoutState == LayoutState.VALID;
       }
     }
-    if (parent.layoutPosition == null || parent.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
-      parent.layoutPosition = pPositions[pParentId];
-      parent.layoutPosition!.timeOfCall = pStartOfCall;
-    }
+    return legalLayoutState;
   }
 
-  List<BaseCommand> _applyLayoutConstraints(String pParentId) {
-    LayoutData parent = _layoutDataSet[pParentId]!;
-    Map<String, LayoutPosition> positions = {};
-
-    positions[pParentId] = parent.layoutPosition!;
-
-    for (int index = 0; index < parent.children!.length; index++) {
-      LayoutData child = _layoutDataSet[parent.children![index]]!;
-      positions[child.id] = child.layoutPosition!;
-    }
-
-    UpdateLayoutPositionCommand updateComponentsCommand =
-        UpdateLayoutPositionCommand(layoutPosition: positions, reason: "Layout has finished");
-    return [updateComponentsCommand];
-  }
-
-  List<BaseCommand> _calculateLayout(String pParentId) {
+  /// Performs a layout operation.
+  List<BaseCommand> _performLayout(String pParentId) {
     // Time the start of the layout call.
     DateTime startOfCall = DateTime.now();
 
@@ -161,11 +145,11 @@ class LayoutService implements ILayoutService {
 
     List<LayoutData> children = [];
     for (int index = 0; index < parentSnapShot.children!.length; index++) {
-      children.add(_layoutDataSet[parentSnapShot.children![index]]!);
+      children.add(_layoutDataSet[parentSnapShot.children![index]]!.clone());
     }
 
     // Returns a bunch of layout positions.
-    var sizes = parentSnapShot.layout!.calculateLayout(parentSnapShot, children);
+    HashMap<String, LayoutData> sizes = parentSnapShot.layout!.calculateLayout(parentSnapShot, children);
 
     // Saves all layout positions.
     _saveLayoutPositions(pParentId, sizes, startOfCall);
@@ -173,29 +157,50 @@ class LayoutService implements ILayoutService {
     // Get real parent object again.
     LayoutData parent = _layoutDataSet[pParentId]!;
 
-    // Does parent already have positions? If yes, means we already have completely layouted everything.
-    LayoutData? parentParent = _layoutDataSet[parent.parentId];
-    if (parentParent == null ||
-        (parentParent.hasPosition && !startOfCall.isBefore(parentParent.layoutPosition!.timeOfCall!))) {
+    // We only register our size (layouts the parent of the parent) if the following:
+    // We dont have a position.
+    // We have a position but it is old.
+    // We have a position but our calc size is different.
+    if (parent.hasPosition &&
+        (!startOfCall.isBefore(parent.layoutPosition!.timeOfCall!) || !parent.hasNewCalculatedSize)) {
       return _applyLayoutConstraints(pParentId);
     } else {
-      registerPreferredSize(parent.id, parent.parentId!, parent);
+      registerPreferredSize(parent.id, parent);
     }
 
     return [];
   }
 
-  bool _isLegalState({required String componentId}) {
-    bool legalLayoutState = true;
-    LayoutData? parent = _layoutDataSet[componentId];
+  void _saveLayoutPositions(String pParentId, HashMap<String, LayoutData> pNewData, DateTime pStartOfCall) {
+    LayoutData parent = _layoutDataSet[pParentId]!;
 
-    if (parent != null) {
-      for (int index = 0; legalLayoutState && index < parent.children!.length; index++) {
-        LayoutData child = _layoutDataSet[parent.children![index]]!;
-        legalLayoutState =
-            (child.hasCalculatedSize || child.hasPreferredSize) && (child.layoutState != LayoutState.dirty);
+    for (int index = 0; index < parent.children!.length; index++) {
+      LayoutData child = _layoutDataSet[parent.children![index]]!;
+
+      if (child.layoutPosition == null || child.layoutPosition!.timeOfCall!.isBefore(pStartOfCall)) {
+        LayoutData? newChildData = pNewData[child.id];
+        if (newChildData != null) {
+          child.layoutPosition = newChildData.layoutPosition;
+          child.layoutPosition!.timeOfCall = pStartOfCall;
+          child.calculatedSize = newChildData.calculatedSize;
+        }
       }
     }
-    return legalLayoutState;
+  }
+
+  List<BaseCommand> _applyLayoutConstraints(String pParentId) {
+    LayoutData parent = _layoutDataSet[pParentId]!;
+    HashMap<String, LayoutData> dataToUpdate = HashMap<String, LayoutData>();
+
+    dataToUpdate[pParentId] = parent;
+
+    for (int index = 0; index < parent.children!.length; index++) {
+      LayoutData child = _layoutDataSet[parent.children![index]]!;
+      dataToUpdate[child.id] = child;
+    }
+
+    UpdateLayoutPositionCommand updateComponentsCommand =
+        UpdateLayoutPositionCommand(layoutPosition: dataToUpdate, reason: "Layout has finished");
+    return [updateComponentsCommand];
   }
 }

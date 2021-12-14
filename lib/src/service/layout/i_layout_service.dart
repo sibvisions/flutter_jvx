@@ -9,11 +9,7 @@ abstract class ILayoutService {
   ///
   /// Returns Command to update UI if, layout has been newly calculated, returns an empty list if nothing happened.
   List<BaseCommand> registerAsParent(
-      {required String pId,
-      required List<String> pChildrenIds,
-      required String pLayout,
-      String? pLayoutData,
-      String? pConstraints});
+      {required String pId, required List<String> pChildrenIds, required String pLayout, String? pLayoutData});
 
   /// Removes a parent.
   ///
@@ -23,7 +19,7 @@ abstract class ILayoutService {
   /// Registers a preferred size for a child element.
   ///
   /// Returns Command to update UI if, layout has been newly calculated.
-  List<BaseCommand> registerPreferredSize(String pId, String pParentId, LayoutData pLayoutData);
+  List<BaseCommand> registerPreferredSize(String pId, LayoutData pLayoutData);
 
   /// Register a fixed size of a component
   ///

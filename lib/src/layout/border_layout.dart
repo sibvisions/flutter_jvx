@@ -45,20 +45,23 @@ class BorderLayout implements ILayout, ICloneable {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// the horizontal gap between components.
+  /// The original layout string.
+  final String layoutString;
+
+  /// The horizontal gap between components.
   int iHorizontalGap = 0;
 
-  /// the vertical gap between components.
+  /// The vertical gap between components.
   int iVerticalGap = 0;
 
-  /// the layout margins.
+  /// The layout margins.
   EdgeInsets eiMargins = const EdgeInsets.all(0);
 
   /// Map of all positions of the children.
   final Map<String, LayoutPosition> _positions = HashMap<String, LayoutPosition>();
 
   /// [LayoutData] of container this layout belongs to.
-  late LayoutData _parentData;
+  late LayoutData pParent;
 
   /// Child with layout constraint [NORTH];
   LayoutData? _childNorth;
@@ -75,22 +78,13 @@ class BorderLayout implements ILayout, ICloneable {
   /// Child with layout constraint [CENTER];
   LayoutData? _childCenter;
 
-  @override
-  List<LayoutData> listChildsToRedraw = [];
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [BorderLayout].
-  BorderLayout(String pLayout) {
-    updateValuesFromString(pLayout);
-  }
-
-  BorderLayout.from(BorderLayout pLayout) {
-    eiMargins = pLayout.eiMargins.copyWith();
-    iVerticalGap = pLayout.iVerticalGap;
-    iHorizontalGap = pLayout.iHorizontalGap;
+  BorderLayout({required this.layoutString}) {
+    updateValuesFromString(layoutString);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,11 +92,10 @@ class BorderLayout implements ILayout, ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Clear constraint map.
     _positions.clear();
 
-    _parentData = pParent;
     _childNorth = pChildren.firstWhereOrNull((element) => NORTH == element.constraints);
     _childSouth = pChildren.firstWhereOrNull((element) => SOUTH == element.constraints);
     _childEast = pChildren.firstWhereOrNull((element) => EAST == element.constraints);
@@ -112,27 +105,34 @@ class BorderLayout implements ILayout, ICloneable {
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
 
-    double x = _parentData.insets!.left + eiMargins.left;
-    double y = _parentData.insets!.top + eiMargins.top;
-    double width = preferredSize.width - x - _parentData.insets!.right + eiMargins.right;
-    double height = preferredSize.height - y - _parentData.insets!.bottom + eiMargins.bottom;
+    double x = pParent.insets!.left + eiMargins.left;
+    double y = pParent.insets!.top + eiMargins.top;
+    double width = preferredSize.width - x - pParent.insets!.right + eiMargins.right;
+    double height = preferredSize.height - y - pParent.insets!.bottom + eiMargins.bottom;
 
     // If parent has forced this into a size, cant exceed these values.
-    if (_parentData.hasPosition && !_parentData.hasPreferredSize) {
-      width = _parentData.layoutPosition!.width - x - _parentData.insets!.right + eiMargins.right;
-      height = _parentData.layoutPosition!.height - y - _parentData.insets!.bottom + eiMargins.bottom;
+    if (!pParent.hasPreferredSize && pParent.hasCalculatedSize && pParent.hasPosition) {
+      width = pParent.layoutPosition!.width - x - pParent.insets!.right + eiMargins.right;
+      height = pParent.layoutPosition!.height - y - pParent.insets!.bottom + eiMargins.bottom;
+    } else if (!pParent.hasCalculatedSize) {
+      pParent.calculatedSize = preferredSize;
     }
+
+    HashMap<String, LayoutData> returnMap = HashMap<String, LayoutData>();
+    returnMap[pParent.id] = pParent;
 
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
 
       markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
 
-      _positions[_childNorth!.id] =
+      _childNorth!.layoutPosition =
           LayoutPosition(top: x, left: y, width: width, height: bestSize.height, isComponentSize: true);
 
       y += bestSize.height + iVerticalGap;
       height -= bestSize.height + iVerticalGap;
+
+      returnMap[_childNorth!.id] = _childNorth!;
     }
 
     if (_childSouth != null) {
@@ -140,10 +140,12 @@ class BorderLayout implements ILayout, ICloneable {
 
       markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
-      _positions[_childSouth!.id] = LayoutPosition(
+      _childSouth!.layoutPosition = LayoutPosition(
           top: x, left: eiMargins.left, width: width, height: y + height - bestSize.height, isComponentSize: true);
 
       height -= bestSize.height + iVerticalGap;
+
+      returnMap[_childSouth!.id] = _childSouth!;
     }
 
     if (_childWest != null) {
@@ -151,11 +153,13 @@ class BorderLayout implements ILayout, ICloneable {
 
       markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
 
-      _positions[_childWest!.id] =
+      _childSouth!.layoutPosition =
           LayoutPosition(top: x, left: y, width: bestSize.width, height: height, isComponentSize: true);
 
       x += bestSize.width + iHorizontalGap;
       width -= bestSize.width + iHorizontalGap;
+
+      returnMap[_childWest!.id] = _childWest!;
     }
 
     if (_childEast != null) {
@@ -163,27 +167,30 @@ class BorderLayout implements ILayout, ICloneable {
 
       markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
 
-      _positions[_childEast!.id] = LayoutPosition(
+      _childEast!.layoutPosition = LayoutPosition(
           top: x + width - bestSize.width, left: y, width: bestSize.width, height: height, isComponentSize: true);
 
       width -= bestSize.width + iHorizontalGap;
+
+      returnMap[_childEast!.id] = _childEast!;
     }
 
     if (_childCenter != null) {
       markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
 
-      _positions[_childCenter!.id] =
+      _childCenter!.layoutPosition =
           LayoutPosition(top: x, left: y, width: width, height: height, isComponentSize: true);
+
+      returnMap[_childCenter!.id] = _childCenter!;
     }
 
-    //parent.layoutData
-    return _positions;
+    return returnMap;
   }
 
   /// Makes a deep copy of this [BorderLayout].
   @override
   BorderLayout clone() {
-    return BorderLayout.from(this);
+    return BorderLayout(layoutString: layoutString);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -220,49 +227,12 @@ class BorderLayout implements ILayout, ICloneable {
     iVerticalGap = int.parse(parameter[6]);
   }
 
-  /// Returns the maximum layout size
-  Size _maximumLayoutSize() {
-    if (_parentData.maxSize != null) {
-      return _parentData.maxSize!;
-    }
-    return const Size(double.infinity, double.infinity);
-  }
-
-  /// Returns the minimum layout size
-  Size _minimumLayoutSize() {
-    if (_parentData.hasMinSize) {
-      return _parentData.minSize!;
-    } else {
-      Size n = const Size(0, 0);
-      if (_childNorth != null && _childNorth!.hasMinSize) {
-        n = _childNorth!.bestMinSize;
-      }
-      Size e = const Size(0, 0);
-      if (_childEast != null && _childEast!.hasMinSize) {
-        e = _childEast!.bestMinSize;
-      }
-      Size s = const Size(0, 0);
-      if (_childSouth != null && _childSouth!.hasMinSize) {
-        s = _childSouth!.bestMinSize;
-      }
-      Size w = const Size(0, 0);
-      if (_childWest != null && _childWest!.hasMinSize) {
-        w = _childWest!.bestMinSize;
-      }
-      Size c = const Size(0, 0);
-      if (_childCenter != null && _childCenter!.hasMinSize) {
-        c = _childCenter!.bestMinSize;
-      }
-
-      return Size(max(max(n.width, s.width), w.width + c.width + e.width),
-          max(max(w.height, e.height), c.height) + n.height + s.height);
-    }
-  }
-
   /// Returns the preferred layout size
   Size _preferredLayoutSize() {
-    if (_parentData.hasPreferredSize) {
-      return _parentData.preferredSize!;
+    if (pParent.hasPreferredSize) {
+      return pParent.preferredSize!;
+    } else if (pParent.hasCalculatedSize) {
+      return pParent.calculatedSize!;
     } else {
       double width = 0;
       double height = 0;
@@ -318,10 +288,8 @@ class BorderLayout implements ILayout, ICloneable {
   void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
     if (!pChild.hasPreferredSize &&
         pChild.hasCalculatedSize &&
-        (pChild.calculatedSize!.width > pNewCalcSize.width || pChild.calculatedSize!.height > pNewCalcSize.height)) {
-      LayoutData cloneChildNorth = pChild.clone();
-      cloneChildNorth.calculatedSize = pNewCalcSize;
-      listChildsToRedraw.add(cloneChildNorth);
+        (pChild.calculatedSize!.width != pNewCalcSize.width || pChild.calculatedSize!.height != pNewCalcSize.height)) {
+      pChild.calculatedSize = pNewCalcSize;
     }
   }
 }

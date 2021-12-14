@@ -10,7 +10,6 @@ class RegisterParentProcessor with LayoutServiceMixin implements ICommandProcess
         pId: command.parentId,
         pChildrenIds: command.childrenIds,
         pLayout: command.layout,
-        pLayoutData: command.layoutData,
-        pConstraints: command.constraints);
+        pLayoutData: command.layoutData);
   }
 }

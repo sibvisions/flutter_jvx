@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -96,27 +98,35 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
   }
 
   double? _getWidthForComponent() {
-    if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
-      return layoutData.layoutPosition!.width;
-    } else if (layoutData.hasPreferredSize) {
+    if (layoutData.hasPreferredSize) {
       return layoutData.preferredSize!.width;
-    } else if (layoutData.hasCalculatedSize && layoutData.calculatedSize!.width != double.infinity) {
-      return layoutData.calculatedSize!.width;
-    } else {
-      return null;
+    } else if (layoutData.hasCalculatedSize) {
+      if (layoutData.calculatedSize!.height == double.infinity) {
+        return layoutData.calculatedSize!.width;
+      } else if (layoutData.calculatedSize!.width == double.infinity) {
+        return null;
+      } else if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
+        return layoutData.layoutPosition!.width;
+      }
     }
+
+    return null;
   }
 
   double? _getHeightForComponent() {
-    if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
-      return layoutData.layoutPosition!.height;
-    } else if (layoutData.hasPreferredSize) {
+    if (layoutData.hasPreferredSize) {
       return layoutData.preferredSize!.height;
-    } else if (layoutData.hasCalculatedSize && layoutData.calculatedSize!.height != double.infinity) {
-      return layoutData.calculatedSize!.height;
-    } else {
-      return null;
+    } else if (layoutData.hasCalculatedSize) {
+      if (layoutData.calculatedSize!.width == double.infinity) {
+        return layoutData.calculatedSize!.height;
+      } else if (layoutData.calculatedSize!.height == double.infinity) {
+        return null;
+      } else if (layoutData.hasPosition && layoutData.layoutPosition!.isComponentSize) {
+        return layoutData.layoutPosition!.height;
+      }
     }
+
+    return null;
   }
 
   double _getTopForPositioned() {
@@ -127,22 +137,40 @@ class _FlButtonWrapperState extends State<FlButtonWrapper> with UiServiceMixin {
     return layoutData.hasPosition ? layoutData.layoutPosition!.left : 0.0;
   }
 
+  bool isNewCalcSize() {
+    return _getHeightForComponent() == null || _getWidthForComponent() == null;
+  }
+
   void postFrameCallback(Duration time, BuildContext context) {
-    if (!layoutData.hasCalculatedSize) {
-      var width = context.size!.width.ceilToDouble();
-      var height = context.size!.height.ceilToDouble();
-      layoutData.calculatedSize = Size(width, height);
+    Size potentialNewCalcSize = Size(context.size!.width.ceilToDouble(), context.size!.height.ceilToDouble());
+
+    bool rebuild = false;
+    bool sendCommand = !sentPrefSize;
+
+    if (isNewCalcSize()) {
+      layoutData.calculatedSize = potentialNewCalcSize;
     }
 
-    PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
-        parentId: buttonModel.parent ?? "",
-        layoutData: layoutData,
-        componentId: buttonModel.id,
-        reason: "Component has been rendered");
-    if (!sentPrefSize) {
-      uiService.sendCommand(preferredSizeCommand);
+    if (layoutData.hasNewCalculatedSize) {
+      sendCommand = true;
+    } else {
+      rebuild = true;
     }
-    sentPrefSize = true;
+
+    if (sendCommand) {
+      PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
+          parentId: buttonModel.parent ?? "",
+          layoutData: layoutData,
+          componentId: buttonModel.id,
+          reason: "Component has been rendered");
+
+      uiService.sendCommand(preferredSizeCommand);
+      sentPrefSize = true;
+    }
+
+    if (rebuild) {
+      setState(() {});
+    }
   }
 
   void buttonPressed() {

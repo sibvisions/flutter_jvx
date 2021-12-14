@@ -1,13 +1,13 @@
+import 'dart:collection';
+
 import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';
-import '../model/layout/layout_position.dart';
 import 'border_layout.dart';
 import 'flow_layout.dart';
 import 'form_layout.dart';
 import 'grid_layout.dart';
 
 // The states a layout can be in. If a component is dirty, it gets redrawn.
-// enum LayoutState { DIRTY, RENDERED } -> Not sure if needed yet. Value was necessary in old system. {current dev branch needs it}
 
 /// Defines the base construct of a [ILayout].
 /// It is generally advised to use this class as an interface and not as a superclass.
@@ -18,13 +18,10 @@ abstract class ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Calculates the constraints and widths and heigths of the children components and those of the [pParent].
-  Map<String, LayoutPosition> calculateLayout(LayoutData pParent, List<LayoutData> pChildren);
+  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren);
 
   @override
   ILayout clone();
-
-  /// Returns a list of children with new constraints to recalculate its size.
-  List<LayoutData> get listChildsToRedraw;
 
   /// Returns the correct [ILayout] implementation depending on the data in [pLayout].
   ///
@@ -37,7 +34,7 @@ abstract class ILayout implements ICloneable {
 
       switch (list.first) {
         case "BorderLayout":
-          return BorderLayout(pLayout);
+          return BorderLayout(layoutString: pLayout);
         case "FormLayout":
           return FormLayout(layoutData: pLayoutData!, layoutString: pLayout);
         case "GridLayout":

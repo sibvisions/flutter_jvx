@@ -1,9 +1,10 @@
+import 'package:flutter_client/src/model/layout/layout_data.dart';
+
 import 'ui_command.dart';
-import '../../layout/layout_position.dart';
 
 class UpdateLayoutPositionCommand extends UiCommand {
   /// List of position data
-  Map<String, LayoutPosition> layoutPosition;
+  Map<String, LayoutData> layoutPosition;
 
   UpdateLayoutPositionCommand({
     required this.layoutPosition,
