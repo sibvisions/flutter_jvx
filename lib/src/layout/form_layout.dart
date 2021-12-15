@@ -2,43 +2,118 @@ import 'dart:collection';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/layout/alignments.dart';
+
+import '../../util/layout/form_layout/fl_calculate_anchors_util.dart';
+import '../../util/layout/form_layout/fl_calculate_dependent_util.dart';
 import '../model/layout/form_layout/form_layout_anchor.dart';
 import '../model/layout/form_layout/form_layout_constraints.dart';
 import '../model/layout/form_layout/form_layout_size.dart';
-import '../model/layout/form_layout/gaps.dart';
-import '../model/layout/form_layout/margins.dart';
 import '../model/layout/form_layout/form_layout_used_border.dart';
-import '../../util/layout/form_layout/fl_calculate_anchors_util.dart';
-import '../../util/layout/form_layout/fl_calculate_dependent_util.dart';
-import '../../util/layout/form_layout/fl_util.dart';
-
-import 'i_layout.dart';
+import '../model/layout/gaps.dart';
+import '../model/layout/margins.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
-
-/// Possible Horizontal Alignments (left=0,center=1,right=2,stretch=3)
-enum HorizontalAlignment { left, center, right, stretch }
-
-/// Possible Vertical Alignments (top=0,center=1,bottom=2,stretch=3)
-enum VerticalAlignment { top, center, bottom, stretch }
+import 'i_layout.dart';
 
 class FormLayout extends ILayout {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The original layout string
   final String layoutString;
+
+  /// The split layout string.
+  final List<String> splitLayoutString;
+
+  /// The original layout data string
   final String layoutData;
 
-  FormLayout({required this.layoutData, required this.layoutString});
+  /// Margins
+  late final Margins margins;
 
-  HashMap<String, LayoutData> mapFromChildren({required List<LayoutData> children}) {
-    HashMap<String, LayoutData> map = HashMap();
-    for (LayoutData data in children) {
-      map[data.id] = data;
-    }
+  /// Gaps
+  late final Gaps gaps;
 
-    return map;
+  /// Raw alignments
+  late final List<String> alignment;
+
+  /// Horizontal alignment
+  late final HorizontalAlignment horizontalAlignment;
+
+  /// Vertical alignment
+  late final VerticalAlignment verticalAlignment;
+
+  /// Anchors
+  late final HashMap<String, FormLayoutAnchor> anchors;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  FormLayout({required this.layoutData, required this.layoutString}) : splitLayoutString = layoutString.split(",") {
+    margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5));
+    gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7));
+    alignment = splitLayoutString.sublist(7, 9);
+    anchors = _getAnchors(layoutData);
+    horizontalAlignment = HorizontalAlignmentE.fromString(alignment[0]);
+    verticalAlignment = VerticalAlignmentE.fromString(alignment[1]);
   }
 
-  Size? getSize(LayoutData pParent) {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
+  ILayout clone() {
+    return FormLayout(layoutData: layoutData, layoutString: layoutString);
+  }
+
+  @override
+  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+    /// Size set by Parent
+    final Size? setPosition = _getSize(pParent);
+
+    /// Component constraints
+    HashMap<String, FormLayoutConstraints> componentConstraints = _getComponentConstraints(pChildren, anchors);
+
+    FormLayoutUsedBorder usedBorder = FormLayoutUsedBorder();
+    FormLayoutSize preferredMinimumSize = FormLayoutSize();
+
+    _calculateAnchors(
+        pAnchors: anchors,
+        pComponentData: pChildren,
+        pComponentConstraints: componentConstraints,
+        pUsedBorder: usedBorder,
+        pPreferredMinimumSize: preferredMinimumSize,
+        pGaps: gaps);
+
+    _calculateTargetDependentAnchors(
+        pMinPrefSize: preferredMinimumSize,
+        pAnchors: anchors,
+        pHorizontalAlignment: horizontalAlignment,
+        pVerticalAlignment: verticalAlignment,
+        pUsedBorder: usedBorder,
+        pMargins: margins,
+        pComponentData: pChildren,
+        pComponentConstraints: componentConstraints,
+        pGivenSize: setPosition);
+
+    return _buildComponents(
+        pAnchors: anchors,
+        pComponentConstraints: componentConstraints,
+        pMargins: margins,
+        id: pParent.id,
+        pChildrenData: pChildren,
+        pParent: pParent);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Size? _getSize(LayoutData pParent) {
     if (!pParent.hasPreferredSize && pParent.hasPosition) {
       double width = pParent.layoutPosition!.width;
       double height = pParent.layoutPosition!.height;
@@ -47,83 +122,9 @@ class FormLayout extends ILayout {
     return null;
   }
 
-  @override
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    // Needed from Outside
-
-    /// Data of children components
-    final HashMap<String, LayoutData> componentData = mapFromChildren(children: pChildren);
-
-    /// LayoutData, Anchor String
-    String layoutData = this.layoutData;
-
-    /// LayoutString
-    String layout = layoutString;
-
-    /// Size set by Parent
-    final Size? setPosition = getSize(pParent);
-
-    // init and derived variables
-
-    /// Margins
-    final Margins margins =
-        Margins.fromList(marginList: layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(0, 4));
-
-    /// Gaps
-    final Gaps gaps = Gaps.createFromList(
-        gapsList: layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(4, 6));
-
-    /// Raw alignments
-    final List<String> alignment = layout.substring(layout.indexOf(",") + 1, layout.length).split(",").sublist(6, 8);
-
-    /// Horizontal alignment
-    final HorizontalAlignment horizontalAlignment = FLUtil.getHorizontalAlignment(alignment[0]);
-
-    /// Vertical alignment
-    final VerticalAlignment verticalAlignment = FLUtil.getVerticalAlignment(alignment[1]);
-
-    /// Anchors
-    HashMap<String, FormLayoutAnchor> anchors = FLUtil.getAnchors(layoutData);
-
-    /// Component constraints
-    HashMap<String, FormLayoutConstraints> componentConstraints =
-        FLUtil.getComponentConstraints(componentData, anchors);
-
-    FormLayoutUsedBorder usedBorder = FormLayoutUsedBorder();
-    FormLayoutSize preferredMinimumSize = FormLayoutSize();
-
-    calculateAnchors(
-        pAnchors: anchors,
-        pComponentData: componentData,
-        pComponentConstraints: componentConstraints,
-        pUsedBorder: usedBorder,
-        pPreferredMinimumSize: preferredMinimumSize,
-        pGaps: gaps);
-
-    calculateTargetDependentAnchors(
-        pMinPrefSize: preferredMinimumSize,
-        pAnchors: anchors,
-        pHorizontalAlignment: horizontalAlignment,
-        pVerticalAlignment: verticalAlignment,
-        pUsedBorder: usedBorder,
-        pMargins: margins,
-        pComponentData: componentData,
-        pComponentConstraints: componentConstraints,
-        pGivenSize: setPosition);
-
-    return buildComponents(
-        pAnchors: anchors,
-        pComponentConstraints: componentConstraints,
-        pMargins: margins,
-        id: pParent.id,
-        pChildrenData: pChildren,
-        pParent: pParent
-    );
-  }
-
-  void calculateAnchors(
+  void _calculateAnchors(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
-      required HashMap<String, LayoutData> pComponentData,
+      required List<LayoutData> pComponentData,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       required FormLayoutUsedBorder pUsedBorder,
       required FormLayoutSize pPreferredMinimumSize,
@@ -142,8 +143,8 @@ class FormLayout extends ILayout {
     });
 
     // Init autoSize Anchors
-    pComponentData.forEach((componentId, component) {
-      FormLayoutConstraints constraint = pComponentConstraints[componentId]!;
+    for (var component in pComponentData) {
+      FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
       FLCalculateAnchorsUtil.initAutoSizeRelative(
           pStartAnchor: constraint.leftAnchor, pEndAnchor: constraint.rightAnchor, pAnchors: pAnchors);
@@ -153,14 +154,14 @@ class FormLayout extends ILayout {
           pStartAnchor: constraint.topAnchor, pEndAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
       FLCalculateAnchorsUtil.initAutoSizeRelative(
           pStartAnchor: constraint.bottomAnchor, pEndAnchor: constraint.topAnchor, pAnchors: pAnchors);
-    });
+    }
 
     // AutoSize calculations
     for (double autoSizeCount = 1; autoSizeCount > 0 && autoSizeCount < 10000000;) {
-      pComponentData.forEach((componentId, component) {
+      for (var component in pComponentData) {
         //Todo LayoutData needs Visible - if(component.isVisible)
         if (true) {
-          FormLayoutConstraints constraint = pComponentConstraints[componentId]!;
+          FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
           Size preferredSize = component.calculatedSize!;
           FLCalculateAnchorsUtil.calculateAutoSize(
               leftTopAnchor: constraint.topAnchor,
@@ -175,12 +176,12 @@ class FormLayout extends ILayout {
               autoSizeCount: autoSizeCount,
               pAnchors: pAnchors);
         }
-      });
+      }
 
       autoSizeCount = 10000000;
 
-      pComponentData.forEach((componentId, component) {
-        FormLayoutConstraints constraint = pComponentConstraints[componentId]!;
+      for (var component in pComponentData) {
+        FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
         double count;
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
@@ -203,7 +204,7 @@ class FormLayout extends ILayout {
         if (count > 0 && count < autoSizeCount) {
           autoSizeCount = count;
         }
-      });
+      }
     }
 
     double leftWidth = 0;
@@ -212,8 +213,8 @@ class FormLayout extends ILayout {
     double bottomHeight = 0;
 
     // Calculate preferredSize
-    pComponentData.forEach((componentId, component) {
-      FormLayoutConstraints constraint = pComponentConstraints[componentId]!;
+    for (var component in pComponentData) {
+      FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
       Size preferredComponentSize = component.calculatedSize!;
       Size minimumComponentSize = component.minSize ?? const Size(0, 0);
@@ -283,7 +284,7 @@ class FormLayout extends ILayout {
         pUsedBorder.topBorderUsed = true;
         pUsedBorder.bottomBorderUsed = true;
       }
-    });
+    }
 
     //----------------------------------------------------------
 
@@ -346,14 +347,14 @@ class FormLayout extends ILayout {
     }
   }
 
-  void calculateTargetDependentAnchors(
+  void _calculateTargetDependentAnchors(
       {required FormLayoutSize pMinPrefSize,
       required HashMap<String, FormLayoutAnchor> pAnchors,
       required HorizontalAlignment pHorizontalAlignment,
       required VerticalAlignment pVerticalAlignment,
       required FormLayoutUsedBorder pUsedBorder,
       required Margins pMargins,
-      required HashMap<String, LayoutData> pComponentData,
+      required List<LayoutData> pComponentData,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       Size? pGivenSize}) {
     /// ToDo SetSizes from server
@@ -393,17 +394,17 @@ class FormLayout extends ILayout {
     FormLayoutAnchor tba = pAnchors["t"]!;
 
     // Horizontal Alignment
-    if (pHorizontalAlignment == HorizontalAlignment.stretch ||
+    if (pHorizontalAlignment == HorizontalAlignment.STRETCH ||
         (pUsedBorder.leftBorderUsed && pUsedBorder.rightBorderUsed)) {
       if (minLayoutSize.width > calcSize.width) {
         lba.position = 0;
         rba.position = minLayoutSize.width;
       } else if (maxLayoutSize.width < calcSize.width) {
         switch (pHorizontalAlignment) {
-          case HorizontalAlignment.left:
+          case HorizontalAlignment.LEFT:
             lba.position = 0;
             break;
-          case HorizontalAlignment.right:
+          case HorizontalAlignment.RIGHT:
             lba.position = calcSize.width - maxLayoutSize.width;
             break;
           default:
@@ -419,10 +420,10 @@ class FormLayout extends ILayout {
         lba.position = 0;
       } else {
         switch (pHorizontalAlignment) {
-          case HorizontalAlignment.left:
+          case HorizontalAlignment.LEFT:
             lba.position = 0;
             break;
-          case HorizontalAlignment.right:
+          case HorizontalAlignment.RIGHT:
             lba.position = calcSize.width - pMinPrefSize.preferredWidth;
             break;
           default:
@@ -433,17 +434,17 @@ class FormLayout extends ILayout {
     }
 
     // Vertical Alignment
-    if (pVerticalAlignment == VerticalAlignment.stretch ||
+    if (pVerticalAlignment == VerticalAlignment.STRETCH ||
         (pUsedBorder.bottomBorderUsed && pUsedBorder.topBorderUsed)) {
       if (minLayoutSize.height > calcSize.height) {
         tba.position = 0;
         bba.position = minLayoutSize.height;
       } else if (maxLayoutSize.height < calcSize.height) {
         switch (pVerticalAlignment) {
-          case VerticalAlignment.top:
+          case VerticalAlignment.TOP:
             tba.position = 0;
             break;
-          case VerticalAlignment.bottom:
+          case VerticalAlignment.BOTTOM:
             tba.position = calcSize.height - maxLayoutSize.height;
             break;
           default:
@@ -459,10 +460,10 @@ class FormLayout extends ILayout {
         tba.position = 0;
       } else {
         switch (pVerticalAlignment) {
-          case VerticalAlignment.top:
+          case VerticalAlignment.TOP:
             tba.position = 0;
             break;
-          case VerticalAlignment.bottom:
+          case VerticalAlignment.BOTTOM:
             tba.position = calcSize.height - pMinPrefSize.preferredHeight;
             break;
           default:
@@ -477,10 +478,10 @@ class FormLayout extends ILayout {
     tba.position -= pMargins.marginTop;
     bba.position -= pMargins.marginTop;
 
-    pComponentData.forEach((componentId, component) {
+    for (var component in pComponentData) {
       ///ToDo Component Visible here
       if (true) {
-        FormLayoutConstraints constraints = pComponentConstraints[componentId]!;
+        FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
         Size preferredComponentSize = component.calculatedSize!;
 
         FLCalculateDependentUtil.calculateRelativeAnchor(
@@ -492,10 +493,10 @@ class FormLayout extends ILayout {
             rightBottomAnchor: constraints.bottomAnchor,
             preferredSize: preferredComponentSize.height);
       }
-    });
+    }
   }
 
-  HashMap<String, LayoutData> buildComponents(
+  HashMap<String, LayoutData> _buildComponents(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       required Margins pMargins,
@@ -544,8 +545,8 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
-      layoutData.layoutPosition =
-        LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
+      layoutData.layoutPosition = LayoutPosition(
+          width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
 
       sizeMap[componentId] = layoutData;
     });
@@ -553,13 +554,44 @@ class FormLayout extends ILayout {
     double width = borderConstraints.rightAnchor.position - borderConstraints.leftAnchor.position;
     pParent.calculatedSize = Size(width, height);
 
-
-
     return sizeMap;
   }
 
-  @override
-  ILayout clone() {
-    return FormLayout(layoutData: layoutData, layoutString: layoutString);
+  /// Parses all anchors from layoutData and establishes relatedAnchors
+  static HashMap<String, FormLayoutAnchor> _getAnchors(String layoutData) {
+    HashMap<String, FormLayoutAnchor> anchors = HashMap();
+
+    // Parse layoutData to get Anchors
+    final List<String> splitAnchors = layoutData.split(";");
+    for (var stringAnchor in splitAnchors) {
+      String name = stringAnchor.substring(0, stringAnchor.indexOf(","));
+      anchors[name] = FormLayoutAnchor.fromAnchorData(pAnchorData: stringAnchor);
+    }
+
+    // Establish relatedAnchors
+    anchors.forEach((anchorName, anchor) {
+      anchor.relatedAnchor = anchors[anchor.relatedAnchorName];
+    });
+    return anchors;
+  }
+
+  /// Creates [FormLayoutConstraints] for every [LayoutData] (child)
+  static HashMap<String, FormLayoutConstraints> _getComponentConstraints(
+      List<LayoutData> components, HashMap<String, FormLayoutAnchor> anchors) {
+    HashMap<String, FormLayoutConstraints> componentConstraints = HashMap();
+
+    for (var value in components) {
+      List<String> anchorNames = value.constraints!.split(";");
+      // Get Anchors
+      FormLayoutAnchor topAnchor = anchors[anchorNames[0]]!;
+      FormLayoutAnchor leftAnchor = anchors[anchorNames[1]]!;
+      FormLayoutAnchor bottomAnchor = anchors[anchorNames[2]]!;
+      FormLayoutAnchor rightAnchor = anchors[anchorNames[3]]!;
+      // Build Constraint
+      FormLayoutConstraints constraint = FormLayoutConstraints(
+          bottomAnchor: bottomAnchor, leftAnchor: leftAnchor, rightAnchor: rightAnchor, topAnchor: topAnchor);
+      componentConstraints[value.id] = constraint;
+    }
+    return componentConstraints;
   }
 }

@@ -1,4 +1,4 @@
-enum Orientation { HORIZONTAL, VERTICAL }
+import '../alignments.dart';
 
 class FormLayoutAnchor {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,7 +15,7 @@ class FormLayoutAnchor {
   final String? relatedAnchorName;
 
   /// The orientation of this anchor.
-  final Orientation orientation;
+  final AlignmentOrientation orientation;
 
   /// true, if this anchor should be auto sized.
   final bool autoSize;
@@ -63,11 +63,11 @@ class FormLayoutAnchor {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns wether the orientation of the anchor is horizontal or vertical
-  static Orientation getOrientationFromData({required String anchorName}) {
+  static AlignmentOrientation getOrientationFromData({required String anchorName}) {
     if (anchorName.startsWith("l") || anchorName.startsWith("r")) {
-      return Orientation.HORIZONTAL;
+      return AlignmentOrientation.HORIZONTAL;
     } else {
-      return Orientation.VERTICAL;
+      return AlignmentOrientation.VERTICAL;
     }
   }
 

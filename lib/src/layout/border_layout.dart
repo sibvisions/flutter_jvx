@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -84,7 +83,7 @@ class BorderLayout implements ILayout, ICloneable {
 
   /// Initializes a [BorderLayout].
   BorderLayout({required this.layoutString}) {
-    updateValuesFromString(layoutString);
+    _updateValuesFromString(layoutString);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,7 +123,7 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
 
-      markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
+      _markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
 
       _childNorth!.layoutPosition =
           LayoutPosition(top: x, left: y, width: width, height: bestSize.height, isComponentSize: true);
@@ -138,7 +137,7 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childSouth != null) {
       Size bestSize = _childSouth!.bestSize;
 
-      markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
+      _markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
       _childSouth!.layoutPosition = LayoutPosition(
           top: x, left: eiMargins.left, width: width, height: y + height - bestSize.height, isComponentSize: true);
@@ -151,7 +150,7 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childWest != null) {
       Size bestSize = _childWest!.bestSize;
 
-      markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
+      _markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
 
       _childSouth!.layoutPosition =
           LayoutPosition(top: x, left: y, width: bestSize.width, height: height, isComponentSize: true);
@@ -165,7 +164,7 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childEast != null) {
       Size bestSize = _childEast!.bestSize;
 
-      markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
+      _markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
 
       _childEast!.layoutPosition = LayoutPosition(
           top: x + width - bestSize.width, left: y, width: bestSize.width, height: height, isComponentSize: true);
@@ -176,7 +175,7 @@ class BorderLayout implements ILayout, ICloneable {
     }
 
     if (_childCenter != null) {
-      markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
+      _markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
 
       _childCenter!.layoutPosition =
           LayoutPosition(top: x, left: y, width: width, height: height, isComponentSize: true);
@@ -214,7 +213,7 @@ class BorderLayout implements ILayout, ICloneable {
   /// [5] = horizontal gap in px (int)
   ///
   /// [6] = vertical gap in px (int)
-  void updateValuesFromString(String layout) {
+  void _updateValuesFromString(String layout) {
     List<String> parameter = layout.split(",");
 
     double top = double.parse(parameter[1]);
@@ -285,7 +284,7 @@ class BorderLayout implements ILayout, ICloneable {
 
   /// Checks if the new size constraint of either width or height would
   /// be needed for a redraw, if the component only has a calculated size.
-  void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
+  void _markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
     if (!pChild.hasPreferredSize &&
         pChild.hasCalculatedSize &&
         (pChild.calculatedSize!.width != pNewCalcSize.width || pChild.calculatedSize!.height != pNewCalcSize.height)) {

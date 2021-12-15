@@ -25,3 +25,71 @@
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If this is wanted as auto completion in VS Code
+paste the following into the dart.js under 
+File -> Preferences -> User Snippets -> Dart
+
+"// Constants": {
+	"prefix": "// Constants",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Constants",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Constants"
+	},
+	"// Class members": {
+	"prefix": "// Class members",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Class members",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Class members"
+	},
+	"// Initialization": {
+	"prefix": "// Initialization",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Initialization",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Initialization"
+	},
+	"// Method definitions": {
+	"prefix": "// Method definitions",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Method definitions",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Method definitions"
+	},
+	"// Interface implementation": {
+	"prefix": "// Interface implementation",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Interface implementation",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Interface implementation"
+	},
+	"// Overridden methods": {
+	"prefix": "// Overridden methods",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Overridden methods",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Overridden methods"
+	},
+	"// User-defined methods": {
+	"prefix": "// User-defined methods",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// User-defined methods",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "User-defined methods"
+	}
