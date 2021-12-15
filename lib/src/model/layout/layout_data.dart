@@ -21,7 +21,7 @@ class LayoutData implements ICloneable {
   final String id;
 
   /// The id of the parent component.
-  final String? parentId;
+  String? parentId;
 
   /// The layout of the component.
   ILayout? layout;
@@ -92,7 +92,7 @@ class LayoutData implements ICloneable {
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
         preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null,
         calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
-        // lastCalculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
+        lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
         insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
         layoutState = pLayoutData.layoutState,
         layoutString = pLayoutData.layoutString,
@@ -168,6 +168,11 @@ class LayoutData implements ICloneable {
   /// If this component has a [calculatedSize];
   bool get hasCalculatedSize {
     return calculatedSize != null;
+  }
+
+  /// If this component has a [lastCalculatedSize];
+  bool get hasLastCalculatedSize {
+    return lastCalculatedSize != null;
   }
 
   /// If this component has [insets];

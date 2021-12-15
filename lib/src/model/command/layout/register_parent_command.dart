@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/layout/layout_data.dart';
+
 import 'layout_command.dart';
 
 class RegisterParentCommand extends LayoutCommand {
@@ -5,31 +7,15 @@ class RegisterParentCommand extends LayoutCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The parent id.
-  String parentId;
-
-  /// List of children ids.
-  List<String> childrenIds;
-
-  /// The layout of this container.
-  String layout;
-
-  /// Additional layout data e.g. Anchors in form-layout
-  String? layoutData;
-
-  /// Constraints of this layout in relation of other layouts.
-  String? constraints;
+  /// [LayoutData] Object of this parent.
+  final LayoutData layoutData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   RegisterParentCommand({
-    required this.layout,
-    required this.childrenIds,
-    required this.parentId,
-    this.layoutData,
-    this.constraints,
+    required this.layoutData,
     required String reason,
   }) : super(reason: reason);
 
@@ -39,5 +25,5 @@ class RegisterParentCommand extends LayoutCommand {
 
   @override
   String get logString =>
-      "RegisterParentCommand | Component: $parentId | Childrens: ${childrenIds.toString()} | Reason $reason";
+      "RegisterParentCommand: | ${layoutData.toString()} | Reason $reason";
 }

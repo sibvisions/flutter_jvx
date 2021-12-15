@@ -25,39 +25,29 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> registerAsParent(
-      {required String pId, required List<String> pChildrenIds, required String pLayout, String? pLayoutData}) {
-    LayoutData? ldRegisteredParent = _layoutDataSet[pId];
+  List<BaseCommand> registerAsParent({required LayoutData pLayoutData}) {
+    LayoutData? ldRegisteredParent = _layoutDataSet[pLayoutData.id];
 
     // If Size has been set do NOT override it, used to set sizes from outside, e.g. First-Screen, Split-Screen.
     if (ldRegisteredParent != null) {
-      ldRegisteredParent.layoutState = LayoutState.VALID;
-      ldRegisteredParent.layout = ILayout.getLayout(pLayout, pLayoutData);
-      ldRegisteredParent.children = pChildrenIds;
-      ldRegisteredParent.layoutData = pLayoutData;
-      ldRegisteredParent.layoutString = pLayout;
-      ldRegisteredParent.calculatedSize = null;
-    } else {
-      _layoutDataSet[pId] = LayoutData(
-          id: pId,
-          layout: ILayout.getLayout(pLayout, pLayoutData),
-          children: pChildrenIds,
-          layoutString: pLayout,
-          layoutData: pLayoutData);
+      pLayoutData.calculatedSize ??= ldRegisteredParent.calculatedSize;
+      pLayoutData.lastCalculatedSize = ldRegisteredParent.calculatedSize;
+      pLayoutData.layoutPosition = ldRegisteredParent.layoutPosition;
     }
+    _layoutDataSet[pLayoutData.id] = pLayoutData;
 
     // Only initialize children not here yet
-    for (String childId in pChildrenIds) {
+    for (String childId in pLayoutData.children!) {
       LayoutData? childLayout = _layoutDataSet[childId];
       if (childLayout == null) {
-        _layoutDataSet[childId] = LayoutData(id: childId, parentId: pId);
+        _layoutDataSet[childId] = LayoutData(id: childId, parentId: pLayoutData.id);
       }
     }
 
-    bool legalState = _isLegalState(componentId: pId);
+    bool legalState = _isLegalState(componentId: pLayoutData.id);
 
     if (legalState) {
-      return _performLayout(pId);
+      return _performLayout(pLayoutData.id);
     }
 
     return [];
@@ -73,16 +63,28 @@ class LayoutService implements ILayoutService {
     _layoutDataSet[pId] = pLayoutData;
     pLayoutData.layoutState = LayoutState.VALID;
 
-    bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
-    if (isLegalState) {
-      return _performLayout(pLayoutData.parentId!);
+
+    if(pLayoutData.hasNewCalculatedSize) {
+      if (pLayoutData.parentId != null) {
+        bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
+        if (isLegalState) {
+          return _performLayout(pLayoutData.parentId!);
+        }
+      }
     }
+
+    pLayoutData.lastCalculatedSize = pLayoutData.calculatedSize;
+
+
 
     return [];
   }
 
   @override
   List<BaseCommand> setComponentSize({required String id, required Size size}) {
+
+    _layoutDataSet.forEach((key, value) {value.layoutPosition = null;});
+
     LayoutData? layoutData = _layoutDataSet[id];
     if (layoutData != null) {
       LayoutPosition? layoutPosition = layoutData.layoutPosition;
@@ -159,8 +161,7 @@ class LayoutService implements ILayoutService {
     // We dont have a position.
     // We have a position but it is old.
     // We have a position but our calc size is different.
-    if (parent.hasPosition &&
-        (!startOfCall.isBefore(parent.layoutPosition!.timeOfCall!) || !parent.hasNewCalculatedSize)) {
+    if (parent.hasPosition && (!startOfCall.isBefore(parent.layoutPosition!.timeOfCall!) || !parent.hasNewCalculatedSize)) {
       return _applyLayoutConstraints(pParentId);
     } else {
       registerPreferredSize(parent.id, parent);

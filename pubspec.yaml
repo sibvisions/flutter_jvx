@@ -14,10 +14,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  #IOS Dep
+  # IOS Dep
   cupertino_icons: ^1.0.2
 
-  #Custom  Dep
+  # Custom  Dep
   get_it: ^7.2.0
   http: ^0.13.4
 

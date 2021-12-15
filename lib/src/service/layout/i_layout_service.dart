@@ -8,8 +8,7 @@ abstract class ILayoutService {
   /// Registers a parent for receiving child constraint changes.
   ///
   /// Returns Command to update UI if, layout has been newly calculated, returns an empty list if nothing happened.
-  List<BaseCommand> registerAsParent(
-      {required String pId, required List<String> pChildrenIds, required String pLayout, String? pLayoutData});
+  List<BaseCommand> registerAsParent({required LayoutData pLayoutData});
 
   /// Removes a parent.
   ///

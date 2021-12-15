@@ -15,8 +15,10 @@ abstract class ComponentsFactory {
         return FlButtonWrapper(model: model as FlButtonModel);
       case ("Panel"):
         return FlPanelWrapper(model: model as FlPanelModel);
+      case ("GroupPanel"):
+        return FlPanelWrapper(model: model as FlPanelModel);
       default:
-        return DummyWrapper(dummyModel: model as FlDummyModel);
+        return DummyWrapper(model: model as FlDummyModel);
     }
   }
 }
