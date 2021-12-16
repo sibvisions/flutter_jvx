@@ -12,13 +12,13 @@ abstract class ComponentsFactory {
   static Widget buildWidget(FlComponentModel model) {
     switch (model.className) {
       case ("Button"):
-        return FlButtonWrapper(model: model as FlButtonModel);
+        return FlButtonWrapper(model: model as FlButtonModel, key: Key(model.id));
       case ("Panel"):
-        return FlPanelWrapper(model: model as FlPanelModel);
+        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case ("GroupPanel"):
-        return FlPanelWrapper(model: model as FlPanelModel);
+        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       default:
-        return DummyWrapper(model: model as FlDummyModel);
+        return DummyWrapper(model: model as FlDummyModel, key: Key(model.id));
     }
   }
 }

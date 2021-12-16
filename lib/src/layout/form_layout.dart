@@ -162,7 +162,7 @@ class FormLayout extends ILayout {
         //Todo LayoutData needs Visible - if(component.isVisible)
         if (true) {
           FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
-          Size preferredSize = component.calculatedSize!;
+          Size preferredSize = component.bestSize;
           FLCalculateAnchorsUtil.calculateAutoSize(
               leftTopAnchor: constraint.topAnchor,
               rightBottomAnchor: constraint.bottomAnchor,
@@ -216,7 +216,7 @@ class FormLayout extends ILayout {
     for (var component in pComponentData) {
       FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
-      Size preferredComponentSize = component.calculatedSize!;
+      Size preferredComponentSize = component.bestSize;
       Size minimumComponentSize = component.minSize ?? const Size(0, 0);
 
       if (constraint.rightAnchor.getBorderAnchor().name == "l") {
@@ -482,7 +482,7 @@ class FormLayout extends ILayout {
       ///ToDo Component Visible here
       if (true) {
         FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
-        Size preferredComponentSize = component.calculatedSize!;
+        Size preferredComponentSize = component.bestSize;
 
         FLCalculateDependentUtil.calculateRelativeAnchor(
             leftTopAnchor: constraints.leftAnchor,

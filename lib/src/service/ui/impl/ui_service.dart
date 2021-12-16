@@ -96,15 +96,17 @@ class UiService with CommandServiceMixin implements IUiService {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
       int indexOfOld = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
-      _currentScreen.removeAt(indexOfOld);
-      _currentScreen.add(updatedModel);
+      if(indexOfOld != -1) {
+        _currentScreen.removeAt(indexOfOld);
+        _currentScreen.add(updatedModel);
+      }
 
       // Notify active component
       ComponentCallback? callback = _registeredComponents[updatedModel.id];
       if (callback != null) {
         callback.call(newModel: updatedModel);
       } else {
-        throw Exception("Component To Update not found");
+        throw Exception("Component ${updatedModel.id} To Update not found");
       }
     }
   }

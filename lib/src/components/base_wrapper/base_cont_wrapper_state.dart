@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_state.dart';
 import 'package:flutter_client/src/components/components_factory.dart';
@@ -28,18 +30,21 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+    layoutData.insets = const EdgeInsets.only();
 
-    buildChildren();
     registerParent();
+    buildChildren();
   }
 
   @override
   receiveNewModel({required T newModel}) {
-    buildChildren();
     layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
-
+    buildChildren();
+    registerParent();
     return super.receiveNewModel(newModel: newModel);
   }
+
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -49,7 +54,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   /// layoutData.
   void registerParent(){
     RegisterParentCommand registerParentCommand = RegisterParentCommand(
-        layoutData: layoutData,
+        layoutData: layoutData.clone(),
         reason: "parent register"
     );
      uiService.sendCommand(registerParentCommand);
@@ -83,7 +88,6 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     // Only re-render if children did change
     if(changeDetected){
-      registerParent();
       setState(() {
         children = newChildren;
       });

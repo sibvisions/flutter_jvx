@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../util/i_clonable.dart';
 
 /// The [LayoutPosition] are the constraints actually getting applied to a component.
@@ -56,5 +58,14 @@ class LayoutPosition implements ICloneable {
   @override
   LayoutPosition clone() {
     return LayoutPosition.from(this);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  String toString() {
+    return "$top, $left | $width, $height | $isComponentSize, $timeOfCall";
   }
 }

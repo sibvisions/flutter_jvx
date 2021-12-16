@@ -1,8 +1,10 @@
 import 'dart:collection';
+import 'dart:ui';
 
 import 'package:flutter_client/src/model/layout/alignments.dart';
 import 'package:flutter_client/src/model/layout/form_layout/form_layout_anchor.dart';
 import 'package:flutter_client/src/model/layout/gaps.dart';
+import 'package:flutter_client/src/model/layout/layout_position.dart';
 import 'package:flutter_client/src/model/layout/margins.dart';
 import '../../util/extensions/string_extensions.dart';
 
@@ -334,7 +336,30 @@ class FlowLayout extends ILayout {
     //       return sizeMap;
     //   }, [compSizes, style.width, style.height, reportSize, id, context.contentStore]);
 
-    return HashMap();
+    HashMap<String, LayoutData> posit = HashMap();
+
+    double left = 0;
+    double height = 0;
+    for (var element in pChildren) {
+      left += element.bestSize.width + 5;
+      if(height < element.bestSize.height){
+        height = element.bestSize.height;
+      }
+      var pos =LayoutPosition(
+          width: element.bestSize.width,
+          height: height,
+          top: 0,
+          left: left,
+          isComponentSize: true
+      );
+      element.layoutPosition = pos;
+      posit[element.id] = element;
+    }
+    pParent.calculatedSize = Size(left, height);
+    posit[pParent.id] = pParent;
+
+
+    return posit;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -37,7 +37,7 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
       ));
       activeRoute = AppRoutingType.menu;
     } else if (event is RouteToWorkScreen) {
-      activePage = MaterialPage(child: WorkScreen(screen: event.screen, key: Key(event.screen.id),));
+      activePage = MaterialPage(child: WorkScreen(screen: event.screen, key: Key(event.screen.id + "_Work"),));
       activeRoute = AppRoutingType.workScreen;
     }
     notifyListeners();

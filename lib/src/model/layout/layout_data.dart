@@ -184,8 +184,9 @@ class LayoutData implements ICloneable {
   bool get hasNewCalculatedSize {
     if (calculatedSize == null && lastCalculatedSize == null) {
       return false;
-    } else if (calculatedSize != null && lastCalculatedSize == null ||
-        calculatedSize == null && lastCalculatedSize != null) {
+    }
+      else if (calculatedSize != null && lastCalculatedSize == null || calculatedSize == null && lastCalculatedSize != null)
+    {
       return true;
     }
 

@@ -60,14 +60,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Returns Positioned Widget according to [layoutData]
   Positioned getPositioned({required Widget child}){
-    log("------------------------");
-    log(getTopForPositioned().toString());
-    log(getLeftForPositioned().toString());
-    log(getWidthForPositioned().toString());
-    log(getHeightForPositioned().toString());
-    log(getWidthForComponent().toString());
-    log(getHeightForComponent().toString());
-    log("------------------------");
 
     return Positioned(
       top: getTopForPositioned(),
@@ -98,18 +90,34 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new LayoutData
   receiveNewLayoutData({required LayoutData newLayoutData}){
-    setState(() {
-      layoutData = newLayoutData;
-    });
+    if (layoutData.layoutPosition == null || layoutData.layoutPosition!.timeOfCall!.isBefore(newLayoutData.layoutPosition!.timeOfCall!))
+    {
+      setState(() {
+        log("${model.id} is receiving position of ${newLayoutData.layoutPosition}");
+        layoutData.layoutPosition = newLayoutData.layoutPosition;
+      });
+    }
   }
 
   /// Callback called after every build
   void postFrameCallback(Duration time, BuildContext context) {
-    Size potentialNewCalcSize = Size(context.size!.width.ceilToDouble(), context.size!.height.ceilToDouble());
+    // Size potentialNewCalcSize = Size(context.size!.width.ceilToDouble(), context.size!.height.ceilToDouble());
+
+    double? minWidth;
+    double? minHeight;
+    if (getWidthForComponent() == null)
+    {
+      minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(getHeightForComponent() ?? 10000).ceilToDouble();
+    }
+    if (getHeightForComponent() == null)
+    {
+      minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(getWidthForComponent() ?? 10000).ceilToDouble();
+    }
+
     bool rebuild = false;
 
     if (isNewCalcSize()) {
-      layoutData.calculatedSize = potentialNewCalcSize;
+      layoutData.calculatedSize = Size(minWidth ?? layoutData.calculatedSize!.width, minHeight ?? layoutData.calculatedSize!.height);
       if (layoutData.hasNewCalculatedSize) {
         sentCalcSize = false;
       } else {
@@ -120,7 +128,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     if (!sentCalcSize) {
       PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
           parentId: model.parent ?? "",
-          layoutData: layoutData,
+          layoutData: layoutData.clone(),
           componentId: model.id,
           reason: "Component has been rendered");
 
@@ -174,11 +182,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   double? getWidthForPositioned() {
-    return layoutData.hasPosition ? layoutData.layoutPosition!.width : null;
+    return layoutData.hasPosition ? layoutData.layoutPosition!.width : 0.0;
   }
 
   double? getHeightForPositioned() {
-    return layoutData.hasPosition ? layoutData.layoutPosition!.height : null;
+    return layoutData.hasPosition ? layoutData.layoutPosition!.height : 0.0;
   }
 
   bool isNewCalcSize() {

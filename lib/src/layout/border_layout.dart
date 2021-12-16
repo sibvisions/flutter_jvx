@@ -94,12 +94,13 @@ class BorderLayout implements ILayout, ICloneable {
   HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Clear constraint map.
     _positions.clear();
+    this.pParent = pParent;
 
-    _childNorth = pChildren.firstWhereOrNull((element) => NORTH == element.constraints);
-    _childSouth = pChildren.firstWhereOrNull((element) => SOUTH == element.constraints);
-    _childEast = pChildren.firstWhereOrNull((element) => EAST == element.constraints);
-    _childWest = pChildren.firstWhereOrNull((element) => WEST == element.constraints);
-    _childCenter = pChildren.firstWhereOrNull((element) => NORTH == element.constraints);
+    _childNorth = pChildren.firstWhereOrNull((element) => NORTH == element.constraints?.toUpperCase());
+    _childSouth = pChildren.firstWhereOrNull((element) => SOUTH == element.constraints?.toUpperCase());
+    _childEast = pChildren.firstWhereOrNull((element) => EAST == element.constraints?.toUpperCase());
+    _childWest = pChildren.firstWhereOrNull((element) => WEST == element.constraints?.toUpperCase());
+    _childCenter = pChildren.firstWhereOrNull((element) => CENTER == element.constraints?.toUpperCase());
 
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
@@ -118,7 +119,7 @@ class BorderLayout implements ILayout, ICloneable {
     }
 
     HashMap<String, LayoutData> returnMap = HashMap<String, LayoutData>();
-    returnMap[pParent.id] = pParent;
+
 
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
@@ -182,7 +183,6 @@ class BorderLayout implements ILayout, ICloneable {
 
       returnMap[_childCenter!.id] = _childCenter!;
     }
-
     return returnMap;
   }
 
@@ -238,13 +238,13 @@ class BorderLayout implements ILayout, ICloneable {
 
       double maxWidth = 0;
       double maxHeight = 0;
-      if (_childNorth != null && _childNorth!.hasPreferredSize) {
+      if (_childNorth != null && (_childNorth!.hasPreferredSize || _childNorth!.hasCalculatedSize)) {
         Size size = _childNorth!.bestSize;
 
         maxWidth = size.width;
         height += size.height + iVerticalGap;
       }
-      if (_childSouth != null && _childSouth!.hasPreferredSize) {
+      if (_childSouth != null && (_childSouth!.hasPreferredSize || _childSouth!.hasCalculatedSize)) {
         Size size = _childSouth!.bestSize;
 
         if (size.width > maxWidth) {
@@ -252,13 +252,13 @@ class BorderLayout implements ILayout, ICloneable {
         }
         height += size.height + iVerticalGap;
       }
-      if (_childEast != null && _childEast!.hasPreferredSize) {
+      if (_childEast != null && (_childEast!.hasPreferredSize || _childEast!.hasCalculatedSize)) {
         Size size = _childEast!.bestSize;
 
         maxHeight = size.height;
         width += size.width + iHorizontalGap;
       }
-      if (_childWest != null && _childWest!.hasPreferredSize) {
+      if (_childWest != null && (_childWest!.hasPreferredSize || _childWest!.hasCalculatedSize)) {
         Size size = _childWest!.bestSize;
 
         if (size.height > maxHeight) {
@@ -266,7 +266,7 @@ class BorderLayout implements ILayout, ICloneable {
         }
         width += size.width + iHorizontalGap;
       }
-      if (_childCenter != null && _childCenter!.hasPreferredSize) {
+      if (_childCenter != null && (_childCenter!.hasPreferredSize || _childCenter!.hasCalculatedSize)) {
         Size size = _childCenter!.bestSize;
         if (size.height > maxHeight) {
           maxHeight = size.height;

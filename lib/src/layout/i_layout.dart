@@ -40,7 +40,7 @@ abstract class ILayout implements ICloneable {
         case "GridLayout":
           return GridLayout();
         case "FlowLayout":
-          return FlowLayout(layoutData: pLayoutData!, layoutString: pLayout);
+          return FlowLayout(layoutData: pLayoutData ?? "", layoutString: pLayout);
         default:
           return null;
       }
