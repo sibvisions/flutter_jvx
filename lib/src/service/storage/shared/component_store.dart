@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import '../../../model/command/ui/update_components_command.dart';
 import '../../../model/command/ui/update_components_command.dart';
@@ -70,7 +71,6 @@ class ComponentStore implements IStorageService {
     // List of all affected models
     Set<String> affectedModels = {};
 
-    List<BaseCommand> commands = [];
 
     // Handle new Components
     if (newComponents != null) {
@@ -154,6 +154,11 @@ class ComponentStore implements IStorageService {
         affectedUiComponents.add(affectedModel);
       }
     }
+
+    log("----------DeletedUiComponents: ${deletedUiComponents} ");
+    log("----------affected: ${affectedUiComponents} ");
+    log("----------changed: ${changedUiComponents} ");
+    log("----------newUiComponents: ${newUiComponents} ");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
         affectedComponents: affectedUiComponents,

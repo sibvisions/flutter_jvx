@@ -546,7 +546,7 @@ class FormLayout extends ILayout {
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
       layoutData.layoutPosition = LayoutPosition(
-          width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
+          width: width, height: height, isComponentSize: true, left: left, top: top);
 
       sizeMap[componentId] = layoutData;
     });

@@ -43,6 +43,8 @@ class LayoutService implements ILayoutService {
     if (!pLayoutData.isChild && pLayoutData.hasPosition)
     {
       listToReturn.add(UpdateLayoutPositionCommand(layoutPosition: HashMap.from({pLayoutData.id: pLayoutData}), reason: "Layout has finished"));
+    } else if(_isLegalState(componentId: pLayoutData.id)) {
+      listToReturn.addAll(_performLayout(pLayoutData.id));
     }
 
     if (_isLegalState(componentId: pLayoutData.id)) {
@@ -59,12 +61,16 @@ class LayoutService implements ILayoutService {
 
     if(pLayoutData.hasNewCalculatedSize || pLayoutData.hasPreferredSize) {
       bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
-      log("legal state for ${pLayoutData.parentId} is $isLegalState");
+      // log("legal state for ${pLayoutData.parentId} is $isLegalState");
       if (isLegalState) {
         LayoutData parentData = _layoutDataSet[pLayoutData.parentId]!;
         parentData.lastCalculatedSize = parentData.calculatedSize;
-        parentData.calculatedSize = null;
-        return _performLayout(pLayoutData.parentId!);
+
+        // Special case: uppermost layout does not calculates it's size
+        if(!pLayoutData.isChild){
+          parentData.calculatedSize = null;
+        }
+        return _performLayout(parentData.id);
       }
     } else {
       log("${pLayoutData.id} has no new CalculatedSize --------------------------------");
@@ -82,6 +88,7 @@ class LayoutService implements ILayoutService {
     LayoutData? layoutData = _layoutDataSet[id];
     if (layoutData != null) {
       LayoutPosition? layoutPosition = layoutData.layoutPosition;
+      layoutData.calculatedSize = size;
       if (layoutPosition != null) {
         layoutPosition.height = size.height;
         layoutPosition.width = size.width;
@@ -92,7 +99,7 @@ class LayoutService implements ILayoutService {
     } else {
       LayoutPosition layoutPosition = LayoutPosition(
           width: size.width, height: size.height, top: 0, left: 0, isComponentSize: true, timeOfCall: DateTime.now());
-      LayoutData layoutData = LayoutData(id: id, layoutPosition: layoutPosition);
+      LayoutData layoutData = LayoutData(id: id, layoutPosition: layoutPosition, calculatedSize: size);
       _layoutDataSet[id] = layoutData;
     }
 
@@ -156,7 +163,7 @@ class LayoutService implements ILayoutService {
     LayoutData parent = _layoutDataSet[pParentId]!;
     if (parentSnapShot.hasNewCalculatedSize)
     {
-      log("Layout: ${parentSnapShot.id} has new calc size of ${parentSnapShot.lastCalculatedSize} | ${parentSnapShot.calculatedSize}");
+      // log("Layout: ${parentSnapShot.id} has new calc size of ${parentSnapShot.lastCalculatedSize} | ${parentSnapShot.calculatedSize}");
       parent.lastCalculatedSize = parent.calculatedSize;
       parent.calculatedSize = parentSnapShot.calculatedSize;
     }
@@ -169,10 +176,8 @@ class LayoutService implements ILayoutService {
       log ("Apply constraints to immediate children: ${parent.children} from $pParentId");
       return _applyLayoutConstraints(pParentId, sizes);
     } else {
-      registerPreferredSize(parent.id, parent);
+      return registerPreferredSize(parent.id, parent);
     }
-
-    return [];
   }
 
   List<BaseCommand> _applyLayoutConstraints(String pParentId, HashMap<String, LayoutData> sizes) {
@@ -183,6 +188,8 @@ class LayoutService implements ILayoutService {
     for (var childId in sizes.keys)
     {
       LayoutData child = _layoutDataSet[childId]!;
+      child.layoutPosition = sizes[childId]!.layoutPosition;
+      child.layoutPosition!.timeOfCall = DateTime.now();
 
       if (child.isParent)
       {

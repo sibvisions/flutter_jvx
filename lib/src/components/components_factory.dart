@@ -17,6 +17,8 @@ abstract class ComponentsFactory {
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case ("GroupPanel"):
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+      case ("ScrollPanel"):
+        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       default:
         return DummyWrapper(model: model as FlDummyModel, key: Key(model.id));
     }

@@ -95,6 +95,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       setState(() {
         log("${model.id} is receiving position of ${newLayoutData.layoutPosition}");
         layoutData.layoutPosition = newLayoutData.layoutPosition;
+        layoutData.calculatedSize = newLayoutData.calculatedSize;
       });
     }
   }
