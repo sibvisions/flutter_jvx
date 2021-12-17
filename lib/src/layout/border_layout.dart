@@ -139,8 +139,8 @@ class BorderLayout implements ILayout, ICloneable {
 
       _markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
-      _childSouth!.layoutPosition =
-          LayoutPosition(left: x, top: y + height, width: width, height: bestSize.height, isComponentSize: true);
+      _childSouth!.layoutPosition = LayoutPosition(
+          left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
 
       height -= bestSize.height + iVerticalGap;
 
