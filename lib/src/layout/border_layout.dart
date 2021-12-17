@@ -120,14 +120,13 @@ class BorderLayout implements ILayout, ICloneable {
 
     HashMap<String, LayoutData> returnMap = HashMap<String, LayoutData>();
 
-
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
 
       _markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
 
       _childNorth!.layoutPosition =
-          LayoutPosition(top: y, left: x, width: width, height: bestSize.height, isComponentSize: true);
+          LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
 
       y += bestSize.height + iVerticalGap;
       height -= bestSize.height + iVerticalGap;
@@ -140,8 +139,8 @@ class BorderLayout implements ILayout, ICloneable {
 
       _markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
-      _childSouth!.layoutPosition = LayoutPosition(
-          top: y, left: eiMargins.left, width: width, height: y + height - bestSize.height, isComponentSize: true);
+      _childSouth!.layoutPosition =
+          LayoutPosition(left: x, top: y + height, width: width, height: bestSize.height, isComponentSize: true);
 
       height -= bestSize.height + iVerticalGap;
 
@@ -154,7 +153,7 @@ class BorderLayout implements ILayout, ICloneable {
       _markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
 
       _childSouth!.layoutPosition =
-          LayoutPosition(top: y, left: x, width: bestSize.width, height: height, isComponentSize: true);
+          LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
       x += bestSize.width + iHorizontalGap;
       width -= bestSize.width + iHorizontalGap;
@@ -168,7 +167,7 @@ class BorderLayout implements ILayout, ICloneable {
       _markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
 
       _childEast!.layoutPosition = LayoutPosition(
-          top: y, left:  x + width - bestSize.width, width: bestSize.width, height: height, isComponentSize: true);
+          left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
       width -= bestSize.width + iHorizontalGap;
 
@@ -179,7 +178,7 @@ class BorderLayout implements ILayout, ICloneable {
       _markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
 
       _childCenter!.layoutPosition =
-          LayoutPosition(top: y, left: x, width: width, height: height, isComponentSize: true);
+          LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true);
 
       returnMap[_childCenter!.id] = _childCenter!;
     }
@@ -285,7 +284,8 @@ class BorderLayout implements ILayout, ICloneable {
   /// Checks if the new size constraint of either width or height would
   /// be needed for a redraw, if the component only has a calculated size.
   void _markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
-    if (!pChild.isParent && !pChild.hasPreferredSize &&
+    if (!pChild.isParent &&
+        !pChild.hasPreferredSize &&
         pChild.hasCalculatedSize &&
         (pChild.calculatedSize!.width != pNewCalcSize.width || pChild.calculatedSize!.height != pNewCalcSize.height)) {
       pChild.calculatedSize = pNewCalcSize;
