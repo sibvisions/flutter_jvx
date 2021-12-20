@@ -6,6 +6,8 @@ abstract class ApiObjectProperty {
   static const String constraints = "constraints";
   static const String parent = "parent";
   static const String indexOf = "indexOf";
+  static const String visible = "visible";
+  static const String remove = "~remove";
 
   //Parent Properties -- any Component which can have children have these
   static const String layout = "layout";
@@ -23,7 +25,6 @@ abstract class ApiObjectProperty {
   static const String text = "text";
   static const String horizontalAlignment = "horizontalAlignment";
   static const String verticalAlignment = "verticalAlignment";
-  static const String visible = "visible";
   static const String enabled = "enabled";
   
   //Can occur in both request & response

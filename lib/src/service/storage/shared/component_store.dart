@@ -23,6 +23,9 @@ class ComponentStore implements IStorageService {
   /// Map of all active components received from server, key set to id of [FlComponentModel].
   final HashMap<String, FlComponentModel> _componentMap = HashMap();
 
+  /// Map of all components with "[ApiObjectProperty.remove]" flag to true, these components are not yet to be deleted.
+  final HashMap<String, FlComponentModel> _removedComponents = HashMap();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,6 +98,15 @@ class ComponentStore implements IStorageService {
           // Update Component and add to changedModels
           FlComponentModel newModel = oldModel.updateComponent(oldModel, changedData);
           changedModels.add(newModel.id);
+
+
+          // Handle component removed
+          if(newModel.isRemoved){
+            log("got do delete !!!!!!!!!!!!!!");
+            _componentMap.remove(newModel.id);
+            _removedComponents[newModel.id] = newModel;
+          }
+
           _componentMap[newModel.id] = newModel;
 
 

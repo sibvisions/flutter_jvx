@@ -39,12 +39,12 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   @override
   receiveNewModel({required T newModel}) {
     layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
+    super.receiveNewModel(newModel: newModel);
+
+
     buildChildren();
     registerParent();
-    return super.receiveNewModel(newModel: newModel);
   }
-
-
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods

@@ -41,6 +41,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         preferredSize: model.preferredSize,
         minSize: model.minimumSize,
         maxSize: model.maximumSize,
+        isVisible: model.isVisible
     );
 
     uiService.registerAsLiveComponent(id: model.id, callback: ({data, newModel}) {
@@ -79,6 +80,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData.minSize = newModel.minimumSize;
       layoutData.maxSize = newModel.maximumSize;
       layoutData.parentId = newModel.parent;
+      layoutData.isVisible = newModel.isVisible;
       layoutData.calculatedSize = null;
 
       model = newModel;

@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:core';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/layout/alignments.dart';
@@ -159,8 +160,7 @@ class FormLayout extends ILayout {
     // AutoSize calculations
     for (double autoSizeCount = 1; autoSizeCount > 0 && autoSizeCount < 10000000;) {
       for (var component in pComponentData) {
-        //Todo LayoutData needs Visible - if(component.isVisible)
-        if (true) {
+        if (component.isVisible) {
           FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
           Size preferredSize = component.bestSize;
           FLCalculateAnchorsUtil.calculateAutoSize(
@@ -175,6 +175,8 @@ class FormLayout extends ILayout {
               preferredSize: preferredSize.width,
               autoSizeCount: autoSizeCount,
               pAnchors: pAnchors);
+        } else {
+          log("${component.id} not visible");
         }
       }
 
@@ -479,8 +481,7 @@ class FormLayout extends ILayout {
     bba.position -= pMargins.marginTop;
 
     for (var component in pComponentData) {
-      ///ToDo Component Visible here
-      if (true) {
+      if (component.isVisible) {
         FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
         Size preferredComponentSize = component.bestSize;
 

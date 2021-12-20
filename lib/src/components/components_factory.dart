@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_client/src/components/label/fl_label_wrapper.dart';
+import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 import '../model/component/dummy/fl_dummy_model.dart';
 
 import '../model/component/button/fl_button_model.dart';
@@ -15,6 +17,8 @@ abstract class ComponentsFactory {
         return FlButtonWrapper(model: model as FlButtonModel, key: Key(model.id));
       case ("Panel"):
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+      case ("Label"):
+        return FlLabelWrapper(model: model as FlLabelModel, key: Key(model.id));
       case ("GroupPanel"):
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case ("ScrollPanel"):

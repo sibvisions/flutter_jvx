@@ -53,11 +53,8 @@ class LayoutData implements ICloneable {
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
 
-  /// LayoutData for layouts
-  String? layoutData;
-
-  /// LayoutString for layouts
-  String? layoutString;
+  /// "True" if this component should be visible, true by default.
+  bool isVisible;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -66,7 +63,6 @@ class LayoutData implements ICloneable {
   /// Initializes a [LayoutData].
   LayoutData(
       {required this.id,
-      this.layoutData,
       this.parentId,
       this.layout,
       this.children,
@@ -78,12 +74,12 @@ class LayoutData implements ICloneable {
       this.layoutPosition,
       this.calculatedSize,
       this.lastCalculatedSize,
-      this.layoutString});
+      this.isVisible = true,
+    });
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
       : id = pLayoutData.id,
-        layoutData = pLayoutData.layoutData,
         parentId = pLayoutData.parentId,
         layout = pLayoutData.layout?.clone(),
         children = pLayoutData.children != null ? List.from(pLayoutData.children!) : null,
@@ -95,13 +91,15 @@ class LayoutData implements ICloneable {
         lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
         insets = pLayoutData.insets != null ? pLayoutData.insets!.copyWith() : null,
         layoutState = pLayoutData.layoutState,
-        layoutString = pLayoutData.layoutString,
-        layoutPosition = pLayoutData.layoutPosition != null ? pLayoutData.layoutPosition!.clone() : null;
+        layoutPosition = pLayoutData.layoutPosition != null ? pLayoutData.layoutPosition!.clone() : null,
+        isVisible = pLayoutData.isVisible ? true : false
+  ;
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})
       : layout = null,
-        parentId = null;
+        parentId = null,
+        isVisible = true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

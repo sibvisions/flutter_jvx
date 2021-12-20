@@ -121,30 +121,42 @@ class BorderLayout implements ILayout, ICloneable {
     HashMap<String, LayoutData> returnMap = HashMap<String, LayoutData>();
 
     if (_childNorth != null) {
-      Size bestSize = _childNorth!.bestSize;
+      if(_childNorth!.isVisible){
+        Size bestSize = _childNorth!.bestSize;
 
-      _markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
+        _markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
 
-      _childNorth!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
+        _childNorth!.layoutPosition =
+            LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
 
-      y += bestSize.height + iVerticalGap;
-      height -= bestSize.height + iVerticalGap;
+        y += bestSize.height + iVerticalGap;
+        height -= bestSize.height + iVerticalGap;
 
-      returnMap[_childNorth!.id] = _childNorth!;
+        returnMap[_childNorth!.id] = _childNorth!;
+      } else {
+        _childNorth!.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+        returnMap[_childNorth!.id] = _childNorth!;
+      }
+
     }
 
     if (_childSouth != null) {
-      Size bestSize = _childSouth!.bestSize;
+      if(_childSouth!.isVisible){
+        Size bestSize = _childSouth!.bestSize;
 
-      _markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
+        _markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
-      _childSouth!.layoutPosition = LayoutPosition(
-          left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
+        _childSouth!.layoutPosition = LayoutPosition(
+            left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
 
-      height -= bestSize.height + iVerticalGap;
+        height -= bestSize.height + iVerticalGap;
 
-      returnMap[_childSouth!.id] = _childSouth!;
+        returnMap[_childSouth!.id] = _childSouth!;
+      } else {
+        _childSouth!.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+        returnMap[_childSouth!.id] = _childSouth!;
+      }
+
     }
 
     if (_childWest != null) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/parse_util.dart';
 
-import '../../../util/size_util.dart';
 import '../api/api_object_property.dart';
 
 /// The base component model.
@@ -30,9 +30,13 @@ abstract class FlComponentModel {
   /// The maximum size of the component.
   final Size? maximumSize;
 
-  // Styling
+  /// If this component is currently removed, defaults to false
+  final bool isRemoved;
+
   /// If the component is visible.
-  final bool? isVisible;
+  final bool isVisible;
+
+
 
   /// Creates a [FlComponentModel] from a json.
   FlComponentModel.fromJson(Map<String, dynamic> json)
@@ -41,10 +45,12 @@ abstract class FlComponentModel {
         parent = json[ApiObjectProperty.parent],
         id = json[ApiObjectProperty.id],
         constraints = json[ApiObjectProperty.constraints],
-        preferredSize = SizeUtil.fromString(json[ApiObjectProperty.preferredSize]),
-        minimumSize = SizeUtil.fromString(json[ApiObjectProperty.minimumSize]),
-        maximumSize = SizeUtil.fromString(json[ApiObjectProperty.maximumSize]),
-        isVisible = json[ApiObjectProperty.visible];
+        preferredSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.preferredSize]),
+        minimumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.minimumSize]),
+        maximumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.maximumSize]),
+        isVisible = json[ApiObjectProperty.visible] ?? true,
+        isRemoved = ParseUtil.parseBoolFromString(pBoolString:  json[ApiObjectProperty.remove]) ?? false
+  ;
 
   /// Updates the component model with new properties. If no property is passed, uses the old value.
   FlComponentModel.updatedProperties(FlComponentModel oldModel, dynamic json)
@@ -53,10 +59,16 @@ abstract class FlComponentModel {
         className = oldModel.className,
         parent = json[ApiObjectProperty.parent] ?? oldModel.parent,
         constraints = json[ApiObjectProperty.constraints] ?? oldModel.constraints,
-        preferredSize = json[ApiObjectProperty.preferredSize] ?? oldModel.preferredSize,
-        minimumSize = json[ApiObjectProperty.minimumSize] ?? oldModel.minimumSize,
-        maximumSize = json[ApiObjectProperty.maximumSize] ?? oldModel.maximumSize,
-        isVisible = json[ApiObjectProperty.visible] ?? oldModel.isVisible;
+        preferredSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.preferredSize]) ?? oldModel.preferredSize,
+        minimumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.minimumSize]) ?? oldModel.minimumSize,
+        maximumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.maximumSize]) ?? oldModel.maximumSize,
+        isVisible = json[ApiObjectProperty.visible] ?? oldModel.isVisible,
+        isRemoved = ParseUtil.parseBoolFromString(pBoolString:  json[ApiObjectProperty.remove]) ?? oldModel.isRemoved;
 
   FlComponentModel updateComponent(FlComponentModel oldModel, dynamic json);
+
+  @override
+  String toString() {
+    return "Instance of $runtimeType with id: $id ";
+  }
 }

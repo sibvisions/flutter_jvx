@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_client/src/mixin/storage_service_mixin.dart';
 import 'package:flutter_client/src/model/command/ui/route_command.dart';
+import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 import 'package:flutter_client/src/routing/app_routing_type.dart';
 
 import '../../../../model/api/api_object_property.dart';
@@ -103,6 +104,8 @@ class ScreenGenericProcessor implements IProcessor {
         return FlPanelModel.fromJson(json);
       case (FlComponentClassname.button):
         return FlButtonModel.fromJson(json);
+      case (FlComponentClassname.label):
+        return FlLabelModel.fromJson(json);
       default:
         return FlDummyModel.fromJson(json);
     }

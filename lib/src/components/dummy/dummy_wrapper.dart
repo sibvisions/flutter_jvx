@@ -19,6 +19,7 @@ class _DummyWrapperState extends BaseCompWrapperState {
   @override
   Widget build(BuildContext context) {
     DummyWidget dummyWidget = DummyWidget(
+      id: model.id,
       height: getHeightForComponent(),
       width: getWidthForComponent(),
     );

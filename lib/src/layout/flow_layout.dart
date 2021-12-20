@@ -341,22 +341,34 @@ class FlowLayout extends ILayout {
     double left = 0;
     double height = 0;
     for (var element in pChildren) {
-      left += element.bestSize.width + 5;
-      if(height < element.bestSize.height){
-        height = element.bestSize.height;
+      if(element.isVisible){
+        left += element.bestSize.width + 5;
+        if(height < element.bestSize.height){
+          height = element.bestSize.height;
+        }
+        var pos =LayoutPosition(
+            width: element.bestSize.width,
+            height: height,
+            top: 0,
+            left: left,
+            isComponentSize: true
+        );
+        element.layoutPosition = pos;
+        posit[element.id] = element;
+      } else {
+        var pos =LayoutPosition(
+            width: 0,
+            height: 0,
+            top: 0,
+            left: 0,
+            isComponentSize: true
+        );
+        element.layoutPosition = pos;
+        posit[element.id] = element;
       }
-      var pos =LayoutPosition(
-          width: element.bestSize.width,
-          height: height,
-          top: 0,
-          left: left,
-          isComponentSize: true
-      );
-      element.layoutPosition = pos;
-      posit[element.id] = element;
+
     }
     pParent.calculatedSize = Size(left, height);
-    posit[pParent.id] = pParent;
 
 
     return posit;

@@ -8,12 +8,16 @@ class FlPanelWidget extends StatelessWidget {
    final double? height;
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Stack(
-        children: children
-      ),
+    // return SizedBox(
+    //   width: width,
+    //   height: height,
+    //   child: Stack(
+    //     children: children
+    //   ),
+    // );
+    //
+    return Stack(
+      children: children,
     );
   }
 }

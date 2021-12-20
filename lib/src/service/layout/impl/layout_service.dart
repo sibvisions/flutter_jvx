@@ -48,8 +48,6 @@ class LayoutService implements ILayoutService {
     }
 
     if (_isLegalState(componentId: pLayoutData.id)) {
-      listToReturn.addAll(_performLayout(pLayoutData.id));
-    }
 
     return listToReturn;
   }
