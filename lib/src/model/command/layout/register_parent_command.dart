@@ -1,5 +1,4 @@
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-
+import '../../layout/layout_data.dart';
 import 'layout_command.dart';
 
 class RegisterParentCommand extends LayoutCommand {
@@ -24,6 +23,5 @@ class RegisterParentCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString =>
-      "RegisterParentCommand: | ${layoutData.toString()} | Reason $reason";
+  String get logString => "RegisterParentCommand: | ${layoutData.toString()} | Reason $reason";
 }

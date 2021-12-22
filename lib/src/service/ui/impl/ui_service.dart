@@ -1,14 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-
-import '../../../model/command/base_command.dart';
-import '../../../model/layout/layout_position.dart';
 import '../../../../util/type_def/callback_def.dart';
-
 import '../../../mixin/command_service_mixin.dart';
+import '../../../model/command/base_command.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
 import '../../../model/routing/route_to_menu.dart';
 import '../../../model/routing/route_to_work_screen.dart';
@@ -96,7 +93,7 @@ class UiService with CommandServiceMixin implements IUiService {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
       int indexOfOld = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
-      if(indexOfOld != -1) {
+      if (indexOfOld != -1) {
         _currentScreen.removeAt(indexOfOld);
         _currentScreen.add(updatedModel);
       }

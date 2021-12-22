@@ -1,6 +1,5 @@
 import 'dart:isolate';
 
-import 'messages/endpoint/api_isolate_press_button_message.dart';
 import 'package:http/http.dart';
 
 import '../../shared/i_controller.dart';
@@ -12,6 +11,7 @@ import 'messages/api_isolate_repository_message.dart';
 import 'messages/endpoint/api_isolate_device_status_message.dart';
 import 'messages/endpoint/api_isolate_login_message.dart';
 import 'messages/endpoint/api_isolate_open_screen_message.dart';
+import 'messages/endpoint/api_isolate_press_button_message.dart';
 import 'messages/endpoint/api_isolate_startup_message.dart';
 
 void apiCallback(SendPort callerSendPort) {

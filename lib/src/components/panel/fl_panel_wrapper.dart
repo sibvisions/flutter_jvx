@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_widget.dart';
-import 'package:flutter_client/src/components/base_wrapper/base_cont_wrapper_state.dart';
+
 import '../../model/component/panel/fl_panel_model.dart';
+import '../base_wrapper/base_comp_wrapper_widget.dart';
+import '../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_panel_widget.dart';
 
 class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
@@ -12,8 +13,6 @@ class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
 }
 
 class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
-
-
   @override
   Widget build(BuildContext context) {
     FlPanelWidget panelWidget = FlPanelWidget(
@@ -22,8 +21,6 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       height: getHeightForComponent(),
     );
 
-    return(
-      getPositioned(child: panelWidget)
-    );
+    return (getPositioned(child: panelWidget));
   }
 }

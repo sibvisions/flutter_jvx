@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import '../processor/close_screen_processor.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/api_response_names.dart';
@@ -10,6 +9,7 @@ import '../i_controller.dart';
 import '../i_processor.dart';
 import '../processor/application_meta_data_processor.dart';
 import '../processor/application_parameters_processor.dart';
+import '../processor/close_screen_processor.dart';
 import '../processor/menu_processor.dart';
 import '../processor/screen_generic_processor.dart';
 

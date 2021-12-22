@@ -1,9 +1,6 @@
-import 'dart:developer';
-
-import 'package:flutter_client/src/mixin/storage_service_mixin.dart';
-import 'package:flutter_client/src/model/command/ui/route_command.dart';
-import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
-import 'package:flutter_client/src/routing/app_routing_type.dart';
+import '../../../../model/command/ui/route_command.dart';
+import '../../../../model/component/label/fl_label_model.dart';
+import '../../../../routing/app_routing_type.dart';
 
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
@@ -21,7 +18,6 @@ import '../i_processor.dart';
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
 class ScreenGenericProcessor implements IProcessor {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,21 +39,20 @@ class ScreenGenericProcessor implements IProcessor {
           reason: "Api received screen.generic response",
           componentsToSave: componentsToSave,
           updatedComponent: updatedComponent,
-          screenName: screenGenericResponse.componentId
-      );
+          screenName: screenGenericResponse.componentId);
       commands.add(saveComponentsCommand);
     }
 
     // Handle Screen Opening
-    if(!screenGenericResponse.update){
-      dynamic json = screenGenericResponse.changedComponents.firstWhere((element) => element[ApiObjectProperty.screenClassName] != null);
+    if (!screenGenericResponse.update) {
+      dynamic json = screenGenericResponse.changedComponents
+          .firstWhere((element) => element[ApiObjectProperty.screenClassName] != null);
       String screenClassName = json[ApiObjectProperty.screenClassName];
 
       RouteCommand routeCommand = RouteCommand(
           routeType: AppRoutingType.workScreen,
           reason: "Screen generic update was set to false.",
-          screenName: screenClassName
-      );
+          screenName: screenClassName);
       commands.add(routeCommand);
     }
     return commands;

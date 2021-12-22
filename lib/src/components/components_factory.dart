@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/components/label/fl_label_wrapper.dart';
-import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
-import '../model/component/dummy/fl_dummy_model.dart';
 
 import '../model/component/button/fl_button_model.dart';
+import '../model/component/dummy/fl_dummy_model.dart';
 import '../model/component/fl_component_model.dart';
+import '../model/component/label/fl_label_model.dart';
 import '../model/component/panel/fl_panel_model.dart';
 import 'button/fl_button_wrapper.dart';
 import 'dummy/dummy_wrapper.dart';
+import 'label/fl_label_wrapper.dart';
 import 'panel/fl_panel_wrapper.dart';
 
 abstract class ComponentsFactory {

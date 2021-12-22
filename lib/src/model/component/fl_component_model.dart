@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/parse_util.dart';
+import '../../../util/parse_util.dart';
 
 import '../api/api_object_property.dart';
 

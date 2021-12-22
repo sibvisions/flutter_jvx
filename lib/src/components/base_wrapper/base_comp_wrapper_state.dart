@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
+import 'base_comp_wrapper_widget.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/layout/preferred_size_command.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/layout/layout_data.dart';
 
 /// Base state class for all component_wrappers, houses following functionality:
 /// Model and layout init
@@ -99,7 +99,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     if (layoutData.layoutPosition == null ||
         layoutData.layoutPosition!.timeOfCall!.isBefore(newLayoutData.layoutPosition!.timeOfCall!)) {
       setState(() {
-        log("${model.id} is receiving position of ${newLayoutData.layoutPosition}");
+        log("receiveNewLayoutData: ${model.id}, ${newLayoutData.calculatedSize} || ${newLayoutData.layoutPosition}");
         layoutData.layoutPosition = newLayoutData.layoutPosition;
         layoutData.calculatedSize = newLayoutData.calculatedSize;
       });

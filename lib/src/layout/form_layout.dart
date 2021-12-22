@@ -3,7 +3,7 @@ import 'dart:core';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/layout/alignments.dart';
+import '../model/layout/alignments.dart';
 
 import '../../util/layout/form_layout/fl_calculate_anchors_util.dart';
 import '../../util/layout/form_layout/fl_calculate_dependent_util.dart';
@@ -115,11 +115,31 @@ class FormLayout extends ILayout {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Size? _getSize(LayoutData pParent) {
-    if (!pParent.hasPreferredSize && pParent.hasPosition) {
-      double width = pParent.layoutPosition!.width;
-      double height = pParent.layoutPosition!.height;
-      return Size(width, height);
+    double dimWidth;
+    double dimHeight;
+
+    if (pParent.hasPreferredSize) {
+      dimWidth = pParent.preferredSize!.width;
+      dimHeight = pParent.preferredSize!.height;
+    } else if (pParent.hasCalculatedSize &&
+        pParent.hasPosition &&
+        pParent.calculatedSize!.width != double.infinity &&
+        pParent.calculatedSize!.height != double.infinity) {
+      dimWidth = pParent.layoutPosition!.width;
+      dimHeight = pParent.layoutPosition!.height;
+    } else if (pParent.hasCalculatedSize) {
+      dimWidth = pParent.calculatedSize!.width != double.infinity ? pParent.calculatedSize!.width : 0.0;
+      dimHeight = pParent.calculatedSize!.height != double.infinity ? pParent.calculatedSize!.height : 0.0;
+    } else {
+      dimWidth = 0.0;
+      dimHeight = 0.0;
     }
+
+    if (dimHeight == 0.0 && dimWidth == 0.0) {
+      return null;
+    }
+
+    return Size(dimWidth, dimHeight);
   }
 
   void _calculateAnchors(
@@ -175,16 +195,16 @@ class FormLayout extends ILayout {
               pAutoSizeCount: autoSizeCount,
               pAnchors: pAnchors);
         } else {
-          if(constraint.topAnchor.autoSize){
+          if (constraint.topAnchor.autoSize) {
             constraint.topAnchor.firstCalculation = false;
           }
-          if(constraint.leftAnchor.autoSize){
+          if (constraint.leftAnchor.autoSize) {
             constraint.leftAnchor.firstCalculation = false;
           }
-          if(constraint.bottomAnchor.autoSize){
+          if (constraint.bottomAnchor.autoSize) {
             constraint.bottomAnchor.firstCalculation = false;
           }
-          if(constraint.rightAnchor.autoSize){
+          if (constraint.rightAnchor.autoSize) {
             constraint.rightAnchor.firstCalculation = false;
           }
           log("${component.id} not visible");
@@ -196,22 +216,26 @@ class FormLayout extends ILayout {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
 
         double count;
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(leftTopAnchor: constraint.leftAnchor, rightBottomAnchor: constraint.rightAnchor, pAnchors: pAnchors);
+        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+            leftTopAnchor: constraint.leftAnchor, rightBottomAnchor: constraint.rightAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           log("1st");
           autoSizeCount = count;
         }
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(leftTopAnchor: constraint.rightAnchor, rightBottomAnchor: constraint.leftAnchor, pAnchors: pAnchors);
+        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+            leftTopAnchor: constraint.rightAnchor, rightBottomAnchor: constraint.leftAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           log("2nd");
           autoSizeCount = count;
         }
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(leftTopAnchor: constraint.topAnchor, rightBottomAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
+        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+            leftTopAnchor: constraint.topAnchor, rightBottomAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           log("3rd");
           autoSizeCount = count;
         }
-        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(leftTopAnchor: constraint.bottomAnchor, rightBottomAnchor: constraint.topAnchor, pAnchors: pAnchors);
+        count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
+            leftTopAnchor: constraint.bottomAnchor, rightBottomAnchor: constraint.topAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
           log("4th");
           autoSizeCount = count;
@@ -556,12 +580,11 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
-      if(layoutData.isVisible){
-        layoutData.layoutPosition = LayoutPosition(
-            width: width, height: height, isComponentSize: true, left: left, top: top);
+      if (layoutData.isVisible) {
+        layoutData.layoutPosition =
+            LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
       } else {
-        layoutData.layoutPosition = LayoutPosition(
-            width: 0, height: 0, isComponentSize: true, left: 0, top: 0);
+        layoutData.layoutPosition = LayoutPosition(width: 0, height: 0, isComponentSize: true, left: 0, top: 0);
       }
       sizeMap[componentId] = layoutData;
     });

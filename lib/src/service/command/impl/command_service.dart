@@ -1,9 +1,5 @@
-
-import 'dart:developer';
-
-import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
-import 'package:flutter_client/src/model/routing/route_to_menu.dart';
-import 'package:flutter_client/src/routing/app_routing_type.dart';
+import '../../../model/command/storage/delete_screen_command.dart';
+import '../../../routing/app_routing_type.dart';
 
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
@@ -23,15 +19,12 @@ import '../shared/processor/layout/layout_processor.dart';
 import '../shared/processor/storage/storage_processor.dart';
 import '../shared/processor/ui/ui_processor.dart';
 
-
 /// [CommandService] is used to processCommands(facilitating communication between Services.
 /// Will take in Commands and transfer them to a [ICommandProcessor] which will process its
 /// contents, resulting in potentially more commands.
 ///
 // Author: Michael Schober
-class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMixin implements ICommandService{
-
-
+class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMixin implements ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,22 +53,21 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
     Future<List<BaseCommand>>? commands;
 
     // Switch-Case doesn't work with types
-    if(command is ApiCommand){
+    if (command is ApiCommand) {
       commands = _apiProcessor.processCommand(command);
-    } else if(command is ConfigCommand) {
+    } else if (command is ConfigCommand) {
       commands = _configProcessor.processCommand(command);
-    } else if(command is StorageCommand) {
+    } else if (command is StorageCommand) {
       commands = _storageProcessor.processCommand(command);
-    } else if(command is UiCommand) {
+    } else if (command is UiCommand) {
       commands = _uiProcessor.processCommand(command);
-    } else if(command is LayoutCommand) {
+    } else if (command is LayoutCommand) {
       commands = _layoutProcessor.processCommand(command);
     }
 
-
     // Executes Commands resulting from incoming command.
     // Call routing commands dead last, all other actions must take priority.
-    if(commands != null) {
+    if (commands != null) {
       commands.then((value) {
         var executeFirst = value.where((element) => element is! RouteCommand);
         for (var value1 in executeFirst) {
@@ -88,10 +80,10 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         // Find WorkScreen Commands that direct to the same workScreen
         for (RouteCommand routeCommand in routeCommands) {
           String? screenName = routeCommand.screenName;
-          if(screenName != null){
+          if (screenName != null) {
             var commands = sameRouteCommands[screenName];
 
-            if(commands != null){
+            if (commands != null) {
               commands.add(routeCommand);
             } else {
               sameRouteCommands[screenName] = [routeCommand];
@@ -107,9 +99,10 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
         });
 
         // Route to menu if current screen is to be closed (deleted) and no new RouteCommand was provided.
-        if(value.any((element) => element is DeleteScreenCommand)){
-          if(!value.any((element) => element is RouteCommand)){
-            RouteCommand routeCommand = RouteCommand(routeType: AppRoutingType.menu, reason: "Last screen was closed and no other routing was passeed");
+        if (value.any((element) => element is DeleteScreenCommand)) {
+          if (!value.any((element) => element is RouteCommand)) {
+            RouteCommand routeCommand = RouteCommand(
+                routeType: AppRoutingType.menu, reason: "Last screen was closed and no other routing was passeed");
             sendCommand(routeCommand);
           }
         }

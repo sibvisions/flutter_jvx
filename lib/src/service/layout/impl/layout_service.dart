@@ -25,12 +25,11 @@ class LayoutService implements ILayoutService {
 
   @override
   List<BaseCommand> registerAsParent({required LayoutData pLayoutData}) {
-    log("Registering layout: ${pLayoutData.id} with ${pLayoutData.preferredSize}, ${pLayoutData.lastCalculatedSize}, ${pLayoutData.calculatedSize}, ${pLayoutData.layoutPosition}");
+    log("registerAsParent: ${pLayoutData.id} with ${pLayoutData.preferredSize}, ${pLayoutData.lastCalculatedSize}, ${pLayoutData.calculatedSize}, ${pLayoutData.layoutPosition}");
 
     LayoutData? ldRegisteredParent = _layoutDataSet[pLayoutData.id];
 
     if (ldRegisteredParent != null) {
-      log("Already exists with ${ldRegisteredParent.layoutState} ${ldRegisteredParent.preferredSize}, ${ldRegisteredParent.lastCalculatedSize}, ${ldRegisteredParent.calculatedSize}, ${ldRegisteredParent.layoutPosition}");
       pLayoutData.calculatedSize ??= ldRegisteredParent.calculatedSize;
       pLayoutData.lastCalculatedSize = ldRegisteredParent.calculatedSize;
       pLayoutData.layoutPosition = ldRegisteredParent.layoutPosition;
@@ -50,7 +49,7 @@ class LayoutService implements ILayoutService {
 
   @override
   List<BaseCommand> registerPreferredSize(String pId, LayoutData pLayoutData) {
-    log("Registering size: $pId with ${pLayoutData.preferredSize} || ${pLayoutData.lastCalculatedSize} || ${pLayoutData.calculatedSize}");
+    log("registerPreferredSize: $pId with ${pLayoutData.preferredSize}, ${pLayoutData.lastCalculatedSize}, ${pLayoutData.calculatedSize}");
     _layoutDataSet[pId] = pLayoutData;
 
     if (pLayoutData.hasNewCalculatedSize || pLayoutData.hasPreferredSize) {
@@ -67,7 +66,7 @@ class LayoutService implements ILayoutService {
         return _performLayout(parentData.id);
       }
     } else {
-      log("${pLayoutData.id} has no new CalculatedSize --------------------------------");
+      //log("${pLayoutData.id} has no new CalculatedSize --------------------------------");
     }
 
     pLayoutData.lastCalculatedSize = pLayoutData.calculatedSize;
@@ -77,7 +76,7 @@ class LayoutService implements ILayoutService {
 
   @override
   List<BaseCommand> setComponentSize({required String id, required Size size}) {
-    log("Setting component size of $id to $size");
+    log("setComponentSize: $id to $size");
 
     LayoutData? layoutData = _layoutDataSet[id];
     if (layoutData != null) {
@@ -102,15 +101,21 @@ class LayoutService implements ILayoutService {
 
   @override
   void markLayoutAsDirty({required String id}) {
+    log("markLayoutAsDirty: $id");
     LayoutData? layoutData = _layoutDataSet[id];
 
     if (layoutData != null) {
       layoutData.layoutState = LayoutState.DIRTY;
+      if (layoutData.isParent) {
+        layoutData.layoutPosition = null;
+        layoutData.calculatedSize = null;
+      }
     }
   }
 
   @override
   bool removeAsParent(String pParentId) {
+    log("removeAsParent: $pParentId");
     return _layoutDataSet.remove(pParentId) != null;
   }
 
@@ -145,7 +150,7 @@ class LayoutService implements ILayoutService {
     // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
     LayoutData parentSnapShot = _layoutDataSet[pParentId]!.clone();
 
-    log("Calculating layout: ${parentSnapShot.id} with ${parentSnapShot.layout!.toString()}");
+    log("_performLayout: ${parentSnapShot.id} with ${parentSnapShot.layout!.toString()}");
 
     List<LayoutData> children = [];
     for (int index = 0; index < parentSnapShot.children!.length; index++) {
@@ -168,7 +173,7 @@ class LayoutService implements ILayoutService {
     // We have a position but our calc size is different.
     if (parent.hasPosition &&
         (!startOfCall.isBefore(parent.layoutPosition!.timeOfCall!) || !parentSnapShot.hasNewCalculatedSize)) {
-      log("Apply constraints to immediate children: ${parent.children} from $pParentId");
+      log("_applyLayoutConstraints: ${parent.children} from $pParentId");
       return _applyLayoutConstraints(pParentId, sizes);
     } else {
       return registerPreferredSize(parent.id, parent);
@@ -179,11 +184,12 @@ class LayoutService implements ILayoutService {
     List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutPosition: sizes, reason: "Layout has finished")];
 
     for (var childId in sizes.keys) {
+      LayoutData sizesChild = sizes[childId]!;
       LayoutData child = _layoutDataSet[childId]!;
-      child.layoutPosition = sizes[childId]!.layoutPosition;
+      child.layoutPosition = sizesChild.layoutPosition;
       child.layoutPosition!.timeOfCall = DateTime.now();
 
-      if (child.isParent) {
+      if (child.isParent && _isLegalState(componentId: childId)) {
         commands.addAll(_performLayout(childId));
       }
     }

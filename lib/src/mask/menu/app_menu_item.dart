@@ -1,8 +1,8 @@
-import '../../model/command/api/open_screen_command.dart';
+import 'package:flutter/material.dart';
 
+import '../../model/command/api/open_screen_command.dart';
 import '../../model/menu/menu_item_model.dart';
 import '../../service/ui/i_ui_service.dart';
-import 'package:flutter/material.dart';
 
 class AppMenuItem extends StatelessWidget {
   const AppMenuItem({

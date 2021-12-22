@@ -1,16 +1,14 @@
 import 'dart:collection';
 import 'dart:developer';
 
-import '../../../model/command/ui/update_components_command.dart';
-import '../../../model/command/ui/update_components_command.dart';
-
+import '../../../../util/extensions/list_extensions.dart';
 import '../../../model/api/api_object_property.dart';
 import '../../../model/command/base_command.dart';
+import '../../../model/command/ui/update_components_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../i_storage_service.dart';
-import '../../../../util/extensions/list_extensions.dart';
 
 class ComponentStore implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +72,6 @@ class ComponentStore implements IStorageService {
     // List of all affected models
     Set<String> affectedModels = {};
 
-
     // Handle new Components
     if (newComponents != null) {
       for (FlComponentModel componentModel in newComponents) {
@@ -94,14 +91,13 @@ class ComponentStore implements IStorageService {
       for (dynamic changedData in componentsToUpdate) {
         // Get old Model
         FlComponentModel? oldModel = _componentMap[changedData[ApiObjectProperty.id]];
-        if(oldModel != null){
+        if (oldModel != null) {
           // Update Component and add to changedModels
           FlComponentModel newModel = oldModel.updateComponent(oldModel, changedData);
           changedModels.add(newModel.id);
 
-
           // Handle component removed
-          if(newModel.isRemoved){
+          if (newModel.isRemoved) {
             log("got do delete !!!!!!!!!!!!!!");
             _componentMap.remove(newModel.id);
             _removedComponents[newModel.id] = newModel;
@@ -109,14 +105,12 @@ class ComponentStore implements IStorageService {
 
           _componentMap[newModel.id] = newModel;
 
-
           // Handle parent change, notify old parent of change
           if (newModel.parent != oldModel.parent) {
             var oldParent = _componentMap[oldModel.parent]!;
             affectedModels.add(oldParent.id);
           }
         }
-
       }
     }
 
@@ -167,10 +161,10 @@ class ComponentStore implements IStorageService {
       }
     }
 
-    log("----------DeletedUiComponents: ${deletedUiComponents} ");
-    log("----------affected: ${affectedUiComponents} ");
-    log("----------changed: ${changedUiComponents} ");
-    log("----------newUiComponents: ${newUiComponents} ");
+    log("----------DeletedUiComponents: $deletedUiComponents ");
+    log("----------affected: $affectedUiComponents ");
+    log("----------changed: $changedUiComponents ");
+    log("----------newUiComponents: $newUiComponents ");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
         affectedComponents: affectedUiComponents,

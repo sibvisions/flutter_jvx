@@ -1,18 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_state.dart';
-import 'package:flutter_client/src/components/components_factory.dart';
-import 'package:flutter_client/src/layout/i_layout.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
+import 'base_comp_wrapper_state.dart';
+import '../components_factory.dart';
+import '../../layout/i_layout.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/layout/register_parent_command.dart';
+import '../../model/component/fl_component_model.dart';
+import '../../model/component/panel/fl_panel_model.dart';
+import '../../service/ui/i_ui_service.dart';
 
-abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrapperState<T> with UiServiceMixin{
-
-
+abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrapperState<T> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +37,6 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
     super.receiveNewModel(newModel: newModel);
 
-
     buildChildren();
     registerParent();
   }
@@ -52,14 +47,11 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   /// Will Send [RegisterParentCommand] to [IUiService] sending its current
   /// layoutData.
-  void registerParent(){
-    RegisterParentCommand registerParentCommand = RegisterParentCommand(
-        layoutData: layoutData.clone(),
-        reason: "parent register"
-    );
-     uiService.sendCommand(registerParentCommand);
+  void registerParent() {
+    RegisterParentCommand registerParentCommand =
+        RegisterParentCommand(layoutData: layoutData.clone(), reason: "parent register");
+    uiService.sendCommand(registerParentCommand);
   }
-
 
   /// Will contact [IUiService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
@@ -70,8 +62,8 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     bool changeDetected = false;
 
     // Only New Children will be used
-    for(FlComponentModel model in models){
-      if(!children.containsKey(model.id)){
+    for (FlComponentModel model in models) {
+      if (!children.containsKey(model.id)) {
         newChildren[model.id] = ComponentsFactory.buildWidget(model);
         changeDetected = true;
       } else {
@@ -81,13 +73,13 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     // Check if there are children in the old list not present in the new List
     children.forEach((key, value) {
-      if(!models.any((element) => element.id == key)){
+      if (!models.any((element) => element.id == key)) {
         changeDetected = true;
       }
     });
 
     // Only re-render if children did change
-    if(changeDetected){
+    if (changeDetected) {
       setState(() {
         children = newChildren;
       });

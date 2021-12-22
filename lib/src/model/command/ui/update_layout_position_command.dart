@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/layout/layout_data.dart';
+import '../../layout/layout_data.dart';
 
 import 'ui_command.dart';
 

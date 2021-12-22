@@ -1,5 +1,5 @@
-import 'ui_command.dart';
 import '../../../routing/app_routing_type.dart';
+import 'ui_command.dart';
 
 ///
 /// Issue this command to route to a new page.

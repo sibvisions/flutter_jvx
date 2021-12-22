@@ -1,13 +1,11 @@
 import 'dart:collection';
-import 'dart:html';
 import 'dart:ui';
 import 'dart:math';
 
-import 'package:flutter_client/src/model/layout/alignments.dart';
-import 'package:flutter_client/src/model/layout/form_layout/form_layout_anchor.dart';
-import 'package:flutter_client/src/model/layout/gaps.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/src/model/layout/margins.dart';
+import '../model/layout/alignments.dart';
+import '../model/layout/gaps.dart';
+import '../model/layout/layout_position.dart';
+import '../model/layout/margins.dart';
 import '../../util/extensions/string_extensions.dart';
 
 import '../model/layout/layout_data.dart';
@@ -84,7 +82,7 @@ class FlowLayout extends ILayout {
     if (pParent.hasPreferredSize) {
       dimWidth = pParent.preferredSize!.width;
       dimHeight = pParent.preferredSize!.height;
-    } else if (pParent.hasPosition) {
+    } else if (pParent.hasCalculatedSize && pParent.hasPosition) {
       dimWidth = pParent.layoutPosition!.width;
       dimHeight = pParent.layoutPosition!.height;
     } else if (pParent.hasCalculatedSize) {
@@ -136,7 +134,7 @@ class FlowLayout extends ILayout {
     double fW = max(1, iWidth);
     /** The FlowLayout preferred width */
     double fPW = max(1, prefSize.width);
-    /** The FlowLayout preferred height*/
+    /** The FlowLayout height*/
     double fH = max(1, iHeight);
     /** The FlowLayout preferred height */
     double fPH = max(1, prefSize.height);
@@ -208,6 +206,10 @@ class FlowLayout extends ILayout {
         }
         positionMap[child.id] = child;
       }
+    }
+
+    if (!pParent.hasCalculatedSize) {
+      pParent.calculatedSize = Size(iWidth, iHeight);
     }
 
     return positionMap;
