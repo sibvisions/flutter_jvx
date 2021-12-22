@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import '../../../src/model/layout/form_layout/form_layout_anchor.dart';
 
@@ -8,6 +9,7 @@ class FLCalculateAnchorsUtil {
       {required FormLayoutAnchor pStartAnchor,
       required FormLayoutAnchor pEndAnchor,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
+
     List<FormLayoutAnchor> autoSizeAnchors = [];
     FormLayoutAnchor? startAnchor = pStartAnchor;
     while (startAnchor != null && startAnchor != pEndAnchor) {
@@ -38,19 +40,20 @@ class FLCalculateAnchorsUtil {
 
   /// Calculates the preferred size of component auto size anchors.
   static void calculateAutoSize(
-      {required FormLayoutAnchor leftTopAnchor,
-      required FormLayoutAnchor rightBottomAnchor,
-      required double preferredSize,
-      required double autoSizeCount,
+      {required FormLayoutAnchor pLeftTopAnchor,
+      required FormLayoutAnchor pRightBottomAnchor,
+      required double pPreferredSize,
+      required double pAutoSizeCount,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
-    List<FormLayoutAnchor> autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
-    if (autoSizeAnchors.length == autoSizeCount) {
-      double fixedSize = rightBottomAnchor.getAbsolutePosition() - leftTopAnchor.getAbsolutePosition();
+
+    List<FormLayoutAnchor> autoSizeAnchors = getAutoSizeAnchorsBetween(pStartAnchor: pLeftTopAnchor, pEndAnchor: pRightBottomAnchor, pAnchors: pAnchors);
+
+    if (autoSizeAnchors.length == pAutoSizeCount) {
+      double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
       for (FormLayoutAnchor anchor in autoSizeAnchors) {
         fixedSize += anchor.position;
       }
-      double diffSize = (preferredSize - fixedSize + autoSizeCount - 1) / autoSizeCount;
+      double diffSize = (pPreferredSize - fixedSize + pAutoSizeCount - 1) / pAutoSizeCount;
       for (FormLayoutAnchor anchor in autoSizeAnchors) {
         if (diffSize > -anchor.position) {
           anchor.position = -diffSize;
@@ -59,14 +62,16 @@ class FLCalculateAnchorsUtil {
       }
     }
 
-    autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: rightBottomAnchor, pEndAnchor: leftTopAnchor, pAnchors: pAnchors);
-    if (autoSizeAnchors.length == autoSizeCount) {
-      double fixedSize = rightBottomAnchor.getAbsolutePosition() - leftTopAnchor.getAbsolutePosition();
+    autoSizeAnchors = getAutoSizeAnchorsBetween(pStartAnchor: pRightBottomAnchor, pEndAnchor: pLeftTopAnchor, pAnchors: pAnchors);
+    if(pRightBottomAnchor.name == "b9"){
+      log(autoSizeAnchors.toString());
+    }
+    if (autoSizeAnchors.length == pAutoSizeCount) {
+      double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
       for (FormLayoutAnchor anchor in autoSizeAnchors) {
         fixedSize -= anchor.position;
       }
-      double diffSize = (preferredSize - fixedSize + autoSizeCount - 1) / autoSizeCount;
+      double diffSize = (pPreferredSize - fixedSize + pAutoSizeCount - 1) / pAutoSizeCount;
       for (FormLayoutAnchor anchor in autoSizeAnchors) {
         if (diffSize > anchor.position) {
           anchor.position = diffSize;
@@ -81,8 +86,8 @@ class FLCalculateAnchorsUtil {
       {required FormLayoutAnchor leftTopAnchor,
       required FormLayoutAnchor rightBottomAnchor,
       required HashMap<String, FormLayoutAnchor> pAnchors}) {
-    List<FormLayoutAnchor> autoSizeAnchors =
-        getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
+
+    List<FormLayoutAnchor> autoSizeAnchors = getAutoSizeAnchorsBetween(pStartAnchor: leftTopAnchor, pEndAnchor: rightBottomAnchor, pAnchors: pAnchors);
     double counter = 0;
     for (FormLayoutAnchor anchor in autoSizeAnchors) {
       if (!anchor.firstCalculation) {
