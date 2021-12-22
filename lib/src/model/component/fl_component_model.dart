@@ -36,7 +36,8 @@ abstract class FlComponentModel {
   /// If the component is visible.
   final bool isVisible;
 
-
+  /// The index of the component in relation to its siblings in a flow layout.
+  final int? indexOf;
 
   /// Creates a [FlComponentModel] from a json.
   FlComponentModel.fromJson(Map<String, dynamic> json)
@@ -49,8 +50,8 @@ abstract class FlComponentModel {
         minimumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.minimumSize]),
         maximumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.maximumSize]),
         isVisible = json[ApiObjectProperty.visible] ?? true,
-        isRemoved = ParseUtil.parseBoolFromString(pBoolString:  json[ApiObjectProperty.remove]) ?? false
-  ;
+        isRemoved = ParseUtil.parseBoolFromString(pBoolString: json[ApiObjectProperty.remove]) ?? false,
+        indexOf = json[ApiObjectProperty.indexOf];
 
   /// Updates the component model with new properties. If no property is passed, uses the old value.
   FlComponentModel.updatedProperties(FlComponentModel oldModel, dynamic json)
@@ -59,11 +60,15 @@ abstract class FlComponentModel {
         className = oldModel.className,
         parent = json[ApiObjectProperty.parent] ?? oldModel.parent,
         constraints = json[ApiObjectProperty.constraints] ?? oldModel.constraints,
-        preferredSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.preferredSize]) ?? oldModel.preferredSize,
-        minimumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.minimumSize]) ?? oldModel.minimumSize,
-        maximumSize = ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.maximumSize]) ?? oldModel.maximumSize,
+        preferredSize =
+            ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.preferredSize]) ?? oldModel.preferredSize,
+        minimumSize =
+            ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.minimumSize]) ?? oldModel.minimumSize,
+        maximumSize =
+            ParseUtil.parseSizeFromString(pSizeString: json[ApiObjectProperty.maximumSize]) ?? oldModel.maximumSize,
         isVisible = json[ApiObjectProperty.visible] ?? oldModel.isVisible,
-        isRemoved = ParseUtil.parseBoolFromString(pBoolString:  json[ApiObjectProperty.remove]) ?? oldModel.isRemoved;
+        isRemoved = ParseUtil.parseBoolFromString(pBoolString: json[ApiObjectProperty.remove]) ?? oldModel.isRemoved,
+        indexOf = json[ApiObjectProperty.indexOf] ?? oldModel.indexOf;
 
   FlComponentModel updateComponent(FlComponentModel oldModel, dynamic json);
 

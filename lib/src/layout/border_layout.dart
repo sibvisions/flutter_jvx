@@ -121,7 +121,7 @@ class BorderLayout implements ILayout, ICloneable {
     HashMap<String, LayoutData> returnMap = HashMap<String, LayoutData>();
 
     if (_childNorth != null) {
-      if(_childNorth!.isVisible){
+      if (_childNorth!.isVisible) {
         Size bestSize = _childNorth!.bestSize;
 
         _markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
@@ -137,11 +137,10 @@ class BorderLayout implements ILayout, ICloneable {
         _childNorth!.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
         returnMap[_childNorth!.id] = _childNorth!;
       }
-
     }
 
     if (_childSouth != null) {
-      if(_childSouth!.isVisible){
+      if (_childSouth!.isVisible) {
         Size bestSize = _childSouth!.bestSize;
 
         _markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
@@ -156,7 +155,6 @@ class BorderLayout implements ILayout, ICloneable {
         _childSouth!.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
         returnMap[_childSouth!.id] = _childSouth!;
       }
-
     }
 
     if (_childWest != null) {

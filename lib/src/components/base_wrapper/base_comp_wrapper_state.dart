@@ -11,16 +11,18 @@ import 'package:flutter_client/src/model/layout/layout_data.dart';
 /// Model and layout init
 /// Subscription handling in UiService
 /// Getters for componentSize
-abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget> with UiServiceMixin {
-
+abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
+    with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// [FlComponentModel] of the component, will be set in [initState]
   late T model;
+
   /// Layout data of the component, will be set in [initState]
   late LayoutData layoutData;
+
   /// 'True' if the calc size has been sent.
   bool sentCalcSize = false;
 
@@ -41,18 +43,20 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         preferredSize: model.preferredSize,
         minSize: model.minimumSize,
         maxSize: model.maximumSize,
-        isVisible: model.isVisible
-    );
+        isVisible: model.isVisible,
+        indexOf: model.indexOf);
 
-    uiService.registerAsLiveComponent(id: model.id, callback: ({data, newModel}) {
-      if(data != null){
-        receiveNewLayoutData(newLayoutData: data);
-      }
+    uiService.registerAsLiveComponent(
+        id: model.id,
+        callback: ({data, newModel}) {
+          if (data != null) {
+            receiveNewLayoutData(newLayoutData: data);
+          }
 
-      if(newModel != null){
-        receiveNewModel(newModel: newModel as T);
-      }
-    });
+          if (newModel != null) {
+            receiveNewModel(newModel: newModel as T);
+          }
+        });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,8 +64,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns Positioned Widget according to [layoutData]
-  Positioned getPositioned({required Widget child}){
-
+  Positioned getPositioned({required Widget child}) {
     return Positioned(
       top: getTopForPositioned(),
       left: getLeftForPositioned(),
@@ -72,7 +75,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new Model
-  receiveNewModel({required T newModel}){
+  receiveNewModel({required T newModel}) {
     setState(() {
       // Set potentially new layout data contained in the new model
       layoutData.constraints = newModel.constraints;
@@ -81,6 +84,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData.maxSize = newModel.maximumSize;
       layoutData.parentId = newModel.parent;
       layoutData.isVisible = newModel.isVisible;
+      layoutData.indexOf = newModel.indexOf;
       layoutData.calculatedSize = null;
 
       model = newModel;
@@ -91,9 +95,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new LayoutData
-  receiveNewLayoutData({required LayoutData newLayoutData}){
-    if (layoutData.layoutPosition == null || layoutData.layoutPosition!.timeOfCall!.isBefore(newLayoutData.layoutPosition!.timeOfCall!))
-    {
+  receiveNewLayoutData({required LayoutData newLayoutData}) {
+    if (layoutData.layoutPosition == null ||
+        layoutData.layoutPosition!.timeOfCall!.isBefore(newLayoutData.layoutPosition!.timeOfCall!)) {
       setState(() {
         log("${model.id} is receiving position of ${newLayoutData.layoutPosition}");
         layoutData.layoutPosition = newLayoutData.layoutPosition;
@@ -108,19 +112,22 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     double? minWidth;
     double? minHeight;
-    if (getWidthForComponent() == null)
-    {
-      minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(getHeightForComponent() ?? 10000).ceilToDouble();
+    if (getWidthForComponent() == null) {
+      minWidth = (context.findRenderObject() as RenderBox)
+          .getMaxIntrinsicWidth(getHeightForComponent() ?? 10000)
+          .ceilToDouble();
     }
-    if (getHeightForComponent() == null)
-    {
-      minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(getWidthForComponent() ?? 10000).ceilToDouble();
+    if (getHeightForComponent() == null) {
+      minHeight = (context.findRenderObject() as RenderBox)
+          .getMaxIntrinsicHeight(getWidthForComponent() ?? 10000)
+          .ceilToDouble();
     }
 
     bool rebuild = false;
 
     if (isNewCalcSize()) {
-      layoutData.calculatedSize = Size(minWidth ?? layoutData.calculatedSize!.width, minHeight ?? layoutData.calculatedSize!.height);
+      layoutData.calculatedSize =
+          Size(minWidth ?? layoutData.calculatedSize!.width, minHeight ?? layoutData.calculatedSize!.height);
       if (layoutData.hasNewCalculatedSize) {
         sentCalcSize = false;
       } else {
