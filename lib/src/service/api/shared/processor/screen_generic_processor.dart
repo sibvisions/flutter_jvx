@@ -106,6 +106,10 @@ class ScreenGenericProcessor implements IProcessor {
         return FlButtonModel.fromJson(json);
       case (FlComponentClassname.label):
         return FlLabelModel.fromJson(json);
+      case (FlComponentClassname.groupPanel):
+        return FlPanelModel.fromJson(json);
+      case (FlComponentClassname.scrollPanel):
+        return FlPanelModel.fromJson(json);
       default:
         return FlDummyModel.fromJson(json);
     }
