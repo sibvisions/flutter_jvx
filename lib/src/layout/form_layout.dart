@@ -580,6 +580,8 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
+      ILayout.markForRedrawIfNeeded(layoutData, Size.fromWidth(width));
+
       if (layoutData.isVisible) {
         layoutData.layoutPosition =
             LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);

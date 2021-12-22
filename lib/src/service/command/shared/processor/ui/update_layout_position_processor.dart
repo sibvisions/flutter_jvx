@@ -9,7 +9,7 @@ class UpdateLayoutPositionProcessor
   @override
   Future<List<BaseCommand>> processCommand(UpdateLayoutPositionCommand command) async {
     var uiService = getUiService();
-    command.layoutPosition.forEach((key, value) {
+    command.layoutDatas.forEach((key, value) {
       uiService.setLayoutPosition(id: key, layoutData: value);
     });
 

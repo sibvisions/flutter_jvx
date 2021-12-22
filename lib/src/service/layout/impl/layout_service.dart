@@ -39,7 +39,7 @@ class LayoutService implements ILayoutService {
     List<BaseCommand> listToReturn = [];
     if (!pLayoutData.isChild && pLayoutData.hasPosition) {
       listToReturn.add(UpdateLayoutPositionCommand(
-          layoutPosition: HashMap.from({pLayoutData.id: pLayoutData}), reason: "Layout has finished"));
+          layoutDatas: HashMap.from({pLayoutData.id: pLayoutData}), reason: "Layout has finished"));
     } else if (_isLegalState(componentId: pLayoutData.id)) {
       listToReturn.addAll(_performLayout(pLayoutData.id));
     }
@@ -50,9 +50,11 @@ class LayoutService implements ILayoutService {
   @override
   List<BaseCommand> registerPreferredSize(String pId, LayoutData pLayoutData) {
     log("registerPreferredSize: $pId with ${pLayoutData.preferredSize}, ${pLayoutData.lastCalculatedSize}, ${pLayoutData.calculatedSize}");
+
+    LayoutData? oldObject = _layoutDataSet[pId];
     _layoutDataSet[pId] = pLayoutData;
 
-    if (pLayoutData.hasNewCalculatedSize || pLayoutData.hasPreferredSize) {
+    if (pLayoutData.hasNewCalculatedSize || oldObject == null || pLayoutData.preferredSize != oldObject.preferredSize) {
       bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
       // log("legal state for ${pLayoutData.parentId} is $isLegalState");
       if (isLegalState) {
@@ -181,7 +183,7 @@ class LayoutService implements ILayoutService {
   }
 
   List<BaseCommand> _applyLayoutConstraints(String pParentId, HashMap<String, LayoutData> sizes) {
-    List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutPosition: sizes, reason: "Layout has finished")];
+    List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutDatas: sizes, reason: "Layout has finished")];
 
     for (var childId in sizes.keys) {
       LayoutData sizesChild = sizes[childId]!;
@@ -191,6 +193,8 @@ class LayoutService implements ILayoutService {
 
       if (child.isParent && _isLegalState(componentId: childId)) {
         commands.addAll(_performLayout(childId));
+      } else if (!child.isParent && child.hasNewCalculatedSize) {
+        markLayoutAsDirty(id: child.id);
       }
     }
 

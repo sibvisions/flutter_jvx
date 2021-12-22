@@ -6,10 +6,10 @@ import 'ui_command.dart';
 
 class UpdateLayoutPositionCommand extends UiCommand {
   /// List of position data
-  HashMap<String, LayoutData> layoutPosition;
+  HashMap<String, LayoutData> layoutDatas;
 
   UpdateLayoutPositionCommand({
-    required this.layoutPosition,
+    required this.layoutDatas,
     required String reason,
   }) : super(reason: reason);
 

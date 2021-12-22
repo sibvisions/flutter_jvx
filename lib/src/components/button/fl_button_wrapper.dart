@@ -25,8 +25,8 @@ class _FlButtonWrapperState extends BaseCompWrapperState<FlButtonModel> with UiS
       height: getHeightForComponent(),
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      postFrameCallback(timeStamp, context);
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      postFrameCallback(context);
     });
 
     return getPositioned(child: buttonWidget);

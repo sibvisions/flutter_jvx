@@ -17,6 +17,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  late BuildContext lastContext;
+
   /// [FlComponentModel] of the component, will be set in [initState]
   late T model;
 
@@ -98,16 +100,23 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   receiveNewLayoutData({required LayoutData newLayoutData}) {
     if (layoutData.layoutPosition == null ||
         layoutData.layoutPosition!.timeOfCall!.isBefore(newLayoutData.layoutPosition!.timeOfCall!)) {
-      setState(() {
-        log("receiveNewLayoutData: ${model.id}, ${newLayoutData.calculatedSize} || ${newLayoutData.layoutPosition}");
-        layoutData.layoutPosition = newLayoutData.layoutPosition;
-        layoutData.calculatedSize = newLayoutData.calculatedSize;
-      });
+      log("receiveNewLayoutData: ${model.id}, ${newLayoutData.calculatedSize} || ${newLayoutData.layoutPosition}");
+      layoutData.layoutPosition = newLayoutData.layoutPosition;
+      layoutData.calculatedSize = newLayoutData.calculatedSize;
+
+      if (layoutData.hasCalculatedSize &&
+          layoutData.calculatedSize!.width != double.infinity &&
+          layoutData.calculatedSize!.height != double.infinity) {
+        setState(() {});
+      } else {
+        postFrameCallback(lastContext);
+      }
     }
   }
 
   /// Callback called after every build
-  void postFrameCallback(Duration time, BuildContext context) {
+  void postFrameCallback(BuildContext context) {
+    lastContext = context;
     // Size potentialNewCalcSize = Size(context.size!.width.ceilToDouble(), context.size!.height.ceilToDouble());
 
     double? minWidth;

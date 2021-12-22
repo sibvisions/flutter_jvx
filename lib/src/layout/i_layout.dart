@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ui';
 
 import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';
@@ -47,5 +48,15 @@ abstract class ILayout implements ICloneable {
     }
 
     return null;
+  }
+
+  static void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
+    if (!pChild.isParent &&
+        !pChild.hasPreferredSize &&
+        pChild.hasCalculatedSize &&
+        ((pNewCalcSize.width != double.infinity && pChild.calculatedSize!.width != pNewCalcSize.width) ||
+            (pNewCalcSize.height != double.infinity && pChild.calculatedSize!.height != pNewCalcSize.height))) {
+      pChild.calculatedSize = pNewCalcSize;
+    }
   }
 }

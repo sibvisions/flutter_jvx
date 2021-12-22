@@ -22,8 +22,8 @@ class _DummyWrapperState extends BaseCompWrapperState {
       width: getWidthForComponent(),
     );
 
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      postFrameCallback(timeStamp, context);
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      postFrameCallback(context);
     });
 
     return getPositioned(child: dummyWidget);

@@ -17,8 +17,8 @@ class _FlLabelWrapperState extends BaseCompWrapperState<FlLabelModel> {
   Widget build(BuildContext context) {
     final FlLabelWidget widget = FlLabelWidget(model: model);
 
-    SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-      postFrameCallback(timeStamp, context);
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      postFrameCallback(context);
     });
 
     return getPositioned(child: widget);
