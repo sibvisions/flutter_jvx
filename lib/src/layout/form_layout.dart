@@ -180,35 +180,19 @@ class FormLayout extends ILayout {
     for (double autoSizeCount = 1; autoSizeCount > 0 && autoSizeCount < 10000000;) {
       for (var component in pComponentData) {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
-        if (component.isVisible) {
-          Size preferredSize = component.bestSize;
-          FLCalculateAnchorsUtil.calculateAutoSize(
-              pLeftTopAnchor: constraint.topAnchor,
-              pRightBottomAnchor: constraint.bottomAnchor,
-              pPreferredSize: preferredSize.height,
-              pAutoSizeCount: autoSizeCount,
-              pAnchors: pAnchors);
-          FLCalculateAnchorsUtil.calculateAutoSize(
-              pLeftTopAnchor: constraint.leftAnchor,
-              pRightBottomAnchor: constraint.rightAnchor,
-              pPreferredSize: preferredSize.width,
-              pAutoSizeCount: autoSizeCount,
-              pAnchors: pAnchors);
-        } else {
-          if (constraint.topAnchor.autoSize) {
-            constraint.topAnchor.firstCalculation = false;
-          }
-          if (constraint.leftAnchor.autoSize) {
-            constraint.leftAnchor.firstCalculation = false;
-          }
-          if (constraint.bottomAnchor.autoSize) {
-            constraint.bottomAnchor.firstCalculation = false;
-          }
-          if (constraint.rightAnchor.autoSize) {
-            constraint.rightAnchor.firstCalculation = false;
-          }
-          log("${component.id} not visible");
-        }
+        Size preferredSize = component.bestSize;
+        FLCalculateAnchorsUtil.calculateAutoSize(
+            pLeftTopAnchor: constraint.topAnchor,
+            pRightBottomAnchor: constraint.bottomAnchor,
+            pPreferredSize: preferredSize.height,
+            pAutoSizeCount: autoSizeCount,
+            pAnchors: pAnchors);
+        FLCalculateAnchorsUtil.calculateAutoSize(
+            pLeftTopAnchor: constraint.leftAnchor,
+            pRightBottomAnchor: constraint.rightAnchor,
+            pPreferredSize: preferredSize.width,
+            pAutoSizeCount: autoSizeCount,
+            pAnchors: pAnchors);
       }
       autoSizeCount = 10000000;
 
@@ -515,19 +499,16 @@ class FormLayout extends ILayout {
     bba.position -= pMargins.marginTop;
 
     for (var component in pComponentData) {
-      if (component.isVisible) {
-        FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
-        Size preferredComponentSize = component.bestSize;
-
-        FLCalculateDependentUtil.calculateRelativeAnchor(
-            leftTopAnchor: constraints.leftAnchor,
-            rightBottomAnchor: constraints.rightAnchor,
-            preferredSize: preferredComponentSize.width);
-        FLCalculateDependentUtil.calculateRelativeAnchor(
-            leftTopAnchor: constraints.topAnchor,
-            rightBottomAnchor: constraints.bottomAnchor,
-            preferredSize: preferredComponentSize.height);
-      }
+      FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
+      Size preferredComponentSize = component.bestSize;
+      FLCalculateDependentUtil.calculateRelativeAnchor(
+          leftTopAnchor: constraints.leftAnchor,
+          rightBottomAnchor: constraints.rightAnchor,
+          preferredSize: preferredComponentSize.width);
+      FLCalculateDependentUtil.calculateRelativeAnchor(
+          leftTopAnchor: constraints.topAnchor,
+          rightBottomAnchor: constraints.bottomAnchor,
+          preferredSize: preferredComponentSize.height);
     }
   }
 
@@ -582,12 +563,8 @@ class FormLayout extends ILayout {
 
       ILayout.markForRedrawIfNeeded(layoutData, Size.fromWidth(width));
 
-      if (layoutData.isVisible) {
-        layoutData.layoutPosition =
-            LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
-      } else {
-        layoutData.layoutPosition = LayoutPosition(width: 0, height: 0, isComponentSize: true, left: 0, top: 0);
-      }
+      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
+
       sizeMap[componentId] = layoutData;
     });
     double height = borderConstraints.bottomAnchor.position - borderConstraints.topAnchor.position;

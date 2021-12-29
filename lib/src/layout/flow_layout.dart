@@ -146,7 +146,7 @@ class FlowLayout extends ILayout {
     bool bFirst = true;
 
     for (LayoutData child in pChildren) {
-      if (child.isVisible) {
+      if (child.needsRelayout) {
         Size size = child.bestSize;
 
         if (isRowOrientationHorizontal) {
@@ -257,7 +257,7 @@ class FlowLayout extends ILayout {
     bool bFirst = true;
 
     for (LayoutData component in pChildren) {
-      if (component.isVisible) {
+      if (component.needsRelayout) {
         Size prefSize = component.bestSize;
         if (isRowOrientationHorizontal) {
           /** If this isn't the first component add the gap between components*/

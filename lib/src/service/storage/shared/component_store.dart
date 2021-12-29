@@ -101,9 +101,11 @@ class ComponentStore implements IStorageService {
             log("got do delete !!!!!!!!!!!!!!");
             _componentMap.remove(newModel.id);
             _removedComponents[newModel.id] = newModel;
+          } else {
+            _componentMap[newModel.id] = newModel;
           }
 
-          _componentMap[newModel.id] = newModel;
+
 
           // Handle parent change, notify old parent of change
           if (newModel.parent != oldModel.parent) {
@@ -135,7 +137,7 @@ class ComponentStore implements IStorageService {
       if (!isExisting) {
         newUiComponents.add(newModel);
       } else {
-        // IF component has been rendered, check if it had been changed.
+        // IF component has been rendered, check if it has been changed.
         bool hasChanged = changedModels.any((changedModels) => changedModels == newModel.id);
         if (hasChanged) {
           changedUiComponents.add(newModel);
@@ -143,7 +145,7 @@ class ComponentStore implements IStorageService {
       }
     }
 
-    // Check for components which are not active anymore, but may not deleted in storage
+    // Check for components which are not active anymore, but may not be deleted in storage
     for (FlComponentModel oldModel in oldScreenComps) {
       bool isExisting = newScreenComps.any((newModel) => newModel.id == oldModel.id);
 
@@ -208,7 +210,7 @@ class ComponentStore implements IStorageService {
 
     for (FlComponentModel componentModel in _componentMap.values) {
       String? parentId = componentModel.parent;
-      if (parentId != null && parentId == id) {
+      if (parentId != null && parentId == id && componentModel.isVisible) {
         children.add(componentModel);
         children.addAll(_getAllComponentsBelow(componentModel.id));
       }
@@ -224,7 +226,7 @@ class ComponentStore implements IStorageService {
       }
     });
 
-    if (componentModel != null) {
+    if (componentModel != null && componentModel!.isVisible) {
       var list = _getAllComponentsBelow(componentModel!.id);
       list.add(componentModel!);
       return list;

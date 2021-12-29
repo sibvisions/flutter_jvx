@@ -54,7 +54,7 @@ class LayoutData implements ICloneable {
   LayoutPosition? layoutPosition;
 
   /// "True" if this component should be visible, true by default.
-  bool isVisible;
+  bool needsRelayout;
 
   /// The index of the component in relation to its siblings in a flow layout.
   int? indexOf;
@@ -77,7 +77,7 @@ class LayoutData implements ICloneable {
       this.layoutPosition,
       this.calculatedSize,
       this.lastCalculatedSize,
-      this.isVisible = true,
+      this.needsRelayout = false,
       this.indexOf});
 
   /// Clones [LayoutData] as a deep copy.
@@ -95,14 +95,14 @@ class LayoutData implements ICloneable {
         insets = pLayoutData.insets?.copyWith(),
         layoutState = pLayoutData.layoutState,
         layoutPosition = pLayoutData.layoutPosition?.clone(),
-        isVisible = pLayoutData.isVisible,
+        needsRelayout = pLayoutData.needsRelayout,
         indexOf = pLayoutData.indexOf;
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})
       : layout = null,
         parentId = null,
-        isVisible = true;
+        needsRelayout = true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
