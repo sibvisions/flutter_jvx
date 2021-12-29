@@ -15,10 +15,10 @@ class UpdateComponentsProcessor
 
     // Set Dirty in layoutService
     for (String affected in command.affectedComponents) {
-      layoutService.markLayoutAsDirty(id: affected);
+      layoutService.markLayoutAsDirty(pComponentId: affected);
     }
     for (FlComponentModel changed in command.changedComponents) {
-      layoutService.markLayoutAsDirty(id: changed.id);
+      layoutService.markLayoutAsDirty(pComponentId: changed.id);
     }
 
     // Update Components in UI

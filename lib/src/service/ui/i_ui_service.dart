@@ -50,6 +50,6 @@ abstract class IUiService {
   /// Deletes unused component models from local cache.
   void deleteInactiveComponent({required Set<String> inactiveIds});
 
-  /// Notify component of new [LayoutPosition].
-  void setLayoutPosition({required String id, required LayoutData layoutData});
+  /// Notify component of new [LayoutData].
+  void setLayoutPosition({required LayoutData layoutData});
 }

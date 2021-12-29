@@ -11,7 +11,7 @@ class GridLayout extends ILayout {
   }
 
   @override
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // TODO: implement calculateLayout
     throw UnimplementedError();
   }

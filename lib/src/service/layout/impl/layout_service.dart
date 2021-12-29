@@ -24,96 +24,87 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> registerAsParent({required LayoutData pLayoutData}) {
-    log("registerAsParent: ${pLayoutData.id} with ${pLayoutData.preferredSize}, ${pLayoutData.lastCalculatedSize}, ${pLayoutData.calculatedSize}, ${pLayoutData.layoutPosition}");
+  Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
+    log("reportLayout: ${pLayoutData.id}");
 
-    LayoutData? ldRegisteredParent = _layoutDataSet[pLayoutData.id];
-
-    if (ldRegisteredParent != null) {
-      pLayoutData.calculatedSize ??= ldRegisteredParent.calculatedSize;
-      pLayoutData.lastCalculatedSize = ldRegisteredParent.calculatedSize;
-      pLayoutData.layoutPosition = ldRegisteredParent.layoutPosition;
+    // Set object with new data, if component isn't a child its treated as the top most panel
+    if(!pLayoutData.isChild){
+      LayoutData data = _layoutDataSet[pLayoutData.id]!;
+      pLayoutData.layoutPosition = data.layoutPosition;
+      pLayoutData.calculatedSize = Size(data.layoutPosition!.width, data.layoutPosition!.height);
     }
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
-    List<BaseCommand> listToReturn = [];
-    if (!pLayoutData.isChild && pLayoutData.hasPosition) {
-      listToReturn.add(UpdateLayoutPositionCommand(
-          layoutDatas: HashMap.from({pLayoutData.id: pLayoutData}), reason: "Layout has finished"));
-    } else if (_isLegalState(componentId: pLayoutData.id)) {
-      listToReturn.addAll(_performLayout(pLayoutData.id));
+    // Handle possible re-layout
+    if(_isLegalState(pParentLayout: pLayoutData)){
+      return _performLayout(pParentLayout: pLayoutData);
     }
-
-    return listToReturn;
-  }
-
-  @override
-  List<BaseCommand> registerPreferredSize(String pId, LayoutData pLayoutData) {
-    log("registerPreferredSize: $pId with PS: ${pLayoutData.preferredSize}, LCS: ${pLayoutData.lastCalculatedSize}, CS: ${pLayoutData.calculatedSize}");
-
-    LayoutData? oldObject = _layoutDataSet[pId];
-    _layoutDataSet[pId] = pLayoutData;
-
-    if (pLayoutData.hasNewCalculatedSize || oldObject == null || pLayoutData.preferredSize != oldObject.preferredSize) {
-      bool isLegalState = _isLegalState(componentId: pLayoutData.parentId!);
-      if (isLegalState) {
-        LayoutData parentData = _layoutDataSet[pLayoutData.parentId]!;
-        parentData.lastCalculatedSize = parentData.calculatedSize;
-
-        // Special case: uppermost layout does not calculates it's size
-        if (!pLayoutData.isChild) {
-          parentData.calculatedSize = null;
-        }
-        return _performLayout(parentData.id);
-      }
-    }
-
-    pLayoutData.lastCalculatedSize = pLayoutData.calculatedSize;
 
     return [];
   }
 
   @override
-  List<BaseCommand> setComponentSize({required String id, required Size size}) {
+  Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
+    log("Report size: ${pLayoutData.id}");
 
-    log("Set Position of $id size: $size");
-    LayoutData? existingData = _layoutDataSet[id];
 
-    LayoutPosition position = LayoutPosition(width: size.width, height: size.height, top: 0, left: 0, isComponentSize: true, timeOfCall: DateTime.now());
+    // Set object with new data.
+    _layoutDataSet[pLayoutData.id] = pLayoutData;
 
-    if(existingData != null){
+    // Handle possible re-layout
+    LayoutData parentData = _layoutDataSet[pLayoutData.parentId]!;
+    if(_isLegalState(pParentLayout: parentData)){
+      return _performLayout(pParentLayout: parentData);
+    }
 
-      existingData.layoutPosition = position;
-      if(_isLegalState(componentId: id)){
-        return _performLayout(id);
+    return [];
+  }
+
+  @override
+  Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
+
+    LayoutPosition position = LayoutPosition(
+        width: pSize.width,
+        height: pSize.height,
+        top: 0,
+        left: 0,
+        isComponentSize: true,
+        timeOfCall: DateTime.now()
+    );
+
+    LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
+    if(existingLayout != null){
+      existingLayout.calculatedSize = pSize;
+      existingLayout.layoutPosition = position;
+
+      if(_isLegalState(pParentLayout: existingLayout)){
+        return _performLayout(pParentLayout: existingLayout);
       }
     } else {
-      var data = LayoutData(id: id, layoutPosition: position);
-      data.layoutState = LayoutState.DIRTY;
-      _layoutDataSet[id] = data;
+      _layoutDataSet[pScreenComponentId] = LayoutData(
+          id: pScreenComponentId,
+          layoutPosition: position,
+          calculatedSize: pSize,
+          lastCalculatedSize: pSize
+      );
     }
 
     return [];
   }
 
   @override
-  void markLayoutAsDirty({required String id}) {
-    log("markLayoutAsDirty: $id");
-    LayoutData? layoutData = _layoutDataSet[id];
+  void markLayoutAsDirty({required String pComponentId}) {
+    LayoutData? data = _layoutDataSet[pComponentId];
 
-    if (layoutData != null) {
-      layoutData.layoutState = LayoutState.DIRTY;
-      if (layoutData.isParent && layoutData.isChild) {
-        layoutData.layoutPosition = null;
-        layoutData.calculatedSize = null;
-      }
+    if(data != null){
+     data.layoutState = LayoutState.DIRTY;
     }
   }
 
   @override
-  bool removeAsParent(String pParentId) {
-    log("removeAsParent: $pParentId");
-    return _layoutDataSet.remove(pParentId) != null;
+  bool removeLayout({required String pComponentId}) {
+
+    return false;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,75 +112,57 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns true if conditions to perform the layout are met.
-  bool _isLegalState({required String componentId}) {
-    bool legalLayoutState = true;
-    LayoutData? parent = _layoutDataSet[componentId];
+  bool _isLegalState({required LayoutData pParentLayout}) {
+    List<LayoutData>? children = _getChildrenOrNull(pParentLayout: pParentLayout);
 
-    if (parent != null && parent.layoutState == LayoutState.VALID) {
-      for (int index = 0; legalLayoutState && index < parent.children!.length; index++) {
-        LayoutData? child = _layoutDataSet[parent.children![index]];
-        if (child != null) {
-          legalLayoutState =
-              (child.hasCalculatedSize || child.hasPreferredSize) && child.layoutState == LayoutState.VALID;
-        } else {
-          legalLayoutState = false;
-        }
-      }
+    if(pParentLayout.layoutState == LayoutState.VALID && children != null){
+      bool areChildrenValid = children.every((element) =>
+        ((element.layoutState == LayoutState.VALID) && (element.hasCalculatedSize || element.hasPreferredSize)));
+      return areChildrenValid;
     }
-    return legalLayoutState;
+    return false;
   }
 
   /// Performs a layout operation.
-  List<BaseCommand> _performLayout(String pParentId) {
-    // Time the start of the layout call.
-    DateTime startOfCall = DateTime.now();
+  Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
+    log("perform Layout: ${pParentLayout.id}");
 
-    // DeepCopy to make sure data can't be changed by other events while checks and calculation are running
-    LayoutData parentSnapShot = _layoutDataSet[pParentId]!.clone();
+    List<LayoutData> children = _getChildrenOrNull(pParentLayout: pParentLayout)!;
 
-    log("_performLayout: ${parentSnapShot.id} with ${parentSnapShot.layout!.toString()}");
+    pParentLayout.lastCalculatedSize = pParentLayout.calculatedSize;
+    pParentLayout.layout!.calculateLayout(pParentLayout, children);
 
-    List<LayoutData> children = [];
-    for (int index = 0; index < parentSnapShot.children!.length; index++) {
-      children.add(_layoutDataSet[parentSnapShot.children![index]]!.clone());
-    }
-
-    // Returns a bunch of layout positions.
-    HashMap<String, LayoutData> sizes = parentSnapShot.layout!.calculateLayout(parentSnapShot, children);
-
-    LayoutData parent = _layoutDataSet[pParentId]!;
-    if (parentSnapShot.hasNewCalculatedSize) {
-      // log("Layout: ${parentSnapShot.id} has new calc size of ${parentSnapShot.lastCalculatedSize} | ${parentSnapShot.calculatedSize}");
-      parent.lastCalculatedSize = parent.calculatedSize;
-      parent.calculatedSize = parentSnapShot.calculatedSize;
-    }
-
-    // We only register our size (layouts the parent of the parent) if the following:
-    // We dont have a position.
-    // We have a position but it is old.
-    // We have a position but our calc size is different.
-    if (parent.hasPosition && (!startOfCall.isBefore(parent.layoutPosition!.timeOfCall!) || !parentSnapShot.hasNewCalculatedSize)) {
-      log("_applyLayoutConstraints: ${parent.children} from $pParentId");
-      return _applyLayoutConstraints(pParentId, sizes);
+    // No Child because of first panel
+    if(pParentLayout.hasNewCalculatedSize && pParentLayout.isChild){
+      return reportPreferredSize(pLayoutData: pParentLayout);
     } else {
-      return registerPreferredSize(parent.id, parent);
+      List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutDataList: children, reason: "Layout has finished")];
+
+      for(LayoutData child in children){
+        if(child.isParent && _isLegalState(pParentLayout: child)) {
+          var childCommands = await _performLayout(pParentLayout: child);
+          commands.addAll(childCommands);
+        }
+      }
+      if(!pParentLayout.isChild){
+        children.add(pParentLayout);
+      }
+      return commands;
     }
   }
 
-  List<BaseCommand> _applyLayoutConstraints(String pParentId, HashMap<String, LayoutData> sizes) {
-    List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutDatas: sizes, reason: "Layout has finished")];
 
-    for (var childId in sizes.keys) {
-      LayoutData sizesChild = sizes[childId]!;
-      LayoutData child = _layoutDataSet[childId]!;
-      child.layoutPosition = sizesChild.layoutPosition;
-      child.layoutPosition!.timeOfCall = DateTime.now();
+  List<LayoutData>? _getChildrenOrNull({required LayoutData pParentLayout}){
+    List<LayoutData> childrenData = [];
 
-      if (child.isParent && _isLegalState(componentId: childId)) {
-        commands.addAll(_performLayout(childId));
+    for (String childId in pParentLayout.children){
+      LayoutData? childData = _layoutDataSet[childId];
+      if(childData != null){
+        childrenData.add(childData);
+      } else {
+        return null;
       }
     }
-
-    return commands;
+    return childrenData;
   }
 }

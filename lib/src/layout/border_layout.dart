@@ -91,7 +91,7 @@ class BorderLayout implements ILayout, ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     // Clear constraint map.
     _positions.clear();
     this.pParent = pParent;
@@ -118,8 +118,6 @@ class BorderLayout implements ILayout, ICloneable {
       pParent.calculatedSize = preferredSize;
     }
 
-    HashMap<String, LayoutData> returnMap = HashMap<String, LayoutData>();
-
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
 
@@ -130,8 +128,6 @@ class BorderLayout implements ILayout, ICloneable {
 
       y += bestSize.height + iVerticalGap;
       height -= bestSize.height + iVerticalGap;
-
-      returnMap[_childNorth!.id] = _childNorth!;
     }
 
     if (_childSouth != null) {
@@ -143,8 +139,6 @@ class BorderLayout implements ILayout, ICloneable {
             left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
 
         height -= bestSize.height + iVerticalGap;
-
-        returnMap[_childSouth!.id] = _childSouth!;
     }
 
     if (_childWest != null) {
@@ -157,8 +151,6 @@ class BorderLayout implements ILayout, ICloneable {
 
       x += bestSize.width + iHorizontalGap;
       width -= bestSize.width + iHorizontalGap;
-
-      returnMap[_childWest!.id] = _childWest!;
     }
 
     if (_childEast != null) {
@@ -170,8 +162,6 @@ class BorderLayout implements ILayout, ICloneable {
           left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
       width -= bestSize.width + iHorizontalGap;
-
-      returnMap[_childEast!.id] = _childEast!;
     }
 
     if (_childCenter != null) {
@@ -179,10 +169,7 @@ class BorderLayout implements ILayout, ICloneable {
 
       _childCenter!.layoutPosition =
           LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true);
-
-      returnMap[_childCenter!.id] = _childCenter!;
     }
-    return returnMap;
   }
 
   /// Makes a deep copy of this [BorderLayout].
@@ -229,8 +216,6 @@ class BorderLayout implements ILayout, ICloneable {
   Size _preferredLayoutSize() {
     if (pParent.hasPreferredSize) {
       return pParent.preferredSize!;
-    } else if (pParent.hasCalculatedSize) {
-      return pParent.calculatedSize!;
     } else {
       double width = 0;
       double height = 0;

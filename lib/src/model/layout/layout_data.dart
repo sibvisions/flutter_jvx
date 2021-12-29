@@ -27,7 +27,7 @@ class LayoutData implements ICloneable {
   ILayout? layout;
 
   /// The children of the component.
-  List<String>? children;
+  List<String> children;
 
   /// The constraints as sent by the server for the component.
   String? constraints;
@@ -68,7 +68,7 @@ class LayoutData implements ICloneable {
       {required this.id,
       this.parentId,
       this.layout,
-      this.children,
+      this.children = const [],
       this.constraints,
       this.minSize,
       this.maxSize,
@@ -85,7 +85,7 @@ class LayoutData implements ICloneable {
       : id = pLayoutData.id,
         parentId = pLayoutData.parentId,
         layout = pLayoutData.layout?.clone(),
-        children = pLayoutData.children != null ? List.from(pLayoutData.children!) : null,
+        children = List.from(pLayoutData.children),
         constraints = pLayoutData.constraints,
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
@@ -102,6 +102,7 @@ class LayoutData implements ICloneable {
   LayoutData.fromId({required this.id})
       : layout = null,
         parentId = null,
+        children = const [],
         needsRelayout = true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -138,7 +139,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is a parent.
   bool get isParent {
-    return children != null && children!.isNotEmpty && layout != null;
+    return children.isNotEmpty && layout != null;
   }
 
   /// If this component is a child and therefore has a parent.

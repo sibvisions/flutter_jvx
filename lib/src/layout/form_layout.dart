@@ -72,7 +72,7 @@ class FormLayout extends ILayout {
   }
 
   @override
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     /// Size set by Parent
     final Size? setPosition = _getSize(pParent);
 
@@ -107,7 +107,8 @@ class FormLayout extends ILayout {
         pMargins: margins,
         id: pParent.id,
         pChildrenData: pChildren,
-        pParent: pParent);
+        pParent: pParent,
+        pMinPrefSize: preferredMinimumSize);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -512,13 +513,14 @@ class FormLayout extends ILayout {
     }
   }
 
-  HashMap<String, LayoutData> _buildComponents(
+  void _buildComponents(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       required Margins pMargins,
       required String id,
       required List<LayoutData> pChildrenData,
-      required LayoutData pParent}) {
+      required LayoutData pParent,
+      required FormLayoutSize pMinPrefSize}) {
     /// Get Border- and Margin Anchors for calculation
     FormLayoutAnchor lba = pAnchors["l"]!;
     FormLayoutAnchor rba = pAnchors["r"]!;
@@ -537,9 +539,6 @@ class FormLayout extends ILayout {
     /// Used for layoutSize
     FormLayoutConstraints borderConstraints =
         FormLayoutConstraints(bottomAnchor: bba, leftAnchor: lba, rightAnchor: rba, topAnchor: tba);
-
-    // Sizes of Children
-    HashMap<String, LayoutData> sizeMap = HashMap();
 
     // This layout has additional margins to add.
     double additionalLeft = marginConstraints.leftAnchor.getAbsolutePosition();
@@ -563,15 +562,9 @@ class FormLayout extends ILayout {
 
       ILayout.markForRedrawIfNeeded(layoutData, Size.fromWidth(width));
 
-      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
-
-      sizeMap[componentId] = layoutData;
+      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
     });
-    double height = borderConstraints.bottomAnchor.position - borderConstraints.topAnchor.position;
-    double width = borderConstraints.rightAnchor.position - borderConstraints.leftAnchor.position;
-    pParent.calculatedSize = Size(width, height);
-
-    return sizeMap;
+    pParent.calculatedSize = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors
