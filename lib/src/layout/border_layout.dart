@@ -112,8 +112,8 @@ class BorderLayout implements ILayout, ICloneable {
 
     // If parent has forced this into a size, cant exceed these values.
     if (!pParent.hasPreferredSize && pParent.hasCalculatedSize && pParent.hasPosition) {
-      width = pParent.layoutPosition!.width - x - pParent.insets!.right + eiMargins.right;
-      height = pParent.layoutPosition!.height - y - pParent.insets!.bottom + eiMargins.bottom;
+      width = pParent.layoutPosition!.width - x - pParent.insets!.right - eiMargins.right;
+      height = pParent.layoutPosition!.height - y - pParent.insets!.bottom - eiMargins.bottom ;
     } else if (!pParent.hasCalculatedSize) {
       pParent.calculatedSize = preferredSize;
     }
@@ -124,7 +124,7 @@ class BorderLayout implements ILayout, ICloneable {
       ILayout.markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
 
       _childNorth!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
+          LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true, timeOfCall: DateTime.now());
 
       y += bestSize.height + iVerticalGap;
       height -= bestSize.height + iVerticalGap;
@@ -136,7 +136,7 @@ class BorderLayout implements ILayout, ICloneable {
         ILayout.markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
 
         _childSouth!.layoutPosition = LayoutPosition(
-            left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
+            left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true, timeOfCall: DateTime.now());
 
         height -= bestSize.height + iVerticalGap;
     }
@@ -147,7 +147,7 @@ class BorderLayout implements ILayout, ICloneable {
       ILayout.markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
 
       _childSouth!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true);
+          LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true, timeOfCall: DateTime.now());
 
       x += bestSize.width + iHorizontalGap;
       width -= bestSize.width + iHorizontalGap;
@@ -159,7 +159,7 @@ class BorderLayout implements ILayout, ICloneable {
       ILayout.markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
 
       _childEast!.layoutPosition = LayoutPosition(
-          left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true);
+          left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true, timeOfCall: DateTime.now());
 
       width -= bestSize.width + iHorizontalGap;
     }
@@ -168,7 +168,7 @@ class BorderLayout implements ILayout, ICloneable {
       ILayout.markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
 
       _childCenter!.layoutPosition =
-          LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true);
+          LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true, timeOfCall: DateTime.now());
     }
   }
 

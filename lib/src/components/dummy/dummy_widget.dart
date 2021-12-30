@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class DummyWidget extends StatelessWidget {
@@ -9,6 +11,6 @@ class DummyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Dummy for $id");
+    return Container(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0), child: Text("Dummy for $id"));
   }
 }

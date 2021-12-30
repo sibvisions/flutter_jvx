@@ -35,7 +35,7 @@ Future<bool> initAppMobile() async {
   services.registerSingleton(configService, signalsReady: true);
 
   // Layout
-  ILayoutService layoutService = LayoutService();
+  ILayoutService layoutService = LayoutStorage();
   services.registerSingleton(layoutService, signalsReady: true);
 
   // Storage

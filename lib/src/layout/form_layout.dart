@@ -564,7 +564,7 @@ class FormLayout extends ILayout {
 
       layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
     });
-    pParent.calculatedSize = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
+    pParent.calculatedSize = Size(pMinPrefSize.preferredWidth + margins.marginRight + margins.marginLeft, pMinPrefSize.preferredHeight + margins.marginBottom + margins.marginTop);
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors

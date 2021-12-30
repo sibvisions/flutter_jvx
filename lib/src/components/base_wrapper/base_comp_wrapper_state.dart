@@ -98,20 +98,11 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new LayoutData
   receiveNewLayoutData({required LayoutData newLayoutData}) {
-    if (layoutData.layoutPosition == null ||
-        layoutData.layoutPosition!.timeOfCall!.isBefore(newLayoutData.layoutPosition!.timeOfCall!)) {
-      log("receiveNewLayoutData: ${model.id}, ${newLayoutData.calculatedSize} || ${newLayoutData.layoutPosition}");
-      layoutData.layoutPosition = newLayoutData.layoutPosition;
-      layoutData.calculatedSize = newLayoutData.calculatedSize;
 
-      if (layoutData.hasCalculatedSize &&
-          layoutData.calculatedSize!.width != double.infinity &&
-          layoutData.calculatedSize!.height != double.infinity) {
-        setState(() {});
-      } else {
-        postFrameCallback(lastContext);
-      }
-    }
+    layoutData = newLayoutData;
+    setState(() {
+
+    });
   }
 
   /// Callback called after every build

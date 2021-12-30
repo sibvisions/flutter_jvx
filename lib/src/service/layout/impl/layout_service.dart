@@ -11,7 +11,7 @@ import '../../../model/layout/layout_data.dart';
 
 import '../i_layout_service.dart';
 
-class LayoutService implements ILayoutService {
+class LayoutStorage implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,6 +26,7 @@ class LayoutService implements ILayoutService {
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
     log("reportLayout: ${pLayoutData.id}");
+    pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
     if(!pLayoutData.isChild){
@@ -45,8 +46,8 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    log("Report size: ${pLayoutData.id}");
-
+    log("Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}");
+    pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data.
     _layoutDataSet[pLayoutData.id] = pLayoutData;

@@ -59,6 +59,12 @@ class LayoutData implements ICloneable {
   /// The index of the component in relation to its siblings in a flow layout.
   int? indexOf;
 
+  /// When height has been constrained what width did the component take.
+  Map<double, double>? heightConstrains;
+
+  /// When width has been constrained what height did the component take.
+  Map<double, double>? widthConstrains;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,7 +102,9 @@ class LayoutData implements ICloneable {
         layoutState = pLayoutData.layoutState,
         layoutPosition = pLayoutData.layoutPosition?.clone(),
         needsRelayout = pLayoutData.needsRelayout,
-        indexOf = pLayoutData.indexOf;
+        indexOf = pLayoutData.indexOf,
+        heightConstrains = pLayoutData.heightConstrains != null ? Map.from(pLayoutData.heightConstrains!) : null,
+        widthConstrains = pLayoutData.widthConstrains != null ? Map.from(pLayoutData.widthConstrains!) : null;
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})

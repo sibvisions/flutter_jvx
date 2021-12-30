@@ -51,10 +51,10 @@ abstract class ILayout implements ICloneable {
   }
 
   static void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
-    if (!pChild.hasPreferredSize && pChild.hasCalculatedSize && (pChild.calculatedSize!.width > pNewCalcSize.width || pChild.calculatedSize!.height > pNewCalcSize.height) &&
-        ((pNewCalcSize.width != double.infinity && pChild.calculatedSize!.width != pNewCalcSize.width) ||
-        (pNewCalcSize.height != double.infinity && pChild.calculatedSize!.height != pNewCalcSize.height))) {
-      pChild.calculatedSize = pNewCalcSize;
-    }
+    // if (!pChild.hasPreferredSize && pChild.hasCalculatedSize && (pChild.calculatedSize!.width > pNewCalcSize.width || pChild.calculatedSize!.height > pNewCalcSize.height) &&
+    //     ((pNewCalcSize.width != double.infinity && pChild.calculatedSize!.width != pNewCalcSize.width) ||
+    //     (pNewCalcSize.height != double.infinity && pChild.calculatedSize!.height != pNewCalcSize.height))) {
+    //   pChild.calculatedSize = pNewCalcSize;
+    // }
   }
 }
