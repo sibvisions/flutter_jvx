@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
+
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
@@ -35,7 +37,8 @@ Future<bool> initAppMobile() async {
   services.registerSingleton(configService, signalsReady: true);
 
   // Layout
-  ILayoutService layoutService = LayoutStorage();
+  ILayoutService layoutService = await IsolateLayoutService.create();
+  // ILayoutService layoutService = LayoutStorage();
   services.registerSingleton(layoutService, signalsReady: true);
 
   // Storage
