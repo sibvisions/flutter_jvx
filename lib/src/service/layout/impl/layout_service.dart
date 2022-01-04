@@ -11,7 +11,7 @@ import '../../../model/layout/layout_data.dart';
 
 import '../i_layout_service.dart';
 
-class LayoutStorage implements ILayoutService {
+class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,7 +25,7 @@ class LayoutStorage implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    log("reportLayout: ${pLayoutData.id}");
+    // log("reportLayout: ${pLayoutData.id}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -46,8 +46,14 @@ class LayoutStorage implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    log("Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}");
+    log("Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
+
+    if(pLayoutData.hasNewCalculatedSize){
+      pLayoutData.widthConstrains = {};
+      pLayoutData.heightConstrains = {};
+      pLayoutData.lastCalculatedSize = pLayoutData.calculatedSize;
+    }
 
     // Set object with new data.
     _layoutDataSet[pLayoutData.id] = pLayoutData;
@@ -70,7 +76,6 @@ class LayoutStorage implements ILayoutService {
         top: 0,
         left: 0,
         isComponentSize: true,
-        timeOfCall: DateTime.now()
     );
 
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
@@ -83,10 +88,12 @@ class LayoutStorage implements ILayoutService {
       }
     } else {
       _layoutDataSet[pScreenComponentId] = LayoutData(
-          id: pScreenComponentId,
-          layoutPosition: position,
-          calculatedSize: pSize,
-          lastCalculatedSize: pSize
+        id: pScreenComponentId,
+        layoutPosition: position,
+        calculatedSize: pSize,
+        lastCalculatedSize: pSize,
+        widthConstrains: {},
+        heightConstrains: {}
       );
     }
 
@@ -128,16 +135,66 @@ class LayoutStorage implements ILayoutService {
   Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
     log("perform Layout: ${pParentLayout.id}");
 
-    List<LayoutData> children = _getChildrenOrNull(pParentLayout: pParentLayout)!;
+    // Copy of parent
+    LayoutData parent = LayoutData.from(pParentLayout);
 
-    pParentLayout.lastCalculatedSize = pParentLayout.calculatedSize;
-    pParentLayout.layout!.calculateLayout(pParentLayout, children);
+    // Copy of children with deleted positions
+    List<LayoutData> children = _getChildrenOrNull(pParentLayout: parent)!.map((data) {
+      LayoutData copy = LayoutData.from(data);
+      copy.layoutPosition = null;
+      return copy;
+    }).toList();
 
-    // No Child because of first panel
-    if(pParentLayout.hasNewCalculatedSize && pParentLayout.isChild){
-      return reportPreferredSize(pLayoutData: pParentLayout);
+    parent.lastCalculatedSize = parent.calculatedSize;
+    parent.layout!.calculateLayout(parent, children);
+
+    List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutDataList: children, reason: "Layout has finished")];
+
+
+    if(parent.hasNewCalculatedSize && parent.isChild){
+      return reportPreferredSize(pLayoutData: parent);
     } else {
-      List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutDataList: children, reason: "Layout has finished")];
+      bool needsRebuild = false;
+      bool rebuildReady = true;
+
+      List<LayoutData> toBeConstrained = [];
+
+      for(LayoutData child in children){
+        _layoutDataSet[child.id] = child;
+
+        // Handle constrained components. Components are constrained if their position is smaller than their calculated size
+        if(!child.hasPreferredSize && child.hasCalculatedSize){
+          double calcWidth = child.calculatedSize!.width;
+          double calcHeight = child.calculatedSize!.height;
+
+          double positionWidth = child.layoutPosition!.width;
+          double positionHeight = child.layoutPosition!.height;
+
+          // Check if component was once already constrained and has recalculated itself with constrained size.
+          if(calcWidth > positionWidth || calcHeight > positionHeight){
+            log("${child.id} was constrained, calculated: ${child.calculatedSize}, position: ${child.layoutPosition}" );
+            needsRebuild = true;
+
+            if((calcWidth > positionWidth && !child.widthConstrains.containsKey(positionWidth)) ||
+                (calcHeight > positionHeight && !child.heightConstrains.containsKey(positionHeight)))
+            {
+              rebuildReady = false;
+              if(!child.isParent){
+                toBeConstrained.add(child);
+                child.layoutState = LayoutState.DIRTY;
+              }
+            }
+          }
+        }
+      }
+
+      if(toBeConstrained.isNotEmpty){
+        return [UpdateLayoutPositionCommand(layoutDataList: toBeConstrained, reason: "ConstraintCheck")];
+      }
+
+      if(needsRebuild && rebuildReady) {
+        parent.layout!.calculateLayout(parent, children);
+      }
 
       for(LayoutData child in children){
         if(child.isParent && _isLegalState(pParentLayout: child)) {
@@ -145,11 +202,18 @@ class LayoutStorage implements ILayoutService {
           commands.addAll(childCommands);
         }
       }
-      if(!pParentLayout.isChild){
-        children.add(pParentLayout);
+
+      // Special case for top most panel
+      if(!parent.isChild){
+        _layoutDataSet[parent.id] = parent;
+        children.add(parent);
       }
+
       return commands;
     }
+
+
+
   }
 
 

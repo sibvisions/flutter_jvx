@@ -14,11 +14,11 @@ class LayoutData implements ICloneable {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// State of layout
-  LayoutState layoutState = LayoutState.VALID;
-
   /// The id of the component.
   final String id;
+
+  /// State of layout
+  LayoutState layoutState = LayoutState.VALID;
 
   /// The id of the parent component.
   String? parentId;
@@ -60,31 +60,33 @@ class LayoutData implements ICloneable {
   int? indexOf;
 
   /// When height has been constrained what width did the component take.
-  Map<double, double>? heightConstrains;
+  Map<double, double> heightConstrains;
 
   /// When width has been constrained what height did the component take.
-  Map<double, double>? widthConstrains;
+  Map<double, double> widthConstrains;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutData].
-  LayoutData(
-      {required this.id,
-      this.parentId,
-      this.layout,
-      this.children = const [],
-      this.constraints,
-      this.minSize,
-      this.maxSize,
-      this.preferredSize,
-      this.insets,
-      this.layoutPosition,
-      this.calculatedSize,
-      this.lastCalculatedSize,
-      this.needsRelayout = false,
-      this.indexOf});
+  LayoutData({
+    required this.id,
+    required this.widthConstrains,
+    required this.heightConstrains,
+    this.parentId,
+    this.layout,
+    this.children = const [],
+    this.constraints,
+    this.minSize,
+    this.maxSize,
+    this.preferredSize,
+    this.insets,
+    this.layoutPosition,
+    this.calculatedSize,
+    this.lastCalculatedSize,
+    this.needsRelayout = false,
+    this.indexOf});
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
@@ -103,15 +105,17 @@ class LayoutData implements ICloneable {
         layoutPosition = pLayoutData.layoutPosition?.clone(),
         needsRelayout = pLayoutData.needsRelayout,
         indexOf = pLayoutData.indexOf,
-        heightConstrains = pLayoutData.heightConstrains != null ? Map.from(pLayoutData.heightConstrains!) : null,
-        widthConstrains = pLayoutData.widthConstrains != null ? Map.from(pLayoutData.widthConstrains!) : null;
+        heightConstrains = Map.from(pLayoutData.heightConstrains),
+        widthConstrains = Map.from(pLayoutData.widthConstrains);
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})
       : layout = null,
         parentId = null,
         children = const [],
-        needsRelayout = true;
+        needsRelayout = true,
+        heightConstrains = {},
+        widthConstrains = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -199,7 +203,7 @@ class LayoutData implements ICloneable {
       return true;
     }
 
-    return calculatedSize!.width != lastCalculatedSize!.width && calculatedSize!.height != lastCalculatedSize!.height;
+    return calculatedSize!.width != lastCalculatedSize!.width || calculatedSize!.height != lastCalculatedSize!.height;
   }
 
   /// Gets the preferred size of a component. The size is between the minimum and maximum size.
@@ -215,6 +219,23 @@ class LayoutData implements ICloneable {
     } else if (hasCalculatedSize) {
       width = calculatedSize!.width;
       height = calculatedSize!.height;
+
+      // If component has position, see if a constrained position has already been set and replace current height or width
+      if(hasPosition){
+        if(width > layoutPosition!.width){
+          double? constrainedHeight = widthConstrains[layoutPosition!.width];
+          if(constrainedHeight != null){
+            height = constrainedHeight;
+          }
+        }
+
+        if(height > layoutPosition!.height){
+          double? constraintWidth = heightConstrains[layoutPosition!.height];
+          if(constraintWidth != null){
+            width = constraintWidth;
+          }
+        }
+      }
     }
 
     if (hasMinSize) {

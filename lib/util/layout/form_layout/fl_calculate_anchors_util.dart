@@ -63,9 +63,6 @@ class FLCalculateAnchorsUtil {
     }
 
     autoSizeAnchors = getAutoSizeAnchorsBetween(pStartAnchor: pRightBottomAnchor, pEndAnchor: pLeftTopAnchor, pAnchors: pAnchors);
-    if(pRightBottomAnchor.name == "b9"){
-      log(autoSizeAnchors.toString());
-    }
     if (autoSizeAnchors.length == pAutoSizeCount) {
       double fixedSize = pRightBottomAnchor.getAbsolutePosition() - pLeftTopAnchor.getAbsolutePosition();
       for (FormLayoutAnchor anchor in autoSizeAnchors) {

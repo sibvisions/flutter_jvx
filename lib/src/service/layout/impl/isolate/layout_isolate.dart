@@ -18,7 +18,7 @@ void layoutIsolate(SendPort callerSendPort) {
   callerSendPort.send(isolateReceivePort.sendPort);
 
 
-  final LayoutStorage layoutStorage = LayoutStorage();
+  final LayoutService layoutStorage = LayoutService();
 
   isolateReceivePort.listen((message) async {
 

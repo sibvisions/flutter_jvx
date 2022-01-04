@@ -204,25 +204,21 @@ class FormLayout extends ILayout {
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.leftAnchor, rightBottomAnchor: constraint.rightAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("1st");
           autoSizeCount = count;
         }
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.rightAnchor, rightBottomAnchor: constraint.leftAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("2nd");
           autoSizeCount = count;
         }
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.topAnchor, rightBottomAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("3rd");
           autoSizeCount = count;
         }
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.bottomAnchor, rightBottomAnchor: constraint.topAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("4th");
           autoSizeCount = count;
         }
       }
@@ -560,11 +556,12 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
-      ILayout.markForRedrawIfNeeded(layoutData, Size.fromWidth(width));
-
-      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top, timeOfCall: DateTime.now());
+      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
     });
-    pParent.calculatedSize = Size(pMinPrefSize.preferredWidth + margins.marginRight + margins.marginLeft, pMinPrefSize.preferredHeight + margins.marginBottom + margins.marginTop);
+    pParent.calculatedSize = Size(
+        pMinPrefSize.preferredWidth + margins.marginRight + margins.marginLeft,
+        pMinPrefSize.preferredHeight + margins.marginBottom + margins.marginTop
+    );
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors

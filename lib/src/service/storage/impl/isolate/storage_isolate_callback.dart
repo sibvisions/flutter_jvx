@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/layout/impl/layout_service.dart';
+
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 
 import 'message/endpoint/storage_isolate_get_menu_message.dart';

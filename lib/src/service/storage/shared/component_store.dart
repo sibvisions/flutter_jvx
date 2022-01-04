@@ -98,7 +98,6 @@ class ComponentStore implements IStorageService {
 
           // Handle component removed
           if (newModel.isRemoved) {
-            log("got do delete !!!!!!!!!!!!!!");
             _componentMap.remove(newModel.id);
             _removedComponents[newModel.id] = newModel;
           } else {

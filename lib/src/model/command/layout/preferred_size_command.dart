@@ -6,12 +6,6 @@ class PreferredSizeCommand extends LayoutCommand {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Component id.
-  final String componentId;
-
-  /// Id of the parent component.
-  final String parentId;
-
   /// Contains the current [LayoutData] for the component.
   final LayoutData layoutData;
 
@@ -21,8 +15,6 @@ class PreferredSizeCommand extends LayoutCommand {
 
   PreferredSizeCommand({
     required this.layoutData,
-    required this.parentId,
-    required this.componentId,
     required String reason,
   }) : super(reason: reason);
 
@@ -31,5 +23,6 @@ class PreferredSizeCommand extends LayoutCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "PreferredSizeCommand | Component: $componentId | Parent: $parentId | Reason $reason";
+  String get logString => "PreferredSizeCommand";
 }
+

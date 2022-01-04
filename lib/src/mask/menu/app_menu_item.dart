@@ -23,11 +23,14 @@ class AppMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 182,
-      child: (GestureDetector(
-        onTap: _onMenuItemClick,
-        child: Text(menuItemModel.label),
-      )),
+      width: 180,
+      child: Material(
+        color: Colors.cyan,
+        child: InkWell(
+          child: Center(child: Text(menuItemModel.label)),
+          onTap: _onMenuItemClick,
+        ),
+      )
     );
   }
 }
