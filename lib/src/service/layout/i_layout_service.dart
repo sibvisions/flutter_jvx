@@ -21,7 +21,7 @@ abstract class ILayoutService {
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize});
 
   /// Marks Layout as Dirty, used to wait for all changing components to re-register themselves to avoid unnecessary re-renders.
-  void markLayoutAsDirty({required String pComponentId});
+  Future<bool> markLayoutAsDirty({required String pComponentId});
 
   /// Removes a parent.
   ///

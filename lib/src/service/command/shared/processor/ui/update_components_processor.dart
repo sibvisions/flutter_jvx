@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
-import '../../../../../model/component/fl_component_model.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
@@ -13,13 +14,12 @@ class UpdateComponentsProcessor
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
     IUiService uiService = getUiService();
 
-    // Set Dirty in layoutService
-    for (String affected in command.affectedComponents) {
-      layoutService.markLayoutAsDirty(pComponentId: affected);
-    }
-    for (FlComponentModel changed in command.changedComponents) {
-      layoutService.markLayoutAsDirty(pComponentId: changed.id);
-    }
+    log("------------------- Component are updating");
+
+    List<Future> futureList = [];
+    futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
+    futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));
+
 
     // Update Components in UI
 
@@ -30,6 +30,8 @@ class UpdateComponentsProcessor
     uiService.notifyChangedComponents(updatedModels: command.changedComponents);
 
     uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
+
+    log("------------------- Component are finished updating");
 
     return [];
   }

@@ -559,8 +559,8 @@ class FormLayout extends ILayout {
       layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
     });
     pParent.calculatedSize = Size(
-        pMinPrefSize.preferredWidth + margins.marginRight + margins.marginLeft,
-        pMinPrefSize.preferredHeight + margins.marginBottom + margins.marginTop
+        pMinPrefSize.preferredWidth,
+        pMinPrefSize.preferredHeight
     );
   }
 

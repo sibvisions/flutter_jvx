@@ -162,10 +162,10 @@ class ComponentStore implements IStorageService {
       }
     }
 
-    log("----------DeletedUiComponents: $deletedUiComponents ");
-    log("----------affected: $affectedUiComponents ");
-    log("----------changed: $changedUiComponents ");
-    log("----------newUiComponents: $newUiComponents ");
+    // log("----------DeletedUiComponents: $deletedUiComponents ");
+    // log("----------affected: $affectedUiComponents ");
+    // log("----------changed: $changedUiComponents ");
+    // log("----------newUiComponents: $newUiComponents ");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
         affectedComponents: affectedUiComponents,

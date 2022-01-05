@@ -42,9 +42,9 @@ class IsolateLayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void markLayoutAsDirty({required String pComponentId}) async {
+  Future<bool> markLayoutAsDirty({required String pComponentId}) {
     MarkAsDirtyMessage message = MarkAsDirtyMessage(id: pComponentId);
-    _sendMessage(message);
+    return _sendMessage(message);
   }
 
   @override
@@ -53,21 +53,21 @@ class IsolateLayoutService implements ILayoutService {
   }
 
   @override
-  Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
+  Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) {
     ReportLayoutMessage message = ReportLayoutMessage(layoutData: pLayoutData);
-    return await _sendMessage(message);
+    return _sendMessage(message);
   }
 
   @override
-  Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
+  Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) {
     ReportPreferredSizeMessage message = ReportPreferredSizeMessage(layoutData: pLayoutData);
-    return await _sendMessage(message);
+    return _sendMessage(message);
   }
 
   @override
-  Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
+  Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) {
     SetScreenSizeMessage message = SetScreenSizeMessage(componentId: pScreenComponentId, size: pSize);
-    return await _sendMessage(message);
+    return _sendMessage<List<BaseCommand>>(message);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +76,7 @@ class IsolateLayoutService implements ILayoutService {
 
 
   /// Sends the [message] to the api Isolate and returns a Future containing the first answer.
-  Future _sendMessage(LayoutMessage message) async {
+  Future<T> _sendMessage<T>(LayoutMessage message) async {
     SendPort? apiPort = _apiSendPort;
     if (apiPort != null) {
       // Response will come to this receivePort
@@ -87,7 +87,7 @@ class IsolateLayoutService implements ILayoutService {
       // send message to isolate
       apiPort.send(wrapper);
       // Needs to be casted, response type is assured by message itself (sendResponse method)
-      return receivePort.first;
+      return await receivePort.first;
     } else {
       throw Exception("SendPort to Storage Isolate was null, could not send request");
     }

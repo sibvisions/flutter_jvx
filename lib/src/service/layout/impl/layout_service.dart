@@ -25,7 +25,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    // log("reportLayout: ${pLayoutData.id}");
+    log("reportLayout: ${pLayoutData.id}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -78,6 +78,7 @@ class LayoutService implements ILayoutService {
         isComponentSize: true,
     );
 
+
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
     if(existingLayout != null){
       existingLayout.calculatedSize = pSize;
@@ -101,12 +102,14 @@ class LayoutService implements ILayoutService {
   }
 
   @override
-  void markLayoutAsDirty({required String pComponentId}) {
+  Future<bool> markLayoutAsDirty({required String pComponentId}) async {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if(data != null){
      data.layoutState = LayoutState.DIRTY;
+     return true;
     }
+    return false;
   }
 
   @override

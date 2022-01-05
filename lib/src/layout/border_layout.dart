@@ -121,8 +121,6 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childNorth != null) {
       Size bestSize = _childNorth!.bestSize;
 
-      ILayout.markForRedrawIfNeeded(_childNorth!, Size.fromWidth(width));
-
       _childNorth!.layoutPosition =
           LayoutPosition(left: x, top: y, width: width, height: bestSize.height, isComponentSize: true);
 
@@ -133,8 +131,6 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childSouth != null) {
         Size bestSize = _childSouth!.bestSize;
 
-        ILayout.markForRedrawIfNeeded(_childSouth!, Size.fromWidth(width));
-
         _childSouth!.layoutPosition = LayoutPosition(
             left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
 
@@ -143,8 +139,6 @@ class BorderLayout implements ILayout, ICloneable {
 
     if (_childWest != null) {
       Size bestSize = _childWest!.bestSize;
-
-      ILayout.markForRedrawIfNeeded(_childWest!, Size.fromHeight(height));
 
       _childSouth!.layoutPosition =
           LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true);
@@ -156,8 +150,6 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childEast != null) {
       Size bestSize = _childEast!.bestSize;
 
-      ILayout.markForRedrawIfNeeded(_childEast!, Size.fromHeight(height));
-
       _childEast!.layoutPosition = LayoutPosition(
           left: x + width - bestSize.width, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
@@ -165,7 +157,6 @@ class BorderLayout implements ILayout, ICloneable {
     }
 
     if (_childCenter != null) {
-      ILayout.markForRedrawIfNeeded(_childCenter!, Size.fromWidth(width));
 
       _childCenter!.layoutPosition =
           LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true);
