@@ -213,10 +213,7 @@ class LayoutData implements ICloneable {
     double width = 0;
     double height = 0;
 
-    if (hasPreferredSize) {
-      width = preferredSize!.width;
-      height = preferredSize!.height;
-    } else if (hasCalculatedSize) {
+    if (hasCalculatedSize) {
       width = calculatedSize!.width;
       height = calculatedSize!.height;
 

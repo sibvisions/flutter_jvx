@@ -113,7 +113,7 @@ class BorderLayout implements ILayout, ICloneable {
     double height = preferredSize.height - y - pParent.insets!.bottom + eiMargins.bottom;
 
     // If parent has forced this into a size, cant exceed these values.
-    if (!pParent.hasPreferredSize && pParent.hasCalculatedSize && pParent.hasPosition) {
+    if (pParent.hasPosition) {
       width = pParent.layoutPosition!.width - x - pParent.insets!.right - eiMargins.right;
       height = pParent.layoutPosition!.height - y - pParent.insets!.bottom - eiMargins.bottom ;
     }

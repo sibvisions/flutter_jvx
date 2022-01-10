@@ -119,24 +119,10 @@ class FormLayout extends ILayout {
     double dimWidth;
     double dimHeight;
 
-    if (pParent.hasPreferredSize) {
-      dimWidth = pParent.preferredSize!.width;
-      dimHeight = pParent.preferredSize!.height;
-    } else if (pParent.hasCalculatedSize &&
-        pParent.hasPosition &&
-        pParent.calculatedSize!.width != double.infinity &&
-        pParent.calculatedSize!.height != double.infinity) {
+    if (pParent.hasPosition) {
       dimWidth = pParent.layoutPosition!.width;
       dimHeight = pParent.layoutPosition!.height;
-    } else if (pParent.hasCalculatedSize) {
-      dimWidth = pParent.calculatedSize!.width != double.infinity ? pParent.calculatedSize!.width : 0.0;
-      dimHeight = pParent.calculatedSize!.height != double.infinity ? pParent.calculatedSize!.height : 0.0;
     } else {
-      dimWidth = 0.0;
-      dimHeight = 0.0;
-    }
-
-    if (dimHeight == 0.0 && dimWidth == 0.0) {
       return null;
     }
 

@@ -21,9 +21,6 @@ class FlowLayout extends ILayout {
   /// The split layout string.
   final List<String> splitLayoutString;
 
-  /// The original layout data string
-  final String layoutData;
-
   /// Margins of the BorderLayout
   late final Margins margins;
 
@@ -47,7 +44,7 @@ class FlowLayout extends ILayout {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlowLayout({required this.layoutData, required this.layoutString}) : splitLayoutString = layoutString.split(",") {
+  FlowLayout({required this.layoutString}) : splitLayoutString = layoutString.split(",") {
     margins = Margins.fromList(marginList: splitLayoutString.sublist(1, 5));
     gaps = Gaps.createFromList(gapsList: splitLayoutString.sublist(5, 7));
     isRowOrientationHorizontal =
@@ -64,7 +61,7 @@ class FlowLayout extends ILayout {
 
   @override
   ILayout clone() {
-    return FlowLayout(layoutData: layoutData, layoutString: layoutString);
+    return FlowLayout(layoutString: layoutString);
   }
 
   @override
@@ -76,15 +73,9 @@ class FlowLayout extends ILayout {
     double dimWidth;
     double dimHeight;
 
-    if (pParent.hasPreferredSize) {
-      dimWidth = pParent.preferredSize!.width;
-      dimHeight = pParent.preferredSize!.height;
-    } else if (pParent.hasCalculatedSize && pParent.hasPosition) {
+    if(pParent.hasPosition) {
       dimWidth = pParent.layoutPosition!.width;
       dimHeight = pParent.layoutPosition!.height;
-    } else if (pParent.hasCalculatedSize) {
-      dimWidth = pParent.calculatedSize!.width != double.infinity ? pParent.calculatedSize!.width : 0.0;
-      dimHeight = pParent.calculatedSize!.height != double.infinity ? pParent.calculatedSize!.height : 0.0;
     } else {
       dimWidth = 0.0;
       dimHeight = 0.0;

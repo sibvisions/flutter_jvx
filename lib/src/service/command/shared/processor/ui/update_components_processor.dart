@@ -19,16 +19,19 @@ class UpdateComponentsProcessor
     log("------------------- Components are updating");
 
     layoutService.setValid(isValid: false);
-    Future isLegal = Future.doWhile(() async {
-      bool a = await layoutService.layoutInProcess();
 
-      if(a){
+    // Check to see if layout is currently busy
+    Future isLegal = Future.doWhile(() async {
+      bool isBusy = await layoutService.layoutInProcess();
+
+      if(isBusy){
         await Future.delayed(const Duration(milliseconds: 2));
       }
 
-      return a;
+      return isBusy;
     });
 
+    // Update components when current layout run is finished
     isLegal.then((_) {
       layoutService.setValid(isValid: true);
 
