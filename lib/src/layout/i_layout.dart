@@ -19,7 +19,7 @@ abstract class ILayout implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Calculates the constraints and widths and heigths of the children components and those of the [pParent].
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren);
+  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren);
 
   @override
   ILayout clone();
@@ -41,22 +41,13 @@ abstract class ILayout implements ICloneable {
         case "GridLayout":
           return GridLayout();
         case "FlowLayout":
-          return FlowLayout(layoutData: pLayoutData ?? "", layoutString: pLayout);
+          return FlowLayout(
+              layoutData: pLayoutData ?? "", layoutString: pLayout);
         default:
           return null;
       }
     }
 
     return null;
-  }
-
-  static void markForRedrawIfNeeded(LayoutData pChild, Size pNewCalcSize) {
-    if (!pChild.isParent &&
-        !pChild.hasPreferredSize &&
-        pChild.hasCalculatedSize &&
-        ((pNewCalcSize.width != double.infinity && pChild.calculatedSize!.width != pNewCalcSize.width) ||
-            (pNewCalcSize.height != double.infinity && pChild.calculatedSize!.height != pNewCalcSize.height))) {
-      pChild.calculatedSize = pNewCalcSize;
-    }
   }
 }

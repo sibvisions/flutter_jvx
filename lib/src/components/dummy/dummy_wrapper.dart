@@ -20,6 +20,7 @@ class _DummyWrapperState extends BaseCompWrapperState {
       id: model.id,
       height: getHeightForComponent(),
       width: getWidthForComponent(),
+      key: Key("${model.id}_Widget"),
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {

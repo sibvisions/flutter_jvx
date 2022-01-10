@@ -6,6 +6,6 @@ import '../../i_command_processor.dart';
 class RegisterParentProcessor with LayoutServiceMixin implements ICommandProcessor<RegisterParentCommand> {
   @override
   Future<List<BaseCommand>> processCommand(RegisterParentCommand command) async {
-    return layoutService.registerAsParent(pLayoutData: command.layoutData);
+    return layoutService.reportLayout(pLayoutData: command.layoutData);
   }
 }

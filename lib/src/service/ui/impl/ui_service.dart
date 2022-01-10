@@ -114,8 +114,8 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void setLayoutPosition({required String id, required LayoutData layoutData}) {
-    ComponentCallback? callback = _registeredComponents[id];
+  void setLayoutPosition({required LayoutData layoutData}) {
+    ComponentCallback? callback = _registeredComponents[layoutData.id];
     if (callback != null) {
       callback.call(data: layoutData);
     } else {

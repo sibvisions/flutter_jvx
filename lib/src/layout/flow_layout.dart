@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:ui';
 import 'dart:math';
 
@@ -69,9 +68,7 @@ class FlowLayout extends ILayout {
   }
 
   @override
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    /** Map which contains component ids as key and positioning and sizing properties as value */
-    HashMap<String, LayoutData> positionMap = HashMap();
+  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
 
     /** Sorts the Childcomponent based on indexOf property */
     pChildren.sort((a, b) => a.indexOf! - b.indexOf!);
@@ -146,7 +143,7 @@ class FlowLayout extends ILayout {
     bool bFirst = true;
 
     for (LayoutData child in pChildren) {
-      if (child.isVisible) {
+      if (child.needsRelayout) {
         Size size = child.bestSize;
 
         if (isRowOrientationHorizontal) {
@@ -204,15 +201,9 @@ class FlowLayout extends ILayout {
 
           y += size.height + gaps.verticalGap;
         }
-        positionMap[child.id] = child;
       }
     }
-
-    if (!pParent.hasCalculatedSize) {
-      pParent.calculatedSize = Size(iWidth, iHeight);
-    }
-
-    return positionMap;
+    pParent.calculatedSize = Size(iWidth, iHeight);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,7 +248,7 @@ class FlowLayout extends ILayout {
     bool bFirst = true;
 
     for (LayoutData component in pChildren) {
-      if (component.isVisible) {
+      if (component.needsRelayout) {
         Size prefSize = component.bestSize;
         if (isRowOrientationHorizontal) {
           /** If this isn't the first component add the gap between components*/

@@ -72,7 +72,7 @@ class FormLayout extends ILayout {
   }
 
   @override
-  HashMap<String, LayoutData> calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
+  void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     /// Size set by Parent
     final Size? setPosition = _getSize(pParent);
 
@@ -107,7 +107,8 @@ class FormLayout extends ILayout {
         pMargins: margins,
         id: pParent.id,
         pChildrenData: pChildren,
-        pParent: pParent);
+        pParent: pParent,
+        pMinPrefSize: preferredMinimumSize);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,35 +181,19 @@ class FormLayout extends ILayout {
     for (double autoSizeCount = 1; autoSizeCount > 0 && autoSizeCount < 10000000;) {
       for (var component in pComponentData) {
         FormLayoutConstraints constraint = pComponentConstraints[component.id]!;
-        if (component.isVisible) {
-          Size preferredSize = component.bestSize;
-          FLCalculateAnchorsUtil.calculateAutoSize(
-              pLeftTopAnchor: constraint.topAnchor,
-              pRightBottomAnchor: constraint.bottomAnchor,
-              pPreferredSize: preferredSize.height,
-              pAutoSizeCount: autoSizeCount,
-              pAnchors: pAnchors);
-          FLCalculateAnchorsUtil.calculateAutoSize(
-              pLeftTopAnchor: constraint.leftAnchor,
-              pRightBottomAnchor: constraint.rightAnchor,
-              pPreferredSize: preferredSize.width,
-              pAutoSizeCount: autoSizeCount,
-              pAnchors: pAnchors);
-        } else {
-          if (constraint.topAnchor.autoSize) {
-            constraint.topAnchor.firstCalculation = false;
-          }
-          if (constraint.leftAnchor.autoSize) {
-            constraint.leftAnchor.firstCalculation = false;
-          }
-          if (constraint.bottomAnchor.autoSize) {
-            constraint.bottomAnchor.firstCalculation = false;
-          }
-          if (constraint.rightAnchor.autoSize) {
-            constraint.rightAnchor.firstCalculation = false;
-          }
-          log("${component.id} not visible");
-        }
+        Size preferredSize = component.bestSize;
+        FLCalculateAnchorsUtil.calculateAutoSize(
+            pLeftTopAnchor: constraint.topAnchor,
+            pRightBottomAnchor: constraint.bottomAnchor,
+            pPreferredSize: preferredSize.height,
+            pAutoSizeCount: autoSizeCount,
+            pAnchors: pAnchors);
+        FLCalculateAnchorsUtil.calculateAutoSize(
+            pLeftTopAnchor: constraint.leftAnchor,
+            pRightBottomAnchor: constraint.rightAnchor,
+            pPreferredSize: preferredSize.width,
+            pAutoSizeCount: autoSizeCount,
+            pAnchors: pAnchors);
       }
       autoSizeCount = 10000000;
 
@@ -219,25 +204,21 @@ class FormLayout extends ILayout {
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.leftAnchor, rightBottomAnchor: constraint.rightAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("1st");
           autoSizeCount = count;
         }
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.rightAnchor, rightBottomAnchor: constraint.leftAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("2nd");
           autoSizeCount = count;
         }
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.topAnchor, rightBottomAnchor: constraint.bottomAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("3rd");
           autoSizeCount = count;
         }
         count = FLCalculateAnchorsUtil.finishAutoSizeCalculation(
             leftTopAnchor: constraint.bottomAnchor, rightBottomAnchor: constraint.topAnchor, pAnchors: pAnchors);
         if (count > 0 && count < autoSizeCount) {
-          log("4th");
           autoSizeCount = count;
         }
       }
@@ -515,29 +496,27 @@ class FormLayout extends ILayout {
     bba.position -= pMargins.marginTop;
 
     for (var component in pComponentData) {
-      if (component.isVisible) {
-        FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
-        Size preferredComponentSize = component.bestSize;
-
-        FLCalculateDependentUtil.calculateRelativeAnchor(
-            leftTopAnchor: constraints.leftAnchor,
-            rightBottomAnchor: constraints.rightAnchor,
-            preferredSize: preferredComponentSize.width);
-        FLCalculateDependentUtil.calculateRelativeAnchor(
-            leftTopAnchor: constraints.topAnchor,
-            rightBottomAnchor: constraints.bottomAnchor,
-            preferredSize: preferredComponentSize.height);
-      }
+      FormLayoutConstraints constraints = pComponentConstraints[component.id]!;
+      Size preferredComponentSize = component.bestSize;
+      FLCalculateDependentUtil.calculateRelativeAnchor(
+          leftTopAnchor: constraints.leftAnchor,
+          rightBottomAnchor: constraints.rightAnchor,
+          preferredSize: preferredComponentSize.width);
+      FLCalculateDependentUtil.calculateRelativeAnchor(
+          leftTopAnchor: constraints.topAnchor,
+          rightBottomAnchor: constraints.bottomAnchor,
+          preferredSize: preferredComponentSize.height);
     }
   }
 
-  HashMap<String, LayoutData> _buildComponents(
+  void _buildComponents(
       {required HashMap<String, FormLayoutAnchor> pAnchors,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       required Margins pMargins,
       required String id,
       required List<LayoutData> pChildrenData,
-      required LayoutData pParent}) {
+      required LayoutData pParent,
+      required FormLayoutSize pMinPrefSize}) {
     /// Get Border- and Margin Anchors for calculation
     FormLayoutAnchor lba = pAnchors["l"]!;
     FormLayoutAnchor rba = pAnchors["r"]!;
@@ -556,9 +535,6 @@ class FormLayout extends ILayout {
     /// Used for layoutSize
     FormLayoutConstraints borderConstraints =
         FormLayoutConstraints(bottomAnchor: bba, leftAnchor: lba, rightAnchor: rba, topAnchor: tba);
-
-    // Sizes of Children
-    HashMap<String, LayoutData> sizeMap = HashMap();
 
     // This layout has additional margins to add.
     double additionalLeft = marginConstraints.leftAnchor.getAbsolutePosition();
@@ -580,21 +556,12 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
-      ILayout.markForRedrawIfNeeded(layoutData, Size.fromWidth(width));
-
-      if (layoutData.isVisible) {
-        layoutData.layoutPosition =
-            LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
-      } else {
-        layoutData.layoutPosition = LayoutPosition(width: 0, height: 0, isComponentSize: true, left: 0, top: 0);
-      }
-      sizeMap[componentId] = layoutData;
+      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
     });
-    double height = borderConstraints.bottomAnchor.position - borderConstraints.topAnchor.position;
-    double width = borderConstraints.rightAnchor.position - borderConstraints.leftAnchor.position;
-    pParent.calculatedSize = Size(width, height);
-
-    return sizeMap;
+    pParent.calculatedSize = Size(
+        pMinPrefSize.preferredWidth,
+        pMinPrefSize.preferredHeight
+    );
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors

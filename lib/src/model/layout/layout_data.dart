@@ -14,11 +14,11 @@ class LayoutData implements ICloneable {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// State of layout
-  LayoutState layoutState = LayoutState.VALID;
-
   /// The id of the component.
   final String id;
+
+  /// State of layout
+  LayoutState layoutState = LayoutState.VALID;
 
   /// The id of the parent component.
   String? parentId;
@@ -27,7 +27,7 @@ class LayoutData implements ICloneable {
   ILayout? layout;
 
   /// The children of the component.
-  List<String>? children;
+  List<String> children;
 
   /// The constraints as sent by the server for the component.
   String? constraints;
@@ -54,10 +54,16 @@ class LayoutData implements ICloneable {
   LayoutPosition? layoutPosition;
 
   /// "True" if this component should be visible, true by default.
-  bool isVisible;
+  bool needsRelayout;
 
   /// The index of the component in relation to its siblings in a flow layout.
   int? indexOf;
+
+  /// When height has been constrained what width did the component take.
+  Map<double, double> heightConstrains;
+
+  /// When width has been constrained what height did the component take.
+  Map<double, double> widthConstrains;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -66,9 +72,11 @@ class LayoutData implements ICloneable {
   /// Initializes a [LayoutData].
   LayoutData(
       {required this.id,
+      required this.widthConstrains,
+      required this.heightConstrains,
       this.parentId,
       this.layout,
-      this.children,
+      this.children = const [],
       this.constraints,
       this.minSize,
       this.maxSize,
@@ -77,7 +85,7 @@ class LayoutData implements ICloneable {
       this.layoutPosition,
       this.calculatedSize,
       this.lastCalculatedSize,
-      this.isVisible = true,
+      this.needsRelayout = false,
       this.indexOf});
 
   /// Clones [LayoutData] as a deep copy.
@@ -85,7 +93,7 @@ class LayoutData implements ICloneable {
       : id = pLayoutData.id,
         parentId = pLayoutData.parentId,
         layout = pLayoutData.layout?.clone(),
-        children = pLayoutData.children != null ? List.from(pLayoutData.children!) : null,
+        children = List.from(pLayoutData.children),
         constraints = pLayoutData.constraints,
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
@@ -95,14 +103,19 @@ class LayoutData implements ICloneable {
         insets = pLayoutData.insets?.copyWith(),
         layoutState = pLayoutData.layoutState,
         layoutPosition = pLayoutData.layoutPosition?.clone(),
-        isVisible = pLayoutData.isVisible,
-        indexOf = pLayoutData.indexOf;
+        needsRelayout = pLayoutData.needsRelayout,
+        indexOf = pLayoutData.indexOf,
+        heightConstrains = Map.from(pLayoutData.heightConstrains),
+        widthConstrains = Map.from(pLayoutData.widthConstrains);
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})
       : layout = null,
         parentId = null,
-        isVisible = true;
+        children = const [],
+        needsRelayout = true,
+        heightConstrains = {},
+        widthConstrains = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -138,7 +151,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is a parent.
   bool get isParent {
-    return children != null && children!.isNotEmpty && layout != null;
+    return children.isNotEmpty && layout != null;
   }
 
   /// If this component is a child and therefore has a parent.
@@ -190,7 +203,7 @@ class LayoutData implements ICloneable {
       return true;
     }
 
-    return calculatedSize!.width != lastCalculatedSize!.width && calculatedSize!.height != lastCalculatedSize!.height;
+    return calculatedSize!.width != lastCalculatedSize!.width || calculatedSize!.height != lastCalculatedSize!.height;
   }
 
   /// Gets the preferred size of a component. The size is between the minimum and maximum size.
@@ -206,6 +219,23 @@ class LayoutData implements ICloneable {
     } else if (hasCalculatedSize) {
       width = calculatedSize!.width;
       height = calculatedSize!.height;
+
+      // If component has position, see if a constrained position has already been set and replace current height or width
+      if (hasPosition) {
+        if (width > layoutPosition!.width) {
+          double? constrainedHeight = widthConstrains[layoutPosition!.width];
+          if (constrainedHeight != null) {
+            height = constrainedHeight;
+          }
+        }
+
+        if (height > layoutPosition!.height) {
+          double? constraintWidth = heightConstrains[layoutPosition!.height];
+          if (constraintWidth != null) {
+            width = constraintWidth;
+          }
+        }
+      }
     }
 
     if (hasMinSize) {
@@ -216,29 +246,6 @@ class LayoutData implements ICloneable {
       if (minSize!.height > height) {
         height = minSize!.height;
       }
-    }
-
-    if (hasMaxSize) {
-      if (maxSize!.width < width) {
-        width = maxSize!.width;
-      }
-
-      if (maxSize!.height < height) {
-        height = maxSize!.height;
-      }
-    }
-
-    return Size(width, height);
-  }
-
-  /// Returns the minimum size. If maximum size is smaller than minimum, returns maximum size. If no minimum size is set, returns `0,0`
-  Size get bestMinSize {
-    double width = 0;
-    double height = 0;
-
-    if (hasMinSize) {
-      width = minSize!.width;
-      height = minSize!.height;
     }
 
     if (hasMaxSize) {

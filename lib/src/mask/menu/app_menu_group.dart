@@ -22,7 +22,7 @@ class AppMenuGroup extends StatelessWidget {
         itemCount: menuGroupModel.items.length,
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-            maxCrossAxisExtent: 150, crossAxisSpacing: 1, mainAxisExtent: 70),
+            maxCrossAxisExtent: 150, crossAxisSpacing: 5, mainAxisExtent: 70, mainAxisSpacing: 5),
         itemBuilder: (context, index) => AppMenuItem(menuItemModel: menuGroupModel.items[index], uiService: uiService),
       )
     ]);

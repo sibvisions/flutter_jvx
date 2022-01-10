@@ -1,8 +1,11 @@
+import 'dart:developer';
+
+import '../../../../api/shared/fl_component_classname.dart';
+
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
-import '../../../../../model/component/fl_component_model.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
@@ -13,23 +16,30 @@ class UpdateComponentsProcessor
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
     IUiService uiService = getUiService();
 
-    // Set Dirty in layoutService
-    for (String affected in command.affectedComponents) {
-      layoutService.markLayoutAsDirty(id: affected);
-    }
-    for (FlComponentModel changed in command.changedComponents) {
-      layoutService.markLayoutAsDirty(id: changed.id);
-    }
+    log("------------------- Component are updating");
 
-    // Update Components in UI
+    await layoutService.setValid(isValid: false);
 
-    uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
+    while (await layoutService.layoutInProcess()) {}
 
-    uiService.saveNewComponents(newModels: command.newComponents);
+    await layoutService.setValid(isValid: true);
 
-    uiService.notifyChangedComponents(updatedModels: command.changedComponents);
+    List<Future> futureList = [];
+    futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
+    futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));
 
-    uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
+    // Update Components in UI after all are marked as dirty
+    Future.wait(futureList).then((value) {
+      uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
+
+      uiService.saveNewComponents(newModels: command.newComponents);
+
+      uiService.notifyChangedComponents(updatedModels: command.changedComponents);
+
+      uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
+
+      log("------------------- Component are finished updating");
+    });
 
     return [];
   }

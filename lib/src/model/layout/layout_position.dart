@@ -23,8 +23,6 @@ class LayoutPosition implements ICloneable {
   /// (Fixed size or not, e.g. [BorderLayout] has this always `true`)
   bool isComponentSize;
 
-  /// The time of the initial layout call to determine if the [LayoutPosition] is still relevant for components.
-  DateTime? timeOfCall;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -36,8 +34,7 @@ class LayoutPosition implements ICloneable {
       required this.height,
       required this.top,
       required this.left,
-      required this.isComponentSize,
-      this.timeOfCall});
+      required this.isComponentSize,});
 
   /// Clones [LayoutPosition] as a deep copy.
   LayoutPosition.from(LayoutPosition pLayoutPosition)
@@ -45,8 +42,7 @@ class LayoutPosition implements ICloneable {
         height = pLayoutPosition.height,
         top = pLayoutPosition.top,
         left = pLayoutPosition.left,
-        isComponentSize = pLayoutPosition.isComponentSize,
-        timeOfCall = pLayoutPosition.timeOfCall != null ? DateTime.parse(pLayoutPosition.timeOfCall.toString()) : null;
+        isComponentSize = pLayoutPosition.isComponentSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -64,6 +60,6 @@ class LayoutPosition implements ICloneable {
 
   @override
   String toString() {
-    return "$top, $left | $width, $height | $isComponentSize, $timeOfCall";
+    return "$top, $left | $width, $height | $isComponentSize";
   }
 }

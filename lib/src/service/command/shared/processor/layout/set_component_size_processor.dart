@@ -6,6 +6,6 @@ import '../../i_command_processor.dart';
 class SetComponentSizeProcessor with LayoutServiceMixin implements ICommandProcessor<SetComponentSizeCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SetComponentSizeCommand command) async {
-    return layoutService.setComponentSize(id: command.componentId, size: command.size);
+    return layoutService.setScreenSize(pScreenComponentId: command.componentId, pSize: command.size);
   }
 }
