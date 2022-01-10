@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:flutter_client/src/service/api/shared/fl_component_classname.dart';
+
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -20,18 +22,22 @@ class UpdateComponentsProcessor
     futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
     futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));
 
+    // Update Components in UI after all are marked as dirty
+    Future.wait(futureList).then((value) {
+      uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
 
-    // Update Components in UI
+      uiService.saveNewComponents(newModels: command.newComponents);
 
-    uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
+      uiService.notifyChangedComponents(updatedModels: command.changedComponents);
 
-    uiService.saveNewComponents(newModels: command.newComponents);
+      uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
 
-    uiService.notifyChangedComponents(updatedModels: command.changedComponents);
+      log("------------------- Component are finished updating");
+    });
 
-    uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
 
-    log("------------------- Component are finished updating");
+
+
 
     return [];
   }

@@ -44,7 +44,7 @@ class IsolateLayoutService implements ILayoutService {
   @override
   Future<bool> markLayoutAsDirty({required String pComponentId}) {
     MarkAsDirtyMessage message = MarkAsDirtyMessage(id: pComponentId);
-    return _sendMessage(message);
+    return _sendMessage<bool>(message);
   }
 
   @override

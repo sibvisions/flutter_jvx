@@ -106,8 +106,9 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if(data != null){
-     data.layoutState = LayoutState.DIRTY;
-     return true;
+      log("$pComponentId was marked as DIRTY");
+      data.layoutState = LayoutState.DIRTY;
+      return true;
     }
     return false;
   }

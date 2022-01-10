@@ -81,6 +81,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   receiveNewModel({required T newModel}) {
+    log("${newModel.id} received new Model");
+
     setState(() {
       // Set potentially new layout data contained in the new model
       layoutData.constraints = newModel.constraints;
@@ -103,6 +105,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   /// Sets State with new LayoutData
   receiveNewLayoutData({required LayoutData newLayoutData}) {
     layoutData = newLayoutData;
+    log("${layoutData.id} received new layout data");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if(!layoutData.hasPreferredSize && layoutData.hasCalculatedSize && layoutData.hasPosition && lastContext != null){

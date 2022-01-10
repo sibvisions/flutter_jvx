@@ -29,7 +29,7 @@ void layoutIsolate(SendPort callerSendPort) {
     dynamic response;
 
     if(isolateMessage is MarkAsDirtyMessage){
-      layoutStorage.markLayoutAsDirty(pComponentId: isolateMessage.id);
+      response = await layoutStorage.markLayoutAsDirty(pComponentId: isolateMessage.id);
     } else if(isolateMessage is ReportLayoutMessage){
       response = await layoutStorage.reportLayout(pLayoutData: isolateMessage.layoutData);
     } else if(isolateMessage is ReportPreferredSizeMessage) {

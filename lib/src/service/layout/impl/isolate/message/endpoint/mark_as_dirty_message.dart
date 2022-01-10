@@ -2,7 +2,7 @@ import 'dart:isolate';
 
 import 'package:flutter_client/src/service/layout/impl/isolate/message/layout_message.dart';
 
-class MarkAsDirtyMessage extends LayoutMessage<void> {
+class MarkAsDirtyMessage extends LayoutMessage<bool> {
 
   final String id;
 
@@ -11,8 +11,8 @@ class MarkAsDirtyMessage extends LayoutMessage<void> {
   });
 
   @override
-  sendResponse({required void response, required SendPort sendPort}) {
-
+  sendResponse({required bool response, required SendPort sendPort}) {
+    sendPort.send(response);
   }
 
 }
