@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import '../../../model/command/base_command.dart';
@@ -19,6 +21,11 @@ class LayoutService implements ILayoutService {
   /// The map of all registered components
   final HashMap<String, LayoutData> _layoutDataSet = HashMap<String, LayoutData>();
 
+  /// The map of all layouting components
+  final List<String> _currentlyLayouting = [];
+
+  /// If layouting is currently allowed.
+  bool _isValid = true;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,7 +36,7 @@ class LayoutService implements ILayoutService {
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
-    if(!pLayoutData.isChild){
+    if (!pLayoutData.isChild) {
       LayoutData data = _layoutDataSet[pLayoutData.id]!;
       pLayoutData.layoutPosition = data.layoutPosition;
       pLayoutData.calculatedSize = Size(data.layoutPosition!.width, data.layoutPosition!.height);
@@ -37,7 +44,7 @@ class LayoutService implements ILayoutService {
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
     // Handle possible re-layout
-    if(_isLegalState(pParentLayout: pLayoutData)){
+    if (_isLegalState(pParentLayout: pLayoutData)) {
       return _performLayout(pParentLayout: pLayoutData);
     }
 
@@ -49,7 +56,7 @@ class LayoutService implements ILayoutService {
     log("Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
 
-    if(pLayoutData.hasNewCalculatedSize){
+    if (pLayoutData.hasNewCalculatedSize) {
       pLayoutData.widthConstrains = {};
       pLayoutData.heightConstrains = {};
       pLayoutData.lastCalculatedSize = pLayoutData.calculatedSize;
@@ -60,7 +67,7 @@ class LayoutService implements ILayoutService {
 
     // Handle possible re-layout
     LayoutData parentData = _layoutDataSet[pLayoutData.parentId]!;
-    if(_isLegalState(pParentLayout: parentData)){
+    if (_isLegalState(pParentLayout: parentData)) {
       return _performLayout(pParentLayout: parentData);
     }
 
@@ -69,33 +76,30 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) async {
-
     LayoutPosition position = LayoutPosition(
-        width: pSize.width,
-        height: pSize.height,
-        top: 0,
-        left: 0,
-        isComponentSize: true,
+      width: pSize.width,
+      height: pSize.height,
+      top: 0,
+      left: 0,
+      isComponentSize: true,
     );
 
-
     LayoutData? existingLayout = _layoutDataSet[pScreenComponentId];
-    if(existingLayout != null){
+    if (existingLayout != null) {
       existingLayout.calculatedSize = pSize;
       existingLayout.layoutPosition = position;
 
-      if(_isLegalState(pParentLayout: existingLayout)){
+      if (_isLegalState(pParentLayout: existingLayout)) {
         return _performLayout(pParentLayout: existingLayout);
       }
     } else {
       _layoutDataSet[pScreenComponentId] = LayoutData(
-        id: pScreenComponentId,
-        layoutPosition: position,
-        calculatedSize: pSize,
-        lastCalculatedSize: pSize,
-        widthConstrains: {},
-        heightConstrains: {}
-      );
+          id: pScreenComponentId,
+          layoutPosition: position,
+          calculatedSize: pSize,
+          lastCalculatedSize: pSize,
+          widthConstrains: {},
+          heightConstrains: {});
     }
 
     return [];
@@ -105,7 +109,7 @@ class LayoutService implements ILayoutService {
   Future<bool> markLayoutAsDirty({required String pComponentId}) async {
     LayoutData? data = _layoutDataSet[pComponentId];
 
-    if(data != null){
+    if (data != null) {
       log("$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
       return true;
@@ -115,8 +119,24 @@ class LayoutService implements ILayoutService {
 
   @override
   bool removeLayout({required String pComponentId}) {
-
     return false;
+  }
+
+  @override
+  Future<bool> layoutInProcess() async {
+    return _currentlyLayouting.isNotEmpty;
+  }
+
+  @override
+  Future<bool> isValid() async {
+    return _isValid;
+  }
+
+  @override
+  Future<bool> setValid({required bool isValid}) async {
+    _isValid = isValid;
+
+    return _isValid;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,11 +145,16 @@ class LayoutService implements ILayoutService {
 
   /// Returns true if conditions to perform the layout are met.
   bool _isLegalState({required LayoutData pParentLayout}) {
+    if (!_isValid) {
+      log("I am not valid. ${pParentLayout.id}");
+      return false;
+    }
+
     List<LayoutData>? children = _getChildrenOrNull(pParentLayout: pParentLayout);
 
-    if(pParentLayout.layoutState == LayoutState.VALID && children != null){
+    if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
       bool areChildrenValid = children.every((element) =>
-        ((element.layoutState == LayoutState.VALID) && (element.hasCalculatedSize || element.hasPreferredSize)));
+          ((element.layoutState == LayoutState.VALID) && (element.hasCalculatedSize || element.hasPreferredSize)));
       return areChildrenValid;
     }
     return false;
@@ -137,6 +162,11 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
+    _currentlyLayouting.add(pParentLayout.id);
+    log("Add to LayoutList: ${pParentLayout.id}");
+
+    //sleep(const Duration(seconds: 1));
+
     log("perform Layout: ${pParentLayout.id}");
 
     // Copy of parent
@@ -154,8 +184,9 @@ class LayoutService implements ILayoutService {
 
     List<BaseCommand> commands = [UpdateLayoutPositionCommand(layoutDataList: children, reason: "Layout has finished")];
 
-
-    if(parent.hasNewCalculatedSize && parent.isChild){
+    if (parent.hasNewCalculatedSize && parent.isChild) {
+      log("Remove from LayoutList: ${pParentLayout.id}");
+      _currentlyLayouting.remove(pParentLayout.id);
       return reportPreferredSize(pLayoutData: parent);
     } else {
       bool needsRebuild = false;
@@ -163,11 +194,11 @@ class LayoutService implements ILayoutService {
 
       List<LayoutData> toBeConstrained = [];
 
-      for(LayoutData child in children){
+      for (LayoutData child in children) {
         _layoutDataSet[child.id] = child;
 
         // Handle constrained components. Components are constrained if their position is smaller than their calculated size
-        if(!child.hasPreferredSize && child.hasCalculatedSize){
+        if (!child.hasPreferredSize && child.hasCalculatedSize) {
           double calcWidth = child.calculatedSize!.width;
           double calcHeight = child.calculatedSize!.height;
 
@@ -175,15 +206,14 @@ class LayoutService implements ILayoutService {
           double positionHeight = child.layoutPosition!.height;
 
           // Check if component was once already constrained and has recalculated itself with constrained size.
-          if(calcWidth > positionWidth || calcHeight > positionHeight){
-            log("${child.id} was constrained, calculated: ${child.calculatedSize}, position: ${child.layoutPosition}" );
+          if (calcWidth > positionWidth || calcHeight > positionHeight) {
+            log("${child.id} was constrained, calculated: ${child.calculatedSize}, position: ${child.layoutPosition}");
             needsRebuild = true;
 
-            if((calcWidth > positionWidth && !child.widthConstrains.containsKey(positionWidth)) ||
-                (calcHeight > positionHeight && !child.heightConstrains.containsKey(positionHeight)))
-            {
+            if ((calcWidth > positionWidth && !child.widthConstrains.containsKey(positionWidth)) ||
+                (calcHeight > positionHeight && !child.heightConstrains.containsKey(positionHeight))) {
               rebuildReady = false;
-              if(!child.isParent){
+              if (!child.isParent) {
                 toBeConstrained.add(child);
                 child.layoutState = LayoutState.DIRTY;
               }
@@ -192,41 +222,44 @@ class LayoutService implements ILayoutService {
         }
       }
 
-      if(toBeConstrained.isNotEmpty){
-        return [UpdateLayoutPositionCommand(layoutDataList: toBeConstrained, reason: "ConstraintCheck")];
-      }
-
-      if(needsRebuild && rebuildReady) {
+      if (needsRebuild && rebuildReady) {
         parent.layout!.calculateLayout(parent, children);
       }
 
-      for(LayoutData child in children){
-        if(child.isParent && _isLegalState(pParentLayout: child)) {
+      for (LayoutData child in children) {
+        if (child.isParent && _isLegalState(pParentLayout: child)) {
           var childCommands = await _performLayout(pParentLayout: child);
           commands.addAll(childCommands);
         }
       }
 
       // Special case for top most panel
-      if(!parent.isChild){
+      if (!parent.isChild) {
         _layoutDataSet[parent.id] = parent;
         children.add(parent);
       }
 
+      if (toBeConstrained.isNotEmpty) {
+        commands = [UpdateLayoutPositionCommand(layoutDataList: toBeConstrained, reason: "ConstraintCheck")];
+      }
+
+      if (!_isValid) {
+        commands = [];
+      }
+
+      log("Remove from LayoutList: ${pParentLayout.id}");
+      _currentlyLayouting.remove(pParentLayout.id);
+
       return commands;
     }
-
-
-
   }
 
-
-  List<LayoutData>? _getChildrenOrNull({required LayoutData pParentLayout}){
+  List<LayoutData>? _getChildrenOrNull({required LayoutData pParentLayout}) {
     List<LayoutData> childrenData = [];
 
-    for (String childId in pParentLayout.children){
+    for (String childId in pParentLayout.children) {
       LayoutData? childData = _layoutDataSet[childId];
-      if(childData != null){
+      if (childData != null) {
         childrenData.add(childData);
       } else {
         return null;

@@ -18,6 +18,12 @@ class UpdateComponentsProcessor
 
     log("------------------- Component are updating");
 
+    await layoutService.setValid(isValid: false);
+
+    while (await layoutService.layoutInProcess()) {}
+
+    await layoutService.setValid(isValid: true);
+
     List<Future> futureList = [];
     futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
     futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));

@@ -1,5 +1,8 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_in_process_message.dart';
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_valid_message.dart';
+
 import 'message/endpoint/mark_as_dirty_message.dart';
 import 'message/endpoint/report_layout_message.dart';
 import 'message/endpoint/report_preferred_size_message.dart';
@@ -33,6 +36,14 @@ void layoutIsolate(SendPort callerSendPort) {
     } else if (isolateMessage is SetScreenSizeMessage) {
       response =
           await layoutStorage.setScreenSize(pScreenComponentId: isolateMessage.componentId, pSize: isolateMessage.size);
+    } else if (isolateMessage is LayoutInProcessMessage) {
+      response = await layoutStorage.layoutInProcess();
+    } else if (isolateMessage is LayoutValidMessage) {
+      if (isolateMessage.set) {
+        response = await layoutStorage.setValid(isValid: isolateMessage.value);
+      } else {
+        response = await layoutStorage.isValid();
+      }
     }
 
     if (response != null) {

@@ -2,6 +2,9 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_in_process_message.dart';
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_valid_message.dart';
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/set_is_valid_message.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/layout/layout_data.dart';
 import '../../i_layout_service.dart';
@@ -54,19 +57,37 @@ class IsolateLayoutService implements ILayoutService {
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) {
     ReportLayoutMessage message = ReportLayoutMessage(layoutData: pLayoutData);
-    return _sendMessage(message);
+    return _sendMessage<List<BaseCommand>>(message);
   }
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) {
     ReportPreferredSizeMessage message = ReportPreferredSizeMessage(layoutData: pLayoutData);
-    return _sendMessage(message);
+    return _sendMessage<List<BaseCommand>>(message);
   }
 
   @override
   Future<List<BaseCommand>> setScreenSize({required String pScreenComponentId, required Size pSize}) {
     SetScreenSizeMessage message = SetScreenSizeMessage(componentId: pScreenComponentId, size: pSize);
     return _sendMessage<List<BaseCommand>>(message);
+  }
+
+  @override
+  Future<bool> layoutInProcess() {
+    LayoutInProcessMessage message = LayoutInProcessMessage();
+    return _sendMessage<bool>(message);
+  }
+
+  @override
+  Future<bool> isValid() {
+    LayoutValidMessage message = LayoutValidMessage(set: false, value: false);
+    return _sendMessage<bool>(message);
+  }
+
+  @override
+  Future<bool> setValid({required bool isValid}) {
+    LayoutValidMessage message = LayoutValidMessage(set: true, value: isValid);
+    return _sendMessage<bool>(message);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
