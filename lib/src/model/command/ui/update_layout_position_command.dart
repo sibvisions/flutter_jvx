@@ -1,7 +1,4 @@
-import 'dart:collection';
-
 import '../../layout/layout_data.dart';
-
 import 'ui_command.dart';
 
 class UpdateLayoutPositionCommand extends UiCommand {

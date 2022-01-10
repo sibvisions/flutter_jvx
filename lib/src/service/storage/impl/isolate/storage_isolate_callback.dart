@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/layout/impl/layout_service.dart';
+import '../../../layout/impl/layout_service.dart';
 
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
 

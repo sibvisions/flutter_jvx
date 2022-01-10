@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter_client/src/service/api/shared/fl_component_classname.dart';
+import '../../../../api/shared/fl_component_classname.dart';
 
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
@@ -34,10 +34,6 @@ class UpdateComponentsProcessor
 
       log("------------------- Component are finished updating");
     });
-
-
-
-
 
     return [];
   }

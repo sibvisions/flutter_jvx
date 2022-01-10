@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
+import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
 
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';

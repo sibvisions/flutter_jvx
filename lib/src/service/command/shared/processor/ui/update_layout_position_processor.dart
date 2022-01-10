@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/layout/layout_data.dart';
+import '../../../../../model/layout/layout_data.dart';
 
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';

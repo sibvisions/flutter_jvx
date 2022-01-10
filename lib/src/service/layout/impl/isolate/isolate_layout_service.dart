@@ -2,19 +2,18 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-import 'package:flutter_client/src/service/layout/i_layout_service.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/layout_isolate.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/mark_as_dirty_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/report_layout_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/report_preferred_size_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/set_screen_size_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/layout_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/layout_message_wrapper.dart';
+import '../../../../model/command/base_command.dart';
+import '../../../../model/layout/layout_data.dart';
+import '../../i_layout_service.dart';
+import 'layout_isolate.dart';
+import 'message/endpoint/mark_as_dirty_message.dart';
+import 'message/endpoint/report_layout_message.dart';
+import 'message/endpoint/report_preferred_size_message.dart';
+import 'message/endpoint/set_screen_size_message.dart';
+import 'message/layout_message.dart';
+import 'message/layout_message_wrapper.dart';
 
 class IsolateLayoutService implements ILayoutService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +73,6 @@ class IsolateLayoutService implements ILayoutService {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
   /// Sends the [message] to the api Isolate and returns a Future containing the first answer.
   Future<T> _sendMessage<T>(LayoutMessage message) async {
     SendPort? apiPort = _apiSendPort;
@@ -82,8 +80,7 @@ class IsolateLayoutService implements ILayoutService {
       // Response will come to this receivePort
       ReceivePort receivePort = ReceivePort();
       // Wrap message
-      LayoutMessageWrapper wrapper =
-      LayoutMessageWrapper(sendPort: receivePort.sendPort, message: message);
+      LayoutMessageWrapper wrapper = LayoutMessageWrapper(sendPort: receivePort.sendPort, message: message);
       // send message to isolate
       apiPort.send(wrapper);
       // Needs to be casted, response type is assured by message itself (sendResponse method)
@@ -94,7 +91,6 @@ class IsolateLayoutService implements ILayoutService {
   }
 
   Future<bool> initLayoutService() async {
-
     // Local and temporary ReceivePort to retrieve the new isolate's SendPort
     ReceivePort receivePort = ReceivePort();
 
@@ -106,6 +102,4 @@ class IsolateLayoutService implements ILayoutService {
 
     return true;
   }
-
-
 }

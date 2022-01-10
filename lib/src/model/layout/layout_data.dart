@@ -70,23 +70,23 @@ class LayoutData implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [LayoutData].
-  LayoutData({
-    required this.id,
-    required this.widthConstrains,
-    required this.heightConstrains,
-    this.parentId,
-    this.layout,
-    this.children = const [],
-    this.constraints,
-    this.minSize,
-    this.maxSize,
-    this.preferredSize,
-    this.insets,
-    this.layoutPosition,
-    this.calculatedSize,
-    this.lastCalculatedSize,
-    this.needsRelayout = false,
-    this.indexOf});
+  LayoutData(
+      {required this.id,
+      required this.widthConstrains,
+      required this.heightConstrains,
+      this.parentId,
+      this.layout,
+      this.children = const [],
+      this.constraints,
+      this.minSize,
+      this.maxSize,
+      this.preferredSize,
+      this.insets,
+      this.layoutPosition,
+      this.calculatedSize,
+      this.lastCalculatedSize,
+      this.needsRelayout = false,
+      this.indexOf});
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
@@ -221,17 +221,17 @@ class LayoutData implements ICloneable {
       height = calculatedSize!.height;
 
       // If component has position, see if a constrained position has already been set and replace current height or width
-      if(hasPosition){
-        if(width > layoutPosition!.width){
+      if (hasPosition) {
+        if (width > layoutPosition!.width) {
           double? constrainedHeight = widthConstrains[layoutPosition!.width];
-          if(constrainedHeight != null){
+          if (constrainedHeight != null) {
             height = constrainedHeight;
           }
         }
 
-        if(height > layoutPosition!.height){
+        if (height > layoutPosition!.height) {
           double? constraintWidth = heightConstrains[layoutPosition!.height];
-          if(constraintWidth != null){
+          if (constraintWidth != null) {
             width = constraintWidth;
           }
         }
@@ -246,29 +246,6 @@ class LayoutData implements ICloneable {
       if (minSize!.height > height) {
         height = minSize!.height;
       }
-    }
-
-    if (hasMaxSize) {
-      if (maxSize!.width < width) {
-        width = maxSize!.width;
-      }
-
-      if (maxSize!.height < height) {
-        height = maxSize!.height;
-      }
-    }
-
-    return Size(width, height);
-  }
-
-  /// Returns the minimum size. If maximum size is smaller than minimum, returns maximum size. If no minimum size is set, returns `0,0`
-  Size get bestMinSize {
-    double width = 0;
-    double height = 0;
-
-    if (hasMinSize) {
-      width = minSize!.width;
-      height = minSize!.height;
     }
 
     if (hasMaxSize) {
