@@ -144,7 +144,7 @@ class ComponentStore implements IStorageService {
       }
     }
 
-    // Check for components which are not active anymore, but may not be deleted in storage
+    // Check for components which are not active anymore, e.g. not visible, removed or destroyed
     for (FlComponentModel oldModel in oldScreenComps) {
       bool isExisting = newScreenComps.any((newModel) => newModel.id == oldModel.id);
 
@@ -153,14 +153,18 @@ class ComponentStore implements IStorageService {
       }
     }
 
+    // Components can only be affected if any other component has either changed, was deleted or is new. -Special Case for opening a screen
     // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
-    for (String affectedModel in affectedModels) {
-      bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
-      bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
-      if (!isChanged && !isNew) {
-        affectedUiComponents.add(affectedModel);
+    if(newUiComponents.isNotEmpty || changedUiComponents.isNotEmpty || deletedUiComponents.isNotEmpty){
+      for (String affectedModel in affectedModels) {
+        bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
+        bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
+        if (!isChanged && !isNew) {
+          affectedUiComponents.add(affectedModel);
+        }
       }
     }
+
 
     // log("----------DeletedUiComponents: $deletedUiComponents ");
     // log("----------affected: $affectedUiComponents ");

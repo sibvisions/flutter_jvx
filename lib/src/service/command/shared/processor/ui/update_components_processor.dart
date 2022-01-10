@@ -16,29 +16,38 @@ class UpdateComponentsProcessor
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
     IUiService uiService = getUiService();
 
-    log("------------------- Component are updating");
+    log("------------------- Components are updating");
 
-    await layoutService.setValid(isValid: false);
+    layoutService.setValid(isValid: false);
+    Future isLegal = Future.doWhile(() async {
+      bool a = await layoutService.layoutInProcess();
 
-    while (await layoutService.layoutInProcess()) {}
+      if(a){
+        await Future.delayed(const Duration(milliseconds: 2));
+      }
 
-    await layoutService.setValid(isValid: true);
+      return a;
+    });
 
-    List<Future> futureList = [];
-    futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
-    futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));
+    isLegal.then((_) {
+      layoutService.setValid(isValid: true);
 
-    // Update Components in UI after all are marked as dirty
-    Future.wait(futureList).then((value) {
-      uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
+      List<Future> futureList = [];
+      futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
+      futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));
 
-      uiService.saveNewComponents(newModels: command.newComponents);
+      // Update Components in UI after all are marked as dirty
+      Future.wait(futureList).then((value) {
+        uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
 
-      uiService.notifyChangedComponents(updatedModels: command.changedComponents);
+        uiService.saveNewComponents(newModels: command.newComponents);
 
-      uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
+        uiService.notifyChangedComponents(updatedModels: command.changedComponents);
 
-      log("------------------- Component are finished updating");
+        uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
+
+        log("------------------- Components are finished updating");
+      });
     });
 
     return [];
