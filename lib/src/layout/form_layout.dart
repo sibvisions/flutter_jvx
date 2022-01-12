@@ -122,11 +122,8 @@ class FormLayout extends ILayout {
     if (pParent.hasPosition) {
       dimWidth = pParent.layoutPosition!.width;
       dimHeight = pParent.layoutPosition!.height;
-    } else {
-      return null;
+      return Size(dimWidth, dimHeight);
     }
-
-    return Size(dimWidth, dimHeight);
   }
 
   void _calculateAnchors(
@@ -365,31 +362,8 @@ class FormLayout extends ILayout {
     Size minLayoutSize = const Size(50, 50);
 
     /// Available Size, set to setSize from parent by default
-    Size calcSize = pGivenSize ?? Size(pMinPrefSize.minimumWidth, pMinPrefSize.minimumHeight);
+    Size calcSize = pGivenSize ?? Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
 
-    /// Not smaller than Minimum
-    // double newMinWidth = calcSize.width;
-    // double newMinHeight = calcSize.height;
-    // if(newMinWidth < pMinPrefSize.minimumWidth){
-    //   newMinWidth = pMinPrefSize.minimumWidth;
-    // }
-    // if(newMinHeight < pMinPrefSize.minimumHeight) {
-    //   newMinHeight = pMinPrefSize.minimumHeight;
-    // }
-    // calcSize = Size(newMinWidth, newMinHeight);
-    //
-    // /// Not bigger than maximumSize (from Server)
-    // if(setSize != null){
-    //   double newMaxWidth = calcSize.width;
-    //   double newMaxHeight = calcSize.height;
-    //   if(calcSize.width > setSize.width){
-    //     newMinWidth = setSize.width;
-    //   }
-    //   if(calcSize.height > setSize.height){
-    //     newMaxHeight = setSize.height;
-    //   }
-    //   calcSize = Size(newMaxWidth, newMaxHeight);
-    // }
 
     FormLayoutAnchor lba = pAnchors["l"]!;
     FormLayoutAnchor rba = pAnchors["r"]!;
@@ -544,10 +518,21 @@ class FormLayout extends ILayout {
 
       layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
     });
-    pParent.calculatedSize = Size(
-        pMinPrefSize.preferredWidth,
-        pMinPrefSize.preferredHeight
-    );
+
+    Size preferred = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
+
+    if(!pParent.hasPosition){
+      pParent.calculatedSize = preferred;
+    } else {
+
+      if(pParent.isWidthConstrained){
+        pParent.widthConstrains[pParent.layoutPosition!.width] = pMinPrefSize.preferredHeight;
+      }
+      if(pParent.isHeightConstrained){
+        pParent.heightConstrains[pParent.layoutPosition!.height] = pMinPrefSize.preferredWidth;
+      }
+
+    }
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors

@@ -32,7 +32,7 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
     commandService.sendCommand(deviceStatusCommand);
 
     SetComponentSizeCommand command = SetComponentSizeCommand(
-        componentId: widget.screen.id, size: Size(width, height), reason: "Set First Panel Size");
+        componentId: widget.screen.id, size: Size(width.ceilToDouble(), height.ceilToDouble()), reason: "Set First Panel Size");
     commandService.sendCommand(command);
   }
 

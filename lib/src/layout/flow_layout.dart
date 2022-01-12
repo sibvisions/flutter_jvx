@@ -70,15 +70,25 @@ class FlowLayout extends ILayout {
     /** Sorts the Childcomponent based on indexOf property */
     pChildren.sort((a, b) => a.indexOf! - b.indexOf!);
 
-    double dimWidth;
-    double dimHeight;
+    double dimWidth = 0;
+    double dimHeight = 0;
 
     if(pParent.hasPosition) {
       dimWidth = pParent.layoutPosition!.width;
       dimHeight = pParent.layoutPosition!.height;
     } else {
-      dimWidth = 0.0;
-      dimHeight = 0.0;
+      double maxHeight = 0;
+      double maxWidth = 0;
+      for(LayoutData child in pChildren) {
+        if (child.calculatedSize!.height > maxHeight) {
+          maxHeight = child.calculatedSize!.height;
+        }
+        if (child.calculatedSize!.width > maxWidth) {
+          maxWidth = child.calculatedSize!.width;
+        }
+      }
+      dimWidth = maxWidth;
+      dimHeight = maxHeight;
     }
 
     dimWidth -= pParent.insets!.left + pParent.insets!.right + margins.marginLeft + margins.marginRight;
@@ -87,6 +97,8 @@ class FlowLayout extends ILayout {
     Size dimSize = Size(dimWidth, dimHeight);
 
     final _FlowGrid flowLayoutInfo = calculateGrid(dimSize, pChildren);
+
+
 
     Size prefSize = Size(
         (flowLayoutInfo.gridWidth * flowLayoutInfo.columns + gaps.horizontalGap * (flowLayoutInfo.columns - 1)),
@@ -194,7 +206,17 @@ class FlowLayout extends ILayout {
         }
       }
     }
-    pParent.calculatedSize = Size(iWidth, iHeight);
+    if(!pParent.hasPosition){
+      pParent.calculatedSize = Size(fPW, fPH);
+    } else {
+
+      if(pParent.isWidthConstrained){
+        pParent.widthConstrains[pParent.layoutPosition!.width] = fPH;
+      }
+      if(pParent.isHeightConstrained){
+        pParent.heightConstrains[pParent.layoutPosition!.height] = fPW;
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

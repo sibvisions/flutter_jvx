@@ -206,6 +206,68 @@ class LayoutData implements ICloneable {
     return calculatedSize!.width != lastCalculatedSize!.width || calculatedSize!.height != lastCalculatedSize!.height;
   }
 
+  /// If this component is constrained by its position and has no corresponding entries in its constrain maps.
+  bool get isNewlyConstraint {
+    if(isWidthNewlyConstraint || isHeightNewlyConstraint){
+      return true;
+    }
+    return false;
+  }
+
+  /// If this component is constrained by its position width and has no corresponding entries in its width constrain map.
+  bool get isWidthNewlyConstraint {
+    if(hasPosition){
+      double posWidth = layoutPosition!.width;
+      if(isWidthConstrained && widthConstrains[posWidth] == null){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// If this component is constrained by its position height and has no corresponding entries in its height constrain map.
+  bool get isHeightNewlyConstraint {
+    if(hasPosition){
+      double posHeight = layoutPosition!.height;
+      if(isHeightConstrained && heightConstrains[posHeight] == null){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// If this component is constrained by its position height
+  bool get isHeightConstrained {
+    if(hasPosition && hasCalculatedSize) {
+      double posHeight = layoutPosition!.height;
+      double calcHeight = calculatedSize!.height;
+      if(posHeight < calcHeight){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// If this component is constrained by its position width
+  bool get isWidthConstrained {
+    if(hasPosition && hasCalculatedSize) {
+      double posWidth = layoutPosition!.width;
+      double calcWidth = calculatedSize!.width;
+      if(posWidth < calcWidth){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /// If this component is constrained by its position
+  bool get isConstrained {
+    if(isHeightConstrained || isWidthConstrained){
+      return true;
+    }
+    return false;
+  }
+
   /// Gets the preferred size of a component. The size is between the minimum and maximum size.
   ///
   /// If no preferred size is set, returns the lowest size between the minimum and maximum size.
@@ -235,25 +297,25 @@ class LayoutData implements ICloneable {
       }
     }
 
-    if (hasMinSize) {
-      if (minSize!.width > width) {
-        width = minSize!.width;
-      }
-
-      if (minSize!.height > height) {
-        height = minSize!.height;
-      }
-    }
-
-    if (hasMaxSize) {
-      if (maxSize!.width < width) {
-        width = maxSize!.width;
-      }
-
-      if (maxSize!.height < height) {
-        height = maxSize!.height;
-      }
-    }
+    // if (hasMinSize) {
+    //   if (minSize!.width > width) {
+    //     width = minSize!.width;
+    //   }
+    //
+    //   if (minSize!.height > height) {
+    //     height = minSize!.height;
+    //   }
+    // }
+    //
+    // if (hasMaxSize) {
+    //   if (maxSize!.width < width) {
+    //     width = maxSize!.width;
+    //   }
+    //
+    //   if (maxSize!.height < height) {
+    //     height = maxSize!.height;
+    //   }
+    // }
 
     return Size(width, height);
   }

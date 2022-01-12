@@ -93,7 +93,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData.needsRelayout = newModel.isVisible;
       layoutData.indexOf = newModel.indexOf;
       layoutData.lastCalculatedSize = layoutData.calculatedSize;
-      layoutData.calculatedSize = null;
 
       model = newModel;
 
@@ -136,7 +135,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         layoutData.heightConstrains[layoutData.layoutPosition!.height] = newWidth;
         isConstrained = true;
       }
-
 
       if(isConstrained){
         PreferredSizeCommand command = PreferredSizeCommand(
