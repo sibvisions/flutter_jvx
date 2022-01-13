@@ -1,19 +1,34 @@
+import 'package:flutter_client/src/components/label/fl_label_widget.dart';
+
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
 
+/// The model for [FlLabelWidget]
 class FlLabelModel extends FlComponentModel {
-  final String text;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlLabelModel.fromJson(Map<String, dynamic> json)
-      : text = json[ApiObjectProperty.text],
-        super.fromJson(json);
+  /// The text shown in the [FlLabelWidget]
+  String text = "";
 
-  FlLabelModel.updatedProperties(FlLabelModel oldModel, dynamic json)
-      : text = json[ApiObjectProperty.text] ?? oldModel.text,
-        super.updatedProperties(oldModel, json);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Initializes the [FlLabelModel]
+  FlLabelModel() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  FlComponentModel updateComponent(FlComponentModel oldModel, json) {
-    return FlLabelModel.updatedProperties(oldModel as FlLabelModel, json);
+  void applyFromJson(Map<String, dynamic> pJson) {
+    super.applyFromJson(pJson);
+    var jsonText = pJson[ApiObjectProperty.text];
+    if (jsonText != null) {
+      text = jsonText;
+    }
   }
 }

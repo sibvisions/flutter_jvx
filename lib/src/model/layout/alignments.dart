@@ -2,6 +2,8 @@
 // VerticalAlignment
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+import 'package:flutter/cupertino.dart';
+
 /// Possible Vertical Alignments (TOP=0, CENTER=1, BOTTOM=2, STRETCH=3)
 enum VerticalAlignment { TOP, CENTER, BOTTOM, STRETCH }
 
@@ -31,6 +33,19 @@ extension HorizontalAlignmentE on HorizontalAlignment {
   /// Parses [pAlignment] to [HorizontalAlignment]
   static HorizontalAlignment fromString(String pAlignment) {
     return HorizontalAlignment.values[int.parse(pAlignment)];
+  }
+
+  static TextAlign toTextAlign(HorizontalAlignment pAlignment) {
+    switch (pAlignment) {
+      case HorizontalAlignment.LEFT:
+        return TextAlign.left;
+      case HorizontalAlignment.CENTER:
+        return TextAlign.center;
+      case HorizontalAlignment.RIGHT:
+        return TextAlign.right;
+      case HorizontalAlignment.STRETCH:
+        return TextAlign.justify;
+    }
   }
 }
 

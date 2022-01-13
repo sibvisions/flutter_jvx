@@ -35,7 +35,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    log("reportLayout: ${pLayoutData.id}");
+    log("reportLayout: ${pLayoutData.id} with ${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -70,7 +70,7 @@ class LayoutService implements ILayoutService {
 
     // Handle possible re-layout, check if parentId exists -> special case for first panel
     String? parentId = pLayoutData.parentId;
-    if(parentId != null){
+    if (parentId != null) {
       LayoutData parentData = _layoutDataSet[parentId]!;
       if (_isLegalState(pParentLayout: parentData)) {
         return _performLayout(pParentLayout: parentData);
@@ -100,12 +100,11 @@ class LayoutService implements ILayoutService {
       existingLayout.widthConstrains = {};
       existingLayout.heightConstrains = {};
 
-
       if (_isLegalState(pParentLayout: existingLayout)) {
         commands.addAll(await _performLayout(pParentLayout: existingLayout));
       }
     } else {
-     existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
+      existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
           id: pScreenComponentId,
           layoutPosition: position,
           calculatedSize: pSize,
@@ -159,7 +158,6 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
-
     log("perform Layout ${pParentLayout.id}");
 
     // Copy of parent
@@ -174,7 +172,6 @@ class LayoutService implements ILayoutService {
 
     List<BaseCommand> commands = [];
 
-
     // True if this parent needs to register itself again.
     bool needsToRegister = false;
 
@@ -185,28 +182,28 @@ class LayoutService implements ILayoutService {
     List<LayoutData> newlyConstraintChildren = [];
 
     // Needs to register again if this layout has been newly constraint by its parent.
-    if(parent.isNewlyConstraint || !parent.hasPosition){
+    if (parent.isNewlyConstraint || !parent.hasPosition) {
       needsToRegister = true;
     }
 
     parent.layout!.calculateLayout(parent, children);
 
     // Check if any children have been constrained.
-    for(LayoutData child in children) {
-      if(child.isNewlyConstraint){
+    for (LayoutData child in children) {
+      if (child.isNewlyConstraint) {
         newlyConstraintChildren.add(child);
         needsRebuild = true;
         markLayoutAsDirty(pComponentId: child.id);
-      } else if(child.isConstrained) {
+      } else if (child.isConstrained) {
         needsRebuild = true;
       }
     }
 
-    if(needsRebuild && newlyConstraintChildren.isEmpty){
+    if (needsRebuild && newlyConstraintChildren.isEmpty) {
       parent.layout!.calculateLayout(parent, children);
-    } else if(newlyConstraintChildren.isNotEmpty) {
-      for(LayoutData child in newlyConstraintChildren){
-        if(child.isParent){
+    } else if (newlyConstraintChildren.isNotEmpty) {
+      for (LayoutData child in newlyConstraintChildren) {
+        if (child.isParent) {
           commands.add(RegisterParentCommand(layoutData: child, reason: "Was constrained"));
         }
       }
@@ -214,28 +211,21 @@ class LayoutService implements ILayoutService {
       return commands;
     }
 
-
-    if(needsToRegister) {
+    if (needsToRegister) {
       commands.add(PreferredSizeCommand(layoutData: parent, reason: "Finished Constrained calc"));
-      for(LayoutData child in children) {
+      for (LayoutData child in children) {
         _layoutDataSet[child.id] = child;
       }
     } else {
-      for(LayoutData child in children){
+      for (LayoutData child in children) {
         _layoutDataSet[child.id] = child;
-        if(child.isParent){
+        if (child.isParent) {
           commands.add(RegisterParentCommand(layoutData: child, reason: "Has finished"));
         }
       }
       commands.add(UpdateLayoutPositionCommand(layoutDataList: children, reason: "Has finished"));
     }
     return commands;
-
-
-
-
-
-
 
     // if(needsRebuild && newlyConstraintChildren.isEmpty){
     //   parent.layout!.calculateLayout(parent, children);
@@ -293,8 +283,8 @@ class LayoutService implements ILayoutService {
     List<LayoutData>? children = _getChildrenOrNull(pParentLayout: pParentLayout);
 
     if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
-      bool areChildrenValid = children.every((element) =>
-      ((element.layoutState == LayoutState.VALID) && element.hasCalculatedSize));
+      bool areChildrenValid =
+          children.every((element) => ((element.layoutState == LayoutState.VALID) && element.hasCalculatedSize));
       return areChildrenValid;
     }
     return false;

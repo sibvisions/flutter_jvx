@@ -90,25 +90,25 @@ class ComponentStore implements IStorageService {
     if (componentsToUpdate != null) {
       for (dynamic changedData in componentsToUpdate) {
         // Get old Model
-        FlComponentModel? oldModel = _componentMap[changedData[ApiObjectProperty.id]];
-        if (oldModel != null) {
+        FlComponentModel? model = _componentMap[changedData[ApiObjectProperty.id]];
+        if (model != null) {
           // Update Component and add to changedModels
-          FlComponentModel newModel = oldModel.updateComponent(oldModel, changedData);
-          changedModels.add(newModel.id);
+          String? oldParentId = model.parent;
+
+          model.applyFromJson(changedData);
+          changedModels.add(model.id);
 
           // Handle component removed
-          if (newModel.isRemoved) {
-            _componentMap.remove(newModel.id);
-            _removedComponents[newModel.id] = newModel;
+          if (model.isRemoved) {
+            _componentMap.remove(model.id);
+            _removedComponents[model.id] = model;
           } else {
-            _componentMap[newModel.id] = newModel;
+            _componentMap[model.id] = model;
           }
 
-
-
           // Handle parent change, notify old parent of change
-          if (newModel.parent != oldModel.parent) {
-            var oldParent = _componentMap[oldModel.parent]!;
+          if (model.parent != oldParentId) {
+            var oldParent = _componentMap[model.parent]!;
             affectedModels.add(oldParent.id);
           }
         }
@@ -155,7 +155,7 @@ class ComponentStore implements IStorageService {
 
     // Components can only be affected if any other component has either changed, was deleted or is new. -Special Case for opening a screen
     // Only add Models to affected if they are not new or changed, to avoid unnecessary re-renders.
-    if(newUiComponents.isNotEmpty || changedUiComponents.isNotEmpty || deletedUiComponents.isNotEmpty){
+    if (newUiComponents.isNotEmpty || changedUiComponents.isNotEmpty || deletedUiComponents.isNotEmpty) {
       for (String affectedModel in affectedModels) {
         bool isChanged = changedUiComponents.any((changedModel) => changedModel.id == affectedModel);
         bool isNew = newUiComponents.any((newModel) => newModel.id == affectedModel);
@@ -164,7 +164,6 @@ class ComponentStore implements IStorageService {
         }
       }
     }
-
 
     // log("----------DeletedUiComponents: $deletedUiComponents ");
     // log("----------affected: $affectedUiComponents ");

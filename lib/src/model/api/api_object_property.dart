@@ -1,13 +1,32 @@
 abstract class ApiObjectProperty {
   //General Properties -- any Component can have these
+  // Basic Data
   static const String id = "id";
   static const String name = "name";
   static const String className = "className";
-  static const String constraints = "constraints";
   static const String parent = "parent";
-  static const String indexOf = "indexOf";
-  static const String visible = "visible";
   static const String remove = "~remove";
+  static const String visible = "visible";
+  static const String enabled = "enabled";
+  static const String focusable = "focusable";
+
+  // Layout Data
+  static const String constraints = "constraints";
+  static const String indexOf = "indexOf";
+  static const String tabIndex = "tabIndex";
+  static const String bounds = "bounds";
+  // Size Data
+  static const String preferredSize = "preferredSize";
+  static const String minimumSize = "minimumSize";
+  static const String maximumSize = "maximumSize";
+
+  // Style Data
+  static const String background = "background";
+  static const String foreground = "foreground";
+  static const String horizontalAlignment = "horizontalAlignment";
+  static const String verticalAlignment = "verticalAlignment";
+  static const String font = "font";
+  static const String toolTipText = "toolTipText";
 
   //Parent Properties -- any Component which can have children have these
   static const String layout = "layout";
@@ -23,10 +42,7 @@ abstract class ApiObjectProperty {
 
   //Common Properties -- these may be used by many different Components
   static const String text = "text";
-  static const String horizontalAlignment = "horizontalAlignment";
-  static const String verticalAlignment = "verticalAlignment";
-  static const String enabled = "enabled";
-  
+
   //Can occur in both request & response
   static const String clientId = "clientId";
   static const String componentId = "componentId";
@@ -51,9 +67,4 @@ abstract class ApiObjectProperty {
   static const String changedComponents = "changedComponents";
   static const String update = "update";
   static const String home = "home";
-
-  // Sizes
-  static const String preferredSize = "preferredSize";
-  static const String minimumSize = "minimumSize";
-  static const String maximumSize = "maximumSize";
 }

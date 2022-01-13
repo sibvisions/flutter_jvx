@@ -93,20 +93,29 @@ class ScreenGenericProcessor implements IProcessor {
   }
 
   /// Parses json component into its appropriate [FlComponentModel], which is termite by its [ApiObjectProperty.className].
-  FlComponentModel _parseFlComponentModel(dynamic json, String className) {
+  FlComponentModel _parseFlComponentModel(dynamic pJson, String className) {
+    FlComponentModel model;
     switch (className) {
       case (FlComponentClassname.panel):
-        return FlPanelModel.fromJson(json);
+        model = FlPanelModel();
+        break;
       case (FlComponentClassname.button):
-        return FlButtonModel.fromJson(json);
+        model = FlButtonModel();
+        break;
       case (FlComponentClassname.label):
-        return FlLabelModel.fromJson(json);
+        model = FlLabelModel();
+        break;
       case (FlComponentClassname.groupPanel):
-        return FlPanelModel.fromJson(json);
+        model = FlPanelModel();
+        break;
       case (FlComponentClassname.scrollPanel):
-        return FlPanelModel.fromJson(json);
+        model = FlPanelModel();
+        break;
       default:
-        return FlDummyModel.fromJson(json);
+        model = FlDummyModel();
+        break;
     }
+    model.applyFromJson(pJson);
+    return model;
   }
 }

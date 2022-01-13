@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -24,7 +25,25 @@ class LayoutData implements ICloneable {
   String? parentId;
 
   /// The layout of the component.
-  ILayout? layout;
+  ILayout? _layout;
+
+  set layout(ILayout? layout) {
+    log("Changes the layout of $id to: $layout");
+
+    if (layout == null) {
+      try {
+        throw Exception("Layout was nulled");
+      } catch (e, stacktrace) {
+        log(stacktrace.toString());
+      }
+    }
+
+    _layout = layout;
+  }
+
+  ILayout? get layout {
+    return _layout;
+  }
 
   /// The children of the component.
   List<String> children;
@@ -75,7 +94,6 @@ class LayoutData implements ICloneable {
       required this.widthConstrains,
       required this.heightConstrains,
       this.parentId,
-      this.layout,
       this.children = const [],
       this.constraints,
       this.minSize,
@@ -86,13 +104,15 @@ class LayoutData implements ICloneable {
       this.calculatedSize,
       this.lastCalculatedSize,
       this.needsRelayout = false,
-      this.indexOf});
+      this.indexOf,
+      ILayout? layout})
+      : _layout = layout;
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
       : id = pLayoutData.id,
         parentId = pLayoutData.parentId,
-        layout = pLayoutData.layout?.clone(),
+        _layout = pLayoutData.layout?.clone(),
         children = List.from(pLayoutData.children),
         constraints = pLayoutData.constraints,
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
@@ -110,7 +130,7 @@ class LayoutData implements ICloneable {
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})
-      : layout = null,
+      : _layout = null,
         parentId = null,
         children = const [],
         needsRelayout = true,
@@ -208,7 +228,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position and has no corresponding entries in its constrain maps.
   bool get isNewlyConstraint {
-    if(isWidthNewlyConstraint || isHeightNewlyConstraint){
+    if (isWidthNewlyConstraint || isHeightNewlyConstraint) {
       return true;
     }
     return false;
@@ -216,9 +236,9 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position width and has no corresponding entries in its width constrain map.
   bool get isWidthNewlyConstraint {
-    if(hasPosition){
+    if (hasPosition) {
       double posWidth = layoutPosition!.width;
-      if(isWidthConstrained && widthConstrains[posWidth] == null){
+      if (isWidthConstrained && widthConstrains[posWidth] == null) {
         return true;
       }
     }
@@ -227,9 +247,9 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position height and has no corresponding entries in its height constrain map.
   bool get isHeightNewlyConstraint {
-    if(hasPosition){
+    if (hasPosition) {
       double posHeight = layoutPosition!.height;
-      if(isHeightConstrained && heightConstrains[posHeight] == null){
+      if (isHeightConstrained && heightConstrains[posHeight] == null) {
         return true;
       }
     }
@@ -238,10 +258,10 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position height
   bool get isHeightConstrained {
-    if(hasPosition && hasCalculatedSize) {
+    if (hasPosition && hasCalculatedSize) {
       double posHeight = layoutPosition!.height;
       double calcHeight = calculatedSize!.height;
-      if(posHeight < calcHeight){
+      if (posHeight < calcHeight) {
         return true;
       }
     }
@@ -250,10 +270,10 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position width
   bool get isWidthConstrained {
-    if(hasPosition && hasCalculatedSize) {
+    if (hasPosition && hasCalculatedSize) {
       double posWidth = layoutPosition!.width;
       double calcWidth = calculatedSize!.width;
-      if(posWidth < calcWidth){
+      if (posWidth < calcWidth) {
         return true;
       }
     }
@@ -262,7 +282,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position
   bool get isConstrained {
-    if(isHeightConstrained || isWidthConstrained){
+    if (isHeightConstrained || isWidthConstrained) {
       return true;
     }
     return false;

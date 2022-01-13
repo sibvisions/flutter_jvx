@@ -1,25 +1,50 @@
+import 'dart:developer';
+
+import 'package:flutter_client/src/components/panel/fl_panel_widget.dart';
+
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
 
+/// The model for [FlPanelWidget]
 class FlPanelModel extends FlComponentModel {
-  final String? layout;
-  final String? layoutData;
-  final String? screenClassName;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlPanelModel.fromJson(Map<String, dynamic> json) :
-    layout = json[ApiObjectProperty.layout],
-    layoutData = json[ApiObjectProperty.layoutData],
-    screenClassName = json[ApiObjectProperty.screenClassName],
-    super.fromJson(json);
+  /// The name of the layout type.
+  String? layout;
 
-  FlPanelModel.updatedProperties(FlPanelModel oldModel, dynamic json) :
-    layoutData = json[ApiObjectProperty.layoutData] ?? oldModel.layoutData,
-    layout = json[ApiObjectProperty.layout] ?? oldModel.layout,
-    screenClassName = json[ApiObjectProperty.screenClassName] ?? oldModel.screenClassName,
-    super.updatedProperties(oldModel, json);
+  /// The layout data.
+  String? layoutData;
+
+  /// The screen class name.
+  String? screenClassName;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Initializes the [FlPanelModel]
+  FlPanelModel() : super();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  FlComponentModel updateComponent(FlComponentModel oldModel, dynamic json) {
-    return FlPanelModel.updatedProperties(oldModel as FlPanelModel, json);
+  void applyFromJson(Map<String, dynamic> pJson) {
+    super.applyFromJson(pJson);
+    var jsonLayout = pJson[ApiObjectProperty.layout];
+    if (jsonLayout != null) {
+      layout = jsonLayout;
+    }
+    var jsonLayoutData = pJson[ApiObjectProperty.layoutData];
+    if (jsonLayoutData != null) {
+      layoutData = jsonLayoutData;
+    }
+    var jsonScreenClassName = pJson[ApiObjectProperty.screenClassName];
+    if (jsonScreenClassName != null) {
+      screenClassName = jsonScreenClassName;
+    }
   }
 }

@@ -15,7 +15,6 @@ import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
 import 'src/service/layout/i_layout_service.dart';
-import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
@@ -24,8 +23,11 @@ import 'src/service/ui/impl/ui_service.dart';
 
 Future<bool> initAppMobile() async {
   // API
+  UrlConfig urlConfigServer1 = ConfigGenerator.generateMobileServerUrl("172.16.0.34", 8888);
+  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
+
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
+  UrlConfig urlConfig = urlConfigServer1;
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();

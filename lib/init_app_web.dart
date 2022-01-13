@@ -25,10 +25,7 @@ initAppWeb() {
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
-  IApiService apiService = DefaultApi(
-      repository: repository,
-      controller: controller
-  );
+  IApiService apiService = DefaultApi(repository: repository, controller: controller);
   services.registerSingleton(apiService, signalsReady: true);
 
   //Config
@@ -46,6 +43,4 @@ initAppWeb() {
   //UI
   IUiService uiService = UiService();
   services.registerSingleton(uiService, signalsReady: true);
-
-
 }

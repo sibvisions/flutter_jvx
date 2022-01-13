@@ -39,17 +39,16 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     model = widget.model as T;
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
-      id: model.id,
-      parentId: model.parent,
-      constraints: model.constraints,
-      preferredSize: model.preferredSize,
-      minSize: model.minimumSize,
-      maxSize: model.maximumSize,
-      needsRelayout: model.isVisible,
-      indexOf: model.indexOf,
-      heightConstrains: {},
-      widthConstrains: {}
-    );
+        id: model.id,
+        parentId: model.parent,
+        constraints: model.constraints,
+        preferredSize: model.preferredSize,
+        minSize: model.minimumSize,
+        maxSize: model.maximumSize,
+        needsRelayout: model.isVisible,
+        indexOf: model.indexOf,
+        heightConstrains: {},
+        widthConstrains: {});
 
     uiService.registerAsLiveComponent(
         id: model.id,
@@ -107,7 +106,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     log("${layoutData.id} received new layout data");
 
     // Check if new position constrains component. Only sends command if constraint is new.
-    if(!layoutData.hasPreferredSize && layoutData.hasCalculatedSize && layoutData.hasPosition && lastContext != null){
+    if (!layoutData.hasPreferredSize && layoutData.hasCalculatedSize && layoutData.hasPosition && lastContext != null) {
       double calcWidth = layoutData.calculatedSize!.width;
       double calcHeight = layoutData.calculatedSize!.height;
 
@@ -117,7 +116,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       double positionHeight = layoutData.layoutPosition!.height;
 
       // Constraint by width
-      if(layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth){
+      if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
         double newHeight = (lastContext!.findRenderObject() as RenderBox)
             .getMaxIntrinsicHeight(layoutData.layoutPosition!.width)
             .ceilToDouble();
@@ -127,7 +126,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       }
 
       // Constraint by height
-      if(layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight){
+      if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
         double? newWidth = (lastContext!.findRenderObject() as RenderBox)
             .getMaxIntrinsicWidth(layoutData.layoutPosition!.height)
             .ceilToDouble();
@@ -136,11 +135,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         isConstrained = true;
       }
 
-      if(isConstrained){
-        PreferredSizeCommand command = PreferredSizeCommand(
-            layoutData: LayoutData.from(layoutData),
-            reason: "Component has been constrained"
-        );
+      if (isConstrained) {
+        PreferredSizeCommand command =
+            PreferredSizeCommand(layoutData: LayoutData.from(layoutData), reason: "Component has been constrained");
         uiService.sendCommand(command);
       } else {
         setState(() {});
@@ -148,32 +145,24 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     } else {
       setState(() {});
     }
-
-
   }
 
   /// Callback called after every build
   void postFrameCallback(BuildContext context) {
     lastContext = context;
 
-
-    if(!sentCalcSize){
-      if(!layoutData.hasPreferredSize){
+    if (!sentCalcSize) {
+      if (!layoutData.hasPreferredSize) {
         double minWidth;
         double minHeight;
-        minWidth = (context.findRenderObject() as RenderBox)
-            .getMaxIntrinsicWidth(double.infinity)
-            .ceilToDouble();
-        minHeight = (context.findRenderObject() as RenderBox)
-            .getMaxIntrinsicHeight(double.infinity)
-            .ceilToDouble();
+        minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
+        minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
 
         layoutData.calculatedSize = Size(minWidth, minHeight);
       }
 
-      PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(
-          layoutData: layoutData.clone(),
-          reason: "Component has been rendered");
+      PreferredSizeCommand preferredSizeCommand =
+          PreferredSizeCommand(layoutData: layoutData.clone(), reason: "Component has been rendered");
 
       uiService.sendCommand(preferredSizeCommand);
       sentCalcSize = true;

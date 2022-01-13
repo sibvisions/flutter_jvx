@@ -1,14 +1,13 @@
+import 'package:flutter_client/src/components/dummy/dummy_widget.dart';
+
 import '../fl_component_model.dart';
 
+/// The model for [DummyWidget]
 class FlDummyModel extends FlComponentModel {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlDummyModel.fromJson(Map<String, dynamic> json) : super.fromJson(json);
-
-  FlDummyModel.updateProperties(FlComponentModel oldModel, dynamic json) :
-      super.updatedProperties(oldModel, json);
-
-  @override
-  FlComponentModel updateComponent(FlComponentModel oldModel, dynamic json) {
-    return FlDummyModel.updateProperties(oldModel, json);
-  }
+  /// Initializes the [FlDummyModel]
+  FlDummyModel() : super();
 }
