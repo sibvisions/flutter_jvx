@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/service/command/shared/processor/ui/update_components_processor.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
@@ -11,6 +13,7 @@ class OpenScreenCommandProcessor
   Future<List<BaseCommand>> processCommand(OpenScreenCommand command) async {
     String? clientId = configService.getClientId();
     if (clientId != null) {
+      UpdateComponentsProcessor.isOpenScreen = true;
       return apiService.openScreen(command.componentId, clientId);
     } else {
       throw Exception(

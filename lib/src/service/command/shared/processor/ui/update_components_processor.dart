@@ -12,13 +12,18 @@ import '../../i_command_processor.dart';
 class UpdateComponentsProcessor
     with UiServiceGetterMixin, LayoutServiceMixin
     implements ICommandProcessor<UpdateComponentsCommand> {
+  static bool isOpenScreen = false;
+  static bool _secondRun = false;
+
   @override
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
     IUiService uiService = getUiService();
 
     log("------------------- Components are updating");
 
-    layoutService.setValid(isValid: false);
+    if (!isOpenScreen && !_secondRun) {
+      layoutService.setValid(isValid: false);
+    }
 
     // Check to see if layout is currently busy
     Future isLegal = Future.doWhile(() async {
@@ -33,7 +38,12 @@ class UpdateComponentsProcessor
 
     // Update components when current layout run is finished
     isLegal.then((_) {
-      layoutService.setValid(isValid: true);
+      if (!isOpenScreen && !_secondRun) {
+        layoutService.setValid(isValid: true);
+
+        _secondRun = isOpenScreen;
+        isOpenScreen = false;
+      }
 
       List<Future> futureList = [];
       futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
