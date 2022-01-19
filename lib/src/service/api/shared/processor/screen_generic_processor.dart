@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/component/panel/fl_split_panel.dart';
+
 import '../../../../model/command/ui/route_command.dart';
 import '../../../../model/component/label/fl_label_model.dart';
 import '../../../../routing/app_routing_type.dart';
@@ -110,6 +112,9 @@ class ScreenGenericProcessor implements IProcessor {
         break;
       case (FlComponentClassname.scrollPanel):
         model = FlPanelModel();
+        break;
+      case (FlComponentClassname.splitPanel):
+        model = FlSplitPanelModel();
         break;
       default:
         model = FlDummyModel();

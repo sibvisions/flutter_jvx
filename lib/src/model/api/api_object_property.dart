@@ -15,6 +15,8 @@ abstract class ApiObjectProperty {
   static const String indexOf = "indexOf";
   static const String tabIndex = "tabIndex";
   static const String bounds = "bounds";
+  static const String dividerPosition = "dividerPosition";
+  static const String orientation = "orientation";
   // Size Data
   static const String preferredSize = "preferredSize";
   static const String minimumSize = "minimumSize";

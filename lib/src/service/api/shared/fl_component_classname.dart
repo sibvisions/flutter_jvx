@@ -4,4 +4,5 @@ abstract class FlComponentClassname {
   static const String label = "Label";
   static const String groupPanel = "GroupPanel";
   static const String scrollPanel = "ScrollPanel";
+  static const String splitPanel = "SplitPanel";
 }

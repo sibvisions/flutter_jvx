@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:ui';
 
+import 'package:flutter_client/src/layout/split_layout.dart';
+
 import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';
 import 'border_layout.dart';
@@ -42,6 +44,8 @@ abstract class ILayout implements ICloneable {
           return GridLayout();
         case "FlowLayout":
           return FlowLayout(layoutString: pLayout);
+        case "SplitLayout":
+          return SplitLayout();
         default:
           return null;
       }
