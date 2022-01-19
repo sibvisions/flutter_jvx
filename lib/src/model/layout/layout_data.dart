@@ -317,25 +317,25 @@ class LayoutData implements ICloneable {
       }
     }
 
-    // if (hasMinSize) {
-    //   if (minSize!.width > width) {
-    //     width = minSize!.width;
-    //   }
-    //
-    //   if (minSize!.height > height) {
-    //     height = minSize!.height;
-    //   }
-    // }
-    //
-    // if (hasMaxSize) {
-    //   if (maxSize!.width < width) {
-    //     width = maxSize!.width;
-    //   }
-    //
-    //   if (maxSize!.height < height) {
-    //     height = maxSize!.height;
-    //   }
-    // }
+    if (hasMinSize) {
+      if (minSize!.width > width) {
+        width = minSize!.width;
+      }
+
+      if (minSize!.height > height) {
+        height = minSize!.height;
+      }
+    }
+
+    if (hasMaxSize) {
+      if (maxSize!.width < width) {
+        width = maxSize!.width;
+      }
+
+      if (maxSize!.height < height) {
+        height = maxSize!.height;
+      }
+    }
 
     return Size(width, height);
   }

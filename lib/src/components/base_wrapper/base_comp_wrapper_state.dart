@@ -159,6 +159,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
 
         layoutData.calculatedSize = Size(minWidth, minHeight);
+      } else {
+        layoutData.calculatedSize = layoutData.preferredSize;
       }
 
       PreferredSizeCommand preferredSizeCommand =
