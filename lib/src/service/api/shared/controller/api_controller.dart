@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter_client/src/service/api/shared/processor/dal_fetch_processor.dart';
+import 'package:flutter_client/src/service/api/shared/processor/dal_meta_data_processor.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/api_response_names.dart';
@@ -19,6 +21,8 @@ class ApiController implements IController {
   final IProcessor _menuProcessor = MenuProcessor();
   final IProcessor _screenGenericProcessor = ScreenGenericProcessor();
   final IProcessor _closeScreenProcessor = CloseScreenProcessor();
+  final IProcessor _dalMetaDataProcessor = DalMetaDataProcessor();
+  final IProcessor _dalFetchProcessor = DalFetchProcessor();
 
   @override
   Future<List<BaseCommand>> processResponse(Future<Response> response) {
@@ -54,6 +58,10 @@ class ApiController implements IController {
         return _screenGenericProcessor.processResponse(json);
       case (ApiResponseNames.closeScreen):
         return _closeScreenProcessor.processResponse(json);
+      case (ApiResponseNames.dalMetaData):
+        return _dalMetaDataProcessor.processResponse(json);
+      case (ApiResponseNames.dalFetch):
+        return _dalFetchProcessor.processResponse(json);
       default:
         return [];
     }

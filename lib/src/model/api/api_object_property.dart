@@ -81,4 +81,28 @@ abstract class ApiObjectProperty {
   static const String changedComponents = "changedComponents";
   static const String update = "update";
   static const String home = "home";
+  static const String columnViewTable = "columnView_table_";
+  static const String columns = "columns";
+
+
+  // Data Properties
+  static const String dataTypeIdentifier = "dataTypeIdentifier";
+  static const String width = "width";
+  static const String readOnly = "readonly";
+  static const String nullable = "nullable";
+  static const String resizable = "resizable";
+  static const String sortable = "sortable";
+  static const String movable = "movable";
+  static const String contentType = "contentType";
+  static const String directCellEditor = "directCellEditor";
+  static const String preferredEditorMode = "preferredEditorMode";
+  static const String autoOpenPopup = "autoOpenPopup";
+  static const String cellEditor = "cellEditor";
+  static const String dataProvider = "dataProvider";
+  static const String records = "records";
+  static const String to = "to";
+  static const String from = "from";
+  static const String columnNames = "columnNames";
+  static const String isAllFetched = "isAllFetched";
+  static const String selectedRow = "selectedRow";
 }

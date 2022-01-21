@@ -129,7 +129,7 @@ abstract class FlComponentModel {
     }
     var jsonIsRemoved = pJson[ApiObjectProperty.remove];
     if (jsonIsRemoved != null) {
-      isRemoved = ParseUtil.parseBoolFromString(pBoolString: jsonIsRemoved)!;
+      isRemoved = ParseUtil.parseBoolFromString(jsonIsRemoved)!;
     }
     var jsonIsVisible = pJson[ApiObjectProperty.visible];
     if (jsonIsVisible != null) {
@@ -157,19 +157,19 @@ abstract class FlComponentModel {
     }
     var jsonPreferredSize = pJson[ApiObjectProperty.preferredSize];
     if (jsonPreferredSize != null) {
-      preferredSize = ParseUtil.parseSizeFromString(pSizeString: jsonPreferredSize)!;
+      preferredSize = ParseUtil.parseSizeFromString(jsonPreferredSize)!;
     }
     var jsonMinimumSize = pJson[ApiObjectProperty.minimumSize];
     if (jsonMinimumSize != null) {
-      minimumSize = ParseUtil.parseSizeFromString(pSizeString: jsonMinimumSize)!;
+      minimumSize = ParseUtil.parseSizeFromString(jsonMinimumSize)!;
     }
     var jsonMaximumSize = pJson[ApiObjectProperty.maximumSize];
     if (jsonMaximumSize != null) {
-      maximumSize = ParseUtil.parseSizeFromString(pSizeString: jsonMaximumSize)!;
+      maximumSize = ParseUtil.parseSizeFromString(jsonMaximumSize)!;
     }
     var jsonBounds = pJson[ApiObjectProperty.bounds];
     if (jsonBounds != null) {
-      bounds = ParseUtil.parseBounds(pValue: jsonBounds);
+      bounds = ParseUtil.parseBounds(jsonBounds);
     }
     var jsonBackground = pJson[ApiObjectProperty.background];
     if (jsonBackground != null) {
