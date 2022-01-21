@@ -66,3 +66,15 @@ extension AlignmentOrientationE on HorizontalAlignment {
     return AlignmentOrientation.values[int.parse(pAlignment)];
   }
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Flutter Alignment
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/// Two-dimensional array translating JVx alignment constants to Flutter alignment constants.
+const FLUTTER_ALIGNMENT = [
+  [Alignment.topLeft, Alignment.centerLeft, Alignment.bottomLeft, Alignment.centerLeft],
+  [Alignment.topCenter, Alignment.center, Alignment.bottomCenter, Alignment.center],
+  [Alignment.topRight, Alignment.centerRight, Alignment.bottomRight, Alignment.centerRight],
+  [Alignment.topCenter, Alignment.center, Alignment.bottomCenter, Alignment.center],
+];

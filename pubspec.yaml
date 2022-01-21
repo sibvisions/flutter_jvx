@@ -20,6 +20,7 @@ dependencies:
   # Custom  Dep
   get_it: ^7.2.0
   http: ^0.13.4
+  font_awesome_flutter: ^9.2.0
 
 flutter:
 

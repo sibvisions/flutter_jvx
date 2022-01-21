@@ -173,11 +173,11 @@ abstract class FlComponentModel {
     }
     var jsonBackground = pJson[ApiObjectProperty.background];
     if (jsonBackground != null) {
-      background = ParseUtil.parseHexColor(pValue: jsonBackground)!;
+      background = ParseUtil.parseHexColor(jsonBackground)!;
     }
     var jsonForeground = pJson[ApiObjectProperty.foreground];
     if (jsonForeground != null) {
-      foreground = ParseUtil.parseHexColor(pValue: jsonForeground)!;
+      foreground = ParseUtil.parseHexColor(jsonForeground)!;
     }
     var jsonVerticalAlignment = pJson[ApiObjectProperty.verticalAlignment];
     if (jsonVerticalAlignment != null) {
@@ -192,9 +192,9 @@ abstract class FlComponentModel {
       var fontValuesList = (fontValues as String).split(",");
       if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
         fontName = fontValuesList[0];
-        fontSize = int.parse(fontValuesList[1]);
-        isBold = (int.parse(fontValuesList[2]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
-        isItalic = (int.parse(fontValuesList[2]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
+        fontSize = int.parse(fontValuesList[2]);
+        isBold = (int.parse(fontValuesList[1]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
+        isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
       }
     }
     var jsonTooltipText = pJson[ApiObjectProperty.toolTipText];

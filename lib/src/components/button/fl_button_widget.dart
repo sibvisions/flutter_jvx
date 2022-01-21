@@ -30,7 +30,7 @@ class FlButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: width, height: height, child: ElevatedButton(onPressed: onPress, child: _getTextWidget()));
+    return ElevatedButton(onPressed: onPress, child: _getTextWidget());
   }
 
   Text _getTextWidget() {

@@ -44,6 +44,18 @@ abstract class ApiObjectProperty {
 
   //Common Properties -- these may be used by many different Components
   static const String text = "text";
+  static const String borderOnMouseEntered = "borderOnMouseEntered";
+  static const String borderPainted = "borderPainted";
+  static const String defaultButton = "defaultButton";
+  static const String horizontalTextPosition = "horizontalTextPosition";
+  static const String verticalTextPosition = "verticalTextPosition";
+  static const String margins = "margins";
+  static const String imageTextGap = "imageTextGap";
+  static const String mousePressedImage = "mousePressedImage";
+  static const String mouseOverImage = "mouseOverImage";
+  static const String accelerator = "accelerator";
+  static const String ariaLabel = "ariaLabel";
+  static const String defaultWindow = "defaultWindow";
 
   //Can occur in both request & response
   static const String clientId = "clientId";

@@ -26,10 +26,16 @@ class ApiController implements IController {
         .then((fullResponse) => fullResponse.body)
         .then((body) => jsonDecode(body) as List<dynamic>)
         .then((value) => value.map((e) => _sentToProcessor(e)).toList())
-        .then((value) => value.reduce((value, element) {
-              value.addAll(element);
-              return value;
-            })); //Reduce List<List<BaseCommands>> to only a single Type of List<BaseCommands>
+        .then((value) {
+      if (value.isNotEmpty) {
+        return value.reduce((element1, element2) {
+          element1.addAll(element2);
+          return element1;
+        });
+      } else {
+        return <BaseCommand>[];
+      }
+    }); //Reduce List<List<BaseCommands>> to only a single Type of List<BaseCommands>
     return commands;
   }
 

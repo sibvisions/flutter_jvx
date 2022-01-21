@@ -34,7 +34,7 @@ abstract class ParseUtil {
   /// Starting with 0x or 0X in AARRGGBB or RRGGBB.
   ///
   /// Starting with # in RRGGBBAA o RRGGBB
-  static Color? parseHexColor({String? pValue}) {
+  static Color? parseHexColor(String? pValue) {
     if (pValue == null) {
       return null;
     } else if (pValue.startsWith("#")) {

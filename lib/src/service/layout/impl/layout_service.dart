@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
