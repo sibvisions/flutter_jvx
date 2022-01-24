@@ -33,6 +33,7 @@ class DalFetchResponse extends ApiResponse{
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Creates an [DalFetchResponse] Object
   DalFetchResponse({
     required String name,
     required this.dataProvider,
@@ -44,11 +45,13 @@ class DalFetchResponse extends ApiResponse{
     required this.records
   }) : super(name: name);
 
+
+  /// Parses a json into an [DalFetchResponse] Object
   DalFetchResponse.fromJson(Map<String, dynamic> pJson) :
-      records = pJson[ApiObjectProperty.records],
+      records = pJson[ApiObjectProperty.records].cast<List<dynamic>>(),
       to = pJson[ApiObjectProperty.to],
       from = pJson[ApiObjectProperty.from],
-      columnNames = pJson[ApiObjectProperty.columnNames],
+      columnNames = pJson[ApiObjectProperty.columnNames].cast<String>(),
       isAllFetched = pJson[ApiObjectProperty.isAllFetched],
       selectedRow = pJson[ApiObjectProperty.selectedRow],
       dataProvider = pJson[ApiObjectProperty.dataProvider],

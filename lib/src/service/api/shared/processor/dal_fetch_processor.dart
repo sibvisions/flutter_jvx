@@ -8,6 +8,7 @@ class DalFetchProcessor extends IProcessor {
   @override
   List<BaseCommand> processResponse(json) {
 
+    DalFetchResponse res = DalFetchResponse.fromJson(json);
 
     return [];
   }
