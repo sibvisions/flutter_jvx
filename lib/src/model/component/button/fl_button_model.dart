@@ -3,6 +3,7 @@ import 'package:flutter_client/src/components/button/fl_button_widget.dart';
 import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 import 'package:flutter_client/src/model/layout/alignments.dart';
 import 'package:flutter_client/util/font_awesome_util.dart';
+import 'package:flutter_client/util/parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../api/api_object_property.dart';
@@ -44,12 +45,18 @@ class FlButtonModel extends FlComponentModel {
   /// The image when the button is currently being pressed down.
   Widget? mouseOverImage;
 
+  /// The margins between the button and its children.
+  EdgeInsets margins = const EdgeInsets.fromLTRB(10, 10, 10, 10);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the [FlButtonModel]
-  FlButtonModel() : super();
+  FlButtonModel() : super() {
+    labelModel.verticalAlignment = VerticalAlignment.CENTER;
+    labelModel.horizontalAlignment = HorizontalAlignment.RIGHT;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -114,12 +121,26 @@ class FlButtonModel extends FlComponentModel {
       }
     }
 
+    var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
+    if (jsonMargins != null) {
+      margins = jsonMargins;
+    }
+
     // Label parsing
     // Label alignment gets sent in 2 different keys than when sending a label directly.
 
-    pJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
-    pJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
+    labelModel.text = text;
+    labelModel.background = background;
+    labelModel.foreground = foreground;
+    labelModel.fontName = fontName;
+    labelModel.fontSize = fontSize;
+    labelModel.isBold = isBold;
+    labelModel.isItalic = isItalic;
 
-    labelModel.applyFromJson(pJson);
+    Map<String, dynamic> labelJson = <String, dynamic>{};
+    labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
+    labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
+
+    labelModel.applyFromJson(labelJson);
   }
 }

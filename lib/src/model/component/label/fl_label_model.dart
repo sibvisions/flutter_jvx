@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/components/label/fl_label_widget.dart';
+import 'package:flutter_client/src/model/layout/alignments.dart';
 
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
@@ -17,7 +18,10 @@ class FlLabelModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the [FlLabelModel]
-  FlLabelModel() : super();
+  FlLabelModel() : super() {
+    horizontalAlignment = HorizontalAlignment.LEFT;
+    verticalAlignment = VerticalAlignment.TOP;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

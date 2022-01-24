@@ -19,7 +19,7 @@ class _FlButtonWrapperState extends BaseCompWrapperState<FlButtonModel> with UiS
   @override
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
-      buttonModel: model,
+      model: model,
       onPress: buttonPressed,
       width: getWidthForComponent(),
       height: getHeightForComponent(),
