@@ -34,16 +34,22 @@ abstract class IUiService {
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
-  /// Register as an active Component, callback will be called when model changes or children should be rebuilt.
+  /// Register as an active component, callback will be called when model changes or children should be rebuilt.
   void registerAsLiveComponent({required String id, required ComponentCallback callback});
 
-  /// Notify affected Parents that their children changed, should only be used when parent model hasn't been changed as well.
+  /// Register a an active component in need of data from a dataBook.
+  void registerAsDataComponent({required String pDataProvider, required Function pCallback});
+
+  /// Notify affected parents that their children changed, should only be used when parent model hasn't been changed as well.
   void notifyAffectedComponents({required Set<String> affectedIds});
 
-  /// Notify changed Live components that their model has changed, will give them their new model.
+  /// Notify changed live components that their model has changed, will give them their new model.
   void notifyChangedComponents({required List<FlComponentModel> updatedModels});
 
-  /// Save new Components to active components, used for saving components which have not been previously been rendered.
+  /// Notify all components belonging to [dataProvider] that their underlying data may have changed.
+  void notifyDataChange({required String dataProvider});
+
+  /// Save new components to active components, used for saving components which have not been previously been rendered.
   void saveNewComponents({required List<FlComponentModel> newModels});
 
   /// Deletes unused component models from local cache.

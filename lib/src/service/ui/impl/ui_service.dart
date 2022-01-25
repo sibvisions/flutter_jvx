@@ -19,14 +19,17 @@ class UiService with CommandServiceMixin implements IUiService {
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Used to send Routing events to [AppDelegate].
+  /// Used to send routing events to [AppDelegate].
   final StreamController _routeStream = StreamController.broadcast();
 
-  /// Last open Screen
+  /// Last open screen
   final List<FlComponentModel> _currentScreen = [];
 
-  /// Live Component Registration
+  /// Live component registration
   final HashMap<String, ComponentCallback> _registeredComponents = HashMap();
+
+  /// Live data components
+  final HashMap<String, HashMap<String, Function>> _registeredDataComponents = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -121,5 +124,15 @@ class UiService with CommandServiceMixin implements IUiService {
     } else {
       throw Exception("Component to set position not found");
     }
+  }
+
+  @override
+  void registerAsDataComponent({required String pDataProvider, required Function pCallback}) {
+
+  }
+
+  @override
+  void notifyDataChange({required String dataProvider}) {
+
   }
 }
