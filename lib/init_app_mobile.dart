@@ -1,5 +1,3 @@
-import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
-
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
@@ -15,6 +13,7 @@ import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
 import 'src/service/layout/i_layout_service.dart';
+import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';

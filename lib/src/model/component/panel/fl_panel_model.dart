@@ -1,6 +1,4 @@
-import 'dart:developer';
-
-import 'package:flutter_client/src/components/panel/fl_panel_widget.dart';
+import '../../../components/panel/fl_panel_widget.dart';
 
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';

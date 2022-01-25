@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/components/dummy/dummy_widget.dart';
+import '../../../components/dummy/dummy_widget.dart';
 
 import '../fl_component_model.dart';
 

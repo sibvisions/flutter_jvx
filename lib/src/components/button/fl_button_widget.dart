@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/label/fl_label_widget.dart';
-import 'package:flutter_client/src/model/layout/alignments.dart';
+import '../label/fl_label_widget.dart';
+import '../../model/layout/alignments.dart';
 
 import '../../model/component/button/fl_button_model.dart';
 

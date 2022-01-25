@@ -3,8 +3,8 @@ import 'dart:collection';
 import 'dart:developer';
 import 'dart:ui';
 
-import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
-import 'package:flutter_client/src/model/command/layout/register_parent_command.dart';
+import '../../../model/command/layout/preferred_size_command.dart';
+import '../../../model/command/layout/register_parent_command.dart';
 
 import '../../../model/command/base_command.dart';
 import '../../../model/command/ui/update_layout_position_command.dart';

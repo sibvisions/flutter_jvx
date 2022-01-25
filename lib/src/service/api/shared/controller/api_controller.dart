@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/service/api/shared/processor/dal_fetch_processor.dart';
-import 'package:flutter_client/src/service/api/shared/processor/dal_meta_data_processor.dart';
+import '../processor/dal_fetch_processor.dart';
+import '../processor/dal_meta_data_processor.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/api_response_names.dart';

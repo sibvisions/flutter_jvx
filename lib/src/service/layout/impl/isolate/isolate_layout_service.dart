@@ -2,9 +2,8 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_in_process_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_valid_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/set_is_valid_message.dart';
+import 'message/endpoint/layout_in_process_message.dart';
+import 'message/endpoint/layout_valid_message.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/layout/layout_data.dart';
 import '../../i_layout_service.dart';

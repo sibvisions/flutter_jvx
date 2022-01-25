@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/service/command/shared/processor/ui/update_components_processor.dart';
+import '../ui/update_components_processor.dart';
 
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';

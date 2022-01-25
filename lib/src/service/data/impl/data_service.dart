@@ -1,13 +1,12 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/command/base_command.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/src/service/data/i_data_service.dart';
+import '../../../model/api/response/dal_fetch_response.dart';
+import '../../../model/api/response/dal_meta_data_response.dart';
+import '../../../model/command/base_command.dart';
+import '../../../model/data/column_definition.dart';
+import '../i_data_service.dart';
 
 class DataService implements IDataService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,25 +20,21 @@ class DataService implements IDataService {
 
   @override
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch}) async {
-    
-
     return [];
   }
 
   @override
   void updateMetaData({required DalMetaDataResponse pMetaData}) async {
-
     DataBook? dataBook = dataBooks[pMetaData.dataProvider];
 
-    if(dataBook == null){
+    if (dataBook == null) {
       dataBook = DataBook(
           dataProvider: pMetaData.dataProvider,
           records: HashMap(),
           columnDefinitions: pMetaData.columns,
           isAllFetched: false,
           selectedRow: -1,
-          columnViewTable: pMetaData.columnViewTable
-      );
+          columnViewTable: pMetaData.columnViewTable);
       dataBooks[dataBook.dataProvider] = dataBook;
     } else {
       dataBook.columnDefinitions = pMetaData.columns;
@@ -52,13 +47,10 @@ class DataService implements IDataService {
     // TODO: implement dataProviderChange
     throw UnimplementedError();
   }
-
 }
-
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -85,14 +77,13 @@ class DataBook {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataBook({
-    required this.dataProvider,
-    required this.records,
-    required this.columnDefinitions,
-    required this.isAllFetched,
-    required this.selectedRow,
-    required this.columnViewTable
-  });
+  DataBook(
+      {required this.dataProvider,
+      required this.records,
+      required this.columnDefinitions,
+      required this.isAllFetched,
+      required this.selectedRow,
+      required this.columnViewTable});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -105,10 +96,9 @@ class DataBook {
 
   /// Saves all incoming records, overwrites records if already present
   void saveDataRecords({required List<dynamic> pRecords, required int from, required int to}) {
-    while(from != to){
-      records[from] = pRecords[to-from];
+    while (from != to) {
+      records[from] = pRecords[to - from];
       from++;
     }
   }
-
 }

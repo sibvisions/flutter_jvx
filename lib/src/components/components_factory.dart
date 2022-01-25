@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/split_panel/fl_split_panel_wrapper.dart';
-import 'package:flutter_client/src/model/component/panel/fl_split_panel.dart';
+import 'split_panel/fl_split_panel_wrapper.dart';
+import '../model/component/panel/fl_split_panel.dart';
 
 import '../model/component/button/fl_button_model.dart';
 import '../model/component/dummy/fl_dummy_model.dart';

@@ -1,7 +1,4 @@
-import 'dart:collection';
-import 'dart:ui';
-
-import 'package:flutter_client/src/layout/split_layout.dart';
+import 'split_layout.dart';
 
 import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';

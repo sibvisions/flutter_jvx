@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/components/label/fl_label_widget.dart';
-import 'package:flutter_client/src/model/layout/alignments.dart';
+import '../../../components/label/fl_label_widget.dart';
+import '../../layout/alignments.dart';
 
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';

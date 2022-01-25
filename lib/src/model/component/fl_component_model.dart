@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/layout/alignments.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/util/constants/i_font.dart';
+import '../layout/alignments.dart';
+import '../layout/layout_position.dart';
+import '../../../util/constants/i_font.dart';
 import '../../../util/parse_util.dart';
 
 import '../api/api_object_property.dart';

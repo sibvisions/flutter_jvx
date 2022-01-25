@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'i_layout.dart';
 import '../model/layout/layout_data.dart';
 

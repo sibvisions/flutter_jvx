@@ -1,8 +1,7 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import '../api/api_object_property.dart';
+import '../component/fl_component_model.dart';
 
 class ICellEditor extends FlComponentModel {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,31 +30,26 @@ class ICellEditor extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void applyFromJson(Map<String, dynamic> pJson){
+  void applyFromJson(Map<String, dynamic> pJson) {
     // ContentType
     var jsonContentType = pJson[ApiObjectProperty.contentType];
-    if(jsonContentType != null){
+    if (jsonContentType != null) {
       contentType = jsonContentType;
     }
     // DirectCellEditor
     var jsonDirectCellEditor = pJson[ApiObjectProperty.directCellEditor];
-    if(jsonDirectCellEditor != null){
+    if (jsonDirectCellEditor != null) {
       directCellEditor = jsonDirectCellEditor;
     }
     // PreferredEditorMode
     var jsonPreferredEditorMode = pJson[ApiObjectProperty.preferredEditorMode];
-    if(jsonPreferredEditorMode != null){
+    if (jsonPreferredEditorMode != null) {
       preferredEditorMode = jsonPreferredEditorMode;
     }
     // AutoOpenPopup
     var jsonAutoOpenPopup = pJson[ApiObjectProperty.autoOpenPopup];
-    if(jsonAutoOpenPopup != null){
+    if (jsonAutoOpenPopup != null) {
       autoOpenPopup = jsonAutoOpenPopup;
     }
   }
-
-
-
-
-
 }

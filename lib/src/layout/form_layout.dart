@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:core';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import '../model/layout/alignments.dart';
@@ -364,7 +363,6 @@ class FormLayout extends ILayout {
     /// Available Size, set to setSize from parent by default
     Size calcSize = pGivenSize ?? Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
 
-
     FormLayoutAnchor lba = pAnchors["l"]!;
     FormLayoutAnchor rba = pAnchors["r"]!;
     FormLayoutAnchor bba = pAnchors["b"]!;
@@ -516,22 +514,21 @@ class FormLayout extends ILayout {
 
       LayoutData layoutData = pChildrenData.firstWhere((element) => element.id == componentId);
 
-      layoutData.layoutPosition = LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
+      layoutData.layoutPosition =
+          LayoutPosition(width: width, height: height, isComponentSize: true, left: left, top: top);
     });
 
     Size preferred = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
 
-    if(!pParent.hasPosition){
+    if (!pParent.hasPosition) {
       pParent.calculatedSize = preferred;
     } else {
-
-      if(pParent.isWidthConstrained){
+      if (pParent.isWidthConstrained) {
         pParent.widthConstrains[pParent.layoutPosition!.width] = pMinPrefSize.preferredHeight;
       }
-      if(pParent.isHeightConstrained){
+      if (pParent.isHeightConstrained) {
         pParent.heightConstrains[pParent.layoutPosition!.height] = pMinPrefSize.preferredWidth;
       }
-
     }
   }
 

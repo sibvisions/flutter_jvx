@@ -1,12 +1,9 @@
-
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/data/cell_editor.dart';
+import '../api/api_object_property.dart';
+import '../api/response/dal_meta_data_response.dart';
+import 'cell_editor.dart';
 
 /// The definition of a column of a dataBook. Received from the server in a [DalMetaDataResponse]
 class ColumnDefinition {
-
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,58 +49,55 @@ class ColumnDefinition {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Writes all data present in the json into the objects properties.
-  void applyFromJson({required Map<String, dynamic> pJson}){
+  void applyFromJson({required Map<String, dynamic> pJson}) {
     // Name
     var jsonName = pJson[ApiObjectProperty.name];
-    if(jsonName != null) {
+    if (jsonName != null) {
       name = jsonName;
     }
     // Label
     var jsonLabel = pJson[ApiObjectProperty.label];
-    if(jsonLabel != null){
+    if (jsonLabel != null) {
       label = jsonLabel;
     }
     // DataTypeIdentifier
     var jsonDataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier];
-    if(jsonDataTypeIdentifier != null){
+    if (jsonDataTypeIdentifier != null) {
       dataTypeIdentifier = jsonDataTypeIdentifier;
     }
     // Width
     var jsonWidth = pJson[ApiObjectProperty.width];
-    if(jsonWidth != null){
+    if (jsonWidth != null) {
       width = (jsonWidth as int).toDouble();
     }
     // Readonly
     var jsonReadonly = pJson[ApiObjectProperty.readOnly];
-    if(jsonReadonly != null){
+    if (jsonReadonly != null) {
       readonly = jsonReadonly;
     }
     // Nullable
     var jsonNullable = pJson[ApiObjectProperty.nullable];
-    if(jsonNullable != null){
+    if (jsonNullable != null) {
       nullable = jsonNullable;
     }
     // Resizable
     var jsonResizable = pJson[ApiObjectProperty.resizable];
-    if(jsonResizable != null){
+    if (jsonResizable != null) {
       resizable = jsonResizable;
     }
     // Sortable
     var jsonSortable = pJson[ApiObjectProperty.sortable];
-    if(jsonSortable != null){
+    if (jsonSortable != null) {
       sortable = jsonSortable;
     }
     // Movable
     var jsonMovable = pJson[ApiObjectProperty.movable];
-    if(jsonMovable != null){
+    if (jsonMovable != null) {
       movable = jsonMovable;
     }
-    var jsonCellEditor = pJson [ApiObjectProperty.cellEditor];
-    if(jsonCellEditor != null){
+    var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
+    if (jsonCellEditor != null) {
       cellEditor.applyFromJson(jsonCellEditor);
     }
   }
-
-
-
 }

@@ -1,10 +1,9 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/response/api_response.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/util/parse_util.dart';
+import '../api_object_property.dart';
+import 'api_response.dart';
+import '../../data/column_definition.dart';
+import '../../../../util/parse_util.dart';
 
 class DalMetaDataResponse extends ApiResponse {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,15 +21,12 @@ class DalMetaDataResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DalMetaDataResponse({
-    required String name,
-    required this.dataProvider,
-    required this.columns,
-    required this.columnViewTable
-  }) : super(name: name);
+  DalMetaDataResponse(
+      {required String name, required this.dataProvider, required this.columns, required this.columnViewTable})
+      : super(name: name);
 
   DalMetaDataResponse.fromJson({required Map<String, dynamic> pJson})
-    :   columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),
+      : columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),
         columns = ParseUtil.parseColumnDefinitions(pJson[ApiObjectProperty.columns]),
         dataProvider = pJson[ApiObjectProperty.dataProvider],
         super.fromJson(pJson);

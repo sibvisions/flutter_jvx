@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/component/panel/fl_split_panel.dart';
+import '../../../../model/component/panel/fl_split_panel.dart';
 
 import '../../../../model/command/ui/route_command.dart';
 import '../../../../model/component/label/fl_label_model.dart';

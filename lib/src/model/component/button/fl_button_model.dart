@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/button/fl_button_widget.dart';
-import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
-import 'package:flutter_client/src/model/layout/alignments.dart';
-import 'package:flutter_client/util/font_awesome_util.dart';
-import 'package:flutter_client/util/parse_util.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../components/button/fl_button_widget.dart';
+import '../label/fl_label_model.dart';
+import '../../layout/alignments.dart';
+import '../../../../util/font_awesome_util.dart';
+import '../../../../util/parse_util.dart';
 
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';

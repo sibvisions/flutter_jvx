@@ -1,9 +1,7 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/api/response/api_response.dart';
+import '../api_object_property.dart';
+import 'api_response.dart';
 
-
-class DalFetchResponse extends ApiResponse{
-
+class DalFetchResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,26 +32,25 @@ class DalFetchResponse extends ApiResponse{
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Creates an [DalFetchResponse] Object
-  DalFetchResponse({
-    required String name,
-    required this.dataProvider,
-    required this.from,
-    required this.selectedRow,
-    required this.isAllFetched,
-    required this.columnNames,
-    required this.to,
-    required this.records
-  }) : super(name: name);
-
+  DalFetchResponse(
+      {required String name,
+      required this.dataProvider,
+      required this.from,
+      required this.selectedRow,
+      required this.isAllFetched,
+      required this.columnNames,
+      required this.to,
+      required this.records})
+      : super(name: name);
 
   /// Parses a json into an [DalFetchResponse] Object
-  DalFetchResponse.fromJson(Map<String, dynamic> pJson) :
-      records = pJson[ApiObjectProperty.records].cast<List<dynamic>>(),
-      to = pJson[ApiObjectProperty.to],
-      from = pJson[ApiObjectProperty.from],
-      columnNames = pJson[ApiObjectProperty.columnNames].cast<String>(),
-      isAllFetched = pJson[ApiObjectProperty.isAllFetched],
-      selectedRow = pJson[ApiObjectProperty.selectedRow],
-      dataProvider = pJson[ApiObjectProperty.dataProvider],
-      super.fromJson(pJson);
+  DalFetchResponse.fromJson(Map<String, dynamic> pJson)
+      : records = pJson[ApiObjectProperty.records].cast<List<dynamic>>(),
+        to = pJson[ApiObjectProperty.to],
+        from = pJson[ApiObjectProperty.from],
+        columnNames = pJson[ApiObjectProperty.columnNames].cast<String>(),
+        isAllFetched = pJson[ApiObjectProperty.isAllFetched],
+        selectedRow = pJson[ApiObjectProperty.selectedRow],
+        dataProvider = pJson[ApiObjectProperty.dataProvider],
+        super.fromJson(pJson);
 }

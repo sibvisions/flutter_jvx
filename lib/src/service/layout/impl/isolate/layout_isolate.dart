@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_in_process_message.dart';
-import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/layout_valid_message.dart';
+import 'message/endpoint/layout_in_process_message.dart';
+import 'message/endpoint/layout_valid_message.dart';
 
 import 'message/endpoint/mark_as_dirty_message.dart';
 import 'message/endpoint/report_layout_message.dart';

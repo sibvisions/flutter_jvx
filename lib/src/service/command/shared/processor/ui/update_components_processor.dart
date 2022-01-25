@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import '../../../../api/shared/fl_component_classname.dart';
-
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';

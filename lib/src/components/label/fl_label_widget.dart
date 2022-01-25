@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/layout/alignments.dart';
+import '../../model/layout/alignments.dart';
 import '../../model/component/label/fl_label_model.dart';
 
 class FlLabelWidget extends StatelessWidget {

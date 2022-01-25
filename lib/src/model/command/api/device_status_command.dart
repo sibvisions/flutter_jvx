@@ -1,7 +1,6 @@
 import 'api_command.dart';
 
 class DeviceStatusCommand extends ApiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,5 +25,6 @@ class DeviceStatusCommand extends ApiCommand {
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
   String get logString => "DeviceStatusCommand | Width: $screenWidth | Height: $screenHeight | Reason: $reason";
 }
