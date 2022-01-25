@@ -21,7 +21,7 @@ class DataService implements IDataService {
 
   @override
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch}) async {
-
+    
 
     return [];
   }
@@ -45,6 +45,12 @@ class DataService implements IDataService {
       dataBook.columnDefinitions = pMetaData.columns;
       dataBook.columnViewTable = pMetaData.columnViewTable;
     }
+  }
+
+  @override
+  Future<List<BaseCommand>> dataProviderChange() {
+    // TODO: implement dataProviderChange
+    throw UnimplementedError();
   }
 
 }
