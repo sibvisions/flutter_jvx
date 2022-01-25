@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'parse_util.dart';
+import 'package:flutter_client/util/parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// This

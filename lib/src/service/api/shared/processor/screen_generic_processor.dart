@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
+
 import '../../../../model/component/panel/fl_split_panel.dart';
 
 import '../../../../model/command/ui/route_command.dart';
@@ -103,6 +105,9 @@ class ScreenGenericProcessor implements IProcessor {
         break;
       case (FlComponentClassname.button):
         model = FlButtonModel();
+        break;
+      case (FlComponentClassname.toogleButton):
+        model = FlToggleButtonModel();
         break;
       case (FlComponentClassname.label):
         model = FlLabelModel();

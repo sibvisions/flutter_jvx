@@ -56,6 +56,8 @@ abstract class ApiObjectProperty {
   static const String accelerator = "accelerator";
   static const String ariaLabel = "ariaLabel";
   static const String defaultWindow = "defaultWindow";
+  static const String selected = "selected";
+  static const String ariaPressed = "ariaPressed";
 
   //Can occur in both request & response
   static const String clientId = "clientId";
@@ -83,7 +85,6 @@ abstract class ApiObjectProperty {
   static const String home = "home";
   static const String columnViewTable = "columnView_table_";
   static const String columns = "columns";
-
 
   // Data Properties
   static const String dataTypeIdentifier = "dataTypeIdentifier";
