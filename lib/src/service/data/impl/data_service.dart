@@ -7,6 +7,7 @@ import '../../../model/data/column_definition.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,11 +16,28 @@ class DataService implements IDataService {
   HashMap<String, DataBook> dataBooks = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization",
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Creates an [DataService] Instance
+  DataService();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch}) async {
+
+    DataBook? dataBook = dataBooks[pFetch.dataProvider];
+    if(dataBook == null){
+      dataBook = DataBook.empty();
+      dataBook.saveFromFetchRequest(fetchResponse: pFetch);
+    } else {
+
+    }
+
+
     return [];
   }
 
@@ -51,12 +69,13 @@ class DataService implements IDataService {
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Link to source of the data,
-  final String dataProvider;
+  String dataProvider;
 
   /// List of column names which should be shown if this dataBook is to be
   List<String> columnViewTable;
@@ -77,6 +96,7 @@ class DataBook {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Creates a [DataBook]
   DataBook(
       {required this.dataProvider,
       required this.records,
@@ -84,6 +104,15 @@ class DataBook {
       required this.isAllFetched,
       required this.selectedRow,
       required this.columnViewTable});
+
+  /// Creates a [DataBook] with only default values
+  DataBook.empty() :
+      dataProvider = "",
+      columnViewTable = [],
+      columnDefinitions = [],
+      records = HashMap(),
+      selectedRow = -1,
+      isAllFetched = false;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -101,4 +130,11 @@ class DataBook {
       from++;
     }
   }
+
+  void saveFromFetchRequest({required DalFetchResponse fetchResponse}){
+      dataProvider = fetchResponse.dataProvider;
+      isAllFetched = fetchResponse.isAllFetched;
+      selectedRow = fetchResponse.selectedRow;
+  }
 }
+
