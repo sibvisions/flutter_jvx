@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import '../label/fl_label_widget.dart';
 import '../../model/layout/alignments.dart';
 
 import '../../model/component/button/fl_button_model.dart';
 
 /// The widget representing a button.
-class FlButtonWidget extends StatelessWidget {
+class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  // The model containing every information to build the button.
-  final FlButtonModel model;
 
   // The function to call on the press of the button.
   final VoidCallback onPress;
@@ -21,7 +19,8 @@ class FlButtonWidget extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlButtonWidget]
-  const FlButtonWidget({Key? key, required this.model, required this.onPress}) : super(key: key);
+  const FlButtonWidget({Key? key, required FlButtonModel model, required this.onPress})
+      : super(key: key, model: model as T);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -30,15 +29,12 @@ class FlButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPress,
-      child: Container(
-        child: _getButtonChild(),
-        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-      ),
-      style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(model.background),
-          padding: MaterialStateProperty.all(model.margins)),
-    );
+        onPressed: onPress,
+        child: Container(
+          child: getButtonChild(),
+          alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+        ),
+        style: getButtonStyle());
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +42,7 @@ class FlButtonWidget extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the icon and/or the text of the button.
-  Widget _getButtonChild() {
+  Widget getButtonChild() {
     if (model.text.isNotEmpty && model.image != null) {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
@@ -84,6 +80,7 @@ class FlButtonWidget extends StatelessWidget {
     }
   }
 
+  /// Converts [VerticalAlignment] into a usable [CrossAxisAlignment] for [Row]
   CrossAxisAlignment _getCrossAxisAlignment(VerticalAlignment pAlignment) {
     if (pAlignment == VerticalAlignment.TOP) {
       return CrossAxisAlignment.start;
@@ -97,5 +94,13 @@ class FlButtonWidget extends StatelessWidget {
   /// Gets the text widget of the button with the label model.
   Widget _getTextWidget() {
     return FlLabelWidget(model: model.labelModel).getTextWidget();
+  }
+
+  /// Gets the button style.
+  ButtonStyle getButtonStyle() {
+    return ButtonStyle(
+        elevation: MaterialStateProperty.all(2),
+        backgroundColor: MaterialStateProperty.all(model.background),
+        padding: MaterialStateProperty.all(model.margins));
   }
 }
