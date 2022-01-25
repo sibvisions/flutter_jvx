@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
 import '../label/fl_label_widget.dart';
 import '../../model/layout/alignments.dart';
 
-import '../../model/component/button/fl_button_model.dart';
-
 /// The widget representing a button.
-class FlButtonWidget extends StatelessWidget {
+class FlToggleButtonWidget extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // The model containing every information to build the button.
-  final FlButtonModel model;
+  final FlToggleButtonModel model;
 
   // The function to call on the press of the button.
   final VoidCallback onPress;
@@ -21,7 +20,7 @@ class FlButtonWidget extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes a [FlButtonWidget]
-  const FlButtonWidget({Key? key, required this.model, required this.onPress}) : super(key: key);
+  const FlToggleButtonWidget({Key? key, required this.model, required this.onPress}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -33,6 +32,8 @@ class FlButtonWidget extends StatelessWidget {
       onPressed: onPress,
       child: Container(
         child: _getButtonChild(),
+        decoration: BoxDecoration(
+            boxShadow: [BoxShadow(blurRadius: 10.0, color: model.selected ? Colors.black26 : const Color(0x00000000))]),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       ),
       style: ButtonStyle(
