@@ -31,6 +31,8 @@ class ICellEditor extends FlComponentModel {
 
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
+    super.applyFromJson(pJson);
+
     // ContentType
     var jsonContentType = pJson[ApiObjectProperty.contentType];
     if (jsonContentType != null) {

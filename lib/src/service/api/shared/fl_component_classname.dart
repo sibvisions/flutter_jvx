@@ -1,9 +1,9 @@
 abstract class FlComponentClassname {
-  static const String panel = "Panel";
-  static const String button = "Button";
-  static const String toogleButton = "ToggleButton";
-  static const String label = "Label";
-  static const String groupPanel = "GroupPanel";
-  static const String scrollPanel = "ScrollPanel";
-  static const String splitPanel = "SplitPanel";
+  static const String PANEL = "Panel";
+  static const String BUTTON = "Button";
+  static const String TOGGLE_BUTTON = "ToggleButton";
+  static const String LABEL = "Label";
+  static const String GROUP_PANEL = "GroupPanel";
+  static const String SCROLL_PANEL = "ScrollPanel";
+  static const String SPLIT_PANEL = "SplitPanel";
 }

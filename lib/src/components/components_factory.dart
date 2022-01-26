@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/button/fl_toggle_button_wrapper.dart';
 import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
 import 'package:flutter_client/src/service/api/shared/fl_component_classname.dart';
+import 'panel/fl_scroll_panel_wrapper.dart';
 import 'split_panel/fl_split_panel_wrapper.dart';
 import '../model/component/panel/fl_split_panel.dart';
 
@@ -19,19 +20,19 @@ import 'panel/fl_panel_wrapper.dart';
 abstract class ComponentsFactory {
   static Widget buildWidget(FlComponentModel model) {
     switch (model.className) {
-      case FlComponentClassname.button:
+      case FlComponentClassname.BUTTON:
         return FlButtonWrapper(model: model as FlButtonModel, key: Key(model.id));
-      case FlComponentClassname.toogleButton:
+      case FlComponentClassname.TOGGLE_BUTTON:
         return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: Key(model.id));
-      case FlComponentClassname.panel:
+      case FlComponentClassname.PANEL:
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
-      case FlComponentClassname.label:
+      case FlComponentClassname.LABEL:
         return FlLabelWrapper(model: model as FlLabelModel, key: Key(model.id));
-      case FlComponentClassname.groupPanel:
+      case FlComponentClassname.GROUP_PANEL:
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
-      case FlComponentClassname.scrollPanel:
-        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
-      case FlComponentClassname.splitPanel:
+      case FlComponentClassname.SCROLL_PANEL:
+        return FlScrollPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+      case FlComponentClassname.SPLIT_PANEL:
         return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: Key(model.id));
       default:
         return DummyWrapper(model: model as FlDummyModel, key: Key(model.id));

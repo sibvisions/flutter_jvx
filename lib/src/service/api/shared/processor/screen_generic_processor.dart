@@ -100,25 +100,25 @@ class ScreenGenericProcessor implements IProcessor {
   FlComponentModel _parseFlComponentModel(dynamic pJson, String className) {
     FlComponentModel model;
     switch (className) {
-      case (FlComponentClassname.panel):
+      case (FlComponentClassname.PANEL):
         model = FlPanelModel();
         break;
-      case (FlComponentClassname.button):
+      case (FlComponentClassname.BUTTON):
         model = FlButtonModel();
         break;
-      case (FlComponentClassname.toogleButton):
+      case (FlComponentClassname.TOGGLE_BUTTON):
         model = FlToggleButtonModel();
         break;
-      case (FlComponentClassname.label):
+      case (FlComponentClassname.LABEL):
         model = FlLabelModel();
         break;
-      case (FlComponentClassname.groupPanel):
+      case (FlComponentClassname.GROUP_PANEL):
         model = FlPanelModel();
         break;
-      case (FlComponentClassname.scrollPanel):
+      case (FlComponentClassname.SCROLL_PANEL):
         model = FlPanelModel();
         break;
-      case (FlComponentClassname.splitPanel):
+      case (FlComponentClassname.SPLIT_PANEL):
         model = FlSplitPanelModel();
         break;
       default:

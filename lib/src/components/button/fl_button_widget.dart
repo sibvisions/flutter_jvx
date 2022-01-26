@@ -49,7 +49,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         return Column(
           children: <Widget>[
             model.image!,
-            SizedBox(width: model.imageTextGap.toDouble()),
+            SizedBox(height: model.imageTextGap.toDouble()),
             Flexible(child: _getTextWidget())
           ],
           mainAxisSize: MainAxisSize.min,

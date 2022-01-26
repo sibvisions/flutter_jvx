@@ -20,7 +20,7 @@ abstract class IFontAwesome {
 
     String iconName = arr[0];
     Size iconSize = Size(double.parse(arr[1]), double.parse(arr[2]));
-    Color iconColor = ParseUtil.parseHexColor(arr[4]) ?? Colors.black;
+    Color iconColor = arr.length > 4 ? ParseUtil.parseHexColor(arr[4]) ?? Colors.black : Colors.black;
 
     IconData iconData = ICONS[iconName] ?? FontAwesomeIcons.questionCircle;
 
