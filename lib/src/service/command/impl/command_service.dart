@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/model/command/data/data_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/data/data_processor.dart';
+
 import '../../../model/command/storage/delete_screen_command.dart';
 import '../../../routing/app_routing_type.dart';
 
@@ -25,6 +28,7 @@ import '../shared/processor/ui/ui_processor.dart';
 ///
 // Author: Michael Schober
 class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMixin implements ICommandService {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,6 +47,9 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
   /// Will process all Commands with superclass [LayoutCommand]
   final ICommandProcessor _layoutProcessor = LayoutProcessor();
+
+  /// Will process all Commands with superclass [DataCommand]
+  final ICommandProcessor _dataProcessor = DataProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -63,6 +70,8 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
       commands = _uiProcessor.processCommand(command);
     } else if (command is LayoutCommand) {
       commands = _layoutProcessor.processCommand(command);
+    } else if (command is DataCommand) {
+      commands = _dataProcessor.processCommand(command);
     }
 
     // Executes Commands resulting from incoming command.

@@ -3,8 +3,8 @@ import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/base_command.dart';
 
 /// Interface for a dataService meant to handle all dataBook related tasks,
-/// this class is intended to be used as an interface
 abstract class IDataService {
+
   /// Establishes the meta data of the given dataBook
   void updateMetaData({required DalMetaDataResponse pMetaData});
 
@@ -13,4 +13,7 @@ abstract class IDataService {
 
   /// DataProviderChange
   Future<List<BaseCommand>> dataProviderChange();
+
+  /// Returns column data of the selected row of the dataProvider
+  Future<dynamic> getSelectedDataColumn({required String pColumnName, required String pDataProvider});
 }

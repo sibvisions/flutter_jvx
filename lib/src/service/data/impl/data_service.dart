@@ -1,9 +1,10 @@
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/data/data_book.dart';
+
 import '../../../model/api/response/dal_fetch_response.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/data/column_definition.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
@@ -32,9 +33,10 @@ class DataService implements IDataService {
     DataBook? dataBook = dataBooks[pFetch.dataProvider];
     if(dataBook == null){
       dataBook = DataBook.empty();
-      dataBook.saveFromFetchRequest(fetchResponse: pFetch);
+      dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
+      dataBooks[pFetch.dataProvider] = dataBook;
     } else {
-
+      dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
     }
 
 
@@ -65,76 +67,16 @@ class DataService implements IDataService {
     // TODO: implement dataProviderChange
     throw UnimplementedError();
   }
-}
 
-/// Holds all data and column definitions of a data provider
-class DataBook {
+  @override
+  Future getSelectedDataColumn({required String pColumnName, required String pDataProvider}) async {
+    
+    // Get dataBook
+    DataBook dataBook = dataBooks[pDataProvider]!;
+    
+    dynamic selectedRowColumnData = dataBook.getSelectedColumnData(pDataColumnName: pColumnName);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Link to source of the data,
-  String dataProvider;
-
-  /// List of column names which should be shown if this dataBook is to be
-  List<String> columnViewTable;
-
-  /// Definitions for all columns of this dataBook
-  List<ColumnDefinition> columnDefinitions;
-
-  /// All fetched records of this dataBook
-  HashMap<int, List<dynamic>> records;
-
-  /// If this dataBook has already fetched all possible data
-  bool isAllFetched;
-
-  /// Index of currently selected Row
-  int selectedRow;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Initialization
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Creates a [DataBook]
-  DataBook(
-      {required this.dataProvider,
-      required this.records,
-      required this.columnDefinitions,
-      required this.isAllFetched,
-      required this.selectedRow,
-      required this.columnViewTable});
-
-  /// Creates a [DataBook] with only default values
-  DataBook.empty() :
-      dataProvider = "",
-      columnViewTable = [],
-      columnDefinitions = [],
-      records = HashMap(),
-      selectedRow = -1,
-      isAllFetched = false;
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Empties the records list
-  void deleteAllRecords() {
-    records = HashMap();
-  }
-
-  /// Saves all incoming records, overwrites records if already present
-  void saveDataRecords({required List<dynamic> pRecords, required int from, required int to}) {
-    while (from != to) {
-      records[from] = pRecords[to - from];
-      from++;
-    }
-  }
-
-  void saveFromFetchRequest({required DalFetchResponse fetchResponse}){
-      dataProvider = fetchResponse.dataProvider;
-      isAllFetched = fetchResponse.isAllFetched;
-      selectedRow = fetchResponse.selectedRow;
+    return selectedRowColumnData;
   }
 }
 
