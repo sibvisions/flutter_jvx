@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class FlScrollPanelWidget extends StatelessWidget {
@@ -8,8 +10,19 @@ class FlScrollPanelWidget extends StatelessWidget {
   final double? height;
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: children,
+    log("Scroll panel has size: $width x $height");
+
+    return SingleChildScrollView(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          SizedBox(
+            width: width,
+            height: (height ?? 0),
+          ),
+          ...children
+        ],
+      ),
     );
   }
 }

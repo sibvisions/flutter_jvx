@@ -18,8 +18,8 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   Widget build(BuildContext context) {
     FlScrollPanelWidget panelWidget = FlScrollPanelWidget(
       children: children.values.toList(),
-      width: getWidthForComponent(),
-      height: getHeightForComponent(),
+      width: layoutData.hasCalculatedSize ? layoutData.calculatedSize!.width : 0.0,
+      height: layoutData.hasCalculatedSize ? layoutData.calculatedSize!.height : 0.0,
     );
 
     return (getPositioned(child: panelWidget));
