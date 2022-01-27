@@ -103,10 +103,14 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   /// Sets State with new LayoutData
   receiveNewLayoutData({required LayoutData newLayoutData}) {
     layoutData = newLayoutData;
-    log("${layoutData.id} received new layout data");
+    log("${layoutData.id} NEW DATA; ${newLayoutData.calculatedSize}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
-    if (!layoutData.hasPreferredSize && layoutData.hasCalculatedSize && layoutData.hasPosition && lastContext != null) {
+    if (!layoutData.isParent &&
+        !layoutData.hasPreferredSize &&
+        layoutData.hasCalculatedSize &&
+        layoutData.hasPosition &&
+        lastContext != null) {
       double calcWidth = layoutData.calculatedSize!.width;
       double calcHeight = layoutData.calculatedSize!.height;
 
@@ -139,12 +143,10 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         PreferredSizeCommand command =
             PreferredSizeCommand(layoutData: LayoutData.from(layoutData), reason: "Component has been constrained");
         uiService.sendCommand(command);
-      } else {
-        setState(() {});
       }
-    } else {
-      setState(() {});
     }
+
+    setState(() {});
   }
 
   /// Callback called after every build

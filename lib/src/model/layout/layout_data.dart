@@ -25,25 +25,7 @@ class LayoutData implements ICloneable {
   String? parentId;
 
   /// The layout of the component.
-  ILayout? _layout;
-
-  set layout(ILayout? layout) {
-    log("Changes the layout of $id to: $layout");
-
-    if (layout == null) {
-      try {
-        throw Exception("Layout was nulled");
-      } catch (e, stacktrace) {
-        log(stacktrace.toString());
-      }
-    }
-
-    _layout = layout;
-  }
-
-  ILayout? get layout {
-    return _layout;
-  }
+  ILayout? layout;
 
   /// The children of the component.
   List<String> children;
@@ -61,7 +43,17 @@ class LayoutData implements ICloneable {
   Size? preferredSize;
 
   /// The calculated size of the component.
-  Size? calculatedSize;
+  Size? _calculatedSize;
+
+  set calculatedSize(Size? newCalcSize) {
+    log("$id CHANGED CALC TO: $newCalcSize");
+
+    _calculatedSize = newCalcSize;
+  }
+
+  Size? get calculatedSize {
+    return _calculatedSize;
+  }
 
   /// The last calculated size of the component.
   Size? lastCalculatedSize;
@@ -101,24 +93,24 @@ class LayoutData implements ICloneable {
       this.preferredSize,
       this.insets,
       this.layoutPosition,
-      this.calculatedSize,
+      Size? calculatedSize,
       this.lastCalculatedSize,
       this.needsRelayout = false,
       this.indexOf,
-      ILayout? layout})
-      : _layout = layout;
+      this.layout})
+      : _calculatedSize = calculatedSize;
 
   /// Clones [LayoutData] as a deep copy.
   LayoutData.from(LayoutData pLayoutData)
       : id = pLayoutData.id,
         parentId = pLayoutData.parentId,
-        _layout = pLayoutData.layout?.clone(),
+        layout = pLayoutData.layout?.clone(),
         children = List.from(pLayoutData.children),
         constraints = pLayoutData.constraints,
         minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null,
         maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null,
         preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null,
-        calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
+        _calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
         lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
         insets = pLayoutData.insets?.copyWith(),
         layoutState = pLayoutData.layoutState,
@@ -130,7 +122,7 @@ class LayoutData implements ICloneable {
 
   /// Creates a bare-bones [LayoutData] object for retrieving in a set.
   LayoutData.fromId({required this.id})
-      : _layout = null,
+      : layout = null,
         parentId = null,
         children = const [],
         needsRelayout = true,

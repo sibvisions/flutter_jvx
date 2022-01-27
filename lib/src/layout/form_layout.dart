@@ -285,8 +285,6 @@ class FormLayout extends ILayout {
       }
     }
 
-    //----------------------------------------------------------
-
     /// Preferred width
     if (leftWidth != 0 && rightWidth != 0) {
       double w = leftWidth + rightWidth + pGaps.horizontalGap;

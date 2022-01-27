@@ -34,7 +34,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    log("reportLayout: ${pLayoutData.id} with ${pLayoutData.layout}");
+    log("${pLayoutData.id} REPORT: ${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -124,6 +124,19 @@ class LayoutService implements ILayoutService {
     if (data != null) {
       log("$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
+
+      // Fixes the bug of wrong calc size for the first layout, subsequent layouts are wrong tho.
+      // if (data.parentId != null) {
+      //   for (LayoutData? parentData = _layoutDataSet[data.parentId];
+      //       parentData != null && parentData.isChild && parentData.isParent;
+      //       parentData = _layoutDataSet[parentData.parentId]) {
+      //     parentData.layoutPosition = null;
+      //     parentData.calculatedSize = null;
+      //     parentData.widthConstrains = {};
+      //     parentData.heightConstrains = {};
+      //   }
+      // }
+
       return true;
     }
     return false;
@@ -157,7 +170,8 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
-    log("perform Layout ${pParentLayout.id}");
+    log("${pParentLayout.id} PERFORM LAYOUT");
+    _currentlyLayouting.add(pParentLayout.id);
 
     // Copy of parent
     LayoutData parent = LayoutData.from(pParentLayout);
@@ -187,6 +201,8 @@ class LayoutService implements ILayoutService {
 
     parent.layout!.calculateLayout(parent, children);
 
+    log("${parent.id} CALC SIZE: ${parent.calculatedSize}");
+
     // Check if any children have been constrained.
     for (LayoutData child in children) {
       if (child.isNewlyConstraint) {
@@ -207,6 +223,12 @@ class LayoutService implements ILayoutService {
         }
       }
       commands.add(UpdateLayoutPositionCommand(layoutDataList: newlyConstraintChildren, reason: "Was constrained"));
+
+      // if (!await isValid()) {
+      //   commands = [];
+      // }
+      _currentlyLayouting.remove(pParentLayout.id);
+
       return commands;
     }
 
@@ -224,6 +246,12 @@ class LayoutService implements ILayoutService {
       }
       commands.add(UpdateLayoutPositionCommand(layoutDataList: children, reason: "Has finished"));
     }
+
+    // if (!await isValid()) {
+    //   commands = [];
+    // }
+    _currentlyLayouting.remove(pParentLayout.id);
+
     return commands;
 
     // if(needsRebuild && newlyConstraintChildren.isEmpty){

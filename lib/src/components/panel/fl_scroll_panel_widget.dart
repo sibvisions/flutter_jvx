@@ -10,8 +10,6 @@ class FlScrollPanelWidget extends StatelessWidget {
   final double? height;
   @override
   Widget build(BuildContext context) {
-    log("Scroll panel has size: $width x $height");
-
     return SingleChildScrollView(
       child: Stack(
         clipBehavior: Clip.none,
