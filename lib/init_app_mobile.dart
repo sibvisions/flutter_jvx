@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/service/data/i_data_service.dart';
+import 'package:flutter_client/src/service/data/impl/data_service.dart';
+
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
@@ -26,7 +29,7 @@ Future<bool> initAppMobile() async {
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = urlConfigServer1;
+  UrlConfig urlConfig = urlConfigServer2;
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
@@ -44,6 +47,10 @@ Future<bool> initAppMobile() async {
   // Storage
   IStorageService storageService = await IsolateStorageService.create();
   services.registerSingleton(storageService, signalsReady: true);
+
+  // Data
+  IDataService dataService = DataService();
+  services.registerSingleton(dataService, signalsReady: true);
 
   // Command
   ICommandService commandService = CommandService();
