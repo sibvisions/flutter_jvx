@@ -1,6 +1,7 @@
 import 'package:flutter_client/src/mixin/data_service_mixin.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/command/data/save_fetch_data_command.dart';
+import 'package:flutter_client/src/model/command/ui/data_book_updated_command.dart';
 import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
 
 class SaveFetchDataProcessor with DataServiceMixin implements ICommandProcessor<SaveFetchDataCommand> {
@@ -11,7 +12,9 @@ class SaveFetchDataProcessor with DataServiceMixin implements ICommandProcessor<
 
     dataService.updateData(pFetch: command.response);
 
-    return [];
+    DataBookUpdatedCommand dataBookUpdatedCommand = DataBookUpdatedCommand(reason: "Fetch has updated Data", dataProvider: command.response.dataProvider);
+
+    return [dataBookUpdatedCommand];
   }
 
 

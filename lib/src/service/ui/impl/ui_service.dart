@@ -15,6 +15,7 @@ import '../i_ui_service.dart';
 /// Manages all interactions with the UI
 // Author: Michael Schober
 class UiService with CommandServiceMixin implements IUiService {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,7 +30,7 @@ class UiService with CommandServiceMixin implements IUiService {
   final HashMap<String, ComponentCallback> _registeredComponents = HashMap();
 
   /// Live data components
-  final HashMap<String, HashMap<String, Function>> _registeredDataComponents = HashMap();
+  final HashMap<String, Map<String, Function>> _registeredDataComponents = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -40,10 +41,21 @@ class UiService with CommandServiceMixin implements IUiService {
     commandService.sendCommand(command);
   }
 
-  // Routing
   @override
-  Stream getRouteChangeStream() {
-    return _routeStream.stream;
+  void saveNewComponents({required List<FlComponentModel> newModels}) {
+    newModels.addAll(newModels);
+  }
+
+  @override
+  void deleteInactiveComponent({required Set<String> inactiveIds}) {
+    // remove subscription for components removed from ui
+    for (String inactiveId in inactiveIds) {
+      _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
+      _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
+      _registeredDataComponents.forEach((key, value) {
+        value.removeWhere((key, value) => key == inactiveId);
+      });
+    }
   }
 
   @override
@@ -60,24 +72,20 @@ class UiService with CommandServiceMixin implements IUiService {
     _routeStream.sink.add(routeToWorkScreen);
   }
 
-  // Content
-  @override
-  List<FlComponentModel> getChildrenModels(String id) {
-    var children = _currentScreen.where((element) => element.parent == id).toList();
-    return children;
-  }
 
-  // Active UI Management
   @override
   void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
     _registeredComponents[id] = callback;
   }
 
   @override
-  void deleteInactiveComponent({required Set<String> inactiveIds}) {
-    for (String inactiveId in inactiveIds) {
-      _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
-      _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
+  void registerAsDataComponent({required String pDataProvider, required Function pCallback, required String pComponentId}) {
+    Map<String, Function>? registeredComponents = _registeredDataComponents[pDataProvider];
+
+    if(registeredComponents == null){
+      _registeredDataComponents[pDataProvider] = {pComponentId: pCallback};
+    } else {
+      registeredComponents[pComponentId] = pCallback;
     }
   }
 
@@ -112,8 +120,26 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void saveNewComponents({required List<FlComponentModel> newModels}) {
-    newModels.addAll(newModels);
+  void notifyDataChange({required String pDataProvider}) {
+
+    Map<String, Function>? dataProviderListener = _registeredDataComponents[pDataProvider];
+
+    if(dataProviderListener != null){
+      dataProviderListener.forEach((key, value) {
+        value.call();
+      });
+    }
+  }
+
+  @override
+  List<FlComponentModel> getChildrenModels(String id) {
+    var children = _currentScreen.where((element) => element.parent == id).toList();
+    return children;
+  }
+
+  @override
+  Stream getRouteChangeStream() {
+    return _routeStream.stream;
   }
 
   @override
@@ -127,12 +153,17 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void registerAsDataComponent({required String pDataProvider, required Function pCallback}) {
+  void setSelectedData({required String pDataProvider, required String pComponentId, required data}) {
+    Map<String, Function>? dataListener = _registeredDataComponents[pDataProvider];
 
+    if(dataListener != null){
+      Function? callback = dataListener[pComponentId];
+      if(callback != null){
+        callback.call(data);
+      }
+    }
   }
 
-  @override
-  void notifyDataChange({required String dataProvider}) {
 
-  }
+
 }

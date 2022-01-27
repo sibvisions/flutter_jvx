@@ -78,5 +78,13 @@ class DataService implements IDataService {
 
     return selectedRowColumnData;
   }
+
+  @override
+  Future<List<List<dynamic>>> getDataChunk({required List<String> pColumnNames, required int pFrom, required int pTo, required String pDataProvider}) async {
+    // TODO: implement getDataChunk
+
+
+    return [];
+  }
 }
 

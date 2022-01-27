@@ -1,3 +1,8 @@
+import 'package:flutter_client/src/model/command/ui/data_book_updated_command.dart';
+import 'package:flutter_client/src/model/command/ui/update_selected_data_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/ui/data_book_updated_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/ui/update_selected_data_processor.dart';
+
 import '../../../../../model/command/ui/update_layout_position_command.dart';
 import 'update_layout_position_processor.dart';
 
@@ -16,6 +21,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _routeCommandProcessor = RouteCommandProcessor();
   final ICommandProcessor _updateComponentsProcessor = UpdateComponentsProcessor();
   final ICommandProcessor _updateLayoutPositionProcessor = UpdateLayoutPositionProcessor();
+  final ICommandProcessor _updateSelectedDataProcessor = UpdateSelectedDataProcessor();
+  final ICommandProcessor _dataBookUpdatedProcessor = DataBookUpdatedProcessor();
 
   @override
   Future<List<BaseCommand>> processCommand(UiCommand command) async {
@@ -26,6 +33,10 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _updateComponentsProcessor.processCommand(command);
     } else if (command is UpdateLayoutPositionCommand) {
       return _updateLayoutPositionProcessor.processCommand(command);
+    } else if (command is UpdateSelectedDataCommand) {
+      return _updateSelectedDataProcessor.processCommand(command);
+    } else if (command is DataBookUpdatedCommand) {
+      return _dataBookUpdatedProcessor.processCommand(command);
     }
 
     return [];

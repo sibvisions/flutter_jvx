@@ -16,4 +16,7 @@ abstract class IDataService {
 
   /// Returns column data of the selected row of the dataProvider
   Future<dynamic> getSelectedDataColumn({required String pColumnName, required String pDataProvider});
+
+  /// Returns a chunk of data with only
+  Future<List<List<dynamic>>> getDataChunk({required List<String> pColumnNames, required int pFrom, required int pTo, required String pDataProvider});
 }
