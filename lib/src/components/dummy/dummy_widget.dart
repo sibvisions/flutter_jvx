@@ -11,6 +11,13 @@ class DummyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0), child: Text("Dummy for $id"));
+    return Container(
+      color: Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+      child: Text(
+        "Dummy for $id",
+        textAlign: TextAlign.end,
+      ),
+      alignment: Alignment.bottomLeft,
+    );
   }
 }
