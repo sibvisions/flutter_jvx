@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import '../../model/layout/alignments.dart';
 import '../../model/component/label/fl_label_model.dart';
 
-class FlLabelWidget extends StatelessWidget {
-  const FlLabelWidget({Key? key, required this.model}) : super(key: key);
-
-  final FlLabelModel model;
+class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
+  const FlLabelWidget({Key? key, required T model}) : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +30,16 @@ class FlLabelWidget extends StatelessWidget {
   Text getTextWidget() {
     return Text(
       model.text,
-      style: TextStyle(
-        color: model.foreground,
-        fontStyle: model.isItalic ? FontStyle.italic : FontStyle.normal,
-        fontWeight: model.isBold ? FontWeight.bold : FontWeight.normal,
-      ),
+      style: getTextStyle(),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
+    );
+  }
+
+  TextStyle getTextStyle() {
+    return TextStyle(
+      color: model.foreground,
+      fontStyle: model.isItalic ? FontStyle.italic : FontStyle.normal,
+      fontWeight: model.isBold ? FontWeight.bold : FontWeight.normal,
     );
   }
 }

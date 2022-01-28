@@ -1,32 +1,42 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter/scheduler.dart';
-// import '../base_wrapper/base_comp_wrapper_state.dart';
-// import '../base_wrapper/base_comp_wrapper_widget.dart';
-// import '../../model/component/fl_component_model.dart';
+import 'dart:developer';
 
-// import 'dummy_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/components/editor/fl_text_field_widget.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
+import '../base_wrapper/base_comp_wrapper_state.dart';
+import '../base_wrapper/base_comp_wrapper_widget.dart';
 
-// class DummyWrapper extends BaseCompWrapperWidget {
-//   const DummyWrapper({Key? key, required FlComponentModel model}) : super(key: key, model: model);
+class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
+  const FlTextFieldWrapper({Key? key, required FlTextFieldModel model}) : super(key: key, model: model);
 
-//   @override
-//   _DummyWrapperState createState() => _DummyWrapperState();
-// }
+  @override
+  _FlTextFieldWrapperState createState() => _FlTextFieldWrapperState();
+}
 
-// class _DummyWrapperState extends BaseCompWrapperState {
-//   @override
-//   Widget build(BuildContext context) {
-//     DummyWidget dummyWidget = DummyWidget(
-//       id: model.id,
-//       height: getHeightForComponent(),
-//       width: getWidthForComponent(),
-//       key: Key("${model.id}_Widget"),
-//     );
+class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> with UiServiceMixin {
+  @override
+  Widget build(BuildContext context) {
+    FlTextFieldWidget textFieldWidget = FlTextFieldWidget(
+      key: Key("${model.id}_Widget"),
+      model: model,
+      endEditing: endEditing,
+      valueChanged: valueChanged,
+    );
 
-//     SchedulerBinding.instance!.addPostFrameCallback((_) {
-//       postFrameCallback(context);
-//     });
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      postFrameCallback(context);
+    });
 
-//     return getPositioned(child: dummyWidget);
-//   }
-// }
+    return getPositioned(child: textFieldWidget);
+  }
+
+  void valueChanged(String pValue) {
+    log("Value changed to: " + pValue);
+  }
+
+  void endEditing(String pValue) {
+    log("Editing ended with: " + pValue);
+  }
+}

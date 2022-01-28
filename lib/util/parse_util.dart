@@ -39,24 +39,24 @@ abstract class ParseUtil {
     if (pValue == null) {
       return null;
     } else if (pValue.startsWith("#")) {
-      if (pValue.length == 9) {
+      if (pValue.characters.length == 9) {
         return Color.fromARGB(
             int.parse(pValue.substring(7, 9), radix: 16),
             int.parse(pValue.substring(3, 5), radix: 16),
             int.parse(pValue.substring(5, 7), radix: 16),
             int.parse(pValue.substring(1, 3), radix: 16));
-      } else if (pValue.length == 7) {
+      } else if (pValue.characters.length == 7) {
         return Color.fromARGB(0xFF, int.parse(pValue.substring(1, 3), radix: 16),
             int.parse(pValue.substring(3, 5), radix: 16), int.parse(pValue.substring(5, 7), radix: 16));
       }
     } else if (pValue.startsWith("0x") || pValue.startsWith("0X")) {
-      if (pValue.length == 10) {
+      if (pValue.characters.length == 10) {
         return Color.fromARGB(
             int.parse(pValue.substring(2, 4), radix: 16),
             int.parse(pValue.substring(4, 6), radix: 16),
             int.parse(pValue.substring(6, 8), radix: 16),
             int.parse(pValue.substring(8, 10), radix: 16));
-      } else if (pValue.length == 8) {
+      } else if (pValue.characters.length == 8) {
         return Color.fromARGB(0xFF, int.parse(pValue.substring(2, 4), radix: 16),
             int.parse(pValue.substring(4, 6), radix: 16), int.parse(pValue.substring(6, 8), radix: 16));
       }

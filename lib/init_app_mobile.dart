@@ -29,7 +29,7 @@ Future<bool> initAppMobile() async {
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = urlConfigServer2;
+  UrlConfig urlConfig = urlConfigServer1;
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();

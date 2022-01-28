@@ -58,6 +58,10 @@ abstract class ApiObjectProperty {
   static const String defaultWindow = "defaultWindow";
   static const String selected = "selected";
   static const String ariaPressed = "ariaPressed";
+  static const String placeholder = "placeholder";
+  static const String rows = "rows";
+  static const String border = "border";
+  static const String editable = "editable";
 
   //Can occur in both request & response
   static const String clientId = "clientId";

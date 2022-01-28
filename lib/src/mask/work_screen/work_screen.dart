@@ -32,21 +32,26 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
     commandService.sendCommand(deviceStatusCommand);
 
     SetComponentSizeCommand command = SetComponentSizeCommand(
-        componentId: widget.screen.id, size: Size(width.ceilToDouble(), height.ceilToDouble()), reason: "Set First Panel Size");
+        componentId: widget.screen.id,
+        size: Size(width.ceilToDouble(), height.ceilToDouble()),
+        reason: "Set First Panel Size");
     commandService.sendCommand(command);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
-        body: Scaffold(
-          body: LayoutBuilder(builder: (context, constraints) {
-            _getScreenSize(constraints.maxHeight, constraints.maxWidth);
-            return Stack(
-              children: [screen],
-            );
-          }),
-        ));
+      appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
+      body: Scaffold(
+        body: LayoutBuilder(builder: (context, constraints) {
+          _getScreenSize(constraints.maxHeight, constraints.maxWidth);
+          return Stack(
+            children: [screen],
+          );
+        }),
+        resizeToAvoidBottomInset: false,
+      ),
+      resizeToAvoidBottomInset: false,
+    );
   }
 }
