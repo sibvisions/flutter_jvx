@@ -126,7 +126,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
     if(dataProviderListener != null){
       dataProviderListener.forEach((key, value) {
-        value.call();
+        value.call(key);
       });
     }
   }
