@@ -58,12 +58,6 @@ class LayoutService implements ILayoutService {
     log("Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
 
-    if (pLayoutData.hasNewCalculatedSize) {
-      pLayoutData.widthConstrains = {};
-      pLayoutData.heightConstrains = {};
-      pLayoutData.lastCalculatedSize = pLayoutData.calculatedSize;
-    }
-
     // Set object with new data.
     _layoutDataSet[pLayoutData.id] = pLayoutData;
 
@@ -173,131 +167,63 @@ class LayoutService implements ILayoutService {
     log("${pParentLayout.id} PERFORM LAYOUT");
     _currentlyLayouting.add(pParentLayout.id);
 
-    // Copy of parent
-    LayoutData parent = LayoutData.from(pParentLayout);
+    try {
+      // Copy of parent
+      LayoutData parent = LayoutData.from(pParentLayout);
 
-    // Copy of children with deleted positions
-    List<LayoutData> children = _getChildrenOrNull(pParentLayout: parent)!.map((data) {
-      LayoutData copy = LayoutData.from(data);
-      copy.layoutPosition = null;
-      return copy;
-    }).toList();
+      // Copy of children with deleted positions
+      List<LayoutData> children = _getChildrenOrNull(pParentLayout: parent)!.map((data) {
+        LayoutData copy = LayoutData.from(data);
+        return copy;
+      }).toList();
 
-    List<BaseCommand> commands = [];
+      // All newly constraint children
+      List<LayoutData> newlyConstraintChildren = [];
 
-    // True if this parent needs to register itself again.
-    bool needsToRegister = false;
+      // Needs to register again if this layout has been newly constraint by its parent.
 
-    // True if there are any constrained Children
-    bool needsRebuild = false;
-
-    // All newly constraint children
-    List<LayoutData> newlyConstraintChildren = [];
-
-    // Needs to register again if this layout has been newly constraint by its parent.
-    if (parent.isNewlyConstraint || !parent.hasPosition) {
-      needsToRegister = true;
-    }
-
-    parent.layout!.calculateLayout(parent, children);
-
-    log("${parent.id} CALC SIZE: ${parent.calculatedSize}");
-
-    // Check if any children have been constrained.
-    for (LayoutData child in children) {
-      if (child.isNewlyConstraint) {
-        newlyConstraintChildren.add(child);
-        needsRebuild = true;
-        markLayoutAsDirty(pComponentId: child.id);
-      } else if (child.isConstrained) {
-        needsRebuild = true;
-      }
-    }
-
-    if (needsRebuild && newlyConstraintChildren.isEmpty) {
+      parent.lastCalculatedSize = parent.calculatedSize;
       parent.layout!.calculateLayout(parent, children);
-    } else if (newlyConstraintChildren.isNotEmpty) {
-      for (LayoutData child in newlyConstraintChildren) {
-        if (child.isParent) {
-          commands.add(RegisterParentCommand(layoutData: child, reason: "Was constrained"));
+
+      // Update info here.
+      for (LayoutData child in [parent, ...children]) {
+        _layoutDataSet[child.id] = child;
+      }
+
+      log("${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
+
+      // Check if any children have been newly constrained.
+      for (LayoutData child in children) {
+        if (child.isNewlyConstraint && !child.isParent) {
+          newlyConstraintChildren.add(child);
+          markLayoutAsDirty(pComponentId: child.id);
         }
       }
-      commands.add(UpdateLayoutPositionCommand(layoutDataList: newlyConstraintChildren, reason: "Was constrained"));
 
-      // if (!await isValid()) {
-      //   commands = [];
-      // }
-      _currentlyLayouting.remove(pParentLayout.id);
+      if (newlyConstraintChildren.isNotEmpty) {
+        return [UpdateLayoutPositionCommand(layoutDataList: newlyConstraintChildren, reason: "Was constrained")];
+      }
+
+      // Nothing has been "newly" constrained meaning now, i can tell my parent exactly how big i want to be.
+      // So if my calc size has changed - tell parent, if not, tell children their position.
+      var commands = <BaseCommand>[];
+
+      if (parent.isChild && parent.hasNewCalculatedSize) {
+        return [PreferredSizeCommand(layoutData: parent, reason: "Has new calc size")];
+      } else {
+        for (LayoutData child in children) {
+          if (child.isParent) {
+            commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
+          }
+        }
+
+        commands.add(UpdateLayoutPositionCommand(layoutDataList: [parent, ...children], reason: "New position"));
+      }
 
       return commands;
+    } finally {
+      _currentlyLayouting.remove(pParentLayout.id);
     }
-
-    if (needsToRegister) {
-      commands.add(PreferredSizeCommand(layoutData: parent, reason: "Finished Constrained calc"));
-      for (LayoutData child in children) {
-        _layoutDataSet[child.id] = child;
-      }
-    } else {
-      for (LayoutData child in children) {
-        _layoutDataSet[child.id] = child;
-        if (child.isParent) {
-          commands.add(RegisterParentCommand(layoutData: child, reason: "Has finished"));
-        }
-      }
-      commands.add(UpdateLayoutPositionCommand(layoutDataList: children, reason: "Has finished"));
-    }
-
-    // if (!await isValid()) {
-    //   commands = [];
-    // }
-    _currentlyLayouting.remove(pParentLayout.id);
-
-    return commands;
-
-    // if(needsRebuild && newlyConstraintChildren.isEmpty){
-    //   parent.layout!.calculateLayout(parent, children);
-    //
-    //   if(needsToRegister) {
-    //     commands.add(PreferredSizeCommand(layoutData: parent, reason: "Has finished Constrain calculation"));
-    //   } else {
-    //     commands.add(UpdateLayoutPositionCommand(layoutDataList: children, reason: "Layout run has finished"));
-    //     _layoutDataSet[parent.id] = parent;
-    //     for(LayoutData child in children) {
-    //       if(child.isParent){
-    //         commands.add(RegisterParentCommand(layoutData: child, reason: "Parent has finished calculating your position"));
-    //       } else {
-    //         _layoutDataSet[child.id] = child;
-    //       }
-    //     }
-    //   }
-    // }
-    // else if(newlyConstraintChildren.isNotEmpty){
-    //   List<LayoutData> constraintChildren = [];
-    //
-    //   // Separate commands components and parents
-    //   for(LayoutData child in newlyConstraintChildren){
-    //     if(child.isParent){
-    //       commands.add(RegisterParentCommand(layoutData: child, reason: "Constraint Check from ${parent.id}"));
-    //     } else {
-    //       constraintChildren.add(child);
-    //     }
-    //   }
-    //   commands.add(UpdateLayoutPositionCommand(layoutDataList: constraintChildren, reason: "ConstraintCheck from ${parent.id}"));
-    // }
-    // else if(needsToRegister) {
-    //   commands.add(PreferredSizeCommand(layoutData: parent, reason: "Has finished Constrain calculation"));
-    // }
-    // else {
-    //   commands.add(UpdateLayoutPositionCommand(layoutDataList: children, reason: "Layout run has finished"));
-    //   _layoutDataSet[parent.id] = parent;
-    //   for(LayoutData child in children) {
-    //     if(child.isParent){
-    //       commands.add(RegisterParentCommand(layoutData: child, reason: "Parent has finished calculating your position"));
-    //     } else {
-    //       _layoutDataSet[child.id] = child;
-    //     }
-    //   }
-    // }
   }
 
   /// Returns true if conditions to perform the layout are met.

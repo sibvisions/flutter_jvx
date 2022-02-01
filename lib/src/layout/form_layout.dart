@@ -518,16 +518,7 @@ class FormLayout extends ILayout {
 
     Size preferred = Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
 
-    if (!pParent.hasPosition) {
-      pParent.calculatedSize = preferred;
-    } else {
-      if (pParent.isWidthConstrained) {
-        pParent.widthConstrains[pParent.layoutPosition!.width] = pMinPrefSize.preferredHeight;
-      }
-      if (pParent.isHeightConstrained) {
-        pParent.heightConstrains[pParent.layoutPosition!.height] = pMinPrefSize.preferredWidth;
-      }
-    }
+    pParent.calculatedSize = preferred;
   }
 
   /// Parses all anchors from layoutData and establishes relatedAnchors

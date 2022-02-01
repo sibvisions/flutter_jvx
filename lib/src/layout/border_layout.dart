@@ -105,17 +105,7 @@ class BorderLayout implements ILayout, ICloneable {
     // How much size would we want? -> Preferred
     Size preferredSize = _preferredLayoutSize();
 
-    if(!pParent.hasPosition){
-      pParent.calculatedSize = preferredSize;
-    } else {
-      if(pParent.isWidthNewlyConstraint){
-        pParent.widthConstrains[pParent.layoutPosition!.width] = preferredSize.height;
-      }
-      if(pParent.isHeightNewlyConstraint){
-        pParent.heightConstrains[pParent.layoutPosition!.height] = preferredSize.width;
-      }
-    }
-
+    pParent.calculatedSize = preferredSize;
 
     double x = pParent.insets!.left + eiMargins.left;
     double y = pParent.insets!.top + eiMargins.top;
@@ -125,7 +115,7 @@ class BorderLayout implements ILayout, ICloneable {
     // If parent has forced this into a size, cant exceed these values.
     if (pParent.hasPosition) {
       width = pParent.layoutPosition!.width - x - pParent.insets!.right - eiMargins.right;
-      height = pParent.layoutPosition!.height - y - pParent.insets!.bottom - eiMargins.bottom ;
+      height = pParent.layoutPosition!.height - y - pParent.insets!.bottom - eiMargins.bottom;
     }
 
     if (_childNorth != null) {
@@ -139,12 +129,12 @@ class BorderLayout implements ILayout, ICloneable {
     }
 
     if (_childSouth != null) {
-        Size bestSize = _childSouth!.bestSize;
+      Size bestSize = _childSouth!.bestSize;
 
-        _childSouth!.layoutPosition = LayoutPosition(
-            left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
+      _childSouth!.layoutPosition = LayoutPosition(
+          left: x, top: y + height - bestSize.height, width: width, height: bestSize.height, isComponentSize: true);
 
-        height -= bestSize.height + iVerticalGap;
+      height -= bestSize.height + iVerticalGap;
     }
 
     if (_childWest != null) {
@@ -167,7 +157,6 @@ class BorderLayout implements ILayout, ICloneable {
     }
 
     if (_childCenter != null) {
-
       _childCenter!.layoutPosition =
           LayoutPosition(left: x, top: y, width: width, height: height, isComponentSize: true);
     }

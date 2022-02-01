@@ -66,20 +66,21 @@ class FlowLayout extends ILayout {
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-
     /** Sorts the Childcomponent based on indexOf property */
     pChildren.sort((a, b) => a.indexOf! - b.indexOf!);
 
     double dimWidth = 0;
     double dimHeight = 0;
 
-    if(pParent.hasPosition) {
+    pParent.calculatedSize;
+
+    if (pParent.hasPosition) {
       dimWidth = pParent.layoutPosition!.width;
       dimHeight = pParent.layoutPosition!.height;
     } else {
       double maxHeight = 0;
       double maxWidth = 0;
-      for(LayoutData child in pChildren) {
+      for (LayoutData child in pChildren) {
         if (child.calculatedSize!.height > maxHeight) {
           maxHeight = child.calculatedSize!.height;
         }
@@ -97,8 +98,6 @@ class FlowLayout extends ILayout {
     Size dimSize = Size(dimWidth, dimHeight);
 
     final _FlowGrid flowLayoutInfo = calculateGrid(dimSize, pChildren);
-
-
 
     Size prefSize = Size(
         (flowLayoutInfo.gridWidth * flowLayoutInfo.columns + gaps.horizontalGap * (flowLayoutInfo.columns - 1)),
@@ -206,17 +205,8 @@ class FlowLayout extends ILayout {
         }
       }
     }
-    if(!pParent.hasPosition){
-      pParent.calculatedSize = Size(fPW, fPH);
-    } else {
 
-      if(pParent.isWidthConstrained){
-        pParent.widthConstrains[pParent.layoutPosition!.width] = fPH;
-      }
-      if(pParent.isHeightConstrained){
-        pParent.heightConstrains[pParent.layoutPosition!.height] = fPW;
-      }
-    }
+    pParent.calculatedSize = Size(fPW, fPH);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
