@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/layout/layout_position.dart';
 import 'base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/preferred_size_command.dart';
@@ -27,6 +28,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// 'True' if the calc size has been sent.
   bool sentCalcSize = false;
+
+  /// The position to calculate width constraints.
+  LayoutPosition? calcPosition;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -94,6 +98,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData.lastCalculatedSize = layoutData.calculatedSize;
       layoutData.widthConstrains = {};
       layoutData.heightConstrains = {};
+      calcPosition = null;
 
       model = newModel;
 
@@ -104,40 +109,47 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new LayoutData
   receiveNewLayoutData({required LayoutData newLayoutData}) {
-    layoutData = newLayoutData;
+    if (newLayoutData.hasPosition && newLayoutData.layoutPosition!.isConstraintCalc) {
+      calcPosition = newLayoutData.layoutPosition;
+      newLayoutData.layoutPosition = layoutData.layoutPosition;
+      layoutData = newLayoutData;
+    } else {
+      layoutData = newLayoutData;
+      calcPosition = null;
+    }
     log("${layoutData.id} NEW DATA; ${newLayoutData.calculatedSize}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent &&
         !layoutData.hasPreferredSize &&
         layoutData.hasCalculatedSize &&
-        layoutData.hasPosition &&
+        (layoutData.hasPosition || calcPosition != null) &&
         lastContext != null) {
       double calcWidth = layoutData.calculatedSize!.width;
       double calcHeight = layoutData.calculatedSize!.height;
 
       bool isConstrained = false;
 
-      double positionWidth = layoutData.layoutPosition!.width;
-      double positionHeight = layoutData.layoutPosition!.height;
+      LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
+
+      double positionWidth = constraintPos.width;
+      double positionHeight = constraintPos.height;
 
       // Constraint by width
       if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-        double newHeight = (lastContext!.findRenderObject() as RenderBox)
-            .getMaxIntrinsicHeight(layoutData.layoutPosition!.width)
-            .ceilToDouble();
+        double newHeight =
+            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(positionWidth).ceilToDouble();
 
-        layoutData.widthConstrains[layoutData.layoutPosition!.width] = newHeight;
+        layoutData.widthConstrains[positionWidth] = newHeight;
         isConstrained = true;
       }
 
       // Constraint by height
       if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-        double? newWidth = (lastContext!.findRenderObject() as RenderBox)
-            .getMaxIntrinsicWidth(layoutData.layoutPosition!.height)
-            .ceilToDouble();
+        double? newWidth =
+            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(positionHeight).ceilToDouble();
 
-        layoutData.heightConstrains[layoutData.layoutPosition!.height] = newWidth;
+        layoutData.heightConstrains[positionHeight] = newWidth;
         isConstrained = true;
       }
 

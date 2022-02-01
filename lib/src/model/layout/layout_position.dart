@@ -23,6 +23,8 @@ class LayoutPosition implements ICloneable {
   /// (Fixed size or not, e.g. [BorderLayout] has this always `true`)
   bool isComponentSize;
 
+  /// Whether or not the position is only to recalc the component
+  bool isConstraintCalc;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -34,7 +36,8 @@ class LayoutPosition implements ICloneable {
       required this.height,
       required this.top,
       required this.left,
-      required this.isComponentSize,});
+      required this.isComponentSize,
+      this.isConstraintCalc = false});
 
   /// Clones [LayoutPosition] as a deep copy.
   LayoutPosition.from(LayoutPosition pLayoutPosition)
@@ -42,7 +45,8 @@ class LayoutPosition implements ICloneable {
         height = pLayoutPosition.height,
         top = pLayoutPosition.top,
         left = pLayoutPosition.left,
-        isComponentSize = pLayoutPosition.isComponentSize;
+        isComponentSize = pLayoutPosition.isComponentSize,
+        isConstraintCalc = pLayoutPosition.isConstraintCalc;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation

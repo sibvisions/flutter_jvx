@@ -197,6 +197,7 @@ class LayoutService implements ILayoutService {
         if (child.isNewlyConstraint && !child.isParent) {
           newlyConstraintChildren.add(child);
           markLayoutAsDirty(pComponentId: child.id);
+          child.layoutPosition!.isConstraintCalc = true;
         }
       }
 
