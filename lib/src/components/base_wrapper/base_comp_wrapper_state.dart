@@ -153,9 +153,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         isConstrained = true;
       }
 
+      var sentData = LayoutData.from(layoutData);
+      sentData.layoutPosition = constraintPos;
+
       if (isConstrained) {
         PreferredSizeCommand command =
-            PreferredSizeCommand(layoutData: LayoutData.from(layoutData), reason: "Component has been constrained");
+            PreferredSizeCommand(layoutData: sentData, reason: "Component has been constrained");
         uiService.sendCommand(command);
       }
     }
