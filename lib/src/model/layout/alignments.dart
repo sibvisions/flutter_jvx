@@ -16,6 +16,19 @@ extension VerticalAlignmentE on VerticalAlignment {
   static VerticalAlignment fromString(String pAlignment) {
     return VerticalAlignment.values[int.parse(pAlignment)];
   }
+
+  static TextAlignVertical toTextAlign(VerticalAlignment pAlignment) {
+    switch (pAlignment) {
+      case VerticalAlignment.TOP:
+        return TextAlignVertical.top;
+      case VerticalAlignment.CENTER:
+        return TextAlignVertical.center;
+      case VerticalAlignment.BOTTOM:
+        return TextAlignVertical.bottom;
+      case VerticalAlignment.STRETCH:
+        return TextAlignVertical.center;
+    }
+  }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

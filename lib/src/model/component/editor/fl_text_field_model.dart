@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 
@@ -21,6 +22,13 @@ class FlTextFieldModel extends FlLabelModel {
 
   /// If the textfield is editable or not.
   bool isEditable = true;
+
+  // Default widget values not overrideable by the server
+  final double iconSize = 24;
+
+  final EdgeInsets textPadding = EdgeInsets.zero;
+
+  final EdgeInsets iconPadding = const EdgeInsets.only(right: 10);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -60,5 +68,13 @@ class FlTextFieldModel extends FlLabelModel {
     if (jsonEditable != null) {
       isEditable = jsonEditable;
     }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  bool get isReadOnly {
+    return !(isEnabled && isEditable && isFocusable);
   }
 }
