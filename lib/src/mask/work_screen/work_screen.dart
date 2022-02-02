@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../../model/command/layout/set_component_size_command.dart';
 
 import '../../mixin/command_service_mixin.dart';
@@ -40,18 +42,24 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
-      body: Scaffold(
-        body: LayoutBuilder(builder: (context, constraints) {
-          _getScreenSize(constraints.maxHeight, constraints.maxWidth);
-          return Stack(
-            children: [screen],
-          );
-        }),
+    return GestureDetector(
+      onTap: () {
+        log("unfocused");
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
+        body: Scaffold(
+          body: LayoutBuilder(builder: (context, constraints) {
+            _getScreenSize(constraints.maxHeight, constraints.maxWidth);
+            return Stack(
+              children: [screen],
+            );
+          }),
+          resizeToAvoidBottomInset: false,
+        ),
         resizeToAvoidBottomInset: false,
       ),
-      resizeToAvoidBottomInset: false,
     );
   }
 }
