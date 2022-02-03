@@ -14,7 +14,8 @@ class FlTextFieldModel extends FlLabelModel {
   int rows = 1;
 
   /// The average amount of characters to be seen when unconstrained.
-  /// (average character length * columns = wanted width of field in non constrained layouts)
+  /// (average character length * columns = wanted width of field in non constrained layouts)#
+  // TODO character length into widget size
   int columns = 10;
 
   /// If the textfield has a drawn border.
@@ -23,12 +24,15 @@ class FlTextFieldModel extends FlLabelModel {
   /// If the textfield is editable or not.
   bool isEditable = true;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Default widget values not overrideable by the server
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   final double iconSize = 24;
 
-  final EdgeInsets textPadding = EdgeInsets.zero;
+  final EdgeInsets textPadding = const EdgeInsets.only(left: 1);
 
-  final EdgeInsets iconPadding = const EdgeInsets.only(right: 10);
+  final EdgeInsets iconPadding = const EdgeInsets.only(right: 5);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

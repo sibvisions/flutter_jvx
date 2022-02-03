@@ -10,19 +10,53 @@ import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
 class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   const FlTextFieldWrapper({Key? key, required FlTextFieldModel model}) : super(key: key, model: model);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  _FlTextFieldWrapperState createState() => _FlTextFieldWrapperState();
+  FlTextFieldWrapperState createState() => FlTextFieldWrapperState();
 }
 
-class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> with UiServiceMixin, DataServiceMixin {
+class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrapperState<T>
+    with UiServiceMixin, DataServiceMixin {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   final TextEditingController textController = TextEditingController();
 
   final FocusNode focusNode = FocusNode();
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
-  receiveNewModel({required FlTextFieldModel newModel}) {
+  Widget build(BuildContext context) {
+    FlTextFieldWidget textFieldWidget = FlTextFieldWidget(
+      key: Key("${model.id}_Widget"),
+      model: model,
+      endEditing: endEditing,
+      valueChanged: valueChanged,
+      focusNode: focusNode,
+      textController: textController,
+    );
+
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      postFrameCallback(context);
+    });
+
+    return getPositioned(child: textFieldWidget);
+  }
+
+  @override
+  receiveNewModel({required T newModel}) {
     super.receiveNewModel(newModel: newModel);
 
     updateText();
@@ -43,23 +77,9 @@ class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> wi
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    FlTextFieldWidget textFieldWidget = FlTextFieldWidget(
-      key: Key("${model.id}_Widget"),
-      model: model,
-      endEditing: endEditing,
-      valueChanged: valueChanged,
-      focusNode: focusNode,
-      textController: textController,
-    );
-
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
-      postFrameCallback(context);
-    });
-
-    return getPositioned(child: textFieldWidget);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void valueChanged(String pValue) {
     if (pValue != model.text) {

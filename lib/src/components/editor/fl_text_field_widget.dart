@@ -61,37 +61,49 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
         onEditingComplete: () {
           focusNode.unfocus();
         },
-        minLines: null,
-        maxLines: 1,
+        minLines: minLines,
+        maxLines: maxLines,
         keyboardType: TextInputType.text,
         focusNode: focusNode,
       ),
     );
   }
 
-  Widget? getClearIcon() {
-    return Padding(
-      padding: model.iconPadding,
-      child: GestureDetector(
-        onTap: () {
-          textController.value = textController.value.copyWith(
-            text: "",
-            selection: const TextSelection.collapsed(offset: 0),
-            composing: TextRange.empty,
-          );
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-          if (focusNode.hasFocus) {
-            valueChanged(textController.text);
-          } else {
-            endEditing(textController.text);
-          }
-        },
-        child: Icon(
-          Icons.clear,
-          size: model.iconSize,
-          color: Colors.grey[400],
+  Widget? getClearIcon() {
+    return Align(
+      widthFactor: 1,
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: model.iconPadding,
+        child: GestureDetector(
+          onTap: () {
+            textController.value = textController.value.copyWith(
+              text: "",
+              selection: const TextSelection.collapsed(offset: 0),
+              composing: TextRange.empty,
+            );
+
+            if (focusNode.hasFocus) {
+              valueChanged(textController.text);
+            } else {
+              endEditing(textController.text);
+            }
+          },
+          child: Icon(
+            Icons.clear,
+            size: model.iconSize,
+            color: Colors.grey[400],
+          ),
         ),
       ),
     );
   }
+
+  int? get minLines => null;
+
+  int? get maxLines => model.rows;
 }

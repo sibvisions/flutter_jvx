@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
+import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
 
 import '../../../../model/component/panel/fl_split_panel.dart';
@@ -115,6 +116,9 @@ class ScreenGenericProcessor implements IProcessor {
         break;
       case (FlComponentClassname.TEXT_FIELD):
         model = FlTextFieldModel();
+        break;
+      case (FlComponentClassname.TEXT_AREA):
+        model = FlTextAreaModel();
         break;
       case (FlComponentClassname.GROUP_PANEL):
         model = FlPanelModel();

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/button/fl_toggle_button_wrapper.dart';
+import 'package:flutter_client/src/components/editor/fl_text_area_wrapper.dart';
 import 'package:flutter_client/src/components/editor/fl_text_field_wrapper.dart';
 import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
+import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
 import 'package:flutter_client/src/service/api/shared/fl_component_classname.dart';
 import 'panel/fl_scroll_panel_wrapper.dart';
@@ -32,6 +34,8 @@ abstract class ComponentsFactory {
         return FlLabelWrapper(model: model as FlLabelModel, key: Key(model.id));
       case FlComponentClassname.TEXT_FIELD:
         return FlTextFieldWrapper(model: model as FlTextFieldModel, key: Key(model.id));
+      case FlComponentClassname.TEXT_AREA:
+        return FlTextAreaWrapper(model: model as FlTextAreaModel, key: Key(model.id));
       case FlComponentClassname.GROUP_PANEL:
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case FlComponentClassname.SCROLL_PANEL:
