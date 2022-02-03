@@ -17,7 +17,31 @@ class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
 }
 
 class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> with UiServiceMixin, DataServiceMixin {
-  final FocusNode _focusNode = FocusNode();
+  final TextEditingController textController = TextEditingController();
+
+  final FocusNode focusNode = FocusNode();
+
+  @override
+  receiveNewModel({required FlTextFieldModel newModel}) {
+    super.receiveNewModel(newModel: newModel);
+
+    updateText();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    updateText();
+
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        setState(() {
+          endEditing(textController.text);
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +50,8 @@ class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> wi
       model: model,
       endEditing: endEditing,
       valueChanged: valueChanged,
-      focusNode: _focusNode,
+      focusNode: focusNode,
+      textController: textController,
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -34,12 +59,6 @@ class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> wi
     });
 
     return getPositioned(child: textFieldWidget);
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
   }
 
   void valueChanged(String pValue) {
@@ -58,5 +77,13 @@ class _FlTextFieldWrapperState extends BaseCompWrapperState<FlTextFieldModel> wi
     setState(() {
       model.text = pValue;
     });
+  }
+
+  void updateText() {
+    textController.value = textController.value.copyWith(
+      text: model.text,
+      selection: TextSelection.collapsed(offset: model.text.characters.length),
+      composing: null,
+    );
   }
 }

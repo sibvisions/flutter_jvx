@@ -12,10 +12,10 @@ class FlStatefulWidget<T extends FlComponentModel> extends StatefulWidget {
   const FlStatefulWidget({Key? key, required this.model}) : super(key: key);
 
   @override
-  _FlStatefulWidgetState createState() => _FlStatefulWidgetState();
+  FlStatefulWidgetState createState() => FlStatefulWidgetState();
 }
 
-class _FlStatefulWidgetState extends State<FlStatefulWidget> {
+class FlStatefulWidgetState<T extends FlStatefulWidget> extends State<T> {
   @override
   Widget build(BuildContext context) {
     return Container();

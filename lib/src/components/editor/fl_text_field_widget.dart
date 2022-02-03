@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/label/fl_label_widget.dart';
@@ -10,20 +8,25 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  final FocusNode focusNode;
-
-  final TextEditingController textController = TextEditingController();
-
   final Function(String) valueChanged;
 
   final Function(String) endEditing;
+
+  final FocusNode focusNode;
+
+  final TextEditingController textController;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextFieldWidget(
-      {Key? key, required T model, required this.valueChanged, required this.endEditing, required this.focusNode})
+  const FlTextFieldWidget(
+      {Key? key,
+      required T model,
+      required this.valueChanged,
+      required this.endEditing,
+      required this.focusNode,
+      required this.textController})
       : super(key: key, model: model);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,12 +36,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
   @override
   Widget build(BuildContext context) {
     FlLabelWidget labelWidget = FlLabelWidget(model: model);
-
-    textController.value = textController.value.copyWith(
-      text: model.text,
-      selection: TextSelection.collapsed(offset: model.text.characters.length),
-      composing: null,
-    );
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -62,12 +59,12 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
         style: labelWidget.getTextStyle(),
         onChanged: valueChanged,
         onEditingComplete: () {
-          endEditing(textController.text);
-          FocusManager.instance.primaryFocus?.unfocus();
+          focusNode.unfocus();
         },
         minLines: null,
         maxLines: 1,
         keyboardType: TextInputType.text,
+        focusNode: focusNode,
       ),
     );
   }
@@ -83,10 +80,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
             composing: TextRange.empty,
           );
 
-          if (!focusNode.hasPrimaryFocus) {
-            endEditing("");
+          if (focusNode.hasFocus) {
+            valueChanged(textController.text);
           } else {
-            valueChanged("");
+            endEditing(textController.text);
           }
         },
         child: Icon(

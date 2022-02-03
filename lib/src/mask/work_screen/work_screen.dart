@@ -61,5 +61,19 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
         resizeToAvoidBottomInset: false,
       ),
     );
+
+    // return Scaffold(
+    //   appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
+    //   body: Scaffold(
+    //     body: LayoutBuilder(builder: (context, constraints) {
+    //       _getScreenSize(constraints.maxHeight, constraints.maxWidth);
+    //       return Stack(
+    //         children: [screen],
+    //       );
+    //     }),
+    //     resizeToAvoidBottomInset: false,
+    //   ),
+    //   resizeToAvoidBottomInset: false,
+    // );
   }
 }
