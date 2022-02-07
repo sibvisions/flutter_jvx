@@ -120,15 +120,6 @@ class LayoutData implements ICloneable {
         heightConstrains = Map.from(pLayoutData.heightConstrains),
         widthConstrains = Map.from(pLayoutData.widthConstrains);
 
-  /// Creates a bare-bones [LayoutData] object for retrieving in a set.
-  LayoutData.fromId({required this.id})
-      : layout = null,
-        parentId = null,
-        children = const [],
-        needsRelayout = true,
-        heightConstrains = {},
-        widthConstrains = {};
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,6 +151,25 @@ class LayoutData implements ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  applyFromOther(LayoutData pLayoutData) {
+    parentId = pLayoutData.parentId;
+    layout = pLayoutData.layout?.clone();
+    children = List.from(pLayoutData.children);
+    constraints = pLayoutData.constraints;
+    minSize = pLayoutData.minSize != null ? Size.copy(pLayoutData.minSize!) : null;
+    maxSize = pLayoutData.maxSize != null ? Size.copy(pLayoutData.maxSize!) : null;
+    preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null;
+    _calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null;
+    lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null;
+    insets = pLayoutData.insets?.copyWith();
+    layoutState = pLayoutData.layoutState;
+    layoutPosition = pLayoutData.layoutPosition?.clone();
+    needsRelayout = pLayoutData.needsRelayout;
+    indexOf = pLayoutData.indexOf;
+    heightConstrains = Map.from(pLayoutData.heightConstrains);
+    widthConstrains = Map.from(pLayoutData.widthConstrains);
+  }
 
   /// If this component is a parent.
   bool get isParent {

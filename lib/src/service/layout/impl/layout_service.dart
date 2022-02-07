@@ -119,18 +119,6 @@ class LayoutService implements ILayoutService {
       log("$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
-      // Fixes the bug of wrong calc size for the first layout, subsequent layouts are wrong tho.
-      // if (data.parentId != null) {
-      //   for (LayoutData? parentData = _layoutDataSet[data.parentId];
-      //       parentData != null && parentData.isChild && parentData.isParent;
-      //       parentData = _layoutDataSet[parentData.parentId]) {
-      //     parentData.layoutPosition = null;
-      //     parentData.calculatedSize = null;
-      //     parentData.widthConstrains = {};
-      //     parentData.heightConstrains = {};
-      //   }
-      // }
-
       return true;
     }
     return false;
@@ -184,16 +172,13 @@ class LayoutService implements ILayoutService {
 
       parent.lastCalculatedSize = parent.calculatedSize;
       parent.layout!.calculateLayout(parent, children);
-
-      // Update info here.
-      for (LayoutData child in [parent, ...children]) {
-        _layoutDataSet[child.id] = child;
-      }
+      _layoutDataSet[parent.id] = parent;
 
       log("${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
 
       // Check if any children have been newly constrained.
       for (LayoutData child in children) {
+        _layoutDataSet[child.id] = child;
         if (child.isNewlyConstraint && !child.isParent) {
           newlyConstraintChildren.add(child);
           markLayoutAsDirty(pComponentId: child.id);

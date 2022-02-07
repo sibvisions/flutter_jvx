@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 class FlScrollPanelWidget extends StatelessWidget {
@@ -11,15 +9,21 @@ class FlScrollPanelWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          SizedBox(
-            width: width,
-            height: (height ?? 0),
-          ),
-          ...children
-        ],
+      scrollDirection: Axis.horizontal,
+      child: SingleChildScrollView(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            IgnorePointer(
+              ignoring: true,
+              child: SizedBox(
+                width: (width ?? 0),
+                height: (height ?? 0),
+              ),
+            ),
+            ...children,
+          ],
+        ),
       ),
     );
   }

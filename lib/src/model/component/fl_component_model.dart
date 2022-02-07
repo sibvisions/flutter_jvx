@@ -93,6 +93,8 @@ abstract class FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Creates a [FlComponentModel].
+  ///
+  /// Always initiate a model first, then call [applyFromJson].
   FlComponentModel();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -108,6 +110,9 @@ abstract class FlComponentModel {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Applies property values from the json sent by the mobile server.
+  /// Only applies properties if they exist in the json,
+  /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
     var jsonId = pJson[ApiObjectProperty.id];
     if (jsonId != null) {
