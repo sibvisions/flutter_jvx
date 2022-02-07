@@ -140,7 +140,7 @@ class BorderLayout implements ILayout, ICloneable {
     if (_childWest != null) {
       Size bestSize = _childWest!.bestSize;
 
-      _childSouth!.layoutPosition =
+      _childWest!.layoutPosition =
           LayoutPosition(left: x, top: y, width: bestSize.width, height: height, isComponentSize: true);
 
       x += bestSize.width + iHorizontalGap;
