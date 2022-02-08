@@ -29,7 +29,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: onPress,
+        onPressed: model.isEnabled && model.isFocusable ? onPress : null,
         child: Container(
           child: getButtonChild(),
           alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],

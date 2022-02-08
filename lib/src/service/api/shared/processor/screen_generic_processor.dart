@@ -102,36 +102,70 @@ class ScreenGenericProcessor implements IProcessor {
   FlComponentModel _parseFlComponentModel(dynamic pJson, String className) {
     FlComponentModel model;
     switch (className) {
-      case (FlComponentClassname.PANEL):
+      // Containers
+      case FlContainerClassname.PANEL:
         model = FlPanelModel();
         break;
-      case (FlComponentClassname.BUTTON):
-        model = FlButtonModel();
-        break;
-      case (FlComponentClassname.TOGGLE_BUTTON):
-        model = FlToggleButtonModel();
-        break;
-      case (FlComponentClassname.LABEL):
-        model = FlLabelModel();
-        break;
-      case (FlComponentClassname.TEXT_FIELD):
-        model = FlTextFieldModel();
-        break;
-      case (FlComponentClassname.TEXT_AREA):
-        model = FlTextAreaModel();
-        break;
-      case (FlComponentClassname.GROUP_PANEL):
+      case FlContainerClassname.GROUP_PANEL:
         model = FlPanelModel();
         break;
-      case (FlComponentClassname.SCROLL_PANEL):
-        model = FlPanelModel();
-        break;
-      case (FlComponentClassname.SPLIT_PANEL):
+      case FlContainerClassname.SCROLL_PANEL:
         model = FlSplitPanelModel();
         break;
+      case FlContainerClassname.SPLIT_PANEL:
+        model = FlSplitPanelModel();
+        break;
+      case FlContainerClassname.TABSET_PANEL:
+        continue alsoDefault;
+      case FlContainerClassname.CUSTOM_CONTAINER:
+        continue alsoDefault;
+
+      // Components
+      case FlComponentClassname.BUTTON:
+        model = FlButtonModel();
+        break;
+      case FlComponentClassname.TOGGLE_BUTTON:
+        model = FlToggleButtonModel();
+        break;
+      case FlComponentClassname.LABEL:
+        model = FlLabelModel();
+        break;
+      case FlComponentClassname.TEXT_FIELD:
+        model = FlTextFieldModel();
+        break;
+      case FlComponentClassname.TEXT_AREA:
+        model = FlTextAreaModel();
+        break;
+      case FlComponentClassname.ICON:
+        continue alsoDefault;
+      case FlComponentClassname.POPUP_MENU:
+        continue alsoDefault;
+      case FlComponentClassname.MENU_ITEM:
+        continue alsoDefault;
+      case FlComponentClassname.POPUP_MENU_BUTTON:
+        continue alsoDefault;
+      case FlComponentClassname.CHECK_BOX:
+        continue alsoDefault;
+      case FlComponentClassname.PASSWORD_FIELD:
+        continue alsoDefault;
+      case FlComponentClassname.TABLE:
+        continue alsoDefault;
+      case FlComponentClassname.RADIO_BUTTON:
+        continue alsoDefault;
+      case FlComponentClassname.MAP:
+        continue alsoDefault;
+      case FlComponentClassname.CHART:
+        continue alsoDefault;
+      case FlComponentClassname.GAUGE:
+        continue alsoDefault;
+
+      // Cell editors:
+      case FlComponentClassname.EDITOR:
+        continue alsoDefault;
+
+      alsoDefault:
       default:
         model = FlDummyModel();
-        break;
     }
     model.applyFromJson(pJson);
     return model;

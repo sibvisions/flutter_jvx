@@ -5,6 +5,14 @@
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overrideable widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -26,11 +34,12 @@
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 If this is wanted as auto completion in VS Code
 paste the following into the dart.js under 
 File -> Preferences -> User Snippets -> Dart
 
-"// Constants": {
+	"// Constants": {
 	"prefix": "// Constants",
 		"body": [
 			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
@@ -92,4 +101,22 @@ File -> Preferences -> User Snippets -> Dart
 			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		],
 		"description": "User-defined methods"
+	},
+	"// Overrideable widget defaults": {
+	"prefix": "// Overrideable widget defaults",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Overrideable widget defaults",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Overrideable widget defaults"
+	},
+	"// Overridden widget defaults": {
+	"prefix": "// Overridden widget defaults",
+		"body": [
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+			"// Overridden widget defaults",
+			"//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+		],
+		"description": "Overridden widget defaults"
 	}

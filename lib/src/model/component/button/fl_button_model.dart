@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../components/button/fl_button_widget.dart';
 import '../label/fl_label_model.dart';
 import '../../layout/alignments.dart';
@@ -36,7 +38,7 @@ class FlButtonModel extends FlComponentModel {
   Widget? image;
 
   /// The gap between image and text if both exist.
-  int imageTextGap = 0;
+  int imageTextGap = 5;
 
   /// The image when the button gets pressed.
   Widget? mousePressedImage;
@@ -88,7 +90,12 @@ class FlButtonModel extends FlComponentModel {
     var jsonImage = pJson[ApiObjectProperty.image];
     if (jsonImage != null) {
       if (IFontAwesome.checkFontAwesome(jsonImage)) {
-        image = IFontAwesome.getFontAwesomeIcon(jsonImage);
+        FaIcon icon = IFontAwesome.getFontAwesomeIcon(jsonImage);
+        if (_isGrey) {
+          image = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
+        } else {
+          image = icon;
+        }
       } else {
         // TODO image
         // image = jsonImage;
@@ -103,7 +110,12 @@ class FlButtonModel extends FlComponentModel {
     var jsonMousePressedImage = pJson[ApiObjectProperty.mousePressedImage];
     if (jsonMousePressedImage != null) {
       if (IFontAwesome.checkFontAwesome(jsonMousePressedImage)) {
-        mousePressedImage = IFontAwesome.getFontAwesomeIcon(jsonMousePressedImage);
+        FaIcon icon = IFontAwesome.getFontAwesomeIcon(jsonMousePressedImage);
+        if (_isGrey) {
+          mousePressedImage = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
+        } else {
+          mousePressedImage = icon;
+        }
       } else {
         // TODO image
         // image = jsonImage;
@@ -113,7 +125,12 @@ class FlButtonModel extends FlComponentModel {
     var jsonMouseOverImage = pJson[ApiObjectProperty.mouseOverImage];
     if (jsonMouseOverImage != null) {
       if (IFontAwesome.checkFontAwesome(jsonMouseOverImage)) {
-        mouseOverImage = IFontAwesome.getFontAwesomeIcon(jsonMouseOverImage);
+        FaIcon icon = IFontAwesome.getFontAwesomeIcon(jsonMouseOverImage);
+        if (_isGrey) {
+          mouseOverImage = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
+        } else {
+          mouseOverImage = icon;
+        }
       } else {
         // TODO image
         // image = jsonImage;
@@ -128,6 +145,11 @@ class FlButtonModel extends FlComponentModel {
     // Label parsing
     // Label alignment gets sent in 2 different keys than when sending a label directly.
 
+    // If the button is disabled
+    if (_isGrey) {
+      foreground = IColorConstants.COMPONENT_DISABLED;
+    }
+
     labelModel.text = text;
     labelModel.background = background;
     labelModel.foreground = foreground;
@@ -141,5 +163,9 @@ class FlButtonModel extends FlComponentModel {
     labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
 
     labelModel.applyFromJson(labelJson);
+  }
+
+  bool get _isGrey {
+    return !(isEnabled && isFocusable);
   }
 }

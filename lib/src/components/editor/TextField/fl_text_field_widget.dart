@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/label/fl_label_widget.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
 import 'package:flutter_client/src/model/layout/alignments.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
 
 class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,6 +17,28 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
   final FocusNode focusNode;
 
   final TextEditingController textController;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overrideable widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  double get iconSize => 24;
+
+  EdgeInsets get textPadding => const EdgeInsets.only(left: 1);
+
+  EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
+
+  int? get minLines => null;
+
+  int? get maxLines => model.rows;
+
+  TextInputType get keyboardType => TextInputType.text;
+
+  List<TextInputFormatter>? get inputFormatters => null;
+
+  MaxLengthEnforcement? get maxLengthEnforcement => null;
+
+  int? get maxLength => null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -41,7 +65,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
       decoration: BoxDecoration(
         color: model.background,
         border: Border.all(
-            color: model.isEnabled ? Colors.black : Colors.grey,
+            color: model.isEnabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
             style: model.isBorderVisible ? BorderStyle.solid : BorderStyle.none),
       ),
       child: TextField(
@@ -49,7 +73,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
         decoration: InputDecoration(
           isDense: true, // Removes all the unneccessary paddings and widgets
           hintText: model.placeholder,
-          contentPadding: model.textPadding,
+          contentPadding: textPadding,
           border: InputBorder.none,
           suffixIcon: !model.isReadOnly && model.text.isNotEmpty ? getClearIcon() : null,
         ),
@@ -63,8 +87,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
         },
         minLines: minLines,
         maxLines: maxLines,
-        keyboardType: TextInputType.text,
+        keyboardType: keyboardType,
         focusNode: focusNode,
+        maxLength: maxLength,
+        maxLengthEnforcement: maxLengthEnforcement,
+        inputFormatters: inputFormatters,
       ),
     );
   }
@@ -78,7 +105,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
       widthFactor: 1,
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: model.iconPadding,
+        padding: iconPadding,
         child: GestureDetector(
           onTap: () {
             textController.value = textController.value.copyWith(
@@ -95,15 +122,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
           },
           child: Icon(
             Icons.clear,
-            size: model.iconSize,
-            color: Colors.grey[400],
+            size: iconSize,
+            color: IColorConstants.COMPONENT_DISABLED,
           ),
         ),
       ),
     );
   }
-
-  int? get minLines => null;
-
-  int? get maxLines => model.rows;
 }

@@ -25,16 +25,6 @@ class FlTextFieldModel extends FlLabelModel {
   bool isEditable = true;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Default widget values not overrideable by the server
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  final double iconSize = 24;
-
-  final EdgeInsets textPadding = const EdgeInsets.only(left: 1);
-
-  final EdgeInsets iconPadding = const EdgeInsets.only(right: 5);
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

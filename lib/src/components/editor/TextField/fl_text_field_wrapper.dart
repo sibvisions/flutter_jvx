@@ -2,12 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/editor/fl_text_field_widget.dart';
+import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_state.dart';
+import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_widget.dart';
 import 'package:flutter_client/src/mixin/data_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
-import '../base_wrapper/base_comp_wrapper_state.dart';
-import '../base_wrapper/base_comp_wrapper_widget.dart';
+
+import 'fl_text_field_widget.dart';
 
 class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +69,8 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
     updateText();
 
+    textController.text = "";
+
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         setState(() {
@@ -83,7 +86,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
   void valueChanged(String pValue) {
     if (pValue != model.text) {
-      log("Value changed to: " + pValue);
+      log("Value changed to: " + pValue + " | Length: " + pValue.characters.length.toString());
 
       setState(() {
         model.text = pValue;
@@ -92,7 +95,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   }
 
   void endEditing(String pValue) {
-    log("Editing ended with: " + pValue);
+    log("Editing ended with: " + pValue + " | Length: " + pValue.characters.length.toString());
 
     setState(() {
       model.text = pValue;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/editor/fl_text_field_wrapper.dart';
+import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_widget.dart';
+import 'package:flutter_client/src/components/editor/TextField/fl_text_field_wrapper.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
-import '../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_text_area_widget.dart';
 
 class FlTextAreaWrapper extends BaseCompWrapperWidget<FlTextAreaModel> {

@@ -6,7 +6,6 @@ import '../base_wrapper/base_comp_wrapper_widget.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/button_pressed_command.dart';
-import '../../model/component/button/fl_button_model.dart';
 import 'fl_toggle_button_widget.dart';
 
 class FlToggleButtonWrapper extends BaseCompWrapperWidget<FlToggleButtonModel> {

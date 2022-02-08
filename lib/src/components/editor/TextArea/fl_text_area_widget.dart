@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/fl_text_field_widget.dart';
+import 'package:flutter_client/src/components/editor/TextField/fl_text_field_widget.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
 
 class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
@@ -23,7 +23,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
             textController: textController);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
+  // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
@@ -31,4 +31,7 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
   @override
   int? get maxLines => null;
+
+  @override
+  TextInputType get keyboardType => TextInputType.multiline;
 }

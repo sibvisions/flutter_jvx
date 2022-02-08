@@ -24,24 +24,58 @@ import 'panel/fl_panel_wrapper.dart';
 abstract class ComponentsFactory {
   static Widget buildWidget(FlComponentModel model) {
     switch (model.className) {
+      // Containers
+      case FlContainerClassname.PANEL:
+        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+      case FlContainerClassname.GROUP_PANEL:
+        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+      case FlContainerClassname.SCROLL_PANEL:
+        return FlScrollPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+      case FlContainerClassname.SPLIT_PANEL:
+        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: Key(model.id));
+      case FlContainerClassname.TABSET_PANEL:
+        continue alsoDefault;
+      case FlContainerClassname.CUSTOM_CONTAINER:
+        continue alsoDefault;
+
+      // Components
       case FlComponentClassname.BUTTON:
         return FlButtonWrapper(model: model as FlButtonModel, key: Key(model.id));
       case FlComponentClassname.TOGGLE_BUTTON:
         return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: Key(model.id));
-      case FlComponentClassname.PANEL:
-        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case FlComponentClassname.LABEL:
         return FlLabelWrapper(model: model as FlLabelModel, key: Key(model.id));
       case FlComponentClassname.TEXT_FIELD:
         return FlTextFieldWrapper(model: model as FlTextFieldModel, key: Key(model.id));
       case FlComponentClassname.TEXT_AREA:
         return FlTextAreaWrapper(model: model as FlTextAreaModel, key: Key(model.id));
-      case FlComponentClassname.GROUP_PANEL:
-        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
-      case FlComponentClassname.SCROLL_PANEL:
-        return FlScrollPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
-      case FlComponentClassname.SPLIT_PANEL:
-        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: Key(model.id));
+      case FlComponentClassname.ICON:
+        continue alsoDefault;
+      case FlComponentClassname.POPUP_MENU:
+        continue alsoDefault;
+      case FlComponentClassname.MENU_ITEM:
+        continue alsoDefault;
+      case FlComponentClassname.POPUP_MENU_BUTTON:
+        continue alsoDefault;
+      case FlComponentClassname.CHECK_BOX:
+        continue alsoDefault;
+      case FlComponentClassname.PASSWORD_FIELD:
+        continue alsoDefault;
+      case FlComponentClassname.TABLE:
+        continue alsoDefault;
+      case FlComponentClassname.RADIO_BUTTON:
+        continue alsoDefault;
+      case FlComponentClassname.MAP:
+        continue alsoDefault;
+      case FlComponentClassname.CHART:
+        continue alsoDefault;
+      case FlComponentClassname.GAUGE:
+        continue alsoDefault;
+
+      // Cell editors:
+      case FlComponentClassname.EDITOR:
+
+      alsoDefault:
       default:
         return DummyWrapper(model: model as FlDummyModel, key: Key(model.id));
     }
