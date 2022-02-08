@@ -8,22 +8,19 @@ class FlScrollPanelWidget extends StatelessWidget {
   final double? height;
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            IgnorePointer(
-              ignoring: true,
-              child: SizedBox(
-                width: (width ?? 0),
-                height: (height ?? 0),
-              ),
+    return InteractiveViewer(
+      constrained: false,
+      child: Stack(
+        children: [
+          IgnorePointer(
+            ignoring: true,
+            child: SizedBox(
+              width: (width ?? 0),
+              height: (height ?? 0),
             ),
-            ...children,
-          ],
-        ),
+          ),
+          ...children,
+        ],
       ),
     );
   }

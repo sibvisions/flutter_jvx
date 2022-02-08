@@ -17,7 +17,6 @@ class FlPanelWidget extends StatelessWidget {
     // );
     //
     return Stack(
-      clipBehavior: Clip.none,
       children: children,
     );
   }
