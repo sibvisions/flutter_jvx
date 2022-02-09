@@ -1,13 +1,23 @@
-import '../api/api_object_property.dart';
-import '../component/fl_component_model.dart';
+import 'package:flutter_client/src/model/layout/alignments.dart';
 
-class ICellEditor extends FlComponentModel {
+import '../api/api_object_property.dart';
+
+class ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The class name of the editor.
+  String className = "";
+
   /// Description of the content
   String? contentType;
+
+  /// The horizontal alignment of the editor.
+  HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
+
+  /// The vertical alignment of the editor.
+  VerticalAlignment verticalAlignment = VerticalAlignment.TOP;
 
   /// If this editor should be shown inside a table.
   bool directCellEditor = false;
@@ -22,21 +32,33 @@ class ICellEditor extends FlComponentModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Initializes a [ICellEditor] with default values
-  ICellEditor();
+  /// Initializes a [ICellEditorModel] with default values
+  ICellEditorModel();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  @override
   void applyFromJson(Map<String, dynamic> pJson) {
-    super.applyFromJson(pJson);
-
+    // ClassName
+    var jsonClassName = pJson[ApiObjectProperty.className];
+    if (jsonClassName != null) {
+      className = jsonClassName;
+    }
     // ContentType
     var jsonContentType = pJson[ApiObjectProperty.contentType];
     if (jsonContentType != null) {
       contentType = jsonContentType;
+    }
+    // HorizontalAlignment
+    var jsonHorizontalAlignment = pJson[ApiObjectProperty.horizontalAlignment];
+    if (jsonHorizontalAlignment != null) {
+      horizontalAlignment = HorizontalAlignment.values[jsonHorizontalAlignment];
+    }
+    // VerticalAlignment
+    var jsonVerticalAlignment = pJson[ApiObjectProperty.verticalAlignment];
+    if (jsonVerticalAlignment != null) {
+      verticalAlignment = VerticalAlignment.values[jsonVerticalAlignment];
     }
     // DirectCellEditor
     var jsonDirectCellEditor = pJson[ApiObjectProperty.directCellEditor];

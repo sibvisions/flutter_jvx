@@ -1,3 +1,4 @@
+import 'package:flutter_client/src/components/editor/CellEditor/fl_cell_editor.dart';
 import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
@@ -161,7 +162,7 @@ class ScreenGenericProcessor implements IProcessor {
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
-        continue alsoDefault;
+        return FlCellEditor.getCellEditorModel(pJson);
 
       alsoDefault:
       default:

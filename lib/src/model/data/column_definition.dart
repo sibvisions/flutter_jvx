@@ -1,6 +1,6 @@
 import '../api/api_object_property.dart';
 import '../api/response/dal_meta_data_response.dart';
-import 'cell_editor.dart';
+import 'cell_editor_model.dart';
 
 /// The definition of a column of a dataBook. Received from the server in a [DalMetaDataResponse]
 class ColumnDefinition {
@@ -35,7 +35,7 @@ class ColumnDefinition {
   bool movable = true;
 
   /// CellEditor info for this column
-  ICellEditor cellEditor = ICellEditor();
+  ICellEditorModel cellEditor = ICellEditorModel();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

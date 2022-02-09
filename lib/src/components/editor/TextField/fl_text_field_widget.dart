@@ -40,6 +40,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
 
   int? get maxLength => null;
 
+  bool get obscureText => false;
+
+  String get obscuringCharacter => '•';
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +96,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
         maxLength: maxLength,
         maxLengthEnforcement: maxLengthEnforcement,
         inputFormatters: inputFormatters,
+        obscureText: obscureText,
+        obscuringCharacter: obscuringCharacter,
       ),
     );
   }
