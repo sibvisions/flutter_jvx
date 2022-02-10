@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/service/data/i_data_service.dart';
-import 'package:flutter_client/src/service/service.dart';
+import '../service/data/i_data_service.dart';
+import '../service/service.dart';
 
 ///
 /// Provides an [IDataService] instance from get.it service

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import '../../model/component/fl_component_model.dart';
 
 class FlStatefulWidget<T extends FlComponentModel> extends StatefulWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

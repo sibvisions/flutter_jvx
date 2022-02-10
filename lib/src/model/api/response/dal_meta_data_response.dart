@@ -1,7 +1,7 @@
+import '../../../../util/parse_util.dart';
+import '../../data/column_definition.dart';
 import '../api_object_property.dart';
 import 'api_response.dart';
-import '../../data/column_definition.dart';
-import '../../../../util/parse_util.dart';
 
 class DalMetaDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

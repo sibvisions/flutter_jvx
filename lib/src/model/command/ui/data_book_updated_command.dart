@@ -1,8 +1,7 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'ui_command.dart';
 
 /// Used to indicate that components listening to this dataBook(dataProvider) should re-fetch their data
 class DataBookUpdatedCommand extends UiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,10 +13,7 @@ class DataBookUpdatedCommand extends UiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataBookUpdatedCommand({
-    required String reason,
-    required this.dataProvider
-  }) : super(reason: reason);
+  DataBookUpdatedCommand({required String reason, required this.dataProvider}) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

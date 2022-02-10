@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
+import '../../model/layout/layout_position.dart';
 import 'base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/preferred_size_command.dart';

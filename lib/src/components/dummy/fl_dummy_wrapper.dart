@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import '../../model/component/dummy/fl_dummy_model.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import '../../model/component/fl_component_model.dart';
 
-import 'dummy_widget.dart';
+import 'fl_dummy_widget.dart';
 
-class DummyWrapper extends BaseCompWrapperWidget {
-  const DummyWrapper({Key? key, required FlComponentModel model}) : super(key: key, model: model);
+class FlDummyWrapper extends BaseCompWrapperWidget<FlDummyModel> {
+  const FlDummyWrapper({Key? key, required FlDummyModel model}) : super(key: key, model: model);
 
   @override
-  _DummyWrapperState createState() => _DummyWrapperState();
+  _FlDummyWrapperState createState() => _FlDummyWrapperState();
 }
 
-class _DummyWrapperState extends BaseCompWrapperState {
+class _FlDummyWrapperState extends BaseCompWrapperState<FlDummyModel> {
   @override
   Widget build(BuildContext context) {
-    DummyWidget dummyWidget = DummyWidget(
+    FlDummyWidget dummyWidget = FlDummyWidget(
       id: model.id,
+      model: widget.model as FlDummyModel,
       height: getHeightForComponent(),
       width: getWidthForComponent(),
       key: Key("${model.id}_Widget"),

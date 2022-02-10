@@ -1,13 +1,17 @@
-import '../../../components/dummy/dummy_widget.dart';
+import 'dart:ui';
+
+import '../../../components/dummy/fl_dummy_widget.dart';
 
 import '../fl_component_model.dart';
 
-/// The model for [DummyWidget]
+/// The model for [FlDummyWidget]
 class FlDummyModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Initializes the [FlDummyModel]
-  FlDummyModel() : super();
+  FlDummyModel() : super() {
+    minimumSize = const Size(55, 55);
+  }
 }

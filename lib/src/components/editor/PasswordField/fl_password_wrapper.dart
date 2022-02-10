@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import 'fl_password_widget.dart';
 import '../TextField/fl_text_field_wrapper.dart';
 import '../../../model/component/editor/fl_text_area_model.dart';
-import 'fl_text_area_widget.dart';
 
 class FlTextAreaWrapper extends BaseCompWrapperWidget<FlTextAreaModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,19 +27,17 @@ class FlTextAreaWrapperState extends FlTextFieldWrapperState<FlTextAreaModel> {
 
   @override
   Widget build(BuildContext context) {
-    FlTextAreaWidget textAreaWidget = FlTextAreaWidget(
-      key: Key("${model.id}_Widget"),
-      model: model,
-      endEditing: endEditing,
-      valueChanged: valueChanged,
-      focusNode: focusNode,
-      textController: textController,
-    );
+    FlPasswordWidget passwordWidget = FlPasswordWidget(
+        model: model,
+        valueChanged: valueChanged,
+        endEditing: endEditing,
+        focusNode: focusNode,
+        textController: textController);
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: textAreaWidget);
+    return getPositioned(child: passwordWidget);
   }
 }

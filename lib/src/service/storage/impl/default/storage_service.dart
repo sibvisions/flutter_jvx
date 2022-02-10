@@ -1,9 +1,8 @@
 import '../../../../model/command/base_command.dart';
-import '../../shared/component_store.dart';
-
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../../i_storage_service.dart';
+import '../../shared/component_store.dart';
 
 /// Contains all component & menu Data
 // Author: Michael Schober

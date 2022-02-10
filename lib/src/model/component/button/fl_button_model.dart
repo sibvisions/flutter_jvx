@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
+import '../../../../util/constants/i_color.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../components/button/fl_button_widget.dart';
 import '../label/fl_label_model.dart';

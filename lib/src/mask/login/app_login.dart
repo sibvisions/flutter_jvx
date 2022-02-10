@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../model/command/api/login_command.dart';
-import '../../model/command/api/startup_command.dart';
 
 import '../../mixin/ui_service_mixin.dart';
+import '../../model/command/api/login_command.dart';
+import '../../model/command/api/startup_command.dart';
 
 class AppLogin extends StatelessWidget with UiServiceMixin {
   AppLogin({Key? key}) : super(key: key);

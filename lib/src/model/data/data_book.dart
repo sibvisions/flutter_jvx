@@ -1,13 +1,11 @@
 import 'dart:collection';
-import 'dart:developer';
 
-import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
+import '../api/response/dal_fetch_response.dart';
 
 import 'column_definition.dart';
 
 /// Holds all data and column definitions of a data provider
 class DataBook {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,18 +33,17 @@ class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Creates a [DataBook]
-  DataBook({
-    required this.dataProvider,
-    required this.records,
-    required this.columnDefinitions,
-    required this.isAllFetched,
-    required this.selectedRow,
-    required this.columnViewTable
-  });
+  DataBook(
+      {required this.dataProvider,
+      required this.records,
+      required this.columnDefinitions,
+      required this.isAllFetched,
+      required this.selectedRow,
+      required this.columnViewTable});
 
   /// Creates a [DataBook] with only default values
-  DataBook.empty() :
-        dataProvider = "",
+  DataBook.empty()
+      : dataProvider = "",
         columnViewTable = [],
         columnDefinitions = [],
         records = HashMap(),
@@ -71,14 +68,14 @@ class DataBook {
   }
 
   /// Saves all data from a fetchRequest
-  void saveFromFetchRequest({required DalFetchResponse pFetchResponse}){
+  void saveFromFetchRequest({required DalFetchResponse pFetchResponse}) {
     dataProvider = pFetchResponse.dataProvider;
     isAllFetched = pFetchResponse.isAllFetched;
     selectedRow = pFetchResponse.selectedRow;
 
     // Save records
     int to = pFetchResponse.to;
-    for(int i=0;i<pFetchResponse.records.length;i++){
+    for (int i = 0; i < pFetchResponse.records.length; i++) {
       records[to] = pFetchResponse.records[i];
       to++;
     }
@@ -87,13 +84,12 @@ class DataBook {
   /// Get data of the column of the currently selected row
   /// If no record is currently selected (-1) returns null
   /// If selected row is not found returns null
-  dynamic getSelectedColumnData({required String pDataColumnName}){
-
+  dynamic getSelectedColumnData({required String pDataColumnName}) {
     // Get index of column
     int indexOfColumn = columnDefinitions.indexWhere((columnDef) => columnDef.name == pDataColumnName);
 
     // If column with provided name was not found throw error.
-    if(indexOfColumn == -1){
+    if (indexOfColumn == -1) {
       throw Exception("Column with name $pDataColumnName was not found in dataBook $dataProvider");
     }
 
@@ -102,7 +98,7 @@ class DataBook {
 
     // If record is found return value at the index of the column.
     // ToDo Handle non-existing record better.
-    if(record != null) {
+    if (record != null) {
       return record[indexOfColumn];
     } else {
       return null;

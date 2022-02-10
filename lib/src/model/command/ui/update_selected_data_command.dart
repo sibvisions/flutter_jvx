@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/model/command/ui/ui_command.dart';
+import 'ui_command.dart';
 
 class UpdateSelectedDataCommand extends UiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,12 +18,9 @@ class UpdateSelectedDataCommand extends UiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UpdateSelectedDataCommand({
-    required this.dataProvider,
-    required String reason,
-    required this.componentId,
-    required this.data
-  }) : super(reason: reason);
+  UpdateSelectedDataCommand(
+      {required this.dataProvider, required String reason, required this.componentId, required this.data})
+      : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

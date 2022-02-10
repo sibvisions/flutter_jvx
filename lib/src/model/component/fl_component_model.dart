@@ -205,4 +205,38 @@ abstract class FlComponentModel {
       tooltipText = jsonTooltipText;
     }
   }
+
+  /// If this component is used in a cell editor, some values are overriden.
+  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    var jsonCellEditorHorizontalAlignment = pJson[ApiObjectProperty.cellEditorHorizontalAlignment];
+    if (jsonCellEditorHorizontalAlignment != null) {
+      horizontalAlignment = HorizontalAlignment.values[jsonCellEditorHorizontalAlignment];
+    }
+
+    var jsonCellEditorVerticalAlignment = pJson[ApiObjectProperty.cellEditorVerticalAlignment];
+    if (jsonCellEditorVerticalAlignment != null) {
+      verticalAlignment = VerticalAlignment.values[jsonCellEditorVerticalAlignment];
+    }
+
+    var jsonCellEditorBackground = pJson[ApiObjectProperty.cellEditorBackground];
+    if (jsonCellEditorBackground != null) {
+      background = ParseUtil.parseHexColor(jsonCellEditorBackground)!;
+    }
+
+    var jsonCellEditorForeground = pJson[ApiObjectProperty.cellEditorForeground];
+    if (jsonCellEditorForeground != null) {
+      foreground = ParseUtil.parseHexColor(jsonCellEditorForeground)!;
+    }
+
+    var jsonCellEditorFont = pJson[ApiObjectProperty.cellEditorFont];
+    if (jsonCellEditorFont != null) {
+      var fontValuesList = (jsonCellEditorFont as String).split(",");
+      if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
+        fontName = fontValuesList[0];
+        fontSize = int.parse(fontValuesList[2]);
+        isBold = (int.parse(fontValuesList[1]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
+        isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
+      }
+    }
+  }
 }

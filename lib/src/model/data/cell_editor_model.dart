@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/layout/alignments.dart';
+import '../layout/alignments.dart';
 
 import '../api/api_object_property.dart';
 

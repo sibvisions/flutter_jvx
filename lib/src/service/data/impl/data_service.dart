@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/data/data_book.dart';
+import '../../../model/data/data_book.dart';
 
 import '../../../model/api/response/dal_fetch_response.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
@@ -8,7 +8,6 @@ import '../../../model/command/base_command.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,16 +28,14 @@ class DataService implements IDataService {
 
   @override
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch}) async {
-
     DataBook? dataBook = dataBooks[pFetch.dataProvider];
-    if(dataBook == null){
+    if (dataBook == null) {
       dataBook = DataBook.empty();
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
       dataBooks[pFetch.dataProvider] = dataBook;
     } else {
       dataBook.saveFromFetchRequest(pFetchResponse: pFetch);
     }
-
 
     return [];
   }
@@ -70,21 +67,19 @@ class DataService implements IDataService {
 
   @override
   Future getSelectedDataColumn({required String pColumnName, required String pDataProvider}) async {
-    
     // Get dataBook
     DataBook dataBook = dataBooks[pDataProvider]!;
-    
+
     dynamic selectedRowColumnData = dataBook.getSelectedColumnData(pDataColumnName: pColumnName);
 
     return selectedRowColumnData;
   }
 
   @override
-  Future<List<List<dynamic>>> getDataChunk({required List<String> pColumnNames, required int pFrom, required int pTo, required String pDataProvider}) async {
+  Future<List<List<dynamic>>> getDataChunk(
+      {required List<String> pColumnNames, required int pFrom, required int pTo, required String pDataProvider}) async {
     // TODO: implement getDataChunk
-
 
     return [];
   }
 }
-

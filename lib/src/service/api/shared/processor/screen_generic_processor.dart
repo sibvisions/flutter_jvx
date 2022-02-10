@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/components/editor/CellEditor/fl_cell_editor.dart';
-import 'package:flutter_client/src/model/component/button/fl_toggle_button_model.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
+import '../../../../model/component/button/fl_toggle_button_model.dart';
+import '../../../../model/component/editor/fl_editor_model.dart';
+import '../../../../model/component/editor/fl_text_area_model.dart';
+import '../../../../model/component/editor/fl_text_field_model.dart';
 
 import '../../../../model/component/panel/fl_split_panel.dart';
 
@@ -162,7 +162,8 @@ class ScreenGenericProcessor implements IProcessor {
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
-        return FlCellEditor.getCellEditorModel(pJson);
+        model = FlEditorModel(json: pJson);
+        break;
 
       alsoDefault:
       default:

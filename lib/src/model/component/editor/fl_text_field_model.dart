@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
+import '../../api/api_object_property.dart';
+import '../label/fl_label_model.dart';
 
 class FlTextFieldModel extends FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +60,19 @@ class FlTextFieldModel extends FlLabelModel {
     var jsonEditable = pJson[ApiObjectProperty.editable];
     if (jsonEditable != null) {
       isEditable = jsonEditable;
+    }
+  }
+
+  @override
+  void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    var jsonCellEditorEditable = pJson[ApiObjectProperty.cellEditorEditable];
+    if (jsonCellEditorEditable != null) {
+      isEditable = jsonCellEditorEditable;
+    }
+
+    var jsonCellEditorPlaceholder = pJson[ApiObjectProperty.cellEditorPlaceholder];
+    if (jsonCellEditorPlaceholder != null) {
+      placeholder = jsonCellEditorPlaceholder;
     }
   }
 

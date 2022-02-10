@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 import '../../../shared/i_repository.dart';
-
 import 'api_isolate_message.dart';
 
 class ApiIsolateRepositoryMessage extends ApiIsolateMessage {
@@ -16,5 +15,4 @@ class ApiIsolateRepositoryMessage extends ApiIsolateMessage {
     // TODO: implement sendResponse
     throw UnimplementedError();
   }
-
 }

@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/model/command/ui/data_book_updated_command.dart';
-import 'package:flutter_client/src/model/command/ui/update_selected_data_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/ui/data_book_updated_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/ui/update_selected_data_processor.dart';
+import '../../../../../model/command/ui/data_book_updated_command.dart';
+import '../../../../../model/command/ui/update_selected_data_command.dart';
+import 'data_book_updated_processor.dart';
+import 'update_selected_data_processor.dart';
 
 import '../../../../../model/command/ui/update_layout_position_command.dart';
 import 'update_layout_position_processor.dart';

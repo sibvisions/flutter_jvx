@@ -1,8 +1,7 @@
-import 'package:flutter_client/src/components/button/fl_toggle_button_widget.dart';
-import 'package:flutter_client/src/model/component/button/fl_button_model.dart';
+import '../../../components/button/fl_toggle_button_widget.dart';
+import 'fl_button_model.dart';
 
 import '../../api/api_object_property.dart';
-import '../fl_component_model.dart';
 
 /// The model for [FlToggleButtonWidget]
 class FlToggleButtonModel extends FlButtonModel {

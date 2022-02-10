@@ -1,16 +1,19 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/service/api/shared/fl_component_classname.dart';
+import 'package:flutter/cupertino.dart';
+import '../api/api_object_property.dart';
+import 'dummy/fl_dummy_cell_editor.dart';
+import 'editor/fl_text_cell_editor.dart';
+import '../../service/api/shared/fl_component_classname.dart';
 
-abstract class FlCellEditor {
-  static FlComponentModel getCellEditorModel(Map<String, dynamic> pJson) {
+abstract class ICellEditor {
+  Widget get widget;
+
+  static ICellEditor getCellEditor(Map<String, dynamic> pJson) {
     Map<String, dynamic> cellEditorJson = pJson[ApiObjectProperty.cellEditor];
     String cellEditorClassName = cellEditorJson[ApiObjectProperty.className];
 
     switch (cellEditorClassName) {
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
-        continue alsoDefault;
+        return FlTextCellEditor(pJson);
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         continue alsoDefault;
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
@@ -26,7 +29,7 @@ abstract class FlCellEditor {
 
       alsoDefault:
       default:
-        return FlDummyModel();
+        return FlDummyCellEditor(pJson);
     }
   }
 }

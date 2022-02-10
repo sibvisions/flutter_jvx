@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_state.dart';
-import 'package:flutter_client/src/components/base_wrapper/base_comp_wrapper_widget.dart';
-import 'package:flutter_client/src/mixin/data_service_mixin.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
+import '../../base_wrapper/base_comp_wrapper_state.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../../mixin/data_service_mixin.dart';
+import '../../../mixin/ui_service_mixin.dart';
+import '../../../model/component/editor/fl_text_field_model.dart';
 
 import 'fl_text_field_widget.dart';
 

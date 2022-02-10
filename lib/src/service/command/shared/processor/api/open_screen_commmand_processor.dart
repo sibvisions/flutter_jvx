@@ -1,10 +1,9 @@
-import '../ui/update_components_processor.dart';
-
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
+import '../ui/update_components_processor.dart';
 
 class OpenScreenCommandProcessor
     with ApiServiceMixin, ConfigServiceMixin

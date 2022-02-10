@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/command/data/data_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/data/data_processor.dart';
+import '../../../model/command/data/data_command.dart';
+import '../shared/processor/data/data_processor.dart';
 
 import '../../../model/command/storage/delete_screen_command.dart';
 import '../../../routing/app_routing_type.dart';
@@ -28,7 +28,6 @@ import '../shared/processor/ui/ui_processor.dart';
 ///
 // Author: Michael Schober
 class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMixin implements ICommandService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

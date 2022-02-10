@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import '../TextField/fl_text_field_widget.dart';
-import '../../../model/component/editor/fl_text_area_model.dart';
+import '../../../model/component/editor/fl_text_field_model.dart';
 
-class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
+class FlPasswordWidget extends FlTextFieldWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlTextAreaWidget(
+  const FlPasswordWidget(
       {Key? key,
-      required T model,
+      required FlTextFieldModel model,
       required Function(String) valueChanged,
       required Function(String) endEditing,
       required FocusNode focusNode,
@@ -27,11 +27,5 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  int? get minLines => model.rows;
-
-  @override
-  int? get maxLines => null;
-
-  @override
-  TextInputType get keyboardType => TextInputType.multiline;
+  bool get obscureText => true;
 }

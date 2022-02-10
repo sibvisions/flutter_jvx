@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/model/command/data/data_command.dart';
+import 'data_command.dart';
 
 class GetDataChunkCommand extends DataCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,14 +24,14 @@ class GetDataChunkCommand extends DataCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  GetDataChunkCommand({
-    required String reason,
-    required this.dataProvider,
-    required this.from,
-    required this.to,
-    required this.componentId,
-    required this.dataColumns
-  }) : super(reason: reason);
+  GetDataChunkCommand(
+      {required String reason,
+      required this.dataProvider,
+      required this.from,
+      required this.to,
+      required this.componentId,
+      required this.dataColumns})
+      : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -41,5 +40,4 @@ class GetDataChunkCommand extends DataCommand {
   @override
   // TODO: implement logString
   String get logString => throw UnimplementedError();
-
 }
