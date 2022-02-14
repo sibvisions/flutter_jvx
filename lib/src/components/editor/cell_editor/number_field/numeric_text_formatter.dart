@@ -15,11 +15,11 @@ class NumericTextFormatter extends TextInputFormatter {
     _scale = newScale;
 
     // ToDo intl Number Formatter only supports only patterns with up to 16 digits
-    if (this._numberFormat != null && scale != null) {
-      this._numberFormat = _cutDigits(this._numberFormat!, scale!);
+    if (_numberFormat != null && scale != null) {
+      _numberFormat = _cutDigits(_numberFormat!, scale!);
     }
 
-    numberFormatter = NumberFormat(this._numberFormat, this._locale);
+    numberFormatter = NumberFormat(_numberFormat, _locale);
   }
 
   String? get numberFormat => _numberFormat;
@@ -27,39 +27,32 @@ class NumericTextFormatter extends TextInputFormatter {
     _numberFormat = newFormat;
 
     /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
-    if (this._numberFormat != null) {
-      this._numberFormat = _cutDigits(this._numberFormat!, 14);
+    if (_numberFormat != null) {
+      _numberFormat = _cutDigits(_numberFormat!, 14);
     }
 
-    numberFormatter = NumberFormat(this._numberFormat, this._locale);
+    numberFormatter = NumberFormat(_numberFormat, _locale);
   }
 
   String? get locale => _locale;
   set locale(String? newLocale) {
     _locale = newLocale;
-    numberFormatter = NumberFormat(this._numberFormat, this._locale);
+    numberFormatter = NumberFormat(_numberFormat, _locale);
   }
 
-  NumericTextFormatter(
-      [String? numberFormat,
-      String? locale,
-      this.precision,
-      this.length,
-      int? scale,
-      this.signed])
-      : super() {
-    this.numberFormat = numberFormat;
-    this.locale = locale;
-    this.scale = scale;
+  NumericTextFormatter([String? numberFormat, String? locale, precision, length, int? scale, signed]) : super() {
+    numberFormat = numberFormat;
+    locale = locale;
+    scale = scale;
   }
 
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.text.length == 0) {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) {
       return newValue.copyWith(text: '');
     } else if (newValue.text.compareTo(oldValue.text) != 0) {
       String newString = newValue.text;
-      int textLengthChange = newValue.text.length - oldValue.text.length;
+      //int textLengthChange = newValue.text.length - oldValue.text.length;
 
       /// ToDo intl Number Formatter only supports only patterns with up to 16 digits
       if (newString.length > 16) return newValue.copyWith(text: oldValue.text);
@@ -70,31 +63,29 @@ class NumericTextFormatter extends TextInputFormatter {
         newString = newString.substring(0, newString.length - 1);
       }
 
-      dynamic number = this.convertToNumber(newString);
+      dynamic number = convertToNumber(newString);
 
       if (precision != null && scale != null) {
         String toMatch = number.toString();
         int localScale = (scale! < 0 ? 14 : scale!);
         int localPrecision = precision! <= 0 ? 15 - scale! : precision!;
-        RegExp expression = new RegExp(r"^(?=(\D*\d\D*){0," +
+        RegExp expression = RegExp(r"^(?=(\D*\d\D*){0," +
             localPrecision.toString() +
             r"}$)-?([0-9]+)?([\.,]?[0-9]{0," +
             localScale.toString() +
             r"})?$");
 
-        if (!expression.hasMatch(toMatch))
-          return newValue.copyWith(
-              text: oldValue.text, selection: oldValue.selection);
+        if (!expression.hasMatch(toMatch)) return newValue.copyWith(text: oldValue.text, selection: oldValue.selection);
       }
 
-      //newString = this.getFormattedString(number);
+      //newString = getFormattedString(number);
 
       if (addTrailingDecSep) {
-        if (scale == null || scale! > 0)
+        if (scale == null || scale! > 0) {
           newString += numberFormatter!.symbols.DECIMAL_SEP;
-        else
-          return newValue.copyWith(
-              text: newString, selection: oldValue.selection);
+        } else {
+          return newValue.copyWith(text: newString, selection: oldValue.selection);
+        }
       }
 
       // if (textLengthChange < 0 && newString.length >= oldValue.text.length) {
@@ -144,25 +135,21 @@ class NumericTextFormatter extends TextInputFormatter {
   }
 
   TextInputType getKeyboardType() {
-    // if (this._numberFormat != null && this._numberFormat!.isNotEmpty) {
-    //   if (!this.numberFormat!.contains(".")) return TextInputType.number;
+    // if (_numberFormat != null && _numberFormat!.isNotEmpty) {
+    //   if (!numberFormat!.contains(".")) return TextInputType.number;
 
-    //   if (this.scale == 0) return TextInputType.number;
+    //   if (scale == 0) return TextInputType.number;
     // }
 
-    return TextInputType.numberWithOptions(
-        decimal: this.scale != 0, signed: this.signed);
+    return TextInputType.numberWithOptions(decimal: scale != 0, signed: signed);
   }
 
   String _cutDigits(String formatString, int cutAt) {
-    List<String> numberFormatParts = this._numberFormat!.split(".");
+    List<String> numberFormatParts = _numberFormat!.split(".");
     if (numberFormatParts.length > 1 && numberFormatParts[1].length > cutAt) {
       try {
-        String newFormat = numberFormatParts[0] +
-            "." +
-            numberFormatParts[1].substring(0, cutAt < 0 ? 14 : cutAt);
-        if (newFormat.endsWith("."))
-          return newFormat.substring(0, newFormat.length - 1);
+        String newFormat = numberFormatParts[0] + "." + numberFormatParts[1].substring(0, cutAt < 0 ? 14 : cutAt);
+        if (newFormat.endsWith(".")) return newFormat.substring(0, newFormat.length - 1);
         return newFormat;
       } catch (e) {
         return '';
