@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../model/component/button/fl_toggle_button_model.dart';
-import '../base_wrapper/base_comp_wrapper_state.dart';
-import '../base_wrapper/base_comp_wrapper_widget.dart';
 
 import '../../mixin/ui_service_mixin.dart';
-import '../../model/command/api/button_pressed_command.dart';
+import 'fl_button_wrapper.dart';
 import 'fl_toggle_button_widget.dart';
 
-class FlToggleButtonWrapper extends BaseCompWrapperWidget<FlToggleButtonModel> {
+class FlToggleButtonWrapper extends FlButtonWrapper<FlToggleButtonModel> {
   const FlToggleButtonWrapper({Key? key, required FlToggleButtonModel model}) : super(key: key, model: model);
 
   @override
   _FlToggleButtonWrapperState createState() => _FlToggleButtonWrapperState();
 }
 
-class _FlToggleButtonWrapperState extends BaseCompWrapperState<FlToggleButtonModel> with UiServiceMixin {
+class _FlToggleButtonWrapperState extends FlButtonWrapperState<FlToggleButtonModel> with UiServiceMixin {
   @override
   Widget build(BuildContext context) {
     final FlToggleButtonWidget buttonWidget = FlToggleButtonWidget(
@@ -28,9 +26,5 @@ class _FlToggleButtonWrapperState extends BaseCompWrapperState<FlToggleButtonMod
     });
 
     return getPositioned(child: buttonWidget);
-  }
-
-  void buttonPressed() {
-    uiService.sendCommand(ButtonPressedCommand(componentId: model.name, reason: "Button has been pressed"));
   }
 }

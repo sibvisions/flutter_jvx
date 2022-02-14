@@ -110,6 +110,7 @@ abstract class ApiObjectProperty {
   static const String columnNames = "columnNames";
   static const String isAllFetched = "isAllFetched";
   static const String selectedRow = "selectedRow";
+  static const String numberFormat = "numberFormat";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

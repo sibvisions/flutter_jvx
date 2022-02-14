@@ -4,6 +4,16 @@ import '../api/api_object_property.dart';
 
 class ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Open Editor on double click. This should be the default behaviour.
+  static const int DOUBLE_CLICK = 0;
+
+  /// Open Editor with single click.
+  static const int SINGLE_CLICK = 1;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -23,7 +33,7 @@ class ICellEditorModel {
   bool directCellEditor = false;
 
   /// The preferred editor mode
-  int preferredEditorMode = -1;
+  int preferredEditorMode = DOUBLE_CLICK;
 
   /// If this editor should open in a popup
   bool autoOpenPopup = false;

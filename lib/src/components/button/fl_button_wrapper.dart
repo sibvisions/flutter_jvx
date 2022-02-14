@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -8,14 +10,18 @@ import '../../model/command/api/button_pressed_command.dart';
 import '../../model/component/button/fl_button_model.dart';
 import 'fl_button_widget.dart';
 
-class FlButtonWrapper extends BaseCompWrapperWidget<FlButtonModel> {
-  const FlButtonWrapper({Key? key, required FlButtonModel model}) : super(key: key, model: model);
+class FlButtonWrapper<T extends FlButtonModel> extends BaseCompWrapperWidget<T> {
+  const FlButtonWrapper({Key? key, required T model}) : super(key: key, model: model);
 
   @override
-  _FlButtonWrapperState createState() => _FlButtonWrapperState();
+  FlButtonWrapperState createState() => FlButtonWrapperState();
 }
 
-class _FlButtonWrapperState extends BaseCompWrapperState<FlButtonModel> with UiServiceMixin {
+class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState<T> with UiServiceMixin {
+  /// If anything has a focus, the button pressed event must be added as a listener.
+  /// As to send it last.
+  FocusNode? currentObjectFocused;
+
   @override
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
@@ -31,6 +37,20 @@ class _FlButtonWrapperState extends BaseCompWrapperState<FlButtonModel> with UiS
   }
 
   void buttonPressed() {
+    currentObjectFocused = FocusManager.instance.primaryFocus;
+    if (currentObjectFocused == null) {
+      log("button pressed");
+      uiService.sendCommand(ButtonPressedCommand(componentId: model.name, reason: "Button has been pressed"));
+    } else {
+      currentObjectFocused!.addListener(delayedButtonPress);
+      currentObjectFocused!.unfocus();
+    }
+  }
+
+  void delayedButtonPress() {
+    log("button pressed");
     uiService.sendCommand(ButtonPressedCommand(componentId: model.name, reason: "Button has been pressed"));
+    currentObjectFocused!.removeListener(delayedButtonPress);
+    currentObjectFocused = null;
   }
 }

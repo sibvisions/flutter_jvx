@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/PasswordField/fl_password_widget.dart';
-import 'package:flutter_client/src/components/editor/TextArea/fl_text_area_widget.dart';
-import 'package:flutter_client/src/components/editor/TextField/fl_text_field_widget.dart';
+import 'package:flutter_client/src/components/editor/password_field/fl_password_widget.dart';
+import 'package:flutter_client/src/components/editor/text_area/fl_text_area_widget.dart';
+import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
 import '../../../components/dummy/fl_dummy_widget.dart';
