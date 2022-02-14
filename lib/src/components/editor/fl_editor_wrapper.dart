@@ -53,6 +53,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void initState() {
+    // Only exception where we actually have to do stuff BEFORE we init the sate...
+    // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
     cellEditor = ICellEditor.getCellEditor((widget.model as FlEditorModel).json);
 
     (widget.model as FlEditorModel).applyComponentInformation((cellEditor.widget as FlStatelessWidget).model);

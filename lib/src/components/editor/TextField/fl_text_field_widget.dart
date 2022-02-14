@@ -114,11 +114,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
         padding: iconPadding,
         child: GestureDetector(
           onTap: () {
-            textController.value = textController.value.copyWith(
-              text: "",
-              selection: const TextSelection.collapsed(offset: 0),
-              composing: TextRange.empty,
-            );
+            textController.clear();
 
             if (focusNode.hasFocus) {
               valueChanged(textController.text);

@@ -65,6 +65,8 @@ class FlTextFieldModel extends FlLabelModel {
 
   @override
   void applyCellEditorOverrides(Map<String, dynamic> pJson) {
+    super.applyCellEditorOverrides(pJson);
+
     var jsonCellEditorEditable = pJson[ApiObjectProperty.cellEditorEditable];
     if (jsonCellEditorEditable != null) {
       isEditable = jsonCellEditorEditable;
