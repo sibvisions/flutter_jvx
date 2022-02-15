@@ -31,7 +31,7 @@ abstract class ICellEditor<T extends ICellEditorModel> {
 
       alsoDefault:
       default:
-        return FlDummyCellEditor(pJson);
+        return FlDummyCellEditor({});
     }
   }
 }

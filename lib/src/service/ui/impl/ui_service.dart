@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
+
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/command/base_command.dart';
@@ -79,14 +81,23 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void registerAsDataComponent({required String pDataProvider, required Function pCallback, required String pComponentId}) {
+  void registerAsDataComponent({required String pDataProvider, required Function pCallback, required String pComponentId, required String pColumnName}) {
     Map<String, Function>? registeredComponents = _registeredDataComponents[pDataProvider];
-
     if(registeredComponents == null){
       _registeredDataComponents[pDataProvider] = {pComponentId: pCallback};
     } else {
       registeredComponents[pComponentId] = pCallback;
     }
+
+
+    GetSelectedDataCommand command = GetSelectedDataCommand(
+        reason: "reason",
+        componentId: pComponentId,
+        dataProvider: pDataProvider,
+        columnName: pColumnName
+    );
+    sendCommand(command);
+
   }
 
   @override
