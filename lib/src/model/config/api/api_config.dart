@@ -26,4 +26,8 @@ class ApiConfig {
   Uri getButtonPressedUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.pressButton);
   }
+
+  Uri getSetValueUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.setValue);
+  }
 }

@@ -4,11 +4,14 @@ class EndpointConfig {
   final String openScreen;
   final String deviceStatus;
   final String pressButton;
+  final String setValue;
 
-  EndpointConfig(
-      {required this.startup,
-      required this.login,
-      required this.openScreen,
-      required this.deviceStatus,
-      required this.pressButton});
+  EndpointConfig({
+    required this.startup,
+    required this.login,
+    required this.openScreen,
+    required this.deviceStatus,
+    required this.pressButton,
+    required this.setValue
+  });
 }

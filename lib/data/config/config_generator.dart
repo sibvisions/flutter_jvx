@@ -8,7 +8,9 @@ class ConfigGenerator {
         login: "/api/v2/login",
         openScreen: "/api/v2/openScreen",
         deviceStatus: "/api/deviceStatus",
-        pressButton: "/api/v2/pressButton");
+        pressButton: "/api/v2/pressButton",
+        setValue: "/api/comp/setValue"
+    );
   }
 
   static UrlConfig generateMobileServerUrl(String host, int port) {

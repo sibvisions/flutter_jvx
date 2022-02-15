@@ -1,5 +1,8 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_value_message.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
@@ -82,6 +85,11 @@ class IsolateApi implements IApiService {
     return await _sendRequest(ApiIsoltePressButtonMessage(clientId: clientId, componentId: componentId));
   }
 
+  @override
+  Future<List<BaseCommand>> setValue(String clientId, String componentId, value) async {
+    return await _sendRequest(ApiIsolateSetValueMessage(componentId: componentId, clientId:  clientId, value:  value));
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,4 +137,5 @@ class IsolateApi implements IApiService {
     }
     return true;
   }
+
 }

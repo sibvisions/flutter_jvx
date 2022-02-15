@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_client/src/model/api/requests/set_value_request.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/requests/device_status_request.dart';
@@ -65,6 +66,12 @@ class OnlineApiRepository implements IRepository {
   Future<Response> pressButton(String componentId, String clientId) {
     PressButtonRequest request = PressButtonRequest(componentId: componentId, clientId: clientId);
     return _sendPostRequest(apiConfig.getButtonPressedUri(), jsonEncode(request));
+  }
+
+  @override
+  Future<Response> setValue(String clientId, String componentId, value) {
+    SetValueRequest request = SetValueRequest(componentId: componentId, value: value, clientId: clientId);
+    return _sendPostRequest(apiConfig.getSetValueUri(), jsonEncode(request));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -46,4 +46,11 @@ class DefaultApi implements IApiService {
     var actions = controller.processResponse(response);
     return actions;
   }
+
+  @override
+  Future<List<BaseCommand>> setValue(String clientId, String componentId, value) {
+    var response = repository.setValue(clientId, componentId, value);
+    var actions = controller.processResponse(response);
+    return actions;
+  }
 }

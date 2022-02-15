@@ -6,4 +6,5 @@ abstract class IApiService {
   Future<List<BaseCommand>> openScreen(String componentId, String clientId);
   Future<List<BaseCommand>> deviceStatus(String clientId, double screenWidth, double screenHeight);
   Future<List<BaseCommand>> pressButton(String clientId, String componentId);
+  Future<List<BaseCommand>> setValue(String clientId, String componentId, dynamic value);
 }

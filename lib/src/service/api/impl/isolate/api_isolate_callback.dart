@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_value_message.dart';
 import 'package:http/http.dart';
 
 import '../../shared/i_controller.dart';
@@ -56,6 +57,8 @@ void apiCallback(SendPort callerSendPort) {
         response = repo.openScreen(apiMessage.componentId, apiMessage.clientId);
       } else if (apiMessage is ApiIsoltePressButtonMessage) {
         response = repo.pressButton(apiMessage.componentId, apiMessage.clientId);
+      } else if (apiMessage is ApiIsolateSetValueMessage){
+        response = repo.setValue(apiMessage.clientId, apiMessage.componentId, apiMessage.value);
       }
 
       if (response != null) {

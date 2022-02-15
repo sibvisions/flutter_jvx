@@ -11,4 +11,5 @@ abstract class IRepository {
   Future<Response> openScreen(String componentId, String clientId);
   Future<Response> deviceStatus(String clientId, double screenWidth, double screenHeight);
   Future<Response> pressButton(String componentId, String clientId);
+  Future<Response> setValue(String clientId, String componentId, dynamic value);
 }

@@ -12,7 +12,6 @@ class ApiIsolateRepositoryMessage extends ApiIsolateMessage {
 
   @override
   sendResponse({required response, required SendPort sendPort}) {
-    // TODO: implement sendResponse
     throw UnimplementedError();
   }
 }
