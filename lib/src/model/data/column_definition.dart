@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/model/component/editor/fl_text_cell_editor.dart';
+import 'package:flutter_client/src/model/component/i_cell_editor.dart';
+
 import '../api/api_object_property.dart';
 import '../api/response/dal_meta_data_response.dart';
 import 'cell_editor_model.dart';
@@ -35,7 +38,7 @@ class ColumnDefinition {
   bool movable = true;
 
   /// CellEditor info for this column
-  ICellEditorModel cellEditor = ICellEditorModel();
+  ICellEditor cellEditor = FlTextCellEditor({});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -97,7 +100,7 @@ class ColumnDefinition {
     }
     var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
     if (jsonCellEditor != null) {
-      cellEditor.applyFromJson(jsonCellEditor);
+      cellEditor = ICellEditor.getCellEditor(jsonCellEditor);
     }
   }
 }

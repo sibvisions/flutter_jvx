@@ -4,12 +4,10 @@ import 'package:flutter_client/src/components/editor/text_area/fl_text_area_widg
 import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
-import '../../../components/dummy/fl_dummy_widget.dart';
-import '../../api/api_object_property.dart';
-import '../dummy/fl_dummy_model.dart';
+import 'package:flutter_client/src/model/data/cell_editor_model.dart';
 import '../i_cell_editor.dart';
 
-class FlTextCellEditor extends ICellEditor {
+class FlTextCellEditor extends ICellEditor<ICellEditorModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,38 +32,41 @@ class FlTextCellEditor extends ICellEditor {
 
   final FocusNode focusNode = FocusNode();
 
-  late Widget _widget;
-
   @override
-  Widget get widget => _widget;
+  Widget get widget {
+    // TODO widget text cell editor
+    return const Text("");
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextCellEditor(Map<String, dynamic> pJson) {
-    Map<String, dynamic> cellEditorJson = pJson[ApiObjectProperty.cellEditor];
-    String contentType = cellEditorJson[ApiObjectProperty.contentType];
+  FlTextCellEditor(Map<String, dynamic> pCellEditorJson) {
+    model = ICellEditorModel();
+    model.applyFromJson(pCellEditorJson);
 
-    switch (contentType) {
-      case (TEXT_PLAIN_WRAPPEDMULTILINE):
-      case (TEXT_PLAIN_MULTILINE):
-        _widget = createTextAreaWidget(pJson, cellEditorJson);
-        break;
+    //String contentType = cellEditorJson[ApiObjectProperty.contentType];
 
-      case (TEXT_PLAIN_SINGLELINE):
-        _widget = createTextFieldWidget(pJson, cellEditorJson);
-        break;
+    // switch (contentType) {
+    //   case (TEXT_PLAIN_WRAPPEDMULTILINE):
+    //   case (TEXT_PLAIN_MULTILINE):
+    //     _widget = createTextAreaWidget(pJson, cellEditorJson);
+    //     break;
 
-      case (TEXT_PLAIN_PASSWORD):
-        _widget = createPasswordWidget(pJson, cellEditorJson);
-        break;
+    //   case (TEXT_PLAIN_SINGLELINE):
+    //     _widget = createTextFieldWidget(pJson, cellEditorJson);
+    //     break;
 
-      default:
-        FlDummyModel model = FlDummyModel();
-        model.applyFromJson(pJson);
-        _widget = FlDummyWidget(id: model.id, model: model);
-    }
+    //   case (TEXT_PLAIN_PASSWORD):
+    //     _widget = createPasswordWidget(pJson, cellEditorJson);
+    //     break;
+
+    //   default:
+    //     FlDummyModel model = FlDummyModel();
+    //     model.applyFromJson(pJson);
+    //     _widget = FlDummyWidget(id: model.id, model: model);
+    // }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -43,7 +43,7 @@ const Map<LOG_TYPE, LOG_LEVEL> LOG_SETTINGS = {
 };
 
 class LOGGER {
-  static log(List<LOG_TYPE> pTypes, LOG_LEVEL pLevel, dynamic pMessage, StackTrace? pStacktrace) {
+  static logs({required List<LOG_TYPE> pTypes, required LOG_LEVEL pLevel, dynamic pMessage, StackTrace? pStacktrace}) {
     bool canLog = MINIMUM_LOG.index <= pLevel.index;
 
     if (!canLog) {
@@ -63,5 +63,69 @@ class LOGGER {
         dev.log(pStacktrace.toString());
       }
     }
+  }
+
+  static logsF({required List<LOG_TYPE> pTypes, dynamic pMessage, StackTrace? pStacktrace}) {
+    logs(pLevel: LOG_LEVEL.FATAL, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logsE({required List<LOG_TYPE> pTypes, dynamic pMessage, StackTrace? pStacktrace}) {
+    logs(pLevel: LOG_LEVEL.ERROR, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logsW({required List<LOG_TYPE> pTypes, dynamic pMessage, StackTrace? pStacktrace}) {
+    logs(pLevel: LOG_LEVEL.WARNING, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logsI({required List<LOG_TYPE> pTypes, dynamic pMessage, StackTrace? pStacktrace}) {
+    logs(pLevel: LOG_LEVEL.INFO, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logsD({required List<LOG_TYPE> pTypes, dynamic pMessage, StackTrace? pStacktrace}) {
+    logs(pLevel: LOG_LEVEL.DEBUG, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logsT({required List<LOG_TYPE> pTypes, dynamic pMessage, StackTrace? pStacktrace}) {
+    logs(pLevel: LOG_LEVEL.TRACE, pTypes: pTypes, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static log({required LOG_TYPE pType, required LOG_LEVEL pLevel, dynamic pMessage, StackTrace? pStacktrace}) {
+    bool canLog = MINIMUM_LOG.index <= pLevel.index;
+
+    if (!canLog) {
+      LOG_LEVEL? logLevel = LOG_SETTINGS[pType];
+      canLog = logLevel != null && logLevel.index <= pLevel.index;
+    }
+
+    if (canLog) {
+      dev.log(pMessage.toString());
+      if (pStacktrace != null) {
+        dev.log(pStacktrace.toString());
+      }
+    }
+  }
+
+  static logF({required LOG_TYPE pType, dynamic pMessage, StackTrace? pStacktrace}) {
+    log(pLevel: LOG_LEVEL.FATAL, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logE({required LOG_TYPE pType, dynamic pMessage, StackTrace? pStacktrace}) {
+    log(pLevel: LOG_LEVEL.ERROR, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logW({required LOG_TYPE pType, dynamic pMessage, StackTrace? pStacktrace}) {
+    log(pLevel: LOG_LEVEL.WARNING, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logI({required LOG_TYPE pType, dynamic pMessage, StackTrace? pStacktrace}) {
+    log(pLevel: LOG_LEVEL.INFO, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logD({required LOG_TYPE pType, dynamic pMessage, StackTrace? pStacktrace}) {
+    log(pLevel: LOG_LEVEL.DEBUG, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
+  }
+
+  static logT({required LOG_TYPE pType, dynamic pMessage, StackTrace? pStacktrace}) {
+    log(pLevel: LOG_LEVEL.TRACE, pType: pType, pMessage: pMessage, pStacktrace: pStacktrace);
   }
 }

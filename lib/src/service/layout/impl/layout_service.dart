@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
 import 'dart:ui';
+
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../model/command/layout/preferred_size_command.dart';
 import '../../../model/command/layout/register_parent_command.dart';
@@ -34,7 +35,7 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportLayout({required LayoutData pLayoutData}) async {
-    log("${pLayoutData.id} REPORT: ${pLayoutData.layout}");
+    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${pLayoutData.id} REPORT: ${pLayoutData.layout}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data, if component isn't a child its treated as the top most panel
@@ -55,7 +56,10 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<List<BaseCommand>> reportPreferredSize({required LayoutData pLayoutData}) async {
-    log("Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
+    LOGGER.logD(
+        pType: LOG_TYPE.LAYOUT,
+        pMessage:
+            "Report size: ${pLayoutData.id}, calculated: ${pLayoutData.calculatedSize}, heightConstraints: ${pLayoutData.heightConstrains}, widthConstriants: ${pLayoutData.widthConstrains}");
     pLayoutData.layoutState = LayoutState.VALID;
 
     // Set object with new data.
@@ -116,7 +120,7 @@ class LayoutService implements ILayoutService {
     LayoutData? data = _layoutDataSet[pComponentId];
 
     if (data != null) {
-      log("$pComponentId was marked as DIRTY");
+      LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "$pComponentId was marked as DIRTY");
       data.layoutState = LayoutState.DIRTY;
 
       return true;
@@ -152,7 +156,7 @@ class LayoutService implements ILayoutService {
 
   /// Performs a layout operation.
   Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
-    log("${pParentLayout.id} PERFORM LAYOUT");
+    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${pParentLayout.id} PERFORM LAYOUT");
     _currentlyLayouting.add(pParentLayout.id);
 
     try {
@@ -174,7 +178,10 @@ class LayoutService implements ILayoutService {
       parent.layout!.calculateLayout(parent, children);
       _layoutDataSet[parent.id] = parent;
 
-      log("${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
+      LOGGER.logD(
+          pType: LOG_TYPE.LAYOUT,
+          pMessage:
+              "${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
 
       // Check if any children have been newly constrained.
       for (LayoutData child in children) {
@@ -215,7 +222,7 @@ class LayoutService implements ILayoutService {
   /// Returns true if conditions to perform the layout are met.
   bool _isLegalState({required LayoutData pParentLayout}) {
     if (!_isValid) {
-      log("I am not valid. ${pParentLayout.id}");
+      LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "I am not valid. ${pParentLayout.id}");
       return false;
     }
 

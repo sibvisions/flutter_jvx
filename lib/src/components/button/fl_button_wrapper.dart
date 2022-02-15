@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
@@ -39,7 +38,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void buttonPressed() {
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null) {
-      log("button pressed");
+      LOGGER.logI(pType: LOG_TYPE.GENERAL, pMessage: "Button pressed");
       uiService.sendCommand(ButtonPressedCommand(componentId: model.name, reason: "Button has been pressed"));
     } else {
       currentObjectFocused!.addListener(delayedButtonPress);
@@ -48,7 +47,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   }
 
   void delayedButtonPress() {
-    log("button pressed");
+    LOGGER.logI(pType: LOG_TYPE.GENERAL, pMessage: "Button pressed");
     uiService.sendCommand(ButtonPressedCommand(componentId: model.name, reason: "Button has been pressed"));
     currentObjectFocused!.removeListener(delayedButtonPress);
     currentObjectFocused = null;
