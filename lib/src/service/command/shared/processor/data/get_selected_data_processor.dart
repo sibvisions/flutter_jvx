@@ -8,7 +8,7 @@ class GetSelectedDataProcessor with DataServiceMixin implements ICommandProcesso
   @override
   Future<List<BaseCommand>> processCommand(GetSelectedDataCommand command) async {
     dynamic data =
-        dataService.getSelectedDataColumn(pColumnName: command.columnName, pDataProvider: command.dataProvider);
+        await dataService.getSelectedDataColumn(pColumnName: command.columnName, pDataProvider: command.dataProvider);
 
     UpdateSelectedDataCommand updateSelectedDataCommand = UpdateSelectedDataCommand(
         reason: "${command.componentId} requested data from ${command.dataProvider}",

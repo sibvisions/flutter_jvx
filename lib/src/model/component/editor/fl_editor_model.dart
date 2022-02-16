@@ -13,7 +13,7 @@ class FlEditorModel extends FlComponentModel {
 
   Map<String, dynamic> json;
 
-  ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+  //ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
 
   FlEditorModel({required this.json});
 
@@ -25,18 +25,11 @@ class FlEditorModel extends FlComponentModel {
 
     var jsonColumnName = pJson[ApiObjectProperty.columnName];
     if (jsonColumnName != null) {
-      dataRow = jsonColumnName;
+      columnName = jsonColumnName;
     }
     var jsonDataRow = pJson[ApiObjectProperty.dataRow];
     if (jsonDataRow != null) {
       dataRow = jsonDataRow;
-    }
-
-    var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
-    if (jsonCellEditor != null) {
-      cellEditor.dispose();
-      cellEditor =
-          ICellEditor.getCellEditor(pCellEditorJson: jsonCellEditor, onChange: onChange, onEndEditing: onEndEditing);
     }
   }
 
@@ -61,16 +54,5 @@ class FlEditorModel extends FlComponentModel {
         pDestination[sourceKey] = value;
       }
     }
-  }
-
-  void onChange(dynamic pValue) {}
-
-  void onEndEditing(dynamic pValue) {
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of $id set to $pValue");
-    // uiService.sendCommand() // TODO setValueS!!! command
-  }
-
-  void dispose() {
-    cellEditor.dispose();
   }
 }

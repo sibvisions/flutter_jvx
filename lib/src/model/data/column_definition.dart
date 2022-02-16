@@ -37,7 +37,7 @@ class ColumnDefinition {
   bool movable = true;
 
   /// CellEditor info for this column
-  late ICellEditor cellEditor;
+  //late ICellEditor cellEditor;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -97,11 +97,11 @@ class ColumnDefinition {
     if (jsonMovable != null) {
       movable = jsonMovable;
     }
-    var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
-    if (jsonCellEditor != null) {
-      cellEditor =
-          ICellEditor.getCellEditor(pCellEditorJson: jsonCellEditor, onChange: onChange, onEndEditing: onEndEditing);
-    }
+    // var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
+    // if (jsonCellEditor != null) {
+    //   cellEditor =
+    //       ICellEditor.getCellEditor(pCellEditorJson: jsonCellEditor, onChange: onChange, onEndEditing: onEndEditing);
+    // }
   }
 
   void onChange(dynamic value) {}
