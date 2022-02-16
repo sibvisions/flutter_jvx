@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/password_field/fl_password_widget.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
+import 'package:flutter_client/src/components/dummy/fl_dummy_widget.dart';
 import 'package:flutter_client/src/components/editor/text_area/fl_text_area_widget.dart';
-import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
+import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
 import 'package:flutter_client/src/model/data/cell_editor_model.dart';
 import '../i_cell_editor.dart';
 
-class FlTextCellEditor extends ICellEditor<ICellEditorModel> {
+class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,118 +32,81 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel> {
 
   final FocusNode focusNode = FocusNode();
 
-  @override
-  Widget get widget {
-    // TODO widget text cell editor
-    return const Text("");
-  }
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextCellEditor(Map<String, dynamic> pCellEditorJson) {
-    model = ICellEditorModel();
-    model.applyFromJson(pCellEditorJson);
-
-    //String contentType = cellEditorJson[ApiObjectProperty.contentType];
-
-    // switch (contentType) {
-    //   case (TEXT_PLAIN_WRAPPEDMULTILINE):
-    //   case (TEXT_PLAIN_MULTILINE):
-    //     _widget = createTextAreaWidget(pJson, cellEditorJson);
-    //     break;
-
-    //   case (TEXT_PLAIN_SINGLELINE):
-    //     _widget = createTextFieldWidget(pJson, cellEditorJson);
-    //     break;
-
-    //   case (TEXT_PLAIN_PASSWORD):
-    //     _widget = createPasswordWidget(pJson, cellEditorJson);
-    //     break;
-
-    //   default:
-    //     FlDummyModel model = FlDummyModel();
-    //     model.applyFromJson(pJson);
-    //     _widget = FlDummyWidget(id: model.id, model: model);
-    // }
-  }
+  FlTextCellEditor({
+    required Map<String, dynamic> pCellEditorJson,
+    required Function(String) onChange,
+    required Function(String) onEndEditing,
+  }) : super(
+          model: ICellEditorModel(),
+          pCellEditorJson: pCellEditorJson,
+          onValueChange: onChange,
+          onEndEditing: onEndEditing,
+        );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Method definitions
+  // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextAreaWidget createTextAreaWidget(Map<String, dynamic> pJson, Map<String, dynamic> pCellEditorJson) {
-    FlTextAreaModel model = FlTextAreaModel();
-    model.applyFromJson(pJson);
-
-    model.applyFromJson(pCellEditorJson);
-
-    model.applyCellEditorOverrides(pJson);
-
-    return FlTextAreaWidget(
-        model: model,
-        valueChanged: valueChanged,
-        endEditing: endEditing,
-        focusNode: focusNode,
-        textController: textController);
+  @override
+  void setValue(String? pValue) {
+    if (pValue == null) {
+      textController.clear();
+    } else {
+      textController.value = textController.value.copyWith(
+        text: pValue,
+        selection: TextSelection.collapsed(offset: pValue.characters.length),
+        composing: null,
+      );
+    }
   }
 
-  FlTextFieldWidget createTextFieldWidget(Map<String, dynamic> pJson, Map<String, dynamic> pCellEditorJson) {
-    FlTextFieldModel model = FlTextFieldModel();
-    model.applyFromJson(pJson);
+  @override
+  FlStatelessWidget getWidget() {
+    FlStatelessWidget widget;
 
-    model.applyFromJson(pCellEditorJson);
+    switch (model.contentType) {
+      case (TEXT_PLAIN_WRAPPEDMULTILINE):
+      case (TEXT_PLAIN_MULTILINE):
+        widget = FlTextAreaWidget(
+          model: FlTextAreaModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+        break;
+      case (TEXT_PLAIN_SINGLELINE):
+        widget = FlTextAreaWidget(
+          model: FlTextAreaModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+        break;
+      case (TEXT_PLAIN_PASSWORD):
+        widget = FlTextAreaWidget(
+          model: FlTextAreaModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+        break;
+      default:
+        widget = FlDummyWidget(model: FlDummyModel());
+    }
 
-    model.applyCellEditorOverrides(pJson);
-
-    return FlTextFieldWidget(
-        model: model,
-        valueChanged: valueChanged,
-        endEditing: endEditing,
-        focusNode: focusNode,
-        textController: textController);
+    return widget;
   }
 
-  FlTextFieldWidget createPasswordWidget(Map<String, dynamic> pJson, Map<String, dynamic> pCellEditorJson) {
-    FlTextFieldModel model = FlTextFieldModel();
-    model.applyFromJson(pJson);
-
-    model.applyFromJson(pCellEditorJson);
-
-    model.applyCellEditorOverrides(pJson);
-
-    return FlPasswordWidget(
-        model: model,
-        valueChanged: valueChanged,
-        endEditing: endEditing,
-        focusNode: focusNode,
-        textController: textController);
-  }
-
-  void valueChanged(String pValue) {
-    // if (pValue != model.text) {
-    //   log("Value changed to: " + pValue + " | Length: " + pValue.characters.length.toString());
-
-    //   setState(() {
-    //     model.text = pValue;
-    //   });
-    // }
-  }
-
-  void endEditing(String pValue) {
-    // log("Editing ended with: " + pValue + " | Length: " + pValue.characters.length.toString());
-
-    // setState(() {
-    //   model.text = pValue;
-    // });
-  }
-
-  void updateText() {
-    // textController.value = textController.value.copyWith(
-    //   text: model.text,
-    //   selection: TextSelection.collapsed(offset: model.text.characters.length),
-    //   composing: null,
-    // );
+  @override
+  void dispose() {
+    textController.dispose();
+    focusNode.dispose();
   }
 }

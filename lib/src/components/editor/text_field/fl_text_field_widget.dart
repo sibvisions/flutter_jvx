@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_data_widget.dart';
 import '../../label/fl_label_widget.dart';
 import '../../../model/component/editor/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../../../util/constants/i_color.dart';
 
-class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T> {
+class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidget<T, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  final Function(String) valueChanged;
-
-  final Function(String) endEditing;
 
   final FocusNode focusNode;
 
@@ -51,11 +48,11 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
   const FlTextFieldWidget(
       {Key? key,
       required T model,
-      required this.valueChanged,
-      required this.endEditing,
+      required Function(String) valueChanged,
+      required Function(String) endEditing,
       required this.focusNode,
       required this.textController})
-      : super(key: key, model: model);
+      : super(key: key, model: model, valueChanged: valueChanged, endEditing: endEditing);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -79,7 +76,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessWidget<T>
           hintText: model.placeholder,
           contentPadding: textPadding,
           border: InputBorder.none,
-          suffixIcon: !model.isReadOnly && model.text.isNotEmpty ? getClearIcon() : null,
+          suffixIcon: !model.isReadOnly && textController.text.isNotEmpty ? getClearIcon() : null,
         ),
         textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
         textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),

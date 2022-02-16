@@ -109,6 +109,8 @@ abstract class ApiObjectProperty {
   static const String to = "to";
   static const String from = "from";
   static const String columnNames = "columnNames";
+  static const String columnName = "columnName";
+  static const String dataRow = "dataRow";
   static const String isAllFetched = "isAllFetched";
   static const String selectedRow = "selectedRow";
   static const String numberFormat = "numberFormat";

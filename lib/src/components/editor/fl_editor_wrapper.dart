@@ -25,22 +25,22 @@ class FlEditorWrapper extends BaseCompWrapperWidget<FlEditorModel> {
   FlEditorWrapperState createState() => FlEditorWrapperState();
 }
 
-class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T>
-    with UiServiceMixin, DataServiceMixin {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class members
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  final TextEditingController textController = TextEditingController();
-
-  final FocusNode focusNode = FocusNode();
-
-  late ICellEditor cellEditor;
-
-  Widget dummyWidget = FlDummyWidget(id: "Dummy", model: FlDummyModel());
-
+class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void initState() {
+    // Only exception where we actually have to do stuff BEFORE we init the sate...
+    // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
+
+    (widget.model as FlEditorModel).applyComponentInformation((widget.model as T).cellEditor.getWidget().model);
+
+    subscribe(widget.model as T);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +48,29 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    return getPositioned(child: cellEditor.widget);
-  }
-
-  @override
-  void initState() {
-    // Only exception where we actually have to do stuff BEFORE we init the sate...
-    // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
-    cellEditor = ICellEditor.getCellEditor((widget.model as FlEditorModel).json);
-
-    (widget.model as FlEditorModel).applyComponentInformation((cellEditor.widget as FlStatelessWidget).model);
-
-    super.initState();
+    return getPositioned(child: model.cellEditor.getWidget());
   }
 
   @override
   receiveNewModel({required T newModel}) {
+    unsubcribe();
+
+    (widget.model as FlEditorModel).applyComponentInformation((newModel.cellEditor.getWidget()).model);
+
+    subscribe(newModel);
+
     super.receiveNewModel(newModel: newModel);
+  }
+
+  void subscribe(T model) {
+    uiService.registerAsDataComponent(
+        pDataProvider: model.dataRow,
+        pCallback: model.cellEditor.setValue,
+        pComponentId: model.id,
+        pColumnName: model.columnName);
+  }
+
+  void unsubcribe() {
+    uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.dataRow);
   }
 }

@@ -17,8 +17,7 @@ class _FlDummyWrapperState extends BaseCompWrapperState<FlDummyModel> {
   @override
   Widget build(BuildContext context) {
     FlDummyWidget dummyWidget = FlDummyWidget(
-      id: model.id,
-      model: widget.model as FlDummyModel,
+      model: model,
       height: getHeightForComponent(),
       width: getWidthForComponent(),
       key: Key("${model.id}_Widget"),

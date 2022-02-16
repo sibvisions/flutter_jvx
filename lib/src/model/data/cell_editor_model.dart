@@ -46,7 +46,7 @@ class ICellEditorModel {
   ICellEditorModel();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Method definitions
+  // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void applyFromJson(Map<String, dynamic> pJson) {

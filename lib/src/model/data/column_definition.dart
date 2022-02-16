@@ -1,9 +1,8 @@
-import 'package:flutter_client/src/model/component/editor/fl_text_cell_editor.dart';
+import 'package:flutter_client/src/model/component/dummy/fl_dummy_cell_editor.dart';
 import 'package:flutter_client/src/model/component/i_cell_editor.dart';
 
 import '../api/api_object_property.dart';
 import '../api/response/dal_meta_data_response.dart';
-import 'cell_editor_model.dart';
 
 /// The definition of a column of a dataBook. Received from the server in a [DalMetaDataResponse]
 class ColumnDefinition {
@@ -38,7 +37,7 @@ class ColumnDefinition {
   bool movable = true;
 
   /// CellEditor info for this column
-  ICellEditor cellEditor = FlTextCellEditor({});
+  late ICellEditor cellEditor;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -100,7 +99,12 @@ class ColumnDefinition {
     }
     var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
     if (jsonCellEditor != null) {
-      cellEditor = ICellEditor.getCellEditor(jsonCellEditor);
+      cellEditor =
+          ICellEditor.getCellEditor(pCellEditorJson: jsonCellEditor, onChange: onChange, onEndEditing: onEndEditing);
     }
   }
+
+  void onChange(dynamic value) {}
+
+  void onEndEditing(dynamic value) {}
 }

@@ -107,7 +107,7 @@ abstract class FlComponentModel {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Method definitions
+  // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Applies property values from the json sent by the mobile server.

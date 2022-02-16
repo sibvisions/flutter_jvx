@@ -9,5 +9,9 @@ abstract class FlStatelessWidget<T extends FlComponentModel> extends StatelessWi
   // The model containing every information to build the button.
   final T model;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   const FlStatelessWidget({Key? key, required this.model}) : super(key: key);
 }
