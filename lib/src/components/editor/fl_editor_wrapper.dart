@@ -33,6 +33,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  ICellEditor? oldCellEditor;
+
   ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
 
   @override
@@ -58,18 +60,23 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
+  void postFrameCallback(BuildContext context) {
+    super.postFrameCallback(context);
+
+    oldCellEditor?.dispose();
+  }
+
+  @override
   receiveNewModel({required T newModel}) {
     unsubscribe();
 
-    ICellEditor oldCellEditor = cellEditor;
+    oldCellEditor = cellEditor;
 
     recreateCellEditor(newModel);
 
     (widget.model as FlEditorModel).applyComponentInformation((cellEditor.getWidget()).model);
 
     super.receiveNewModel(newModel: newModel);
-
-    oldCellEditor.dispose();
   }
 
   void subscribe(T pModel) {

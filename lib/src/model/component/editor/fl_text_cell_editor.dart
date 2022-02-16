@@ -28,7 +28,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  late final FlStatelessWidget _widget;
+  late FlStatelessWidget _widget;
 
   final TextEditingController textController = TextEditingController();
 
@@ -106,7 +106,10 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
 
   @override
   void dispose() {
-    textController.dispose();
-    focusNode.dispose();
+    try {
+      _widget = FlDummyWidget(model: FlDummyModel());
+      textController.dispose();
+      focusNode.dispose();
+    } catch (_) {}
   }
 }
