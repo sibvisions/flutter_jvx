@@ -58,6 +58,12 @@ abstract class IUiService {
   /// Deletes unused component models from local cache.
   void deleteInactiveComponent({required Set<String> inactiveIds});
 
+  /// Removes all active subscriptions as the wrapper has been disposed
+  void disposeSubscriptions({required String pComponentId});
+
   /// Notify component of new [LayoutData].
   void setLayoutPosition({required LayoutData layoutData});
+
+  /// Deletes the callback of the registered component on the dataProvider
+  void unRegisterDataComponent({required String pComponentId, required String pDataProvider});
 }

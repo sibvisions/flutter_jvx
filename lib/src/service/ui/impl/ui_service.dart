@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
 
@@ -45,7 +46,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
-    newModels.addAll(newModels);
+    _currentScreen.addAll(newModels);
   }
 
   @override
@@ -114,11 +115,8 @@ class UiService with CommandServiceMixin implements IUiService {
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
-      int indexOfOld = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
-      if (indexOfOld != -1) {
-        _currentScreen.removeAt(indexOfOld);
-        _currentScreen.add(updatedModel);
-      }
+      FlComponentModel model = _currentScreen.firstWhere((element) => element.id == updatedModel.id);
+      model = updatedModel;
 
       // Notify active component
       ComponentCallback? callback = _registeredComponents[updatedModel.id];
@@ -144,7 +142,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   List<FlComponentModel> getChildrenModels(String id) {
-    var children = _currentScreen.where((element) => element.parent == id).toList();
+    var children = _currentScreen.where((element) => (element.parent == id && element.isVisible)).toList();
     return children;
   }
 
@@ -159,7 +157,7 @@ class UiService with CommandServiceMixin implements IUiService {
     if (callback != null) {
       callback.call(data: layoutData);
     } else {
-      throw Exception("Component to set position not found");
+      // throw Exception("Component to set position not found");
     }
   }
 
@@ -173,6 +171,21 @@ class UiService with CommandServiceMixin implements IUiService {
         callback.call(data);
       }
     }
+  }
+
+  @override
+  void disposeSubscriptions({required String pComponentId}) {
+    _registeredComponents.removeWhere((componentId, value) => componentId == pComponentId);
+    _registeredDataComponents.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
+  }
+
+  @override
+  void unRegisterDataComponent({required String pComponentId, required String pDataProvider}) {
+    _registeredDataComponents.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
   }
 
 
