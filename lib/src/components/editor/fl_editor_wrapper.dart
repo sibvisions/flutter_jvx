@@ -53,7 +53,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   receiveNewModel({required T newModel}) {
-    unsubcribe();
+    unsubscribe();
 
     (widget.model as FlEditorModel).applyComponentInformation((newModel.cellEditor.getWidget()).model);
 
@@ -70,7 +70,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         pColumnName: model.columnName);
   }
 
-  void unsubcribe() {
+  void unsubscribe() {
     uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.dataRow);
   }
 }
