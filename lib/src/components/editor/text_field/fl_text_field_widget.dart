@@ -89,7 +89,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         minLines: minLines,
         maxLines: maxLines,
         keyboardType: keyboardType,
-        focusNode: focusNode,
+        focusNode: !model.isReadOnly ? focusNode : null,
         maxLength: maxLength,
         maxLengthEnforcement: maxLengthEnforcement,
         inputFormatters: inputFormatters,

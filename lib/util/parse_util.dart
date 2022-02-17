@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
 import '../src/model/data/column_definition.dart';
 import '../src/model/layout/layout_position.dart';
 
@@ -27,6 +28,20 @@ abstract class ParseUtil {
       double height = double.parse(split[1]);
 
       return Size(width, height);
+    }
+  }
+
+  static Color? parseServerColor(String? pValue) {
+    if (pValue == null) {
+      return null;
+    }
+
+    var values = (pValue).split(";");
+    int serverStringIndex = values.length - 1;
+    if (values[0].contains("#")) {
+      return parseHexColor(values[0]);
+    } else {
+      return IColorConstants.SERVER_COLORS[values[serverStringIndex]];
     }
   }
 

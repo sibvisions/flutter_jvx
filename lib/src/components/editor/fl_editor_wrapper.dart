@@ -1,19 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/command/api/set_value_command.dart';
 import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:flutter_client/src/model/component/dummy/fl_dummy_cell_editor.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
-import '../dummy/fl_dummy_widget.dart';
-import '../../mixin/data_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
-import '../../model/component/dummy/fl_dummy_model.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../../model/component/i_cell_editor.dart';
 
@@ -81,7 +75,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
-    Widget editorWidget = cellEditor.getWidget();
+    FlStatelessWidget editorWidget = cellEditor.getWidget();
+    editorWidget.model.applyFromJson(model.json);
+    editorWidget.model.applyCellEditorOverrides(model.json);
 
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: StackTrace.current.toString());
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- BUILD -----");

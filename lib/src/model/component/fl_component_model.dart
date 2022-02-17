@@ -176,11 +176,11 @@ abstract class FlComponentModel {
     }
     var jsonBackground = pJson[ApiObjectProperty.background];
     if (jsonBackground != null) {
-      background = ParseUtil.parseHexColor(jsonBackground)!;
+      background = ParseUtil.parseServerColor(jsonBackground)!;
     }
     var jsonForeground = pJson[ApiObjectProperty.foreground];
     if (jsonForeground != null) {
-      foreground = ParseUtil.parseHexColor(jsonForeground)!;
+      foreground = ParseUtil.parseServerColor(jsonForeground)!;
     }
     var jsonVerticalAlignment = pJson[ApiObjectProperty.verticalAlignment];
     if (jsonVerticalAlignment != null) {
@@ -220,12 +220,12 @@ abstract class FlComponentModel {
 
     var jsonCellEditorBackground = pJson[ApiObjectProperty.cellEditorBackground];
     if (jsonCellEditorBackground != null) {
-      background = ParseUtil.parseHexColor(jsonCellEditorBackground)!;
+      background = ParseUtil.parseServerColor(jsonCellEditorBackground)!;
     }
 
     var jsonCellEditorForeground = pJson[ApiObjectProperty.cellEditorForeground];
     if (jsonCellEditorForeground != null) {
-      foreground = ParseUtil.parseHexColor(jsonCellEditorForeground)!;
+      foreground = ParseUtil.parseServerColor(jsonCellEditorForeground)!;
     }
 
     var jsonCellEditorFont = pJson[ApiObjectProperty.cellEditorFont];
