@@ -37,7 +37,7 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void buttonPressed() {
     currentObjectFocused = FocusManager.instance.primaryFocus;
-    if (currentObjectFocused == null) {
+    if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       LOGGER.logI(pType: LOG_TYPE.GENERAL, pMessage: "Button pressed");
       uiService.sendCommand(ButtonPressedCommand(componentId: model.name, reason: "Button has been pressed"));
     } else {
