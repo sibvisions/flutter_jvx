@@ -7,7 +7,7 @@ import '../../shared/component_store.dart';
 /// Contains all component & menu Data
 // Author: Michael Schober
 class DefaultStorageService implements IStorageService {
-  final ComponentStore componentStore = ComponentStore();
+  final StorageService componentStore = StorageService();
 
   @override
   Future<MenuModel> getMenu() {

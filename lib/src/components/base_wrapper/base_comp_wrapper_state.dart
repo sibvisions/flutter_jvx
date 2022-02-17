@@ -65,12 +65,20 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
           if (newModel != null) {
             receiveNewModel(newModel: newModel as T);
           }
+
+          if(newModel == null && data == null){
+            affected();
+          }
         });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void affected() {
+
+  }
 
   /// Returns Positioned Widget according to [layoutData]
   Positioned getPositioned({required Widget child}) {

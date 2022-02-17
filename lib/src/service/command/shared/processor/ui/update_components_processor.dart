@@ -46,6 +46,7 @@ class UpdateComponentsProcessor
       List<Future> futureList = [];
       futureList.addAll(command.affectedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e)));
       futureList.addAll(command.changedComponents.map((e) => layoutService.markLayoutAsDirty(pComponentId: e.id)));
+      futureList.addAll(command.deletedComponents.map((e) => layoutService.removeLayout(pComponentId: e)));
 
       // Update Components in UI after all are marked as dirty
       Future.wait(futureList).then((value) {

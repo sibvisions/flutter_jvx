@@ -9,7 +9,7 @@ import '../../../model/component/panel/fl_panel_model.dart';
 import '../../../model/menu/menu_model.dart';
 import '../i_storage_service.dart';
 
-class ComponentStore implements IStorageService {
+class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,6 +93,7 @@ class ComponentStore implements IStorageService {
         if (model != null) {
           // Update Component and add to changedModels
           String? oldParentId = model.parent;
+          bool wasVisible = model.isVisible;
 
           model.applyFromJson(changedData);
           changedModels.add(model.id);
@@ -109,6 +110,10 @@ class ComponentStore implements IStorageService {
           if (model.parent != oldParentId) {
             var oldParent = _componentMap[model.parent]!;
             affectedModels.add(oldParent.id);
+          }
+
+          if(model.isVisible != wasVisible){
+            affectedModels.add(model.parent!);
           }
         }
       }

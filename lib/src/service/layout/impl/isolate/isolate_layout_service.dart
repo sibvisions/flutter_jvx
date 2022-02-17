@@ -2,6 +2,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/remove_layout_message.dart';
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
 import '../../../../model/command/base_command.dart';
@@ -49,8 +50,9 @@ class IsolateLayoutService implements ILayoutService {
   }
 
   @override
-  bool removeLayout({required String pComponentId}) {
-    throw UnimplementedError();
+  Future<bool> removeLayout({required String pComponentId}) {
+    RemoveLayoutMessage message = RemoveLayoutMessage(componentId: pComponentId);
+    return _sendMessage<bool>(message);
   }
 
   @override

@@ -1,6 +1,9 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/model/api/requests/set_value_request.dart';
+import 'package:flutter_client/src/model/api/requests/set_values_request.dart';
 import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_value_message.dart';
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_values_messages.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../model/command/base_command.dart';
@@ -88,6 +91,16 @@ class IsolateApi implements IApiService {
   @override
   Future<List<BaseCommand>> setValue(String clientId, String componentId, value) async {
     return await _sendRequest(ApiIsolateSetValueMessage(componentId: componentId, clientId:  clientId, value:  value));
+  }
+
+  @override
+  Future<List<BaseCommand>> setValues({required String clientId, required String componentId,
+    required List<String> columnNames, required List values, required String dataProvider}) async
+  {
+    SetValuesRequest request = SetValuesRequest(componentId: componentId, clientId: clientId, dataProvider: dataProvider, columnNames: columnNames, values: values);
+    ApiIsolateSetValuesMessage message = ApiIsolateSetValuesMessage(setValuesRequest: request);
+    return await _sendRequest(message);
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

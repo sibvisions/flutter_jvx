@@ -5,6 +5,7 @@ class EndpointConfig {
   final String deviceStatus;
   final String pressButton;
   final String setValue;
+  final String setValues;
 
   EndpointConfig({
     required this.startup,
@@ -12,6 +13,7 @@ class EndpointConfig {
     required this.openScreen,
     required this.deviceStatus,
     required this.pressButton,
-    required this.setValue
+    required this.setValue,
+    required this.setValues
   });
 }

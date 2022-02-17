@@ -129,8 +129,10 @@ class LayoutService implements ILayoutService {
   }
 
   @override
-  bool removeLayout({required String pComponentId}) {
-    return false;
+  Future<bool> removeLayout({required String pComponentId}) async {
+    //ToDo only return true if remove was successfully
+    _layoutDataSet.remove(pComponentId);
+    return true;
   }
 
   @override

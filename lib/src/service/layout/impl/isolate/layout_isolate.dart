@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/layout/impl/isolate/message/endpoint/remove_layout_message.dart';
+
 import 'message/endpoint/layout_in_process_message.dart';
 import 'message/endpoint/layout_valid_message.dart';
 
@@ -44,6 +46,8 @@ void layoutIsolate(SendPort callerSendPort) {
       } else {
         response = await layoutStorage.isValid();
       }
+    } else if (isolateMessage is RemoveLayoutMessage){
+      response = await layoutStorage.removeLayout(pComponentId: isolateMessage.componentId);
     }
 
     if (response != null) {
