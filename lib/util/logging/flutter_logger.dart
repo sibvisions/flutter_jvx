@@ -44,13 +44,13 @@ const Map<LOG_TYPE, LOG_LEVEL> LOG_SETTINGS = {
 
 class LOGGER {
   static logs({required List<LOG_TYPE> pTypes, required LOG_LEVEL pLevel, dynamic pMessage, StackTrace? pStacktrace}) {
-    bool canLog = MINIMUM_LOG.index <= pLevel.index;
+    bool canLog = MINIMUM_LOG.index >= pLevel.index;
 
     if (!canLog) {
       for (LOG_TYPE logType in pTypes) {
         LOG_LEVEL? logLevel = LOG_SETTINGS[logType];
 
-        if (logLevel != null && logLevel.index <= pLevel.index) {
+        if (logLevel != null && logLevel.index >= pLevel.index) {
           canLog = true;
           break;
         }
@@ -90,11 +90,11 @@ class LOGGER {
   }
 
   static log({required LOG_TYPE pType, required LOG_LEVEL pLevel, dynamic pMessage, StackTrace? pStacktrace}) {
-    bool canLog = MINIMUM_LOG.index <= pLevel.index;
+    bool canLog = MINIMUM_LOG.index >= pLevel.index;
 
     if (!canLog) {
       LOG_LEVEL? logLevel = LOG_SETTINGS[pType];
-      canLog = logLevel != null && logLevel.index <= pLevel.index;
+      canLog = logLevel != null && logLevel.index >= pLevel.index;
     }
 
     if (canLog) {
