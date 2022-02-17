@@ -26,4 +26,7 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
 
   @override
   void setValue(pValue) {}
+
+  @override
+  getValue() {}
 }

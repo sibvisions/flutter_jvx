@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/dummy/fl_dummy_widget.dart';
@@ -115,10 +117,12 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
 
   @override
   void dispose() {
-    try {
-      _widget = FlDummyWidget(model: FlDummyModel());
-      textController.dispose();
-      focusNode.dispose();
-    } catch (_) {}
+    focusNode.dispose();
+    textController.dispose();
+  }
+
+  @override
+  String getValue() {
+    return textController.text;
   }
 }

@@ -38,6 +38,8 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   void dispose();
 
+  C? getValue();
+
   void setValue(C? pValue);
 
   /// Returns the widget representing the cell editor.

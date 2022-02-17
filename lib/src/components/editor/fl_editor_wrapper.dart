@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
+import 'package:flutter_client/src/model/command/api/set_value_command.dart';
+import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:flutter_client/src/model/component/dummy/fl_dummy_cell_editor.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
@@ -51,12 +55,46 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   @override
+  receiveNewModel({required T newModel}) {
+    unsubscribe();
+
+    oldCellEditor = cellEditor;
+
+    recreateCellEditor(newModel);
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- RECEIVE_NEW_MODEL -----");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor!.hashCode}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
+    LOGGER.logD(
+        pType: LOG_TYPE.UI,
+        pMessage: "Old cell editor widget hashcode: " + oldCellEditor!.getWidget().hashCode.toString());
+    LOGGER.logD(
+        pType: LOG_TYPE.UI, pMessage: "New cell editor widget hashcode: " + cellEditor.getWidget().hashCode.toString());
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- RECEIVE_NEW_MODEL -----");
+    (widget.model as FlEditorModel).applyComponentInformation((cellEditor.getWidget()).model);
+
+    super.receiveNewModel(newModel: newModel);
+  }
+
+  @override
   Widget build(BuildContext context) {
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return getPositioned(child: cellEditor.getWidget());
+    Widget editorWidget = cellEditor.getWidget();
+
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: StackTrace.current.toString());
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- BUILD -----");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
+    LOGGER.logD(
+        pType: LOG_TYPE.UI,
+        pMessage: "Old cell editor widget hashcode: " + (oldCellEditor?.getWidget().hashCode.toString() ?? ""));
+    LOGGER.logD(
+        pType: LOG_TYPE.UI, pMessage: "New cell editor widget hashcode: " + cellEditor.getWidget().hashCode.toString());
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- BUILD -----");
+
+    return getPositioned(child: editorWidget);
   }
 
   @override
@@ -64,19 +102,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     super.postFrameCallback(context);
 
     oldCellEditor?.dispose();
-  }
-
-  @override
-  receiveNewModel({required T newModel}) {
-    unsubscribe();
-
-    oldCellEditor = cellEditor;
-
-    recreateCellEditor(newModel);
-
-    (widget.model as FlEditorModel).applyComponentInformation((cellEditor.getWidget()).model);
-
-    super.receiveNewModel(newModel: newModel);
+    oldCellEditor = null;
   }
 
   void subscribe(T pModel) {
@@ -94,8 +120,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void onChange(dynamic pValue) {}
 
   void onEndEditing(dynamic pValue) {
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "editing ended");
     LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $pValue");
-    // uiService.sendCommand() // TODO setValueS!!! command
+    uiService.sendCommand(SetValuesCommand(
+        componentId: model.id,
+        dataProvider: model.dataRow,
+        columnNames: [model.columnName],
+        values: [cellEditor.getValue()],
+        reason: "Value of ${model.id} set to $pValue"));
   }
 
   @override

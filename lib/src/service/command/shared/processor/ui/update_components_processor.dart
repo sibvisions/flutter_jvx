@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
@@ -17,7 +17,7 @@ class UpdateComponentsProcessor
   Future<List<BaseCommand>> processCommand(UpdateComponentsCommand command) async {
     IUiService uiService = getUiService();
 
-    log("------------------- Components are updating");
+    LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "------------------- Components are updating");
 
     if (!isOpenScreen && !_secondRun) {
       layoutService.setValid(isValid: false);
@@ -58,7 +58,7 @@ class UpdateComponentsProcessor
 
         uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
 
-        log("------------------- Components are finished updating");
+        LOGGER.logD(pType: LOG_TYPE.COMMAND, pMessage: "------------------- Components are finished updating");
       });
     });
 

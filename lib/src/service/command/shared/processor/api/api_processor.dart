@@ -1,5 +1,7 @@
 import 'package:flutter_client/src/model/command/api/set_value_command.dart';
+import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/set_value_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/set_values_command_processor.dart';
 
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/button_pressed_command.dart';
@@ -43,6 +45,9 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [SetValueCommand]
   final ICommandProcessor _setValueProcessor = SetValueProcessor();
 
+  /// Processes [SetValuesCommand]
+  final ICommandProcessor _setValuesProcessor = SetValuesProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,8 +65,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _deviceStatusProcessor.processCommand(command);
     } else if (command is ButtonPressedCommand) {
       return _pressButtonProcessor.processCommand(command);
-    } else if (command is SetValueCommand){
+    } else if (command is SetValueCommand) {
       return _setValueProcessor.processCommand(command);
+    } else if (command is SetValuesCommand) {
+      return _setValuesProcessor.processCommand(command);
     } else {
       return [];
     }
