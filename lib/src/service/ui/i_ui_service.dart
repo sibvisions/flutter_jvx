@@ -38,7 +38,11 @@ abstract class IUiService {
   void registerAsLiveComponent({required String id, required ComponentCallback callback});
 
   /// Register a an active component in need of data from a dataBook.
-  void registerAsDataComponent({required String pDataProvider, required Function pCallback, required String pComponentId, required String pColumnName});
+  void registerAsDataComponent(
+      {required String pDataProvider,
+      required Function pCallback,
+      required String pComponentId,
+      required String pColumnName});
 
   /// Notify affected parents that their children changed, should only be used when parent model hasn't been changed as well.
   void notifyAffectedComponents({required Set<String> affectedIds});
@@ -50,7 +54,11 @@ abstract class IUiService {
   void notifyDataChange({required String pDataProvider});
 
   /// Calls the callback function of the component
-  void setSelectedData({required String pDataProvider, required String pComponentId, required dynamic data});
+  void setSelectedData(
+      {required String pDataProvider,
+      required String pComponentId,
+      required dynamic data,
+      required String pColumnName});
 
   /// Save new components to active components, used for saving components which have not been previously been rendered.
   void saveNewComponents({required List<FlComponentModel> newModels});

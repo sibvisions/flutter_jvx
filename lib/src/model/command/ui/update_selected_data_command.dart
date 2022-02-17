@@ -14,12 +14,18 @@ class UpdateSelectedDataCommand extends UiCommand {
   /// Link to the dataBook
   final String dataProvider;
 
+  final String columnName;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   UpdateSelectedDataCommand(
-      {required this.dataProvider, required String reason, required this.componentId, required this.data})
+      {required this.dataProvider,
+      required String reason,
+      required this.componentId,
+      required this.data,
+      required this.columnName})
       : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

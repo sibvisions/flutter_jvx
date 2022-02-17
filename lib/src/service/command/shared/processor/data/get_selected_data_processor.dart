@@ -14,7 +14,8 @@ class GetSelectedDataProcessor with DataServiceMixin implements ICommandProcesso
         reason: "${command.componentId} requested data from ${command.dataProvider}",
         componentId: command.componentId,
         data: data,
-        dataProvider: command.dataProvider);
+        dataProvider: command.dataProvider,
+        columnName: command.columnName);
 
     return [updateSelectedDataCommand];
   }

@@ -18,7 +18,6 @@ import '../i_ui_service.dart';
 /// Manages all interactions with the UI
 // Author: Michael Schober
 class UiService with CommandServiceMixin implements IUiService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +32,11 @@ class UiService with CommandServiceMixin implements IUiService {
   final HashMap<String, ComponentCallback> _registeredComponents = HashMap();
 
   /// Live data components
-  final HashMap<String, Map<String, Function>> _registeredDataComponents = HashMap();
+  /// Dataprovider
+  /// - Columnname
+  /// -- ComponentId
+  /// --- Callbacks
+  final HashMap<String, Map<String, Map<String, Function>>> _registeredDataComponents = HashMap();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -75,30 +78,30 @@ class UiService with CommandServiceMixin implements IUiService {
     _routeStream.sink.add(routeToWorkScreen);
   }
 
-
   @override
   void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
     _registeredComponents[id] = callback;
   }
 
   @override
-  void registerAsDataComponent({required String pDataProvider, required Function pCallback, required String pComponentId, required String pColumnName}) {
-    Map<String, Function>? registeredComponents = _registeredDataComponents[pDataProvider];
-    if(registeredComponents == null){
-      _registeredDataComponents[pDataProvider] = {pComponentId: pCallback};
+  void registerAsDataComponent(
+      {required String pDataProvider,
+      required Function pCallback,
+      required String pComponentId,
+      required String pColumnName}) {
+    if (_registeredDataComponents[pDataProvider] == null) {
+      _registeredDataComponents[pDataProvider] = {
+        pColumnName: {pComponentId: pCallback}
+      };
+    } else if (_registeredDataComponents[pDataProvider]![pColumnName] == null) {
+      _registeredDataComponents[pDataProvider]![pColumnName] = {pComponentId: pCallback};
     } else {
-      registeredComponents[pComponentId] = pCallback;
+      _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId] = pCallback;
     }
 
-
     GetSelectedDataCommand command = GetSelectedDataCommand(
-        reason: "reason",
-        componentId: pComponentId,
-        dataProvider: pDataProvider,
-        columnName: pColumnName
-    );
+        reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
     sendCommand(command);
-
   }
 
   @override
@@ -130,13 +133,16 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void notifyDataChange({required String pDataProvider}) {
+    var dataProviderCallbacks = _registeredDataComponents[pDataProvider];
 
-    Map<String, Function>? dataProviderListener = _registeredDataComponents[pDataProvider];
-
-    if(dataProviderListener != null){
-      dataProviderListener.forEach((key, value) {
-        value.call(key);
-      });
+    if (dataProviderCallbacks != null) {
+      for (String columnName in dataProviderCallbacks.keys) {
+        for (String componentId in dataProviderCallbacks[columnName]!.keys) {
+          GetSelectedDataCommand command = GetSelectedDataCommand(
+              reason: "reason", componentId: componentId, dataProvider: pDataProvider, columnName: columnName);
+          sendCommand(command);
+        }
+      }
     }
   }
 
@@ -162,15 +168,9 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void setSelectedData({required String pDataProvider, required String pComponentId, required data}) {
-    Map<String, Function>? dataListener = _registeredDataComponents[pDataProvider];
-
-    if(dataListener != null){
-      Function? callback = dataListener[pComponentId];
-      if(callback != null){
-        callback.call(data);
-      }
-    }
+  void setSelectedData(
+      {required String pDataProvider, required String pComponentId, required data, required String pColumnName}) {
+    _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId]!.call(data);
   }
 
   @override
@@ -187,7 +187,4 @@ class UiService with CommandServiceMixin implements IUiService {
       value.removeWhere((key, value) => key == pComponentId);
     });
   }
-
-
-
 }
