@@ -78,6 +78,7 @@ abstract class ApiObjectProperty {
   static const String screenWidth = "screenWidth";
   static const String screenHeight = "screenHeight";
   static const String value = "value";
+  static const String values = "values";
 
   //Response Properties
   static const String authenticated = "authenticated";

@@ -9,7 +9,8 @@ class ConfigGenerator {
         openScreen: "/api/v2/openScreen",
         deviceStatus: "/api/deviceStatus",
         pressButton: "/api/v2/pressButton",
-        setValue: "/api/comp/setValue"
+        setValue: "/api/comp/setValue",
+        setValues: "/api/dal/setValues"
     );
   }
 

@@ -41,6 +41,14 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     registerParent();
   }
 
+  @override
+  affected() {
+    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+
+    buildChildren();
+    registerParent();
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,17 +65,17 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   /// children were either added or removed.
   void buildChildren() {
     List<FlComponentModel> models = uiService.getChildrenModels(model.id);
-    Map<String, Widget> newChildren = {};
+    Map<String, Widget> newChildrenList = {};
 
     bool changeDetected = false;
 
     // Only New Children will be used
     for (FlComponentModel model in models) {
       if (!children.containsKey(model.id)) {
-        newChildren[model.id] = ComponentsFactory.buildWidget(model);
+        newChildrenList[model.id] = ComponentsFactory.buildWidget(model);
         changeDetected = true;
       } else {
-        newChildren[model.id] = children[model.id]!;
+        newChildrenList[model.id] = children[model.id]!;
       }
     }
 
@@ -81,7 +89,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     // Only re-render if children did change
     if (changeDetected) {
       setState(() {
-        children = newChildren;
+        children = newChildrenList;
       });
     }
   }

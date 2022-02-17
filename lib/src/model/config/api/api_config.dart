@@ -30,4 +30,8 @@ class ApiConfig {
   Uri getSetValueUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.setValue);
   }
+
+  Uri getSetValuesUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.setValues);
+  }
 }

@@ -26,7 +26,7 @@ abstract class ILayoutService {
   /// Removes a parent.
   ///
   /// Returns `true` if removed and `false` if nothing was removed.
-  bool removeLayout({required String pComponentId});
+  Future<bool> removeLayout({required String pComponentId});
 
   /// If any parent is currently layouting.
   Future<bool> layoutInProcess();
