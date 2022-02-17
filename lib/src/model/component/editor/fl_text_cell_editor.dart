@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
 import 'package:flutter_client/src/components/dummy/fl_dummy_widget.dart';
+import 'package:flutter_client/src/components/editor/password_field/fl_password_widget.dart';
 import 'package:flutter_client/src/components/editor/text_area/fl_text_area_widget.dart';
+import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
 import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
+import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
 import 'package:flutter_client/src/model/data/cell_editor_model.dart';
 import '../i_cell_editor.dart';
 
@@ -60,8 +63,8 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
         );
         break;
       case (TEXT_PLAIN_SINGLELINE):
-        _widget = FlTextAreaWidget(
-          model: FlTextAreaModel(),
+        _widget = FlTextFieldWidget(
+          model: FlTextFieldModel(),
           valueChanged: onValueChange,
           endEditing: onEndEditing,
           focusNode: focusNode,
@@ -69,8 +72,8 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
         );
         break;
       case (TEXT_PLAIN_PASSWORD):
-        _widget = FlTextAreaWidget(
-          model: FlTextAreaModel(),
+        _widget = FlPasswordWidget(
+          model: FlTextFieldModel(),
           valueChanged: onValueChange,
           endEditing: onEndEditing,
           focusNode: focusNode,
