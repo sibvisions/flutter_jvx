@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../util/i_clonable.dart';
 import '../../layout/i_layout.dart';
@@ -46,7 +47,7 @@ class LayoutData implements ICloneable {
   Size? _calculatedSize;
 
   set calculatedSize(Size? newCalcSize) {
-    log("$id CHANGED CALC TO: $newCalcSize");
+    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "$id CHANGED CALC TO: $newCalcSize");
 
     _calculatedSize = newCalcSize;
   }

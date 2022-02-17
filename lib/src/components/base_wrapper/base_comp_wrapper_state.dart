@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 import '../../model/layout/layout_position.dart';
 import 'base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
@@ -84,7 +85,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
   /// Sets State with new Model
   receiveNewModel({required T newModel}) {
-    log("${newModel.id} received new Model");
+    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${newModel.id} received new Model");
 
     setState(() {
       // Set potentially new layout data contained in the new model
@@ -117,7 +118,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData = newLayoutData;
       calcPosition = null;
     }
-    log("${layoutData.id} NEW DATA; ${newLayoutData.calculatedSize}");
+    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${layoutData.id} NEW DATA; ${newLayoutData.calculatedSize}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent &&

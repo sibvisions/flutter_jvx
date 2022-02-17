@@ -51,6 +51,12 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
           onValueChange: onChange,
           onEndEditing: onEndEditing,
         ) {
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        onEndEditing(textController.text);
+      }
+    });
+
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
