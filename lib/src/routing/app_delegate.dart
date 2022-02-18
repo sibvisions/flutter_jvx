@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mask/setting/settings_page.dart';
+import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
 import '../model/command/ui/route_command.dart';
 
 import '../mask/login/app_login.dart';
@@ -39,6 +41,9 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
     } else if (event is RouteToWorkScreen) {
       activePage = MaterialPage(child: WorkScreen(screen: event.screen, key: Key(event.screen.id + "_Work"),));
       activeRoute = AppRoutingType.workScreen;
+    } else if (event is RouteToSettingsPage) {
+      activePage = MaterialPage(child: SettingsPage());
+      activeRoute = AppRoutingType.settings;
     }
     notifyListeners();
   }
@@ -61,13 +66,19 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
     //if OS Back pressed go back to Login
     if (activeRoute == AppRoutingType.menu) {
       activePage = MaterialPage(child: AppLogin());
-      activeRoute = AppRoutingType.menu;
+      activeRoute = AppRoutingType.login;
       notifyListeners();
     }
 
     if (activeRoute == AppRoutingType.workScreen) {
       RouteCommand command = RouteCommand(routeType: AppRoutingType.menu, reason: "backButton");
       uiService.sendCommand(command);
+    }
+
+    if(activeRoute == AppRoutingType.settings) {
+      activePage = MaterialPage(child: AppLogin());
+      activeRoute = AppRoutingType.login;
+      notifyListeners();
     }
 
     return SynchronousFuture(true);

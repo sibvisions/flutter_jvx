@@ -27,31 +27,39 @@ class AppLogin extends StatelessWidget with UiServiceMixin {
         children: [
           Expanded(child: Container()),
           Expanded(
-            flex: 5,
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TextFormField(
-                  controller: usernameController,
-                ),
-                TextFormField(
-                  controller: passwordController,
-                ),
-                ElevatedButton(
-                  onPressed: onLoginPressed,
-                  child: const Text("Login"),
-                ),
-                ElevatedButton(
-                  onPressed: onStartUpPressed,
-                  child: const Text("StartUp"),
+                Container(
+                  color: Colors.grey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextFormField(
+                        controller: usernameController,
+                      ),
+                      TextFormField(
+                        controller: passwordController,
+                      ),
+                      ElevatedButton(
+                        onPressed: onLoginPressed,
+                        child: const Text("Login"),
+                      ),
+                      ElevatedButton(
+                        onPressed: onStartUpPressed,
+                        child: const Text("StartUp"),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
           Expanded(child: Container())
-        ],
+        ]
       ),
+      bottomNavigationBar: Row(children: [ElevatedButton(onPressed: (){uiService.routeToSettings();}, child: Text("To Settings Page"))], mainAxisAlignment: MainAxisAlignment.end,),
     ));
   }
 }

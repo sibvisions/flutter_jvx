@@ -43,7 +43,6 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   @override
   affected() {
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
 
     buildChildren();
     registerParent();
