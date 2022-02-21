@@ -60,7 +60,7 @@ class LayoutData implements ICloneable {
   Size? lastCalculatedSize;
 
   /// The insets of the component.
-  EdgeInsets? insets;
+  EdgeInsets insets = EdgeInsets.zero;
 
   /// The actual position of the component inside their parent.
   LayoutPosition? layoutPosition;
@@ -92,7 +92,7 @@ class LayoutData implements ICloneable {
       this.minSize,
       this.maxSize,
       this.preferredSize,
-      this.insets,
+      this.insets = EdgeInsets.zero,
       this.layoutPosition,
       Size? calculatedSize,
       this.lastCalculatedSize,
@@ -113,7 +113,7 @@ class LayoutData implements ICloneable {
         preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null,
         _calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null,
         lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null,
-        insets = pLayoutData.insets?.copyWith(),
+        insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero,
         layoutState = pLayoutData.layoutState,
         layoutPosition = pLayoutData.layoutPosition?.clone(),
         needsRelayout = pLayoutData.needsRelayout,
@@ -163,7 +163,7 @@ class LayoutData implements ICloneable {
     preferredSize = pLayoutData.hasPreferredSize ? Size.copy(pLayoutData.preferredSize!) : null;
     _calculatedSize = pLayoutData.hasCalculatedSize ? Size.copy(pLayoutData.calculatedSize!) : null;
     lastCalculatedSize = pLayoutData.hasLastCalculatedSize ? Size.copy(pLayoutData.lastCalculatedSize!) : null;
-    insets = pLayoutData.insets?.copyWith();
+    insets = pLayoutData.insets != EdgeInsets.zero ? pLayoutData.insets.copyWith() : EdgeInsets.zero;
     layoutState = pLayoutData.layoutState;
     layoutPosition = pLayoutData.layoutPosition?.clone();
     needsRelayout = pLayoutData.needsRelayout;
@@ -210,11 +210,6 @@ class LayoutData implements ICloneable {
   /// If this component has a [lastCalculatedSize];
   bool get hasLastCalculatedSize {
     return lastCalculatedSize != null;
-  }
-
-  /// If this component has [insets];
-  bool get hasInsets {
-    return insets != null;
   }
 
   /// If this componen has a new [calculatedSize] that does not equal its [lastCalculatedSize].
