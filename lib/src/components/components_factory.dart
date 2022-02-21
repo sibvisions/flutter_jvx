@@ -11,7 +11,7 @@ import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
 import 'panel/fl_scroll_panel_wrapper.dart';
 import 'split_panel/fl_split_panel_wrapper.dart';
-import '../model/component/panel/fl_split_panel.dart';
+import '../model/component/panel/fl_split_panel_model.dart';
 
 import '../model/component/button/fl_button_model.dart';
 import '../model/component/dummy/fl_dummy_model.dart';

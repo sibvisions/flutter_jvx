@@ -9,7 +9,7 @@ class FlSplitPanelModel extends FlPanelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The initial position of the divider in the split.
-  double dividerPosition = -1;
+  double dividerPosition = 50;
 
   /// The way the panels are split up.
   SPLIT_ORIENTATION orientation = SPLIT_ORIENTATION.VERTICAL;
@@ -33,7 +33,11 @@ class FlSplitPanelModel extends FlPanelModel {
     // DividerPosition
     var jsonDividerPosition = pJson[ApiObjectProperty.dividerPosition];
     if (jsonDividerPosition != null) {
-      dividerPosition = (jsonDividerPosition as int).toDouble();
+      if (jsonDividerPosition == -1) {
+        dividerPosition = 50;
+      } else {
+        dividerPosition = jsonDividerPosition.toDouble();
+      }
     }
     // Orientation
     var jsonOrientation = pJson[ApiObjectProperty.orientation];
