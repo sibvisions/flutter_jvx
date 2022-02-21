@@ -38,6 +38,8 @@ abstract class ParseUtil {
 
     var values = (pValue).split(";");
     int serverStringIndex = values.length - 1;
+    // TODO: change later so serverString index has priority
+    // if (values[serverStringIndex].contains("#")) {
     if (values[0].contains("#")) {
       return parseHexColor(values[0]);
     } else {
