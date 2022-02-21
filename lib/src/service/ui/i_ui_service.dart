@@ -28,6 +28,9 @@ abstract class IUiService {
   /// provided [FlComponentModel]s will be displayed and saved.
   void routeToWorkScreen(List<FlComponentModel> screenComponents);
 
+  /// Will route to the settings page.
+  void routeToSettings();
+
   /// Returns broadcast [Stream] on which routing events will take place.
   Stream getRouteChangeStream();
 

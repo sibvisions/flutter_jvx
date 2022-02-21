@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
@@ -147,7 +148,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       // Constraint by width
       if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
         double newHeight =
-            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(positionWidth).ceilToDouble();
+            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0,positionWidth)).ceilToDouble();
 
         layoutData.widthConstrains[positionWidth] = newHeight;
         isConstrained = true;
@@ -156,7 +157,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       // Constraint by height
       if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
         double? newWidth =
-            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(positionHeight).ceilToDouble();
+            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0,positionHeight)).ceilToDouble();
 
         layoutData.heightConstrains[positionHeight] = newWidth;
         isConstrained = true;

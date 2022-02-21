@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:developer';
 
 import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
+import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
 
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
@@ -79,6 +80,12 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
+  void routeToSettings() {
+    RouteToSettingsPage settingsPage = RouteToSettingsPage();
+    _routeStream.sink.add(settingsPage);
+  }
+
+  @override
   void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
     _registeredComponents[id] = callback;
   }
@@ -148,7 +155,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   List<FlComponentModel> getChildrenModels(String id) {
-    var children = _currentScreen.where((element) => (element.parent == id && element.isVisible)).toList();
+    var children = _currentScreen.where((element) => (element.parent == id)).toList();
     return children;
   }
 
