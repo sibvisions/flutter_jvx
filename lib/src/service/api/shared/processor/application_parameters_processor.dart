@@ -12,11 +12,7 @@ class ApplicationParametersProcessor implements IProcessor {
 
     String? authenticated = response.authenticated;
     RouteCommand? routeCommand;
-    if (authenticated != null && authenticated == "yes") {
-      routeCommand = RouteCommand(
-          routeType: AppRoutingType.menu,
-          reason: "User is marked as authenticated -'yes' in an ApplicationParameterResponse.");
-    }
+
 
     String? openScreen = response.openScreen;
     if (openScreen != null) {

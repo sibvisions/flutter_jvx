@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/model/command/ui/route_command.dart';
+import 'package:flutter_client/src/routing/app_routing_type.dart';
+
 import '../../../../model/api/response/menu_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_menu_command.dart';
@@ -25,7 +28,15 @@ class MenuProcessor implements IProcessor {
         reason: "Menu was added from Server response",
         menu: menuModel
     );
+
+
+
+    RouteCommand routeCommand = RouteCommand(
+      routeType: AppRoutingType.menu,
+      reason: "A Menu was received.");
+
     commands.add(menuCommand);
+    commands.add(routeCommand);
 
     return commands;
   }
