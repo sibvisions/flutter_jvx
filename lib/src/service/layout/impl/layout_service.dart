@@ -68,9 +68,11 @@ class LayoutService implements ILayoutService {
     // Handle possible re-layout, check if parentId exists -> special case for first panel
     String? parentId = pLayoutData.parentId;
     if (parentId != null) {
-      LayoutData parentData = _layoutDataSet[parentId]!;
-      if (_isLegalState(pParentLayout: parentData)) {
-        return _performLayout(pParentLayout: parentData);
+      LayoutData? parentData = _layoutDataSet[parentId];
+      if (parentData != null) {
+        if (_isLegalState(pParentLayout: parentData)) {
+          return _performLayout(pParentLayout: parentData);
+        }
       }
     }
 
