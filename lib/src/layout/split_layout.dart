@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'i_layout.dart';
@@ -17,7 +18,7 @@ class SplitLayout implements ILayout, ICloneable {
   /// The second component constraint (right or bottom).
   static const String SECOND_COMPONENT = "SECOND_COMPONENT";
 
-  static const Duration UPDATE_INTERVALL = Duration(milliseconds: 30);
+  static const Duration UPDATE_INTERVALL = Duration(milliseconds: 16);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,6 +33,14 @@ class SplitLayout implements ILayout, ICloneable {
 
   /// How the splitter is orientated, defaults to Vertical
   SPLIT_ORIENTATION splitAlignment;
+
+  LayoutPosition firstComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+
+  Size firstComponentSize = const Size(0, 0);
+
+  LayoutPosition secondComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+
+  Size secondComponentSize = const Size(0, 0);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -58,9 +67,9 @@ class SplitLayout implements ILayout, ICloneable {
         double leftTopWidth = position.width / 100 * leftTopRatio - splitterSize / 2;
         double rightBottomWidth = position.width / 100 * (100 - leftTopRatio) - splitterSize / 2;
 
-        leftTopChild.layoutPosition = LayoutPosition(
+        firstComponentViewer = LayoutPosition(
             width: leftTopWidth.ceilToDouble(), height: position.height, top: 0, left: 0, isComponentSize: false);
-        rightBottomChild.layoutPosition = LayoutPosition(
+        secondComponentViewer = LayoutPosition(
             width: rightBottomWidth.ceilToDouble(),
             height: position.height,
             top: 0,
@@ -70,9 +79,9 @@ class SplitLayout implements ILayout, ICloneable {
         double leftTopHeight = position.height / 100 * leftTopRatio - splitterSize / 2;
         double rightBottomHeight = position.height / 100 * (100 - leftTopRatio) - splitterSize / 2;
 
-        leftTopChild.layoutPosition =
+        firstComponentViewer =
             LayoutPosition(width: position.width, height: leftTopHeight, top: 0, left: 0, isComponentSize: false);
-        rightBottomChild.layoutPosition = LayoutPosition(
+        secondComponentViewer = LayoutPosition(
             width: position.width,
             height: rightBottomHeight,
             top: leftTopHeight + splitterSize,
@@ -80,6 +89,18 @@ class SplitLayout implements ILayout, ICloneable {
             isComponentSize: false);
       }
     }
+
+    firstComponentSize = Size(max(leftTopChild.bestSize.width, firstComponentViewer.width),
+        max(leftTopChild.bestSize.height, firstComponentViewer.height));
+
+    leftTopChild.layoutPosition = LayoutPosition(
+        width: firstComponentSize.width, height: firstComponentSize.height, top: 0, left: 0, isComponentSize: true);
+
+    secondComponentSize = Size(max(rightBottomChild.bestSize.width, secondComponentViewer.width),
+        max(rightBottomChild.bestSize.height, secondComponentViewer.height));
+
+    rightBottomChild.layoutPosition = LayoutPosition(
+        width: secondComponentSize.width, height: secondComponentSize.height, top: 0, left: 0, isComponentSize: true);
 
     // preferred width & height
     double width = splitAlignment == SPLIT_ORIENTATION.VERTICAL ? splitterSize : 0;

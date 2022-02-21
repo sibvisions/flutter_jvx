@@ -12,13 +12,14 @@ class FlScrollPanelWidget extends StatelessWidget {
       constrained: false,
       child: Stack(
         children: [
-          IgnorePointer(
-            ignoring: true,
-            child: SizedBox(
-              width: (width ?? 0),
-              height: (height ?? 0),
-            ),
+          // IgnorePointer(
+          //   ignoring: true,
+          //   child:
+          SizedBox(
+            width: (width ?? 0),
+            height: (height ?? 0),
           ),
+          // ),
           ...children,
         ],
       ),

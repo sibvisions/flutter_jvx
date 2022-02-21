@@ -22,13 +22,11 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     super.initState();
 
     ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
-
     layoutData.layout = ScrollLayout(originalLayout);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
-    layoutData.insets = const EdgeInsets.only();
 
-    registerParent();
     buildChildren();
+    registerParent();
   }
 
   @override

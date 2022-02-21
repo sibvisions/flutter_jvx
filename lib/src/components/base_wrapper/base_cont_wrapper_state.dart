@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'base_comp_wrapper_state.dart';
 import '../components_factory.dart';
-import '../../layout/i_layout.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
@@ -19,26 +18,6 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  void initState() {
-    super.initState();
-
-    layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
-    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
-
-    registerParent();
-    buildChildren();
-  }
-
-  @override
-  receiveNewModel({required T newModel}) {
-    layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
-    super.receiveNewModel(newModel: newModel);
-
-    buildChildren();
-    registerParent();
-  }
 
   @override
   affected() {

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
 import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
@@ -40,7 +39,7 @@ class UiService with CommandServiceMixin implements IUiService {
   final HashMap<String, Map<String, Map<String, Function>>> _registeredDataComponents = HashMap();
 
   /// List of all received
-  final Map<String,LayoutData> _layoutDataList = {};
+  final Map<String, LayoutData> _layoutDataList = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -168,7 +167,7 @@ class UiService with CommandServiceMixin implements IUiService {
   List<LayoutData> getChildrenLayoutData({required String pParentId}) {
     List<LayoutData> childrenData = [];
     _layoutDataList.forEach((key, value) {
-      if(value.parentId == pParentId){
+      if (value.parentId == pParentId) {
         childrenData.add(value);
       }
     });
