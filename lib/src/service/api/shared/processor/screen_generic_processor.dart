@@ -3,7 +3,7 @@ import '../../../../model/component/editor/fl_editor_model.dart';
 import '../../../../model/component/editor/fl_text_area_model.dart';
 import '../../../../model/component/editor/fl_text_field_model.dart';
 
-import '../../../../model/component/panel/fl_split_panel.dart';
+import '../../../../model/component/panel/fl_split_panel_model.dart';
 
 import '../../../../model/command/ui/route_command.dart';
 import '../../../../model/component/label/fl_label_model.dart';
@@ -111,7 +111,7 @@ class ScreenGenericProcessor implements IProcessor {
         model = FlPanelModel();
         break;
       case FlContainerClassname.SCROLL_PANEL:
-        model = FlSplitPanelModel();
+        model = FlPanelModel();
         break;
       case FlContainerClassname.SPLIT_PANEL:
         model = FlSplitPanelModel();
