@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:core';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import '../model/layout/alignments.dart';
@@ -73,24 +74,25 @@ class FormLayout extends ILayout {
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
     /// Size set by Parent
-    final Size? setPosition = _getSize(pParent);
 
     /// Component constraints
     HashMap<String, FormLayoutConstraints> componentConstraints = _getComponentConstraints(pChildren, anchors);
 
     FormLayoutUsedBorder usedBorder = FormLayoutUsedBorder();
-    FormLayoutSize preferredMinimumSize = FormLayoutSize();
+    FormLayoutSize formLayoutSize = FormLayoutSize();
 
     _calculateAnchors(
         pAnchors: anchors,
         pComponentData: pChildren,
         pComponentConstraints: componentConstraints,
         pUsedBorder: usedBorder,
-        pPreferredMinimumSize: preferredMinimumSize,
+        pPreferredMinimumSize: formLayoutSize,
         pGaps: gaps);
 
+    Size calcSize = _getSize(pParent, formLayoutSize);
+
     _calculateTargetDependentAnchors(
-        pMinPrefSize: preferredMinimumSize,
+        pMinPrefSize: formLayoutSize,
         pAnchors: anchors,
         pHorizontalAlignment: horizontalAlignment,
         pVerticalAlignment: verticalAlignment,
@@ -98,7 +100,7 @@ class FormLayout extends ILayout {
         pMargins: margins,
         pComponentData: pChildren,
         pComponentConstraints: componentConstraints,
-        pGivenSize: setPosition);
+        pGivenSize: calcSize);
 
     return _buildComponents(
         pAnchors: anchors,
@@ -107,22 +109,28 @@ class FormLayout extends ILayout {
         id: pParent.id,
         pChildrenData: pChildren,
         pParent: pParent,
-        pMinPrefSize: preferredMinimumSize);
+        pMinPrefSize: formLayoutSize);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Size? _getSize(LayoutData pParent) {
-    double dimWidth;
-    double dimHeight;
+  Size _getSize(LayoutData pParent, FormLayoutSize pMinimumSize) {
+    double dimWidth = pMinimumSize.preferredWidth;
+    double dimHeight = pMinimumSize.preferredHeight;
 
     if (pParent.hasPosition) {
-      dimWidth = pParent.layoutPosition!.width;
-      dimHeight = pParent.layoutPosition!.height;
-      return Size(dimWidth, dimHeight);
+      if (pParent.layoutPosition!.isComponentSize) {
+        dimWidth = pParent.layoutPosition!.width;
+        dimHeight = pParent.layoutPosition!.height;
+      } else {
+        dimWidth = max(dimWidth, pParent.layoutPosition!.width);
+        dimHeight = max(dimHeight, pParent.layoutPosition!.height);
+      }
     }
+
+    return Size(dimWidth, dimHeight);
   }
 
   void _calculateAnchors(

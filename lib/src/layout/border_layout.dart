@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -107,15 +108,21 @@ class BorderLayout implements ILayout, ICloneable {
 
     pParent.calculatedSize = preferredSize;
 
-    double x = pParent.insets!.left + eiMargins.left;
-    double y = pParent.insets!.top + eiMargins.top;
-    double width = preferredSize.width - x - pParent.insets!.right + eiMargins.right;
-    double height = preferredSize.height - y - pParent.insets!.bottom + eiMargins.bottom;
+    double x = pParent.insets.left + eiMargins.left;
+    double y = pParent.insets.top + eiMargins.top;
+    double width = preferredSize.width - x - pParent.insets.right + eiMargins.right;
+    double height = preferredSize.height - y - pParent.insets.bottom + eiMargins.bottom;
 
     // If parent has forced this into a size, cant exceed these values.
     if (pParent.hasPosition) {
-      width = pParent.layoutPosition!.width - x - pParent.insets!.right - eiMargins.right;
-      height = pParent.layoutPosition!.height - y - pParent.insets!.bottom - eiMargins.bottom;
+      if (pParent.layoutPosition!.isComponentSize) {
+        width = pParent.layoutPosition!.width - x - pParent.insets.right - eiMargins.right;
+        height = pParent.layoutPosition!.height - y - pParent.insets.bottom - eiMargins.bottom;
+      } else {
+        width = max(pParent.layoutPosition!.width, preferredSize.width) - x - pParent.insets.right - eiMargins.right;
+        height =
+            max(pParent.layoutPosition!.height, preferredSize.height) - y - pParent.insets.bottom - eiMargins.bottom;
+      }
     }
 
     if (_childNorth != null) {

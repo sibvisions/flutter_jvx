@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'i_layout.dart';
-import '../model/component/panel/fl_split_panel.dart';
+import '../model/component/panel/fl_split_panel_model.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
 import '../../util/i_clonable.dart';
@@ -17,6 +17,7 @@ class SplitLayout implements ILayout, ICloneable {
   /// The second component constraint (right or bottom).
   static const String SECOND_COMPONENT = "SECOND_COMPONENT";
 
+  static const Duration UPDATE_INTERVALL = Duration(milliseconds: 30);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,44 +59,37 @@ class SplitLayout implements ILayout, ICloneable {
         double rightBottomWidth = position.width / 100 * (100 - leftTopRatio) - splitterSize / 2;
 
         leftTopChild.layoutPosition = LayoutPosition(
-            width: leftTopWidth.ceilToDouble(), height: position.height, top: 0, left: 0, isComponentSize: true);
+            width: leftTopWidth.ceilToDouble(), height: position.height, top: 0, left: 0, isComponentSize: false);
         rightBottomChild.layoutPosition = LayoutPosition(
             width: rightBottomWidth.ceilToDouble(),
             height: position.height,
             top: 0,
             left: leftTopWidth + splitterSize,
-            isComponentSize: true);
+            isComponentSize: false);
       } else {
         double leftTopHeight = position.height / 100 * leftTopRatio - splitterSize / 2;
         double rightBottomHeight = position.height / 100 * (100 - leftTopRatio) - splitterSize / 2;
 
         leftTopChild.layoutPosition =
-            LayoutPosition(width: position.width, height: leftTopHeight, top: 0, left: 0, isComponentSize: true);
+            LayoutPosition(width: position.width, height: leftTopHeight, top: 0, left: 0, isComponentSize: false);
         rightBottomChild.layoutPosition = LayoutPosition(
             width: position.width,
             height: rightBottomHeight,
             top: leftTopHeight + splitterSize,
             left: 0,
-            isComponentSize: true);
+            isComponentSize: false);
       }
-
-      // Split layout can never exceed its given size (position).
-      if (pParent.isWidthNewlyConstraint) {
-        pParent.widthConstrains[pParent.layoutPosition!.width] = position.height;
-      }
-      if (pParent.isHeightNewlyConstraint) {
-        pParent.heightConstrains[pParent.layoutPosition!.height] = position.width;
-      }
-    } else {
-      // preferred width & height
-      double width = splitAlignment == SPLIT_ORIENTATION.VERTICAL ? splitterSize : 0;
-      double height = splitAlignment == SPLIT_ORIENTATION.HORIZONTAL ? splitterSize : 0;
-      for (LayoutData child in pChildren) {
-        width += child.bestSize.width;
-        height += child.bestSize.height;
-      }
-      pParent.calculatedSize = Size(width, height);
     }
+
+    // preferred width & height
+    double width = splitAlignment == SPLIT_ORIENTATION.VERTICAL ? splitterSize : 0;
+    double height = splitAlignment == SPLIT_ORIENTATION.HORIZONTAL ? splitterSize : 0;
+    for (LayoutData child in pChildren) {
+      width += child.bestSize.width;
+      height += child.bestSize.height;
+    }
+
+    pParent.calculatedSize = Size(width, height);
   }
 
   @override
