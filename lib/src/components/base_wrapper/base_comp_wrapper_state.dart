@@ -67,7 +67,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
             receiveNewModel(newModel: newModel as T);
           }
 
-          if(newModel == null && data == null){
+          if (newModel == null && data == null) {
             affected();
           }
         });
@@ -77,9 +77,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void affected() {
-
-  }
+  void affected() {}
 
   /// Returns Positioned Widget according to [layoutData]
   Positioned getPositioned({required Widget child}) {
@@ -147,8 +145,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
       // Constraint by width
       if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-        double newHeight =
-            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0,positionWidth)).ceilToDouble();
+        double newHeight = (lastContext!.findRenderObject() as RenderBox)
+            .getMaxIntrinsicHeight(max(0.0, positionWidth))
+            .ceilToDouble();
 
         layoutData.widthConstrains[positionWidth] = newHeight;
         isConstrained = true;
@@ -156,8 +155,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
       // Constraint by height
       if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-        double? newWidth =
-            (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0,positionHeight)).ceilToDouble();
+        double? newWidth = (lastContext!.findRenderObject() as RenderBox)
+            .getMaxIntrinsicWidth(max(0.0, positionHeight))
+            .ceilToDouble();
 
         layoutData.heightConstrains[positionHeight] = newWidth;
         isConstrained = true;

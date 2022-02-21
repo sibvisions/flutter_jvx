@@ -26,7 +26,6 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
-    layoutData.insets = const EdgeInsets.only();
 
     registerParent();
     buildChildren();
@@ -43,7 +42,6 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   @override
   affected() {
-
     buildChildren();
     registerParent();
   }
