@@ -48,13 +48,12 @@ class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> with UiSer
             constrained: false,
             child: Stack(
               children: [
-                // IgnorePointer(
-                //   ignoring: true,
-                // child:
-                SizedBox(
-                  width: childPosition.width,
-                  height: childPosition.height,
-                  // ),
+                IgnorePointer(
+                  ignoring: true,
+                  child: SizedBox(
+                    width: childPosition.width,
+                    height: childPosition.height,
+                  ),
                 ),
                 childWidget
               ],
