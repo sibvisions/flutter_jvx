@@ -37,6 +37,9 @@ abstract class IUiService {
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
+  /// Returns a list of layoutData from all children.
+  List<LayoutData> getChildrenLayoutData({required String pParentId});
+
   /// Register as an active component, callback will be called when model changes or children should be rebuilt.
   void registerAsLiveComponent({required String id, required ComponentCallback callback});
 

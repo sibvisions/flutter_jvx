@@ -39,6 +39,9 @@ class UiService with CommandServiceMixin implements IUiService {
   /// --- Callbacks
   final HashMap<String, Map<String, Map<String, Function>>> _registeredDataComponents = HashMap();
 
+  /// List of all received
+  final Map<String,LayoutData> _layoutDataList = {};
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,6 +60,7 @@ class UiService with CommandServiceMixin implements IUiService {
   void deleteInactiveComponent({required Set<String> inactiveIds}) {
     // remove subscription for components removed from ui
     for (String inactiveId in inactiveIds) {
+      _layoutDataList.remove(inactiveId);
       _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
       _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
       _registeredDataComponents.forEach((key, value) {
@@ -75,6 +79,7 @@ class UiService with CommandServiceMixin implements IUiService {
   void routeToWorkScreen(List<FlComponentModel> screenComponents) {
     RouteToWorkScreen routeToWorkScreen = RouteToWorkScreen(screen: screenComponents.first);
     _currentScreen.clear();
+    _layoutDataList.clear();
     _currentScreen.addAll(screenComponents);
     _routeStream.sink.add(routeToWorkScreen);
   }
@@ -160,6 +165,17 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
+  List<LayoutData> getChildrenLayoutData({required String pParentId}) {
+    List<LayoutData> childrenData = [];
+    _layoutDataList.forEach((key, value) {
+      if(value.parentId == pParentId){
+        childrenData.add(value);
+      }
+    });
+    return childrenData;
+  }
+
+  @override
   Stream getRouteChangeStream() {
     return _routeStream.stream;
   }
@@ -167,6 +183,7 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void setLayoutPosition({required LayoutData layoutData}) {
     ComponentCallback? callback = _registeredComponents[layoutData.id];
+    _layoutDataList[layoutData.id] = layoutData;
     if (callback != null) {
       callback.call(data: layoutData);
     } else {
