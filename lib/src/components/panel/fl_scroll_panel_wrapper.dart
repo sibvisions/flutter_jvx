@@ -45,6 +45,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
       children: children.values.toList(),
       width: widthOfScrollPanel,
       height: heightOfScrollPanel,
+      isScrollable: isScrollable,
     );
 
     return (getPositioned(child: panelWidget));
@@ -76,5 +77,14 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     }
 
     return height;
+  }
+
+  bool get isScrollable {
+    if (layoutData.hasPosition) {
+      return layoutData.layoutPosition!.width < widthOfScrollPanel ||
+          layoutData.layoutPosition!.height < heightOfScrollPanel;
+    }
+
+    return true;
   }
 }

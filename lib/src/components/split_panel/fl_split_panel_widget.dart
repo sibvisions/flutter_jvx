@@ -38,29 +38,33 @@ class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> with UiSer
         childPosition = layout.secondComponentSize;
       }
 
-      children.add(
-        Positioned(
-          top: viewerPosition.top,
-          left: viewerPosition.left,
-          width: viewerPosition.width,
-          height: viewerPosition.height,
-          child: InteractiveViewer(
-            constrained: false,
-            child: Stack(
-              children: [
-                IgnorePointer(
-                  ignoring: true,
-                  child: SizedBox(
-                    width: childPosition.width,
-                    height: childPosition.height,
+      if (viewerPosition.width < childPosition.width || viewerPosition.height < childPosition.height) {
+        children.add(
+          Positioned(
+            top: viewerPosition.top,
+            left: viewerPosition.left,
+            width: viewerPosition.width,
+            height: viewerPosition.height,
+            child: InteractiveViewer(
+              constrained: false,
+              child: Stack(
+                children: [
+                  IgnorePointer(
+                    ignoring: true,
+                    child: SizedBox(
+                      width: childPosition.width,
+                      height: childPosition.height,
+                    ),
                   ),
-                ),
-                childWidget
-              ],
+                  childWidget
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
+      } else {
+        children.add(childWidget);
+      }
     }
 
     return Stack(
