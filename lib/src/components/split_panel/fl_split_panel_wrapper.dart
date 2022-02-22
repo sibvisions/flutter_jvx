@@ -85,14 +85,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
           onHorizontalDragEnd: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDragEnd : null,
           child: Container(
             color: IColorConstants.COMPONENT_DISABLED,
-            // child: Center(
-            //     child: ClipRRect(
-            //         borderRadius: BorderRadius.circular(5.0),
-            //         child: Container(
-            //           height: 4,
-            //           color: IColorConstants.COMPONENT_DISABLED,
-            //           width: 40,
-            //         )))),
           ),
         ),
       );
