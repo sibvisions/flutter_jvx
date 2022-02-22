@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/api/startup_command.dart';
+
 import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';
 
@@ -59,6 +61,9 @@ Future<bool> initAppMobile() async {
   // UI
   IUiService uiService = UiService();
   services.registerSingleton(uiService, signalsReady: true);
+
+  StartupCommand startupCommand = StartupCommand(reason: "InitApp");
+  commandService.sendCommand(startupCommand);
 
   return true;
 }
