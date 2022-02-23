@@ -55,7 +55,7 @@ class MenuProcessor implements IProcessor {
     List<MenuItemModel> menuItems = [];
     for(MenuEntryResponse responseMenuEntry in entries){
       if(responseMenuEntry.group == groupName){
-        MenuItemModel menuItem = MenuItemModel(componentId: responseMenuEntry.componentId, label: responseMenuEntry.text);
+        MenuItemModel menuItem = MenuItemModel(componentId: responseMenuEntry.componentId, label: responseMenuEntry.text, image: responseMenuEntry.image);
         menuItems.add(menuItem);
       }
     }

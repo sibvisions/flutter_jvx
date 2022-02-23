@@ -22,6 +22,7 @@ dependencies:
   http: ^0.13.4
   font_awesome_flutter: ^9.2.0
   intl: ^0.17.0
+  mobile_scanner: ^0.1.1
 
 flutter:
 

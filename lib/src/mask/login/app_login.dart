@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import 'package:flutter_client/src/model/command/ui/route_command.dart';
 import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
+import 'package:flutter_client/src/routing/app_routing_type.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../mixin/ui_service_mixin.dart';
@@ -24,6 +26,11 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
     uiService.sendCommand(startupCommand);
   }
 
+  void onSettingsPressed() {
+    RouteCommand command = RouteCommand(routeType: AppRoutingType.settings, reason: "Setting pressed");
+    uiService.sendCommand(command);
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -43,12 +50,12 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                     TextFormField(
                       controller: usernameController,
                       decoration: const InputDecoration(
-                          labelText: "Username: "
+                        labelText: "Username: "
                       ),
                     ),
                     TextFormField(
                       decoration: const InputDecoration(
-                          labelText: "Password: "
+                        labelText: "Password: "
                       ),
                       controller: passwordController,
                     ),
@@ -60,7 +67,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton.icon(
-                          onPressed: onStartUpPressed,
+                          onPressed: onSettingsPressed,
                           icon: const FaIcon(FontAwesomeIcons.cogs),
                           label: const Text("Settings"),
                         ),
@@ -76,12 +83,6 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
         ),
         Expanded(child: Container())
       ]),
-      bottomNavigationBar: Row(
-        children: [
-
-        ],
-        mainAxisAlignment: MainAxisAlignment.end,
-      ),
     ));
   }
 }

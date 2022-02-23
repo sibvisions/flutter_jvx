@@ -19,6 +19,7 @@ class RouteCommandProcessor with UiServiceGetterMixin, StorageServiceMixin imple
       MenuModel? menuModel = await storageService.getMenu();
 
       getUiService().routeToMenu(menuModel);
+
     }
 
     // WorkScreen
@@ -28,6 +29,10 @@ class RouteCommandProcessor with UiServiceGetterMixin, StorageServiceMixin imple
         List<FlComponentModel> screen = await storageService.getScreenByScreenClassName(screenName);
         getUiService().routeToWorkScreen(screen);
       }
+    }
+
+    if (command.routeType == AppRoutingType.settings) {
+      getUiService().routeToSettings();
     }
 
     return [];

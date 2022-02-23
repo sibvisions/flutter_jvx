@@ -1,6 +1,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'init_app_mobile.dart';
 import 'init_app_web.dart';
@@ -8,6 +9,7 @@ import 'src/routing/app_delegate.dart';
 import 'src/routing/app_information_parser.dart';
 
 void main() {
+
   if (kIsWeb) {
     initAppWeb();
     runApp(MyApp());
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp.router(
       routeInformationParser: _parser,
       routerDelegate: _delegate,

@@ -35,7 +35,6 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
       activePage = MaterialPage(
           child: AppMenu(
         menuModel: event.menuModel,
-        uiService: uiService,
       ));
       activeRoute = AppRoutingType.menu;
     } else if (event is RouteToWorkScreen) {
