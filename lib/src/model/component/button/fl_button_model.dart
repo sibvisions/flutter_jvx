@@ -19,9 +19,6 @@ class FlButtonModel extends FlComponentModel {
   /// The model of the label widget.
   FlLabelModel labelModel = FlLabelModel();
 
-  /// The text of the button.
-  String text = "";
-
   /// If the border activates on click.
   bool borderOnMouseEntered = false;
 
@@ -66,11 +63,6 @@ class FlButtonModel extends FlComponentModel {
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
-
-    var jsonText = pJson[ApiObjectProperty.text];
-    if (jsonText != null) {
-      text = jsonText;
-    }
 
     var jsonBorderOnMouseEntered = pJson[ApiObjectProperty.borderOnMouseEntered];
     if (jsonBorderOnMouseEntered != null) {
@@ -150,7 +142,6 @@ class FlButtonModel extends FlComponentModel {
       foreground = IColorConstants.COMPONENT_DISABLED;
     }
 
-    labelModel.text = text;
     labelModel.background = background;
     labelModel.foreground = foreground;
     labelModel.fontName = fontName;
@@ -161,6 +152,7 @@ class FlButtonModel extends FlComponentModel {
     Map<String, dynamic> labelJson = <String, dynamic>{};
     labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];
     labelJson[ApiObjectProperty.verticalAlignment] = pJson[ApiObjectProperty.verticalTextPosition];
+    labelJson[ApiObjectProperty.text] = pJson[ApiObjectProperty.text];
 
     labelModel.applyFromJson(labelJson);
   }
