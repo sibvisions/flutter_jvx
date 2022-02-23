@@ -101,6 +101,6 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     return ButtonStyle(
         elevation: MaterialStateProperty.all(2),
         backgroundColor: MaterialStateProperty.all(model.background),
-        padding: MaterialStateProperty.all(model.margins));
+        padding: MaterialStateProperty.all(model.paddings));
   }
 }

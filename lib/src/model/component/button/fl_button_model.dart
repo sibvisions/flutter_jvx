@@ -43,8 +43,8 @@ class FlButtonModel extends FlComponentModel {
   /// The image when the button is currently being pressed down.
   Widget? mouseOverImage;
 
-  /// The margins between the button and its children.
-  EdgeInsets margins = const EdgeInsets.fromLTRB(10, 10, 10, 10);
+  /// The paddings between the button and its children.
+  EdgeInsets paddings = const EdgeInsets.fromLTRB(10, 10, 10, 10);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -131,7 +131,7 @@ class FlButtonModel extends FlComponentModel {
 
     var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
     if (jsonMargins != null) {
-      margins = jsonMargins;
+      paddings = jsonMargins;
     }
 
     // Label parsing
