@@ -11,22 +11,27 @@ abstract class IFontAwesome {
   static FaIcon getFontAwesomeIcon(String pText) {
     List<String> arr = pText.split(",");
 
-    if (arr[0].contains(";")) {
-      var nameAndSize = arr[0].split(";");
+    String iconName = arr[0];
+    double? iconSize;
 
-      arr[0] = nameAndSize[0];
-      arr.add(nameAndSize[1]);
+    if (iconName.contains(";")) {
+      var nameAndSize = iconName.split(";");
+
+      // Currently ignore "size=X" parameter;
+      iconName = nameAndSize[0];
     }
 
-    String iconName = arr[0];
-    Size iconSize = Size(double.parse(arr[1]), double.parse(arr[2]));
+    if (arr.length >= 2) {
+      iconSize = double.parse(arr[1]);
+    }
+
     Color iconColor = arr.length > 4 ? (ParseUtil.parseHexColor(arr[4]) ?? Colors.black) : Colors.black;
 
     IconData iconData = ICONS[iconName] ?? FontAwesomeIcons.questionCircle;
 
     return FaIcon(
       iconData,
-      size: iconSize.width,
+      size: iconSize,
       color: iconColor,
     );
   }
