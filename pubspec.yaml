@@ -23,6 +23,7 @@ dependencies:
   font_awesome_flutter: ^9.2.0
   intl: ^0.17.0
   mobile_scanner: ^0.1.1
+  path_provider: ^2.0.9
 
 flutter:
 

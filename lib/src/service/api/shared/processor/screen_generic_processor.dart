@@ -148,7 +148,8 @@ class ScreenGenericProcessor implements IProcessor {
       case FlComponentClassname.CHECK_BOX:
         continue alsoDefault;
       case FlComponentClassname.PASSWORD_FIELD:
-        continue alsoDefault;
+        model = FlTextFieldModel();
+        break;
       case FlComponentClassname.TABLE:
         continue alsoDefault;
       case FlComponentClassname.RADIO_BUTTON:

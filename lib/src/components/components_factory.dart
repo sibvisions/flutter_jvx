@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/editor/password_field/fl_password_wrapper.dart';
 import 'button/fl_toggle_button_wrapper.dart';
 import 'editor/fl_editor_wrapper.dart';
 import '../model/component/button/fl_toggle_button_model.dart';
@@ -62,7 +63,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.CHECK_BOX:
         continue alsoDefault;
       case FlComponentClassname.PASSWORD_FIELD:
-        continue alsoDefault;
+        return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: Key(model.id));
       case FlComponentClassname.TABLE:
         continue alsoDefault;
       case FlComponentClassname.RADIO_BUTTON:
