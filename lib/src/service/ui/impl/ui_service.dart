@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
+import 'package:flutter_client/src/model/routing/route_close_qr_scanner.dart';
+import 'package:flutter_client/src/model/routing/route_open_qr_scanner.dart';
 import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
 
 import '../../../../util/type_def/callback_def.dart';
@@ -209,5 +211,17 @@ class UiService with CommandServiceMixin implements IUiService {
     _registeredDataComponents.forEach((key, value) {
       value.removeWhere((key, value) => key == pComponentId);
     });
+  }
+
+  @override
+  void closeQRScanner() {
+    RouteCloseQRScanner routeCloseQRScanner = RouteCloseQRScanner();
+    _routeStream.sink.add(routeCloseQRScanner);
+  }
+
+  @override
+  void openQRScanner({required Function callback}) {
+    RouteOpenRQScanner routeOpenRQScanner = RouteOpenRQScanner(callBack: callback);
+    _routeStream.sink.add(routeOpenRQScanner);
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
 import 'package:flutter_client/src/mask/setting/settings_page.dart';
+import 'package:flutter_client/src/model/routing/route_close_qr_scanner.dart';
+import 'package:flutter_client/src/model/routing/route_open_qr_scanner.dart';
 import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
 import '../model/command/ui/route_command.dart';
 
@@ -21,7 +23,7 @@ import 'app_routing_type.dart';
 ///
 class AppDelegate extends RouterDelegate<AppRoutePath>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin, UiServiceMixin {
-  Page activePage = MaterialPage(child: AppLogin());
+  List<Page> activePage = [MaterialPage(child: AppLogin())];
   AppRoutingType activeRoute = AppRoutingType.login;
 
   StreamSubscription? routeSubscription;
@@ -32,17 +34,21 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
 
   _routeChanged(dynamic event) {
     if (event is RouteToMenu) {
-      activePage = MaterialPage(
+      activePage = [MaterialPage(
           child: AppMenu(
         menuModel: event.menuModel,
-      ));
+      ))];
       activeRoute = AppRoutingType.menu;
     } else if (event is RouteToWorkScreen) {
-      activePage = MaterialPage(child: WorkScreen(screen: event.screen, key: Key(event.screen.id + "_Work"),));
+      activePage = [MaterialPage(child: WorkScreen(screen: event.screen, key: Key(event.screen.id + "_Work"),))];
       activeRoute = AppRoutingType.workScreen;
     } else if (event is RouteToSettingsPage) {
-      activePage = MaterialPage(child: SettingsPage());
+      activePage = [const MaterialPage(child: SettingsPage())];
       activeRoute = AppRoutingType.settings;
+    } else if (event is RouteOpenRQScanner) {
+      activePage.add(MaterialPage(child: QRScannerMask(callBack: event.callBack)));
+    } else if (event is RouteCloseQRScanner) {
+      activePage.removeLast();
     }
     notifyListeners();
   }
@@ -59,26 +65,28 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
   @override
   Future<bool> popRoute() {
     //don't close app if pressing back on login
-    if (activeRoute == AppRoutingType.login) {
-      return SynchronousFuture(false);
-    }
-    //if OS Back pressed go back to Login
-    if (activeRoute == AppRoutingType.menu) {
-      activePage = MaterialPage(child: AppLogin());
-      activeRoute = AppRoutingType.login;
+    if(activePage.length == 2){
+      activePage.removeLast();
       notifyListeners();
+      return SynchronousFuture(true);
     }
 
-    if (activeRoute == AppRoutingType.workScreen) {
+
+    if (activeRoute == AppRoutingType.login) {
+      return SynchronousFuture(true);
+    } else if (activeRoute == AppRoutingType.menu) {
+      activePage = [MaterialPage(child: AppLogin())];
+      activeRoute = AppRoutingType.login;
+      notifyListeners();
+    } else if (activeRoute == AppRoutingType.workScreen) {
       RouteCommand command = RouteCommand(routeType: AppRoutingType.menu, reason: "backButton");
       uiService.sendCommand(command);
-    }
-
-    if(activeRoute == AppRoutingType.settings) {
-      activePage = MaterialPage(child: AppLogin());
+    } else if(activeRoute == AppRoutingType.settings) {
+      activePage = [MaterialPage(child: AppLogin())];
       activeRoute = AppRoutingType.login;
       notifyListeners();
     }
+
 
     return SynchronousFuture(true);
   }
@@ -93,7 +101,7 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
   Widget build(BuildContext context) {
     return (Navigator(
       key: navigatorKey,
-      pages: [activePage],
+      pages: [activePage.last],
       onPopPage: (route, result) {
         return route.didPop(result);
       },

@@ -80,4 +80,10 @@ abstract class IUiService {
 
   /// Deletes the callback of the registered component on the dataProvider
   void unRegisterDataComponent({required String pComponentId, required String pDataProvider});
+
+  /// Opens the QR Scanner, the callback will be called with the scanned data.
+  void openQRScanner({required Function callback});
+
+  /// Closes the QR Scanner, if one is currently open
+  void closeQRScanner();
 }

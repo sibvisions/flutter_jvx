@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -10,20 +10,22 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends State<SettingsPage> with UiServiceMixin {
 
-  MobileScannerController cameraController = MobileScannerController();
+  void loginCodeScanned(dynamic data) {
+    log("arrived");
+    uiService.closeQRScanner();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Settings"),),
-      body: MobileScanner(
-        controller: cameraController,
-          onDetect: (barcode, args) {
-
-          },
-      ),
+      body: ElevatedButton(
+        child: Text("OPEN QR"),
+        onPressed: () {uiService.openQRScanner(callback: loginCodeScanned);},
+      )
     );
   }
 }
