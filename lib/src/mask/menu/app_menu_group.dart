@@ -7,14 +7,13 @@ import '../../service/ui/i_ui_service.dart';
 import 'app_menu_item.dart';
 
 class AppMenuGroup extends StatelessWidget {
-const AppMenuGroup({Key? key, required this.menuGroupModel, required this.uiService}) : super(key: key);
+  const AppMenuGroup({Key? key, required this.menuGroupModel, required this.uiService}) : super(key: key);
 
   final IUiService uiService;
   final MenuGroupModel menuGroupModel;
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,13 +31,11 @@ const AppMenuGroup({Key? key, required this.menuGroupModel, required this.uiServ
           mainAxisSpacing: 5,
           crossAxisSpacing: 5,
           maxCrossAxisExtent: 150,
+          padding: const EdgeInsets.all(5),
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           semanticChildCount: menuGroupModel.items.length,
-
-
           children: menuGroupModel.items.map((e) => AppMenuItem(menuItemModel: e, uiService: uiService)).toList(),
-
         ),
       ],
     );
