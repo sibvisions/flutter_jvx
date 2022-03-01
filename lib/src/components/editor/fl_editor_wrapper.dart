@@ -11,6 +11,8 @@ import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../../model/component/i_cell_editor.dart';
 
+/// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
+/// It serves as the layouting wrapper of various non layouting widgets.
 class FlEditorWrapper extends BaseCompWrapperWidget<FlEditorModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -28,16 +30,22 @@ class FlEditorWrapper extends BaseCompWrapperWidget<FlEditorModel> {
 
 class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The old cell editor which might have to be disposed of.
+  ICellEditor? oldCellEditor;
+
+  /// The currently used cell editor.
+  ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ICellEditor? oldCellEditor;
-
-  ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
-
   @override
   void initState() {
-    // Only exception where we actually have to do stuff BEFORE we init the sate...
+    // Exception where we have to do stuff before we init the sate.
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
     recreateCellEditor(widget.model as T);
 
@@ -50,10 +58,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   receiveNewModel({required T newModel}) {
+    // If a change of cell editors has occured.
     if (newModel.changedCellEditor) {
       unsubscribe();
-
-      oldCellEditor = cellEditor;
 
       recreateCellEditor(newModel);
 
@@ -71,8 +78,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       postFrameCallback(context);
     });
 
+    // Celleditors always return a fresh new widget.
+    // We must apply the universal editor components onto the widget.
     FlStatelessWidget editorWidget = cellEditor.getWidget();
     editorWidget.model.applyFromJson(model.json);
+    // Some parts of a json have to take priority.
+    // As they override the properties.
     editorWidget.model.applyCellEditorOverrides(model.json);
 
     logCellEditor("BUILD");
@@ -84,10 +95,23 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void postFrameCallback(BuildContext context) {
     super.postFrameCallback(context);
 
+    // Dispose of the old one after the build to clean up memory.
     oldCellEditor?.dispose();
     oldCellEditor = null;
   }
 
+  @override
+  void dispose() {
+    cellEditor.dispose();
+    super.dispose();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Subscribes to the service and registers the set value call back.
+  // TODO get column definition and apply it to the cell editor.
   void subscribe(T pModel) {
     uiService.registerAsDataComponent(
         pDataProvider: pModel.dataRow,
@@ -96,16 +120,19 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         pColumnName: pModel.columnName);
   }
 
+  /// Unsubscribes the callback of the cell editor from value changes.
   void unsubscribe() {
     uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.dataRow);
   }
 
+  /// Sets the state after value change to rebuild the widget and reflect the value change.
   void onChange(dynamic pValue) {
     setState(() {
       cellEditor.setValue(pValue);
     });
   }
 
+  /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
     setState(() {
       cellEditor.setValue(pValue);
@@ -121,13 +148,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         reason: "Value of ${model.id} set to $pValue"));
   }
 
-  @override
-  void dispose() {
-    cellEditor.dispose();
-    super.dispose();
-  }
-
+  /// Recreates the cell editor.
   void recreateCellEditor(T pModel) {
+    oldCellEditor = cellEditor;
+
     var jsonCellEditor = pModel.json[ApiObjectProperty.cellEditor];
     if (jsonCellEditor != null) {
       cellEditor =
@@ -136,6 +160,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
   }
 
+  /// Logs the cell editor for debug purposes.
   void logCellEditor(String pPhase) {
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: StackTrace.current.toString());
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
