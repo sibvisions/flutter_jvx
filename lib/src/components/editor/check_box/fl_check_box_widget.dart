@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_data_widget.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'package:flutter_client/src/components/button/fl_button_widget.dart';
+import 'package:flutter_client/src/model/component/check_box/fl_check_box_model.dart';
 
-class FlCheckBoxWidget extends FlStatelessDataWidget<FlComponentModel, bool> {
-  FlCheckBoxWidget(
-      {required model, required Function(dynamic p1) valueChanged, required Function(dynamic p1) endEditing})
-      : super(model: model, valueChanged: valueChanged, endEditing: endEditing);
+class FlCheckBoxWidget extends FlButtonWidget<FlCheckBoxModel> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+  Widget get image {
+    return Checkbox(
+      value: model.selected,
+      onChanged: (_) {
+        onPress();
+      },
+    );
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  const FlCheckBoxWidget({Key? key, required FlCheckBoxModel model, required Function() onPress})
+      : super(key: key, model: model, onPress: onPress);
 }

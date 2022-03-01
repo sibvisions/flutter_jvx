@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/editor/check_box/fl_check_box_wrapper.dart';
 import 'package:flutter_client/src/components/editor/password_field/fl_password_wrapper.dart';
+import 'package:flutter_client/src/model/component/check_box/fl_check_box_model.dart';
 import 'button/fl_toggle_button_wrapper.dart';
 import 'editor/fl_editor_wrapper.dart';
 import '../model/component/button/fl_toggle_button_model.dart';
 import '../model/component/editor/fl_editor_model.dart';
-import '../model/component/editor/fl_text_area_model.dart';
-import '../model/component/editor/fl_text_field_model.dart';
+import '../model/component/text_area/fl_text_area_model.dart';
+import '../model/component/text_field/fl_text_field_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
@@ -61,7 +63,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.POPUP_MENU_BUTTON:
         continue alsoDefault;
       case FlComponentClassname.CHECK_BOX:
-        continue alsoDefault;
+        return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: Key(model.id));
       case FlComponentClassname.PASSWORD_FIELD:
         return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: Key(model.id));
       case FlComponentClassname.TABLE:

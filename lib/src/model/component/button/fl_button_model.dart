@@ -23,7 +23,7 @@ class FlButtonModel extends FlComponentModel {
   bool borderOnMouseEntered = false;
 
   /// If the border is shown.
-  bool borderPainted = false;
+  bool borderPainted = true;
 
   /// The aria label.
   String ariaLabel = "";

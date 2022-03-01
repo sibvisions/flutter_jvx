@@ -7,7 +7,7 @@ import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../../mixin/data_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
-import '../../../model/component/editor/fl_text_field_model.dart';
+import '../../../model/component/text_field/fl_text_field_model.dart';
 
 import 'fl_text_field_widget.dart';
 

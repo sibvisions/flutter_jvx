@@ -5,8 +5,8 @@ import 'package:flutter_client/src/components/editor/password_field/fl_password_
 import 'package:flutter_client/src/components/editor/text_area/fl_text_area_widget.dart';
 import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
 import 'package:flutter_client/src/model/component/dummy/fl_dummy_model.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_area_model.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
+import 'package:flutter_client/src/model/component/text_area/fl_text_area_model.dart';
+import 'package:flutter_client/src/model/component/text_field/fl_text_field_model.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/cell_editor_model.dart';
 import 'i_cell_editor.dart';
 

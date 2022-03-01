@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
-import '../../../model/component/editor/fl_text_area_model.dart';
+import '../../../model/component/text_area/fl_text_area_model.dart';
 
 class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

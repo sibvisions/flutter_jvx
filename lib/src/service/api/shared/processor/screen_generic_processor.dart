@@ -1,7 +1,9 @@
+import 'package:flutter_client/src/model/component/check_box/fl_check_box_model.dart';
+
 import '../../../../model/component/button/fl_toggle_button_model.dart';
 import '../../../../model/component/editor/fl_editor_model.dart';
-import '../../../../model/component/editor/fl_text_area_model.dart';
-import '../../../../model/component/editor/fl_text_field_model.dart';
+import '../../../../model/component/text_area/fl_text_area_model.dart';
+import '../../../../model/component/text_field/fl_text_field_model.dart';
 
 import '../../../../model/component/panel/fl_split_panel_model.dart';
 
@@ -146,7 +148,8 @@ class ScreenGenericProcessor implements IProcessor {
       case FlComponentClassname.POPUP_MENU_BUTTON:
         continue alsoDefault;
       case FlComponentClassname.CHECK_BOX:
-        continue alsoDefault;
+        model = FlCheckBoxModel();
+        break;
       case FlComponentClassname.PASSWORD_FIELD:
         model = FlTextFieldModel();
         break;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/editor/text_field/fl_text_field_wrapper.dart';
-import 'package:flutter_client/src/model/component/editor/fl_text_field_model.dart';
+import 'package:flutter_client/src/model/component/text_field/fl_text_field_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_password_widget.dart';
 

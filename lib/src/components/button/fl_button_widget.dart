@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/layout/alignments.dart';
@@ -15,6 +16,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   final VoidCallback onPress;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overrideable widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Widget? get image => model.image;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -29,12 +36,13 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: model.isEnabled && model.isFocusable ? onPress : null,
-        child: Container(
-          child: getButtonChild(),
-          alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-        ),
-        style: getButtonStyle());
+      onPressed: model.isEnabled && model.isFocusable ? onPress : null,
+      child: Container(
+        child: getButtonChild(),
+        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+      ),
+      style: getButtonStyle(),
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,12 +51,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   /// Returns the icon and/or the text of the button.
   Widget? getButtonChild() {
-    if (model.labelModel.text.isNotEmpty && model.image != null) {
+    if (model.labelModel.text.isNotEmpty && image != null) {
       if (model.labelModel.verticalAlignment != VerticalAlignment.CENTER &&
           model.labelModel.horizontalAlignment == HorizontalAlignment.CENTER) {
         return Column(
           children: <Widget>[
-            model.image!,
+            image!,
             SizedBox(height: model.imageTextGap.toDouble()),
             Flexible(child: _getTextWidget())
           ],
@@ -59,11 +67,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         );
       } else {
         return Row(
-          children: <Widget>[
-            model.image!,
-            SizedBox(width: model.imageTextGap.toDouble()),
-            Flexible(child: _getTextWidget())
-          ],
+          children: <Widget>[image!, SizedBox(width: model.imageTextGap.toDouble()), Flexible(child: _getTextWidget())],
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: _getCrossAxisAlignment(model.labelModel.verticalAlignment),
           textBaseline: TextBaseline.alphabetic,
@@ -73,8 +77,8 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       }
     } else if (model.labelModel.text.isNotEmpty) {
       return _getTextWidget();
-    } else if (model.image != null) {
-      return model.image!;
+    } else if (image != null) {
+      return image!;
     } else {
       return null;
     }
@@ -99,7 +103,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// Gets the button style.
   ButtonStyle getButtonStyle() {
     return ButtonStyle(
-        elevation: MaterialStateProperty.all(2),
+        // side: MaterialStateProperty.all(
+        //   BorderSide(
+        //       color: model.isEnabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
+        //       style: model.borderPainted ? BorderStyle.solid : BorderStyle.none),
+        // ),
+        elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
         backgroundColor: MaterialStateProperty.all(model.background),
         padding: MaterialStateProperty.all(model.paddings));
   }
