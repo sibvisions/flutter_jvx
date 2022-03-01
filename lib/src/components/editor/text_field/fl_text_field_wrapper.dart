@@ -70,8 +70,6 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
 
     updateText();
 
-    textController.text = "";
-
     focusNode.addListener(() {
       if (!focusNode.hasFocus) {
         setState(() {
@@ -90,6 +88,12 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
       log("Value changed to: " + pValue + " | Length: " + pValue.characters.length.toString());
 
       setState(() {
+        textController.value = textController.value.copyWith(
+          text: pValue,
+          selection: TextSelection.collapsed(offset: pValue.characters.length),
+          composing: null,
+        );
+
         model.text = pValue;
       });
     }
@@ -103,6 +107,12 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     uiService.sendCommand(setValue);
 
     setState(() {
+      textController.value = textController.value.copyWith(
+        text: pValue,
+        selection: TextSelection.collapsed(offset: pValue.characters.length),
+        composing: null,
+      );
+
       model.text = pValue;
     });
   }

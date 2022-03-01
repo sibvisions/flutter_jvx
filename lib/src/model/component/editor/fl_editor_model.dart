@@ -3,6 +3,8 @@ import 'package:flutter_client/src/model/api/api_object_property.dart';
 import '../fl_component_model.dart';
 
 class FlEditorModel extends FlComponentModel {
+  bool changedCellEditor = false;
+
   late String dataRow;
 
   late String columnName;
@@ -27,6 +29,8 @@ class FlEditorModel extends FlComponentModel {
     if (jsonDataRow != null) {
       dataRow = jsonDataRow;
     }
+
+    changedCellEditor = pJson.keys.contains(ApiObjectProperty.cellEditor);
   }
 
   /// Applies component specific layout size information

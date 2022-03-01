@@ -61,6 +61,42 @@ class FlButtonModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
+  set background(Color pColor) {
+    super.background = pColor;
+    labelModel.background = pColor;
+  }
+
+  @override
+  set foreground(Color pColor) {
+    super.foreground = pColor;
+    labelModel.foreground = pColor;
+  }
+
+  @override
+  set fontName(String pFontName) {
+    super.fontName = pFontName;
+    labelModel.fontName = pFontName;
+  }
+
+  @override
+  set fontSize(int pFontSize) {
+    super.fontSize = pFontSize;
+    labelModel.fontSize = pFontSize;
+  }
+
+  @override
+  set isBold(bool pIsBold) {
+    super.isBold = pIsBold;
+    labelModel.isBold = pIsBold;
+  }
+
+  @override
+  set isItalic(bool pIsItalic) {
+    super.isItalic = pIsItalic;
+    labelModel.isItalic = pIsItalic;
+  }
+
+  @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
@@ -141,13 +177,6 @@ class FlButtonModel extends FlComponentModel {
     if (_isGrey) {
       foreground = IColorConstants.COMPONENT_DISABLED;
     }
-
-    labelModel.background = background;
-    labelModel.foreground = foreground;
-    labelModel.fontName = fontName;
-    labelModel.fontSize = fontSize;
-    labelModel.isBold = isBold;
-    labelModel.isItalic = isItalic;
 
     Map<String, dynamic> labelJson = <String, dynamic>{};
     labelJson[ApiObjectProperty.horizontalAlignment] = pJson[ApiObjectProperty.horizontalTextPosition];

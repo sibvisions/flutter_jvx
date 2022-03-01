@@ -31,8 +31,6 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  late FlStatelessWidget _widget;
-
   final TextEditingController textController = TextEditingController();
 
   final FocusNode focusNode = FocusNode();
@@ -56,39 +54,6 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
         onEndEditing(textController.text);
       }
     });
-
-    switch (model.contentType) {
-      case (TEXT_PLAIN_WRAPPEDMULTILINE):
-      case (TEXT_PLAIN_MULTILINE):
-        _widget = FlTextAreaWidget(
-          model: FlTextAreaModel(),
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
-          focusNode: focusNode,
-          textController: textController,
-        );
-        break;
-      case (TEXT_PLAIN_SINGLELINE):
-        _widget = FlTextFieldWidget(
-          model: FlTextFieldModel(),
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
-          focusNode: focusNode,
-          textController: textController,
-        );
-        break;
-      case (TEXT_PLAIN_PASSWORD):
-        _widget = FlPasswordWidget(
-          model: FlTextFieldModel(),
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
-          focusNode: focusNode,
-          textController: textController,
-        );
-        break;
-      default:
-        _widget = FlDummyWidget(model: FlDummyModel());
-    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,7 +75,35 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
 
   @override
   FlStatelessWidget getWidget() {
-    return _widget;
+    switch (model.contentType) {
+      case (TEXT_PLAIN_WRAPPEDMULTILINE):
+      case (TEXT_PLAIN_MULTILINE):
+        return FlTextAreaWidget(
+          model: FlTextAreaModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+      case (TEXT_PLAIN_SINGLELINE):
+        return FlTextFieldWidget(
+          model: FlTextFieldModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+      case (TEXT_PLAIN_PASSWORD):
+        return FlPasswordWidget(
+          model: FlTextFieldModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+      default:
+        return FlDummyWidget(model: FlDummyModel());
+    }
   }
 
   @override

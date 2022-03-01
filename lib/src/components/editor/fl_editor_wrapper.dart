@@ -50,21 +50,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   receiveNewModel({required T newModel}) {
-    unsubscribe();
+    if (newModel.changedCellEditor) {
+      unsubscribe();
 
-    oldCellEditor = cellEditor;
+      oldCellEditor = cellEditor;
 
-    recreateCellEditor(newModel);
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- RECEIVE_NEW_MODEL -----");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor!.hashCode}");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
-    LOGGER.logD(
-        pType: LOG_TYPE.UI,
-        pMessage: "Old cell editor widget hashcode: " + oldCellEditor!.getWidget().hashCode.toString());
-    LOGGER.logD(
-        pType: LOG_TYPE.UI, pMessage: "New cell editor widget hashcode: " + cellEditor.getWidget().hashCode.toString());
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- RECEIVE_NEW_MODEL -----");
-    (widget.model as FlEditorModel).applyComponentInformation((cellEditor.getWidget()).model);
+      recreateCellEditor(newModel);
+
+      logCellEditor("RECEIVE_NEW_MODEL");
+
+      (widget.model as FlEditorModel).applyComponentInformation((cellEditor.getWidget()).model);
+    }
 
     super.receiveNewModel(newModel: newModel);
   }
@@ -79,16 +75,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     editorWidget.model.applyFromJson(model.json);
     editorWidget.model.applyCellEditorOverrides(model.json);
 
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: StackTrace.current.toString());
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- BUILD -----");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
-    LOGGER.logD(
-        pType: LOG_TYPE.UI,
-        pMessage: "Old cell editor widget hashcode: " + (oldCellEditor?.getWidget().hashCode.toString() ?? ""));
-    LOGGER.logD(
-        pType: LOG_TYPE.UI, pMessage: "New cell editor widget hashcode: " + cellEditor.getWidget().hashCode.toString());
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- BUILD -----");
+    logCellEditor("BUILD");
 
     return getPositioned(child: editorWidget);
   }
@@ -113,9 +100,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.dataRow);
   }
 
-  void onChange(dynamic pValue) {}
+  void onChange(dynamic pValue) {
+    setState(() {
+      cellEditor.setValue(pValue);
+    });
+  }
 
   void onEndEditing(dynamic pValue) {
+    setState(() {
+      cellEditor.setValue(pValue);
+    });
+
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "editing ended");
     LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $pValue");
     uiService.sendCommand(SetValuesCommand(
@@ -139,5 +134,18 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           ICellEditor.getCellEditor(pCellEditorJson: jsonCellEditor, onChange: onChange, onEndEditing: onEndEditing);
       subscribe(pModel);
     }
+  }
+
+  void logCellEditor(String pPhase) {
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: StackTrace.current.toString());
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
+    LOGGER.logD(
+        pType: LOG_TYPE.UI,
+        pMessage: "Old cell editor widget hashcode: " + (oldCellEditor?.getWidget().hashCode.toString() ?? ""));
+    LOGGER.logD(
+        pType: LOG_TYPE.UI, pMessage: "New cell editor widget hashcode: " + cellEditor.getWidget().hashCode.toString());
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
   }
 }

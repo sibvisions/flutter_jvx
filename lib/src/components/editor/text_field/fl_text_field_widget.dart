@@ -76,7 +76,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           hintText: model.placeholder,
           contentPadding: textPadding,
           border: InputBorder.none,
-          suffixIcon: !model.isReadOnly && textController.text.isNotEmpty ? getClearIcon() : null,
+          suffixIcon: ((!model.isReadOnly) && textController.text.isNotEmpty) ? getClearIcon() : null,
         ),
         textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
         textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
