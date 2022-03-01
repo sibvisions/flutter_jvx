@@ -48,6 +48,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                   children: [
                     Text(configService.getAppName()?.toUpperCase() ?? "App Name",
                       style: Theme.of(context).textTheme.headline4,),
+                    const Padding(padding: EdgeInsets.all(5)),
                     TextFormField(
                       controller: usernameController,
                       decoration: const InputDecoration(
@@ -60,6 +61,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                       ),
                       controller: passwordController,
                     ),
+                    const Padding(padding: EdgeInsets.all(5)),
                     ElevatedButton(
                       onPressed: onLoginPressed,
                       child: const Text("Login"),

@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/data/column_definition.dart';
+
 import '../../../model/data/data_book.dart';
 
 import '../../../model/api/response/dal_fetch_response.dart';
@@ -73,6 +75,15 @@ class DataService implements IDataService {
     dynamic selectedRowColumnData = dataBook.getSelectedColumnData(pDataColumnName: pColumnName);
 
     return selectedRowColumnData;
+  }
+
+  @override
+  Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider}) async {
+    DataBook dataBook = dataBooks[pDataProvider]!;
+
+    ColumnDefinition? columnDefinition = dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
+
+    return columnDefinition;
   }
 
   @override

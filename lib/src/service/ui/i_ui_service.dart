@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter_client/src/model/data/column_definition.dart';
+
 import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
@@ -44,11 +46,13 @@ abstract class IUiService {
   void registerAsLiveComponent({required String id, required ComponentCallback callback});
 
   /// Register a an active component in need of data from a dataBook.
-  void registerAsDataComponent(
-      {required String pDataProvider,
-      required Function pCallback,
-      required String pComponentId,
-      required String pColumnName});
+  void registerAsDataComponent({
+    required String pDataProvider,
+    required Function pCallback,
+    required Function pColumnDefinitionCallback,
+    required String pComponentId,
+    required String pColumnName,
+  });
 
   /// Notify affected parents that their children changed, should only be used when parent model hasn't been changed as well.
   void notifyAffectedComponents({required Set<String> affectedIds});
@@ -60,11 +64,19 @@ abstract class IUiService {
   void notifyDataChange({required String pDataProvider});
 
   /// Calls the callback function of the component
-  void setSelectedData(
-      {required String pDataProvider,
-      required String pComponentId,
-      required dynamic data,
-      required String pColumnName});
+  void setSelectedData({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required dynamic data,
+  });
+
+  void setSelectedColumnDefinition({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required ColumnDefinition pColumnDefinition
+  });
 
   /// Save new components to active components, used for saving components which have not been previously been rendered.
   void saveNewComponents({required List<FlComponentModel> newModels});

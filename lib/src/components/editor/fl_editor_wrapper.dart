@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
@@ -114,10 +116,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   // TODO get column definition and apply it to the cell editor.
   void subscribe(T pModel) {
     uiService.registerAsDataComponent(
-        pDataProvider: pModel.dataRow,
-        pCallback: cellEditor.setValue,
-        pComponentId: pModel.id,
-        pColumnName: pModel.columnName);
+      pColumnDefinitionCallback: (columnDefinition) {log(columnDefinition.toString());},
+      pDataProvider: pModel.dataRow,
+      pCallback: cellEditor.setValue,
+      pComponentId: pModel.id,
+      pColumnName: pModel.columnName
+    );
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.

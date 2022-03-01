@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 import 'package:flutter_client/src/model/routing/route_close_qr_scanner.dart';
 import 'package:flutter_client/src/model/routing/route_open_qr_scanner.dart';
 import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
@@ -40,6 +41,9 @@ class UiService with CommandServiceMixin implements IUiService {
   /// --- Callbacks
   final HashMap<String, Map<String, Map<String, Function>>> _registeredDataComponents = HashMap();
 
+  /// List of all one-time-use columnDefinition callBacks
+  final HashMap<String, Map<String, Map<String, Function>>> _columnDefinitionCallback = HashMap();
+
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
 
@@ -65,6 +69,9 @@ class UiService with CommandServiceMixin implements IUiService {
       _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
       _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
       _registeredDataComponents.forEach((key, value) {
+        value.removeWhere((key, value) => key == inactiveId);
+      });
+      _columnDefinitionCallback.forEach((key, value) {
         value.removeWhere((key, value) => key == inactiveId);
       });
     }
@@ -97,19 +104,26 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void registerAsDataComponent(
-      {required String pDataProvider,
-      required Function pCallback,
-      required String pComponentId,
-      required String pColumnName}) {
+  void registerAsDataComponent({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required Function pColumnDefinitionCallback,
+    required Function pCallback,
+  }) {
     if (_registeredDataComponents[pDataProvider] == null) {
       _registeredDataComponents[pDataProvider] = {
         pColumnName: {pComponentId: pCallback}
       };
+      _columnDefinitionCallback[pDataProvider] = {
+        pColumnName: {pComponentId: pColumnDefinitionCallback}
+      };
     } else if (_registeredDataComponents[pDataProvider]![pColumnName] == null) {
       _registeredDataComponents[pDataProvider]![pColumnName] = {pComponentId: pCallback};
+      _columnDefinitionCallback[pDataProvider]![pColumnName] = {pComponentId: pColumnDefinitionCallback};
     } else {
       _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId] = pCallback;
+      _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId] = pColumnDefinitionCallback;
     }
 
     GetSelectedDataCommand command = GetSelectedDataCommand(
@@ -193,8 +207,12 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void setSelectedData(
-      {required String pDataProvider, required String pComponentId, required data, required String pColumnName}) {
+  void setSelectedData({
+    required String pDataProvider,
+    required String pComponentId,
+    required data,
+    required String pColumnName,
+  }) {
     _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId]!.call(data);
   }
 
@@ -204,11 +222,17 @@ class UiService with CommandServiceMixin implements IUiService {
     _registeredDataComponents.forEach((key, value) {
       value.removeWhere((key, value) => key == pComponentId);
     });
+    _columnDefinitionCallback.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
   }
 
   @override
   void unRegisterDataComponent({required String pComponentId, required String pDataProvider}) {
     _registeredDataComponents.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
+    _columnDefinitionCallback.forEach((key, value) {
       value.removeWhere((key, value) => key == pComponentId);
     });
   }
@@ -223,5 +247,15 @@ class UiService with CommandServiceMixin implements IUiService {
   void openQRScanner({required Function callback}) {
     RouteOpenRQScanner routeOpenRQScanner = RouteOpenRQScanner(callBack: callback);
     _routeStream.sink.add(routeOpenRQScanner);
+  }
+
+  @override
+  void setSelectedColumnDefinition({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required ColumnDefinition pColumnDefinition
+  }) {
+    _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId]!.call(pColumnDefinition);
   }
 }

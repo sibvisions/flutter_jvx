@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/data/column_definition.dart';
+
 import 'ui_command.dart';
 
 class UpdateSelectedDataCommand extends UiCommand {
@@ -14,18 +16,24 @@ class UpdateSelectedDataCommand extends UiCommand {
   /// Link to the dataBook
   final String dataProvider;
 
+  /// The columnName of the return data
   final String columnName;
+
+  /// The columnDefinition of the requested Column
+  final ColumnDefinition columnDefinition;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UpdateSelectedDataCommand(
-      {required this.dataProvider,
-      required String reason,
-      required this.componentId,
-      required this.data,
-      required this.columnName})
+  UpdateSelectedDataCommand({
+    required this.dataProvider,
+    required String reason,
+    required this.componentId,
+    required this.data,
+    required this.columnName,
+    required this.columnDefinition
+  })
       : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
