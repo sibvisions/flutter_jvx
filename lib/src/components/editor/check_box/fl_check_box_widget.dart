@@ -10,6 +10,7 @@ class FlCheckBoxWidget extends FlButtonWidget<FlCheckBoxModel> {
   @override
   Widget get image {
     return Checkbox(
+      visualDensity: VisualDensity.compact,
       value: model.selected,
       onChanged: (_) {
         onPress();
