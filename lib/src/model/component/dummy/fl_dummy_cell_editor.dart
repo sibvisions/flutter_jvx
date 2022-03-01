@@ -1,9 +1,9 @@
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
-import 'package:flutter_client/src/model/data/cell_editor_model.dart';
+import 'package:flutter_client/src/model/component/editor/cell_editor/cell_editor_model.dart';
 
 import '../../../components/dummy/fl_dummy_widget.dart';
 import 'fl_dummy_model.dart';
-import '../i_cell_editor.dart';
+import '../../../components/editor/cell_editor/i_cell_editor.dart';
 
 class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   FlDummyCellEditor({

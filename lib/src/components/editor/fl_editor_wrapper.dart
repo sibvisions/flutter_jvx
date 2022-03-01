@@ -9,7 +9,7 @@ import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/component/editor/fl_editor_model.dart';
-import '../../model/component/i_cell_editor.dart';
+import 'cell_editor/i_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
