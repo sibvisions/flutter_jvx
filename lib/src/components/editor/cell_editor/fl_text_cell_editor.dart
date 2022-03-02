@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+
+import '../../../model/component/dummy/fl_dummy_model.dart';
+import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../model/component/editor/text_area/fl_text_area_model.dart';
+import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../dummy/fl_dummy_widget.dart';
 import '../password_field/fl_password_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
-import '../../../model/component/dummy/fl_dummy_model.dart';
-import '../../../model/component/text_area/fl_text_area_model.dart';
-import '../../../model/component/text_field/fl_text_field_model.dart';
-import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import 'i_cell_editor.dart';
 
 class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {

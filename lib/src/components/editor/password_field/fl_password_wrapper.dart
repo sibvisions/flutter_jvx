@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../text_field/fl_text_field_wrapper.dart';
-import '../../../model/component/text_field/fl_text_field_model.dart';
+
+import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../text_field/fl_text_field_wrapper.dart';
 import 'fl_password_widget.dart';
 
 class FlPasswordFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {

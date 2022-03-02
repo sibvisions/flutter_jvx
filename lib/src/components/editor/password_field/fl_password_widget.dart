@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/component/text_field/fl_text_field_model.dart';
+import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../text_field/fl_text_field_widget.dart';
 
 class FlPasswordWidget extends FlTextFieldWidget {

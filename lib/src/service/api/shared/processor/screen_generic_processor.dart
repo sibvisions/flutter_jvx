@@ -1,24 +1,20 @@
-import '../../../../model/component/check_box/fl_check_box_model.dart';
-
-import '../../../../model/component/button/fl_toggle_button_model.dart';
-import '../../../../model/component/editor/fl_editor_model.dart';
-import '../../../../model/component/text_area/fl_text_area_model.dart';
-import '../../../../model/component/text_field/fl_text_field_model.dart';
-
-import '../../../../model/component/panel/fl_split_panel_model.dart';
-
-import '../../../../model/command/ui/route_command.dart';
-import '../../../../model/component/label/fl_label_model.dart';
-import '../../../../routing/app_routing_type.dart';
-
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
+import '../../../../model/command/ui/route_command.dart';
 import '../../../../model/component/button/fl_button_model.dart';
+import '../../../../model/component/button/fl_toggle_button_model.dart';
+import '../../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../../model/component/dummy/fl_dummy_model.dart';
+import '../../../../model/component/editor/fl_editor_model.dart';
+import '../../../../model/component/editor/text_area/fl_text_area_model.dart';
+import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../../model/component/fl_component_model.dart';
+import '../../../../model/component/label/fl_label_model.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
+import '../../../../model/component/panel/fl_split_panel_model.dart';
+import '../../../../routing/app_routing_type.dart';
 import '../fl_component_classname.dart';
 import '../i_processor.dart';
 

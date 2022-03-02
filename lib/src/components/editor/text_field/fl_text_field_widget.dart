@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../../../util/constants/i_color.dart';
+import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../model/layout/alignments.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
 import '../../label/fl_label_widget.dart';
-import '../../../model/component/text_field/fl_text_field_model.dart';
-import '../../../model/layout/alignments.dart';
-import '../../../../util/constants/i_color.dart';
 
 class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidget<T, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

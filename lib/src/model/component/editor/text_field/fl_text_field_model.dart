@@ -1,5 +1,5 @@
-import '../../api/api_object_property.dart';
-import '../label/fl_label_model.dart';
+import '../../../api/api_object_property.dart';
+import '../../label/fl_label_model.dart';
 
 class FlTextFieldModel extends FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

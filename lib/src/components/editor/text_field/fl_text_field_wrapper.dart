@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../../model/command/api/set_value_command.dart';
-import '../../base_wrapper/base_comp_wrapper_state.dart';
-import '../../base_wrapper/base_comp_wrapper_widget.dart';
+
 import '../../../mixin/data_service_mixin.dart';
 import '../../../mixin/ui_service_mixin.dart';
-import '../../../model/component/text_field/fl_text_field_model.dart';
-
+import '../../../model/command/api/set_value_command.dart';
+import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../base_wrapper/base_comp_wrapper_state.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_text_field_widget.dart';
 
 class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> with UiServiceMixin {
