@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
@@ -8,6 +10,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  FocusNode? currentObjectFocused;
 
   dynamic _value;
 
@@ -52,6 +56,11 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   @override
   void dispose() {
     // do nothing
+  }
+
+  @override
+  bool isActionCellEditor() {
+    return true;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

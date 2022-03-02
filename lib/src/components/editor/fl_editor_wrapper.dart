@@ -2,15 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
+
+import '../../../util/logging/flutter_logger.dart';
+import '../../mixin/ui_service_mixin.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/dummy/fl_dummy_cell_editor.dart';
-import '../../../util/logging/flutter_logger.dart';
+import '../../model/component/editor/fl_editor_model.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
-import '../../mixin/ui_service_mixin.dart';
-import '../../model/component/editor/fl_editor_model.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 import 'cell_editor/i_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
@@ -34,6 +35,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If anything has a focus, the set value event must be added as a listener.
+  /// As to send it last.
+  FocusNode? currentObjectFocused;
 
   /// The old cell editor which might have to be disposed of.
   ICellEditor? oldCellEditor;
@@ -143,14 +148,33 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       cellEditor.setValue(pValue);
     });
 
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "editing ended");
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $pValue");
+    if (cellEditor.isActionCellEditor()) {
+      currentObjectFocused = FocusManager.instance.primaryFocus;
+      if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
+        currentObjectFocused = null;
+        sendValue();
+      } else {
+        LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Value will be set");
+        currentObjectFocused!.addListener(sendValue);
+        currentObjectFocused!.unfocus();
+      }
+    } else {
+      sendValue();
+    }
+  }
+
+  void sendValue() {
+    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to ${cellEditor.getValue()}");
     uiService.sendCommand(SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataRow,
         columnNames: [model.columnName],
         values: [cellEditor.getValue()],
-        reason: "Value of ${model.id} set to $pValue"));
+        reason: "Value of ${model.id} set to ${cellEditor.getValue()}"));
+
+    if (currentObjectFocused != null) {
+      currentObjectFocused!.removeListener(sendValue);
+    }
   }
 
   /// Recreates the cell editor.

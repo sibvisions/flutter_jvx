@@ -117,4 +117,9 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   String getValue() {
     return textController.text;
   }
+
+  @override
+  bool isActionCellEditor() {
+    return false;
+  }
 }
