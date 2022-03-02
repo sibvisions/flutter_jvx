@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../model/component/check_box/fl_check_box_model.dart';
-import '../button/fl_button_wrapper.dart';
-import 'fl_check_box_widget.dart';
+import '../../../model/component/button/fl_radio_button_model.dart';
+import '../fl_button_wrapper.dart';
+import 'fl_radio_button_widget.dart';
 
-class FlCheckBoxWrapper extends FlButtonWrapper<FlCheckBoxModel> {
+class FlRadioButtonWrapper extends FlButtonWrapper<FlRadioButtonModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlCheckBoxWrapper({Key? key, required FlCheckBoxModel model}) : super(key: key, model: model);
+  const FlRadioButtonWrapper({Key? key, required FlRadioButtonModel model}) : super(key: key, model: model);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  FlCheckBoxWrapperState createState() => FlCheckBoxWrapperState();
+  FlRadioButtonWrapperState createState() => FlRadioButtonWrapperState();
 }
 
-class FlCheckBoxWrapperState<T extends FlCheckBoxModel> extends FlButtonWrapperState<T> {
+class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
-    FlCheckBoxWidget checkboxWidget = FlCheckBoxWidget(
+    FlRadioButtonWidget checkboxWidget = FlRadioButtonWidget(
       model: model,
       onPress: buttonPressed,
     );
