@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../button/fl_button_widget.dart';
-import '../../../model/component/check_box/fl_check_box_model.dart';
+
+import '../../model/component/check_box/fl_check_box_model.dart';
+import '../button/fl_button_widget.dart';
 
 class FlCheckBoxWidget extends FlButtonWidget<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

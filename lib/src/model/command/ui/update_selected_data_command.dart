@@ -1,5 +1,4 @@
 import '../../data/column_definition.dart';
-
 import 'ui_command.dart';
 
 class UpdateSelectedDataCommand extends UiCommand {

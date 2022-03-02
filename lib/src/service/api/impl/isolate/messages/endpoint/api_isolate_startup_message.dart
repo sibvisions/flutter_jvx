@@ -1,7 +1,6 @@
 import 'dart:isolate';
 
 import '../../../../../../model/command/base_command.dart';
-
 import '../api_isolate_message.dart';
 
 class ApiIsolateStartUpMessage extends ApiIsolateMessage<List<BaseCommand>> {
@@ -15,6 +14,4 @@ class ApiIsolateStartUpMessage extends ApiIsolateMessage<List<BaseCommand>> {
   sendResponse({required List<BaseCommand> response, required SendPort sendPort}) {
     sendPort.send(response);
   }
-
-
 }

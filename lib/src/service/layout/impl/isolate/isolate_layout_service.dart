@@ -2,14 +2,15 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'message/endpoint/remove_layout_message.dart';
-import 'message/endpoint/layout_in_process_message.dart';
-import 'message/endpoint/layout_valid_message.dart';
+
 import '../../../../model/command/base_command.dart';
 import '../../../../model/layout/layout_data.dart';
 import '../../i_layout_service.dart';
 import 'layout_isolate.dart';
+import 'message/endpoint/layout_in_process_message.dart';
+import 'message/endpoint/layout_valid_message.dart';
 import 'message/endpoint/mark_as_dirty_message.dart';
+import 'message/endpoint/remove_layout_message.dart';
 import 'message/endpoint/report_layout_message.dart';
 import 'message/endpoint/report_preferred_size_message.dart';
 import 'message/endpoint/set_screen_size_message.dart';

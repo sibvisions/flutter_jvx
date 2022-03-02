@@ -1,11 +1,10 @@
-import 'split_layout.dart';
-
 import '../../util/i_clonable.dart';
 import '../model/layout/layout_data.dart';
 import 'border_layout.dart';
 import 'flow_layout.dart';
 import 'form_layout.dart';
 import 'grid_layout.dart';
+import 'split_layout.dart';
 
 // The states a layout can be in. If a component is dirty, it gets redrawn.
 

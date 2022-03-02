@@ -1,23 +1,21 @@
-import '../../../model/command/data/data_command.dart';
-import '../shared/processor/data/data_processor.dart';
-
-import '../../../model/command/storage/delete_screen_command.dart';
-import '../../../routing/app_routing_type.dart';
-
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/storage_service_mixin.dart';
 import '../../../model/command/api/api_command.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
+import '../../../model/command/data/data_command.dart';
 import '../../../model/command/layout/layout_command.dart';
+import '../../../model/command/storage/delete_screen_command.dart';
 import '../../../model/command/storage/storage_command.dart';
 import '../../../model/command/ui/route_command.dart';
 import '../../../model/command/ui/ui_command.dart';
+import '../../../routing/app_routing_type.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
 import '../shared/processor/api/api_processor.dart';
 import '../shared/processor/config/config_processor.dart';
+import '../shared/processor/data/data_processor.dart';
 import '../shared/processor/layout/layout_processor.dart';
 import '../shared/processor/storage/storage_processor.dart';
 import '../shared/processor/ui/ui_processor.dart';

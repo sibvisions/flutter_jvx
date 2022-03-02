@@ -1,11 +1,11 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'i_layout.dart';
+import '../../util/i_clonable.dart';
 import '../model/component/panel/fl_split_panel_model.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
-import '../../util/i_clonable.dart';
+import 'i_layout.dart';
 
 class SplitLayout implements ILayout, ICloneable {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

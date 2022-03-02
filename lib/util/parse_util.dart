@@ -1,9 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'constants/i_color.dart';
+
 import '../src/model/data/column_definition.dart';
 import '../src/model/layout/layout_position.dart';
+import 'constants/i_color.dart';
 
 abstract class ParseUtil {
   /// Will return true if string == "true", false if string == "false"

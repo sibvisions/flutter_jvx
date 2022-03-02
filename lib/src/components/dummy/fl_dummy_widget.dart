@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
+
 import '../../model/component/dummy/fl_dummy_model.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlDummyWidget extends FlStatelessWidget<FlDummyModel> {
   const FlDummyWidget({Key? key, this.width, this.height, required FlDummyModel model}) : super(key: key, model: model);

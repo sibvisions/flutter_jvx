@@ -1,6 +1,5 @@
-import '../../../layout/alignments.dart';
-
 import '../../../api/api_object_property.dart';
+import '../../../layout/alignments.dart';
 
 class ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

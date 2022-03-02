@@ -1,12 +1,10 @@
 import 'dart:collection';
 
-import '../../../model/data/column_definition.dart';
-
-import '../../../model/data/data_book.dart';
-
 import '../../../model/api/response/dal_fetch_response.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
+import '../../../model/data/column_definition.dart';
+import '../../../model/data/data_book.dart';
 import '../i_data_service.dart';
 
 class DataService implements IDataService {

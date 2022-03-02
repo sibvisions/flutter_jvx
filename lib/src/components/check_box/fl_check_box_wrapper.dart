@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../button/toggle/fl_toggle_button_wrapper.dart';
+
+import '../../model/component/check_box/fl_check_box_model.dart';
+import '../button/toggle/fl_toggle_button_wrapper.dart';
 import 'fl_check_box_widget.dart';
-import '../../../model/component/check_box/fl_check_box_model.dart';
 
 class FlCheckBoxWrapper extends FlToggleButtonWrapper<FlCheckBoxModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

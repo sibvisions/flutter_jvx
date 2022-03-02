@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'layout_command.dart';
 
 class SetComponentSizeCommand extends LayoutCommand {

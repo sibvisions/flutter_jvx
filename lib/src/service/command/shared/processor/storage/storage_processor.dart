@@ -1,11 +1,10 @@
-import '../../../../../model/command/storage/delete_screen_command.dart';
-import 'delete_screen_processor.dart';
-
 import '../../../../../model/command/base_command.dart';
+import '../../../../../model/command/storage/delete_screen_command.dart';
 import '../../../../../model/command/storage/save_components_command.dart';
 import '../../../../../model/command/storage/save_menu_command.dart';
 import '../../../../../model/command/storage/storage_command.dart';
 import '../../i_command_processor.dart';
+import 'delete_screen_processor.dart';
 import 'save_components_commands_processor.dart';
 import 'save_menu_command_processor.dart';
 

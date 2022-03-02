@@ -1,8 +1,8 @@
-import '../../base_wrapper/fl_stateless_widget.dart';
-import 'i_cell_editor.dart';
-import '../check_box/fl_check_box_widget.dart';
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import '../../base_wrapper/fl_stateless_widget.dart';
+import '../../check_box/fl_check_box_widget.dart';
+import 'i_cell_editor.dart';
 
 class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
