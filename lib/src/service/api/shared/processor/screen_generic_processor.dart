@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/component/button/fl_radio_button_model.dart';
+
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
@@ -152,7 +154,8 @@ class ScreenGenericProcessor implements IProcessor {
       case FlComponentClassname.TABLE:
         continue alsoDefault;
       case FlComponentClassname.RADIO_BUTTON:
-        continue alsoDefault;
+        model = FlRadioButtonModel();
+        break;
       case FlComponentClassname.MAP:
         continue alsoDefault;
       case FlComponentClassname.CHART:

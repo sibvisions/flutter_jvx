@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
+
 import '../../../model/component/button/fl_toggle_button_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../fl_button_widget.dart';
@@ -28,7 +30,10 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
         decoration: BoxDecoration(
             // 0x00000000 -> completely invisible shadow.
             // The shadow mimics a fake press.
-            boxShadow: [BoxShadow(blurRadius: 10.0, color: model.selected ? Colors.black26 : const Color(0x00000000))]),
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 10.0, color: model.selected ? IColor.darken(model.background) : const Color(0x00000000))
+            ]),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       ),
       style: getButtonStyle(),

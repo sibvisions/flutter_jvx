@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/component/button/fl_radio_button_model.dart';
 
 import '../model/component/button/fl_button_model.dart';
 import '../model/component/button/fl_toggle_button_model.dart';
@@ -14,6 +15,7 @@ import '../model/component/panel/fl_panel_model.dart';
 import '../model/component/panel/fl_split_panel_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'button/fl_button_wrapper.dart';
+import 'button/radio/fl_radio_button_wrapper.dart';
 import 'button/toggle/fl_toggle_button_wrapper.dart';
 import 'check_box/fl_check_box_wrapper.dart';
 import 'dummy/fl_dummy_wrapper.dart';
@@ -69,7 +71,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.TABLE:
         continue alsoDefault;
       case FlComponentClassname.RADIO_BUTTON:
-        continue alsoDefault;
+        return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: Key(model.id));
       case FlComponentClassname.MAP:
         continue alsoDefault;
       case FlComponentClassname.CHART:
