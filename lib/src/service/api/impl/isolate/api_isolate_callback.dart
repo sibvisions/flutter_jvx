@@ -1,7 +1,7 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_value_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_values_messages.dart';
+import 'messages/endpoint/api_isolate_set_value_message.dart';
+import 'messages/endpoint/api_isolate_set_values_messages.dart';
 import 'package:http/http.dart';
 
 import '../../shared/i_controller.dart';
@@ -58,16 +58,15 @@ void apiCallback(SendPort callerSendPort) {
         response = repo.openScreen(apiMessage.componentId, apiMessage.clientId);
       } else if (apiMessage is ApiIsoltePressButtonMessage) {
         response = repo.pressButton(apiMessage.componentId, apiMessage.clientId);
-      } else if (apiMessage is ApiIsolateSetValueMessage){
+      } else if (apiMessage is ApiIsolateSetValueMessage) {
         response = repo.setValue(apiMessage.clientId, apiMessage.componentId, apiMessage.value);
-      } else if (apiMessage is ApiIsolateSetValuesMessage){
+      } else if (apiMessage is ApiIsolateSetValuesMessage) {
         response = repo.setValues(
             clientId: apiMessage.setValuesRequest.clientId,
             componentId: apiMessage.setValuesRequest.componentId,
             columnNames: apiMessage.setValuesRequest.columnNames,
             values: apiMessage.setValuesRequest.values,
-            dataProvider: apiMessage.setValuesRequest.dataProvider
-        );
+            dataProvider: apiMessage.setValuesRequest.dataProvider);
       }
       if (response != null) {
         var actions = await cont.processResponse(response);

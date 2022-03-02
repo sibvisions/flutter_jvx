@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
+import '../api_object_property.dart';
 
 class SetValuesRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

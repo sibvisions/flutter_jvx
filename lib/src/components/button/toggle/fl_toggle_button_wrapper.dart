@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../model/component/button/fl_toggle_button_model.dart';
+import '../../../mixin/ui_service_mixin.dart';
+import '../../../model/component/button/fl_toggle_button_model.dart';
 
-import '../../mixin/ui_service_mixin.dart';
-import 'fl_button_wrapper.dart';
+import '../fl_button_wrapper.dart';
 import 'fl_toggle_button_widget.dart';
 
 class FlToggleButtonWrapper<T extends FlToggleButtonModel> extends FlButtonWrapper<T> {

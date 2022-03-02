@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'fl_stateless_widget.dart';
+import '../../model/component/fl_component_model.dart';
 
 abstract class FlStatelessDataWidget<T extends FlComponentModel, C> extends FlStatelessWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

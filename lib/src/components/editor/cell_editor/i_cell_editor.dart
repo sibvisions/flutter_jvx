@@ -1,6 +1,6 @@
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/fl_check_box_cell_editor.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../base_wrapper/fl_stateless_widget.dart';
+import 'fl_check_box_cell_editor.dart';
+import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/dummy/fl_dummy_cell_editor.dart';
 import 'fl_text_cell_editor.dart';

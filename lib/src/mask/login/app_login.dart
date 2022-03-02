@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
-import 'package:flutter_client/src/model/command/ui/route_command.dart';
-import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
-import 'package:flutter_client/src/routing/app_routing_type.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../mixin/config_service_mixin.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/login_command.dart';
 import '../../model/command/api/startup_command.dart';
+import '../../model/command/ui/route_command.dart';
+import '../../routing/app_routing_type.dart';
 
 class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   AppLogin({Key? key}) : super(key: key);
@@ -16,8 +15,8 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   final TextEditingController passwordController = TextEditingController();
 
   void onLoginPressed() {
-    LoginCommand loginCommand = LoginCommand(
-        userName: usernameController.text, password: passwordController.text, reason: "LoginButton");
+    LoginCommand loginCommand =
+        LoginCommand(userName: usernameController.text, password: passwordController.text, reason: "LoginButton");
     uiService.sendCommand(loginCommand);
   }
 
@@ -34,7 +33,6 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   //ToDo Login Background
   @override
   Widget build(BuildContext context) {
-    
     return (Scaffold(
       body: Row(children: [
         Expanded(child: Container()),
@@ -46,19 +44,17 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text(configService.getAppName()?.toUpperCase() ?? "App Name",
-                      style: Theme.of(context).textTheme.headline4,),
+                    Text(
+                      configService.getAppName()?.toUpperCase() ?? "App Name",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
                     const Padding(padding: EdgeInsets.all(5)),
                     TextFormField(
                       controller: usernameController,
-                      decoration: const InputDecoration(
-                        labelText: "Username: "
-                      ),
+                      decoration: const InputDecoration(labelText: "Username: "),
                     ),
                     TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: "Password: "
-                      ),
+                      decoration: const InputDecoration(labelText: "Password: "),
                       controller: passwordController,
                     ),
                     const Padding(padding: EdgeInsets.all(5)),
@@ -66,16 +62,13 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                       onPressed: onLoginPressed,
                       child: const Text("Login"),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton.icon(
-                          onPressed: onSettingsPressed,
-                          icon: const FaIcon(FontAwesomeIcons.cogs),
-                          label: const Text("Settings"),
-                        ),
-                      ]
-                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      TextButton.icon(
+                        onPressed: onSettingsPressed,
+                        icon: const FaIcon(FontAwesomeIcons.cogs),
+                        label: const Text("Settings"),
+                      ),
+                    ]),
                   ],
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,

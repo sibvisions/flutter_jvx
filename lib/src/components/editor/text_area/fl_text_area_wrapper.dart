@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/editor/text_field/fl_text_field_wrapper.dart';
+import '../text_field/fl_text_field_wrapper.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../../model/component/text_area/fl_text_area_model.dart';
 import 'fl_text_area_widget.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/number_field/numeric_text_formatter.dart';
-import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
-import 'package:flutter_client/src/model/component/text_field/fl_text_field_model.dart';
+import 'numeric_text_formatter.dart';
+import '../../text_field/fl_text_field_widget.dart';
+import '../../../../model/component/text_field/fl_text_field_model.dart';
 
 class FlNumberFieldWidget extends FlTextFieldWidget {
   final NumericTextFormatter numberFormatter;

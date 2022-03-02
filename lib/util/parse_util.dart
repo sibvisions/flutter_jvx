@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
+import 'constants/i_color.dart';
 import '../src/model/data/column_definition.dart';
 import '../src/model/layout/layout_position.dart';
 

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
-import 'package:flutter_client/src/mask/setting/settings_page.dart';
-import 'package:flutter_client/src/model/routing/route_close_qr_scanner.dart';
-import 'package:flutter_client/src/model/routing/route_open_qr_scanner.dart';
-import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
+import '../mask/camera/qr_scanner_mask.dart';
+import '../mask/setting/settings_page.dart';
+import '../model/routing/route_close_qr_scanner.dart';
+import '../model/routing/route_open_qr_scanner.dart';
+import '../model/routing/route_to_settings_page.dart';
 import '../model/command/ui/route_command.dart';
 
 import '../mask/login/app_login.dart';
@@ -34,13 +34,21 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
 
   _routeChanged(dynamic event) {
     if (event is RouteToMenu) {
-      activePage = [MaterialPage(
-          child: AppMenu(
-        menuModel: event.menuModel,
-      ))];
+      activePage = [
+        MaterialPage(
+            child: AppMenu(
+          menuModel: event.menuModel,
+        ))
+      ];
       activeRoute = AppRoutingType.menu;
     } else if (event is RouteToWorkScreen) {
-      activePage = [MaterialPage(child: WorkScreen(screen: event.screen, key: Key(event.screen.id + "_Work"),))];
+      activePage = [
+        MaterialPage(
+            child: WorkScreen(
+          screen: event.screen,
+          key: Key(event.screen.id + "_Work"),
+        ))
+      ];
       activeRoute = AppRoutingType.workScreen;
     } else if (event is RouteToSettingsPage) {
       activePage = [const MaterialPage(child: SettingsPage())];
@@ -65,12 +73,11 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
   @override
   Future<bool> popRoute() {
     //don't close app if pressing back on login
-    if(activePage.length == 2){
+    if (activePage.length == 2) {
       activePage.removeLast();
       notifyListeners();
       return SynchronousFuture(true);
     }
-
 
     if (activeRoute == AppRoutingType.login) {
       return SynchronousFuture(true);
@@ -81,12 +88,11 @@ class AppDelegate extends RouterDelegate<AppRoutePath>
     } else if (activeRoute == AppRoutingType.workScreen) {
       RouteCommand command = RouteCommand(routeType: AppRoutingType.menu, reason: "backButton");
       uiService.sendCommand(command);
-    } else if(activeRoute == AppRoutingType.settings) {
+    } else if (activeRoute == AppRoutingType.settings) {
       activePage = [MaterialPage(child: AppLogin())];
       activeRoute = AppRoutingType.login;
       notifyListeners();
     }
-
 
     return SynchronousFuture(true);
   }

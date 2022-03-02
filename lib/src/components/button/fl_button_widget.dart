@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/layout/alignments.dart';

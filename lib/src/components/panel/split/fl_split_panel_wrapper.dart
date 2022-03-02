@@ -2,13 +2,13 @@ import 'dart:math';
 import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/layout/split_layout.dart';
-import 'package:flutter_client/src/model/layout/layout_position.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
-import '../base_wrapper/base_comp_wrapper_widget.dart';
-import '../base_wrapper/base_cont_wrapper_state.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../base_wrapper/base_cont_wrapper_state.dart';
+import '../../../layout/split_layout.dart';
+import '../../../model/component/panel/fl_split_panel_model.dart';
+import '../../../model/layout/layout_position.dart';
+import '../../../../util/constants/i_color.dart';
 import 'fl_split_panel_widget.dart';
-import '../../model/component/panel/fl_split_panel_model.dart';
 
 class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
   const FlSplitPanelWrapper({Key? key, required FlSplitPanelModel model}) : super(key: key, model: model);

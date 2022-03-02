@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'src/model/command/api/startup_command.dart';
 
 import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';

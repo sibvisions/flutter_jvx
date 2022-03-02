@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_client/src/model/data/column_definition.dart';
+import '../../model/data/column_definition.dart';
 
 import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
@@ -71,12 +71,11 @@ abstract class IUiService {
     required dynamic data,
   });
 
-  void setSelectedColumnDefinition({
-    required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required ColumnDefinition pColumnDefinition
-  });
+  void setSelectedColumnDefinition(
+      {required String pDataProvider,
+      required String pComponentId,
+      required String pColumnName,
+      required ColumnDefinition pColumnDefinition});
 
   /// Save new components to active components, used for saving components which have not been previously been rendered.
   void saveNewComponents({required List<FlComponentModel> newModels});

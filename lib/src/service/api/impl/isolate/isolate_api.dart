@@ -1,8 +1,8 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/api/requests/set_values_request.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_value_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_set_values_messages.dart';
+import '../../../../model/api/requests/set_values_request.dart';
+import 'messages/endpoint/api_isolate_set_value_message.dart';
+import 'messages/endpoint/api_isolate_set_values_messages.dart';
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';

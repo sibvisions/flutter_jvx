@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'fl_button_widget.dart';
-import '../../model/component/button/fl_toggle_button_model.dart';
-import '../../model/layout/alignments.dart';
+import '../../../model/component/button/fl_toggle_button_model.dart';
+import '../../../model/layout/alignments.dart';
+import '../fl_button_widget.dart';
 
 /// The widget representing a button.
 class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {

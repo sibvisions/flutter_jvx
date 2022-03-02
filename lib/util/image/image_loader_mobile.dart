@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import '../../src/mixin/config_service_mixin.dart';
 import '../download/download_helper.dart';
 import 'image_loader.dart';
 

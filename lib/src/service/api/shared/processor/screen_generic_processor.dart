@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/component/check_box/fl_check_box_model.dart';
+import '../../../../model/component/check_box/fl_check_box_model.dart';
 
 import '../../../../model/component/button/fl_toggle_button_model.dart';
 import '../../../../model/component/editor/fl_editor_model.dart';

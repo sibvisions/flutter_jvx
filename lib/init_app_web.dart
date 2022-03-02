@@ -1,7 +1,7 @@
-import 'package:flutter_client/src/service/data/i_data_service.dart';
-import 'package:flutter_client/src/service/data/impl/data_service.dart';
-import 'package:flutter_client/src/service/layout/i_layout_service.dart';
-import 'package:flutter_client/src/service/layout/impl/layout_service.dart';
+import 'src/service/data/i_data_service.dart';
+import 'src/service/data/impl/data_service.dart';
+import 'src/service/layout/i_layout_service.dart';
+import 'src/service/layout/impl/layout_service.dart';
 
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';

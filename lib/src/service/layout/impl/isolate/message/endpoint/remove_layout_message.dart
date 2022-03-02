@@ -1,9 +1,8 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/layout/impl/isolate/message/layout_message.dart';
+import '../layout_message.dart';
 
 class RemoveLayoutMessage extends LayoutMessage<bool> {
-
   final String componentId;
 
   RemoveLayoutMessage({required this.componentId});
@@ -12,5 +11,4 @@ class RemoveLayoutMessage extends LayoutMessage<bool> {
   sendResponse({required bool response, required SendPort sendPort}) {
     sendPort.send(response);
   }
-
 }

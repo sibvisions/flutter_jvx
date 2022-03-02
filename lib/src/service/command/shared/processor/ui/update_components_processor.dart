@@ -1,4 +1,4 @@
-import 'package:flutter_client/util/logging/flutter_logger.dart';
+import '../../../../../../util/logging/flutter_logger.dart';
 
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';

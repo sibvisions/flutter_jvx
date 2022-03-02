@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/check_box/fl_check_box_wrapper.dart';
-import 'package:flutter_client/src/components/editor/password_field/fl_password_wrapper.dart';
-import 'package:flutter_client/src/model/component/check_box/fl_check_box_model.dart';
-import 'button/fl_toggle_button_wrapper.dart';
+import 'editor/check_box/fl_check_box_wrapper.dart';
+import 'editor/password_field/fl_password_wrapper.dart';
+import '../model/component/check_box/fl_check_box_model.dart';
+import 'button/toggle/fl_toggle_button_wrapper.dart';
 import 'editor/fl_editor_wrapper.dart';
 import '../model/component/button/fl_toggle_button_model.dart';
 import '../model/component/editor/fl_editor_model.dart';
@@ -12,8 +12,8 @@ import '../model/component/text_field/fl_text_field_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
-import 'panel/fl_scroll_panel_wrapper.dart';
-import 'split_panel/fl_split_panel_wrapper.dart';
+import 'panel/scroll/fl_scroll_panel_wrapper.dart';
+import 'panel/split/fl_split_panel_wrapper.dart';
 import '../model/component/panel/fl_split_panel_model.dart';
 
 import '../model/component/button/fl_button_model.dart';

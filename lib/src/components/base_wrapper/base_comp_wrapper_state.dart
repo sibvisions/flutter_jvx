@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
+import '../../../util/logging/flutter_logger.dart';
 import '../../model/layout/layout_position.dart';
 import 'base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';

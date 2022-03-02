@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/data/column_definition.dart';
+import '../../../model/data/column_definition.dart';
 
 import '../../../model/data/data_book.dart';
 
@@ -78,10 +78,12 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider}) async {
+  Future<ColumnDefinition> getSelectedColumnDefinition(
+      {required String pColumnName, required String pDataProvider}) async {
     DataBook dataBook = dataBooks[pDataProvider]!;
 
-    ColumnDefinition? columnDefinition = dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
+    ColumnDefinition? columnDefinition =
+        dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
 
     return columnDefinition;
   }

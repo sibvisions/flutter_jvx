@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/data/column_definition.dart';
+import '../../data/column_definition.dart';
 
 import 'ui_command.dart';
 
@@ -26,14 +26,13 @@ class UpdateSelectedDataCommand extends UiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UpdateSelectedDataCommand({
-    required this.dataProvider,
-    required String reason,
-    required this.componentId,
-    required this.data,
-    required this.columnName,
-    required this.columnDefinition
-  })
+  UpdateSelectedDataCommand(
+      {required this.dataProvider,
+      required String reason,
+      required this.componentId,
+      required this.data,
+      required this.columnName,
+      required this.columnDefinition})
       : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

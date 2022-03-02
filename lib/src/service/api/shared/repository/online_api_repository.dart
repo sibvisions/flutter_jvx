@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_client/src/model/api/requests/set_value_request.dart';
-import 'package:flutter_client/src/model/api/requests/set_values_request.dart';
+import '../../../../model/api/requests/set_value_request.dart';
+import '../../../../model/api/requests/set_values_request.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/requests/device_status_request.dart';
@@ -76,16 +76,18 @@ class OnlineApiRepository implements IRepository {
   }
 
   @override
-  Future<Response> setValues({required String clientId, required String componentId,
-    required List<String> columnNames, required List values, required String dataProvider})
-  {
+  Future<Response> setValues(
+      {required String clientId,
+      required String componentId,
+      required List<String> columnNames,
+      required List values,
+      required String dataProvider}) {
     SetValuesRequest request = SetValuesRequest(
         componentId: componentId,
         clientId: clientId,
         dataProvider: dataProvider,
         columnNames: columnNames,
-        values: values
-    );
+        values: values);
     return _sendPostRequest(apiConfig.getSetValuesUri(), jsonEncode(request));
   }
 

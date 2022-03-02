@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter_client/src/model/command/data/get_selected_data.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/src/model/routing/route_close_qr_scanner.dart';
-import 'package:flutter_client/src/model/routing/route_open_qr_scanner.dart';
-import 'package:flutter_client/src/model/routing/route_to_settings_page.dart';
+import '../../../model/command/data/get_selected_data.dart';
+import '../../../model/data/column_definition.dart';
+import '../../../model/routing/route_close_qr_scanner.dart';
+import '../../../model/routing/route_open_qr_scanner.dart';
+import '../../../model/routing/route_to_settings_page.dart';
 
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
@@ -250,12 +250,11 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void setSelectedColumnDefinition({
-    required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required ColumnDefinition pColumnDefinition
-  }) {
+  void setSelectedColumnDefinition(
+      {required String pDataProvider,
+      required String pComponentId,
+      required String pColumnName,
+      required ColumnDefinition pColumnDefinition}) {
     _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId]!.call(pColumnDefinition);
   }
 }

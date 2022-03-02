@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/command/api/set_values_command.dart';
-import 'package:flutter_client/src/model/component/dummy/fl_dummy_cell_editor.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
+import '../../model/api/api_object_property.dart';
+import '../../model/command/api/set_values_command.dart';
+import '../../model/component/dummy/fl_dummy_cell_editor.dart';
+import '../../../util/logging/flutter_logger.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
@@ -116,12 +116,13 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   // TODO get column definition and apply it to the cell editor.
   void subscribe(T pModel) {
     uiService.registerAsDataComponent(
-      pColumnDefinitionCallback: (columnDefinition) {log(columnDefinition.toString());},
-      pDataProvider: pModel.dataRow,
-      pCallback: cellEditor.setValue,
-      pComponentId: pModel.id,
-      pColumnName: pModel.columnName
-    );
+        pColumnDefinitionCallback: (columnDefinition) {
+          log(columnDefinition.toString());
+        },
+        pDataProvider: pModel.dataRow,
+        pCallback: cellEditor.setValue,
+        pComponentId: pModel.id,
+        pColumnName: pModel.columnName);
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.

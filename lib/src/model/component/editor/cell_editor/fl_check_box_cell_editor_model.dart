@@ -1,5 +1,5 @@
-import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../api/api_object_property.dart';
+import 'cell_editor_model.dart';
 
 class FlCheckBoxCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

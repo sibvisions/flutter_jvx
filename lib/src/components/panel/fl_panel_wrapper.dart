@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/layout/i_layout.dart';
+import '../../layout/i_layout.dart';
 
 import '../../model/component/panel/fl_panel_model.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
