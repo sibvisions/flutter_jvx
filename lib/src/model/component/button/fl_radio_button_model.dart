@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../layout/alignments.dart';
 import 'fl_button_model.dart';
 import 'fl_toggle_button_model.dart';
 
@@ -11,6 +12,15 @@ class FlRadioButtonModel extends FlToggleButtonModel {
 
   /// Initializes the [FlButtonModel]
   FlRadioButtonModel() : super() {
+    horizontalAlignment = HorizontalAlignment.LEFT;
     paddings = const EdgeInsets.all(2);
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden widget defaults
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Radiobutton never draws a border.
+  @override
+  bool get borderPainted => false;
 }

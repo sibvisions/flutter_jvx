@@ -14,7 +14,9 @@ class FlCheckBoxWidget extends FlButtonWidget<FlCheckBoxModel> {
       visualDensity: VisualDensity.compact,
       value: model.selected,
       onChanged: (_) {
-        onPress();
+        if (model.isEnabled) {
+          onPress();
+        }
       },
     );
   }
