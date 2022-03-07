@@ -3,17 +3,12 @@ import 'dart:collection';
 import 'dart:ui';
 
 import '../../../../util/logging/flutter_logger.dart';
-
+import '../../../model/command/base_command.dart';
 import '../../../model/command/layout/preferred_size_command.dart';
 import '../../../model/command/layout/register_parent_command.dart';
-
-import '../../../model/command/base_command.dart';
 import '../../../model/command/ui/update_layout_position_command.dart';
-
-import '../../../model/layout/layout_position.dart';
-
 import '../../../model/layout/layout_data.dart';
-
+import '../../../model/layout/layout_position.dart';
 import '../i_layout_service.dart';
 
 class LayoutService implements ILayoutService {
@@ -180,7 +175,6 @@ class LayoutService implements ILayoutService {
 
       parent.lastCalculatedSize = parent.calculatedSize;
       parent.layout!.calculateLayout(parent, children);
-      _layoutDataSet[parent.id] = parent;
 
       LOGGER.logD(
           pType: LOG_TYPE.LAYOUT,
@@ -200,6 +194,9 @@ class LayoutService implements ILayoutService {
       if (newlyConstraintChildren.isNotEmpty) {
         return [UpdateLayoutPositionCommand(layoutDataList: newlyConstraintChildren, reason: "Was constrained")];
       }
+
+      /// Only save information AFTER calculations after constrained children.
+      _layoutDataSet[parent.id] = parent;
 
       // Nothing has been "newly" constrained meaning now, i can tell my parent exactly how big i want to be.
       // So if my calc size has changed - tell parent, if not, tell children their position.

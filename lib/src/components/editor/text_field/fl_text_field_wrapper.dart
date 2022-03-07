@@ -84,19 +84,9 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void valueChanged(String pValue) {
-    if (pValue != model.text) {
-      log("Value changed to: " + pValue + " | Length: " + pValue.characters.length.toString());
+    log("Value changed to: " + pValue + " | Length: " + pValue.characters.length.toString());
 
-      setState(() {
-        textController.value = textController.value.copyWith(
-          text: pValue,
-          selection: TextSelection.collapsed(offset: pValue.characters.length),
-          composing: null,
-        );
-
-        model.text = pValue;
-      });
-    }
+    setState(() {});
   }
 
   void endEditing(String pValue) {
@@ -106,15 +96,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
         SetValueCommand(componentId: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
     uiService.sendCommand(setValue);
 
-    setState(() {
-      textController.value = textController.value.copyWith(
-        text: pValue,
-        selection: TextSelection.collapsed(offset: pValue.characters.length),
-        composing: null,
-      );
-
-      model.text = pValue;
-    });
+    setState(() {});
   }
 
   void updateText() {

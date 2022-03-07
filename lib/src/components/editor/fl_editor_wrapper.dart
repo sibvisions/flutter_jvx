@@ -137,16 +137,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
   void onChange(dynamic pValue) {
-    setState(() {
-      cellEditor.setValue(pValue);
-    });
+    setState(() {});
   }
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
-    setState(() {
-      cellEditor.setValue(pValue);
-    });
+    setState(() {});
 
     if (cellEditor.isActionCellEditor()) {
       currentObjectFocused = FocusManager.instance.primaryFocus;
