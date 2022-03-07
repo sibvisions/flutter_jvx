@@ -1,8 +1,8 @@
 import '../../../../../model/command/base_command.dart';
-import '../../../../../model/command/config/client_id_command.dart';
+import '../../../../../model/command/config/save_app_meta_data_command.dart';
 import '../../../../../model/command/config/config_command.dart';
 import '../../i_command_processor.dart';
-import 'client_id_command_processor.dart';
+import 'save_app_meta_data_processor.dart';
 
 
 ///
@@ -11,13 +11,13 @@ import 'client_id_command_processor.dart';
 class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
 
 
-  final ClientIdProcessor _clientIdProcessor = ClientIdProcessor();
+  final SaveAppMetaDataProcessor _saveAppMetaDataProcessor = SaveAppMetaDataProcessor();
 
   @override
   Future<List<BaseCommand>> processCommand(ConfigCommand command) async {
 
-    if(command is ClientIdCommand){
-      return _clientIdProcessor.processCommand(command);
+    if(command is SaveAppMetaDataCommand){
+      return _saveAppMetaDataProcessor.processCommand(command);
     } else {
       return [];
     }

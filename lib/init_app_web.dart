@@ -36,7 +36,10 @@ initAppWeb() {
   services.registerSingleton(apiService, signalsReady: true);
 
   // Config
-  IConfigService configService = ConfigService(appName: "demo");
+  IConfigService configService = ConfigService(
+      appName: "demo",
+      url: urlConfigServer2.getBasePath(),
+  );
   services.registerSingleton(configService, signalsReady: true);
 
   // Layout

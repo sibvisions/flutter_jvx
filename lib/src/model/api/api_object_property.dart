@@ -93,6 +93,7 @@ abstract class ApiObjectProperty {
   static const String home = "home";
   static const String columnViewTable = "columnView_table_";
   static const String columns = "columns";
+  static const String version = "version";
 
   // Data Properties
   static const String dataTypeIdentifier = "dataTypeIdentifier";

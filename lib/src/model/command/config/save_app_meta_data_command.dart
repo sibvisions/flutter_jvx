@@ -1,19 +1,21 @@
+import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
+
 import 'config_command.dart';
 
-class ClientIdCommand extends ConfigCommand {
+class SaveAppMetaDataCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
-  /// The client id.
-  String? clientId;
+
+  /// AppMetaData response from server
+  final ApplicationMetaDataResponse metaData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ClientIdCommand({
-    this.clientId,
+  SaveAppMetaDataCommand({
+    required this.metaData,
     required String reason
   }): super(reason: reason);
 
@@ -22,5 +24,5 @@ class ClientIdCommand extends ConfigCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "ClientIdCommand | Client id: $clientId | Reason: $reason";
+  String get logString => "SaveAppMetaData | response: $metaData | Reason: $reason";
 }

@@ -5,45 +5,90 @@ import '../i_config_service.dart';
 class ConfigService implements IConfigService{
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Class Members
+  // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Name of the app.
-  String? _appName;
+  /// Name of the visionX app
+  String appName;
 
-  /// Client id of the current session.
-  String? _clientId;
+  /// Url of the remote server
+  String url;
+
+  /// Version of the remote server
+  String? version;
+
+  /// Current clientId (sessionId)
+  String? clientId;
+
+  /// Directory of the installed app, null if launched in web
+  String? directory;
+
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ///Initializes an [ConfigService]
   ConfigService({
-    String? appName
-  }) : _appName = appName;
+    required this.url,
+    required this.appName,
+  });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String? getAppName() {
-    return _appName;
+  String getAppName() {
+    return appName;
   }
 
   @override
   String? getClientId() {
-    return _clientId;
+    return clientId;
   }
 
   @override
-  void setClientId(String? clientId) {
-    _clientId = clientId;
+  String? getDirectory() {
+    return directory;
   }
 
   @override
-  void setAppName(String? appName) {
-    _appName = _appName;
+  String getUrl() {
+    return url;
   }
+
+  @override
+  String? getVersion() {
+    return version;
+  }
+
+  @override
+  void setAppName(String pAppName) {
+    appName = pAppName;
+  }
+
+  @override
+  void setClientId(String? pClientId) {
+    clientId = pClientId;
+  }
+
+  @override
+  void setDirectory(String? pDirectory) {
+    directory = pDirectory;
+  }
+
+  @override
+  void setUrl(String pUrl) {
+    url = pUrl;
+  }
+
+  @override
+  void setVersion(String pVersion) {
+    version = pVersion;
+  }
+
+
+
+
 }

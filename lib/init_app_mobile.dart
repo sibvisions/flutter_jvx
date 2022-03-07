@@ -31,7 +31,7 @@ Future<bool> initAppMobile() async {
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = urlConfigServer1;
+  UrlConfig urlConfig = urlConfigServer2;
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
@@ -39,7 +39,10 @@ Future<bool> initAppMobile() async {
   services.registerSingleton(apiService, signalsReady: true);
 
   // Config
-  IConfigService configService = ConfigService(appName: "demo");
+  IConfigService configService = ConfigService(
+    appName: "demo",
+    url: urlConfig.getBasePath()
+  );
   services.registerSingleton(configService, signalsReady: true);
 
   // Layout
