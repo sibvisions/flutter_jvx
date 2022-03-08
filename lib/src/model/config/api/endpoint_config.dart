@@ -6,6 +6,7 @@ class EndpointConfig {
   final String pressButton;
   final String setValue;
   final String setValues;
+  final String downloadResource;
 
   EndpointConfig({
     required this.startup,
@@ -14,6 +15,7 @@ class EndpointConfig {
     required this.deviceStatus,
     required this.pressButton,
     required this.setValue,
-    required this.setValues
+    required this.setValues,
+    required this.downloadResource
   });
 }

@@ -9,6 +9,7 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
   Future<List<BaseCommand>> processCommand(SaveAppMetaDataCommand command) async {
     configService.setClientId(command.metaData.clientId);
     configService.setVersion(command.metaData.version);
+
     return [];
   }
 }

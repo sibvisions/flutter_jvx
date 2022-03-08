@@ -12,6 +12,7 @@ abstract class IRepository {
   Future<Response> deviceStatus(String clientId, double screenWidth, double screenHeight);
   Future<Response> pressButton(String componentId, String clientId);
   Future<Response> setValue(String clientId, String componentId, dynamic value);
+  Future<Response> downloadResource(String clientId, String? fileId);
   Future<Response> setValues({
     required String clientId,
     required String componentId,

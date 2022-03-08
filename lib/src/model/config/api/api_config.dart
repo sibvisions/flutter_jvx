@@ -34,4 +34,8 @@ class ApiConfig {
   Uri getSetValuesUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.setValues);
   }
+
+  Uri getDownloadResourceUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.downloadResource);
+  }
 }

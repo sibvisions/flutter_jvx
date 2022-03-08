@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter_client/src/model/api/requests/download_request.dart';
+
 import '../../../../model/api/requests/set_value_request.dart';
 import '../../../../model/api/requests/set_values_request.dart';
 import 'package:http/http.dart';
@@ -89,6 +91,12 @@ class OnlineApiRepository implements IRepository {
         columnNames: columnNames,
         values: values);
     return _sendPostRequest(apiConfig.getSetValuesUri(), jsonEncode(request));
+  }
+
+  @override
+  Future<Response> downloadResource(String clientId, String? fileId) {
+    DownloadResourcesRequest request = DownloadResourcesRequest(clientId: clientId, fileId: fileId);
+    return _sendPostRequest(apiConfig.getDownloadResourceUri(), jsonEncode(request));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
