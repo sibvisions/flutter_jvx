@@ -45,7 +45,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
                 child: Column(
                   children: [
                     Text(
-                      configService.getAppName()?.toUpperCase() ?? "App Name",
+                      configService.getAppName().toUpperCase(),
                       style: Theme.of(context).textTheme.headline4,
                     ),
                     const Padding(padding: EdgeInsets.all(5)),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../layout/i_layout.dart';
 
+import '../../layout/i_layout.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/base_cont_wrapper_state.dart';
@@ -40,11 +40,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
 
   @override
   Widget build(BuildContext context) {
-    FlPanelWidget panelWidget = FlPanelWidget(
-      children: children.values.toList(),
-      width: getWidthForComponent(),
-      height: getHeightForComponent(),
-    );
+    FlPanelWidget panelWidget = FlPanelWidget(children: children.values.toList());
 
     return (getPositioned(child: panelWidget));
   }

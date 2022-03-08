@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/component/button/fl_radio_button_model.dart';
 
 import '../model/component/button/fl_button_model.dart';
+import '../model/component/button/fl_radio_button_model.dart';
 import '../model/component/button/fl_toggle_button_model.dart';
 import '../model/component/check_box/fl_check_box_model.dart';
 import '../model/component/dummy/fl_dummy_model.dart';
@@ -11,6 +10,7 @@ import '../model/component/editor/text_area/fl_text_area_model.dart';
 import '../model/component/editor/text_field/fl_text_field_model.dart';
 import '../model/component/fl_component_model.dart';
 import '../model/component/label/fl_label_model.dart';
+import '../model/component/panel/fl_group_panel_model.dart';
 import '../model/component/panel/fl_panel_model.dart';
 import '../model/component/panel/fl_split_panel_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
@@ -25,6 +25,7 @@ import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
 import 'label/fl_label_wrapper.dart';
 import 'panel/fl_panel_wrapper.dart';
+import 'panel/group/fl_group_panel_wrapper.dart';
 import 'panel/scroll/fl_scroll_panel_wrapper.dart';
 import 'panel/split/fl_split_panel_wrapper.dart';
 
@@ -35,7 +36,7 @@ abstract class ComponentsFactory {
       case FlContainerClassname.PANEL:
         return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case FlContainerClassname.GROUP_PANEL:
-        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+        return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: Key(model.id));
       case FlContainerClassname.SCROLL_PANEL:
         return FlScrollPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
       case FlContainerClassname.SPLIT_PANEL:

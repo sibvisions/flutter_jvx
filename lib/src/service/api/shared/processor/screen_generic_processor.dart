@@ -1,11 +1,10 @@
-import 'package:flutter_client/src/model/component/button/fl_radio_button_model.dart';
-
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
 import '../../../../model/command/ui/route_command.dart';
 import '../../../../model/component/button/fl_button_model.dart';
+import '../../../../model/component/button/fl_radio_button_model.dart';
 import '../../../../model/component/button/fl_toggle_button_model.dart';
 import '../../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../../model/component/dummy/fl_dummy_model.dart';
@@ -14,6 +13,7 @@ import '../../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/component/label/fl_label_model.dart';
+import '../../../../model/component/panel/fl_group_panel_model.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../../routing/app_routing_type.dart';
@@ -108,7 +108,7 @@ class ScreenGenericProcessor implements IProcessor {
         model = FlPanelModel();
         break;
       case FlContainerClassname.GROUP_PANEL:
-        model = FlPanelModel();
+        model = FlGroupPanelModel();
         break;
       case FlContainerClassname.SCROLL_PANEL:
         model = FlPanelModel();

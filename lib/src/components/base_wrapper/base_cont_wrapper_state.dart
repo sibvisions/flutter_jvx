@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'base_comp_wrapper_state.dart';
-import '../components_factory.dart';
+
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import '../../service/ui/i_ui_service.dart';
+import '../components_factory.dart';
+import 'base_comp_wrapper_state.dart';
 
 abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrapperState<T> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +40,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   /// Will contact [IUiService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
-  void buildChildren() {
+  bool buildChildren() {
     List<FlComponentModel> models = uiService.getChildrenModels(model.id);
     Map<String, Widget> newChildrenList = {};
 
@@ -68,5 +69,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
         children = newChildrenList;
       });
     }
+
+    return changeDetected;
   }
 }

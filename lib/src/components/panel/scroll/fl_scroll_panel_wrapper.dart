@@ -1,21 +1,22 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../base_wrapper/base_comp_wrapper_widget.dart';
-import '../../base_wrapper/base_cont_wrapper_state.dart';
+
 import '../../../layout/i_layout.dart';
 import '../../../layout/scroll_layout.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_scroll_panel_widget.dart';
 
 class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
   const FlScrollPanelWrapper({Key? key, required FlPanelModel model}) : super(key: key, model: model);
 
   @override
-  _FlPanelWrapperState createState() => _FlPanelWrapperState();
+  _FlScrollPanelWrapperState createState() => _FlScrollPanelWrapperState();
 }
 
-class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
+class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   @override
   void initState() {
     super.initState();
