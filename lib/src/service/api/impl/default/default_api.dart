@@ -60,4 +60,11 @@ class DefaultApi implements IApiService {
     var actions = controller.processResponse(response);
     return actions;
   }
+
+  @override
+  Future<List<BaseCommand>> downloadResource(String clientId, String? fileId) {
+    var response = repository.downloadResource(clientId, fileId);
+    var actions = controller.processResponse(response);
+    return actions;
+  }
 }

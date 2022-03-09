@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_resource_message.dart';
+
 import '../../../../model/api/requests/set_values_request.dart';
 import 'messages/endpoint/api_isolate_set_value_message.dart';
 import 'messages/endpoint/api_isolate_set_values_messages.dart';
@@ -21,6 +23,7 @@ import 'messages/endpoint/api_isolate_startup_message.dart';
 /// Makes Request to JVx Mobile API and parses responses to [BaseCommand]
 // Author: Michael Schober
 class IsolateApi implements IApiService {
+  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +91,11 @@ class IsolateApi implements IApiService {
   @override
   Future<List<BaseCommand>> setValue(String clientId, String componentId, value) async {
     return await _sendRequest(ApiIsolateSetValueMessage(componentId: componentId, clientId: clientId, value: value));
+  }
+  
+  @override
+  Future<List<BaseCommand>> downloadResource(String clientId, String? fileId) async {
+    return await _sendRequest(ApiIsolateDownloadResourceMessage(clientId: clientId, fileId: fileId));
   }
 
   @override
