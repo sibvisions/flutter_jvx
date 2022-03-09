@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/panel/group/fl_group_panel_widget.dart';
 
@@ -82,34 +80,18 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   }
 
   double get widthOfGroupPanel {
-    double width = 0.0;
-
     if (layoutData.hasPosition) {
-      width = max(width, layoutData.layoutPosition!.width);
+      return layoutData.layoutPosition!.width;
     }
 
-    if (layoutData.hasCalculatedSize) {
-      width = max(width, layoutData.calculatedSize!.width);
-    }
-
-    return width;
+    return 0.0;
   }
 
   double get heightOfGroupPanel {
-    double height = 0.0;
-
     if (layoutData.hasPosition) {
-      height = max(height, layoutData.layoutPosition!.height);
+      return layoutData.layoutPosition!.height - (layoutData.layout as GroupLayout).groupHeaderHeight;
     }
 
-    if (layoutData.hasCalculatedSize) {
-      height = max(height, layoutData.calculatedSize!.height);
-    }
-
-    if (height > 0.0) {
-      height -= (layoutData.layout as GroupLayout).groupHeaderHeight;
-    }
-
-    return height;
+    return 0.0;
   }
 }
