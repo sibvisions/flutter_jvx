@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_resource_message.dart';
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_images_message.dart';
 
 import '../../../../model/api/requests/set_values_request.dart';
 import 'messages/endpoint/api_isolate_set_value_message.dart';
@@ -94,8 +94,18 @@ class IsolateApi implements IApiService {
   }
   
   @override
-  Future<List<BaseCommand>> downloadResource(String clientId, String? fileId) async {
-    return await _sendRequest(ApiIsolateDownloadResourceMessage(clientId: clientId, fileId: fileId));
+  Future<List<BaseCommand>> downloadImages({
+    required String clientId,
+    required String baseDir,
+    required String appName,
+    required String appVersion
+  }) async {
+    return await _sendRequest(ApiIsolateDownloadImagesMessage(
+        clientId: clientId,
+        baseDir: baseDir,
+        appVersion: appVersion,
+        appName: appName
+    ));
   }
 
   @override

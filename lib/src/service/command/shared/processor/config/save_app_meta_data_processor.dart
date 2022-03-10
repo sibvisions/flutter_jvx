@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/api/download_images_command.dart';
+
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/config/save_app_meta_data_command.dart';
@@ -7,9 +9,15 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
 
   @override
   Future<List<BaseCommand>> processCommand(SaveAppMetaDataCommand command) async {
-    configService.setClientId(command.metaData.clientId);
-    configService.setVersion(command.metaData.version);
 
-    return [];
+    // Remove '.' to allow easy saving of images in filesystem
+    String version = command.metaData.version.replaceAll(".", "_");
+
+    configService.setClientId(command.metaData.clientId);
+    configService.setVersion(version);
+
+    DownloadImagesCommand downloadResourcesCommand = DownloadImagesCommand(reason: "Resources should be downloaded");
+
+    return [downloadResourcesCommand];
   }
 }

@@ -1,12 +1,12 @@
 import 'package:flutter_client/src/model/command/api/api_command.dart';
 
-class DownloadResourcesCommand extends ApiCommand {
+class DownloadImagesCommand extends ApiCommand {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DownloadResourcesCommand({
+  DownloadImagesCommand({
     required String reason
   }) : super(reason: reason);
 

@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/model/command/api/download_images_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/download_images_processor.dart';
+
 import '../../../../../model/command/api/set_value_command.dart';
 import '../../../../../model/command/api/set_values_command.dart';
 import 'set_value_command_processor.dart';
@@ -23,6 +26,7 @@ import 'start_up_command_processor.dart';
 ///
 // Author: Michael Schober
 class ApiProcessor implements ICommandProcessor<ApiCommand> {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,6 +52,9 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [SetValuesCommand]
   final ICommandProcessor _setValuesProcessor = SetValuesProcessor();
 
+  /// Processes [DownloadImagesCommand]
+  final ICommandProcessor _downloadImagesProcessor = DownloadImagesProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,6 +76,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _setValueProcessor.processCommand(command);
     } else if (command is SetValuesCommand) {
       return _setValuesProcessor.processCommand(command);
+    } else if (command is DownloadImagesCommand) {
+      return _downloadImagesProcessor.processCommand(command);
     } else {
       return [];
     }

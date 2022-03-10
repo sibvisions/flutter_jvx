@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_images_message.dart';
+
 import 'messages/endpoint/api_isolate_set_value_message.dart';
 import 'messages/endpoint/api_isolate_set_values_messages.dart';
 import 'package:http/http.dart';
@@ -59,7 +61,18 @@ void apiCallback(SendPort callerSendPort) {
       } else if (apiMessage is ApiIsoltePressButtonMessage) {
         response = repo.pressButton(apiMessage.componentId, apiMessage.clientId);
       } else if (apiMessage is ApiIsolateSetValueMessage) {
-        response = repo.setValue(apiMessage.clientId, apiMessage.componentId, apiMessage.value);
+        response = repo.setValue(
+            apiMessage.clientId, apiMessage.componentId, apiMessage.value);
+      } else if (apiMessage is ApiIsolateDownloadImagesMessage) {
+        var res = repo.downloadImages(clientId: apiMessage.clientId);
+        var actions = await cont.processImageDownload(
+          appName: apiMessage.appName,
+          appVersion: apiMessage.appVersion,
+          baseDir: apiMessage.baseDir,
+          response: res
+        );
+
+        apiMessage.sendResponse(response: actions, sendPort: message.sendPort);
       } else if (apiMessage is ApiIsolateSetValuesMessage) {
         response = repo.setValues(
             clientId: apiMessage.setValuesRequest.clientId,

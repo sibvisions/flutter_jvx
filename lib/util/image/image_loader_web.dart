@@ -21,6 +21,7 @@ class ImageLoaderWeb with ConfigServiceMixin implements ImageLoader {
     String fileBinary = ""; //appState.fileConfig.files[path]!
     String baseUrl = ""; //appState.serverConfig!.baseUrl
     String appName = ""; //appState.serverConfig!.appName
+
     if (isInMemory) {
       return Image.memory(base64Decode(fileBinary), height: height, width: width);
     } else {

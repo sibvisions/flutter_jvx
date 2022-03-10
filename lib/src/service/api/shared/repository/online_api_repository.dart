@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:flutter_client/src/model/api/requests/download_request.dart';
+import 'package:flutter_client/src/model/api/requests/download_images_request.dart';
 
 import '../../../../model/api/requests/set_value_request.dart';
 import '../../../../model/api/requests/set_values_request.dart';
@@ -16,12 +17,14 @@ import '../i_repository.dart';
 
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   final ApiConfig apiConfig;
   final Client client = Client();
+  final HttpClient httpClient = HttpClient();
   final Map<String, String> _headers = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,8 +97,8 @@ class OnlineApiRepository implements IRepository {
   }
 
   @override
-  Future<Response> downloadResource(String clientId, String? fileId) {
-    DownloadResourcesRequest request = DownloadResourcesRequest(clientId: clientId, fileId: fileId);
+  Future<Response> downloadImages({required String clientId}) {
+    DownloadImagesRequest request = DownloadImagesRequest(clientId: clientId);
     return _sendPostRequest(apiConfig.getDownloadResourceUri(), jsonEncode(request));
   }
 
@@ -104,6 +107,8 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Future<Response> _sendPostRequest(Uri uri, String body) {
+    _headers["Access-Control_Allow_Origin"] = "*";
+    HttpHeaders.contentTypeHeader;
     Future<Response> res = client.post(uri, headers: _headers, body: body);
     res.then(_extractCookie);
     return res;
