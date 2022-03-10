@@ -18,14 +18,14 @@ class ConfigService implements IConfigService{
   /// Url of the remote server
   String url;
 
-  /// Version of the remote server
-  String? version;
-
   /// Current clientId (sessionId)
   String? clientId;
 
-  /// Directory of the installed app, null if launched in web
-  String? directory;
+  /// Version of the remote server
+  late String version;
+
+  /// Directory of the installed app, empty string if launched in web
+  late String directory;
 
 
 
@@ -53,7 +53,7 @@ class ConfigService implements IConfigService{
   }
 
   @override
-  String? getDirectory() {
+  String getDirectory() {
     return directory;
   }
 
@@ -63,7 +63,7 @@ class ConfigService implements IConfigService{
   }
 
   @override
-  String? getVersion() {
+  String getVersion() {
     return version;
   }
 
@@ -78,7 +78,7 @@ class ConfigService implements IConfigService{
   }
 
   @override
-  void setDirectory(String? pDirectory) {
+  void setDirectory(String pDirectory) {
     directory = pDirectory;
   }
 

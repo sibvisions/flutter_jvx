@@ -7,7 +7,12 @@ abstract class IApiService {
   Future<List<BaseCommand>> deviceStatus(String clientId, double screenWidth, double screenHeight);
   Future<List<BaseCommand>> pressButton(String clientId, String componentId);
   Future<List<BaseCommand>> setValue(String clientId, String componentId, dynamic value);
-  Future<List<BaseCommand>> downloadResource(String clientId, String? fileId);
+  Future<List<BaseCommand>> downloadImages({
+    required String clientId,
+    required String baseDir,
+    required String appName,
+    required String appVersion
+  });
   Future<List<BaseCommand>> setValues({
     required String clientId,
     required String componentId,

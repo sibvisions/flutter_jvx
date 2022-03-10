@@ -24,6 +24,7 @@ dependencies:
   intl: ^0.17.0
   mobile_scanner: ^0.1.1
   path_provider: ^2.0.9
+  archive: ^3.2.2
 
 flutter:
 

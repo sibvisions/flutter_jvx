@@ -85,6 +85,10 @@ abstract class ApiObjectProperty {
   static const String screenHeight = "screenHeight";
   static const String value = "value";
   static const String values = "values";
+  static const String fileId = "fileId";
+  static const String libraryImages = "libraryImages";
+  static const String applicationImages = "applicationImages";
+  static const String contentMode = "contentMode";
 
   //Response Properties
   static const String authenticated = "authenticated";

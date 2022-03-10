@@ -4,18 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DownloadHelper {
-  static String getLocalFilePath(
-      {required String baseUrl,
+  static String getLocalFilePath({
       required String appName,
       required String appVersion,
       required bool translation,
-      required String baseDir}) {
-    String trimmedBaseUrl = baseUrl.split('/')[2];
+      required String baseDir
+  }) {
 
     if (translation) {
-      return '$baseDir/translation/$trimmedBaseUrl/$appName/$appVersion';
+      return '$baseDir/translation/$appName/$appVersion';
     } else {
-      return '$baseDir/images/$trimmedBaseUrl/$appName/$appVersion';
+      return '$baseDir/images/$appName/$appVersion';
     }
   }
 

@@ -15,18 +15,22 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
 
   ImageLoaderMobile();
 
+  @override
   Image loadImage(String path, [double? width, double? height]) {
-    // TODO config loading
 
-    String baseUrl = ""; //appState.serverConfig!.baseUrl
-    String appName = ""; //appState.serverConfig!.appName,
-    String appVersion = "1.0"; //appState.applicationMetaData?.version ?? 1.0
-    String baseDir = ""; //appState.baseDirectory
+    String baseUrl = configService.getUrl(); //appState.serverConfig!.baseUrl
+    String appName = configService.getAppName(); //appState.serverConfig!.appName,
+    String appVersion = configService.getAppName(); //appState.applicationMetaData?.version ?? 1.0
+    String baseDir = configService.getDirectory(); //appState.baseDirectory
 
     String localFilePath = DownloadHelper.getLocalFilePath(
-        baseUrl: baseUrl, appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
+        appName: appName,
+        appVersion: appVersion,
+        translation: false,
+        baseDir: baseDir
+    );
 
-    File file = File('$localFilePath$path');
+    File file = File('$localFilePath/$path');
     if (file.existsSync()) {
       return Image(
         image: FileImage(file),

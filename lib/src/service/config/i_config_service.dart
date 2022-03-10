@@ -16,10 +16,10 @@ abstract class IConfigService {
   void setClientId(String? pClientId);
 
   /// Returns directory of the app, if app is started as web returns null
-  String? getDirectory();
+  String getDirectory();
 
   /// Set directory
-  void setDirectory(String? pDirectory);
+  void setDirectory(String pDirectory);
 
   /// Returns the appName
   String getAppName();
@@ -34,7 +34,7 @@ abstract class IConfigService {
   void setUrl(String pUrl);
 
   /// Returns version of the server application
-  String? getVersion();
+  String getVersion();
 
   /// Set version
   void setVersion(String pVersion);

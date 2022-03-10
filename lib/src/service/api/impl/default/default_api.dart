@@ -1,3 +1,5 @@
+import 'package:http/http.dart';
+
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
@@ -62,9 +64,14 @@ class DefaultApi implements IApiService {
   }
 
   @override
-  Future<List<BaseCommand>> downloadResource(String clientId, String? fileId) {
-    var response = repository.downloadResource(clientId, fileId);
-    var actions = controller.processResponse(response);
+  Future<List<BaseCommand>> downloadImages({
+    required String clientId,
+    required String baseDir,
+    required String appName,
+    required String appVersion
+  }) {
+    var response = repository.downloadImages(clientId: clientId);
+    var actions = controller.processImageDownload(baseDir: baseDir, response: response, appVersion: appVersion, appName: appName);
     return actions;
   }
 }
