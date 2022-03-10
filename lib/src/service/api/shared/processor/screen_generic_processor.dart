@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/component/panel/fl_tab_panel_model.dart';
+
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
@@ -117,7 +119,8 @@ class ScreenGenericProcessor implements IProcessor {
         model = FlSplitPanelModel();
         break;
       case FlContainerClassname.TABSET_PANEL:
-        continue alsoDefault;
+        model = FlTabPanelModel();
+        break;
       case FlContainerClassname.CUSTOM_CONTAINER:
         continue alsoDefault;
 

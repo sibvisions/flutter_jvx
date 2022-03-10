@@ -5,8 +5,6 @@ import '../../api/api_object_property.dart';
 import '../label/fl_label_model.dart';
 import 'fl_panel_model.dart';
 
-enum SPLIT_ORIENTATION { HORIZONTAL, VERTICAL }
-
 class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -32,7 +30,7 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
   @override
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
-    // DividerPosition
+
     var jsonText = pJson[ApiObjectProperty.text];
     if (jsonText != null) {
       text = jsonText;

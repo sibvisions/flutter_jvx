@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
+import 'package:flutter_client/src/model/component/panel/fl_tab_panel_model.dart';
 
 import '../model/component/button/fl_button_model.dart';
 import '../model/component/button/fl_radio_button_model.dart';
@@ -42,7 +44,7 @@ abstract class ComponentsFactory {
       case FlContainerClassname.SPLIT_PANEL:
         return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: Key(model.id));
       case FlContainerClassname.TABSET_PANEL:
-        continue alsoDefault;
+        return FlTabPanelWrapper(model: model as FlTabPanelModel, key: Key(model.id));
       case FlContainerClassname.CUSTOM_CONTAINER:
         continue alsoDefault;
 
