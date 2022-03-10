@@ -47,8 +47,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   @override
   Widget build(BuildContext context) {
     return (getPositioned(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Wrap(
         children: [
           FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
           const Divider(color: Colors.black),
