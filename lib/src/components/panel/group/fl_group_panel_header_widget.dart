@@ -5,19 +5,17 @@ import 'package:flutter_client/src/components/label/fl_label_widget.dart';
 import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 
 class FlGroupPanelHeaderWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
-  Function(BuildContext) postFrameCallback;
+  final Function(BuildContext) postFrameCallback;
 
-  FlGroupPanelHeaderWidget({Key? key, required T model, required this.postFrameCallback})
+  const FlGroupPanelHeaderWidget({Key? key, required T model, required this.postFrameCallback})
       : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
-    FlLabelWidget labelWidget = FlLabelWidget(model: model);
-
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
 
-    return labelWidget;
+    return FlLabelWidget(model: model);
   }
 }

@@ -64,6 +64,10 @@ abstract class ApiObjectProperty {
   static const String editable = "editable";
   static const String deselectedValue = "deselectedValue";
   static const String selectedValue = "selectedValue";
+  static const String eventTabClosed = "eventTabClosed";
+  static const String eventTabMoved = "eventTabMoved";
+  static const String selectedIndex = "selectedIndex";
+  static const String draggable = "draggable";
 
   //Can occur in both request & response
   static const String clientId = "clientId";

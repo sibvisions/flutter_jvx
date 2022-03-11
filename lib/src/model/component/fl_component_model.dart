@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../layout/alignments.dart';
-import '../layout/layout_position.dart';
+
 import '../../../util/constants/i_font.dart';
 import '../../../util/parse_util.dart';
-
 import '../api/api_object_property.dart';
+import '../layout/alignments.dart';
+import '../layout/layout_position.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
@@ -41,7 +41,7 @@ abstract class FlComponentModel {
   /// The constraints string.
   String? constraints;
 
-  /// The index of the component in relation to its siblings in a flow layout.
+  /// The index of the component in relation to its siblings.
   int indexOf = 0;
 
   /// The desired tab index;

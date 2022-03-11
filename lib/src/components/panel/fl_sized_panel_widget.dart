@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FlGroupPanelWidget extends StatelessWidget {
-  const FlGroupPanelWidget({Key? key, required this.children, this.width, this.height}) : super(key: key);
+class FlSizedPanelWidget extends StatelessWidget {
+  const FlSizedPanelWidget({Key? key, required this.children, this.width, this.height}) : super(key: key);
 
   final List<Widget> children;
   final double? width;

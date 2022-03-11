@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/panel/group/fl_group_panel_widget.dart';
+import 'package:flutter_client/src/components/panel/fl_sized_panel_widget.dart';
 
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
@@ -26,9 +26,9 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
 
-    buildChildren();
-
     layoutAfterBuild = true;
+
+    buildChildren();
   }
 
   @override
@@ -45,13 +45,20 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   }
 
   @override
+  affected() {
+    layoutAfterBuild = true;
+
+    buildChildren();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return (getPositioned(
       child: Wrap(
         children: [
           FlGroupPanelHeaderWidget(model: model, postFrameCallback: postFrameCallback),
           const Divider(color: Colors.black),
-          FlGroupPanelWidget(
+          FlSizedPanelWidget(
             children: children.values.toList(),
             width: widthOfGroupPanel,
             height: heightOfGroupPanel,
