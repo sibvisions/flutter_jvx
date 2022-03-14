@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import '../model/layout/layout_data.dart';
@@ -5,11 +6,11 @@ import '../model/layout/layout_position.dart';
 import 'i_layout.dart';
 
 class TabLayout implements ILayout {
-  int selectedIndex;
+  // int selectedIndex;
 
   double tabHeaderHeight;
 
-  TabLayout({required this.tabHeaderHeight, required this.selectedIndex});
+  TabLayout({required this.tabHeaderHeight}); //, required this.selectedIndex});
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
@@ -17,6 +18,7 @@ class TabLayout implements ILayout {
     if (pParent.hasPosition) {
       double width = pParent.layoutPosition!.width;
       double height = pParent.layoutPosition!.height - tabHeaderHeight;
+      log("${pParent.layoutPosition!.height}");
       childrenPosition = LayoutPosition(width: width, height: height, top: 0, left: 0, isComponentSize: true);
     }
 
@@ -32,11 +34,13 @@ class TabLayout implements ILayout {
         }
       }
 
-      if (childData.indexOf == selectedIndex) {
-        childData.layoutPosition = childrenPosition;
-      } else {
-        childData.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
-      }
+      childData.layoutPosition = childrenPosition;
+
+      // if (childData.indexOf == selectedIndex) {
+      //   childData.layoutPosition = childrenPosition;
+      // } else {
+      //   childData.layoutPosition = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
+      // }
     }
 
     pParent.calculatedSize = Size(calcWidth, calcHeight + tabHeaderHeight);
@@ -44,6 +48,6 @@ class TabLayout implements ILayout {
 
   @override
   ILayout clone() {
-    return TabLayout(tabHeaderHeight: tabHeaderHeight, selectedIndex: selectedIndex);
+    return TabLayout(tabHeaderHeight: tabHeaderHeight); //, selectedIndex: selectedIndex);
   }
 }
