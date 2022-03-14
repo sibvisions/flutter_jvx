@@ -16,7 +16,7 @@ class GroupLayout implements ILayout {
     LayoutData clonedParentData = pParent.clone();
 
     /// If it does not have a calc size, then we have to have it calculate as infinite
-    clonedParentData.layoutPosition = pParent.hasCalculatedSize
+    clonedParentData.layoutPosition = pParent.hasPosition
         ? LayoutPosition(
             width: pParent.layoutPosition!.width,
             height: pParent.layoutPosition!.height - groupHeaderHeight,
