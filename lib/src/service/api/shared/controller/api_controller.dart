@@ -91,7 +91,7 @@ class ApiController implements IController {
         outputFile.writeAsBytes(file.content);
       }
     } else {
-      //ToDo implement return command to save images in RAM
+      //ToDo implement return command to save images in RAM in main thread
     }
 
     return [];

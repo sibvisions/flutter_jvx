@@ -89,6 +89,7 @@ abstract class ApiObjectProperty {
   static const String libraryImages = "libraryImages";
   static const String applicationImages = "applicationImages";
   static const String contentMode = "contentMode";
+  static const String index = "index";
 
   //Response Properties
   static const String authenticated = "authenticated";

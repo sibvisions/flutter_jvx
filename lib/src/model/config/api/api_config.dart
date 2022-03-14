@@ -38,4 +38,8 @@ class ApiConfig {
   Uri getDownloadResourceUri() {
     return Uri.parse(urlConfig.getBasePath() + endpointConfig.downloadResource);
   }
+
+  Uri getCloseTabUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.tabClose);
+  }
 }

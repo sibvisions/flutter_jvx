@@ -1,5 +1,7 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/model/api/requests/tab_close_request.dart';
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_close_tab_message.dart';
 import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_images_message.dart';
 
 import '../../../../model/api/requests/set_values_request.dart';
@@ -122,6 +124,18 @@ class IsolateApi implements IApiService {
         columnNames: columnNames,
         values: values);
     ApiIsolateSetValuesMessage message = ApiIsolateSetValuesMessage(setValuesRequest: request);
+    return await _sendRequest(message);
+  }
+
+  @override
+  Future<List<BaseCommand>> closeTab({required String clientId, required String componentName, required int index}) async {
+    ApiIsolateCloseTabMessage message = ApiIsolateCloseTabMessage(
+        tabCloseRequest: TabCloseRequest(
+          clientId: clientId,
+          componentName: componentName,
+          index: index
+        )
+    );
     return await _sendRequest(message);
   }
 

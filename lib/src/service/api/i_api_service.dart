@@ -20,4 +20,9 @@ abstract class IApiService {
     required List<dynamic> values,
     required String dataProvider,
   });
+  Future<List<BaseCommand>> closeTab({
+    required String clientId,
+    required String componentName,
+    required int index,
+  });
 }
