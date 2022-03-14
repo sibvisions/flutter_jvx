@@ -168,6 +168,12 @@ class LayoutService implements ILayoutService {
         return copy;
       }).toList();
 
+      Map<String, LayoutData> childrenBefore = {};
+
+      for (LayoutData child in children) {
+        childrenBefore[child.id] = child.clone();
+      }
+
       // All newly constraint children
       List<LayoutData> newlyConstraintChildren = [];
 
@@ -207,7 +213,19 @@ class LayoutService implements ILayoutService {
       } else {
         for (LayoutData child in children) {
           if (child.isParent) {
-            commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
+            LayoutData oldChild = childrenBefore[child.id]!;
+            bool needsRelayout = !oldChild.hasPosition;
+
+            if (!needsRelayout) {
+              LayoutPosition oldPosition = oldChild.layoutPosition!;
+              LayoutPosition newPosition = child.layoutPosition!;
+
+              needsRelayout = (oldPosition.height != newPosition.height) || (oldPosition.width != newPosition.width);
+            }
+
+            if (needsRelayout) {
+              commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
+            }
           }
         }
 
