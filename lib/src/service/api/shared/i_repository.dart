@@ -22,4 +22,5 @@ abstract class IRepository {
     required List<dynamic> values,
     required String dataProvider,
   });
+  Future<Response> tabClose({required String clientId, required String componentName, required int index});
 }

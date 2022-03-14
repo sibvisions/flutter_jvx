@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_close_tab_message.dart';
 import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_images_message.dart';
 
 import 'messages/endpoint/api_isolate_set_value_message.dart';
@@ -80,6 +81,12 @@ void apiCallback(SendPort callerSendPort) {
             columnNames: apiMessage.setValuesRequest.columnNames,
             values: apiMessage.setValuesRequest.values,
             dataProvider: apiMessage.setValuesRequest.dataProvider);
+      } else if (apiMessage is ApiIsolateCloseTabMessage) {
+        response = repo.tabClose(
+            clientId: apiMessage.tabCloseRequest.clientId,
+            componentName: apiMessage.tabCloseRequest.componentName,
+            index: apiMessage.tabCloseRequest.index
+        );
       }
       if (response != null) {
         var actions = await cont.processResponse(response);

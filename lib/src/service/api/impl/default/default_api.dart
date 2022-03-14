@@ -74,4 +74,11 @@ class DefaultApi implements IApiService {
     var actions = controller.processImageDownload(baseDir: baseDir, response: response, appVersion: appVersion, appName: appName);
     return actions;
   }
+
+  @override
+  Future<List<BaseCommand>> closeTab({required String clientId, required String componentName, required int index}) {
+    var response = repository.tabClose(clientId: clientId, componentName: componentName, index: index);
+    var actions = controller.processResponse(response);
+    return actions;
+  }
 }

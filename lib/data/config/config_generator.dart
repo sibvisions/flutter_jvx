@@ -11,7 +11,8 @@ class ConfigGenerator {
       pressButton: "/api/v2/pressButton",
       setValue: "/api/comp/setValue",
       setValues: "/api/dal/setValues",
-      downloadResource: "/download"
+      downloadResource: "/download",
+      tabClose: "/api/comp/closeTab"
     );
   }
 

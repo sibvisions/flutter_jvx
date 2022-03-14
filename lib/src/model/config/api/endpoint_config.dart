@@ -7,6 +7,7 @@ class EndpointConfig {
   final String setValue;
   final String setValues;
   final String downloadResource;
+  final String tabClose;
 
   EndpointConfig({
     required this.startup,
@@ -16,6 +17,7 @@ class EndpointConfig {
     required this.pressButton,
     required this.setValue,
     required this.setValues,
-    required this.downloadResource
+    required this.downloadResource,
+    required this.tabClose
   });
 }

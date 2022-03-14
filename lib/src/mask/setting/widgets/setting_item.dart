@@ -20,7 +20,7 @@ class SettingItem extends StatelessWidget {
   /// Title of the setting
   final String title;
   /// Value to be displayed
-  final String value;
+  final ValueListenable<String> value;
   /// Will be called when item was pressed
   final VoidCallback onPressed;
 
@@ -33,7 +33,12 @@ class SettingItem extends StatelessWidget {
         leading: frontIcon,
         trailing: endIcon,
         title: Text(title),
-        subtitle: Text(value),
+        subtitle: ValueListenableBuilder(
+          valueListenable: value,
+          builder: (BuildContext buildContext, String value, Widget? widget) {
+            return Text(value);
+          },
+        ),
         onTap: onPressed,
       ),
     );

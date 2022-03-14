@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_client/src/model/api/requests/download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/tab_close_request.dart';
 
 import '../../../../model/api/requests/set_value_request.dart';
 import '../../../../model/api/requests/set_values_request.dart';
@@ -100,6 +101,12 @@ class OnlineApiRepository implements IRepository {
   Future<Response> downloadImages({required String clientId}) {
     DownloadImagesRequest request = DownloadImagesRequest(clientId: clientId);
     return _sendPostRequest(apiConfig.getDownloadResourceUri(), jsonEncode(request));
+  }
+
+  @override
+  Future<Response> tabClose({required String clientId, required String componentName, required int index}) {
+    TabCloseRequest tabCloseRequest = TabCloseRequest(index: index, componentName: componentName, clientId: clientId);
+    return _sendPostRequest(apiConfig.getCloseTabUri(), jsonEncode(tabCloseRequest));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

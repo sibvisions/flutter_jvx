@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/setting/widgets/setting_group.dart';
 import 'package:flutter_client/src/mask/setting/widgets/setting_item.dart';
@@ -21,7 +22,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   late SettingGroup baseSettings;
-  late String baseUrlString;
+
+  late ValueNotifier<String> baseUrlNotifier;
+
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -29,10 +32,18 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
   @override
   void initState() {
-    baseUrlString = configService.getUrl();
+
+    baseUrlNotifier = ValueNotifier<String>(configService.getUrl());
 
     baseSettings = _buildBaseSettings();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    baseUrlNotifier.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -60,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem appNameSetting = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.server),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-        value: "asd",
+        value: ValueNotifier("asd"),
         title: "App name",
         onPressed: () {},
     );
@@ -68,9 +79,13 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     SettingItem baseUrlSetting = SettingItem(
         frontIcon: const FaIcon(FontAwesomeIcons.globe),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
-        value: baseUrlString,
+        value: baseUrlNotifier,
         title: "URL",
-        onPressed: () {baseUrlString = "funny";},
+        onPressed: () {
+          // Set Value
+          configService.setUrl("asdasd");
+          baseUrlNotifier.value = configService.getUrl();
+        },
     );
 
 
