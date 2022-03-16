@@ -97,6 +97,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
         tabs: tabContentList,
         vsync: this,
         changedIndexTo: changedIndexTo);
+    tabController.widgetsSelectedOnce.addAll(lastController!.widgetsSelectedOnce);
 
     for (int i = 0; i < tabContentList.length; i++) {
       tabHeaderList.add(createTab(tabContentList[i]));
@@ -113,8 +114,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   Widget build(BuildContext context) {
     List<Widget> childrenToHide = tabContentList
         .where((e) =>
-            !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e)) &&
-            model.selectedIndex != e.model.indexOf)
+            !tabController.widgetsSelectedOnce.contains(e.model.indexOf) && model.selectedIndex != e.model.indexOf)
         .toList();
 
     return getPositioned(
@@ -157,7 +157,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                     maintainSize: true,
                   )
                 : null,
-          )
+          ),
         ],
       ),
     );
