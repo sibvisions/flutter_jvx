@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import '../model/layout/layout_data.dart';
@@ -18,7 +17,6 @@ class TabLayout implements ILayout {
     if (pParent.hasPosition) {
       double width = pParent.layoutPosition!.width;
       double height = pParent.layoutPosition!.height - tabHeaderHeight;
-      log("${pParent.layoutPosition!.height}");
       childrenPosition = LayoutPosition(width: width, height: height, top: 0, left: 0, isComponentSize: true);
     }
 
