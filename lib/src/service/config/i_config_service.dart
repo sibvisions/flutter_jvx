@@ -39,11 +39,22 @@ abstract class IConfigService {
   /// Set version
   void setVersion(String pVersion);
 
+  /// Return menuMode
+  MENU_MODE getMenuMode();
+
+  /// Set MenuMode
+  void setMenuMode(MENU_MODE pMenuMode);
 
 
 
+}
 
-
-
-
+enum MENU_MODE {
+  GRID,
+  GRID_GROUPED,
+  LIST,
+  LIST_GROUPED,
+  DRAWER,
+  SWIPER,
+  TABS
 }

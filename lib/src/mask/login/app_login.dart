@@ -34,6 +34,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       body: Row(children: [
         Expanded(child: Container()),
         Expanded(

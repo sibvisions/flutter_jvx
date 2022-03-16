@@ -18,13 +18,22 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   # Custom  Dep
-  get_it: ^7.2.0
+    # REST handling
   http: ^0.13.4
+    # Icons
   font_awesome_flutter: ^9.2.0
+    # Translations capability
   intl: ^0.17.0
+    # Managing different persistent classes
+  get_it: ^7.2.0
+    # QR Scanner
   mobile_scanner: ^0.1.1
+    # Saving files on system
   path_provider: ^2.0.9
+    # handling zip files
   archive: ^3.2.2
+    # Special Slivers for lists and grids
+  sliver_tools: ^0.2.5
 
 flutter:
 

@@ -27,6 +27,9 @@ class ConfigService implements IConfigService{
   /// Directory of the installed app, empty string if launched in web
   late String directory;
 
+  /// Display options for menu
+  MENU_MODE menuMode = MENU_MODE.LIST;
+
 
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,6 +93,16 @@ class ConfigService implements IConfigService{
   @override
   void setVersion(String pVersion) {
     version = pVersion;
+  }
+
+  @override
+  MENU_MODE getMenuMode() {
+    return menuMode;
+  }
+
+  @override
+  void setMenuMode(MENU_MODE pMenuMode) {
+    menuMode = pMenuMode;
   }
 
 

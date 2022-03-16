@@ -118,7 +118,7 @@ class FlButtonModel extends FlComponentModel {
     var jsonImage = pJson[ApiObjectProperty.image];
     if (jsonImage != null) {
       if (IFontAwesome.checkFontAwesome(jsonImage)) {
-        FaIcon icon = IFontAwesome.getFontAwesomeIcon(jsonImage);
+        FaIcon icon = IFontAwesome.getFontAwesomeIcon(pText: jsonImage);
         if (_isGrey) {
           image = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
         } else {
@@ -138,7 +138,7 @@ class FlButtonModel extends FlComponentModel {
     var jsonMousePressedImage = pJson[ApiObjectProperty.mousePressedImage];
     if (jsonMousePressedImage != null) {
       if (IFontAwesome.checkFontAwesome(jsonMousePressedImage)) {
-        FaIcon icon = IFontAwesome.getFontAwesomeIcon(jsonMousePressedImage);
+        FaIcon icon = IFontAwesome.getFontAwesomeIcon(pText: jsonMousePressedImage);
         if (_isGrey) {
           mousePressedImage = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
         } else {
@@ -153,7 +153,7 @@ class FlButtonModel extends FlComponentModel {
     var jsonMouseOverImage = pJson[ApiObjectProperty.mouseOverImage];
     if (jsonMouseOverImage != null) {
       if (IFontAwesome.checkFontAwesome(jsonMouseOverImage)) {
-        FaIcon icon = IFontAwesome.getFontAwesomeIcon(jsonMouseOverImage);
+        FaIcon icon = IFontAwesome.getFontAwesomeIcon(pText: jsonMouseOverImage);
         if (_isGrey) {
           mouseOverImage = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
         } else {

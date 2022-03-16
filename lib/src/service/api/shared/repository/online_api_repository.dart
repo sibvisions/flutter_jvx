@@ -48,7 +48,7 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<Response> startUp(String appName) {
-    StartUpRequest startUpRequest = StartUpRequest(deviceMode: "mobile", applicationName: appName);
+    StartUpRequest startUpRequest = StartUpRequest(deviceMode: "mobile", applicationName: appName, appMode: "full");
     return _sendPostRequest(apiConfig.getStartupUri(), jsonEncode(startUpRequest));
   }
 

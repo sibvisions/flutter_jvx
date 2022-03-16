@@ -18,6 +18,12 @@ void main() {
   }
 }
 
+ThemeData themeData = ThemeData.from(colorScheme: ColorScheme.light(
+  primary: Colors.amber,
+  background: Colors.grey.shade300
+
+));
+
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
@@ -28,6 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp.router(
+      theme: themeData,
       routeInformationParser: _parser,
       routerDelegate: _delegate,
       title: "Flutter Demo",

@@ -19,4 +19,8 @@ class ConfigGenerator {
   static UrlConfig generateMobileServerUrl(String host, int port) {
     return UrlConfig(host: host, path: "/JVx.mobile/services/mobile", https: false, port: port);
   }
+
+  static UrlConfig generateVisionX(String host) {
+    return UrlConfig(host: host, path: "/services/mobile", https: false);
+  }
 }

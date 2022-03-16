@@ -3,13 +3,13 @@ class UrlConfig {
   final String host;
   final String path;
   final bool https;
-  final int port;
+  final int? port;
 
   UrlConfig({
     required this.host,
     required this.path,
     required this.https,
-    required this.port
+    this.port
   });
 
   String getBasePath() {
@@ -20,7 +20,9 @@ class UrlConfig {
       url += "http://";
     }
     url += host;
-    url += ":" + port.toString();
+    if(port != null) {
+      url += ":" + port.toString();
+    }
     url += path;
     return url;
   }

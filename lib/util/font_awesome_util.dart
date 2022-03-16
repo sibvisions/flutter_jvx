@@ -8,11 +8,11 @@ abstract class IFontAwesome {
     return pText.contains('FontAwesome');
   }
 
-  static FaIcon getFontAwesomeIcon(String pText) {
+  static FaIcon getFontAwesomeIcon({required String pText, double? pIconSize, Color? pColor}) {
     List<String> arr = pText.split(",");
 
     String iconName = arr[0];
-    double? iconSize;
+    double? iconSize = pIconSize;
 
     if (iconName.contains(";")) {
       var nameAndSize = iconName.split(";");
@@ -26,6 +26,10 @@ abstract class IFontAwesome {
     }
 
     Color iconColor = arr.length > 4 ? (ParseUtil.parseHexColor(arr[4]) ?? Colors.black) : Colors.black;
+
+    if(pColor != null)  {
+      iconColor = pColor;
+    }
 
     IconData iconData = ICONS[iconName] ?? FontAwesomeIcons.questionCircle;
 

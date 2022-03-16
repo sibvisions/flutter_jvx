@@ -24,9 +24,13 @@ class SettingGroup extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: groupHeader,
         ),
-        Card(
-          child: Column(
-            children: items
+        Padding(
+          padding: const EdgeInsets.fromLTRB(5,0,5,0),
+          child: Card(
+            elevation: 5,
+            child: Column(
+              children: items
+            ),
           ),
         )
       ],

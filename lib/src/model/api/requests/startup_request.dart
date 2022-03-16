@@ -5,9 +5,11 @@ class StartUpRequest {
   final String deviceMode;
   final double? screenWidth;
   final double? screenHeight;
+  final String appMode;
 
 
   StartUpRequest({
+    required this.appMode,
     required this.deviceMode,
     required this.applicationName,
     this.screenHeight,
@@ -15,6 +17,7 @@ class StartUpRequest {
   });
 
   Map<String, dynamic> toJson() => {
+    ApiObjectProperty.appMode: appMode,
     ApiObjectProperty.deviceMode : deviceMode,
     ApiObjectProperty.applicationName : applicationName
   };
