@@ -31,34 +31,35 @@ import 'panel/group/fl_group_panel_wrapper.dart';
 import 'panel/scroll/fl_scroll_panel_wrapper.dart';
 import 'panel/split/fl_split_panel_wrapper.dart';
 
+//GlobalKey()
 abstract class ComponentsFactory {
   static Widget buildWidget(FlComponentModel model) {
     switch (model.className) {
       // Containers
       case FlContainerClassname.PANEL:
-        return FlPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+        return FlPanelWrapper(model: model as FlPanelModel, key: GlobalKey());
       case FlContainerClassname.GROUP_PANEL:
-        return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: Key(model.id));
+        return FlGroupPanelWrapper(model: model as FlGroupPanelModel, key: GlobalKey());
       case FlContainerClassname.SCROLL_PANEL:
-        return FlScrollPanelWrapper(model: model as FlPanelModel, key: Key(model.id));
+        return FlScrollPanelWrapper(model: model as FlPanelModel, key: GlobalKey());
       case FlContainerClassname.SPLIT_PANEL:
-        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: Key(model.id));
+        return FlSplitPanelWrapper(model: model as FlSplitPanelModel, key: GlobalKey());
       case FlContainerClassname.TABSET_PANEL:
-        return FlTabPanelWrapper(model: model as FlTabPanelModel, key: Key(model.id));
+        return FlTabPanelWrapper(model: model as FlTabPanelModel, key: GlobalKey());
       case FlContainerClassname.CUSTOM_CONTAINER:
         continue alsoDefault;
 
       // Components
       case FlComponentClassname.BUTTON:
-        return FlButtonWrapper(model: model as FlButtonModel, key: Key(model.id));
+        return FlButtonWrapper(model: model as FlButtonModel, key: GlobalKey());
       case FlComponentClassname.TOGGLE_BUTTON:
-        return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: Key(model.id));
+        return FlToggleButtonWrapper(model: model as FlToggleButtonModel, key: GlobalKey());
       case FlComponentClassname.LABEL:
-        return FlLabelWrapper(model: model as FlLabelModel, key: Key(model.id));
+        return FlLabelWrapper(model: model as FlLabelModel, key: GlobalKey());
       case FlComponentClassname.TEXT_FIELD:
-        return FlTextFieldWrapper(model: model as FlTextFieldModel, key: Key(model.id));
+        return FlTextFieldWrapper(model: model as FlTextFieldModel, key: GlobalKey());
       case FlComponentClassname.TEXT_AREA:
-        return FlTextAreaWrapper(model: model as FlTextAreaModel, key: Key(model.id));
+        return FlTextAreaWrapper(model: model as FlTextAreaModel, key: GlobalKey());
       case FlComponentClassname.ICON:
         continue alsoDefault;
       case FlComponentClassname.POPUP_MENU:
@@ -68,13 +69,13 @@ abstract class ComponentsFactory {
       case FlComponentClassname.POPUP_MENU_BUTTON:
         continue alsoDefault;
       case FlComponentClassname.CHECK_BOX:
-        return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: Key(model.id));
+        return FlCheckBoxWrapper(model: model as FlCheckBoxModel, key: GlobalKey());
       case FlComponentClassname.PASSWORD_FIELD:
-        return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: Key(model.id));
+        return FlPasswordFieldWrapper(model: model as FlTextFieldModel, key: GlobalKey());
       case FlComponentClassname.TABLE:
         continue alsoDefault;
       case FlComponentClassname.RADIO_BUTTON:
-        return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: Key(model.id));
+        return FlRadioButtonWrapper(model: model as FlRadioButtonModel, key: GlobalKey());
       case FlComponentClassname.MAP:
         continue alsoDefault;
       case FlComponentClassname.CHART:
@@ -84,11 +85,11 @@ abstract class ComponentsFactory {
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
-        return FlEditorWrapper(model: model as FlEditorModel, key: Key(model.id));
+        return FlEditorWrapper(model: model as FlEditorModel, key: GlobalKey());
 
       alsoDefault:
       default:
-        return FlDummyWrapper(model: model as FlDummyModel, key: Key(model.id));
+        return FlDummyWrapper(model: model as FlDummyModel, key: GlobalKey());
     }
   }
 }

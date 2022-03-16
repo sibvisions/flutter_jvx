@@ -40,7 +40,7 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
   /// Will contact [IUiService] to get its children [FlComponentModel], will only call setState if
   /// children were either added or removed.
-  bool buildChildren() {
+  bool buildChildren({bool pSetStateOnChange = true}) {
     List<FlComponentModel> models = uiService.getChildrenModels(model.id);
     Map<String, Widget> newChildrenList = {};
 
@@ -65,9 +65,10 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     // Only re-render if children did change
     if (changeDetected) {
-      setState(() {
-        children = newChildrenList;
-      });
+      children = newChildrenList;
+      if (pSetStateOnChange) {
+        setState(() {});
+      }
     }
 
     return changeDetected;

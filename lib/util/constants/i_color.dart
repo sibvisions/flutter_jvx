@@ -29,7 +29,7 @@ abstract class IColorConstants {
   };
 }
 
-abstract class IColor with IColorConstants {
+abstract class IColor extends IColorConstants {
   static Color darken(Color color, [double amount = .1]) {
     assert(amount >= 0 && amount <= 1);
 

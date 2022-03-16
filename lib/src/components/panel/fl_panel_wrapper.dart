@@ -25,7 +25,7 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     layoutData.layout = ILayout.getLayout(model.layout, model.layoutData);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
 
-    buildChildren();
+    buildChildren(pSetStateOnChange: false);
     registerParent();
   }
 

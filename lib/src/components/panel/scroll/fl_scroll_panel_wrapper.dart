@@ -25,7 +25,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
     layoutData.layout = ScrollLayout(originalLayout);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
 
-    buildChildren();
+    buildChildren(pSetStateOnChange: false);
     registerParent();
   }
 

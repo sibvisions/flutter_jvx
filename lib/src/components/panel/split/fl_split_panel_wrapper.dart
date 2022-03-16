@@ -1,13 +1,14 @@
-import 'dart:math';
 import 'dart:developer' as dev;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
-import '../../base_wrapper/base_comp_wrapper_widget.dart';
-import '../../base_wrapper/base_cont_wrapper_state.dart';
+
+import '../../../../util/constants/i_color.dart';
 import '../../../layout/split_layout.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
-import '../../../../util/constants/i_color.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_split_panel_widget.dart';
 
 class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
@@ -27,7 +28,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
     layoutData.layout = SplitLayout(splitAlignment: model.orientation, leftTopRatio: model.dividerPosition);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
 
-    buildChildren();
+    buildChildren(pSetStateOnChange: false);
     registerParent();
   }
 
