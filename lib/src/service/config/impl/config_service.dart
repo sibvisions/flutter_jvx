@@ -28,7 +28,7 @@ class ConfigService implements IConfigService{
   late String directory;
 
   /// Display options for menu
-  MENU_MODE menuMode = MENU_MODE.LIST;
+  MENU_MODE menuMode = MENU_MODE.GRID_GROUPED;
 
 
 
