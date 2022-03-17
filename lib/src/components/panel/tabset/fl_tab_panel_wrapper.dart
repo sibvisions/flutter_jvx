@@ -18,6 +18,8 @@ import 'fl_tab_controller.dart';
 import 'fl_tab_header.dart';
 import 'fl_tab_view.dart';
 
+enum TabPlacements { WRAP, TOP, LEFT, BOTTOM, RIGHT }
+
 class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
   const FlTabPanelWrapper({Key? key, required FlTabPanelModel model}) : super(key: key, model: model);
 
@@ -119,11 +121,17 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     return getPositioned(
       child: Wrap(
+        direction: Axis.vertical,
+        verticalDirection: TabPlacements.BOTTOM == model.tabPlacement ? VerticalDirection.up : VerticalDirection.down,
         children: [
-          FlTabHeader(
-            tabHeaderList: tabHeaderList,
-            postFrameCallback: postFrameCallback,
-            tabController: tabController,
+          SizedBox(
+            width: widthOfTabPanel,
+            height: (layoutData.layout as TabLayout).tabHeaderHeight,
+            child: FlTabHeader(
+              tabHeaderList: tabHeaderList,
+              postFrameCallback: postFrameCallback,
+              tabController: tabController,
+            ),
           ),
           SizedBox(
             width: widthOfTabPanel,
@@ -147,7 +155,11 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             child: childrenToHide.isNotEmpty
                 ? Visibility(
                     child: Stack(
-                      children: childrenToHide,
+                      children: childrenToHide
+                          .map(
+                            (e) => FlTabView(child: e),
+                          )
+                          .toList(),
                     ),
                     maintainAnimation: true,
                     maintainInteractivity: false,
@@ -250,8 +262,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     TabLayout layout = (layoutData.layout as TabLayout);
 
-    double minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
-    double tabHeaderHeight = minHeight + 16.0;
+    double tabHeaderHeight =
+        (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
 
     if (tabHeaderHeight != layout.tabHeaderHeight) {
       layout.tabHeaderHeight = tabHeaderHeight;
@@ -313,7 +325,8 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       ..foreground = childModel.foreground
       ..isBold = childModel.isBold
       ..isItalic = childModel.isItalic
-      ..verticalAlignment = VerticalAlignment.BOTTOM;
+      ..verticalAlignment = VerticalAlignment.BOTTOM
+      ..isEnabled = enabled;
 
     Widget textChild = FlLabelWidget(model: labelModel);
 

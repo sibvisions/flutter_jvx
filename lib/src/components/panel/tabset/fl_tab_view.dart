@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../base_wrapper/base_comp_wrapper_widget.dart';
-
 class FlTabView extends StatefulWidget {
-  final BaseCompWrapperWidget child;
+  final Widget child;
   const FlTabView({Key? key, required this.child}) : super(key: key);
 
   @override

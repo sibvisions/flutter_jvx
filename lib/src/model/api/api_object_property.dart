@@ -68,6 +68,7 @@ abstract class ApiObjectProperty {
   static const String eventTabMoved = "eventTabMoved";
   static const String selectedIndex = "selectedIndex";
   static const String draggable = "draggable";
+  static const String tabPlacement = "tabPlacement";
 
   //Can occur in both request & response
   static const String clientId = "clientId";

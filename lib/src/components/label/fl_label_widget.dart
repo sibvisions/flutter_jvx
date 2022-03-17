@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../base_wrapper/fl_stateless_widget.dart';
-import '../../model/layout/alignments.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
+
 import '../../model/component/label/fl_label_model.dart';
+import '../../model/layout/alignments.dart';
+import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   const FlLabelWidget({Key? key, required T model}) : super(key: key, model: model);
@@ -37,7 +39,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
 
   TextStyle getTextStyle() {
     return TextStyle(
-      color: model.foreground,
+      color: model.isEnabled ? model.foreground : IColorConstants.COMPONENT_DISABLED,
       fontStyle: model.isItalic ? FontStyle.italic : FontStyle.normal,
       fontWeight: model.isBold ? FontWeight.bold : FontWeight.normal,
     );

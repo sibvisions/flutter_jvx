@@ -1,3 +1,6 @@
+import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
+import 'package:flutter_client/src/model/api/api_object_property.dart';
+
 import 'fl_panel_model.dart';
 
 class FlTabPanelModel extends FlPanelModel {
@@ -13,6 +16,8 @@ class FlTabPanelModel extends FlPanelModel {
   int selectedIndex = 0;
 
   bool draggable = false;
+
+  TabPlacements tabPlacement = TabPlacements.TOP;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,4 +29,13 @@ class FlTabPanelModel extends FlPanelModel {
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
+  void applyFromJson(Map<String, dynamic> pJson) {
+    super.applyFromJson(pJson);
+
+    var jsonTabPlacement = pJson[ApiObjectProperty.tabPlacement];
+    if (jsonTabPlacement != null) {
+      tabPlacement = TabPlacements.values[jsonTabPlacement];
+    }
+  }
 }

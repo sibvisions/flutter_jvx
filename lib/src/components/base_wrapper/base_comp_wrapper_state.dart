@@ -1,13 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+
 import '../../../util/logging/flutter_logger.dart';
-import '../../model/layout/layout_position.dart';
-import 'base_comp_wrapper_widget.dart';
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/layout/preferred_size_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
+import '../../model/layout/layout_position.dart';
+import 'base_comp_wrapper_widget.dart';
 
 /// Base state class for all component_wrappers, houses following functionality:
 /// Model and layout init
@@ -41,7 +42,8 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void initState() {
     super.initState();
     // Models need to be same type, dart doesn't see that both extend [FlComponentModel]
-    model = widget.model as T;
+    model = uiService.getComponentModel(pComponentId: widget.model.id)! as T;
+
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(
         id: model.id,
