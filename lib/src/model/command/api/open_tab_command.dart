@@ -1,7 +1,6 @@
-import 'package:flutter_client/src/model/command/api/api_command.dart';
+import 'api_command.dart';
 
-class TabCloseCommand extends ApiCommand {
-
+class OpenTabCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +15,7 @@ class TabCloseCommand extends ApiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  TabCloseCommand({
+  OpenTabCommand({
     required this.componentName,
     required this.index,
     required String reason,
@@ -25,5 +24,4 @@ class TabCloseCommand extends ApiCommand {
   @override
   // TODO: implement logString
   String get logString => throw UnimplementedError();
-
 }

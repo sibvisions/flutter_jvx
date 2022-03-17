@@ -1,10 +1,5 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_close_tab_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_images_message.dart';
-
-import 'messages/endpoint/api_isolate_set_value_message.dart';
-import 'messages/endpoint/api_isolate_set_values_messages.dart';
 import 'package:http/http.dart';
 
 import '../../shared/i_controller.dart';
@@ -13,10 +8,15 @@ import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_message.dart';
 import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_repository_message.dart';
+import 'messages/endpoint/api_isolate_close_tab_message.dart';
 import 'messages/endpoint/api_isolate_device_status_message.dart';
+import 'messages/endpoint/api_isolate_download_images_message.dart';
 import 'messages/endpoint/api_isolate_login_message.dart';
 import 'messages/endpoint/api_isolate_open_screen_message.dart';
+import 'messages/endpoint/api_isolate_open_tab_message.dart';
 import 'messages/endpoint/api_isolate_press_button_message.dart';
+import 'messages/endpoint/api_isolate_set_value_message.dart';
+import 'messages/endpoint/api_isolate_set_values_messages.dart';
 import 'messages/endpoint/api_isolate_startup_message.dart';
 
 void apiCallback(SendPort callerSendPort) {
@@ -62,16 +62,11 @@ void apiCallback(SendPort callerSendPort) {
       } else if (apiMessage is ApiIsoltePressButtonMessage) {
         response = repo.pressButton(apiMessage.componentId, apiMessage.clientId);
       } else if (apiMessage is ApiIsolateSetValueMessage) {
-        response = repo.setValue(
-            apiMessage.clientId, apiMessage.componentId, apiMessage.value);
+        response = repo.setValue(apiMessage.clientId, apiMessage.componentId, apiMessage.value);
       } else if (apiMessage is ApiIsolateDownloadImagesMessage) {
         var res = repo.downloadImages(clientId: apiMessage.clientId);
         var actions = await cont.processImageDownload(
-          appName: apiMessage.appName,
-          appVersion: apiMessage.appVersion,
-          baseDir: apiMessage.baseDir,
-          response: res
-        );
+            appName: apiMessage.appName, appVersion: apiMessage.appVersion, baseDir: apiMessage.baseDir, response: res);
 
         apiMessage.sendResponse(response: actions, sendPort: message.sendPort);
       } else if (apiMessage is ApiIsolateSetValuesMessage) {
@@ -82,11 +77,15 @@ void apiCallback(SendPort callerSendPort) {
             values: apiMessage.setValuesRequest.values,
             dataProvider: apiMessage.setValuesRequest.dataProvider);
       } else if (apiMessage is ApiIsolateCloseTabMessage) {
-        response = repo.tabClose(
-            clientId: apiMessage.tabCloseRequest.clientId,
-            componentName: apiMessage.tabCloseRequest.componentName,
-            index: apiMessage.tabCloseRequest.index
-        );
+        response = repo.closeTab(
+            clientId: apiMessage.closeTabRequest.clientId,
+            componentName: apiMessage.closeTabRequest.componentName,
+            index: apiMessage.closeTabRequest.index);
+      } else if (apiMessage is ApiIsolateOpenTabMessage) {
+        response = repo.openTab(
+            clientId: apiMessage.tabOpenRequest.clientId,
+            componentName: apiMessage.tabOpenRequest.componentName,
+            index: apiMessage.tabOpenRequest.index);
       }
       if (response != null) {
         var actions = await cont.processResponse(response);

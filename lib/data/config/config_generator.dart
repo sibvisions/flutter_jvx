@@ -4,16 +4,16 @@ import '../../src/model/config/api/url_config.dart';
 class ConfigGenerator {
   static EndpointConfig generateFixedEndpoints() {
     return EndpointConfig(
-      startup: "/api/v3/startup",
-      login: "/api/v2/login",
-      openScreen: "/api/v2/openScreen",
-      deviceStatus: "/api/deviceStatus",
-      pressButton: "/api/v2/pressButton",
-      setValue: "/api/comp/setValue",
-      setValues: "/api/dal/setValues",
-      downloadResource: "/download",
-      tabClose: "/api/comp/closeTab"
-    );
+        startup: "/api/v3/startup",
+        login: "/api/v2/login",
+        openScreen: "/api/v2/openScreen",
+        deviceStatus: "/api/deviceStatus",
+        pressButton: "/api/v2/pressButton",
+        setValue: "/api/comp/setValue",
+        setValues: "/api/dal/setValues",
+        downloadResource: "/download",
+        closeTab: "/api/comp/closeTab",
+        openTab: "/api/comp/selectTab");
   }
 
   static UrlConfig generateMobileServerUrl(String host, int port) {

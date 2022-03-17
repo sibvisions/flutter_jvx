@@ -1,24 +1,26 @@
-import 'package:flutter_client/src/model/command/api/download_images_command.dart';
-import 'package:flutter_client/src/service/command/shared/processor/api/download_images_processor.dart';
-
-import '../../../../../model/command/api/set_value_command.dart';
-import '../../../../../model/command/api/set_values_command.dart';
-import 'set_value_command_processor.dart';
-import 'set_values_command_processor.dart';
-
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/button_pressed_command.dart';
+import '../../../../../model/command/api/close_tab_command.dart';
 import '../../../../../model/command/api/device_status_command.dart';
+import '../../../../../model/command/api/download_images_command.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
+import '../../../../../model/command/api/open_tab_command.dart';
 import '../../../../../model/command/api/press_button_command.dart';
+import '../../../../../model/command/api/set_value_command.dart';
+import '../../../../../model/command/api/set_values_command.dart';
 import '../../../../../model/command/api/startup_command.dart';
 import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
+import 'close_tab_processor.dart';
 import 'device_status_processor.dart';
+import 'download_images_processor.dart';
 import 'login_command_processor.dart';
 import 'open_screen_commmand_processor.dart';
+import 'open_tab_processor.dart';
 import 'press_button_processor.dart';
+import 'set_value_command_processor.dart';
+import 'set_values_command_processor.dart';
 import 'start_up_command_processor.dart';
 
 ///
@@ -26,7 +28,6 @@ import 'start_up_command_processor.dart';
 ///
 // Author: Michael Schober
 class ApiProcessor implements ICommandProcessor<ApiCommand> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +56,12 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [DownloadImagesCommand]
   final ICommandProcessor _downloadImagesProcessor = DownloadImagesProcessor();
 
+  /// Processes [CloseTabCommand]
+  final ICommandProcessor _tabCloseProcessor = CloseTabProcessor();
+
+  /// Processes [OpenTabCommand]
+  final ICommandProcessor _tabOpenProcessor = OpenTabProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,6 +85,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _setValuesProcessor.processCommand(command);
     } else if (command is DownloadImagesCommand) {
       return _downloadImagesProcessor.processCommand(command);
+    } else if (command is CloseTabCommand) {
+      return _tabCloseProcessor.processCommand(command);
+    } else if (command is OpenTabCommand) {
+      return _tabOpenProcessor.processCommand(command);
     } else {
       return [];
     }

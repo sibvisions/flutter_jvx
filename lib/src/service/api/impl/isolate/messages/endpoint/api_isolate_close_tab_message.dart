@@ -1,15 +1,12 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/api/requests/tab_close_request.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_message.dart';
+import '../../../../../../model/api/requests/tab_close_request.dart';
+import '../api_isolate_message.dart';
 
-class ApiIsolateCloseTabMessage extends ApiIsolateMessage{
+class ApiIsolateCloseTabMessage extends ApiIsolateMessage {
+  final TabCloseRequest closeTabRequest;
 
-  final TabCloseRequest tabCloseRequest;
-
-  ApiIsolateCloseTabMessage({
-    required this.tabCloseRequest
-  });
+  ApiIsolateCloseTabMessage({required this.closeTabRequest});
 
   @override
   sendResponse({required response, required SendPort sendPort}) {

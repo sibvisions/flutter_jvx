@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/api/open_tab_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../util/constants/i_color.dart';
@@ -95,10 +96,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     lastController = tabController;
     tabController = FlTabController(
-        initialIndex: tabContentList.indexWhere((element) => element.model.indexOf == model.selectedIndex),
-        tabs: tabContentList,
-        vsync: this,
-        changedIndexTo: changedIndexTo);
+        initialIndex: lastController!.index, tabs: tabContentList, vsync: this, changedIndexTo: changedIndexTo);
     tabController.widgetsSelectedOnce.addAll(lastController!.widgetsSelectedOnce);
 
     for (int i = 0; i < tabContentList.length; i++) {
@@ -245,6 +243,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   void changedIndexTo(int pValue) {
     setState(() {
+      uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
       model.selectedIndex = pValue;
     });
   }
@@ -256,8 +255,9 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       lastController = null;
     }
 
-    if (tabController.index != model.selectedIndex) {
-      tabController.animateTo(model.selectedIndex);
+    var tabIndex = tabContentList.indexWhere((element) => element.model.indexOf == model.selectedIndex);
+    if (tabIndex >= 0 && tabController.index != tabIndex) {
+      tabController.animateTo(tabIndex);
     }
 
     TabLayout layout = (layoutData.layout as TabLayout);

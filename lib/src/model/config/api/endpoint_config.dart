@@ -7,17 +7,18 @@ class EndpointConfig {
   final String setValue;
   final String setValues;
   final String downloadResource;
-  final String tabClose;
+  final String closeTab;
+  final String openTab;
 
-  EndpointConfig({
-    required this.startup,
-    required this.login,
-    required this.openScreen,
-    required this.deviceStatus,
-    required this.pressButton,
-    required this.setValue,
-    required this.setValues,
-    required this.downloadResource,
-    required this.tabClose
-  });
+  EndpointConfig(
+      {required this.startup,
+      required this.login,
+      required this.openScreen,
+      required this.deviceStatus,
+      required this.pressButton,
+      required this.setValue,
+      required this.setValues,
+      required this.downloadResource,
+      required this.closeTab,
+      required this.openTab});
 }

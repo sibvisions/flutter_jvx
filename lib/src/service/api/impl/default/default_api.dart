@@ -1,5 +1,3 @@
-import 'package:http/http.dart';
-
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
@@ -57,27 +55,41 @@ class DefaultApi implements IApiService {
   }
 
   @override
-  Future<List<BaseCommand>> setValues({required String clientId, required String componentId, required List<String> columnNames, required List values, required String dataProvider}) {
-    var response = repository.setValues(clientId: clientId, componentId: componentId, columnNames: columnNames, values: values, dataProvider: dataProvider);
+  Future<List<BaseCommand>> setValues(
+      {required String clientId,
+      required String componentId,
+      required List<String> columnNames,
+      required List values,
+      required String dataProvider}) {
+    var response = repository.setValues(
+        clientId: clientId,
+        componentId: componentId,
+        columnNames: columnNames,
+        values: values,
+        dataProvider: dataProvider);
     var actions = controller.processResponse(response);
     return actions;
   }
 
   @override
-  Future<List<BaseCommand>> downloadImages({
-    required String clientId,
-    required String baseDir,
-    required String appName,
-    required String appVersion
-  }) {
+  Future<List<BaseCommand>> downloadImages(
+      {required String clientId, required String baseDir, required String appName, required String appVersion}) {
     var response = repository.downloadImages(clientId: clientId);
-    var actions = controller.processImageDownload(baseDir: baseDir, response: response, appVersion: appVersion, appName: appName);
+    var actions =
+        controller.processImageDownload(baseDir: baseDir, response: response, appVersion: appVersion, appName: appName);
     return actions;
   }
 
   @override
   Future<List<BaseCommand>> closeTab({required String clientId, required String componentName, required int index}) {
-    var response = repository.tabClose(clientId: clientId, componentName: componentName, index: index);
+    var response = repository.closeTab(clientId: clientId, componentName: componentName, index: index);
+    var actions = controller.processResponse(response);
+    return actions;
+  }
+
+  @override
+  Future<List<BaseCommand>> openTab({required String clientId, required String componentName, required int index}) {
+    var response = repository.openTab(clientId: clientId, componentName: componentName, index: index);
     var actions = controller.processResponse(response);
     return actions;
   }

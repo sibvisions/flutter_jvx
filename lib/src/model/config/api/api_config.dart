@@ -40,6 +40,10 @@ class ApiConfig {
   }
 
   Uri getCloseTabUri() {
-    return Uri.parse(urlConfig.getBasePath() + endpointConfig.tabClose);
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.closeTab);
+  }
+
+  Uri getOpenTabUri() {
+    return Uri.parse(urlConfig.getBasePath() + endpointConfig.openTab);
   }
 }

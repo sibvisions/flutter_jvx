@@ -1,24 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_client/src/model/api/requests/download_images_request.dart';
-import 'package:flutter_client/src/model/api/requests/tab_close_request.dart';
-
-import '../../../../model/api/requests/set_value_request.dart';
-import '../../../../model/api/requests/set_values_request.dart';
+import 'package:flutter_client/src/model/api/requests/tab_open_request.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/requests/device_status_request.dart';
+import '../../../../model/api/requests/download_images_request.dart';
 import '../../../../model/api/requests/login_request.dart';
 import '../../../../model/api/requests/open_screen_request.dart';
 import '../../../../model/api/requests/press_button_request.dart';
+import '../../../../model/api/requests/set_value_request.dart';
+import '../../../../model/api/requests/set_values_request.dart';
 import '../../../../model/api/requests/startup_request.dart';
+import '../../../../model/api/requests/tab_close_request.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
 
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,9 +103,15 @@ class OnlineApiRepository implements IRepository {
   }
 
   @override
-  Future<Response> tabClose({required String clientId, required String componentName, required int index}) {
+  Future<Response> closeTab({required String clientId, required String componentName, required int index}) {
     TabCloseRequest tabCloseRequest = TabCloseRequest(index: index, componentName: componentName, clientId: clientId);
     return _sendPostRequest(apiConfig.getCloseTabUri(), jsonEncode(tabCloseRequest));
+  }
+
+  @override
+  Future<Response> openTab({required String clientId, required String componentName, required int index}) {
+    TabOpenRequest tabOpenRequest = TabOpenRequest(index: index, componentName: componentName, clientId: clientId);
+    return _sendPostRequest(apiConfig.getOpenTabUri(), jsonEncode(tabOpenRequest));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

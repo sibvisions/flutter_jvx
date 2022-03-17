@@ -114,6 +114,7 @@ abstract class FlComponentModel {
   /// Only applies properties if they exist in the json,
   /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
+    bool layoutChanged = false;
     var jsonId = pJson[ApiObjectProperty.id];
     if (jsonId != null) {
       id = jsonId;

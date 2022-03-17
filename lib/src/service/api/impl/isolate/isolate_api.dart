@@ -1,12 +1,8 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/api/requests/tab_close_request.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_close_tab_message.dart';
-import 'package:flutter_client/src/service/api/impl/isolate/messages/endpoint/api_isolate_download_images_message.dart';
-
 import '../../../../model/api/requests/set_values_request.dart';
-import 'messages/endpoint/api_isolate_set_value_message.dart';
-import 'messages/endpoint/api_isolate_set_values_messages.dart';
+import '../../../../model/api/requests/tab_close_request.dart';
+import '../../../../model/api/requests/tab_open_request.dart';
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
 import '../../shared/i_controller.dart';
@@ -16,16 +12,20 @@ import 'messages/api_isolate_controller_message.dart';
 import 'messages/api_isolate_message.dart';
 import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_repository_message.dart';
+import 'messages/endpoint/api_isolate_close_tab_message.dart';
 import 'messages/endpoint/api_isolate_device_status_message.dart';
+import 'messages/endpoint/api_isolate_download_images_message.dart';
 import 'messages/endpoint/api_isolate_login_message.dart';
 import 'messages/endpoint/api_isolate_open_screen_message.dart';
+import 'messages/endpoint/api_isolate_open_tab_message.dart';
 import 'messages/endpoint/api_isolate_press_button_message.dart';
+import 'messages/endpoint/api_isolate_set_value_message.dart';
+import 'messages/endpoint/api_isolate_set_values_messages.dart';
 import 'messages/endpoint/api_isolate_startup_message.dart';
 
 /// Makes Request to JVx Mobile API and parses responses to [BaseCommand]
 // Author: Michael Schober
 class IsolateApi implements IApiService {
-  
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,20 +94,12 @@ class IsolateApi implements IApiService {
   Future<List<BaseCommand>> setValue(String clientId, String componentId, value) async {
     return await _sendRequest(ApiIsolateSetValueMessage(componentId: componentId, clientId: clientId, value: value));
   }
-  
+
   @override
-  Future<List<BaseCommand>> downloadImages({
-    required String clientId,
-    required String baseDir,
-    required String appName,
-    required String appVersion
-  }) async {
+  Future<List<BaseCommand>> downloadImages(
+      {required String clientId, required String baseDir, required String appName, required String appVersion}) async {
     return await _sendRequest(ApiIsolateDownloadImagesMessage(
-        clientId: clientId,
-        baseDir: baseDir,
-        appVersion: appVersion,
-        appName: appName
-    ));
+        clientId: clientId, baseDir: baseDir, appVersion: appVersion, appName: appName));
   }
 
   @override
@@ -128,14 +120,18 @@ class IsolateApi implements IApiService {
   }
 
   @override
-  Future<List<BaseCommand>> closeTab({required String clientId, required String componentName, required int index}) async {
+  Future<List<BaseCommand>> closeTab(
+      {required String clientId, required String componentName, required int index}) async {
     ApiIsolateCloseTabMessage message = ApiIsolateCloseTabMessage(
-        tabCloseRequest: TabCloseRequest(
-          clientId: clientId,
-          componentName: componentName,
-          index: index
-        )
-    );
+        closeTabRequest: TabCloseRequest(clientId: clientId, componentName: componentName, index: index));
+    return await _sendRequest(message);
+  }
+
+  @override
+  Future<List<BaseCommand>> openTab(
+      {required String clientId, required String componentName, required int index}) async {
+    ApiIsolateOpenTabMessage message = ApiIsolateOpenTabMessage(
+        tabOpenRequest: TabOpenRequest(clientId: clientId, componentName: componentName, index: index));
     return await _sendRequest(message);
   }
 

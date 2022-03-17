@@ -1,6 +1,6 @@
 import '../api_object_property.dart';
 
-class TabCloseRequest {
+class TabOpenRequest {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +18,7 @@ class TabCloseRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  TabCloseRequest({required this.index, required this.componentName, required this.clientId});
+  TabOpenRequest({required this.index, required this.componentName, required this.clientId});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
