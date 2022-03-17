@@ -145,8 +145,10 @@ class UiService with CommandServiceMixin implements IUiService {
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
-      FlComponentModel model = _currentScreen.firstWhere((element) => element.id == updatedModel.id);
-      model = updatedModel;
+      int index = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
+      if(index != -1){
+        _currentScreen[index] = updatedModel;
+       }
 
       // Notify active component
       ComponentCallback? callback = _registeredComponents[updatedModel.id];
@@ -256,5 +258,13 @@ class UiService with CommandServiceMixin implements IUiService {
       required String pColumnName,
       required ColumnDefinition pColumnDefinition}) {
     _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId]!.call(pColumnDefinition);
+  }
+
+  @override
+  FlComponentModel? getComponentModel({required String pComponentId}) {
+    int index = _currentScreen.indexWhere((element) => element.id == pComponentId);
+    if(index != -1){
+      return _currentScreen[index];
+    }
   }
 }
