@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
 import 'dart:ui';
 
 import '../../../../util/logging/flutter_logger.dart';
-import '../../../layout/tab_layout.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/layout/preferred_size_command.dart';
 import '../../../model/command/layout/register_parent_command.dart';
@@ -170,22 +168,12 @@ class LayoutService implements ILayoutService {
         return copy;
       }).toList();
 
-      // Map<String, LayoutData> childrenBefore = {};
-
-      // for (LayoutData child in children) {
-      //   childrenBefore[child.id] = child.clone();
-      // }
-
       // All newly constraint children
       List<LayoutData> newlyConstraintChildren = [];
 
       // Needs to register again if this layout has been newly constraint by its parent.
       parent.lastCalculatedSize = parent.calculatedSize;
       parent.layout!.calculateLayout(parent, children);
-
-      if (parent.layout is TabLayout) {
-        log("TAB");
-      }
 
       LOGGER.logD(
           pType: LOG_TYPE.LAYOUT,
@@ -214,29 +202,11 @@ class LayoutService implements ILayoutService {
       var commands = <BaseCommand>[];
 
       if (parent.isChild && parent.hasNewCalculatedSize) {
-        if (parent.id.startsWith("TP") || parent.parentId!.startsWith("TP")) {
-          log("${parent.id} CALC SIZE: ${parent.calculatedSize} ; OLD CALC SIZE: ${parent.lastCalculatedSize} ; HAS NEW: ${parent.hasNewCalculatedSize}");
-          log("${parent.id} GoToParent ${parent.parentId}");
-        }
         return [PreferredSizeCommand(layoutData: parent, reason: "Has new calc size")];
       } else {
         for (LayoutData child in children) {
           if (child.isParent) {
-            // LayoutData oldChild = childrenBefore[child.id]!;
-            // bool needsRelayout = !oldChild.hasPosition || child.hasNewCalculatedSize;
-
-            // if (!needsRelayout) {
-            //   LayoutPosition oldPosition = oldChild.layoutPosition!;
-            //   LayoutPosition newPosition = child.layoutPosition!;
-
-            //   needsRelayout = (oldPosition.height != newPosition.height) || (oldPosition.width != newPosition.width);
-            // }
-
-            // if (needsRelayout) {
             commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
-            // } else {
-            //   log("Child ${child.id} does not relayout, position is: ${child.layoutPosition}");
-            // }
           }
         }
 

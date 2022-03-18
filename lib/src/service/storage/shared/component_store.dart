@@ -112,7 +112,7 @@ class StorageService implements IStorageService {
             affectedModels.add(oldParent.id);
           }
 
-          if(model.isVisible != wasVisible){
+          if (model.isVisible != wasVisible || model.isRemoved) {
             affectedModels.add(model.parent!);
           }
         }
@@ -130,11 +130,7 @@ class StorageService implements IStorageService {
     // Check for new or changed active components
     for (FlComponentModel newModel in newScreenComps) {
       // Was model already sent once, present in oldScreen
-      bool isExisting = oldScreenComps.any((oldModel) => oldModel.id == newModel.id);
-
-      if (oldScreenComps.isEmpty) {
-        isExisting = false;
-      }
+      bool isExisting = oldScreenComps.isNotEmpty && oldScreenComps.any((oldModel) => oldModel.id == newModel.id);
 
       // IF component has not been rendered before it is new.
       if (!isExisting) {
