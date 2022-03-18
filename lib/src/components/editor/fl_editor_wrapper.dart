@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../util/logging/flutter_logger.dart';
-import '../../mixin/ui_service_mixin.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/dummy/fl_dummy_cell_editor.dart';
@@ -16,12 +15,12 @@ import 'cell_editor/i_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
 /// It serves as the layouting wrapper of various non layouting widgets.
-class FlEditorWrapper extends BaseCompWrapperWidget<FlEditorModel> {
+class FlEditorWrapper<T extends FlEditorModel> extends BaseCompWrapperWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlEditorWrapper({Key? key, required FlEditorModel model}) : super(key: key, model: model);
+  FlEditorWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -31,7 +30,7 @@ class FlEditorWrapper extends BaseCompWrapperWidget<FlEditorModel> {
   FlEditorWrapperState createState() => FlEditorWrapperState();
 }
 
-class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> with UiServiceMixin {
+class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../mixin/data_service_mixin.dart';
-import '../../../mixin/ui_service_mixin.dart';
 import '../../../model/command/api/set_value_command.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../base_wrapper/base_comp_wrapper_state.dart';
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 import 'fl_text_field_widget.dart';
 
-class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> with UiServiceMixin {
+class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextFieldWrapper({Key? key, required FlTextFieldModel model}) : super(key: key, model: model);
+  FlTextFieldWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -26,8 +25,7 @@ class FlTextFieldWrapper extends BaseCompWrapperWidget<FlTextFieldModel> with Ui
   FlTextFieldWrapperState createState() => FlTextFieldWrapperState();
 }
 
-class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrapperState<T>
-    with UiServiceMixin, DataServiceMixin {
+class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrapperState<T> with DataServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

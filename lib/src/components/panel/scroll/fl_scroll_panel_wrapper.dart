@@ -10,7 +10,7 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_scroll_panel_widget.dart';
 
 class FlScrollPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlScrollPanelWrapper({Key? key, required FlPanelModel model}) : super(key: key, model: model);
+  FlScrollPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   _FlScrollPanelWrapperState createState() => _FlScrollPanelWrapperState();
@@ -33,6 +33,7 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   receiveNewModel({required FlPanelModel newModel}) {
     ILayout originalLayout = ILayout.getLayout(newModel.layout, newModel.layoutData)!;
     layoutData.layout = ScrollLayout(originalLayout);
+    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     buildChildren();

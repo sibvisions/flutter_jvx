@@ -7,7 +7,7 @@ import '../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_panel_widget.dart';
 
 class FlPanelWrapper extends BaseCompWrapperWidget<FlPanelModel> {
-  const FlPanelWrapper({Key? key, required FlPanelModel model}) : super(key: key, model: model);
+  FlPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   _FlPanelWrapperState createState() => _FlPanelWrapperState();
@@ -32,6 +32,8 @@ class _FlPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   @override
   receiveNewModel({required FlPanelModel newModel}) {
     layoutData.layout = ILayout.getLayout(newModel.layout, newModel.layoutData);
+    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
+
     super.receiveNewModel(newModel: newModel);
 
     buildChildren();

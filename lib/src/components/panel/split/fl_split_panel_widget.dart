@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../base_wrapper/base_comp_wrapper_widget.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
+
 import '../../../layout/split_layout.dart';
-import '../../../mixin/ui_service_mixin.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
+import '../../base_wrapper/base_comp_wrapper_widget.dart';
+import '../../base_wrapper/fl_stateless_widget.dart';
 
-class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> with UiServiceMixin {
+class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> {
   final SplitLayout layout;
 
-  FlSplitPanelWidget({Key? key, required this.layout, required FlSplitPanelModel model, required this.children})
+  const FlSplitPanelWidget({Key? key, required this.layout, required FlSplitPanelModel model, required this.children})
       : super(key: key, model: model);
 
   final List<Widget> children;

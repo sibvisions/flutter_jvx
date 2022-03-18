@@ -42,7 +42,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   void initState() {
     super.initState();
     // Models need to be same type, dart doesn't see that both extend [FlComponentModel]
-    model = uiService.getComponentModel(pComponentId: widget.model.id)! as T;
+    model = uiService.getComponentModel(pComponentId: widget.id)! as T;
 
     // Initialize [LayoutData] with data from [model]
     layoutData = LayoutData(

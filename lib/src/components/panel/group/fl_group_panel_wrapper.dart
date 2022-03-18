@@ -9,7 +9,7 @@ import '../fl_sized_panel_widget.dart';
 import 'fl_group_panel_header_widget.dart';
 
 class FlGroupPanelWrapper extends BaseCompWrapperWidget<FlGroupPanelModel> {
-  const FlGroupPanelWrapper({Key? key, required FlGroupPanelModel model}) : super(key: key, model: model);
+  FlGroupPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   _FlGroupPanelWrapperState createState() => _FlGroupPanelWrapperState();
@@ -35,6 +35,7 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   receiveNewModel({required FlGroupPanelModel newModel}) {
     ILayout originalLayout = ILayout.getLayout(newModel.layout, newModel.layoutData)!;
     layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
+    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     layoutAfterBuild = true;

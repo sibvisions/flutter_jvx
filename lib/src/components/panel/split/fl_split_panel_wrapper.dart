@@ -12,7 +12,7 @@ import '../../base_wrapper/base_cont_wrapper_state.dart';
 import 'fl_split_panel_widget.dart';
 
 class FlSplitPanelWrapper extends BaseCompWrapperWidget<FlSplitPanelModel> {
-  const FlSplitPanelWrapper({Key? key, required FlSplitPanelModel model}) : super(key: key, model: model);
+  FlSplitPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   _FlSplitPanelWrapperState createState() => _FlSplitPanelWrapperState();
@@ -35,6 +35,7 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
   @override
   receiveNewModel({required FlSplitPanelModel newModel}) {
     layoutData.layout = SplitLayout(splitAlignment: newModel.orientation, leftTopRatio: newModel.dividerPosition);
+    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     buildChildren();

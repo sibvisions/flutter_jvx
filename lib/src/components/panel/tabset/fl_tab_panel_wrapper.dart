@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/api/close_tab_command.dart';
 import 'package:flutter_client/src/model/command/api/open_tab_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,7 +23,7 @@ import 'fl_tab_view.dart';
 enum TabPlacements { WRAP, TOP, LEFT, BOTTOM, RIGHT }
 
 class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
-  const FlTabPanelWrapper({Key? key, required FlTabPanelModel model}) : super(key: key, model: model);
+  FlTabPanelWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
   _FlTabPanelWrapperState createState() => _FlTabPanelWrapperState();
@@ -35,6 +36,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   bool layoutAfterBuild = false;
 
+  int lastDeletedTab = -1;
   List<Widget> tabHeaderList = [];
   List<BaseCompWrapperWidget> tabContentList = [];
 
@@ -53,7 +55,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   receiveNewModel({required FlTabPanelModel newModel}) {
-    layoutData.layout = TabLayout(tabHeaderHeight: 0.0); //, selectedIndex: model.selectedIndex);
+    layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
     layoutAfterBuild = true;
@@ -85,6 +87,26 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     tabHeaderList.clear();
     tabContentList.clear();
 
+    if (lastDeletedTab >= 0) {
+      tabController.widgetsSelectedOnce.remove(lastDeletedTab);
+
+      if (tabController.widgetsSelectedOnce.isNotEmpty) {
+        List<int> listOfSelectedIndex = tabController.widgetsSelectedOnce.toList();
+        listOfSelectedIndex.sort();
+
+        int i = lastDeletedTab + 1;
+        while (i <= listOfSelectedIndex.last) {
+          if (tabController.widgetsSelectedOnce.contains(i)) {
+            tabController.widgetsSelectedOnce.remove(i);
+            tabController.widgetsSelectedOnce.add(i - 1);
+          }
+
+          i++;
+        }
+      }
+      lastDeletedTab = -1;
+    }
+
     /// Sort children by index;
     for (Widget child in children.values) {
       if (child is BaseCompWrapperWidget) {
@@ -93,15 +115,26 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }
 
     tabContentList.sort((a, b) => a.model.indexOf - b.model.indexOf);
+    var selectedIndex = tabContentList.indexWhere((element) => element.model.indexOf == model.selectedIndex);
 
     lastController = tabController;
     tabController = FlTabController(
-        initialIndex: lastController!.index, tabs: tabContentList, vsync: this, changedIndexTo: changedIndexTo);
+        initialIndex: selectedIndex >= 0 ? selectedIndex : 0,
+        tabs: tabContentList,
+        vsync: this,
+        changedIndexTo: changedIndexTo);
     tabController.widgetsSelectedOnce.addAll(lastController!.widgetsSelectedOnce);
 
     for (int i = 0; i < tabContentList.length; i++) {
       tabHeaderList.add(createTab(tabContentList[i]));
     }
+
+    log("Build children");
+    log("${children.values.length}");
+    log("Tabcontentlist: $tabContentList");
+    log("Tabheaderlist: $tabHeaderList");
+    log("${model.selectedIndex}");
+    log("${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -116,6 +149,14 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
         .where((e) =>
             !tabController.widgetsSelectedOnce.contains(e.model.indexOf) && model.selectedIndex != e.model.indexOf)
         .toList();
+
+    log("BUILD");
+    log("${children.values.length}");
+    log("Tabcontentlist: $tabContentList");
+    log("Tabheaderlist: $tabHeaderList");
+    log("Childrentohide: $childrenToHide");
+    log("${model.selectedIndex}");
+    log("${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
 
     return getPositioned(
       child: Wrap(
@@ -171,44 +212,14 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
         ],
       ),
     );
+  }
 
-    // return getPositioned(
-    //   child: Wrap(
-    //     children: [
-    //       FlTabHeader(tabHeaderList: tabHeaderList, postFrameCallback: postFrameCallback),
-    //       GestureDetector(
-    //         onHorizontalDragEnd: swipe,
-    //         child: Stack(
-    //           children: [
-    //             SizedBox(
-    //               width: widthOfTabPanel,
-    //               height: heightOfTabPanel,
-    //             ),
-    //             ...tabContentList.map(
-    //               (e) => Positioned(
-    //                 top: 0,
-    //                 left: 0,
-    //                 width: widthOfTabPanel,
-    //                 height: heightOfTabPanel,
-    //                 child: Visibility(
-    //                   child: Stack(
-    //                     children: [e],
-    //                   ),
-    //                   maintainAnimation: true,
-    //                   maintainInteractivity: false,
-    //                   maintainSemantics: false,
-    //                   maintainState: true,
-    //                   visible: e.model.indexOf == model.selectedIndex,
-    //                   maintainSize: true,
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
+  void swipeLeft() {
+    swipe(DragEndDetails(velocity: const Velocity(pixelsPerSecond: Offset(1, 0)), primaryVelocity: 1));
+  }
+
+  void swipeRigth() {
+    swipe(DragEndDetails(velocity: const Velocity(pixelsPerSecond: Offset(-1, 0)), primaryVelocity: -1));
   }
 
   void swipe(DragEndDetails pDetails) {
@@ -243,9 +254,9 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   void changedIndexTo(int pValue) {
     setState(() {
-      uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
       model.selectedIndex = pValue;
     });
+    uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
 
   @override
@@ -346,7 +357,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                       : null,
                   child: const Icon(
                     Icons.clear,
-                    size: 16,
+                    size: 30,
                     color: IColorConstants.COMPONENT_DISABLED,
                   ),
                 ),
@@ -359,6 +370,50 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void closeTab(int index) {
-    log("closed tab $index");
+    if (index == model.selectedIndex) {
+      swipeLeft();
+    }
+
+    lastDeletedTab = index;
+    uiService.sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }
 }
+
+// Old possible build for non animated tab
+// return getPositioned(
+//   child: Wrap(
+//     children: [
+//       FlTabHeader(tabHeaderList: tabHeaderList, postFrameCallback: postFrameCallback),
+//       GestureDetector(
+//         onHorizontalDragEnd: swipe,
+//         child: Stack(
+//           children: [
+//             SizedBox(
+//               width: widthOfTabPanel,
+//               height: heightOfTabPanel,
+//             ),
+//             ...tabContentList.map(
+//               (e) => Positioned(
+//                 top: 0,
+//                 left: 0,
+//                 width: widthOfTabPanel,
+//                 height: heightOfTabPanel,
+//                 child: Visibility(
+//                   child: Stack(
+//                     children: [e],
+//                   ),
+//                   maintainAnimation: true,
+//                   maintainInteractivity: false,
+//                   maintainSemantics: false,
+//                   maintainState: true,
+//                   visible: e.model.indexOf == model.selectedIndex,
+//                   maintainSize: true,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     ],
+//   ),
+// );
