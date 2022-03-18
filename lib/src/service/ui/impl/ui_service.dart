@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'dart:collection';
 
-import '../../../model/command/data/get_selected_data.dart';
-import '../../../model/data/column_definition.dart';
-import '../../../model/routing/route_close_qr_scanner.dart';
-import '../../../model/routing/route_open_qr_scanner.dart';
-import '../../../model/routing/route_to_settings_page.dart';
-
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/command/base_command.dart';
+import '../../../model/command/data/get_selected_data.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/data/column_definition.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
+import '../../../model/routing/route_close_qr_scanner.dart';
+import '../../../model/routing/route_open_qr_scanner.dart';
 import '../../../model/routing/route_to_menu.dart';
+import '../../../model/routing/route_to_settings_page.dart';
 import '../../../model/routing/route_to_work_screen.dart';
 import '../../../routing/app_delegate.dart';
 import '../i_ui_service.dart';
@@ -143,19 +142,32 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
+    Set<String> parentPanelCallbacks = {};
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
       int index = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
-      if(index != -1){
+      if (index != -1) {
         _currentScreen[index] = updatedModel;
-       }
+      }
 
       // Notify active component
       ComponentCallback? callback = _registeredComponents[updatedModel.id];
       if (callback != null) {
         callback.call(newModel: updatedModel);
+        if (updatedModel.parent != null && updatedModel.parent!.startsWith("TP")) // TODO michi, besser lösung?
+        {
+          parentPanelCallbacks.add(updatedModel.parent!);
+        }
       } else {
         throw Exception("Component ${updatedModel.id} To Update not found");
+      }
+    }
+    for (String parentId in parentPanelCallbacks) {
+      ComponentCallback? callback = _registeredComponents[parentId];
+      if (callback != null) {
+        callback.call();
+      } else {
+        throw Exception("Component $parentId To Update not found");
       }
     }
   }
@@ -263,7 +275,7 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   FlComponentModel? getComponentModel({required String pComponentId}) {
     int index = _currentScreen.indexWhere((element) => element.id == pComponentId);
-    if(index != -1){
+    if (index != -1) {
       return _currentScreen[index];
     }
   }

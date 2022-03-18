@@ -1,14 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/command/api/close_tab_command.dart';
-import 'package:flutter_client/src/model/command/api/open_tab_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../util/constants/i_color.dart';
 import '../../../../util/font_awesome_util.dart';
+import '../../../../util/logging/flutter_logger.dart';
 import '../../../layout/tab_layout.dart';
+import '../../../model/command/api/close_tab_command.dart';
+import '../../../model/command/api/open_tab_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/label/fl_label_model.dart';
 import '../../../model/component/panel/fl_tab_panel_model.dart';
@@ -129,12 +128,14 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       tabHeaderList.add(createTab(tabContentList[i]));
     }
 
-    log("Build children");
-    log("${children.values.length}");
-    log("Tabcontentlist: $tabContentList");
-    log("Tabheaderlist: $tabHeaderList");
-    log("${model.selectedIndex}");
-    log("${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Build children");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${children.values.length}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabcontentlist: $tabContentList");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabheaderlist: $tabHeaderList");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${model.selectedIndex}");
+    LOGGER.logD(
+        pType: LOG_TYPE.UI,
+        pMessage: "${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -150,13 +151,15 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             !tabController.widgetsSelectedOnce.contains(e.model.indexOf) && model.selectedIndex != e.model.indexOf)
         .toList();
 
-    log("BUILD");
-    log("${children.values.length}");
-    log("Tabcontentlist: $tabContentList");
-    log("Tabheaderlist: $tabHeaderList");
-    log("Childrentohide: $childrenToHide");
-    log("${model.selectedIndex}");
-    log("${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "BUILD");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${children.values.length}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabcontentlist: $tabContentList");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabheaderlist: $tabHeaderList");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Childrentohide: $childrenToHide");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${model.selectedIndex}");
+    LOGGER.logD(
+        pType: LOG_TYPE.UI,
+        pMessage: "${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
 
     return getPositioned(
       child: Wrap(
@@ -304,11 +307,11 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   Widget createTab(BaseCompWrapperWidget pComponent) {
-    String pTabString = pComponent.model.constraints!;
+    FlComponentModel childModel = pComponent.model;
+    String pTabString = childModel.constraints!;
 
     List pTabStrings = pTabString.split(';');
     bool enabled = (pTabStrings[0]?.toLowerCase() == 'true');
-    pComponent.model.isEnabled = enabled;
     bool closable = (pTabStrings[1]?.toLowerCase() == 'true');
     String text = pTabStrings[2] ?? '';
     String img = pTabStrings.length >= 4 ? pTabStrings[3] : '';
@@ -328,7 +331,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       // image = jsonImage;
     }
 
-    FlComponentModel childModel = pComponent.model;
     FlLabelModel labelModel = FlLabelModel()
       ..text = text
       ..fontName = childModel.fontName
@@ -370,10 +372,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void closeTab(int index) {
-    if (index == model.selectedIndex) {
-      swipeLeft();
-    }
-
     lastDeletedTab = index;
     uiService.sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }
