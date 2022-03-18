@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
@@ -15,8 +14,7 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  final Map<RenderBox, ComponentWidget> constraintMap =
-      <RenderBox, ComponentWidget>{};
+  final Map<RenderBox, ComponentWidget> constraintMap = <RenderBox, ComponentWidget>{};
 
   // the layout margins.
   final EdgeInsets? insMargin;
@@ -79,8 +77,7 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, RenderFlowLayoutWidget renderObject) {
+  void updateRenderObject(BuildContext context, RenderFlowLayoutWidget renderObject) {
     /// Force Layout, if some of the settings have changed
     if (this.layoutState == LayoutState.DIRTY) {
       renderObject.markNeedsLayout();
@@ -102,17 +99,13 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.iHorizontalComponentAlignment !=
-        this.horizontalComponentAlignment) {
-      renderObject.iHorizontalComponentAlignment =
-          this.horizontalComponentAlignment;
+    if (renderObject.iHorizontalComponentAlignment != this.horizontalComponentAlignment) {
+      renderObject.iHorizontalComponentAlignment = this.horizontalComponentAlignment;
       renderObject.markNeedsLayout();
     }
 
-    if (renderObject.iVerticalComponentAlignment !=
-        this.verticalComponentAlignment) {
-      renderObject.iVerticalComponentAlignment =
-          this.verticalComponentAlignment;
+    if (renderObject.iVerticalComponentAlignment != this.verticalComponentAlignment) {
+      renderObject.iVerticalComponentAlignment = this.verticalComponentAlignment;
       renderObject.markNeedsLayout();
     }
 
@@ -143,10 +136,8 @@ class CoFlowLayoutWidget extends MultiChildRenderObjectWidget {
     properties.add(new IntProperty('horizontalAlignment', horizontalAlignment));
     properties.add(new IntProperty('verticalAlignment', verticalAlignment));
     properties.add(new IntProperty('orientation', orientation));
-    properties.add(new IntProperty(
-        'horizontalComponentAlignment', horizontalComponentAlignment));
-    properties.add(new IntProperty(
-        'verticalComponentAlignment', verticalComponentAlignment));
+    properties.add(new IntProperty('horizontalComponentAlignment', horizontalComponentAlignment));
+    properties.add(new IntProperty('verticalComponentAlignment', verticalComponentAlignment));
     properties.add(new IntProperty('horizontalGap', horizontalGap));
     properties.add(new IntProperty('verticalGap', verticalGap));
     properties.add(new StringProperty('margins', insMargin.toString()));
@@ -158,8 +149,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
   // Stores all constraints.
-  Map<RenderBox, ComponentWidget> constraintMap =
-      <RenderBox, ComponentWidget>{};
+  Map<RenderBox, ComponentWidget> constraintMap = <RenderBox, ComponentWidget>{};
 
   // the layout margins.
   EdgeInsets? insMargins;
@@ -227,14 +217,12 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   @override
   void performLayout() {
-    this.debugInfo =
-        "FlowLayout in container ${container!.componentModel.componentId}";
+    this.debugInfo = "FlowLayout in container ${container!.componentModel.componentId}";
     // Set components
     constraintMap = <RenderBox, ComponentWidget>{};
     RenderBox? child = firstChild;
     while (child != null) {
-      final MultiChildLayoutParentData childParentData =
-          child.parentData as MultiChildLayoutParentData;
+      final MultiChildLayoutParentData childParentData = child.parentData as MultiChildLayoutParentData;
       addLayoutComponent(child, childParentData.id!);
 
       child = childParentData.nextSibling;
@@ -243,27 +231,19 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     if (layoutSize[this.constraints] != null)
       this.size = layoutSize[this.constraints]!;
     else {
-      LayoutModel layoutModel =
-          (container?.componentModel as ContainerComponentModel)
-              .layout!
-              .layoutModel;
+      LayoutModel layoutModel = (container?.componentModel as ContainerComponentModel).layout!.layoutModel;
 
       // calculate preferred, minimum and maximum layout sizes for parent layouts
       preferredLayoutSize = layoutModel.layoutPreferredSize[this.constraints];
       if (preferredLayoutSize == null) {
-        preferredLayoutSize = _preferredLayoutSize(
-            container?.componentModel as ContainerComponentModel);
-        if (preferredLayoutSize != null)
-          layoutModel.layoutPreferredSize[this.constraints] =
-              preferredLayoutSize!;
+        preferredLayoutSize = _preferredLayoutSize(container?.componentModel as ContainerComponentModel);
+        if (preferredLayoutSize != null) layoutModel.layoutPreferredSize[this.constraints] = preferredLayoutSize!;
       }
 
       minimumLayoutSize = layoutModel.layoutMinimumSize[this.constraints];
       if (minimumLayoutSize == null) {
-        minimumLayoutSize = _minimumLayoutSize(
-            container?.componentModel as ContainerComponentModel);
-        if (minimumLayoutSize != null)
-          layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
+        minimumLayoutSize = _minimumLayoutSize(container?.componentModel as ContainerComponentModel);
+        if (minimumLayoutSize != null) layoutModel.layoutMinimumSize[this.constraints] = minimumLayoutSize!;
       }
 
       Size dimSize = this.constraints.biggest;
@@ -272,20 +252,14 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
       //x stores the columns
       //y stores the rows
-      Rect rectCompInfo =
-          calculateGrid(container?.componentModel as ContainerComponentModel);
+      Rect rectCompInfo = calculateGrid(container?.componentModel as ContainerComponentModel);
 
       //ignore the insets!
-      Size dimPref = new Size(
-          rectCompInfo.width * rectCompInfo.left +
-              iHorizontalGap! * (rectCompInfo.left - 1),
-          rectCompInfo.height * rectCompInfo.top +
-              iVerticalGap! * (rectCompInfo.top - 1));
+      Size dimPref = new Size(rectCompInfo.width * rectCompInfo.left + iHorizontalGap! * (rectCompInfo.left - 1),
+          rectCompInfo.height * rectCompInfo.top + iVerticalGap! * (rectCompInfo.top - 1));
 
-      if (dimSize.height == double.infinity)
-        dimSize = Size(dimSize.width, dimPref.height);
-      if (dimSize.width == double.infinity)
-        dimSize = Size(dimPref.width, dimSize.height);
+      if (dimSize.height == double.infinity) dimSize = Size(dimSize.width, dimPref.height);
+      if (dimSize.width == double.infinity) dimSize = Size(dimPref.width, dimSize.height);
 
       int iLeft;
       int iWidth;
@@ -295,10 +269,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
         iWidth = dimSize.width.round();
       } else {
         //align the layout in the container
-        iLeft = (((dimSize.width - dimPref.width) *
-                    getAlignmentFactor(iHorizontalAlignment!)) +
-                insMargins!.left)
-            .round();
+        iLeft =
+            (((dimSize.width - dimPref.width) * getAlignmentFactor(iHorizontalAlignment!)) + insMargins!.left).round();
         iWidth = dimPref.width.round();
       }
 
@@ -310,10 +282,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
         iHeight = dimSize.height.round();
       } else {
         //align the layout in the container
-        iTop = (((dimSize.height - dimPref.height) *
-                    getAlignmentFactor(iVerticalAlignment!)) +
-                insMargins!.top)
-            .round();
+        iTop =
+            (((dimSize.height - dimPref.height) * getAlignmentFactor(iVerticalAlignment!)) + insMargins!.top).round();
         iHeight = dimPref.height.round();
       }
 
@@ -331,117 +301,82 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
         comp = constraintMap.values.elementAt(i);
 
         if (comp.componentModel.isVisible) {
-          Size size =
-              this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
+          Size size = this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
 
           if (iOrientation == 0) {
-            if (!bFirst &&
-                bAutoWrap &&
-                dimSize.width > 0 &&
-                x + size.width > dimSize.width) {
+            if (!bFirst && bAutoWrap && dimSize.width > 0 && x + size.width > dimSize.width) {
               x = 0;
               y += ((rectCompInfo.height + iVerticalGap!) * fH / fPH).round();
             } else if (bFirst) {
               bFirst = false;
             }
 
-            if (iVerticalComponentAlignment ==
-                IAlignmentConstants.ALIGN_STRETCH) {
+            if (iVerticalComponentAlignment == IAlignmentConstants.ALIGN_STRETCH) {
               double offsetX = iLeft + x * fW / fPW;
               double offsetY = (iTop + y).toDouble();
               double width = size.width * fW / fPW;
               double height = rectCompInfo.height * fH / fPH;
 
               constraintMap.keys.elementAt(i).layout(
-                  BoxConstraints(
-                      minWidth: width,
-                      maxWidth: width,
-                      minHeight: height,
-                      maxHeight: height),
+                  BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height),
                   parentUsesSize: true);
 
               final MultiChildLayoutParentData childParentData =
-                  constraintMap.keys.elementAt(i).parentData
-                      as MultiChildLayoutParentData;
+                  constraintMap.keys.elementAt(i).parentData as MultiChildLayoutParentData;
               childParentData.offset = Offset(offsetX, offsetY);
             } else {
               double offsetX = iLeft + x * fW / fPW;
               double offsetY = iTop +
                   y +
-                  ((rectCompInfo.height - size.height) *
-                          getAlignmentFactor(iVerticalComponentAlignment!)) *
-                      fH /
-                      fPH;
+                  ((rectCompInfo.height - size.height) * getAlignmentFactor(iVerticalComponentAlignment!)) * fH / fPH;
               double width = size.width * fW / fPW;
               double height = size.height * fH / fPH;
 
               constraintMap.keys.elementAt(i).layout(
-                  BoxConstraints(
-                      minWidth: width,
-                      maxWidth: width,
-                      minHeight: height,
-                      maxHeight: height),
+                  BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height),
                   parentUsesSize: true);
 
               final MultiChildLayoutParentData childParentData =
-                  constraintMap.keys.elementAt(i).parentData
-                      as MultiChildLayoutParentData;
+                  constraintMap.keys.elementAt(i).parentData as MultiChildLayoutParentData;
               childParentData.offset = Offset(offsetX, offsetY);
             }
 
             x += (size.width + iHorizontalGap!).round();
           } else {
-            if (!bFirst &&
-                bAutoWrap &&
-                dimSize.height > 0 &&
-                y + size.height > dimSize.height) {
+            if (!bFirst && bAutoWrap && dimSize.height > 0 && y + size.height > dimSize.height) {
               y = 0;
               x += ((rectCompInfo.width + iHorizontalGap!) * fW / fPW).round();
             } else if (bFirst) {
               bFirst = false;
             }
 
-            if (iHorizontalComponentAlignment ==
-                IAlignmentConstants.ALIGN_STRETCH) {
+            if (iHorizontalComponentAlignment == IAlignmentConstants.ALIGN_STRETCH) {
               double offsetX = (iLeft + x).toDouble();
               double offsetY = iTop + y * fH / fPH;
               double width = rectCompInfo.width * fW / fPW;
               double height = size.height * fH / fPH;
 
               constraintMap.keys.elementAt(i).layout(
-                  BoxConstraints(
-                      minWidth: width,
-                      maxWidth: width,
-                      minHeight: height,
-                      maxHeight: height),
+                  BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height),
                   parentUsesSize: true);
 
               final MultiChildLayoutParentData childParentData =
-                  constraintMap.keys.elementAt(i).parentData
-                      as MultiChildLayoutParentData;
+                  constraintMap.keys.elementAt(i).parentData as MultiChildLayoutParentData;
               childParentData.offset = Offset(offsetX, offsetY);
             } else {
               double offsetX = iLeft +
                   x +
-                  ((rectCompInfo.width - size.width) *
-                          getAlignmentFactor(iHorizontalComponentAlignment!)) *
-                      fW /
-                      fPW;
+                  ((rectCompInfo.width - size.width) * getAlignmentFactor(iHorizontalComponentAlignment!)) * fW / fPW;
               double offsetY = iTop + y * fH / fPH;
               double width = size.width * fW / fPW;
               double height = size.height * fH / fPH;
 
               constraintMap.keys.elementAt(i).layout(
-                  BoxConstraints(
-                      minWidth: width,
-                      maxWidth: width,
-                      minHeight: height,
-                      maxHeight: height),
+                  BoxConstraints(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height),
                   parentUsesSize: true);
 
               final MultiChildLayoutParentData childParentData =
-                  constraintMap.keys.elementAt(i).parentData
-                      as MultiChildLayoutParentData;
+                  constraintMap.keys.elementAt(i).parentData as MultiChildLayoutParentData;
               childParentData.offset = Offset(offsetX, offsetY);
             }
 
@@ -452,16 +387,14 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
         if (this.constraints.hasBoundedHeight &&
             this.constraints.hasBoundedWidth &&
             constraintMap.values.elementAt(i) is CoContainerWidget) {
-          (constraintMap.values.elementAt(i).componentModel
-                  as ContainerComponentModel)
+          (constraintMap.values.elementAt(i).componentModel as ContainerComponentModel)
               .layout!
               .layoutModel
               .layoutState = LayoutState.RENDERED;
         }
       }
 
-      this.size =
-          this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
+      this.size = this.constraints.constrainDimensions(fW.toDouble(), fH.toDouble());
 
       // if (this.constraints.hasBoundedHeight &&
       //     this.constraints.hasBoundedWidth) {
@@ -494,8 +427,8 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     int iAnzCols = 1;
 
     Size bounds = this.constraints.biggest;
-    bounds = Size(bounds.width - (insMargins!.left + insMargins!.right),
-        bounds.height - (insMargins!.top + insMargins!.bottom));
+    bounds = Size(
+        bounds.width - (insMargins!.left + insMargins!.right), bounds.height - (insMargins!.top + insMargins!.bottom));
 
     /*if (pContainer.getParent() instanceof JViewport)
 		{
@@ -520,8 +453,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       comp = constraintMap.values.elementAt(i);
 
       if (comp.componentModel.isVisible) {
-        Size dimPref =
-            this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
+        Size dimPref = this.getPreferredSize(constraintMap.keys.elementAt(i), comp);
 
         if (iOrientation == 0) {
           if (!bFirst) {
@@ -533,10 +465,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
           //wrapping doesn't change the height, because the height will be used
           //for all rows
-          if (!bFirst &&
-              bAutoWrap &&
-              bounds.width > 0 &&
-              iCalcWidth > bounds.width) {
+          if (!bFirst && bAutoWrap && bounds.width > 0 && iCalcWidth > bounds.width.floor()) {
             iCalcWidth = dimPref.width.round();
             iAnzRows++;
           } else if (bFirst) {
@@ -554,10 +483,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
           //wrapping doesn't change the width, because the width will be used
           //for all columns
-          if (!bFirst &&
-              bAutoWrap &&
-              bounds.height > 0 &&
-              iCalcHeight > bounds.height) {
+          if (!bFirst && bAutoWrap && bounds.height > 0 && iCalcHeight > bounds.height.floor()) {
             iCalcHeight = dimPref.height.round();
             iAnzCols++;
           } else if (bFirst) {
@@ -569,8 +495,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
       }
     }
 
-    return new Rect.fromLTWH(iAnzCols.toDouble(), iAnzRows.toDouble(),
-        iWidth.toDouble(), iHeight.toDouble());
+    return new Rect.fromLTWH(iAnzCols.toDouble(), iAnzRows.toDouble(), iWidth.toDouble(), iHeight.toDouble());
   }
 
   /*
@@ -606,8 +531,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
           size = layoutRenderBox(renderBox, constraints);
 
         if (size.width == double.infinity || size.height == double.infinity) {
-          print(
-              "CoFlowLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
+          print("CoFlowLayout: getPrefererredSize: Infinity height or width for BorderLayout!");
         }
 
         _setChildSize(comp, size);
@@ -620,12 +544,10 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   bool _isLayoutDirty(ComponentWidget componentWidget) {
     if (componentWidget is CoContainerWidget) {
-      ContainerComponentModel containerComponentModel =
-          componentWidget.componentModel as ContainerComponentModel;
+      ContainerComponentModel containerComponentModel = componentWidget.componentModel as ContainerComponentModel;
 
       if (containerComponentModel.layout != null &&
-          containerComponentModel.layout!.layoutModel.layoutState ==
-              LayoutState.DIRTY) {
+          containerComponentModel.layout!.layoutModel.layoutState == LayoutState.DIRTY) {
         // containerComponentModel.layout!.layoutModel.layoutState =
         //     LayoutState.RENDERED;
         return true;
@@ -637,8 +559,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   Size? _childSize(ComponentWidget comp) {
     if (comp is CoContainerWidget) {
-      ContainerComponentModel containerComponentModel =
-          comp.componentModel as ContainerComponentModel;
+      ContainerComponentModel containerComponentModel = comp.componentModel as ContainerComponentModel;
 
       if (containerComponentModel.layout != null) {
         return containerComponentModel.layout!.layoutModel.layoutSize;
@@ -650,8 +571,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   void _setChildSize(ComponentWidget comp, Size size) {
     if (comp is CoContainerWidget) {
-      ContainerComponentModel containerComponentModel =
-          comp.componentModel as ContainerComponentModel;
+      ContainerComponentModel containerComponentModel = comp.componentModel as ContainerComponentModel;
 
       if (containerComponentModel.layout != null) {
         containerComponentModel.layout!.layoutModel.layoutSize = size;
@@ -661,8 +581,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! MultiChildLayoutParentData)
-      child.parentData = MultiChildLayoutParentData();
+    if (child.parentData is! MultiChildLayoutParentData) child.parentData = MultiChildLayoutParentData();
   }
 
   @override
@@ -672,19 +591,16 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 
   @override
   bool hitTestChildren(HitTestResult result, {required Offset position}) {
-    return defaultHitTestChildren(result as BoxHitTestResult,
-        position: position);
+    return defaultHitTestChildren(result as BoxHitTestResult, position: position);
   }
 
   void addLayoutComponent(RenderBox pComp, Object pConstraints) {
-    ArgumentError.checkNotNull(
-        pConstraints, "The constraints must not be null.");
+    ArgumentError.checkNotNull(pConstraints, "The constraints must not be null.");
 
     if (pConstraints is ComponentWidget) {
       setConstraints(pComp, pConstraints);
     } else {
-      throw new ArgumentError(
-          "Illegal constraint type " + pConstraints.runtimeType.toString());
+      throw new ArgumentError("Illegal constraint type " + pConstraints.runtimeType.toString());
     }
   }
 
@@ -696,16 +612,13 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
 	 */
   void setConstraints(RenderBox pComponent, ComponentWidget pConstraints) {
     ArgumentError.checkNotNull(pComponent, "The component must not be null.");
-    ArgumentError.checkNotNull(
-        pConstraints, "The constraints must not be null.");
+    ArgumentError.checkNotNull(pConstraints, "The constraints must not be null.");
 
     constraintMap.putIfAbsent(pComponent, () => pConstraints);
   }
 
   Size _preferredLayoutSize(ContainerComponentModel pContainer) {
-    EdgeInsets insets = pContainer.layout != null
-        ? pContainer.layout!.layoutModel.margins
-        : EdgeInsets.all(0);
+    EdgeInsets insets = pContainer.layout != null ? pContainer.layout!.layoutModel.margins : EdgeInsets.all(0);
 
     //x stores the columns
     //y stores the rows
@@ -713,15 +626,13 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
     lastPreferredSizeCalculation = rectCompInfo;
     return new Size(
         rectCompInfo.width * rectCompInfo.left +
-            (iHorizontalGap != null ? iHorizontalGap! : 0) *
-                (rectCompInfo.left - 1) +
+            (iHorizontalGap != null ? iHorizontalGap! : 0) * (rectCompInfo.left - 1) +
             insets.left +
             insets.right +
             (insMargins != null ? insMargins!.left : 0) +
             (insMargins != null ? insMargins!.right : 0),
         rectCompInfo.height * rectCompInfo.top +
-            (iVerticalGap != null ? iVerticalGap! : 0) *
-                (rectCompInfo.top - 1) +
+            (iVerticalGap != null ? iVerticalGap! : 0) * (rectCompInfo.top - 1) +
             insets.top +
             insets.bottom +
             (insMargins != null ? insMargins!.top : 0) +
@@ -733,8 +644,7 @@ class RenderFlowLayoutWidget extends CoLayoutRenderBox
   }
 }
 
-class CoFlowLayoutConstraintData
-    extends ParentDataWidget<MultiChildLayoutParentData> {
+class CoFlowLayoutConstraintData extends ParentDataWidget<MultiChildLayoutParentData> {
   /// Marks a child with a layout identifier.
   ///
   /// Both the child and the id arguments must not be null.
@@ -753,8 +663,7 @@ class CoFlowLayoutConstraintData
   @override
   void applyParentData(RenderObject renderObject) {
     assert(renderObject.parentData is MultiChildLayoutParentData);
-    final MultiChildLayoutParentData parentData =
-        renderObject.parentData as MultiChildLayoutParentData;
+    final MultiChildLayoutParentData parentData = renderObject.parentData as MultiChildLayoutParentData;
     if (parentData.id != id) {
       parentData.id = id;
       final AbstractNode targetParent = renderObject.parent!;

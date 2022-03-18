@@ -38,9 +38,7 @@ convertFontAwesomeTextToIcon(String text, Color color) {
   String icon = arr[0];
   Size size = Size(16, 16);
 
-  if (arr.length >= 3 &&
-      double.tryParse(arr[1]) != null &&
-      double.tryParse(arr[2]) != null)
+  if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null)
     size = Size(double.parse(arr[1]), double.parse(arr[2]));
 
   if (icon.contains(";")) {
@@ -655,8 +653,6 @@ IconData chooseIcon(String icon) {
       return FontAwesomeIcons.paperclip;
 
     case 'save':
-      return FontAwesomeIcons.save;
-
     case 'floppyO':
       return FontAwesomeIcons.save;
 
@@ -2004,8 +2000,8 @@ IconData chooseIcon(String icon) {
     case 'ggCircle':
       return FontAwesomeIcons.ggCircle;
 
-    case 'tripadvisor':
-      return FontAwesomeIcons.tripadvisor;
+    // case 'tripadvisor':
+    //   return FontAwesomeIcons.tripadvisor;
 
     case 'odnoklassniki':
       return FontAwesomeIcons.odnoklassniki;

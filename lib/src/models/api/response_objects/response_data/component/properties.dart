@@ -31,14 +31,13 @@ class Properties {
 
   T? _convertProperty<T>(dynamic value) {
     if (value is String) {
-      if (HexColor.isHexColor(value) && T == Color) {
-        return HexColor.fromHex(value) as T;
+      if (T == Color) {
+        return HexColor.parseHexColor(value) as T;
       }
 
       if (T == Size) {
         List<String> sizeString = value.split(",");
-        return Size(double.parse(sizeString[0]), double.parse(sizeString[1]))
-            as T;
+        return Size(double.parse(sizeString[0]), double.parse(sizeString[1])) as T;
       } else if (T == bool) {
         return (value.toLowerCase() == 'true') as T;
       } else if (T == String) {
@@ -100,8 +99,7 @@ class Properties {
         p = p.replaceAll('\$', '~');
         if (i == 0)
           result = p;
-        else if (p.isNotEmpty)
-          result += '${p[0].toUpperCase()}${p.substring(1)}';
+        else if (p.isNotEmpty) result += '${p[0].toUpperCase()}${p.substring(1)}';
       });
     } else if (result.contains('_')) {
       result.split('_').asMap().forEach((i, p) {
