@@ -9,16 +9,19 @@ class EndpointConfig {
   final String downloadImages;
   final String closeTab;
   final String openTab;
+  final String changePassword;
 
-  EndpointConfig(
-      {required this.startup,
-      required this.login,
-      required this.openScreen,
-      required this.deviceStatus,
-      required this.pressButton,
-      required this.setValue,
-      required this.setValues,
-      required this.downloadImages,
-      required this.closeTab,
-      required this.openTab});
+  EndpointConfig({
+    required this.startup,
+    required this.login,
+    required this.openScreen,
+    required this.deviceStatus,
+    required this.pressButton,
+    required this.setValue,
+    required this.setValues,
+    required this.downloadImages,
+    required this.closeTab,
+    required this.openTab,
+    required this.changePassword
+  });
 }

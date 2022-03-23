@@ -92,6 +92,8 @@ abstract class ApiObjectProperty {
   static const String contentMode = "contentMode";
   static const String index = "index";
   static const String appMode = "appMode";
+  static const String newPassword = "newPassword";
+
 
   //Response Properties
   static const String authenticated = "authenticated";
