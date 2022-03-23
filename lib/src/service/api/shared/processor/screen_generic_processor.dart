@@ -26,15 +26,15 @@ import '../i_processor.dart';
 /// based on the 'update' property of the request.
 ///
 /// Possible return Commands : [SaveComponentsCommand], [RouteCommand]
-class ScreenGenericProcessor implements IProcessor {
+class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse(json) {
+  List<BaseCommand> processResponse({required ScreenGenericResponse pResponse}) {
     List<BaseCommand> commands = [];
-    ScreenGenericResponse screenGenericResponse = ScreenGenericResponse.fromJson(json);
+    ScreenGenericResponse screenGenericResponse = pResponse;
 
     // Handle New & Changed Components
     // Get new full components

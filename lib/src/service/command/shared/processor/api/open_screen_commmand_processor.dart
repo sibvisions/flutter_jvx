@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
@@ -13,7 +15,13 @@ class OpenScreenCommandProcessor
     String? clientId = configService.getClientId();
     if (clientId != null) {
       UpdateComponentsProcessor.isOpenScreen = true;
-      return apiService.openScreen(command.componentId, clientId);
+
+      ApiOpenScreenRequest openScreenRequest = ApiOpenScreenRequest(
+          componentId: command.componentId,
+          clientId: clientId,
+          manualClose: true
+      );
+      return apiService.sendRequest(request: openScreenRequest);
     } else {
       throw Exception(
           "NO CLIENT ID FOUND, while trying to send openScreen request. CommandID: " + command.id.toString());

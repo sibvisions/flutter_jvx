@@ -1,31 +1,62 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:flutter_client/src/model/api/requests/tab_open_request.dart';
+import 'package:flutter_client/src/model/api/api_object_property.dart';
+import 'package:flutter_client/src/model/api/api_response_names.dart';
+import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/response/api_response.dart';
+import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
+import 'package:flutter_client/src/model/api/response/application_parameter_response.dart';
+import 'package:flutter_client/src/model/api/response/close_screen_response.dart';
+import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
+import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/api/response/menu_response.dart';
+import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
 import 'package:http/http.dart';
 
-import '../../../../model/api/requests/device_status_request.dart';
-import '../../../../model/api/requests/download_images_request.dart';
-import '../../../../model/api/requests/login_request.dart';
-import '../../../../model/api/requests/open_screen_request.dart';
-import '../../../../model/api/requests/press_button_request.dart';
-import '../../../../model/api/requests/set_value_request.dart';
-import '../../../../model/api/requests/set_values_request.dart';
-import '../../../../model/api/requests/startup_request.dart';
-import '../../../../model/api/requests/tab_close_request.dart';
+import '../../../../model/api/requests/api_download_images_request.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
 
+typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson});
+
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static Map<String, ResponseFactory> maps = {
+  ApiResponseNames.applicationMetaData :
+      ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
+  ApiResponseNames.applicationParameters :
+      ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
+  ApiResponseNames.closeScreen :
+      ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
+  ApiResponseNames.dalFetch :
+      ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
+  ApiResponseNames.menu :
+      ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
+  ApiResponseNames.screenGeneric :
+      ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
+  ApiResponseNames.dalMetaData :
+      ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson)
+  };
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Api config for remote endpoints and url
   final ApiConfig apiConfig;
+  /// Http client for outside connection
   final Client client = Client();
-  final HttpClient httpClient = HttpClient();
+  /// Header fields, used for sessionId
   final Map<String, String> _headers = {};
+  /// Maps response names with a corresponding factory
+  late final Map<String, ResponseFactory> responseFactoryMap = Map.from(maps);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -40,78 +71,40 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<Response> login(String userName, String password, String clientId) {
-    LoginRequest request = LoginRequest(username: userName, password: password, clientId: clientId);
-    return _sendPostRequest(apiConfig.getLoginUri(), jsonEncode(request));
+  Future<List<ApiResponse>> sendRequest({required ApiRequest pRequest}) async {
+    Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
+
+    if(uri != null) {
+      var response = _sendPostRequest(uri, jsonEncode(pRequest));
+      return response
+          .then((response) => response.body)
+          .then((body) => jsonDecode(body) as List<dynamic>)
+          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses));
+    } else {
+      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
+    }
+
+
+  }
+
+  List<Map<String, dynamic>> _test(String a) {
+
+
+    int a = 2+4;
+    return a as List<Map<String, dynamic>>;
   }
 
   @override
-  Future<Response> startUp(String appName) {
-    StartUpRequest startUpRequest = StartUpRequest(deviceMode: "mobile", applicationName: appName, appMode: "full");
-    return _sendPostRequest(apiConfig.getStartupUri(), jsonEncode(startUpRequest));
-  }
+  Future<Uint8List> downloadImages({required ApiDownloadImagesRequest pRequest}) {
+    Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
 
-  @override
-  Future<Response> openScreen(String componentId, String clientId) {
-    OpenScreenRequest openScreenRequest = OpenScreenRequest(
-      manualClose: false,
-      componentId: componentId,
-      clientId: clientId,
-    );
-    return _sendPostRequest(apiConfig.getOpenScreenUri(), jsonEncode(openScreenRequest));
-  }
-
-  @override
-  Future<Response> deviceStatus(String clientId, double screenWidth, double screenHeight) {
-    DeviceStatusRequest deviceStatusRequest =
-        DeviceStatusRequest(clientId: clientId, screenWidth: screenWidth, screenHeight: screenHeight);
-    return _sendPostRequest(apiConfig.getDeviceStatusUri(), jsonEncode(deviceStatusRequest));
-  }
-
-  @override
-  Future<Response> pressButton(String componentId, String clientId) {
-    PressButtonRequest request = PressButtonRequest(componentId: componentId, clientId: clientId);
-    return _sendPostRequest(apiConfig.getButtonPressedUri(), jsonEncode(request));
-  }
-
-  @override
-  Future<Response> setValue(String clientId, String componentId, value) {
-    SetValueRequest request = SetValueRequest(componentId: componentId, value: value, clientId: clientId);
-    return _sendPostRequest(apiConfig.getSetValueUri(), jsonEncode(request));
-  }
-
-  @override
-  Future<Response> setValues(
-      {required String clientId,
-      required String componentId,
-      required List<String> columnNames,
-      required List values,
-      required String dataProvider}) {
-    SetValuesRequest request = SetValuesRequest(
-        componentId: componentId,
-        clientId: clientId,
-        dataProvider: dataProvider,
-        columnNames: columnNames,
-        values: values);
-    return _sendPostRequest(apiConfig.getSetValuesUri(), jsonEncode(request));
-  }
-
-  @override
-  Future<Response> downloadImages({required String clientId}) {
-    DownloadImagesRequest request = DownloadImagesRequest(clientId: clientId);
-    return _sendPostRequest(apiConfig.getDownloadResourceUri(), jsonEncode(request));
-  }
-
-  @override
-  Future<Response> closeTab({required String clientId, required String componentName, required int index}) {
-    TabCloseRequest tabCloseRequest = TabCloseRequest(index: index, componentName: componentName, clientId: clientId);
-    return _sendPostRequest(apiConfig.getCloseTabUri(), jsonEncode(tabCloseRequest));
-  }
-
-  @override
-  Future<Response> openTab({required String clientId, required String componentName, required int index}) {
-    TabOpenRequest tabOpenRequest = TabOpenRequest(index: index, componentName: componentName, clientId: clientId);
-    return _sendPostRequest(apiConfig.getOpenTabUri(), jsonEncode(tabOpenRequest));
+    if(uri != null) {
+      var response = _sendPostRequest(uri, jsonEncode(pRequest));
+      return response
+          .then((response) => response.bodyBytes);
+    } else {
+      throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,4 +129,27 @@ class OnlineApiRepository implements IRepository {
       }
     }
   }
+
+
+  List<ApiResponse> _responseParser({required List<dynamic> pJsonList}) {
+    List<ApiResponse> returnList = [];
+
+
+    for(dynamic responseItem in pJsonList) {
+      ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
+
+      if(builder != null) {
+        returnList.add(builder(pJson: responseItem));
+      } else {
+        // throw Exception("Builder for response ${responseItem[ApiObjectProperty.name]} from json in online repository not found");
+      }
+    }
+
+    return returnList;
+  }
+
+
+
+
+
 }

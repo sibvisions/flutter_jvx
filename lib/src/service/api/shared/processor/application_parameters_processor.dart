@@ -4,11 +4,11 @@ import '../../../../model/command/ui/route_command.dart';
 import '../../../../routing/app_routing_type.dart';
 import '../i_processor.dart';
 
-class ApplicationParametersProcessor implements IProcessor {
+class ApplicationParametersProcessor implements IProcessor<ApplicationParametersResponse> {
   @override
-  List<BaseCommand> processResponse(json) {
+  List<BaseCommand> processResponse({required ApplicationParametersResponse pResponse}) {
     List<BaseCommand> commands = [];
-    ApplicationParametersResponse response = ApplicationParametersResponse.fromJson(json);
+    ApplicationParametersResponse response = pResponse;
 
     String? authenticated = response.authenticated;
     RouteCommand? routeCommand;

@@ -1,6 +1,14 @@
+import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
+
 import 'api_command.dart';
 
+/// Command to set off remote request [ApiSetValuesRequest]
 class SetValuesCommand extends ApiCommand {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Id of component
   final String componentId;
 
@@ -13,13 +21,21 @@ class SetValuesCommand extends ApiCommand {
   /// List of values, order of which corresponds to order of columnsName list
   final List<dynamic> values;
 
-  SetValuesCommand(
-      {required this.componentId,
-      required this.dataProvider,
-      required this.columnNames,
-      required this.values,
-      required String reason})
-      : super(reason: reason);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  SetValuesCommand({
+    required this.componentId,
+    required this.dataProvider,
+    required this.columnNames,
+    required this.values,
+    required String reason
+  }) : super(reason: reason);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   // TODO: implement logString

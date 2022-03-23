@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_set_value_request.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/set_value_command.dart';
@@ -10,7 +12,13 @@ class SetValueProcessor with ConfigServiceMixin, ApiServiceMixin implements ICom
     String? clientId = configService.getClientId();
 
     if (clientId != null) {
-      return apiService.setValue(clientId, command.componentId, command.value);
+      ApiSetValueRequest setValueRequest = ApiSetValueRequest(
+          componentName: command.componentName,
+          value: command.value,
+          clientId: clientId
+      );
+
+      return apiService.sendRequest(request: setValueRequest);
     } else {
       throw Exception("NO CLIENT ID FOUND, while trying to send setValue request. CommandID: " + command.id.toString());
     }

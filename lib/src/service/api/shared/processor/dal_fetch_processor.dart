@@ -4,10 +4,11 @@ import '../../../../model/api/response/dal_fetch_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../i_processor.dart';
 
-class DalFetchProcessor extends IProcessor {
+class DalFetchProcessor extends IProcessor<DalFetchResponse> {
+
   @override
-  List<BaseCommand> processResponse(json) {
-    DalFetchResponse res = DalFetchResponse.fromJson(json);
+  List<BaseCommand> processResponse({required DalFetchResponse pResponse}) {
+    DalFetchResponse res = pResponse;
 
     SaveFetchDataCommand saveFetchDataCommand = SaveFetchDataCommand(response: res, reason: "Server sent FetchData");
 

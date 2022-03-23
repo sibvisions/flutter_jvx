@@ -16,7 +16,7 @@ void storageCallback(SendPort callerSendPort) {
   // Provide the caller with the reference of THIS isolate's SendPort
   callerSendPort.send(isolateReceivePort.sendPort);
 
-  // Storage instance holds all logic and data.
+  // Storage instance holds all data.
   final StorageService componentStore = StorageService();
 
   isolateReceivePort.listen((message) async {

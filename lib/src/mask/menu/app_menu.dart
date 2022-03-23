@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_grouped.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_ungroup.dart';
 import 'package:flutter_client/src/mask/menu/grid/widget/app_menu_grid_header.dart';
+import 'package:flutter_client/src/mask/menu/tab/app_menu_tab.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/model/menu/menu_group_model.dart';
@@ -30,8 +31,9 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
 
    late final Map<MENU_MODE, MenuFactory> menuFactory = {
     MENU_MODE.GRID_GROUPED: _getGroupedGridMenu,
-    MENU_MODE.GRID : _getGridMenuUngrouped,
-    MENU_MODE.LIST : _getListMenuUngrouped
+    MENU_MODE.GRID: _getGridMenuUngrouped,
+    MENU_MODE.LIST: _getListMenuUngrouped,
+    MENU_MODE.TABS: _getTabMenu
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,6 +106,10 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
 
   Widget _getListMenuUngrouped({required MenuModel menuModel, required ButtonCallback onClick}) {
     return AppMenuListUngroup(menuModel: menuModel, onClick: onClick);
+  }
+
+  Widget _getTabMenu({required MenuModel menuModel, required ButtonCallback onClick}) {
+    return AppMenuTab(menuModel: menuModel, onClick: onClick);
   }
 
 

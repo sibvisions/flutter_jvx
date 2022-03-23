@@ -90,7 +90,7 @@ class AppMenuGridItem extends StatelessWidget {
           backgroundColor: Colors.transparent,
           child: IFontAwesome.getFontAwesomeIcon(
               pText: imageName,
-              pIconSize: 50,
+              pIconSize: 72,
               pColor: Theme.of(pContext).cardColor
           )
       );

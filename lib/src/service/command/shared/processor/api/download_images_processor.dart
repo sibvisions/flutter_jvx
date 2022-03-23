@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_client/src/mixin/api_service_mixin.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/command/api/download_images_command.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/service/command/shared/i_command_processor.dart';
@@ -22,12 +23,14 @@ class DownloadImagesProcessor with ApiServiceMixin, ConfigServiceMixin implement
     String appName = configService.getAppName();
 
     if(clientId != null) {
-      apiService.downloadImages(
-        baseDir: baseDir,
-        clientId: clientId,
+      ApiDownloadImagesRequest downloadImagesRequest = ApiDownloadImagesRequest(
         appName: appName,
-        appVersion: appVersion
+        appVersion: appVersion,
+        baseDir: baseDir,
+        clientId: clientId
       );
+
+      apiService.sendRequest(request: downloadImagesRequest);
     }
 
     return [];

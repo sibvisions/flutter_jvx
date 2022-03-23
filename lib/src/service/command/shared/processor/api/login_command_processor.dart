@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_login_request.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/login_command.dart';
@@ -9,7 +11,13 @@ class LoginCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements 
   Future<List<BaseCommand>> processCommand(LoginCommand command) {
     String? clientId = configService.getClientId();
     if (clientId != null) {
-      return apiService.login(command.userName, command.password, clientId);
+      ApiLoginRequest loginRequest = ApiLoginRequest(
+          username: command.userName,
+          password: command.password,
+          clientId: clientId
+      );
+
+      return apiService.sendRequest(request: loginRequest);
     } else {
       throw Exception("NO ClIENT ID FOUND, while trying to send login Request");
     }

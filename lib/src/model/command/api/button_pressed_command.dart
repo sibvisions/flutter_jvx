@@ -9,7 +9,7 @@ class ButtonPressedCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The component id that has taken an action.
-  String componentId;
+  String componentName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -17,7 +17,7 @@ class ButtonPressedCommand extends ApiCommand {
 
   /// Initializes a [ButtonPressedCommand].
   ButtonPressedCommand({
-    required this.componentId,
+    required this.componentName,
     required String reason,
   }) : super(reason: reason);
 
@@ -26,5 +26,5 @@ class ButtonPressedCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "ButtonPressedCommand | Component: $componentId | Reason: $reason";
+  String get logString => "ButtonPressedCommand | Component: $componentName | Reason: $reason";
 }

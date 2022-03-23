@@ -1,32 +1,35 @@
+import 'package:flutter_client/src/model/api/requests/api_request.dart';
+
 import '../api_object_property.dart';
 
-class TabOpenRequest {
+/// Request to send when a button has been pressed.
+class ApiPressButtonRequest extends ApiRequest {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Current session id
+  /// Session id
   final String clientId;
-
-  /// Component name of the tab-set panel
+  /// Component name of the button clicked
   final String componentName;
-
-  /// Index of the closed tab
-  final int index;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  TabOpenRequest({required this.index, required this.componentName, required this.clientId});
+  ApiPressButtonRequest({
+    required this.componentName,
+    required this.clientId,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
+  // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
-        ApiObjectProperty.componentId: componentName,
-        ApiObjectProperty.index: index
-      };
+    ApiObjectProperty.clientId: clientId,
+    ApiObjectProperty.componentId: componentName,
+  };
 }

@@ -50,6 +50,7 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
       child: Scaffold(
         appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
         body: Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
             _getScreenSize(constraints.maxHeight, constraints.maxWidth);
             return Stack(

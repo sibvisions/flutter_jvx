@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_open_tab_request.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/open_tab_command.dart';
@@ -10,7 +12,13 @@ class OpenTabProcessor with ApiServiceMixin, ConfigServiceMixin implements IComm
     String? clientId = configService.getClientId();
 
     if (clientId != null) {
-      return apiService.openTab(clientId: clientId, componentName: command.componentName, index: command.index);
+      ApiOpenTabRequest openTabRequest = ApiOpenTabRequest(
+          index: command.index,
+          componentName: command.componentName,
+          clientId: clientId
+      );
+
+      return apiService.sendRequest(request: openTabRequest);
     }
 
     return [];

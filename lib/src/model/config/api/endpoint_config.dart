@@ -6,7 +6,7 @@ class EndpointConfig {
   final String pressButton;
   final String setValue;
   final String setValues;
-  final String downloadResource;
+  final String downloadImages;
   final String closeTab;
   final String openTab;
 
@@ -18,7 +18,7 @@ class EndpointConfig {
       required this.pressButton,
       required this.setValue,
       required this.setValues,
-      required this.downloadResource,
+      required this.downloadImages,
       required this.closeTab,
       required this.openTab});
 }

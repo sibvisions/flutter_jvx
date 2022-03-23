@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_startup_request.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/api/startup_command.dart';
@@ -9,11 +11,14 @@ import '../../i_command_processor.dart';
 class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
-    String? appName = configService.getAppName();
-    if (appName != null) {
-      return apiService.startUp(appName);
-    } else {
-      throw Exception("NO APP NAME FOUND, while trying to send startUp Request");
-    }
+    String appName = configService.getAppName();
+
+    ApiStartUpRequest startUpRequest = ApiStartUpRequest(
+        appMode: "full",
+        deviceMode: "mobile",
+        applicationName: appName
+    );
+
+    return apiService.sendRequest(request: startUpRequest);
   }
 }

@@ -3,10 +3,10 @@ import '../../../../model/command/base_command.dart';
 import '../../../../model/command/data/save_meta_data_commnad.dart';
 import '../i_processor.dart';
 
-class DalMetaDataProcessor implements IProcessor {
+class DalMetaDataProcessor implements IProcessor<DalMetaDataResponse> {
   @override
-  List<BaseCommand> processResponse(json) {
-    DalMetaDataResponse metaDataResponse = DalMetaDataResponse.fromJson(pJson: json);
+  List<BaseCommand> processResponse({required DalMetaDataResponse pResponse}) {
+    DalMetaDataResponse metaDataResponse = pResponse;
 
     SaveMetaDataCommand saveMetaDataCommand =
         SaveMetaDataCommand(response: metaDataResponse, reason: "Server sent new MetaData");

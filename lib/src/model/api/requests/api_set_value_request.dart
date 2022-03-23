@@ -1,14 +1,16 @@
-import 'package:flutter_client/src/model/api/requests/api_set_value_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_request.dart';
 
-import 'api_command.dart';
+import '../api_object_property.dart';
 
-/// Command to set off remote request [ApiSetValueRequest] from components
-class SetValueCommand extends ApiCommand {
+/// Request to set the value of an unbound(no-dataProvider) component
+class ApiSetValueRequest extends ApiRequest {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Session id
+  final String clientId;
   /// Name of the component from which the value is set
   final String componentName;
   /// Value to be set
@@ -18,17 +20,20 @@ class SetValueCommand extends ApiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SetValueCommand({
+  ApiSetValueRequest({
     required this.componentName,
     required this.value,
-    required String reason
-  }) : super(reason: reason);
+    required this.clientId
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  Map<String, dynamic> toJson() => {
+    ApiObjectProperty.clientId: clientId,
+    ApiObjectProperty.componentId: componentName,
+    ApiObjectProperty.value: value
+  };
 }

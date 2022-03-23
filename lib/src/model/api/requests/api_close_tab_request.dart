@@ -1,6 +1,10 @@
+import 'package:flutter_client/src/model/api/requests/api_request.dart';
+
 import '../api_object_property.dart';
 
-class TabCloseRequest {
+/// Request to notify the server which tab on a tab-set panel is being closed/deleted
+class ApiCloseTabRequest extends ApiRequest {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,15 +22,20 @@ class TabCloseRequest {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  TabCloseRequest({required this.index, required this.componentName, required this.clientId});
+  ApiCloseTabRequest({
+    required this.index,
+    required this.componentName,
+    required this.clientId
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
+  // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
   Map<String, dynamic> toJson() => {
-        ApiObjectProperty.clientId: clientId,
-        ApiObjectProperty.componentId: componentName,
-        ApiObjectProperty.index: index
-      };
+    ApiObjectProperty.clientId: clientId,
+    ApiObjectProperty.componentId: componentName,
+    ApiObjectProperty.index: index
+  };
 }

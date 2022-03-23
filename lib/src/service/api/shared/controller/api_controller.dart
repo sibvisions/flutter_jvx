@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
@@ -34,45 +35,62 @@ class ApiController implements IController {
   final IProcessor _dalMetaDataProcessor = DalMetaDataProcessor();
   final IProcessor _dalFetchProcessor = DalFetchProcessor();
 
+  /// Maps response names to their processor
+  late final Map<String, IProcessor> responseToProcessorMap;
+
 
   /// Decoder used for decoding the application images and translations
   final ZipDecoder _zipDecoder = ZipDecoder();
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ApiController() {
+    responseToProcessorMap = {
+      ApiResponseNames.applicationParameters : _applicationParameterProcessor,
+      ApiResponseNames.applicationMetaData : _applicationMetaDataProcessor,
+      ApiResponseNames.menu : _menuProcessor,
+      ApiResponseNames.screenGeneric : _screenGenericProcessor,
+      ApiResponseNames.closeScreen : _closeScreenProcessor,
+      ApiResponseNames.dalMetaData : _dalMetaDataProcessor,
+      ApiResponseNames.dalFetch : _dalFetchProcessor
+    };
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processResponse(Future<Response> response) {
-    var commands = response
-        .then((fullResponse) => fullResponse.body)
-        .then((body) => jsonDecode(body) as List<dynamic>)
-        .then((value) => value.map((e) => _sentToProcessor(e)).toList())
-        .then((value) {
-      if (value.isNotEmpty) {
-        return value.reduce((element1, element2) {
-          element1.addAll(element2);
-          return element1;
-        });
+  List<BaseCommand> processResponse({
+    required List<ApiResponse> responses
+  }) {
+
+    List<BaseCommand> commands = [];
+
+    for(ApiResponse response in responses) {
+      IProcessor? processor = responseToProcessorMap[response.name];
+
+      if(processor != null) {
+        commands.addAll(processor.processResponse(pResponse: response));
       } else {
-        return <BaseCommand>[];
+        throw Exception("Couldn't find processor belonging to ${response.name}, add it to the map");
       }
-    }); //Reduce List<List<BaseCommands>> to only a single Type of List<BaseCommands>
+    }
     return commands;
   }
 
   @override
-  Future<List<BaseCommand>> processImageDownload({
-    required Future<Response> response,
+  List<BaseCommand> processImageDownload({
+    required Uint8List response,
     required String baseDir,
     required String appName,
     required String appVersion
-  }) async {
+  }) {
 
-    Response fullResponse = await response;
 
-    Archive archive = _zipDecoder.decodeBytes(fullResponse.bodyBytes);
+    Archive archive = _zipDecoder.decodeBytes(response);
     String baseFilePath = DownloadHelper.getLocalFilePath(
         appName: appName,
         appVersion: appVersion,
@@ -86,38 +104,14 @@ class ApiController implements IController {
       for(ArchiveFile file in archive){
         // Create file
         File outputFile = File('$baseFilePath/${file.name}');
-        outputFile = await outputFile.create(recursive: true);
+        Future<File> createdFile = outputFile.create(recursive: true);
         // Write file
-        outputFile.writeAsBytes(file.content);
+        createdFile.then((value) => value.writeAsBytes(file.content));
       }
     } else {
       //ToDo implement return command to save images in RAM in main thread
     }
 
     return [];
-  }
-
-  /// Send single [ApiResponse] to their respective [IProcessor], returns resulting [BaseCommands] as [List].
-  List<BaseCommand> _sentToProcessor(dynamic json) {
-    var responseObj = ApiResponse.fromJson(json);
-
-    switch (responseObj.name) {
-      case (ApiResponseNames.applicationParameters):
-        return _applicationParameterProcessor.processResponse(json);
-      case (ApiResponseNames.applicationMetaData):
-        return _applicationMetaDataProcessor.processResponse(json);
-      case (ApiResponseNames.menu):
-        return _menuProcessor.processResponse(json);
-      case (ApiResponseNames.screenGeneric):
-        return _screenGenericProcessor.processResponse(json);
-      case (ApiResponseNames.closeScreen):
-        return _closeScreenProcessor.processResponse(json);
-      case (ApiResponseNames.dalMetaData):
-        return _dalMetaDataProcessor.processResponse(json);
-      case (ApiResponseNames.dalFetch):
-        return _dalFetchProcessor.processResponse(json);
-      default:
-        return [];
-    }
   }
 }

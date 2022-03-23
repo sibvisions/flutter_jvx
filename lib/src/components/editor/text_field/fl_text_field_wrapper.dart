@@ -91,7 +91,7 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     log("Editing ended with: " + pValue + " | Length: " + pValue.characters.length.toString());
 
     SetValueCommand setValue =
-        SetValueCommand(componentId: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
+        SetValueCommand(componentName: model.name, value: pValue, reason: "Editing has ended on ${model.id}");
     uiService.sendCommand(setValue);
 
     setState(() {});

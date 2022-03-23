@@ -9,11 +9,11 @@ import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../i_processor.dart';
 
-class MenuProcessor implements IProcessor {
+class MenuProcessor implements IProcessor<MenuResponse> {
   @override
-  List<BaseCommand> processResponse(json) {
+  List<BaseCommand> processResponse({required MenuResponse pResponse}) {
     List<BaseCommand> commands = [];
-    MenuResponse response = MenuResponse.fromJson(json);
+    MenuResponse response = pResponse;
 
     List<MenuGroupModel> groups = _isolateGroups(response);
     for (MenuGroupModel group in groups) {

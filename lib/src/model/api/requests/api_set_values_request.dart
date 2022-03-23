@@ -1,6 +1,10 @@
+import 'package:flutter_client/src/model/api/requests/api_request.dart';
+
 import '../api_object_property.dart';
 
-class SetValuesRequest {
+/// Request to set the value of a data-bound component
+class ApiSetValuesRequest extends ApiRequest {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,27 +18,29 @@ class SetValuesRequest {
   /// Id of the component
   final String componentId;
 
-  /// List of columns, order of which corresponds to order of values list
+  /// List of columns, order of which corresponds to order of [values] list
   final List<String> columnNames;
 
-  /// List of values, order of which corresponds to order of columnsName list
+  /// List of values, order of which corresponds to order of [columnNames] list
   final List<dynamic> values;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  SetValuesRequest(
-      {required this.componentId,
-      required this.clientId,
-      required this.dataProvider,
-      required this.columnNames,
-      required this.values});
+  ApiSetValuesRequest({
+    required this.componentId,
+    required this.clientId,
+    required this.dataProvider,
+    required this.columnNames,
+    required this.values
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
+  // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  @override
   Map<String, dynamic> toJson() => {
         ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.dataProvider: dataProvider,

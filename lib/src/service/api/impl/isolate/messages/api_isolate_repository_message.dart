@@ -10,8 +10,4 @@ class ApiIsolateRepositoryMessage extends ApiIsolateMessage {
     required this.repository,
   });
 
-  @override
-  sendResponse({required response, required SendPort sendPort}) {
-    throw UnimplementedError();
-  }
 }

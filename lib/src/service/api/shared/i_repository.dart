@@ -1,27 +1,21 @@
-import 'package:http/http.dart';
+import 'dart:typed_data';
+
+import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/response/api_response.dart';
 
 /// The interface declaring all possible requests to the mobile server.
 abstract class IRepository {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<Response> startUp(String appName);
-  Future<Response> login(String userName, String password, String clientId);
-  Future<Response> openScreen(String componentId, String clientId);
-  Future<Response> deviceStatus(String clientId, double screenWidth, double screenHeight);
-  Future<Response> pressButton(String componentId, String clientId);
-  Future<Response> setValue(String clientId, String componentId, dynamic value);
-  Future<Response> downloadImages({
-    required String clientId,
-  });
-  Future<Response> setValues({
-    required String clientId,
-    required String componentId,
-    required List<String> columnNames,
-    required List<dynamic> values,
-    required String dataProvider,
-  });
-  Future<Response> closeTab({required String clientId, required String componentName, required int index});
-  Future<Response> openTab({required String clientId, required String componentName, required int index});
+  /// Executes [pRequest],
+  /// will throw an exception if request fails to be executed
+  Future<List<ApiResponse>> sendRequest({required ApiRequest pRequest});
+
+  /// Only used to download application images, since handling is completely
+  /// different from normal requests
+  Future<Uint8List> downloadImages({required ApiDownloadImagesRequest pRequest});
 }

@@ -9,9 +9,4 @@ class ApiIsolateControllerMessage extends ApiIsolateMessage {
   ApiIsolateControllerMessage({
     required this.controller,
   });
-
-  @override
-  sendResponse({required response, required SendPort sendPort}) {
-    throw UnimplementedError();
-  }
 }

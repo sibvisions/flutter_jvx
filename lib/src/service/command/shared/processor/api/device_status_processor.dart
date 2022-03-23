@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
+
 import '../../../../../mixin/api_service_mixin.dart';
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../mixin/layout_service_mixin.dart';
@@ -12,11 +14,21 @@ import '../../i_command_processor.dart';
 class DeviceStatusProcessor
     with ApiServiceMixin, ConfigServiceMixin, LayoutServiceMixin
     implements ICommandProcessor<DeviceStatusCommand> {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   Future<List<BaseCommand>> processCommand(DeviceStatusCommand command) async {
     String? clientId = configService.getClientId();
     if (clientId != null) {
-      return apiService.deviceStatus(clientId, command.screenWidth, command.screenHeight);
+      ApiDeviceStatusRequest deviceStatusRequest = ApiDeviceStatusRequest(
+          clientId: clientId,
+          screenWidth: command.screenWidth,
+          screenHeight: command.screenHeight
+      );
+      return apiService.sendRequest(request: deviceStatusRequest);
     } else {
       throw Exception("No Client Id found, while trying to send deviceStatus request");
     }

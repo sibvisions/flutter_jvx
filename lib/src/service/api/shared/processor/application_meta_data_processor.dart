@@ -4,12 +4,10 @@ import '../../../../model/command/config/save_app_meta_data_command.dart';
 import '../i_processor.dart';
 
 
-class ApplicationMetaDataProcessor implements IProcessor {
-
-
+class ApplicationMetaDataProcessor implements IProcessor<ApplicationMetaDataResponse> {
   @override
-  List<BaseCommand> processResponse(json) {
-    ApplicationMetaDataResponse metaDataResponse = ApplicationMetaDataResponse.fromJson(json);
+  List<BaseCommand> processResponse({required ApplicationMetaDataResponse pResponse}) {
+    ApplicationMetaDataResponse metaDataResponse = pResponse;
 
     SaveAppMetaDataCommand command = SaveAppMetaDataCommand(
         metaData: metaDataResponse,
