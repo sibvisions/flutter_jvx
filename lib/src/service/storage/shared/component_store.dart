@@ -87,7 +87,7 @@ class StorageService implements IStorageService {
 
     // Handle components to Update
     if (componentsToUpdate != null) {
-      for (dynamic changedData in componentsToUpdate) {
+      for (Map<String, dynamic> changedData in componentsToUpdate) {
         // Get old Model
         FlComponentModel? model = _componentMap[changedData[ApiObjectProperty.id]];
         if (model != null) {
@@ -95,6 +95,7 @@ class StorageService implements IStorageService {
           String? oldParentId = model.parent;
           bool wasVisible = model.isVisible;
 
+          model.lastChangedProperties = changedData.keys.toSet();
           model.applyFromJson(changedData);
           changedModels.add(model.id);
 

@@ -88,6 +88,9 @@ abstract class FlComponentModel {
   /// The tooltip text of the component.
   String? tooltipText;
 
+  /// The last changed model keys.
+  Set<String> lastChangedProperties = {};
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,7 +117,6 @@ abstract class FlComponentModel {
   /// Only applies properties if they exist in the json,
   /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
-    bool layoutChanged = false;
     var jsonId = pJson[ApiObjectProperty.id];
     if (jsonId != null) {
       id = jsonId;
