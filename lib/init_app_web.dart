@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/api/startup_command.dart';
+
 import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';
 import 'src/service/layout/i_layout_service.dart';
@@ -8,7 +10,7 @@ import 'src/model/config/api/api_config.dart';
 import 'src/model/config/api/endpoint_config.dart';
 import 'src/model/config/api/url_config.dart';
 import 'src/service/api/i_api_service.dart';
-import 'src/service/api/impl/default/default_api.dart';
+import 'src/service/api/impl/default/api_service.dart';
 import 'src/service/api/shared/controller/api_controller.dart';
 import 'src/service/api/shared/i_controller.dart';
 import 'src/service/api/shared/i_repository.dart';
@@ -29,10 +31,10 @@ initAppWeb() {
   UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("127.0.0.1", 8090);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer1, endpointConfig: endpointConfig);
+  ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();
-  IApiService apiService = DefaultApi(repository: repository, controller: controller);
+  IApiService apiService = ApiService(repository: repository, controller: controller);
   services.registerSingleton(apiService, signalsReady: true);
 
   // Config
@@ -61,4 +63,7 @@ initAppWeb() {
   // UI
   IUiService uiService = UiService();
   services.registerSingleton(uiService, signalsReady: true);
+
+  StartupCommand startupCommand = StartupCommand(reason: "InitApp");
+  commandService.sendCommand(startupCommand);
 }
