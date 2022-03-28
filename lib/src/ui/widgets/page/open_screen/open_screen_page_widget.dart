@@ -267,9 +267,8 @@ class _OpenScreenPageWidgetState extends State<OpenScreenPageWidget>
   void _onPopPage(String componentId) {
     NavigationRequest request = NavigationRequest(
         clientId: widget.appState.applicationMetaData?.clientId ?? '',
-        componentId: _pages.isNotEmpty
-            ? (_pages.last.child as SoScreen).configuration.componentId
-            : '');
+        componentId: _currentComponentId
+    );
 
     sl<ApiCubit>().navigation(request);
   }
