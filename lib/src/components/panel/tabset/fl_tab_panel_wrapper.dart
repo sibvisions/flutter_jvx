@@ -248,8 +248,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
-    bool swipeRight = pDetails.primaryVelocity! < 0.0;
-    _swipe(swipeRight, false);
+    _swipe(pDetails.primaryVelocity! < 0.0, false);
   }
 
   void changedIndexTo(int pValue) {
