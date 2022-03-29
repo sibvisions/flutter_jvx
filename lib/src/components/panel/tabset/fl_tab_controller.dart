@@ -20,15 +20,22 @@ class FlTabController extends TabController {
           vsync: vsync,
         ) {
     if (initialIndex >= 0 && initialIndex < tabs.length) {
-      widgetsSelectedOnce.add(tabs[initialIndex].model.indexOf);
+      widgetsSelectedOnce.add(initialIndex);
     }
   }
 
   @override
   void animateTo(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
     if (tabs[value].model.isEnabled) {
-      widgetsSelectedOnce.add(tabs[value].model.indexOf);
-      changedIndexTo(tabs[value].model.indexOf);
+      widgetsSelectedOnce.add(value);
+      changedIndexTo(value);
+      super.animateTo(value, duration: duration, curve: curve);
+    }
+  }
+
+  void animateInternally(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
+    if (tabs[value].model.isEnabled) {
+      widgetsSelectedOnce.add(value);
       super.animateTo(value, duration: duration, curve: curve);
     }
   }

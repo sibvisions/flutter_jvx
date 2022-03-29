@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -103,7 +105,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
           i++;
         }
       }
-      lastDeletedTab = -1;
+      lastDeletedTab = -2;
     }
 
     /// Sort children by index;
@@ -114,28 +116,28 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }
 
     tabContentList.sort((a, b) => a.model.indexOf - b.model.indexOf);
-    var selectedIndex = tabContentList.indexWhere((element) => element.model.indexOf == model.selectedIndex);
 
     lastController = tabController;
     tabController = FlTabController(
-        initialIndex: selectedIndex >= 0 ? selectedIndex : 0,
+        initialIndex: min(lastController!.index, max(tabContentList.length - 1, 0)),
         tabs: tabContentList,
         vsync: this,
         changedIndexTo: changedIndexTo);
     tabController.widgetsSelectedOnce.addAll(lastController!.widgetsSelectedOnce);
 
     for (int i = 0; i < tabContentList.length; i++) {
-      tabHeaderList.add(createTab(tabContentList[i]));
+      tabHeaderList.add(createTab(tabContentList[i], i));
     }
 
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Build children");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${children.values.length}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "BUILD CHILDREN");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Children count: ${children.values.length}");
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabcontentlist: $tabContentList");
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabheaderlist: $tabHeaderList");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${model.selectedIndex}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Model Selected index:${model.selectedIndex}");
     LOGGER.logD(
         pType: LOG_TYPE.UI,
-        pMessage: "${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
+        pMessage: "Tabcontroller: ${tabController.index} + Once selected: ${tabController.widgetsSelectedOnce}");
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Set state: $returnValue");
 
     if (returnValue && pSetStateOnChange) {
       setState(() {});
@@ -146,20 +148,9 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> childrenToHide = tabContentList
-        .where((e) =>
-            !tabController.widgetsSelectedOnce.contains(e.model.indexOf) && model.selectedIndex != e.model.indexOf)
-        .toList();
-
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "BUILD");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${children.values.length}");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabcontentlist: $tabContentList");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Tabheaderlist: $tabHeaderList");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Childrentohide: $childrenToHide");
-    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "${model.selectedIndex}");
-    LOGGER.logD(
-        pType: LOG_TYPE.UI,
-        pMessage: "${tabController.index} + ${tabController.length} + ${tabController.widgetsSelectedOnce}");
+    List<Widget> childrenToHide =
+        tabContentList.where((e) => !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e))).toList();
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "ChildrenToHide: $childrenToHide");
 
     return getPositioned(
       child: Wrap(
@@ -217,12 +208,37 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     );
   }
 
-  void swipeLeft() {
-    swipe(DragEndDetails(velocity: const Velocity(pixelsPerSecond: Offset(1, 0)), primaryVelocity: 1));
+  void swipeLeft(bool pInternally) {
+    _swipe(false, pInternally);
   }
 
-  void swipeRigth() {
-    swipe(DragEndDetails(velocity: const Velocity(pixelsPerSecond: Offset(-1, 0)), primaryVelocity: -1));
+  void swipeRigth(bool pInternally) {
+    _swipe(true, pInternally);
+  }
+
+  void _swipe(bool pRight, bool pInternally) {
+    int index = tabController.index;
+    bool hasSwiped = false;
+    while (!hasSwiped) {
+      if (pRight) {
+        index++;
+      } else {
+        index--;
+      }
+
+      if (index >= 0 && index < tabContentList.length) {
+        if (tabContentList.elementAt(index).model.isEnabled) {
+          if (pInternally) {
+            tabController.animateInternally(index);
+          } else {
+            tabController.animateTo(index);
+          }
+          hasSwiped = true;
+        }
+      } else {
+        hasSwiped = true;
+      }
+    }
   }
 
   void swipe(DragEndDetails pDetails) {
@@ -233,26 +249,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
     bool swipeRight = pDetails.primaryVelocity! < 0.0;
-
-    int tabIndex = tabContentList.indexWhere((element) => element.model.indexOf == model.selectedIndex);
-
-    bool hasSwiped = false;
-    while (!hasSwiped) {
-      if (swipeRight) {
-        tabIndex++;
-      } else {
-        tabIndex--;
-      }
-
-      if (tabIndex >= 0 && tabIndex < tabContentList.length) {
-        if (tabContentList.elementAt(tabIndex).model.isEnabled) {
-          tabController.animateTo(tabIndex);
-          hasSwiped = true;
-        }
-      } else {
-        hasSwiped = true;
-      }
-    }
+    _swipe(swipeRight, false);
   }
 
   void changedIndexTo(int pValue) {
@@ -265,13 +262,17 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   @override
   void postFrameCallback(BuildContext context) {
     if (lastController != null) {
+      if (lastDeletedTab == -2 && model.selectedIndex > 0) {
+        tabController.animateInternally(model.selectedIndex);
+      }
+      lastDeletedTab = -1;
+
       lastController!.dispose();
       lastController = null;
     }
 
-    var tabIndex = tabContentList.indexWhere((element) => element.model.indexOf == model.selectedIndex);
-    if (tabIndex >= 0 && tabController.index != tabIndex) {
-      tabController.animateTo(tabIndex);
+    if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
+      tabController.animateTo(model.selectedIndex);
     }
 
     TabLayout layout = (layoutData.layout as TabLayout);
@@ -306,7 +307,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     return 0.0;
   }
 
-  Widget createTab(BaseCompWrapperWidget pComponent) {
+  Widget createTab(BaseCompWrapperWidget pComponent, int pIndex) {
     FlComponentModel childModel = pComponent.model;
     String pTabString = childModel.constraints!;
 
@@ -354,7 +355,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                 GestureDetector(
                   onTap: enabled
                       ? () {
-                          closeTab(childModel.indexOf);
+                          closeTab(pIndex);
                         }
                       : null,
                   child: const Icon(
@@ -372,6 +373,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void closeTab(int index) {
+    LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Closing tab $index");
     lastDeletedTab = index;
     uiService.sendCommand(CloseTabCommand(componentName: model.name, index: index, reason: "Closed tab"));
   }

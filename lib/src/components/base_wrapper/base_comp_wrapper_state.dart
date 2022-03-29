@@ -60,6 +60,10 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     uiService.registerAsLiveComponent(
         id: model.id,
         callback: ({data, newModel}) {
+          if (!mounted) {
+            return;
+          }
+
           if (data != null) {
             receiveNewLayoutData(newLayoutData: data);
           }
