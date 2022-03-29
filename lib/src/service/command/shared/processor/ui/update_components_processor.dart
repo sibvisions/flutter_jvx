@@ -1,5 +1,4 @@
 import '../../../../../../util/logging/flutter_logger.dart';
-
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -54,7 +53,8 @@ class UpdateComponentsProcessor
 
         uiService.saveNewComponents(newModels: command.newComponents);
 
-        uiService.notifyChangedComponents(updatedModels: command.changedComponents);
+        // List is reversed as to update all children before their respective parents.
+        uiService.notifyChangedComponents(updatedModels: command.changedComponents.reversed.toList());
 
         uiService.notifyAffectedComponents(affectedIds: command.affectedComponents);
 

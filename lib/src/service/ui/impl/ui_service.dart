@@ -142,7 +142,6 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void notifyChangedComponents({required List<FlComponentModel> updatedModels}) {
-    Set<String> parentPanelCallbacks = {};
     for (FlComponentModel updatedModel in updatedModels) {
       // Change to new Model
       int index = _currentScreen.indexWhere((element) => element.id == updatedModel.id);
@@ -154,20 +153,8 @@ class UiService with CommandServiceMixin implements IUiService {
       ComponentCallback? callback = _registeredComponents[updatedModel.id];
       if (callback != null) {
         callback.call(newModel: updatedModel);
-        if (updatedModel.parent != null && updatedModel.parent!.startsWith("TP")) // TODO michi, besser lösung?
-        {
-          parentPanelCallbacks.add(updatedModel.parent!);
-        }
       } else {
         throw Exception("Component ${updatedModel.id} To Update not found");
-      }
-    }
-    for (String parentId in parentPanelCallbacks) {
-      ComponentCallback? callback = _registeredComponents[parentId];
-      if (callback != null) {
-        callback.call();
-      } else {
-        throw Exception("Component $parentId To Update not found");
       }
     }
   }
