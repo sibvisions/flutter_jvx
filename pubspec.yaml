@@ -34,6 +34,8 @@ dependencies:
   archive: ^3.2.2
     # Special Slivers for lists and grids
   sliver_tools: ^0.2.5
+    # Auto resizing text widget
+  auto_size_text: ^3.0.0
 
 flutter:
 

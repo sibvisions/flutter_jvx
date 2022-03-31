@@ -1,20 +1,19 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mask/menu/app_menu.dart';
-import 'package:flutter_client/src/model/command/api/button_pressed_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../../util/font_awesome_util.dart';
 import '../../../../model/menu/menu_item_model.dart';
-import '../../../../service/ui/i_ui_service.dart';
+import '../../app_menu.dart';
 
 class AppMenuGridItem extends StatelessWidget {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Callback for menu item
   final ButtonCallback onClick;
+
   /// Model of this item
   final MenuItemModel menuItemModel;
 
@@ -35,7 +34,9 @@ class AppMenuGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {onClick(componentId: menuItemModel.componentId); },
+      onTap: () {
+        onClick(componentId: menuItemModel.componentId);
+      },
       child: Container(
         color: Theme.of(context).primaryColor,
         child: Column(
@@ -48,10 +49,17 @@ class AppMenuGridItem extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
                 child: Center(
-                  child: Text(
+                  child: AutoSizeText(
                     menuItemModel.label,
-                    style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600 ),
-                    textAlign:  TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    minFontSize: 16,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -72,8 +80,7 @@ class AppMenuGridItem extends StatelessWidget {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget _getImage({required BuildContext pContext}){
-
+  Widget _getImage({required BuildContext pContext}) {
     Widget icon = CircleAvatar(
       backgroundColor: Colors.transparent,
       child: FaIcon(
@@ -85,17 +92,12 @@ class AppMenuGridItem extends StatelessWidget {
 
     String? imageName = menuItemModel.image;
 
-    if(imageName != null) {
+    if (imageName != null) {
       icon = CircleAvatar(
           backgroundColor: Colors.transparent,
-          child: IFontAwesome.getFontAwesomeIcon(
-              pText: imageName,
-              pIconSize: 72,
-              pColor: Theme.of(pContext).cardColor
-          )
-      );
+          child:
+              IFontAwesome.getFontAwesomeIcon(pText: imageName, pIconSize: 72, pColor: Theme.of(pContext).cardColor));
     }
     return icon;
   }
-
 }
