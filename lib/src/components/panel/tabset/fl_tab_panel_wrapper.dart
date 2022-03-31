@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../util/constants/i_color.dart';
@@ -31,15 +32,64 @@ class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
 }
 
 class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with TickerProviderStateMixin {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Layout relevant properties that definitely need a relayout.
+  static const Set<String> LAYOUT_RELEVANT_PROPERTIES = {
+    ApiObjectProperty.id,
+    ApiObjectProperty.name,
+    ApiObjectProperty.className,
+    ApiObjectProperty.parent,
+    ApiObjectProperty.remove,
+    ApiObjectProperty.visible,
+    ApiObjectProperty.enabled,
+    ApiObjectProperty.focusable,
+    ApiObjectProperty.constraints,
+    ApiObjectProperty.indexOf,
+    ApiObjectProperty.tabIndex,
+    ApiObjectProperty.preferredSize,
+    ApiObjectProperty.minimumSize,
+    ApiObjectProperty.maximumSize,
+    ApiObjectProperty.bounds,
+    ApiObjectProperty.verticalAlignment,
+    ApiObjectProperty.horizontalAlignment,
+    ApiObjectProperty.font,
+    ApiObjectProperty.layout,
+    ApiObjectProperty.layoutData,
+    ApiObjectProperty.screenClassName,
+    ApiObjectProperty.eventTabClosed,
+    ApiObjectProperty.eventTabMoved,
+    ApiObjectProperty.draggable,
+    ApiObjectProperty.tabPlacement,
+  };
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The last tab controller used. Saved for old values / call to dispose.
   FlTabController? lastController;
 
+  /// The current tab controller.
   late FlTabController tabController;
 
+  /// If the layout gets rebuild after the build.
   bool layoutAfterBuild = false;
 
+  /// The last deleted tab. -1 if no tab was deleted. -2 if the last tab was deleted.
   int lastDeletedTab = -1;
+
+  /// The list of tab headers.
   List<Widget> tabHeaderList = [];
+
+  /// The list of tab views.
   List<BaseCompWrapperWidget> tabContentList = [];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void initState() {
@@ -59,7 +109,18 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
     super.receiveNewModel(newModel: newModel);
 
+    // Performance optimization.
+    // If ever inplemented, need to add a callback to the layout service "cleaning" itself from the "dirty" status.
+    // There must be a mechanic that if a child is updated, and I, as a parent, have already cleaned myself, to layout after a child calls.
+    // There must also be a mechanic that if a child is updated and I, as a parent, don't need relayouting, to still update because my Child has been updated.
+    // if (newModel.lastChangedProperties.isNotEmpty) {
+    //   if (newModel.lastChangedProperties.any((element) => LAYOUT_RELEVANT_PROPERTIES.contains(element))) {
     layoutAfterBuild = true;
+    //   } else if (newModel.lastChangedProperties.contains(ApiObjectProperty.selectedIndex) &&
+    //       tabController.widgetsSelectedOnce.contains(newModel.selectedIndex)) {
+    //     layoutAfterBuild = true;
+    //   }
+    // }
 
     if (!buildChildren()) {
       setState(() {});
@@ -73,12 +134,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     if (!buildChildren()) {
       setState(() {});
     }
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
   }
 
   @override
@@ -208,6 +263,48 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     );
   }
 
+  @override
+  void postFrameCallback(BuildContext context) {
+    if (lastController != null) {
+      if (lastDeletedTab == -2 && model.selectedIndex > 0) {
+        tabController.animateInternally(model.selectedIndex);
+      }
+      lastDeletedTab = -1;
+
+      lastController!.dispose();
+      lastController = null;
+    }
+
+    if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
+      tabController.animateTo(model.selectedIndex);
+    }
+
+    TabLayout layout = (layoutData.layout as TabLayout);
+
+    double tabHeaderHeight =
+        (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
+
+    if (tabHeaderHeight != layout.tabHeaderHeight) {
+      layout.tabHeaderHeight = tabHeaderHeight;
+      layoutAfterBuild = true;
+    }
+
+    if (layoutAfterBuild) {
+      registerParent();
+      layoutAfterBuild = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   void swipeLeft(bool pInternally) {
     _swipe(false, pInternally);
   }
@@ -256,38 +353,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       model.selectedIndex = pValue;
     });
     uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
-  }
-
-  @override
-  void postFrameCallback(BuildContext context) {
-    if (lastController != null) {
-      if (lastDeletedTab == -2 && model.selectedIndex > 0) {
-        tabController.animateInternally(model.selectedIndex);
-      }
-      lastDeletedTab = -1;
-
-      lastController!.dispose();
-      lastController = null;
-    }
-
-    if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
-      tabController.animateTo(model.selectedIndex);
-    }
-
-    TabLayout layout = (layoutData.layout as TabLayout);
-
-    double tabHeaderHeight =
-        (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
-
-    if (tabHeaderHeight != layout.tabHeaderHeight) {
-      layout.tabHeaderHeight = tabHeaderHeight;
-      layoutAfterBuild = true;
-    }
-
-    if (layoutAfterBuild) {
-      registerParent();
-      layoutAfterBuild = false;
-    }
   }
 
   double get widthOfTabPanel {
