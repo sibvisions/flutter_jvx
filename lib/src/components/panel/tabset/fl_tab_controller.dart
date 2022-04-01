@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/parse_util.dart';
 
 import '../../base_wrapper/base_comp_wrapper_widget.dart';
 
@@ -26,7 +27,7 @@ class FlTabController extends TabController {
 
   @override
   void animateTo(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
-    if (tabs[value].model.isEnabled) {
+    if (_isTabEnabled(value)) {
       widgetsSelectedOnce.add(value);
       changedIndexTo(value);
       super.animateTo(value, duration: duration, curve: curve);
@@ -34,9 +35,13 @@ class FlTabController extends TabController {
   }
 
   void animateInternally(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
-    if (tabs[value].model.isEnabled) {
+    if (_isTabEnabled(value)) {
       widgetsSelectedOnce.add(value);
       super.animateTo(value, duration: duration, curve: curve);
     }
+  }
+
+  bool _isTabEnabled(int value) {
+    return (ParseUtil.parseBoolFromString(tabs[value].model.constraints!.split(';').first) ?? false);
   }
 }

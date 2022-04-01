@@ -1,12 +1,12 @@
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_client/util/image/image_loader.dart';
 
 import '../../../../util/constants/i_color.dart';
-import '../../../../util/font_awesome_util.dart';
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../layout/tab_layout.dart';
 import '../../../model/command/api/close_tab_command.dart';
@@ -343,6 +343,9 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       return;
     }
 
+    dev.log(pDetails.primaryVelocity!.toString());
+    dev.log(pDetails.velocity.pixelsPerSecond.dx.toString());
+
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
     _swipe(pDetails.primaryVelocity! < 0.0, false);
@@ -379,21 +382,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     bool enabled = (pTabStrings[0]?.toLowerCase() == 'true');
     bool closable = (pTabStrings[1]?.toLowerCase() == 'true');
     String text = pTabStrings[2] ?? '';
-    String img = pTabStrings.length >= 4 ? pTabStrings[3] : '';
-    img = img.split(",")[0];
+    String imageString = pTabStrings.length >= 4 ? pTabStrings[3] : '';
 
     Widget? image;
-    if (IFontAwesome.checkFontAwesome(img)) {
-      IconData iconData = IFontAwesome.ICONS[img] ?? FontAwesomeIcons.questionCircle;
-
-      image = FaIcon(
-        iconData,
-        size: 16,
-        color: enabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
-      );
-    } else {
-      // TODO image
-      // image = jsonImage;
+    if (imageString.isNotEmpty) {
+      image = ImageLoader.loadImage(imageString,
+          pWantedSize: const Size(16, 16), pWantedColor: enabled ? null : IColorConstants.COMPONENT_DISABLED);
     }
 
     FlLabelModel labelModel = FlLabelModel()
