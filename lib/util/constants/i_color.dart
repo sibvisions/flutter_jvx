@@ -47,4 +47,16 @@ abstract class IColor extends IColorConstants {
 
     return hslLight.toColor();
   }
+
+  static Color averageBetween(Color pSource, Color pTarget) {
+    final source = HSLColor.fromColor(pSource);
+    final target = HSLColor.fromColor(pTarget);
+
+    final a = (source.alpha + target.alpha) / 2;
+    final h = (source.hue + target.hue) / 2;
+    final s = (source.saturation + target.saturation) / 2;
+    final l = (source.lightness + target.lightness) / 2;
+
+    return HSLColor.fromAHSL(a, h, s, l).toColor();
+  }
 }
