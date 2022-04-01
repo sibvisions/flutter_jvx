@@ -81,12 +81,14 @@ class AppMenuGridItem extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget _getImage({required BuildContext pContext}) {
+    var iconColor = Theme.of(pContext).cardColor;
+
     Widget icon = CircleAvatar(
       backgroundColor: Colors.transparent,
       child: FaIcon(
         FontAwesomeIcons.clone,
         size: 72,
-        color: Theme.of(pContext).cardColor,
+        color: iconColor,
       ),
     );
 
@@ -95,8 +97,7 @@ class AppMenuGridItem extends StatelessWidget {
     if (imageName != null) {
       icon = CircleAvatar(
           backgroundColor: Colors.transparent,
-          child:
-              IFontAwesome.getFontAwesomeIcon(pText: imageName, pIconSize: 72, pColor: Theme.of(pContext).cardColor));
+          child: IFontAwesome.getFontAwesomeIcon(pText: imageName, pIconSize: 72, pColor: iconColor));
     }
     return icon;
   }
