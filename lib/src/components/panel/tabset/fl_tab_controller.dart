@@ -31,8 +31,6 @@ class FlTabController extends TabController {
       widgetsSelectedOnce.add(value);
       changedIndexTo(value);
       super.animateTo(value, duration: duration, curve: curve);
-    } else {
-      changedIndexTo(-1);
     }
   }
 

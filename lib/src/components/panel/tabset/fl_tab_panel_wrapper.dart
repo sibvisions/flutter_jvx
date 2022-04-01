@@ -1,4 +1,3 @@
-import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/gestures.dart';
@@ -204,9 +203,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   @override
   Widget build(BuildContext context) {
     List<Widget> childrenToHide = tabContentList.where((e) {
-      bool isInTabBarView = (e.key as GlobalKey).currentContext?.findAncestorWidgetOfExactType<TabBarView>() != null;
-      bool isInFlTabView = (e.key as GlobalKey).currentContext?.findAncestorWidgetOfExactType<FlTabView>() != null;
-      dev.log("${e.model.indexOf} - $isInTabBarView - $isInFlTabView");
       return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
     }).toList();
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "ChildrenToHide: $childrenToHide");
@@ -353,9 +349,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       return;
     }
 
-    dev.log(pDetails.primaryVelocity!.toString());
-    dev.log(pDetails.velocity.pixelsPerSecond.dx.toString());
-
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
     _swipe(pDetails.primaryVelocity! < 0.0, false);
@@ -363,12 +356,10 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   void changedIndexTo(int pValue) {
     setState(() {
-      if (pValue >= 0) {
-        model.selectedIndex = pValue;
-
-        uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
-      }
+      model.selectedIndex = pValue;
     });
+
+    uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
 
   double get widthOfTabPanel {
