@@ -27,21 +27,23 @@ class FlTabController extends TabController {
 
   @override
   void animateTo(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
-    if (_isTabEnabled(value)) {
+    if (isTabEnabled(value)) {
       widgetsSelectedOnce.add(value);
       changedIndexTo(value);
       super.animateTo(value, duration: duration, curve: curve);
+    } else {
+      changedIndexTo(-1);
     }
   }
 
   void animateInternally(int value, {Duration duration = kTabScrollDuration, Curve curve = Curves.ease}) {
-    if (_isTabEnabled(value)) {
+    if (isTabEnabled(value)) {
       widgetsSelectedOnce.add(value);
       super.animateTo(value, duration: duration, curve: curve);
     }
   }
 
-  bool _isTabEnabled(int value) {
+  bool isTabEnabled(int value) {
     return (ParseUtil.parseBoolFromString(tabs[value].model.constraints!.split(';').first) ?? false);
   }
 }

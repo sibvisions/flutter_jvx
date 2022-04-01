@@ -203,8 +203,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> childrenToHide =
-        tabContentList.where((e) => !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e))).toList();
+    List<Widget> childrenToHide = tabContentList.where((e) {
+      bool isInTabBarView = (e.key as GlobalKey).currentContext?.findAncestorWidgetOfExactType<TabBarView>() != null;
+      bool isInFlTabView = (e.key as GlobalKey).currentContext?.findAncestorWidgetOfExactType<FlTabView>() != null;
+      dev.log("${e.model.indexOf} - $isInTabBarView - $isInFlTabView");
+      return !tabController.widgetsSelectedOnce.contains(tabContentList.indexOf(e));
+    }).toList();
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "ChildrenToHide: $childrenToHide");
 
     return getPositioned(
@@ -230,9 +234,19 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                 controller: tabController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: tabContentList
-                    .map((e) => Stack(
+                    .map(
+                      (e) => Visibility(
+                        child: Stack(
                           children: [FlTabView(child: e)],
-                        ))
+                        ),
+                        maintainAnimation: true,
+                        maintainInteractivity: true,
+                        maintainSemantics: true,
+                        maintainState: true,
+                        visible: tabController.isTabEnabled(e.model.indexOf),
+                        maintainSize: true,
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -243,11 +257,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             child: childrenToHide.isNotEmpty
                 ? Visibility(
                     child: Stack(
-                      children: childrenToHide
-                          .map(
-                            (e) => FlTabView(child: e),
-                          )
-                          .toList(),
+                      children: childrenToHide,
                     ),
                     maintainAnimation: true,
                     maintainInteractivity: false,
@@ -353,9 +363,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   void changedIndexTo(int pValue) {
     setState(() {
-      model.selectedIndex = pValue;
+      if (pValue >= 0) {
+        model.selectedIndex = pValue;
+
+        uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
+      }
     });
-    uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
 
   double get widthOfTabPanel {

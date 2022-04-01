@@ -9,13 +9,28 @@ class FlTabView extends StatefulWidget {
 }
 
 class FlTabViewState extends State<FlTabView> with AutomaticKeepAliveClientMixin {
+  bool _keepAlive = true;
+
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => _keepAlive;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
-    return widget.child;
+    BuildContext? childContext = (widget.child.key as GlobalKey).currentContext;
+    if (childContext != null) {
+      Widget? parentWidget = childContext.findAncestorWidgetOfExactType<FlTabView>();
+      if (parentWidget != widget) {
+        _keepAlive = false;
+        updateKeepAlive();
+      }
+    }
+
+    if (_keepAlive) {
+      return widget.child;
+    } else {
+      return Container();
+    }
   }
 }
