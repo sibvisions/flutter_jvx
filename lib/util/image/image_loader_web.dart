@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import '../../src/mixin/config_service_mixin.dart';
 import 'image_loader.dart';
 
@@ -15,20 +16,26 @@ class ImageLoaderWeb with ConfigServiceMixin implements ImageLoader {
   ImageLoaderWeb();
 
   @override
-  Image loadImage(String path, [double? width, double? height]) {
+  Image loadImageFiles(String pPath, {double? pWidth, double? pHeight, Color? pBlendedColor}) {
     // TODO config loading
-    bool isInMemory = path == configService.getAppName(); // appState.fileConfig.files.containsKey(path)
+    bool isInMemory = pPath == configService.getAppName(); // appState.fileConfig.files.containsKey(path)
     String fileBinary = ""; //appState.fileConfig.files[path]!
-    String baseUrl = ""; //appState.serverConfig!.baseUrl
-    String appName = ""; //appState.serverConfig!.appName
+    String baseUrl = configService.getUrl(); //appState.serverConfig!.baseUrl
+    String appName = configService.getAppName(); //appState.serverConfig!.appName
 
     if (isInMemory) {
-      return Image.memory(base64Decode(fileBinary), height: height, width: width);
+      return Image.memory(
+        base64Decode(fileBinary),
+        height: pHeight,
+        width: pWidth,
+        color: pBlendedColor,
+      );
     } else {
       return Image.network(
-        '$baseUrl/resource/$appName$path',
-        height: height,
-        width: width,
+        '$baseUrl/resource/$appName$pPath',
+        height: pHeight,
+        width: pWidth,
+        color: pBlendedColor,
         loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(

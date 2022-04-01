@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import '../../src/mixin/config_service_mixin.dart';
 import '../download/download_helper.dart';
 import 'image_loader.dart';
@@ -16,26 +17,22 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
   ImageLoaderMobile();
 
   @override
-  Image loadImage(String path, [double? width, double? height]) {
-
+  Image loadImageFiles(String pPath, {double? pWidth, double? pHeight, Color? pBlendedColor}) {
     String baseUrl = configService.getUrl(); //appState.serverConfig!.baseUrl
     String appName = configService.getAppName(); //appState.serverConfig!.appName,
-    String appVersion = configService.getAppName(); //appState.applicationMetaData?.version ?? 1.0
+    String appVersion = configService.getVersion(); //appState.applicationMetaData?.version ?? 1.0
     String baseDir = configService.getDirectory(); //appState.baseDirectory
 
-    String localFilePath = DownloadHelper.getLocalFilePath(
-        appName: appName,
-        appVersion: appVersion,
-        translation: false,
-        baseDir: baseDir
-    );
+    String localFilePath =
+        DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
 
-    File file = File('$localFilePath/$path');
+    File file = File('$localFilePath/$pPath');
     if (file.existsSync()) {
       return Image(
         image: FileImage(file),
-        width: width,
-        height: height,
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
         loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
@@ -47,10 +44,11 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
       );
     } else {
       return Image.network(
-        '$baseUrl/resource/$appName$path',
+        '$baseUrl/resource/$appName$pPath',
         fit: BoxFit.contain,
-        height: height,
-        width: width,
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
         loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(

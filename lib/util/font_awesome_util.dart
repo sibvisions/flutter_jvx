@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'parse_util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'parse_util.dart';
 
 /// This
 abstract class IFontAwesome {
@@ -12,7 +13,7 @@ abstract class IFontAwesome {
     List<String> arr = pText.split(",");
 
     String iconName = arr[0];
-    double? iconSize = pIconSize;
+    double? iconSize;
 
     if (iconName.contains(";")) {
       var nameAndSize = iconName.split(";");
@@ -27,8 +28,12 @@ abstract class IFontAwesome {
 
     Color iconColor = arr.length > 4 ? (ParseUtil.parseHexColor(arr[4]) ?? Colors.black) : Colors.black;
 
-    if(pColor != null)  {
+    if (pColor != null) {
       iconColor = pColor;
+    }
+
+    if (pIconSize != null) {
+      iconSize = pIconSize;
     }
 
     IconData iconData = ICONS[iconName] ?? FontAwesomeIcons.questionCircle;
