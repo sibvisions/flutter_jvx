@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
+import 'package:flutter_client/util/image/image_loader.dart';
 
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/layout/alignments.dart';
@@ -18,7 +20,12 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget? get image => model.image;
+  Widget? get image {
+    if (model.image != null) {
+      return ImageLoader.loadImage(model.image!,
+          pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED);
+    }
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

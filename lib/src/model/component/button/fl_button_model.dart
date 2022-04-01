@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../../util/constants/i_color.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../../components/button/fl_button_widget.dart';
-import '../label/fl_label_model.dart';
-import '../../layout/alignments.dart';
-import '../../../../util/font_awesome_util.dart';
-import '../../../../util/parse_util.dart';
 
+import '../../../../util/constants/i_color.dart';
+import '../../../../util/parse_util.dart';
+import '../../../components/button/fl_button_widget.dart';
 import '../../api/api_object_property.dart';
+import '../../layout/alignments.dart';
 import '../fl_component_model.dart';
+import '../label/fl_label_model.dart';
 
 /// The model for [FlButtonWidget]
 class FlButtonModel extends FlComponentModel {
@@ -32,16 +30,16 @@ class FlButtonModel extends FlComponentModel {
   bool defaultButton = false;
 
   /// The image of the button.
-  Widget? image;
+  String? image;
 
   /// The gap between image and text if both exist.
   int imageTextGap = 5;
 
   /// The image when the button gets pressed.
-  Widget? mousePressedImage;
+  String? mousePressedImage;
 
   /// The image when the button is currently being pressed down.
-  Widget? mouseOverImage;
+  String? mouseOverImage;
 
   /// The paddings between the button and its children.
   EdgeInsets paddings = const EdgeInsets.fromLTRB(10, 10, 10, 10);
@@ -117,17 +115,7 @@ class FlButtonModel extends FlComponentModel {
 
     var jsonImage = pJson[ApiObjectProperty.image];
     if (jsonImage != null) {
-      if (IFontAwesome.checkFontAwesome(jsonImage)) {
-        FaIcon icon = IFontAwesome.getFontAwesomeIcon(pText: jsonImage);
-        if (_isGrey) {
-          image = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
-        } else {
-          image = icon;
-        }
-      } else {
-        // TODO image
-        // image = jsonImage;
-      }
+      image = jsonImage;
     }
 
     var jsonImageTextGap = pJson[ApiObjectProperty.imageTextGap];
@@ -137,32 +125,12 @@ class FlButtonModel extends FlComponentModel {
 
     var jsonMousePressedImage = pJson[ApiObjectProperty.mousePressedImage];
     if (jsonMousePressedImage != null) {
-      if (IFontAwesome.checkFontAwesome(jsonMousePressedImage)) {
-        FaIcon icon = IFontAwesome.getFontAwesomeIcon(pText: jsonMousePressedImage);
-        if (_isGrey) {
-          mousePressedImage = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
-        } else {
-          mousePressedImage = icon;
-        }
-      } else {
-        // TODO image
-        // image = jsonImage;
-      }
+      mousePressedImage = jsonMousePressedImage;
     }
 
     var jsonMouseOverImage = pJson[ApiObjectProperty.mouseOverImage];
     if (jsonMouseOverImage != null) {
-      if (IFontAwesome.checkFontAwesome(jsonMouseOverImage)) {
-        FaIcon icon = IFontAwesome.getFontAwesomeIcon(pText: jsonMouseOverImage);
-        if (_isGrey) {
-          mouseOverImage = FaIcon(icon.icon, size: icon.size, color: IColorConstants.COMPONENT_DISABLED);
-        } else {
-          mouseOverImage = icon;
-        }
-      } else {
-        // TODO image
-        // image = jsonImage;
-      }
+      mouseOverImage = jsonMouseOverImage;
     }
 
     var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
