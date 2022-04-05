@@ -31,7 +31,9 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Route to meu page
-  void routeToMenu();
+  /// pReplaceRoute - true if the route should replace the route in its history
+  /// false if it should add to it
+  void routeToMenu({bool pReplaceRoute = false});
 
   /// Route to work screen page
   void routeToWorkScreen();

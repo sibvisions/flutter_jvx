@@ -30,7 +30,7 @@ class NavigationCommandProcessor with UiServiceGetterMixin, ConfigServiceMixin,
         commands.then((value) {
           if(value.isEmpty){
             getUiService().closeScreen(pScreenName: model.name);
-            getUiService().routeToMenu();
+            getUiService().routeToMenu(pReplaceRoute: true);
           }
         });
 

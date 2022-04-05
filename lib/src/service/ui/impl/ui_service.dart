@@ -66,8 +66,12 @@ UiService with CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void routeToMenu() {
-    _currentBuildContext!.beamToNamed("/menu");
+  void routeToMenu({bool pReplaceRoute = false}) {
+    if(pReplaceRoute) {
+      _currentBuildContext!.beamToReplacementNamed("/menu");
+    } else {
+      _currentBuildContext!.beamToNamed("/menu");
+    }
   }
 
   @override

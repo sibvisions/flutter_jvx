@@ -38,7 +38,7 @@ class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceMixi
     }
 
     try{
-      var a = uiService.getOpenScreen();
+      uiService.getOpenScreen();
       NavigationCommand navigationCommand = NavigationCommand(
           reason: "Back button pressed"
       );
