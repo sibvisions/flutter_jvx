@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../api_object_property.dart';
 
 /// Request to login into the app
-class ApiLoginRequest implements ApiRequest {
+class ApiLoginRequest implements IApiRequest {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

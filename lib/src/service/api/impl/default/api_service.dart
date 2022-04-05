@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
@@ -41,7 +41,7 @@ class ApiService implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendRequest({required ApiRequest request}) async {
+  Future<List<BaseCommand>> sendRequest({required IApiRequest request}) async {
     List<BaseCommand> commands = [];
 
     try{
@@ -59,7 +59,7 @@ class ApiService implements IApiService {
       }
 
     } catch(e) {
-      log(e.toString());
+      rethrow;
     }
     return commands;
   }

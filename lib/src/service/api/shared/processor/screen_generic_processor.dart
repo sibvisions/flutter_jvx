@@ -1,10 +1,10 @@
+import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/component/panel/fl_tab_panel_model.dart';
 
 import '../../../../model/api/api_object_property.dart';
 import '../../../../model/api/response/screen_generic_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/save_components_command.dart';
-import '../../../../model/command/ui/route_command.dart';
 import '../../../../model/component/button/fl_button_model.dart';
 import '../../../../model/component/button/fl_radio_button_model.dart';
 import '../../../../model/component/button/fl_toggle_button_model.dart';
@@ -18,7 +18,6 @@ import '../../../../model/component/label/fl_label_model.dart';
 import '../../../../model/component/panel/fl_group_panel_model.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../model/component/panel/fl_split_panel_model.dart';
-import '../../../../routing/app_routing_type.dart';
 import '../fl_component_classname.dart';
 import '../i_processor.dart';
 
@@ -53,16 +52,13 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
     }
 
     // Handle Screen Opening
+    // if update == false => new screen that should be routed to
     if (!screenGenericResponse.update) {
-      dynamic json = screenGenericResponse.changedComponents
-          .firstWhere((element) => element[ApiObjectProperty.screenClassName] != null);
-      String screenClassName = json[ApiObjectProperty.screenClassName];
+      RouteToWorkCommand workCommand = RouteToWorkCommand(
+          reason: "Server sent screen.generic response with update = 'false'"
+      );
 
-      RouteCommand routeCommand = RouteCommand(
-          routeType: AppRoutingType.workScreen,
-          reason: "Screen generic update was set to false.",
-          screenName: screenClassName);
-      commands.add(routeCommand);
+      commands.add(workCommand);
     }
     return commands;
   }

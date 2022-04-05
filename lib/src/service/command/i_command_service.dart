@@ -10,5 +10,5 @@ abstract class ICommandService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Process the incoming [BaseCommand].
-  sendCommand(BaseCommand command);
+  Future<List<BaseCommand>> sendCommand(BaseCommand command);
 }

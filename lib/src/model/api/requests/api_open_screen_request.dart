@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../api_object_property.dart';
 
 /// Request to open a new work screen
-class ApiOpenScreenRequest extends ApiRequest {
+class ApiOpenScreenRequest extends IApiRequest {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

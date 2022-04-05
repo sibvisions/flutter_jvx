@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
+import 'package:flutter_client/src/model/command/ui/routo_to_menu_command.dart';
+
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
 import '../../../mixin/storage_service_mixin.dart';
@@ -6,11 +11,8 @@ import '../../../model/command/base_command.dart';
 import '../../../model/command/config/config_command.dart';
 import '../../../model/command/data/data_command.dart';
 import '../../../model/command/layout/layout_command.dart';
-import '../../../model/command/storage/delete_screen_command.dart';
 import '../../../model/command/storage/storage_command.dart';
-import '../../../model/command/ui/route_command.dart';
 import '../../../model/command/ui/ui_command.dart';
-import '../../../routing/app_routing_type.dart';
 import '../i_command_service.dart';
 import '../shared/i_command_processor.dart';
 import '../shared/processor/api/api_processor.dart';
@@ -53,7 +55,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  sendCommand(BaseCommand command) {
+  Future<List<BaseCommand>> sendCommand(BaseCommand command) {
     Future<List<BaseCommand>>? commands;
 
     // Switch-Case doesn't work with types
@@ -72,47 +74,64 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
     }
 
     // Executes Commands resulting from incoming command.
-    // Call routing commands dead last, all other actions must take priority.
+    // Call routing commands last, all other actions must take priority.
     if (commands != null) {
-      commands.then((value) {
-        var executeFirst = value.where((element) => element is! RouteCommand);
-        for (var value1 in executeFirst) {
-          sendCommand(value1);
-        }
+      commands.then((resultCommands) {
 
-        List<RouteCommand> routeCommands = value.whereType<RouteCommand>().toList();
-        Map<String, List<RouteCommand>> sameRouteCommands = {};
+        // Isolate possible route commands
+        var routeCommands = resultCommands.where((element) =>
+        element is RouteToWorkCommand || element is RouteToMenuCommand).toList();
 
-        // Find WorkScreen Commands that direct to the same workScreen
-        for (RouteCommand routeCommand in routeCommands) {
-          String? screenName = routeCommand.screenName;
-          if (screenName != null) {
-            var commands = sameRouteCommands[screenName];
+        var nonRouteCommands = resultCommands.where((element) =>
+        element is! RouteToWorkCommand && element is! RouteToMenuCommand).toList();
 
-            if (commands != null) {
-              commands.add(routeCommand);
-            } else {
-              sameRouteCommands[screenName] = [routeCommand];
-            }
-          } else {
-            sendCommand(routeCommand);
+        // When all commands are finished execute routing commands sorted by priority
+        _waitTillFinished(pCommands: nonRouteCommands).then((value) {
+          if(routeCommands.any((element) => element is RouteToWorkCommand)){
+            sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+          } else if(routeCommands.any((element) => element is RouteToMenuCommand)){
+            sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
           }
-        }
-
-        // Only send one command if multiple are sent
-        sameRouteCommands.forEach((key, value) {
-          sendCommand(value.first);
         });
-
-        // Route to menu if current screen is to be closed (deleted) and no new RouteCommand was provided.
-        if (value.any((element) => element is DeleteScreenCommand)) {
-          if (!value.any((element) => element is RouteCommand)) {
-            RouteCommand routeCommand = RouteCommand(
-                routeType: AppRoutingType.menu, reason: "Last screen was closed and no other routing was passeed");
-            sendCommand(routeCommand);
-          }
-        }
       });
+    }
+    return commands!;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Returns true when all provided commands have been executed recursively
+  Future<bool> _waitTillFinished({required List<BaseCommand> pCommands}) async {
+
+    List<List<BaseCommand>> resultCommands = [];
+
+    // Execute incoming commands
+    for (BaseCommand command in pCommands) {
+      resultCommands.add(await sendCommand(command));
+    }
+
+    // To store all commands
+    List<BaseCommand> toBeExecuted = [];
+
+    // find all non empty returns (non finished flow) and add them to be executed
+    resultCommands
+    .where((element) => element.isNotEmpty)
+    .forEach((element) {
+      if(element.isNotEmpty){
+        toBeExecuted.addAll(element);
+      }
+    });
+
+    // Execute all unfinished command flows and only return true if all commands
+    // return an empty command list
+    if(toBeExecuted.isNotEmpty){
+      return _waitTillFinished(pCommands: toBeExecuted);
+    } else {
+      return true;
     }
   }
 }
+
+

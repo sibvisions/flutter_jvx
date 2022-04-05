@@ -15,6 +15,8 @@ class ConfigGenerator {
       closeTab: "/api/comp/closeTab",
       openTab: "/api/comp/selectTab",
       changePassword: "/api/changePassword",
+      resetPassword: "/api/resetPassword",
+      navigation: "/api/navigation"
     );
   }
 

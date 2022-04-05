@@ -93,6 +93,7 @@ abstract class ApiObjectProperty {
   static const String index = "index";
   static const String appMode = "appMode";
   static const String newPassword = "newPassword";
+  static const String identifier = "identifier";
 
 
   //Response Properties
@@ -107,6 +108,9 @@ abstract class ApiObjectProperty {
   static const String columnViewTable = "columnView_table_";
   static const String columns = "columns";
   static const String version = "version";
+  static const String displayName = "displayName";
+  static const String userName = "userName";
+  static const String eMail = "email";
 
   // Data Properties
   static const String dataTypeIdentifier = "dataTypeIdentifier";

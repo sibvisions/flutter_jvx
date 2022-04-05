@@ -1,4 +1,7 @@
-import 'dart:async';
+import 'package:beamer/beamer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/model/menu/menu_model.dart';
 
 import '../../model/data/column_definition.dart';
 
@@ -6,47 +9,94 @@ import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
-import '../../model/menu/menu_model.dart';
-import '../../model/routing/route_to_menu.dart';
-import '../../model/routing/route_to_work_screen.dart';
 import '../command/i_command_service.dart';
 
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
-// Author: Michael Schober
 abstract class IUiService {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Communication with other services
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Sends [command] to [ICommandService]
   void sendCommand(BaseCommand command);
 
-  /// Sends out [RouteToMenu] event on routeChangeStream,
-  /// provided [menuModel] will be displayed and saved.
-  void routeToMenu(MenuModel menuModel);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Routing
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Sends out [RouteToWorkScreen] event on routeChangeStream.
-  /// provided [FlComponentModel]s will be displayed and saved.
-  void routeToWorkScreen(List<FlComponentModel> screenComponents);
+  /// Route to meu page
+  void routeToMenu();
 
-  /// Will route to the settings page.
+  /// Route to work screen page
+  void routeToWorkScreen();
+
+  /// Route to settings page
   void routeToSettings();
 
-  /// Returns broadcast [Stream] on which routing events will take place.
-  Stream getRouteChangeStream();
+  /// Sets the buildContext from the current [BeamLocation],
+  /// used when server dictates location
+  void setRouteContext({required BuildContext pContext});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Meta data management
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Returns the current menu, if none was found - throws exception
+  MenuModel getMenuModel();
+
+  /// Set menu model to be used when opening the menu
+  void setMenuModel({required MenuModel pMenuModel});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Management of component models
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
+  /// Returns component model with matching componentId,
+  /// if none was found returns null
+  FlComponentModel? getComponentModel({required String pComponentId});
+
+  /// Save new components to active components,
+  /// used for saving components which have not been previously been rendered.
+  void saveNewComponents({required List<FlComponentModel> newModels});
+
+  /// Get the screen (top-most-parent)
+  FlComponentModel getScreenByName({required String pScreenName});
+
+  /// Returns the model of the current open screen, will throw exception if
+  /// no screen is open
+  FlPanelModel getOpenScreen();
+
+  void closeScreen({required String pScreenName});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // LayoutData management
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Notify component of new [LayoutData].
+  void setLayoutPosition({required LayoutData layoutData});
+
   /// Returns a list of layoutData from all children.
   List<LayoutData> getChildrenLayoutData({required String pParentId});
 
-  /// Returns component model with matching componentId, if none was found returns null
-  FlComponentModel? getComponentModel({required String pComponentId});
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Component registration management
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Register as an active component, callback will be called when model changes or children should be rebuilt.
-  void registerAsLiveComponent({required String id, required ComponentCallback callback});
+  /// Register as an active component, callback will be called when model
+  /// changes or children should be rebuilt.
+  void registerAsLiveComponent({
+    required String id,
+    required ComponentCallback callback
+  });
 
   /// Register a an active component in need of data from a dataBook.
   void registerAsDataComponent({
@@ -57,47 +107,48 @@ abstract class IUiService {
     required String pColumnName,
   });
 
-  /// Notify affected parents that their children changed, should only be used when parent model hasn't been changed as well.
-  void notifyAffectedComponents({required Set<String> affectedIds});
-
-  /// Notify changed live components that their model has changed, will give them their new model.
-  void notifyChangedComponents({required List<FlComponentModel> updatedModels});
-
-  /// Notify all components belonging to [pDataProvider] that their underlying data may have changed.
-  void notifyDataChange({required String pDataProvider});
-
-  /// Calls the callback function of the component
-  void setSelectedData({
-    required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required dynamic data,
-  });
-
-  void setSelectedColumnDefinition(
-      {required String pDataProvider,
-      required String pComponentId,
-      required String pColumnName,
-      required ColumnDefinition pColumnDefinition});
-
-  /// Save new components to active components, used for saving components which have not been previously been rendered.
-  void saveNewComponents({required List<FlComponentModel> newModels});
-
-  /// Deletes unused component models from local cache.
+  /// Deletes unused component models from local cache and disposes of all their
+  /// active subscriptions.
   void deleteInactiveComponent({required Set<String> inactiveIds});
 
   /// Removes all active subscriptions as the wrapper has been disposed
   void disposeSubscriptions({required String pComponentId});
 
-  /// Notify component of new [LayoutData].
-  void setLayoutPosition({required LayoutData layoutData});
-
   /// Deletes the callback of the registered component on the dataProvider
-  void unRegisterDataComponent({required String pComponentId, required String pDataProvider});
+  void unRegisterDataComponent({
+    required String pComponentId,
+    required String pDataProvider
+  });
 
-  /// Opens the QR Scanner, the callback will be called with the scanned data.
-  void openQRScanner({required Function callback});
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Methods to notify components about changes to themselves
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Closes the QR Scanner, if one is currently open
-  void closeQRScanner();
+  /// Notify affected parents that their children changed, should only be used
+  /// when parent model hasn't been changed as well.
+  void notifyAffectedComponents({required Set<String> affectedIds});
+
+  /// Notify changed live components that their model has changed, will give
+  /// them their new model.
+  void notifyChangedComponents({required List<FlComponentModel> updatedModels});
+
+  /// Notify all components belonging to [pDataProvider] that their underlying
+  /// data may have changed.
+  void notifyDataChange({required String pDataProvider});
+
+  /// Calls the callback function of the component with [pData]
+  void setSelectedData({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required dynamic pData,
+  });
+
+  /// Calls the callback function of the component with [pColumnDefinition]
+  void setSelectedColumnDefinition({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required ColumnDefinition pColumnDefinition
+  });
 }

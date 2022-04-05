@@ -17,7 +17,7 @@ class UpdateSelectedDataProcessor with UiServiceGetterMixin implements ICommandP
     getUiService().setSelectedData(
       pDataProvider: command.dataProvider,
       pComponentId: command.componentId,
-      data: command.data,
+      pData: command.data,
       pColumnName: command.columnName,
     );
 

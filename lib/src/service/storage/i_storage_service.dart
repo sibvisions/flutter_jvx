@@ -10,12 +10,6 @@ abstract class IStorageService {
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Saves the [menuModel] as the current menu, will overwrite any existing menu.
-  Future<bool> saveMenu(MenuModel menuModel);
-
-  /// Returns current [menuModel]
-  Future<MenuModel> getMenu();
-
   /// Updates [FlComponentModel]
   /// Returns [BaseCommand] to update UI with all effected components.
   Future<List<BaseCommand>> updateComponents(

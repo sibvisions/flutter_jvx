@@ -3,6 +3,7 @@ import '../../component/fl_component_model.dart';
 import 'storage_command.dart';
 
 class SaveComponentsCommand extends StorageCommand {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

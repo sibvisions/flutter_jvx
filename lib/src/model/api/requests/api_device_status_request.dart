@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../api_object_property.dart';
 
 /// Request to update the available screen size to the app
-class ApiDeviceStatusRequest implements ApiRequest {
+class ApiDeviceStatusRequest implements IApiRequest {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

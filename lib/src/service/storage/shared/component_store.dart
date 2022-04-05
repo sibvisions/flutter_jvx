@@ -6,16 +6,13 @@ import '../../../model/command/base_command.dart';
 import '../../../model/command/ui/update_components_command.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/panel/fl_panel_model.dart';
-import '../../../model/menu/menu_model.dart';
 import '../i_storage_service.dart';
 
 class StorageService implements IStorageService {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// MenuModel of current app.
-  MenuModel? _menuModel;
 
   /// Map of all active components received from server, key set to id of [FlComponentModel].
   final HashMap<String, FlComponentModel> _componentMap = HashMap();
@@ -26,23 +23,6 @@ class StorageService implements IStorageService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  @override
-  Future<MenuModel> getMenu() async {
-    MenuModel? menuModel = _menuModel;
-    if (menuModel != null) {
-      return menuModel;
-    } else {
-      throw Exception("No Menu was found");
-    }
-  }
-
-  @override
-  Future<bool> saveMenu(MenuModel menuModel) async {
-    _menuModel = menuModel;
-
-    return true;
-  }
 
   @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {

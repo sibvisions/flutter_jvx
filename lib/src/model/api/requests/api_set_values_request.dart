@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../api_object_property.dart';
 
 /// Request to set the value of a data-bound component
-class ApiSetValuesRequest extends ApiRequest {
+class ApiSetValuesRequest extends IApiRequest {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

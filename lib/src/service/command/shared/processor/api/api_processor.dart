@@ -1,3 +1,10 @@
+import 'package:flutter_client/src/model/command/api/change_password_command.dart';
+import 'package:flutter_client/src/model/command/api/navigation_command.dart';
+import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/change_password_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/navigation_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/reset_password_command_processor.dart';
+
 import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/button_pressed_command.dart';
 import '../../../../../model/command/api/close_tab_command.dart';
@@ -62,6 +69,15 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [OpenTabCommand]
   final ICommandProcessor _tabOpenProcessor = OpenTabProcessor();
 
+  /// Processes [ChangePasswordCommand]
+  final ICommandProcessor _changePasswordProcessor = ChangePasswordCommandProcessor();
+
+  /// Processes [ResetPasswordCommand]
+  final ICommandProcessor _resetPasswordProcessor = ResetPasswordCommandProcessor();
+
+  /// Processes [NavigationCommand]
+  final ICommandProcessor _navigationProcessor = NavigationCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -89,6 +105,12 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _tabCloseProcessor.processCommand(command);
     } else if (command is OpenTabCommand) {
       return _tabOpenProcessor.processCommand(command);
+    } else if (command is ChangePasswordCommand) {
+      return _changePasswordProcessor.processCommand(command);
+    } else if (command is ResetPasswordCommand) {
+      return _resetPasswordProcessor.processCommand(command);
+    } else if (command is NavigationCommand){
+      return _navigationProcessor.processCommand(command);
     } else {
       return [];
     }

@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/ui/routo_to_menu_command.dart';
+
 import '../../../../model/api/response/close_screen_response.dart';
 import '../../../../model/command/base_command.dart';
 import '../../../../model/command/storage/delete_screen_command.dart';
@@ -6,8 +8,20 @@ import '../i_processor.dart';
 class CloseScreenProcessor implements IProcessor<CloseScreenResponse> {
   @override
   List<BaseCommand> processResponse({required CloseScreenResponse pResponse}) {
-    CloseScreenResponse closeScreenResponse = pResponse;
+    List<BaseCommand> commands = [];
 
-    return [DeleteScreenCommand(screenName: closeScreenResponse.componentId, reason: "reason")];
+    CloseScreenResponse closeScreenResponse = pResponse;
+    DeleteScreenCommand deleteScreenCommand = DeleteScreenCommand(
+        screenName: closeScreenResponse.componentId,
+        reason: "reason"
+    );
+    commands.add(deleteScreenCommand);
+
+    RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(
+        reason: "The Screen was closed"
+    );
+    commands.add(routeToMenuCommand);
+
+    return commands;
   }
 }

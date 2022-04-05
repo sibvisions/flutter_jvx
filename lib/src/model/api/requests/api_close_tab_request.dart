@@ -1,9 +1,9 @@
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../api_object_property.dart';
 
 /// Request to notify the server which tab on a tab-set panel is being closed/deleted
-class ApiCloseTabRequest extends ApiRequest {
+class ApiCloseTabRequest extends IApiRequest {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members

@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
@@ -13,7 +13,7 @@ import 'messages/api_isolate_message_wrapper.dart';
 import 'messages/api_isolate_repository_message.dart';
 import 'messages/api_isolate_request_message.dart';
 
-/// Executes [ApiRequest] in a separate isolate
+/// Executes [IApiRequest] in a separate isolate
 class IsolateApi implements IApiService {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +52,7 @@ class IsolateApi implements IApiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendRequest({required ApiRequest request}) async {
+  Future<List<BaseCommand>> sendRequest({required IApiRequest request}) async {
 
     ApiIsolateRequestMessage message = ApiIsolateRequestMessage(request: request);
 

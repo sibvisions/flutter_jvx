@@ -1,5 +1,9 @@
-import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:beamer/beamer.dart';
+import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
 
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
@@ -9,25 +13,22 @@ import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
-import '../../../model/routing/route_close_qr_scanner.dart';
-import '../../../model/routing/route_open_qr_scanner.dart';
-import '../../../model/routing/route_to_menu.dart';
-import '../../../model/routing/route_to_settings_page.dart';
-import '../../../model/routing/route_to_work_screen.dart';
-import '../../../routing/app_delegate.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
-// Author: Michael Schober
-class UiService with CommandServiceMixin implements IUiService {
+class
+UiService with CommandServiceMixin implements IUiService {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Used to send routing events to [AppDelegate].
-  final StreamController _routeStream = StreamController.broadcast();
+  /// ALl current menu items
+  MenuModel? _menuModel;
 
-  /// Last open screen
+  BuildContext? _currentBuildContext;
+
+  /// List of all models currently active
   final List<FlComponentModel> _currentScreen = [];
 
   /// Live component registration
@@ -46,13 +47,81 @@ class UiService with CommandServiceMixin implements IUiService {
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
 
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Communication with other services
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void sendCommand(BaseCommand command) {
     commandService.sendCommand(command);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Routing
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void routeToMenu() {
+    _currentBuildContext!.beamToNamed("/menu");
+  }
+
+  @override
+  void routeToWorkScreen() {
+    var screen = _currentScreen.first;
+    _currentBuildContext!.beamToNamed("/workScreen/${screen.id}");
+  }
+
+  @override
+  void routeToSettings() {
+
+  }
+
+  @override
+  void setRouteContext({required BuildContext pContext}) {
+    _currentBuildContext = pContext;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Meta data management
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  MenuModel getMenuModel(){
+    if(_menuModel != null){
+      return _menuModel!;
+    } else {
+      throw Exception(
+          "Menu model was not set, needs to be set before opening menu"
+      );
+    }
+  }
+
+  @override
+  void setMenuModel({required MenuModel pMenuModel}){
+    _menuModel = pMenuModel;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Management of component models
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  List<FlComponentModel> getChildrenModels(String id) {
+    var children = _currentScreen.where((element) => (element.parent == id)).toList();
+    return children;
+  }
+
+  @override
+  FlComponentModel? getComponentModel({required String pComponentId}) {
+    int index = _currentScreen.indexWhere((element) => element.id == pComponentId);
+    if (index != -1) {
+      return _currentScreen[index];
+    }
   }
 
   @override
@@ -61,41 +130,55 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void deleteInactiveComponent({required Set<String> inactiveIds}) {
-    // remove subscription for components removed from ui
-    for (String inactiveId in inactiveIds) {
-      _layoutDataList.remove(inactiveId);
-      _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
-      _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
-      _registeredDataComponents.forEach((key, value) {
-        value.removeWhere((key, value) => key == inactiveId);
-      });
-      _columnDefinitionCallback.forEach((key, value) {
-        value.removeWhere((key, value) => key == inactiveId);
-      });
+  FlComponentModel getScreenByName({required String pScreenName}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void closeScreen({required String pScreenName}) {
+    //ToDo only delete components belonging to screen
+    // for (var element in _currentScreen) {
+    //   if(element is FlPanelModel){
+    //
+    //   }
+    // }
+    _currentScreen.clear();
+  }
+
+  @override
+  FlPanelModel getOpenScreen(){
+    return _currentScreen.first as FlPanelModel;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // LayoutData management
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  List<LayoutData> getChildrenLayoutData({required String pParentId}) {
+    List<LayoutData> childrenData = [];
+    _layoutDataList.forEach((key, value) {
+      if (value.parentId == pParentId) {
+        childrenData.add(value);
+      }
+    });
+    return childrenData;
+  }
+
+  @override
+  void setLayoutPosition({required LayoutData layoutData}) {
+    ComponentCallback? callback = _registeredComponents[layoutData.id];
+    _layoutDataList[layoutData.id] = layoutData;
+    if (callback != null) {
+      callback.call(data: layoutData);
+    } else {
+      // throw Exception("Component to set position not found");
     }
   }
 
-  @override
-  void routeToMenu(MenuModel menuModel) {
-    RouteToMenu routeToMenu = RouteToMenu(menuModel: menuModel);
-    _routeStream.sink.add(routeToMenu);
-  }
-
-  @override
-  void routeToWorkScreen(List<FlComponentModel> screenComponents) {
-    RouteToWorkScreen routeToWorkScreen = RouteToWorkScreen(screen: screenComponents.first);
-    _currentScreen.clear();
-    _layoutDataList.clear();
-    _currentScreen.addAll(screenComponents);
-    _routeStream.sink.add(routeToWorkScreen);
-  }
-
-  @override
-  void routeToSettings() {
-    RouteToSettingsPage settingsPage = RouteToSettingsPage();
-    _routeStream.sink.add(settingsPage);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Component registration management
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
@@ -129,6 +212,47 @@ class UiService with CommandServiceMixin implements IUiService {
         reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
     sendCommand(command);
   }
+
+  @override
+  void deleteInactiveComponent({required Set<String> inactiveIds}) {
+    // remove subscription for components removed from ui
+    for (String inactiveId in inactiveIds) {
+      _layoutDataList.remove(inactiveId);
+      _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
+      _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
+      _registeredDataComponents.forEach((key, value) {
+        value.removeWhere((key, value) => key == inactiveId);
+      });
+      _columnDefinitionCallback.forEach((key, value) {
+        value.removeWhere((key, value) => key == inactiveId);
+      });
+    }
+  }
+
+  @override
+  void disposeSubscriptions({required String pComponentId}) {
+    _registeredComponents.removeWhere((componentId, value) => componentId == pComponentId);
+    _registeredDataComponents.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
+    _columnDefinitionCallback.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
+  }
+
+  @override
+  void unRegisterDataComponent({required String pComponentId, required String pDataProvider}) {
+    _registeredDataComponents.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
+    _columnDefinitionCallback.forEach((key, value) {
+      value.removeWhere((key, value) => key == pComponentId);
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Methods to notify components about changes to themselves
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {
@@ -167,7 +291,11 @@ class UiService with CommandServiceMixin implements IUiService {
       for (String columnName in dataProviderCallbacks.keys) {
         for (String componentId in dataProviderCallbacks[columnName]!.keys) {
           GetSelectedDataCommand command = GetSelectedDataCommand(
-              reason: "reason", componentId: componentId, dataProvider: pDataProvider, columnName: columnName);
+              reason: "reason",
+              componentId: componentId,
+              dataProvider: pDataProvider,
+              columnName: columnName
+          );
           sendCommand(command);
         }
       }
@@ -175,79 +303,13 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  List<FlComponentModel> getChildrenModels(String id) {
-    var children = _currentScreen.where((element) => (element.parent == id)).toList();
-    return children;
-  }
-
-  @override
-  List<LayoutData> getChildrenLayoutData({required String pParentId}) {
-    List<LayoutData> childrenData = [];
-    _layoutDataList.forEach((key, value) {
-      if (value.parentId == pParentId) {
-        childrenData.add(value);
-      }
-    });
-    return childrenData;
-  }
-
-  @override
-  Stream getRouteChangeStream() {
-    return _routeStream.stream;
-  }
-
-  @override
-  void setLayoutPosition({required LayoutData layoutData}) {
-    ComponentCallback? callback = _registeredComponents[layoutData.id];
-    _layoutDataList[layoutData.id] = layoutData;
-    if (callback != null) {
-      callback.call(data: layoutData);
-    } else {
-      // throw Exception("Component to set position not found");
-    }
-  }
-
-  @override
   void setSelectedData({
     required String pDataProvider,
     required String pComponentId,
-    required data,
+    required pData,
     required String pColumnName,
   }) {
-    _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId]!.call(data);
-  }
-
-  @override
-  void disposeSubscriptions({required String pComponentId}) {
-    _registeredComponents.removeWhere((componentId, value) => componentId == pComponentId);
-    _registeredDataComponents.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-    _columnDefinitionCallback.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-  }
-
-  @override
-  void unRegisterDataComponent({required String pComponentId, required String pDataProvider}) {
-    _registeredDataComponents.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-    _columnDefinitionCallback.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-  }
-
-  @override
-  void closeQRScanner() {
-    RouteCloseQRScanner routeCloseQRScanner = RouteCloseQRScanner();
-    _routeStream.sink.add(routeCloseQRScanner);
-  }
-
-  @override
-  void openQRScanner({required Function callback}) {
-    RouteOpenRQScanner routeOpenRQScanner = RouteOpenRQScanner(callBack: callback);
-    _routeStream.sink.add(routeOpenRQScanner);
+    _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId]!.call(pData);
   }
 
   @override
@@ -257,13 +319,5 @@ class UiService with CommandServiceMixin implements IUiService {
       required String pColumnName,
       required ColumnDefinition pColumnDefinition}) {
     _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId]!.call(pColumnDefinition);
-  }
-
-  @override
-  FlComponentModel? getComponentModel({required String pComponentId}) {
-    int index = _currentScreen.indexWhere((element) => element.id == pComponentId);
-    if (index != -1) {
-      return _currentScreen[index];
-    }
   }
 }

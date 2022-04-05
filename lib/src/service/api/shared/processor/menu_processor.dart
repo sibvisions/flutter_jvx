@@ -1,15 +1,21 @@
-import '../../../../model/command/ui/route_command.dart';
-import '../../../../routing/app_routing_type.dart';
+import 'package:flutter_client/src/model/command/ui/routo_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
 
 import '../../../../model/api/response/menu_response.dart';
 import '../../../../model/command/base_command.dart';
-import '../../../../model/command/storage/save_menu_command.dart';
 import '../../../../model/menu/menu_group_model.dart';
 import '../../../../model/menu/menu_item_model.dart';
 import '../../../../model/menu/menu_model.dart';
 import '../i_processor.dart';
 
+/// Processes the menu response into a [MenuModel], will try to route to menu,
+/// if no other routing actions take precedent.
 class MenuProcessor implements IProcessor<MenuResponse> {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   @override
   List<BaseCommand> processResponse({required MenuResponse pResponse}) {
     List<BaseCommand> commands = [];
@@ -21,15 +27,24 @@ class MenuProcessor implements IProcessor<MenuResponse> {
     }
     MenuModel menuModel = MenuModel(menuGroups: groups);
 
-    SaveMenuCommand menuCommand = SaveMenuCommand(reason: "Menu was added from Server response", menu: menuModel);
+    SaveMenuCommand saveMenuCommand = SaveMenuCommand(
+        menuModel: menuModel,
+        reason: "Server sent menu items"
+    );
 
-    RouteCommand routeCommand = RouteCommand(routeType: AppRoutingType.menu, reason: "A Menu was received.");
+    RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(
+        reason: "Server sent a menu, likely on login"
+    );
 
-    commands.add(menuCommand);
-    commands.add(routeCommand);
+    commands.addAll([saveMenuCommand, routeToMenuCommand]);
+
 
     return commands;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   List<MenuGroupModel> _isolateGroups(MenuResponse menu) {
     List<MenuGroupModel> groups = [];

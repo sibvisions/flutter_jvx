@@ -1,4 +1,6 @@
 
+import 'package:flutter_client/src/model/config/user/user_info.dart';
+
 /// Defines the base construct of a [IConfigService]
 /// Config service is used to store & access all configurable data,
 /// also stores session based data such as clientId and userData.
@@ -44,6 +46,12 @@ abstract class IConfigService {
 
   /// Set MenuMode
   void setMenuMode(MENU_MODE pMenuMode);
+
+  /// Returns info about the current user
+  UserInfo? getUserInfo();
+
+  /// Set user inf
+  void setUserInfo(UserInfo pUserInfo);
 
 
 

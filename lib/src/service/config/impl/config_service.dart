@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter_client/src/model/config/user/user_info.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../i_config_service.dart';
@@ -30,7 +32,8 @@ class ConfigService implements IConfigService{
   /// Display options for menu
   MENU_MODE menuMode = MENU_MODE.GRID_GROUPED;
 
-
+  /// Stores all info about current user
+  UserInfo? userInfo;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -71,6 +74,11 @@ class ConfigService implements IConfigService{
   }
 
   @override
+  UserInfo? getUserInfo() {
+    return userInfo;
+  }
+
+  @override
   void setAppName(String pAppName) {
     appName = pAppName;
   }
@@ -103,6 +111,12 @@ class ConfigService implements IConfigService{
   @override
   void setMenuMode(MENU_MODE pMenuMode) {
     menuMode = pMenuMode;
+  }
+
+
+  @override
+  void setUserInfo(UserInfo pUserInfo) {
+    userInfo = pUserInfo;
   }
 
 

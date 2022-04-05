@@ -10,6 +10,8 @@ class EndpointConfig {
   final String closeTab;
   final String openTab;
   final String changePassword;
+  final String resetPassword;
+  final String navigation;
 
   EndpointConfig({
     required this.startup,
@@ -22,6 +24,8 @@ class EndpointConfig {
     required this.downloadImages,
     required this.closeTab,
     required this.openTab,
-    required this.changePassword
+    required this.changePassword,
+    required this.resetPassword,
+    required this.navigation
   });
 }

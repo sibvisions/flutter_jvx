@@ -1,36 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../mixin/config_service_mixin.dart';
-import '../../mixin/ui_service_mixin.dart';
-import '../../model/command/api/login_command.dart';
-import '../../model/command/api/startup_command.dart';
-import '../../model/command/ui/route_command.dart';
-import '../../routing/app_routing_type.dart';
+/// Login page of the app, also used for reset/change password
+class AppLogin extends StatelessWidget {
 
-class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
-  AppLogin({Key? key}) : super(key: key);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  /// The Widget displayed in the middle of the screen
+  final Widget loginCard;
 
-  void onLoginPressed() {
-    LoginCommand loginCommand =
-        LoginCommand(userName: usernameController.text, password: passwordController.text, reason: "LoginButton");
-    uiService.sendCommand(loginCommand);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void onStartUpPressed() {
-    StartupCommand startupCommand = StartupCommand(reason: "StartupButton");
-    uiService.sendCommand(startupCommand);
-  }
+  const AppLogin({
+    Key? key,
+    required this.loginCard
+  }) : super(key: key);
 
-  void onSettingsPressed() {
-    RouteCommand command = RouteCommand(routeType: AppRoutingType.settings, reason: "Setting pressed");
-    uiService.sendCommand(command);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  //ToDo Login Background
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
@@ -40,42 +32,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
         Expanded(
           flex: 8,
           child: SingleChildScrollView(
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      configService.getAppName().toUpperCase(),
-                      style: Theme.of(context).textTheme.headline4,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    TextFormField(
-                      controller: usernameController,
-                      decoration: const InputDecoration(labelText: "Username: "),
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: "Password: "),
-                      controller: passwordController,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    ElevatedButton(
-                      onPressed: onLoginPressed,
-                      child: const Text("Login"),
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      TextButton.icon(
-                        onPressed: onSettingsPressed,
-                        icon: const FaIcon(FontAwesomeIcons.cogs),
-                        label: const Text("Settings"),
-                      ),
-                    ]),
-                  ],
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                ),
-              ),
-            ),
+            child: loginCard
           ),
         ),
         Expanded(child: Container())

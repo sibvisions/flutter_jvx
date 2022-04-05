@@ -36,6 +36,8 @@ dependencies:
   sliver_tools: ^0.2.5
     # Auto resizing text widget
   auto_size_text: ^3.0.0
+    # Used for routing with navigator 2.0
+  beamer: ^1.4.0+1
 
 flutter:
 

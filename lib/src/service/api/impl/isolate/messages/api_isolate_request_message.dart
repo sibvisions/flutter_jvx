@@ -1,10 +1,10 @@
 import 'dart:isolate';
 
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_message.dart';
 
-/// Used to send [ApiRequest] to the APIs isolate to be executed
+/// Used to send [IApiRequest] to the APIs isolate to be executed
 class ApiIsolateRequestMessage extends ApiIsolateMessage<List<BaseCommand>> {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,7 +12,7 @@ class ApiIsolateRequestMessage extends ApiIsolateMessage<List<BaseCommand>> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The request to be executed
-  final ApiRequest request;
+  final IApiRequest request;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

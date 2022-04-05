@@ -1,44 +1,43 @@
 import 'dart:developer';
 
-import '../../model/command/layout/set_component_size_command.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 
-import '../../mixin/command_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
 
 import '../../components/components_factory.dart';
-import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
 import 'package:flutter/material.dart';
 
-class WorkScreen extends StatefulWidget {
-  const WorkScreen({Key? key, required this.screen}) : super(key: key);
 
-  final FlComponentModel screen;
+/// Screen used to show workScreens either custom or from the server,
+/// will send a [DeviceStatusCommand] on open to account for
+/// custom header/footer
+class WorkScreen extends StatelessWidget with UiServiceMixin {
 
-  @override
-  _WorkScreenState createState() => _WorkScreenState();
-}
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
-  Widget screen = const Text("dummy");
+  /// Model of the upper-most parent in this screen
+  final FlPanelModel screenModel;
+  /// Widget of the screenModel
+  final Widget screenWidget;
 
-  @override
-  void initState() {
-    screen = ComponentsFactory.buildWidget(widget.screen);
-    super.initState();
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  _getScreenSize(double height, double width) {
-    DeviceStatusCommand deviceStatusCommand =
-        DeviceStatusCommand(screenWidth: width, screenHeight: height, reason: "Screen has been opened");
-    commandService.sendCommand(deviceStatusCommand);
+  WorkScreen({
+    required this.screenModel,
+    Key? key
+  }) :
+        screenWidget=ComponentsFactory.buildWidget(screenModel),
+        super(key: key);
 
-    SetComponentSizeCommand command = SetComponentSizeCommand(
-        componentId: widget.screen.id,
-        size: Size(width.ceilToDouble(), height.ceilToDouble()),
-        reason: "Set First Panel Size");
-    commandService.sendCommand(command);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +47,18 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
+        appBar: AppBar(
+          title: Text(screenModel.id),
+        ),
         body: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme
+              .of(context)
+              .backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
-            _getScreenSize(constraints.maxHeight, constraints.maxWidth);
+            _setScreenSize(width: constraints.maxWidth, height: constraints.maxHeight);
+            //ToDo send DeviceStatusRequest
             return Stack(
-              children: [screen],
+              children: [screenWidget],
             );
           }),
           resizeToAvoidBottomInset: false,
@@ -63,18 +67,40 @@ class _WorkScreenState extends State<WorkScreen> with CommandServiceMixin {
       ),
     );
 
-    // return Scaffold(
-    //   appBar: AppBar(title: Text((widget.screen as FlPanelModel).screenClassName!)),
-    //   body: Scaffold(
-    //     body: LayoutBuilder(builder: (context, constraints) {
-    //       _getScreenSize(constraints.maxHeight, constraints.maxWidth);
-    //       return Stack(
-    //         children: [screen],
-    //       );
-    //     }),
+
+    // Used for debugging when selecting widgets via the debugger or debugging
+    // pointer events - because the GestureDetector eats all events
+
+    //   return Scaffold(
+    //     appBar: AppBar(title: Text(screenModel.name)),
+    //     body: Scaffold(
+    //       body: LayoutBuilder(builder: (context, constraints) {
+    //         return Stack(
+    //           children: [screenWidget],
+    //         );
+    //       }),
+    //       resizeToAvoidBottomInset: false,
+    //     ),
     //     resizeToAvoidBottomInset: false,
-    //   ),
-    //   resizeToAvoidBottomInset: false,
-    // );
+    //   );
+    // }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  _setScreenSize({required double width, required double height}) {
+    SetComponentSizeCommand command = SetComponentSizeCommand(
+        componentId: screenModel.id,
+        size: Size(width, height),
+        reason: "Opened Work Screen"
+    );
+
+    uiService.sendCommand(command);
+  }
+
+
+
 }
+

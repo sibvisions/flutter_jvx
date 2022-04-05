@@ -3,9 +3,11 @@ import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_login_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_open_tab_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_press_button_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_reset_password_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_value_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_startup_request.dart';
@@ -46,7 +48,9 @@ class ApiConfig {
       ApiPressButtonRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.pressButton),
       ApiSetValueRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.setValue),
       ApiSetValuesRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.setValues),
-      ApiChangePasswordRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.changePassword)
+      ApiChangePasswordRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.changePassword),
+      ApiResetPasswordRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.resetPassword),
+      ApiNavigationRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.navigation)
     };
   }
 

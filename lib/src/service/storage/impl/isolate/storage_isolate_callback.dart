@@ -2,9 +2,7 @@ import 'dart:isolate';
 
 import '../../shared/component_store.dart';
 import 'message/endpoint/storage_isolate_delete_screen_message.dart';
-import 'message/endpoint/storage_isolate_get_menu_message.dart';
 import 'message/endpoint/storage_isolate_get_screen_message.dart';
-import 'message/endpoint/storage_isolate_save_menu_message.dart';
 import 'message/endpoint/storage_isolate_update_components_message.dart';
 import 'message/storage_isolate_message.dart';
 import 'message/storage_isolate_message_wrapper.dart';
@@ -24,12 +22,9 @@ void storageCallback(SendPort callerSendPort) {
     StorageIsolateMessage isolateMessage = isolateMessageWrapper.message;
     dynamic response;
 
-    if (isolateMessage is StorageIsolateGetMenuMessage) {
-      response = await componentStore.getMenu();
-    } else if (isolateMessage is StorageIsolateGetScreenMessage) {
+
+    if (isolateMessage is StorageIsolateGetScreenMessage) {
       response = await componentStore.getScreenByScreenClassName(isolateMessage.screenClassName);
-    } else if (isolateMessage is StorageIsolateSaveMenuMessage) {
-      response = await componentStore.saveMenu(isolateMessage.menuModel);
     } else if (isolateMessage is StorageIsolateUpdateComponentsMessage) {
       response = await componentStore.updateComponents(
           isolateMessage.componentsToUpdate, isolateMessage.newComponents, isolateMessage.screenClassName);

@@ -8,6 +8,7 @@ import '../layout/layout_position.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

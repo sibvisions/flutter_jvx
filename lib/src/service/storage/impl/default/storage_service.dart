@@ -1,27 +1,15 @@
 import '../../../../model/command/base_command.dart';
 import '../../../../model/component/fl_component_model.dart';
-import '../../../../model/menu/menu_model.dart';
 import '../../i_storage_service.dart';
 import '../../shared/component_store.dart';
 
-/// Contains all component & menu Data
-// Author: Michael Schober
+/// Manages all component data received from remote server
 class DefaultStorageService implements IStorageService {
   final StorageService componentStore = StorageService();
 
   @override
-  Future<MenuModel> getMenu() {
-    return componentStore.getMenu();
-  }
-
-  @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) {
     return componentStore.getScreenByScreenClassName(screenClassName);
-  }
-
-  @override
-  Future<bool> saveMenu(MenuModel menuModel) {
-    return componentStore.saveMenu(menuModel);
   }
 
   @override

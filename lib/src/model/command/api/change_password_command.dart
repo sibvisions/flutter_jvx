@@ -18,8 +18,9 @@ class ChangePasswordCommand extends ApiCommand  {
 
   ChangePasswordCommand({
     required this.newPassword,
-    required this.password
-  }) : super(reason: "User changed password");
+    required this.password,
+    required String reason
+  }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

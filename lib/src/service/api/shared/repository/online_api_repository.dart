@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/api_response_names.dart';
-import 'package:flutter_client/src/model/api/requests/api_request.dart';
+import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 import 'package:flutter_client/src/model/api/response/api_response.dart';
 import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
 import 'package:flutter_client/src/model/api/response/application_parameter_response.dart';
@@ -13,6 +13,7 @@ import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/api/response/menu_response.dart';
 import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
+import 'package:flutter_client/src/model/api/response/user_data_response.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/requests/api_download_images_request.dart';
@@ -42,7 +43,9 @@ class OnlineApiRepository implements IRepository {
   ApiResponseNames.screenGeneric :
       ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
   ApiResponseNames.dalMetaData :
-      ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson)
+      ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson),
+  ApiResponseNames.userData :
+      ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson)
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,7 +74,7 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<ApiResponse>> sendRequest({required ApiRequest pRequest}) async {
+  Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
 
     if(uri != null) {
