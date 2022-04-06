@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../../layout/group_layout.dart';
 import '../../../layout/i_layout.dart';
@@ -22,6 +25,8 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
   void initState() {
     super.initState();
 
+    log("group panel init state");
+
     ILayout originalLayout = ILayout.getLayout(model.layout, model.layoutData)!;
     layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
@@ -33,6 +38,8 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   receiveNewModel({required FlGroupPanelModel newModel}) {
+    log("group panel receiveNewModel");
+
     ILayout originalLayout = ILayout.getLayout(newModel.layout, newModel.layoutData)!;
     layoutData.layout = GroupLayout(originalLayout: originalLayout, groupHeaderHeight: 0.0);
     layoutData.children = uiService.getChildrenModels(model.id).map((e) => e.id).toList();
@@ -47,6 +54,8 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   affected() {
+    log("group panel affected");
+
     layoutAfterBuild = true;
 
     buildChildren();
@@ -54,6 +63,8 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
 
   @override
   Widget build(BuildContext context) {
+    log("group panel build");
+
     return (getPositioned(
       child: Wrap(
         children: [
@@ -76,13 +87,15 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     double groupHeaderHeight = (context.size != null ? context.size!.height : 0.0) + 16.0;
 
     if (groupHeaderHeight != layout.groupHeaderHeight) {
+      log("group panel layoutAfterBuild is now true | comparison of heigths $groupHeaderHeight ${layout.groupHeaderHeight}");
       layout.groupHeaderHeight = groupHeaderHeight;
       layoutAfterBuild = true;
     }
 
     if (layoutAfterBuild) {
-      registerParent();
+      log("group panel layoutAfterBuild true");
       layoutAfterBuild = false;
+      registerParent();
     }
   }
 
@@ -100,5 +113,17 @@ class _FlGroupPanelWrapperState extends BaseContWrapperState<FlGroupPanelModel> 
     }
 
     return 0.0;
+  }
+
+  @override
+  receiveNewLayoutData({required LayoutData newLayoutData}) {
+    log("received new layout data");
+    super.receiveNewLayoutData(newLayoutData: newLayoutData);
+  }
+
+  @override
+  void registerParent() {
+    log("register parent");
+    super.registerParent();
   }
 }
