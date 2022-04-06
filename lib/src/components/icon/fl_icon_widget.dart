@@ -32,14 +32,13 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       child = image;
     }
 
-    if (!model.preserveAspectRatio) {
-      child = Expanded(child: child);
-    }
-
     return Container(
-      child: child,
+      child: FittedBox(
+        child: child,
+        fit: model.preserveAspectRatio ? BoxFit.contain : BoxFit.fill,
+        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+      ),
       decoration: BoxDecoration(color: model.background),
-      alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
     );
   }
 
