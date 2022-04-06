@@ -69,6 +69,7 @@ abstract class ApiObjectProperty {
   static const String selectedIndex = "selectedIndex";
   static const String draggable = "draggable";
   static const String tabPlacement = "tabPlacement";
+  static const String preserveAspectRatio = "preserveAspectRatio";
 
   //Can occur in both request & response
   static const String clientId = "clientId";
@@ -94,7 +95,6 @@ abstract class ApiObjectProperty {
   static const String appMode = "appMode";
   static const String newPassword = "newPassword";
   static const String identifier = "identifier";
-
 
   //Response Properties
   static const String authenticated = "authenticated";

@@ -45,6 +45,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   /// The currently used cell editor.
   ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
 
+  /// The value to send to the server on sendValue.
+  dynamic _toSendValue;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,6 +144,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state of the widget and sends a set value command.
   void onEndEditing(dynamic pValue) {
+    _toSendValue = pValue;
     setState(() {});
 
     if (cellEditor.isActionCellEditor()) {
@@ -159,13 +163,13 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void sendValue() {
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to ${cellEditor.getValue()}");
+    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
     uiService.sendCommand(SetValuesCommand(
         componentId: model.id,
         dataProvider: model.dataRow,
         columnNames: [model.columnName],
-        values: [cellEditor.getValue()],
-        reason: "Value of ${model.id} set to ${cellEditor.getValue()}"));
+        values: [_toSendValue],
+        reason: "Value of ${model.id} set to $_toSendValue"));
 
     if (currentObjectFocused != null) {
       currentObjectFocused!.removeListener(sendValue);

@@ -69,10 +69,8 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
 
   void onPress() {
     if (_value == model.selectedValue) {
-      _value = model.deselectedValue;
       onEndEditing(model.deselectedValue);
     } else {
-      _value = model.selectedValue;
       onEndEditing(model.selectedValue);
     }
   }

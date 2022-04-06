@@ -85,6 +85,7 @@ extension AlignmentOrientationE on HorizontalAlignment {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /// Two-dimensional array translating JVx alignment constants to Flutter alignment constants.
+/// The first index is the horizontal alignment, the second index is the vertical alignment.
 const FLUTTER_ALIGNMENT = [
   [Alignment.topLeft, Alignment.centerLeft, Alignment.bottomLeft, Alignment.centerLeft],
   [Alignment.topCenter, Alignment.center, Alignment.bottomCenter, Alignment.center],
