@@ -1,4 +1,4 @@
-import 'package:flutter_client/src/model/command/ui/routo_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
 
 import '../../../../model/api/response/menu_response.dart';

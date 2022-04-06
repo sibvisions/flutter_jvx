@@ -1,5 +1,5 @@
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
-import 'package:flutter_client/src/model/command/ui/routo_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_menu_comand_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_work_command_processor.dart';

@@ -1,7 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
-import 'package:flutter_client/src/model/command/ui/routo_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
@@ -56,6 +54,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
   @override
   Future<List<BaseCommand>> sendCommand(BaseCommand command) {
+
     Future<List<BaseCommand>>? commands;
 
     // Switch-Case doesn't work with types
@@ -105,32 +104,14 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   /// Returns true when all provided commands have been executed recursively
   Future<bool> _waitTillFinished({required List<BaseCommand> pCommands}) async {
 
-    List<List<BaseCommand>> resultCommands = [];
-
     // Execute incoming commands
     for (BaseCommand command in pCommands) {
-      resultCommands.add(await sendCommand(command));
+      await sendCommand(command);
     }
-
-    // To store all commands
-    List<BaseCommand> toBeExecuted = [];
-
-    // find all non empty returns (non finished flow) and add them to be executed
-    resultCommands
-    .where((element) => element.isNotEmpty)
-    .forEach((element) {
-      if(element.isNotEmpty){
-        toBeExecuted.addAll(element);
-      }
-    });
 
     // Execute all unfinished command flows and only return true if all commands
     // return an empty command list
-    if(toBeExecuted.isNotEmpty){
-      return _waitTillFinished(pCommands: toBeExecuted);
-    } else {
-      return true;
-    }
+    return true;
   }
 }
 
