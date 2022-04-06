@@ -5,10 +5,18 @@ import 'package:flutter_client/src/model/command/ui/ui_command.dart';
 class RouteToMenuCommand extends UiCommand {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// 'True' if the route should replace the the current one in the stack
+  final bool replaceRoute;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   RouteToMenuCommand({
+    this.replaceRoute = false,
     required String reason
   }) : super(reason: reason);
 

@@ -16,7 +16,7 @@ class RouteToMenuCommandProcessor with UiServiceGetterMixin
   Future<List<BaseCommand>> processCommand(RouteToMenuCommand command) async {
 
     getUiService().closeScreen(pScreenName: command.toString());
-    getUiService().routeToMenu();
+    getUiService().routeToMenu(pReplaceRoute: command.replaceRoute);
 
     return [];
   }

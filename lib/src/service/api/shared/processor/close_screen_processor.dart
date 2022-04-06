@@ -18,7 +18,8 @@ class CloseScreenProcessor implements IProcessor<CloseScreenResponse> {
     commands.add(deleteScreenCommand);
 
     RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(
-        reason: "The Screen was closed"
+        reason: "The Screen was closed",
+        replaceRoute: true
     );
     commands.add(routeToMenuCommand);
 
