@@ -1,5 +1,4 @@
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/util/parse_util.dart';
 
 import '../../api/api_object_property.dart';
 
@@ -36,7 +35,7 @@ class FlIconModel extends FlComponentModel {
 
     var jsonPreserveAspectRatio = pJson[ApiObjectProperty.preserveAspectRatio];
     if (jsonPreserveAspectRatio != null) {
-      preserveAspectRatio = ParseUtil.parseBoolFromString(jsonPreserveAspectRatio) ?? false;
+      preserveAspectRatio = jsonPreserveAspectRatio;
     }
   }
 }

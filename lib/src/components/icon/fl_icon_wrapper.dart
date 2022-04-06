@@ -10,10 +10,10 @@ class FlIconWrapper extends BaseCompWrapperWidget<FlIconModel> {
   FlIconWrapper({Key? key, required String id}) : super(key: key, id: id);
 
   @override
-  _FlLabelWrapperState createState() => _FlLabelWrapperState();
+  _FlIconWrapperState createState() => _FlIconWrapperState();
 }
 
-class _FlLabelWrapperState extends BaseCompWrapperState<FlIconModel> {
+class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
   @override
   Widget build(BuildContext context) {
     final FlIconWidget widget = FlIconWidget(model: model);

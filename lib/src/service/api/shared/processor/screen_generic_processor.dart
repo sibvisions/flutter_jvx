@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
+import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
 import 'package:flutter_client/src/model/component/panel/fl_tab_panel_model.dart';
 
 import '../../../../model/api/api_object_property.dart';
@@ -54,9 +55,8 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
     if (!screenGenericResponse.update) {
-      RouteToWorkCommand workCommand = RouteToWorkCommand(
-          reason: "Server sent screen.generic response with update = 'false'"
-      );
+      RouteToWorkCommand workCommand =
+          RouteToWorkCommand(reason: "Server sent screen.generic response with update = 'false'");
 
       commands.add(workCommand);
     }
@@ -137,7 +137,8 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
         model = FlTextAreaModel();
         break;
       case FlComponentClassname.ICON:
-        continue alsoDefault;
+        model = FlIconModel();
+        break;
       case FlComponentClassname.POPUP_MENU:
         continue alsoDefault;
       case FlComponentClassname.MENU_ITEM:

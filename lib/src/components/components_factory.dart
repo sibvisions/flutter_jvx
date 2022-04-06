@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/icon/fl_icon_wrapper.dart';
 import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
 
 import '../model/component/fl_component_model.dart';
@@ -48,7 +49,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.TEXT_AREA:
         return FlTextAreaWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.ICON:
-        continue alsoDefault;
+        return FlIconWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.POPUP_MENU:
         continue alsoDefault;
       case FlComponentClassname.MENU_ITEM:
