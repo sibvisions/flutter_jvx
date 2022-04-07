@@ -172,9 +172,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       sentData.layoutPosition = constraintPos;
 
       if (isConstrained) {
-        PreferredSizeCommand command =
-            PreferredSizeCommand(layoutData: sentData, reason: "Component has been constrained");
-        uiService.sendCommand(command);
+        sendCalcSize(pLayoutData: sentData, pReason: "Component has been constrained");
       }
     }
 
@@ -197,12 +195,16 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         layoutData.calculatedSize = layoutData.preferredSize;
       }
 
-      PreferredSizeCommand preferredSizeCommand =
-          PreferredSizeCommand(layoutData: layoutData.clone(), reason: "Component has been rendered");
-
-      uiService.sendCommand(preferredSizeCommand);
+      sendCalcSize(pLayoutData: layoutData.clone(), pReason: "Component has been rendered");
       sentCalcSize = true;
     }
+  }
+
+  /// Sends the calc size.
+  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
+    PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(layoutData: pLayoutData, reason: pReason);
+
+    uiService.sendCommand(preferredSizeCommand);
   }
 
   double? getWidthForComponent() {

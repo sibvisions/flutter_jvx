@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 
 import '../../api/api_object_property.dart';
@@ -11,7 +12,11 @@ class FlIconModel extends FlComponentModel {
   String image = "";
 
   /// If the aspect ratio of the image should be preserved.
-  bool preserveAspectRatio = false;
+  bool preserveAspectRatio = true;
+
+  /// Original size of the image.
+  /// This is used to calculate the size of the image in the layout.
+  Size originalSize = const Size(0, 0);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -31,6 +36,13 @@ class FlIconModel extends FlComponentModel {
     var jsonImage = pJson[ApiObjectProperty.image];
     if (jsonImage != null) {
       image = jsonImage;
+
+      // Set the original size of the image.
+      List<String> arr = jsonImage.split(',');
+
+      if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
+        originalSize = Size(double.parse(arr[1]), double.parse(arr[2]));
+      }
     }
 
     var jsonPreserveAspectRatio = pJson[ApiObjectProperty.preserveAspectRatio];

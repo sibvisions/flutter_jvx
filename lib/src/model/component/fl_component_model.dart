@@ -8,7 +8,6 @@ import '../layout/layout_position.dart';
 
 /// The base component model.
 abstract class FlComponentModel {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,7 +62,7 @@ abstract class FlComponentModel {
 
   // Style Data
   /// The background color.
-  Color background = Colors.white;
+  Color background = Colors.transparent;
 
   /// The foreground color.
   Color foreground = Colors.black;

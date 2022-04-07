@@ -1,27 +1,28 @@
-import '../../../model/component/check_box/fl_check_box_model.dart';
-import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
+import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
+
+import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
-import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
 
-class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynamic> {
+class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The value of the check box.
+  /// The image of the icon.
   dynamic _value;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlCheckBoxCellEditor({
+  FlImageCellEditor({
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
   }) : super(
-          model: FlCheckBoxCellEditorModel(),
+          model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
@@ -38,11 +39,10 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
 
   @override
   FlStatelessWidget getWidget() {
-    FlCheckBoxModel widgetModel = FlCheckBoxModel();
-    widgetModel.labelModel.text = model.text;
-    widgetModel.selected = model.selectedValue == _value;
+    FlIconModel widgetModel = FlIconModel();
+    widgetModel.image = _value ?? '';
 
-    return FlCheckBoxWidget(model: widgetModel, onPress: onPress);
+    return FlIconWidget(model: widgetModel);
   }
 
   @override
@@ -57,18 +57,6 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
 
   @override
   bool isActionCellEditor() {
-    return true;
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Method definitions
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  void onPress() {
-    if (_value == model.selectedValue) {
-      onEndEditing(model.deselectedValue);
-    } else {
-      onEndEditing(model.selectedValue);
-    }
+    return false;
   }
 }

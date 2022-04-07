@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
+
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/dummy/fl_dummy_cell_editor.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -67,7 +69,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         continue alsoDefault;
       case FlCellEditorClassname.IMAGE_VIEWER:
-        continue alsoDefault;
+        return FlImageCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         continue alsoDefault;
       case FlCellEditorClassname.DATE_CELL_EDITOR:

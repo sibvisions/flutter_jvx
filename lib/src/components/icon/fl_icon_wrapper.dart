@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
+import 'package:flutter_client/src/model/command/layout/preferred_size_command.dart';
 import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -23,5 +25,22 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
     });
 
     return getPositioned(child: widget);
+  }
+
+  @override
+  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
+    LayoutData layoutData = pLayoutData.clone();
+    layoutData.calculatedSize = model.originalSize;
+
+    layoutData.widthConstrains.forEach((key, value) {
+      layoutData.widthConstrains[key] = model.originalSize.height;
+    });
+    layoutData.heightConstrains.forEach((key, value) {
+      layoutData.heightConstrains[key] = model.originalSize.width;
+    });
+
+    PreferredSizeCommand preferredSizeCommand = PreferredSizeCommand(layoutData: layoutData, reason: pReason);
+
+    uiService.sendCommand(preferredSizeCommand);
   }
 }
