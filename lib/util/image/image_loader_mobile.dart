@@ -26,7 +26,11 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
     String localFilePath =
         DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
 
-    File file = File('$localFilePath/$pPath');
+    if (!pPath.startsWith('/')) {
+      pPath = '/$pPath';
+    }
+
+    File file = File('$localFilePath$pPath');
     if (file.existsSync()) {
       return Image(
         image: FileImage(file),

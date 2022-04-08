@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
+import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
@@ -102,6 +105,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void postFrameCallback(BuildContext context) {
+    if (cellEditor is FlImageCellEditor) {
+      log("Image cell editor");
+    }
+
     super.postFrameCallback(context);
 
     // Dispose of the old one after the build to clean up memory.
@@ -113,6 +120,37 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void dispose() {
     cellEditor.dispose();
     super.dispose();
+  }
+
+  @override
+  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
+    if (cellEditor is FlImageCellEditor) {
+      LayoutData layoutData = pLayoutData.clone();
+      Widget widget = (cellEditor.getWidget() as FlIconWidget).getImage();
+
+      Size imageSize;
+
+      if (widget is Image) {
+        widget.image
+            .resolve(const ImageConfiguration())
+            .addListener(ImageStreamListener((ImageInfo info, bool synchronousCall) {
+          completer.complete(info.image);
+        }));
+      }
+
+      layoutData.calculatedSize = model.originalSize;
+
+      layoutData.widthConstrains.forEach((key, value) {
+        layoutData.widthConstrains[key] = model.originalSize.height;
+      });
+      layoutData.heightConstrains.forEach((key, value) {
+        layoutData.heightConstrains[key] = model.originalSize.width;
+      });
+
+      super.sendCalcSize(pLayoutData: layoutData, pReason: pReason);
+    } else {
+      super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,7 +165,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           log(columnDefinition.toString());
         },
         pDataProvider: pModel.dataRow,
-        pCallback: cellEditor.setValue,
+        pCallback: setValue,
         pComponentId: pModel.id,
         pColumnName: pModel.columnName);
   }
@@ -139,6 +177,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
   void onChange(dynamic pValue) {
+    setState(() {});
+  }
+
+  void setValue(dynamic pValue) {
+    cellEditor.setValue(pValue);
+
+    if (cellEditor is FlImageCellEditor) {
+      log("Image cell editor");
+    }
+
+    sentCalcSize = false;
     setState(() {});
   }
 
