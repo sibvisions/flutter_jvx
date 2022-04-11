@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../../util/constants/i_font.dart';
 import '../../../util/parse_util.dart';
@@ -241,5 +242,14 @@ abstract class FlComponentModel {
         isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
       }
     }
+  }
+
+  /// Returns the textstyle of the component.
+  TextStyle getTextStyle() {
+    return TextStyle(
+        color: isEnabled ? foreground : IColorConstants.COMPONENT_DISABLED,
+        fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+        fontFamily: fontName);
   }
 }

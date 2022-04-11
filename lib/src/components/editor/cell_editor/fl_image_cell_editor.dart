@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -55,9 +58,14 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
     return FlIconWidget(model: widgetModel, imageStreamListener: imageStreamListener);
   }
 
+  @override
+  FlComponentModel getModel() => FlIconModel();
+
   void onImage(ImageInfo pImageInfo, bool pSynchronousCall) {
     if (imageSize.height.toInt() != pImageInfo.image.height || imageSize.width.toInt() != pImageInfo.image.width) {
+      log("new Size");
       imageSize = Size(pImageInfo.image.width.toDouble(), pImageInfo.image.height.toDouble());
+      log("$imageSize");
     }
 
     if (!pSynchronousCall) {

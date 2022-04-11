@@ -3,16 +3,17 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/fl_text_cell_editor.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/command/api/set_values_command.dart';
-import '../../model/component/dummy/fl_dummy_cell_editor.dart';
 import '../../model/component/editor/fl_editor_model.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
@@ -60,7 +61,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
     recreateCellEditor(widget.model as T);
 
-    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.getWidget().model);
+    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.getModel());
 
     subscribe(widget.model as T);
 
@@ -77,7 +78,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       logCellEditor("RECEIVE_NEW_MODEL");
 
-      (widget.model as FlEditorModel).applyComponentInformation((cellEditor.getWidget()).model);
+      newModel.applyComponentInformation(cellEditor.getModel());
     }
 
     super.receiveNewModel(newModel: newModel);
@@ -97,6 +98,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     // As they override the properties.
     editorWidget.model.applyCellEditorOverrides(model.json);
 
+    if (cellEditor is FlImageCellEditor) {
+      log("build");
+    }
     logCellEditor("BUILD");
 
     return getPositioned(child: editorWidget);
@@ -119,26 +123,37 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
+    Size? newCalcSize;
     if (cellEditor is FlImageCellEditor) {
-      LayoutData newLayoutData = pLayoutData.clone();
-
       FlImageCellEditor imageCellEditor = cellEditor as FlImageCellEditor;
 
-      newLayoutData.calculatedSize = imageCellEditor.imageSize;
-
-      newLayoutData.widthConstrains.forEach((key, value) {
-        newLayoutData.widthConstrains[key] = imageCellEditor.imageSize.height;
-      });
-      newLayoutData.heightConstrains.forEach((key, value) {
-        newLayoutData.heightConstrains[key] = imageCellEditor.imageSize.width;
-      });
-
+      newCalcSize = imageCellEditor.imageSize;
       log("The image size is: ${imageCellEditor.imageSize}");
+    } else if (cellEditor is FlTextCellEditor && pLayoutData.hasCalculatedSize) {
+      FlTextCellEditor textCellEditor = cellEditor as FlTextCellEditor;
 
-      super.sendCalcSize(pLayoutData: newLayoutData, pReason: pReason);
-    } else {
-      super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
+      final TextPainter textPainter = TextPainter(
+        text: TextSpan(text: "w", style: model.getTextStyle()),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      )..layout(minWidth: 0, maxWidth: double.infinity);
+
+      newCalcSize = Size(textPainter.width * textCellEditor.getModel().columns + 2, layoutData.calculatedSize!.height);
     }
+
+    if (newCalcSize != null) {
+      pLayoutData = pLayoutData.clone();
+      pLayoutData.calculatedSize = newCalcSize;
+
+      pLayoutData.widthConstrains.forEach((key, value) {
+        pLayoutData.widthConstrains[key] = newCalcSize!.height;
+      });
+      pLayoutData.heightConstrains.forEach((key, value) {
+        pLayoutData.heightConstrains[key] = newCalcSize!.width;
+      });
+    }
+
+    super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,11 +252,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Old cell editor hashcode: ${oldCellEditor?.hashCode}");
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "New cell editor hashcode: ${cellEditor.hashCode}");
-    LOGGER.logD(
-        pType: LOG_TYPE.UI,
-        pMessage: "Old cell editor widget hashcode: " + (oldCellEditor?.getWidget().hashCode.toString() ?? ""));
-    LOGGER.logD(
-        pType: LOG_TYPE.UI, pMessage: "New cell editor widget hashcode: " + cellEditor.getWidget().hashCode.toString());
     LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "----- $pPhase -----");
   }
 }

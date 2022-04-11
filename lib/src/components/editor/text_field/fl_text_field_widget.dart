@@ -5,7 +5,6 @@ import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
 import '../../base_wrapper/fl_stateless_data_widget.dart';
-import '../../label/fl_label_widget.dart';
 
 class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidget<T, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,8 +60,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    FlLabelWidget labelWidget = FlLabelWidget(model: model);
-
     return DecoratedBox(
       decoration: BoxDecoration(
         color: model.background,
@@ -82,7 +79,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
         textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
         readOnly: model.isReadOnly,
-        style: labelWidget.getTextStyle(),
+        style: model.getTextStyle(),
         onChanged: valueChanged,
         onEditingComplete: () {
           focusNode.unfocus();

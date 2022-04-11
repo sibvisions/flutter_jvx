@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../model/component/label/fl_label_model.dart';
 import '../../model/layout/alignments.dart';
@@ -32,16 +31,8 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   Text getTextWidget() {
     return Text(
       model.text,
-      style: getTextStyle(),
+      style: model.getTextStyle(),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
-    );
-  }
-
-  TextStyle getTextStyle() {
-    return TextStyle(
-      color: model.isEnabled ? model.foreground : IColorConstants.COMPONENT_DISABLED,
-      fontStyle: model.isItalic ? FontStyle.italic : FontStyle.normal,
-      fontWeight: model.isBold ? FontWeight.bold : FontWeight.normal,
     );
   }
 }

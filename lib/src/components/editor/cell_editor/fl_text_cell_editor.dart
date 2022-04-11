@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../model/component/dummy/fl_dummy_model.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
-import '../../base_wrapper/fl_stateless_widget.dart';
-import '../../dummy/fl_dummy_widget.dart';
 import '../password_field/fl_password_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
@@ -75,20 +72,12 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlStatelessWidget getWidget() {
+  FlTextFieldWidget getWidget() {
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
         return FlTextAreaWidget(
           model: FlTextAreaModel(),
-          valueChanged: onValueChange,
-          endEditing: onEndEditing,
-          focusNode: focusNode,
-          textController: textController,
-        );
-      case (TEXT_PLAIN_SINGLELINE):
-        return FlTextFieldWidget(
-          model: FlTextFieldModel(),
           valueChanged: onValueChange,
           endEditing: onEndEditing,
           focusNode: focusNode,
@@ -102,8 +91,30 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
           focusNode: focusNode,
           textController: textController,
         );
+      case (TEXT_PLAIN_SINGLELINE):
       default:
-        return FlDummyWidget(model: FlDummyModel());
+        return FlTextFieldWidget(
+          model: FlTextFieldModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+    }
+  }
+
+  @override
+  FlTextFieldModel getModel() {
+    switch (model.contentType) {
+      case (TEXT_PLAIN_WRAPPEDMULTILINE):
+      case (TEXT_PLAIN_MULTILINE):
+        return FlTextAreaModel();
+      case (TEXT_PLAIN_SINGLELINE):
+        return FlTextFieldModel();
+      case (TEXT_PLAIN_PASSWORD):
+        return FlTextFieldModel();
+      default:
+        return FlTextFieldModel();
     }
   }
 

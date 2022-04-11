@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
+
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
@@ -44,6 +46,9 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
 
     return FlCheckBoxWidget(model: widgetModel, onPress: onPress);
   }
+
+  @override
+  FlComponentModel getModel() => FlCheckBoxModel();
 
   @override
   dynamic getValue() {

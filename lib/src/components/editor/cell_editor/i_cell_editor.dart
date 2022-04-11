@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
+import 'package:flutter_client/src/model/component/fl_component_model.dart';
 
 import '../../../model/api/api_object_property.dart';
-import '../../../model/component/dummy/fl_dummy_cell_editor.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import 'fl_check_box_cell_editor.dart';
+import 'fl_dummy_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
@@ -47,6 +48,9 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   /// Returns the widget representing the cell editor.
   FlStatelessWidget getWidget();
+
+  /// Returns the model of the widget representing the cell editor.
+  FlComponentModel getModel();
 
   bool isActionCellEditor();
 
