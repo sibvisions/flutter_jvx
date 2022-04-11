@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
 import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
 
@@ -13,6 +14,14 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   /// The image of the icon.
   dynamic _value;
 
+  /// The image loading callback to the editor.
+  VoidCallback? imageLoadingCallback;
+
+  /// The size of the image.
+  Size imageSize = Size.zero;
+
+  /// The image loading callback.
+  late ImageStreamListener imageStreamListener = ImageStreamListener(onImage);
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,6 +30,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
+    this.imageLoadingCallback,
   }) : super(
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
@@ -42,7 +52,17 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
-    return FlIconWidget(model: widgetModel);
+    return FlIconWidget(model: widgetModel, imageStreamListener: imageStreamListener);
+  }
+
+  void onImage(ImageInfo pImageInfo, bool pSynchronousCall) {
+    if (imageSize.height.toInt() != pImageInfo.image.height || imageSize.width.toInt() != pImageInfo.image.width) {
+      imageSize = Size(pImageInfo.image.width.toDouble(), pImageInfo.image.height.toDouble());
+    }
+
+    if (!pSynchronousCall) {
+      imageLoadingCallback?.call();
+    }
   }
 
   @override

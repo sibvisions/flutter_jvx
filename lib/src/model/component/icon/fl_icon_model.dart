@@ -16,7 +16,7 @@ class FlIconModel extends FlComponentModel {
 
   /// Original size of the image.
   /// This is used to calculate the size of the image in the layout.
-  Size originalSize = const Size(0, 0);
+  Size originalSize = Size.zero;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

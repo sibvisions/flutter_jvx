@@ -13,15 +13,18 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final bool imageInBinary;
 
+  final ImageStreamListener? imageStreamListener;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlIconWidget({Key? key, required T model, this.imageInBinary = false}) : super(key: key, model: model);
+  const FlIconWidget({Key? key, required T model, this.imageInBinary = false, this.imageStreamListener})
+      : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
-    Widget child = getImage();
+    Widget? child = getImage();
 
     if (model.tooltipText != null) {
       child = Tooltip(message: model.tooltipText!, child: child);
@@ -60,7 +63,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     return BoxFit.none;
   }
 
-  Widget getImage() {
+  Widget? getImage() {
     //BoxConstraints constraints) {
     // Size size = Size(constraints.maxWidth, constraints.maxHeight);
 
@@ -100,9 +103,12 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
     // return ImageLoader.loadImage(model.image,
     //     pWantedSize: Size(iWidth, iHeight), pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED);
 
-    return ImageLoader.loadImage(
-      model.image,
-      pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
-    );
+    if (model.image.isNotEmpty) {
+      return ImageLoader.loadImage(
+        model.image,
+        pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
+        pImageStreamListener: imageStreamListener,
+      );
+    }
   }
 }

@@ -36,11 +36,11 @@ class SplitLayout implements ILayout, ICloneable {
 
   LayoutPosition firstComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
 
-  Size firstComponentSize = const Size(0, 0);
+  Size firstComponentSize = Size.zero;
 
   LayoutPosition secondComponentViewer = LayoutPosition(width: 0, height: 0, top: 0, left: 0, isComponentSize: true);
 
-  Size secondComponentSize = const Size(0, 0);
+  Size secondComponentSize = Size.zero;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

@@ -7,10 +7,12 @@ import 'image_loader_stub.dart'
 
 abstract class ImageLoader {
   /// Loads an Image from the filesystem.
-  Image loadImageFiles(String pPath, {double? pWidth, double? pHeight, Color? pBlendedColor});
+  Image loadImageFiles(String pPath,
+      {double? pWidth, double? pHeight, Color? pBlendedColor, ImageStreamListener? pImageStreamListener});
 
   /// Loads any server sent image string.
-  static Widget loadImage(String pImageString, {Size? pWantedSize, Color? pWantedColor}) {
+  static Widget loadImage(String pImageString,
+      {Size? pWantedSize, Color? pWantedColor, ImageStreamListener? pImageStreamListener}) {
     if (IFontAwesome.checkFontAwesome(pImageString)) {
       return IFontAwesome.getFontAwesomeIcon(pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
     } else {
@@ -32,8 +34,11 @@ abstract class ImageLoader {
         size = pWantedSize;
       }
 
-      return getImageLoader()
-          .loadImageFiles(path, pWidth: size?.width, pHeight: size?.height, pBlendedColor: pWantedColor);
+      return getImageLoader().loadImageFiles(path,
+          pWidth: size?.width,
+          pHeight: size?.height,
+          pBlendedColor: pWantedColor,
+          pImageStreamListener: pImageStreamListener);
     }
   }
 

@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
-import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
 import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../../util/logging/flutter_logger.dart';
@@ -105,10 +104,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void postFrameCallback(BuildContext context) {
-    if (cellEditor is FlImageCellEditor) {
-      log("Image cell editor");
-    }
-
     super.postFrameCallback(context);
 
     // Dispose of the old one after the build to clean up memory.
@@ -125,29 +120,22 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     if (cellEditor is FlImageCellEditor) {
-      LayoutData layoutData = pLayoutData.clone();
-      Widget widget = (cellEditor.getWidget() as FlIconWidget).getImage();
+      LayoutData newLayoutData = pLayoutData.clone();
 
-      Size imageSize;
+      FlImageCellEditor imageCellEditor = cellEditor as FlImageCellEditor;
 
-      if (widget is Image) {
-        widget.image
-            .resolve(const ImageConfiguration())
-            .addListener(ImageStreamListener((ImageInfo info, bool synchronousCall) {
-          completer.complete(info.image);
-        }));
-      }
+      newLayoutData.calculatedSize = imageCellEditor.imageSize;
 
-      layoutData.calculatedSize = model.originalSize;
-
-      layoutData.widthConstrains.forEach((key, value) {
-        layoutData.widthConstrains[key] = model.originalSize.height;
+      newLayoutData.widthConstrains.forEach((key, value) {
+        newLayoutData.widthConstrains[key] = imageCellEditor.imageSize.height;
       });
-      layoutData.heightConstrains.forEach((key, value) {
-        layoutData.heightConstrains[key] = model.originalSize.width;
+      newLayoutData.heightConstrains.forEach((key, value) {
+        newLayoutData.heightConstrains[key] = imageCellEditor.imageSize.width;
       });
 
-      super.sendCalcSize(pLayoutData: layoutData, pReason: pReason);
+      log("The image size is: ${imageCellEditor.imageSize}");
+
+      super.sendCalcSize(pLayoutData: newLayoutData, pReason: pReason);
     } else {
       super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
     }
@@ -162,7 +150,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void subscribe(T pModel) {
     uiService.registerAsDataComponent(
         pColumnDefinitionCallback: (columnDefinition) {
-          log(columnDefinition.toString());
+          //log(columnDefinition.toString());
         },
         pDataProvider: pModel.dataRow,
         pCallback: setValue,
@@ -183,11 +171,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void setValue(dynamic pValue) {
     cellEditor.setValue(pValue);
 
-    if (cellEditor is FlImageCellEditor) {
-      log("Image cell editor");
-    }
-
-    sentCalcSize = false;
     setState(() {});
   }
 
@@ -211,6 +194,14 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
   }
 
+  void recalculateSize() {
+    sentCalcSize = false;
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   void sendValue() {
     LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
     uiService.sendCommand(SetValuesCommand(
@@ -231,8 +222,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     var jsonCellEditor = pModel.json[ApiObjectProperty.cellEditor];
     if (jsonCellEditor != null) {
-      cellEditor =
-          ICellEditor.getCellEditor(pCellEditorJson: jsonCellEditor, onChange: onChange, onEndEditing: onEndEditing);
+      cellEditor = ICellEditor.getCellEditor(
+          pCellEditorJson: jsonCellEditor,
+          onChange: onChange,
+          onEndEditing: onEndEditing,
+          pRecalculateSize: recalculateSize);
       subscribe(pModel);
     }
   }

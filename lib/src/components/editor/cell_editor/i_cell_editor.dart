@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
 
 import '../../../model/api/api_object_property.dart';
@@ -58,6 +59,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
+    VoidCallback? pRecalculateSize,
   }) {
     String cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
@@ -69,7 +71,11 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         continue alsoDefault;
       case FlCellEditorClassname.IMAGE_VIEWER:
-        return FlImageCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
+        return FlImageCellEditor(
+            pCellEditorJson: pCellEditorJson,
+            onChange: onChange,
+            onEndEditing: onEndEditing,
+            imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         continue alsoDefault;
       case FlCellEditorClassname.DATE_CELL_EDITOR:

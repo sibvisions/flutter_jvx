@@ -17,7 +17,8 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
   ImageLoaderMobile();
 
   @override
-  Image loadImageFiles(String pPath, {double? pWidth, double? pHeight, Color? pBlendedColor}) {
+  Image loadImageFiles(String pPath,
+      {double? pWidth, double? pHeight, Color? pBlendedColor, ImageStreamListener? pImageStreamListener}) {
     String baseUrl = configService.getUrl(); //appState.serverConfig!.baseUrl
     String appName = configService.getAppName(); //appState.serverConfig!.appName,
     String appVersion = configService.getVersion(); //appState.applicationMetaData?.version ?? 1.0
@@ -30,9 +31,11 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
       pPath = '/$pPath';
     }
 
+    Image image;
+
     File file = File('$localFilePath$pPath');
     if (file.existsSync()) {
-      return Image(
+      image = Image(
         image: FileImage(file),
         width: pWidth,
         height: pHeight,
@@ -47,7 +50,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
         },
       );
     } else {
-      return Image.network(
+      image = Image.network(
         '$baseUrl/resource/$appName$pPath',
         fit: BoxFit.contain,
         width: pWidth,
@@ -66,6 +69,12 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
         },
       );
     }
+
+    if (pImageStreamListener != null) {
+      image.image.resolve(const ImageConfiguration()).addListener(pImageStreamListener);
+    }
+
+    return image;
   }
 }
 
