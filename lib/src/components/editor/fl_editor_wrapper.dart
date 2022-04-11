@@ -184,9 +184,12 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void setValue(dynamic pValue) {
-    cellEditor.setValue(pValue);
+    if (cellEditor is FlImageCellEditor) {
+      log("my id is: ${model.id}");
+      log("set value: $pValue");
+    }
 
-    setState(() {});
+    cellEditor.setValue(pValue);
   }
 
   /// Sets the state of the widget and sends a set value command.
@@ -212,9 +215,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void recalculateSize() {
     sentCalcSize = false;
 
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {});
   }
 
   void sendValue() {

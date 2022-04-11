@@ -1,8 +1,7 @@
 import 'dart:collection';
-import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
 
 import '../../../../util/type_def/callback_def.dart';
@@ -16,9 +15,7 @@ import '../../../model/menu/menu_model.dart';
 import '../i_ui_service.dart';
 
 /// Manages all interactions with the UI
-class
-UiService with CommandServiceMixin implements IUiService {
-
+class UiService with CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +44,6 @@ UiService with CommandServiceMixin implements IUiService {
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +63,7 @@ UiService with CommandServiceMixin implements IUiService {
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    if(pReplaceRoute) {
+    if (pReplaceRoute) {
       _currentBuildContext!.beamToReplacementNamed("/menu");
     } else {
       _currentBuildContext!.beamToNamed("/menu");
@@ -81,9 +77,7 @@ UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void routeToSettings() {
-
-  }
+  void routeToSettings() {}
 
   @override
   void setRouteContext({required BuildContext pContext}) {
@@ -95,18 +89,16 @@ UiService with CommandServiceMixin implements IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  MenuModel getMenuModel(){
-    if(_menuModel != null){
+  MenuModel getMenuModel() {
+    if (_menuModel != null) {
       return _menuModel!;
     } else {
-      throw Exception(
-          "Menu model was not set, needs to be set before opening menu"
-      );
+      throw Exception("Menu model was not set, needs to be set before opening menu");
     }
   }
 
   @override
-  void setMenuModel({required MenuModel pMenuModel}){
+  void setMenuModel({required MenuModel pMenuModel}) {
     _menuModel = pMenuModel;
   }
 
@@ -147,10 +139,14 @@ UiService with CommandServiceMixin implements IUiService {
     //   }
     // }
     _currentScreen.clear();
+    _registeredComponents.clear();
+    _registeredDataComponents.clear();
+    _columnDefinitionCallback.clear();
+    _layoutDataList.clear();
   }
 
   @override
-  FlPanelModel getOpenScreen(){
+  FlPanelModel getOpenScreen() {
     return _currentScreen.first as FlPanelModel;
   }
 
@@ -295,11 +291,7 @@ UiService with CommandServiceMixin implements IUiService {
       for (String columnName in dataProviderCallbacks.keys) {
         for (String componentId in dataProviderCallbacks[columnName]!.keys) {
           GetSelectedDataCommand command = GetSelectedDataCommand(
-              reason: "reason",
-              componentId: componentId,
-              dataProvider: pDataProvider,
-              columnName: columnName
-          );
+              reason: "reason", componentId: componentId, dataProvider: pDataProvider, columnName: columnName);
           sendCommand(command);
         }
       }

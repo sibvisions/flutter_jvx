@@ -48,6 +48,8 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   @override
   void setValue(dynamic pValue) {
     _value = pValue;
+
+    imageLoadingCallback?.call();
   }
 
   @override
