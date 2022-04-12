@@ -1,19 +1,17 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/fl_text_cell_editor.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
+import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
+import 'cell_editor/fl_image_cell_editor.dart';
+import 'cell_editor/fl_text_cell_editor.dart';
 import 'cell_editor/i_cell_editor.dart';
 
 /// The [FlEditorWrapper] wraps various cell editors and makes them usable as single wrapped widgets.
@@ -98,9 +96,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     // As they override the properties.
     editorWidget.model.applyCellEditorOverrides(model.json);
 
-    if (cellEditor is FlImageCellEditor) {
-      log("build");
-    }
     logCellEditor("BUILD");
 
     return getPositioned(child: editorWidget);
@@ -128,7 +123,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       FlImageCellEditor imageCellEditor = cellEditor as FlImageCellEditor;
 
       newCalcSize = imageCellEditor.imageSize;
-      log("The image size is: ${imageCellEditor.imageSize}");
     } else if (cellEditor is FlTextCellEditor && pLayoutData.hasCalculatedSize) {
       FlTextCellEditor textCellEditor = cellEditor as FlTextCellEditor;
 
@@ -184,11 +178,6 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void setValue(dynamic pValue) {
-    if (cellEditor is FlImageCellEditor) {
-      log("my id is: ${model.id}");
-      log("set value: $pValue");
-    }
-
     cellEditor.setValue(pValue);
   }
 

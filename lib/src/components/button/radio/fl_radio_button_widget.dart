@@ -19,6 +19,7 @@ class FlRadioButtonWidget extends FlButtonWidget<FlRadioButtonModel> {
           onPress();
         }
       },
+      toggleable: true,
     );
   }
 

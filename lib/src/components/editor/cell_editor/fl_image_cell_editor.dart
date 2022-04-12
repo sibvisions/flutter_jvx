@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/components/icon/fl_icon_widget.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../model/component/icon/fl_icon_model.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
+import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
@@ -21,7 +21,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   VoidCallback? imageLoadingCallback;
 
   /// The size of the image.
-  Size imageSize = Size.zero;
+  Size imageSize = const Size(16, 16);
 
   /// The image loading callback.
   late ImageStreamListener imageStreamListener = ImageStreamListener(onImage);
