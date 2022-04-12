@@ -225,7 +225,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position and has no corresponding entries in its constrain maps.
   bool get isNewlyConstraint {
-    if (isWidthNewlyConstraint || isHeightNewlyConstraint) {
+    if (!hasPreferredSize && (isWidthNewlyConstraint || isHeightNewlyConstraint)) {
       return true;
     }
     return false;
@@ -292,7 +292,10 @@ class LayoutData implements ICloneable {
     double width = 0;
     double height = 0;
 
-    if (hasCalculatedSize) {
+    if (hasPreferredSize) {
+      width = preferredSize!.width;
+      height = preferredSize!.height;
+    } else if (hasCalculatedSize) {
       width = calculatedSize!.width;
       height = calculatedSize!.height;
 

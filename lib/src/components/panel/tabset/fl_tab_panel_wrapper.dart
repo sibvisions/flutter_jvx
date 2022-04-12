@@ -68,9 +68,6 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The last tab controller used. Saved for old values / call to dispose.
-  FlTabController? lastController;
-
   /// The current tab controller.
   late FlTabController tabController;
 
@@ -171,13 +168,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
     tabContentList.sort((a, b) => a.model.indexOf - b.model.indexOf);
 
-    lastController = tabController;
     tabController = FlTabController(
-        initialIndex: min(lastController!.index, max(tabContentList.length - 1, 0)),
+        initialIndex: min(tabController.index, max(tabContentList.length - 1, 0)),
         tabs: tabContentList,
         vsync: this,
-        changedIndexTo: changedIndexTo);
-    tabController.widgetsSelectedOnce.addAll(lastController!.widgetsSelectedOnce);
+        changedIndexTo: changedIndexTo,
+        lastController: tabController);
 
     for (int i = 0; i < tabContentList.length; i++) {
       tabHeaderList.add(createTab(tabContentList[i], i));
@@ -225,7 +221,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
             width: widthOfTabPanel,
             height: heightOfTabPanel,
             child: GestureDetector(
-              onHorizontalDragEnd: swipe,
+              onScaleEnd: swipe,
               child: TabBarView(
                 controller: tabController,
                 physics: const NeverScrollableScrollPhysics(),
@@ -271,15 +267,10 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
   @override
   void postFrameCallback(BuildContext context) {
-    if (lastController != null) {
-      if (lastDeletedTab == -2 && model.selectedIndex > 0) {
-        tabController.animateInternally(model.selectedIndex);
-      }
-      lastDeletedTab = -1;
-
-      lastController!.dispose();
-      lastController = null;
+    if (lastDeletedTab == -2 && model.selectedIndex > 0) {
+      tabController.animateTo(model.selectedIndex, pInternally: true);
     }
+    lastDeletedTab = -1;
 
     if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
       tabController.animateTo(model.selectedIndex);
@@ -331,11 +322,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
       if (index >= 0 && index < tabContentList.length) {
         if (tabContentList.elementAt(index).model.isEnabled) {
-          if (pInternally) {
-            tabController.animateInternally(index);
-          } else {
-            tabController.animateTo(index);
-          }
+          tabController.animateTo(index, pInternally: pInternally);
           hasSwiped = true;
         }
       } else {
@@ -344,14 +331,15 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     }
   }
 
-  void swipe(DragEndDetails pDetails) {
-    if (pDetails.primaryVelocity == null || pDetails.primaryVelocity == 0.0) {
+  void swipe(ScaleEndDetails pDetails) {
+    if (pDetails.velocity.pixelsPerSecond.dx.abs() == 0.0 ||
+        pDetails.velocity.pixelsPerSecond.dx.abs() < pDetails.velocity.pixelsPerSecond.dy.abs()) {
       return;
     }
 
     // Bigger than 0 -> Swipe to the left;
     // Negative number -> swipe to the right;
-    _swipe(pDetails.primaryVelocity! < 0.0, false);
+    _swipe(pDetails.velocity.pixelsPerSecond.dx < 0.0, false);
   }
 
   void changedIndexTo(int pValue) {

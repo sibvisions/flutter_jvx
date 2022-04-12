@@ -229,9 +229,17 @@ class LayoutService implements ILayoutService {
     List<LayoutData>? children = _getChildrenOrNull(pParentLayout: pParentLayout);
 
     if (pParentLayout.layoutState == LayoutState.VALID && children != null) {
-      bool areChildrenValid =
-          children.every((element) => ((element.layoutState == LayoutState.VALID) && element.hasCalculatedSize));
-      return areChildrenValid;
+      for (LayoutData child in children) {
+        if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
+          LOGGER.logD(
+              pType: LOG_TYPE.LAYOUT,
+              pMessage:
+                  "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
+          return false;
+        }
+      }
+
+      return true;
     }
     return false;
   }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class FlSizedPanelWidget extends StatelessWidget {
@@ -13,8 +15,8 @@ class FlSizedPanelWidget extends StatelessWidget {
         IgnorePointer(
           ignoring: true,
           child: SizedBox(
-            width: (width ?? 0),
-            height: (height ?? 0),
+            width: max((width ?? 0), 0),
+            height: max((height ?? 0), 0),
           ),
         ),
         ...children,

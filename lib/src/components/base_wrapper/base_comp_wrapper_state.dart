@@ -137,7 +137,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       layoutData = newLayoutData;
       calcPosition = null;
     }
-    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${layoutData.id} NEW DATA; ${newLayoutData.calculatedSize}");
+    LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${layoutData.id} NEW DATA; ${newLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
     if (!layoutData.isParent &&
