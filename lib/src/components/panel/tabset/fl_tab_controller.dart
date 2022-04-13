@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/util/parse_util.dart';
 
@@ -41,16 +43,20 @@ class FlTabController extends TabController {
   }
 
   bool get isAllowedToAnimate {
-    bool isAllowed = true;
-
     for (FlTabController checkTabController in lastControllers) {
-      isAllowed = checkTabController.offset == 0.0 && !checkTabController.indexIsChanging;
+      bool isAllowed = checkTabController.offset == 0.0 && !checkTabController.indexIsChanging;
+
       if (isAllowed && checkTabController.animation != null) {
         isAllowed = (checkTabController.animation!.value - checkTabController.animation!.value.floor()) == 0;
       }
+
+      if (!isAllowed) {
+        log("ANIMATION CANCELLED");
+        return false;
+      }
     }
 
-    return isAllowed;
+    return true;
   }
 
   @override
