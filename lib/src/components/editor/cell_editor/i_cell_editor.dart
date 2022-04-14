@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/choice_cell_editor/fl_choice_cell_editor.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 
@@ -74,6 +75,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlCheckBoxCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         continue alsoDefault;
+      //return FlNumberCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
             pCellEditorJson: pCellEditorJson,
@@ -81,7 +83,11 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
             onEndEditing: onEndEditing,
             imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
-        continue alsoDefault;
+        return FlChoiceCellEditor(
+            pCellEditorJson: pCellEditorJson,
+            onChange: onChange,
+            onEndEditing: onEndEditing,
+            imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         continue alsoDefault;
       case FlCellEditorClassname.LINKED_CELL_EDITOR:

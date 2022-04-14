@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/choice_cell_editor/fl_choice_cell_editor.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
@@ -119,7 +120,11 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
     Size? newCalcSize;
-    if (cellEditor is FlImageCellEditor) {
+    if (cellEditor is FlChoiceCellEditor) {
+      FlChoiceCellEditor imageCellEditor = cellEditor as FlChoiceCellEditor;
+
+      newCalcSize = imageCellEditor.imageSize;
+    } else if (cellEditor is FlImageCellEditor) {
       FlImageCellEditor imageCellEditor = cellEditor as FlImageCellEditor;
 
       newCalcSize = imageCellEditor.imageSize;

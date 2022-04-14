@@ -36,6 +36,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
     File file = File('$localFilePath$pPath');
     if (file.existsSync()) {
       image = Image(
+        fit: BoxFit.none,
         image: FileImage(file),
         width: pWidth,
         height: pHeight,
@@ -52,7 +53,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
     } else {
       image = Image.network(
         '$baseUrl/resource/$appName$pPath',
-        fit: BoxFit.contain,
+        fit: BoxFit.none,
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,
@@ -65,7 +66,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
                       : null));
         },
         errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-          return const Text('Couldn\'t load image with given url');
+          return ImageLoader.DEFAULT_IMAGE;
         },
       );
     }

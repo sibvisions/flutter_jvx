@@ -1,0 +1,120 @@
+import 'package:flutter/material.dart';
+
+import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../model/component/editor/text_area/fl_text_area_model.dart';
+import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../password_field/fl_password_widget.dart';
+import '../text_area/fl_text_area_widget.dart';
+import '../text_field/fl_text_field_widget.dart';
+import 'i_cell_editor.dart';
+
+class FlNumberCellEditor extends ICellEditor<ICellEditorModel, String> {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final TextEditingController textController = TextEditingController();
+
+  final FocusNode focusNode = FocusNode();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  FlNumberCellEditor({
+    required Map<String, dynamic> pCellEditorJson,
+    required Function(String) onChange,
+    required Function(String) onEndEditing,
+  }) : super(
+          model: ICellEditorModel(),
+          pCellEditorJson: pCellEditorJson,
+          onValueChange: onChange,
+          onEndEditing: onEndEditing,
+        ) {
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        onEndEditing(textController.text);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void setValue(String? pValue) {
+    if (pValue == null) {
+      textController.clear();
+    } else {
+      textController.value = textController.value.copyWith(
+        text: pValue,
+        selection: TextSelection.collapsed(offset: pValue.characters.length),
+        composing: null,
+      );
+    }
+  }
+
+  @override
+  FlTextFieldWidget getWidget() {
+    switch (model.contentType) {
+      case (TEXT_PLAIN_WRAPPEDMULTILINE):
+      case (TEXT_PLAIN_MULTILINE):
+        return FlTextAreaWidget(
+          model: FlTextAreaModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+      case (TEXT_PLAIN_PASSWORD):
+        return FlPasswordWidget(
+          model: FlTextFieldModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+      case (TEXT_PLAIN_SINGLELINE):
+      default:
+        return FlTextFieldWidget(
+          model: FlTextFieldModel(),
+          valueChanged: onValueChange,
+          endEditing: onEndEditing,
+          focusNode: focusNode,
+          textController: textController,
+        );
+    }
+  }
+
+  @override
+  FlTextFieldModel getModel() {
+    switch (model.contentType) {
+      case (TEXT_PLAIN_WRAPPEDMULTILINE):
+      case (TEXT_PLAIN_MULTILINE):
+        return FlTextAreaModel();
+      case (TEXT_PLAIN_SINGLELINE):
+        return FlTextFieldModel();
+      case (TEXT_PLAIN_PASSWORD):
+        return FlTextFieldModel();
+      default:
+        return FlTextFieldModel();
+    }
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    textController.dispose();
+  }
+
+  @override
+  String getValue() {
+    return textController.text;
+  }
+
+  @override
+  bool isActionCellEditor() {
+    return false;
+  }
+}

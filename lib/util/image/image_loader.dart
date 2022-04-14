@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../font_awesome_util.dart';
 import 'image_loader_stub.dart'
@@ -6,14 +7,39 @@ import 'image_loader_stub.dart'
     if (dart.library.html) 'image_loader_web.dart';
 
 abstract class ImageLoader {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Constants
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static const Widget DEFAULT_IMAGE = FaIcon(
+    FontAwesomeIcons.questionCircle,
+    size: 16,
+  );
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  factory ImageLoader() => getImageLoader();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Method definitions
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Loads an Image from the filesystem.
   Image loadImageFiles(String pPath,
       {double? pWidth, double? pHeight, Color? pBlendedColor, ImageStreamListener? pImageStreamListener});
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   /// Loads any server sent image string.
   static Widget loadImage(String pImageString,
       {Size? pWantedSize, Color? pWantedColor, ImageStreamListener? pImageStreamListener}) {
-    if (IFontAwesome.checkFontAwesome(pImageString)) {
+    if (pImageString.isEmpty) {
+      return DEFAULT_IMAGE;
+    } else if (IFontAwesome.checkFontAwesome(pImageString)) {
       return IFontAwesome.getFontAwesomeIcon(pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
     } else {
       List<String> arr = pImageString.split(',');
@@ -41,6 +67,4 @@ abstract class ImageLoader {
           pImageStreamListener: pImageStreamListener);
     }
   }
-
-  factory ImageLoader() => getImageLoader();
 }
