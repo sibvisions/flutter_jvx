@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
 
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
@@ -73,15 +74,41 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToWorkScreen() {
     var screen = _currentScreen.first;
-    _currentBuildContext!.beamToNamed("/workScreen/${screen.id}");
+    if(_currentBuildContext!.beamingHistory.last is WorkScreenLocation){
+      _currentBuildContext!.beamToReplacementNamed("/workScreen/${screen.id}");
+    } else {
+      _currentBuildContext!.beamToNamed("/workScreen/${screen.id}");
+    }
   }
 
   @override
-  void routeToSettings() {}
+  void routeToLogin() {
+    if(_currentBuildContext!.beamingHistory.last is WorkScreenLocation){
+      _currentBuildContext!.beamToReplacementNamed("/login");
+    } else {
+      _currentBuildContext!.beamToNamed("/login");
+    }
+  }
+
+  @override
+  void routeToSettings() {
+    _currentBuildContext!.beamToNamed("/settings");
+  }
 
   @override
   void setRouteContext({required BuildContext pContext}) {
     _currentBuildContext = pContext;
+  }
+
+  @override
+  Future<bool?> openDialog<T>({required Widget pDialogWidget, required bool pIsDismissible}){
+    return showDialog(
+        context: _currentBuildContext!,
+        barrierDismissible: pIsDismissible,
+        builder: (BuildContext context) {
+          return pDialogWidget;
+        }
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

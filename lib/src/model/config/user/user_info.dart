@@ -10,7 +10,7 @@ class UserInfo {
   /// Username
   final String userName;
   /// Email of the user
-  final String eMail;
+  final String? eMail;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

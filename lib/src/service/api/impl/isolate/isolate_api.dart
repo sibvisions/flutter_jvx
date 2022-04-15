@@ -1,6 +1,8 @@
 import 'dart:isolate';
 
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
+import 'package:flutter_client/src/model/config/api/api_config.dart';
+import 'package:flutter_client/src/service/api/impl/isolate/messages/api_isolate_api_config_message.dart';
 
 import '../../../../model/command/base_command.dart';
 import '../../i_api_service.dart';
@@ -105,5 +107,19 @@ class IsolateApi implements IApiService {
       apiSendPort.send(controllerWrapper);
     }
     return true;
+  }
+
+  @override
+  void setApiConfig({required ApiConfig apiConfig}) {
+    ReceivePort receivePort = ReceivePort();
+
+    _apiSendPort!.send(
+        ApiIsolateMessageWrapper(
+            sendPort: receivePort.sendPort,
+            message: ApiIsolateApiConfigMessage(
+                apiConfig: apiConfig
+            )
+        )
+    );
   }
 }

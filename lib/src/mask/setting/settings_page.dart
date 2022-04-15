@@ -1,14 +1,23 @@
-import 'dart:developer';
+import 'dart:math';
 
+import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_client/src/mask/camera/qr_parser.dart';
+import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
+import 'package:flutter_client/src/mask/setting/widgets/editor/app_name_editor.dart';
+import 'package:flutter_client/src/mask/setting/widgets/editor/editor_dialog.dart';
 import 'package:flutter_client/src/mask/setting/widgets/setting_group.dart';
 import 'package:flutter_client/src/mask/setting/widgets/setting_item.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
+import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'package:flutter_client/src/model/config/api/url_config.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../mixin/ui_service_mixin.dart';
 
+/// Displays all settings of the app
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -40,6 +49,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   /// Build date notifier
   late ValueNotifier<String> buildDateNotifier;
 
+  /// Username of a scanned QR-Code
+  String? username;
+  /// Password of a scanned QR-Code
+  String? password;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,9 +62,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   void initState() {
 
     // Application setting
-    baseUrlNotifier = ValueNotifier(configService.getUrl());
+    baseUrlNotifier = ValueNotifier(configService.getApiConfig().urlConfig.getBasePath());
     appNameNotifier = ValueNotifier(configService.getAppName());
-    languageNotifier = ValueNotifier("TODO");
+    languageNotifier = ValueNotifier("ToDo");
 
     // Version Info
     // ToDo get real version info
@@ -73,9 +87,14 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
   @override
   Widget build(BuildContext context) {
+    uiService.setRouteContext(pContext: context);
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
+          leading: IconButton(
+            icon: const FaIcon(FontAwesomeIcons.arrowLeft),
+            onPressed: () => context.beamBack(),
+          ),
           title: const Text("Settings"),
         ),
         body: SingleChildScrollView(
@@ -85,7 +104,20 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
               versionInfo
             ],
           ),
-        ));
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: ElevatedButton(
+            child: const Text("Save"),
+            onPressed: _saveClicked,
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: const FaIcon(FontAwesomeIcons.qrcode),
+          onPressed: () => _openQRScanner(),
+        ),
+
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,6 +131,22 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: appNameNotifier,
         title: "App name",
+        onPressed: () {
+          TextEditingController controller = TextEditingController(text: appNameNotifier.value);
+          Widget editor = AppNameEditor(controller: controller);
+
+          _settingItemClicked(
+            pEditor: editor,
+            pTitleIcon: const FaIcon(FontAwesomeIcons.server),
+            pTitleText: "AppName"
+          )
+            .then((value) {
+              if(value){
+                appNameNotifier.value = controller.text;
+                configService.setAppName(controller.text);
+              }
+          });
+        },
     );
 
     SettingItem baseUrlSetting = SettingItem(
@@ -149,7 +197,6 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       title: "Build date",
     );
 
-
     SettingGroup group = SettingGroup(
         groupHeader: const Padding(
           padding: EdgeInsets.fromLTRB(10,0,0,0),
@@ -166,5 +213,63 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     return group;
   }
 
+  Future<bool?> _settingItemClicked<bool>({required Widget pEditor,
+    required FaIcon pTitleIcon, required String pTitleText
+  }) {
+    return showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return EditorDialog(
+            editor: pEditor,
+            titleIcon: pTitleIcon,
+            titleText: pTitleText,
+          );
+        },
+        barrierDismissible: false
+    );
+  }
 
+  /// Opens the QR-Scanner,
+  /// parses scanned code and saves values to config service
+  void _openQRScanner() {
+    uiService.openDialog(
+        pDialogWidget: QRScannerMask(callBack: (barcode, _) {
+          QRAppCode code = QRParser.parseCode(rawQRCode: barcode.rawValue!);
+          // set service values
+          configService.setAppName(code.appName);
+
+          var a = UrlConfig.fromFullString(fullPath: code.url);
+
+          configService.getApiConfig().urlConfig = a;
+
+          // set local display values
+          appNameNotifier.value = code.appName;
+          baseUrlNotifier.value = code.url;
+          // set username & password for later
+          username = code.username;
+          password = code.password;
+
+          SetApiConfigCommand apiConfigCommand = SetApiConfigCommand(
+              apiConfig: configService.getApiConfig(),
+              reason: "QR Scan replaced url"
+          );
+          uiService.sendCommand(apiConfigCommand);
+        }),
+        pIsDismissible: false
+    );
+  }
+
+  /// Will send a [StartupCommand] with current values
+  void _saveClicked() {
+    StartupCommand startupCommand = StartupCommand(
+      reason: "QR-Code-Scanned",
+      password: password,
+      username: username
+    );
+
+    password = null;
+    username = null;
+
+    uiService.sendCommand(startupCommand);
+  }
 }

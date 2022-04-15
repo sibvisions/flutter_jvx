@@ -13,7 +13,7 @@ class UserDataResponse extends ApiResponse {
   /// Name to display
   final String displayName;
   /// Email of the user
-  final String eMail;
+  final String? eMail;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

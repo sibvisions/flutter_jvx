@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:beamer/beamer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_client/src/routing/fl_back_button_dispatcher.dart';
 import 'package:flutter_client/src/routing/locations/login_location.dart';
 import 'package:flutter_client/src/routing/locations/menu_location.dart';
+import 'package:flutter_client/src/routing/locations/setting_location.dart';
 import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
 
 import 'init_app_mobile.dart';
@@ -38,6 +41,7 @@ class MyApp extends StatelessWidget {
         beamLocations: [
           LoginLocation(),
           MenuLocation(),
+          SettingLocation(),
           WorkScreenLocation()
         ]
     ),
@@ -53,5 +57,19 @@ class MyApp extends StatelessWidget {
       backButtonDispatcher: FlBackButtonDispatcher(delegate: _routerDelegate),
       title: "Flutter Demo",
     );
+  }
+
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    var httpclient = super.createHttpClient(context);
+    httpclient.badCertificateCallback = ignoreSecure;
+    return httpclient;
+  }
+
+  static bool ignoreSecure(X509Certificate cert, String host, int port) {
+    return true;
   }
 }

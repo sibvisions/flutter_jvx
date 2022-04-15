@@ -7,4 +7,5 @@ abstract class ApiResponseNames {
   static const String dalMetaData = "dal.metaData";
   static const String dalFetch = "dal.fetch";
   static const String userData = "userData";
+  static const String login = "login";
 }

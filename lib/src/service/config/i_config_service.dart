@@ -1,4 +1,5 @@
 
+import 'package:flutter_client/src/model/config/api/api_config.dart';
 import 'package:flutter_client/src/model/config/user/user_info.dart';
 
 /// Defines the base construct of a [IConfigService]
@@ -29,17 +30,13 @@ abstract class IConfigService {
   /// Set appName
   void setAppName(String pAppName);
 
-  /// Returns the url of the remote server
-  String getUrl();
-
-  /// Set url
-  void setUrl(String pUrl);
-
-  /// Returns version of the server application
-  String getVersion();
+  /// Returns current apiConfig
+  ApiConfig getApiConfig();
 
   /// Set version
   void setVersion(String pVersion);
+
+  String getVersion();
 
   /// Return menuMode
   MENU_MODE getMenuMode();

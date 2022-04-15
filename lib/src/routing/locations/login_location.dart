@@ -15,18 +15,15 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceMixin {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
 
-    // Set route context to so popup's can be opened remotely
-    uiService.setRouteContext(pContext: context);
-
     return [
       BeamPage(
         child: AppLogin(loginCard: LoginCard()),
         key: const ValueKey("login")
       ),
       if(state.uri.pathSegments.contains("passwordReset"))
-      const BeamPage(
-        child: AppLogin(loginCard: ResetPasswordCard()),
-        key: ValueKey("login_password_reset")
+      BeamPage(
+        child: AppLogin(loginCard: const ResetPasswordCard()),
+        key: const ValueKey("login_password_reset")
       )
     ];
   }

@@ -1,17 +1,40 @@
 class UrlConfig {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Domain part of the url
   final String host;
+  /// Additional path needs to always end with 'services/mobile/
   final String path;
+  /// 'true' if path should be 'https'
   final bool https;
+  /// Port
   final int? port;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
   UrlConfig({
     required this.host,
     required this.path,
     required this.https,
     this.port
   });
+  
+  UrlConfig.fromFullString({required String fullPath}) :
+    https = extractIfHttps(url: fullPath),
+    port = extractPort(url: fullPath),
+    host = extractHost(url: fullPath),
+    path = extractPath(url: fullPath);
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Will return the full url
   String getBasePath() {
     String url = "";
     if(https) {
@@ -26,4 +49,46 @@ class UrlConfig {
     url += path;
     return url;
   }
+  
+  static bool extractIfHttps({required String url}){
+    return url.startsWith("https");
+  }
+
+  static int? extractPort({required String url}){
+    bool containsHttp = url.startsWith("http");
+
+    if(containsHttp){
+      String split = url.replaceFirst("http://", "").replaceFirst("https://", "");
+
+      bool containsPort = split.contains(":");
+      if(containsPort){
+        int indexOffStart = split.indexOf(":");
+        int portLength = split.indexOf("/", split.indexOf(":"));
+        return int.parse(split.substring(indexOffStart, indexOffStart+portLength));
+      }
+    }
+  }
+
+  static String extractHost({required String url}) {
+
+    bool startsWithHttp = url.startsWith("http");
+
+    if(startsWithHttp){
+      return url.split("://")[1].split("/")[0].split(":")[0];
+    } else {
+      return url.split("/")[0].split(":")[0];
+    }
+  }
+
+  static String extractPath({required String url}) {
+
+    bool startsWithHttp = url.startsWith("http");
+
+    if(startsWithHttp){
+      return "/" + url.split("/").sublist(3).reduce((value, element) => "$value/$element");
+    } else {
+      return "/" + url.split("/").sublist(1).reduce((value, element) => "$value/$element");
+    }
+  }
+  
 }

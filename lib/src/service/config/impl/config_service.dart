@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_client/src/model/config/api/api_config.dart';
 import 'package:flutter_client/src/model/config/user/user_info.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,24 +15,18 @@ class ConfigService implements IConfigService{
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Config of the api
+  final ApiConfig apiConfig;
   /// Name of the visionX app
   String appName;
-
-  /// Url of the remote server
-  String url;
-
   /// Current clientId (sessionId)
   String? clientId;
-
   /// Version of the remote server
   late String version;
-
   /// Directory of the installed app, empty string if launched in web
   late String directory;
-
   /// Display options for menu
   MENU_MODE menuMode = MENU_MODE.GRID_GROUPED;
-
   /// Stores all info about current user
   UserInfo? userInfo;
 
@@ -40,7 +35,7 @@ class ConfigService implements IConfigService{
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ConfigService({
-    required this.url,
+    required this.apiConfig,
     required this.appName,
   });
 
@@ -61,11 +56,6 @@ class ConfigService implements IConfigService{
   @override
   String getDirectory() {
     return directory;
-  }
-
-  @override
-  String getUrl() {
-    return url;
   }
 
   @override
@@ -94,11 +84,6 @@ class ConfigService implements IConfigService{
   }
 
   @override
-  void setUrl(String pUrl) {
-    url = pUrl;
-  }
-
-  @override
   void setVersion(String pVersion) {
     version = pVersion;
   }
@@ -119,6 +104,10 @@ class ConfigService implements IConfigService{
     userInfo = pUserInfo;
   }
 
+  @override
+  ApiConfig getApiConfig() {
+    return apiConfig;
+  }
 
 
 

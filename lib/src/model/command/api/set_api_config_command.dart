@@ -1,24 +1,21 @@
-import 'api_command.dart';
+import 'package:flutter_client/src/model/command/api/api_command.dart';
+import 'package:flutter_client/src/model/config/api/api_config.dart';
 
-class StartupCommand extends ApiCommand {
+class SetApiConfigCommand extends ApiCommand {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// The password
-  final String? password;
-  /// The username
-  final String? username;
+  final ApiConfig apiConfig;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  StartupCommand({
+  SetApiConfigCommand({
+    required this.apiConfig,
     required String reason,
-    this.password,
-    this.username
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,5 +23,7 @@ class StartupCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "StartupCommand | Reason: $reason | Username: $username | Password: $password";
+  // TODO: implement logString
+  String get logString => throw UnimplementedError();
+
 }

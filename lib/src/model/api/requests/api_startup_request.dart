@@ -19,6 +19,10 @@ class ApiStartUpRequest extends IApiRequest {
   final double? screenWidth;
   /// Total available (for workscreens) height of the screen
   final double? screenHeight;
+  /// Name of the user
+  final String? username;
+  /// Password of the user
+  final String? password;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -29,7 +33,9 @@ class ApiStartUpRequest extends IApiRequest {
     required this.deviceMode,
     required this.applicationName,
     this.screenHeight,
-    this.screenWidth
+    this.screenWidth,
+    this.username,
+    this.password
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,6 +46,8 @@ class ApiStartUpRequest extends IApiRequest {
   Map<String, dynamic> toJson() => {
     ApiObjectProperty.appMode: appMode,
     ApiObjectProperty.deviceMode : deviceMode,
-    ApiObjectProperty.applicationName : applicationName
+    ApiObjectProperty.applicationName : applicationName,
+    ApiObjectProperty.username : username,
+    ApiObjectProperty.password : password
   };
 }

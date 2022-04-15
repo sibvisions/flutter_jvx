@@ -14,9 +14,11 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
     String appName = configService.getAppName();
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
-        appMode: "full",
-        deviceMode: "mobile",
-        applicationName: appName
+      appMode: "full",
+      deviceMode: "mobile",
+      applicationName: appName,
+      username: command.username,
+      password: command.password
     );
 
     return apiService.sendRequest(request: startUpRequest);

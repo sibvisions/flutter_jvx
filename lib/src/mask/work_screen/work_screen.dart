@@ -1,12 +1,9 @@
-import 'dart:developer';
-
+import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 
 import '../../model/command/api/device_status_command.dart';
 
-import '../../components/components_factory.dart';
-import '../../model/component/panel/fl_panel_model.dart';
 import 'package:flutter/material.dart';
 
 
@@ -19,44 +16,46 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Model of the upper-most parent in this screen
-  final FlPanelModel screenModel;
-  /// Widget of the screenModel
+  /// Title on top of the screen
+  final String screenTitle;
+  /// Widget used as workscreen
   final Widget screenWidget;
+  /// 'True' if this a custom screen, a custom screen will not be registered
+  final bool isCustomScreen;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   WorkScreen({
-    required this.screenModel,
+    required this.screenTitle,
+    required this.screenWidget,
+    required this.isCustomScreen,
     Key? key
-  }) :
-        screenWidget=ComponentsFactory.buildWidget(screenModel),
-        super(key: key);
+  }) : super(key: key);
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Overridden methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
+    uiService.setRouteContext(pContext: context);
+
     return GestureDetector(
       onTap: () {
-        log("unfocused");
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(screenModel.id),
+          title: Text(screenTitle),
         ),
         body: Scaffold(
           backgroundColor: Theme
               .of(context)
               .backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
-            _setScreenSize(width: constraints.maxWidth, height: constraints.maxHeight);
-            //ToDo send DeviceStatusRequest
+            if(!isCustomScreen){
+              _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight);
+              _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight);
+            }
             return Stack(
               children: [screenWidget],
             );
@@ -86,21 +85,22 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
     // }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  _setScreenSize({required double width, required double height}) {
+  _setScreenSize({required double pWidth, required double pHeight}) {
     SetComponentSizeCommand command = SetComponentSizeCommand(
-        componentId: screenModel.id,
-        size: Size(width, height),
+        componentId: (screenWidget as FlPanelWrapper).id,
+        size: Size(pWidth, pHeight),
         reason: "Opened Work Screen"
     );
-
     uiService.sendCommand(command);
   }
 
-
-
+  _sendDeviceStatus({required double pWidth, required double pHeight}) {
+    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
+        screenWidth: pWidth,
+        screenHeight: pHeight,
+        reason: "Device was rotated"
+    );
+    uiService.sendCommand(deviceStatusCommand);
+  }
 }
 

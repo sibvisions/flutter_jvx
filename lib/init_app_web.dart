@@ -1,5 +1,4 @@
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
-
 import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';
 import 'src/service/layout/i_layout_service.dart';
@@ -39,8 +38,8 @@ initAppWeb() {
 
   // Config
   IConfigService configService = ConfigService(
-      appName: "demo",
-      url: urlConfigServer2.getBasePath(),
+    appName: "demo",
+    apiConfig: apiConfig
   );
   services.registerSingleton(configService, signalsReady: true);
 

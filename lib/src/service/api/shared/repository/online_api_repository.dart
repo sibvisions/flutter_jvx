@@ -11,6 +11,7 @@ import 'package:flutter_client/src/model/api/response/application_parameter_resp
 import 'package:flutter_client/src/model/api/response/close_screen_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/api/response/login_response.dart';
 import 'package:flutter_client/src/model/api/response/menu_response.dart';
 import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
 import 'package:flutter_client/src/model/api/response/user_data_response.dart';
@@ -30,22 +31,24 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Map<String, ResponseFactory> maps = {
-  ApiResponseNames.applicationMetaData :
-      ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
-  ApiResponseNames.applicationParameters :
-      ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
-  ApiResponseNames.closeScreen :
-      ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
-  ApiResponseNames.dalFetch :
-      ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
-  ApiResponseNames.menu :
-      ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
-  ApiResponseNames.screenGeneric :
-      ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
-  ApiResponseNames.dalMetaData :
-      ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson),
-  ApiResponseNames.userData :
-      ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson)
+    ApiResponseNames.applicationMetaData :
+        ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
+    ApiResponseNames.applicationParameters :
+        ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
+    ApiResponseNames.closeScreen :
+        ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
+    ApiResponseNames.dalFetch :
+        ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
+    ApiResponseNames.menu :
+        ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
+    ApiResponseNames.screenGeneric :
+        ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
+    ApiResponseNames.dalMetaData :
+        ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson),
+    ApiResponseNames.userData :
+        ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
+    ApiResponseNames.login :
+        ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,7 +56,7 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Api config for remote endpoints and url
-  final ApiConfig apiConfig;
+  ApiConfig apiConfig;
   /// Http client for outside connection
   final Client client = Client();
   /// Header fields, used for sessionId
@@ -110,6 +113,12 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
+  @override
+  void setApiConfig({required ApiConfig config}) {
+    apiConfig = config;
+    apiConfig.updateUriMap();
+  }
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,7 +159,6 @@ class OnlineApiRepository implements IRepository {
 
     return returnList;
   }
-
 
 
 

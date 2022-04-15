@@ -4,14 +4,10 @@ import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingItem extends StatelessWidget {
-  const SettingItem({
-    Key? key,
-    required this.value,
-    required this.title,
-    this.frontIcon,
-    this.endIcon,
-    this.onPressed
-  }) : super(key: key);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Icon displayed at the front
   final FaIcon? frontIcon;
@@ -24,6 +20,22 @@ class SettingItem extends StatelessWidget {
   /// Will be called when item was pressed
   final VoidCallback? onPressed;
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  const SettingItem({
+    Key? key,
+    required this.value,
+    required this.title,
+    this.frontIcon,
+    this.endIcon,
+    this.onPressed
+  }) : super(key: key);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {

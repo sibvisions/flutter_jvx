@@ -21,7 +21,7 @@ class ImageLoaderWeb with ConfigServiceMixin implements ImageLoader {
     // TODO config loading
     bool isInMemory = pPath == configService.getAppName(); // appState.fileConfig.files.containsKey(path)
     String fileBinary = ""; //appState.fileConfig.files[path]!
-    String baseUrl = configService.getUrl(); //appState.serverConfig!.baseUrl
+    String baseUrl = "configService.get()"; //appState.serverConfig!.baseUrl
     String appName = configService.getAppName(); //appState.serverConfig!.appName
 
     Image image;

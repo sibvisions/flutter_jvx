@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 import 'package:flutter_client/src/model/api/response/api_response.dart';
+import 'package:flutter_client/src/model/config/api/api_config.dart';
 
 /// The interface declaring all possible requests to the mobile server.
 abstract class IRepository {
@@ -18,4 +19,7 @@ abstract class IRepository {
   /// Only used to download application images, since handling is completely
   /// different from normal requests
   Future<Uint8List> downloadImages({required ApiDownloadImagesRequest pRequest});
+
+  /// Replaces the current config
+  void setApiConfig({required ApiConfig config});
 }

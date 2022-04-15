@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/user_data_processor.dart';
 import 'package:flutter_client/util/download/download_helper.dart';
 import 'package:http/http.dart';
@@ -36,6 +37,7 @@ class ApiController implements IController {
   final IProcessor _dalMetaDataProcessor = DalMetaDataProcessor();
   final IProcessor _dalFetchProcessor = DalFetchProcessor();
   final IProcessor _userDataProcessor = UserDataProcessor();
+  final IProcessor _loginProcessor = LoginProcessor();
 
   /// Maps response names to their processor
   late final Map<String, IProcessor> responseToProcessorMap;
@@ -57,7 +59,8 @@ class ApiController implements IController {
       ApiResponseNames.closeScreen : _closeScreenProcessor,
       ApiResponseNames.dalMetaData : _dalMetaDataProcessor,
       ApiResponseNames.dalFetch : _dalFetchProcessor,
-      ApiResponseNames.userData : _userDataProcessor
+      ApiResponseNames.userData : _userDataProcessor,
+      ApiResponseNames.login : _loginProcessor
     };
   }
 

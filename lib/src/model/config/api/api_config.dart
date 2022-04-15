@@ -23,11 +23,11 @@ class ApiConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Config for the remote server address
-  final UrlConfig urlConfig;
+  UrlConfig urlConfig;
   /// Config for each individual endpoint
-  final EndpointConfig endpointConfig;
+  EndpointConfig endpointConfig;
   /// Map of all remote request mapped to their full uri endpoint in [endpointConfig]
-  late final Map<Type, Uri> uriMap;
+  late Map<Type, Uri> uriMap;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -37,6 +37,24 @@ class ApiConfig {
     required this.urlConfig,
     required this.endpointConfig
   }) {
+    uriMap = {
+      ApiStartUpRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.startup),
+      ApiLoginRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.login),
+      ApiCloseTabRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.closeTab),
+      ApiDeviceStatusRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.deviceStatus),
+      ApiOpenScreenRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.openScreen),
+      ApiDownloadImagesRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.downloadImages),
+      ApiOpenTabRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.openTab),
+      ApiPressButtonRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.pressButton),
+      ApiSetValueRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.setValue),
+      ApiSetValuesRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.setValues),
+      ApiChangePasswordRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.changePassword),
+      ApiResetPasswordRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.resetPassword),
+      ApiNavigationRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.navigation)
+    };
+  }
+
+  updateUriMap() {
     uriMap = {
       ApiStartUpRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.startup),
       ApiLoginRequest : Uri.parse(urlConfig.getBasePath() + endpointConfig.login),

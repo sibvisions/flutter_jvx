@@ -2,6 +2,7 @@ import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../model/data/column_definition.dart';
 
@@ -10,6 +11,9 @@ import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/layout/layout_data.dart';
 import '../command/i_command_service.dart';
+
+/// Definition of the callback for the QR-scanner
+typedef QRCallback = void Function(Barcode qrValue);
 
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
@@ -41,9 +45,16 @@ abstract class IUiService {
   /// Route to settings page
   void routeToSettings();
 
+  /// Route to Login page
+  void routeToLogin();
+
   /// Sets the buildContext from the current [BeamLocation],
   /// used when server dictates location
   void setRouteContext({required BuildContext pContext});
+
+  /// Opens a [Dialog], the future will complete if the dialog is closed by
+  Future<bool?> openDialog<T>(
+      {required Widget pDialogWidget, required bool pIsDismissible});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management

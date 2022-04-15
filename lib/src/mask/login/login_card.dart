@@ -11,7 +11,9 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Controller for username text field
   final TextEditingController usernameController = TextEditingController();
+  /// Controller for password text field
   final TextEditingController passwordController = TextEditingController();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,13 +78,16 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _onLoginPressed() {
-    LoginCommand loginCommand =
-    LoginCommand(userName: usernameController.text, password: passwordController.text, reason: "LoginButton");
+    LoginCommand loginCommand = LoginCommand(
+        userName: usernameController.text,
+        password: passwordController.text,
+        reason: "LoginButton"
+    );
     uiService.sendCommand(loginCommand);
   }
 
   void _onSettingsPressed({required BuildContext context}) {
-
+    context.beamToNamed("/setting");
   }
 
 }

@@ -1,3 +1,4 @@
+import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 
@@ -90,6 +91,8 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
             sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
           } else if(routeCommands.any((element) => element is RouteToMenuCommand)){
             sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+          } else if(routeCommands.any((element) => element is RouteToLoginCommand)){
+            sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
           }
         });
       });
