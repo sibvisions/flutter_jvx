@@ -19,7 +19,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
   @override
   Image loadImageFiles(String pPath,
       {double? pWidth, double? pHeight, Color? pBlendedColor, ImageStreamListener? pImageStreamListener}) {
-    String baseUrl = configService.getUrl(); //appState.serverConfig!.baseUrl
+    String baseUrl = configService.getApiConfig().urlConfig.getBasePath(); //appState.serverConfig!.baseUrl
     String appName = configService.getAppName(); //appState.serverConfig!.appName,
     String appVersion = configService.getVersion(); //appState.applicationMetaData?.version ?? 1.0
     String baseDir = configService.getDirectory(); //appState.baseDirectory
