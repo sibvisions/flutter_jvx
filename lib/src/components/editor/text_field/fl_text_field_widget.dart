@@ -104,7 +104,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   Widget? getClearIcon() {
     return Align(
       widthFactor: 1,
-      alignment: Alignment.topCenter,
+      alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
       child: Padding(
         padding: iconPadding,
         child: GestureDetector(

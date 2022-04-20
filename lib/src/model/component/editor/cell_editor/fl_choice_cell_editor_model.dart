@@ -20,6 +20,8 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
 
   Size maxImageSize = const Size(14, 14);
 
+  VoidCallback? imageLoadingCallback;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,10 +35,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     if (jsonDefaultImageName != null) {
       defaultImage = ImageLoader.loadImage(
         jsonDefaultImageName,
-        pImageStreamListener: ImageStreamListener((info, _) {
-          maxImageSize = Size(max(info.image.width.toDouble(), maxImageSize.width),
-              max(info.image.height.toDouble(), maxImageSize.height));
-        }),
+        pImageStreamListener: ImageStreamListener(newMaxSize),
       );
     }
 
@@ -55,14 +54,27 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
         listImages.add(
           ImageLoader.loadImage(
             jsonValue,
-            pImageStreamListener: ImageStreamListener(
-              (info, __) {
-                maxImageSize = Size(max(info.image.width.toDouble(), maxImageSize.width),
-                    max(info.image.height.toDouble(), maxImageSize.height));
-              },
-            ),
+            pImageStreamListener: ImageStreamListener(newMaxSize),
           ),
         );
+      }
+    }
+  }
+
+  void newMaxSize(ImageInfo pInfo, bool pSyncronous) {
+    if (pInfo.image.width.toDouble() != maxImageSize.width || pInfo.image.height.toDouble() != maxImageSize.height) {
+      maxImageSize = Size(
+        max(
+          pInfo.image.width.toDouble(),
+          maxImageSize.width,
+        ),
+        max(
+          pInfo.image.height.toDouble(),
+          maxImageSize.height,
+        ),
+      );
+      if (!pSyncronous) {
+        imageLoadingCallback?.call();
       }
     }
   }
