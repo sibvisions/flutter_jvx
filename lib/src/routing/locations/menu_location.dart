@@ -5,28 +5,15 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 /// Displays all possible screens of the menu
 class MenuLocation extends BeamLocation<BeamState> with UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-
-    // Set route context to so popup's can be opened remotely
-    uiService.setRouteContext(pContext: context);
-
-
-
-    return [
-      BeamPage(
-        child: AppMenu(),
-        key: const ValueKey("menu")
-      )
-    ];
+    return [BeamPage(child: AppMenu(), key: const ValueKey("menu"))];
   }
 
   @override
   List<Pattern> get pathPatterns => ['/menu'];
-
 }
