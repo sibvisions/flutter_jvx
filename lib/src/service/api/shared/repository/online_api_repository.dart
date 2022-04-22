@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -11,9 +12,11 @@ import 'package:flutter_client/src/model/api/response/application_parameter_resp
 import 'package:flutter_client/src/model/api/response/close_screen_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/api/response/error_response.dart';
 import 'package:flutter_client/src/model/api/response/login_response.dart';
 import 'package:flutter_client/src/model/api/response/menu_response.dart';
 import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
+import 'package:flutter_client/src/model/api/response/session_expired_response.dart';
 import 'package:flutter_client/src/model/api/response/user_data_response.dart';
 import 'package:http/http.dart';
 
@@ -49,6 +52,10 @@ class OnlineApiRepository implements IRepository {
         ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
     ApiResponseNames.login :
         ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
+    ApiResponseNames.error :
+        ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
+    ApiResponseNames.sessionExpired :
+        ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,20 +91,12 @@ class OnlineApiRepository implements IRepository {
       var response = _sendPostRequest(uri, jsonEncode(pRequest));
       return response
           .then((response) => response.body)
-          .then((body) => jsonDecode(body) as List<dynamic>)
+          .then(_caseResponses)
           .then((jsonResponses) => _responseParser(pJsonList: jsonResponses));
+
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
-
-
-  }
-
-  List<Map<String, dynamic>> _test(String a) {
-
-
-    int a = 2+4;
-    return a as List<Map<String, dynamic>>;
   }
 
   @override
@@ -108,6 +107,7 @@ class OnlineApiRepository implements IRepository {
       var response = _sendPostRequest(uri, jsonEncode(pRequest));
       return response
           .then((response) => response.bodyBytes);
+
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
@@ -129,6 +129,17 @@ class OnlineApiRepository implements IRepository {
     Future<Response> res = client.post(uri, headers: _headers, body: body);
     res.then(_extractCookie);
     return res;
+  }
+
+
+  Future<List<dynamic>> _caseResponses(String pBody) async {
+    var response = jsonDecode(pBody);
+
+    if(response is List<dynamic>){
+      return response;
+    } else {
+      return [response];
+    }
   }
 
   void _extractCookie(Response res) {

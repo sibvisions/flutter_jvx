@@ -101,7 +101,7 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  Future<bool?> openDialog<T>({required Widget pDialogWidget, required bool pIsDismissible}){
+  Future<T?> openDialog<T>({required Widget pDialogWidget, required bool pIsDismissible}){
     return showDialog(
         context: _currentBuildContext!,
         barrierDismissible: pIsDismissible,

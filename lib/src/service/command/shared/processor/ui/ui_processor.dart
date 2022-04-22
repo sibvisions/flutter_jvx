@@ -1,7 +1,11 @@
+import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
+import 'package:flutter_client/src/model/command/ui/open_session_expired_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/ui/open_error_dialog_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/ui/open_session_expired_dialog_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_login_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_menu_comand_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_work_command_processor.dart';
@@ -34,6 +38,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _routeToWorkProcessor = RouteToWorkCommandProcessor();
   final ICommandProcessor _saveMenuProcessor = SaveMenuCommandProcessor();
   final ICommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
+  final ICommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
+  final ICommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -58,6 +64,10 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _routeToWorkProcessor.processCommand(command);
     } else if (command is RouteToLoginCommand) {
       return _routeToLoginProcessor.processCommand(command);
+    } else if (command is OpenErrorDialogCommand) {
+      return _openErrorDialogProcessor.processCommand(command);
+    } else if (command is OpenSessionExpiredDialogCommand) {
+      return _openSessionExpiredDialogProcessor.processCommand(command);
     }
 
     return [];

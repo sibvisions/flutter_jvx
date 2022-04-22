@@ -8,4 +8,6 @@ abstract class ApiResponseNames {
   static const String dalFetch = "dal.fetch";
   static const String userData = "userData";
   static const String login = "login";
+  static const String error = "message.error";
+  static const String sessionExpired = "message.sessionexpired";
 }

@@ -52,8 +52,9 @@ abstract class IUiService {
   /// used when server dictates location
   void setRouteContext({required BuildContext pContext});
 
-  /// Opens a [Dialog], the future will complete if the dialog is closed by
-  Future<bool?> openDialog<T>(
+  /// Opens a [Dialog], the future will complete if the dialog is closed by an
+  /// action
+  Future<T?> openDialog<T>(
       {required Widget pDialogWidget, required bool pIsDismissible});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

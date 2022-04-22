@@ -1,14 +1,12 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
+import 'package:flutter_client/src/service/api/shared/processor/session_expired_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/user_data_processor.dart';
 import 'package:flutter_client/util/download/download_helper.dart';
-import 'package:http/http.dart';
 
 import '../../../../model/api/api_response_names.dart';
 import '../../../../model/api/response/api_response.dart';
@@ -20,6 +18,7 @@ import '../processor/application_parameters_processor.dart';
 import '../processor/close_screen_processor.dart';
 import '../processor/dal_fetch_processor.dart';
 import '../processor/dal_meta_data_processor.dart';
+import '../processor/error_processor.dart';
 import '../processor/menu_processor.dart';
 import '../processor/screen_generic_processor.dart';
 
@@ -38,10 +37,11 @@ class ApiController implements IController {
   final IProcessor _dalFetchProcessor = DalFetchProcessor();
   final IProcessor _userDataProcessor = UserDataProcessor();
   final IProcessor _loginProcessor = LoginProcessor();
+  final IProcessor _errorProcessor = ErrorProcessor();
+  final IProcessor _sessionExpiredProcessor = SessionExpiredProcessor();
 
   /// Maps response names to their processor
   late final Map<String, IProcessor> responseToProcessorMap;
-
 
   /// Decoder used for decoding the application images and translations
   final ZipDecoder _zipDecoder = ZipDecoder();
@@ -60,7 +60,9 @@ class ApiController implements IController {
       ApiResponseNames.dalMetaData : _dalMetaDataProcessor,
       ApiResponseNames.dalFetch : _dalFetchProcessor,
       ApiResponseNames.userData : _userDataProcessor,
-      ApiResponseNames.login : _loginProcessor
+      ApiResponseNames.login : _loginProcessor,
+      ApiResponseNames.error : _errorProcessor,
+      ApiResponseNames.sessionExpired : _sessionExpiredProcessor
     };
   }
 
