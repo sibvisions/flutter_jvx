@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/choice_cell_editor/fl_choice_cell_editor.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
@@ -160,12 +161,9 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Subscribes to the service and registers the set value call back.
-  // TODO get column definition and apply it to the cell editor.
   void subscribe(T pModel) {
     uiService.registerAsDataComponent(
-        pColumnDefinitionCallback: (columnDefinition) {
-          //log(columnDefinition.toString());
-        },
+        pColumnDefinitionCallback: setColumnDefinition,
         pDataProvider: pModel.dataRow,
         pCallback: setValue,
         pComponentId: pModel.id,
@@ -184,6 +182,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setValue(dynamic pValue) {
     cellEditor.setValue(pValue);
+  }
+
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
+    cellEditor.setColumnDefinition(pColumnDefinition);
   }
 
   /// Sets the state of the widget and sends a set value command.

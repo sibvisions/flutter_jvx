@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
@@ -132,5 +133,15 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   @override
   bool isActionCellEditor() {
     return false;
+  }
+
+  @override
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
+    // do nothing
+  }
+
+  @override
+  ColumnDefinition? getColumnDefinition() {
+    return null;
   }
 }

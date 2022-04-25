@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../model/component/dummy/fl_dummy_model.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -36,5 +37,15 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   @override
   bool isActionCellEditor() {
     return false;
+  }
+
+  @override
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
+    // do nothing
+  }
+
+  @override
+  ColumnDefinition? getColumnDefinition() {
+    return null;
   }
 }

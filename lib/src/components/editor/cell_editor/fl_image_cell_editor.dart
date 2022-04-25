@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
+import 'package:flutter_client/util/constants/i_types.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
@@ -25,6 +27,8 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
 
   /// The image loading callback.
   late ImageStreamListener imageStreamListener = ImageStreamListener(onImage);
+
+  ColumnDefinition? _columnDefinition;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,11 +57,27 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
+    _columnDefinition = pColumnDefinition;
+
+    imageLoadingCallback?.call();
+  }
+
+  @override
+  ColumnDefinition? getColumnDefinition() {
+    return _columnDefinition;
+  }
+
+  @override
   FlStatelessWidget getWidget() {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
-    return FlIconWidget(model: widgetModel, imageStreamListener: imageStreamListener);
+    return FlIconWidget(
+      model: widgetModel,
+      imageStreamListener: imageStreamListener,
+      imageInBinary: _columnDefinition?.dataTypeIdentifier == Types.BINARY,
+    );
   }
 
   @override

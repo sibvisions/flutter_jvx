@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/choice_cell_editor/fl_choice_cell_editor.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -46,6 +47,10 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   C? getValue();
 
   void setValue(C? pValue);
+
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition);
+
+  ColumnDefinition? getColumnDefinition();
 
   /// Returns the widget representing the cell editor.
   FlStatelessWidget getWidget();

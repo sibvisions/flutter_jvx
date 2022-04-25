@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
 import 'package:flutter_client/util/constants/i_color.dart';
@@ -72,11 +74,16 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   Widget? getImage() {
     if (model.image.isNotEmpty) {
-      return ImageLoader.loadImage(
-        model.image,
-        pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
-        pImageStreamListener: imageStreamListener,
-      );
+      if (imageInBinary) {
+        return Image.memory(base64Decode(model.image));
+      } else {
+        return ImageLoader.loadImage(
+          model.image,
+          pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
+          pImageStreamListener: imageStreamListener,
+        );
+      }
     }
+    return null;
   }
 }

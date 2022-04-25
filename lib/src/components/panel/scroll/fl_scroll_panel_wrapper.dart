@@ -53,28 +53,21 @@ class _FlScrollPanelWrapperState extends BaseContWrapperState<FlPanelModel> {
   }
 
   double get widthOfScrollPanel {
-    double width = 0.0;
+    double width = ScrollLayout.widthOfScrollPanel(layoutData);
 
     if (layoutData.hasPosition) {
-      width = max(width, layoutData.layoutPosition!.width);
-    }
-
-    if (layoutData.hasCalculatedSize) {
-      width = max(width, layoutData.calculatedSize!.width);
+      width = max(layoutData.layoutPosition!.width, width);
     }
 
     return width;
   }
 
   double get heightOfScrollPanel {
-    double height = 0.0;
+    double height = ScrollLayout.heightOfScrollPanel(layoutData);
 
+    // Forces the scroll panel to actually be the size.
     if (layoutData.hasPosition) {
-      height = max(height, layoutData.layoutPosition!.height);
-    }
-
-    if (layoutData.hasCalculatedSize) {
-      height = max(height, layoutData.calculatedSize!.height);
+      height = max(layoutData.layoutPosition!.height, height);
     }
 
     return height;

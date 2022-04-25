@@ -92,15 +92,17 @@ class FormLayout extends ILayout {
     Size calcSize = _getSize(pParent, formLayoutSize);
 
     _calculateTargetDependentAnchors(
-        pMinPrefSize: formLayoutSize,
-        pAnchors: anchors,
-        pHorizontalAlignment: horizontalAlignment,
-        pVerticalAlignment: verticalAlignment,
-        pUsedBorder: usedBorder,
-        pMargins: margins,
-        pComponentData: pChildren,
-        pComponentConstraints: componentConstraints,
-        pGivenSize: calcSize);
+      pMinPrefSize: formLayoutSize,
+      pAnchors: anchors,
+      pHorizontalAlignment: horizontalAlignment,
+      pVerticalAlignment: verticalAlignment,
+      pUsedBorder: usedBorder,
+      pMargins: margins,
+      pComponentData: pChildren,
+      pComponentConstraints: componentConstraints,
+      pGivenSize: calcSize,
+      pParent: pParent,
+    );
 
     return _buildComponents(
         pAnchors: anchors,
@@ -361,9 +363,10 @@ class FormLayout extends ILayout {
       required Margins pMargins,
       required List<LayoutData> pComponentData,
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
-      Size? pGivenSize}) {
+      Size? pGivenSize,
+      required LayoutData pParent}) {
     /// ToDo SetSizes from server
-    Size maxLayoutSize = const Size.square(double.maxFinite);
+    Size maxLayoutSize = pParent.maxSize ?? const Size.square(double.maxFinite);
     Size minLayoutSize = const Size(50, 50);
 
     /// Available Size, set to setSize from parent by default
@@ -391,7 +394,7 @@ class FormLayout extends ILayout {
           default:
             lba.position = (calcSize.width - maxLayoutSize.width) / 2;
         }
-        lba.position = lba.position + maxLayoutSize.width;
+        rba.position = lba.position + maxLayoutSize.width;
       } else {
         lba.position = 0;
         rba.position = calcSize.width;

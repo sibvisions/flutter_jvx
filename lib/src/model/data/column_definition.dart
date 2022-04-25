@@ -1,3 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter_client/src/components/editor/cell_editor/fl_dummy_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
+import 'package:flutter_client/util/constants/i_types.dart';
+
 import '../api/api_object_property.dart';
 import '../api/response/dal_meta_data_response.dart';
 
@@ -10,20 +16,38 @@ class ColumnDefinition {
   /// Name of the column
   String name = "";
 
-  /// Label of the column
-  String label = "";
-
   /// Identifier of the columns datatype
   int dataTypeIdentifier = 0;
 
-  /// Width of the column in a table
-  double? width;
+  /// Label of the column
+  String label = "";
+
+  /// The default label of the ColumnDefinition
+  String sDefaultLabel = "";
+
+  /// If this column is nullable
+  bool nullable = true;
+
+  /// The comment of this ColumnDefinition
+  String comment = "";
+
+  /// The default value of this ColumnDefinition
+  dynamic defaultObject;
+
+  /// The default value of this ColumnDefinition
+  List<dynamic> defaultValues = [];
 
   /// If this column is readonly
   bool readonly = true;
 
-  /// If this column is nullable
-  bool nullable = true;
+  /// If this column is readonly
+  bool writeable = true;
+
+  /// If this column is readonly
+  bool filterable = true;
+
+  /// Width of the column in a table
+  double? width;
 
   /// If it is allowed to resize this column if present in a table
   bool resizable = true;
@@ -31,7 +55,33 @@ class ColumnDefinition {
   /// If it is allowed to sort by this column if present in a table
   bool sortable = false;
 
+  /// If it is allowed to move this column if present in a table
   bool movable = true;
+
+  /// The cell editor of this column.
+  ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Datatype specific information
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// If zero or positive, the scale is the number of digits to the right of the decimal point. If negative, the unscaled value of the number is multiplied by ten to the power of the negation of the scale. For example, a scale of -3 means the unscaled value is multiplied by 1000.
+  int scale = -1;
+
+  /// The precision is the number of digits in the unscaled value. For instance, for the number 123.45, the precision returned is 5.
+  int precision = 0;
+
+  /// If the number type is signed.
+  bool signed = true;
+
+  /// Enable autotrim to avoid whitespaces at the begin and end of texts
+  bool autoTrim = false;
+
+  /// The encoding of binary data types.
+  String encoding = "";
+
+  /// The fractional seconds precision.
+  int iFractionalSecondsPrecision = 0;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -60,6 +110,9 @@ class ColumnDefinition {
     var jsonDataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier];
     if (jsonDataTypeIdentifier != null) {
       dataTypeIdentifier = jsonDataTypeIdentifier;
+      if (dataTypeIdentifier == Types.BINARY) {
+        log("test");
+      }
     }
     // Width
     var jsonWidth = pJson[ApiObjectProperty.width];

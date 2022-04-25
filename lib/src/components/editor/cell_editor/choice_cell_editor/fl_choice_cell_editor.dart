@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/fl_choice_cell_editor_model.dart';
+import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/component/icon/fl_icon_model.dart';
@@ -98,5 +99,15 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   @override
   bool isActionCellEditor() {
     return false;
+  }
+
+  @override
+  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
+    // do nothing
+  }
+
+  @override
+  ColumnDefinition? getColumnDefinition() {
+    return null;
   }
 }

@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'i_layout.dart';
 import '../model/layout/layout_data.dart';
 import '../model/layout/layout_position.dart';
+import 'i_layout.dart';
 
 class ScrollLayout implements ILayout {
   ILayout originalLayout;
@@ -34,7 +34,7 @@ class ScrollLayout implements ILayout {
     return ScrollLayout(originalLayout.clone());
   }
 
-  double widthOfScrollPanel(LayoutData layoutData) {
+  static double widthOfScrollPanel(LayoutData layoutData) {
     double width = 0.0;
 
     if (layoutData.hasPosition) {
@@ -45,10 +45,18 @@ class ScrollLayout implements ILayout {
       width = max(width, layoutData.calculatedSize!.width);
     }
 
+    if (layoutData.hasMinSize) {
+      width = max(width, layoutData.minSize!.width);
+    }
+
+    if (layoutData.hasMaxSize) {
+      width = min(width, layoutData.maxSize!.width);
+    }
+
     return width;
   }
 
-  double heightOfScrollPanel(LayoutData layoutData) {
+  static double heightOfScrollPanel(LayoutData layoutData) {
     double height = 0.0;
 
     if (layoutData.hasPosition) {
@@ -57,6 +65,14 @@ class ScrollLayout implements ILayout {
 
     if (layoutData.hasCalculatedSize) {
       height = max(height, layoutData.calculatedSize!.height);
+    }
+
+    if (layoutData.hasMinSize) {
+      height = max(height, layoutData.minSize!.height);
+    }
+
+    if (layoutData.hasMaxSize) {
+      height = min(height, layoutData.maxSize!.height);
     }
 
     return height;
