@@ -363,7 +363,7 @@ class FormLayout extends ILayout {
       required HashMap<String, FormLayoutConstraints> pComponentConstraints,
       Size? pGivenSize}) {
     /// ToDo SetSizes from server
-    Size maxLayoutSize = const Size(10000, 10000);
+    Size maxLayoutSize = const Size.square(double.maxFinite);
     Size minLayoutSize = const Size(50, 50);
 
     /// Available Size, set to setSize from parent by default
