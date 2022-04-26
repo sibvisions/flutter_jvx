@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/choice_cell_editor/fl_choice_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/fl_image_cell_editor.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_cell_editor.dart';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../model/data/column_definition.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import 'fl_check_box_cell_editor.dart';
+import 'fl_choice_cell_editor.dart';
 import 'fl_dummy_cell_editor.dart';
+import 'fl_image_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
 
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
@@ -53,10 +54,10 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   ColumnDefinition? getColumnDefinition();
 
   /// Returns the widget representing the cell editor.
-  FlStatelessWidget getWidget();
+  FlStatelessWidget getWidget(BuildContext pContext);
 
   /// Returns the model of the widget representing the cell editor.
-  FlComponentModel getModel();
+  FlComponentModel getWidgetModel();
 
   bool isActionCellEditor();
 
@@ -94,7 +95,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
             onEndEditing: onEndEditing,
             imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.DATE_CELL_EDITOR:
-        continue alsoDefault;
+        return FlDateCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         continue alsoDefault;
 

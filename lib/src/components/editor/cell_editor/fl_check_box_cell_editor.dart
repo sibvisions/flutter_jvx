@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/data/column_definition.dart';
 
@@ -40,7 +41,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlStatelessWidget getWidget() {
+  FlStatelessWidget getWidget(BuildContext pContext) {
     FlCheckBoxModel widgetModel = FlCheckBoxModel();
     widgetModel.labelModel.text = model.text;
     widgetModel.selected = model.selectedValue == _value;
@@ -49,7 +50,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlComponentModel getModel() => FlCheckBoxModel();
+  FlComponentModel getWidgetModel() => FlCheckBoxModel();
 
   @override
   dynamic getValue() {

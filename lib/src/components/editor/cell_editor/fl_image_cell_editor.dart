@@ -69,7 +69,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget getWidget() {
+  FlStatelessWidget getWidget(BuildContext pContext) {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
@@ -81,7 +81,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlComponentModel getModel() => FlIconModel();
+  FlComponentModel getWidgetModel() => FlIconModel();
 
   void onImage(ImageInfo pImageInfo, bool pSynchronousCall) {
     if (imageSize.height.toInt() != pImageInfo.image.height || imageSize.width.toInt() != pImageInfo.image.width) {

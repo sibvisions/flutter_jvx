@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../model/component/label/fl_label_model.dart';
 import '../../model/layout/alignments.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
-  const FlLabelWidget({Key? key, required T model}) : super(key: key, model: model);
+  final bool forceBorder;
+
+  final VoidCallback? onPress;
+
+  const FlLabelWidget({Key? key, required T model, this.forceBorder = false, this.onPress})
+      : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +23,20 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child = getTextWidget();
     }
 
-    return Container(
-      child: child,
-      decoration: BoxDecoration(color: model.background),
-      alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+    return GestureDetector(
+      onTap: onPress,
+      child: Container(
+        child: child,
+        decoration: BoxDecoration(
+          color: model.isEnabled ? model.background : IColorConstants.COMPONENT_DISABLED,
+          border: Border.all(
+            color: Colors.black,
+            width: 1,
+            style: forceBorder ? BorderStyle.solid : BorderStyle.none,
+          ),
+        ),
+        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+      ),
     );
   }
 

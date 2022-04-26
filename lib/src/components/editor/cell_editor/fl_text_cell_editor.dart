@@ -73,7 +73,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget getWidget() {
+  FlTextFieldWidget getWidget(BuildContext pContext) {
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
@@ -105,7 +105,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlTextFieldModel getModel() {
+  FlTextFieldModel getWidgetModel() {
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):

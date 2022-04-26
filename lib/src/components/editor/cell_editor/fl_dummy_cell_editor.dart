@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 import 'package:flutter_client/src/model/data/column_definition.dart';
 
@@ -21,12 +22,12 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   void dispose() {}
 
   @override
-  FlStatelessWidget getWidget() {
+  FlStatelessWidget getWidget(BuildContext pContext) {
     return FlDummyWidget(model: FlDummyModel());
   }
 
   @override
-  FlComponentModel getModel() => FlDummyModel();
+  FlComponentModel getWidgetModel() => FlDummyModel();
 
   @override
   void setValue(pValue) {}

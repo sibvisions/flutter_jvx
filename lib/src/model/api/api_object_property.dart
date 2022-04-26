@@ -150,4 +150,12 @@ abstract class ApiObjectProperty {
   static const String allowedValues = "allowedValues";
   static const String defaultImageName = "defaultImageName";
   static const String imageNames = "imageNames";
+
+  // Date cell editor
+  static const String isDateEditor = "isDateEditor";
+  static const String isTimeEditor = "isTimeEditor";
+  static const String isHourEditor = "isHourEditor";
+  static const String isMinuteEditor = "isMinuteEditor";
+  static const String isSecondEditor = "isSecondEditor";
+  static const String isAmPmEditor = "isAmPmEditor";
 }

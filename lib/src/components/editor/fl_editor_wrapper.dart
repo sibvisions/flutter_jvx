@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/choice_cell_editor/fl_choice_cell_editor.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
+import '../../model/data/column_definition.dart';
 import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
+import 'cell_editor/fl_choice_cell_editor.dart';
 import 'cell_editor/fl_dummy_cell_editor.dart';
 import 'cell_editor/fl_image_cell_editor.dart';
 import 'cell_editor/fl_text_cell_editor.dart';
@@ -61,7 +61,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
     recreateCellEditor(widget.model as T);
 
-    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.getModel());
+    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.getWidgetModel());
 
     subscribe(widget.model as T);
 
@@ -78,7 +78,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       logCellEditor("RECEIVE_NEW_MODEL");
 
-      newModel.applyComponentInformation(cellEditor.getModel());
+      newModel.applyComponentInformation(cellEditor.getWidgetModel());
     }
 
     super.receiveNewModel(newModel: newModel);
@@ -92,7 +92,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     // Celleditors always return a fresh new widget.
     // We must apply the universal editor components onto the widget.
-    FlStatelessWidget editorWidget = cellEditor.getWidget();
+    FlStatelessWidget editorWidget = cellEditor.getWidget(context);
     editorWidget.model.applyFromJson(model.json);
     // Some parts of a json have to take priority.
     // As they override the properties.
@@ -138,7 +138,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
         maxLines: 1,
       )..layout(minWidth: 0, maxWidth: double.infinity);
 
-      newCalcSize = Size(textPainter.width * textCellEditor.getModel().columns + 2, layoutData.calculatedSize!.height);
+      newCalcSize =
+          Size(textPainter.width * textCellEditor.getWidgetModel().columns + 2, layoutData.calculatedSize!.height);
     }
 
     if (newCalcSize != null) {

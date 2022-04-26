@@ -28,7 +28,6 @@ class _FlIconWrapperState extends BaseCompWrapperState<FlIconModel> {
 
   @override
   void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    //TODO same loading of image size as the cell editor.
     LayoutData layoutData = pLayoutData.clone();
     layoutData.calculatedSize = model.originalSize;
 
