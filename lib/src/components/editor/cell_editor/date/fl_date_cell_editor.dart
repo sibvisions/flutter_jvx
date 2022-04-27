@@ -59,80 +59,97 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
 
     // TODO locale
     if (model.isDateEditor && model.isTimeEditor) {
-      bool cancelled = false;
-      dynamic originalValue = _value;
-
-      uiService
-          .openDialog(
-        pDialogWidget: DatePickerDialog(
-          initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-          firstDate: DateTime(1970),
-          lastDate: DateTime(2100),
-        ),
-        pIsDismissible: true,
-      )
-          .then(
-        (value) {
-          if (value == null) {
-            cancelled = true;
-          } else {
-            _setDatePart(value);
-          }
-        },
-      ).then((_) {
-        if (cancelled) {
-          return;
-        }
-        uiService
-            .openDialog(
-          pDialogWidget: TimePickerDialog(
-            initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
-          ),
-          pIsDismissible: true,
-        )
-            .then(
-          (value) {
-            if (value == null) {
-              cancelled = true;
-            } else {
-              _setTimePart(value ?? const TimeOfDay(hour: 0, minute: 0));
-            }
-          },
-        ).then((_) {
-          if (cancelled) {
-            _value = originalValue;
-          } else {
-            onEndEditing(_value);
-          }
-        });
-      });
+      _openDateAndTimeEditors();
     } else if (model.isDateEditor) {
-      uiService
-          .openDialog(
-            pDialogWidget: DatePickerDialog(
-              initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-              firstDate: DateTime(1970),
-              lastDate: DateTime(2100),
-            ),
-            pIsDismissible: true,
-          )
-          .then(
-            (value) => _setDatePart(value ?? DateTime(1970)),
-          )
-          .then((_) => onEndEditing(_value));
+      _openDateEditor();
     } else if (model.isTimeEditor) {
+      _openTimeEditor();
+    }
+  }
+
+  void _openDateAndTimeEditors() {
+    bool cancelled = false;
+    dynamic originalValue = _value;
+
+    uiService
+        .openDialog(
+            pDialogWidget: Card(
+              child: DatePickerDialog(
+                initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
+                firstDate: DateTime(1970),
+                lastDate: DateTime(2100),
+              ),
+            ),
+            pIsDismissible: true)
+        .then((value) {
+      if (value == null) {
+        cancelled = true;
+      } else {
+        _setDatePart(value);
+      }
+    }).then((_) {
+      if (cancelled) {
+        _value = originalValue;
+        return;
+      }
       uiService
           .openDialog(
-            pDialogWidget: TimePickerDialog(
-              initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
+              pDialogWidget: Card(
+                child: TimePickerDialog(
+                  initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
+                ),
+              ),
+              pIsDismissible: true)
+          .then((value) {
+        if (value == null) {
+          cancelled = true;
+        } else {
+          _setTimePart(value ?? const TimeOfDay(hour: 0, minute: 0));
+        }
+      }).then((_) {
+        if (cancelled) {
+          _value = originalValue;
+        } else {
+          onEndEditing(_value);
+        }
+      });
+    });
+  }
+
+  void _openDateEditor() {
+    uiService
+        .openDialog(
+            pDialogWidget: Card(
+              child: DatePickerDialog(
+                initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
+                firstDate: DateTime(1970),
+                lastDate: DateTime(2100),
+              ),
             ),
-            pIsDismissible: true,
-          )
-          .then(
-            (value) => _setTimePart(value ?? const TimeOfDay(hour: 0, minute: 0)),
-          )
-          .then((_) => onEndEditing(_value));
-    }
+            pIsDismissible: true)
+        .then((value) {
+      if (value != null) {
+        _setDatePart(value ?? DateTime(1970));
+        onEndEditing(_value);
+      }
+    });
+  }
+
+  void _openTimeEditor() {
+    uiService
+        .openDialog(
+            pDialogWidget: Card(
+              child: TimePickerDialog(
+                initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
+              ),
+            ),
+            pIsDismissible: true)
+        .then((value) {
+      if (value != null) {
+        _setTimePart(value ?? const TimeOfDay(hour: 0, minute: 0));
+        onEndEditing(_value);
+      }
+    });
   }
 
   @override
