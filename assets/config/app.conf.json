@@ -1,7 +1,7 @@
 {
   "startupParameters": {
-    "username" : "features",
-    "password" : "features"
+    "username" : "layout2",
+    "password" : "layout2"
   },
 
   "uiConfig": {
@@ -10,21 +10,24 @@
   },
 
   "remoteConfig": {
-    "indexOfUsingUrlConfig": 0,
+    "indexOfUsingUrlConfig": 1,
     "devUrlConfigs" : [
       {
+        "name": "Schober : 0",
         "host": "172.16.0.59",
         "port": 8090,
         "path": "/JVx.mobile/services/mobile",
         "https": false
       },
       {
+        "name": "Toni : 1",
         "host": "172.16.0.34",
         "port": 8888,
         "path": "/JVx.mobile/services/mobile",
         "https": false
       },
       {
+        "name": "Angelo : 2",
         "host": "172.16.0.59",
         "port": 8090,
         "path": "/JVx.mobile/services/mobile",
