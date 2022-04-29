@@ -82,11 +82,17 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void routeToLogin() {
+  void routeToLogin({String? mode}) {
+    String path = "/login";
+    if(mode !=null){
+      path = "$path/$mode";
+    }
+
     if(_currentBuildContext!.beamingHistory.last is WorkScreenLocation){
-      _currentBuildContext!.beamToReplacementNamed("/login");
+
+      _currentBuildContext!.beamToReplacementNamed(path);
     } else {
-      _currentBuildContext!.beamToNamed("/login");
+      _currentBuildContext!.beamToNamed(path);
     }
   }
 
@@ -145,6 +151,7 @@ class UiService with CommandServiceMixin implements IUiService {
     if (index != -1) {
       return _currentScreen[index];
     }
+    return null;
   }
 
   @override

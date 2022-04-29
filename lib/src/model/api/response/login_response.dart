@@ -5,13 +5,25 @@ import 'package:flutter_client/src/model/api/response/api_response.dart';
 class LoginResponse extends ApiResponse {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final String? username;
+
+  final String mode;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   LoginResponse({
+    required this.username,
+    required this.mode,
     required String name
   }) : super(name: name);
 
   LoginResponse.fromJson({required Map<String, dynamic> pJson}) :
-      super(name: pJson[ApiObjectProperty.name]);
+    mode = pJson[ApiObjectProperty.mode],
+    username = pJson[ApiObjectProperty.username],
+    super(name: pJson[ApiObjectProperty.name]);
 }

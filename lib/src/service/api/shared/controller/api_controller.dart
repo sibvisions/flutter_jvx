@@ -86,6 +86,7 @@ class ApiController implements IController {
         throw Exception("Couldn't find processor belonging to ${response.name}, add it to the map");
       }
     }
+
     return commands;
   }
 

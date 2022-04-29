@@ -12,7 +12,7 @@ class RouteToLoginCommandProcessor extends ICommandProcessor<RouteToLoginCommand
   @override
   Future<List<BaseCommand>> processCommand(RouteToLoginCommand command) async {
 
-    getUiService().routeToLogin();
+    getUiService().routeToLogin(mode: command.mode);
 
     return [];
   }

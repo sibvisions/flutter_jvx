@@ -266,10 +266,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       password: password,
       username: username
     );
-
+    uiService.sendCommand(startupCommand);
     password = null;
     username = null;
-
-    uiService.sendCommand(startupCommand);
   }
 }

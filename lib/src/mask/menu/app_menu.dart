@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mask/drawer/drawer_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_grouped.dart';
 import 'package:flutter_client/src/mask/menu/grid/app_menu_grid_ungroup.dart';
 import 'package:flutter_client/src/mask/menu/tab/app_menu_tab.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
 import 'package:flutter_client/src/service/config/i_config_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../mixin/ui_service_mixin.dart';
 import '../../model/command/api/device_status_command.dart';
@@ -60,9 +62,19 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
         screenHeight: screenSize.height, screenWidth: screenSize.width, reason: "Menu has been opened"));
 
     return Scaffold(
+        endDrawerEnableOpenDragGesture: false,
+        endDrawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text("Menu"),
           centerTitle: true,
+          actions: [
+            Builder(
+                builder: (context)  => IconButton(
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    icon: const FaIcon(FontAwesomeIcons.bitcoin)
+                ),
+            ),
+          ],
         ),
         body: _getMenu());
   }
@@ -73,7 +85,6 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
 
   void menuItemPressed({required String componentId}) {
     OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
-
     uiService.sendCommand(command);
   }
 

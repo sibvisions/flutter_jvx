@@ -6,9 +6,9 @@ class UserInfo {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Name to diplay in the app
-  final String displayName;
+  final String? displayName;
   /// Username
-  final String userName;
+  final String? userName;
   /// Email of the user
   final String? eMail;
 

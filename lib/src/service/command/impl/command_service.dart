@@ -1,3 +1,5 @@
+import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
+import 'package:flutter_client/src/model/command/ui/open_session_expired_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -80,14 +82,23 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
         // Isolate possible route commands
         var routeCommands = resultCommands.where((element) =>
-        element is RouteToWorkCommand || element is RouteToMenuCommand).toList();
+          element is RouteToWorkCommand ||
+          element is RouteToMenuCommand ||
+          element is RouteToLoginCommand)
+        .toList();
 
         var nonRouteCommands = resultCommands.where((element) =>
-        element is! RouteToWorkCommand && element is! RouteToMenuCommand).toList();
+          element is! RouteToWorkCommand &&
+          element is! RouteToMenuCommand &&
+          element is! RouteToLoginCommand)
+        .toList();
 
         // When all commands are finished execute routing commands sorted by priority
         _waitTillFinished(pCommands: nonRouteCommands).then((value) {
-          if(routeCommands.any((element) => element is RouteToWorkCommand)){
+
+          if(nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+            // Don't route if there is an server error
+          } else if(routeCommands.any((element) => element is RouteToWorkCommand)){
             sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
           } else if(routeCommands.any((element) => element is RouteToMenuCommand)){
             sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));

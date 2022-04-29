@@ -1,0 +1,36 @@
+{
+  "startupParameters": {
+    "username" : "features",
+    "password" : "features"
+  },
+
+  "uiConfig": {
+    "showLoginRememberMe" : true,
+    "loginRememberMeChecked": true
+  },
+
+  "remoteConfig": {
+    "indexOfUsingUrlConfig": 0,
+    "devUrlConfigs" : [
+      {
+        "host": "172.16.0.59",
+        "port": 8090,
+        "path": "/JVx.mobile/services/mobile",
+        "https": false
+      },
+      {
+        "host": "172.16.0.34",
+        "port": 8888,
+        "path": "/JVx.mobile/services/mobile",
+        "https": false
+      },
+      {
+        "host": "172.16.0.59",
+        "port": 8090,
+        "path": "/JVx.mobile/services/mobile",
+        "https": false
+      }
+    ],
+    "requestTimeoutInSeconds" : 20
+  }
+}

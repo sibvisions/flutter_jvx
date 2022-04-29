@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -92,7 +91,8 @@ class OnlineApiRepository implements IRepository {
       return response
           .then((response) => response.body)
           .then(_caseResponses)
-          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses));
+          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses))
+          .onError((error, stackTrace) => [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error)]);
 
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
@@ -123,15 +123,17 @@ class OnlineApiRepository implements IRepository {
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Future<Response> _sendPostRequest(Uri uri, String body) {
+  /// Send post request to remote server, applies timeout.
+  Future<Response> _sendPostRequest(Uri uri, String body) async {
     _headers["Access-Control_Allow_Origin"] = "*";
     HttpHeaders.contentTypeHeader;
     Future<Response> res = client.post(uri, headers: _headers, body: body);
     res.then(_extractCookie);
-    return res;
+    return res.timeout(const Duration(seconds : 10));
   }
 
-
+  /// Check if response is an error, an error does not come as array, returns
+  /// the error in an error.
   Future<List<dynamic>> _caseResponses(String pBody) async {
     var response = jsonDecode(pBody);
 
@@ -142,6 +144,7 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
+  /// Extract the session-id cookie to be sent in future
   void _extractCookie(Response res) {
     String? rawCookie = res.headers["set-cookie"];
     if (rawCookie != null) {
@@ -157,14 +160,13 @@ class OnlineApiRepository implements IRepository {
   List<ApiResponse> _responseParser({required List<dynamic> pJsonList}) {
     List<ApiResponse> returnList = [];
 
-
     for(dynamic responseItem in pJsonList) {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
       if(builder != null) {
         returnList.add(builder(pJson: responseItem));
       } else {
-        // throw Exception("Builder for response ${responseItem[ApiObjectProperty.name]} from json in online repository not found");
+        // returnList.add(ErrorResponse(message: "Could not find builder for ${responseItem[ApiObjectProperty.name]}", name: ApiResponseNames.error));
       }
     }
 

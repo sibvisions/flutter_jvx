@@ -5,8 +5,10 @@ class UrlConfig {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Domain part of the url
+  /// http://_HOST_/bar/foo
   final String host;
   /// Additional path needs to always end with 'services/mobile/
+  /// http://host/BAR/FOO/SERVICES/MOBILE
   final String path;
   /// 'true' if path should be 'https'
   final bool https;
@@ -29,6 +31,18 @@ class UrlConfig {
     port = extractPort(url: fullPath),
     host = extractHost(url: fullPath),
     path = extractPath(url: fullPath);
+
+  UrlConfig.fromJson({required Map<String, dynamic> json}) :
+    https = json["https"],
+    port = json["port"],
+    host = json["host"],
+    path = json["path"];
+
+  UrlConfig.empty() :
+    host = "",
+    path = "",
+    https = false,
+    port = null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -67,6 +81,7 @@ class UrlConfig {
         return int.parse(split.substring(indexOffStart, indexOffStart+portLength));
       }
     }
+    return null;
   }
 
   static String extractHost({required String url}) {

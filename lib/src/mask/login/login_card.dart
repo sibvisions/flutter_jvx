@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/login_command.dart';
@@ -30,6 +31,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -55,7 +57,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               TextButton.icon(
-                onPressed: () => _onSettingsPressed(context: context),
+                onPressed: () => context.beamToNamed("/login/lostPassword"),
                 icon: const FaIcon(FontAwesomeIcons.question),
                 label: const Text("Reset password"),
               ),

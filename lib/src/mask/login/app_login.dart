@@ -3,7 +3,6 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 /// Login page of the app, also used for reset/change password
 class AppLogin extends StatelessWidget with UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,10 +14,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  AppLogin({
-    Key? key,
-    required this.loginCard
-  }) : super(key: key);
+  AppLogin({Key? key, required this.loginCard}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -29,15 +25,20 @@ class AppLogin extends StatelessWidget with UiServiceMixin {
     uiService.setRouteContext(pContext: context);
     return (Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: Row(children: [
+      body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Expanded(child: Container()),
         Expanded(
           flex: 8,
-          child: SingleChildScrollView(
-            child: loginCard
-          ),
+          child: Row(children: [
+            Expanded(child: Container()),
+            Expanded(
+              flex: 8,
+              child: SingleChildScrollView(child: loginCard),
+            ),
+            Expanded(child: Container())
+          ]),
         ),
-        Expanded(child: Container())
+        Expanded(child: Container()),
       ]),
     ));
   }

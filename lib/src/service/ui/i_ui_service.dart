@@ -46,7 +46,7 @@ abstract class IUiService {
   void routeToSettings();
 
   /// Route to Login page
-  void routeToLogin();
+  void routeToLogin({String? mode});
 
   /// Sets the buildContext from the current [BeamLocation],
   /// used when server dictates location

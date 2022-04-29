@@ -13,7 +13,8 @@ class LoginProcessor implements IProcessor<LoginResponse> {
   List<BaseCommand> processResponse({required LoginResponse pResponse}) {
 
     RouteToLoginCommand routeToLoginCommand = RouteToLoginCommand(
-        reason: "Login as response"
+      mode: pResponse.mode,
+      reason: "Login as response",
     );
 
     return [routeToLoginCommand];

@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_client/src/model/config/config_file/app_config.dart';
 
 import 'main.dart';
 import 'src/model/command/api/startup_command.dart';
@@ -29,15 +34,22 @@ import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
 Future<bool> initAppMobile() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   HttpOverrides.global = MyHttpOverrides();
 
-  // API
-  UrlConfig urlConfigServer1 = ConfigGenerator.generateMobileServerUrl("172.16.0.34", 8888);
-  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.59", 8090);
-  UrlConfig urlConfigServer3 = ConfigGenerator.generateVisionX("sibnb1");
+
+  // Load Config from file
+  String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
+  AppConfig appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
+  UrlConfig urlConfigServer = UrlConfig.empty();
+
+  if(appConfig.remoteConfig != null && appConfig.remoteConfig!.devUrlConfigs != null) {
+    urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
+  }
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
-  UrlConfig urlConfig = urlConfigServer2;
+  UrlConfig urlConfig = urlConfigServer;
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfig, endpointConfig: endpointConfig);
   IRepository repository = OnlineApiRepository(apiConfig: apiConfig);
   IController controller = ApiController();

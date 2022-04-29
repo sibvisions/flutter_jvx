@@ -40,5 +40,7 @@ dependencies:
   beamer: ^1.4.0+1
 
 flutter:
+  assets:
+    - assets/config/app.conf.json
 
   uses-material-design: true
