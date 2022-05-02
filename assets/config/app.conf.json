@@ -28,8 +28,8 @@
       },
       {
         "name": "Angelo : 2",
-        "host": "172.16.0.59",
-        "port": 8090,
+        "host": "172.16.0.40",
+        "port": 8888,
         "path": "/JVx.mobile/services/mobile",
         "https": false
       }
