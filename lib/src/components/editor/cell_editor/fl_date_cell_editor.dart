@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../model/component/editor/cell_editor/fl_date_cell_editor_model.dart';
-import '../../../../model/component/label/fl_label_model.dart';
-import '../../../../model/data/column_definition.dart';
-import '../../../label/fl_label_widget.dart';
-import '../i_cell_editor.dart';
+import '../../../model/component/editor/cell_editor/fl_date_cell_editor_model.dart';
+import '../../../model/component/label/fl_label_model.dart';
+import '../../../model/data/column_definition.dart';
+import '../../label/fl_label_widget.dart';
+import 'i_cell_editor.dart';
 
 class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,26 +59,24 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
 
     // TODO locale
     if (model.isDateEditor && model.isTimeEditor) {
-      _openDateAndTimeEditors();
+      _openDateAndTimeEditors(pContext);
     } else if (model.isDateEditor) {
-      _openDateEditor();
+      _openDateEditor(pContext);
     } else if (model.isTimeEditor) {
-      _openTimeEditor();
+      _openTimeEditor(pContext);
     }
   }
 
-  void _openDateAndTimeEditors() {
+  void _openDateAndTimeEditors(BuildContext pContext) {
     bool cancelled = false;
     dynamic originalValue = _value;
 
     uiService
         .openDialog(
-            pDialogWidget: Card(
-              child: DatePickerDialog(
-                initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-                firstDate: DateTime(1970),
-                lastDate: DateTime(2100),
-              ),
+            pDialogWidget: DatePickerDialog(
+              initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
+              firstDate: DateTime(1970),
+              lastDate: DateTime(2100),
             ),
             pIsDismissible: true)
         .then((value) {
@@ -94,10 +92,8 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
       }
       uiService
           .openDialog(
-              pDialogWidget: Card(
-                child: TimePickerDialog(
-                  initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
-                ),
+              pDialogWidget: TimePickerDialog(
+                initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
               ),
               pIsDismissible: true)
           .then((value) {
@@ -116,15 +112,13 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     });
   }
 
-  void _openDateEditor() {
+  void _openDateEditor(BuildContext pContext) {
     uiService
         .openDialog(
-            pDialogWidget: Card(
-              child: DatePickerDialog(
-                initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
-                firstDate: DateTime(1970),
-                lastDate: DateTime(2100),
-              ),
+            pDialogWidget: DatePickerDialog(
+              initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
+              firstDate: DateTime(1970),
+              lastDate: DateTime(2100),
             ),
             pIsDismissible: true)
         .then((value) {
@@ -135,13 +129,11 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     });
   }
 
-  void _openTimeEditor() {
+  void _openTimeEditor(BuildContext pContext) {
     uiService
         .openDialog(
-            pDialogWidget: Card(
-              child: TimePickerDialog(
-                initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
-              ),
+            pDialogWidget: TimePickerDialog(
+              initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
             ),
             pIsDismissible: true)
         .then((value) {

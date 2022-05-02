@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/fl_date_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/fl_number_cell_editor.dart';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -47,7 +48,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   C? getValue();
 
-  void setValue(C? pValue);
+  void setValue(dynamic pValue);
 
   void setColumnDefinition(ColumnDefinition? pColumnDefinition);
 
@@ -80,8 +81,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
-        continue alsoDefault;
-      //return FlNumberCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
+        return FlNumberCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
             pCellEditorJson: pCellEditorJson,

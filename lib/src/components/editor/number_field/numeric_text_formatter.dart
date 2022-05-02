@@ -8,7 +8,7 @@ class NumericTextFormatter extends TextInputFormatter {
   int? length;
   int? _scale;
   bool? signed;
-  NumberFormat? numberFormatter;
+  late NumberFormat numberFormatter;
 
   int? get scale => _scale;
   set scale(int? newScale) {
@@ -40,16 +40,17 @@ class NumericTextFormatter extends TextInputFormatter {
     numberFormatter = NumberFormat(_numberFormat, _locale);
   }
 
-  NumericTextFormatter([String? numberFormat, String? locale, precision, length, int? scale, signed]) : super() {
-    numberFormat = numberFormat;
-    locale = locale;
-    scale = scale;
+  NumericTextFormatter({String? numberFormat, String? locale, this.precision, this.length, int? scale, this.signed})
+      : super() {
+    this.numberFormat = numberFormat;
+    this.locale = locale;
+    this.scale = scale;
   }
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (newValue.text.isEmpty) {
-      return newValue.copyWith(text: '');
+      return newValue;
     } else if (newValue.text.compareTo(oldValue.text) != 0) {
       String newString = newValue.text;
       //int textLengthChange = newValue.text.length - oldValue.text.length;
@@ -82,7 +83,7 @@ class NumericTextFormatter extends TextInputFormatter {
 
       if (addTrailingDecSep) {
         if (scale == null || scale! > 0) {
-          newString += numberFormatter!.symbols.DECIMAL_SEP;
+          newString += numberFormatter.symbols.DECIMAL_SEP;
         } else {
           return newValue.copyWith(text: newString, selection: oldValue.selection);
         }
@@ -109,12 +110,16 @@ class NumericTextFormatter extends TextInputFormatter {
   }
 
   String getFormattedString(dynamic value) {
-    if (value != null && (value is int || value is double)) {
-      if (numberFormat != null && numberFormat!.isNotEmpty) {
-        return numberFormatter!.format(value);
-      }
+    if (value != null) {
+      if (value is String) {
+        return value;
+      } else if (value is int || value is double) {
+        if (numberFormat != null && numberFormat!.isNotEmpty) {
+          return numberFormatter.format(value);
+        }
 
-      return value;
+        return value.toString();
+      }
     }
 
     return "";
@@ -124,7 +129,7 @@ class NumericTextFormatter extends TextInputFormatter {
     dynamic number;
     if (pValue is String) {
       if (pValue.isEmpty) return null;
-      number = numberFormatter!.parse(pValue);
+      number = numberFormatter.parse(pValue);
 
       if (scale == 0 && (number is double)) {
         number = int.parse(number.truncate().toString());

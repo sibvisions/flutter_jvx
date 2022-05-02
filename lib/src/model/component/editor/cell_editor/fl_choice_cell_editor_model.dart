@@ -14,7 +14,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
   // The list of images to display.
   List<Widget> listImages = [];
 
-  List<String> listValues = [];
+  List<dynamic> listValues = [];
 
   Widget defaultImage = ImageLoader.DEFAULT_IMAGE;
 
@@ -42,7 +42,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     var jsonAllowedValues = pJson[ApiObjectProperty.allowedValues];
     if (jsonAllowedValues != null) {
       for (var jsonValue in jsonAllowedValues) {
-        listValues.add(jsonValue as String);
+        listValues.add(jsonValue);
       }
     }
 

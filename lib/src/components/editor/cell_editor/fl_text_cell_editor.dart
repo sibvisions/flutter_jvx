@@ -30,6 +30,8 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  String? _value;
+
   final TextEditingController textController = TextEditingController();
 
   final FocusNode focusNode = FocusNode();
@@ -60,8 +62,9 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void setValue(String? pValue) {
-    if (pValue == null) {
+  void setValue(dynamic pValue) {
+    _value = pValue;
+    if (pValue == null || pValue is! String) {
       textController.clear();
     } else {
       textController.value = textController.value.copyWith(
@@ -127,7 +130,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
 
   @override
   String getValue() {
-    return textController.text;
+    return _value ?? '';
   }
 
   @override

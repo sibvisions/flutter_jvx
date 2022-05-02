@@ -153,10 +153,20 @@ abstract class ApiObjectProperty {
   static const String imageNames = "imageNames";
 
   // Date cell editor
+  static const String dateFormat = "dateFormat";
   static const String isDateEditor = "isDateEditor";
   static const String isTimeEditor = "isTimeEditor";
   static const String isHourEditor = "isHourEditor";
   static const String isMinuteEditor = "isMinuteEditor";
   static const String isSecondEditor = "isSecondEditor";
   static const String isAmPmEditor = "isAmPmEditor";
+
+  // Columndefinition
+  static const String length = "length";
+  static const String scale = "scale";
+  static const String precision = "precision";
+  static const String signed = "signed";
+  static const String autoTrim = "autoTrim";
+  static const String encoding = "encoding";
+  static const String fractionalSecondsPrecision = "fractionalSecondsPrecision";
 }

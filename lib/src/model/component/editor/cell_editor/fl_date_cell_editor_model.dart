@@ -28,7 +28,7 @@ class FlDateCellEditorModel extends ICellEditorModel {
   void applyFromJson(Map<String, dynamic> pJson) {
     super.applyFromJson(pJson);
 
-    var jsonDateFormat = pJson['dateFormat'];
+    var jsonDateFormat = pJson[ApiObjectProperty.dateFormat];
     if (jsonDateFormat != null) {
       dateFormat = jsonDateFormat.replaceAll('Y', 'y');
     }

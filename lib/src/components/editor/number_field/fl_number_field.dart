@@ -33,7 +33,7 @@ class FlNumberFieldWidget extends FlTextFieldWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  TextInputType get keyboardType => const TextInputType.numberWithOptions(signed: true, decimal: true);
+  TextInputType get keyboardType => numberFormatter.getKeyboardType();
 
   @override
   List<TextInputFormatter>? get inputFormatters => [numberFormatter];

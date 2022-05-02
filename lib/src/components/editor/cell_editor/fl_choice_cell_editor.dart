@@ -47,7 +47,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
 
   @override
   void setValue(dynamic pValue) {
-    _value = pValue ?? '';
+    _value = pValue;
 
     currentIndex = model.listValues.indexOf(_value);
 

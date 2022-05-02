@@ -65,14 +65,17 @@ class ColumnDefinition {
   // Datatype specific information
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The length of the datatype.
+  int? length;
+
   /// If zero or positive, the scale is the number of digits to the right of the decimal point. If negative, the unscaled value of the number is multiplied by ten to the power of the negation of the scale. For example, a scale of -3 means the unscaled value is multiplied by 1000.
-  int scale = -1;
+  int? scale;
 
   /// The precision is the number of digits in the unscaled value. For instance, for the number 123.45, the precision returned is 5.
-  int precision = 0;
+  int? precision;
 
   /// If the number type is signed.
-  bool signed = true;
+  bool? signed;
 
   /// Enable autotrim to avoid whitespaces at the begin and end of texts
   bool autoTrim = false;
@@ -110,7 +113,7 @@ class ColumnDefinition {
     var jsonDataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier];
     if (jsonDataTypeIdentifier != null) {
       dataTypeIdentifier = jsonDataTypeIdentifier;
-      if (dataTypeIdentifier == Types.BINARY) {
+      if (dataTypeIdentifier == Types.DECIMAL) {
         log("test");
       }
     }
@@ -143,6 +146,41 @@ class ColumnDefinition {
     var jsonMovable = pJson[ApiObjectProperty.movable];
     if (jsonMovable != null) {
       movable = jsonMovable;
+    }
+
+    var jsonLength = pJson[ApiObjectProperty.length];
+    if (jsonLength != null) {
+      length = jsonLength;
+    }
+
+    var jsonScale = pJson[ApiObjectProperty.scale];
+    if (jsonScale != null) {
+      scale = jsonScale;
+    }
+
+    var jsonPrecision = pJson[ApiObjectProperty.precision];
+    if (jsonPrecision != null) {
+      precision = jsonPrecision;
+    }
+
+    var jsonSigned = pJson[ApiObjectProperty.signed];
+    if (jsonSigned != null) {
+      signed = jsonSigned;
+    }
+
+    var jsonAutoTrim = pJson[ApiObjectProperty.autoTrim];
+    if (jsonAutoTrim != null) {
+      autoTrim = jsonAutoTrim;
+    }
+
+    var jsonEncoding = pJson[ApiObjectProperty.encoding];
+    if (jsonEncoding != null) {
+      encoding = jsonEncoding;
+    }
+
+    var jsonFractionalSecondsPrecision = pJson[ApiObjectProperty.fractionalSecondsPrecision];
+    if (jsonFractionalSecondsPrecision != null) {
+      iFractionalSecondsPrecision = jsonFractionalSecondsPrecision;
     }
   }
 

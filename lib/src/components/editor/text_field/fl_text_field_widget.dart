@@ -11,6 +11,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  final TextInputType keyboardType;
+
   final FocusNode focusNode;
 
   final TextEditingController textController;
@@ -29,8 +31,6 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   int? get maxLines => model.rows;
 
-  TextInputType get keyboardType => TextInputType.text;
-
   List<TextInputFormatter>? get inputFormatters => null;
 
   MaxLengthEnforcement? get maxLengthEnforcement => null;
@@ -45,14 +45,15 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const FlTextFieldWidget(
-      {Key? key,
-      required T model,
-      required Function(String) valueChanged,
-      required Function(String) endEditing,
-      required this.focusNode,
-      required this.textController})
-      : super(key: key, model: model, valueChanged: valueChanged, endEditing: endEditing);
+  const FlTextFieldWidget({
+    Key? key,
+    required T model,
+    required Function(String) valueChanged,
+    required Function(String) endEditing,
+    required this.focusNode,
+    required this.textController,
+    this.keyboardType = TextInputType.text,
+  }) : super(key: key, model: model, valueChanged: valueChanged, endEditing: endEditing);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
