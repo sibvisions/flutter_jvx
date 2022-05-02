@@ -32,7 +32,10 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
             // The shadow mimics a fake press.
             boxShadow: [
               BoxShadow(
-                  blurRadius: 10.0, color: model.selected ? IColor.darken(model.background) : const Color(0x00000000))
+                  blurRadius: 10.0,
+                  color: model.selected
+                      ? IColor.darken(model.background ?? Theme.of(context).backgroundColor)
+                      : const Color(0x00000000))
             ]),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       ),

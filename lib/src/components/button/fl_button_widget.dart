@@ -25,6 +25,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
       return ImageLoader.loadImage(model.image!,
           pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED);
     }
+    return null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,7 +116,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
         //       style: model.borderPainted ? BorderStyle.solid : BorderStyle.none),
         // ),
         elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-        backgroundColor: MaterialStateProperty.all(model.background),
+        backgroundColor: model.background != null ? MaterialStateProperty.all(model.background) : null,
         padding: MaterialStateProperty.all(model.paddings));
   }
 }

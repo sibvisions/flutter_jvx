@@ -63,10 +63,10 @@ abstract class FlComponentModel {
 
   // Style Data
   /// The background color.
-  Color background = Colors.transparent;
+  Color? background;
 
   /// The foreground color.
-  Color foreground = Colors.black;
+  Color? foreground;
 
   /// The vertical alignment.
   VerticalAlignment verticalAlignment = VerticalAlignment.CENTER;

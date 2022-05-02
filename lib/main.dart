@@ -26,6 +26,7 @@ ThemeData themeData = ThemeData.from(
   colorScheme: const ColorScheme.light(
     primary: Colors.amber,
     background: Color(0xFFEEEEEE),
+    onPrimary: Colors.black,
   ),
 );
 

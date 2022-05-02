@@ -59,13 +59,13 @@ class FlButtonModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  set background(Color pColor) {
+  set background(Color? pColor) {
     super.background = pColor;
     labelModel.background = pColor;
   }
 
   @override
-  set foreground(Color pColor) {
+  set foreground(Color? pColor) {
     super.foreground = pColor;
     labelModel.foreground = pColor;
   }
