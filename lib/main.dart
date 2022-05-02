@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
@@ -15,7 +14,6 @@ import 'init_app_mobile.dart';
 import 'init_app_web.dart';
 
 void main() {
-
   if (kIsWeb) {
     initAppWeb();
     runApp(MyApp());
@@ -24,26 +22,24 @@ void main() {
   }
 }
 
-ThemeData themeData = ThemeData.from(colorScheme: const ColorScheme.light(
+ThemeData themeData = ThemeData.from(
+    colorScheme: const ColorScheme.light(
   primary: Colors.amber,
-  background: Colors.white70
+  background: Color(0xFFEEEEEE),
 ));
 
 class MyApp extends StatelessWidget {
-
-
   MyApp({Key? key}) : super(key: key);
-
 
   final _routerDelegate = BeamerDelegate(
     initialPath: "/login",
     locationBuilder: BeamerLocationBuilder(
-        beamLocations: [
-          LoginLocation(),
-          MenuLocation(),
-          SettingLocation(),
-          WorkScreenLocation()
-        ]
+      beamLocations: [
+        LoginLocation(),
+        MenuLocation(),
+        SettingLocation(),
+        WorkScreenLocation(),
+      ],
     ),
   );
 
@@ -58,12 +54,11 @@ class MyApp extends StatelessWidget {
       title: "Flutter Demo",
     );
   }
-
 }
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     var httpclient = super.createHttpClient(context);
     httpclient.badCertificateCallback = ignoreSecure;
     return httpclient;
