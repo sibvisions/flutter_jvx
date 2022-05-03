@@ -65,8 +65,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       decoration: BoxDecoration(
         color: model.background,
         border: Border.all(
-            color: model.isEnabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
+            color: model.isEnabled ? Theme.of(context).primaryColor : IColorConstants.COMPONENT_DISABLED,
             style: model.isBorderVisible ? BorderStyle.solid : BorderStyle.none),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
       child: TextField(
         controller: textController,

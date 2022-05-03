@@ -28,6 +28,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     return null;
   }
 
+  bool get enableFeedback => true;
+
+  InteractiveInkFeatureFactory? get splashFactory => null;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,9 +47,10 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: model.isEnabled && model.isFocusable ? onPress : null,
+      onPressed: getOnPressed(),
       child: Container(
         child: getButtonChild(),
+        decoration: getBoxDecoration(context),
         alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
       ),
       style: getButtonStyle(),
@@ -110,13 +115,25 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// Gets the button style.
   ButtonStyle getButtonStyle() {
     return ButtonStyle(
-        // side: MaterialStateProperty.all(
-        //   BorderSide(
-        //       color: model.isEnabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
-        //       style: model.borderPainted ? BorderStyle.solid : BorderStyle.none),
-        // ),
-        elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-        backgroundColor: model.background != null ? MaterialStateProperty.all(model.background) : null,
-        padding: MaterialStateProperty.all(model.paddings));
+      // side: MaterialStateProperty.all(
+      //   BorderSide(
+      //       color: model.isEnabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
+      //       style: model.borderPainted ? BorderStyle.solid : BorderStyle.none),
+      // ),
+      //maximumSize: MaterialStateProperty.all(const Size.fromWidth(200)),
+      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
+      backgroundColor: model.background != null
+          ? MaterialStateProperty.all(model.background)
+          : MaterialStateProperty.all(Colors.transparent),
+      padding: MaterialStateProperty.all(model.paddings),
+      enableFeedback: enableFeedback,
+      splashFactory: splashFactory,
+    );
+  }
+
+  BoxDecoration? getBoxDecoration(BuildContext pContext) => null;
+
+  Function()? getOnPressed() {
+    return model.isEnabled && model.isFocusable ? onPress : null;
   }
 }

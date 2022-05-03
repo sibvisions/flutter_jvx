@@ -23,11 +23,15 @@ void main() {
 }
 
 ThemeData themeData = ThemeData.from(
-  colorScheme: const ColorScheme.light(
-    primary: Colors.amber,
-    background: Color(0xFFEEEEEE),
-    onPrimary: Colors.black,
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: Colors.amber,
+    backgroundColor: const Color(0xFFEEEEEE),
   ),
+  // const ColorScheme.light(
+  //   primary: Colors.amber,
+  //   background: Color(0xFFEEEEEE),
+  //   onPrimary: Colors.black,
+  // ),
 );
 
 class MyApp extends StatelessWidget {
