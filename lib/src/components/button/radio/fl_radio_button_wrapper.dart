@@ -27,7 +27,7 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
 
   @override
   Widget build(BuildContext context) {
-    FlRadioButtonWidget checkboxWidget = FlRadioButtonWidget(
+    FlRadioButtonWidget radioButtonWidget = FlRadioButtonWidget(
       model: model,
       onPress: buttonPressed,
     );
@@ -36,6 +36,6 @@ class FlRadioButtonWrapperState<T extends FlRadioButtonModel> extends FlButtonWr
       postFrameCallback(context);
     });
 
-    return getPositioned(child: checkboxWidget);
+    return getPositioned(child: radioButtonWidget);
   }
 }
