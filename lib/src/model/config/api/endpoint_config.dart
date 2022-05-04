@@ -12,6 +12,7 @@ class EndpointConfig {
   final String changePassword;
   final String resetPassword;
   final String navigation;
+  final String fetch;
 
   EndpointConfig({
     required this.startup,
@@ -26,6 +27,7 @@ class EndpointConfig {
     required this.openTab,
     required this.changePassword,
     required this.resetPassword,
-    required this.navigation
+    required this.navigation,
+    required this.fetch,
   });
 }

@@ -16,7 +16,8 @@ class ConfigGenerator {
       openTab: "/api/comp/selectTab",
       changePassword: "/api/changePassword",
       resetPassword: "/api/resetPassword",
-      navigation: "/api/navigation"
+      navigation: "/api/navigation",
+      fetch: "/api/dal/fetch",
     );
   }
 
