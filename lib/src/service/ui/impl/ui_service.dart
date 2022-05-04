@@ -181,6 +181,7 @@ class UiService with CommandServiceMixin implements IUiService {
     _registeredDataComponents.clear();
     _columnDefinitionCallback.clear();
     _layoutDataList.clear();
+    _registeredDataChunks.clear();
   }
 
   @override
@@ -246,8 +247,8 @@ class UiService with CommandServiceMixin implements IUiService {
       _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId] = pColumnDefinitionCallback;
     }
 
-    GetSelectedDataCommand command =
-        GetSelectedDataCommand(reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
+    GetSelectedDataCommand command = GetSelectedDataCommand(
+        reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
     sendCommand(command);
   }
 
@@ -294,6 +295,7 @@ class UiService with CommandServiceMixin implements IUiService {
     _columnDefinitionCallback.forEach((key, value) {
       value.removeWhere((key, value) => key == pComponentId);
     });
+    _registeredDataChunks.removeWhere((element) => element.id == pComponentId);
   }
 
   @override
@@ -304,6 +306,7 @@ class UiService with CommandServiceMixin implements IUiService {
     _columnDefinitionCallback.forEach((key, value) {
       value.removeWhere((key, value) => key == pComponentId);
     });
+    _registeredDataChunks.removeWhere((element) => element.id == pComponentId && element.dataProvider == pDataProvider);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

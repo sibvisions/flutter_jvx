@@ -21,7 +21,8 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
             valueChanged: valueChanged,
             endEditing: endEditing,
             focusNode: focusNode,
-            textController: textController);
+            textController: textController,
+            keyboardType: TextInputType.multiline);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
@@ -32,7 +33,4 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
 
   @override
   int? get maxLines => null;
-
-  @override
-  TextInputType get keyboardType => TextInputType.multiline;
 }

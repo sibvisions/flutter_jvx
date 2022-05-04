@@ -20,10 +20,12 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlDateCellEditor({
+    required String id,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
   }) : super(
+          id: id,
           model: FlDateCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,

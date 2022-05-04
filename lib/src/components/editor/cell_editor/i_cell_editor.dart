@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_date_cell_editor.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/fl_number_cell_editor.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
@@ -20,6 +21,9 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// The id of the component this cell editor is part of.
+  String id;
+
   /// The cell editor model
   T model;
 
@@ -32,6 +36,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ICellEditor({
+    required this.id,
     required this.model,
     required Map<String, dynamic> pCellEditorJson,
     required this.onValueChange,
@@ -68,6 +73,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   /// Returns a [ICellEditor] based on the cell editor class name
   static ICellEditor getCellEditor({
+    required String pId,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
@@ -77,31 +83,57 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
     switch (cellEditorClassName) {
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
-        return FlTextCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
+        return FlTextCellEditor(
+          id: pId,
+          pCellEditorJson: pCellEditorJson,
+          onChange: onChange,
+          onEndEditing: onEndEditing,
+        );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
-        return FlCheckBoxCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
+        return FlCheckBoxCellEditor(
+          id: pId,
+          pCellEditorJson: pCellEditorJson,
+          onChange: onChange,
+          onEndEditing: onEndEditing,
+        );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
-        return FlNumberCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
+        return FlNumberCellEditor(
+          id: pId,
+          pCellEditorJson: pCellEditorJson,
+          onChange: onChange,
+          onEndEditing: onEndEditing,
+        );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
+            id: pId,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
             imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
+            id: pId,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
             imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.DATE_CELL_EDITOR:
-        return FlDateCellEditor(pCellEditorJson: pCellEditorJson, onChange: onChange, onEndEditing: onEndEditing);
+        return FlDateCellEditor(
+          id: pId,
+          pCellEditorJson: pCellEditorJson,
+          onChange: onChange,
+          onEndEditing: onEndEditing,
+        );
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
-        continue alsoDefault;
+        return FlLinkedCellEditor(
+          id: pId,
+          pCellEditorJson: pCellEditorJson,
+          onChange: onChange,
+          onEndEditing: onEndEditing,
+        );
 
-      alsoDefault:
       default:
-        return FlDummyCellEditor(pCellEditorJson: pCellEditorJson);
+        return FlDummyCellEditor(id: pId, pCellEditorJson: pCellEditorJson);
     }
   }
 }

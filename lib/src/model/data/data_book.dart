@@ -74,10 +74,8 @@ class DataBook {
     selectedRow = pFetchResponse.selectedRow;
 
     // Save records
-    int to = pFetchResponse.to;
     for (int i = 0; i < pFetchResponse.records.length; i++) {
-      records[to] = pFetchResponse.records[i];
-      to++;
+      records[i + pFetchResponse.from] = pFetchResponse.records[i];
     }
   }
 

@@ -77,9 +77,11 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider}) async {
+  Future<ColumnDefinition> getSelectedColumnDefinition(
+      {required String pColumnName, required String pDataProvider}) async {
     DataBook dataBook = dataBooks[pDataProvider]!;
-    ColumnDefinition? columnDefinition = dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
+    ColumnDefinition? columnDefinition =
+        dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
 
     return columnDefinition;
   }
@@ -92,7 +94,7 @@ class DataService implements IDataService {
     required String pDataProvider,
   }) async {
     // Get data from all requested columns
-    List<List<dynamic>> columnData = [[]];
+    List<List<dynamic>> columnData = [];
     DataBook dataBook = dataBooks[pDataProvider]!;
 
     for (String columnName in pColumnNames) {

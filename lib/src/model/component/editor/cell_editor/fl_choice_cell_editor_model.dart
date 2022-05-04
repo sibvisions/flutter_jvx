@@ -41,9 +41,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
 
     var jsonAllowedValues = pJson[ApiObjectProperty.allowedValues];
     if (jsonAllowedValues != null) {
-      for (var jsonValue in jsonAllowedValues) {
-        listValues.add(jsonValue);
-      }
+      listValues = List<dynamic>.from(jsonAllowedValues);
     }
 
     var jsonImageNames = pJson[ApiObjectProperty.imageNames];

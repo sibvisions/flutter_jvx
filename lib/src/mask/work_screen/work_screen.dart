@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
@@ -53,8 +51,6 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
               _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
               _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
             }
-
-            log("viewInsets: ${viewInsets.bottom}");
             return SingleChildScrollView(
               child: Stack(
                 children: [

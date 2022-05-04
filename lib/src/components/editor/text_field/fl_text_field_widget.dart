@@ -48,6 +48,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   String get obscuringCharacter => '•';
 
+  Widget? get suffixIcon => ((!model.isReadOnly) && textController.text.isNotEmpty) ? getClearIcon() : null;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,7 +85,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           hintText: model.placeholder,
           contentPadding: textPadding,
           border: InputBorder.none,
-          suffixIcon: ((!model.isReadOnly) && textController.text.isNotEmpty) ? getClearIcon() : null,
+          suffixIcon: suffixIcon,
         ),
         textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
         textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),

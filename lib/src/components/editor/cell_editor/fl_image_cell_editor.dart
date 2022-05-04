@@ -34,11 +34,13 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlImageCellEditor({
+    required String id,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     this.imageLoadingCallback,
   }) : super(
+          id: id,
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,

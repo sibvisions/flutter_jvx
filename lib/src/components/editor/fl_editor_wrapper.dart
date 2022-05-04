@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -46,7 +48,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   ICellEditor? oldCellEditor;
 
   /// The currently used cell editor.
-  ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+  ICellEditor cellEditor = FlDummyCellEditor(id: "", pCellEditorJson: {});
 
   /// The value to send to the server on sendValue.
   dynamic _toSendValue;
@@ -216,13 +218,25 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   }
 
   void sendValue() {
-    LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
-    uiService.sendCommand(SetValuesCommand(
-        componentId: model.id,
-        dataProvider: model.dataRow,
-        columnNames: [model.columnName],
-        values: [_toSendValue],
-        reason: "Value of ${model.id} set to $_toSendValue"));
+    if (_toSendValue is HashMap<String, dynamic>) {
+      var map = _toSendValue as HashMap<String, dynamic>;
+
+      LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Values of ${model.id} set to $_toSendValue");
+      uiService.sendCommand(SetValuesCommand(
+          componentId: model.id,
+          dataProvider: model.dataRow,
+          columnNames: map.keys.toList(),
+          values: map.values.toList(),
+          reason: "Value of ${model.id} set to $_toSendValue"));
+    } else {
+      LOGGER.logI(pType: LOG_TYPE.DATA, pMessage: "Value of ${model.id} set to $_toSendValue");
+      uiService.sendCommand(SetValuesCommand(
+          componentId: model.id,
+          dataProvider: model.dataRow,
+          columnNames: [model.columnName],
+          values: [_toSendValue],
+          reason: "Value of ${model.id} set to $_toSendValue"));
+    }
 
     if (currentObjectFocused != null) {
       currentObjectFocused!.removeListener(sendValue);
@@ -236,6 +250,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     var jsonCellEditor = pModel.json[ApiObjectProperty.cellEditor];
     if (jsonCellEditor != null) {
       cellEditor = ICellEditor.getCellEditor(
+          pId: pModel.id,
           pCellEditorJson: jsonCellEditor,
           onChange: onChange,
           onEndEditing: onEndEditing,

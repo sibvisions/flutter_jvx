@@ -41,10 +41,12 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlTextCellEditor({
+    required String id,
     required Map<String, dynamic> pCellEditorJson,
     required Function(String) onChange,
     required Function(String) onEndEditing,
   }) : super(
+          id: id,
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -64,9 +66,13 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   @override
   void setValue(dynamic pValue) {
     _value = pValue;
-    if (pValue == null || pValue is! String) {
+    if (pValue == null) {
       textController.clear();
     } else {
+      if (pValue is! String) {
+        pValue = pValue.toString();
+      }
+
       textController.value = textController.value.copyWith(
         text: pValue,
         selection: TextSelection.collapsed(offset: pValue.characters.length),

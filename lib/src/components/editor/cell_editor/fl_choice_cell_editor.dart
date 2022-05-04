@@ -28,11 +28,13 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlChoiceCellEditor({
+    required String id,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     this.imageLoadingCallback,
   }) : super(
+          id: id,
           model: FlChoiceCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,

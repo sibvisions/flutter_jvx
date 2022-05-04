@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter_client/src/components/editor/cell_editor/fl_dummy_cell_editor.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
-import 'package:flutter_client/util/constants/i_types.dart';
 
 import '../api/api_object_property.dart';
 import '../api/response/dal_meta_data_response.dart';
@@ -59,7 +56,7 @@ class ColumnDefinition {
   bool movable = true;
 
   /// The cell editor of this column.
-  ICellEditor cellEditor = FlDummyCellEditor(pCellEditorJson: {});
+  ICellEditor cellEditor = FlDummyCellEditor(id: "", pCellEditorJson: {});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information
@@ -113,9 +110,6 @@ class ColumnDefinition {
     var jsonDataTypeIdentifier = pJson[ApiObjectProperty.dataTypeIdentifier];
     if (jsonDataTypeIdentifier != null) {
       dataTypeIdentifier = jsonDataTypeIdentifier;
-      if (dataTypeIdentifier == Types.DECIMAL) {
-        log("test");
-      }
     }
     // Width
     var jsonWidth = pJson[ApiObjectProperty.width];

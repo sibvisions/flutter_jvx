@@ -27,10 +27,12 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlNumberCellEditor({
+    required String id,
     required Map<String, dynamic> pCellEditorJson,
     required Function(String) onChange,
     required Function(String) onEndEditing,
   }) : super(
+          id: id,
           model: FlNumberCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
