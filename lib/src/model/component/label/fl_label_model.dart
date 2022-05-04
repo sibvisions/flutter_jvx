@@ -1,7 +1,6 @@
 import '../../../components/label/fl_label_widget.dart';
-import '../../layout/alignments.dart';
-
 import '../../api/api_object_property.dart';
+import '../../layout/alignments.dart';
 import '../fl_component_model.dart';
 
 /// The model for [FlLabelWidget]

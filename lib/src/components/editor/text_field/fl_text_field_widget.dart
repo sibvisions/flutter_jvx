@@ -21,9 +21,16 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // Overrideable widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  double get iconSize => 24;
+  double get iconSize {
+    TextPainter p = TextPainter(
+      text: TextSpan(text: "I", style: model.getTextStyle()),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
+    return p.height;
+  }
 
-  EdgeInsets get textPadding => const EdgeInsets.only(left: 1);
+  EdgeInsets get textPadding => const EdgeInsets.only(left: 12);
 
   EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
 
@@ -72,7 +79,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       child: TextField(
         controller: textController,
         decoration: InputDecoration(
-          isDense: true, // Removes all the unneccessary paddings and widgets
+          isDense: false, // Removes all the unneccessary paddings and widgets
           hintText: model.placeholder,
           contentPadding: textPadding,
           border: InputBorder.none,

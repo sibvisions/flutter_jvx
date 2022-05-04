@@ -248,6 +248,7 @@ abstract class FlComponentModel {
   TextStyle getTextStyle() {
     return TextStyle(
         color: isEnabled ? foreground : IColorConstants.COMPONENT_DISABLED,
+        fontSize: fontSize.toDouble(),
         fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
         fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
         fontFamily: fontName);

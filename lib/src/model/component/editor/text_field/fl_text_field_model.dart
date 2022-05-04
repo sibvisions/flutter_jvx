@@ -1,4 +1,5 @@
 import '../../../api/api_object_property.dart';
+import '../../../layout/alignments.dart';
 import '../../label/fl_label_model.dart';
 
 class FlTextFieldModel extends FlLabelModel {
@@ -27,7 +28,9 @@ class FlTextFieldModel extends FlLabelModel {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  FlTextFieldModel() : super();
+  FlTextFieldModel() : super() {
+    verticalAlignment = VerticalAlignment.CENTER;
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
