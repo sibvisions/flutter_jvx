@@ -98,6 +98,13 @@ abstract class ApiObjectProperty {
   static const String message = "message";
   static const String createAuthKey = "createAuthKey";
   static const String loginMode = "loginMode";
+  static const String filterCondition = "filterCondition";
+  static const String editorComponentId = "editorComponentId";
+  static const String compareType = "compareType";
+  static const String operatorType = "operatorType";
+  static const String not = "not";
+  static const String condition = "condition";
+  static const String conditions = "conditions";
 
   //Response Properties
   static const String authenticated = "authenticated";
@@ -140,6 +147,9 @@ abstract class ApiObjectProperty {
   static const String isAllFetched = "isAllFetched";
   static const String selectedRow = "selectedRow";
   static const String numberFormat = "numberFormat";
+  static const String fromRow = "fromRow";
+  static const String rowCount = "rowCount";
+  static const String includeMetaData = "includeMetaData";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";
@@ -185,7 +195,7 @@ abstract class ApiObjectProperty {
   static const String clearColumns = "clearColumns";
   static const String additionalClearColumns = "additionalClearColumns";
 
-  // Columndefinition
+  // Column definition
   static const String length = "length";
   static const String scale = "scale";
   static const String precision = "precision";

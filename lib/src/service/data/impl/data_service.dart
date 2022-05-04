@@ -42,7 +42,7 @@ class DataService implements IDataService {
   }
 
   @override
-  void updateMetaData({required DalMetaDataResponse pMetaData}) async {
+  Future<bool> updateMetaData({required DalMetaDataResponse pMetaData}) async {
     DataBook? dataBook = dataBooks[pMetaData.dataProvider];
 
     if (dataBook == null) {
@@ -58,6 +58,8 @@ class DataService implements IDataService {
       dataBook.columnDefinitions = pMetaData.columns;
       dataBook.columnViewTable = pMetaData.columnViewTable;
     }
+
+    return true;
   }
 
   @override
@@ -114,5 +116,30 @@ class DataService implements IDataService {
     }
 
     return ChunkData(data: data, isAllFetched: dataBook.isAllFetched);
+  }
+
+  @override
+  Future<bool> checkIfFetchPossible({
+    required int pFrom,
+    required int pTo,
+    required String pDataProvider,
+  }) async {
+    DataBook dataBook = dataBooks[pDataProvider]!;
+
+    // If all has already been fetched, then there is no point
+    if (dataBook.isAllFetched) {
+      return false;
+    }
+
+    // Check all indexes if they are present.
+    for (int i = pFrom; i < pTo; i++) {
+      var record = dataBook.records[i];
+      if (record == null) {
+        return true;
+      }
+    }
+
+    // Returns false if all needed rows are already fetched.
+    return false;
   }
 }

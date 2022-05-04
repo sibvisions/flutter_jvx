@@ -7,7 +7,7 @@ import '../../model/data/column_definition.dart';
 /// Interface for a dataService meant to handle all dataBook related tasks,
 abstract class IDataService {
   /// Establishes the meta data of the given dataBook
-  void updateMetaData({required DalMetaDataResponse pMetaData});
+  Future<bool> updateMetaData({required DalMetaDataResponse pMetaData});
 
   /// Updates dataBook with fetched data,
   Future<List<BaseCommand>> updateData({required DalFetchResponse pFetch});
@@ -23,4 +23,11 @@ abstract class IDataService {
 
   /// Returns the columnDefinition of the provided column in the dataBook
   Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider});
+
+  /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
+  Future<bool> checkIfFetchPossible({
+    required int pFrom,
+    required int pTo,
+    required String pDataProvider,
+  });
 }

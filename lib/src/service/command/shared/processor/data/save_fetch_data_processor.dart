@@ -7,7 +7,7 @@ import '../../i_command_processor.dart';
 class SaveFetchDataProcessor with DataServiceMixin implements ICommandProcessor<SaveFetchDataCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveFetchDataCommand command) async {
-    dataService.updateData(pFetch: command.response);
+    await dataService.updateData(pFetch: command.response);
 
     DataBookUpdatedCommand dataBookUpdatedCommand =
         DataBookUpdatedCommand(reason: "Fetch has updated Data", dataProvider: command.response.dataProvider);
