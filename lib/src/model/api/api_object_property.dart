@@ -119,6 +119,7 @@ abstract class ApiObjectProperty {
   // Data Properties
   static const String dataTypeIdentifier = "dataTypeIdentifier";
   static const String width = "width";
+  static const String height = "height";
   static const String readOnly = "readonly";
   static const String nullable = "nullable";
   static const String resizable = "resizable";
@@ -162,6 +163,27 @@ abstract class ApiObjectProperty {
   static const String isMinuteEditor = "isMinuteEditor";
   static const String isSecondEditor = "isSecondEditor";
   static const String isAmPmEditor = "isAmPmEditor";
+
+  // Linked cell editor
+  static const String columnView = "columnView";
+  static const String rowDefinitions = "rowDefinitions";
+  static const String columnCount = "columnCount";
+  static const String additionalCondition = "additionalCondition";
+  static const String displayReferencedColumnName = "displayReferencedColumnName";
+  static const String displayConcatMask = "displayConcatMask";
+  static const String linkReference = "linkReference";
+  static const String referencedColumnNames = "referencedColumnNames";
+  static const String referencedDataBook = "referencedDataBook";
+  static const String popupSize = "popupSize";
+  static const String searchColumnMapping = "searchColumnMapping";
+  static const String searchTextAnywhere = "searchTextAnywhere";
+  static const String searchInAllTableColumns = "searchInAllTableColumns";
+  static const String sortByColumnName = "sortByColumnName";
+  static const String tableHeaderVisible = "tableHeaderVisible";
+  static const String validationEnabled = "validationEnabled";
+  static const String doNotClearColumnNames = "doNotClearColumnNames";
+  static const String clearColumns = "clearColumns";
+  static const String additionalClearColumns = "additionalClearColumns";
 
   // Columndefinition
   static const String length = "length";
