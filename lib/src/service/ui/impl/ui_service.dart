@@ -2,7 +2,9 @@ import 'dart:collection';
 
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
 import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
 
 import '../../../../util/type_def/callback_def.dart';
@@ -10,6 +12,7 @@ import '../../../mixin/command_service_mixin.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_selected_data.dart';
 import '../../../model/component/fl_component_model.dart';
+import '../../../model/data/chunk/chunk_data.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
@@ -41,6 +44,9 @@ class UiService with CommandServiceMixin implements IUiService {
 
   /// List of all one-time-use columnDefinition callBacks
   final HashMap<String, Map<String, Map<String, Function>>> _columnDefinitionCallback = HashMap();
+
+  /// List of all registered data chunk subscriptions
+  final List<ChunkSubscription> _registeredDataChunks = [];
 
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
@@ -74,7 +80,7 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToWorkScreen() {
     var screen = _currentScreen.first;
-    if(_currentBuildContext!.beamingHistory.last is WorkScreenLocation){
+    if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
       _currentBuildContext!.beamToReplacementNamed("/workScreen/${screen.id}");
     } else {
       _currentBuildContext!.beamToNamed("/workScreen/${screen.id}");
@@ -84,12 +90,11 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToLogin({String? mode}) {
     String path = "/login";
-    if(mode !=null){
+    if (mode != null) {
       path = "$path/$mode";
     }
 
-    if(_currentBuildContext!.beamingHistory.last is WorkScreenLocation){
-
+    if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
       _currentBuildContext!.beamToReplacementNamed(path);
     } else {
       _currentBuildContext!.beamToNamed(path);
@@ -107,14 +112,13 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  Future<T?> openDialog<T>({required Widget pDialogWidget, required bool pIsDismissible}){
+  Future<T?> openDialog<T>({required Widget pDialogWidget, required bool pIsDismissible}) {
     return showDialog(
         context: _currentBuildContext!,
         barrierDismissible: pIsDismissible,
         builder: (BuildContext context) {
           return pDialogWidget;
-        }
-    );
+        });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,9 +246,27 @@ class UiService with CommandServiceMixin implements IUiService {
       _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId] = pColumnDefinitionCallback;
     }
 
-    GetSelectedDataCommand command = GetSelectedDataCommand(
-        reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
+    GetSelectedDataCommand command =
+        GetSelectedDataCommand(reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
     sendCommand(command);
+  }
+
+  @override
+  void registerDataChunk({required ChunkSubscription chunkSubscription, bool shouldFetch = true}) {
+    _registeredDataChunks.removeWhere((element) => element.same(chunkSubscription));
+    _registeredDataChunks.add(chunkSubscription);
+
+    if (shouldFetch) {
+      GetDataChunkCommand command = GetDataChunkCommand(
+        reason: "Component registerd",
+        dataProvider: chunkSubscription.dataProvider,
+        from: chunkSubscription.from,
+        to: chunkSubscription.to,
+        componentId: chunkSubscription.id,
+        dataColumns: chunkSubscription.dataColumns,
+      );
+      sendCommand(command);
+    }
   }
 
   @override
@@ -325,7 +347,11 @@ class UiService with CommandServiceMixin implements IUiService {
       for (String columnName in dataProviderCallbacks.keys) {
         for (String componentId in dataProviderCallbacks[columnName]!.keys) {
           GetSelectedDataCommand command = GetSelectedDataCommand(
-              reason: "reason", componentId: componentId, dataProvider: pDataProvider, columnName: columnName);
+            reason: "reason",
+            componentId: componentId,
+            dataProvider: pDataProvider,
+            columnName: columnName,
+          );
           sendCommand(command);
         }
       }
@@ -343,11 +369,24 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void setSelectedColumnDefinition(
-      {required String pDataProvider,
-      required String pComponentId,
-      required String pColumnName,
-      required ColumnDefinition pColumnDefinition}) {
+  void setSelectedColumnDefinition({
+    required String pDataProvider,
+    required String pComponentId,
+    required String pColumnName,
+    required ColumnDefinition pColumnDefinition,
+  }) {
     _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId]!.call(pColumnDefinition);
+  }
+
+  @override
+  void setChunkData({
+    required ChunkData pChunkData,
+    required String pId,
+    required String pDataProvider,
+  }) {
+    ChunkSubscription chunkSubscription =
+        _registeredDataChunks.firstWhere((element) => element.dataProvider == pDataProvider && element.id == pId);
+
+    chunkSubscription.callback(pChunkData);
   }
 }

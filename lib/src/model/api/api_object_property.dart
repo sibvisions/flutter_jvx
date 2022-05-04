@@ -96,6 +96,8 @@ abstract class ApiObjectProperty {
   static const String newPassword = "newPassword";
   static const String identifier = "identifier";
   static const String message = "message";
+  static const String createAuthKey = "createAuthKey";
+  static const String loginMode = "loginMode";
 
   //Response Properties
   static const String authenticated = "authenticated";

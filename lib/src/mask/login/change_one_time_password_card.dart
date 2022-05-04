@@ -1,19 +1,23 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/command/api/login_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ChangeOneTimePasswordCard extends StatelessWidget {
-
+class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Controller for Email/Username text field
   final TextEditingController userNameController = TextEditingController();
+
   /// Controller for Email/Username text field
   final TextEditingController oneTimeController = TextEditingController();
+
   /// Controller for Email/Username text field
   final TextEditingController newPasswordController = TextEditingController();
+
   /// Controller for Email/Username text field
   final TextEditingController newPasswordConfController = TextEditingController();
 
@@ -21,9 +25,7 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ChangeOneTimePasswordCard({
-    Key? key
-  }) : super(key: key);
+  ChangeOneTimePasswordCard({Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -97,6 +99,14 @@ class ChangeOneTimePasswordCard extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _sendRequest() {
+    LoginCommand loginCommand = LoginCommand(
+      loginMode: LoginMode.CHANGE_ONE_TIME_PASSWORD,
+      userName: userNameController.text,
+      password: newPasswordController.text,
+      newPassword: oneTimeController.text,
+      reason: "Password reset",
+    );
 
+    uiService.sendCommand(loginCommand);
   }
 }

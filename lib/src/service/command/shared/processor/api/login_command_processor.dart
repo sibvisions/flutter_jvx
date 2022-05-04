@@ -10,13 +10,16 @@ class LoginCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements 
   @override
   Future<List<BaseCommand>> processCommand(LoginCommand command) {
     String? clientId = configService.getClientId();
+
     if (clientId != null) {
       ApiLoginRequest loginRequest = ApiLoginRequest(
-          username: command.userName,
-          password: command.password,
-          clientId: clientId
+        createAuthKey: command.createAuthKey,
+        loginMode: command.loginMode,
+        newPassword: command.newPassword,
+        username: command.userName,
+        password: command.password,
+        clientId: clientId,
       );
-
       return apiService.sendRequest(request: loginRequest);
     } else {
       throw Exception("NO ClIENT ID FOUND, while trying to send login Request");

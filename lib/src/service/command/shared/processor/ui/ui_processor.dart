@@ -1,13 +1,13 @@
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_session_expired_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/command/ui/save_menu_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/open_error_dialog_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/open_session_expired_dialog_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_login_command_processor.dart';
-import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_menu_comand_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_menu_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/route_to_work_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/ui/save_menu_command_processor.dart';
 
@@ -25,7 +25,6 @@ import 'update_selected_data_processor.dart';
 
 /// Process all sub-types of [UiCommand], delegates commands to specific sub [ICommandProcessor]
 class UiProcessor implements ICommandProcessor<UiCommand> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

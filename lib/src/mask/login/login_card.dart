@@ -1,19 +1,18 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/login_command.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:beamer/beamer.dart';
 
 class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Controller for username text field
   final TextEditingController usernameController = TextEditingController();
+
   /// Controller for password text field
   final TextEditingController passwordController = TextEditingController();
 
@@ -21,9 +20,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  LoginCard({
-    Key? key
-  }) : super(key: key);
+  LoginCard({Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -31,7 +28,6 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -81,9 +77,10 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
 
   void _onLoginPressed() {
     LoginCommand loginCommand = LoginCommand(
-        userName: usernameController.text,
-        password: passwordController.text,
-        reason: "LoginButton"
+      loginMode: LoginMode.MANUAL,
+      userName: usernameController.text,
+      password: passwordController.text,
+      reason: "LoginButton",
     );
     uiService.sendCommand(loginCommand);
   }
@@ -91,5 +88,4 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
   void _onSettingsPressed({required BuildContext context}) {
     context.beamToNamed("/setting");
   }
-
 }

@@ -8,37 +8,31 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 
 /// Displays all possible screens the login can show0
 class LoginLocation extends BeamLocation<BeamState> with UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-
     return [
       BeamPage(
         child: AppLogin(loginCard: LoginCard()),
-        key: const ValueKey("login")
+        key: const ValueKey("login"),
       ),
-      if(state.uri.pathSegments.contains("lostPassword"))
-      BeamPage(
-        child: AppLogin(loginCard: LostPasswordCard()),
-        key: const ValueKey("login_password_reset")
-      ),
-      if(state.uri.pathSegments.contains("changeOneTimePassword"))
-      BeamPage(
-        child: AppLogin(loginCard: ChangeOneTimePasswordCard())
-      )
+      if (state.uri.pathSegments.contains("lostPassword"))
+        BeamPage(
+          child: AppLogin(loginCard: LostPasswordCard()),
+          key: const ValueKey("login_password_reset"),
+        ),
+      if (state.uri.pathSegments.contains("changeOneTimePassword"))
+        BeamPage(
+          child: AppLogin(
+            loginCard: ChangeOneTimePasswordCard(),
+          ),
+        )
     ];
   }
 
   @override
-  List<Pattern> get pathPatterns => [
-    "/login",
-    "/login/lostPassword",
-    "/login/changeOneTimePassword"
-  ];
-
-
+  List<Pattern> get pathPatterns => ["/login", "/login/lostPassword", "/login/changeOneTimePassword"];
 }

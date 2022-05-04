@@ -24,14 +24,14 @@ class GetDataChunkCommand extends DataCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  GetDataChunkCommand(
-      {required String reason,
-      required this.dataProvider,
-      required this.from,
-      required this.to,
-      required this.componentId,
-      required this.dataColumns})
-      : super(reason: reason);
+  GetDataChunkCommand({
+    required String reason,
+    required this.dataProvider,
+    required this.from,
+    required this.to,
+    required this.componentId,
+    required this.dataColumns,
+  }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

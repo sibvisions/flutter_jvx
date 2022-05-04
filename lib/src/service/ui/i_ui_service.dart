@@ -1,14 +1,15 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
+import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-
-import '../../model/data/column_definition.dart';
 
 import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/data/column_definition.dart';
 import '../../model/layout/layout_data.dart';
 import '../command/i_command_service.dart';
 
@@ -18,7 +19,6 @@ typedef QRCallback = void Function(Barcode qrValue);
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.
 abstract class IUiService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,8 +54,7 @@ abstract class IUiService {
 
   /// Opens a [Dialog], the future will complete if the dialog is closed by an
   /// action
-  Future<T?> openDialog<T>(
-      {required Widget pDialogWidget, required bool pIsDismissible});
+  Future<T?> openDialog<T>({required Widget pDialogWidget, required bool pIsDismissible});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Meta data management
@@ -107,10 +106,7 @@ abstract class IUiService {
 
   /// Register as an active component, callback will be called when model
   /// changes or children should be rebuilt.
-  void registerAsLiveComponent({
-    required String id,
-    required ComponentCallback callback
-  });
+  void registerAsLiveComponent({required String id, required ComponentCallback callback});
 
   /// Register a an active component in need of data from a dataBook.
   void registerAsDataComponent({
@@ -121,6 +117,9 @@ abstract class IUiService {
     required String pColumnName,
   });
 
+  /// Register to receive a chunk of data from a specific dataProvider
+  void registerDataChunk({required ChunkSubscription chunkSubscription});
+
   /// Deletes unused component models from local cache and disposes of all their
   /// active subscriptions.
   void deleteInactiveComponent({required Set<String> inactiveIds});
@@ -129,10 +128,7 @@ abstract class IUiService {
   void disposeSubscriptions({required String pComponentId});
 
   /// Deletes the callback of the registered component on the dataProvider
-  void unRegisterDataComponent({
-    required String pComponentId,
-    required String pDataProvider
-  });
+  void unRegisterDataComponent({required String pComponentId, required String pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves
@@ -163,6 +159,13 @@ abstract class IUiService {
     required String pDataProvider,
     required String pComponentId,
     required String pColumnName,
-    required ColumnDefinition pColumnDefinition
+    required ColumnDefinition pColumnDefinition,
+  });
+
+  /// Calls the callback function with [pChunkData] for provided [pId] and [pDataProvider]
+  void setChunkData({
+    required ChunkData pChunkData,
+    required String pId,
+    required String pDataProvider,
   });
 }

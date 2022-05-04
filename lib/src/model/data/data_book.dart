@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import '../api/response/dal_fetch_response.dart';
-
 import 'column_definition.dart';
 
 /// Holds all data and column definitions of a data provider
@@ -33,13 +32,14 @@ class DataBook {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Creates a [DataBook]
-  DataBook(
-      {required this.dataProvider,
-      required this.records,
-      required this.columnDefinitions,
-      required this.isAllFetched,
-      required this.selectedRow,
-      required this.columnViewTable});
+  DataBook({
+    required this.dataProvider,
+    required this.records,
+    required this.columnDefinitions,
+    required this.isAllFetched,
+    required this.selectedRow,
+    required this.columnViewTable,
+  });
 
   /// Creates a [DataBook] with only default values
   DataBook.empty()
@@ -103,5 +103,19 @@ class DataBook {
     } else {
       return null;
     }
+  }
+
+  /// Will return all available data from the column in the provided range
+  List<dynamic> getDataFromColumn({required String pColumnName, required int pFrom, required int pTo}) {
+    List<dynamic> data = [];
+    int indexOfColumn = columnDefinitions.indexWhere((element) => element.name == pColumnName);
+
+    for (int i = pFrom; i < pTo; i++) {
+      var a = records[i];
+      if (a != null) {
+        data.add(a[indexOfColumn]);
+      }
+    }
+    return data;
   }
 }

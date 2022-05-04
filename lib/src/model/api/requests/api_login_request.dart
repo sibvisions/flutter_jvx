@@ -9,12 +9,18 @@ class ApiLoginRequest implements IApiRequest {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Session id
+  /// SessionId
   final String clientId;
-  /// Username string
+  /// Username
   final String username;
-  /// Password string
+  /// Password
   final String password;
+  /// Either one-time-password or new password
+  final String? newPassword;
+  /// "password-change" or "one-time-password"
+  final String? loginMode;
+  /// "Remember me"
+  final bool createAuthKey;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -23,7 +29,10 @@ class ApiLoginRequest implements IApiRequest {
   ApiLoginRequest({
     required this.username,
     required this.password,
-    required this.clientId
+    required this.clientId,
+    this.createAuthKey = false,
+    this.loginMode,
+    this.newPassword,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,5 +44,8 @@ class ApiLoginRequest implements IApiRequest {
     ApiObjectProperty.clientId: clientId,
     ApiObjectProperty.password: password,
     ApiObjectProperty.username: username,
+    ApiObjectProperty.createAuthKey : createAuthKey,
+    ApiObjectProperty.loginMode : loginMode,
+
   };
 }

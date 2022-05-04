@@ -1,7 +1,15 @@
 import 'api_command.dart';
 
-class LoginCommand extends ApiCommand {
+/// All available login request modes
+class LoginMode {
+  static const String MANUAL = "manual";
+  static const String CHANGE_PASSWORD = "changePassword";
+  static const String CHANGE_ONE_TIME_PASSWORD = "changeOneTimePassword";
+  static const String AUTOMATIC = "automatic";
+  static const String LOST_PASSWORD = "lostPassword";
+}
 
+class LoginCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,6 +20,15 @@ class LoginCommand extends ApiCommand {
   /// Password
   final String password;
 
+  /// Either one-time-password or new password
+  final String? newPassword;
+
+  /// See [LoginMode] class
+  final String loginMode;
+
+  /// "Remember me"
+  final bool createAuthKey;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,7 +36,10 @@ class LoginCommand extends ApiCommand {
   LoginCommand({
     required this.userName,
     required this.password,
+    required this.loginMode,
     required String reason,
+    this.createAuthKey = false,
+    this.newPassword,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,5 +47,6 @@ class LoginCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  String get logString => "LoginCommand | Username: $userName | Password: $password | Reason: $reason";
+  //ToDo logString
+  String get logString => throw UnimplementedError();
 }
