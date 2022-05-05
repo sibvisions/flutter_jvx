@@ -6,7 +6,6 @@ import 'package:flutter_client/src/model/menu/menu_model.dart';
 import '../app_menu.dart';
 
 class AppMenuListUngroup extends StatelessWidget {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,21 +20,23 @@ class AppMenuListUngroup extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListUngroup({
-    Key? key,
-    required this.menuModel,
-    required this.onClick
-  }) : super(key: key);
+  const AppMenuListUngroup({Key? key, required this.menuModel, required this.onClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(slivers: [
-      SliverFixedExtentList(
-        itemExtent: 50,
-        delegate: SliverChildListDelegate.fixed(
-            _getAllMenuItems().map((e) => AppMenuListItem(onClick: onClick, model: e)).toList()
-        ),
-      )],
+    return CustomScrollView(
+      slivers: [
+        SliverFixedExtentList(
+          itemExtent: 50,
+          delegate: SliverChildListDelegate.fixed(_getAllMenuItems()
+              .map((e) => AppMenuListItem(
+                    onClick: onClick,
+                    model: e,
+                    backgroundOverride: Theme.of(context).primaryColor,
+                  ))
+              .toList()),
+        )
+      ],
     );
   }
 

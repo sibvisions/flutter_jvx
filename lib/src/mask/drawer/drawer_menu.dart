@@ -10,7 +10,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../model/command/api/open_screen_command.dart';
 
 class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,18 +22,18 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   DrawerMenu({
-     Key? key,
-   }) : super(key: key);
+  DrawerMenu({
+    Key? key,
+  }) : super(key: key);
 
-   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   // Overridden methods
-   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).backgroundColor.withAlpha(255),
+      backgroundColor: Theme.of(context).backgroundColor,
       child: Column(
         children: [
           _buildDrawerHeader(context),
@@ -49,75 +48,87 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget _buildDrawerHeader(BuildContext context){
+  Widget _buildDrawerHeader(BuildContext context) {
     return DrawerHeader(
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 6,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeaderText(flex: 7, text: "Demo"),
-                  const Padding(padding: EdgeInsets.all(4)),
-                  _buildHeaderText(flex: 3, text: "Logged in as: "),
-                  const Padding(padding: EdgeInsets.all(10)),
-                  _buildHeaderText(flex: 5, text: "John Doe"),
-                  const Expanded(flex: 2, child: Padding(padding: EdgeInsets.all(0)))
-                ],
-              ),
+      margin: EdgeInsets.zero,
+      decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeaderText(flex: 7, text: "Demo"),
+                const Padding(padding: EdgeInsets.all(4)),
+                _buildHeaderText(flex: 3, text: "Logged in as: "),
+                const Padding(padding: EdgeInsets.all(10)),
+                _buildHeaderText(flex: 5, text: "John Doe"),
+                const Expanded(flex: 2, child: Text(""))
+              ],
             ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: const [
-                  Expanded(
-                    child: CircleAvatar(
-                      child: FaIcon(FontAwesomeIcons.file),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        )
+          ),
+          Expanded(
+            flex: 4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: const [
+                Expanded(
+                  child: CircleAvatar(
+                    child: FaIcon(FontAwesomeIcons.file),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
-  Widget _buildMenu(BuildContext context){
+  Widget _buildMenu(BuildContext context) {
     MenuModel menuModel = uiService.getMenuModel();
     return AppMenuListGrouped(
-        menuModel: menuModel,
-        onClick: _menuItemPressed
+      menuModel: menuModel,
+      onClick: _menuItemPressed,
     );
   }
 
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
+      Divider(
+        color: Theme.of(context).colorScheme.onPrimary,
+        height: 0.0,
+        thickness: 0.5,
+      ),
       _buildFooterEntry(
         context: context,
         text: "Settings",
         leadingIcon: FontAwesomeIcons.cogs,
         onTap: () => log("asd"),
       ),
-      Divider(color: Theme.of(context).primaryColor),
-      _buildFooterEntry(
-          context: context,
-          text: "Change password",
-          leadingIcon: FontAwesomeIcons.save,
-          onTap: () => log("asd"),
+      Divider(
+        color: Theme.of(context).colorScheme.onPrimary,
+        height: 0.0,
+        thickness: 0.5,
       ),
-      Divider(color: Theme.of(context).primaryColor),
       _buildFooterEntry(
-          context: context,
-          text: "Logout",
-          leadingIcon: FontAwesomeIcons.signOutAlt,
-          onTap: () => log("asd"),
+        context: context,
+        text: "Change password",
+        leadingIcon: FontAwesomeIcons.save,
+        onTap: () => log("asd"),
+      ),
+      Divider(
+        color: Theme.of(context).colorScheme.onPrimary,
+        height: 0.0,
+        thickness: 0.5,
+      ),
+      _buildFooterEntry(
+        context: context,
+        text: "Logout",
+        leadingIcon: FontAwesomeIcons.signOutAlt,
+        onTap: () => log("asd"),
       ),
     ];
   }
@@ -126,15 +137,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   /// Flex value changes size according to all other header texts(Expanded).
   /// Text will size itself to fill available space(Fitted-Box).
   Widget _buildHeaderText({required int flex, required String text}) {
-     return Expanded(
-       flex: flex,
-       child: FittedBox(
-         child: Text(
-           text,
-           style: boldStyle
-         ),
-       ),
-     );
+    return Expanded(
+      flex: flex,
+      child: FittedBox(
+        child: Text(text, style: boldStyle),
+      ),
+    );
   }
 
   /// Build an entry used in the footer of the drawer.
@@ -145,17 +153,16 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
     required VoidCallback onTap,
   }) {
     return ListTile(
+      tileColor: Theme.of(context).primaryColor,
       onTap: onTap,
       leading: FaIcon(leadingIcon),
       title: Text(text),
       trailing: const FaIcon(FontAwesomeIcons.arrowRight),
     );
   }
-  
+
   void _menuItemPressed({required String componentId}) {
     OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
     uiService.sendCommand(command);
   }
-
-
 }

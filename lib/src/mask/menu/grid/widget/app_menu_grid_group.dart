@@ -30,8 +30,8 @@ class AppMenuGridGroup extends StatelessWidget {
       SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200,
-          mainAxisSpacing: 5,
-          crossAxisSpacing: 5,
+          mainAxisSpacing: 1,
+          crossAxisSpacing: 1,
         ),
         delegate: SliverChildListDelegate.fixed(
           menuGroupModel.items.map((e) => AppMenuGridItem(menuItemModel: e, onClick: onClick)).toList(),

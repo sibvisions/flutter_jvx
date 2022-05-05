@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../model/component/button/fl_radio_button_model.dart';
 import '../fl_button_widget.dart';
 
-class FlRadioButtonWidget extends FlButtonWidget<FlRadioButtonModel> {
+class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden widget defaults
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,6 +38,16 @@ class FlRadioButtonWidget extends FlButtonWidget<FlRadioButtonModel> {
   @override
   Function()? getOnPressed() {
     return model.isEnabled && model.isFocusable ? () {} : null;
+  }
+
+  @override
+  ButtonStyle getButtonStyle() {
+    return ButtonStyle(
+      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
+      backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),
+      padding: MaterialStateProperty.all(model.paddings),
+      splashFactory: splashFactory,
+    );
   }
 
   @override

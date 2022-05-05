@@ -115,19 +115,9 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   /// Gets the button style.
   ButtonStyle getButtonStyle() {
     return ButtonStyle(
-      // side: MaterialStateProperty.all(
-      //   BorderSide(
-      //       color: model.isEnabled ? Colors.black : IColorConstants.COMPONENT_DISABLED,
-      //       style: model.borderPainted ? BorderStyle.solid : BorderStyle.none),
-      // ),
-      //maximumSize: MaterialStateProperty.all(const Size.fromWidth(200)),
       elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-      backgroundColor: model.background != null
-          ? MaterialStateProperty.all(model.background)
-          : MaterialStateProperty.all(Colors.transparent),
+      backgroundColor: model.background != null ? MaterialStateProperty.all(model.background) : null,
       padding: MaterialStateProperty.all(model.paddings),
-      enableFeedback: enableFeedback,
-      splashFactory: splashFactory,
     );
   }
 
