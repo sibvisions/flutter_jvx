@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_client/src/service/api/shared/processor/dal_data_provider_changed_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/session_expired_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/user_data_processor.dart';
@@ -23,7 +24,6 @@ import '../processor/menu_processor.dart';
 import '../processor/screen_generic_processor.dart';
 
 class ApiController implements IController {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +39,7 @@ class ApiController implements IController {
   final IProcessor _loginProcessor = LoginProcessor();
   final IProcessor _errorProcessor = ErrorProcessor();
   final IProcessor _sessionExpiredProcessor = SessionExpiredProcessor();
+  final IProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
 
   /// Maps response names to their processor
   late final Map<String, IProcessor> responseToProcessorMap;
@@ -52,17 +53,18 @@ class ApiController implements IController {
 
   ApiController() {
     responseToProcessorMap = {
-      ApiResponseNames.applicationParameters : _applicationParameterProcessor,
-      ApiResponseNames.applicationMetaData : _applicationMetaDataProcessor,
-      ApiResponseNames.menu : _menuProcessor,
-      ApiResponseNames.screenGeneric : _screenGenericProcessor,
-      ApiResponseNames.closeScreen : _closeScreenProcessor,
-      ApiResponseNames.dalMetaData : _dalMetaDataProcessor,
-      ApiResponseNames.dalFetch : _dalFetchProcessor,
-      ApiResponseNames.userData : _userDataProcessor,
-      ApiResponseNames.login : _loginProcessor,
-      ApiResponseNames.error : _errorProcessor,
-      ApiResponseNames.sessionExpired : _sessionExpiredProcessor
+      ApiResponseNames.applicationParameters: _applicationParameterProcessor,
+      ApiResponseNames.applicationMetaData: _applicationMetaDataProcessor,
+      ApiResponseNames.menu: _menuProcessor,
+      ApiResponseNames.screenGeneric: _screenGenericProcessor,
+      ApiResponseNames.closeScreen: _closeScreenProcessor,
+      ApiResponseNames.dalMetaData: _dalMetaDataProcessor,
+      ApiResponseNames.dalFetch: _dalFetchProcessor,
+      ApiResponseNames.userData: _userDataProcessor,
+      ApiResponseNames.login: _loginProcessor,
+      ApiResponseNames.error: _errorProcessor,
+      ApiResponseNames.sessionExpired: _sessionExpiredProcessor,
+      ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
     };
   }
 
@@ -71,16 +73,13 @@ class ApiController implements IController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  List<BaseCommand> processResponse({
-    required List<ApiResponse> responses
-  }) {
-
+  List<BaseCommand> processResponse({required List<ApiResponse> responses}) {
     List<BaseCommand> commands = [];
 
-    for(ApiResponse response in responses) {
+    for (ApiResponse response in responses) {
       IProcessor? processor = responseToProcessorMap[response.name];
 
-      if(processor != null) {
+      if (processor != null) {
         commands.addAll(processor.processResponse(pResponse: response));
       } else {
         throw Exception("Couldn't find processor belonging to ${response.name}, add it to the map");
@@ -91,26 +90,14 @@ class ApiController implements IController {
   }
 
   @override
-  List<BaseCommand> processImageDownload({
-    required Uint8List response,
-    required String baseDir,
-    required String appName,
-    required String appVersion
-  }) {
-
-
+  List<BaseCommand> processImageDownload(
+      {required Uint8List response, required String baseDir, required String appName, required String appVersion}) {
     Archive archive = _zipDecoder.decodeBytes(response);
-    String baseFilePath = DownloadHelper.getLocalFilePath(
-        appName: appName,
-        appVersion: appVersion,
-        translation: false,
-        baseDir: baseDir
-    );
+    String baseFilePath = DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
 
-
-    if(!kIsWeb){
+    if (!kIsWeb) {
       // Save files to disk
-      for(ArchiveFile file in archive){
+      for (ArchiveFile file in archive) {
         // Create file
         File outputFile = File('$baseFilePath/${file.name}');
         Future<File> createdFile = outputFile.create(recursive: true);

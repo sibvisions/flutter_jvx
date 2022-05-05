@@ -77,11 +77,9 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<ColumnDefinition> getSelectedColumnDefinition(
-      {required String pColumnName, required String pDataProvider}) async {
+  Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider}) async {
     DataBook dataBook = dataBooks[pDataProvider]!;
-    ColumnDefinition? columnDefinition =
-        dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
+    ColumnDefinition? columnDefinition = dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
 
     return columnDefinition;
   }
@@ -98,7 +96,11 @@ class DataService implements IDataService {
     DataBook dataBook = dataBooks[pDataProvider]!;
 
     for (String columnName in pColumnNames) {
-      columnData.add(dataBook.getDataFromColumn(pColumnName: columnName, pFrom: pFrom, pTo: pTo));
+      columnData.add(dataBook.getDataFromColumn(
+        pColumnName: columnName,
+        pFrom: pFrom,
+        pTo: pTo,
+      ));
     }
 
     // Check if requested range of fetch is too long
@@ -142,6 +144,39 @@ class DataService implements IDataService {
     }
 
     // Returns false if all needed rows are already fetched.
+    return false;
+  }
+
+  @override
+  Future<bool> deleteDataFromDataBook({
+    required String pDataProvider,
+    required int? pFrom,
+    required int? pTo,
+    required bool? pDeleteAll,
+  }) async {
+    // Get data book and return false if it does not exist
+    DataBook? dataBook = dataBooks[pDataProvider];
+    if (dataBook == null) {
+      return false;
+    }
+    // If delete all flag is set just clear all records
+    if (pDeleteAll == true) {
+      dataBook.clearRecords();
+      return true;
+    }
+    // Clear only records in given range
+    if (pFrom != null && pTo != null) {
+      dataBook.deleteRecordRange(pFrom: pFrom, pTo: pTo);
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> setSelectedRow({
+    required String pDataProvider,
+    required int pNewSelectedRow,
+  }) async {
     return false;
   }
 }

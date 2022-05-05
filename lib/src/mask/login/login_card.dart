@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mask/login/remember_me_checkbox.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/login_command.dart';
@@ -15,6 +16,9 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
 
   /// Controller for password text field
   final TextEditingController passwordController = TextEditingController();
+
+  /// Value holder for the checkbox
+  final CheckHolder checkHolder = CheckHolder(isChecked: false);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -51,6 +55,11 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
               onPressed: _onLoginPressed,
               child: const Text("Login"),
             ),
+            Center(
+              child: RememberMeCheckbox(
+                checkHolder: checkHolder,
+              ),
+            ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               TextButton.icon(
                 onPressed: () => context.beamToNamed("/login/lostPassword"),
@@ -81,6 +90,7 @@ class LoginCard extends StatelessWidget with ConfigServiceMixin, UiServiceMixin 
       userName: usernameController.text,
       password: passwordController.text,
       reason: "LoginButton",
+      createAuthKey: checkHolder.isChecked,
     );
     uiService.sendCommand(loginCommand);
   }

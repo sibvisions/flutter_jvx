@@ -116,4 +116,16 @@ class DataBook {
     }
     return data;
   }
+
+  /// Deletes all records in the specified range, even when they do not exist
+  void deleteRecordRange({required int pFrom, required int pTo}) {
+    for (int i = pFrom; pFrom <= pTo; i++) {
+      records.remove(i);
+    }
+  }
+
+  /// Deletes all current records
+  void clearRecords() {
+    records.clear();
+  }
 }

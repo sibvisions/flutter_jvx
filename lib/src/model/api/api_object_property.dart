@@ -150,6 +150,12 @@ abstract class ApiObjectProperty {
   static const String fromRow = "fromRow";
   static const String rowCount = "rowCount";
   static const String includeMetaData = "includeMetaData";
+  static const String reload = "reload";
+  static const String changedColumnNames = "changedColumnNames";
+  static const String changedValues = "changedValues";
+  static const String deleteEnabled = "deleteEnabled";
+  static const String updateEnabled = "updateEnabled";
+  static const String insertEnabled = "insertEnabled";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

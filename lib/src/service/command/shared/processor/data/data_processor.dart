@@ -1,4 +1,8 @@
+import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
+import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/data/change_selected_row_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/data/delete_provider_data_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/get_data_chunk_command_processor.dart';
 
 import '../../../../../model/command/base_command.dart';
@@ -25,6 +29,11 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   /// Processes [GetDataChunkCommand]
   final GetDataChunkCommandProcessor _getDataChunkCommandProcessor = GetDataChunkCommandProcessor();
 
+  /// Processes [DeleteProviderDataCommand]
+  final DeleteProviderDataCommandProcessor _deleteProviderDataCommandProcessor = DeleteProviderDataCommandProcessor();
+
+  final ChangeSelectedRowCommandProcessor _changeSelectedRowCommandProcessor = ChangeSelectedRowCommandProcessor();
+
   @override
   Future<List<BaseCommand>> processCommand(DataCommand command) async {
     if (command is SaveMetaDataCommand) {
@@ -35,6 +44,10 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return _getSelectedDataProcessor.processCommand(command);
     } else if (command is GetDataChunkCommand) {
       return _getDataChunkCommandProcessor.processCommand(command);
+    } else if (command is DeleteProviderDataCommand) {
+      return _deleteProviderDataCommandProcessor.processCommand(command);
+    } else if (command is ChangeSelectedRowCommand) {
+      return _changeSelectedRowCommandProcessor.processCommand(command);
     }
 
     return [];

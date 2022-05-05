@@ -30,4 +30,18 @@ abstract class IDataService {
     required int pTo,
     required String pDataProvider,
   });
+
+  /// Returns true when deletion was successful
+  Future<bool> deleteDataFromDataBook({
+    required String pDataProvider,
+    required int? pFrom,
+    required int? pTo,
+    required bool? pDeleteAll,
+  });
+
+  /// Returns true when row selection was successful (dataProvider and dataRow exist)
+  Future<bool> setSelectedRow({
+    required String pDataProvider,
+    required int pNewSelectedRow,
+  });
 }
