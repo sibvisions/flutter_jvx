@@ -3,7 +3,6 @@ import 'package:flutter_client/src/mask/menu/app_menu.dart';
 import 'package:flutter_client/src/mask/menu/grid/widget/app_menu_grid_item.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
-import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 
 class AppMenuGridUnGroup extends StatelessWidget {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,9 +19,7 @@ class AppMenuGridUnGroup extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuGridUnGroup(
-      {Key? key, required this.menuModel, required this.onClick})
-      : super(key: key);
+  const AppMenuGridUnGroup({Key? key, required this.menuModel, required this.onClick}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -34,12 +31,11 @@ class AppMenuGridUnGroup extends StatelessWidget {
       SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200,
-          mainAxisSpacing: 5,
-          crossAxisSpacing: 5,
+          mainAxisSpacing: 1,
+          crossAxisSpacing: 1,
         ),
-        delegate: SliverChildListDelegate.fixed(_getAllMenuItems()
-            .map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e))
-            .toList()),
+        delegate: SliverChildListDelegate.fixed(
+            _getAllMenuItems().map((e) => AppMenuGridItem(onClick: onClick, menuItemModel: e)).toList()),
       ),
     ]);
   }

@@ -49,7 +49,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
         id: widget.id,
         dataProvider: model.linkReference.dataProvider,
         callback: receiveData,
-        dataColumns: model.linkReference.referencedColumnNames,
+        dataColumns: columnNamesToSubscribe(),
         from: 0,
         to: 100 * scrollingPage,
       ),
@@ -104,7 +104,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                   onNotification: onNotification,
                   child: ListView.builder(
                     itemBuilder: itemBuilder,
-                    itemCount: _chunkData?.data.length == null ? 2 : _chunkData!.data.length + 1,
+                    itemCount: (_chunkData?.data.length ?? 1) + (hasHeader() ? 1 : 0),
                     controller: _scrollController,
                     scrollDirection: Axis.vertical,
                   ),
@@ -159,17 +159,24 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void _onRowTapped(int index) {
-    HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
-
     List<dynamic> data = _chunkData!.data[index]!;
 
-    int i = 0;
-    for (dynamic date in data) {
-      dataMap[model.linkReference.columnNames[i]] = date;
-      i++;
-    }
+    List<String> columnOrder = columnNamesToSubscribe();
 
-    Navigator.of(context).pop(dataMap);
+    if (model.linkReference.columnNames.isEmpty) {
+      Navigator.of(context).pop(data[columnOrder.indexOf(model.linkReference.referencedColumnNames[0])]);
+    } else {
+      HashMap<String, dynamic> dataMap = HashMap<String, dynamic>();
+
+      for (int i = 0; i < model.linkReference.columnNames.length; i++) {
+        String columnName = model.linkReference.columnNames[i];
+        String referencedColumnName = model.linkReference.referencedColumnNames[i];
+
+        dataMap[columnName] = data[columnOrder.indexOf(referencedColumnName)];
+      }
+
+      Navigator.of(context).pop(dataMap);
+    }
   }
 
   void startTimerValueChanged(dynamic value) {
@@ -187,13 +194,28 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {
-    if (index == 0) {
-      return SizedBox(
-        height: 50,
-        child: Row(
-          children: model.linkReference.referencedColumnNames.map((e) => Text(e)).toList(),
-        ),
-      );
+    int dataIndex = index;
+    if (hasHeader()) {
+      if (index == 0) {
+        return SizedBox(
+          height: 50,
+          child: Row(
+            children: columnNamesToSubscribe()
+                .map(
+                  (e) => Expanded(
+                    child: Text(
+                      e,
+                      style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      } else {
+        //Decrease by one because of the header
+        dataIndex--;
+      }
     }
     if (_chunkData == null) {
       return const SizedBox(
@@ -204,14 +226,30 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       );
     }
 
-    List<dynamic> data = _chunkData!.data[index - 1]!;
+    List<dynamic> data = _chunkData!.data[dataIndex]!;
+
+    List<Widget> rowWidgets = [];
+
+    List<String> columnNamesOrder = columnNamesToSubscribe();
+
+    for (String columnName in columnNamesToShow()) {
+      int columnIndex = columnNamesOrder.indexOf(columnName);
+      rowWidgets.add(
+        Expanded(
+          child: Text(
+            (data[columnIndex] ?? '').toString(),
+            style: const TextStyle(fontSize: 14.0, color: Colors.black),
+          ),
+        ),
+      );
+    }
 
     return GestureDetector(
-      onTap: () => _onRowTapped(index - 1),
+      onTap: () => _onRowTapped(dataIndex),
       child: SizedBox(
         height: 50,
         child: Row(
-          children: data.map((e) => Text((e ?? "").toString())).toList(),
+          children: rowWidgets,
         ),
       ),
     );
@@ -226,24 +264,26 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
           ),
           child: ListTile(title: Row(children: children)));
     } else {
+      // ignore: avoid_unnecessary_containers
       return Container(
-          child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => _onRowTapped(index),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
-              child: Row(children: children),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () => _onRowTapped(index),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                child: Row(children: children),
+              ),
             ),
-          ),
-          const Divider(
-            color: Colors.grey,
-            indent: 10,
-            endIndent: 10,
-            thickness: 0.5,
-          )
-        ],
-      ));
+            const Divider(
+              color: Colors.grey,
+              indent: 10,
+              endIndent: 10,
+              thickness: 0.5,
+            )
+          ],
+        ),
+      );
     }
   }
 
@@ -268,4 +308,31 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
     }
     return true;
   }
+
+  List<String> columnNamesToShow() {
+    if (model.displayReferencedColumnName != null) {
+      return [model.displayReferencedColumnName!];
+    } else if ((model.columnView?.columnCount ?? 0) > 1) {
+      return model.columnView!.columnNames;
+    } else {
+      return model.linkReference.referencedColumnNames;
+    }
+  }
+
+  List<String> columnNamesToSubscribe() {
+    Set<String> columnNames = <String>{};
+
+    if (model.columnView != null) {
+      columnNames.addAll(model.columnView!.columnNames);
+    }
+
+    if (model.displayReferencedColumnName != null) {
+      columnNames.add(model.displayReferencedColumnName!);
+    }
+
+    columnNames.addAll(model.linkReference.referencedColumnNames);
+    return columnNames.toList();
+  }
+
+  bool hasHeader() => columnNamesToShow().length > 1;
 }

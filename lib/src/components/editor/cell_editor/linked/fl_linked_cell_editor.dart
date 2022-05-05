@@ -51,6 +51,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   @override
   void setValue(dynamic pValue) {
     _value = pValue;
+
     if (pValue == null) {
       textController.clear();
     } else {
@@ -72,8 +73,8 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     return FlLinkedEditorWidget(
       model: widgetModel,
-      endEditing: (_) {},
-      valueChanged: (_) {},
+      endEditing: onEndEditing,
+      valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
       onPress: openLinkedCellPicker,

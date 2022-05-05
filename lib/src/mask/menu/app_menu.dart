@@ -66,13 +66,12 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
         endDrawer: DrawerMenu(),
         appBar: AppBar(
           title: const Text("Menu"),
-          centerTitle: true,
+          centerTitle: false,
           actions: [
             Builder(
-                builder: (context)  => IconButton(
-                    onPressed: () => Scaffold.of(context).openEndDrawer(),
-                    icon: const FaIcon(FontAwesomeIcons.bitcoin)
-                ),
+              builder: (context) => IconButton(
+                  onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
             ),
           ],
         ),

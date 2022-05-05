@@ -19,15 +19,6 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  ButtonStyle getButtonStyle() {
-    return ButtonStyle(
-      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
-      backgroundColor: model.background != null ? MaterialStateProperty.all(model.background) : null,
-      padding: MaterialStateProperty.all(model.paddings),
-    );
-  }
-
-  @override
   BoxDecoration? getBoxDecoration(BuildContext pContext) {
     return BoxDecoration(
       // 0x00000000 -> completely invisible shadow.

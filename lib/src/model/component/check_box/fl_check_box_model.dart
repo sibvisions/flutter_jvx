@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../layout/alignments.dart';
-import '../button/fl_toggle_button_model.dart';
+import '../button/fl_radio_button_model.dart';
 
 /// The model of a checkbox
-class FlCheckBoxModel extends FlToggleButtonModel {
+class FlCheckBoxModel extends FlRadioButtonModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

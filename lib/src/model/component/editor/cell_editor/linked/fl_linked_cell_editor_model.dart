@@ -13,6 +13,25 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
 
   ColumnView? columnView;
 
+  dynamic additionalCondition;
+
+  String? displayReferencedColumnName;
+
+  String? displayConcatMask;
+
+  String? searchColumnMapping;
+
+  bool searchTextAnywhere = true;
+
+  bool searchInAllTableColumns = false;
+
+  bool sortByColumnName = false;
+
+  bool tableHeaderVisible = true;
+
+  bool validationEnabled = true;
+
+  bool doNotClearColumnNames = true;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,6 +48,11 @@ class FlLinkedCellEditorModel extends ICellEditorModel {
     var jsonColumnView = pJson[ApiObjectProperty.columnView];
     if (jsonColumnView != null) {
       columnView = ColumnView.fromJson(jsonColumnView);
+    }
+
+    var jsonDisplayReferencedColumnName = pJson[ApiObjectProperty.displayReferencedColumnName];
+    if (jsonDisplayReferencedColumnName != null) {
+      displayReferencedColumnName = jsonDisplayReferencedColumnName;
     }
   }
 }
