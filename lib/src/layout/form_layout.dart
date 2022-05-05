@@ -73,8 +73,6 @@ class FormLayout extends ILayout {
 
   @override
   void calculateLayout(LayoutData pParent, List<LayoutData> pChildren) {
-    /// Size set by Parent
-
     /// Component constraints
     HashMap<String, FormLayoutConstraints> componentConstraints = _getComponentConstraints(pChildren, anchors);
 
@@ -89,6 +87,7 @@ class FormLayout extends ILayout {
         pPreferredMinimumSize: formLayoutSize,
         pGaps: gaps);
 
+    /// Size set by Parent
     Size calcSize = _getSize(pParent, formLayoutSize);
 
     _calculateTargetDependentAnchors(
@@ -367,7 +366,7 @@ class FormLayout extends ILayout {
       required LayoutData pParent}) {
     /// ToDo SetSizes from server
     Size maxLayoutSize = pParent.maxSize ?? const Size.square(double.maxFinite);
-    Size minLayoutSize = const Size(50, 50);
+    Size minLayoutSize = pParent.minSize ?? const Size.square(0);
 
     /// Available Size, set to setSize from parent by default
     Size calcSize = pGivenSize ?? Size(pMinPrefSize.preferredWidth, pMinPrefSize.preferredHeight);
