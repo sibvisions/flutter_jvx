@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
+import 'package:flutter_client/src/model/component/editor/cell_editor/date/fl_date_editor_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWidget<T> {
+class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<T> {
   final VoidCallback? onPress;
 
-  const FlLinkedEditorWidget({
+  const FlDateEditorWidget({
     Key? key,
     this.onPress,
     required T model,
@@ -20,8 +20,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
             valueChanged: valueChanged,
             endEditing: endEditing,
             focusNode: focusNode,
-            textController: textController,
-            keyboardType: TextInputType.none);
+            textController: textController);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
       child: Padding(
         padding: iconPadding,
         child: Icon(
-          FontAwesomeIcons.sortDown,
+          FontAwesomeIcons.calendar,
           size: iconSize,
         ),
       ),

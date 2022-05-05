@@ -1,5 +1,5 @@
-import '../../../api/api_object_property.dart';
-import 'cell_editor_model.dart';
+import '../../../../api/api_object_property.dart';
+import '../cell_editor_model.dart';
 
 class FlDateCellEditorModel extends ICellEditorModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

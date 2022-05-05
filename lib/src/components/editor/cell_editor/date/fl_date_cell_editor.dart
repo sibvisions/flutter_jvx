@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_editor_widget.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
+import 'package:flutter_client/src/model/component/editor/cell_editor/date/fl_date_editor_model.dart';
 import 'package:intl/intl.dart';
 
-import '../../../model/component/editor/cell_editor/fl_date_cell_editor_model.dart';
-import '../../../model/component/label/fl_label_model.dart';
-import '../../../model/data/column_definition.dart';
-import '../../label/fl_label_widget.dart';
-import 'i_cell_editor.dart';
+import '../../../../model/component/label/fl_label_model.dart';
+import '../../../../model/data/column_definition.dart';
+import '../i_cell_editor.dart';
 
 class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,6 +15,12 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dynamic _value;
+
+  TextEditingController textController = TextEditingController();
+
+  FocusNode focusNode = FocusNode();
+
+  VoidCallback? imageLoadingCallback;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -24,13 +31,22 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
+    this.imageLoadingCallback,
   }) : super(
           id: id,
           model: FlDateCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
-        );
+        ) {
+    focusNode.addListener(
+      () {
+        if (focusNode.hasFocus) {
+          openDatePicker();
+        }
+      },
+    );
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -39,37 +55,52 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   @override
   void setValue(dynamic pValue) {
     _value = pValue;
+
+    if (pValue == null) {
+      textController.clear();
+    } else {
+      if (pValue is! String) {
+        pValue = DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(pValue));
+      }
+
+      textController.value = textController.value.copyWith(
+        text: pValue,
+        selection: TextSelection.collapsed(offset: pValue.characters.length),
+        composing: null,
+      );
+    }
+
+    imageLoadingCallback?.call();
   }
 
   @override
-  FlLabelWidget getWidget(BuildContext pContext) {
-    FlLabelModel widgetModel = FlLabelModel();
+  FlDateEditorWidget getWidget(BuildContext pContext) {
+    FlDateEditorModel widgetModel = FlDateEditorModel();
 
-    if (_value != null) {
-      widgetModel.text = DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(_value!));
-    }
-
-    return FlLabelWidget(
+    return FlDateEditorWidget(
       model: widgetModel,
-      forceBorder: true,
-      onPress: () => openDatePicker(pContext),
+      endEditing: onEndEditing,
+      valueChanged: onValueChange,
+      textController: textController,
+      focusNode: focusNode,
+      onPress: () => openDatePicker(),
     );
   }
 
-  void openDatePicker(BuildContext pContext) {
+  void openDatePicker() {
     FocusManager.instance.primaryFocus?.unfocus();
 
     // TODO locale
     if (model.isDateEditor && model.isTimeEditor) {
-      _openDateAndTimeEditors(pContext);
+      _openDateAndTimeEditors();
     } else if (model.isDateEditor) {
-      _openDateEditor(pContext);
+      _openDateEditor();
     } else if (model.isTimeEditor) {
-      _openTimeEditor(pContext);
+      _openTimeEditor();
     }
   }
 
-  void _openDateAndTimeEditors(BuildContext pContext) {
+  void _openDateAndTimeEditors() {
     bool cancelled = false;
     dynamic originalValue = _value;
 
@@ -114,7 +145,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     });
   }
 
-  void _openDateEditor(BuildContext pContext) {
+  void _openDateEditor() {
     uiService
         .openDialog(
             pDialogWidget: DatePickerDialog(
@@ -131,7 +162,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     });
   }
 
-  void _openTimeEditor(BuildContext pContext) {
+  void _openTimeEditor() {
     uiService
         .openDialog(
             pDialogWidget: TimePickerDialog(
@@ -151,7 +182,8 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
 
   @override
   void dispose() {
-    // Do nothing
+    focusNode.dispose();
+    textController.dispose();
   }
 
   @override
@@ -202,9 +234,5 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
       0,
       0,
     ).millisecondsSinceEpoch;
-  }
-
-  void _setDateTime(DateTime dateTime) {
-    _value = dateTime.millisecondsSinceEpoch;
   }
 }
