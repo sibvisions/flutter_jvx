@@ -29,10 +29,10 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
   }
 
   @override
-  Widget? get suffixIcon {
-    Widget? oldSuffix = super.suffixIcon;
+  List<Widget> getSuffixItems() {
+    List<Widget> oldSuffixItems = super.getSuffixItems();
 
-    Widget suffix = Align(
+    oldSuffixItems.add(Align(
       widthFactor: 1,
       alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
       child: Padding(
@@ -42,15 +42,8 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
           size: iconSize,
         ),
       ),
-    );
+    ));
 
-    if (oldSuffix == null) {
-      return suffix;
-    } else {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [oldSuffix, suffix],
-      );
-    }
+    return oldSuffixItems;
   }
 }

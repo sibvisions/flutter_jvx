@@ -32,7 +32,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   EdgeInsets get textPadding => const EdgeInsets.only(left: 12);
 
-  EdgeInsets get iconPadding => const EdgeInsets.only(right: 5);
+  EdgeInsets get iconPadding => const EdgeInsets.only(right: 15);
 
   int? get minLines => null;
 
@@ -48,7 +48,9 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   String get obscuringCharacter => '•';
 
-  Widget? get suffixIcon => ((!model.isReadOnly) && textController.text.isNotEmpty) ? getClearIcon() : null;
+  bool get showSuffixIcon => true;
+
+  bool get hasSuffixItems => getSuffixItems().isNotEmpty;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -85,7 +87,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           hintText: model.placeholder,
           contentPadding: textPadding,
           border: InputBorder.none,
-          suffixIcon: suffixIcon,
+          suffixIcon: getSuffixIcon(),
         ),
         textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
         textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
@@ -113,6 +115,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Widget? getClearIcon() {
+    if (textController.text.isEmpty) {
+      return null;
+    }
+
     return Align(
       widthFactor: 1,
       alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
@@ -135,6 +141,29 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
           ),
         ),
       ),
+    );
+  }
+
+  List<Widget> getSuffixItems() {
+    List<Widget> icons = [];
+
+    Widget? clearIcon = getClearIcon();
+    if (clearIcon != null) {
+      icons.add(clearIcon);
+    }
+
+    return icons;
+  }
+
+  Widget? getSuffixIcon() {
+    if (!showSuffixIcon || !hasSuffixItems) {
+      return null;
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: getSuffixItems(),
     );
   }
 }
