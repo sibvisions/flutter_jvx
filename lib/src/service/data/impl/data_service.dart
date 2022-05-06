@@ -177,6 +177,13 @@ class DataService implements IDataService {
     required String pDataProvider,
     required int pNewSelectedRow,
   }) async {
-    return false;
+    // get databook, if null return false
+    DataBook? dataBook = dataBooks[pDataProvider];
+    if (dataBook == null) {
+      return false;
+    }
+    // set selected row
+    dataBook.selectedRow = pNewSelectedRow;
+    return true;
   }
 }

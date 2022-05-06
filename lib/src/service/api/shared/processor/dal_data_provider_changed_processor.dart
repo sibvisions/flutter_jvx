@@ -11,6 +11,7 @@ class DalDataProviderChangedProcessor extends IProcessor<DataProviderChangedResp
     List<BaseCommand> commands = [];
 
     // If -1 then delete all saved data and re-fetch
+
     if (pResponse.reload == -1) {
       DeleteProviderDataCommand deleteProviderDataCommand = DeleteProviderDataCommand(
         dataProvider: pResponse.dataProvider,
