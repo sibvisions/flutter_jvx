@@ -19,6 +19,8 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   FocusNode focusNode = FocusNode();
 
+  VoidCallback? imageLoadingCallback;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,6 +30,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
+    this.imageLoadingCallback,
   }) : super(
           id: id,
           model: FlLinkedCellEditorModel(),
@@ -65,6 +68,8 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
         composing: null,
       );
     }
+
+    imageLoadingCallback?.call();
   }
 
   @override
