@@ -85,8 +85,8 @@ class OnlineApiRepository implements IRepository {
       return response
           .then((response) => response.body)
           .then(_caseResponses)
-          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses));
-      // .onError((error, stackTrace) => [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error)]);
+          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses))
+          .onError((error, stackTrace) => [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error)]);
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
