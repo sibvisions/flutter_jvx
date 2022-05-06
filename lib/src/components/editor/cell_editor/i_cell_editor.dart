@@ -126,11 +126,11 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
             imageLoadingCallback: pRecalculateSize);
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
-          id: pId,
-          pCellEditorJson: pCellEditorJson,
-          onChange: onChange,
-          onEndEditing: onEndEditing,
-        );
+            id: pId,
+            pCellEditorJson: pCellEditorJson,
+            onChange: onChange,
+            onEndEditing: onEndEditing,
+            imageLoadingCallback: pRecalculateSize);
 
       default:
         return FlDummyCellEditor(id: pId, pCellEditorJson: pCellEditorJson);
