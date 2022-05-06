@@ -1,17 +1,16 @@
-import 'package:flutter_client/src/model/api/response/data_provider_changed_response.dart';
+import 'package:flutter_client/src/model/api/response/dal_data_provider_changed_response.dart';
 import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
 import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
 import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 
-class DalDataProviderChangedProcessor extends IProcessor<DataProviderChangedResponse> {
+class DalDataProviderChangedProcessor extends IProcessor<DalDataProviderChangedResponse> {
   @override
-  List<BaseCommand> processResponse({required DataProviderChangedResponse pResponse}) {
+  List<BaseCommand> processResponse({required DalDataProviderChangedResponse pResponse}) {
     List<BaseCommand> commands = [];
 
     // If -1 then delete all saved data and re-fetch
-
     if (pResponse.reload == -1) {
       DeleteProviderDataCommand deleteProviderDataCommand = DeleteProviderDataCommand(
         dataProvider: pResponse.dataProvider,

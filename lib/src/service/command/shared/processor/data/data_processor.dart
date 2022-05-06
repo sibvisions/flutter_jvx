@@ -34,6 +34,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
 
   final ChangeSelectedRowCommandProcessor _changeSelectedRowCommandProcessor = ChangeSelectedRowCommandProcessor();
 
+  // final DalDataProviderChangedProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
+
   @override
   Future<List<BaseCommand>> processCommand(DataCommand command) async {
     if (command is SaveMetaDataCommand) {
@@ -49,6 +51,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
     } else if (command is ChangeSelectedRowCommand) {
       return _changeSelectedRowCommandProcessor.processCommand(command);
     }
+    // else if (command is DataPro)
 
     return [];
   }

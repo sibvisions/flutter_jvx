@@ -1,7 +1,7 @@
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/response/api_response.dart';
 
-class DataProviderChangedResponse extends ApiResponse {
+class DalDataProviderChangedResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +42,7 @@ class DataProviderChangedResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataProviderChangedResponse({
+  DalDataProviderChangedResponse({
     required this.dataProvider,
     this.reload,
     this.columnNames,
@@ -56,16 +56,16 @@ class DataProviderChangedResponse extends ApiResponse {
     required String name,
   }) : super(name: name);
 
-  DataProviderChangedResponse.fromJson({required Map<String, dynamic> json})
-      : dataProvider = json[ApiObjectProperty.dataProvider],
-        reload = json[ApiObjectProperty.reload],
-        columnNames = json[ApiObjectProperty.columnNames],
-        selectedRow = json[ApiObjectProperty.selectedRow],
-        changedColumnNames = json[ApiObjectProperty.changedColumnNames],
-        changedValues = json[ApiObjectProperty.changedValues],
-        deleteEnabled = json[ApiObjectProperty.deleteEnabled],
-        insertEnabled = json[ApiObjectProperty.deleteEnabled],
-        readOnly = json[ApiObjectProperty.readOnly],
-        updateEnabled = json[ApiObjectProperty.updateEnabled],
-        super.fromJson(json);
+  DalDataProviderChangedResponse.fromJson({required Map<String, dynamic> pJson})
+      : dataProvider = pJson[ApiObjectProperty.dataProvider],
+        reload = pJson[ApiObjectProperty.reload],
+        columnNames = pJson[ApiObjectProperty.columnNames],
+        selectedRow = pJson[ApiObjectProperty.selectedRow],
+        changedColumnNames = pJson[ApiObjectProperty.changedColumnNames].cast<String>(),
+        changedValues = pJson[ApiObjectProperty.changedValues],
+        deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
+        insertEnabled = pJson[ApiObjectProperty.deleteEnabled],
+        readOnly = pJson[ApiObjectProperty.readOnly],
+        updateEnabled = pJson[ApiObjectProperty.updateEnabled],
+        super.fromJson(pJson);
 }

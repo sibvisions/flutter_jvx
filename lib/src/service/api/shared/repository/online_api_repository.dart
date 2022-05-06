@@ -9,6 +9,7 @@ import 'package:flutter_client/src/model/api/response/api_response.dart';
 import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
 import 'package:flutter_client/src/model/api/response/application_parameter_response.dart';
 import 'package:flutter_client/src/model/api/response/close_screen_response.dart';
+import 'package:flutter_client/src/model/api/response/dal_data_provider_changed_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/api/response/error_response.dart';
@@ -27,34 +28,24 @@ typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJ
 
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData :
-        ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
-    ApiResponseNames.applicationParameters :
-        ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
-    ApiResponseNames.closeScreen :
-        ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
-    ApiResponseNames.dalFetch :
-        ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
-    ApiResponseNames.menu :
-        ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
-    ApiResponseNames.screenGeneric :
-        ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
-    ApiResponseNames.dalMetaData :
-        ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson),
-    ApiResponseNames.userData :
-        ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
-    ApiResponseNames.login :
-        ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
-    ApiResponseNames.error :
-        ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
-    ApiResponseNames.sessionExpired :
-        ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
+    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
+    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
+    ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
+    ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
+    ApiResponseNames.menu: ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
+    ApiResponseNames.screenGeneric: ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
+    ApiResponseNames.dalMetaData: ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson),
+    ApiResponseNames.userData: ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
+    ApiResponseNames.login: ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
+    ApiResponseNames.error: ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
+    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
+    ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
+        DalDataProviderChangedResponse.fromJson(pJson: pJson),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,10 +54,13 @@ class OnlineApiRepository implements IRepository {
 
   /// Api config for remote endpoints and url
   ApiConfig apiConfig;
+
   /// Http client for outside connection
   final Client client = Client();
+
   /// Header fields, used for sessionId
   final Map<String, String> _headers = {};
+
   /// Maps response names with a corresponding factory
   late final Map<String, ResponseFactory> responseFactoryMap = Map.from(maps);
 
@@ -86,14 +80,13 @@ class OnlineApiRepository implements IRepository {
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
     Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
 
-    if(uri != null) {
+    if (uri != null) {
       var response = _sendPostRequest(uri, jsonEncode(pRequest));
       return response
           .then((response) => response.body)
           .then(_caseResponses)
           .then((jsonResponses) => _responseParser(pJsonList: jsonResponses))
           .onError((error, stackTrace) => [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error)]);
-
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
@@ -103,11 +96,9 @@ class OnlineApiRepository implements IRepository {
   Future<Uint8List> downloadImages({required ApiDownloadImagesRequest pRequest}) {
     Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
 
-    if(uri != null) {
+    if (uri != null) {
       var response = _sendPostRequest(uri, jsonEncode(pRequest));
-      return response
-          .then((response) => response.bodyBytes);
-
+      return response.then((response) => response.bodyBytes);
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
@@ -129,7 +120,7 @@ class OnlineApiRepository implements IRepository {
     HttpHeaders.contentTypeHeader;
     Future<Response> res = client.post(uri, headers: _headers, body: body);
     res.then(_extractCookie);
-    return res.timeout(const Duration(seconds : 10));
+    return res.timeout(const Duration(seconds: 10));
   }
 
   /// Check if response is an error, an error does not come as array, returns
@@ -137,7 +128,7 @@ class OnlineApiRepository implements IRepository {
   Future<List<dynamic>> _caseResponses(String pBody) async {
     var response = jsonDecode(pBody);
 
-    if(response is List<dynamic>){
+    if (response is List<dynamic>) {
       return response;
     } else {
       return [response];
@@ -156,14 +147,13 @@ class OnlineApiRepository implements IRepository {
     }
   }
 
-
   List<ApiResponse> _responseParser({required List<dynamic> pJsonList}) {
     List<ApiResponse> returnList = [];
 
-    for(dynamic responseItem in pJsonList) {
+    for (dynamic responseItem in pJsonList) {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
-      if(builder != null) {
+      if (builder != null) {
         returnList.add(builder(pJson: responseItem));
       } else {
         // returnList.add(ErrorResponse(message: "Could not find builder for ${responseItem[ApiObjectProperty.name]}", name: ApiResponseNames.error));
@@ -172,8 +162,4 @@ class OnlineApiRepository implements IRepository {
 
     return returnList;
   }
-
-
-
-
 }
