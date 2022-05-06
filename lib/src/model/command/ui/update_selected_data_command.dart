@@ -25,14 +25,14 @@ class UpdateSelectedDataCommand extends UiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UpdateSelectedDataCommand(
-      {required this.dataProvider,
-      required String reason,
-      required this.componentId,
-      required this.data,
-      required this.columnName,
-      required this.columnDefinition})
-      : super(reason: reason);
+  UpdateSelectedDataCommand({
+    required this.dataProvider,
+    required String reason,
+    required this.componentId,
+    required this.data,
+    required this.columnName,
+    required this.columnDefinition,
+  }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
