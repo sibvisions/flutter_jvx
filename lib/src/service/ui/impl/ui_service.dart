@@ -356,6 +356,12 @@ class UiService with CommandServiceMixin implements IUiService {
         }
       }
     }
+
+    List<ChunkSubscription> subs = _registeredDataChunks.where((element) => element.dataProvider == pDataProvider).toList();
+
+    for (ChunkSubscription sub in subs) {
+      registerDataChunk(chunkSubscription: sub);
+    }
   }
 
   @override

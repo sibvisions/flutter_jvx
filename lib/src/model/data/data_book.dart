@@ -77,6 +77,11 @@ class DataBook {
     for (int i = 0; i < pFetchResponse.records.length; i++) {
       records[i + pFetchResponse.from] = pFetchResponse.records[i];
     }
+
+    // Remove values with higher index if all records are fetched (clean old data)
+    if (isAllFetched) {
+      records.removeWhere((key, value) => key > pFetchResponse.to);
+    }
   }
 
   /// Get data of the column of the currently selected row
