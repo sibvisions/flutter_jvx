@@ -24,6 +24,9 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   /// The id of the component this cell editor is part of.
   String id;
 
+  /// The name of the component this cell editor is part of.
+  String name;
+
   /// The cell editor model
   T model;
 
@@ -37,6 +40,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   ICellEditor({
     required this.id,
+    required this.name,
     required this.model,
     required Map<String, dynamic> pCellEditorJson,
     required this.onValueChange,
@@ -74,6 +78,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   /// Returns a [ICellEditor] based on the cell editor class name
   static ICellEditor getCellEditor({
     required String pId,
+    required String pName,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
@@ -85,6 +90,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
         return FlTextCellEditor(
           id: pId,
+          name: pName,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
@@ -92,6 +98,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
           id: pId,
+          name: pName,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
@@ -99,6 +106,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
           id: pId,
+          name: pName,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
@@ -106,6 +114,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
             id: pId,
+            name: pName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
@@ -113,6 +122,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
             id: pId,
+            name: pName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
@@ -120,6 +130,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
             id: pId,
+            name: pName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
@@ -127,13 +138,14 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
             id: pId,
+            name: pName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
             imageLoadingCallback: pRecalculateSize);
 
       default:
-        return FlDummyCellEditor(id: pId, pCellEditorJson: pCellEditorJson);
+        return FlDummyCellEditor(id: pId, name: pName, pCellEditorJson: pCellEditorJson);
     }
   }
 }

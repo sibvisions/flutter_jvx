@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/command/api/filter_command.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
 import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
@@ -11,9 +12,11 @@ import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
 class FlLinkedCellPicker extends StatefulWidget {
   final String id;
 
+  final String name;
+
   final FlLinkedCellEditorModel model;
 
-  const FlLinkedCellPicker({required this.id, required this.model, Key? key}) : super(key: key);
+  const FlLinkedCellPicker({required this.id, required this.name, required this.model, Key? key}) : super(key: key);
 
   @override
   _FlLinkedCellPickerState createState() => _FlLinkedCellPickerState();
@@ -179,9 +182,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
     }
   }
 
-  void startTimerValueChanged(dynamic value) {
+  void startTimerValueChanged(String value) {
     lastChangedFilter = value;
-    if (filterTimer != null && filterTimer!.isActive) {
+
+    if (filterTimer != null) {
       filterTimer!.cancel();
     }
 
@@ -189,8 +193,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void onTextFieldValueChanged() {
-    // TODO, set filter
-    lastChangedFilter;
+    uiService.sendCommand(FilterCommand(
+        editorId: widget.name,
+        value: lastChangedFilter,
+        dataProvider: widget.model.linkReference.dataProvider,
+        reason: "Filtered the linked cell picker"));
   }
 
   Widget itemBuilder(BuildContext ctxt, int index) {

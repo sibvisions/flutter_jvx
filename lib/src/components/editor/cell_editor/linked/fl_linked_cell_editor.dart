@@ -27,12 +27,14 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   FlLinkedCellEditor({
     required String id,
+    required String name,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     this.imageLoadingCallback,
   }) : super(
           id: id,
+          name: name,
           model: FlLinkedCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -94,6 +96,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
             pDialogWidget: FlLinkedCellPicker(
               model: model,
               id: id,
+              name: name,
             ),
             pIsDismissible: true)
         .then((value) {

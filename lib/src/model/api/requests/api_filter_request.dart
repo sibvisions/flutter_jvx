@@ -39,9 +39,10 @@ class ApiFilterRequest implements IApiRequest {
 
   @override
   Map<String, dynamic> toJson() => {
+        ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.columnNames: columnNames,
         ApiObjectProperty.value: value,
-        ApiObjectProperty.filterCondition: filterCondition,
+        ApiObjectProperty.filterCondition: filterCondition?.toJson(),
         ApiObjectProperty.editorComponentId: editorComponentId,
         ApiObjectProperty.dataProvider: dataProvider,
       };

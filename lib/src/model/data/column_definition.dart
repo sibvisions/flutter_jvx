@@ -56,7 +56,7 @@ class ColumnDefinition {
   bool movable = true;
 
   /// The cell editor of this column.
-  ICellEditor cellEditor = FlDummyCellEditor(id: "", pCellEditorJson: {});
+  ICellEditor cellEditor = FlDummyCellEditor(id: "", name: "", pCellEditorJson: {});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information

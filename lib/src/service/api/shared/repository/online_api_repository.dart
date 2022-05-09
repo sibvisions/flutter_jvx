@@ -33,8 +33,10 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
-    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
+    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) =>
+        ApplicationMetaDataResponse.fromJson(pJson),
+    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) =>
+        ApplicationParametersResponse.fromJson(pJson),
     ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
     ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
     ApiResponseNames.menu: ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
@@ -43,7 +45,8 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.userData: ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
     ApiResponseNames.login: ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
     ApiResponseNames.error: ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
-    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
+    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) =>
+        SessionExpiredResponse.fromJson(pJson: pJson),
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson),
   };
@@ -86,7 +89,10 @@ class OnlineApiRepository implements IRepository {
           .then((response) => response.body)
           .then(_caseResponses)
           .then((jsonResponses) => _responseParser(pJsonList: jsonResponses))
-          .onError((error, stackTrace) => [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error)]);
+          .onError((error, stackTrace) => [
+                ErrorResponse(
+                    message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)
+              ]);
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }

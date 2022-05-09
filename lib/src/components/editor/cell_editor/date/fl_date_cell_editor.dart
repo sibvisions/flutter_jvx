@@ -28,12 +28,14 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
 
   FlDateCellEditor({
     required String id,
+    required String name,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     this.imageLoadingCallback,
   }) : super(
           id: id,
+          name: name,
           model: FlDateCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,

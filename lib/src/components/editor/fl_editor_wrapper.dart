@@ -48,7 +48,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   ICellEditor? oldCellEditor;
 
   /// The currently used cell editor.
-  ICellEditor cellEditor = FlDummyCellEditor(id: "", pCellEditorJson: {});
+  ICellEditor cellEditor = FlDummyCellEditor(id: "", name: "", pCellEditorJson: {});
 
   /// The value to send to the server on sendValue.
   dynamic _toSendValue;
@@ -251,6 +251,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     if (jsonCellEditor != null) {
       cellEditor = ICellEditor.getCellEditor(
           pId: pModel.id,
+          pName: pModel.name,
           pCellEditorJson: jsonCellEditor,
           onChange: onChange,
           onEndEditing: onEndEditing,

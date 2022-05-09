@@ -22,11 +22,13 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
 
   FlCheckBoxCellEditor({
     required String id,
+    required String name,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
   }) : super(
           id: id,
+          name: name,
           model: FlCheckBoxCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
