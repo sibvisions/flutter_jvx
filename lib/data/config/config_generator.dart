@@ -19,7 +19,7 @@ class ConfigGenerator {
       navigation: "/api/navigation",
       fetch: "/api/dal/fetch",
       logout: "/api/logout",
-      filter: "/dal/filter",
+      filter: "api/dal/filter",
     );
   }
 
