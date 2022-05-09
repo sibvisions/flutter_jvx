@@ -18,6 +18,8 @@ class ConfigGenerator {
       resetPassword: "/api/resetPassword",
       navigation: "/api/navigation",
       fetch: "/api/dal/fetch",
+      logout: "/api/logout",
+      filter: "/dal/filter",
     );
   }
 

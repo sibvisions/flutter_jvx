@@ -3,7 +3,9 @@ import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_login_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_logout_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_open_tab_request.dart';
@@ -51,6 +53,8 @@ class ApiConfig {
       ApiResetPasswordRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.resetPassword),
       ApiNavigationRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.navigation),
       ApiFetchRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.fetch),
+      ApiLogoutRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.logout),
+      ApiFilterRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.filter),
     };
   }
 
@@ -70,6 +74,8 @@ class ApiConfig {
       ApiResetPasswordRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.resetPassword),
       ApiNavigationRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.navigation),
       ApiFetchRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.fetch),
+      ApiLogoutRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.logout),
+      ApiFilterRequest: Uri.parse(urlConfig.getBasePath() + endpointConfig.filter),
     };
   }
 }

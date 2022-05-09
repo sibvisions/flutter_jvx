@@ -13,6 +13,8 @@ class EndpointConfig {
   final String resetPassword;
   final String navigation;
   final String fetch;
+  final String logout;
+  final String filter;
 
   EndpointConfig({
     required this.startup,
@@ -29,5 +31,7 @@ class EndpointConfig {
     required this.resetPassword,
     required this.navigation,
     required this.fetch,
+    required this.logout,
+    required this.filter,
   });
 }
