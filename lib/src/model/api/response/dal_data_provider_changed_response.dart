@@ -61,7 +61,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
         reload = pJson[ApiObjectProperty.reload],
         columnNames = pJson[ApiObjectProperty.columnNames],
         selectedRow = pJson[ApiObjectProperty.selectedRow],
-        changedColumnNames = pJson[ApiObjectProperty.changedColumnNames].cast<String>(),
+        changedColumnNames = pJson[ApiObjectProperty.changedColumnNames]?.cast<String>(),
         changedValues = pJson[ApiObjectProperty.changedValues],
         deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
         insertEnabled = pJson[ApiObjectProperty.deleteEnabled],

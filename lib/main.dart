@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   final _routerDelegate = BeamerDelegate(
-    initialPath: "/login",
+    initialPath: "/login/manual",
     locationBuilder: BeamerLocationBuilder(
       beamLocations: [
         LoginLocation(),

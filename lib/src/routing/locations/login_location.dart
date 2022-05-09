@@ -34,5 +34,5 @@ class LoginLocation extends BeamLocation<BeamState> with UiServiceMixin {
   }
 
   @override
-  List<Pattern> get pathPatterns => ["/login", "/login/lostPassword", "/login/changeOneTimePassword"];
+  List<Pattern> get pathPatterns => ["/login/manual", "/login/lostPassword", "/login/changeOneTimePassword"];
 }

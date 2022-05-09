@@ -88,11 +88,8 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void routeToLogin({String? mode}) {
-    String path = "/login";
-    if (mode != null) {
-      path = "$path/$mode";
-    }
+  void routeToLogin({String mode = "manual"}) {
+    String path = "/login/$mode";
 
     if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
       _currentBuildContext!.beamToReplacementNamed(path);
@@ -103,7 +100,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void routeToSettings() {
-    _currentBuildContext!.beamToNamed("/settings");
+    _currentBuildContext!.beamToNamed("/setting");
   }
 
   @override
@@ -247,8 +244,8 @@ class UiService with CommandServiceMixin implements IUiService {
       _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId] = pColumnDefinitionCallback;
     }
 
-    GetSelectedDataCommand command = GetSelectedDataCommand(
-        reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
+    GetSelectedDataCommand command =
+        GetSelectedDataCommand(reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
     sendCommand(command);
   }
 
