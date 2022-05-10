@@ -38,6 +38,8 @@ dependencies:
   auto_size_text: ^3.0.0
     # Used for routing with navigator 2.0
   beamer: ^1.4.0+1
+  flutter_map: ^0.14.0
+  latlong2: ^0.8.1
 
 flutter:
   assets:

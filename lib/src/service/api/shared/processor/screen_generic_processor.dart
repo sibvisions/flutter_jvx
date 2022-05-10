@@ -16,6 +16,7 @@ import '../../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../../model/component/fl_component_model.dart';
 import '../../../../model/component/label/fl_label_model.dart';
+import '../../../../model/component/map/fl_map_model.dart';
 import '../../../../model/component/panel/fl_group_panel_model.dart';
 import '../../../../model/component/panel/fl_panel_model.dart';
 import '../../../../model/component/panel/fl_split_panel_model.dart';
@@ -80,6 +81,7 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
     if (changedComponents.isNotEmpty) {
       return changedComponents;
     }
+    return null;
   }
 
   /// Returns List of new [FlComponentModel] models parsed from json, only components with a [ApiObjectProperty.className] are considered new, if none are found will return null.
@@ -95,6 +97,7 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
     if (models.isNotEmpty) {
       return models;
     }
+    return null;
   }
 
   /// Parses json component into its appropriate [FlComponentModel], which is termite by its [ApiObjectProperty.className].
@@ -157,7 +160,8 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
         model = FlRadioButtonModel();
         break;
       case FlComponentClassname.MAP:
-        continue alsoDefault;
+        model = FlMapModel();
+        break;
       case FlComponentClassname.CHART:
         continue alsoDefault;
       case FlComponentClassname.GAUGE:

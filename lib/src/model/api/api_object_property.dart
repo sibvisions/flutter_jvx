@@ -17,6 +17,7 @@ abstract class ApiObjectProperty {
   static const String bounds = "bounds";
   static const String dividerPosition = "dividerPosition";
   static const String orientation = "orientation";
+
   // Size Data
   static const String preferredSize = "preferredSize";
   static const String minimumSize = "minimumSize";
@@ -39,7 +40,7 @@ abstract class ApiObjectProperty {
   static const String mobileAutoClose = "mobile.autoclose";
   static const String screenTitle = "screen_title_";
   static const String screenNavigationName = "screen_navigationName_";
-  static const String screenModel = "screen_modal_";
+  static const String screenModal = "screen_modal_";
   static const String screenClassName = "screen_className_";
 
   //Common Properties -- these may be used by many different Components
@@ -105,6 +106,11 @@ abstract class ApiObjectProperty {
   static const String not = "not";
   static const String condition = "condition";
   static const String conditions = "conditions";
+  static const String fillColor = "fillColor";
+  static const String tileProvider = "tileProvider";
+  static const String lineColor = "fillColor";
+  static const String groupDataBook = "groupDataBook";
+  static const String pointsDataBook = "pointsDataBook";
 
   //Response Properties
   static const String authenticated = "authenticated";
