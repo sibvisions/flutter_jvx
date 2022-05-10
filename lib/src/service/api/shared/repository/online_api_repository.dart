@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -33,10 +34,8 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) =>
-        ApplicationMetaDataResponse.fromJson(pJson),
-    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) =>
-        ApplicationParametersResponse.fromJson(pJson),
+    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
+    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
     ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
     ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
     ApiResponseNames.menu: ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
@@ -45,8 +44,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.userData: ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
     ApiResponseNames.login: ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
     ApiResponseNames.error: ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
-    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) =>
-        SessionExpiredResponse.fromJson(pJson: pJson),
+    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson),
   };
@@ -81,7 +79,7 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<List<ApiResponse>> sendRequest({required IApiRequest pRequest}) async {
-    Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
+    Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call();
 
     if (uri != null) {
       var response = _sendPostRequest(uri, jsonEncode(pRequest));
@@ -89,10 +87,7 @@ class OnlineApiRepository implements IRepository {
           .then((response) => response.body)
           .then(_caseResponses)
           .then((jsonResponses) => _responseParser(pJsonList: jsonResponses))
-          .onError((error, stackTrace) => [
-                ErrorResponse(
-                    message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)
-              ]);
+          .onError(_handleError);
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
@@ -100,7 +95,7 @@ class OnlineApiRepository implements IRepository {
 
   @override
   Future<Uint8List> downloadImages({required ApiDownloadImagesRequest pRequest}) {
-    Uri? uri = apiConfig.uriMap[pRequest.runtimeType];
+    Uri? uri = apiConfig.uriMap[pRequest.runtimeType]?.call();
 
     if (uri != null) {
       var response = _sendPostRequest(uri, jsonEncode(pRequest));
@@ -113,12 +108,18 @@ class OnlineApiRepository implements IRepository {
   @override
   void setApiConfig({required ApiConfig config}) {
     apiConfig = config;
-    apiConfig.updateUriMap();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Future<List<ApiResponse>> _handleError(Object? error, StackTrace stackTrace) async {
+    if (error is TimeoutException) {
+      return [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+    }
+    return [ErrorResponse(message: "Repository error", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+  }
 
   /// Send post request to remote server, applies timeout.
   Future<Response> _sendPostRequest(Uri uri, String body) async {

@@ -12,13 +12,13 @@ class GetDataChunkCommand extends DataCommand {
   final String dataProvider;
 
   /// List of names of the dataColumns that are being requested
-  final List<String> dataColumns;
+  final List<String>? dataColumns;
 
   /// From which index data is being requested
   final int from;
 
   /// To which index data is being requested
-  final int to;
+  final int? to;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -28,9 +28,9 @@ class GetDataChunkCommand extends DataCommand {
     required String reason,
     required this.dataProvider,
     required this.from,
-    required this.to,
     required this.componentId,
-    required this.dataColumns,
+    this.to,
+    this.dataColumns,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

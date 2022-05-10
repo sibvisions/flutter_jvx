@@ -6,11 +6,8 @@ class ChunkSubscription {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the component
+  /// Unique id of this subscription, used for identification
   final String id;
-
-  /// Callback which will be executed with receiving data.
-  final Function callback;
 
   /// Index from which data will be fetched
   final int from;
@@ -21,8 +18,11 @@ class ChunkSubscription {
   /// Data provider from which data will be fetched
   final String dataProvider;
 
+  /// Callback which will be executed with receiving data.
+  final Function callback;
+
   /// List of column names which should be fetched, return order will correspond to order of this list
-  final List<String> dataColumns;
+  final List<String>? dataColumns;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -30,11 +30,11 @@ class ChunkSubscription {
 
   ChunkSubscription({
     required this.id,
-    required this.from,
     required this.dataProvider,
-    required this.callback,
-    required this.dataColumns,
+    required this.from,
     required this.to,
+    required this.callback,
+    this.dataColumns,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

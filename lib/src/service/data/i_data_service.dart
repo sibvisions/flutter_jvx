@@ -18,17 +18,25 @@ abstract class IDataService {
   /// Returns column data of the selected row of the dataProvider
   Future<dynamic> getSelectedDataColumn({required String pColumnName, required String pDataProvider});
 
-  /// Returns a chunk of data
-  Future<ChunkData> getDataChunk({required List<String> pColumnNames, required int pFrom, required int pTo, required String pDataProvider});
-
   /// Returns the columnDefinition of the provided column in the dataBook
-  Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider});
+  Future<ColumnDefinition> getSelectedColumnDefinition({
+    required String pColumnName,
+    required String pDataProvider,
+  });
+
+  /// Returns a chunk of data
+  Future<ChunkData> getDataChunk({
+    required int pFrom,
+    required String pDataProvider,
+    int? pTo,
+    List<String>? pColumnNames,
+  });
 
   /// Returns true if a fetch for the provided range is possible/necessary to fulfill requested range.
   Future<bool> checkIfFetchPossible({
     required int pFrom,
-    required int pTo,
     required String pDataProvider,
+    int? pTo,
   });
 
   /// Returns true when deletion was successful

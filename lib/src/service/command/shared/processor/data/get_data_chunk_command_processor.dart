@@ -39,7 +39,7 @@ class GetDataChunkCommandProcessor
       dataProvider: command.dataProvider,
       clientId: configService.getClientId()!,
       fromRow: command.from,
-      rowCount: command.to - command.from,
+      rowCount: command.to != null ? command.to! - command.from : -1,
     );
 
     List<BaseCommand> commands = await apiService.sendRequest(request: request);

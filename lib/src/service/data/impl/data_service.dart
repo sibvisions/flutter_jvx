@@ -86,21 +86,42 @@ class DataService implements IDataService {
 
   @override
   Future<ChunkData> getDataChunk({
-    required List<String> pColumnNames,
     required int pFrom,
-    required int pTo,
     required String pDataProvider,
+    int? pTo,
+    List<String>? pColumnNames,
   }) async {
     // Get data from all requested columns
     List<List<dynamic>> columnData = [];
+    List<ColumnDefinition> columnDefinitions = [];
+
     DataBook dataBook = dataBooks[pDataProvider]!;
 
-    for (String columnName in pColumnNames) {
-      columnData.add(dataBook.getDataFromColumn(
-        pColumnName: columnName,
-        pFrom: pFrom,
-        pTo: pTo,
-      ));
+    // If pTo is null, all possible records are being requested
+    pTo ??= dataBook.records.length;
+
+    // Get data from databook and add column definitions in correct order -
+    // either same as requested or as received from server
+    if (pColumnNames != null) {
+      for (String columnName in pColumnNames) {
+        columnDefinitions.add(dataBook.columnDefinitions.firstWhere((element) => element.name == columnName));
+        columnData.add(dataBook.getDataFromColumn(
+          pColumnName: columnName,
+          pFrom: pFrom,
+          pTo: pTo,
+        ));
+      }
+    } else {
+      columnDefinitions.addAll(dataBook.columnDefinitions);
+      dataBook.columnDefinitions.map(
+        (e) => columnData.add(
+          dataBook.getDataFromColumn(
+            pColumnName: e.name,
+            pFrom: pFrom,
+            pTo: pTo!,
+          ),
+        ),
+      );
     }
 
     // Check if requested range of fetch is too long
@@ -119,20 +140,23 @@ class DataService implements IDataService {
       data[i + pFrom] = row;
     }
 
-    return ChunkData(data: data, isAllFetched: dataBook.isAllFetched);
+    return ChunkData(data: data, isAllFetched: dataBook.isAllFetched, columnDefinitions: columnDefinitions);
   }
 
   @override
   Future<bool> checkIfFetchPossible({
     required int pFrom,
-    required int pTo,
     required String pDataProvider,
+    int? pTo,
   }) async {
     DataBook dataBook = dataBooks[pDataProvider]!;
 
-    // If all has already been fetched, then there is no point
+    // If all has already been fetched, then there is no point in fetching more,
+    // If not all data is fetched and pTo is null (all possible data is being requested), more should be fetched
     if (dataBook.isAllFetched) {
       return false;
+    } else if (pTo == null) {
+      return true;
     }
 
     // Check all indexes if they are present.

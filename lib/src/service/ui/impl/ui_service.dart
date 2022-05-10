@@ -256,7 +256,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
     if (shouldFetch) {
       GetDataChunkCommand command = GetDataChunkCommand(
-        reason: "Component registerd",
+        reason: "Component registered",
         dataProvider: chunkSubscription.dataProvider,
         from: chunkSubscription.from,
         to: chunkSubscription.to,

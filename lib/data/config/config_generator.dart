@@ -20,6 +20,7 @@ class ConfigGenerator {
       fetch: "/api/dal/fetch",
       logout: "/api/logout",
       filter: "/api/dal/filter",
+      insertRecord: "/api/dal/insertRecord",
     );
   }
 

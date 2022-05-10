@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/menu/list/app_menu_list_grouped.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/command/api/logout_command.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -106,7 +107,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         context: context,
         text: "Settings",
         leadingIcon: FontAwesomeIcons.cogs,
-        onTap: () => log("asd"),
+        onTap: () => uiService.routeToSettings(),
       ),
       Divider(
         color: Theme.of(context).colorScheme.onPrimary,
@@ -128,7 +129,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         context: context,
         text: "Logout",
         leadingIcon: FontAwesomeIcons.signOutAlt,
-        onTap: () => log("asd"),
+        onTap: _logout,
       ),
     ];
   }
@@ -164,5 +165,10 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   void _menuItemPressed({required String componentId}) {
     OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
     uiService.sendCommand(command);
+  }
+
+  void _logout() {
+    LogoutCommand logoutCommand = LogoutCommand(reason: "Drawer menu logout");
+    uiService.sendCommand(logoutCommand);
   }
 }
