@@ -55,7 +55,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
             model.latitudeColumnName,
             model.longitudeColumnName,
           ],
-          to: double.maxFinite.toInt(),
+          to: 10000,
         ),
       );
     }
@@ -77,6 +77,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
       List<LatLng> group = polygonPointsGrouped[groupName] ?? [];
       group.add(point);
+      polygonPointsGrouped[groupName] = group;
     }
 
     for (List<LatLng> pointList in polygonPointsGrouped.values) {
@@ -84,6 +85,6 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
           .add(Polygon(points: pointList, color: model.fillColor, borderColor: model.lineColor, borderStrokeWidth: 1));
     }
 
-    // setState(() {});
+    setState(() {});
   }
 }
