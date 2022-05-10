@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../util/parse_util.dart';
@@ -11,10 +10,6 @@ class FlMapModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  //MarkerTemplate
-  Marker marker =
-      Marker(point: LatLng(48, 17), width: 64, height: 64, builder: (_) => const FaIcon(FontAwesomeIcons.mapMarker));
 
   //Where the map should be centered
   LatLng? center = LatLng(48, 17);
@@ -59,13 +54,14 @@ class FlMapModel extends FlComponentModel {
   String longitudeColumnName = 'LONGITUDE';
   String markerImageColumnName = 'MARKER_IMAGE';
 
+  String? marker;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlMapModel() : super() {
     preferredSize = const Size(300, 300);
-    markers.add(marker);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -94,6 +90,17 @@ class FlMapModel extends FlComponentModel {
     var jsonGroupDataBook = pJson[ApiObjectProperty.groupDataBook];
     if (jsonGroupDataBook != null) {
       groupDataBook = jsonGroupDataBook;
+    }
+
+    var jsonMarker = pJson[ApiObjectProperty.marker];
+    if (jsonMarker != null) {
+      marker = jsonMarker;
+    }
+
+    var jsonCenter = pJson[ApiObjectProperty.center];
+    if (jsonCenter != null) {
+      List<String> centerStrings = jsonCenter.split(';');
+      center = LatLng(double.tryParse(centerStrings.first) ?? 0, double.tryParse(centerStrings.last) ?? 0);
     }
 
     var jsonPointsDataBook = pJson[ApiObjectProperty.pointsDataBook];

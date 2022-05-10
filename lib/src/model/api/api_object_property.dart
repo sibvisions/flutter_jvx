@@ -215,4 +215,7 @@ abstract class ApiObjectProperty {
   static const String autoTrim = "autoTrim";
   static const String encoding = "encoding";
   static const String fractionalSecondsPrecision = "fractionalSecondsPrecision";
+
+  static const String marker = "marker";
+  static const String center = "center";
 }
