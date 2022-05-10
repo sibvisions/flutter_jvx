@@ -12,8 +12,8 @@ class ChunkSubscription {
   /// Index from which data will be fetched
   final int from;
 
-  /// Index to which data will be fetched
-  final int to;
+  /// Index to which data will be fetched, if null - will return all data from provider, will fetch if necessary
+  final int? to;
 
   /// Data provider from which data will be fetched
   final String dataProvider;
@@ -32,8 +32,8 @@ class ChunkSubscription {
     required this.id,
     required this.dataProvider,
     required this.from,
-    required this.to,
     required this.callback,
+    this.to,
     this.dataColumns,
   });
 
