@@ -19,7 +19,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   final HashMap<dynamic, dynamic> _valueMap = HashMap();
 
-  final int _pageLoad = 50;
+  final int pageLoad = 50;
 
   int currentPage = 1;
 
@@ -181,7 +181,6 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
       _valueMap[key] = value;
     }
 
-    bool before = lastCallbackIntentional;
     lastCallbackIntentional = false;
 
     if (_valueMap[_value] == null) {
@@ -212,7 +211,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
             id: id,
             dataProvider: model.linkReference.referencedDataBook,
             from: 0,
-            to: _pageLoad * currentPage,
+            to: pageLoad * currentPage,
             callback: setValueMap,
           ),
         );
