@@ -1,34 +1,38 @@
-import 'dart:io';
-
 import 'package:flutter_client/src/model/config/api/api_config.dart';
 import 'package:flutter_client/src/model/config/user/user_info.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../i_config_service.dart';
 
 /// Stores all config and session based data.
 // Author: Michael Schober
-class ConfigService implements IConfigService{
-
+class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Config of the api
   final ApiConfig apiConfig;
+
   /// Name of the visionX app
   String appName;
+
   /// Current clientId (sessionId)
   String? clientId;
+
   /// Version of the remote server
   late String version;
+
   /// Directory of the installed app, empty string if launched in web
   late String directory;
+
   /// Display options for menu
   MENU_MODE menuMode = MENU_MODE.GRID_GROUPED;
+
   /// Stores all info about current user
   UserInfo? userInfo;
+
+  /// Parameters which will get added to every startup
+  final Map<String, dynamic> startupParameters = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -98,7 +102,6 @@ class ConfigService implements IConfigService{
     menuMode = pMenuMode;
   }
 
-
   @override
   void setUserInfo(UserInfo pUserInfo) {
     userInfo = pUserInfo;
@@ -109,6 +112,13 @@ class ConfigService implements IConfigService{
     return apiConfig;
   }
 
+  @override
+  void addStartupParameter({required String pKey, required dynamic pValue}) {
+    startupParameters[pKey] = pValue;
+  }
 
-
+  @override
+  Map<String, dynamic> getStartUpParameters() {
+    return startupParameters;
+  }
 }

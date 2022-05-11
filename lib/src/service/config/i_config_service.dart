@@ -1,4 +1,3 @@
-
 import 'package:flutter_client/src/model/config/api/api_config.dart';
 import 'package:flutter_client/src/model/config/user/user_info.dart';
 
@@ -7,7 +6,6 @@ import 'package:flutter_client/src/model/config/user/user_info.dart';
 /// also stores session based data such as clientId and userData.
 // Author: Michael Schober
 abstract class IConfigService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Method definitions
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,8 +48,11 @@ abstract class IConfigService {
   /// Set user inf
   void setUserInfo(UserInfo pUserInfo);
 
+  /// Returns a map of all added parameters which should be added on every startup
+  Map<String, dynamic> getStartUpParameters();
 
-
+  /// Add a parameter that will get send in the next startup
+  void addStartupParameter({required String pKey, required dynamic pValue});
 }
 
 enum MENU_MODE {
@@ -61,5 +62,5 @@ enum MENU_MODE {
   LIST_GROUPED,
   DRAWER,
   SWIPER,
-  TABS
+  TABS,
 }

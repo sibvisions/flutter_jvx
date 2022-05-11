@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_client/src/service/api/shared/processor/authentication_data_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/dal_data_provider_changed_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/session_expired_processor.dart';
@@ -40,6 +41,7 @@ class ApiController implements IController {
   final IProcessor _errorProcessor = ErrorProcessor();
   final IProcessor _sessionExpiredProcessor = SessionExpiredProcessor();
   final IProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
+  final IProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
 
   /// Maps response names to their processor
   late final Map<String, IProcessor> responseToProcessorMap;
@@ -65,6 +67,7 @@ class ApiController implements IController {
       ApiResponseNames.error: _errorProcessor,
       ApiResponseNames.sessionExpired: _sessionExpiredProcessor,
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
+      ApiResponseNames.authenticationData: _authenticationDataProcessor,
     };
   }
 
@@ -90,8 +93,12 @@ class ApiController implements IController {
   }
 
   @override
-  List<BaseCommand> processImageDownload(
-      {required Uint8List response, required String baseDir, required String appName, required String appVersion}) {
+  List<BaseCommand> processImageDownload({
+    required Uint8List response,
+    required String baseDir,
+    required String appName,
+    required String appVersion,
+  }) {
     Archive archive = _zipDecoder.decodeBytes(response);
     String baseFilePath = DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
 
