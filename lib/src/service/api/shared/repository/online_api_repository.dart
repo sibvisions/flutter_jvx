@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/api_response_names.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
+import 'package:flutter_client/src/model/api/response/api_authentication_data_response.dart';
 import 'package:flutter_client/src/model/api/response/api_response.dart';
 import 'package:flutter_client/src/model/api/response/application_meta_data_response.dart';
 import 'package:flutter_client/src/model/api/response/application_parameter_response.dart';
@@ -47,6 +48,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson),
+    ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson}) => ApiAuthenticationDataResponse.fromJson(pJson: pJson),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

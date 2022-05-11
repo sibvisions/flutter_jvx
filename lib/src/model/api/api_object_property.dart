@@ -120,6 +120,7 @@ abstract class ApiObjectProperty {
   static const String lineColor = "fillColor";
   static const String groupDataBook = "groupDataBook";
   static const String pointsDataBook = "pointsDataBook";
+  static const String authKey = "authKey";
 
   //Response Properties
   static const String authenticated = "authenticated";

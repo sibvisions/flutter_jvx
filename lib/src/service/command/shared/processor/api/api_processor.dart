@@ -29,7 +29,7 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 import 'close_tab_processor.dart';
 import 'device_status_processor.dart';
-import 'download_images_processor.dart';
+import 'download_images_command_processor.dart';
 import 'login_command_processor.dart';
 import 'open_screen_commmand_processor.dart';
 import 'open_tab_processor.dart';
@@ -69,7 +69,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   final ICommandProcessor _setValuesProcessor = SetValuesProcessor();
 
   /// Processes [DownloadImagesCommand]
-  final ICommandProcessor _downloadImagesProcessor = DownloadImagesProcessor();
+  final ICommandProcessor _downloadImagesProcessor = DownloadImagesCommandProcessor();
 
   /// Processes [CloseTabCommand]
   final ICommandProcessor _tabCloseProcessor = CloseTabProcessor();

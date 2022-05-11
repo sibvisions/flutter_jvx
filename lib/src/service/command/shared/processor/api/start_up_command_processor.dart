@@ -12,13 +12,13 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
     String appName = configService.getAppName();
+    Map<String, dynamic> parameters = configService.getStartUpParameters();
 
     ApiStartUpRequest startUpRequest = ApiStartUpRequest(
       appMode: "full",
       deviceMode: "mobile",
       applicationName: appName,
-      username: command.username,
-      password: command.password
+      startUpParameters: parameters,
     );
 
     return apiService.sendRequest(request: startUpRequest);

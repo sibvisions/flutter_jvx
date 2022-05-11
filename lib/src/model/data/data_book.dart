@@ -59,14 +59,6 @@ class DataBook {
     records = HashMap();
   }
 
-  /// Saves all incoming records, overwrites records if already present
-  void saveDataRecords({required List<dynamic> pRecords, required int pFrom, required int pTo}) {
-    while (pFrom != pTo) {
-      records[pFrom] = pRecords[pTo - pFrom];
-      pFrom++;
-    }
-  }
-
   /// Saves all data from a fetchRequest
   void saveFromFetchRequest({required DalFetchResponse pFetchResponse}) {
     dataProvider = pFetchResponse.dataProvider;
