@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/util/parse_util.dart';
 
 import '../../../mixin/data_service_mixin.dart';
 import '../../../model/command/api/set_value_command.dart';
@@ -83,13 +84,9 @@ class FlTextFieldWrapperState<T extends FlTextFieldModel> extends BaseCompWrappe
     if (pLayoutData.hasCalculatedSize) {
       pLayoutData = pLayoutData.clone();
 
-      final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: "w", style: model.getTextStyle()),
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-      )..layout(minWidth: 0, maxWidth: double.infinity);
+      double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 
-      layoutData.calculatedSize = Size(textPainter.width * model.columns + 2, layoutData.calculatedSize!.height);
+      layoutData.calculatedSize = Size(averageColumnWidth * model.columns + 2, layoutData.calculatedSize!.height);
     }
 
     super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);

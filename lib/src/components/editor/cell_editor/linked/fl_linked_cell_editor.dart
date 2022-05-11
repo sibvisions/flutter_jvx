@@ -1,9 +1,13 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/linked/fl_linked_cell_picker.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
+import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
 
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
+import '../../../../model/data/chunk/chunk_subscription.dart';
 import '../../../../model/data/column_definition.dart';
 import '../i_cell_editor.dart';
 import 'fl_linked_editor_widget.dart';
@@ -12,6 +16,16 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final HashMap<dynamic, dynamic> _valueMap = HashMap();
+
+  final int _pageLoad = 50;
+
+  int currentPage = 1;
+
+  bool lastCallbackIntentional = true;
+
+  bool isAllFetched = false;
 
   dynamic _value;
 
@@ -28,6 +42,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   FlLinkedCellEditor({
     required String id,
     required String name,
+    required String columnName,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
@@ -35,6 +50,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   }) : super(
           id: id,
           name: name,
+          columnName: columnName,
           model: FlLinkedCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -47,6 +63,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
         }
       },
     );
+    subscribe();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,15 +77,23 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     if (pValue == null) {
       textController.clear();
     } else {
-      if (pValue is! String) {
-        pValue = pValue.toString();
+      dynamic showValue = _valueMap[pValue];
+      if (showValue != null && showValue is! String) {
+        showValue = showValue.toString();
       }
 
-      textController.value = textController.value.copyWith(
-        text: pValue,
-        selection: TextSelection.collapsed(offset: pValue.characters.length),
-        composing: null,
-      );
+      if (showValue == null) {
+        textController.clear();
+        currentPage++;
+        subscribe();
+      } else {
+        showValue = showValue as String;
+        textController.value = textController.value.copyWith(
+          text: showValue,
+          selection: TextSelection.collapsed(offset: showValue.characters.length),
+          composing: null,
+        );
+      }
     }
 
     imageLoadingCallback?.call();
@@ -111,6 +136,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   @override
   void dispose() {
+    unsubscribe();
     focusNode.dispose();
     textController.dispose();
   }
@@ -133,5 +159,68 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   @override
   ColumnDefinition? getColumnDefinition() {
     return null;
+  }
+
+  void setValueMap(ChunkData pChunkData) {
+    if (!lastCallbackIntentional) {
+      _valueMap.clear();
+    }
+
+    isAllFetched = pChunkData.isAllFetched;
+
+    int indexOfKeyColumn = pChunkData.columnDefinitions.indexWhere((element) => element.name == columnName);
+    int indexOfValueColumn =
+        pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
+
+    for (int i = _valueMap.values.length; i < pChunkData.data.length; i++) {
+      List<dynamic> dataRow = pChunkData.data[i]!;
+
+      dynamic key = dataRow[indexOfKeyColumn];
+      dynamic value = dataRow[indexOfValueColumn];
+
+      _valueMap[key] = value;
+    }
+
+    bool before = lastCallbackIntentional;
+    lastCallbackIntentional = false;
+
+    if (_valueMap[_value] == null) {
+      currentPage++;
+      subscribe();
+    } else {
+      dynamic showValue = _valueMap[_value];
+      if (showValue is! String) {
+        showValue = showValue.toString();
+      }
+
+      textController.value = textController.value.copyWith(
+        text: showValue,
+        selection: TextSelection.collapsed(offset: showValue.characters.length),
+        composing: null,
+      );
+
+      imageLoadingCallback?.call();
+    }
+  }
+
+  void subscribe() {
+    if (model.displayReferencedColumnName != null) {
+      lastCallbackIntentional = true;
+      if (!isAllFetched) {
+        uiService.registerDataChunk(
+          chunkSubscription: ChunkSubscription(
+            id: id,
+            dataProvider: model.linkReference.referencedDataBook,
+            from: 0,
+            to: _pageLoad * currentPage,
+            callback: setValueMap,
+          ),
+        );
+      }
+    }
+  }
+
+  void unsubscribe() {
+    uiService.unRegisterDataComponent(pComponentId: id, pDataProvider: model.linkReference.referencedDataBook);
   }
 }

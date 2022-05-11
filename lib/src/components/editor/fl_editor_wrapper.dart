@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/util/parse_util.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
@@ -48,7 +49,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   ICellEditor? oldCellEditor;
 
   /// The currently used cell editor.
-  ICellEditor cellEditor = FlDummyCellEditor(id: "", name: "", pCellEditorJson: {});
+  ICellEditor cellEditor = FlDummyCellEditor();
 
   /// The value to send to the server on sendValue.
   dynamic _toSendValue;
@@ -134,14 +135,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     } else if (cellEditor is FlTextCellEditor && pLayoutData.hasCalculatedSize) {
       FlTextCellEditor textCellEditor = cellEditor as FlTextCellEditor;
 
-      final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: "w", style: model.getTextStyle()),
-        textDirection: TextDirection.ltr,
-        maxLines: 1,
-      )..layout(minWidth: 0, maxWidth: double.infinity);
+      double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 
       newCalcSize =
-          Size(textPainter.width * textCellEditor.getWidgetModel().columns + 2, layoutData.calculatedSize!.height);
+          Size(averageColumnWidth * textCellEditor.getWidgetModel().columns + 2, layoutData.calculatedSize!.height);
     }
 
     if (newCalcSize != null) {
@@ -252,6 +249,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
       cellEditor = ICellEditor.getCellEditor(
           pId: pModel.id,
           pName: pModel.name,
+          pColumnName: pModel.columnName,
           pCellEditorJson: jsonCellEditor,
           onChange: onChange,
           onEndEditing: onEndEditing,

@@ -9,15 +9,13 @@ import '../../dummy/fl_dummy_widget.dart';
 import 'i_cell_editor.dart';
 
 class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
-  FlDummyCellEditor({
-    required String id,
-    required String name,
-    required Map<String, dynamic> pCellEditorJson,
-  }) : super(
-          id: id,
-          name: name,
+  FlDummyCellEditor()
+      : super(
+          id: "",
+          name: "",
+          columnName: "",
           model: ICellEditorModel(),
-          pCellEditorJson: pCellEditorJson,
+          pCellEditorJson: {},
           onValueChange: (_) {},
           onEndEditing: (_) {},
         );

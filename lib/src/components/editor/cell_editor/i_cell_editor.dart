@@ -27,6 +27,9 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   /// The name of the component this cell editor is part of.
   String name;
 
+  /// The column name of the column this cell editor represents.
+  String columnName;
+
   /// The cell editor model
   T model;
 
@@ -41,6 +44,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   ICellEditor({
     required this.id,
     required this.name,
+    required this.columnName,
     required this.model,
     required Map<String, dynamic> pCellEditorJson,
     required this.onValueChange,
@@ -79,6 +83,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   static ICellEditor getCellEditor({
     required String pId,
     required String pName,
+    required String pColumnName,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
@@ -91,6 +96,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlTextCellEditor(
           id: pId,
           name: pName,
+          columnName: pColumnName,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
@@ -99,6 +105,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlCheckBoxCellEditor(
           id: pId,
           name: pName,
+          columnName: pColumnName,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
@@ -107,6 +114,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlNumberCellEditor(
           id: pId,
           name: pName,
+          columnName: pColumnName,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
@@ -115,6 +123,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlImageCellEditor(
             id: pId,
             name: pName,
+            columnName: pColumnName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
@@ -123,6 +132,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlChoiceCellEditor(
             id: pId,
             name: pName,
+            columnName: pColumnName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
@@ -131,6 +141,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlDateCellEditor(
             id: pId,
             name: pName,
+            columnName: pColumnName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
@@ -139,13 +150,14 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
         return FlLinkedCellEditor(
             id: pId,
             name: pName,
+            columnName: pColumnName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
             imageLoadingCallback: pRecalculateSize);
 
       default:
-        return FlDummyCellEditor(id: pId, name: pName, pCellEditorJson: pCellEditorJson);
+        return FlDummyCellEditor();
     }
   }
 }

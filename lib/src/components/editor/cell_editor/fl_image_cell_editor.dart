@@ -36,6 +36,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   FlImageCellEditor({
     required String id,
     required String name,
+    required String columnName,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
@@ -43,6 +44,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }) : super(
           id: id,
           name: name,
+          columnName: columnName,
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,

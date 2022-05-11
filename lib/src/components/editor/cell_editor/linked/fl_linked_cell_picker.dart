@@ -45,7 +45,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   void initState() {
     super.initState();
 
-    registerData();
+    subscribe();
   }
 
   @override
@@ -327,15 +327,15 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   bool onNotification(ScrollEndNotification t) {
     if (t.metrics.pixels > 0 && t.metrics.atEdge) {
       scrollingPage++;
-      registerData();
+      subscribe();
     }
     return true;
   }
 
-  void registerData() {
+  void subscribe() {
     uiService.registerDataChunk(
       chunkSubscription: ChunkSubscription(
-        id: widget.id,
+        id: widget.id + "_${runtimeType}_{$hashCode}",
         dataProvider: model.linkReference.dataProvider,
         callback: receiveData,
         dataColumns: columnNamesToSubscribe(),
@@ -343,6 +343,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
         to: 100 * scrollingPage,
       ),
     );
+  }
+
+  void unsubscribe() {
+    uiService.unRegisterDataComponent(
+        pComponentId: widget.id + "_${runtimeType}_{$hashCode}", pDataProvider: model.linkReference.dataProvider);
   }
 
   List<String> columnNamesToShow() {

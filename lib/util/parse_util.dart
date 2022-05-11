@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../src/model/data/column_definition.dart';
@@ -17,6 +15,7 @@ abstract class ParseUtil {
         return false;
       }
     }
+    return null;
   }
 
   /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
@@ -30,6 +29,7 @@ abstract class ParseUtil {
 
       return Size(width, height);
     }
+    return null;
   }
 
   static Color? parseServerColor(String? pValue) {
@@ -79,6 +79,7 @@ abstract class ParseUtil {
             int.parse(pValue.substring(4, 6), radix: 16), int.parse(pValue.substring(6, 8), radix: 16));
       }
     }
+    return null;
   }
 
   static EdgeInsets? parseMargins(String? pValue) {
@@ -93,6 +94,7 @@ abstract class ParseUtil {
         return EdgeInsets.fromLTRB(left.toDouble(), top.toDouble(), right.toDouble(), bottom.toDouble());
       }
     }
+    return null;
   }
 
   static LayoutPosition? parseBounds(String? pValue) {
@@ -114,6 +116,7 @@ abstract class ParseUtil {
         }
       }
     }
+    return null;
   }
 
   /// Parse a json list of column definitions into a list of [ColumnDefinition] objects.
@@ -125,5 +128,65 @@ abstract class ParseUtil {
       colDef.add(columnDefinition);
     }
     return colDef;
+  }
+
+  static Size getTextSize({
+    required String text,
+    required TextStyle style,
+    double textScaleFactor = 1.0,
+    TextAlign align = TextAlign.left,
+    TextDirection textDirection = TextDirection.ltr,
+    double maxWidth = double.infinity,
+    int maxLines = 1,
+  }) {
+    TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: textDirection,
+      maxLines: maxLines,
+      textAlign: align,
+      textScaleFactor: textScaleFactor,
+    )..layout(minWidth: 0, maxWidth: maxWidth);
+
+    return textPainter.size;
+  }
+
+  static double getTextHeight({
+    required String text,
+    required TextStyle style,
+    double textScaleFactor = 1.0,
+    TextAlign align = TextAlign.left,
+    TextDirection textDirection = TextDirection.ltr,
+    double maxWidth = double.infinity,
+    int maxLines = 1,
+  }) {
+    return getTextSize(
+            text: text,
+            style: style,
+            textScaleFactor: textScaleFactor,
+            align: align,
+            textDirection: textDirection,
+            maxWidth: maxWidth,
+            maxLines: maxLines)
+        .height;
+  }
+
+  static double getTextWidth({
+    required String text,
+    required TextStyle style,
+    double textScaleFactor = 1.0,
+    TextAlign align = TextAlign.left,
+    TextDirection textDirection = TextDirection.ltr,
+    double maxWidth = double.infinity,
+    int maxLines = 1,
+  }) {
+    return getTextSize(
+            text: text,
+            style: style,
+            textScaleFactor: textScaleFactor,
+            align: align,
+            textDirection: textDirection,
+            maxWidth: maxWidth,
+            maxLines: maxLines)
+        .width;
   }
 }

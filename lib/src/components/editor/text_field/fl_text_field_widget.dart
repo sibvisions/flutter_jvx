@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_client/util/parse_util.dart';
 
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
@@ -22,12 +23,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   double get iconSize {
-    TextPainter p = TextPainter(
-      text: TextSpan(text: "I", style: model.getTextStyle()),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout(minWidth: 0, maxWidth: double.infinity);
-    return p.height;
+    return ParseUtil.getTextHeight(text: "I", style: model.getTextStyle());
   }
 
   EdgeInsets get textPadding => const EdgeInsets.only(left: 12);

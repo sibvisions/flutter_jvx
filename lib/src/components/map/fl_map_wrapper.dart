@@ -99,7 +99,13 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
   }
 
   void unsubscribe() {
-    uiService.disposeSubscriptions(pComponentId: model.id);
+    if (model.groupDataBook != null) {
+      uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.groupDataBook!);
+    }
+
+    if (model.pointsDataBook != null) {
+      uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.pointsDataBook!);
+    }
   }
 
   void receivePolygonData(ChunkData pChunkData) {

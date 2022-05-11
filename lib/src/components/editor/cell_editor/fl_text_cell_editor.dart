@@ -43,12 +43,14 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   FlTextCellEditor({
     required String id,
     required String name,
+    required String columnName,
     required Map<String, dynamic> pCellEditorJson,
     required Function(String) onChange,
     required Function(String) onEndEditing,
   }) : super(
           id: id,
           name: name,
+          columnName: columnName,
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,

@@ -30,6 +30,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   FlChoiceCellEditor({
     required String id,
     required String name,
+    required String columnName,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
@@ -37,6 +38,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }) : super(
           id: id,
           name: name,
+          columnName: columnName,
           model: FlChoiceCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
