@@ -21,9 +21,11 @@ class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
 }
 
 class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceMixin {
-  final List<Marker> markers = [];
+  List<Marker> markers = [];
 
-  final List<Polygon> polygons = [];
+  List<Polygon> polygons = [];
+
+  MapController mapController = MapController();
 
   @override
   void initState() {
@@ -48,14 +50,12 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   @override
   void dispose() {
-    // TODO: implement dispose
     unsubscribe();
     super.dispose();
   }
 
   @override
   receiveNewModel({required FlMapModel newModel}) {
-    // TODO: implement receiveNewModel
     super.receiveNewModel(newModel: newModel);
     unsubscribe();
     subscribe();
@@ -106,9 +106,9 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
           image,
           pWantedSize: const Size(64, 64),
         );
-      } else if (model.marker != null) {
+      } else if (model.markerImage != null) {
         img = ImageLoader.loadImage(
-          model.marker!,
+          model.markerImage!,
           pWantedSize: const Size(64, 64),
         );
       } else {

@@ -71,6 +71,15 @@ abstract class ApiObjectProperty {
   static const String draggable = "draggable";
   static const String tabPlacement = "tabPlacement";
   static const String preserveAspectRatio = "preserveAspectRatio";
+  static const String marker = "marker";
+  static const String center = "center";
+  static const String zoomLevel = "zoomLevel";
+  static const String pointSelectionEnabled = "pointSelectionEnabled";
+  static const String pointSelectionLockedOnCenter = "pointSelectionLockedOnCenter";
+  static const String markerImageColumnName = "markerImageColumnName";
+  static const String longitudeColumnName = "longitudeColumnName";
+  static const String latitudeColumnName = "latitudeColumnName";
+  static const String groupColumnName = "groupColumnName";
 
   //Can occur in both request & response
   static const String clientId = "clientId";
@@ -215,7 +224,4 @@ abstract class ApiObjectProperty {
   static const String autoTrim = "autoTrim";
   static const String encoding = "encoding";
   static const String fractionalSecondsPrecision = "fractionalSecondsPrecision";
-
-  static const String marker = "marker";
-  static const String center = "center";
 }

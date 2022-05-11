@@ -20,14 +20,8 @@ class FlMapModel extends FlComponentModel {
   //List of Polygons that will be shown on the map
   List<Polygon> polygons = [];
 
-  //Map Controller
-  MapController? controller;
-
   //Zoom factor of map
-  double zoom = 13;
-
-  //Api Key
-  String? apiKey;
+  double zoomLevel = 13;
 
   //Fill Color
   Color fillColor = Colors.white;
@@ -50,11 +44,14 @@ class FlMapModel extends FlComponentModel {
   //layoutVal?:CSSProperties,
   //centerPosition?:MapLocation
   String groupColumnName = 'GROUP';
+
   String latitudeColumnName = 'LATITUDE';
+
   String longitudeColumnName = 'LONGITUDE';
+
   String markerImageColumnName = 'MARKER_IMAGE';
 
-  String? marker;
+  String? markerImage;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -94,7 +91,7 @@ class FlMapModel extends FlComponentModel {
 
     var jsonMarker = pJson[ApiObjectProperty.marker];
     if (jsonMarker != null) {
-      marker = jsonMarker;
+      markerImage = jsonMarker;
     }
 
     var jsonCenter = pJson[ApiObjectProperty.center];
@@ -106,6 +103,41 @@ class FlMapModel extends FlComponentModel {
     var jsonPointsDataBook = pJson[ApiObjectProperty.pointsDataBook];
     if (jsonPointsDataBook != null) {
       pointsDataBook = jsonPointsDataBook;
+    }
+
+    var jsonGroupColumnName = pJson[ApiObjectProperty.groupColumnName];
+    if (jsonGroupColumnName != null) {
+      groupColumnName = jsonGroupColumnName;
+    }
+
+    var jsonLatitudeColumnName = pJson[ApiObjectProperty.latitudeColumnName];
+    if (jsonLatitudeColumnName != null) {
+      latitudeColumnName = jsonLatitudeColumnName;
+    }
+
+    var jsonLongitudeColumnName = pJson[ApiObjectProperty.longitudeColumnName];
+    if (jsonLongitudeColumnName != null) {
+      longitudeColumnName = jsonLongitudeColumnName;
+    }
+
+    var jsonMarkerImageColumnName = pJson[ApiObjectProperty.markerImageColumnName];
+    if (jsonMarkerImageColumnName != null) {
+      markerImageColumnName = jsonMarkerImageColumnName;
+    }
+
+    var jsonPointSelectionEnabled = pJson[ApiObjectProperty.pointSelectionEnabled];
+    if (jsonPointSelectionEnabled != null) {
+      pointSelectionEnabled = jsonPointSelectionEnabled;
+    }
+
+    var jsonPointSelectionLockedOnCenter = pJson[ApiObjectProperty.pointSelectionLockedOnCenter];
+    if (jsonPointSelectionLockedOnCenter != null) {
+      pointSelectionLockedOnCenter = jsonPointSelectionLockedOnCenter;
+    }
+
+    var jsonZoomLevel = pJson[ApiObjectProperty.zoomLevel];
+    if (jsonZoomLevel != null) {
+      zoomLevel = (jsonZoomLevel as int).toDouble();
     }
   }
 }

@@ -9,7 +9,9 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
 
   final List<Polygon> polygons;
 
-  const FlMapWidget({Key? key, required T model, required this.markers, required this.polygons})
+  final MapController? mapController;
+
+  const FlMapWidget({Key? key, required T model, required this.markers, required this.polygons, this.mapController})
       : super(key: key, model: model);
 
   @override
@@ -23,10 +25,10 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
           polygons: polygons,
         ),
       ],
-      mapController: model.controller,
+      mapController: mapController,
       options: MapOptions(
         onTap: (tapPosition, point) {},
-        zoom: model.zoom,
+        zoom: model.zoomLevel,
         center: model.center,
       ),
       children: [
