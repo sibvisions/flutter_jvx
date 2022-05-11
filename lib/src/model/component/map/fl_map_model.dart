@@ -30,7 +30,7 @@ class FlMapModel extends FlComponentModel {
   Color lineColor = Colors.black;
 
   //bool PointSelectionEnabled
-  bool pointSelectionEnabled = false;
+  bool pointSelectionEnabled = true;
 
   //bool pointSelectionLockedOnCenter
   bool pointSelectionLockedOnCenter = false;

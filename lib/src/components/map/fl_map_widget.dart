@@ -11,7 +11,10 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
 
   final MapController? mapController;
 
-  const FlMapWidget({Key? key, required T model, required this.markers, required this.polygons, this.mapController})
+  final Function? onPressed;
+
+  const FlMapWidget(
+      {Key? key, required T model, required this.markers, required this.polygons, this.mapController, this.onPressed})
       : super(key: key, model: model);
 
   @override
@@ -27,7 +30,16 @@ class FlMapWidget<T extends FlMapModel> extends FlStatelessWidget<T> {
       ],
       mapController: mapController,
       options: MapOptions(
-        onTap: (tapPosition, point) {},
+        onTap: (tapPosition, point) {
+          if (onPressed != null && !model.pointSelectionLockedOnCenter) {
+            onPressed!(point);
+          }
+        },
+        onPositionChanged: (MapPosition mapPosition, bool boolean) {
+          if (model.pointSelectionLockedOnCenter && onPressed != null) {
+            onPressed!(mapController?.center);
+          }
+        },
         zoom: model.zoomLevel,
         center: model.center,
       ),

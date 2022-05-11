@@ -7,7 +7,8 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/filter_command.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
+
+import '../../../../model/data/chunk/chunk_subscription.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
   final String id;
@@ -53,14 +54,20 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
     ColorScheme colorScheme = theme.colorScheme;
 
     return Dialog(
-      insetPadding: const EdgeInsets.fromLTRB(25, 25, 25, 25),
-      elevation: 0.0,
+      insetPadding: EdgeInsets.fromLTRB(
+        MediaQuery.of(context).size.width / 8,
+        MediaQuery.of(context).size.height / 8,
+        MediaQuery.of(context).size.width / 8,
+        MediaQuery.of(context).size.height / 8,
+      ),
+      elevation: 10.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       child: Container(
-        decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5.0))),
+        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5.0))),
         child: Column(
           children: <Widget>[
             Container(
+              width: double.infinity,
               decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(5.0), topRight: Radius.circular(5.0))),
@@ -69,20 +76,20 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                 child: Text(
                   "SELECT ITEM",
                   style: TextStyle(
-                      color:
-                          colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface),
+                    color: colorScheme.brightness == Brightness.light ? colorScheme.onPrimary : colorScheme.onSurface,
+                  ),
                 ),
               ),
             ),
             Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: TextFormField(
                   key: widget.key,
                   controller: _controller,
                   maxLines: 1,
                   keyboardType: TextInputType.text,
                   onChanged: startTimerValueChanged,
-                  style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                  style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
                   decoration: const InputDecoration(
                       hintStyle: TextStyle(color: Colors.green),
                       labelText: "Search",
@@ -90,7 +97,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                 )),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
+                padding: const EdgeInsets.only(top: 10),
                 child: NotificationListener<ScrollEndNotification>(
                   onNotification: onNotification,
                   child: ListView.builder(
@@ -131,7 +138,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
           dataProvider: widget.model.linkReference.dataProvider,
           reason: "Filtered the linked cell picker"));
     }
-
     _controller.dispose();
     filterTimer?.cancel();
 
@@ -204,9 +210,19 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
             children: columnNamesToSubscribe()
                 .map(
                   (e) => Expanded(
-                    child: Text(
-                      e,
-                      style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                    child: Column(
+                      children: [
+                        Text(
+                          e,
+                          style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
+                        ),
+                        const Divider(
+                          color: Colors.grey,
+                          indent: 10,
+                          endIndent: 10,
+                          thickness: 0.5,
+                        ),
+                      ],
                     ),
                   ),
                 )
@@ -237,9 +253,15 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       int columnIndex = columnNamesOrder.indexOf(columnName);
       rowWidgets.add(
         Expanded(
-          child: Text(
-            (data[columnIndex] ?? '').toString(),
-            style: const TextStyle(fontSize: 14.0, color: Colors.black),
+          child: SizedBox(
+            height: double.infinity,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                (data[columnIndex] ?? '').toString(),
+                style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
+              ),
+            ),
           ),
         ),
       );
@@ -247,7 +269,10 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
     return GestureDetector(
       onTap: () => _onRowTapped(dataIndex),
-      child: SizedBox(
+      child: Container(
+        decoration: dataIndex % 2 == 0
+            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.25))
+            : BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.15)),
         height: 50,
         child: Row(
           children: rowWidgets,
