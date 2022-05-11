@@ -21,6 +21,7 @@ class ConfigGenerator {
       logout: "/api/logout",
       filter: "/api/dal/filter",
       insertRecord: "/api/dal/insertRecord",
+      selectRecord: "/api/dal/selectRecord",
     );
   }
 

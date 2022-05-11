@@ -12,6 +12,7 @@ import 'package:flutter_client/src/model/api/requests/api_open_screen_request.da
 import 'package:flutter_client/src/model/api/requests/api_open_tab_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_press_button_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_reset_password_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_select_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_value_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_startup_request.dart';
@@ -57,6 +58,7 @@ class ApiConfig {
       ApiLogoutRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.logout),
       ApiFilterRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.filter),
       ApiInsertRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.insertRecord),
+      ApiSelectRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.selectRecord),
     };
   }
 }

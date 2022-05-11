@@ -10,6 +10,7 @@ import 'package:flutter_client/src/model/api/requests/api_navigation_request.dar
 import 'package:flutter_client/src/model/api/requests/api_open_screen_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_press_button_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_reset_password_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_select_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_value_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_set_values_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_startup_request.dart';
@@ -68,6 +69,9 @@ class EndpointConfig {
   /// For [ApiInsertRecordRequest]
   final String insertRecord;
 
+  /// For [ApiSelectRecordRequest]
+  final String selectRecord;
+
   EndpointConfig({
     required this.startup,
     required this.login,
@@ -86,5 +90,6 @@ class EndpointConfig {
     required this.logout,
     required this.filter,
     required this.insertRecord,
+    required this.selectRecord,
   });
 }

@@ -4,6 +4,7 @@ import 'package:flutter_client/src/model/command/api/filter_command.dart';
 import 'package:flutter_client/src/model/command/api/logout_command.dart';
 import 'package:flutter_client/src/model/command/api/navigation_command.dart';
 import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
+import 'package:flutter_client/src/model/command/api/select_record_command.dart';
 import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/change_password_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_client/src/service/command/shared/processor/api/filter_c
 import 'package:flutter_client/src/service/command/shared/processor/api/logout_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/navigation_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/reset_password_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/select_record_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/set_api_config_command_processor.dart';
 
 import '../../../../../model/command/api/api_command.dart';
@@ -92,11 +94,14 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [FilterCommand]
   final ICommandProcessor _filterProcessor = FilterCommandProcessor();
 
-  /// Processes [FilterCommand]
+  /// Processes [FetchCommand]
   final ICommandProcessor _fetchProcessor = FetchCommandProcessor();
 
-  /// Processes [FilterCommand]
+  /// Processes [LogoutCommand]
   final ICommandProcessor _logoutProcessor = LogoutCommandProcessor();
+
+  /// Processes [SelectRecordCommand]
+  final ICommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -139,6 +144,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _fetchProcessor.processCommand(command);
     } else if (command is LogoutCommand) {
       return _logoutProcessor.processCommand(command);
+    } else if (command is SelectRecordCommand) {
+      return _selectRecordProcessor.processCommand(command);
     }
 
     return [];
