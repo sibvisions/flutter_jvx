@@ -224,4 +224,14 @@ abstract class ApiObjectProperty {
   static const String autoTrim = "autoTrim";
   static const String encoding = "encoding";
   static const String fractionalSecondsPrecision = "fractionalSecondsPrecision";
+
+  static const String dataBook = "dataBook";
+  static const String columnLabels = "columnLabels";
+  static const String autoResize = "autoResize";
+  static const String showFocusRect = "showFocusRect";
+  static const String showHorizontalLines = "showHorizontalLines";
+  static const String showSelection = "showSelection";
+  static const String showVerticalLines = "showVerticalLines";
+  static const String sortOnHeaderEnabled = "sortOnHeaderEnabled";
+  static const String wordWrapEnabled = "wordWrapEnabled";
 }
