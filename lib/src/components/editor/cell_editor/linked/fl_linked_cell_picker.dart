@@ -27,7 +27,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  final ScrollController _scrollController = ScrollController();
   final TextEditingController _controller = TextEditingController();
 
   FlLinkedCellEditorModel get model => widget.model;
@@ -45,18 +44,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   void initState() {
     super.initState();
 
-    _scrollController.addListener(_scrollListener);
-
-    uiService.registerDataChunk(
-      chunkSubscription: ChunkSubscription(
-        id: widget.id,
-        dataProvider: model.linkReference.dataProvider,
-        callback: receiveData,
-        dataColumns: columnNamesToSubscribe(),
-        from: 0,
-        to: 100 * scrollingPage,
-      ),
-    );
+    registerData();
   }
 
   @override
@@ -108,7 +96,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
                   child: ListView.builder(
                     itemBuilder: itemBuilder,
                     itemCount: (_chunkData?.data.length ?? 1) + (hasHeader() ? 1 : 0),
-                    controller: _scrollController,
                     scrollDirection: Axis.vertical,
                   ),
                 ),
@@ -137,8 +124,15 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       pDataProvider: model.linkReference.dataProvider,
     );
 
+    if (lastChangedFilter != null) {
+      uiService.sendCommand(FilterCommand(
+          editorId: widget.name,
+          value: "",
+          dataProvider: widget.model.linkReference.dataProvider,
+          reason: "Filtered the linked cell picker"));
+    }
+
     _controller.dispose();
-    _scrollController.dispose();
     filterTimer?.cancel();
 
     super.dispose();
@@ -305,15 +299,25 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
         ));
   }
 
-  _scrollListener() {
-    log("scrolly");
-  }
-
   bool onNotification(ScrollEndNotification t) {
     if (t.metrics.pixels > 0 && t.metrics.atEdge) {
-      log("At the end");
+      scrollingPage++;
+      registerData();
     }
     return true;
+  }
+
+  void registerData() {
+    uiService.registerDataChunk(
+      chunkSubscription: ChunkSubscription(
+        id: widget.id,
+        dataProvider: model.linkReference.dataProvider,
+        callback: receiveData,
+        dataColumns: columnNamesToSubscribe(),
+        from: 0,
+        to: 100 * scrollingPage,
+      ),
+    );
   }
 
   List<String> columnNamesToShow() {
