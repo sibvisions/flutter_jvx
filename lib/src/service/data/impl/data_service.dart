@@ -77,9 +77,11 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<ColumnDefinition> getSelectedColumnDefinition({required String pColumnName, required String pDataProvider}) async {
+  Future<ColumnDefinition> getSelectedColumnDefinition(
+      {required String pColumnName, required String pDataProvider}) async {
     DataBook dataBook = dataBooks[pDataProvider]!;
-    ColumnDefinition? columnDefinition = dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
+    ColumnDefinition? columnDefinition =
+        dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
 
     return columnDefinition;
   }
@@ -113,15 +115,14 @@ class DataService implements IDataService {
       }
     } else {
       columnDefinitions.addAll(dataBook.columnDefinitions);
-      dataBook.columnDefinitions.map(
-        (e) => columnData.add(
-          dataBook.getDataFromColumn(
-            pColumnName: e.name,
-            pFrom: pFrom,
-            pTo: pTo!,
-          ),
-        ),
-      );
+
+      for (ColumnDefinition colDef in columnDefinitions) {
+        columnData.add(dataBook.getDataFromColumn(
+          pColumnName: colDef.name,
+          pFrom: pFrom,
+          pTo: pTo,
+        ));
+      }
     }
 
     // Check if requested range of fetch is too long
