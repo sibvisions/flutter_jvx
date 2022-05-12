@@ -6,6 +6,7 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
 import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
 
+import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/data/chunk/chunk_subscription.dart';
 import '../../../../model/data/column_definition.dart';
@@ -74,29 +75,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   void setValue(dynamic pValue) {
     _value = pValue;
 
-    if (pValue == null) {
-      textController.clear();
-    } else {
-      dynamic showValue = _valueMap[pValue];
-      if (showValue != null && showValue is! String) {
-        showValue = showValue.toString();
-      }
-
-      if (showValue == null) {
-        textController.clear();
-        currentPage++;
-        subscribe();
-      } else {
-        showValue = showValue as String;
-        textController.value = textController.value.copyWith(
-          text: showValue,
-          selection: TextSelection.collapsed(offset: showValue.characters.length),
-          composing: null,
-        );
-      }
-    }
-
-    imageLoadingCallback?.call();
+    setValueIntoController();
   }
 
   @override
@@ -115,6 +94,14 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   void openLinkedCellPicker() {
     FocusManager.instance.primaryFocus?.unfocus();
+
+    uiService.sendCommand(
+      FilterCommand(
+          editorId: name,
+          value: "",
+          dataProvider: model.linkReference.dataProvider,
+          reason: "Opened the linked cell picker"),
+    );
 
     uiService
         .openDialog(
@@ -168,7 +155,8 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     isAllFetched = pChunkData.isAllFetched;
 
-    int indexOfKeyColumn = pChunkData.columnDefinitions.indexWhere((element) => element.name == columnName);
+    int indexOfKeyColumn = pChunkData.columnDefinitions
+        .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0]);
     int indexOfValueColumn =
         pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
 
@@ -183,23 +171,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     lastCallbackIntentional = false;
 
-    if (_valueMap[_value] == null) {
-      currentPage++;
-      subscribe();
-    } else {
-      dynamic showValue = _valueMap[_value];
-      if (showValue is! String) {
-        showValue = showValue.toString();
-      }
-
-      textController.value = textController.value.copyWith(
-        text: showValue,
-        selection: TextSelection.collapsed(offset: showValue.characters.length),
-        composing: null,
-      );
-
-      imageLoadingCallback?.call();
-    }
+    setValueIntoController();
   }
 
   void subscribe() {
@@ -209,7 +181,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
         uiService.registerDataChunk(
           chunkSubscription: ChunkSubscription(
             id: id,
-            dataProvider: model.linkReference.referencedDataBook,
+            dataProvider: model.linkReference.dataProvider,
             from: 0,
             to: pageLoad * currentPage,
             callback: setValueMap,
@@ -221,5 +193,38 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   void unsubscribe() {
     uiService.unRegisterDataComponent(pComponentId: id, pDataProvider: model.linkReference.referencedDataBook);
+  }
+
+  void increaseValueMap() {
+    currentPage++;
+    subscribe();
+  }
+
+  void setValueIntoController() {
+    if (_value == null) {
+      textController.clear();
+    } else {
+      dynamic showValue = _value;
+
+      if (model.displayReferencedColumnName != null) {
+        showValue = _valueMap[_value];
+      }
+
+      if (showValue == null) {
+        textController.clear();
+        increaseValueMap();
+      } else {
+        if (showValue is! String) {
+          showValue = showValue.toString();
+        }
+        textController.value = textController.value.copyWith(
+          text: showValue,
+          selection: TextSelection.collapsed(offset: showValue.characters.length),
+          composing: null,
+        );
+      }
+    }
+
+    imageLoadingCallback?.call();
   }
 }
