@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 /// This is a standard template for a server side error message.
 class ServerErrorDialog extends StatelessWidget {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,12 +33,8 @@ class ServerErrorDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text(
             "OK",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
-
         ),
       ],
     );

@@ -59,4 +59,11 @@ abstract class IColor extends IColorConstants {
 
     return HSLColor.fromAHSL(a, h, s, l).toColor();
   }
+
+  static Color toggleColor(Color pSource) {
+    if (pSource.computeLuminance() > 0.5) {
+      return darken(pSource);
+    }
+    return lighten(pSource);
+  }
 }

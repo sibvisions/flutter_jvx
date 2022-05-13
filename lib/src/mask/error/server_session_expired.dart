@@ -3,7 +3,6 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 
 class ServerSessionExpired extends StatelessWidget with UiServiceMixin {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,10 +13,7 @@ class ServerSessionExpired extends StatelessWidget with UiServiceMixin {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ServerSessionExpired({
-    required this.message,
-    Key? key
-  }) : super(key: key);
+  ServerSessionExpired({required this.message, Key? key}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -34,29 +30,22 @@ class ServerSessionExpired extends StatelessWidget with UiServiceMixin {
           onPressed: () => _restartApp(context: context),
           child: const Text(
             "RESTART APP",
-            style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
-
         ),
       ],
     );
   }
-  
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void _restartApp ({required BuildContext context}) {
-    StartupCommand startupCommand = StartupCommand(
-        reason: "Session expired dialog"
-    );
+  void _restartApp({required BuildContext context}) {
+    StartupCommand startupCommand = StartupCommand(reason: "Session expired dialog");
     uiService.sendCommand(startupCommand);
-    
+
     //close popup
     Navigator.of(context).pop();
   }
-
 }

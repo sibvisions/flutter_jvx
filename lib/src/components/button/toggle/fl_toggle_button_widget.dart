@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
 
+import '../../../../main.dart';
+import '../../../../util/constants/i_color.dart';
 import '../../../model/component/button/fl_toggle_button_model.dart';
+import '../../../model/layout/alignments.dart';
 import '../fl_button_widget.dart';
 
 /// The widget representing a button.
@@ -19,18 +21,28 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  BoxDecoration? getBoxDecoration(BuildContext pContext) {
-    return BoxDecoration(
-      // 0x00000000 -> completely invisible shadow.
-      // The shadow mimics a fake press.
-      boxShadow: [
-        BoxShadow(
-          blurRadius: 10.0,
-          color: model.selected
-              ? IColor.darken(model.background ?? Theme.of(pContext).primaryColor)
-              : const Color(0x00000000),
-        )
-      ],
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: getOnPressed(),
+      child: Container(
+        child: getButtonChild(),
+        decoration: getBoxDecoration(context),
+        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+      ),
+      style: getButtonStyle(),
+    );
+  }
+
+  @override
+  ButtonStyle getButtonStyle() {
+    return ButtonStyle(
+      elevation: MaterialStateProperty.all(model.borderPainted ? 2 : 0),
+      backgroundColor: model.selected
+          ? MaterialStateProperty.all(IColor.toggleColor(model.background ?? themeData.primaryColor))
+          : model.background != null
+              ? MaterialStateProperty.all(model.background)
+              : null,
+      padding: MaterialStateProperty.all(model.paddings),
     );
   }
 }

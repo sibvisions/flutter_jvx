@@ -270,7 +270,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
       onTap: () => _onRowTapped(dataIndex),
       child: Container(
         decoration: dataIndex % 2 == 0
-            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.25))
+            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.05))
             : BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.15)),
         height: 50,
         child: Row(
