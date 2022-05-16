@@ -21,9 +21,12 @@ class DalMetaDataResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DalMetaDataResponse(
-      {required String name, required this.dataProvider, required this.columns, required this.columnViewTable})
-      : super(name: name);
+  DalMetaDataResponse({
+    required String name,
+    required this.dataProvider,
+    required this.columns,
+    required this.columnViewTable,
+  }) : super(name: name);
 
   DalMetaDataResponse.fromJson({required Map<String, dynamic> pJson})
       : columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),

@@ -2,7 +2,7 @@ import 'package:flutter_client/src/mixin/api_service_mixin.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 
 import '../../../../../mixin/data_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -21,16 +21,18 @@ class GetDataChunkCommandProcessor
     );
 
     if (!needFetch) {
-      ChunkData chunkData = await dataService.getDataChunk(
+      DataChunk dataChunk = await dataService.getDataChunk(
         pColumnNames: command.dataColumns,
         pFrom: command.from,
         pTo: command.to,
         pDataProvider: command.dataProvider,
       );
+      dataChunk.update = command.isUpdate;
+
       getUiService().setChunkData(
-        pChunkData: chunkData,
-        pId: command.componentId,
+        pDataChunk: dataChunk,
         pDataProvider: command.dataProvider,
+        pSubId: command.subId,
       );
       return [];
     }

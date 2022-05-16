@@ -1,42 +1,25 @@
+import 'package:flutter_client/src/model/command/data/data_command.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
 
-import 'data_command.dart';
-
-class GetDataChunkCommand extends DataCommand {
+class GetMetaDataCommand extends DataCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Id of the [DataSubscription] requesting data
-  final String subId;
-
-  /// Link to the dataBook containing the data
+  /// Data provider for which the meta data will be returned
   final String dataProvider;
 
-  /// List of names of the dataColumns that are being requested
-  final List<String>? dataColumns;
-
-  /// From which index data is being requested
-  final int from;
-
-  /// To which index data is being requested
-  final int? to;
-
-  /// True if the the data should only overwrite old existing data
-  final bool isUpdate;
+  /// Id of [DataSubscription] where meta data will be returned to
+  final String subId;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  GetDataChunkCommand({
+  GetMetaDataCommand({
     required String reason,
     required this.dataProvider,
-    required this.from,
     required this.subId,
-    this.isUpdate = false,
-    this.to,
-    this.dataColumns,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

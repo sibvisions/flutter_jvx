@@ -1,5 +1,8 @@
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
+
 import '../api/response/dal_fetch_response.dart';
 import 'column_definition.dart';
 
@@ -27,6 +30,9 @@ class DataBook {
   /// Index of currently selected Row
   int selectedRow;
 
+  /// Contains all metadata
+  DalMetaDataResponse? metaData;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,6 +45,7 @@ class DataBook {
     required this.isAllFetched,
     required this.selectedRow,
     required this.columnViewTable,
+    this.metaData,
   });
 
   /// Creates a [DataBook] with only default values
@@ -76,28 +83,35 @@ class DataBook {
     }
   }
 
-  /// Get data of the column of the currently selected row
+  /// Get date of of the selected record,
   /// If no record is currently selected (-1) returns null
   /// If selected row is not found returns null
-  dynamic getSelectedColumnData({required String pDataColumnName}) {
-    // Get index of column
-    int indexOfColumn = columnDefinitions.indexWhere((columnDef) => columnDef.name == pDataColumnName);
-
-    // If column with provided name was not found throw error.
-    if (indexOfColumn == -1) {
-      throw Exception("Column with name $pDataColumnName was not found in dataBook $dataProvider");
-    }
-
-    // Get record of selectedRow
-    List<dynamic>? record = records[selectedRow];
-
-    // If record is found return value at the index of the column.
-    // ToDo Handle non-existing record better.
-    if (record != null) {
-      return record[indexOfColumn];
-    } else {
+  DataRecord? getSelectedRecord({required List<String>? pDataColumnNames}) {
+    if (selectedRow == -1) {
       return null;
     }
+
+    List<ColumnDefinition> definitions = columnDefinitions;
+    List<dynamic> selectedRecord = records[selectedRow]!;
+
+    if (pDataColumnNames != null) {
+      // Get provided column definitions
+      List<ColumnDefinition> definitions =
+          pDataColumnNames.map((e) => columnDefinitions.firstWhere((element) => e == element.name)).toList();
+
+      // Get full selected record, then only take requested columns
+      List<dynamic> fullRecord = records[selectedRow]!;
+      selectedRecord = definitions.map((e) {
+        int indexOfDef = columnDefinitions.indexOf(e);
+        return fullRecord[indexOfDef];
+      }).toList();
+    }
+
+    return DataRecord(
+      columnDefinitions: definitions,
+      index: selectedRow,
+      values: selectedRecord,
+    );
   }
 
   /// Will return all available data from the column in the provided range

@@ -1,9 +1,11 @@
 import 'dart:collection';
 
+import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
+
 import '../../../model/api/response/dal_fetch_response.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/data/chunk/chunk_data.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../model/data/data_book.dart';
 import '../i_data_service.dart';
@@ -47,12 +49,14 @@ class DataService implements IDataService {
 
     if (dataBook == null) {
       dataBook = DataBook(
-          dataProvider: pMetaData.dataProvider,
-          records: HashMap(),
-          columnDefinitions: pMetaData.columns,
-          isAllFetched: false,
-          selectedRow: -1,
-          columnViewTable: pMetaData.columnViewTable);
+        dataProvider: pMetaData.dataProvider,
+        records: HashMap(),
+        columnDefinitions: pMetaData.columns,
+        isAllFetched: false,
+        selectedRow: -1,
+        columnViewTable: pMetaData.columnViewTable,
+        metaData: pMetaData,
+      );
       dataBooks[dataBook.dataProvider] = dataBook;
     } else {
       dataBook.columnDefinitions = pMetaData.columns;
@@ -63,31 +67,19 @@ class DataService implements IDataService {
   }
 
   @override
-  Future<List<BaseCommand>> dataProviderChange() {
-    // TODO: implement dataProviderChange
-    throw UnimplementedError();
-  }
-
-  @override
-  Future getSelectedDataColumn({required String pColumnName, required String pDataProvider}) async {
+  Future<DataRecord?> getSelectedRowData({
+    required List<String>? pColumnNames,
+    required String pDataProvider,
+  }) async {
     DataBook dataBook = dataBooks[pDataProvider]!;
-    dynamic selectedRowColumnData = dataBook.getSelectedColumnData(pDataColumnName: pColumnName);
+
+    DataRecord? selectedRowColumnData = dataBook.getSelectedRecord(pDataColumnNames: pColumnNames);
 
     return selectedRowColumnData;
   }
 
   @override
-  Future<ColumnDefinition> getSelectedColumnDefinition(
-      {required String pColumnName, required String pDataProvider}) async {
-    DataBook dataBook = dataBooks[pDataProvider]!;
-    ColumnDefinition? columnDefinition =
-        dataBook.columnDefinitions.firstWhere((element) => element.name == pColumnName);
-
-    return columnDefinition;
-  }
-
-  @override
-  Future<ChunkData> getDataChunk({
+  Future<DataChunk> getDataChunk({
     required int pFrom,
     required String pDataProvider,
     int? pTo,
@@ -141,7 +133,19 @@ class DataService implements IDataService {
       data[i + pFrom] = row;
     }
 
-    return ChunkData(data: data, isAllFetched: dataBook.isAllFetched, columnDefinitions: columnDefinitions);
+    return DataChunk(
+      data: data,
+      isAllFetched: dataBook.isAllFetched,
+      columnDefinitions: columnDefinitions,
+      from: pFrom,
+      to: pTo,
+    );
+  }
+
+  @override
+  Future<DalMetaDataResponse> getMetaData({required String pDataProvider}) async {
+    DataBook dataBook = dataBooks[pDataProvider]!;
+    return dataBook.metaData!;
   }
 
   @override

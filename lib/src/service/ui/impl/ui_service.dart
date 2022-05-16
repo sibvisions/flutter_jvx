@@ -3,17 +3,19 @@ import 'dart:collection';
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
+import 'package:flutter_client/src/model/command/data/get_meta_data_command.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
 
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
+import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
-import '../../../model/command/data/get_selected_data.dart';
+import '../../../model/command/data/get_selected_data_command.dart';
 import '../../../model/component/fl_component_model.dart';
-import '../../../model/data/chunk/chunk_data.dart';
-import '../../../model/data/column_definition.dart';
+import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
 import '../../../model/menu/menu_model.dart';
 import '../i_ui_service.dart';
@@ -35,18 +37,8 @@ class UiService with CommandServiceMixin implements IUiService {
   /// Live component registration
   final HashMap<String, ComponentCallback> _registeredComponents = HashMap();
 
-  /// Live data components
-  /// Dataprovider
-  /// - Columnname
-  /// -- ComponentId
-  /// --- Callbacks
-  final HashMap<String, Map<String, Map<String, Function>>> _registeredDataComponents = HashMap();
-
-  /// List of all one-time-use columnDefinition callBacks
-  final HashMap<String, Map<String, Map<String, Function>>> _columnDefinitionCallback = HashMap();
-
-  /// List of all registered data chunk subscriptions
-  final List<ChunkSubscription> _registeredDataChunks = [];
+  /// All Registered data subscriptions
+  final List<DataSubscription> _dataSubscriptions = [];
 
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
@@ -175,10 +167,8 @@ class UiService with CommandServiceMixin implements IUiService {
     // }
     _currentScreen.clear();
     _registeredComponents.clear();
-    _registeredDataComponents.clear();
-    _columnDefinitionCallback.clear();
     _layoutDataList.clear();
-    _registeredDataChunks.clear();
+    _dataSubscriptions.clear();
   }
 
   @override
@@ -222,88 +212,78 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
+  @Deprecated("Use Data subscription")
   void registerAsDataComponent({
     required String pDataProvider,
     required String pComponentId,
     required String pColumnName,
     required Function pColumnDefinitionCallback,
-    required Function pCallback,
+    required OnSelectedRecordCallback pCallback,
   }) {
-    if (_registeredDataComponents[pDataProvider] == null) {
-      _registeredDataComponents[pDataProvider] = {
-        pColumnName: {pComponentId: pCallback}
-      };
-      _columnDefinitionCallback[pDataProvider] = {
-        pColumnName: {pComponentId: pColumnDefinitionCallback}
-      };
-    } else if (_registeredDataComponents[pDataProvider]![pColumnName] == null) {
-      _registeredDataComponents[pDataProvider]![pColumnName] = {pComponentId: pCallback};
-      _columnDefinitionCallback[pDataProvider]![pColumnName] = {pComponentId: pColumnDefinitionCallback};
-    } else {
-      _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId] = pCallback;
-      _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId] = pColumnDefinitionCallback;
-    }
+    DataSubscription subscription = DataSubscription(
+      id: pComponentId,
+      dataProvider: pDataProvider,
+      from: -1,
+      onSelectedRecord: pCallback,
+    );
 
-    GetSelectedDataCommand command =
-        GetSelectedDataCommand(reason: "reason", componentId: pComponentId, dataProvider: pDataProvider, columnName: pColumnName);
-    sendCommand(command);
+    registerDataSubscription(pDataSubscription: subscription);
   }
 
   @override
-  void registerDataChunk({required ChunkSubscription chunkSubscription, bool shouldFetch = true}) {
-    _registeredDataChunks.removeWhere((element) => element.same(chunkSubscription));
-    _registeredDataChunks.add(chunkSubscription);
+  void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true}) {
+    _dataSubscriptions.removeWhere((element) => element.same(pDataSubscription));
+    _dataSubscriptions.add(pDataSubscription);
 
-    if (shouldFetch) {
-      GetDataChunkCommand command = GetDataChunkCommand(
-        reason: "Component registered",
-        dataProvider: chunkSubscription.dataProvider,
-        from: chunkSubscription.from,
-        to: chunkSubscription.to,
-        componentId: chunkSubscription.id,
-        dataColumns: chunkSubscription.dataColumns,
+    if (pShouldFetch) {
+      if (pDataSubscription.from != -1) {
+        GetDataChunkCommand getDataChunkCommand = GetDataChunkCommand(
+          reason: "Subscription added",
+          dataProvider: pDataSubscription.dataProvider,
+          from: pDataSubscription.from,
+          to: pDataSubscription.to,
+          subId: pDataSubscription.id,
+          dataColumns: pDataSubscription.dataColumns,
+        );
+        sendCommand(getDataChunkCommand);
+      }
+
+      GetSelectedDataCommand getSelectedDataCommand = GetSelectedDataCommand(
+        subId: pDataSubscription.id,
+        reason: "Subscription added",
+        dataProvider: pDataSubscription.dataProvider,
+        columnNames: pDataSubscription.dataColumns,
       );
-      sendCommand(command);
+      sendCommand(getSelectedDataCommand);
+
+      GetMetaDataCommand getMetaDataCommand = GetMetaDataCommand(
+        reason: "Subscription added",
+        dataProvider: pDataSubscription.dataProvider,
+        subId: pDataSubscription.id,
+      );
+      sendCommand(getMetaDataCommand);
     }
   }
 
   @override
   void deleteInactiveComponent({required Set<String> inactiveIds}) {
-    // remove subscription for components removed from ui
+    // remove subscription for removed components
     for (String inactiveId in inactiveIds) {
       _layoutDataList.remove(inactiveId);
       _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
-      _registeredComponents.removeWhere((componentId, value) => componentId == inactiveId);
-      _registeredDataComponents.forEach((key, value) {
-        value.removeWhere((key, value) => key == inactiveId);
-      });
-      _columnDefinitionCallback.forEach((key, value) {
-        value.removeWhere((key, value) => key == inactiveId);
-      });
+      disposeSubscriptions(pComponentId: inactiveId);
     }
   }
 
   @override
   void disposeSubscriptions({required String pComponentId}) {
+    _dataSubscriptions.removeWhere((element) => element.id == pComponentId);
     _registeredComponents.removeWhere((componentId, value) => componentId == pComponentId);
-    _registeredDataComponents.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-    _columnDefinitionCallback.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-    _registeredDataChunks.removeWhere((element) => element.id == pComponentId);
   }
 
   @override
-  void unRegisterDataComponent({required String pComponentId, required String pDataProvider}) {
-    _registeredDataComponents.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-    _columnDefinitionCallback.forEach((key, value) {
-      value.removeWhere((key, value) => key == pComponentId);
-    });
-    _registeredDataChunks.removeWhere((element) => element.id == pComponentId && element.dataProvider == pDataProvider);
+  void disposeDataSubscription({required String pComponentId, required String pDataProvider}) {
+    _dataSubscriptions.removeWhere((element) => element.id == pComponentId && element.dataProvider == pDataProvider);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -340,59 +320,69 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void notifyDataChange({required String pDataProvider}) {
-    var dataProviderCallbacks = _registeredDataComponents[pDataProvider];
-
-    if (dataProviderCallbacks != null) {
-      for (String columnName in dataProviderCallbacks.keys) {
-        for (String componentId in dataProviderCallbacks[columnName]!.keys) {
-          GetSelectedDataCommand command = GetSelectedDataCommand(
-            reason: "reason",
-            componentId: componentId,
-            dataProvider: pDataProvider,
-            columnName: columnName,
-          );
-          sendCommand(command);
-        }
+  void notifyDataChange({
+    required String pDataProvider,
+    required int pFrom,
+    required int pTo,
+  }) {
+    _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
+      // Check if selected data changed
+      if (pFrom == -1) {
+        sendCommand(GetSelectedDataCommand(
+          subId: sub.id,
+          reason: "Notify data was called with pFrom -1",
+          dataProvider: sub.dataProvider,
+          columnNames: sub.dataColumns,
+        ));
+      } else if (sub.from != -1) {
+        sendCommand(GetDataChunkCommand(
+          reason: "Notify data was called",
+          dataProvider: pDataProvider,
+          from: sub.from,
+          to: sub.to,
+          subId: sub.id,
+          dataColumns: sub.dataColumns,
+        ));
       }
-    }
-
-    List<ChunkSubscription> subs = _registeredDataChunks.where((element) => element.dataProvider == pDataProvider).toList();
-
-    for (ChunkSubscription sub in subs) {
-      registerDataChunk(chunkSubscription: sub);
-    }
+    });
   }
 
   @override
   void setSelectedData({
+    required String pSubId,
     required String pDataProvider,
-    required String pComponentId,
-    required pData,
-    required String pColumnName,
+    required DataRecord? pDataRow,
   }) {
-    _registeredDataComponents[pDataProvider]![pColumnName]![pComponentId]!.call(pData);
-  }
-
-  @override
-  void setSelectedColumnDefinition({
-    required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required ColumnDefinition pColumnDefinition,
-  }) {
-    _columnDefinitionCallback[pDataProvider]![pColumnName]![pComponentId]!.call(pColumnDefinition);
+    _dataSubscriptions
+        .where((element) => element.dataProvider == pDataProvider && element.id == pSubId)
+        .forEach((element) => element.onSelectedRecord(pDataRow));
   }
 
   @override
   void setChunkData({
-    required ChunkData pChunkData,
-    required String pId,
+    required String pSubId,
+    required DataChunk pDataChunk,
     required String pDataProvider,
   }) {
-    ChunkSubscription chunkSubscription =
-        _registeredDataChunks.firstWhere((element) => element.dataProvider == pDataProvider && element.id == pId);
+    List<DataSubscription> subs =
+        _dataSubscriptions.where((element) => element.dataProvider == pDataProvider && element.id == pSubId).toList();
 
-    chunkSubscription.callback(pChunkData);
+    subs.forEach((element) {
+      var a = element.onDataChunk;
+      if (a != null) {
+        a(pDataChunk);
+      }
+    });
+  }
+
+  @override
+  void setMetaData({
+    required String pSubId,
+    required String pDataProvider,
+    required DalMetaDataResponse pMetaData,
+  }) {
+    _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
+      element.onMetaData!(pMetaData);
+    });
   }
 }

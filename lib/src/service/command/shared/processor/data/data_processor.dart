@@ -1,13 +1,15 @@
 import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
 import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
+import 'package:flutter_client/src/model/command/data/get_meta_data_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/change_selected_row_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/delete_provider_data_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/get_data_chunk_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/data/get_meta_data_command_processor.dart';
 
 import '../../../../../model/command/base_command.dart';
 import '../../../../../model/command/data/data_command.dart';
-import '../../../../../model/command/data/get_selected_data.dart';
+import '../../../../../model/command/data/get_selected_data_command.dart';
 import '../../../../../model/command/data/save_fetch_data_command.dart';
 import '../../../../../model/command/data/save_meta_data_command.dart';
 import '../../i_command_processor.dart';
@@ -24,7 +26,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
   final SaveFetchDataProcessor _fetchDataProcessor = SaveFetchDataProcessor();
 
   /// Processes [GetSelectedDataCommand]
-  final GetSelectedDataProcessor _getSelectedDataProcessor = GetSelectedDataProcessor();
+  final GetSelectedDataCommandProcessor _getSelectedDataProcessor = GetSelectedDataCommandProcessor();
 
   /// Processes [GetDataChunkCommand]
   final GetDataChunkCommandProcessor _getDataChunkCommandProcessor = GetDataChunkCommandProcessor();
@@ -34,7 +36,7 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
 
   final ChangeSelectedRowCommandProcessor _changeSelectedRowCommandProcessor = ChangeSelectedRowCommandProcessor();
 
-  // final DalDataProviderChangedProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
+  final GetMetaDataCommandProcessor _metaDataCommandProcessor = GetMetaDataCommandProcessor();
 
   @override
   Future<List<BaseCommand>> processCommand(DataCommand command) async {
@@ -50,8 +52,9 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return _deleteProviderDataCommandProcessor.processCommand(command);
     } else if (command is ChangeSelectedRowCommand) {
       return _changeSelectedRowCommandProcessor.processCommand(command);
+    } else if (command is GetMetaDataCommand) {
+      return _metaDataCommandProcessor.processCommand(command);
     }
-    // else if (command is DataPro)
 
     return [];
   }

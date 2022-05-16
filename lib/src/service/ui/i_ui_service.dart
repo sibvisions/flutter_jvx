@@ -1,15 +1,16 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
-import '../../model/data/column_definition.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../command/i_command_service.dart';
 
@@ -105,30 +106,29 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Register as an active component, callback will be called when model
-  /// changes or children should be rebuilt.
   void registerAsLiveComponent({required String id, required ComponentCallback callback});
 
   /// Register a an active component in need of data from a dataBook.
+  @Deprecated("use registerDataSubscription version")
   void registerAsDataComponent({
     required String pDataProvider,
-    required Function pCallback,
+    required OnSelectedRecordCallback pCallback,
     required Function pColumnDefinitionCallback,
     required String pComponentId,
     required String pColumnName,
   });
 
-  /// Register to receive a chunk of data from a specific dataProvider
-  void registerDataChunk({required ChunkSubscription chunkSubscription});
+  /// Register to receive a subscriptions of data from a specific dataProvider
+  void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true});
 
-  /// Deletes unused component models from local cache and disposes of all their
-  /// active subscriptions.
+  /// Not to be used from ui, only used when components are no l onger to be displayed in UI
   void deleteInactiveComponent({required Set<String> inactiveIds});
 
-  /// Removes all active subscriptions as the wrapper has been disposed
+  /// Removes all active subscriptions
   void disposeSubscriptions({required String pComponentId});
 
-  /// Deletes the callback of the registered component on the dataProvider
-  void unRegisterDataComponent({required String pComponentId, required String pDataProvider});
+  /// Removes [DataSubscription] from [IUiService]
+  void disposeDataSubscription({required String pComponentId, required String pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves
@@ -144,28 +144,29 @@ abstract class IUiService {
 
   /// Notify all components belonging to [pDataProvider] that their underlying
   /// data may have changed.
-  void notifyDataChange({required String pDataProvider});
+  void notifyDataChange({
+    required String pDataProvider,
+    required int pFrom,
+    required int pTo,
+  });
 
-  /// Calls the callback function of the component with [pData]
+  /// Calls the callback of all subscribed [DataSubscription]s which are subscribed to [pDataProvider]
   void setSelectedData({
+    required String pSubId,
     required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required dynamic pData,
+    required DataRecord? pDataRow,
   });
 
-  /// Calls the callback function of the component with [pColumnDefinition]
-  void setSelectedColumnDefinition({
-    required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required ColumnDefinition pColumnDefinition,
-  });
-
-  /// Calls the callback function with [pChunkData] for provided [pId] and [pDataProvider]
+  /// Calls the callback of all subscribed [DataSubscription]s
   void setChunkData({
-    required ChunkData pChunkData,
-    required String pId,
+    required String pSubId,
     required String pDataProvider,
+    required DataChunk pDataChunk,
+  });
+
+  void setMetaData({
+    required String pSubId,
+    required String pDataProvider,
+    required DalMetaDataResponse pMetaData,
   });
 }
