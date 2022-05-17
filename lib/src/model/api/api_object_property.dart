@@ -174,6 +174,7 @@ abstract class ApiObjectProperty {
   static const String insertEnabled = "insertEnabled";
   static const String filter = "filter";
   static const String fetch = "fetch";
+  static const String onlySelected = "onlySelected";
 
   // Cell editor overrides
   static const String cellEditorEditable = "cellEditor_editable_";

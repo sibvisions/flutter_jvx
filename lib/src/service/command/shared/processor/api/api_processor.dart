@@ -1,4 +1,6 @@
 import 'package:flutter_client/src/model/command/api/change_password_command.dart';
+import 'package:flutter_client/src/model/command/api/dal_save_command.dart';
+import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
 import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/command/api/filter_command.dart';
 import 'package:flutter_client/src/model/command/api/logout_command.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_client/src/model/command/api/reset_password_command.dart
 import 'package:flutter_client/src/model/command/api/select_record_command.dart';
 import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/change_password_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/dal_save_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/delete_record_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/filter_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/logout_command_processor.dart';
@@ -33,7 +37,7 @@ import 'close_tab_processor.dart';
 import 'device_status_processor.dart';
 import 'download_images_command_processor.dart';
 import 'login_command_processor.dart';
-import 'open_screen_commmand_processor.dart';
+import 'open_screen_command_processor.dart';
 import 'open_tab_processor.dart';
 import 'press_button_processor.dart';
 import 'set_value_command_processor.dart';
@@ -103,6 +107,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
   /// Processes [SelectRecordCommand]
   final ICommandProcessor _selectRecordProcessor = SelectRecordCommandProcessor();
 
+  final ICommandProcessor _deleteRecordCommandProcessor = DeleteRecordCommandProcessor();
+
+  final ICommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,6 +154,10 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _logoutProcessor.processCommand(command);
     } else if (command is SelectRecordCommand) {
       return _selectRecordProcessor.processCommand(command);
+    } else if (command is DeleteRecordCommand) {
+      return _deleteRecordCommandProcessor.processCommand(command);
+    } else if (command is DalSaveCommand) {
+      return _dalSaveProcessor.processCommand(command);
     }
 
     return [];
