@@ -96,8 +96,10 @@ class DataBook {
 
     if (pDataColumnNames != null) {
       // Get provided column definitions
-      List<ColumnDefinition> definitions =
-          pDataColumnNames.map((e) => columnDefinitions.firstWhere((element) => e == element.name)).toList();
+      definitions = [];
+      for (String columnName in pDataColumnNames) {
+        definitions.add(columnDefinitions.firstWhere((element) => element.name == columnName));
+      }
 
       // Get full selected record, then only take requested columns
       List<dynamic> fullRecord = records[selectedRow]!;

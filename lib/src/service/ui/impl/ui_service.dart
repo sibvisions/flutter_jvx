@@ -327,14 +327,13 @@ class UiService with CommandServiceMixin implements IUiService {
   }) {
     _dataSubscriptions.where((element) => element.dataProvider == pDataProvider).forEach((sub) {
       // Check if selected data changed
-      if (pFrom == -1) {
-        sendCommand(GetSelectedDataCommand(
-          subId: sub.id,
-          reason: "Notify data was called with pFrom -1",
-          dataProvider: sub.dataProvider,
-          columnNames: sub.dataColumns,
-        ));
-      } else if (sub.from != -1) {
+      sendCommand(GetSelectedDataCommand(
+        subId: sub.id,
+        reason: "Notify data was called with pFrom -1",
+        dataProvider: sub.dataProvider,
+        columnNames: sub.dataColumns,
+      ));
+      if (sub.from != -1) {
         sendCommand(GetDataChunkCommand(
           reason: "Notify data was called",
           dataProvider: pDataProvider,
@@ -381,9 +380,7 @@ class UiService with CommandServiceMixin implements IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   }) {
-    _dataSubscriptions
-        .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
-        .forEach((element) {
+    _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
       element.onMetaData!(pMetaData);
     });
   }
