@@ -20,7 +20,7 @@ class DataSubscription {
   final String dataProvider;
 
   /// Callback will be called with selected row, regardless if only the selected row was fetched
-  final OnSelectedRecordCallback onSelectedRecord;
+  final OnSelectedRecordCallback? onSelectedRecord;
 
   /// Index from which data will be fetched, set to -1 to only receive the selected row
   final int from;
@@ -45,7 +45,7 @@ class DataSubscription {
     required this.id,
     required this.dataProvider,
     required this.from,
-    required this.onSelectedRecord,
+    this.onSelectedRecord,
     this.onDataChunk,
     this.onMetaData,
     this.to,

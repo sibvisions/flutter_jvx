@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/command/api/filter_command.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
 
-import '../../../../model/data/chunk/chunk_subscription.dart';
+import '../../../../mixin/ui_service_mixin.dart';
+import '../../../../model/command/api/filter_command.dart';
+import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
+import '../../../../model/data/subscriptions/data_chunk.dart';
+import '../../../../model/data/subscriptions/data_subscription.dart';
 
 class FlLinkedCellPicker extends StatefulWidget {
   final String id;
@@ -35,7 +34,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   int scrollingPage = 1;
   Timer? filterTimer; // 200-300 Milliseconds
   dynamic lastChangedFilter;
-  ChunkData? _chunkData;
+  DataChunk? _chunkData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -126,7 +125,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
   @override
   void dispose() {
-    uiService.unRegisterDataComponent(
+    uiService.disposeDataSubscription(
       pComponentId: widget.id,
       pDataProvider: model.linkReference.dataProvider,
     );
@@ -147,12 +146,13 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void receiveData(ChunkData pChunkData) {
-    _chunkData = pChunkData;
-
-    for (int i = 0; i < _chunkData!.data.length; i++) {
-      List<dynamic> date = _chunkData!.data[i]!;
-      log("Row: $i - $date");
+  void receiveData(DataChunk pChunkData) {
+    if (pChunkData.update && _chunkData != null) {
+      for (int index in pChunkData.data.keys) {
+        _chunkData!.data[index] = pChunkData.data[index]!;
+      }
+    } else {
+      _chunkData = pChunkData;
     }
 
     if (mounted) {
@@ -332,11 +332,11 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void subscribe() {
-    uiService.registerDataChunk(
-      chunkSubscription: ChunkSubscription(
+    uiService.registerDataSubscription(
+      pDataSubscription: DataSubscription(
         id: widget.id + "_${runtimeType}_{$hashCode}",
         dataProvider: model.linkReference.dataProvider,
-        callback: receiveData,
+        onDataChunk: receiveData,
         dataColumns: columnNamesToSubscribe(),
         from: 0,
         to: 100 * scrollingPage,
@@ -345,7 +345,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void unsubscribe() {
-    uiService.unRegisterDataComponent(
+    uiService.disposeDataSubscription(
         pComponentId: widget.id + "_${runtimeType}_{$hashCode}", pDataProvider: model.linkReference.dataProvider);
   }
 

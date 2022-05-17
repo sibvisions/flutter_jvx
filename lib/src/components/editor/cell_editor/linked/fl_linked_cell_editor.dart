@@ -1,16 +1,16 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/linked/fl_linked_cell_picker.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
 
+import '../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
-import '../../../../model/data/chunk/chunk_subscription.dart';
+import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
 import '../../../../model/data/column_definition.dart';
+import '../../../../model/data/subscriptions/data_chunk.dart';
+import '../../../../model/data/subscriptions/data_subscription.dart';
 import '../i_cell_editor.dart';
+import 'fl_linked_cell_picker.dart';
 import 'fl_linked_editor_widget.dart';
 
 class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> with UiServiceMixin {
@@ -148,8 +148,8 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     return null;
   }
 
-  void setValueMap(ChunkData pChunkData) {
-    if (!lastCallbackIntentional) {
+  void setValueMap(DataChunk pChunkData) {
+    if (!lastCallbackIntentional && !pChunkData.update) {
       _valueMap.clear();
     }
 
@@ -160,9 +160,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     int indexOfValueColumn =
         pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
 
-    for (int i = _valueMap.values.length; i < pChunkData.data.length; i++) {
-      List<dynamic> dataRow = pChunkData.data[i]!;
-
+    for (List<dynamic> dataRow in pChunkData.data.values) {
       dynamic key = dataRow[indexOfKeyColumn];
       dynamic value = dataRow[indexOfValueColumn];
 
@@ -178,13 +176,13 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     if (model.displayReferencedColumnName != null) {
       lastCallbackIntentional = true;
       if (!isAllFetched) {
-        uiService.registerDataChunk(
-          chunkSubscription: ChunkSubscription(
+        uiService.registerDataSubscription(
+          pDataSubscription: DataSubscription(
             id: id,
             dataProvider: model.linkReference.dataProvider,
             from: 0,
             to: pageLoad * currentPage,
-            callback: setValueMap,
+            onDataChunk: setValueMap,
           ),
         );
       }
@@ -192,7 +190,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   }
 
   void unsubscribe() {
-    uiService.unRegisterDataComponent(pComponentId: id, pDataProvider: model.linkReference.referencedDataBook);
+    uiService.disposeDataSubscription(pComponentId: id, pDataProvider: model.linkReference.referencedDataBook);
   }
 
   void increaseValueMap() {

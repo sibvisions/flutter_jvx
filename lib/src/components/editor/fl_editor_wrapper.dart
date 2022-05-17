@@ -2,13 +2,15 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
 import 'package:flutter_client/util/parse_util.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../model/api/api_object_property.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
-import '../../model/data/column_definition.dart';
 import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -162,17 +164,21 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Subscribes to the service and registers the set value call back.
   void subscribe(T pModel) {
-    uiService.registerAsDataComponent(
-        pColumnDefinitionCallback: setColumnDefinition,
-        pDataProvider: pModel.dataRow,
-        pCallback: setValue,
-        pComponentId: pModel.id,
-        pColumnName: pModel.columnName);
+    uiService.registerDataSubscription(
+      pDataSubscription: DataSubscription(
+        id: pModel.id,
+        dataProvider: pModel.dataRow,
+        from: -1,
+        onSelectedRecord: setValue,
+        onMetaData: setColumnDefinition,
+        dataColumns: [pModel.columnName],
+      ),
+    );
   }
 
   /// Unsubscribes the callback of the cell editor from value changes.
   void unsubscribe() {
-    uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.dataRow);
+    uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.dataRow);
   }
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
@@ -180,12 +186,17 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     setState(() {});
   }
 
-  void setValue(dynamic pValue) {
-    cellEditor.setValue(pValue);
+  void setValue(DataRecord? pDataRecord) {
+    if (pDataRecord != null) {
+      cellEditor
+          .setValue(pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)]);
+    } else {
+      cellEditor.setValue(null);
+    }
   }
 
-  void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
-    cellEditor.setColumnDefinition(pColumnDefinition);
+  void setColumnDefinition(DalMetaDataResponse pMetaData) {
+    cellEditor.setColumnDefinition(pMetaData.columns.firstWhere((element) => element.name == model.columnName));
   }
 
   /// Sets the state of the widget and sends a set value command.

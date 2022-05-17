@@ -3,8 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/map/fl_map_widget.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/set_values_command.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_data.dart';
-import 'package:flutter_client/src/model/data/chunk/chunk_subscription.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
+import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:latlong2/latlong.dart';
@@ -66,12 +66,12 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void subscribe() {
     if (model.pointsDataBook != null) {
-      uiService.registerDataChunk(
-        chunkSubscription: ChunkSubscription(
+      uiService.registerDataSubscription(
+        pDataSubscription: DataSubscription(
           id: model.id,
           from: 0,
           dataProvider: model.pointsDataBook!,
-          callback: receiveMarkerData,
+          onDataChunk: receiveMarkerData,
           dataColumns: [
             model.markerImageColumnName,
             model.latitudeColumnName,
@@ -82,12 +82,12 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     }
 
     if (model.groupDataBook != null) {
-      uiService.registerDataChunk(
-        chunkSubscription: ChunkSubscription(
+      uiService.registerDataSubscription(
+        pDataSubscription: DataSubscription(
           id: model.id,
           from: 0,
           dataProvider: model.groupDataBook!,
-          callback: receivePolygonData,
+          onDataChunk: receivePolygonData,
           dataColumns: [
             model.groupColumnName,
             model.latitudeColumnName,
@@ -100,15 +100,16 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void unsubscribe() {
     if (model.groupDataBook != null) {
-      uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.groupDataBook!);
+      uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.groupDataBook!);
     }
 
     if (model.pointsDataBook != null) {
-      uiService.unRegisterDataComponent(pComponentId: model.id, pDataProvider: model.pointsDataBook!);
+      uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.pointsDataBook!);
     }
   }
 
-  void receivePolygonData(ChunkData pChunkData) {
+  void receivePolygonData(DataChunk pChunkData) {
+    // TODO chunkdata can be update true
     polygons.clear();
 
     Map<String, List<LatLng>> polygonPointsGrouped = <String, List<LatLng>>{};
@@ -135,7 +136,8 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     setState(() {});
   }
 
-  void receiveMarkerData(ChunkData pChunkData) {
+  void receiveMarkerData(DataChunk pChunkData) {
+    // TODO chunkdata can be update true
     markers.clear();
 
     for (List<dynamic> dataRow in pChunkData.data.values) {

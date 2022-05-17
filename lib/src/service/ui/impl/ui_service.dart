@@ -355,7 +355,7 @@ class UiService with CommandServiceMixin implements IUiService {
   }) {
     _dataSubscriptions
         .where((element) => element.dataProvider == pDataProvider && element.id == pSubId)
-        .forEach((element) => element.onSelectedRecord(pDataRow));
+        .forEach((element) => element.onSelectedRecord?.call(pDataRow));
   }
 
   @override
@@ -381,7 +381,9 @@ class UiService with CommandServiceMixin implements IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   }) {
-    _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
+    _dataSubscriptions
+        .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
+        .forEach((element) {
       element.onMetaData!(pMetaData);
     });
   }
