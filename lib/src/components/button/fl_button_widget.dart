@@ -48,11 +48,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: getOnPressed(),
-      child: Container(
-        child: getButtonChild(),
-        decoration: getBoxDecoration(context),
-        alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
-      ),
+      child: getDirectButtonChild(context),
       style: getButtonStyle(),
     );
   }
@@ -94,6 +90,14 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     } else {
       return null;
     }
+  }
+
+  Widget? getDirectButtonChild(BuildContext context) {
+    return Container(
+      child: getButtonChild(),
+      decoration: getBoxDecoration(context),
+      alignment: FLUTTER_ALIGNMENT[model.horizontalAlignment.index][model.verticalAlignment.index],
+    );
   }
 
   /// Converts [VerticalAlignment] into a usable [CrossAxisAlignment] for [Row]
