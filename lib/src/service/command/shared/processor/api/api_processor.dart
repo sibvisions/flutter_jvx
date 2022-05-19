@@ -20,7 +20,6 @@ import 'package:flutter_client/src/service/command/shared/processor/api/select_r
 import 'package:flutter_client/src/service/command/shared/processor/api/set_api_config_command_processor.dart';
 
 import '../../../../../model/command/api/api_command.dart';
-import '../../../../../model/command/api/button_pressed_command.dart';
 import '../../../../../model/command/api/close_tab_command.dart';
 import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/api/download_images_command.dart';
@@ -126,7 +125,7 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _openScreenCommandProcessor.processCommand(command);
     } else if (command is DeviceStatusCommand) {
       return _deviceStatusProcessor.processCommand(command);
-    } else if (command is ButtonPressedCommand) {
+    } else if (command is PressButtonCommand) {
       return _pressButtonProcessor.processCommand(command);
     } else if (command is SetValueCommand) {
       return _setValueProcessor.processCommand(command);

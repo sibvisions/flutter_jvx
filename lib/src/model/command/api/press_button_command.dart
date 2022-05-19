@@ -1,11 +1,30 @@
 import 'api_command.dart';
 
+///
+/// Issue this command to signify an action has been done.
+///
 class PressButtonCommand extends ApiCommand {
-  final String componentId;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class Members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  PressButtonCommand({required this.componentId, required String reason}) : super(reason: reason);
+  /// The component id that has taken an action.
+  String componentName;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Initializes a [PressButtonCommand].
+  PressButtonCommand({
+    required this.componentName,
+    required String reason,
+  }) : super(reason: reason);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  // TODO: implement logString
-  String get logString => throw UnimplementedError();
+  String get logString => "ButtonPressedCommand | Component: $componentName | Reason: $reason";
 }

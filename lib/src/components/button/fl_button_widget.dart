@@ -92,7 +92,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     }
   }
 
-  Widget? getDirectButtonChild(BuildContext context) {
+  Widget getDirectButtonChild(BuildContext context) {
     return Container(
       child: getButtonChild(),
       decoration: getBoxDecoration(context),

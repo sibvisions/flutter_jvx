@@ -22,6 +22,8 @@ class FlMapWrapper extends BaseCompWrapperWidget<FlMapModel> {
 }
 
 class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiServiceMixin {
+  DataChunk? _chunkData;
+
   List<Marker> markers = [];
 
   List<Polygon> polygons = [];
@@ -109,12 +111,19 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
   }
 
   void receivePolygonData(DataChunk pChunkData) {
-    // TODO chunkdata can be update true
+    if (pChunkData.update && _chunkData != null) {
+      for (int index in pChunkData.data.keys) {
+        _chunkData!.data[index] = pChunkData.data[index]!;
+      }
+    } else {
+      _chunkData = pChunkData;
+    }
+
     polygons.clear();
 
     Map<String, List<LatLng>> polygonPointsGrouped = <String, List<LatLng>>{};
 
-    for (List<dynamic> dataRow in pChunkData.data.values) {
+    for (List<dynamic> dataRow in _chunkData!.data.values) {
       String groupName = dataRow[0];
 
       double lat = dataRow[1] is int ? dataRow[1].toDouble() : dataRow[1];
@@ -137,10 +146,17 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
   }
 
   void receiveMarkerData(DataChunk pChunkData) {
-    // TODO chunkdata can be update true
+    if (pChunkData.update && _chunkData != null) {
+      for (int index in pChunkData.data.keys) {
+        _chunkData!.data[index] = pChunkData.data[index]!;
+      }
+    } else {
+      _chunkData = pChunkData;
+    }
+
     markers.clear();
 
-    for (List<dynamic> dataRow in pChunkData.data.values) {
+    for (List<dynamic> dataRow in _chunkData!.data.values) {
       String? image = dataRow[0];
 
       double lat = dataRow[1] is int ? dataRow[1].toDouble() : dataRow[1];

@@ -1,12 +1,18 @@
+import 'package:flutter_client/src/model/component/button/fl_popup_menu_items_model.dart';
+import 'package:flutter_client/src/model/component/button/fl_popup_menu_model.dart';
 import 'package:flutter_client/src/model/component/button/fl_radio_button_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_editor_model.dart';
 import 'package:flutter_client/src/model/component/map/fl_map_model.dart';
-import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
+
+//import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'component/button/fl_button_model.dart';
+import 'component/button/fl_popup_menu_button_model.dart';
+import 'component/button/fl_seperator.dart';
 import 'component/button/fl_toggle_button_model.dart';
+import 'component/chart/fl_chart_model.dart';
 import 'component/check_box/fl_check_box_model.dart';
 import 'component/dummy/fl_dummy_model.dart';
 import 'component/editor/text_area/fl_text_area_model.dart';
@@ -50,23 +56,26 @@ abstract class ModelFactory {
       case FlComponentClassname.ICON:
         return FlIconModel();
       case FlComponentClassname.POPUP_MENU:
-        continue alsoDefault;
+        return FlPopupMenuModel();
       case FlComponentClassname.MENU_ITEM:
-        continue alsoDefault;
+        return FlPopupMenuItemModel();
+      case FlComponentClassname.SEPERATOR:
+        return FlSeperatorModel();
       case FlComponentClassname.POPUP_MENU_BUTTON:
-        continue alsoDefault;
+        return FlPopupMenuButtonModel();
       case FlComponentClassname.CHECK_BOX:
         return FlCheckBoxModel();
       case FlComponentClassname.PASSWORD_FIELD:
         return FlTextFieldModel();
       case FlComponentClassname.TABLE:
-        return FlTableModel();
+        continue alsoDefault;
+      //return FlTableModel();
       case FlComponentClassname.RADIO_BUTTON:
         return FlRadioButtonModel();
       case FlComponentClassname.MAP:
         return FlMapModel();
       case FlComponentClassname.CHART:
-        continue alsoDefault;
+        return FlChartModel();
       case FlComponentClassname.GAUGE:
         continue alsoDefault;
 

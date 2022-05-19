@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../../../util/logging/flutter_logger.dart';
-import '../../model/command/api/button_pressed_command.dart';
+import '../../model/command/api/press_button_command.dart';
 import '../../model/component/button/fl_button_model.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -20,6 +20,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   /// As to send it last.
   FocusNode? currentObjectFocused;
 
+  String? _overwrittenButtonPressId;
+
   @override
   Widget build(BuildContext context) {
     final FlButtonWidget buttonWidget = FlButtonWidget(
@@ -34,11 +36,13 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     return getPositioned(child: buttonWidget);
   }
 
-  void buttonPressed() {
+  void buttonPressed([String? overwrittenButtonPressId]) {
+    _overwrittenButtonPressId = overwrittenButtonPressId;
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Button pressed");
-      uiService.sendCommand(ButtonPressedCommand(componentName: model.name, reason: "Button has been pressed"));
+      uiService.sendCommand(PressButtonCommand(
+          componentName: _overwrittenButtonPressId ?? model.name, reason: "Button has been pressed"));
     } else {
       LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Button will be pressed");
       currentObjectFocused!.addListener(delayedButtonPress);
@@ -48,7 +52,8 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
 
   void delayedButtonPress() {
     LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Delayed button pressed");
-    uiService.sendCommand(ButtonPressedCommand(componentName: model.name, reason: "Button has been pressed"));
+    uiService.sendCommand(
+        PressButtonCommand(componentName: _overwrittenButtonPressId ?? model.name, reason: "Button has been pressed"));
     currentObjectFocused!.removeListener(delayedButtonPress);
     currentObjectFocused = null;
   }

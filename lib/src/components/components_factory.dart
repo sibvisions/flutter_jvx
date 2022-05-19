@@ -8,8 +8,10 @@ import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.
 import '../model/component/fl_component_model.dart';
 import '../service/api/shared/fl_component_classname.dart';
 import 'button/fl_button_wrapper.dart';
+import 'button/popup_menu/fl_popup_menu_button_wrapper.dart';
 import 'button/radio/fl_radio_button_wrapper.dart';
 import 'button/toggle/fl_toggle_button_wrapper.dart';
+import 'chart/fl_chart_wrapper.dart';
 import 'check_box/fl_check_box_wrapper.dart';
 import 'dummy/fl_dummy_wrapper.dart';
 import 'editor/fl_editor_wrapper.dart';
@@ -58,7 +60,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.MENU_ITEM:
         continue alsoDefault;
       case FlComponentClassname.POPUP_MENU_BUTTON:
-        continue alsoDefault;
+        return FlPopupMenuButtonWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.CHECK_BOX:
         return FlCheckBoxWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.PASSWORD_FIELD:
@@ -71,7 +73,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.MAP:
         return FlMapWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.CHART:
-        continue alsoDefault;
+        return FlChartWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.GAUGE:
         continue alsoDefault;
 
