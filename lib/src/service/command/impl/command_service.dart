@@ -1,8 +1,7 @@
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
-import 'package:flutter_client/src/model/command/ui/open_session_expired_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
-import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
+import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
 
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
@@ -56,8 +55,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> sendCommand(BaseCommand command) {
-
+  Future<List<BaseCommand>> sendCommand(BaseCommand command) async {
     Future<List<BaseCommand>>? commands;
 
     // Switch-Case doesn't work with types
@@ -78,31 +76,25 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
     // Executes Commands resulting from incoming command.
     // Call routing commands last, all other actions must take priority.
     if (commands != null) {
-      commands.then((resultCommands) {
-
+      await commands.then((resultCommands) async {
         // Isolate possible route commands
-        var routeCommands = resultCommands.where((element) =>
-          element is RouteToWorkCommand ||
-          element is RouteToMenuCommand ||
-          element is RouteToLoginCommand)
-        .toList();
+        var routeCommands = resultCommands
+            .where((element) => element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
+            .toList();
 
-        var nonRouteCommands = resultCommands.where((element) =>
-          element is! RouteToWorkCommand &&
-          element is! RouteToMenuCommand &&
-          element is! RouteToLoginCommand)
-        .toList();
+        var nonRouteCommands = resultCommands
+            .where((element) => element is! RouteToWorkCommand && element is! RouteToMenuCommand && element is! RouteToLoginCommand)
+            .toList();
 
         // When all commands are finished execute routing commands sorted by priority
-        _waitTillFinished(pCommands: nonRouteCommands).then((value) {
-
-          if(nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+        await _waitTillFinished(pCommands: nonRouteCommands).then((value) {
+          if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
             // Don't route if there is an server error
-          } else if(routeCommands.any((element) => element is RouteToWorkCommand)){
+          } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
             sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-          } else if(routeCommands.any((element) => element is RouteToMenuCommand)){
+          } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
             sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-          } else if(routeCommands.any((element) => element is RouteToLoginCommand)){
+          } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
             sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
           }
         });
@@ -116,17 +108,10 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns true when all provided commands have been executed recursively
-  Future<bool> _waitTillFinished({required List<BaseCommand> pCommands}) async {
-
+  _waitTillFinished({required List<BaseCommand> pCommands}) async {
     // Execute incoming commands
     for (BaseCommand command in pCommands) {
       await sendCommand(command);
     }
-
-    // Execute all unfinished command flows and only return true if all commands
-    // return an empty command list
-    return true;
   }
 }
-
-

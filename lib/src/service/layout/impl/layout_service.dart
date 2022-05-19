@@ -127,9 +127,8 @@ class LayoutService implements ILayoutService {
 
   @override
   Future<bool> removeLayout({required String pComponentId}) async {
-    //ToDo only return true if remove was successfully
-    _layoutDataSet.remove(pComponentId);
-    return true;
+    var deleted = _layoutDataSet.remove(pComponentId);
+    return deleted == null ? false : true;
   }
 
   @override
@@ -233,8 +232,7 @@ class LayoutService implements ILayoutService {
         if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
           LOGGER.logD(
               pType: LOG_TYPE.LAYOUT,
-              pMessage:
-                  "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
+              pMessage: "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
           return false;
         }
       }

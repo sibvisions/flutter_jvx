@@ -23,13 +23,13 @@ class UpdateComponentsCommand extends UiCommand {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  UpdateComponentsCommand(
-      {this.affectedComponents = const {},
-      this.newComponents = const [],
-      this.changedComponents = const [],
-      this.deletedComponents = const {},
-      required String reason})
-      : super(reason: reason);
+  UpdateComponentsCommand({
+    this.affectedComponents = const {},
+    this.newComponents = const [],
+    this.changedComponents = const [],
+    this.deletedComponents = const {},
+    required String reason,
+  }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

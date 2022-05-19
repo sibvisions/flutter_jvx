@@ -32,8 +32,10 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
   /// Will Send [RegisterParentCommand] to [IUiService] sending its current
   /// layoutData.
   void registerParent() {
-    RegisterParentCommand registerParentCommand =
-        RegisterParentCommand(layoutData: layoutData.clone(), reason: "parent register");
+    RegisterParentCommand registerParentCommand = RegisterParentCommand(
+      layoutData: layoutData.clone(),
+      reason: "parent register",
+    );
     uiService.sendCommand(registerParentCommand);
   }
 
@@ -64,6 +66,11 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
 
     // Only re-render if children did change
     if (changeDetected) {
+      layoutData.children.clear();
+      newChildrenList.forEach((key, value) {
+        layoutData.children.add(key);
+      });
+
       children = newChildrenList;
       if (pSetStateOnChange) {
         setState(() {});

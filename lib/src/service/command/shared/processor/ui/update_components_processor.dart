@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../../../util/logging/flutter_logger.dart';
 import '../../../../../mixin/layout_service_mixin.dart';
 import '../../../../../mixin/ui_service_getter_mixin.dart';
@@ -6,9 +8,7 @@ import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../ui/i_ui_service.dart';
 import '../../i_command_processor.dart';
 
-class UpdateComponentsProcessor
-    with UiServiceGetterMixin, LayoutServiceMixin
-    implements ICommandProcessor<UpdateComponentsCommand> {
+class UpdateComponentsProcessor with UiServiceGetterMixin, LayoutServiceMixin implements ICommandProcessor<UpdateComponentsCommand> {
   static bool isOpenScreen = false;
   static bool _secondRun = false;
 
@@ -27,14 +27,14 @@ class UpdateComponentsProcessor
       bool isBusy = await layoutService.layoutInProcess();
 
       if (isBusy) {
-        await Future.delayed(const Duration(milliseconds: 2));
+        await Future.delayed(const Duration(milliseconds: 10));
       }
 
       return isBusy;
     });
 
     // Update components when current layout run is finished
-    isLegal.then((_) {
+    await isLegal.then((_) async {
       if (!isOpenScreen && !_secondRun) {
         layoutService.setValid(isValid: true);
 
@@ -48,10 +48,10 @@ class UpdateComponentsProcessor
       futureList.addAll(command.deletedComponents.map((e) => layoutService.removeLayout(pComponentId: e)));
 
       // Update Components in UI after all are marked as dirty
-      Future.wait(futureList).then((value) {
+      await Future.wait(futureList).then((value) {
         uiService.deleteInactiveComponent(inactiveIds: command.deletedComponents);
 
-        uiService.saveNewComponents(newModels: command.newComponents);
+        uiService.saveNewComponents(newModels: command.newComponents.reversed.toList());
 
         // List is reversed as to update all children before their respective parents.
         uiService.notifyChangedComponents(updatedModels: command.changedComponents.reversed.toList());

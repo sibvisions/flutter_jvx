@@ -9,7 +9,6 @@ import '../../../model/component/panel/fl_panel_model.dart';
 import '../i_storage_service.dart';
 
 class StorageService implements IStorageService {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,8 +26,7 @@ class StorageService implements IStorageService {
   @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {
     // Get Screen (Top-most Panel)
-    FlComponentModel? screenModel =
-        _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
+    FlComponentModel? screenModel = _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
 
     if (screenModel != null) {
       List<FlComponentModel> screen = [];
@@ -43,13 +41,16 @@ class StorageService implements IStorageService {
 
   @override
   Future<List<BaseCommand>> updateComponents(
-      List<dynamic>? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) async {
+    List<dynamic>? componentsToUpdate,
+    List<FlComponentModel>? newComponents,
+    String screenName,
+  ) async {
     // List of all changed models
     Set<String> changedModels = {};
-    // List of all deleted models
-    Set<String> deletedModels = {};
     // List of all affected models
     Set<String> affectedModels = {};
+
+    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName);
 
     // Handle new Components
     if (newComponents != null) {
@@ -62,8 +63,6 @@ class StorageService implements IStorageService {
         _addNewComponent(componentModel);
       }
     }
-
-    List<FlComponentModel> oldScreenComps = _getAllComponentsBelowByName(name: screenName);
 
     // Handle components to Update
     if (componentsToUpdate != null) {
@@ -152,11 +151,12 @@ class StorageService implements IStorageService {
     // log("----------newUiComponents: $newUiComponents ");
 
     UpdateComponentsCommand updateComponentsCommand = UpdateComponentsCommand(
-        affectedComponents: affectedUiComponents,
-        changedComponents: changedUiComponents,
-        deletedComponents: deletedUiComponents,
-        newComponents: newUiComponents,
-        reason: "Server Changed Components");
+      affectedComponents: affectedUiComponents,
+      changedComponents: changedUiComponents,
+      deletedComponents: deletedUiComponents,
+      newComponents: newUiComponents,
+      reason: "Server Changed Components",
+    );
 
     return [updateComponentsCommand];
   }

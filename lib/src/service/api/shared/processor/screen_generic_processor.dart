@@ -31,18 +31,20 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
 
     if (componentsToSave != null || updatedComponent != null) {
       SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
-          reason: "Api received screen.generic response",
-          componentsToSave: componentsToSave,
-          updatedComponent: updatedComponent,
-          screenName: screenGenericResponse.componentId);
+        reason: "Api received screen.generic response",
+        componentsToSave: componentsToSave,
+        updatedComponent: updatedComponent,
+        screenName: screenGenericResponse.componentId,
+      );
       commands.add(saveComponentsCommand);
     }
 
     // Handle Screen Opening
     // if update == false => new screen that should be routed to
     if (!screenGenericResponse.update) {
-      RouteToWorkCommand workCommand =
-          RouteToWorkCommand(reason: "Server sent screen.generic response with update = 'false'");
+      RouteToWorkCommand workCommand = RouteToWorkCommand(
+        reason: "Server sent screen.generic response with update = 'false'",
+      );
 
       commands.add(workCommand);
     }
