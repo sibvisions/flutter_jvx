@@ -18,7 +18,7 @@ abstract class FlPopupMenuItemWidget {
   }
 
   static Widget _createText(FlPopupMenuItemModel pModel) {
-    return Text(pModel.text, style: pModel.getTextStyle());
+    return Padding(padding: const EdgeInsets.only(left: 5.0), child: Text(pModel.text, style: pModel.getTextStyle()));
   }
 
   static Widget _createIcon(String? icon) {

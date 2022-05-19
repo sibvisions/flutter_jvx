@@ -65,7 +65,7 @@ class FlPopupMenuButtonWrapperState<T extends FlPopupMenuButtonModel> extends Fl
       }
 
       bool forceIconSlot = menuItems.any((element) => element is FlPopupMenuItemModel && element.icon != null);
-
+      menuItems.sort((a, b) => a.indexOf.compareTo(b.indexOf));
       for (FlComponentModel popupMenuItemModel in menuItems) {
         if (popupMenuItemModel is FlPopupMenuItemModel) {
           listOfItems.add(FlPopupMenuItemWidget.withModel(popupMenuItemModel, forceIconSlot));
