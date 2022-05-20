@@ -15,7 +15,10 @@ class LogoutCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements
     );
 
     File f = File(configService.getDirectory() + "/auth.txt");
-    await f.delete();
+
+    if (f.existsSync()) {
+      f.deleteSync();
+    }
 
     return apiService.sendRequest(request: logoutRequest);
   }
