@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
 import 'dart:ui';
+
+import 'package:flutter_client/src/layout/split_layout.dart';
 
 import '../../../../util/logging/flutter_logger.dart';
 import '../../../model/command/base_command.dart';
@@ -174,6 +177,14 @@ class LayoutService implements ILayoutService {
       parent.lastCalculatedSize = parent.calculatedSize;
       parent.layout!.calculateLayout(parent, children);
 
+      if (parent.layout is SplitLayout) {
+        log("Parent: ${parent.layout}");
+      }
+
+      children.where((element) => element.layout is SplitLayout).forEach((element) {
+        log("Child: ${element.layout}");
+      });
+
       LOGGER.logD(
           pType: LOG_TYPE.LAYOUT,
           pMessage:
@@ -232,7 +243,8 @@ class LayoutService implements ILayoutService {
         if (!(child.layoutState == LayoutState.VALID && (child.hasCalculatedSize || child.hasPreferredSize))) {
           LOGGER.logD(
               pType: LOG_TYPE.LAYOUT,
-              pMessage: "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
+              pMessage:
+                  "${child.id} is not valid because: ${child.layoutState}, ${child.hasCalculatedSize}, ${child.hasPreferredSize}");
           return false;
         }
       }

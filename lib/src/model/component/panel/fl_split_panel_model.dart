@@ -36,7 +36,8 @@ class FlSplitPanelModel extends FlPanelModel {
       if (jsonDividerPosition == -1) {
         dividerPosition = 50;
       } else {
-        dividerPosition = jsonDividerPosition.toDouble();
+        // TODO
+        //dividerPosition = jsonDividerPosition.toDouble();
       }
     }
     // Orientation

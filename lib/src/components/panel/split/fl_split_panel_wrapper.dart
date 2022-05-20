@@ -1,4 +1,3 @@
-import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -57,8 +56,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
       SplitLayout splitLayout = (layoutData.layout as SplitLayout);
       LayoutPosition currentPosition = layoutData.layoutPosition!;
 
-      dev.log(currentPosition.toString());
-
       double top = 0.0;
       double left = 0;
 
@@ -73,7 +70,6 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
         left = (currentPosition.width * (splitLayout.leftTopRatio / 100.0)) - (splitLayout.splitterSize / 2);
       }
 
-      dev.log("$top, $left | $width, $height");
       return Positioned(
         top: top,
         left: left,
