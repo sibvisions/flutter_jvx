@@ -67,10 +67,10 @@ class SplitLayout implements ILayout, ICloneable {
         double leftTopWidth = position.width / 100 * leftTopRatio - splitterSize / 2;
         double rightBottomWidth = position.width / 100 * (100 - leftTopRatio) - splitterSize / 2;
 
-        firstComponentViewer = LayoutPosition(
-            width: leftTopWidth.ceilToDouble(), height: position.height, top: 0, left: 0, isComponentSize: false);
+        firstComponentViewer =
+            LayoutPosition(width: leftTopWidth, height: position.height, top: 0, left: 0, isComponentSize: false);
         secondComponentViewer = LayoutPosition(
-            width: rightBottomWidth.ceilToDouble(),
+            width: rightBottomWidth,
             height: position.height,
             top: 0,
             left: leftTopWidth + splitterSize,
