@@ -63,7 +63,26 @@ class FlSplitPanelWidget extends FlStatelessWidget<FlSplitPanelModel> {
           ),
         );
       } else {
-        children.add(childWidget);
+        children.add(
+          Positioned(
+            top: viewerPosition.top,
+            left: viewerPosition.left,
+            width: viewerPosition.width,
+            height: viewerPosition.height,
+            child: Stack(
+              children: [
+                IgnorePointer(
+                  ignoring: true,
+                  child: SizedBox(
+                    width: childPosition.width,
+                    height: childPosition.height,
+                  ),
+                ),
+                childWidget
+              ],
+            ),
+          ),
+        );
       }
     }
 
