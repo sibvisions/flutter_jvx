@@ -138,6 +138,7 @@ abstract class ApiObjectProperty {
   static const String userName = "userName";
   static const String eMail = "email";
   static const String mode = "mode";
+  static const String profileImage = "profileImage";
 
   // Data Properties
   static const String dataTypeIdentifier = "dataTypeIdentifier";

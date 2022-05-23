@@ -5,7 +5,6 @@ import 'package:flutter_client/src/model/config/user/user_info.dart';
 import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 
 class UserDataProcessor implements IProcessor<UserDataResponse> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,15 +14,12 @@ class UserDataProcessor implements IProcessor<UserDataResponse> {
     UserInfo userInfo = UserInfo(
       userName: pResponse.userName,
       displayName: pResponse.displayName,
-      eMail: pResponse.eMail
+      eMail: pResponse.eMail,
+      profileImage: pResponse.profileImage,
     );
 
-    SaveUserDataCommand command = SaveUserDataCommand(
-        userInfo: userInfo,
-        reason: "Server sent user data"
-    );
+    SaveUserDataCommand command = SaveUserDataCommand(userInfo: userInfo, reason: "Server sent user data");
 
     return [command];
   }
-
 }
