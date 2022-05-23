@@ -60,11 +60,11 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeaderText(flex: 7, text: "Demo"),
+                _buildHeaderText(flex: 7, text: configService.getAppName()),
                 const Padding(padding: EdgeInsets.all(4)),
                 _buildHeaderText(flex: 3, text: "Logged in as: "),
                 const Padding(padding: EdgeInsets.all(10)),
-                _buildHeaderText(flex: 5, text: "John Doe"),
+                _buildHeaderText(flex: 5, text: configService.getUserInfo()?.displayName ?? ""),
                 const Expanded(flex: 2, child: Text(""))
               ],
             ),
@@ -74,10 +74,18 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [
+              children: [
                 Expanded(
                   child: CircleAvatar(
-                    child: FaIcon(FontAwesomeIcons.file),
+                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundImage: configService.getUserInfo()?.profileImage?.image,
+                    child: configService.getUserInfo()?.profileImage == null
+                        ? FaIcon(
+                            FontAwesomeIcons.solidUser,
+                            color: Theme.of(context).primaryColor,
+                            size: 36,
+                          )
+                        : null,
                   ),
                 )
               ],
@@ -155,10 +163,13 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   }) {
     return ListTile(
       tileColor: Theme.of(context).primaryColor,
+      textColor: Theme.of(context).colorScheme.onPrimary,
       onTap: onTap,
-      leading: FaIcon(leadingIcon),
+      leading: FaIcon(
+        leadingIcon,
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
       title: Text(text),
-      trailing: const FaIcon(FontAwesomeIcons.arrowRight),
     );
   }
 
