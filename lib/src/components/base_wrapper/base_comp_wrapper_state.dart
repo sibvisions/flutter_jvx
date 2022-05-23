@@ -103,7 +103,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new Model
-  receiveNewModel({required T newModel}) {
+  void receiveNewModel({required T newModel}) {
     LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${newModel.id} received new Model");
 
     setState(() {
@@ -128,7 +128,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new LayoutData
-  receiveNewLayoutData({required LayoutData newLayoutData}) {
+  void receiveNewLayoutData({required LayoutData newLayoutData}) {
     if (newLayoutData.hasPosition && newLayoutData.layoutPosition!.isConstraintCalc) {
       calcPosition = newLayoutData.layoutPosition;
       newLayoutData.layoutPosition = layoutData.layoutPosition;

@@ -1,7 +1,5 @@
 import 'package:beamer/beamer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_client/src/mask/camera/qr_parser.dart';
 import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
 import 'package:flutter_client/src/mask/setting/widgets/editor/app_name_editor.dart';
@@ -12,6 +10,7 @@ import 'package:flutter_client/src/mask/setting/widgets/setting_item.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/config/api/url_config.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -168,10 +167,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
                 baseUrlNotifier.value = config.getBasePath();
                 configService.getApiConfig().urlConfig = config;
-                uiService.sendCommand(SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
+                uiService.sendCommand(
+                    SetApiConfigCommand(apiConfig: configService.getApiConfig(), reason: "Settings url editor"));
               } catch (e) {
-                // uiService.sendCommand(OpenErrorDialogCommand(reason: "parseURl", message: "URL text could not be parsed"));
-                rethrow;
+                uiService
+                    .sendCommand(OpenErrorDialogCommand(reason: "parseURl", message: "URL text could not be parsed"));
               }
             }
           });
@@ -234,7 +234,8 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     return group;
   }
 
-  Future<bool?> _settingItemClicked<bool>({required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
+  Future<bool?> _settingItemClicked<bool>(
+      {required Widget pEditor, required FaIcon pTitleIcon, required String pTitleText}) {
     return showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
