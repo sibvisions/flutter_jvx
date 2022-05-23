@@ -38,7 +38,7 @@ class UserDataResponse extends ApiResponse {
       : userName = json[ApiObjectProperty.userName],
         displayName = json[ApiObjectProperty.displayName],
         eMail = json[ApiObjectProperty.eMail],
-        profileImage = getImage(ApiObjectProperty.profileImage),
+        profileImage = getImage(json[ApiObjectProperty.profileImage]),
         super.fromJson(json);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
