@@ -280,49 +280,6 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
     );
   }
 
-  Container getTableRow(List<Widget> children, int index, bool isHeader) {
-    if (isHeader) {
-      return Container(
-          decoration: BoxDecoration(
-            boxShadow: [BoxShadow(color: Colors.grey[400]!, spreadRadius: 1)],
-            color: Theme.of(context).primaryColor,
-          ),
-          child: ListTile(title: Row(children: children)));
-    } else {
-      // ignore: avoid_unnecessary_containers
-      return Container(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () => _onRowTapped(index),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 8),
-                child: Row(children: children),
-              ),
-            ),
-            const Divider(
-              color: Colors.grey,
-              indent: 10,
-              endIndent: 10,
-              thickness: 0.5,
-            )
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget getTableColumn(String text, int rowIndex) {
-    int flex = 1;
-
-    return Expanded(
-        flex: flex,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16),
-          child: Container(child: Text(text), padding: const EdgeInsets.all(0)),
-        ));
-  }
-
   bool onNotification(ScrollEndNotification t) {
     if (t.metrics.pixels > 0 && t.metrics.atEdge) {
       scrollingPage++;
