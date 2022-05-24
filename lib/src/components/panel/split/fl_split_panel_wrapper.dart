@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
+import 'package:flutter_client/util/constants/i_color.dart';
 
-import '../../../../util/constants/i_color.dart';
 import '../../../layout/split_layout.dart';
 import '../../../model/component/panel/fl_split_panel_model.dart';
 import '../../../model/layout/layout_position.dart';
@@ -82,7 +83,17 @@ class _FlSplitPanelWrapperState extends BaseContWrapperState<FlSplitPanelModel> 
           onHorizontalDragUpdate: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDrag : null,
           onHorizontalDragEnd: model.orientation == SPLIT_ORIENTATION.VERTICAL ? _horizontalDragEnd : null,
           child: Container(
-            color: IColorConstants.COMPONENT_DISABLED,
+            color: themeData.backgroundColor,
+            child: Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Container(
+                  width: model.orientation == SPLIT_ORIENTATION.VERTICAL ? width : width * 0.3,
+                  height: model.orientation == SPLIT_ORIENTATION.VERTICAL ? height * 0.3 : height,
+                  color: IColor.darken(IColorConstants.COMPONENT_DISABLED),
+                ),
+              ),
+            ),
           ),
         ),
       );
