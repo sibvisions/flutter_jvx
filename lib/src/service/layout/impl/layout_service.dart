@@ -15,7 +15,6 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class Members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   /// The map of all registered components
   final HashMap<String, LayoutData> _layoutDataSet = HashMap<String, LayoutData>();
 
@@ -95,7 +94,7 @@ class LayoutService implements ILayoutService {
       existingLayout.heightConstrains = {};
 
       if (_isLegalState(pParentLayout: existingLayout)) {
-        commands.addAll(await _performLayout(pParentLayout: existingLayout));
+        commands.addAll(_performLayout(pParentLayout: existingLayout));
       }
     } else {
       existingLayout = _layoutDataSet[pScreenComponentId] = LayoutData(
@@ -107,9 +106,11 @@ class LayoutService implements ILayoutService {
           heightConstrains: {});
     }
 
-    commands.add(UpdateLayoutPositionCommand(layoutDataList: [existingLayout], reason: "ScreenSize"));
-
-    return commands;
+    return [
+      // Update layout position always has to come first.
+      UpdateLayoutPositionCommand(layoutDataList: [existingLayout], reason: "ScreenSize"),
+      ...commands
+    ];
   }
 
   @override
@@ -153,7 +154,7 @@ class LayoutService implements ILayoutService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Performs a layout operation.
-  Future<List<BaseCommand>> _performLayout({required LayoutData pParentLayout}) async {
+  List<BaseCommand> _performLayout({required LayoutData pParentLayout}) {
     LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${pParentLayout.id} PERFORM LAYOUT");
     _currentlyLayouting.add(pParentLayout.id);
 
@@ -203,13 +204,14 @@ class LayoutService implements ILayoutService {
       if (parent.isChild && parent.hasNewCalculatedSize) {
         return [PreferredSizeCommand(layoutData: parent, reason: "Has new calc size")];
       } else {
+        // Bugfix: Update layout position always has to come first.
+        commands.add(UpdateLayoutPositionCommand(layoutDataList: [parent, ...children], reason: "New position"));
+
         for (LayoutData child in children) {
           if (child.isParent) {
             commands.add(RegisterParentCommand(layoutData: child, reason: "New position"));
           }
         }
-
-        commands.add(UpdateLayoutPositionCommand(layoutDataList: [parent, ...children], reason: "New position"));
       }
 
       return commands;

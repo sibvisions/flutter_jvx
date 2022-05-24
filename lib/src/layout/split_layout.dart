@@ -105,9 +105,15 @@ class SplitLayout implements ILayout, ICloneable {
     // preferred width & height
     double width = splitAlignment == SPLIT_ORIENTATION.VERTICAL ? splitterSize : 0;
     double height = splitAlignment == SPLIT_ORIENTATION.HORIZONTAL ? splitterSize : 0;
+
     for (LayoutData child in pChildren) {
-      width += child.bestSize.width;
-      height += child.bestSize.height;
+      if (splitAlignment == SPLIT_ORIENTATION.VERTICAL) {
+        width += child.bestSize.width;
+        height = max(height, child.bestSize.height);
+      } else {
+        height += child.bestSize.height;
+        width = max(width, child.bestSize.width);
+      }
     }
 
     pParent.calculatedSize = Size(width, height);
@@ -129,6 +135,6 @@ class SplitLayout implements ILayout, ICloneable {
 
   @override
   String toString() {
-    return "SplitLayout[leftTopRatio: $leftTopRatio, splitAlignment: $splitAlignment, splitterSize: $splitterSize, firstComponentViewer: $firstComponentViewer, firstComponentSize: $firstComponentSize, secondComponentViewer: $secondComponentViewer, secondComponentSize: $secondComponentSize]";
+    return "SplitLayout[firstComponentViewer: $firstComponentViewer; secondComponentViewer: $secondComponentViewer]";
   }
 }
