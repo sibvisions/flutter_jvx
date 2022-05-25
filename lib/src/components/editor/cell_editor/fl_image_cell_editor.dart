@@ -20,13 +20,13 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   dynamic _value;
 
   /// The image loading callback to the editor.
-  VoidCallback? imageLoadingCallback;
+  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   /// The size of the image.
   Size imageSize = const Size(16, 16);
 
   /// The image loading callback.
-  late ImageStreamListener imageStreamListener = ImageStreamListener(onImage);
+  late Function(Size, bool)? imageStreamListener = onImage;
 
   ColumnDefinition? _columnDefinition;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,17 +34,13 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlImageCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
-    this.imageLoadingCallback,
+    this.recalculateSizeCallback,
   }) : super(
-          id: id,
-          name: name,
-          columnName: columnName,
+          columnDefinition: columnDefinition,
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -59,14 +55,14 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   void setValue(dynamic pValue) {
     _value = pValue;
 
-    imageLoadingCallback?.call();
+    recalculateSizeCallback?.call(true);
   }
 
   @override
   void setColumnDefinition(ColumnDefinition? pColumnDefinition) {
     _columnDefinition = pColumnDefinition;
 
-    imageLoadingCallback?.call();
+    recalculateSizeCallback?.call(true);
   }
 
   @override
@@ -89,15 +85,15 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   @override
   FlComponentModel getWidgetModel() => FlIconModel();
 
-  void onImage(ImageInfo pImageInfo, bool pSynchronousCall) {
-    if (imageSize.height.toInt() != pImageInfo.image.height || imageSize.width.toInt() != pImageInfo.image.width) {
+  void onImage(Size pImageInfo, bool pSynchronousCall) {
+    if (imageSize.height.toInt() != pImageInfo.height || imageSize.width.toInt() != pImageInfo.width) {
       log("new Size");
-      imageSize = Size(pImageInfo.image.width.toDouble(), pImageInfo.image.height.toDouble());
+      imageSize = Size(pImageInfo.width.toDouble(), pImageInfo.height.toDouble());
       log("$imageSize");
     }
 
     if (!pSynchronousCall) {
-      imageLoadingCallback?.call();
+      recalculateSizeCallback?.call(true);
     }
   }
 
@@ -114,5 +110,10 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   @override
   bool isActionCellEditor() {
     return false;
+  }
+
+  @override
+  String formatValue(Object pValue) {
+    return pValue.toString();
   }
 }

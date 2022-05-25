@@ -3,6 +3,7 @@ import 'package:flutter_client/src/model/component/button/fl_popup_menu_model.da
 import 'package:flutter_client/src/model/component/button/fl_radio_button_model.dart';
 import 'package:flutter_client/src/model/component/editor/fl_editor_model.dart';
 import 'package:flutter_client/src/model/component/map/fl_map_model.dart';
+import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 
 //import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 
@@ -68,8 +69,7 @@ abstract class ModelFactory {
       case FlComponentClassname.PASSWORD_FIELD:
         return FlTextFieldModel();
       case FlComponentClassname.TABLE:
-        continue alsoDefault;
-      //return FlTableModel();
+        return FlTableModel();
       case FlComponentClassname.RADIO_BUTTON:
         return FlRadioButtonModel();
       case FlComponentClassname.MAP:

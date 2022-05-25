@@ -1,4 +1,3 @@
-import 'package:flutter_client/src/components/editor/cell_editor/fl_dummy_cell_editor.dart';
 import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
 
 import '../api/api_object_property.dart';
@@ -55,8 +54,16 @@ class ColumnDefinition {
   /// If it is allowed to move this column if present in a table
   bool movable = true;
 
+  /// The cell editor json of this column.
+  late Map<String, dynamic> cellEditorJson;
+
   /// The cell editor of this column.
-  ICellEditor cellEditor = FlDummyCellEditor();
+  ICellEditor get cellEditor => ICellEditor.getCellEditor(
+        pCellEditorJson: cellEditorJson,
+        onChange: onChange,
+        onEndEditing: onEndEditing,
+        columnDefinition: this,
+      );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information
@@ -175,6 +182,11 @@ class ColumnDefinition {
     var jsonFractionalSecondsPrecision = pJson[ApiObjectProperty.fractionalSecondsPrecision];
     if (jsonFractionalSecondsPrecision != null) {
       iFractionalSecondsPrecision = jsonFractionalSecondsPrecision;
+    }
+
+    var jsonCellEditor = pJson[ApiObjectProperty.cellEditor];
+    if (jsonCellEditor != null) {
+      cellEditorJson = jsonCellEditor;
     }
   }
 

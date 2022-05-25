@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/icon/fl_icon_wrapper.dart';
 import 'package:flutter_client/src/components/map/fl_map_wrapper.dart';
 import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
+import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
 
 //import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
 
@@ -66,8 +67,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.PASSWORD_FIELD:
         return FlPasswordFieldWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.TABLE:
-        continue alsoDefault;
-      //return FlTableWrapper(id: model.id, key: GlobalKey());
+        return FlTableWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.RADIO_BUTTON:
         return FlRadioButtonWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.MAP:

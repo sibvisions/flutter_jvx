@@ -15,6 +15,8 @@ import 'fl_dummy_cell_editor.dart';
 import 'fl_image_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
 
+typedef CellEditorRecalculateSizeCallback = Function([bool pRecalculate]);
+
 /// A cell editor wraps around a editing component and handles all relevant events and value changes.
 abstract class ICellEditor<T extends ICellEditorModel, C> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,13 +24,13 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// The id of the component this cell editor is part of.
-  String id;
+  String? id;
 
   /// The name of the component this cell editor is part of.
-  String name;
+  String? name;
 
   /// The column name of the column this cell editor represents.
-  String columnName;
+  String? columnName;
 
   /// The cell editor model
   T model;
@@ -37,18 +39,21 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   Function(C) onEndEditing;
 
+  ColumnDefinition? columnDefinition;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ICellEditor({
-    required this.id,
-    required this.name,
-    required this.columnName,
     required this.model,
     required Map<String, dynamic> pCellEditorJson,
     required this.onValueChange,
     required this.onEndEditing,
+    this.id,
+    this.name,
+    this.columnName,
+    this.columnDefinition,
   }) {
     model.applyFromJson(pCellEditorJson);
   }
@@ -75,86 +80,77 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
 
   bool isActionCellEditor();
 
+  String formatValue(Object pValue);
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns a [ICellEditor] based on the cell editor class name
   static ICellEditor getCellEditor({
-    required String pId,
-    required String pName,
-    required String pColumnName,
+    String? pId,
+    String? pName,
+    String? pColumnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
-    VoidCallback? pRecalculateSize,
+    CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
   }) {
     String cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
     switch (cellEditorClassName) {
       case FlCellEditorClassname.TEXT_CELL_EDITOR:
         return FlTextCellEditor(
-          id: pId,
-          name: pName,
-          columnName: pColumnName,
+          columnDefinition: columnDefinition,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
         );
       case FlCellEditorClassname.CHECK_BOX_CELL_EDITOR:
         return FlCheckBoxCellEditor(
-          id: pId,
-          name: pName,
-          columnName: pColumnName,
+          columnDefinition: columnDefinition,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
         );
       case FlCellEditorClassname.NUMBER_CELL_EDITOR:
         return FlNumberCellEditor(
-          id: pId,
-          name: pName,
-          columnName: pColumnName,
+          columnDefinition: columnDefinition,
           pCellEditorJson: pCellEditorJson,
           onChange: onChange,
           onEndEditing: onEndEditing,
         );
       case FlCellEditorClassname.IMAGE_VIEWER:
         return FlImageCellEditor(
-            id: pId,
-            name: pName,
-            columnName: pColumnName,
+            columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
-            imageLoadingCallback: pRecalculateSize);
+            recalculateSizeCallback: pRecalculateSizeCallback);
       case FlCellEditorClassname.CHOICE_CELL_EDITOR:
         return FlChoiceCellEditor(
-            id: pId,
-            name: pName,
-            columnName: pColumnName,
+            columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
-            imageLoadingCallback: pRecalculateSize);
+            recalculateSizeCallback: pRecalculateSizeCallback);
       case FlCellEditorClassname.DATE_CELL_EDITOR:
         return FlDateCellEditor(
-            id: pId,
-            name: pName,
-            columnName: pColumnName,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
-            imageLoadingCallback: pRecalculateSize);
+            recalculateSizeCallback: pRecalculateSizeCallback);
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
             id: pId,
             name: pName,
             columnName: pColumnName,
+            columnDefinition: columnDefinition,
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
-            imageLoadingCallback: pRecalculateSize);
+            recalculateSizeCallback: pRecalculateSizeCallback);
 
       default:
         return FlDummyCellEditor();

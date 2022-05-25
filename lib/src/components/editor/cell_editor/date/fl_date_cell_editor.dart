@@ -20,24 +20,20 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
 
   FocusNode focusNode = FocusNode();
 
-  VoidCallback? imageLoadingCallback;
+  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlDateCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
-    this.imageLoadingCallback,
+    this.recalculateSizeCallback,
   }) : super(
-          id: id,
-          name: name,
-          columnName: columnName,
+          columnDefinition: columnDefinition,
           model: FlDateCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -74,7 +70,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
       );
     }
 
-    imageLoadingCallback?.call();
+    recalculateSizeCallback?.call(false);
   }
 
   @override
@@ -83,8 +79,6 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
 
     return FlDateEditorWidget(
       model: widgetModel,
-      endEditing: onEndEditing,
-      valueChanged: onValueChange,
       textController: textController,
       focusNode: focusNode,
       onPress: () => openDatePicker(),
@@ -153,7 +147,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     uiService
         .openDialog(
             pDialogWidget: DatePickerDialog(
-              initialDate: DateTime.fromMillisecondsSinceEpoch(_value ?? 0),
+              initialDate: DateTime.fromMillisecondsSinceEpoch(_value),
               firstDate: DateTime(1970),
               lastDate: DateTime(2100),
             ),
@@ -170,7 +164,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     uiService
         .openDialog(
             pDialogWidget: TimePickerDialog(
-              initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value ?? 0)),
+              initialTime: TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(_value)),
             ),
             pIsDismissible: true)
         .then((value) {
@@ -191,7 +185,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   }
 
   @override
-  String getValue() {
+  dynamic getValue() {
     return _value;
   }
 
@@ -238,5 +232,13 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
       0,
       0,
     ).millisecondsSinceEpoch;
+  }
+
+  @override
+  String formatValue(pValue) {
+    if (pValue is int) {
+      return DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(pValue));
+    }
+    return pValue.toString();
   }
 }

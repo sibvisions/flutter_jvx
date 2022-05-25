@@ -219,8 +219,10 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     }
   }
 
-  void recalculateSize() {
-    sentCalcSize = false;
+  void recalculateSize([bool pRecalulcate = true]) {
+    if (pRecalulcate) {
+      sentCalcSize = false;
+    }
 
     setState(() {});
   }
@@ -264,7 +266,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           pCellEditorJson: jsonCellEditor,
           onChange: onChange,
           onEndEditing: onEndEditing,
-          pRecalculateSize: recalculateSize);
+          pRecalculateSizeCallback: recalculateSize);
       subscribe(pModel);
     }
   }

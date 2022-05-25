@@ -30,8 +30,6 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  String? _value;
-
   final TextEditingController textController = TextEditingController();
 
   final FocusNode focusNode = FocusNode();
@@ -41,16 +39,12 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlTextCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(String) onChange,
     required Function(String) onEndEditing,
   }) : super(
-          id: id,
-          name: name,
-          columnName: columnName,
+          columnDefinition: columnDefinition,
           model: ICellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -69,7 +63,6 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
 
   @override
   void setValue(dynamic pValue) {
-    _value = pValue;
     if (pValue == null) {
       textController.clear();
     } else {
@@ -140,7 +133,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
 
   @override
   String getValue() {
-    return _value ?? '';
+    return textController.text;
   }
 
   @override
@@ -156,5 +149,10 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   @override
   ColumnDefinition? getColumnDefinition() {
     return null;
+  }
+
+  @override
+  String formatValue(Object pValue) {
+    return pValue.toString();
   }
 }

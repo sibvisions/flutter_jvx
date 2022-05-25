@@ -34,20 +34,21 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
   FocusNode focusNode = FocusNode();
 
-  VoidCallback? imageLoadingCallback;
+  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlLinkedCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    String? id,
+    String? name,
+    String? columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
-    this.imageLoadingCallback,
+    this.recalculateSizeCallback,
   }) : super(
           id: id,
           name: name,
@@ -97,7 +98,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     uiService.sendCommand(
       FilterCommand(
-          editorId: name,
+          editorId: name!,
           value: "",
           dataProvider: model.linkReference.dataProvider,
           reason: "Opened the linked cell picker"),
@@ -107,8 +108,8 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
         .openDialog(
             pDialogWidget: FlLinkedCellPicker(
               model: model,
-              id: id,
-              name: name,
+              id: id!,
+              name: name!,
             ),
             pIsDismissible: true)
         .then((value) {
@@ -178,7 +179,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
       if (!isAllFetched) {
         uiService.registerDataSubscription(
           pDataSubscription: DataSubscription(
-            id: id,
+            id: id!,
             dataProvider: model.linkReference.dataProvider,
             from: 0,
             to: pageLoad * currentPage,
@@ -190,7 +191,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pComponentId: id, pDataProvider: model.linkReference.referencedDataBook);
+    uiService.disposeDataSubscription(pComponentId: id!, pDataProvider: model.linkReference.referencedDataBook);
   }
 
   void increaseValueMap() {
@@ -223,6 +224,12 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
       }
     }
 
-    imageLoadingCallback?.call();
+    recalculateSizeCallback?.call(false);
+  }
+
+  //TODO: implement this method
+  @override
+  String formatValue(Object pValue) {
+    return pValue.toString();
   }
 }

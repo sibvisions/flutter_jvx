@@ -19,7 +19,7 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
 
   final bool imageInBinary;
 
-  final ImageStreamListener? imageStreamListener;
+  final Function(Size, bool)? imageStreamListener;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization

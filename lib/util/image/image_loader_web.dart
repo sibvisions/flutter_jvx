@@ -17,7 +17,7 @@ class ImageLoaderWeb with ConfigServiceMixin implements ImageLoader {
 
   @override
   Image loadImageFiles(String pPath,
-      {double? pWidth, double? pHeight, Color? pBlendedColor, ImageStreamListener? pImageStreamListener}) {
+      {double? pWidth, double? pHeight, Color? pBlendedColor, Function(Size, bool)? pImageStreamListener}) {
     // TODO config loading
     bool isInMemory = pPath == configService.getAppName(); // appState.fileConfig.files.containsKey(path)
     String fileBinary = ""; //appState.fileConfig.files[path]!
@@ -54,7 +54,7 @@ class ImageLoaderWeb with ConfigServiceMixin implements ImageLoader {
     }
 
     if (pImageStreamListener != null) {
-      image.image.resolve(const ImageConfiguration()).addListener(pImageStreamListener);
+      image.image.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
     }
 
     return image;

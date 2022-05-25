@@ -4,21 +4,21 @@ import 'package:flutter_client/src/model/component/editor/cell_editor/date/fl_da
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<T> {
+  static dynamic doNothing(dynamic pValue) {}
+
   final VoidCallback? onPress;
 
   const FlDateEditorWidget({
     Key? key,
     this.onPress,
     required T model,
-    required Function(String) valueChanged,
-    required Function(String) endEditing,
     required FocusNode focusNode,
     required TextEditingController textController,
   }) : super(
             key: key,
             model: model,
-            valueChanged: valueChanged,
-            endEditing: endEditing,
+            valueChanged: doNothing,
+            endEditing: doNothing,
             focusNode: focusNode,
             textController: textController);
 

@@ -35,7 +35,7 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
     if (jsonDefaultImageName != null) {
       defaultImage = ImageLoader.loadImage(
         jsonDefaultImageName,
-        pImageStreamListener: ImageStreamListener(newMaxSize),
+        pImageStreamListener: newMaxSize,
       );
     }
 
@@ -52,22 +52,22 @@ class FlChoiceCellEditorModel extends ICellEditorModel {
         listImages.add(
           ImageLoader.loadImage(
             jsonValue,
-            pImageStreamListener: ImageStreamListener(newMaxSize),
+            pImageStreamListener: newMaxSize,
           ),
         );
       }
     }
   }
 
-  void newMaxSize(ImageInfo pInfo, bool pSyncronous) {
-    if (pInfo.image.width.toDouble() != maxImageSize.width || pInfo.image.height.toDouble() != maxImageSize.height) {
+  void newMaxSize(Size pInfo, bool pSyncronous) {
+    if (pInfo.width.toDouble() != maxImageSize.width || pInfo.height.toDouble() != maxImageSize.height) {
       maxImageSize = Size(
         max(
-          pInfo.image.width.toDouble(),
+          pInfo.width.toDouble(),
           maxImageSize.width,
         ),
         max(
-          pInfo.image.height.toDouble(),
+          pInfo.height.toDouble(),
           maxImageSize.height,
         ),
       );

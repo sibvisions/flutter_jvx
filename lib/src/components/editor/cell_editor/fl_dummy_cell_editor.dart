@@ -51,4 +51,9 @@ class FlDummyCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   ColumnDefinition? getColumnDefinition() {
     return null;
   }
+
+  @override
+  String formatValue(Object pValue) {
+    return pValue.toString();
+  }
 }

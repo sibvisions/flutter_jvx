@@ -28,7 +28,7 @@ abstract class ImageLoader {
 
   /// Loads an Image from the filesystem.
   Image loadImageFiles(String pPath,
-      {double? pWidth, double? pHeight, Color? pBlendedColor, ImageStreamListener? pImageStreamListener});
+      {double? pWidth, double? pHeight, Color? pBlendedColor, Function(Size, bool)? pImageStreamListener});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -36,9 +36,13 @@ abstract class ImageLoader {
 
   /// Loads any server sent image string.
   static Widget loadImage(String pImageString,
-      {Size? pWantedSize, Color? pWantedColor, ImageStreamListener? pImageStreamListener}) {
+      {Size? pWantedSize, Color? pWantedColor, Function(Size, bool)? pImageStreamListener}) {
     if (pImageString.isEmpty) {
-      return DEFAULT_IMAGE;
+      try {
+        return DEFAULT_IMAGE;
+      } finally {
+        pImageStreamListener?.call(const Size.square(16), true);
+      }
     } else if (IFontAwesome.checkFontAwesome(pImageString)) {
       return IFontAwesome.getFontAwesomeIcon(pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
     } else {
@@ -66,5 +70,17 @@ abstract class ImageLoader {
           pBlendedColor: pWantedColor,
           pImageStreamListener: pImageStreamListener);
     }
+  }
+
+  static ImageStreamListener createListener(Function(Size, bool)? pImageStreamListener) {
+    return ImageStreamListener(
+      (image, synchronousCall) => pImageStreamListener?.call(
+        Size(
+          image.image.width.toDouble(),
+          image.image.height.toDouble(),
+        ),
+        synchronousCall,
+      ),
+    );
   }
 }

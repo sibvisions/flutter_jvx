@@ -14,8 +14,6 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
 
   ColumnDefinition? _columnDefinition;
 
-  dynamic _value;
-
   late NumericTextFormatter numberFormatter;
 
   final TextEditingController textController = TextEditingController();
@@ -27,16 +25,12 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlNumberCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(String) onChange,
     required Function(String) onEndEditing,
   }) : super(
-          id: id,
-          name: name,
-          columnName: columnName,
+          columnDefinition: columnDefinition,
           model: FlNumberCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -124,5 +118,10 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
       scale: _columnDefinition?.scale,
       signed: _columnDefinition?.signed,
     );
+  }
+
+  @override
+  String formatValue(Object pValue) {
+    return numberFormatter.getFormattedString(pValue);
   }
 }

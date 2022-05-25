@@ -21,16 +21,12 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlCheckBoxCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
   }) : super(
-          id: id,
-          name: name,
-          columnName: columnName,
+          columnDefinition: columnDefinition,
           model: FlCheckBoxCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
@@ -93,5 +89,11 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
     } else {
       onEndEditing(model.selectedValue);
     }
+  }
+
+//TODO: implement this method
+  @override
+  String formatValue(Object pValue) {
+    return pValue.toString();
   }
 }

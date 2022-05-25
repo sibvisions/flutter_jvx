@@ -19,7 +19,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   int currentIndex = 0;
 
   /// The image loading callback to the editor.
-  VoidCallback? imageLoadingCallback;
+  CellEditorRecalculateSizeCallback? recalculateSizeCallback;
 
   /// The size of the image.
   late Size imageSize = model.maxImageSize;
@@ -28,23 +28,19 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   FlChoiceCellEditor({
-    required String id,
-    required String name,
-    required String columnName,
+    ColumnDefinition? columnDefinition,
     required Map<String, dynamic> pCellEditorJson,
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
-    this.imageLoadingCallback,
+    this.recalculateSizeCallback,
   }) : super(
-          id: id,
-          name: name,
-          columnName: columnName,
+          columnDefinition: columnDefinition,
           model: FlChoiceCellEditorModel(),
           pCellEditorJson: pCellEditorJson,
           onValueChange: onChange,
           onEndEditing: onEndEditing,
         ) {
-    model.imageLoadingCallback = imageLoadingCallback;
+    model.imageLoadingCallback = recalculateSizeCallback;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,7 +53,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
 
     currentIndex = model.listValues.indexOf(_value);
 
-    imageLoadingCallback?.call();
+    recalculateSizeCallback?.call(true);
   }
 
   @override
@@ -115,5 +111,11 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   @override
   ColumnDefinition? getColumnDefinition() {
     return null;
+  }
+
+  //TODO: implement this method
+  @override
+  String formatValue(Object pValue) {
+    return pValue.toString();
   }
 }
