@@ -18,6 +18,7 @@ import 'component/check_box/fl_check_box_model.dart';
 import 'component/dummy/fl_dummy_model.dart';
 import 'component/editor/text_area/fl_text_area_model.dart';
 import 'component/editor/text_field/fl_text_field_model.dart';
+import 'component/gauge/fl_gauge_model.dart';
 import 'component/icon/fl_icon_model.dart';
 import 'component/label/fl_label_model.dart';
 import 'component/panel/fl_group_panel_model.dart';
@@ -77,7 +78,7 @@ abstract class ModelFactory {
       case FlComponentClassname.CHART:
         return FlChartModel();
       case FlComponentClassname.GAUGE:
-        continue alsoDefault;
+        return FlGaugeModel();
 
       // Cell editors:
       case FlComponentClassname.EDITOR:

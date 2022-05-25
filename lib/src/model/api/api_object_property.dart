@@ -121,6 +121,21 @@ abstract class ApiObjectProperty {
   static const String groupDataBook = "groupDataBook";
   static const String pointsDataBook = "pointsDataBook";
   static const String authKey = "authKey";
+  static const String xAxisTitle = "xAxisTitle";
+  static const String yAxisTitle = "yAxisTitle";
+  static const String xColumnName = "xColumnName";
+  static const String yColumnNames = "yColumnNames";
+  static const String title = "title";
+  static const String yColumnLabels = "yColumnLabels";
+  static const String xColumnLabel = "xColumnLabel";
+  static const String maxValue = "maxValue";
+  static const String minValue = "minValue";
+  static const String maxErrorValue = "maxErrorValue";
+  static const String minErrorValue = "minErrorValue";
+  static const String maxWarningValue = "maxWarningValue";
+  static const String minWarningValue = "minWarningValue";
+  static const String gaugeStyle = "gaugeStyle";
+  static const String data = "data";
 
   //Response Properties
   static const String authenticated = "authenticated";

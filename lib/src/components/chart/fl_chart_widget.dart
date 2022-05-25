@@ -5,42 +5,34 @@ import '../../model/component/chart/fl_chart_model.dart';
 import '../base_wrapper/fl_stateless_widget.dart';
 
 class FlChartWidget<T extends FlChartModel> extends FlStatelessWidget<T> {
+  final List<ChartSeries> series;
+
   const FlChartWidget({
     Key? key,
     required T model,
+    required this.series,
   }) : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
-    List<_SalesData> data = [
-      _SalesData('Jan', 35),
-      _SalesData('Feb', 28),
-      _SalesData('Mar', 34),
-      _SalesData('Apr', 32),
-      _SalesData('May', 40)
-    ];
-
     return SfCartesianChart(
-      primaryXAxis: CategoryAxis(),
-      title: ChartTitle(text: 'DemoChart'),
+      title: ChartTitle(text: model.title, textStyle: model.getTextStyle()),
       legend: Legend(isVisible: true),
       tooltipBehavior: TooltipBehavior(enable: true),
-      series: <ChartSeries<_SalesData, String>>[
-        LineSeries<_SalesData, String>(
-          dataSource: data,
-          xValueMapper: (_SalesData sales, _) => sales.year,
-          yValueMapper: (_SalesData sales, _) => sales.sales,
-          name: 'Sales',
-          dataLabelSettings: const DataLabelSettings(isVisible: true),
+      series: series,
+      primaryXAxis: CategoryAxis(
+        labelPlacement: LabelPlacement.onTicks,
+        title: AxisTitle(
+          text: model.xAxisTitle,
+          textStyle: model.getTextStyle(),
         ),
-      ],
+      ),
+      primaryYAxis: NumericAxis(
+        title: AxisTitle(
+          text: model.yAxisTitle,
+          textStyle: model.getTextStyle(),
+        ),
+      ),
     );
   }
-}
-
-class _SalesData {
-  _SalesData(this.year, this.sales);
-
-  final String year;
-  final double sales;
 }

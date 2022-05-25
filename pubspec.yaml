@@ -42,6 +42,7 @@ dependencies:
   latlong2: ^0.8.1
   scrollable_positioned_list: ^0.3.1
   syncfusion_flutter_charts: ^20.1.55
+  syncfusion_flutter_gauges: ^20.1.55
 
 flutter:
   assets:
