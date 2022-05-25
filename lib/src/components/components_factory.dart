@@ -18,6 +18,7 @@ import 'editor/fl_editor_wrapper.dart';
 import 'editor/password_field/fl_password_wrapper.dart';
 import 'editor/text_area/fl_text_area_wrapper.dart';
 import 'editor/text_field/fl_text_field_wrapper.dart';
+import 'gauge/fl_gauge_wrapper.dart';
 import 'label/fl_label_wrapper.dart';
 import 'panel/fl_panel_wrapper.dart';
 import 'panel/group/fl_group_panel_wrapper.dart';
@@ -75,7 +76,7 @@ abstract class ComponentsFactory {
       case FlComponentClassname.CHART:
         return FlChartWrapper(id: model.id, key: GlobalKey());
       case FlComponentClassname.GAUGE:
-        continue alsoDefault;
+        return FlGaugeWrapper(id: model.id, key: GlobalKey());
 
       // Cell editors:
       case FlComponentClassname.EDITOR:
