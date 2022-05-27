@@ -16,7 +16,8 @@ class FlGaugeModel extends FlComponentModel {
   double? maxWarningValue;
   double? minWarningValue;
   int gaugeStyle = 1;
-  double? value;
+  double value = 0;
+  String? columnLabel = "";
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -81,6 +82,11 @@ class FlGaugeModel extends FlComponentModel {
     var jsonValue = pJson[ApiObjectProperty.data];
     if (jsonValue != null) {
       value = jsonValue.toDouble();
+    }
+
+    var jsonColumnLabel = pJson[ApiObjectProperty.columnLabel];
+    if (jsonColumnLabel != null) {
+      columnLabel = jsonColumnLabel;
     }
   }
 }

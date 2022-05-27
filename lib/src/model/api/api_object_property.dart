@@ -136,6 +136,7 @@ abstract class ApiObjectProperty {
   static const String minWarningValue = "minWarningValue";
   static const String gaugeStyle = "gaugeStyle";
   static const String data = "data";
+  static const String columnLabel = "columnLabel";
 
   //Response Properties
   static const String authenticated = "authenticated";
