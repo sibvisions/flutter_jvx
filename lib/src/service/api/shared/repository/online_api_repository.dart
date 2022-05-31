@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/api_response_names.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
@@ -20,6 +20,7 @@ import 'package:flutter_client/src/model/api/response/menu_response.dart';
 import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
 import 'package:flutter_client/src/model/api/response/session_expired_response.dart';
 import 'package:flutter_client/src/model/api/response/user_data_response.dart';
+import 'package:http/browser_client.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/requests/api_download_images_request.dart';
@@ -126,9 +127,13 @@ class OnlineApiRepository implements IRepository {
   /// Send post request to remote server, applies timeout.
   Future<Response> _sendPostRequest(Uri uri, String body) async {
     _headers["Access-Control_Allow_Origin"] = "*";
-    HttpHeaders.contentTypeHeader;
+    if (client is BrowserClient) {
+      (client as BrowserClient).withCredentials = true;
+    }
     Future<Response> res = client.post(uri, headers: _headers, body: body);
-    res.then(_extractCookie);
+    if (!kIsWeb) {
+      res.then(_extractCookie);
+    }
     return res.timeout(const Duration(seconds: 10));
   }
 
@@ -147,8 +152,10 @@ class OnlineApiRepository implements IRepository {
   /// Extract the session-id cookie to be sent in future
   void _extractCookie(Response res) {
     String? rawCookie = res.headers["set-cookie"];
+
     if (rawCookie != null) {
       String cookie = rawCookie.substring(0, rawCookie.indexOf(";"));
+
       _headers.putIfAbsent("Cookie", () => cookie);
       if (_headers.containsKey("Cookie")) {
         _headers.update("Cookie", (value) => cookie);
