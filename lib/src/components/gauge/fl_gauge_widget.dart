@@ -14,19 +14,19 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     switch (model.gaugeStyle) {
       case 0:
-        return getGauge0();
+        return createSpeedometer();
       case 1:
-        return getGauge1();
+        return createMeter();
       case 2:
-        return getGauge2();
+        return createRing();
       case 3:
-        return getGauge3();
+        return createFlat();
       default:
-        return getGauge1();
+        return createSpeedometer();
     }
   }
 
-  Widget getGauge0() {
+  Widget createSpeedometer() {
     return SfRadialGauge(
       axes: [
         RadialAxis(
@@ -39,7 +39,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
           annotations: <GaugeAnnotation>[
             GaugeAnnotation(
                 widget: Text(
-                  model.columnLabel ?? model.value.toString(),
+                  model.columnLabel ?? "",
                   style: model.getTextStyle(),
                 ),
                 angle: 90,
@@ -50,7 +50,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Widget getGauge1() {
+  Widget createMeter() {
     return SfRadialGauge(
       axes: [
         RadialAxis(
@@ -73,7 +73,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
           annotations: <GaugeAnnotation>[
             GaugeAnnotation(
                 widget: Text(
-                  model.columnLabel ?? model.value.toString(),
+                  model.columnLabel ?? "",
                   style: model.getTextStyle(),
                 ),
                 angle: 90,
@@ -84,7 +84,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Widget getGauge2() {
+  Widget createRing() {
     return SfRadialGauge(
       axes: [
         RadialAxis(
@@ -111,7 +111,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
               axisValue: 50,
               positionFactor: 0.1,
               widget: Text(
-                model.columnLabel ?? model.value.toString(),
+                model.columnLabel ?? "",
                 style: model.getTextStyle(),
               ),
             ),
@@ -121,7 +121,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
     );
   }
 
-  Widget getGauge3() {
+  Widget createFlat() {
     return SfRadialGauge(
       axes: [
         RadialAxis(
@@ -148,7 +148,7 @@ class FlGaugeWidget<T extends FlGaugeModel> extends FlStatelessWidget<T> {
               axisValue: 50,
               positionFactor: 0.1,
               widget: Text(
-                model.columnLabel ?? model.value.toString(),
+                model.columnLabel ?? "",
                 style: model.getTextStyle(),
               ),
             ),
