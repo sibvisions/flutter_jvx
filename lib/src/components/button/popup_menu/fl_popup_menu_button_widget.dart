@@ -28,18 +28,18 @@ class FlPopupMenuButtonWidget<T extends FlPopupMenuButtonModel> extends FlButton
       : super(key: key, model: model, onPress: onPress);
 
   @override
-  Widget getDirectButtonChild(BuildContext context) {
+  Widget createDirectButtonChild(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: super.getDirectButtonChild(context),
+          child: super.createDirectButtonChild(context),
         ),
-        getPopupIcon(context),
+        createPopupIcon(context),
       ],
     );
   }
 
-  Widget getPopupIcon(BuildContext context) {
+  Widget createPopupIcon(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: onItemPress,
       itemBuilder: (_) => popupItems,

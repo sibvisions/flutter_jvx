@@ -48,7 +48,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: getOnPressed(),
-      child: getDirectButtonChild(context),
+      child: createDirectButtonChild(context),
       style: getButtonStyle(),
     );
   }
@@ -92,7 +92,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
     }
   }
 
-  Widget getDirectButtonChild(BuildContext context) {
+  Widget createDirectButtonChild(BuildContext context) {
     return Container(
       child: getButtonChild(),
       decoration: getBoxDecoration(context),

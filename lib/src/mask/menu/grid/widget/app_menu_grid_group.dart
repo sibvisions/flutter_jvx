@@ -26,7 +26,7 @@ class AppMenuGridGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiSliver(pushPinnedChildren: true, children: [
-      SliverPersistentHeader(pinned: true, delegate: AppMenuGridHeader(headerText: menuGroupModel.name, height: 50)),
+      SliverPersistentHeader(pinned: true, delegate: AppMenuGridHeader(headerText: menuGroupModel.name, height: 48)),
       SliverGrid(
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200,

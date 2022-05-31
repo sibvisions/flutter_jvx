@@ -1,8 +1,4 @@
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
-import 'src/service/data/i_data_service.dart';
-import 'src/service/data/impl/data_service.dart';
-import 'src/service/layout/i_layout_service.dart';
-import 'src/service/layout/impl/layout_service.dart';
 
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
@@ -18,6 +14,10 @@ import 'src/service/command/i_command_service.dart';
 import 'src/service/command/impl/command_service.dart';
 import 'src/service/config/i_config_service.dart';
 import 'src/service/config/impl/config_service.dart';
+import 'src/service/data/i_data_service.dart';
+import 'src/service/data/impl/data_service.dart';
+import 'src/service/layout/i_layout_service.dart';
+import 'src/service/layout/impl/layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/default/storage_service.dart';
@@ -27,7 +27,7 @@ import 'src/service/ui/impl/ui_service.dart';
 initAppWeb() {
   // API
   UrlConfig urlConfigServer1 = ConfigGenerator.generateMobileServerUrl("127.0.0.1", 8888);
-  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("127.0.0.1", 8090);
+  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.40", 8888);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
@@ -37,10 +37,7 @@ initAppWeb() {
   services.registerSingleton(apiService, signalsReady: true);
 
   // Config
-  IConfigService configService = ConfigService(
-    appName: "demo",
-    apiConfig: apiConfig
-  );
+  IConfigService configService = ConfigService(appName: "demo", apiConfig: apiConfig);
   services.registerSingleton(configService, signalsReady: true);
 
   // Layout

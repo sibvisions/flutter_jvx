@@ -9,7 +9,6 @@ import 'package:flutter_client/src/service/config/i_config_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../mixin/ui_service_mixin.dart';
-import '../../model/command/api/device_status_command.dart';
 import '../../model/menu/menu_model.dart';
 import 'list/app_menu_list_ungroup.dart';
 
@@ -58,8 +57,8 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   Widget build(BuildContext context) {
     uiService.setRouteContext(pContext: context);
     Size screenSize = MediaQuery.of(context).size;
-    uiService.sendCommand(DeviceStatusCommand(
-        screenHeight: screenSize.height, screenWidth: screenSize.width, reason: "Menu has been opened"));
+    // uiService.sendCommand(DeviceStatusCommand(
+    //     screenHeight: screenSize.height, screenWidth: screenSize.width, reason: "Menu has been opened"));
 
     return Scaffold(
         endDrawerEnableOpenDragGesture: false,

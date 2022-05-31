@@ -20,12 +20,12 @@ import 'package:flutter_client/src/model/api/response/menu_response.dart';
 import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
 import 'package:flutter_client/src/model/api/response/session_expired_response.dart';
 import 'package:flutter_client/src/model/api/response/user_data_response.dart';
-import 'package:http/browser_client.dart';
 import 'package:http/http.dart';
 
 import '../../../../model/api/requests/api_download_images_request.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
+import 'browser_client.dart' if (dart.library.html) 'package:http/browser_client.dart';
 
 typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson});
 
@@ -36,8 +36,10 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
-    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
+    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) =>
+        ApplicationMetaDataResponse.fromJson(pJson),
+    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) =>
+        ApplicationParametersResponse.fromJson(pJson),
     ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
     ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
     ApiResponseNames.menu: ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
@@ -46,10 +48,12 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.userData: ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
     ApiResponseNames.login: ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
     ApiResponseNames.error: ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
-    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
+    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) =>
+        SessionExpiredResponse.fromJson(pJson: pJson),
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson),
-    ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson}) => ApiAuthenticationDataResponse.fromJson(pJson: pJson),
+    ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson}) =>
+        ApiAuthenticationDataResponse.fromJson(pJson: pJson),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,16 +123,22 @@ class OnlineApiRepository implements IRepository {
 
   Future<List<ApiResponse>> _handleError(Object? error, StackTrace stackTrace) async {
     if (error is TimeoutException) {
-      return [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+      return [
+        ErrorResponse(message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)
+      ];
     }
-    return [ErrorResponse(message: "Repository error", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+    return [
+      ErrorResponse(message: "Repository error", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)
+    ];
   }
 
   /// Send post request to remote server, applies timeout.
   Future<Response> _sendPostRequest(Uri uri, String body) async {
     _headers["Access-Control_Allow_Origin"] = "*";
-    if (client is BrowserClient) {
-      (client as BrowserClient).withCredentials = true;
+    if (kIsWeb) {
+      if (client is BrowserClient) {
+        (client as BrowserClient).withCredentials = true;
+      }
     }
     Future<Response> res = client.post(uri, headers: _headers, body: body);
     if (!kIsWeb) {
