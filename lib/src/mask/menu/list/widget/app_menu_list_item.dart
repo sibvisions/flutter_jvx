@@ -22,8 +22,7 @@ class AppMenuListItem extends StatelessWidget {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  const AppMenuListItem({Key? key, required this.model, required this.onClick, this.backgroundOverride})
-      : super(key: key);
+  const AppMenuListItem({Key? key, required this.model, required this.onClick, this.backgroundOverride}) : super(key: key);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -65,7 +64,7 @@ class AppMenuListItem extends StatelessWidget {
         ),
       ),
       onTap: () {
-        onClick(componentId: model.componentId);
+        onClick(componentId: model.screenId);
       },
     );
   }
@@ -89,8 +88,7 @@ class AppMenuListItem extends StatelessWidget {
     if (imageName != null) {
       icon = CircleAvatar(
           backgroundColor: Colors.transparent,
-          child: IFontAwesome.getFontAwesomeIcon(
-              pText: imageName, pIconSize: 25, pColor: Theme.of(pContext).primaryColor));
+          child: IFontAwesome.getFontAwesomeIcon(pText: imageName, pIconSize: 25, pColor: Theme.of(pContext).primaryColor));
     }
     return icon;
   }

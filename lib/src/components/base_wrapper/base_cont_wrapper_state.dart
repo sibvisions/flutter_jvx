@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/custom/custom_component.dart';
 
 import '../../model/command/layout/register_parent_command.dart';
 import '../../model/component/fl_component_model.dart';
@@ -50,7 +51,14 @@ abstract class BaseContWrapperState<T extends FlPanelModel> extends BaseCompWrap
     // Only New Children will be used
     for (FlComponentModel model in models) {
       if (!children.containsKey(model.id)) {
-        newChildrenList[model.id] = ComponentsFactory.buildWidget(model);
+        // If Custom component with name exits create a custom widget instead of a normal one
+        CustomComponent? customComp = uiService.getCustomComponent(pComponentName: model.name);
+        if (customComp != null) {
+          newChildrenList[model.id] = ComponentsFactory.buildCustomWidget(model);
+        } else {
+          newChildrenList[model.id] = ComponentsFactory.buildWidget(model);
+        }
+
         changeDetected = true;
       } else {
         newChildrenList[model.id] = children[model.id]!;

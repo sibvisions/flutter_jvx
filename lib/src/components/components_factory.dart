@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/components/custom/fl_custom_wrapper.dart';
 import 'package:flutter_client/src/components/icon/fl_icon_wrapper.dart';
 import 'package:flutter_client/src/components/map/fl_map_wrapper.dart';
 import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
@@ -86,5 +87,10 @@ abstract class ComponentsFactory {
       default:
         return FlDummyWrapper(id: model.id, key: GlobalKey());
     }
+  }
+
+  /// Used for replace components
+  static buildCustomWidget(FlComponentModel model) {
+    return FlCustomWrapper(id: model.id, key: GlobalKey());
   }
 }

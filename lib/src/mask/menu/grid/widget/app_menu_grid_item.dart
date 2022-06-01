@@ -35,7 +35,7 @@ class AppMenuGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onClick(componentId: menuItemModel.componentId);
+        onClick(componentId: menuItemModel.screenId);
       },
       child: Container(
         color: Theme.of(context).primaryColor,
@@ -92,12 +92,22 @@ class AppMenuGridItem extends StatelessWidget {
       ),
     );
 
+    // Server side images
     String? imageName = menuItemModel.image;
-
     if (imageName != null) {
-      icon = CircleAvatar(
+      return CircleAvatar(
           backgroundColor: Colors.transparent,
-          child: IFontAwesome.getFontAwesomeIcon(pText: imageName, pIconSize: 72, pColor: iconColor));
+          child: IFontAwesome.getFontAwesomeIcon(
+            pText: imageName,
+            pIconSize: 72,
+            pColor: iconColor,
+          ));
+    }
+
+    // Custom menu item
+    Widget? imageIcon = menuItemModel.icon;
+    if (imageIcon != null) {
+      return imageIcon;
     }
     return icon;
   }

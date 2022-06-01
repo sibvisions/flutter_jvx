@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
+import 'package:flutter_client/util/debouncer.dart';
 
 import '../../model/command/api/device_status_command.dart';
 
@@ -22,12 +23,27 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   /// 'True' if this a custom screen, a custom screen will not be registered
   final bool isCustomScreen;
 
+  /// Header will be sticky displayed on top - header size will shrink space for screen
+  final PreferredSizeWidget? header;
+
+  /// Footer will be sticky displayed on top - footer size will shrink space for screen
+  final Widget? footer;
+
+  /// Debounce re-layouts if keyboard opens.
+  final Debounce debounce = Debounce(delay: const Duration(milliseconds: 500));
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  WorkScreen({required this.screenTitle, required this.screenWidget, required this.isCustomScreen, Key? key})
-      : super(key: key);
+  WorkScreen({
+    required this.screenTitle,
+    required this.screenWidget,
+    required this.isCustomScreen,
+    this.footer,
+    this.header,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +54,26 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(screenTitle),
         ),
         body: Scaffold(
+          appBar: header,
+          bottomNavigationBar: footer,
           backgroundColor: Theme.of(context).backgroundColor,
           body: LayoutBuilder(builder: (context, constraints) {
             final viewInsets = EdgeInsets.fromWindowPadding(
-                WidgetsBinding.instance!.window.viewInsets, WidgetsBinding.instance!.window.devicePixelRatio);
+              WidgetsBinding.instance!.window.viewInsets,
+              WidgetsBinding.instance!.window.devicePixelRatio,
+            );
 
             if (!isCustomScreen) {
-              _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
-              _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+              // debounce to not re-layout multiple times when opening the keyboard
+              debounce.call(() {
+                _setScreenSize(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+                _sendDeviceStatus(pWidth: constraints.maxWidth, pHeight: constraints.maxHeight + viewInsets.bottom);
+              });
             }
             return SingleChildScrollView(
               child: Stack(
@@ -65,7 +89,6 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
           }),
           //resizeToAvoidBottomInset: false,
         ),
-        resizeToAvoidBottomInset: false,
       ),
     );
 
@@ -94,8 +117,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
-    DeviceStatusCommand deviceStatusCommand =
-        DeviceStatusCommand(screenWidth: pWidth, screenHeight: pHeight, reason: "Device was rotated");
+    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(screenWidth: pWidth, screenHeight: pHeight, reason: "Device was rotated");
     uiService.sendCommand(deviceStatusCommand);
   }
 }

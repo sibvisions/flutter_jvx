@@ -5,9 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
 import 'package:flutter_client/src/model/command/data/get_meta_data_command.dart';
 import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/model/custom/custom_component.dart';
+import 'package:flutter_client/src/model/custom/custom_menu_item.dart';
+import 'package:flutter_client/src/model/custom/custom_screen.dart';
+import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
+import 'package:flutter_client/src/model/menu/menu_group_model.dart';
+import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
+import 'package:flutter_client/util/extensions/list_extensions.dart';
 
 import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
@@ -43,6 +50,17 @@ class UiService with CommandServiceMixin implements IUiService {
   /// List of all received
   final Map<String, LayoutData> _layoutDataList = {};
 
+  /// Holds all custom screen modifications
+  final CustomScreenManager? customManager;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  UiService({
+    this.customManager,
+  });
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,9 +91,9 @@ class UiService with CommandServiceMixin implements IUiService {
   void routeToWorkScreen() {
     var screen = _currentScreen.first;
     if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
-      _currentBuildContext!.beamToReplacementNamed("/workScreen/${screen.id}");
+      _currentBuildContext!.beamToReplacementNamed("/workScreen/${screen.name}");
     } else {
-      _currentBuildContext!.beamToNamed("/workScreen/${screen.id}");
+      _currentBuildContext!.beamToNamed("/workScreen/${screen.name}");
     }
   }
 
@@ -93,6 +111,11 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void routeToSettings() {
     _currentBuildContext!.beamToNamed("/setting");
+  }
+
+  @override
+  void routeToCustom({required String pFullPath}) {
+    _currentBuildContext!.beamToNamed(pFullPath);
   }
 
   @override
@@ -125,6 +148,34 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void setMenuModel({required MenuModel pMenuModel}) {
+    // Add all custom menuItems
+    if (customManager != null) {
+      customManager!.customScreens.forEach((element) {
+        CustomMenuItem? customModel = element.menuItemModel;
+        if (customModel != null) {
+          // Create standard model
+          MenuItemModel model = MenuItemModel(
+            label: customModel.label,
+            screenId: customModel.screenId,
+            icon: customModel.icon,
+          );
+          MenuGroupModel? menuGroupModel = pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
+          if (menuGroupModel != null) {
+            // Remove menu items that open the same screen
+            menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
+            menuGroupModel.items.add(model);
+          } else {
+            // Make new group if it didn't exist
+            MenuGroupModel newGroup = MenuGroupModel(
+              name: customModel.group,
+              items: [model],
+            );
+            pMenuModel.menuGroups.add(newGroup);
+          }
+        }
+      });
+    }
+
     _menuModel = pMenuModel;
   }
 
@@ -140,21 +191,17 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   FlComponentModel? getComponentModel({required String pComponentId}) {
-    int index = _currentScreen.indexWhere((element) => element.id == pComponentId);
-    if (index != -1) {
-      return _currentScreen[index];
-    }
-    return null;
+    return _currentScreen.firstWhereOrNull((element) => element.id == pComponentId);
+  }
+
+  @override
+  FlComponentModel? getComponentByName({required String pComponentName}) {
+    return _currentScreen.firstWhereOrNull((element) => element.name == pComponentName);
   }
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
     _currentScreen.addAll(newModels);
-  }
-
-  @override
-  FlComponentModel getScreenByName({required String pScreenName}) {
-    throw UnimplementedError();
   }
 
   @override
@@ -172,8 +219,11 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  FlPanelModel getOpenScreen() {
-    return _currentScreen.first as FlPanelModel;
+  FlPanelModel? getOpenScreen() {
+    if (_currentScreen.isNotEmpty) {
+      return _currentScreen.first as FlPanelModel;
+    }
+    return null;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -383,5 +433,30 @@ class UiService with CommandServiceMixin implements IUiService {
     _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
       element.onMetaData!(pMetaData);
     });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Custom
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  CustomScreen? getCustomScreen({required String pScreenName}) {
+    return customManager?.customScreens.firstWhereOrNull((element) => element.screenName == pScreenName);
+  }
+
+  @override
+  CustomComponent? getCustomComponent({required String pComponentName}) {
+    List<CustomScreen>? screens = customManager?.customScreens;
+
+    if (screens != null) {
+      for (CustomScreen screen in screens) {
+        for (CustomComponent component in screen.replaceComponents) {
+          if (component.componentName == pComponentName) {
+            return component;
+          }
+        }
+      }
+    }
+    return null;
   }
 }

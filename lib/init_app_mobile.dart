@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/config/config_file/app_config.dart';
+import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
+import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'package:flutter_client/util/logging/flutter_logger.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -27,14 +29,13 @@ import 'src/service/config/impl/config_service.dart';
 import 'src/service/data/i_data_service.dart';
 import 'src/service/data/impl/data_service.dart';
 import 'src/service/layout/i_layout_service.dart';
-import 'src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'src/service/service.dart';
 import 'src/service/storage/i_storage_service.dart';
 import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-Future<bool> initAppMobile() async {
+Future<bool> initAppMobile({CustomScreenManager? pCustomManager}) async {
   // Needed or rootBundle and applicationDocumentsDirectory wont work
   WidgetsFlutterBinding.ensureInitialized();
   // Needed to avoid CORS issues
@@ -104,7 +105,7 @@ Future<bool> initAppMobile() async {
   services.registerSingleton(commandService, signalsReady: true);
 
   // UI
-  IUiService uiService = UiService();
+  IUiService uiService = UiService(customManager: pCustomManager);
   services.registerSingleton(uiService, signalsReady: true);
 
   // Send startup to server

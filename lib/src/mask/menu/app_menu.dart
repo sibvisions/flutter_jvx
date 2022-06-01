@@ -6,6 +6,7 @@ import 'package:flutter_client/src/mask/menu/tab/app_menu_tab.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/device_status_command.dart';
 import 'package:flutter_client/src/model/command/api/open_screen_command.dart';
+import 'package:flutter_client/src/model/custom/custom_screen.dart';
 import 'package:flutter_client/src/service/config/i_config_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -58,8 +59,8 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   Widget build(BuildContext context) {
     uiService.setRouteContext(pContext: context);
     Size screenSize = MediaQuery.of(context).size;
-    uiService.sendCommand(DeviceStatusCommand(
-        screenHeight: screenSize.height, screenWidth: screenSize.width, reason: "Menu has been opened"));
+    uiService
+        .sendCommand(DeviceStatusCommand(screenHeight: screenSize.height, screenWidth: screenSize.width, reason: "Menu has been opened"));
 
     return Scaffold(
         endDrawerEnableOpenDragGesture: false,
@@ -69,9 +70,8 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
           centerTitle: false,
           actions: [
             Builder(
-              builder: (context) => IconButton(
-                  onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
+              builder: (context) =>
+                  IconButton(onPressed: () => Scaffold.of(context).openEndDrawer(), icon: const FaIcon(FontAwesomeIcons.ellipsisV)),
             ),
           ],
         ),
@@ -83,8 +83,14 @@ class AppMenu extends StatelessWidget with UiServiceMixin, ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void menuItemPressed({required String componentId}) {
-    OpenScreenCommand command = OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed");
-    uiService.sendCommand(command);
+    CustomScreen? customScreen = uiService.getCustomScreen(pScreenName: componentId);
+
+    // Offline screens no not require the server to know that they are open
+    if (customScreen != null && customScreen.isOfflineScreen) {
+      uiService.routeToCustom(pFullPath: "/workScreen/$componentId");
+    } else {
+      uiService.sendCommand(OpenScreenCommand(componentId: componentId, reason: "Menu Item was pressed"));
+    }
   }
 
   Widget _getMenu() {

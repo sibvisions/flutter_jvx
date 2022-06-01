@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/component/panel/fl_panel_model.dart';
+import 'package:flutter_client/src/model/custom/custom_screen.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
@@ -10,6 +10,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
+import '../../model/component/panel/fl_panel_model.dart';
+import '../../model/custom/custom_component.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../command/i_command_service.dart';
@@ -49,6 +51,9 @@ abstract class IUiService {
   /// Route to Login page
   void routeToLogin({String mode});
 
+  /// Route to the provided full path, used for routing to offline screens
+  void routeToCustom({required String pFullPath});
+
   /// Sets the buildContext from the current [BeamLocation],
   /// used when server dictates location
   void setRouteContext({required BuildContext pContext});
@@ -71,6 +76,9 @@ abstract class IUiService {
   // Management of component models
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Returns the top-most panel if a work screen is open
+  FlPanelModel? getOpenScreen();
+
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);
 
@@ -78,17 +86,14 @@ abstract class IUiService {
   /// if none was found returns null
   FlComponentModel? getComponentModel({required String pComponentId});
 
+  /// Get the screen (top-most-parent)
+  FlComponentModel? getComponentByName({required String pComponentName});
+
   /// Save new components to active components,
   /// used for saving components which have not been previously been rendered.
   void saveNewComponents({required List<FlComponentModel> newModels});
 
-  /// Get the screen (top-most-parent)
-  FlComponentModel getScreenByName({required String pScreenName});
-
-  /// Returns the model of the current open screen, will throw exception if
-  /// no screen is open
-  FlPanelModel getOpenScreen();
-
+  /// Called when the current workScreen is closed, will delete all relevant data(models, subscriptions,...) from [IUiService]
   void closeScreen({required String pScreenName});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,4 +174,14 @@ abstract class IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   });
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Custom
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Gets replace-type screen by screenName
+  CustomScreen? getCustomScreen({required String pScreenName});
+
+  /// Gets a custom component with given name (ignores screen)
+  CustomComponent? getCustomComponent({required String pComponentName});
 }
