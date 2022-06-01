@@ -1,14 +1,30 @@
-///
-/// Menu Item
-///
+import 'package:flutter/material.dart';
+
 class MenuItemModel {
-  final String componentId;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Id of the screen to open
+  final String screenId;
+
+  /// Icon to be displayed in the menu
   final String? image;
+
+  /// Label text of the menu item in the menu
   final String label;
 
-  MenuItemModel ({
-    required this.componentId,
+  /// Icon to be used when creating a custom menu item
+  final Widget? icon;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  MenuItemModel({
+    required this.screenId,
+    required this.label,
     this.image,
-    required this.label
+    this.icon,
   });
 }
