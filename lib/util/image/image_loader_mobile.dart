@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -17,8 +18,14 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
   ImageLoaderMobile();
 
   @override
-  Image loadImageFiles(String pPath,
-      {double? pWidth, double? pHeight, Color? pBlendedColor, Function(Size, bool)? pImageStreamListener}) {
+  Image loadImageFiles(
+    String pPath, {
+    double? pWidth,
+    double? pHeight,
+    Color? pBlendedColor,
+    Function(Size, bool)? pImageStreamListener,
+    bool imageInBinary = false,
+  }) {
     String baseUrl = configService.getApiConfig().urlConfig.getBasePath(); //appState.serverConfig!.baseUrl
     String appName = configService.getAppName(); //appState.serverConfig!.appName,
     String appVersion = configService.getVersion(); //appState.applicationMetaData?.version ?? 1.0
@@ -27,14 +34,21 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
     String localFilePath =
         DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
 
-    if (!pPath.startsWith('/')) {
+    if (!pPath.startsWith('/') && !imageInBinary) {
       pPath = '/$pPath';
     }
 
     Image image;
 
     File file = File('$localFilePath$pPath');
-    if (file.existsSync()) {
+    if (imageInBinary) {
+      image = Image.memory(
+        base64Decode(pPath),
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
+      );
+    } else if (file.existsSync()) {
       image = Image(
         fit: BoxFit.none,
         image: FileImage(file),

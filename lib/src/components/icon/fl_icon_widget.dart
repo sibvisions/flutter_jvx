@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/component/icon/fl_icon_model.dart';
 import 'package:flutter_client/util/constants/i_color.dart';
@@ -69,21 +67,17 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
       return BoxFit.fitHeight;
     }
 
-    return BoxFit.none;
+    if (model.preserveAspectRatio) {
+      return BoxFit.contain;
+    } else {
+      return BoxFit.fill;
+    }
   }
 
   Widget? getImage() {
-    if (model.image.isNotEmpty) {
-      if (imageInBinary) {
-        return Image.memory(base64Decode(model.image));
-      } else {
-        return ImageLoader.loadImage(
-          model.image,
-          pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
-          pImageStreamListener: imageStreamListener,
-        );
-      }
-    }
-    return null;
+    return ImageLoader.loadImage(model.image,
+        pWantedColor: model.isEnabled ? null : IColorConstants.COMPONENT_DISABLED,
+        pImageStreamListener: imageStreamListener,
+        imageInBinary: imageInBinary);
   }
 }

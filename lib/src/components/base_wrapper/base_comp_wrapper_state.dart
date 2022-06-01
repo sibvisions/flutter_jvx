@@ -128,7 +128,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
   }
 
   /// Sets State with new LayoutData
-  void receiveNewLayoutData({required LayoutData newLayoutData}) {
+  void receiveNewLayoutData({required LayoutData newLayoutData, bool pSetState = true}) {
     if (newLayoutData.hasPosition && newLayoutData.layoutPosition!.isConstraintCalc) {
       calcPosition = newLayoutData.layoutPosition;
       newLayoutData.layoutPosition = layoutData.layoutPosition;
@@ -183,7 +183,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       }
     }
 
-    setState(() {});
+    if (pSetState) {
+      setState(() {});
+    }
   }
 
   /// Callback called after every build
@@ -192,12 +194,7 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
     if (!sentCalcSize) {
       if (!layoutData.hasPreferredSize) {
-        double minWidth;
-        double minHeight;
-        minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
-        minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
-
-        layoutData.calculatedSize = Size(minWidth, minHeight);
+        layoutData.calculatedSize = calculateSize(context);
       } else {
         layoutData.calculatedSize = layoutData.preferredSize;
       }
@@ -205,6 +202,13 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
       sendCalcSize(pLayoutData: layoutData.clone(), pReason: "Component has been rendered");
       sentCalcSize = true;
     }
+  }
+
+  /// Calculates the size of the component
+  Size calculateSize(BuildContext context) {
+    double minWidth = (context.findRenderObject() as RenderBox).getMaxIntrinsicWidth(double.infinity).ceilToDouble();
+    double minHeight = (context.findRenderObject() as RenderBox).getMaxIntrinsicHeight(double.infinity).ceilToDouble();
+    return Size(minWidth, minHeight);
   }
 
   /// Sends the calc size.

@@ -43,7 +43,7 @@ class ApiSelectRecordRequest implements IApiRequest {
   Map<String, dynamic> toJson() => {
         ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.dataProvider: dataProvider,
-        ApiObjectProperty.selectedRow: selectedRow,
+        ApiObjectProperty.rowNumber: selectedRow,
         ApiObjectProperty.fetch: fetch,
         ApiObjectProperty.reload: reload,
         ApiObjectProperty.filter: filter?.toJson(),

@@ -86,13 +86,16 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   FlComponentModel getWidgetModel() => FlIconModel();
 
   void onImage(Size pImageInfo, bool pSynchronousCall) {
+    bool newSize = false;
+
     if (imageSize.height.toInt() != pImageInfo.height || imageSize.width.toInt() != pImageInfo.width) {
       log("new Size");
       imageSize = Size(pImageInfo.width.toDouble(), pImageInfo.height.toDouble());
+      newSize = true;
       log("$imageSize");
     }
 
-    if (!pSynchronousCall) {
+    if (!pSynchronousCall && newSize) {
       recalculateSizeCallback?.call(true);
     }
   }

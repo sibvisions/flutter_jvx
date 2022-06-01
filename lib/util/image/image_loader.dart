@@ -28,7 +28,11 @@ abstract class ImageLoader {
 
   /// Loads an Image from the filesystem.
   Image loadImageFiles(String pPath,
-      {double? pWidth, double? pHeight, Color? pBlendedColor, Function(Size, bool)? pImageStreamListener});
+      {double? pWidth,
+      double? pHeight,
+      Color? pBlendedColor,
+      Function(Size, bool)? pImageStreamListener,
+      bool imageInBinary = false});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -36,7 +40,10 @@ abstract class ImageLoader {
 
   /// Loads any server sent image string.
   static Widget loadImage(String pImageString,
-      {Size? pWantedSize, Color? pWantedColor, Function(Size, bool)? pImageStreamListener}) {
+      {Size? pWantedSize,
+      Color? pWantedColor,
+      Function(Size, bool)? pImageStreamListener,
+      bool imageInBinary = false}) {
     if (pImageString.isEmpty) {
       try {
         return DEFAULT_IMAGE;
@@ -46,41 +53,45 @@ abstract class ImageLoader {
     } else if (IFontAwesome.checkFontAwesome(pImageString)) {
       return IFontAwesome.getFontAwesomeIcon(pText: pImageString, pIconSize: pWantedSize?.width, pColor: pWantedColor);
     } else {
-      List<String> arr = pImageString.split(',');
-
-      String path = arr[0];
+      String path = pImageString;
       Size? size;
-      //bool dynamic = false;
+      if (!imageInBinary) {
+        List<String> arr = pImageString.split(',');
 
-      if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
-        size = Size(double.parse(arr[1]), double.parse(arr[2]));
-      }
+        path = arr[0];
+        //bool dynamic = false;
 
-      //if (arr.length >= 4) {
-      //  dynamic = ParseUtil.parseBoolFromString(arr[3]) ?? false;
-      //}
+        if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
+          size = Size(double.parse(arr[1]), double.parse(arr[2]));
+        }
 
-      if (pWantedSize != null) {
-        size = pWantedSize;
+        //if (arr.length >= 4) {
+        //  dynamic = ParseUtil.parseBoolFromString(arr[3]) ?? false;
+        //}
+
+        if (pWantedSize != null) {
+          size = pWantedSize;
+        }
       }
 
       return getImageLoader().loadImageFiles(path,
           pWidth: size?.width,
           pHeight: size?.height,
           pBlendedColor: pWantedColor,
-          pImageStreamListener: pImageStreamListener);
+          pImageStreamListener: pImageStreamListener,
+          imageInBinary: imageInBinary);
     }
   }
 
   static ImageStreamListener createListener(Function(Size, bool)? pImageStreamListener) {
-    return ImageStreamListener(
-      (image, synchronousCall) => pImageStreamListener?.call(
+    return ImageStreamListener((imageInfo, synchronousCall) {
+      pImageStreamListener?.call(
         Size(
-          image.image.width.toDouble(),
-          image.image.height.toDouble(),
+          imageInfo.image.width.toDouble(),
+          imageInfo.image.height.toDouble(),
         ),
         synchronousCall,
-      ),
-    );
+      );
+    });
   }
 }

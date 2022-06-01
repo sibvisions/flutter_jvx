@@ -6,13 +6,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_client/src/components/table/column_size_calculator.dart';
 import 'package:flutter_client/src/components/table/fl_table_widget.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/command/api/select_record_command.dart';
 import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
+import 'package:flutter_client/src/model/layout/layout_data.dart';
 
 import '../../model/api/response/dal_meta_data_response.dart';
-import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
 
@@ -51,13 +52,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     final FlTableWidget widget = FlTableWidget(
       model: model,
       chunkData: chunkData,
-      tableWidth: tableSize.getTableSize(model),
+      tableSize: tableSize,
+      selectedRow: selectedRow,
       onEndScroll: onEndScroll,
       onLongPress: onLongPress,
       onRowSwipe: onRowSwipe,
       onRowTap: onRowTap,
       onRowTapDown: onRowDown,
-      columnSizes: tableSize.columnWidths,
     );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -71,6 +72,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   void dispose() {
     unsubscribe();
     super.dispose();
+  }
+
+  @override
+  void receiveNewLayoutData({required LayoutData newLayoutData, bool pSetState = true}) {
+    super.receiveNewLayoutData(newLayoutData: newLayoutData, pSetState: false);
+
+    recalculateTableSize(pSetState);
   }
 
   @override
@@ -90,12 +98,19 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       chunkData = pChunkData;
     }
 
+    recalculateTableSize(true);
+  }
+
+  void recalculateTableSize([bool pSetState = false]) {
     tableSize = ColumnSizeCalculator.calculateTableSize(
       tableModel: model,
       dataChunk: chunkData,
+      availableWidth: layoutData.layoutPosition?.width,
     );
 
-    setState(() {});
+    if (pSetState) {
+      setState(() {});
+    }
   }
 
   void receiveSelectedRecord(DataRecord? pRecord) {
@@ -128,7 +143,13 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   }
 
   void onRowTap(int pRowIndex) {
-    // TODO
+    if (selectedRow != pRowIndex) {
+      uiService
+          .sendCommand(SelectRecordCommand(dataProvider: model.dataBook, selectedRecord: pRowIndex, reason: "Tapped"));
+
+      selectedRow = pRowIndex;
+      setState(() {});
+    }
   }
 
   void onRowDown(int pRowIndex) {
@@ -156,13 +177,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   }
 
   @override
-  void sendCalcSize({required LayoutData pLayoutData, required String pReason}) {
-    if (pLayoutData.hasCalculatedSize) {
-      pLayoutData = pLayoutData.clone();
-
-      layoutData.calculatedSize = const Size(500, 500);
-    }
-
-    super.sendCalcSize(pLayoutData: pLayoutData, pReason: pReason);
+  Size calculateSize(BuildContext context) {
+    return tableSize.calculatedSize;
   }
 }

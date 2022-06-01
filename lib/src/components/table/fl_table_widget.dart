@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
+import 'package:flutter_client/src/components/table/column_size_calculator.dart';
 import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class FlTableWidget extends FlStatelessWidget<FlTableModel> {
-  final double tableWidth;
+  final TableSize tableSize;
 
-  final List<double> columnSizes;
+  final int selectedRow;
 
   final Function(int)? onRowTapDown;
 
@@ -25,8 +26,8 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     Key? key,
     required FlTableModel model,
     required this.chunkData,
-    required this.columnSizes,
-    required this.tableWidth,
+    required this.tableSize,
+    this.selectedRow = -1,
     this.onRowTapDown,
     this.onRowTap,
     this.onRowSwipe,
@@ -44,7 +45,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
         scrollDirection: Axis.horizontal,
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: tableWidth.toDouble(),
+            maxWidth: tableSize.size.width,
           ),
           child: ScrollablePositionedList.builder(
             itemBuilder: buildItem,
@@ -65,26 +66,28 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
       rowWidgets.add(
         SizedBox(
-          width: columnSizes[model.columnNames.indexOf(columnName)].toDouble(),
+          width: tableSize.columnWidths[model.columnNames.indexOf(columnName)].toDouble(),
           child: Align(
             alignment: Alignment.center,
             child: Text(
               (data[columnIndex] ?? '').toString(),
-              style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
+              style: model.getTextStyle(),
             ),
           ),
         ),
       );
     }
 
+    double opacity = pIndex % 2 == 0 ? 0.05 : 0.15;
+
     return GestureDetector(
       onPanDown: (_) => onRowTapDown?.call(pIndex),
       onTap: () => onRowTap?.call(pIndex),
       child: Container(
-        height: 50,
-        decoration: pIndex % 2 == 0
-            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.05))
-            : BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.15)),
+        height: tableSize.rowHeight,
+        decoration: pIndex != selectedRow
+            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(opacity))
+            : BoxDecoration(color: Colors.green.withOpacity(opacity)),
         child: Row(
           children: rowWidgets,
         ),
@@ -100,12 +103,12 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     for (String columnName in headerList) {
       rowWidgets.add(
         SizedBox(
-          width: columnSizes[headerList.indexOf(columnName)].toDouble(),
+          width: tableSize.columnWidths[headerList.indexOf(columnName)].toDouble(),
           child: Align(
             alignment: Alignment.center,
             child: Text(
               columnName,
-              style: TextStyle(fontSize: 14.0, color: Theme.of(context).colorScheme.onPrimary),
+              style: model.getTextStyle(),
             ),
           ),
         ),
@@ -114,7 +117,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
     return Container(
       decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.05)),
-      height: 50,
+      height: tableSize.tableHeaderHeight,
       child: Row(
         children: rowWidgets,
       ),
