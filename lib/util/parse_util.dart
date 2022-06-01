@@ -130,7 +130,7 @@ abstract class ParseUtil {
     return colDef;
   }
 
-  static Size getTextSize({
+  static TextPainter getTextPainter({
     required String text,
     required TextStyle style,
     double textScaleFactor = 1.0,
@@ -147,7 +147,27 @@ abstract class ParseUtil {
       textScaleFactor: textScaleFactor,
     )..layout(minWidth: 0, maxWidth: maxWidth);
 
-    return textPainter.size;
+    return textPainter;
+  }
+
+  static Size getTextSize({
+    required String text,
+    required TextStyle style,
+    double textScaleFactor = 1.0,
+    TextAlign align = TextAlign.left,
+    TextDirection textDirection = TextDirection.ltr,
+    double maxWidth = double.infinity,
+    int maxLines = 1,
+  }) {
+    return getTextPainter(
+            text: text,
+            style: style,
+            textScaleFactor: textScaleFactor,
+            align: align,
+            textDirection: textDirection,
+            maxWidth: maxWidth,
+            maxLines: maxLines)
+        .size;
   }
 
   static double getTextHeight({
@@ -159,7 +179,7 @@ abstract class ParseUtil {
     double maxWidth = double.infinity,
     int maxLines = 1,
   }) {
-    return getTextSize(
+    return getTextPainter(
             text: text,
             style: style,
             textScaleFactor: textScaleFactor,
@@ -179,7 +199,7 @@ abstract class ParseUtil {
     double maxWidth = double.infinity,
     int maxLines = 1,
   }) {
-    return getTextSize(
+    return getTextPainter(
             text: text,
             style: style,
             textScaleFactor: textScaleFactor,
