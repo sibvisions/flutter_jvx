@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../components/label/fl_label_widget.dart';
 import '../../api/api_object_property.dart';
 import '../../layout/alignments.dart';
@@ -31,7 +33,7 @@ class FlLabelModel extends FlComponentModel {
     super.applyFromJson(pJson);
     var jsonText = pJson[ApiObjectProperty.text];
     if (jsonText != null) {
-      text = jsonText;
+      text = utf8.decode((jsonText as String).runes.toList());
     }
   }
 }

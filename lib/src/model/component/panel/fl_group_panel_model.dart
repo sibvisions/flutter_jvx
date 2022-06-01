@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_client/src/model/layout/alignments.dart';
 
 import '../../../components/panel/group/fl_group_panel_wrapper.dart';
@@ -33,7 +35,7 @@ class FlGroupPanelModel extends FlPanelModel implements FlLabelModel {
 
     var jsonText = pJson[ApiObjectProperty.text];
     if (jsonText != null) {
-      text = jsonText;
+      text = utf8.decode((jsonText as String).runes.toList());
     }
   }
 }

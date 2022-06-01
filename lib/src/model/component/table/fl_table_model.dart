@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/component/fl_component_model.dart';
 
@@ -9,7 +8,7 @@ class FlTableModel extends FlComponentModel {
 
   List<String>? columnLabels = [];
 
-  bool autoResize = false;
+  bool autoResize = true;
 
   bool editable = true;
 
@@ -36,9 +35,7 @@ class FlTableModel extends FlComponentModel {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  FlTableModel() : super() {
-    preferredSize = const Size(250, 250);
-  }
+  FlTableModel() : super();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

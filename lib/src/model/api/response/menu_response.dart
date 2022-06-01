@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../api_object_property.dart';
 import 'api_response.dart';
 
@@ -5,10 +7,10 @@ class MenuResponse extends ApiResponse {
   final String componentId;
   final List<MenuEntryResponse> responseMenuItems;
 
-
-  MenuResponse.fromJson(Map<String, dynamic> json) :
-        componentId = json[ApiObjectProperty.componentId],
-        responseMenuItems = (json[ApiObjectProperty.entries] as List<dynamic>).map((e) => MenuEntryResponse.fromJson(e)).toList(),
+  MenuResponse.fromJson(Map<String, dynamic> json)
+      : componentId = json[ApiObjectProperty.componentId],
+        responseMenuItems =
+            (json[ApiObjectProperty.entries] as List<dynamic>).map((e) => MenuEntryResponse.fromJson(e)).toList(),
         super.fromJson(json);
 }
 
@@ -25,9 +27,9 @@ class MenuEntryResponse {
     this.image,
   });
 
-  MenuEntryResponse.fromJson(Map<String, dynamic> json) :
-        componentId = json[ApiObjectProperty.componentId],
-        text = json[ApiObjectProperty.text],
+  MenuEntryResponse.fromJson(Map<String, dynamic> json)
+      : componentId = json[ApiObjectProperty.componentId],
+        text = utf8.decode((json[ApiObjectProperty.text] as String).runes.toList()),
         image = json[ApiObjectProperty.image],
         group = json[ApiObjectProperty.group];
 }

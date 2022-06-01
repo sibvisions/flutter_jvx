@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../api/api_object_property.dart';
 import '../fl_component_model.dart';
 
@@ -28,7 +30,7 @@ class FlPopupMenuItemModel extends FlComponentModel {
 
     var jsonText = pJson[ApiObjectProperty.text];
     if (jsonText != null) {
-      text = jsonText;
+      text = utf8.decode((jsonText as String).runes.toList());
     }
 
     var jsonIcon = pJson[ApiObjectProperty.image];

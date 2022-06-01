@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../../api/api_object_property.dart';
 import 'cell_editor_model.dart';
 
@@ -32,10 +34,10 @@ class FlCheckBoxCellEditorModel extends ICellEditorModel {
     if (jsonDeselectedValue != null) {
       deselectedValue = jsonDeselectedValue;
     }
-    // HorizontalAlignment
+
     var jsonText = pJson[ApiObjectProperty.text];
     if (jsonText != null) {
-      text = jsonText;
+      text = utf8.decode((jsonText as String).runes.toList());
     }
   }
 }
