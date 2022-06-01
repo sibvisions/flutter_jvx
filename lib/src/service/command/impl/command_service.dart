@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -56,48 +58,45 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
   @override
   Future<List<BaseCommand>> sendCommand(BaseCommand command) async {
-    Future<List<BaseCommand>>? commands;
+    List<BaseCommand>? commands;
 
     // Switch-Case doesn't work with types
     if (command is ApiCommand) {
-      commands = _apiProcessor.processCommand(command);
+      commands = await _apiProcessor.processCommand(command);
     } else if (command is ConfigCommand) {
-      commands = _configProcessor.processCommand(command);
+      commands = await _configProcessor.processCommand(command);
     } else if (command is StorageCommand) {
-      commands = _storageProcessor.processCommand(command);
+      commands = await _storageProcessor.processCommand(command);
     } else if (command is UiCommand) {
-      commands = _uiProcessor.processCommand(command);
+      commands = await _uiProcessor.processCommand(command);
     } else if (command is LayoutCommand) {
-      commands = _layoutProcessor.processCommand(command);
+      commands = await _layoutProcessor.processCommand(command);
     } else if (command is DataCommand) {
-      commands = _dataProcessor.processCommand(command);
+      commands = await _dataProcessor.processCommand(command);
     }
 
     // Executes Commands resulting from incoming command.
     // Call routing commands last, all other actions must take priority.
     if (commands != null) {
-      await commands.then((resultCommands) async {
-        // Isolate possible route commands
-        var routeCommands = resultCommands
-            .where((element) => element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
-            .toList();
+      // Isolate possible route commands
+      var routeCommands = commands
+          .where((element) => element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
+          .toList();
 
-        var nonRouteCommands = resultCommands
-            .where((element) => element is! RouteToWorkCommand && element is! RouteToMenuCommand && element is! RouteToLoginCommand)
-            .toList();
+      var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
+      // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
 
-        // When all commands are finished execute routing commands sorted by priority
-        await _waitTillFinished(pCommands: nonRouteCommands).then((value) {
-          if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
-            // Don't route if there is an server error
-          } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-            sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-          } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-            sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-          } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-            sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
-          }
-        });
+      // When all commands are finished execute routing commands sorted by priority
+      await _waitTillFinished(pCommands: nonRouteCommands).then((value) {
+        if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+          // Don't route if there is an server error
+        } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
+          return sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+          return sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+          return sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+        }
       });
     }
     return commands!;
@@ -107,7 +106,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Returns true when all provided commands have been executed recursively
+  /// Returns true when all provided commands have been executed
   _waitTillFinished({required List<BaseCommand> pCommands}) async {
     // Execute incoming commands
     for (BaseCommand command in pCommands) {

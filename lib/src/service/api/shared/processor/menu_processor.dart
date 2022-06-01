@@ -11,7 +11,6 @@ import '../i_processor.dart';
 /// Processes the menu response into a [MenuModel], will try to route to menu,
 /// if no other routing actions take precedent.
 class MenuProcessor implements IProcessor<MenuResponse> {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,17 +26,11 @@ class MenuProcessor implements IProcessor<MenuResponse> {
     }
     MenuModel menuModel = MenuModel(menuGroups: groups);
 
-    SaveMenuCommand saveMenuCommand = SaveMenuCommand(
-        menuModel: menuModel,
-        reason: "Server sent menu items"
-    );
+    SaveMenuCommand saveMenuCommand = SaveMenuCommand(menuModel: menuModel, reason: "Server sent menu items");
 
-    RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(
-        reason: "Server sent a menu, likely on login"
-    );
+    RouteToMenuCommand routeToMenuCommand = RouteToMenuCommand(reason: "Server sent a menu, likely on login");
 
     commands.addAll([saveMenuCommand, routeToMenuCommand]);
-
 
     return commands;
   }
@@ -60,8 +53,8 @@ class MenuProcessor implements IProcessor<MenuResponse> {
     List<MenuItemModel> menuItems = [];
     for (MenuEntryResponse responseMenuEntry in entries) {
       if (responseMenuEntry.group == groupName) {
-        MenuItemModel menuItem = MenuItemModel(
-            componentId: responseMenuEntry.componentId, label: responseMenuEntry.text, image: responseMenuEntry.image);
+        MenuItemModel menuItem =
+            MenuItemModel(screenId: responseMenuEntry.componentId, label: responseMenuEntry.text, image: responseMenuEntry.image);
         menuItems.add(menuItem);
       }
     }

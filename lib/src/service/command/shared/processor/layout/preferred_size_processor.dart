@@ -5,7 +5,7 @@ import '../../i_command_processor.dart';
 
 class PreferredSizeProcessor with LayoutServiceMixin implements ICommandProcessor<PreferredSizeCommand> {
   @override
-  Future<List<BaseCommand>> processCommand(PreferredSizeCommand command) async {
+  Future<List<BaseCommand>> processCommand(PreferredSizeCommand command) {
     return layoutService.reportPreferredSize(pLayoutData: command.layoutData);
   }
 }
