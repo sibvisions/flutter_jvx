@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_client/util/constants/i_color.dart';
 import 'package:flutter_client/util/image/image_loader.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../model/component/button/fl_button_model.dart';
 import '../../model/layout/alignments.dart';
@@ -46,10 +47,37 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   @override
   Widget build(BuildContext context) {
+    if (model.style == 'hyperlink') {
+      return createHyperlinkButton();
+    }
     return ElevatedButton(
       onPressed: getOnPressed(),
       child: createDirectButtonChild(context),
       style: getButtonStyle(),
+    );
+  }
+
+  Widget createHyperlinkButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      margin: const EdgeInsets.all(4),
+      child: GestureDetector(
+        onTap: hyperlinkOnTap,
+        child: SizedBox(
+          height: 40,
+          child: Center(
+            child: Text(
+              model.labelModel.text,
+              style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: model.labelModel.getTextStyle().fontSize,
+                  color: !model.isEnabled ? IColorConstants.COMPONENT_DISABLED : model.foreground ?? Colors.blue),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -66,7 +94,7 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
           children: <Widget>[
             image!,
             SizedBox(height: model.imageTextGap.toDouble()),
-            Flexible(child: _getTextWidget())
+            Flexible(child: _getTextWidget()),
           ],
           mainAxisSize: MainAxisSize.min,
           textBaseline: TextBaseline.alphabetic,
@@ -129,5 +157,20 @@ class FlButtonWidget<T extends FlButtonModel> extends FlStatelessWidget<T> {
 
   Function()? getOnPressed() {
     return model.isEnabled && model.isFocusable ? onPress : null;
+  }
+
+  void hyperlinkOnTap() {
+    if (model.isEnabled) {
+      String url = model.labelModel.text;
+
+      if (!url.startsWith("http")) {
+        url = 'https://' + url;
+      }
+      try {
+        launchUrlString(url);
+      } catch (e) {
+        rethrow;
+      }
+    }
   }
 }

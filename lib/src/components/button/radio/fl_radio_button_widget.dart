@@ -47,6 +47,7 @@ class FlRadioButtonWidget<T extends FlRadioButtonModel> extends FlButtonWidget<T
       backgroundColor: MaterialStateProperty.all(model.background ?? Colors.transparent),
       padding: MaterialStateProperty.all(model.paddings),
       splashFactory: splashFactory,
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
     );
   }
 

@@ -44,6 +44,9 @@ class FlButtonModel extends FlComponentModel {
   /// The paddings between the button and its children.
   EdgeInsets paddings = const EdgeInsets.fromLTRB(10, 10, 10, 10);
 
+  /// The style of the Button.
+  String style = "";
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,6 +139,11 @@ class FlButtonModel extends FlComponentModel {
     var jsonMargins = ParseUtil.parseMargins(pJson[ApiObjectProperty.margins]);
     if (jsonMargins != null) {
       paddings = jsonMargins;
+    }
+
+    var jsonStyle = pJson[ApiObjectProperty.style];
+    if (jsonStyle != null) {
+      style = jsonStyle;
     }
 
     // Label parsing

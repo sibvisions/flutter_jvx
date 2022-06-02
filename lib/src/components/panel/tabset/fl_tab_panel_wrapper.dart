@@ -388,7 +388,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       ..foreground = childModel.foreground
       ..isBold = childModel.isBold
       ..isItalic = childModel.isItalic
-      ..verticalAlignment = VerticalAlignment.BOTTOM
+      ..verticalAlignment = VerticalAlignment.CENTER
       ..isEnabled = enabled;
 
     Widget textChild = FlLabelWidget(model: labelModel);
@@ -396,11 +396,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     return Tab(
       child: closable
           ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                image ?? Container(),
+                const SizedBox(width: 5),
                 textChild,
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 GestureDetector(
                   onTap: enabled
                       ? () {
@@ -409,14 +410,14 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
                       : null,
                   child: const Icon(
                     Icons.clear,
-                    size: 30,
+                    size: 18,
                     color: IColorConstants.COMPONENT_DISABLED,
                   ),
                 ),
               ],
             )
           : textChild,
-      icon: image,
+      //icon: image,
       iconMargin: const EdgeInsets.all(5),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_client/util/parse_util.dart';
 
+import '../../../../main.dart';
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -26,9 +27,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return ParseUtil.getTextHeight(text: "I", style: model.getTextStyle());
   }
 
-  EdgeInsets get textPadding => const EdgeInsets.only(left: 12);
-
-  EdgeInsets get iconPadding => const EdgeInsets.only(right: 15);
+  EdgeInsets get textPadding => const EdgeInsets.fromLTRB(12, 10, 0, 10);
+  EdgeInsets get iconPadding => const EdgeInsets.fromLTRB(0, 10, 15, 10);
 
   int? get minLines => null;
 
@@ -72,7 +72,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
       decoration: BoxDecoration(
         color: model.background,
         border: Border.all(
-            color: model.isEnabled ? Theme.of(context).primaryColor : IColorConstants.COMPONENT_DISABLED,
+            color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED,
             style: model.isBorderVisible ? BorderStyle.solid : BorderStyle.none),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),

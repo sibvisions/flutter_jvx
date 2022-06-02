@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../model/component/label/fl_label_model.dart';
 import '../../model/layout/alignments.dart';
@@ -28,7 +27,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
       child: Container(
         child: child,
         decoration: BoxDecoration(
-          color: model.isEnabled ? model.background : IColorConstants.COMPONENT_DISABLED,
+          color: model.background,
           border: Border.all(
             color: Colors.black,
             width: 1,

@@ -56,6 +56,7 @@ abstract class ApiObjectProperty {
   static const String mouseOverImage = "mouseOverImage";
   static const String accelerator = "accelerator";
   static const String ariaLabel = "ariaLabel";
+  static const String style = "style";
   static const String defaultWindow = "defaultWindow";
   static const String selected = "selected";
   static const String ariaPressed = "ariaPressed";

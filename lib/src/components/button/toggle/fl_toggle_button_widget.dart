@@ -43,6 +43,7 @@ class FlToggleButtonWidget extends FlButtonWidget<FlToggleButtonModel> {
               ? MaterialStateProperty.all(model.background)
               : null,
       padding: MaterialStateProperty.all(model.paddings),
+      overlayColor: MaterialStateProperty.all(Colors.transparent),
     );
   }
 }

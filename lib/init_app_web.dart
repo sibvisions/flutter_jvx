@@ -26,8 +26,7 @@ import 'src/service/ui/impl/ui_service.dart';
 
 initAppWeb() {
   // API
-  UrlConfig urlConfigServer1 = ConfigGenerator.generateMobileServerUrl("127.0.0.1", 8888);
-  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("172.16.0.40", 8888);
+  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8888);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
