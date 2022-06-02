@@ -18,13 +18,17 @@ class FlTabViewState extends State<FlTabView> with AutomaticKeepAliveClientMixin
   Widget build(BuildContext context) {
     super.build(context);
 
-    BuildContext? childContext = (widget.child.key as GlobalKey).currentContext;
-    if (childContext != null) {
-      Widget? parentWidget = childContext.findAncestorWidgetOfExactType<FlTabView>();
-      if (parentWidget != widget) {
-        _keepAlive = false;
-        updateKeepAlive();
+    try {
+      BuildContext? childContext = (widget.child.key as GlobalKey).currentContext;
+      if (childContext != null) {
+        Widget? parentWidget = childContext.findAncestorWidgetOfExactType<FlTabView>();
+        if (parentWidget != widget) {
+          _keepAlive = false;
+          updateKeepAlive();
+        }
       }
+    } catch (_) {
+      _keepAlive = false;
     }
 
     if (_keepAlive) {

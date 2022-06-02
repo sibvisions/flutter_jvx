@@ -272,7 +272,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
     lastDeletedTab = -1;
 
     if (model.selectedIndex >= 0 && tabController.index != model.selectedIndex) {
-      tabController.animateTo(model.selectedIndex);
+      tabController.animateTo(model.selectedIndex, pInternally: true);
     }
 
     TabLayout layout = (layoutData.layout as TabLayout);
@@ -321,11 +321,7 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
 
       if (index >= 0 && index < tabContentList.length) {
         if (tabController.isTabEnabled(index)) {
-          if (!pInternally) {
-            changedIndexTo(index);
-          } else {
-            tabController.animateTo(index, pInternally: pInternally);
-          }
+          tabController.animateTo(index, pInternally: pInternally);
           hasSwiped = true;
         }
       } else {

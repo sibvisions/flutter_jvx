@@ -66,8 +66,9 @@ class FlTabController extends TabController {
       widgetsSelectedOnce.add(value);
       if (!pInternally) {
         changedIndexTo(value);
+      } else {
+        super.animateTo(value, duration: duration, curve: curve);
       }
-      super.animateTo(value, duration: duration, curve: curve);
     }
   }
 
