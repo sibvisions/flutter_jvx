@@ -67,6 +67,13 @@ class StorageService implements IStorageService {
     // Handle components to Update
     if (componentsToUpdate != null) {
       for (Map<String, dynamic> changedData in componentsToUpdate) {
+        // If a removed component changes it is no longer removed
+        FlComponentModel? removedModel = _removedComponents[changedData[ApiObjectProperty.id]];
+        if (removedModel != null) {
+          removedModel.isRemoved = false;
+          _componentMap[removedModel.id] = removedModel;
+        }
+
         // Get old Model
         FlComponentModel? model = _componentMap[changedData[ApiObjectProperty.id]];
         if (model != null) {
