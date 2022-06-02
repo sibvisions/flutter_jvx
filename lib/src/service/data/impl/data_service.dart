@@ -61,6 +61,7 @@ class DataService implements IDataService {
     } else {
       dataBook.columnDefinitions = pMetaData.columns;
       dataBook.columnViewTable = pMetaData.columnViewTable;
+      dataBook.metaData = pMetaData;
     }
 
     return true;

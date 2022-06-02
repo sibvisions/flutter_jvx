@@ -5,21 +5,20 @@ import '../../shared/component_store.dart';
 
 /// Manages all component data received from remote server
 class DefaultStorageService implements IStorageService {
-  final StorageService componentStore = StorageService();
+  final StorageService storageService = StorageService();
 
   @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) {
-    return componentStore.getScreenByScreenClassName(screenClassName);
+    return storageService.getScreenByScreenClassName(screenClassName);
   }
 
   @override
-  Future<List<BaseCommand>> updateComponents(
-      List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) {
-    return componentStore.updateComponents(componentsToUpdate, newComponents, screenName);
+  Future<List<BaseCommand>> updateComponents(List? componentsToUpdate, List<FlComponentModel>? newComponents, String screenName) {
+    return storageService.updateComponents(componentsToUpdate, newComponents, screenName);
   }
 
   @override
   Future<void> deleteScreen({required String screenName}) {
-    return componentStore.deleteScreen(screenName: screenName);
+    return storageService.deleteScreen(screenName: screenName);
   }
 }
