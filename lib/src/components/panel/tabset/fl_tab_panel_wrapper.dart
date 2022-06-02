@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/util/image/image_loader.dart';
@@ -321,8 +320,12 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
       }
 
       if (index >= 0 && index < tabContentList.length) {
-        if (tabContentList.elementAt(index).model.isEnabled) {
-          tabController.animateTo(index, pInternally: pInternally);
+        if (tabController.isTabEnabled(index)) {
+          if (!pInternally) {
+            changedIndexTo(index);
+          } else {
+            tabController.animateTo(index, pInternally: pInternally);
+          }
           hasSwiped = true;
         }
       } else {
@@ -343,9 +346,9 @@ class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with
   }
 
   void changedIndexTo(int pValue) {
-    setState(() {
-      model.selectedIndex = pValue;
-    });
+    // setState(() {
+    //   model.selectedIndex = pValue;
+    // });
 
     uiService.sendCommand(OpenTabCommand(componentName: model.name, index: pValue, reason: "Opened the tab."));
   }
