@@ -36,7 +36,11 @@ class UiService with CommandServiceMixin implements IUiService {
   /// ALl current menu items
   MenuModel? _menuModel;
 
+  /// Build context of the current location, used for routing and pop-ups
   BuildContext? _currentBuildContext;
+
+  /// The name of the current work screen
+  List<String> openWorkScreens = [];
 
   /// List of all models currently active
   final List<FlComponentModel> _currentScreen = [];
@@ -88,8 +92,8 @@ class UiService with CommandServiceMixin implements IUiService {
   }
 
   @override
-  void routeToWorkScreen() {
-    var screen = _currentScreen.first;
+  void routeToWorkScreen({required String pScreenName}) {
+    var screen = _currentScreen.firstWhere((element) => element.name == pScreenName);
     if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
       _currentBuildContext!.beamToReplacementNamed("/workScreen/${screen.name}");
     } else {
@@ -133,9 +137,9 @@ class UiService with CommandServiceMixin implements IUiService {
         });
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Meta data management
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Meta data management
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   MenuModel getMenuModel() {
@@ -179,9 +183,9 @@ class UiService with CommandServiceMixin implements IUiService {
     _menuModel = pMenuModel;
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Management of component models
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Management of component models
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   List<FlComponentModel> getChildrenModels(String id) {
@@ -206,29 +210,43 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void closeScreen({required String pScreenName}) {
-    //ToDo only delete components belonging to screen
-    // for (var element in _currentScreen) {
-    //   if(element is FlPanelModel){
-    //
-    //   }
-    // }
-    _currentScreen.clear();
-    _registeredComponents.clear();
-    _layoutDataList.clear();
+    FlComponentModel screenModel = _currentScreen.firstWhere((element) => element.name == pScreenName);
+
+    List<FlComponentModel> children = _getAllComponentsBelow(screenModel.id);
+
+    // Remove all children
+    _currentScreen.removeWhere((currentComp) => children.any((compToDelete) => compToDelete.id == currentComp.id));
+    _registeredComponents.removeWhere((key, value) => children.any((compToDelete) => compToDelete.id == key));
+    _layoutDataList.removeWhere((key, value) => children.any((compToDelete) => compToDelete.id == key));
+
+    // Remove itself as well
+    _currentScreen.remove(screenModel);
+    _registeredComponents.removeWhere((key, value) => key == screenModel.id);
+
     _dataSubscriptions.clear();
   }
 
   @override
-  FlPanelModel? getOpenScreen() {
-    if (_currentScreen.isNotEmpty) {
-      return _currentScreen.first as FlPanelModel;
-    }
-    return null;
+  FlPanelModel? getOpenScreen({required String pScreenName}) {
+    return _currentScreen.firstWhereOrNull((element) => element.name == pScreenName) as FlPanelModel?;
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // LayoutData management
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  List<FlComponentModel> _getAllComponentsBelow(String id) {
+    List<FlComponentModel> children = [];
+
+    for (FlComponentModel componentModel in _currentScreen) {
+      String? parentId = componentModel.parent;
+      if (parentId != null && parentId == id) {
+        children.add(componentModel);
+        children.addAll(_getAllComponentsBelow(componentModel.id));
+      }
+    }
+    return children;
+  }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// LayoutData management
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   List<LayoutData> getChildrenLayoutData({required String pParentId}) {
@@ -252,9 +270,9 @@ class UiService with CommandServiceMixin implements IUiService {
     }
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Component registration management
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Component registration management
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
@@ -336,9 +354,9 @@ class UiService with CommandServiceMixin implements IUiService {
     _dataSubscriptions.removeWhere((element) => element.id == pComponentId && element.dataProvider == pDataProvider);
   }
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Methods to notify components about changes to themselves
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Methods to notify components about changes to themselves
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {

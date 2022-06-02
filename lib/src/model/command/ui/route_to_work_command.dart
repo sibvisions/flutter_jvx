@@ -2,13 +2,19 @@ import 'package:flutter_client/src/model/command/ui/ui_command.dart';
 
 /// Command to route to the currently active workScreen
 class RouteToWorkCommand extends UiCommand {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  final String screenName;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   RouteToWorkCommand({
-    required String reason
+    required this.screenName,
+    required String reason,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,5 +24,4 @@ class RouteToWorkCommand extends UiCommand {
   @override
   // TODO: implement logString
   String get logString => throw UnimplementedError();
-
 }

@@ -41,7 +41,7 @@ class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceMixi
       if (screen != null && screen.isOfflineScreen) {
         return delegate.beamBack();
       } else {
-        uiService.sendCommand(NavigationCommand(reason: "Back button pressed"));
+        uiService.sendCommand(NavigationCommand(reason: "Back button pressed", openScreen: location));
         return true;
       }
     } else {

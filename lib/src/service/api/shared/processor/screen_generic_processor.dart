@@ -43,6 +43,7 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
     // if update == false => new screen that should be routed to
     if (!screenGenericResponse.update) {
       RouteToWorkCommand workCommand = RouteToWorkCommand(
+        screenName: screenGenericResponse.componentId,
         reason: "Server sent screen.generic response with update = 'false'",
       );
 

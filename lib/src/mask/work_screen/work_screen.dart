@@ -1,10 +1,15 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 import 'package:flutter_client/util/debouncer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../model/command/api/device_status_command.dart';
+import '../../model/command/api/navigation_command.dart';
+import '../drawer/drawer_menu.dart';
 
 /// Screen used to show workScreens either custom or from the server,
 /// will send a [DeviceStatusCommand] on open to account for
@@ -16,6 +21,9 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
 
   /// Title on top of the screen
   final String screenTitle;
+
+  /// ScreenName of an online-screen - used for sending [ApiNavigationRequest]
+  final String screenName;
 
   /// Widget used as workscreen
   final Widget screenWidget;
@@ -40,6 +48,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
     required this.screenTitle,
     required this.screenWidget,
     required this.isCustomScreen,
+    required this.screenName,
     this.footer,
     this.header,
     Key? key,
@@ -56,8 +65,17 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          leading: Center(
+            child: GestureDetector(
+              child: const FaIcon(FontAwesomeIcons.arrowLeft),
+              onTap: () => _onBackTab(context),
+              onDoubleTap: () => context.beamBack(),
+            ),
+          ),
           title: Text(screenTitle),
         ),
+        endDrawerEnableOpenDragGesture: false,
+        endDrawer: DrawerMenu(),
         body: Scaffold(
           appBar: header,
           bottomNavigationBar: footer,
@@ -119,5 +137,13 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
     DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(screenWidth: pWidth, screenHeight: pHeight, reason: "Device was rotated");
     uiService.sendCommand(deviceStatusCommand);
+  }
+
+  _onBackTab(BuildContext context) {
+    if (isCustomScreen) {
+      context.beamBack();
+    } else {
+      uiService.sendCommand(NavigationCommand(reason: "Work screen back", openScreen: screenName));
+    }
   }
 }

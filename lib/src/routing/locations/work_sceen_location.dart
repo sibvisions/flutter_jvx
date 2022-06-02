@@ -11,7 +11,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceMixin {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
     final String workScreenName = state.pathParameters['workScreenName']!;
-    FlPanelModel? model = uiService.getOpenScreen();
+    FlPanelModel? model = uiService.getOpenScreen(pScreenName: workScreenName);
 
     // Header
     CustomHeader? header;
@@ -56,6 +56,7 @@ class WorkScreenLocation extends BeamLocation<BeamState> with UiServiceMixin {
             screenWidget: screen,
             footer: footer,
             header: header,
+            screenName: workScreenName,
           ),
           key: ValueKey("Work_$workScreenName}"))
     ];

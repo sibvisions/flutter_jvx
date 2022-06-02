@@ -43,7 +43,7 @@ abstract class IUiService {
   void routeToMenu({bool pReplaceRoute = false});
 
   /// Route to work screen page
-  void routeToWorkScreen();
+  void routeToWorkScreen({required String pScreenName});
 
   /// Route to settings page
   void routeToSettings();
@@ -77,7 +77,7 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Returns the top-most panel if a work screen is open
-  FlPanelModel? getOpenScreen();
+  FlPanelModel? getOpenScreen({required String pScreenName});
 
   /// Returns all [FlComponentModel] children of provided id.
   List<FlComponentModel> getChildrenModels(String id);

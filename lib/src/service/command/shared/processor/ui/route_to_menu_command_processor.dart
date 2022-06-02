@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/mixin/ui_service_getter_mixin.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -5,20 +6,15 @@ import 'package:flutter_client/src/service/command/shared/i_command_processor.da
 import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 
 /// Takes [RouteToMenuCommand] and tell [IUiService] to route there
-class RouteToMenuCommandProcessor with UiServiceGetterMixin
-    implements ICommandProcessor<RouteToMenuCommand> {
-
+class RouteToMenuCommandProcessor with UiServiceGetterMixin implements ICommandProcessor<RouteToMenuCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  Future<List<BaseCommand>> processCommand(RouteToMenuCommand command) async {
-
-    getUiService().closeScreen(pScreenName: command.toString());
+  Future<List<BaseCommand>> processCommand(RouteToMenuCommand command) {
     getUiService().routeToMenu(pReplaceRoute: command.replaceRoute);
 
-    return [];
+    return SynchronousFuture([]);
   }
-
 }
