@@ -94,6 +94,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
               });
             }
             return SingleChildScrollView(
+              physics: viewInsets.bottom > 0 ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
               child: Stack(
                 children: [
                   SizedBox(
@@ -135,7 +136,8 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
-    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(screenWidth: pWidth, screenHeight: pHeight, reason: "Device was rotated");
+    DeviceStatusCommand deviceStatusCommand =
+        DeviceStatusCommand(screenWidth: pWidth, screenHeight: pHeight, reason: "Device was rotated");
     uiService.sendCommand(deviceStatusCommand);
   }
 
