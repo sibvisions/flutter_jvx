@@ -11,7 +11,9 @@ class MenuLocation extends BeamLocation<BeamState> with UiServiceMixin {
 
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    return [BeamPage(child: AppMenu(), key: const ValueKey("menu"))];
+    return [
+      BeamPage(child: AppMenu(), key: const ValueKey("menu")),
+    ];
   }
 
   @override

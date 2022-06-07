@@ -6,9 +6,7 @@ class ApplicationParametersProcessor implements IProcessor<ApplicationParameters
   @override
   List<BaseCommand> processResponse({required ApplicationParametersResponse pResponse}) {
     List<BaseCommand> commands = [];
-    ApplicationParametersResponse response = pResponse;
-
-
+    //TODO use application parameters
 
     return commands;
   }

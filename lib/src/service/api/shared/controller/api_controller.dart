@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -32,8 +33,8 @@ class ApiController implements IController {
   final IProcessor _applicationParameterProcessor = ApplicationParametersProcessor();
   final IProcessor _applicationMetaDataProcessor = ApplicationMetaDataProcessor();
   final IProcessor _menuProcessor = MenuProcessor();
-  final IProcessor _screenGenericProcessor = ScreenGenericProcessor();
   final IProcessor _closeScreenProcessor = CloseScreenProcessor();
+  final IProcessor _screenGenericProcessor = ScreenGenericProcessor();
   final IProcessor _dalMetaDataProcessor = DalMetaDataProcessor();
   final IProcessor _dalFetchProcessor = DalFetchProcessor();
   final IProcessor _userDataProcessor = UserDataProcessor();
@@ -44,7 +45,7 @@ class ApiController implements IController {
   final IProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
 
   /// Maps response names to their processor
-  late final Map<String, IProcessor> responseToProcessorMap;
+  late final HashMap<String, IProcessor> responseToProcessorMap;
 
   /// Decoder used for decoding the application images and translations
   final ZipDecoder _zipDecoder = ZipDecoder();
@@ -54,7 +55,7 @@ class ApiController implements IController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiController() {
-    responseToProcessorMap = {
+    responseToProcessorMap = HashMap.from({
       ApiResponseNames.applicationParameters: _applicationParameterProcessor,
       ApiResponseNames.applicationMetaData: _applicationMetaDataProcessor,
       ApiResponseNames.menu: _menuProcessor,
@@ -68,7 +69,7 @@ class ApiController implements IController {
       ApiResponseNames.sessionExpired: _sessionExpiredProcessor,
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
       ApiResponseNames.authenticationData: _authenticationDataProcessor,
-    };
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

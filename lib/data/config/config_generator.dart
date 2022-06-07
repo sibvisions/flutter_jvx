@@ -22,6 +22,7 @@ class ConfigGenerator {
       filter: "/api/dal/filter",
       insertRecord: "/api/dal/insertRecord",
       selectRecord: "/api/dal/selectRecord",
+      closeScreen: "/api/closeScreen",
     );
   }
 

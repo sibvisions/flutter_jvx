@@ -109,10 +109,14 @@ Future<bool> initAppMobile({CustomScreenManager? pCustomManager}) async {
   services.registerSingleton(uiService, signalsReady: true);
 
   // Send startup to server
+  Size a = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
+
   StartupCommand startupCommand = StartupCommand(
     reason: "InitApp",
     username: appConfig.startupParameters?.username,
     password: appConfig.startupParameters?.password,
+    screenWidth: a.width,
+    screenHeight: a.height,
   );
   commandService.sendCommand(startupCommand);
 

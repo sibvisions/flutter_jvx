@@ -19,6 +19,8 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
       deviceMode: "mobile",
       applicationName: appName,
       startUpParameters: parameters,
+      screenHeight: command.screenHeight,
+      screenWidth: command.screenWidth,
     );
 
     return apiService.sendRequest(request: startUpRequest);

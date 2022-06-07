@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/command/api/change_password_command.dart';
+import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/dal_save_command.dart';
 import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
 import 'package:flutter_client/src/model/command/api/fetch_command.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_client/src/model/command/api/reset_password_command.dart
 import 'package:flutter_client/src/model/command/api/select_record_command.dart';
 import 'package:flutter_client/src/model/command/api/set_api_config_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/change_password_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/close_screen_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/dal_save_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/delete_record_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
@@ -110,6 +112,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _dalSaveProcessor = DalSaveCommandProcessor();
 
+  final ICommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,6 +161,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _deleteRecordCommandProcessor.processCommand(command);
     } else if (command is DalSaveCommand) {
       return _dalSaveProcessor.processCommand(command);
+    } else if (command is CloseScreenCommand) {
+      return _closeScreenProcessor.processCommand(command);
     }
 
     return [];

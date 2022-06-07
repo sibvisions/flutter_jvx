@@ -89,7 +89,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
       // When all commands are finished execute routing commands sorted by priority
       await _waitTillFinished(pCommands: nonRouteCommands).then((value) {
         if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
-          // Don't route if there is an server error
+          // Don't route if there is a server error
         } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
           return sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
         } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {

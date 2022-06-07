@@ -13,7 +13,6 @@ import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/model/menu/menu_group_model.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
-import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
 import 'package:flutter_client/util/extensions/list_extensions.dart';
 
 import '../../../../util/type_def/callback_def.dart';
@@ -84,32 +83,17 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void routeToMenu({bool pReplaceRoute = false}) {
-    if (pReplaceRoute) {
-      _currentBuildContext!.beamToReplacementNamed("/menu");
-    } else {
-      _currentBuildContext!.beamToNamed("/menu");
-    }
+    _currentBuildContext!.beamToNamed("/menu");
   }
 
   @override
   void routeToWorkScreen({required String pScreenName}) {
-    var screen = _currentScreen.firstWhere((element) => element.name == pScreenName);
-    if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
-      _currentBuildContext!.beamToReplacementNamed("/workScreen/${screen.name}");
-    } else {
-      _currentBuildContext!.beamToNamed("/workScreen/${screen.name}");
-    }
+    _currentBuildContext!.beamToNamed("/workScreen/$pScreenName");
   }
 
   @override
   void routeToLogin({String mode = "manual"}) {
-    String path = "/login/$mode";
-
-    if (_currentBuildContext!.beamingHistory.last is WorkScreenLocation) {
-      _currentBuildContext!.beamToReplacementNamed(path);
-    } else {
-      _currentBuildContext!.beamToNamed(path);
-    }
+    _currentBuildContext!.beamToNamed("/login/$mode");
   }
 
   @override
@@ -214,16 +198,16 @@ class UiService with CommandServiceMixin implements IUiService {
 
     List<FlComponentModel> children = _getAllComponentsBelow(screenModel.id);
 
-    // Remove all children
+    // Remove all children and itself
     _currentScreen.removeWhere((currentComp) => children.any((compToDelete) => compToDelete.id == currentComp.id));
-    _registeredComponents.removeWhere((key, value) => children.any((compToDelete) => compToDelete.id == key));
-    _layoutDataList.removeWhere((key, value) => children.any((compToDelete) => compToDelete.id == key));
-
-    // Remove itself as well
     _currentScreen.remove(screenModel);
-    _registeredComponents.removeWhere((key, value) => key == screenModel.id);
 
+    // clear lists that get filled when new screen opens anyway
+    _registeredComponents.clear();
+    _layoutDataList.clear();
     _dataSubscriptions.clear();
+
+    _currentBuildContext!.beamBack();
   }
 
   @override

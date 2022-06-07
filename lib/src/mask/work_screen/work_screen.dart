@@ -141,7 +141,7 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
 
   _onBackTab(BuildContext context) {
     if (isCustomScreen) {
-      context.beamBack();
+      context.beamToNamed("/menu");
     } else {
       uiService.sendCommand(NavigationCommand(reason: "Work screen back", openScreen: screenName));
     }

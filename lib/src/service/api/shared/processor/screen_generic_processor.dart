@@ -24,19 +24,22 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
 
     // Handle New & Changed Components
     // Get new full components
-    List<FlComponentModel>? componentsToSave = _getNewComponents(screenGenericResponse.changedComponents);
+    List<dynamic>? changedComponents = pResponse.changedComponents;
+    if (changedComponents != null) {
+      List<FlComponentModel>? componentsToSave = _getNewComponents(changedComponents);
 
-    // Get changed Components
-    List<dynamic>? updatedComponent = _getChangedComponents(screenGenericResponse.changedComponents);
+      // Get changed Components
+      List<dynamic>? updatedComponent = _getChangedComponents(changedComponents);
 
-    if (componentsToSave != null || updatedComponent != null) {
-      SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
-        reason: "Api received screen.generic response",
-        componentsToSave: componentsToSave,
-        updatedComponent: updatedComponent,
-        screenName: screenGenericResponse.componentId,
-      );
-      commands.add(saveComponentsCommand);
+      if (componentsToSave != null || updatedComponent != null) {
+        SaveComponentsCommand saveComponentsCommand = SaveComponentsCommand(
+          reason: "Api received screen.generic response",
+          componentsToSave: componentsToSave,
+          updatedComponent: updatedComponent,
+          screenName: screenGenericResponse.componentId,
+        );
+        commands.add(saveComponentsCommand);
+      }
     }
 
     // Handle Screen Opening
@@ -46,7 +49,6 @@ class ScreenGenericProcessor implements IProcessor<ScreenGenericResponse> {
         screenName: screenGenericResponse.componentId,
         reason: "Server sent screen.generic response with update = 'false'",
       );
-
       commands.add(workCommand);
     }
     return commands;

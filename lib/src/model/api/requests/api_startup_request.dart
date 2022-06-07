@@ -61,8 +61,8 @@ class ApiStartUpRequest extends IApiRequest {
         ApiObjectProperty.applicationName: applicationName,
         ApiObjectProperty.userName: username,
         ApiObjectProperty.password: password,
-        ApiObjectProperty.screenWidth: screenWidth?.toString(),
-        ApiObjectProperty.screenHeight: screenHeight?.toString(),
+        ApiObjectProperty.screenWidth: screenWidth,
+        ApiObjectProperty.screenHeight: screenHeight,
         ApiObjectProperty.authKey: authKey,
         ...?startUpParameters
       };

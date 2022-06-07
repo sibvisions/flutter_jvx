@@ -11,10 +11,7 @@ import '../../i_command_processor.dart';
 
 /// Calls [IApiService] deviceStatus and [IConfigService] for current clientId
 // Author: Michael Schober
-class DeviceStatusProcessor
-    with ApiServiceMixin, ConfigServiceMixin, LayoutServiceMixin
-    implements ICommandProcessor<DeviceStatusCommand> {
-
+class DeviceStatusProcessor with ApiServiceMixin, ConfigServiceMixin, LayoutServiceMixin implements ICommandProcessor<DeviceStatusCommand> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,9 +21,9 @@ class DeviceStatusProcessor
     String? clientId = configService.getClientId();
     if (clientId != null) {
       ApiDeviceStatusRequest deviceStatusRequest = ApiDeviceStatusRequest(
-          clientId: clientId,
-          screenWidth: command.screenWidth,
-          screenHeight: command.screenHeight
+        clientId: clientId,
+        screenWidth: command.screenWidth,
+        screenHeight: command.screenHeight,
       );
       return apiService.sendRequest(request: deviceStatusRequest);
     } else {
