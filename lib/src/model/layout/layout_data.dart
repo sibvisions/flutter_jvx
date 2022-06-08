@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../../../util/i_clonable.dart';
@@ -58,6 +56,9 @@ class LayoutData implements ICloneable {
   /// The last calculated size of the component.
   Size? lastCalculatedSize;
 
+  /// Fixed sized component.
+  bool isFixedSize;
+
   /// The insets of the component.
   EdgeInsets insets = EdgeInsets.zero;
 
@@ -97,7 +98,8 @@ class LayoutData implements ICloneable {
       this.lastCalculatedSize,
       this.needsRelayout = false,
       this.indexOf,
-      this.layout})
+      this.layout,
+      this.isFixedSize = false})
       : _calculatedSize = calculatedSize;
 
   /// Clones [LayoutData] as a deep copy.
@@ -118,7 +120,8 @@ class LayoutData implements ICloneable {
         needsRelayout = pLayoutData.needsRelayout,
         indexOf = pLayoutData.indexOf,
         heightConstrains = Map.from(pLayoutData.heightConstrains),
-        widthConstrains = Map.from(pLayoutData.widthConstrains);
+        widthConstrains = Map.from(pLayoutData.widthConstrains),
+        isFixedSize = pLayoutData.isFixedSize;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -169,6 +172,7 @@ class LayoutData implements ICloneable {
     indexOf = pLayoutData.indexOf;
     heightConstrains = Map.from(pLayoutData.heightConstrains);
     widthConstrains = Map.from(pLayoutData.widthConstrains);
+    isFixedSize = pLayoutData.isFixedSize;
   }
 
   /// If this component is a parent.
@@ -225,7 +229,7 @@ class LayoutData implements ICloneable {
 
   /// If this component is constrained by its position and has no corresponding entries in its constrain maps.
   bool get isNewlyConstraint {
-    if (!hasPreferredSize && (isWidthNewlyConstraint || isHeightNewlyConstraint)) {
+    if (!hasPreferredSize && !isFixedSize && (isWidthNewlyConstraint || isHeightNewlyConstraint)) {
       return true;
     }
     return false;

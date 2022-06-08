@@ -42,6 +42,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   void initState() {
     super.initState();
 
+    layoutData.isFixedSize = true;
+
     tableSize = TableSize.initial((model.columnLabels ?? model.columnNames).length);
 
     subscribe();

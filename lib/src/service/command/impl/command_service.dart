@@ -4,6 +4,7 @@ import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.da
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_work_command.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../mixin/api_service_mixin.dart';
 import '../../../mixin/config_service_mixin.dart';
@@ -58,48 +59,63 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
   @override
   Future<List<BaseCommand>> sendCommand(BaseCommand command) async {
-    List<BaseCommand>? commands;
+    List<BaseCommand> commands = [];
 
     // Switch-Case doesn't work with types
-    if (command is ApiCommand) {
-      commands = await _apiProcessor.processCommand(command);
-    } else if (command is ConfigCommand) {
-      commands = await _configProcessor.processCommand(command);
-    } else if (command is StorageCommand) {
-      commands = await _storageProcessor.processCommand(command);
-    } else if (command is UiCommand) {
-      commands = await _uiProcessor.processCommand(command);
-    } else if (command is LayoutCommand) {
-      commands = await _layoutProcessor.processCommand(command);
-    } else if (command is DataCommand) {
-      commands = await _dataProcessor.processCommand(command);
+    try {
+      if (command is ApiCommand) {
+        commands = await _apiProcessor.processCommand(command);
+      } else if (command is ConfigCommand) {
+        commands = await _configProcessor.processCommand(command);
+      } else if (command is StorageCommand) {
+        commands = await _storageProcessor.processCommand(command);
+      } else if (command is UiCommand) {
+        commands = await _uiProcessor.processCommand(command);
+      } else if (command is LayoutCommand) {
+        commands = await _layoutProcessor.processCommand(command);
+      } else if (command is DataCommand) {
+        commands = await _dataProcessor.processCommand(command);
+      } else {
+        LOGGER.logW(
+          pType: LOG_TYPE.COMMAND,
+          pMessage: "Command (${command.runtimeType}) without Processor found",
+        );
+        return [];
+      }
+    } catch (error, stacktrace) {
+      LOGGER.logE(
+        pType: LOG_TYPE.COMMAND,
+        pMessage: "Error processing (${command.runtimeType}): ${error.toString()}",
+        pStacktrace: stacktrace,
+      );
     }
 
     // Executes Commands resulting from incoming command.
     // Call routing commands last, all other actions must take priority.
-    if (commands != null) {
-      // Isolate possible route commands
-      var routeCommands = commands
-          .where((element) => element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
-          .toList();
 
-      var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
-      // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
+    // Isolate possible route commands
+    var routeCommands = commands
+        .where((element) =>
+            element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
+        .toList();
 
-      // When all commands are finished execute routing commands sorted by priority
-      await _waitTillFinished(pCommands: nonRouteCommands).then((value) {
-        if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
-          // Don't route if there is a server error
-        } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
-          return sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
-        } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
-          return sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
-        } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
-          return sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
-        }
-      });
-    }
-    return commands!;
+    var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
+    // nonRouteCommands.sort((a, b) => a.id.compareTo(b.id));
+
+    // When all commands are finished execute routing commands sorted by priority
+    await _waitTillFinished(pCommands: nonRouteCommands).then((value) {
+      if (nonRouteCommands.any((element) => element is OpenErrorDialogCommand)) {
+        // Don't route if there is a server error
+      } else if (routeCommands.any((element) => element is RouteToWorkCommand)) {
+        return sendCommand(routeCommands.firstWhere((element) => element is RouteToWorkCommand));
+      } else if (routeCommands.any((element) => element is RouteToMenuCommand)) {
+        return sendCommand(routeCommands.firstWhere((element) => element is RouteToMenuCommand));
+      } else if (routeCommands.any((element) => element is RouteToLoginCommand)) {
+        return sendCommand(routeCommands.firstWhere((element) => element is RouteToLoginCommand));
+      }
+    });
+
+    return commands;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

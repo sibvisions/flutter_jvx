@@ -58,7 +58,7 @@ class LOGGER {
     }
 
     if (canLog) {
-      dev.log(pMessage.toString());
+      dev.log("$pLevel: " + pMessage.toString());
       if (pStacktrace != null) {
         dev.log(pStacktrace.toString());
       }
@@ -98,7 +98,7 @@ class LOGGER {
     }
 
     if (canLog) {
-      dev.log(pMessage.toString());
+      dev.log("$pLevel: " + pMessage.toString());
       if (pStacktrace != null) {
         dev.log(pStacktrace.toString());
       }

@@ -140,15 +140,9 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
     LOGGER.logD(pType: LOG_TYPE.LAYOUT, pMessage: "${layoutData.id} NEW DATA; ${newLayoutData.layoutPosition}");
 
     // Check if new position constrains component. Only sends command if constraint is new.
-    if (!layoutData.isParent &&
-        !layoutData.hasPreferredSize &&
-        layoutData.hasCalculatedSize &&
-        (layoutData.hasPosition || calcPosition != null) &&
-        lastContext != null) {
+    if (!layoutData.isParent && (layoutData.isNewlyConstraint || calcPosition != null) && lastContext != null) {
       double calcWidth = layoutData.calculatedSize!.width;
       double calcHeight = layoutData.calculatedSize!.height;
-
-      bool isConstrained = false;
 
       LayoutPosition constraintPos = calcPosition ?? layoutData.layoutPosition!;
 
@@ -162,7 +156,6 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
             .ceilToDouble();
 
         layoutData.widthConstrains[positionWidth] = newHeight;
-        isConstrained = true;
       }
 
       // Constraint by height
@@ -172,15 +165,12 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
             .ceilToDouble();
 
         layoutData.heightConstrains[positionHeight] = newWidth;
-        isConstrained = true;
       }
 
       var sentData = LayoutData.from(layoutData);
       sentData.layoutPosition = constraintPos;
 
-      if (isConstrained) {
-        sendCalcSize(pLayoutData: sentData, pReason: "Component has been constrained");
-      }
+      sendCalcSize(pLayoutData: sentData, pReason: "Component has been constrained");
     }
 
     if (pSetState) {
