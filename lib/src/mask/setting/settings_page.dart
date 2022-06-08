@@ -1,5 +1,6 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/camera/qr_parser.dart';
 import 'package:flutter_client/src/mask/camera/qr_scanner_mask.dart';
 import 'package:flutter_client/src/mask/setting/widgets/editor/app_name_editor.dart';
@@ -93,6 +94,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   Widget build(BuildContext context) {
     uiService.setRouteContext(pContext: context);
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         leading: IconButton(
@@ -107,9 +109,41 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        child: ElevatedButton(
-          child: const Text("Save"),
-          onPressed: _saveClicked,
+        shape: const CircularNotchedRectangle(),
+        color: themeData.primaryColor,
+        child: SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: InkWell(
+                  radius: 50,
+                  onTap: () => context.beamBack(),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "CLOSE",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Expanded(
+                child: InkWell(
+                  onTap: _saveClicked,
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "SAVE",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -126,7 +160,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
   SettingGroup _buildApplicationSettings() {
     SettingItem appNameSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.server),
+      frontIcon: FaIcon(
+        FontAwesomeIcons.server,
+        color: themeData.primaryColor,
+      ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: appNameNotifier,
       title: "App name",
@@ -136,7 +173,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
         _settingItemClicked(
           pEditor: editor,
-          pTitleIcon: const FaIcon(FontAwesomeIcons.server),
+          pTitleIcon: FaIcon(
+            FontAwesomeIcons.server,
+            color: themeData.primaryColor,
+          ),
           pTitleText: "AppName",
         ).then((value) {
           if (value) {
@@ -148,7 +188,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     );
 
     SettingItem baseUrlSetting = SettingItem(
-        frontIcon: const FaIcon(FontAwesomeIcons.globe),
+        frontIcon: FaIcon(
+          FontAwesomeIcons.globe,
+          color: themeData.primaryColor,
+        ),
         endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
         value: baseUrlNotifier,
         title: "URL",
@@ -158,7 +201,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
           _settingItemClicked(
             pEditor: editor,
-            pTitleIcon: const FaIcon(FontAwesomeIcons.globe),
+            pTitleIcon: FaIcon(
+              FontAwesomeIcons.globe,
+              color: themeData.primaryColor,
+            ),
             pTitleText: "URL",
           ).then((value) {
             if (value) {
@@ -178,7 +224,10 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         });
 
     SettingItem languageSetting = SettingItem(
-      frontIcon: const FaIcon(FontAwesomeIcons.language),
+      frontIcon: FaIcon(
+        FontAwesomeIcons.language,
+        color: themeData.primaryColor,
+      ),
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: languageNotifier,
       title: "Language",
@@ -186,12 +235,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
     return SettingGroup(
       groupHeader: const Padding(
-        padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+        padding: EdgeInsets.all(10),
         child: Text(
           "Application",
           style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -220,12 +269,12 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
 
     SettingGroup group = SettingGroup(
         groupHeader: const Padding(
-          padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+          padding: EdgeInsets.all(10),
           child: Text(
             "Version Info",
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w300,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
