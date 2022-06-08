@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/panel/fl_panel_wrapper.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
+import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
 import 'package:flutter_client/util/debouncer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -67,9 +68,12 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
         appBar: AppBar(
           leading: Center(
             child: GestureDetector(
-              child: const FaIcon(FontAwesomeIcons.arrowLeft),
               onTap: () => _onBackTab(context),
-              onDoubleTap: () => context.beamBack(),
+              onDoubleTap: () => _onDoubleTab(context),
+              child: const CircleAvatar(
+                backgroundColor: Colors.green,
+                child: FaIcon(FontAwesomeIcons.arrowLeft),
+              ),
             ),
           ),
           title: Text(screenTitle),
@@ -131,13 +135,19 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
 
   _setScreenSize({required double pWidth, required double pHeight}) {
     SetComponentSizeCommand command = SetComponentSizeCommand(
-        componentId: (screenWidget as FlPanelWrapper).id, size: Size(pWidth, pHeight), reason: "Opened Work Screen");
+      componentId: (screenWidget as FlPanelWrapper).id,
+      size: Size(pWidth, pHeight),
+      reason: "Opened Work Screen",
+    );
     uiService.sendCommand(command);
   }
 
   _sendDeviceStatus({required double pWidth, required double pHeight}) {
-    DeviceStatusCommand deviceStatusCommand =
-        DeviceStatusCommand(screenWidth: pWidth, screenHeight: pHeight, reason: "Device was rotated");
+    DeviceStatusCommand deviceStatusCommand = DeviceStatusCommand(
+      screenWidth: pWidth,
+      screenHeight: pHeight,
+      reason: "Device was rotated",
+    );
     uiService.sendCommand(deviceStatusCommand);
   }
 
@@ -146,6 +156,15 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
       context.beamToNamed("/menu");
     } else {
       uiService.sendCommand(NavigationCommand(reason: "Work screen back", openScreen: screenName));
+    }
+  }
+
+  _onDoubleTab(BuildContext context) {
+    if (isCustomScreen) {
+      context.beamToNamed("/menu");
+    } else {
+      uiService.closeScreen(pScreenName: screenName);
+      uiService.sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: screenName));
     }
   }
 }
