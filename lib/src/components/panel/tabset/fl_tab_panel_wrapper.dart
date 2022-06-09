@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/util/image/image_loader.dart';
 
 import '../../../../util/constants/i_color.dart';
@@ -30,39 +29,6 @@ class FlTabPanelWrapper extends BaseCompWrapperWidget<FlTabPanelModel> {
 }
 
 class _FlTabPanelWrapperState extends BaseContWrapperState<FlTabPanelModel> with TickerProviderStateMixin {
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Constants
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /// Layout relevant properties that definitely need a relayout.
-  static const Set<String> LAYOUT_RELEVANT_PROPERTIES = {
-    ApiObjectProperty.id,
-    ApiObjectProperty.name,
-    ApiObjectProperty.className,
-    ApiObjectProperty.parent,
-    ApiObjectProperty.remove,
-    ApiObjectProperty.visible,
-    ApiObjectProperty.enabled,
-    ApiObjectProperty.focusable,
-    ApiObjectProperty.constraints,
-    ApiObjectProperty.indexOf,
-    ApiObjectProperty.tabIndex,
-    ApiObjectProperty.preferredSize,
-    ApiObjectProperty.minimumSize,
-    ApiObjectProperty.maximumSize,
-    ApiObjectProperty.bounds,
-    ApiObjectProperty.verticalAlignment,
-    ApiObjectProperty.horizontalAlignment,
-    ApiObjectProperty.font,
-    ApiObjectProperty.layout,
-    ApiObjectProperty.layoutData,
-    ApiObjectProperty.screenClassName,
-    ApiObjectProperty.eventTabClosed,
-    ApiObjectProperty.eventTabMoved,
-    ApiObjectProperty.draggable,
-    ApiObjectProperty.tabPlacement,
-  };
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

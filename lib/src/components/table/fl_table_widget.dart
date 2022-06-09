@@ -10,17 +10,19 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   final int selectedRow;
 
-  final Function(int)? onRowTapDown;
+  final Function(int, DragDownDetails?)? onRowTapDown;
 
   final Function(int)? onRowTap;
 
-  final Function(int)? onRowSwipe;
+  final Function()? onRowSwipe;
 
   final VoidCallback? onLongPress;
 
   final VoidCallback? onEndScroll;
 
   final DataChunk chunkData;
+
+  final ItemScrollController? itemScrollController;
 
   FlTableWidget({
     Key? key,
@@ -33,23 +35,29 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onRowSwipe,
     this.onLongPress,
     this.onEndScroll,
+    this.itemScrollController,
   }) : super(key: key, model: model) {
     //log("length of chunk data: ${chunkData.data.length}");
   }
 
   @override
   Widget build(BuildContext context) {
-    return NotificationListener<ScrollEndNotification>(
-      onNotification: onInternalEndScroll,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: tableSize.size.width,
-          ),
-          child: ScrollablePositionedList.builder(
-            itemBuilder: buildItem,
-            itemCount: chunkData.data.length + 1,
+    return GestureDetector(
+      onLongPress: onLongPress,
+      onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails),
+      child: NotificationListener<ScrollEndNotification>(
+        onNotification: onInternalEndScroll,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: tableSize.size.width,
+            ),
+            child: ScrollablePositionedList.builder(
+              itemScrollController: itemScrollController,
+              itemBuilder: buildItem,
+              itemCount: chunkData.data.length + 1,
+            ),
           ),
         ),
       ),
@@ -81,8 +89,9 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     double opacity = pIndex % 2 == 0 ? 0.05 : 0.15;
 
     return GestureDetector(
-      onPanDown: (_) => onRowTapDown?.call(pIndex),
+      onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(pIndex, pDragDetails),
       onTap: () => onRowTap?.call(pIndex),
+      //onHorizontalDragEnd: onInternalEndSwipe,
       child: Container(
         height: tableSize.rowHeight,
         decoration: pIndex != selectedRow
@@ -134,8 +143,21 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
 
   bool onInternalEndScroll(ScrollEndNotification notification) {
     if (notification.metrics.pixels > 0 && notification.metrics.atEdge) {
-      onEndScroll?.call();
+      if (notification.metrics.axis == Axis.horizontal) {
+        /// Scrolled all the way to the left.
+        onRowSwipe?.call();
+      } else {
+        /// Scrolled to the bottom
+        onEndScroll?.call();
+      }
     }
+
     return true;
+  }
+
+  onInternalEndSwipe(DragEndDetails pDragEndDetails) {
+    if (pDragEndDetails.primaryVelocity != null && pDragEndDetails.primaryVelocity! < 0.0) {
+      onRowSwipe?.call();
+    }
   }
 }
