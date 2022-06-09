@@ -26,7 +26,7 @@ class ErrorResponse extends ApiResponse {
     this.stacktrace,
     this.error,
   }) : super(name: name) {
-    LOGGER.logI(
+    LOGGER.logW(
         pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 
@@ -35,7 +35,7 @@ class ErrorResponse extends ApiResponse {
         stacktrace = null,
         error = null,
         super.fromJson(pJson) {
-    LOGGER.logI(
+    LOGGER.logW(
         pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 }
