@@ -4,6 +4,7 @@ import 'package:flutter_client/src/model/command/api/dal_save_command.dart';
 import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
 import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/command/api/filter_command.dart';
+import 'package:flutter_client/src/model/command/api/insert_record_command.dart';
 import 'package:flutter_client/src/model/command/api/logout_command.dart';
 import 'package:flutter_client/src/model/command/api/navigation_command.dart';
 import 'package:flutter_client/src/model/command/api/reset_password_command.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_client/src/service/command/shared/processor/api/dal_save
 import 'package:flutter_client/src/service/command/shared/processor/api/delete_record_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/filter_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/insert_record_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/logout_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/navigation_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/reset_password_command_processor.dart';
@@ -114,6 +116,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _closeScreenProcessor = CloseScreenCommandProcessor();
 
+  final ICommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,6 +167,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _dalSaveProcessor.processCommand(command);
     } else if (command is CloseScreenCommand) {
       return _closeScreenProcessor.processCommand(command);
+    } else if (command is InsertRecordCommand) {
+      return _insertRecordProcessor.processCommand(command);
     }
 
     return [];
