@@ -3,6 +3,7 @@ import 'package:flutter_client/src/components/custom/fl_custom_wrapper.dart';
 import 'package:flutter_client/src/components/icon/fl_icon_wrapper.dart';
 import 'package:flutter_client/src/components/map/fl_map_wrapper.dart';
 import 'package:flutter_client/src/components/panel/tabset/fl_tab_panel_wrapper.dart';
+import 'package:flutter_client/src/components/signature_pad/fl_signature_pad_wrapper.dart';
 import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
 
 //import 'package:flutter_client/src/components/table/fl_table_wrapper.dart';
@@ -43,6 +44,10 @@ abstract class ComponentsFactory {
       case FlContainerClassname.TABSET_PANEL:
         return FlTabPanelWrapper(id: model.id, key: GlobalKey());
       case FlContainerClassname.CUSTOM_CONTAINER:
+        switch (model.classNameEventSourceRef) {
+          case 'SignaturePad':
+            return FlSignaturePadWrapper(id: model.id, key: GlobalKey());
+        }
         continue alsoDefault;
 
       // Components

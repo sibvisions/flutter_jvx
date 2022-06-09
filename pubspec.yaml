@@ -44,6 +44,7 @@ dependencies:
   syncfusion_flutter_charts: ^20.1.55
   syncfusion_flutter_gauges: ^20.1.55
   url_launcher: ^6.1.2
+  signature: ^5.0.1
 
 flutter:
   assets:

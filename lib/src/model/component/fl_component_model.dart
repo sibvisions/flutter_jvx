@@ -92,6 +92,9 @@ abstract class FlComponentModel {
   /// The last changed model keys.
   Set<String> lastChangedProperties = {};
 
+  /// Class Name Reference
+  String? classNameEventSourceRef;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -207,6 +210,11 @@ abstract class FlComponentModel {
     var jsonTooltipText = pJson[ApiObjectProperty.toolTipText];
     if (jsonTooltipText != null) {
       tooltipText = jsonTooltipText;
+    }
+
+    var jsonClassNameEventSourceRef = pJson[ApiObjectProperty.classNameEventSourceRef];
+    if (jsonClassNameEventSourceRef != null) {
+      classNameEventSourceRef = jsonClassNameEventSourceRef;
     }
   }
 
