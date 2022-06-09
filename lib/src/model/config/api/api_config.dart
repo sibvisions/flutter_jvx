@@ -1,6 +1,7 @@
 import 'package:flutter_client/src/model/api/requests/api_change_password_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_close_screen_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
@@ -61,6 +62,7 @@ class ApiConfig {
       ApiInsertRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.insertRecord),
       ApiSelectRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.selectRecord),
       ApiCloseScreenRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeScreen),
+      ApiDeleteRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.deleteRecord),
     };
   }
 }

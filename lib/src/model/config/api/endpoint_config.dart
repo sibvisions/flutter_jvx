@@ -1,6 +1,7 @@
 import 'package:flutter_client/src/model/api/requests/api_change_password_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_close_screen_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
@@ -76,6 +77,9 @@ class EndpointConfig {
   /// For [ApiCloseScreenRequest]
   final String closeScreen;
 
+  /// Fot [ApiDeleteRecordRequest]
+  final String deleteRecord;
+
   EndpointConfig({
     required this.startup,
     required this.login,
@@ -96,5 +100,6 @@ class EndpointConfig {
     required this.insertRecord,
     required this.selectRecord,
     required this.closeScreen,
+    required this.deleteRecord,
   });
 }
