@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
@@ -74,7 +75,13 @@ class DataBook {
 
     // Save records
     for (int i = 0; i < pFetchResponse.records.length; i++) {
-      records[i + pFetchResponse.from] = pFetchResponse.records[i];
+      // Decode sting values as utf-8 for special characters
+      records[i + pFetchResponse.from] = pFetchResponse.records[i].map((element) {
+        if (element is String) {
+          return utf8.decode(element.runes.toList());
+        }
+        return element;
+      }).toList();
     }
 
     // Remove values with higher index if all records are fetched (clean old data)
