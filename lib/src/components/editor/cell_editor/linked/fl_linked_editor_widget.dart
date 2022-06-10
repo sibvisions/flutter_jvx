@@ -34,6 +34,7 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
 
     oldSuffixItems.add(Align(
       widthFactor: 1,
+      heightFactor: 1,
       alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
       child: Padding(
         padding: iconPadding,

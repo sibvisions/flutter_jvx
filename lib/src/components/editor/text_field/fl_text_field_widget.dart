@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/util/parse_util.dart';
 
-import '../../../../main.dart';
 import '../../../../util/constants/i_color.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
 import '../../../model/layout/alignments.dart';
@@ -27,8 +27,8 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return ParseUtil.getTextHeight(text: "I", style: model.getTextStyle());
   }
 
-  EdgeInsets get textPadding => const EdgeInsets.fromLTRB(12, 10, 0, 10);
-  EdgeInsets get iconPadding => const EdgeInsets.fromLTRB(0, 10, 15, 10);
+  EdgeInsets? get textPadding => null;
+  EdgeInsetsDirectional get iconPadding => const EdgeInsetsDirectional.only(end: 15);
 
   int? get minLines => null;
 
@@ -68,41 +68,34 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: model.background,
-        border: Border.all(
-            color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED,
-            style: model.isBorderVisible ? BorderStyle.solid : BorderStyle.none),
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
-      ),
-      child: TextField(
-        controller: textController,
-        decoration: InputDecoration(
-          isDense: false, // Removes all the unneccessary paddings and widgets
-          hintText: model.placeholder,
-          contentPadding: textPadding,
-          border: InputBorder.none,
-          suffixIcon: getSuffixIcon(),
+    return TextField(
+      controller: textController,
+      decoration: InputDecoration(
+        hintText: model.placeholder,
+        contentPadding: textPadding,
+        border: const OutlineInputBorder(),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED),
         ),
-        textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
-        textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
-        readOnly: model.isReadOnly,
-        style: model.getTextStyle(),
-        onChanged: valueChanged,
-        onEditingComplete: () {
-          focusNode.unfocus();
-        },
-        minLines: minLines,
-        maxLines: maxLines,
-        keyboardType: keyboardType,
-        focusNode: !model.isReadOnly ? focusNode : null,
-        maxLength: maxLength,
-        maxLengthEnforcement: maxLengthEnforcement,
-        inputFormatters: inputFormatters,
-        obscureText: obscureText,
-        obscuringCharacter: obscuringCharacter,
+        suffixIcon: getSuffixIcon(),
       ),
+      textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
+      textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
+      readOnly: model.isReadOnly,
+      style: model.getTextStyle(),
+      onChanged: valueChanged,
+      onEditingComplete: () {
+        focusNode.unfocus();
+      },
+      minLines: minLines,
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      focusNode: !model.isReadOnly ? focusNode : null,
+      maxLength: maxLength,
+      maxLengthEnforcement: maxLengthEnforcement,
+      inputFormatters: inputFormatters,
+      obscureText: obscureText,
+      obscuringCharacter: obscuringCharacter,
     );
   }
 
@@ -117,6 +110,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
     return Align(
       widthFactor: 1,
+      heightFactor: 1,
       alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
       child: Padding(
         padding: iconPadding,

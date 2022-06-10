@@ -33,6 +33,7 @@ class FlDateEditorWidget<T extends FlDateEditorModel> extends FlTextFieldWidget<
 
     oldSuffixItems.add(Align(
       widthFactor: 1,
+      heightFactor: 1,
       alignment: keyboardType == TextInputType.multiline ? Alignment.topCenter : Alignment.center,
       child: Padding(
         padding: iconPadding,
