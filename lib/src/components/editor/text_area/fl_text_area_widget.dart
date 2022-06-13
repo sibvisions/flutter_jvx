@@ -32,5 +32,5 @@ class FlTextAreaWidget<T extends FlTextAreaModel> extends FlTextFieldWidget<T> {
   int? get minLines => model.rows;
 
   @override
-  int? get maxLines => null;
+  int? get maxLines => model.rows != 0 ? model.rows : null;
 }
