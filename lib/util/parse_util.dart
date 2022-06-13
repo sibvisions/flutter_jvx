@@ -58,25 +58,19 @@ abstract class ParseUtil {
       return null;
     } else if (pValue.startsWith("#")) {
       if (pValue.characters.length == 9) {
-        return Color.fromARGB(
-            int.parse(pValue.substring(7, 9), radix: 16),
-            int.parse(pValue.substring(3, 5), radix: 16),
-            int.parse(pValue.substring(5, 7), radix: 16),
-            int.parse(pValue.substring(1, 3), radix: 16));
+        return Color.fromARGB(int.parse(pValue.substring(7, 9), radix: 16), int.parse(pValue.substring(3, 5), radix: 16),
+            int.parse(pValue.substring(5, 7), radix: 16), int.parse(pValue.substring(1, 3), radix: 16));
       } else if (pValue.characters.length == 7) {
-        return Color.fromARGB(0xFF, int.parse(pValue.substring(1, 3), radix: 16),
-            int.parse(pValue.substring(3, 5), radix: 16), int.parse(pValue.substring(5, 7), radix: 16));
+        return Color.fromARGB(0xFF, int.parse(pValue.substring(1, 3), radix: 16), int.parse(pValue.substring(3, 5), radix: 16),
+            int.parse(pValue.substring(5, 7), radix: 16));
       }
     } else if (pValue.startsWith("0x") || pValue.startsWith("0X")) {
       if (pValue.characters.length == 10) {
-        return Color.fromARGB(
-            int.parse(pValue.substring(2, 4), radix: 16),
-            int.parse(pValue.substring(4, 6), radix: 16),
-            int.parse(pValue.substring(6, 8), radix: 16),
-            int.parse(pValue.substring(8, 10), radix: 16));
+        return Color.fromARGB(int.parse(pValue.substring(2, 4), radix: 16), int.parse(pValue.substring(4, 6), radix: 16),
+            int.parse(pValue.substring(6, 8), radix: 16), int.parse(pValue.substring(8, 10), radix: 16));
       } else if (pValue.characters.length == 8) {
-        return Color.fromARGB(0xFF, int.parse(pValue.substring(2, 4), radix: 16),
-            int.parse(pValue.substring(4, 6), radix: 16), int.parse(pValue.substring(6, 8), radix: 16));
+        return Color.fromARGB(0xFF, int.parse(pValue.substring(2, 4), radix: 16), int.parse(pValue.substring(4, 6), radix: 16),
+            int.parse(pValue.substring(6, 8), radix: 16));
       }
     }
     return null;
@@ -108,11 +102,7 @@ abstract class ParseUtil {
 
         if (left != null && top != null && width != null && height != null) {
           return LayoutPosition(
-              width: width.toDouble(),
-              height: height.toDouble(),
-              top: top.toDouble(),
-              left: left.toDouble(),
-              isComponentSize: true);
+              width: width.toDouble(), height: height.toDouble(), top: top.toDouble(), left: left.toDouble(), isComponentSize: true);
         }
       }
     }

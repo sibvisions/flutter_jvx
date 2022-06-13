@@ -3,12 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/config/config_file/app_config.dart';
 import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
 import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_client/util/file/file_manager_mobile.dart';
 
 import 'data/config/config_generator.dart';
 import 'main.dart';
@@ -35,15 +33,13 @@ import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-Future<bool> initAppMobile({CustomScreenManager? pCustomManager}) async {
+Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
   // Needed or rootBundle and applicationDocumentsDirectory wont work
   WidgetsFlutterBinding.ensureInitialized();
   // Needed to avoid CORS issues
   // ToDo find way to not do this
   HttpOverrides.global = MyHttpOverrides();
-
-  //Get file path
-  Directory directory = await getApplicationDocumentsDirectory();
+  FileMangerMobile fileMangerMobile = await FileMangerMobile.create();
 
   // Load Config from files
   String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
@@ -54,13 +50,7 @@ Future<bool> initAppMobile({CustomScreenManager? pCustomManager}) async {
     urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
   }
 
-  String? authKey;
-
-  try {
-    authKey = await File('${directory.path}/auth.txt').readAsString();
-  } catch (e) {
-    LOGGER.logI(pType: LOG_TYPE.GENERAL, pMessage: "Could not read authKey from file 'auth.txt' on startUp");
-  }
+  File? b = await fileMangerMobile.getIndependentFile(pPath: "auth.txt");
 
   // Api
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
@@ -72,21 +62,12 @@ Future<bool> initAppMobile({CustomScreenManager? pCustomManager}) async {
   services.registerSingleton(apiService, signalsReady: true);
 
   // Config
-  IConfigService configService = ConfigService(appName: "demo", apiConfig: apiConfig);
+  IConfigService configService = ConfigService(
+    appName: "demo",
+    apiConfig: apiConfig,
+    fileManager: fileMangerMobile,
+  );
   services.registerSingleton(configService, signalsReady: true);
-  configService.setDirectory(directory.path);
-  configService.addStartupParameter(
-    pKey: ApiObjectProperty.userName,
-    pValue: appConfig.startupParameters?.username,
-  );
-  configService.addStartupParameter(
-    pKey: ApiObjectProperty.password,
-    pValue: appConfig.startupParameters?.password,
-  );
-  configService.addStartupParameter(
-    pKey: ApiObjectProperty.authKey,
-    pValue: authKey,
-  );
 
   // Layout
   ILayoutService layoutService = await IsolateLayoutService.create();
@@ -117,6 +98,7 @@ Future<bool> initAppMobile({CustomScreenManager? pCustomManager}) async {
     password: appConfig.startupParameters?.password,
     screenWidth: a.width,
     screenHeight: a.height,
+    authKey: null,
   );
   commandService.sendCommand(startupCommand);
 

@@ -2,12 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/util/file/file_manager.dart';
 
 import '../../src/mixin/config_service_mixin.dart';
-import '../download/download_helper.dart';
 import 'image_loader.dart';
 
-class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
+ImageLoader getImageLoader() => ImageLoaderImpl();
+
+class ImageLoaderImpl with ConfigServiceMixin implements ImageLoader {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   String? osName;
   String? osVersion;
   String? appVersion;
@@ -15,7 +21,15 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
   String? deviceTypeModel;
   String? technology;
 
-  ImageLoaderMobile();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ImageLoaderImpl();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   Image loadImageFiles(
@@ -26,21 +40,14 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
     Function(Size, bool)? pImageStreamListener,
     bool imageInBinary = false,
   }) {
-    String baseUrl = configService.getApiConfig().urlConfig.getBasePath(); //appState.serverConfig!.baseUrl
-    String appName = configService.getAppName(); //appState.serverConfig!.appName,
-    String appVersion = configService.getVersion(); //appState.applicationMetaData?.version ?? 1.0
-    String baseDir = configService.getDirectory(); //appState.baseDirectory
-
-    String localFilePath =
-        DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
-
-    if (!pPath.startsWith('/') && !imageInBinary) {
-      pPath = '/$pPath';
-    }
+    String baseUrl = configService.getApiConfig().urlConfig.getBasePath();
+    String appName = configService.getAppName();
+    IFileManager fileManager = configService.getFileManager();
 
     Image image;
 
-    File file = File('$localFilePath$pPath');
+    File? file = fileManager.getFileSync(pPath: pPath);
+
     if (imageInBinary) {
       image = Image.memory(
         base64Decode(pPath),
@@ -48,7 +55,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
         height: pHeight,
         color: pBlendedColor,
       );
-    } else if (file.existsSync()) {
+    } else if (file != null) {
       image = Image(
         fit: BoxFit.none,
         image: FileImage(file),
@@ -66,7 +73,7 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
       );
     } else {
       image = Image.network(
-        '$baseUrl/resource/$appName$pPath',
+        '$baseUrl/resource/$appName/$pPath',
         fit: BoxFit.none,
         width: pWidth,
         height: pHeight,
@@ -92,5 +99,3 @@ class ImageLoaderMobile with ConfigServiceMixin implements ImageLoader {
     return image;
   }
 }
-
-ImageLoader getImageLoader() => ImageLoaderMobile();

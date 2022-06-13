@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/command/api/navigation_command.dart';
 import 'package:flutter_client/src/model/custom/custom_screen.dart';
-import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
+import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
 
 class FlBackButtonDispatcher extends RootBackButtonDispatcher with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

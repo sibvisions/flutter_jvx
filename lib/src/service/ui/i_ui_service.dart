@@ -7,7 +7,6 @@ import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../../util/type_def/callback_def.dart';
 import '../../model/command/base_command.dart';
 import '../../model/component/fl_component_model.dart';
 import '../../model/component/panel/fl_panel_model.dart';
@@ -18,6 +17,7 @@ import '../command/i_command_service.dart';
 
 /// Definition of the callback for the QR-scanner
 typedef QRCallback = void Function(Barcode qrValue);
+typedef ComponentCallback = Function({FlComponentModel? newModel, LayoutData? data});
 
 /// Defines the base construct of a [IUiService]
 /// Used to manage all interactions to and from the ui.

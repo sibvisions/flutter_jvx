@@ -1,5 +1,6 @@
 import 'package:flutter_client/src/model/config/api/api_config.dart';
 import 'package:flutter_client/src/model/config/user/user_info.dart';
+import 'package:flutter_client/util/file/file_manager.dart';
 
 import '../i_config_service.dart';
 
@@ -34,6 +35,9 @@ class ConfigService implements IConfigService {
   /// Parameters which will get added to every startup
   final Map<String, dynamic> startupParameters = {};
 
+  /// Used to manage files, different implementations for web and mobile
+  IFileManager fileManager;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +45,10 @@ class ConfigService implements IConfigService {
   ConfigService({
     required this.apiConfig,
     required this.appName,
-  });
+    required this.fileManager,
+  }) {
+    fileManager.setAppName(pName: appName);
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -74,6 +81,7 @@ class ConfigService implements IConfigService {
 
   @override
   void setAppName(String pAppName) {
+    fileManager.setAppName(pName: pAppName);
     appName = pAppName;
   }
 
@@ -89,6 +97,7 @@ class ConfigService implements IConfigService {
 
   @override
   void setVersion(String pVersion) {
+    fileManager.setAppVersion(pVersion: pVersion);
     version = pVersion;
   }
 
@@ -120,5 +129,15 @@ class ConfigService implements IConfigService {
   @override
   Map<String, dynamic> getStartUpParameters() {
     return startupParameters;
+  }
+
+  @override
+  IFileManager getFileManager() {
+    return fileManager;
+  }
+
+  @override
+  void setFileManger(IFileManager pFileManger) {
+    fileManager = pFileManger;
   }
 }

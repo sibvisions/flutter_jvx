@@ -1,5 +1,7 @@
+import 'package:flutter_client/src/model/command/config/save_application_images_command.dart';
 import 'package:flutter_client/src/model/command/config/save_auth_key_command.dart';
 import 'package:flutter_client/src/model/command/config/save_user_data_command.dart';
+import 'package:flutter_client/src/service/command/shared/processor/config/save_application_images_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/config/save_auth_key_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/config/save_user_data_command_processor.dart';
 
@@ -19,6 +21,8 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
 
   final SaveAuthKeyCommandProcessor _authKeyCommandProcessor = SaveAuthKeyCommandProcessor();
 
+  final SaveApplicationImagesCommandProcessor _applicationImagesCommandProcessor = SaveApplicationImagesCommandProcessor();
+
   @override
   Future<List<BaseCommand>> processCommand(ConfigCommand command) async {
     if (command is SaveAppMetaDataCommand) {
@@ -27,6 +31,8 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
       return _saveUserDataCommandProcessor.processCommand(command);
     } else if (command is SaveAuthKeyCommand) {
       return _authKeyCommandProcessor.processCommand(command);
+    } else if (command is SaveApplicationImagesCommand) {
+      return _applicationImagesCommandProcessor.processCommand(command);
     }
 
     return [];

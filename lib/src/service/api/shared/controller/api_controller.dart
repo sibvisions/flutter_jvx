@@ -1,15 +1,10 @@
 import 'dart:collection';
-import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:archive/archive.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/service/api/shared/processor/authentication_data_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/dal_data_provider_changed_processor.dart';
+import 'package:flutter_client/src/service/api/shared/processor/download_images_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/session_expired_processor.dart';
-import 'package:flutter_client/src/service/api/shared/processor/user_data_processor.dart';
-import 'package:flutter_client/util/download/download_helper.dart';
 
 import '../../../../model/api/api_response_names.dart';
 import '../../../../model/api/response/api_response.dart';
@@ -24,6 +19,7 @@ import '../processor/dal_meta_data_processor.dart';
 import '../processor/error_processor.dart';
 import '../processor/menu_processor.dart';
 import '../processor/screen_generic_processor.dart';
+import '../processor/user_data_processor.dart';
 
 class ApiController implements IController {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,14 +39,12 @@ class ApiController implements IController {
   final IProcessor _sessionExpiredProcessor = SessionExpiredProcessor();
   final IProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
   final IProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
+  final IProcessor _downloadImagesProcessor = DownloadImagesProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IProcessor> responseToProcessorMap;
 
-  /// Decoder used for decoding the application images and translations
-  final ZipDecoder _zipDecoder = ZipDecoder();
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~s
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -69,6 +63,7 @@ class ApiController implements IController {
       ApiResponseNames.sessionExpired: _sessionExpiredProcessor,
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
       ApiResponseNames.authenticationData: _authenticationDataProcessor,
+      ApiResponseNames.downloadImages: _downloadImagesProcessor,
     });
   }
 
@@ -91,31 +86,5 @@ class ApiController implements IController {
     }
 
     return commands;
-  }
-
-  @override
-  List<BaseCommand> processImageDownload({
-    required Uint8List response,
-    required String baseDir,
-    required String appName,
-    required String appVersion,
-  }) {
-    Archive archive = _zipDecoder.decodeBytes(response);
-    String baseFilePath = DownloadHelper.getLocalFilePath(appName: appName, appVersion: appVersion, translation: false, baseDir: baseDir);
-
-    if (!kIsWeb) {
-      // Save files to disk
-      for (ArchiveFile file in archive) {
-        // Create file
-        File outputFile = File('$baseFilePath/${file.name}');
-        Future<File> createdFile = outputFile.create(recursive: true);
-        // Write file
-        createdFile.then((value) => value.writeAsBytes(file.content));
-      }
-    } else {
-      //ToDo implement return command to save images in RAM in main thread
-    }
-
-    return [];
   }
 }

@@ -2,9 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../font_awesome_util.dart';
-import 'image_loader_stub.dart'
-    if (dart.library.io) 'image_loader_mobile.dart'
-    if (dart.library.html) 'image_loader_web.dart';
+import 'image_loader_impl.dart';
 
 abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,12 +25,14 @@ abstract class ImageLoader {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Loads an Image from the filesystem.
-  Image loadImageFiles(String pPath,
-      {double? pWidth,
-      double? pHeight,
-      Color? pBlendedColor,
-      Function(Size, bool)? pImageStreamListener,
-      bool imageInBinary = false});
+  Image loadImageFiles(
+    String pPath, {
+    double? pWidth,
+    double? pHeight,
+    Color? pBlendedColor,
+    Function(Size, bool)? pImageStreamListener,
+    bool imageInBinary = false,
+  });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -40,10 +40,7 @@ abstract class ImageLoader {
 
   /// Loads any server sent image string.
   static Widget loadImage(String pImageString,
-      {Size? pWantedSize,
-      Color? pWantedColor,
-      Function(Size, bool)? pImageStreamListener,
-      bool imageInBinary = false}) {
+      {Size? pWantedSize, Color? pWantedColor, Function(Size, bool)? pImageStreamListener, bool imageInBinary = false}) {
     if (pImageString.isEmpty) {
       try {
         return DEFAULT_IMAGE;
@@ -59,15 +56,10 @@ abstract class ImageLoader {
         List<String> arr = pImageString.split(',');
 
         path = arr[0];
-        //bool dynamic = false;
 
         if (arr.length >= 3 && double.tryParse(arr[1]) != null && double.tryParse(arr[2]) != null) {
           size = Size(double.parse(arr[1]), double.parse(arr[2]));
         }
-
-        //if (arr.length >= 4) {
-        //  dynamic = ParseUtil.parseBoolFromString(arr[3]) ?? false;
-        //}
 
         if (pWantedSize != null) {
           size = pWantedSize;

@@ -1,4 +1,3 @@
-import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 import 'package:flutter_client/src/model/config/api/api_config.dart';
 
@@ -40,18 +39,8 @@ class ApiService implements IApiService {
   Future<List<BaseCommand>> sendRequest({required IApiRequest request}) async {
     List<BaseCommand> commands = [];
 
-    try {
-      if (request is ApiDownloadImagesRequest) {
-        var response = await repository.downloadImages(pRequest: request);
-        commands = controller.processImageDownload(
-            response: response, baseDir: request.baseDir, appName: request.appName, appVersion: request.appVersion);
-      } else {
-        var response = await repository.sendRequest(pRequest: request);
-        commands = controller.processResponse(responses: response);
-      }
-    } catch (e) {
-      rethrow;
-    }
+    var response = await repository.sendRequest(pRequest: request);
+    commands = controller.processResponse(responses: response);
     return commands;
   }
 

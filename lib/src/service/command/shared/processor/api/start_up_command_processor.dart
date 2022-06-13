@@ -18,6 +18,8 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
       appMode: "full",
       deviceMode: "mobile",
       applicationName: appName,
+      password: command.password,
+      username: command.username,
       startUpParameters: parameters,
       screenHeight: command.screenHeight,
       screenWidth: command.screenWidth,

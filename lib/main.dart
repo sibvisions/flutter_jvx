@@ -1,25 +1,18 @@
 import 'dart:io';
 
 import 'package:beamer/beamer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_client/src/routing/fl_back_button_dispatcher.dart';
 import 'package:flutter_client/src/routing/locations/login_location.dart';
 import 'package:flutter_client/src/routing/locations/menu_location.dart';
 import 'package:flutter_client/src/routing/locations/setting_location.dart';
-import 'package:flutter_client/src/routing/locations/work_sceen_location.dart';
+import 'package:flutter_client/src/routing/locations/work_screen_location.dart';
 
-import 'init_app_mobile.dart';
-import 'init_app_web.dart';
+import 'init_app_mobile.dart' if (dart.library.html) 'init_app_web.dart';
 
 void main() {
-  if (kIsWeb) {
-    initAppWeb();
-    runApp(MyApp());
-  } else {
-    initAppMobile().then((value) => runApp(MyApp()));
-  }
+  initApp().then((value) => runApp(MyApp()));
 }
 
 ThemeData themeData = ThemeData.from(

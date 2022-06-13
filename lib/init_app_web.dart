@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
+import 'package:flutter_client/util/file/file_manager_web.dart';
 
 import 'data/config/config_generator.dart';
 import 'src/model/config/api/api_config.dart';
@@ -24,9 +26,9 @@ import 'src/service/storage/impl/default/storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-initAppWeb() {
+Future<bool> initApp() {
   // API
-  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8888);
+  UrlConfig urlConfigServer2 = ConfigGenerator.generateMobileServerUrl("localhost", 8090);
 
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
   ApiConfig apiConfig = ApiConfig(urlConfig: urlConfigServer2, endpointConfig: endpointConfig);
@@ -36,7 +38,11 @@ initAppWeb() {
   services.registerSingleton(apiService, signalsReady: true);
 
   // Config
-  IConfigService configService = ConfigService(appName: "demo", apiConfig: apiConfig);
+  IConfigService configService = ConfigService(
+    appName: "demo",
+    apiConfig: apiConfig,
+    fileManager: FileManagerWeb(),
+  );
   services.registerSingleton(configService, signalsReady: true);
 
   // Layout
@@ -61,4 +67,6 @@ initAppWeb() {
 
   StartupCommand startupCommand = StartupCommand(reason: "InitApp");
   commandService.sendCommand(startupCommand);
+
+  return SynchronousFuture(true);
 }

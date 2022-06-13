@@ -1,6 +1,8 @@
 import 'package:flutter_client/src/model/config/api/api_config.dart';
 import 'package:flutter_client/src/model/config/user/user_info.dart';
 
+import '../../../util/file/file_manager.dart';
+
 /// Defines the base construct of a [IConfigService]
 /// Config service is used to store & access all configurable data,
 /// also stores session based data such as clientId and userData.
@@ -53,6 +55,12 @@ abstract class IConfigService {
 
   /// Add a parameter that will get send in the next startup
   void addStartupParameter({required String pKey, required dynamic pValue});
+
+  /// Returns instance of [IFileManager]
+  IFileManager getFileManager();
+
+  /// Set instance of [IFileManager]
+  void setFileManger(IFileManager pFileManger);
 }
 
 enum MENU_MODE {

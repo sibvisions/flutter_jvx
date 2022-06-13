@@ -15,7 +15,6 @@ import 'package:flutter_client/src/model/menu/menu_group_model.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/util/extensions/list_extensions.dart';
 
-import '../../../../util/type_def/callback_def.dart';
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
