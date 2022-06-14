@@ -138,6 +138,7 @@ abstract class ApiObjectProperty {
   static const String gaugeStyle = "gaugeStyle";
   static const String data = "data";
   static const String columnLabel = "columnLabel";
+  static const String langCode = "langCode";
 
   //Response Properties
   static const String authenticated = "authenticated";

@@ -1,11 +1,9 @@
-import 'package:flutter_client/src/model/config/api/api_config.dart';
-import 'package:flutter_client/src/model/config/user/user_info.dart';
-import 'package:flutter_client/util/file/file_manager.dart';
-
+import '../../../../util/file/file_manager.dart';
+import '../../../model/config/api/api_config.dart';
+import '../../../model/config/user/user_info.dart';
 import '../i_config_service.dart';
 
 /// Stores all config and session based data.
-// Author: Michael Schober
 class ConfigService implements IConfigService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
@@ -38,6 +36,9 @@ class ConfigService implements IConfigService {
   /// Used to manage files, different implementations for web and mobile
   IFileManager fileManager;
 
+  /// Display language will change display of all static text
+  String language;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,6 +47,7 @@ class ConfigService implements IConfigService {
     required this.apiConfig,
     required this.appName,
     required this.fileManager,
+    required this.language,
   }) {
     fileManager.setAppName(pName: appName);
   }
@@ -139,5 +141,15 @@ class ConfigService implements IConfigService {
   @override
   void setFileManger(IFileManager pFileManger) {
     fileManager = pFileManger;
+  }
+
+  @override
+  String getLanguage() {
+    return language;
+  }
+
+  @override
+  void setLanguage(String pLanguage) {
+    language = pLanguage;
   }
 }

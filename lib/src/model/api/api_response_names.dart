@@ -13,4 +13,5 @@ abstract class ApiResponseNames {
   static const String sessionExpired = "message.sessionexpired";
   static const String authenticationData = "authenticationData";
   static const String downloadImages = "downloadImages";
+  static const String downloadTranslation = "downloadTranslation";
 }

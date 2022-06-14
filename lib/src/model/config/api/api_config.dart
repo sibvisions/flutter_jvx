@@ -4,6 +4,7 @@ import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart
 import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_download_translation_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
@@ -48,7 +49,6 @@ class ApiConfig {
       ApiCloseTabRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeTab),
       ApiDeviceStatusRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.deviceStatus),
       ApiOpenScreenRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.openScreen),
-      ApiDownloadImagesRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.downloadImages),
       ApiOpenTabRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.openTab),
       ApiPressButtonRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.pressButton),
       ApiSetValueRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.setValue),
@@ -63,6 +63,8 @@ class ApiConfig {
       ApiSelectRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.selectRecord),
       ApiCloseScreenRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.closeScreen),
       ApiDeleteRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.deleteRecord),
+      ApiDownloadImagesRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
+      ApiDownloadTranslationRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
     };
   }
 }

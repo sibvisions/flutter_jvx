@@ -20,12 +20,16 @@ class StartupCommand extends ApiCommand {
   /// Height of the screen (display area)
   final double? screenHeight;
 
+  /// Display language off the app
+  final String? language;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   StartupCommand({
     required String reason,
+    this.language,
     this.password,
     this.username,
     this.authKey,

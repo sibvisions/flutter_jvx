@@ -14,6 +14,7 @@ import 'package:flutter_client/src/service/command/shared/processor/api/change_p
 import 'package:flutter_client/src/service/command/shared/processor/api/close_screen_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/dal_save_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/delete_record_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/download_translation_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/filter_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/insert_record_command_processor.dart';
@@ -27,6 +28,7 @@ import '../../../../../model/command/api/api_command.dart';
 import '../../../../../model/command/api/close_tab_command.dart';
 import '../../../../../model/command/api/device_status_command.dart';
 import '../../../../../model/command/api/download_images_command.dart';
+import '../../../../../model/command/api/download_translation_command.dart';
 import '../../../../../model/command/api/login_command.dart';
 import '../../../../../model/command/api/open_screen_command.dart';
 import '../../../../../model/command/api/open_tab_command.dart';
@@ -118,6 +120,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _insertRecordProcessor = InsertRecordCommandProcessor();
 
+  final ICommandProcessor _downloadTranslationProcessor = DownloadTranslationCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,6 +173,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _closeScreenProcessor.processCommand(command);
     } else if (command is InsertRecordCommand) {
       return _insertRecordProcessor.processCommand(command);
+    } else if (command is DownloadTranslationCommand) {
+      return _downloadTranslationProcessor.processCommand(command);
     }
 
     return [];

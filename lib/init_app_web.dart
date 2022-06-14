@@ -42,6 +42,7 @@ Future<bool> initApp() {
     appName: "demo",
     apiConfig: apiConfig,
     fileManager: FileManagerWeb(),
+    language: 'en',
   );
   services.registerSingleton(configService, signalsReady: true);
 

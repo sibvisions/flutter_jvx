@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/api_response_names.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_download_translation_request.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_download_request.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
 import 'package:flutter_client/src/model/api/response/api_authentication_data_response.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_client/src/model/api/response/close_screen_response.dart
 import 'package:flutter_client/src/model/api/response/dal_data_provider_changed_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/api/response/downloadTranslationResponse.dart';
 import 'package:flutter_client/src/model/api/response/download_images_response.dart';
 import 'package:flutter_client/src/model/api/response/error_response.dart';
 import 'package:flutter_client/src/model/api/response/login_response.dart';
@@ -177,6 +179,8 @@ class OnlineApiRepository implements IRepository {
 
     if (pRequest is ApiDownloadImagesRequest) {
       parsedResponse.add(DownloadImagesResponse(responseBody: pBody, name: "downloadImages"));
+    } else if (pRequest is ApiDownloadTranslationRequest) {
+      parsedResponse.add(DownloadTranslationResponse(bodyBytes: pBody, name: "downloadTranslation"));
     }
 
     return parsedResponse;

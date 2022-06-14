@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/command/api/download_images_command.dart';
+import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
 
 import '../../../../../mixin/config_service_mixin.dart';
 import '../../../../../model/command/base_command.dart';
@@ -13,7 +14,15 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
 
     configService.setClientId(command.metaData.clientId);
     configService.setVersion(version);
+    // String langCode =
 
-    return [DownloadImagesCommand(reason: "Resources should be downloaded")];
+    bool doesExist = await configService.getFileManager().doesFileExist(pPath: "");
+
+    if (!doesExist) {
+      return [
+        DownloadImagesCommand(reason: "Resources should be downloaded"),
+      ];
+    }
+    return [DownloadTranslationCommand(reason: "Translation should be downloaded")];
   }
 }

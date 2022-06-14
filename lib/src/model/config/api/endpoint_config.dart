@@ -4,6 +4,7 @@ import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart
 import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_download_translation_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_insert_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_login_request.dart';
@@ -41,8 +42,8 @@ class EndpointConfig {
   /// For [ApiSetValuesRequest]
   final String setValues;
 
-  /// For [ApiDownloadImagesRequest]
-  final String downloadImages;
+  /// For [ApiDownloadImagesRequest] & [ApiDownloadTranslationRequest]
+  final String download;
 
   /// For [ApiCloseTabRequest]
   final String closeTab;
@@ -88,7 +89,7 @@ class EndpointConfig {
     required this.pressButton,
     required this.setValue,
     required this.setValues,
-    required this.downloadImages,
+    required this.download,
     required this.closeTab,
     required this.openTab,
     required this.changePassword,

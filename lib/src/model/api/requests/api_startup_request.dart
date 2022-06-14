@@ -32,6 +32,10 @@ class ApiStartUpRequest extends IApiRequest {
   /// Auth-key from previous auto-login
   final String? authKey;
 
+  /// Language code
+  final String langCode;
+
+  /// Custom startup parameters
   final Map<String, dynamic>? startUpParameters;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,6 +46,7 @@ class ApiStartUpRequest extends IApiRequest {
     required this.appMode,
     required this.deviceMode,
     required this.applicationName,
+    this.langCode = "en",
     this.screenHeight,
     this.screenWidth,
     this.username,
@@ -64,6 +69,7 @@ class ApiStartUpRequest extends IApiRequest {
         ApiObjectProperty.screenWidth: screenWidth,
         ApiObjectProperty.screenHeight: screenHeight,
         ApiObjectProperty.authKey: authKey,
+        ApiObjectProperty.langCode: langCode,
         ...?startUpParameters
       };
 }

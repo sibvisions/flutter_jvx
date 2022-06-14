@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter_client/src/service/api/shared/processor/authentication_data_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/dal_data_provider_changed_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/download_images_processor.dart';
+import 'package:flutter_client/src/service/api/shared/processor/download_translation_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/session_expired_processor.dart';
 
@@ -40,6 +41,7 @@ class ApiController implements IController {
   final IProcessor _dalDataProviderChangedProcessor = DalDataProviderChangedProcessor();
   final IProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
   final IProcessor _downloadImagesProcessor = DownloadImagesProcessor();
+  final IProcessor _downloadTranslationProcessor = DownloadTranslationProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IProcessor> responseToProcessorMap;
@@ -64,6 +66,7 @@ class ApiController implements IController {
       ApiResponseNames.dalDataProviderChanged: _dalDataProviderChangedProcessor,
       ApiResponseNames.authenticationData: _authenticationDataProcessor,
       ApiResponseNames.downloadImages: _downloadImagesProcessor,
+      ApiResponseNames.downloadTranslation: _downloadTranslationProcessor,
     });
   }
 

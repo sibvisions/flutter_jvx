@@ -50,7 +50,19 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
     urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
   }
 
-  File? b = await fileMangerMobile.getIndependentFile(pPath: "auth.txt");
+  // Read last use config files
+  File? authFile = await fileMangerMobile.getIndependentFile(pPath: "auth.txt");
+  File? languageFile = await fileMangerMobile.getIndependentFile(pPath: "lang.txt");
+
+  String? auth;
+  if (authFile != null) {
+    auth = await authFile.readAsString();
+  }
+
+  String? lang;
+  if (languageFile != null) {
+    lang = await languageFile.readAsString();
+  }
 
   // Api
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
@@ -63,6 +75,7 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
 
   // Config
   IConfigService configService = ConfigService(
+    language: "en",
     appName: "demo",
     apiConfig: apiConfig,
     fileManager: fileMangerMobile,
@@ -98,7 +111,7 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
     password: appConfig.startupParameters?.password,
     screenWidth: a.width,
     screenHeight: a.height,
-    authKey: null,
+    authKey: auth,
   );
   commandService.sendCommand(startupCommand);
 

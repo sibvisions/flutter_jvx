@@ -37,8 +37,17 @@ class FileMangerMobile implements IFileManager {
 
   @override
   Future<bool> doesFileExist({required String pPath}) async {
-    File file = File(_getSavePath(pPath: pPath));
-    return await file.exists();
+    bool exists = false;
+
+    exists = await Directory(_getSavePath(pPath: pPath)).exists();
+
+    if (exists) return exists;
+
+    exists = await File(_getSavePath(pPath: pPath)).exists();
+
+    if (exists) return exists;
+
+    return false;
   }
 
   @override
@@ -122,7 +131,7 @@ class FileMangerMobile implements IFileManager {
     if (_appVersion == null || _appName == null) {
       throw Exception("App Version/Name was not set while trying to save/read files!");
     }
-    return "${directory.path}/$_appName/_$_appVersion${_preparePath(pPath: pPath)}";
+    return "${directory.path}/$_appName/$_appVersion${_preparePath(pPath: pPath)}";
   }
 
   /// Will prepare the path to be uniform (always have a leading "/")
