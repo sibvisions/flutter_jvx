@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/util/file/file_manager.dart';
@@ -39,6 +40,8 @@ class ImageLoaderImpl with ConfigServiceMixin implements ImageLoader {
     Color? pBlendedColor,
     Function(Size, bool)? pImageStreamListener,
     bool imageInBinary = false,
+    bool imageInBase64 = true,
+    BoxFit fit = BoxFit.none,
   }) {
     String baseUrl = configService.getApiConfig().urlConfig.getBasePath();
     String appName = configService.getAppName();
@@ -49,15 +52,17 @@ class ImageLoaderImpl with ConfigServiceMixin implements ImageLoader {
     File? file = fileManager.getFileSync(pPath: pPath);
 
     if (imageInBinary) {
+      Uint8List imageValues = imageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
       image = Image.memory(
-        base64Decode(pPath),
+        imageValues,
+        fit: fit,
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,
       );
     } else if (file != null) {
       image = Image(
-        fit: BoxFit.none,
+        fit: fit,
         image: FileImage(file),
         width: pWidth,
         height: pHeight,
@@ -74,7 +79,7 @@ class ImageLoaderImpl with ConfigServiceMixin implements ImageLoader {
     } else {
       image = Image.network(
         '$baseUrl/resource/$appName/$pPath',
-        fit: BoxFit.none,
+        fit: fit,
         width: pWidth,
         height: pHeight,
         color: pBlendedColor,

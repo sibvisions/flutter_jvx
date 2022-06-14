@@ -32,6 +32,8 @@ abstract class ImageLoader {
     Color? pBlendedColor,
     Function(Size, bool)? pImageStreamListener,
     bool imageInBinary = false,
+    bool imageInBase64 = false,
+    BoxFit fit = BoxFit.none,
   });
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,7 +42,12 @@ abstract class ImageLoader {
 
   /// Loads any server sent image string.
   static Widget loadImage(String pImageString,
-      {Size? pWantedSize, Color? pWantedColor, Function(Size, bool)? pImageStreamListener, bool imageInBinary = false}) {
+      {Size? pWantedSize,
+      Color? pWantedColor,
+      Function(Size, bool)? pImageStreamListener,
+      bool imageInBinary = false,
+      bool imageInBase64 = true,
+      BoxFit fit = BoxFit.none}) {
     if (pImageString.isEmpty) {
       try {
         return DEFAULT_IMAGE;
@@ -66,12 +73,16 @@ abstract class ImageLoader {
         }
       }
 
-      return getImageLoader().loadImageFiles(path,
-          pWidth: size?.width,
-          pHeight: size?.height,
-          pBlendedColor: pWantedColor,
-          pImageStreamListener: pImageStreamListener,
-          imageInBinary: imageInBinary);
+      return getImageLoader().loadImageFiles(
+        path,
+        pWidth: size?.width,
+        pHeight: size?.height,
+        pBlendedColor: pWantedColor,
+        pImageStreamListener: pImageStreamListener,
+        imageInBinary: imageInBinary,
+        imageInBase64: imageInBase64,
+        fit: fit,
+      );
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:flutter_client/src/model/command/api/set_values_command.dart';
 import 'package:flutter_client/src/model/component/custom/fl_custom_container_model.dart';
 import 'package:signature/signature.dart';
 
-import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/data/subscriptions/data_record.dart';
 import '../../model/data/subscriptions/data_subscription.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -29,8 +29,9 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 // Class members
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  DataChunk? _chunkData;
+  DataRecord? _dataRecord;
   late final SignatureController signatureController;
+  bool showImage = false;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Overridden methods
@@ -38,7 +39,14 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
   @override
   Widget build(BuildContext context) {
-    final FlSignaturePadWidget widget = FlSignaturePadWidget(model: model, controller: signatureController);
+    final FlSignaturePadWidget widget = FlSignaturePadWidget(
+      model: model,
+      controller: signatureController,
+      showImage: showImage,
+      sendSignature: sendSignature,
+      deleteSignature: deleteSignature,
+      dataRecord: _dataRecord,
+    );
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -54,10 +62,11 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
 
   @override
   void initState() {
-    signatureController = SignatureController(onDrawEnd: () => onEndDrawing());
+    signatureController = SignatureController();
 
     super.initState();
     subscribe();
+    showImage = _dataRecord?.values[0] != null;
     layoutData.isFixedSize = true;
   }
 
@@ -68,13 +77,13 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     subscribe();
   }
 
-  Future<void> onEndDrawing() async {
+  Future<void> sendSignature() async {
     Uint8List? pngBytes = await signatureController.toPngBytes();
 
     List<dynamic> values = [];
     values.add(pngBytes);
 
-    log("Drawing ended");
+    log("Sending Signature");
 
     SetValuesCommand setValues = SetValuesCommand(
         componentId: model.id,
@@ -83,8 +92,19 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         values: values,
         reason: "Drawing has ended on ${model.id}");
     uiService.sendCommand(setValues);
+  }
 
-    setState(() {});
+  Future<void> deleteSignature() async {
+    log("Deleting Signature");
+    signatureController.clear();
+
+    SetValuesCommand setValues = SetValuesCommand(
+        componentId: model.id,
+        dataProvider: model.dataProvider,
+        columnNames: getDataColumns(),
+        values: [],
+        reason: "Drawing has ended on ${model.id}");
+    uiService.sendCommand(setValues);
   }
 
   void subscribe() {
@@ -93,7 +113,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
         id: model.id,
         from: -1,
         dataProvider: model.dataProvider,
-        onDataChunk: receiveSignatureData,
+        onSelectedRecord: receiveSignatureData,
         dataColumns: getDataColumns(),
       ),
     );
@@ -103,15 +123,9 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
     uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.dataProvider);
   }
 
-  void receiveSignatureData(DataChunk pChunkData) {
-    if (pChunkData.update && _chunkData != null) {
-      for (int index in pChunkData.data.keys) {
-        _chunkData!.data[index] = pChunkData.data[index]!;
-      }
-    } else {
-      _chunkData = pChunkData;
-    }
-
+  void receiveSignatureData(DataRecord? pDataRecord) {
+    _dataRecord = pDataRecord;
+    showImage = _dataRecord?.values[0] != null;
     setState(() {});
   }
 
