@@ -1,6 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
+import 'package:flutter_client/src/model/component/component_subscription.dart';
 import 'package:flutter_client/src/model/custom/custom_screen.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
@@ -111,17 +112,7 @@ abstract class IUiService {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Register as an active component, callback will be called when model
-  void registerAsLiveComponent({required String id, required ComponentCallback callback});
-
-  /// Register a an active component in need of data from a dataBook.
-  @Deprecated("use registerDataSubscription version")
-  void registerAsDataComponent({
-    required String pDataProvider,
-    required OnSelectedRecordCallback pCallback,
-    required Function pColumnDefinitionCallback,
-    required String pComponentId,
-    required String pColumnName,
-  });
+  void registerAsLiveComponent({required ComponentSubscription pComponentSubscription});
 
   /// Register to receive a subscriptions of data from a specific dataProvider
   void registerDataSubscription({required DataSubscription pDataSubscription, bool pShouldFetch = true});
@@ -130,10 +121,10 @@ abstract class IUiService {
   void deleteInactiveComponent({required Set<String> inactiveIds});
 
   /// Removes all active subscriptions
-  void disposeSubscriptions({required String pComponentId});
+  void disposeSubscriptions({required Object pSubscriber});
 
   /// Removes [DataSubscription] from [IUiService]
-  void disposeDataSubscription({required String pComponentId, required String pDataProvider});
+  void disposeDataSubscription({required Object pSubscriber, required String pDataProvider});
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Methods to notify components about changes to themselves

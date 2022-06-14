@@ -97,11 +97,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     FocusManager.instance.primaryFocus?.unfocus();
 
     uiService.sendCommand(
-      FilterCommand(
-          editorId: name!,
-          value: "",
-          dataProvider: model.linkReference.dataProvider,
-          reason: "Opened the linked cell picker"),
+      FilterCommand(editorId: name!, value: "", dataProvider: model.linkReference.dataProvider, reason: "Opened the linked cell picker"),
     );
 
     uiService
@@ -156,10 +152,9 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     isAllFetched = pChunkData.isAllFetched;
 
-    int indexOfKeyColumn = pChunkData.columnDefinitions
-        .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0]);
-    int indexOfValueColumn =
-        pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
+    int indexOfKeyColumn =
+        pChunkData.columnDefinitions.indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0]);
+    int indexOfValueColumn = pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
 
     for (List<dynamic> dataRow in pChunkData.data.values) {
       dynamic key = dataRow[indexOfKeyColumn];
@@ -179,7 +174,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
       if (!isAllFetched) {
         uiService.registerDataSubscription(
           pDataSubscription: DataSubscription(
-            id: id!,
+            subbedObj: this,
             dataProvider: model.linkReference.dataProvider,
             from: 0,
             to: pageLoad * currentPage,
@@ -191,7 +186,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pComponentId: id!, pDataProvider: model.linkReference.referencedDataBook);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.referencedDataBook);
   }
 
   void increaseValueMap() {

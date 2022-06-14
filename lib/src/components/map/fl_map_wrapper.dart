@@ -70,7 +70,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     if (model.pointsDataBook != null) {
       uiService.registerDataSubscription(
         pDataSubscription: DataSubscription(
-          id: model.id,
+          subbedObj: this,
           from: 0,
           dataProvider: model.pointsDataBook!,
           onDataChunk: receiveMarkerData,
@@ -86,7 +86,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     if (model.groupDataBook != null) {
       uiService.registerDataSubscription(
         pDataSubscription: DataSubscription(
-          id: model.id,
+          subbedObj: this,
           from: 0,
           dataProvider: model.groupDataBook!,
           onDataChunk: receivePolygonData,
@@ -102,11 +102,11 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
 
   void unsubscribe() {
     if (model.groupDataBook != null) {
-      uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.groupDataBook!);
+      uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.groupDataBook!);
     }
 
     if (model.pointsDataBook != null) {
-      uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.pointsDataBook!);
+      uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.pointsDataBook!);
     }
   }
 
@@ -138,8 +138,7 @@ class _FlMapWrapperState extends BaseCompWrapperState<FlMapModel> with UiService
     }
 
     for (List<LatLng> pointList in polygonPointsGrouped.values) {
-      polygons
-          .add(Polygon(points: pointList, color: model.fillColor, borderColor: model.lineColor, borderStrokeWidth: 1));
+      polygons.add(Polygon(points: pointList, color: model.fillColor, borderColor: model.lineColor, borderStrokeWidth: 1));
     }
 
     setState(() {});

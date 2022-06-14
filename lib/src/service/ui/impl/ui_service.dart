@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
@@ -19,6 +17,7 @@ import '../../../mixin/command_service_mixin.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
 import '../../../model/command/base_command.dart';
 import '../../../model/command/data/get_selected_data_command.dart';
+import '../../../model/component/component_subscription.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/subscriptions/data_subscription.dart';
 import '../../../model/layout/layout_data.dart';
@@ -44,7 +43,7 @@ class UiService with CommandServiceMixin implements IUiService {
   final List<FlComponentModel> _currentScreen = [];
 
   /// Live component registration
-  final HashMap<String, ComponentCallback> _registeredComponents = HashMap();
+  final List<ComponentSubscription> _registeredComponents = [];
 
   /// All Registered data subscriptions
   final List<DataSubscription> _dataSubscriptions = [];
@@ -244,13 +243,10 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void setLayoutPosition({required LayoutData layoutData}) {
-    ComponentCallback? callback = _registeredComponents[layoutData.id];
     _layoutDataList[layoutData.id] = layoutData;
-    if (callback != null) {
-      callback.call(data: layoutData);
-    } else {
-      // throw Exception("Component to set position not found");
-    }
+    _registeredComponents.where((element) => element.compId == layoutData.id).forEach((element) {
+      element.callback.call(data: layoutData);
+    });
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -258,27 +254,8 @@ class UiService with CommandServiceMixin implements IUiService {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
-  void registerAsLiveComponent({required String id, required ComponentCallback callback}) {
-    _registeredComponents[id] = callback;
-  }
-
-  @override
-  @Deprecated("Use Data subscription")
-  void registerAsDataComponent({
-    required String pDataProvider,
-    required String pComponentId,
-    required String pColumnName,
-    required Function pColumnDefinitionCallback,
-    required OnSelectedRecordCallback pCallback,
-  }) {
-    DataSubscription subscription = DataSubscription(
-      id: pComponentId,
-      dataProvider: pDataProvider,
-      from: -1,
-      onSelectedRecord: pCallback,
-    );
-
-    registerDataSubscription(pDataSubscription: subscription);
+  void registerAsLiveComponent({required ComponentSubscription pComponentSubscription}) {
+    _registeredComponents.add(pComponentSubscription);
   }
 
   @override
@@ -322,19 +299,18 @@ class UiService with CommandServiceMixin implements IUiService {
     for (String inactiveId in inactiveIds) {
       _layoutDataList.remove(inactiveId);
       _currentScreen.removeWhere((screenComponent) => screenComponent.id == inactiveId);
-      disposeSubscriptions(pComponentId: inactiveId);
     }
   }
 
   @override
-  void disposeSubscriptions({required String pComponentId}) {
-    _dataSubscriptions.removeWhere((element) => element.id == pComponentId);
-    _registeredComponents.removeWhere((componentId, value) => componentId == pComponentId);
+  void disposeSubscriptions({required Object pSubscriber}) {
+    _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber);
+    _registeredComponents.removeWhere((element) => element.subbedObj == pSubscriber);
   }
 
   @override
-  void disposeDataSubscription({required String pComponentId, required String pDataProvider}) {
-    _dataSubscriptions.removeWhere((element) => element.id == pComponentId && element.dataProvider == pDataProvider);
+  void disposeDataSubscription({required Object pSubscriber, required String pDataProvider}) {
+    _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -344,10 +320,9 @@ class UiService with CommandServiceMixin implements IUiService {
   @override
   void notifyAffectedComponents({required Set<String> affectedIds}) {
     for (String affectedId in affectedIds) {
-      ComponentCallback? callback = _registeredComponents[affectedId];
-      if (callback != null) {
-        callback.call();
-      }
+      _registeredComponents.where((element) => element.compId == affectedId).forEach((element) {
+        element.callback.call();
+      });
     }
   }
 
@@ -361,12 +336,9 @@ class UiService with CommandServiceMixin implements IUiService {
       }
 
       // Notify active component
-      ComponentCallback? callback = _registeredComponents[updatedModel.id];
-      if (callback != null) {
-        callback.call(newModel: updatedModel);
-      } else {
-        throw Exception("Component ${updatedModel.id} To Update not found");
-      }
+      _registeredComponents.where((element) => element.compId == updatedModel.id).forEach((element) {
+        element.callback(newModel: updatedModel);
+      });
     }
   }
 

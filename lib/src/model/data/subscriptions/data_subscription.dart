@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
@@ -13,8 +15,11 @@ class DataSubscription {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Unique id of this subscription, used for identification
+  /// Unique id of this subscription
   final String id;
+
+  /// Reference to creator of this subscription
+  final Object subbedObj;
 
   /// Data provider from which data will be fetched
   final String dataProvider;
@@ -42,7 +47,7 @@ class DataSubscription {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DataSubscription({
-    required this.id,
+    required this.subbedObj,
     required this.dataProvider,
     required this.from,
     this.onSelectedRecord,
@@ -50,7 +55,7 @@ class DataSubscription {
     this.onMetaData,
     this.to,
     this.dataColumns,
-  });
+  }) : id = getRandomString(15);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // User-defined methods
@@ -63,3 +68,9 @@ class DataSubscription {
     return false;
   }
 }
+
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) =>
+    String.fromCharCodes(Iterable.generate(length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

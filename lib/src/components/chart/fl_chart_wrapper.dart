@@ -51,7 +51,7 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
   void subscribe() {
     uiService.registerDataSubscription(
       pDataSubscription: DataSubscription(
-        id: model.id,
+        subbedObj: this,
         from: 0,
         dataProvider: model.dataProvider,
         onDataChunk: receiveChartData,
@@ -106,6 +106,6 @@ class _FlChartWrapperState extends BaseCompWrapperState<FlChartModel> with UiSer
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.dataProvider);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 }

@@ -110,7 +110,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   void subscribe() {
     uiService.registerDataSubscription(
       pDataSubscription: DataSubscription(
-        id: model.id,
+        subbedObj: this,
         from: -1,
         dataProvider: model.dataProvider,
         onSelectedRecord: receiveSignatureData,
@@ -120,7 +120,7 @@ class _FlSignaturePadWrapperState extends BaseCompWrapperState<FlCustomContainer
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.dataProvider);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataProvider);
   }
 
   void receiveSignatureData(DataRecord? pDataRecord) {

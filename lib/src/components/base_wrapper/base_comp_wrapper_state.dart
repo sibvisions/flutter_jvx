@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/component/component_subscription.dart';
 
 import '../../../util/logging/flutter_logger.dart';
 import '../../mixin/ui_service_mixin.dart';
@@ -14,8 +15,7 @@ import 'base_comp_wrapper_widget.dart';
 /// Model and layout init
 /// Subscription handling in UiService
 /// Getters for componentSize
-abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget>
-    with UiServiceMixin {
+abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<BaseCompWrapperWidget> with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,25 +57,28 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
         heightConstrains: {},
         widthConstrains: {});
 
-    uiService.registerAsLiveComponent(
-        id: model.id,
-        callback: ({data, newModel}) {
-          if (!mounted) {
-            return;
-          }
+    ComponentSubscription componentSubscription = ComponentSubscription(
+      compId: model.id,
+      subbedObj: this,
+      callback: ({data, newModel}) {
+        if (!mounted) {
+          return;
+        }
 
-          if (data != null) {
-            receiveNewLayoutData(newLayoutData: data);
-          }
+        if (data != null) {
+          receiveNewLayoutData(newLayoutData: data);
+        }
 
-          if (newModel != null) {
-            receiveNewModel(newModel: newModel as T);
-          }
+        if (newModel != null) {
+          receiveNewModel(newModel: newModel as T);
+        }
 
-          if (newModel == null && data == null) {
-            affected();
-          }
-        });
+        if (newModel == null && data == null) {
+          affected();
+        }
+      },
+    );
+    uiService.registerAsLiveComponent(pComponentSubscription: componentSubscription);
   }
 
   @override
@@ -151,18 +154,14 @@ abstract class BaseCompWrapperState<T extends FlComponentModel> extends State<Ba
 
       // Constraint by width
       if (layoutData.widthConstrains[positionWidth] == null && calcWidth > positionWidth) {
-        double newHeight = (lastContext!.findRenderObject() as RenderBox)
-            .getMaxIntrinsicHeight(max(0.0, positionWidth))
-            .ceilToDouble();
+        double newHeight = (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicHeight(max(0.0, positionWidth)).ceilToDouble();
 
         layoutData.widthConstrains[positionWidth] = newHeight;
       }
 
       // Constraint by height
       if (layoutData.heightConstrains[positionHeight] == null && calcHeight > positionHeight) {
-        double? newWidth = (lastContext!.findRenderObject() as RenderBox)
-            .getMaxIntrinsicWidth(max(0.0, positionHeight))
-            .ceilToDouble();
+        double? newWidth = (lastContext!.findRenderObject() as RenderBox).getMaxIntrinsicWidth(max(0.0, positionHeight)).ceilToDouble();
 
         layoutData.heightConstrains[positionHeight] = newWidth;
       }

@@ -126,15 +126,12 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   @override
   void dispose() {
     uiService.disposeDataSubscription(
-      pComponentId: widget.id,
+      pSubscriber: this,
       pDataProvider: model.linkReference.dataProvider,
     );
 
     uiService.sendCommand(FilterCommand(
-        editorId: widget.name,
-        value: "",
-        dataProvider: widget.model.linkReference.dataProvider,
-        reason: "Closed the linked cell picker"));
+        editorId: widget.name, value: "", dataProvider: widget.model.linkReference.dataProvider, reason: "Closed the linked cell picker"));
 
     _controller.dispose();
     filterTimer?.cancel();
@@ -291,7 +288,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   void subscribe() {
     uiService.registerDataSubscription(
       pDataSubscription: DataSubscription(
-        id: widget.id + "_${runtimeType}_{$hashCode}",
+        subbedObj: this,
         dataProvider: model.linkReference.dataProvider,
         onDataChunk: receiveData,
         dataColumns: columnNamesToSubscribe(),
@@ -302,8 +299,7 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
   }
 
   void unsubscribe() {
-    uiService.disposeDataSubscription(
-        pComponentId: widget.id + "_${runtimeType}_{$hashCode}", pDataProvider: model.linkReference.dataProvider);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.linkReference.dataProvider);
   }
 
   List<String> columnNamesToShow() {

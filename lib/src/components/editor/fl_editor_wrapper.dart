@@ -139,8 +139,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 
-      newCalcSize =
-          Size(averageColumnWidth * textCellEditor.getWidgetModel().columns + 2, layoutData.calculatedSize!.height);
+      newCalcSize = Size(averageColumnWidth * textCellEditor.getWidgetModel().columns + 2, layoutData.calculatedSize!.height);
     }
 
     if (newCalcSize != null) {
@@ -166,7 +165,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
   void subscribe(T pModel) {
     uiService.registerDataSubscription(
       pDataSubscription: DataSubscription(
-        id: pModel.id,
+        subbedObj: this,
         dataProvider: pModel.dataRow,
         from: -1,
         onSelectedRecord: setValue,
@@ -178,7 +177,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   /// Unsubscribes the callback of the cell editor from value changes.
   void unsubscribe() {
-    uiService.disposeDataSubscription(pComponentId: model.id, pDataProvider: model.dataRow);
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataRow);
   }
 
   /// Sets the state after value change to rebuild the widget and reflect the value change.
@@ -188,8 +187,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setValue(DataRecord? pDataRecord) {
     if (pDataRecord != null) {
-      cellEditor
-          .setValue(pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)]);
+      cellEditor.setValue(pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)]);
     } else {
       cellEditor.setValue(null);
     }
