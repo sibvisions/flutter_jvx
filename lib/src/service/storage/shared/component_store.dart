@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:flutter_client/util/logging/flutter_logger.dart';
+
 import '../../../../util/extensions/list_extensions.dart';
 import '../../../model/api/api_object_property.dart';
 import '../../../model/command/base_command.dart';
@@ -26,7 +28,8 @@ class StorageService implements IStorageService {
   @override
   Future<List<FlComponentModel>> getScreenByScreenClassName(String screenClassName) async {
     // Get Screen (Top-most Panel)
-    FlComponentModel? screenModel = _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
+    FlComponentModel? screenModel =
+        _componentMap.values.firstWhereOrNull((componentModel) => _isScreen(screenClassName, componentModel));
 
     if (screenModel != null) {
       List<FlComponentModel> screen = [];
@@ -170,7 +173,26 @@ class StorageService implements IStorageService {
 
   @override
   Future<void> deleteScreen({required String screenName}) async {
-    _componentMap.removeWhere((key, value) => value.name == screenName);
+    LOGGER.logD(
+        pType: LOG_TYPE.STORAGE,
+        pMessage: "Deleting Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
+
+    LOGGER.logD(pType: LOG_TYPE.STORAGE, pMessage: _componentMap.keys.toList().toString());
+
+    FlComponentModel? screenModel =
+        _componentMap.values.firstWhereOrNull((componentModel) => componentModel.name == screenName);
+
+    if (screenModel != null) {
+      _componentMap.remove(screenModel.id);
+
+      List<FlComponentModel> models = _getAllComponentsBelow(screenModel.id, true);
+      models.forEach((element) {
+        _componentMap.remove(element.id);
+      });
+    }
+    LOGGER.logD(
+        pType: LOG_TYPE.STORAGE,
+        pMessage: "Deleted Screen: $screenName, current is: _componentMap: ${_componentMap.length}");
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -195,12 +217,12 @@ class StorageService implements IStorageService {
   }
 
   /// Returns List of all [FlComponentModel] below it, recursively.
-  List<FlComponentModel> _getAllComponentsBelow(String id) {
+  List<FlComponentModel> _getAllComponentsBelow(String id, [bool ignoreVisiblity = false]) {
     List<FlComponentModel> children = [];
 
     for (FlComponentModel componentModel in _componentMap.values) {
       String? parentId = componentModel.parent;
-      if (parentId != null && parentId == id && componentModel.isVisible) {
+      if (parentId != null && (ignoreVisiblity || parentId == id && componentModel.isVisible)) {
         children.add(componentModel);
         children.addAll(_getAllComponentsBelow(componentModel.id));
       }
@@ -208,7 +230,7 @@ class StorageService implements IStorageService {
     return children;
   }
 
-  List<FlComponentModel> _getAllComponentsBelowByName({required String name}) {
+  List<FlComponentModel> _getAllComponentsBelowByName({required String name, bool ignoreVisiblity = false}) {
     FlComponentModel? componentModel;
     _componentMap.forEach((key, value) {
       if (value.name == name) {
@@ -216,8 +238,8 @@ class StorageService implements IStorageService {
       }
     });
 
-    if (componentModel != null && componentModel!.isVisible) {
-      var list = _getAllComponentsBelow(componentModel!.id);
+    if (componentModel != null && (ignoreVisiblity || componentModel!.isVisible)) {
+      var list = _getAllComponentsBelow(componentModel!.id, ignoreVisiblity);
       list.add(componentModel!);
       return list;
     } else {

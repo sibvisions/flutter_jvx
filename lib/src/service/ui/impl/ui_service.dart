@@ -12,6 +12,7 @@ import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
 import 'package:flutter_client/src/model/menu/menu_group_model.dart';
 import 'package:flutter_client/src/model/menu/menu_item_model.dart';
 import 'package:flutter_client/util/extensions/list_extensions.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import '../../../mixin/command_service_mixin.dart';
 import '../../../model/api/response/dal_meta_data_response.dart';
@@ -145,7 +146,8 @@ class UiService with CommandServiceMixin implements IUiService {
             screenId: customModel.screenId,
             icon: customModel.icon,
           );
-          MenuGroupModel? menuGroupModel = pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
+          MenuGroupModel? menuGroupModel =
+              pMenuModel.menuGroups.firstWhereOrNull((element) => element.name == customModel.group);
           if (menuGroupModel != null) {
             // Remove menu items that open the same screen
             menuGroupModel.items.removeWhere((element) => element.screenId == customModel.screenId);
@@ -187,6 +189,7 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void saveNewComponents({required List<FlComponentModel> newModels}) {
+    LOGGER.logD(pType: LOG_TYPE.UI, pMessage: "Save new components: " + newModels.map((e) => e.id).toList().toString());
     _currentScreen.addAll(newModels);
   }
 
@@ -310,7 +313,8 @@ class UiService with CommandServiceMixin implements IUiService {
 
   @override
   void disposeDataSubscription({required Object pSubscriber, required String pDataProvider}) {
-    _dataSubscriptions.removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
+    _dataSubscriptions
+        .removeWhere((element) => element.subbedObj == pSubscriber && element.dataProvider == pDataProvider);
   }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -403,7 +407,9 @@ class UiService with CommandServiceMixin implements IUiService {
     required String pDataProvider,
     required DalMetaDataResponse pMetaData,
   }) {
-    _dataSubscriptions.where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null).forEach((element) {
+    _dataSubscriptions
+        .where((sub) => sub.dataProvider == pDataProvider && sub.id == pSubId && sub.onMetaData != null)
+        .forEach((element) {
       element.onMetaData!(pMetaData);
     });
   }
