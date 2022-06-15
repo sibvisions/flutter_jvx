@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
@@ -17,12 +16,7 @@ class SaveApplicationImagesCommandProcessor with ConfigServiceMixin implements I
     Uint8List content;
 
     for (ArchiveFile file in command.images) {
-      if (kIsWeb) {
-        String newContent = utf8.decode(file.content);
-        content = base64Decode(newContent);
-      } else {
-        content = file.content;
-      }
+      content = file.content;
 
       fileManager.saveFile(pContent: content, pPath: file.name);
     }
