@@ -3,25 +3,25 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/components/table/column_size_calculator.dart';
-import 'package:flutter_client/src/components/table/fl_table_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/api/requests/api_filter_model.dart';
-import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
-import 'package:flutter_client/src/model/command/api/insert_record_command.dart';
-import 'package:flutter_client/src/model/command/api/select_record_command.dart';
-import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
-import 'package:flutter_client/src/model/layout/layout_data.dart';
-import 'package:flutter_client/util/logging/flutter_logger.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../util/logging/flutter_logger.dart';
+import '../../mixin/ui_service_mixin.dart';
+import '../../model/api/requests/api_filter_model.dart';
 import '../../model/api/response/dal_meta_data_response.dart';
+import '../../model/command/api/delete_record_command.dart';
+import '../../model/command/api/insert_record_command.dart';
+import '../../model/command/api/select_record_command.dart';
+import '../../model/component/table/fl_table_model.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
+import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
+import 'column_size_calculator.dart';
+import 'fl_table_widget.dart';
 
 class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
   static const int DEFAULT_ITEM_COUNT_PER_PAGE = 100;
@@ -33,27 +33,50 @@ class FlTableWrapper extends BaseCompWrapperWidget<FlTableModel> {
 }
 
 class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiServiceMixin {
+  static const int LOADED_META_DATA = 1;
+  static const int LOADED_SELECTED_RECORD = 2;
+  static const int LOADED_DATA = 4;
+  static const int CALCULATION_COMPLETE = 8;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  int currentState = 0;
+
   /// The last touched index describes the index of the initially touched row in complex movements.
-  /// This is used as a way to know which row to apply the [deleteRecord].
+  /// This is used as e.g. a way to know which row to apply the [deleteRecord].
   int lastTouchedIndex = -1;
 
+  /// The last position of the tab of the table.
   DragDownDetails? _lastDragDownDetails;
 
+  /// How many "pages" of the table data have been loaded multiplied by: [FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE]
   int pageCount = 1;
 
+  /// The currently selected row. -1 is none selected.
   int selectedRow = -1;
 
+  /// The meta data of the table.
   DalMetaDataResponse? metaData;
 
+  /// The data of the table.
   DataChunk chunkData =
       DataChunk(data: HashMap(), isAllFetched: false, columnDefinitions: [], from: 0, to: 0, update: false);
 
+  /// The sizes of the table.
   late TableSize tableSize;
 
+  /// The item scroll controller.
   ItemScrollController itemScrollController = ItemScrollController();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Overridden methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   @override
   void initState() {
+    dev.log("initState this: $hashCode");
     super.initState();
 
     layoutData.isFixedSize = true;
@@ -65,7 +88,8 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   Widget build(BuildContext context) {
-    final FlTableWidget widget = FlTableWidget(
+    dev.log("build this: $hashCode");
+    Widget widget = FlTableWidget(
       model: model,
       chunkData: chunkData,
       tableSize: tableSize,
@@ -77,6 +101,10 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       onRowTapDown: onRowDown,
     );
 
+    if (currentState != (LOADED_META_DATA | LOADED_SELECTED_RECORD | LOADED_DATA | CALCULATION_COMPLETE)) {
+      widget = const CircularProgressIndicator();
+    }
+
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
     });
@@ -86,12 +114,14 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   void dispose() {
+    dev.log("dispose this: $hashCode");
     unsubscribe();
     super.dispose();
   }
 
   @override
   void receiveNewLayoutData({required LayoutData newLayoutData, bool pSetState = true}) {
+    dev.log("receiveNewLayoutData this: $hashCode");
     super.receiveNewLayoutData(newLayoutData: newLayoutData, pSetState: false);
 
     recalculateTableSize(pSetState);
@@ -99,12 +129,66 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
   @override
   receiveNewModel({required FlTableModel newModel}) {
+    dev.log("receiveNewModel this: $hashCode");
     super.receiveNewModel(newModel: newModel);
     subscribe();
   }
 
+  @override
+  Size calculateSize(BuildContext context) {
+    dev.log("calculateSize this: $hashCode");
+    return tableSize.calculatedSize;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Recalculates the size of the table.
+  void recalculateTableSize([bool pSetState = false]) {
+    dev.log("recalculateTableSize this: $hashCode");
+    tableSize = ColumnSizeCalculator.calculateTableSize(
+      tableModel: model,
+      dataChunk: chunkData,
+      availableWidth: layoutData.layoutPosition?.width,
+    );
+
+    currentState = currentState | CALCULATION_COMPLETE;
+
+    if (pSetState) {
+      setState(() {});
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Data methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Subscribes to the data service.
+  void subscribe() {
+    uiService.registerDataSubscription(
+      pDataSubscription: DataSubscription(
+        subbedObj: this,
+        dataProvider: model.dataBook,
+        from: 0,
+        to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
+        onSelectedRecord: receiveSelectedRecord,
+        onDataChunk: receiveTableData,
+        onMetaData: receiveMetaData,
+        dataColumns: null,
+      ),
+    );
+  }
+
+  /// Unsubscribes from the data service.
+  void unsubscribe() {
+    uiService.disposeDataSubscription(pSubscriber: this, pDataProvider: model.dataBook);
+  }
+
+  /// Loads data from the server.
   void receiveTableData(DataChunk pChunkData) {
-    dev.log("Received table data: ${pChunkData.data.length}");
+    currentState = currentState | LOADED_DATA;
+
     if (pChunkData.update) {
       for (int index in pChunkData.data.keys) {
         chunkData.data[index] = pChunkData.data[index]!;
@@ -116,20 +200,9 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     recalculateTableSize(true);
   }
 
-  void recalculateTableSize([bool pSetState = false]) {
-    tableSize = ColumnSizeCalculator.calculateTableSize(
-      tableModel: model,
-      dataChunk: chunkData,
-      availableWidth: layoutData.layoutPosition?.width,
-    );
-
-    if (pSetState) {
-      setState(() {});
-    }
-  }
-
+  /// Receives which row is selected.
   void receiveSelectedRecord(DataRecord? pRecord) {
-    dev.log("Received selected record: $pRecord");
+    currentState = currentState | LOADED_SELECTED_RECORD;
 
     if (pRecord != null) {
       selectedRow = pRecord.index;
@@ -140,13 +213,24 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     setState(() {});
   }
 
+  /// Receives the meta data of the table.
   void receiveMetaData(DalMetaDataResponse pMetaData) {
-    dev.log("Received meta data: ${pMetaData.columns.length}");
+    // Future.delayed(
+    //   const Duration(seconds: 5),
+    //   () {
+    currentState = currentState | LOADED_META_DATA;
 
     metaData = pMetaData;
     setState(() {});
+    //   },
+    // );
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Action methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Increments the page count and loads more data.
   void loadMore() {
     if (!chunkData.isAllFetched) {
       pageCount++;
@@ -154,6 +238,7 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     }
   }
 
+  /// Deletes the selected record.
   void deleteRecord() {
     if (lastTouchedIndex != -1) {
       ApiFilterModel? filter = createPrimaryFilter(pRowIndex: lastTouchedIndex);
@@ -171,20 +256,25 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     }
   }
 
+  /// Selects the record.
   void selectRecord(int pRowIndex) {
-    if (selectedRow != pRowIndex) {
-      uiService
-          .sendCommand(SelectRecordCommand(dataProvider: model.dataBook, selectedRecord: pRowIndex, reason: "Tapped"));
+    // if (selectedRow != pRowIndex) {
+    ApiFilterModel? filter = createPrimaryFilter(pRowIndex: pRowIndex);
 
-      selectedRow = pRowIndex;
-      setState(() {});
+    if (filter == null) {
+      LOGGER.logW(pType: LOG_TYPE.DATA, pMessage: "Filter of table(${model.id}) null");
+      return;
     }
+
+    uiService.sendCommand(
+        SelectRecordCommand(dataProvider: model.dataBook, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
+
+    selectedRow = pRowIndex;
+    setState(() {});
+    // }
   }
 
-  void insertRecord() {
-    uiService.sendCommand(InsertRecordCommand(dataProvider: model.dataBook, reason: "Inserted"));
-  }
-
+  /// Saves the last touched row.
   void onRowDown(int pRowIndex, DragDownDetails? pDetails) {
     if (_lastDragDownDetails != null &&
         pDetails != null &&
@@ -198,28 +288,44 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
     dev.log('onRowDown: $pRowIndex');
   }
 
-  void subscribe() {
-    uiService.registerDataSubscription(
-      pDataSubscription: DataSubscription(
-        id: model.id,
-        dataProvider: model.dataBook,
-        from: 0,
-        to: FlTableWrapper.DEFAULT_ITEM_COUNT_PER_PAGE * pageCount,
-        onSelectedRecord: receiveSelectedRecord,
-        onDataChunk: receiveTableData,
-        onMetaData: receiveMetaData,
-        dataColumns: null,
-      ),
-    );
+  showContextMenu() {
+    List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
+
+    if (metaData?.insertEnabled ?? true) {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare, 'Insert', ContextMenuCommand.INSERT));
+    }
+
+    if ((metaData?.deleteEnabled ?? true) && lastTouchedIndex != -1) {
+      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Delete', ContextMenuCommand.DELETE));
+    }
+
+    if (_lastDragDownDetails == null) {
+      return;
+    }
+
+    showMenu(
+            position: RelativeRect.fromRect(
+                _lastDragDownDetails!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size),
+            context: context,
+            items: popupMenuEntries)
+        .then((val) {
+      WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
+
+      if (val == ContextMenuCommand.INSERT) {
+        insertRecord();
+      } else if (val == ContextMenuCommand.DELETE) {
+        deleteRecord();
+      }
+    });
   }
 
-  void unsubscribe() {
-    uiService.disposeSubscriptions(pComponentId: model.id);
-  }
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  @override
-  Size calculateSize(BuildContext context) {
-    return tableSize.calculatedSize;
+  /// Inserts a new record.
+  void insertRecord() {
+    uiService.sendCommand(InsertRecordCommand(dataProvider: model.dataBook, reason: "Inserted"));
   }
 
   dynamic getValue({required String pColumnName, int? pRowIndex}) {
@@ -275,38 +381,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       enabled: true,
       value: value,
     );
-  }
-
-  showContextMenu() {
-    List<PopupMenuEntry<ContextMenuCommand>> popupMenuEntries = <PopupMenuEntry<ContextMenuCommand>>[];
-
-    if (metaData?.insertEnabled ?? true) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.plusSquare, 'Insert', ContextMenuCommand.INSERT));
-    }
-
-    if ((metaData?.deleteEnabled ?? true) && lastTouchedIndex != -1) {
-      popupMenuEntries.add(_getContextMenuItem(FontAwesomeIcons.minusSquare, 'Delete', ContextMenuCommand.DELETE));
-    }
-
-    if (_lastDragDownDetails == null) {
-      return;
-    }
-
-    showMenu(
-            position: RelativeRect.fromRect(
-                _lastDragDownDetails!.globalPosition & const Size(40, 40), Offset.zero & MediaQuery.of(context).size),
-            context: context,
-            items: popupMenuEntries)
-        .then((val) {
-      WidgetsBinding.instance!.focusManager.primaryFocus?.unfocus();
-      if (val != null) {
-        if (val == ContextMenuCommand.INSERT) {
-          insertRecord();
-        } else if (val == ContextMenuCommand.DELETE) {
-          deleteRecord();
-        }
-      }
-    });
   }
 }
 
