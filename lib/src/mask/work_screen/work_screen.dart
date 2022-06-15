@@ -5,6 +5,7 @@ import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_navigation_request.dart';
 import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
 import 'package:flutter_client/src/model/command/layout/set_component_size_command.dart';
+import 'package:flutter_client/src/model/command/storage/delete_screen_command.dart';
 import 'package:flutter_client/util/misc/debouncer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -163,8 +164,8 @@ class WorkScreen extends StatelessWidget with UiServiceMixin {
     if (isCustomScreen) {
       context.beamToNamed("/menu");
     } else {
-      uiService.closeScreen(pScreenName: screenName);
       uiService.sendCommand(CloseScreenCommand(reason: "Work screen back", screenName: screenName));
+      uiService.sendCommand(DeleteScreenCommand(reason: "Work screen back", screenName: screenName));
     }
   }
 }
