@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_download_request.dart';
 
 import '../api_object_property.dart';
@@ -21,8 +20,8 @@ class ApiDownloadImagesRequest implements IApiDownloadRequest {
   /// Set to true to download all images of the app
   final bool applicationImages = true;
 
-  /// Send images as base64 encoded in web
-  final String? contentMode = kIsWeb ? "base64" : null;
+  /// Content mode of images, will always be null
+  final String? contentMode = null;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
