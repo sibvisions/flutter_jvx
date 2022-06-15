@@ -68,10 +68,10 @@ class FileMangerMobile implements IFileManager {
   }
 
   @override
-  void saveFile({required List<int> pContent, required String pPath}) async {
+  Future<File> saveFile({required List<int> pContent, required String pPath}) async {
     File file = File(_getSavePath(pPath: pPath));
     File created = await file.create(recursive: true);
-    created.writeAsBytes(pContent);
+    return created.writeAsBytes(pContent);
   }
 
   @override
@@ -106,10 +106,10 @@ class FileMangerMobile implements IFileManager {
   }
 
   @override
-  void saveIndependentFile({required List<int> pContent, required String pPath}) async {
+  Future<File> saveIndependentFile({required List<int> pContent, required String pPath}) async {
     File file = File("${directory.path}/${_preparePath(pPath: pPath)}");
     File created = await file.create(recursive: true);
-    created.writeAsBytes(pContent);
+    return created.writeAsBytes(pContent);
   }
 
   @override

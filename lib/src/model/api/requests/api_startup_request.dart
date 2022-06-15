@@ -46,7 +46,7 @@ class ApiStartUpRequest extends IApiRequest {
     required this.appMode,
     required this.deviceMode,
     required this.applicationName,
-    this.langCode = "en",
+    required this.langCode,
     this.screenHeight,
     this.screenWidth,
     this.username,

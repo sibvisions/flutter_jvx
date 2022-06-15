@@ -1,7 +1,9 @@
 import 'package:flutter_client/src/model/command/config/save_application_images_command.dart';
+import 'package:flutter_client/src/model/command/config/save_application_translation_command.dart';
 import 'package:flutter_client/src/model/command/config/save_auth_key_command.dart';
 import 'package:flutter_client/src/model/command/config/save_user_data_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/config/save_application_images_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/config/save_application_translation_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/config/save_auth_key_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/config/save_user_data_command_processor.dart';
 
@@ -23,6 +25,8 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
 
   final SaveApplicationImagesCommandProcessor _applicationImagesCommandProcessor = SaveApplicationImagesCommandProcessor();
 
+  final SaveApplicationTranslationCommandProcessor _applicationTranslationCommandProcessor = SaveApplicationTranslationCommandProcessor();
+
   @override
   Future<List<BaseCommand>> processCommand(ConfigCommand command) async {
     if (command is SaveAppMetaDataCommand) {
@@ -33,6 +37,8 @@ class ConfigProcessor implements ICommandProcessor<ConfigCommand> {
       return _authKeyCommandProcessor.processCommand(command);
     } else if (command is SaveApplicationImagesCommand) {
       return _applicationImagesCommandProcessor.processCommand(command);
+    } else if (command is SaveApplicationTranslationCommand) {
+      return _applicationTranslationCommandProcessor.processCommand(command);
     }
 
     return [];

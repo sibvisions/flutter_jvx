@@ -14,15 +14,18 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
 
     configService.setClientId(command.metaData.clientId);
     configService.setVersion(version);
-    // String langCode =
 
     bool doesExist = await configService.getFileManager().doesFileExist(pPath: "");
 
     if (!doesExist) {
       return [
         DownloadImagesCommand(reason: "Resources should be downloaded"),
+        DownloadTranslationCommand(reason: "Translation should be downloaded"),
       ];
     }
-    return [DownloadTranslationCommand(reason: "Translation should be downloaded")];
+
+    configService.setLanguage(configService.getLanguage());
+
+    return [];
   }
 }

@@ -42,10 +42,11 @@ class FileManagerWeb implements IFileManager {
   }
 
   @override
-  void saveFile({required List<int> pContent, required String pPath}) {
+  Future<File> saveFile({required List<int> pContent, required String pPath}) {
     File file = FakeFile(pPath: _getSavePath(pPath: pPath));
     file.writeAsBytes(pContent);
     _files[_getSavePath(pPath: pPath)] = file;
+    return SynchronousFuture(file);
   }
 
   @override
@@ -65,10 +66,11 @@ class FileManagerWeb implements IFileManager {
   }
 
   @override
-  void saveIndependentFile({required List<int> pContent, required String pPath}) {
+  Future<File> saveIndependentFile({required List<int> pContent, required String pPath}) {
     File file = FakeFile(pPath: _preparePath(pPath: pPath));
     file.writeAsBytes(pContent);
     _files[file.path] = file;
+    return SynchronousFuture(file);
   }
 
   @override

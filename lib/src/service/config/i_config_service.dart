@@ -62,11 +62,14 @@ abstract class IConfigService {
   /// Set instance of [IFileManager]
   void setFileManger(IFileManager pFileManger);
 
-  /// Get current display language
+  /// Set current display language
+  void setLanguage(String pLangCode);
+
+  /// Returns language code of current language
   String getLanguage();
 
-  /// Set current display language
-  void setLanguage(String pLanguage);
+  /// Translates text in current translation, will return the original text if not translation was found
+  String translateText(String pText);
 }
 
 enum MENU_MODE {

@@ -190,6 +190,6 @@ class OnlineApiRepository implements IRepository {
     if (error is TimeoutException) {
       return [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
     }
-    return [ErrorResponse(message: "Repository error", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+    return [ErrorResponse(message: "Repository error : $error}", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
   }
 }

@@ -25,10 +25,10 @@ abstract class IFileManager {
   void deleteFile({required String pPath});
 
   /// Save File in provided path
-  void saveFile({required List<int> pContent, required String pPath});
+  Future<File> saveFile({required List<int> pContent, required String pPath});
 
   /// Save a file that does not depend on a version or appName
-  void saveIndependentFile({required List<int> pContent, required String pPath});
+  Future<File> saveIndependentFile({required List<int> pContent, required String pPath});
 
   /// Sets the app name under which all files are saved internally
   void setAppName({required String pName});

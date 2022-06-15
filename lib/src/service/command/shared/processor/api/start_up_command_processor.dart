@@ -7,7 +7,6 @@ import '../../../../../model/command/base_command.dart';
 import '../../i_command_processor.dart';
 
 /// Used to process [StartupCommand], will call ApiService
-// Author: Michael Schober
 class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implements ICommandProcessor<StartupCommand> {
   @override
   Future<List<BaseCommand>> processCommand(StartupCommand command) async {
@@ -23,6 +22,7 @@ class StartUpCommandProcessor with ConfigServiceMixin, ApiServiceMixin implement
       startUpParameters: parameters,
       screenHeight: command.screenHeight,
       screenWidth: command.screenWidth,
+      langCode: configService.getLanguage(),
     );
 
     return apiService.sendRequest(request: startUpRequest);

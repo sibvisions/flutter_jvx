@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter_client/src/model/config/translation/translation.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
+
 import '../../../../util/file/file_manager.dart';
 import '../../../model/config/api/api_config.dart';
 import '../../../model/config/user/user_info.dart';
@@ -37,7 +42,9 @@ class ConfigService implements IConfigService {
   IFileManager fileManager;
 
   /// Display language will change display of all static text
-  String language;
+  String langCode;
+
+  Translation translation = Translation.empty();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -47,7 +54,7 @@ class ConfigService implements IConfigService {
     required this.apiConfig,
     required this.appName,
     required this.fileManager,
-    required this.language,
+    required this.langCode,
   }) {
     fileManager.setAppName(pName: appName);
   }
@@ -145,11 +152,36 @@ class ConfigService implements IConfigService {
 
   @override
   String getLanguage() {
-    return language;
+    return langCode;
   }
 
   @override
   void setLanguage(String pLanguage) {
-    language = pLanguage;
+    langCode = pLanguage;
+
+    File? defaultTranslationFile = fileManager.getFileSync(pPath: "translation.json");
+    File? langTransFile = fileManager.getFileSync(pPath: "translation_$pLanguage.json");
+
+    if (defaultTranslationFile != null) {
+      Translation defaultTrans = Translation.fromFile(pFile: defaultTranslationFile);
+      translation.translations.addAll(defaultTrans.translations);
+    }
+
+    if (langTransFile == null) {
+      LOGGER.logW(pType: LOG_TYPE.CONFIG, pMessage: "Translation file for code $langCode could not be found");
+    } else {
+      Translation langTrans = Translation.fromFile(pFile: langTransFile);
+      translation.translations.addAll(langTrans.translations);
+    }
+  }
+
+  @override
+  String translateText(String pText) {
+    String? translatedText = translation.translations[pText];
+    if (translatedText == null) {
+      LOGGER.logD(pType: LOG_TYPE.CONFIG, pMessage: "Translation for text: $pText was not found for language $langCode");
+      return pText;
+    }
+    return translatedText;
   }
 }

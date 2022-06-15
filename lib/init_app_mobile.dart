@@ -33,6 +33,8 @@ import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
+const langCode = "fr";
+
 Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
   // Needed or rootBundle and applicationDocumentsDirectory wont work
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,7 +77,7 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
 
   // Config
   IConfigService configService = ConfigService(
-    language: "en",
+    langCode: langCode,
     appName: "demo",
     apiConfig: apiConfig,
     fileManager: fileMangerMobile,
@@ -106,6 +108,7 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
   Size a = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
 
   StartupCommand startupCommand = StartupCommand(
+    language: langCode,
     reason: "InitApp",
     username: appConfig.startupParameters?.username,
     password: appConfig.startupParameters?.password,
