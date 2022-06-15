@@ -59,6 +59,7 @@ class FlSignaturePadWidget<T extends FlCustomContainerModel> extends FlStateless
       image ??= ImageLoader.DEFAULT_IMAGE;
 
       return GestureDetector(
+        onSecondaryTap: () => showContextMenu(context),
         onLongPress: () => showContextMenu(context),
         onLongPressDown: (details) => {this.details = details},
         child: Container(
