@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_client/main.dart';
 import 'package:flutter_client/src/mask/menu/list/app_menu_list_grouped.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_client/src/model/menu/menu_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../model/command/api/open_screen_command.dart';
+import '../setting/widgets/change_password.dart';
 
 class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +107,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -118,7 +118,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         onTap: () => uiService.routeToSettings(),
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -126,10 +126,12 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         context: context,
         text: "Change password",
         leadingIcon: FontAwesomeIcons.save,
-        onTap: () => log("asd"),
+        onTap: () => {
+          uiService.openDialog(pDialogWidget: ChagePassword(), pIsDismissible: true),
+        },
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -149,7 +151,10 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
     return Expanded(
       flex: flex,
       child: FittedBox(
-        child: Text(text, style: boldStyle),
+        child: Text(
+          text,
+          style: TextStyle(color: themeData.colorScheme.onPrimary.withOpacity(0.75), fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
@@ -163,13 +168,13 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   }) {
     return ListTile(
       tileColor: Theme.of(context).primaryColor,
-      textColor: Theme.of(context).colorScheme.onPrimary,
+      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
       onTap: onTap,
       leading: FaIcon(
         leadingIcon,
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
       ),
-      title: Text(text),
+      title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 

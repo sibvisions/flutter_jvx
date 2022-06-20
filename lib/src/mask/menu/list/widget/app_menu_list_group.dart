@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/mask/menu/list/widget/app_menu_list_item.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -49,7 +50,7 @@ class AppMenuListGroup extends StatelessWidget {
         pinned: true,
         delegate: AppMenuGridHeader(
           headerText: menuGroupModel.name,
-          height: 50,
+          height: kIsWeb ? 48 : 50,
         ),
       ),
       SliverList(

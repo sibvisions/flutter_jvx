@@ -67,7 +67,10 @@ class FlSignaturePadWidget<T extends FlCustomContainerModel> extends FlStateless
             border: Border.all(color: themeData.colorScheme.onPrimary),
             borderRadius: BorderRadius.circular(5),
           ),
-          child: image,
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: image,
+          ),
         ),
       );
     }
@@ -79,9 +82,12 @@ class FlSignaturePadWidget<T extends FlCustomContainerModel> extends FlStateless
           border: Border.all(color: themeData.colorScheme.onPrimary),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Signature(
-          controller: controller,
-          backgroundColor: model.background ?? themeData.backgroundColor,
+        child: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Signature(
+            controller: controller,
+            backgroundColor: model.background ?? themeData.backgroundColor,
+          ),
         ),
       ),
     );
