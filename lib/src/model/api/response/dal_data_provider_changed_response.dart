@@ -17,6 +17,9 @@ class DalDataProviderChangedResponse extends ApiResponse {
   /// New selected row
   int? selectedRow;
 
+  /// The deleted row
+  int? deletedRow;
+
   /// Name of columns of the data book, only not null if [changedValues] is provided
   List<String>? columnNames;
 
@@ -47,6 +50,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
     this.reload,
     this.columnNames,
     this.selectedRow,
+    this.deletedRow,
     this.changedColumnNames,
     this.changedValues,
     this.deleteEnabled,
@@ -61,6 +65,7 @@ class DalDataProviderChangedResponse extends ApiResponse {
         reload = pJson[ApiObjectProperty.reload],
         columnNames = pJson[ApiObjectProperty.columnNames],
         selectedRow = pJson[ApiObjectProperty.selectedRow],
+        deletedRow = pJson[ApiObjectProperty.deletedRow],
         changedColumnNames = pJson[ApiObjectProperty.changedColumnNames]?.cast<String>(),
         changedValues = pJson[ApiObjectProperty.changedValues],
         deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],

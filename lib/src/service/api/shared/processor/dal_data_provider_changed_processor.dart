@@ -3,6 +3,7 @@ import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
 import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
+import 'package:flutter_client/src/model/command/data/delete_row_command.dart';
 import 'package:flutter_client/src/service/api/shared/i_processor.dart';
 
 class DalDataProviderChangedProcessor extends IProcessor<DalDataProviderChangedResponse> {
@@ -37,7 +38,15 @@ class DalDataProviderChangedProcessor extends IProcessor<DalDataProviderChangedR
       commands.add(fetchCommand);
     }
 
-    if (pResponse.selectedRow != null) {
+    if (pResponse.deletedRow != null) {
+      DeleteRowCommand deleteRowCommand = DeleteRowCommand(
+        dataProvider: pResponse.dataProvider,
+        deletedRow: pResponse.deletedRow!,
+        newSelectedRow: pResponse.selectedRow!,
+        reason: "Data provider changed - server response",
+      );
+      commands.add(deleteRowCommand);
+    } else if (pResponse.selectedRow != null) {
       ChangeSelectedRowCommand changeSelectedRowCommand = ChangeSelectedRowCommand(
         dataProvider: pResponse.dataProvider,
         newSelectedRow: pResponse.selectedRow!,

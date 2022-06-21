@@ -1,9 +1,11 @@
 import 'package:flutter_client/src/model/command/data/change_selected_row_command.dart';
 import 'package:flutter_client/src/model/command/data/delete_provider_data_command.dart';
+import 'package:flutter_client/src/model/command/data/delete_row_command.dart';
 import 'package:flutter_client/src/model/command/data/get_data_chunk_command.dart';
 import 'package:flutter_client/src/model/command/data/get_meta_data_command.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/change_selected_row_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/delete_provider_data_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/data/delete_row_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/get_data_chunk_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/data/get_meta_data_command_processor.dart';
 
@@ -36,6 +38,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
 
   final ChangeSelectedRowCommandProcessor _changeSelectedRowCommandProcessor = ChangeSelectedRowCommandProcessor();
 
+  final DeleteRowCommandProcessor _deleteRowCommandProcessor = DeleteRowCommandProcessor();
+
   final GetMetaDataCommandProcessor _metaDataCommandProcessor = GetMetaDataCommandProcessor();
 
   @override
@@ -54,6 +58,8 @@ class DataProcessor extends ICommandProcessor<DataCommand> {
       return _changeSelectedRowCommandProcessor.processCommand(command);
     } else if (command is GetMetaDataCommand) {
       return _metaDataCommandProcessor.processCommand(command);
+    } else if (command is DeleteRowCommand) {
+      return _deleteRowCommandProcessor.processCommand(command);
     }
 
     return [];
