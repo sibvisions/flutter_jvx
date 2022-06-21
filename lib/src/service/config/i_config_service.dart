@@ -18,12 +18,6 @@ abstract class IConfigService {
   /// Set clientId
   void setClientId(String? pClientId);
 
-  /// Returns directory of the app, if app is started as web returns null
-  String getDirectory();
-
-  /// Set directory
-  void setDirectory(String pDirectory);
-
   /// Returns the appName
   String getAppName();
 

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_client/src/mixin/api_service_mixin.dart';
 import 'package:flutter_client/src/mixin/config_service_mixin.dart';
 import 'package:flutter_client/src/model/api/requests/api_logout_request.dart';
@@ -14,11 +12,7 @@ class LogoutCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements
       clientId: configService.getClientId()!,
     );
 
-    File f = File(configService.getDirectory() + "/auth.txt");
-
-    if (f.existsSync()) {
-      f.deleteSync();
-    }
+    configService.getFileManager().deleteFile(pPath: "/auth.txt");
 
     return apiService.sendRequest(request: logoutRequest);
   }

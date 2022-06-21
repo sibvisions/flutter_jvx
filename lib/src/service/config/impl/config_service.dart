@@ -74,11 +74,6 @@ class ConfigService implements IConfigService {
   }
 
   @override
-  String getDirectory() {
-    return directory;
-  }
-
-  @override
   String getVersion() {
     return version;
   }
@@ -97,11 +92,6 @@ class ConfigService implements IConfigService {
   @override
   void setClientId(String? pClientId) {
     clientId = pClientId;
-  }
-
-  @override
-  void setDirectory(String pDirectory) {
-    directory = pDirectory;
   }
 
   @override
