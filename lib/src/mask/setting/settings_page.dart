@@ -13,6 +13,7 @@ import 'package:flutter_client/src/model/command/api/set_api_config_command.dart
 import 'package:flutter_client/src/model/command/api/startup_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
 import 'package:flutter_client/src/model/config/api/url_config.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../mixin/ui_service_mixin.dart';
@@ -42,6 +43,9 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
   /// App name notifier, will rebuild the value once changed
   late ValueNotifier<String> appNameNotifier;
 
+  /// Picture Size notifier, will rebuild the value once changed
+  late ValueNotifier<String> pictureSizeNotifier;
+
   /// Version Info
   late SettingGroup versionInfo;
 
@@ -70,6 +74,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     baseUrlNotifier = ValueNotifier(configService.getApiConfig().urlConfig.getBasePath());
     appNameNotifier = ValueNotifier(configService.getAppName());
     languageNotifier = ValueNotifier("ToDo");
+    pictureSizeNotifier = ValueNotifier("ToDo");
 
     // Version Info
     // ToDo get real version info
@@ -117,31 +122,36 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
-                child: InkWell(
-                  radius: 50,
-                  onTap: () => context.beamBack(),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "CLOSE",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+                child: configService.getUserInfo()!.userName != null
+                    ? InkWell(
+                        onTap: () => context.beamBack(),
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "CLOSE",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      )
+                    : Container(),
               ),
-              const Spacer(),
               Expanded(
                 child: InkWell(
                   onTap: _saveClicked,
                   child: Container(
                     alignment: Alignment.center,
-                    child: const Text(
-                      "SAVE",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    child: configService.getUserInfo()!.userName != null
+                        ? const Text(
+                            "SAVE",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        : const Text(
+                            "OPEN",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -231,6 +241,49 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
       value: languageNotifier,
       title: "Language",
+      onPressed: () {
+        Picker picker = Picker(
+            confirmTextStyle: const TextStyle(fontSize: 14),
+            cancelTextStyle: const TextStyle(fontSize: 14),
+            adapter: PickerDataAdapter<String>(),
+            columnPadding: const EdgeInsets.all(8),
+            onConfirm: (Picker picker, List value) {
+              print(value.toString());
+              // TODO Set the Language
+            });
+        picker.showModal(context, themeData: themeData);
+      },
+    );
+
+    SettingItem pictureSetting = SettingItem(
+      frontIcon: FaIcon(
+        FontAwesomeIcons.image,
+        color: themeData.primaryColor,
+      ),
+      endIcon: const FaIcon(FontAwesomeIcons.arrowRight),
+      value: pictureSizeNotifier,
+      title: "Big",
+      onPressed: () {
+        Picker picker = Picker(
+            confirmTextStyle: const TextStyle(fontSize: 14),
+            cancelTextStyle: const TextStyle(fontSize: 14),
+            adapter: PickerDataAdapter<int>(data: [
+              PickerItem(text: const Text('320 px'), value: 320),
+              PickerItem(text: const Text('640 px'), value: 640),
+              PickerItem(text: const Text('1024 px'), value: 1024)
+            ]),
+            columnPadding: const EdgeInsets.all(8),
+            onConfirm: (Picker picker, List value) {
+              int? size;
+
+              if (value.isNotEmpty) {
+                size = picker.getSelectedValues()[0];
+              }
+              print(size.toString());
+              //TODO Set the Size
+            });
+        picker.showModal(context, themeData: themeData);
+      },
     );
 
     return SettingGroup(
@@ -244,7 +297,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
           ),
         ),
       ),
-      items: [appNameSetting, baseUrlSetting, languageSetting],
+      items: [appNameSetting, baseUrlSetting, languageSetting, pictureSetting],
     );
   }
 

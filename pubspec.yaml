@@ -45,6 +45,7 @@ dependencies:
   syncfusion_flutter_gauges: ^20.1.55
   url_launcher: ^6.1.2
   signature: ^5.0.1
+  flutter_picker: ^2.0.3
 
 flutter:
   assets:
