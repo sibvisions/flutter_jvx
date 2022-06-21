@@ -216,4 +216,27 @@ class DataService implements IDataService {
     dataBook.selectedRow = pNewSelectedRow;
     return true;
   }
+
+  @override
+  Future<bool> deleteRow({
+    required String pDataProvider,
+    required int pDeletedRow,
+    required int pNewSelectedRow,
+  }) async {
+    // get databook, if null return false
+    DataBook? dataBook = dataBooks[pDataProvider];
+    if (dataBook == null || dataBook.records.length <= pDeletedRow) {
+      return false;
+    }
+
+    for (int i = pDeletedRow; i < dataBook.records.length - 1; i++) {
+      dataBook.records[i] = dataBook.records[i + 1]!;
+    }
+
+    dataBook.records.remove(dataBook.records.length - 1);
+
+    dataBook.selectedRow = pNewSelectedRow;
+
+    return true;
+  }
 }

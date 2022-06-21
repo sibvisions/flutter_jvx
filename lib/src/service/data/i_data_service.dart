@@ -52,4 +52,11 @@ abstract class IDataService {
     required String pDataProvider,
     required int pNewSelectedRow,
   });
+
+  /// Returns true when row selection was successful (dataProvider and dataRow exist)
+  Future<bool> deleteRow({
+    required String pDataProvider,
+    required int pDeletedRow,
+    required int pNewSelectedRow,
+  });
 }
