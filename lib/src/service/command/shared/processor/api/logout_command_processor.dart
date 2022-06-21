@@ -12,7 +12,11 @@ class LogoutCommandProcessor with ApiServiceMixin, ConfigServiceMixin implements
       clientId: configService.getClientId()!,
     );
 
-    configService.getFileManager().deleteFile(pPath: "/auth.txt");
+    if (await configService.getFileManager().doesFileExist(pPath: "auth.txt")) {
+      configService.getFileManager().deleteFile(pPath: "/auth.txt");
+    }
+    configService.setUserInfo(null);
+    configService.setAuthCode(null);
 
     return apiService.sendRequest(request: logoutRequest);
   }

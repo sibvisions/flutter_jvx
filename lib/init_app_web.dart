@@ -42,7 +42,8 @@ Future<bool> initApp() {
     appName: "demo",
     apiConfig: apiConfig,
     fileManager: FileManagerWeb(),
-    language: 'en',
+    langCode: 'en',
+    supportedLanguages: ["en"],
   );
   services.registerSingleton(configService, signalsReady: true);
 
@@ -66,7 +67,7 @@ Future<bool> initApp() {
   IUiService uiService = UiService();
   services.registerSingleton(uiService, signalsReady: true);
 
-  StartupCommand startupCommand = StartupCommand(reason: "InitApp");
+  StartupCommand startupCommand = StartupCommand(reason: "InitApp", language: "de");
   commandService.sendCommand(startupCommand);
 
   return SynchronousFuture(true);

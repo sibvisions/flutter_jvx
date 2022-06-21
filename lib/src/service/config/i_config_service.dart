@@ -28,9 +28,10 @@ abstract class IConfigService {
   ApiConfig getApiConfig();
 
   /// Set version
-  void setVersion(String pVersion);
+  void setVersion(String? pVersion);
 
-  String getVersion();
+  /// Return version
+  String? getVersion();
 
   /// Return menuMode
   MENU_MODE getMenuMode();
@@ -42,7 +43,7 @@ abstract class IConfigService {
   UserInfo? getUserInfo();
 
   /// Set user inf
-  void setUserInfo(UserInfo pUserInfo);
+  void setUserInfo(UserInfo? pUserInfo);
 
   /// Returns a map of all added parameters which should be added on every startup
   Map<String, dynamic> getStartUpParameters();
@@ -64,6 +65,18 @@ abstract class IConfigService {
 
   /// Translates text in current translation, will return the original text if not translation was found
   String translateText(String pText);
+
+  /// Set auth code for future auto-login
+  void setAuthCode(String? pAuthCode);
+
+  /// Get auth code if one has been set
+  String? getAuthCode();
+
+  /// Return a list of all supported languages codes
+  List<String> getSupportedLang();
+
+  /// Return a list of all supported languages codes
+  void setSupportedLang({required List<String> languages});
 }
 
 enum MENU_MODE {

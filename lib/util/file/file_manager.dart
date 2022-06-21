@@ -34,5 +34,8 @@ abstract class IFileManager {
   void setAppName({required String pName});
 
   /// Sets the app version under which all files are saved internally
-  void setAppVersion({required String pVersion});
+  void setAppVersion({required String? pVersion});
+
+  /// Returns directory, will always return null if in web
+  Directory? getDirectory({required String pPath});
 }

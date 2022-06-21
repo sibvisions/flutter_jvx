@@ -8,10 +8,7 @@ import '../../../../../model/command/config/save_auth_key_command.dart';
 class SaveAuthKeyCommandProcessor with ConfigServiceMixin implements ICommandProcessor<SaveAuthKeyCommand> {
   @override
   Future<List<BaseCommand>> processCommand(SaveAuthKeyCommand command) {
-    configService.getFileManager().saveIndependentFile(
-          pContent: command.authKey.runes.toList(),
-          pPath: "/auth.txt",
-        );
+    configService.setAuthCode(command.authKey);
     return SynchronousFuture([]);
   }
 }
