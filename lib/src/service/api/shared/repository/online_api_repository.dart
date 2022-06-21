@@ -22,6 +22,7 @@ import 'package:flutter_client/src/model/api/response/download_images_response.d
 import 'package:flutter_client/src/model/api/response/error_response.dart';
 import 'package:flutter_client/src/model/api/response/login_response.dart';
 import 'package:flutter_client/src/model/api/response/menu_response.dart';
+import 'package:flutter_client/src/model/api/response/message_dialog_response.dart';
 import 'package:flutter_client/src/model/api/response/screen_generic_response.dart';
 import 'package:flutter_client/src/model/api/response/session_expired_response.dart';
 import 'package:flutter_client/src/model/api/response/user_data_response.dart';
@@ -54,6 +55,7 @@ class OnlineApiRepository implements IRepository {
     ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
         DalDataProviderChangedResponse.fromJson(pJson: pJson),
     ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson}) => ApiAuthenticationDataResponse.fromJson(pJson: pJson),
+    ApiResponseNames.messageDialog: ({required Map<String, dynamic> pJson}) => MessageDialogResponse.fromJson(pJson: pJson),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
