@@ -181,6 +181,7 @@ abstract class ApiObjectProperty {
   static const String dataRow = "dataRow";
   static const String isAllFetched = "isAllFetched";
   static const String selectedRow = "selectedRow";
+  static const String deletedRow = "deletedRow";
   static const String rowNumber = "rowNumber";
   static const String numberFormat = "numberFormat";
   static const String fromRow = "fromRow";
