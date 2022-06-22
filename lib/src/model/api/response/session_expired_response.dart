@@ -2,7 +2,6 @@ import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/response/api_response.dart';
 
 class SessionExpiredResponse extends ApiResponse {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,11 +15,11 @@ class SessionExpiredResponse extends ApiResponse {
 
   SessionExpiredResponse({
     required this.message,
-    required String name
-  }) : super(name: name);
+    required String name,
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
 
-  SessionExpiredResponse.fromJson({required Map<String, dynamic> pJson}) :
-    message = pJson[ApiObjectProperty.message],
-    super.fromJson(pJson);
-
+  SessionExpiredResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : message = pJson[ApiObjectProperty.message],
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

@@ -1,22 +1,29 @@
+import 'package:flutter_client/src/model/api/api_response_names.dart';
+
 import '../api_object_property.dart';
 
-class ApiResponse{
-
+class ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  String name;
+  /// Name of response - possible names are listed in [ApiResponseNames]
+  final String name;
+
+  /// Original Request that provoked this response
+  final Object originalRequest;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   ApiResponse({
-    required this.name
+    required this.name,
+    required this.originalRequest,
   });
 
-  ApiResponse.fromJson(Map<String, dynamic> json) :
-        name = json[ApiObjectProperty.name]
-  ;
+  ApiResponse.fromJson({
+    required Map<String, dynamic> pJson,
+    required this.originalRequest,
+  }) : name = pJson[ApiObjectProperty.name];
 }

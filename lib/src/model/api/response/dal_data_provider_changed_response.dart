@@ -58,19 +58,20 @@ class DalDataProviderChangedResponse extends ApiResponse {
     this.readOnly,
     this.updateEnabled,
     required String name,
-  }) : super(name: name);
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
 
-  DalDataProviderChangedResponse.fromJson({required Map<String, dynamic> pJson})
+  DalDataProviderChangedResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : dataProvider = pJson[ApiObjectProperty.dataProvider],
         reload = pJson[ApiObjectProperty.reload],
         columnNames = pJson[ApiObjectProperty.columnNames],
         selectedRow = pJson[ApiObjectProperty.selectedRow],
-        deletedRow = pJson[ApiObjectProperty.deletedRow],
+        deletedRow = pJson[ApiObjectProperty.version],
         changedColumnNames = pJson[ApiObjectProperty.changedColumnNames]?.cast<String>(),
         changedValues = pJson[ApiObjectProperty.changedValues],
         deleteEnabled = pJson[ApiObjectProperty.deleteEnabled],
         insertEnabled = pJson[ApiObjectProperty.deleteEnabled],
         readOnly = pJson[ApiObjectProperty.readOnly],
         updateEnabled = pJson[ApiObjectProperty.updateEnabled],
-        super.fromJson(pJson);
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

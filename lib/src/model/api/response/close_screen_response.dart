@@ -2,12 +2,24 @@ import '../api_object_property.dart';
 import 'api_response.dart';
 
 class CloseScreenResponse extends ApiResponse {
-  /// Name of Screen to close (delete)
-  final String componentId;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  CloseScreenResponse({required this.componentId, required String name}) : super(name: name);
+  /// Name of Screen to close
+  final String screenName;
 
-  CloseScreenResponse.fromJson({required Map<String, dynamic> json})
-      : componentId = json[ApiObjectProperty.componentId],
-        super.fromJson(json);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  CloseScreenResponse({
+    required this.screenName,
+    required String name,
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
+
+  CloseScreenResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : screenName = pJson[ApiObjectProperty.componentId],
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

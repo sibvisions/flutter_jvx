@@ -4,21 +4,46 @@ import '../api_object_property.dart';
 import 'api_response.dart';
 
 class MenuResponse extends ApiResponse {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Id of the menu
   final String componentId;
+
+  /// List of all [MenuEntryResponse]
   final List<MenuEntryResponse> responseMenuItems;
 
-  MenuResponse.fromJson(Map<String, dynamic> json)
-      : componentId = json[ApiObjectProperty.componentId],
-        responseMenuItems =
-            (json[ApiObjectProperty.entries] as List<dynamic>).map((e) => MenuEntryResponse.fromJson(e)).toList(),
-        super.fromJson(json);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  MenuResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : componentId = pJson[ApiObjectProperty.componentId],
+        responseMenuItems = (pJson[ApiObjectProperty.entries] as List<dynamic>).map((e) => MenuEntryResponse.fromJson(e)).toList(),
+        super.fromJson(originalRequest: originalRequest, pJson: pJson);
 }
 
 class MenuEntryResponse {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// The group this menu entry belongs to
   final String group;
+
+  /// Component id of the attached screen (will be sent in openScreenRequest when pressed)
   final String componentId;
+
+  /// Text to be displayed in the menu entry
   final String text;
+
+  /// Image to be displayed (usually Font-awesome icon)
   final String? image;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   MenuEntryResponse({
     required this.componentId,

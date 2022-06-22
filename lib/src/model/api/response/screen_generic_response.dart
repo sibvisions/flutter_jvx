@@ -6,8 +6,13 @@ class ScreenGenericResponse extends ApiResponse {
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Name of the screen
   final String componentId;
+
+  /// List of all changed and new components
   final List<dynamic>? changedComponents;
+
+  /// False if this should be displayed on top
   final bool update;
   final bool home;
 
@@ -21,12 +26,13 @@ class ScreenGenericResponse extends ApiResponse {
     required this.home,
     required this.update,
     required String name,
-  }) : super(name: name);
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
 
-  ScreenGenericResponse.fromJson(Map<String, dynamic> json)
-      : componentId = json[ApiObjectProperty.componentId],
-        changedComponents = json[ApiObjectProperty.changedComponents],
-        update = json[ApiObjectProperty.update],
-        home = json[ApiObjectProperty.home],
-        super.fromJson(json);
+  ScreenGenericResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : componentId = pJson[ApiObjectProperty.componentId],
+        changedComponents = pJson[ApiObjectProperty.changedComponents],
+        update = pJson[ApiObjectProperty.update],
+        home = pJson[ApiObjectProperty.home],
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

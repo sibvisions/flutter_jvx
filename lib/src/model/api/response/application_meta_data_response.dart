@@ -2,7 +2,6 @@ import '../api_object_property.dart';
 import 'api_response.dart';
 
 class ApplicationMetaDataResponse extends ApiResponse {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,8 +16,15 @@ class ApplicationMetaDataResponse extends ApiResponse {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  ApplicationMetaDataResponse.fromJson(Map<String, dynamic> json) :
-    clientId = json[ApiObjectProperty.clientId],
-    version = json[ApiObjectProperty.version],
-    super.fromJson(json);
+  ApplicationMetaDataResponse({
+    required this.version,
+    required this.clientId,
+    required Object originalRequest,
+    required String name,
+  }) : super(originalRequest: originalRequest, name: name);
+
+  ApplicationMetaDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : clientId = pJson[ApiObjectProperty.clientId],
+        version = pJson[ApiObjectProperty.version],
+        super.fromJson(originalRequest: originalRequest, pJson: pJson);
 }

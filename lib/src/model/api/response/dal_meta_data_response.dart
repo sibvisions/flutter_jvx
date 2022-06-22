@@ -37,7 +37,6 @@ class DalMetaDataResponse extends ApiResponse {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   DalMetaDataResponse({
-    required String name,
     required this.dataProvider,
     required this.columns,
     required this.columnViewTable,
@@ -46,9 +45,11 @@ class DalMetaDataResponse extends ApiResponse {
     required this.updateEnabled,
     required this.insertEnabled,
     required this.primaryKeyColumns,
-  }) : super(name: name);
+    required String name,
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
 
-  DalMetaDataResponse.fromJson({required Map<String, dynamic> pJson})
+  DalMetaDataResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : columnViewTable = pJson[ApiObjectProperty.columnViewTable].cast<String>(),
         columns = ParseUtil.parseColumnDefinitions(pJson[ApiObjectProperty.columns]),
         dataProvider = pJson[ApiObjectProperty.dataProvider],
@@ -57,5 +58,5 @@ class DalMetaDataResponse extends ApiResponse {
         updateEnabled = pJson[ApiObjectProperty.updateEnabled] ?? true,
         insertEnabled = pJson[ApiObjectProperty.insertEnabled] ?? true,
         primaryKeyColumns = List<String>.from(pJson[ApiObjectProperty.primaryKeyColumns] ?? []),
-        super.fromJson(pJson);
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

@@ -23,19 +23,18 @@ class ErrorResponse extends ApiResponse {
   ErrorResponse({
     required this.message,
     required String name,
+    required Object originalRequest,
     this.stacktrace,
     this.error,
-  }) : super(name: name) {
-    LOGGER.logW(
-        pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
+  }) : super(name: name, originalRequest: originalRequest) {
+    LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 
-  ErrorResponse.fromJson({required Map<String, dynamic> pJson})
+  ErrorResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : message = pJson[ApiObjectProperty.message],
         stacktrace = null,
         error = null,
-        super.fromJson(pJson) {
-    LOGGER.logW(
-        pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
+        super.fromJson(originalRequest: originalRequest, pJson: pJson) {
+    LOGGER.logW(pType: LOG_TYPE.COMMAND, pMessage: 'ErrorResponse: $message | ErrorObject $error', pStacktrace: stacktrace);
   }
 }

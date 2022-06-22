@@ -3,7 +3,6 @@ import 'package:flutter_client/src/model/api/response/api_response.dart';
 
 /// Response to indicate to display the login screen
 class LoginResponse extends ApiResponse {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,11 +18,12 @@ class LoginResponse extends ApiResponse {
   LoginResponse({
     required this.username,
     required this.mode,
-    required String name
-  }) : super(name: name);
+    required String name,
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
 
-  LoginResponse.fromJson({required Map<String, dynamic> pJson}) :
-    mode = pJson[ApiObjectProperty.mode],
-    username = pJson[ApiObjectProperty.username],
-    super(name: pJson[ApiObjectProperty.name]);
+  LoginResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : mode = pJson[ApiObjectProperty.mode],
+        username = pJson[ApiObjectProperty.username],
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

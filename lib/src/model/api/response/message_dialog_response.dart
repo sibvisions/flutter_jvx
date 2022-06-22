@@ -15,9 +15,10 @@ class MessageDialogResponse extends ApiResponse {
   MessageDialogResponse({
     required this.message,
     required String name,
-  }) : super(name: name);
+    required Object originalRequest,
+  }) : super(name: name, originalRequest: originalRequest);
 
-  MessageDialogResponse.fromJson({required Map<String, dynamic> pJson})
+  MessageDialogResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
       : message = pJson[ApiObjectProperty.message],
-        super.fromJson(pJson);
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

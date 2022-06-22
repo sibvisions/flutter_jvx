@@ -10,7 +10,7 @@ class CloseScreenProcessor implements IProcessor<CloseScreenResponse> {
 
     CloseScreenResponse closeScreenResponse = pResponse;
     commands.add(DeleteScreenCommand(
-      screenName: closeScreenResponse.componentId,
+      screenName: closeScreenResponse.screenName,
       reason: "reason",
     ));
 

@@ -2,11 +2,21 @@ import '../api_object_property.dart';
 import 'api_response.dart';
 
 class ApplicationParametersResponse extends ApiResponse {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   String? authenticated;
+
+  /// Which screen to open, is a screen name
   String? openScreen;
 
-  ApplicationParametersResponse.fromJson(Map<String, dynamic> json) :
-        authenticated = json[ApiObjectProperty.authenticated],
-        openScreen = json[ApiObjectProperty.openScreen],
-        super.fromJson(json);
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Initialization
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ApplicationParametersResponse.fromJson({required Map<String, dynamic> pJson, required Object originalRequest})
+      : authenticated = pJson[ApiObjectProperty.authenticated],
+        openScreen = pJson[ApiObjectProperty.openScreen],
+        super.fromJson(pJson: pJson, originalRequest: originalRequest);
 }

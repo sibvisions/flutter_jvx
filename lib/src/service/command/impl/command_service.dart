@@ -60,7 +60,6 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
   @override
   Future<List<BaseCommand>> sendCommand(BaseCommand command) async {
     List<BaseCommand> commands = [];
-
     // Switch-Case doesn't work with types
     try {
       if (command is ApiCommand) {
@@ -95,8 +94,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
 
     // Isolate possible route commands
     var routeCommands = commands
-        .where((element) =>
-            element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
+        .where((element) => element is RouteToWorkCommand || element is RouteToMenuCommand || element is RouteToLoginCommand)
         .toList();
 
     var nonRouteCommands = commands.where((element) => !routeCommands.contains(element)).toList();
@@ -115,6 +113,7 @@ class CommandService with ApiServiceMixin, ConfigServiceMixin, StorageServiceMix
       }
     });
 
+    command.callback?.call();
     return commands;
   }
 

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../service/ui/i_ui_service.dart';
 import '../base_command.dart';
 
@@ -7,5 +9,6 @@ import '../base_command.dart';
 abstract class UiCommand extends BaseCommand {
   UiCommand({
     required String reason,
-  }) : super(reason: reason);
+    VoidCallback? callBack,
+  }) : super(reason: reason, callback: callBack);
 }

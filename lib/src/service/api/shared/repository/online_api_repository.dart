@@ -32,7 +32,7 @@ import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
 import 'browser_client.dart' if (dart.library.html) 'package:http/browser_client.dart';
 
-typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson});
+typedef ResponseFactory = ApiResponse Function({required Map<String, dynamic> pJson, required Object originalRequest});
 
 /// Handles all possible requests to the mobile server.
 class OnlineApiRepository implements IRepository {
@@ -41,21 +41,34 @@ class OnlineApiRepository implements IRepository {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static Map<String, ResponseFactory> maps = {
-    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson}) => ApplicationMetaDataResponse.fromJson(pJson),
-    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson}) => ApplicationParametersResponse.fromJson(pJson),
-    ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson}) => CloseScreenResponse.fromJson(json: pJson),
-    ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson}) => DalFetchResponse.fromJson(pJson),
-    ApiResponseNames.menu: ({required Map<String, dynamic> pJson}) => MenuResponse.fromJson(pJson),
-    ApiResponseNames.screenGeneric: ({required Map<String, dynamic> pJson}) => ScreenGenericResponse.fromJson(pJson),
-    ApiResponseNames.dalMetaData: ({required Map<String, dynamic> pJson}) => DalMetaDataResponse.fromJson(pJson: pJson),
-    ApiResponseNames.userData: ({required Map<String, dynamic> pJson}) => UserDataResponse.fromJson(json: pJson),
-    ApiResponseNames.login: ({required Map<String, dynamic> pJson}) => LoginResponse.fromJson(pJson: pJson),
-    ApiResponseNames.error: ({required Map<String, dynamic> pJson}) => ErrorResponse.fromJson(pJson: pJson),
-    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson}) => SessionExpiredResponse.fromJson(pJson: pJson),
-    ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson}) =>
-        DalDataProviderChangedResponse.fromJson(pJson: pJson),
-    ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson}) => ApiAuthenticationDataResponse.fromJson(pJson: pJson),
-    ApiResponseNames.messageDialog: ({required Map<String, dynamic> pJson}) => MessageDialogResponse.fromJson(pJson: pJson),
+    ApiResponseNames.applicationMetaData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        ApplicationMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.applicationParameters: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        ApplicationParametersResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.closeScreen: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        CloseScreenResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.dalFetch: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        DalFetchResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.menu: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        MenuResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.screenGeneric: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        ScreenGenericResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.dalMetaData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        DalMetaDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.userData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        UserDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.login: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        LoginResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.error: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        ErrorResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.sessionExpired: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        SessionExpiredResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.dalDataProviderChanged: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        DalDataProviderChangedResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.authenticationData: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        ApiAuthenticationDataResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
+    ApiResponseNames.messageDialog: ({required Map<String, dynamic> pJson, required Object originalRequest}) =>
+        MessageDialogResponse.fromJson(pJson: pJson, originalRequest: originalRequest),
   };
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,8 +114,8 @@ class OnlineApiRepository implements IRepository {
         return response
             .then((response) => response.body)
             .then(_checkResponse)
-            .then((jsonResponses) => _responseParser(pJsonList: jsonResponses))
-            .onError(_handleError);
+            .then((jsonResponses) => _responseParser(pJsonList: jsonResponses, originalRequest: pRequest))
+            .onError((error, stackTrace) => _handleError(error, stackTrace, pRequest));
       }
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
@@ -160,14 +173,14 @@ class OnlineApiRepository implements IRepository {
   }
 
   /// Parses the List of JSON responses in [ApiResponse]s
-  List<ApiResponse> _responseParser({required List<dynamic> pJsonList}) {
+  List<ApiResponse> _responseParser({required List<dynamic> pJsonList, required Object originalRequest}) {
     List<ApiResponse> returnList = [];
 
     for (dynamic responseItem in pJsonList) {
       ResponseFactory? builder = responseFactoryMap[responseItem[ApiObjectProperty.name]];
 
       if (builder != null) {
-        returnList.add(builder(pJson: responseItem));
+        returnList.add(builder(pJson: responseItem, originalRequest: originalRequest));
       } else {
         // returnList.add(ErrorResponse(message: "Could not find builder for ${responseItem[ApiObjectProperty.name]}", name: ApiResponseNames.error));
       }
@@ -180,18 +193,32 @@ class OnlineApiRepository implements IRepository {
     List<ApiResponse> parsedResponse = [];
 
     if (pRequest is ApiDownloadImagesRequest) {
-      parsedResponse.add(DownloadImagesResponse(responseBody: pBody, name: "downloadImages"));
+      parsedResponse.add(DownloadImagesResponse(responseBody: pBody, name: "downloadImages", originalRequest: pRequest));
     } else if (pRequest is ApiDownloadTranslationRequest) {
-      parsedResponse.add(DownloadTranslationResponse(bodyBytes: pBody, name: "downloadTranslation"));
+      parsedResponse.add(DownloadTranslationResponse(bodyBytes: pBody, name: "downloadTranslation", originalRequest: pRequest));
     }
 
     return parsedResponse;
   }
 
-  Future<List<ApiResponse>> _handleError(Object? error, StackTrace stackTrace) async {
+  Future<List<ApiResponse>> _handleError(Object? error, StackTrace stackTrace, Object originalRequest) async {
     if (error is TimeoutException) {
-      return [ErrorResponse(message: "Message timed out", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+      return [
+        ErrorResponse(
+            message: "Message timed out",
+            name: ApiResponseNames.error,
+            error: error,
+            stacktrace: stackTrace,
+            originalRequest: originalRequest)
+      ];
     }
-    return [ErrorResponse(message: "Repository error : $error}", name: ApiResponseNames.error, error: error, stacktrace: stackTrace)];
+    return [
+      ErrorResponse(
+          message: "Repository error : $error}",
+          name: ApiResponseNames.error,
+          error: error,
+          stacktrace: stackTrace,
+          originalRequest: originalRequest)
+    ];
   }
 }
