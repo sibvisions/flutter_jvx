@@ -118,8 +118,13 @@ class FileMangerMobile implements IFileManager {
   }
 
   @override
-  void setAppVersion({required String pVersion}) {
+  void setAppVersion({required String? pVersion}) {
     _appVersion = pVersion;
+  }
+
+  @override
+  Directory? getDirectory({required String pPath}) {
+    return Directory(_getSavePath(pPath: pPath));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

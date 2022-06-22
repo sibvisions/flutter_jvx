@@ -18,7 +18,12 @@ class SaveApplicationImagesCommandProcessor with ConfigServiceMixin implements I
     for (ArchiveFile file in command.images) {
       content = file.content;
 
-      fileManager.saveFile(pContent: content, pPath: file.name);
+      String name = file.name;
+      if (file.name.startsWith("/")) {
+        name.replaceFirst("/", "");
+      }
+
+      fileManager.saveFile(pContent: content, pPath: "images/$name");
     }
 
     return SynchronousFuture([]);

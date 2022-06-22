@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_client/src/model/config/config_file/app_config.dart';
+import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
 import 'package:flutter_client/src/model/custom/custom_screen_manager.dart';
 import 'package:flutter_client/src/service/layout/impl/isolate/isolate_layout_service.dart';
 import 'package:flutter_client/util/file/file_manager_mobile.dart';
+import 'package:flutter_client/util/logging/flutter_logger.dart';
 
 import 'data/config/config_generator.dart';
 import 'main.dart';
@@ -33,38 +35,78 @@ import 'src/service/storage/impl/isolate/isolate_storage_service.dart';
 import 'src/service/ui/i_ui_service.dart';
 import 'src/service/ui/impl/ui_service.dart';
 
-const langCode = "fr";
-
 Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
-  // Needed or rootBundle and applicationDocumentsDirectory wont work
-  WidgetsFlutterBinding.ensureInitialized();
   // Needed to avoid CORS issues
   // ToDo find way to not do this
   HttpOverrides.global = MyHttpOverrides();
-  FileMangerMobile fileMangerMobile = await FileMangerMobile.create();
 
-  // Load Config from files
-  String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
-  AppConfig appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
-  UrlConfig urlConfigServer = UrlConfig.empty();
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Init values
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  if (appConfig.remoteConfig != null && appConfig.remoteConfig!.devUrlConfigs != null) {
-    urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
-  }
+  // If not called will throw error when trying to access any files
+  WidgetsFlutterBinding.ensureInitialized();
 
-  // Read last use config files
-  File? authFile = await fileMangerMobile.getIndependentFile(pPath: "auth.txt");
-  File? languageFile = await fileMangerMobile.getIndependentFile(pPath: "lang.txt");
-
+  // Init values, should be possible to provide to initApp
+  String appName = "demo";
+  String langCode = "en";
   String? auth;
-  if (authFile != null) {
-    auth = await authFile.readAsString();
+  String? userName;
+  String? password;
+
+  FileMangerMobile fileMangerMobile = await FileMangerMobile.create();
+  fileMangerMobile.setAppName(pName: appName);
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Load config files
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Load Dev config
+  UrlConfig urlConfigServer = UrlConfig.empty();
+  AppConfig? appConfig;
+  try {
+    String rawConfig = await rootBundle.loadString('assets/config/app.conf.json');
+    appConfig = AppConfig.fromJson(json: jsonDecode(rawConfig));
+
+    userName = appConfig.startupParameters?.username;
+    password = appConfig.startupParameters?.password;
+
+    if (appConfig.remoteConfig != null && appConfig.remoteConfig!.devUrlConfigs != null) {
+      urlConfigServer = appConfig.remoteConfig!.devUrlConfigs![appConfig.remoteConfig!.indexOfUsingUrlConfig];
+    }
+  } catch (e) {
+    LOGGER.logD(pType: LOG_TYPE.GENERAL, pMessage: "No Dev Config found");
   }
 
-  String? lang;
-  if (languageFile != null) {
-    lang = await languageFile.readAsString();
+  // Load last running config
+  LastRunConfig lastRunConfig = LastRunConfig();
+  List<String> supportedLang = ["en"];
+  File? lastRunConfigFile = await fileMangerMobile.getIndependentFile(pPath: "$appName/lastRunConfig.json");
+  if (lastRunConfigFile != null) {
+    lastRunConfig = LastRunConfig.fromJson(pJson: jsonDecode(lastRunConfigFile.readAsStringSync()));
+    // Set app version so version specific files can be get
+    fileMangerMobile.setAppVersion(pVersion: lastRunConfig.version!);
+
+    // Add supported languages by parsing all translation file names
+    Directory? lang = fileMangerMobile.getDirectory(pPath: "languages/");
+    if (lang != null && lang.existsSync()) {
+      List<String> fileNames = lang.listSync().map((e) => e.path.split("/").last).toList();
+      RegExp regExp = RegExp("_(?<name>[a-z]*)");
+
+      fileNames.forEach((element) {
+        RegExpMatch? match = regExp.firstMatch(element);
+        if (match != null) {
+          supportedLang.add(match.namedGroup("name")!);
+        }
+      });
+    }
   }
+
+  auth = lastRunConfig.authCode;
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Service init
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   // Api
   EndpointConfig endpointConfig = ConfigGenerator.generateFixedEndpoints();
@@ -77,10 +119,11 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
 
   // Config
   IConfigService configService = ConfigService(
-    langCode: langCode,
-    appName: "demo",
+    langCode: lastRunConfig.language ?? langCode,
+    appName: appName,
     apiConfig: apiConfig,
     fileManager: fileMangerMobile,
+    supportedLanguages: supportedLang,
   );
   services.registerSingleton(configService, signalsReady: true);
 
@@ -105,15 +148,15 @@ Future<bool> initApp({CustomScreenManager? pCustomManager}) async {
   services.registerSingleton(uiService, signalsReady: true);
 
   // Send startup to server
-  Size a = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
+  Size phoneSize = MediaQueryData.fromWindow(WidgetsBinding.instance!.window).size;
 
   StartupCommand startupCommand = StartupCommand(
-    language: langCode,
+    language: lastRunConfig.language,
     reason: "InitApp",
-    username: appConfig.startupParameters?.username,
-    password: appConfig.startupParameters?.password,
-    screenWidth: a.width,
-    screenHeight: a.height,
+    username: userName,
+    password: password,
+    screenWidth: phoneSize.width,
+    screenHeight: phoneSize.height,
     authKey: auth,
   );
   commandService.sendCommand(startupCommand);

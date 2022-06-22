@@ -19,6 +19,7 @@ import '../processor/dal_fetch_processor.dart';
 import '../processor/dal_meta_data_processor.dart';
 import '../processor/error_processor.dart';
 import '../processor/menu_processor.dart';
+import '../processor/message_dialog_processor.dart';
 import '../processor/screen_generic_processor.dart';
 import '../processor/user_data_processor.dart';
 
@@ -42,6 +43,7 @@ class ApiController implements IController {
   final IProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
   final IProcessor _downloadImagesProcessor = DownloadImagesProcessor();
   final IProcessor _downloadTranslationProcessor = DownloadTranslationProcessor();
+  final IProcessor _messageDialogProcessor = MessageDialogProcessor();
 
   /// Maps response names to their processor
   late final HashMap<String, IProcessor> responseToProcessorMap;
@@ -67,6 +69,7 @@ class ApiController implements IController {
       ApiResponseNames.authenticationData: _authenticationDataProcessor,
       ApiResponseNames.downloadImages: _downloadImagesProcessor,
       ApiResponseNames.downloadTranslation: _downloadTranslationProcessor,
+      ApiResponseNames.messageDialog: _messageDialogProcessor,
     });
   }
 

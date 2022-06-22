@@ -107,7 +107,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   List<Widget> _buildDrawerFooter(BuildContext context) {
     return [
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -118,7 +118,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         onTap: () => uiService.routeToSettings(),
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -127,11 +127,11 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         text: "Change password",
         leadingIcon: FontAwesomeIcons.save,
         onTap: () => {
-          uiService.openDialog(pDialogWidget: ChagePassword(), pIsDismissible: true),
+          uiService.openDialog(pDialogWidget: ChangePassword(), pIsDismissible: true),
         },
       ),
       Divider(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
         height: 0.0,
         thickness: 0.5,
       ),
@@ -153,7 +153,7 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
       child: FittedBox(
         child: Text(
           text,
-          style: TextStyle(color: themeData.colorScheme.onPrimary.withOpacity(0.75), fontWeight: FontWeight.bold),
+          style: TextStyle(color: themeData.colorScheme.onPrimary.withOpacity(0.7), fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -168,11 +168,11 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
   }) {
     return ListTile(
       tileColor: Theme.of(context).primaryColor,
-      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
+      textColor: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
       onTap: onTap,
       leading: FaIcon(
         leadingIcon,
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.75),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
       ),
       title: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
     );
