@@ -2,12 +2,15 @@ import 'package:flutter_client/src/model/command/ui/ui_command.dart';
 
 /// Command to route to login
 class RouteToLoginCommand extends UiCommand {
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  /// Login mode
   final String mode;
+
+  /// Username and password
+  final Map<String, String?> loginData;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -15,8 +18,9 @@ class RouteToLoginCommand extends UiCommand {
 
   RouteToLoginCommand({
     required this.mode,
+    required this.loginData,
     required String reason,
-  }) : super(reason:  reason);
+  }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods
@@ -24,5 +28,4 @@ class RouteToLoginCommand extends UiCommand {
 
   @override
   String get logString => throw UnimplementedError();
-
 }

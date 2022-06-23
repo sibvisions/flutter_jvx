@@ -50,7 +50,7 @@ abstract class IUiService {
   void routeToSettings();
 
   /// Route to Login page
-  void routeToLogin({String mode});
+  void routeToLogin({String mode, required Map<String, String?> pLoginProps});
 
   /// Route to the provided full path, used for routing to offline screens
   void routeToCustom({required String pFullPath});
