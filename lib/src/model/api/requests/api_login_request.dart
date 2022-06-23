@@ -48,6 +48,7 @@ class ApiLoginRequest implements IApiRequest {
         ApiObjectProperty.clientId: clientId,
         ApiObjectProperty.password: password,
         ApiObjectProperty.username: username,
+        ApiObjectProperty.newPassword: newPassword,
         ApiObjectProperty.createAuthKey: createAuthKey,
         ApiObjectProperty.loginMode: loginMode,
       };
