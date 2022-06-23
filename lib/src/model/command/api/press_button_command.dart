@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import 'api_command.dart';
 
 ///
@@ -19,7 +21,8 @@ class PressButtonCommand extends ApiCommand {
   PressButtonCommand({
     required this.componentName,
     required String reason,
-  }) : super(reason: reason);
+    VoidCallback? callback,
+  }) : super(reason: reason, callback: callback);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Overridden methods

@@ -18,7 +18,7 @@ void main() {
 ThemeData themeData = ThemeData.from(
   colorScheme: ColorScheme.fromSwatch(
     primarySwatch: Colors.amber,
-    backgroundColor: const Color(0xFFEEEEEE),
+    backgroundColor: const Color(0xFFFFFFFF),
   ),
   // const ColorScheme.light(
   //   primary: Colors.amber,

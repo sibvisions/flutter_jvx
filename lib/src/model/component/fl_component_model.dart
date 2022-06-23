@@ -253,12 +253,14 @@ abstract class FlComponentModel {
   }
 
   /// Returns the textstyle of the component.
-  TextStyle getTextStyle() {
+  TextStyle getTextStyle(
+      {Color? pForeground, double? pFontSize, FontStyle? pFontStyle, FontWeight? pFontWeight, String? pFontFamily}) {
     return TextStyle(
-        color: isEnabled ? foreground : IColorConstants.COMPONENT_DISABLED,
-        fontSize: fontSize.toDouble(),
-        fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-        fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-        fontFamily: fontName);
+      color: pForeground ?? (isEnabled ? foreground : IColorConstants.COMPONENT_DISABLED),
+      fontSize: pFontSize ?? fontSize.toDouble(),
+      fontStyle: pFontStyle ?? (isItalic ? FontStyle.italic : FontStyle.normal),
+      fontWeight: pFontWeight ?? (isBold ? FontWeight.bold : FontWeight.normal),
+      fontFamily: pFontFamily ?? fontName,
+    );
   }
 }

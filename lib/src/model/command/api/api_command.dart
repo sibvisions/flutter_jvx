@@ -9,5 +9,5 @@ abstract class ApiCommand extends BaseCommand {
   ApiCommand({
     required String reason,
     VoidCallback? callback,
-  }) : super(reason: reason);
+  }) : super(reason: reason, callback: callback);
 }
