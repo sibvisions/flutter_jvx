@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
     // Application setting
     baseUrlNotifier = ValueNotifier(configService.getApiConfig().urlConfig.getBasePath());
     appNameNotifier = ValueNotifier(configService.getAppName());
-    languageNotifier = ValueNotifier("ToDo");
+    languageNotifier = ValueNotifier(configService.getLanguage());
     pictureSizeNotifier = ValueNotifier("ToDo");
 
     // Version Info
@@ -122,7 +122,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
-                child: configService.getUserInfo()!.userName != null
+                child: configService.getUserInfo() != null
                     ? InkWell(
                         onTap: () => context.beamBack(),
                         child: Container(
@@ -140,7 +140,7 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
                   onTap: _saveClicked,
                   child: Container(
                     alignment: Alignment.center,
-                    child: configService.getUserInfo()!.userName != null
+                    child: configService.getUserInfo() != null
                         ? const Text(
                             "SAVE",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -245,11 +245,11 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
         Picker picker = Picker(
             confirmTextStyle: const TextStyle(fontSize: 14),
             cancelTextStyle: const TextStyle(fontSize: 14),
-            adapter: PickerDataAdapter<String>(),
+            adapter: PickerDataAdapter<String>(pickerdata: configService.getSupportedLang()),
             columnPadding: const EdgeInsets.all(8),
             onConfirm: (Picker picker, List value) {
-              print(value.toString());
-              // TODO Set the Language
+              languageNotifier.value = picker.getSelectedValues()[0];
+              configService.setLanguage(picker.getSelectedValues()[0]);
             });
         picker.showModal(context, themeData: themeData);
       },
@@ -265,14 +265,13 @@ class _SettingsPageState extends State<SettingsPage> with UiServiceMixin, Config
       title: "Big",
       onPressed: () {
         Picker picker = Picker(
-            confirmTextStyle: const TextStyle(fontSize: 14),
-            cancelTextStyle: const TextStyle(fontSize: 14),
             adapter: PickerDataAdapter<int>(data: [
               PickerItem(text: const Text('320 px'), value: 320),
               PickerItem(text: const Text('640 px'), value: 640),
               PickerItem(text: const Text('1024 px'), value: 1024)
             ]),
-            columnPadding: const EdgeInsets.all(8),
+            confirmTextStyle: const TextStyle(fontSize: 14),
+            cancelTextStyle: const TextStyle(fontSize: 14),
             onConfirm: (Picker picker, List value) {
               int? size;
 

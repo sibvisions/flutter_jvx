@@ -1,4 +1,5 @@
 import 'package:flutter_client/src/model/command/ui/open_error_dialog_command.dart';
+import 'package:flutter_client/src/model/command/ui/open_message_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/open_session_expired_dialog_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_login_command.dart';
 import 'package:flutter_client/src/model/command/ui/route_to_menu_command.dart';
@@ -16,6 +17,7 @@ import '../../../../../model/command/ui/ui_command.dart';
 import '../../../../../model/command/ui/update_components_command.dart';
 import '../../../../../model/command/ui/update_layout_position_command.dart';
 import '../../i_command_processor.dart';
+import 'open_message_dialog_command_processor.dart';
 import 'update_components_processor.dart';
 import 'update_layout_position_processor.dart';
 
@@ -33,6 +35,7 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
   final ICommandProcessor _routeToLoginProcessor = RouteToLoginCommandProcessor();
   final ICommandProcessor _openErrorDialogProcessor = OpenErrorDialogCommandProcessor();
   final ICommandProcessor _openSessionExpiredDialogProcessor = OpenSessionExpiredDialogCommandProcessor();
+  final ICommandProcessor _openMessageDialogProcessor = OpenMessageDialogCommandProcessor();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
@@ -57,6 +60,8 @@ class UiProcessor implements ICommandProcessor<UiCommand> {
       return _openErrorDialogProcessor.processCommand(command);
     } else if (command is OpenSessionExpiredDialogCommand) {
       return _openSessionExpiredDialogProcessor.processCommand(command);
+    } else if (command is OpenMessageDialogCommand) {
+      return _openMessageDialogProcessor.processCommand(command);
     }
 
     return [];

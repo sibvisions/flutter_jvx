@@ -127,7 +127,11 @@ class DrawerMenu extends StatelessWidget with ConfigServiceMixin, UiServiceMixin
         text: "Change password",
         leadingIcon: FontAwesomeIcons.save,
         onTap: () => {
-          uiService.openDialog(pDialogWidget: ChangePassword(), pIsDismissible: true),
+          uiService.openDialog(
+              pDialogWidget: ChangePassword(
+                username: configService.getUserInfo()?.userName,
+              ),
+              pIsDismissible: true),
         },
       ),
       Divider(

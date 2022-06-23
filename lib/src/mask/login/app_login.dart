@@ -22,7 +22,7 @@ class AppLogin extends StatelessWidget with UiServiceMixin {
 
   @override
   Widget build(BuildContext context) {
-    uiService.setRouteContext(pContext: context);
+    // uiService.setRouteContext(pContext: context);
     return (Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

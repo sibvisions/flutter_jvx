@@ -35,12 +35,15 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Text(
-              "Please enter Email",
+              "Welcome",
               style: Theme.of(context).textTheme.headline5,
+            ),
+            const Text(
+              "Please enter and confirm the new password",
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
@@ -50,17 +53,17 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin {
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               decoration: const InputDecoration(labelText: "One time password: "),
-              controller: userNameController,
+              controller: oneTimeController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               decoration: const InputDecoration(labelText: "New password: "),
-              controller: userNameController,
+              controller: newPasswordController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             TextFormField(
               decoration: const InputDecoration(labelText: "Confirm new password: "),
-              controller: userNameController,
+              controller: newPasswordConfController,
             ),
             const Padding(padding: EdgeInsets.all(5)),
             Row(
@@ -99,11 +102,14 @@ class ChangeOneTimePasswordCard extends StatelessWidget with UiServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   void _sendRequest() {
+    if (newPasswordController.text != newPasswordConfController.text) {
+      uiService.openDialog(pDialogWidget: const Text('The new Passwords do not match!'), pIsDismissible: true);
+    }
     LoginCommand loginCommand = LoginCommand(
       loginMode: LoginMode.CHANGE_ONE_TIME_PASSWORD,
       userName: userNameController.text,
-      password: newPasswordController.text,
-      newPassword: oneTimeController.text,
+      newPassword: newPasswordController.text,
+      password: oneTimeController.text,
       reason: "Password reset",
     );
 
