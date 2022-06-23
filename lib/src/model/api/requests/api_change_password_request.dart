@@ -39,6 +39,6 @@ class ApiChangePasswordRequest extends IApiRequest {
         ApiObjectProperty.password: password,
         ApiObjectProperty.newPassword: newPassword,
         ApiObjectProperty.clientId: clientId,
-        if (username != null) ApiObjectProperty.username: username,
+        if (username != null) ApiObjectProperty.userName: username,
       };
 }
