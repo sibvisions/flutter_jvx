@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
 import 'package:flutter_client/src/service/service.dart';
@@ -5,7 +7,7 @@ import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 import 'package:flutter_client/util/loading_handler/i_command_progress_handler.dart';
 
 class DefaultLoadingProgressHandler implements ICommandProgressHandler {
-  Map<BaseCommand, Future> commandFutureMap = {};
+  Map<BaseCommand, Timer> commandTimerMap = {};
   BuildContext? _lastContext;
   int amount = 0;
 
@@ -43,18 +45,22 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
 
   @override
   void notifyCommandProgressEnd(BaseCommand pCommand) {
-    // if (isSupported(pCommand)) {
-    //   Duration duration = durationForCommand(pCommand);
-    //   commandFutureMap[pCommand] = Future.delayed(duration, () => showLoadingProgress());
-    // }
+    if (isSupported(pCommand)) {
+      Duration duration = durationForCommand(pCommand);
+      commandTimerMap[pCommand] = Timer(duration, showLoadingProgress);
+    }
   }
 
   @override
   void notifyCommandProgressStart(BaseCommand pCommand) {
-    // Future? future = commandFutureMap[pCommand];
-    // if (future != null) {
-    //   future.whenComplete(() => null);
-    // }
+    Timer? timer = commandTimerMap[pCommand];
+    if (timer != null) {
+      if (timer.isActive) {
+        timer.cancel();
+      } else {
+        closeLoadingProgress();
+      }
+    }
   }
 
   bool isSupported(BaseCommand pCommand) {
