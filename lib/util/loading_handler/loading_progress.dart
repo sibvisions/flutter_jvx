@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/model/command/base_command.dart';
@@ -6,29 +7,82 @@ import 'package:flutter_client/src/service/service.dart';
 import 'package:flutter_client/src/service/ui/i_ui_service.dart';
 import 'package:flutter_client/util/loading_handler/i_command_progress_handler.dart';
 
+/// The [DefaultLoadingProgressHandler] shows a loading progress if a request is over its defined threshold for the wait time.
 class DefaultLoadingProgressHandler implements ICommandProgressHandler {
-  Map<BaseCommand, Timer> commandTimerMap = {};
-  BuildContext? _lastContext;
-  int amount = 0;
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  void showLoadingProgress() {
-    if (_lastContext == null && amount == 0) {
+  /// Map of all timers for every call.
+  final Map<BaseCommand, Timer> _commandTimerMap = {};
+
+  /// The context of the popup
+  BuildContext? _dialogContext;
+
+  /// Amount of requests that have called for a loading progress.
+  int _loadingCommandAmount = 0;
+
+  /// List of all supported loading progress [BaseCommand] types.
+  // List<ProgressDefinition> progressDefinitions = [
+  //   ProgressDefinition(commandType: ApiCommand, minimumTimeTillLoader: const Duration(seconds: 2)),
+  // ];
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Interface implementation
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  @override
+  void notifyCommandProgressStart(BaseCommand pCommand) async {
+    if (isSupported(pCommand)) {
+      Duration duration = durationForCommand(pCommand);
+      _commandTimerMap[pCommand] = Timer(duration, _showLoadingProgress);
+    }
+  }
+
+  @override
+  void notifyCommandProgressEnd(BaseCommand pCommand) async {
+    Timer? timer = _commandTimerMap.remove(pCommand);
+    if (timer != null) {
+      log("found timer");
+      if (timer.isActive) {
+        timer.cancel();
+        log("cancel timer");
+      } else {
+        _closeLoadingProgress();
+      }
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // User-defined methods
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  void _showLoadingProgress() {
+    if (_loadingCommandAmount == 0) {
+      log("showLoadingProgress | $_loadingCommandAmount");
       services<IUiService>().openDialog(
         pDialogWidget: _createLoadingProgressIndicator(),
         pIsDismissible: false,
-        pContextCallback: (context) => _lastContext = context,
+        pContextCallback: (context) {
+          log("set context | $_loadingCommandAmount");
+          if (_loadingCommandAmount == 0) {
+            Navigator.pop(context);
+          } else {
+            _dialogContext = context;
+          }
+        },
       );
     }
-    amount++;
+    _loadingCommandAmount++;
   }
 
-  void closeLoadingProgress() {
-    if (_lastContext != null) {
-      if (amount > 1) {
-        amount--;
-      } else {
-        Navigator.pop(_lastContext!);
-      }
+  void _closeLoadingProgress() {
+    _loadingCommandAmount--;
+    if (_loadingCommandAmount == 0 && _dialogContext != null) {
+      log("closeLoadingProgress | $_loadingCommandAmount");
+
+      Navigator.pop(_dialogContext!);
+      _dialogContext = null;
     }
   }
 
@@ -43,31 +97,21 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
     );
   }
 
-  @override
-  void notifyCommandProgressEnd(BaseCommand pCommand) {
-    if (isSupported(pCommand)) {
-      Duration duration = durationForCommand(pCommand);
-      commandTimerMap[pCommand] = Timer(duration, showLoadingProgress);
-    }
-  }
-
-  @override
-  void notifyCommandProgressStart(BaseCommand pCommand) {
-    Timer? timer = commandTimerMap[pCommand];
-    if (timer != null) {
-      if (timer.isActive) {
-        timer.cancel();
-      } else {
-        closeLoadingProgress();
-      }
-    }
-  }
-
   bool isSupported(BaseCommand pCommand) {
-    return true;
+    return true; //progressDefinitions.any((definition) => pCommand is ApiCommand);
   }
 
   Duration durationForCommand(BaseCommand pCommand) {
-    return const Duration(seconds: 2);
+    return const Duration(milliseconds: 500);
   }
 }
+
+// class ProgressDefinition {
+//   /// The type definition of the command class.
+//   Type commandType;
+
+//   /// The minimum duration to wait before showing a loading progress.
+//   Duration minimumTimeTillLoader;
+
+//   ProgressDefinition({required this.commandType, required this.minimumTimeTillLoader});
+// }
