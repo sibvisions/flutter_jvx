@@ -1,16 +1,19 @@
 import 'package:flutter_client/src/model/command/api/api_command.dart';
 
 /// Command to Change the password of the current user
-class ChangePasswordCommand extends ApiCommand  {
-
+class ChangePasswordCommand extends ApiCommand {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Old password
   final String password;
+
   /// New password
   final String newPassword;
+
+  /// Username
+  final String? username;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -19,7 +22,8 @@ class ChangePasswordCommand extends ApiCommand  {
   ChangePasswordCommand({
     required this.newPassword,
     required this.password,
-    required String reason
+    required String reason,
+    this.username,
   }) : super(reason: reason);
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,5 +33,4 @@ class ChangePasswordCommand extends ApiCommand  {
   @override
   // TODO: implement logString
   String get logString => throw UnimplementedError();
-
 }
