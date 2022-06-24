@@ -125,13 +125,15 @@ class _FlLinkedCellPickerState extends State<FlLinkedCellPicker> with UiServiceM
 
   @override
   void dispose() {
-    uiService.disposeDataSubscription(
+    uiService.disposeSubscriptions(
       pSubscriber: this,
-      pDataProvider: model.linkReference.dataProvider,
     );
 
     uiService.sendCommand(FilterCommand(
-        editorId: widget.name, value: "", dataProvider: widget.model.linkReference.dataProvider, reason: "Closed the linked cell picker"));
+        editorId: widget.name,
+        value: "",
+        dataProvider: widget.model.linkReference.dataProvider,
+        reason: "Closed the linked cell picker"));
 
     _controller.dispose();
     filterTimer?.cancel();

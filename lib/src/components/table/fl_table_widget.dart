@@ -1,28 +1,49 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_client/src/components/base_wrapper/fl_stateless_widget.dart';
+import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
 import 'package:flutter_client/src/components/table/column_size_calculator.dart';
+import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
+import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
 import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
 import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class FlTableWidget extends FlStatelessWidget<FlTableModel> {
+class FlTableWidget extends FlStatelessWidget<FlTableModel> with UiServiceMixin {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Class members
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  /// Contains all relevant table size information.
   final TableSize tableSize;
 
+  /// The selected current row.
   final int selectedRow;
 
+  /// Gets called with the index of the row that was touched when the user starts to pan.
   final Function(int, DragDownDetails?)? onRowTapDown;
 
+  /// Gets called with the index of the row that was touched when the user tapped a row.
   final Function(int)? onRowTap;
 
+  /// Gets called when the user swiped a row. -> use index of [onRowTapDown] to know which one.
   final Function()? onRowSwipe;
 
+  /// Gets called when the user long pressed a row. -> use index of [onRowTapDown] to know which one.
   final VoidCallback? onLongPress;
 
+  /// Gets called when the user scrolled to the edge of the table.
   final VoidCallback? onEndScroll;
 
+  /// The data of the table.
   final DataChunk chunkData;
 
+  /// The scroll controller of the table.
   final ItemScrollController? itemScrollController;
+
+  /// The meta data of the table.
+  final DalMetaDataResponse? metaData;
 
   FlTableWidget({
     Key? key,
@@ -36,27 +57,40 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     this.onLongPress,
     this.onEndScroll,
     this.itemScrollController,
-  }) : super(key: key, model: model) {
-    //log("length of chunk data: ${chunkData.data.length}");
-  }
+    this.metaData,
+  }) : super(key: key, model: model);
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: onLongPress,
-      onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails),
-      child: NotificationListener<ScrollEndNotification>(
-        onNotification: onInternalEndScroll,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: tableSize.size.width,
-            ),
-            child: ScrollablePositionedList.builder(
-              itemScrollController: itemScrollController,
-              itemBuilder: buildItem,
-              itemCount: chunkData.data.length + 1,
+    BorderRadius borderRadius = BorderRadius.circular(5.0);
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        border: Border.all(width: TableSize.borderWidth, color: Theme.of(context).primaryColor),
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: ClipRRect(
+        // The clip rect is there to stop the rendering of the children.
+        borderRadius: borderRadius, // Otherwise the children would clip the border of the parent container.
+        child: GestureDetector(
+          onLongPress: onLongPress,
+          onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(-1, pDragDetails),
+          child: NotificationListener<ScrollEndNotification>(
+            onNotification: onInternalEndScroll,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: tableSize.size.width,
+                ),
+                child: ScrollablePositionedList.builder(
+                  addAutomaticKeepAlives: true,
+                  itemScrollController: itemScrollController,
+                  itemBuilder: buildItem,
+                  itemCount: chunkData.data.length + 1,
+                ),
+              ),
             ),
           ),
         ),
@@ -72,21 +106,36 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     for (String columnName in model.columnNames) {
       int columnIndex = chunkData.columnDefinitions.indexWhere((e) => e.name == columnName);
 
+      ICellEditor cellEditor = ICellEditor.getCellEditor(
+        pCellEditorJson: chunkData.columnDefinitions[columnIndex].cellEditorJson,
+        onChange: (value) => log("change $value for $columnName in row $columnIndex"),
+        onEndEditing: (value) => log("end editing $value for $columnName in row $columnIndex"),
+        pUiService: uiService,
+      );
+
+      var value = data[columnIndex];
+      cellEditor.setValue(value);
+
+      Widget? tableWidget = cellEditor.createTableWidget(context);
+
+      tableWidget ??= Text(
+        (value ?? '').toString(),
+        style: model.getTextStyle(),
+      );
+
       rowWidgets.add(
         SizedBox(
           width: tableSize.columnWidths[model.columnNames.indexOf(columnName)].toDouble(),
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              (data[columnIndex] ?? '').toString(),
-              style: model.getTextStyle(),
-            ),
-          ),
+          child: tableWidget,
         ),
       );
     }
 
-    double opacity = pIndex % 2 == 0 ? 0.05 : 0.15;
+    double opacity = pIndex % 2 == 0 ? 0.00 : 0.15;
+
+    if (pIndex == selectedRow) {
+      opacity += 0.15;
+    }
 
     return GestureDetector(
       onPanDown: (DragDownDetails? pDragDetails) => onRowTapDown?.call(pIndex, pDragDetails),
@@ -94,9 +143,17 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
       //onHorizontalDragEnd: onInternalEndSwipe,
       child: Container(
         height: tableSize.rowHeight,
-        decoration: pIndex != selectedRow
-            ? BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(opacity))
-            : BoxDecoration(color: Colors.green.withOpacity(opacity)),
+        decoration: BoxDecoration(
+          color: pIndex == selectedRow
+              ? Colors.blue.withOpacity(opacity)
+              : Theme.of(context).primaryColor.withOpacity(opacity),
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).primaryColor.withOpacity(0.25),
+              width: 1.0,
+            ),
+          ),
+        ),
         child: Row(
           children: rowWidgets,
         ),
@@ -117,7 +174,7 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
             alignment: Alignment.center,
             child: Text(
               columnName,
-              style: model.getTextStyle(),
+              style: model.getTextStyle(pFontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -125,7 +182,12 @@ class FlTableWidget extends FlStatelessWidget<FlTableModel> {
     }
 
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.05)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+        border: const Border(
+          bottom: BorderSide(color: Colors.black),
+        ),
+      ),
       height: tableSize.tableHeaderHeight,
       child: Row(
         children: rowWidgets,

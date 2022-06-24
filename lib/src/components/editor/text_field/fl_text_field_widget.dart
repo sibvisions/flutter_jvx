@@ -46,7 +46,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
 
   bool get showSuffixIcon => true;
 
-  bool get hasSuffixItems => getSuffixItems().isNotEmpty;
+  bool get hasSuffixItems => createSuffixItems().isNotEmpty;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -77,7 +77,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: model.isEnabled ? themeData.primaryColor : IColorConstants.COMPONENT_DISABLED),
         ),
-        suffixIcon: getSuffixIcon(),
+        suffixIcon: createSuffixIcon(),
       ),
       textAlign: HorizontalAlignmentE.toTextAlign(model.horizontalAlignment),
       textAlignVertical: VerticalAlignmentE.toTextAlign(model.verticalAlignment),
@@ -103,7 +103,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
   // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  Widget? getClearIcon() {
+  Widget? createClearIcon() {
     if (textController.text.isEmpty) {
       return null;
     }
@@ -134,10 +134,10 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     );
   }
 
-  List<Widget> getSuffixItems() {
+  List<Widget> createSuffixItems() {
     List<Widget> icons = [];
 
-    Widget? clearIcon = getClearIcon();
+    Widget? clearIcon = createClearIcon();
     if (clearIcon != null) {
       icons.add(clearIcon);
     }
@@ -145,7 +145,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return icons;
   }
 
-  Widget? getSuffixIcon() {
+  Widget? createSuffixIcon() {
     if (!showSuffixIcon || !hasSuffixItems) {
       return null;
     }
@@ -153,7 +153,7 @@ class FlTextFieldWidget<T extends FlTextFieldModel> extends FlStatelessDataWidge
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
-      children: getSuffixItems(),
+      children: createSuffixItems(),
     );
   }
 }

@@ -1,10 +1,12 @@
-import 'dart:math';
+import 'dart:developer' as dev;
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/model/component/table/fl_table_model.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_chunk.dart';
-import 'package:flutter_client/util/parse_util.dart';
+
+import '../../../util/parse_util.dart';
+import '../../model/component/table/fl_table_model.dart';
+import '../../model/data/column_definition.dart';
+import '../../model/data/subscriptions/data_chunk.dart';
 
 class ColumnSizeCalculator {
   static TableSize calculateTableSize({
@@ -16,6 +18,8 @@ class ColumnSizeCalculator {
   }) {
     TableSize tableSize = TableSize();
 
+    availableWidth = (availableWidth ?? 0.0) - (TableSize.borderWidth * 2);
+
     List<String> columnHeaders = tableModel.columnLabels ?? tableModel.columnNames;
 
     for (String columnHeader in columnHeaders) {
@@ -23,7 +27,7 @@ class ColumnSizeCalculator {
         TableSize.defaultMinWidth,
         ParseUtil.getTextWidth(
               text: columnHeader,
-              style: tableModel.getTextStyle(),
+              style: tableModel.getTextStyle(pFontWeight: FontWeight.bold),
               textScaleFactor: textScaleFactor,
             ) *
             1.3, // Value is multiplied by 1.3 to make sure that the text is not cut off
@@ -36,18 +40,21 @@ class ColumnSizeCalculator {
 
     // get preferred data widths
     if (dataChunk != null) {
-      calculateForRecordCount = min(dataChunk.data.length, calculateForRecordCount);
+      calculateForRecordCount = math.min(
+        dataChunk.data.length,
+        calculateForRecordCount,
+      );
 
       int colIndex = -1;
-      int showIndex = -1;
+      int showIndex = 0;
       for (ColumnDefinition colDef in dataChunk.columnDefinitions) {
         colIndex++;
 
         if (!tableModel.columnNames.contains(colDef.name)) {
           continue; //Not to be meassured
+        } else {
+          showIndex = tableModel.columnNames.indexOf(colDef.name);
         }
-
-        showIndex++;
 
         double colWidth = TableSize.defaultMinWidth;
 
@@ -55,99 +62,54 @@ class ColumnSizeCalculator {
           colWidth = adjustValue(colWidth, colDef.width!);
         }
 
-        if (colDef.cellEditor.model.directCellEditor) {
-          // Calculate width of this column with formattings of this cell editor
-          double? width = colDef.cellEditor.getWidgetModel().preferredSize?.width;
-          if (width != null) {
-            colWidth = adjustValue(colWidth, width);
+        // if (colDef.cellEditor.model.directCellEditor) {
+        //   // Calculate width of this column with formattings of this cell editor
+        //   double? width = colDef.cellEditor.createWidgetModel().preferredSize?.width;
+        //   if (width != null) {
+        //     colWidth = adjustValue(colWidth, width);
+        //   }
+        // } else {
+        for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
+          dynamic value = dataChunk.data[rowIndex]![colIndex];
+
+          if (value == null) {
+            continue;
           }
-        } else {
-          for (int rowIndex = 0; rowIndex < calculateForRecordCount; rowIndex++) {
-            if (TableSize.defaultMinWidth < colWidth && colWidth < TableSize.defaultMaxWidth) {
-              dynamic value = dataChunk.data[rowIndex]![colIndex];
 
-              if (value == null) {
-                continue;
-              }
+          String formattedText = "$value"; // colDef.cellEditor.formatValue(value);
+          double width = ParseUtil.getTextWidth(
+              text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
 
-              String formattedText = colDef.cellEditor.formatValue(value);
-              double width = ParseUtil.getTextWidth(
-                  text: formattedText, style: tableModel.getTextStyle(), textScaleFactor: textScaleFactor);
+          width *= 1.3; // Value is multiplied by 1.3 to make sure that the text is not cut off
+          // because the calculated width is too small. Still not sure why, but it works.
 
-              width *= 1.3; // Value is multiplied by 1.3 to make sure that the text is not cut off
-              // because the calculated width is too small. Still not sure why, but it works.
-
-              colWidth = adjustValue(colWidth, width);
-            }
-          }
+          colWidth = adjustValue(colWidth, width);
         }
+        // }
 
         tableSize.calculatedColumnWidths[showIndex] =
             adjustValue(tableSize.calculatedColumnWidths[showIndex], colWidth);
 
-        tableSize.columnWidths[showIndex] = adjustValue(tableSize.calculatedColumnWidths[showIndex], colWidth);
+        tableSize.columnWidths[showIndex] = tableSize.calculatedColumnWidths[showIndex];
       }
     }
 
-    if (tableModel.autoResize && availableWidth != null && tableSize.calculatedSize.width > availableWidth) {
-    } else if (availableWidth != null && tableSize.calculatedSize.width < availableWidth) {
+    dev.log("calculated ${tableSize.columnWidths}");
+
+    if (tableModel.autoResize && tableSize.calculatedSize.width < availableWidth) {
+      dev.log("redistribute ${tableSize.calculatedSize.width}");
+      dev.log("redistribute ${tableSize.size.width}");
+
       tableSize.redistributeRemainingWidth(availableWidth - tableSize.calculatedSize.width);
+      dev.log("after redis ${tableSize.size.width}");
     }
 
     return tableSize;
   }
 
-  // static double getPreferredTableHeight(SoComponentData componentData, List<String> columnLabels, TextStyle textStyle,
-  //     bool tableHeaderVisible, double textScaleFactor,
-  //     [double headerPadding = 13, double itemPadding = 8, double borderWidth = 1, int calculateForRecordCount = 1]) {
-  //   double headerHeight = 0;
-  //   double itemHeight = 0;
-  //   int recordCount = calculateForRecordCount;
-
-  //   if (columnLabels.isNotEmpty) {
-  //     double textHeight = TextUtils.getTextHeight(columnLabels[0], textStyle, textScaleFactor);
-  //     if (tableHeaderVisible) headerHeight = textHeight + headerPadding;
-  //     itemHeight = textHeight + itemPadding;
-  //   }
-
-  //   if (componentData.data?.records != null && componentData.data!.records.length > calculateForRecordCount) {
-  //     recordCount = componentData.data!.records.length;
-  //   }
-
-  //   return headerHeight + (itemHeight * recordCount) + (borderWidth * 2);
-  // }
-
-  // static void _calculateAutoSizeColumnWidths(List<TableColumnSize> columns, double containerWidth) {
-  //   double sumFixedColumnWidth = _getFixedColumnWidthSum(columns);
-  //   double sumFlexColumnWidth = _getFlexColumnWidthSum(columns);
-  //   bool moreFlexAvailable = sumFlexColumnWidth > 0;
-  //   double flexReduceFactor = sumFlexColumnWidth / (containerWidth - sumFixedColumnWidth);
-
-  //   while (moreFlexAvailable &&
-  //       ((containerWidth < getColumnWidthSum(columns) && flexReduceFactor > 1.0) ||
-  //           (containerWidth > getColumnWidthSum(columns) && flexReduceFactor > 0.0))) {
-  //     moreFlexAvailable = false;
-
-  //     for (int i = 0; i < columns.length; i++) {
-  //       TableColumnSize c = columns[i];
-  //       if (c.isFlexColumn) {
-  //         c.reducePreferredWidth(flexReduceFactor);
-
-  //         if (c.isFlexColumn) moreFlexAvailable = true;
-  //       }
-  //     }
-
-  //     if (moreFlexAvailable) {
-  //       sumFixedColumnWidth = _getFixedColumnWidthSum(columns);
-  //       sumFlexColumnWidth = _getFlexColumnWidthSum(columns);
-  //       flexReduceFactor = sumFlexColumnWidth / (containerWidth - sumFixedColumnWidth);
-  //     }
-  //   }
-  // }
-
   static double adjustValue(double currentWidth, double wantedWith) {
     if (wantedWith > currentWidth) {
-      return min(max(wantedWith, TableSize.defaultMinWidth), TableSize.defaultMaxWidth);
+      return math.min(math.max(wantedWith, TableSize.defaultMinWidth), TableSize.defaultMaxWidth);
     } else {
       return currentWidth;
     }
@@ -169,6 +131,8 @@ class TableSize {
   /// The default row height
   static double defaultRowHeight = 50.0;
 
+  /// The default border width
+  static double borderWidth = 1.0;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

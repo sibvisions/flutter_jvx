@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_editor_widget.dart';
-import 'package:flutter_client/src/mixin/ui_service_mixin.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/date/fl_date_editor_model.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../model/component/editor/cell_editor/date/fl_date_cell_editor_model.dart';
+import '../../../../model/component/editor/cell_editor/date/fl_date_editor_model.dart';
 import '../../../../model/component/label/fl_label_model.dart';
 import '../../../../model/data/column_definition.dart';
+import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
+import 'fl_date_editor_widget.dart';
 
-class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with UiServiceMixin {
+class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  IUiService uiService;
 
   dynamic _value;
 
@@ -32,6 +34,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     this.recalculateSizeCallback,
+    required this.uiService,
   }) : super(
           columnDefinition: columnDefinition,
           model: FlDateCellEditorModel(),
@@ -74,7 +77,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   }
 
   @override
-  FlDateEditorWidget getWidget(BuildContext pContext) {
+  FlDateEditorWidget createWidget(BuildContext pContext) {
     FlDateEditorModel widgetModel = FlDateEditorModel();
 
     return FlDateEditorWidget(
@@ -176,7 +179,7 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
   }
 
   @override
-  FlLabelModel getWidgetModel() => FlLabelModel();
+  FlLabelModel createWidgetModel() => FlLabelModel();
 
   @override
   void dispose() {
@@ -240,5 +243,10 @@ class FlDateCellEditor extends ICellEditor<FlDateCellEditorModel, dynamic> with 
       return DateFormat(model.dateFormat).format(DateTime.fromMillisecondsSinceEpoch(pValue));
     }
     return pValue.toString();
+  }
+
+  @override
+  Widget createTableWidget(BuildContext pContext) {
+    return createWidget(pContext);
   }
 }

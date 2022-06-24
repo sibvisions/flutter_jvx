@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/model/component/fl_component_model.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../model/component/check_box/fl_check_box_model.dart';
 import '../../../model/component/editor/cell_editor/fl_check_box_cell_editor_model.dart';
+import '../../../model/component/fl_component_model.dart';
+import '../../../model/data/column_definition.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../check_box/fl_check_box_widget.dart';
 import 'i_cell_editor.dart';
@@ -43,7 +43,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlStatelessWidget getWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget(BuildContext pContext) {
     FlCheckBoxModel widgetModel = FlCheckBoxModel();
     widgetModel.labelModel.text = model.text;
     widgetModel.selected = model.selectedValue == _value;
@@ -52,7 +52,7 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   }
 
   @override
-  FlComponentModel getWidgetModel() => FlCheckBoxModel();
+  FlComponentModel createWidgetModel() => FlCheckBoxModel();
 
   @override
   dynamic getValue() {
@@ -95,5 +95,10 @@ class FlCheckBoxCellEditor extends ICellEditor<FlCheckBoxCellEditorModel, dynami
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
+  }
+
+  @override
+  Widget createTableWidget(BuildContext pContext) {
+    return createWidget(pContext);
   }
 }

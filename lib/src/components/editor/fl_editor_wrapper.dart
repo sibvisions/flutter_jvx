@@ -2,15 +2,16 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_record.dart';
-import 'package:flutter_client/src/model/data/subscriptions/data_subscription.dart';
-import 'package:flutter_client/util/parse_util.dart';
+import 'package:flutter_client/util/extensions/list_extensions.dart';
 
 import '../../../util/logging/flutter_logger.dart';
+import '../../../util/parse_util.dart';
 import '../../model/api/api_object_property.dart';
+import '../../model/api/response/dal_meta_data_response.dart';
 import '../../model/command/api/set_values_command.dart';
 import '../../model/component/editor/fl_editor_model.dart';
+import '../../model/data/subscriptions/data_record.dart';
+import '../../model/data/subscriptions/data_subscription.dart';
 import '../../model/layout/layout_data.dart';
 import '../base_wrapper/base_comp_wrapper_state.dart';
 import '../base_wrapper/base_comp_wrapper_widget.dart';
@@ -66,7 +67,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
     // The layout information about the widget this editor has, eg custom min size is not yet in the editor model.
     recreateCellEditor(widget.model as T);
 
-    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.getWidgetModel());
+    (widget.model as FlEditorModel).applyComponentInformation(cellEditor.createWidgetModel());
 
     subscribe(widget.model as T);
 
@@ -83,7 +84,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       logCellEditor("RECEIVE_NEW_MODEL");
 
-      newModel.applyComponentInformation(cellEditor.getWidgetModel());
+      newModel.applyComponentInformation(cellEditor.createWidgetModel());
     }
 
     super.receiveNewModel(newModel: newModel);
@@ -97,7 +98,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
     // Celleditors always return a fresh new widget.
     // We must apply the universal editor components onto the widget.
-    FlStatelessWidget editorWidget = cellEditor.getWidget(context);
+    FlStatelessWidget editorWidget = cellEditor.createWidget(context);
     editorWidget.model.applyFromJson(model.json);
     // Some parts of a json have to take priority.
     // As they override the properties.
@@ -119,6 +120,7 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   @override
   void dispose() {
+    uiService.disposeSubscriptions(pSubscriber: this);
     cellEditor.dispose();
     super.dispose();
   }
@@ -139,7 +141,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
       double averageColumnWidth = ParseUtil.getTextWidth(text: "w", style: model.getTextStyle());
 
-      newCalcSize = Size(averageColumnWidth * textCellEditor.getWidgetModel().columns + 2, layoutData.calculatedSize!.height);
+      newCalcSize =
+          Size(averageColumnWidth * textCellEditor.createWidgetModel().columns + 2, layoutData.calculatedSize!.height);
     }
 
     if (newCalcSize != null) {
@@ -187,14 +190,15 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
 
   void setValue(DataRecord? pDataRecord) {
     if (pDataRecord != null) {
-      cellEditor.setValue(pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)]);
+      cellEditor
+          .setValue(pDataRecord.values[pDataRecord.columnDefinitions.indexWhere((e) => e.name == model.columnName)]);
     } else {
       cellEditor.setValue(null);
     }
   }
 
   void setColumnDefinition(DalMetaDataResponse pMetaData) {
-    cellEditor.setColumnDefinition(pMetaData.columns.firstWhere((element) => element.name == model.columnName));
+    cellEditor.setColumnDefinition(pMetaData.columns.firstWhereOrNull((element) => element.name == model.columnName));
   }
 
   /// Sets the state of the widget and sends a set value command.
@@ -264,7 +268,8 @@ class FlEditorWrapperState<T extends FlEditorModel> extends BaseCompWrapperState
           pCellEditorJson: jsonCellEditor,
           onChange: onChange,
           onEndEditing: onEndEditing,
-          pRecalculateSizeCallback: recalculateSize);
+          pRecalculateSizeCallback: recalculateSize,
+          pUiService: uiService);
       subscribe(pModel);
     }
   }

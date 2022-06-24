@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/number_field/numeric_text_formatter.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
 
+import '../../../model/component/editor/cell_editor/fl_number_cell_editor_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../model/data/column_definition.dart';
+import '../number_field/numeric_text_formatter.dart';
 import '../text_field/fl_text_field_widget.dart';
 import 'i_cell_editor.dart';
 
@@ -65,7 +65,7 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget getWidget(BuildContext pContext) {
+  FlTextFieldWidget createWidget(BuildContext pContext) {
     return FlTextFieldWidget(
       model: FlTextFieldModel(),
       valueChanged: onValueChange, //(value) => onValueChange(numberFormatter.convertToNumber(value)),
@@ -98,7 +98,7 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   }
 
   @override
-  FlTextFieldModel getWidgetModel() {
+  FlTextFieldModel createWidgetModel() {
     return FlTextFieldModel();
   }
 
@@ -123,5 +123,10 @@ class FlNumberCellEditor extends ICellEditor<FlNumberCellEditorModel, String> {
   @override
   String formatValue(Object pValue) {
     return numberFormatter.getFormattedString(pValue);
+  }
+
+  @override
+  Widget createTableWidget(BuildContext pContext) {
+    return createWidget(pContext);
   }
 }

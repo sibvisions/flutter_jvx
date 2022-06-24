@@ -57,7 +57,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget getWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget(BuildContext pContext) {
     FlIconModel widgetModel = FlIconModel();
 
     Widget image;
@@ -86,7 +86,7 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   }
 
   @override
-  FlComponentModel getWidgetModel() => FlIconModel();
+  FlComponentModel createWidgetModel() => FlIconModel();
 
   @override
   dynamic getValue() {
@@ -117,5 +117,10 @@ class FlChoiceCellEditor extends ICellEditor<FlChoiceCellEditorModel, dynamic> {
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
+  }
+
+  @override
+  Widget createTableWidget(BuildContext pContext) {
+    return createWidget(pContext);
   }
 }

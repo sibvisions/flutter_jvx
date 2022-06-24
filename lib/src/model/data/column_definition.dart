@@ -1,5 +1,3 @@
-import 'package:flutter_client/src/components/editor/cell_editor/i_cell_editor.dart';
-
 import '../api/api_object_property.dart';
 import '../api/response/dal_meta_data_response.dart';
 
@@ -56,14 +54,6 @@ class ColumnDefinition {
 
   /// The cell editor json of this column.
   late Map<String, dynamic> cellEditorJson;
-
-  /// The cell editor of this column.
-  ICellEditor get cellEditor => ICellEditor.getCellEditor(
-        pCellEditorJson: cellEditorJson,
-        onChange: onChange,
-        onEndEditing: onEndEditing,
-        columnDefinition: this,
-      );
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Datatype specific information

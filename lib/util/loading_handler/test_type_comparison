@@ -1,0 +1,33 @@
+// Use in darpad.dev
+import 'dart:ui';
+
+void main() {
+  Object peter = Person("Peter");
+  Object cybob = Cyborg("Bob", true);
+  Type personType = Person;
+  Type cyborgType = Cyborg;
+
+  print(peter.runtimeType == cybob.runtimeType);
+  print(peter.runtimeType == personType);
+  print(peter.runtimeType == cyborgType);
+  print(peter is Person);
+  print(peter is Cyborg);
+  print("=============================");
+  print(cybob.runtimeType == peter.runtimeType);
+  print(cybob.runtimeType == personType);
+  print(cybob.runtimeType == cyborgType);
+  print(cybob is Person);
+  print(cybob is Cyborg);
+}
+
+class Person {
+  String name;
+
+  Person(this.name);
+}
+
+class Cyborg extends Person {
+  bool hasBionicDick;
+
+  Cyborg(String name, this.hasBionicDick) : super(name);
+}

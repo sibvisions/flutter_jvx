@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
 
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/editor/text_area/fl_text_area_model.dart';
 import '../../../model/component/editor/text_field/fl_text_field_model.dart';
+import '../../../model/data/column_definition.dart';
 import '../password_field/fl_password_widget.dart';
 import '../text_area/fl_text_area_widget.dart';
 import '../text_field/fl_text_field_widget.dart';
@@ -79,7 +79,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlTextFieldWidget getWidget(BuildContext pContext) {
+  FlTextFieldWidget createWidget(BuildContext pContext) {
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
@@ -111,7 +111,7 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   }
 
   @override
-  FlTextFieldModel getWidgetModel() {
+  FlTextFieldModel createWidgetModel() {
     switch (model.contentType) {
       case (TEXT_PLAIN_WRAPPEDMULTILINE):
       case (TEXT_PLAIN_MULTILINE):
@@ -154,5 +154,10 @@ class FlTextCellEditor extends ICellEditor<ICellEditorModel, String> {
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
+  }
+
+  @override
+  Widget? createTableWidget(BuildContext pContext) {
+    return null;
   }
 }

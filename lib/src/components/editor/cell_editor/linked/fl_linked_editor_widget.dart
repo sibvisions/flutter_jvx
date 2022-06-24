@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_client/src/components/editor/text_field/fl_text_field_widget.dart';
-import 'package:flutter_client/src/model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
+import '../../text_field/fl_text_field_widget.dart';
 
 class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWidget<T> {
   final VoidCallback? onPress;
@@ -29,8 +30,8 @@ class FlLinkedEditorWidget<T extends FlLinkedEditorModel> extends FlTextFieldWid
   }
 
   @override
-  List<Widget> getSuffixItems() {
-    List<Widget> oldSuffixItems = super.getSuffixItems();
+  List<Widget> createSuffixItems() {
+    List<Widget> oldSuffixItems = super.createSuffixItems();
 
     oldSuffixItems.add(Align(
       widthFactor: 1,

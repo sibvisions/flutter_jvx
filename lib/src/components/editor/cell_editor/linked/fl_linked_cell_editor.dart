@@ -2,21 +2,23 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
-import '../../../../mixin/ui_service_mixin.dart';
 import '../../../../model/command/api/filter_command.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_cell_editor_model.dart';
 import '../../../../model/component/editor/cell_editor/linked/fl_linked_editor_model.dart';
 import '../../../../model/data/column_definition.dart';
 import '../../../../model/data/subscriptions/data_chunk.dart';
 import '../../../../model/data/subscriptions/data_subscription.dart';
+import '../../../../service/ui/i_ui_service.dart';
 import '../i_cell_editor.dart';
 import 'fl_linked_cell_picker.dart';
 import 'fl_linked_editor_widget.dart';
 
-class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> with UiServiceMixin {
+class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Class members
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  IUiService uiService;
 
   final HashMap<dynamic, dynamic> _valueMap = HashMap();
 
@@ -49,6 +51,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     this.recalculateSizeCallback,
+    required this.uiService,
   }) : super(
           id: id,
           name: name,
@@ -80,7 +83,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   }
 
   @override
-  FlLinkedEditorWidget getWidget(BuildContext pContext) {
+  FlLinkedEditorWidget createWidget(BuildContext pContext) {
     FlLinkedEditorModel widgetModel = FlLinkedEditorModel();
 
     return FlLinkedEditorWidget(
@@ -97,7 +100,11 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
     FocusManager.instance.primaryFocus?.unfocus();
 
     uiService.sendCommand(
-      FilterCommand(editorId: name!, value: "", dataProvider: model.linkReference.dataProvider, reason: "Opened the linked cell picker"),
+      FilterCommand(
+          editorId: name!,
+          value: "",
+          dataProvider: model.linkReference.dataProvider,
+          reason: "Opened the linked cell picker"),
     );
 
     uiService
@@ -116,7 +123,7 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   }
 
   @override
-  FlLinkedEditorModel getWidgetModel() => FlLinkedEditorModel();
+  FlLinkedEditorModel createWidgetModel() => FlLinkedEditorModel();
 
   @override
   void dispose() {
@@ -152,9 +159,10 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
 
     isAllFetched = pChunkData.isAllFetched;
 
-    int indexOfKeyColumn =
-        pChunkData.columnDefinitions.indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0]);
-    int indexOfValueColumn = pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
+    int indexOfKeyColumn = pChunkData.columnDefinitions
+        .indexWhere((element) => element.name == model.linkReference.referencedColumnNames[0]);
+    int indexOfValueColumn =
+        pChunkData.columnDefinitions.indexWhere((element) => element.name == model.displayReferencedColumnName);
 
     for (List<dynamic> dataRow in pChunkData.data.values) {
       dynamic key = dataRow[indexOfKeyColumn];
@@ -226,5 +234,10 @@ class FlLinkedCellEditor extends ICellEditor<FlLinkedCellEditorModel, dynamic> w
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
+  }
+
+  @override
+  Widget createTableWidget(BuildContext pContext) {
+    return createWidget(pContext);
   }
 }

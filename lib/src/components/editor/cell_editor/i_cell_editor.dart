@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/date/fl_date_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/fl_number_cell_editor.dart';
-import 'package:flutter_client/src/components/editor/cell_editor/linked/fl_linked_cell_editor.dart';
 
 import '../../../model/api/api_object_property.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/data/column_definition.dart';
 import '../../../service/api/shared/fl_component_classname.dart';
+import '../../../service/ui/i_ui_service.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
+import 'date/fl_date_cell_editor.dart';
 import 'fl_check_box_cell_editor.dart';
 import 'fl_choice_cell_editor.dart';
 import 'fl_dummy_cell_editor.dart';
 import 'fl_image_cell_editor.dart';
+import 'fl_number_cell_editor.dart';
 import 'fl_text_cell_editor.dart';
+import 'linked/fl_linked_cell_editor.dart';
 
 typedef CellEditorRecalculateSizeCallback = Function([bool pRecalculate]);
 
@@ -73,10 +74,13 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
   ColumnDefinition? getColumnDefinition();
 
   /// Returns the widget representing the cell editor.
-  FlStatelessWidget getWidget(BuildContext pContext);
+  FlStatelessWidget createWidget(BuildContext pContext);
+
+  /// Returns the widget for the table.
+  Widget? createTableWidget(BuildContext pContext);
 
   /// Returns the model of the widget representing the cell editor.
-  FlComponentModel getWidgetModel();
+  FlComponentModel createWidgetModel();
 
   bool isActionCellEditor();
 
@@ -96,6 +100,7 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
     required Function(dynamic) onChange,
     required Function(dynamic) onEndEditing,
     CellEditorRecalculateSizeCallback? pRecalculateSizeCallback,
+    required IUiService pUiService,
   }) {
     String cellEditorClassName = pCellEditorJson[ApiObjectProperty.className];
 
@@ -140,7 +145,8 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
-            recalculateSizeCallback: pRecalculateSizeCallback);
+            recalculateSizeCallback: pRecalculateSizeCallback,
+            uiService: pUiService);
       case FlCellEditorClassname.LINKED_CELL_EDITOR:
         return FlLinkedCellEditor(
             id: pId,
@@ -150,7 +156,8 @@ abstract class ICellEditor<T extends ICellEditorModel, C> {
             pCellEditorJson: pCellEditorJson,
             onChange: onChange,
             onEndEditing: onEndEditing,
-            recalculateSizeCallback: pRecalculateSizeCallback);
+            recalculateSizeCallback: pRecalculateSizeCallback,
+            uiService: pUiService);
 
       default:
         return FlDummyCellEditor();

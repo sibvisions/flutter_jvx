@@ -22,11 +22,6 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   /// Amount of requests that have called for a loading progress.
   int _loadingCommandAmount = 0;
 
-  /// List of all supported loading progress [BaseCommand] types.
-  // List<ProgressDefinition> progressDefinitions = [
-  //   ProgressDefinition(commandType: ApiCommand, minimumTimeTillLoader: const Duration(seconds: 2)),
-  // ];
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,31 +82,28 @@ class DefaultLoadingProgressHandler implements ICommandProgressHandler {
   }
 
   Widget _createLoadingProgressIndicator() {
-    return const Align(
-      alignment: Alignment.center,
-      child: SizedBox(
-        width: 25.0,
-        height: 25.0,
-        child: CircularProgressIndicator.adaptive(),
+    return WillPopScope(
+      onWillPop: _willPop,
+      child: const Align(
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: 25.0,
+          height: 25.0,
+          child: CircularProgressIndicator.adaptive(),
+        ),
       ),
     );
   }
 
+  Future<bool> _willPop() async {
+    return false;
+  }
+
   bool isSupported(BaseCommand pCommand) {
-    return true; //progressDefinitions.any((definition) => pCommand is ApiCommand);
+    return true;
   }
 
   Duration durationForCommand(BaseCommand pCommand) {
-    return const Duration(milliseconds: 500);
+    return const Duration(milliseconds: 250);
   }
 }
-
-// class ProgressDefinition {
-//   /// The type definition of the command class.
-//   Type commandType;
-
-//   /// The minimum duration to wait before showing a loading progress.
-//   Duration minimumTimeTillLoader;
-
-//   ProgressDefinition({required this.commandType, required this.minimumTimeTillLoader});
-// }

@@ -89,8 +89,15 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   @override
   Widget build(BuildContext context) {
     dev.log("build this: $hashCode");
-    Widget widget = FlTableWidget(
+
+    Widget? widget;
+    if (currentState != (LOADED_META_DATA | LOADED_SELECTED_RECORD | LOADED_DATA | CALCULATION_COMPLETE)) {
+      widget = const CircularProgressIndicator();
+    }
+
+    widget ??= FlTableWidget(
       model: model,
+      metaData: metaData,
       chunkData: chunkData,
       tableSize: tableSize,
       selectedRow: selectedRow,
@@ -100,10 +107,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
       onRowTap: selectRecord,
       onRowTapDown: onRowDown,
     );
-
-    if (currentState != (LOADED_META_DATA | LOADED_SELECTED_RECORD | LOADED_DATA | CALCULATION_COMPLETE)) {
-      widget = const CircularProgressIndicator();
-    }
 
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       postFrameCallback(context);
@@ -189,15 +192,20 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
   void receiveTableData(DataChunk pChunkData) {
     currentState = currentState | LOADED_DATA;
 
+    bool hasToCalc = false;
     if (pChunkData.update) {
       for (int index in pChunkData.data.keys) {
         chunkData.data[index] = pChunkData.data[index]!;
       }
     } else {
+      hasToCalc = chunkData.columnDefinitions.isEmpty && chunkData.data.isEmpty && pChunkData.to == 0;
+
       chunkData = pChunkData;
     }
 
-    recalculateTableSize(true);
+    if (hasToCalc) {
+      recalculateTableSize(true);
+    }
   }
 
   /// Receives which row is selected.
@@ -268,8 +276,6 @@ class _FlTableWrapperState extends BaseCompWrapperState<FlTableModel> with UiSer
 
     uiService.sendCommand(
         SelectRecordCommand(dataProvider: model.dataBook, selectedRecord: pRowIndex, reason: "Tapped", filter: filter));
-
-    selectedRow = pRowIndex;
     setState(() {});
     // }
   }

@@ -41,8 +41,12 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
     currentObjectFocused = FocusManager.instance.primaryFocus;
     if (currentObjectFocused == null || currentObjectFocused!.parent == null) {
       LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Button pressed");
-      uiService.sendCommand(PressButtonCommand(
-          componentName: _overwrittenButtonPressId ?? model.name, reason: "Button has been pressed"));
+      uiService.sendCommand(
+        PressButtonCommand(
+          componentName: _overwrittenButtonPressId ?? model.name,
+          reason: "Button has been pressed",
+        ),
+      );
     } else {
       LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Button will be pressed");
       currentObjectFocused!.addListener(delayedButtonPress);
@@ -53,7 +57,11 @@ class FlButtonWrapperState<T extends FlButtonModel> extends BaseCompWrapperState
   void delayedButtonPress() {
     LOGGER.logI(pType: LOG_TYPE.UI, pMessage: "Delayed button pressed");
     uiService.sendCommand(
-        PressButtonCommand(componentName: _overwrittenButtonPressId ?? model.name, reason: "Button has been pressed"));
+      PressButtonCommand(
+        componentName: _overwrittenButtonPressId ?? model.name,
+        reason: "Button has been pressed",
+      ),
+    );
     currentObjectFocused!.removeListener(delayedButtonPress);
     currentObjectFocused = null;
   }

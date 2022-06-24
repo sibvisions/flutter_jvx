@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_client/src/model/data/column_definition.dart';
-import 'package:flutter_client/util/constants/i_types.dart';
 
+import '../../../../util/constants/i_types.dart';
 import '../../../model/component/editor/cell_editor/cell_editor_model.dart';
 import '../../../model/component/fl_component_model.dart';
 import '../../../model/component/icon/fl_icon_model.dart';
+import '../../../model/data/column_definition.dart';
 import '../../base_wrapper/fl_stateless_widget.dart';
 import '../../icon/fl_icon_widget.dart';
 import 'i_cell_editor.dart';
@@ -71,7 +71,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlStatelessWidget getWidget(BuildContext pContext) {
+  FlStatelessWidget createWidget(BuildContext pContext) {
     FlIconModel widgetModel = FlIconModel();
     widgetModel.image = _value ?? '';
 
@@ -83,7 +83,7 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   }
 
   @override
-  FlComponentModel getWidgetModel() => FlIconModel();
+  FlComponentModel createWidgetModel() => FlIconModel();
 
   void onImage(Size pImageInfo, bool pSynchronousCall) {
     bool newSize = false;
@@ -118,5 +118,10 @@ class FlImageCellEditor extends ICellEditor<ICellEditorModel, dynamic> {
   @override
   String formatValue(Object pValue) {
     return pValue.toString();
+  }
+
+  @override
+  Widget createTableWidget(BuildContext pContext) {
+    return createWidget(pContext);
   }
 }
