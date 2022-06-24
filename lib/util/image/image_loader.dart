@@ -1,10 +1,16 @@
-import 'package:flutter/widgets.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_client/src/mixin/config_service_mixin.dart';
+import 'package:flutter_client/util/file/file_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../src/mixin/config_service_mixin.dart';
 import '../font_awesome_util.dart';
-import 'image_loader_impl.dart';
 
-abstract class ImageLoader {
+class ImageLoader with ConfigServiceMixin {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Constants
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,14 +24,14 @@ abstract class ImageLoader {
   // Initialization
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  factory ImageLoader() => getImageLoader();
+  ImageLoader();
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Method definitions
+  // User-defined methods
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Loads an Image from the filesystem.
-  Image loadImageFiles(
+  Image _loadImageFiles(
     String pPath, {
     double? pWidth,
     double? pHeight,
@@ -34,11 +40,67 @@ abstract class ImageLoader {
     bool imageInBinary = false,
     bool imageInBase64 = false,
     BoxFit fit = BoxFit.none,
-  });
+  }) {
+    String baseUrl = configService.getApiConfig().urlConfig.getBasePath();
+    String appName = configService.getAppName();
+    IFileManager fileManager = configService.getFileManager();
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // User-defined methods
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Image image;
+
+    File? file = fileManager.getFileSync(pPath: pPath);
+
+    if (imageInBinary) {
+      Uint8List imageValues = imageInBase64 ? base64Decode(pPath) : Uint8List.fromList(pPath.codeUnits);
+      image = Image.memory(
+        imageValues,
+        fit: fit,
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
+      );
+    } else if (file != null) {
+      image = Image(
+        fit: fit,
+        image: FileImage(file),
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+              child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                      : null));
+        },
+      );
+    } else {
+      image = Image.network(
+        '$baseUrl/resource/$appName/$pPath',
+        fit: fit,
+        width: pWidth,
+        height: pHeight,
+        color: pBlendedColor,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+              child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                      : null));
+        },
+        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+          return ImageLoader.DEFAULT_IMAGE;
+        },
+      );
+    }
+
+    if (pImageStreamListener != null) {
+      image.image.resolve(const ImageConfiguration()).addListener(ImageLoader.createListener(pImageStreamListener));
+    }
+
+    return image;
+  }
 
   /// Loads any server sent image string.
   static Widget loadImage(String pImageString,
@@ -73,7 +135,7 @@ abstract class ImageLoader {
         }
       }
 
-      return getImageLoader().loadImageFiles(
+      return ImageLoader()._loadImageFiles(
         path,
         pWidth: size?.width,
         pHeight: size?.height,
