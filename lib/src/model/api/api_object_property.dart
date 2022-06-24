@@ -108,7 +108,7 @@ abstract class ApiObjectProperty {
   static const String identifier = "identifier";
   static const String message = "message";
   static const String createAuthKey = "createAuthKey";
-  static const String loginMode = "loginMode";
+  static const String loginMode = "mode";
   static const String filterCondition = "filterCondition";
   static const String editorComponentId = "editorComponentId";
   static const String compareType = "compareType";
