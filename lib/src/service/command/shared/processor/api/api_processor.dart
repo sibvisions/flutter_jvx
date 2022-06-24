@@ -2,6 +2,7 @@ import 'package:flutter_client/src/model/command/api/change_password_command.dar
 import 'package:flutter_client/src/model/command/api/close_screen_command.dart';
 import 'package:flutter_client/src/model/command/api/dal_save_command.dart';
 import 'package:flutter_client/src/model/command/api/delete_record_command.dart';
+import 'package:flutter_client/src/model/command/api/download_style_command.dart';
 import 'package:flutter_client/src/model/command/api/fetch_command.dart';
 import 'package:flutter_client/src/model/command/api/filter_command.dart';
 import 'package:flutter_client/src/model/command/api/insert_record_command.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_client/src/service/command/shared/processor/api/change_p
 import 'package:flutter_client/src/service/command/shared/processor/api/close_screen_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/dal_save_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/delete_record_command_processor.dart';
+import 'package:flutter_client/src/service/command/shared/processor/api/download_style_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/download_translation_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/fetch_command_processor.dart';
 import 'package:flutter_client/src/service/command/shared/processor/api/filter_command_processor.dart';
@@ -122,6 +124,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
 
   final ICommandProcessor _downloadTranslationProcessor = DownloadTranslationCommandProcessor();
 
+  final ICommandProcessor _downloadStyleProcessor = DownloadStyleCommandProcessor();
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Interface implementation
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,6 +179,8 @@ class ApiProcessor implements ICommandProcessor<ApiCommand> {
       return _insertRecordProcessor.processCommand(command);
     } else if (command is DownloadTranslationCommand) {
       return _downloadTranslationProcessor.processCommand(command);
+    } else if (command is DownloadStyleCommand) {
+      return _downloadStyleProcessor.processCommand(command);
     }
 
     return [];

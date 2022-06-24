@@ -77,6 +77,12 @@ abstract class IConfigService {
 
   /// Return a list of all supported languages codes
   void setSupportedLang({required List<String> languages});
+
+  /// Get app style sent from server
+  Map<String, String>? getAppStyle();
+
+  /// Set app style, usually only called after download
+  void setAppStyle(Map<String, String>? pAppStyle);
 }
 
 enum MENU_MODE {

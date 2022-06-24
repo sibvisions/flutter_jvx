@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_client/src/model/command/api/download_images_command.dart';
+import 'package:flutter_client/src/model/command/api/download_style_command.dart';
 import 'package:flutter_client/src/model/command/api/download_translation_command.dart';
 import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
 
@@ -39,6 +40,7 @@ class SaveAppMetaDataProcessor with ConfigServiceMixin implements ICommandProces
     if (!doImgExits) {
       commands.add(DownloadImagesCommand(reason: "Resources should be downloaded"));
     }
+    commands.add(DownloadStyleCommand(reason: "Styles should be downloaded"));
     return commands;
   }
 }

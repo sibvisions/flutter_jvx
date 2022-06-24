@@ -14,5 +14,6 @@ abstract class ApiResponseNames {
   static const String authenticationData = "authenticationData";
   static const String downloadImages = "downloadImages";
   static const String downloadTranslation = "downloadTranslation";
+  static const String downloadStyle = "downloadStyle";
   static const String messageDialog = "message.dialog";
 }

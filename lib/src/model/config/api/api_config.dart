@@ -4,6 +4,7 @@ import 'package:flutter_client/src/model/api/requests/api_close_tab_request.dart
 import 'package:flutter_client/src/model/api/requests/api_delete_record_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_device_status_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_download_style_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_translation_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_fetch_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_filter_request.dart';
@@ -65,6 +66,7 @@ class ApiConfig {
       ApiDeleteRecordRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.deleteRecord),
       ApiDownloadImagesRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
       ApiDownloadTranslationRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
+      ApiDownloadStyleRequest: () => Uri.parse(urlConfig.getBasePath() + endpointConfig.download),
     };
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_client/src/model/config/config_file/last_run_config.dart';
@@ -42,6 +43,9 @@ class ConfigService implements IConfigService {
 
   /// Current translation, base translation + overlaid language
   Translation translation = Translation.empty();
+
+  /// Application style sent from server
+  Map<String, String> applicationStyle = {};
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Initialization
@@ -173,6 +177,22 @@ class ConfigService implements IConfigService {
   @override
   void setSupportedLang({required List<String> languages}) {
     supportedLanguages = languages;
+  }
+
+  @override
+  Map<String, String> getAppStyle() {
+    return applicationStyle;
+  }
+
+  @override
+  void setAppStyle(Map<String, String>? pAppStyle) {
+    log("asdasd");
+
+    if (pAppStyle == null) {
+      applicationStyle.clear();
+    } else {
+      applicationStyle = pAppStyle;
+    }
   }
 
   // ------------------------------

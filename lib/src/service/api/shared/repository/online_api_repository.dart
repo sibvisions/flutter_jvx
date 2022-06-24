@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_client/src/model/api/api_object_property.dart';
 import 'package:flutter_client/src/model/api/api_response_names.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_images_request.dart';
+import 'package:flutter_client/src/model/api/requests/api_download_style_request.dart';
 import 'package:flutter_client/src/model/api/requests/api_download_translation_request.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_download_request.dart';
 import 'package:flutter_client/src/model/api/requests/i_api_request.dart';
@@ -17,8 +18,8 @@ import 'package:flutter_client/src/model/api/response/close_screen_response.dart
 import 'package:flutter_client/src/model/api/response/dal_data_provider_changed_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_fetch_response.dart';
 import 'package:flutter_client/src/model/api/response/dal_meta_data_response.dart';
-import 'package:flutter_client/src/model/api/response/downloadTranslationResponse.dart';
 import 'package:flutter_client/src/model/api/response/download_images_response.dart';
+import 'package:flutter_client/src/model/api/response/download_translation_response.dart';
 import 'package:flutter_client/src/model/api/response/error_response.dart';
 import 'package:flutter_client/src/model/api/response/login_response.dart';
 import 'package:flutter_client/src/model/api/response/menu_response.dart';
@@ -28,6 +29,7 @@ import 'package:flutter_client/src/model/api/response/session_expired_response.d
 import 'package:flutter_client/src/model/api/response/user_data_response.dart';
 import 'package:http/http.dart';
 
+import '../../../../model/api/response/download_style_response.dart';
 import '../../../../model/config/api/api_config.dart';
 import '../i_repository.dart';
 import 'browser_client.dart' if (dart.library.html) 'package:http/browser_client.dart';
@@ -110,13 +112,13 @@ class OnlineApiRepository implements IRepository {
         return response
             .then((response) => response.bodyBytes)
             .then((responseBody) => _handleDownload(pBody: responseBody, pRequest: pRequest));
-      } else {
-        return response
-            .then((response) => response.body)
-            .then(_checkResponse)
-            .then((jsonResponses) => _responseParser(pJsonList: jsonResponses, originalRequest: pRequest))
-            .onError((error, stackTrace) => _handleError(error, stackTrace, pRequest));
       }
+
+      return response
+          .then((response) => response.body)
+          .then(_checkResponse)
+          .then((jsonResponses) => _responseParser(pJsonList: jsonResponses, originalRequest: pRequest))
+          .onError((error, stackTrace) => _handleError(error, stackTrace, pRequest));
     } else {
       throw Exception("URI belonging to ${pRequest.runtimeType} not found, add it to the apiConfig!");
     }
@@ -193,9 +195,23 @@ class OnlineApiRepository implements IRepository {
     List<ApiResponse> parsedResponse = [];
 
     if (pRequest is ApiDownloadImagesRequest) {
-      parsedResponse.add(DownloadImagesResponse(responseBody: pBody, name: "downloadImages", originalRequest: pRequest));
+      parsedResponse.add(DownloadImagesResponse(
+        responseBody: pBody,
+        name: ApiResponseNames.downloadImages,
+        originalRequest: pRequest,
+      ));
     } else if (pRequest is ApiDownloadTranslationRequest) {
-      parsedResponse.add(DownloadTranslationResponse(bodyBytes: pBody, name: "downloadTranslation", originalRequest: pRequest));
+      parsedResponse.add(DownloadTranslationResponse(
+        bodyBytes: pBody,
+        name: ApiResponseNames.downloadTranslation,
+        originalRequest: pRequest,
+      ));
+    } else if (pRequest is ApiDownloadStyleRequest) {
+      parsedResponse.add(DownloadStyleResponse(
+        bodyBytes: pBody,
+        name: ApiResponseNames.downloadStyle,
+        originalRequest: pRequest,
+      ));
     }
 
     return parsedResponse;

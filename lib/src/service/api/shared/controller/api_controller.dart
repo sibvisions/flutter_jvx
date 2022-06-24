@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter_client/src/service/api/shared/processor/authentication_data_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/dal_data_provider_changed_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/download_images_processor.dart';
+import 'package:flutter_client/src/service/api/shared/processor/download_style_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/download_translation_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/login_processor.dart';
 import 'package:flutter_client/src/service/api/shared/processor/session_expired_processor.dart';
@@ -43,6 +44,7 @@ class ApiController implements IController {
   final IProcessor _authenticationDataProcessor = AuthenticationDataProcessor();
   final IProcessor _downloadImagesProcessor = DownloadImagesProcessor();
   final IProcessor _downloadTranslationProcessor = DownloadTranslationProcessor();
+  final IProcessor _downloadStyleProcessor = DownloadStyleProcessor();
   final IProcessor _messageDialogProcessor = MessageDialogProcessor();
 
   /// Maps response names to their processor
@@ -70,6 +72,7 @@ class ApiController implements IController {
       ApiResponseNames.downloadImages: _downloadImagesProcessor,
       ApiResponseNames.downloadTranslation: _downloadTranslationProcessor,
       ApiResponseNames.messageDialog: _messageDialogProcessor,
+      ApiResponseNames.downloadStyle: _downloadStyleProcessor,
     });
   }
 
