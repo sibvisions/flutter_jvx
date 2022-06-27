@@ -20,9 +20,9 @@ abstract class ParseUtil {
 
   /// Parses a [Size] object from a string, will only parse correctly if provided string was formatted :
   /// "x,y" - e.g. "200,400" -> Size(200,400), if provided String was null, returned size will also be null
-  static Size? parseSizeFromString(String? pSizeString) {
-    if (pSizeString != null) {
-      List<String> split = pSizeString.split(",");
+  static Size? parseSize(dynamic pSize) {
+    if (pSize != null && pSize is String) {
+      List<String> split = pSize.split(",");
 
       double width = double.parse(split[0]);
       double height = double.parse(split[1]);
@@ -32,12 +32,12 @@ abstract class ParseUtil {
     return null;
   }
 
-  static Color? parseServerColor(String? pValue) {
-    if (pValue == null) {
+  static Color? parseServerColor(dynamic pValue) {
+    if (pValue == null || pValue is! String) {
       return null;
     }
 
-    var values = (pValue).split(";");
+    var values = pValue.split(";");
     int serverStringIndex = values.length - 1;
     // TODO: change later so serverString index has priority
     // if (values[serverStringIndex].contains("#")) {
@@ -58,19 +58,25 @@ abstract class ParseUtil {
       return null;
     } else if (pValue.startsWith("#")) {
       if (pValue.characters.length == 9) {
-        return Color.fromARGB(int.parse(pValue.substring(7, 9), radix: 16), int.parse(pValue.substring(3, 5), radix: 16),
-            int.parse(pValue.substring(5, 7), radix: 16), int.parse(pValue.substring(1, 3), radix: 16));
+        return Color.fromARGB(
+            int.parse(pValue.substring(7, 9), radix: 16),
+            int.parse(pValue.substring(3, 5), radix: 16),
+            int.parse(pValue.substring(5, 7), radix: 16),
+            int.parse(pValue.substring(1, 3), radix: 16));
       } else if (pValue.characters.length == 7) {
-        return Color.fromARGB(0xFF, int.parse(pValue.substring(1, 3), radix: 16), int.parse(pValue.substring(3, 5), radix: 16),
-            int.parse(pValue.substring(5, 7), radix: 16));
+        return Color.fromARGB(0xFF, int.parse(pValue.substring(1, 3), radix: 16),
+            int.parse(pValue.substring(3, 5), radix: 16), int.parse(pValue.substring(5, 7), radix: 16));
       }
     } else if (pValue.startsWith("0x") || pValue.startsWith("0X")) {
       if (pValue.characters.length == 10) {
-        return Color.fromARGB(int.parse(pValue.substring(2, 4), radix: 16), int.parse(pValue.substring(4, 6), radix: 16),
-            int.parse(pValue.substring(6, 8), radix: 16), int.parse(pValue.substring(8, 10), radix: 16));
+        return Color.fromARGB(
+            int.parse(pValue.substring(2, 4), radix: 16),
+            int.parse(pValue.substring(4, 6), radix: 16),
+            int.parse(pValue.substring(6, 8), radix: 16),
+            int.parse(pValue.substring(8, 10), radix: 16));
       } else if (pValue.characters.length == 8) {
-        return Color.fromARGB(0xFF, int.parse(pValue.substring(2, 4), radix: 16), int.parse(pValue.substring(4, 6), radix: 16),
-            int.parse(pValue.substring(6, 8), radix: 16));
+        return Color.fromARGB(0xFF, int.parse(pValue.substring(2, 4), radix: 16),
+            int.parse(pValue.substring(4, 6), radix: 16), int.parse(pValue.substring(6, 8), radix: 16));
       }
     }
     return null;
@@ -91,8 +97,8 @@ abstract class ParseUtil {
     return null;
   }
 
-  static LayoutPosition? parseBounds(String? pValue) {
-    if (pValue != null) {
+  static LayoutPosition? parseBounds(dynamic pValue) {
+    if (pValue != null && pValue is String) {
       var splitString = pValue.split(",");
       if (splitString.isNotEmpty && splitString.length == 4) {
         int? left = int.tryParse(splitString[0]);
@@ -102,7 +108,11 @@ abstract class ParseUtil {
 
         if (left != null && top != null && width != null && height != null) {
           return LayoutPosition(
-              width: width.toDouble(), height: height.toDouble(), top: top.toDouble(), left: left.toDouble(), isComponentSize: true);
+              width: width.toDouble(),
+              height: height.toDouble(),
+              top: top.toDouble(),
+              left: left.toDouble(),
+              isComponentSize: true);
         }
       }
     }

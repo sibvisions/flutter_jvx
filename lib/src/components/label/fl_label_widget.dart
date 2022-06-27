@@ -16,7 +16,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Widget child;
 
-    if (model.tooltipText != null) {
+    if (model.toolTipText != null) {
       child = getTooltipWidget();
     } else {
       child = getTextWidget();
@@ -40,7 +40,7 @@ class FlLabelWidget<T extends FlLabelModel> extends FlStatelessWidget<T> {
   }
 
   Tooltip getTooltipWidget() {
-    return Tooltip(message: model.tooltipText!, child: getTextWidget());
+    return Tooltip(message: model.toolTipText!, child: getTextWidget());
   }
 
   Text getTextWidget() {

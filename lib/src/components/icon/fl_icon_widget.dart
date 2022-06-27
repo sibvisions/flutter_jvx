@@ -36,8 +36,8 @@ class FlIconWidget<T extends FlIconModel> extends FlStatelessWidget<T> {
   Widget build(BuildContext context) {
     Widget? child = directImage ?? getImage();
 
-    if (model.tooltipText != null) {
-      child = Tooltip(message: model.tooltipText!, child: child);
+    if (model.toolTipText != null) {
+      child = Tooltip(message: model.toolTipText!, child: child);
     }
 
     return GestureDetector(

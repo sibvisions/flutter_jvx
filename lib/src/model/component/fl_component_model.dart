@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_client/src/model/component/label/fl_label_model.dart';
 import 'package:flutter_client/util/constants/i_color.dart';
 
 import '../../../util/constants/i_font.dart';
@@ -87,7 +88,7 @@ abstract class FlComponentModel {
   bool isItalic = false;
 
   /// The tooltip text of the component.
-  String? tooltipText;
+  String? toolTipText;
 
   /// The last changed model keys.
   Set<String> lastChangedProperties = {};
@@ -121,101 +122,145 @@ abstract class FlComponentModel {
   /// Only applies properties if they exist in the json,
   /// otherwise uses their initiated default values.
   void applyFromJson(Map<String, dynamic> pJson) {
-    var jsonId = pJson[ApiObjectProperty.id];
-    if (jsonId != null) {
-      id = jsonId;
-    }
-    var jsonName = pJson[ApiObjectProperty.name];
-    if (jsonName != null) {
-      name = jsonName;
-    }
-    var jsonClassName = pJson[ApiObjectProperty.className];
-    if (jsonClassName != null) {
-      className = jsonClassName;
-    }
-    var jsonParent = pJson[ApiObjectProperty.parent];
-    if (jsonParent != null) {
-      parent = jsonParent;
-    }
-    var jsonIsRemoved = pJson[ApiObjectProperty.remove];
-    if (jsonIsRemoved != null) {
-      isRemoved = ParseUtil.parseBoolFromString(jsonIsRemoved)!;
-    }
-    var jsonIsVisible = pJson[ApiObjectProperty.visible];
-    if (jsonIsVisible != null) {
-      isVisible = jsonIsVisible;
-    }
-    var jsonIsEnabled = pJson[ApiObjectProperty.enabled];
-    if (jsonIsEnabled != null) {
-      isEnabled = jsonIsEnabled;
-    }
-    var jsonIsFocusable = pJson[ApiObjectProperty.focusable];
-    if (jsonIsFocusable != null) {
-      isFocusable = jsonIsFocusable;
-    }
-    var jsonConstraints = pJson[ApiObjectProperty.constraints];
-    if (jsonConstraints != null) {
-      constraints = jsonConstraints;
-    }
-    var jsonIndexOf = pJson[ApiObjectProperty.indexOf];
-    if (jsonIndexOf != null) {
-      indexOf = jsonIndexOf;
-    }
-    var jsonTabIndex = pJson[ApiObjectProperty.tabIndex];
-    if (jsonTabIndex != null) {
-      tabIndex = jsonTabIndex;
-    }
-    var jsonPreferredSize = pJson[ApiObjectProperty.preferredSize];
-    if (jsonPreferredSize != null) {
-      preferredSize = ParseUtil.parseSizeFromString(jsonPreferredSize)!;
-    }
-    var jsonMinimumSize = pJson[ApiObjectProperty.minimumSize];
-    if (jsonMinimumSize != null) {
-      minimumSize = ParseUtil.parseSizeFromString(jsonMinimumSize)!;
-    }
-    var jsonMaximumSize = pJson[ApiObjectProperty.maximumSize];
-    if (jsonMaximumSize != null) {
-      maximumSize = ParseUtil.parseSizeFromString(jsonMaximumSize)!;
-    }
-    var jsonBounds = pJson[ApiObjectProperty.bounds];
-    if (jsonBounds != null) {
-      bounds = ParseUtil.parseBounds(jsonBounds);
-    }
-    var jsonBackground = pJson[ApiObjectProperty.background];
-    if (jsonBackground != null) {
-      background = ParseUtil.parseServerColor(jsonBackground)!;
-    }
-    var jsonForeground = pJson[ApiObjectProperty.foreground];
-    if (jsonForeground != null) {
-      foreground = ParseUtil.parseServerColor(jsonForeground)!;
-    }
-    var jsonVerticalAlignment = pJson[ApiObjectProperty.verticalAlignment];
-    if (jsonVerticalAlignment != null) {
-      verticalAlignment = VerticalAlignment.values[jsonVerticalAlignment];
-    }
-    var jsonHorizontalAlignment = pJson[ApiObjectProperty.horizontalAlignment];
-    if (jsonHorizontalAlignment != null) {
-      horizontalAlignment = HorizontalAlignment.values[jsonHorizontalAlignment];
-    }
-    var fontValues = pJson[ApiObjectProperty.font];
-    if (fontValues != null) {
-      var fontValuesList = (fontValues as String).split(",");
-      if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
-        fontName = fontValuesList[0];
-        fontSize = int.parse(fontValuesList[2]);
-        isBold = (int.parse(fontValuesList[1]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
-        isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
-      }
-    }
-    var jsonTooltipText = pJson[ApiObjectProperty.toolTipText];
-    if (jsonTooltipText != null) {
-      tooltipText = jsonTooltipText;
-    }
+    FlComponentModel defaultModel = FlLabelModel();
 
-    var jsonClassNameEventSourceRef = pJson[ApiObjectProperty.classNameEventSourceRef];
-    if (jsonClassNameEventSourceRef != null) {
-      classNameEventSourceRef = jsonClassNameEventSourceRef;
-    }
+    id = _valueToSet(
+      pJson,
+      ApiObjectProperty.id,
+      defaultModel.id,
+      id,
+    );
+    name = _valueToSet(
+      pJson,
+      ApiObjectProperty.name,
+      defaultModel.name,
+      name,
+    );
+    className = _valueToSet(
+      pJson,
+      ApiObjectProperty.className,
+      defaultModel.className,
+      className,
+    );
+    parent = _valueToSet(
+      pJson,
+      ApiObjectProperty.parent,
+      defaultModel.parent,
+      parent,
+    );
+    isRemoved = _valueToSet(
+      pJson,
+      ApiObjectProperty.remove,
+      defaultModel.isRemoved,
+      isRemoved,
+      ParseUtil.parseBool,
+    );
+    isVisible = _valueToSet(
+      pJson,
+      ApiObjectProperty.visible,
+      defaultModel.isVisible,
+      isVisible,
+    );
+    isEnabled = _valueToSet(
+      pJson,
+      ApiObjectProperty.enabled,
+      defaultModel.isEnabled,
+      isEnabled,
+    );
+    isFocusable = _valueToSet(
+      pJson,
+      ApiObjectProperty.focusable,
+      defaultModel.isFocusable,
+      isFocusable,
+    );
+    constraints = _valueToSet(
+      pJson,
+      ApiObjectProperty.constraints,
+      defaultModel.constraints,
+      constraints,
+    );
+    indexOf = _valueToSet(
+      pJson,
+      ApiObjectProperty.indexOf,
+      defaultModel.indexOf,
+      indexOf,
+    );
+    tabIndex = _valueToSet(
+      pJson,
+      ApiObjectProperty.tabIndex,
+      defaultModel.tabIndex,
+      tabIndex,
+    );
+    preferredSize = _valueToSet(
+      pJson,
+      ApiObjectProperty.preferredSize,
+      defaultModel.preferredSize,
+      preferredSize,
+      ParseUtil.parseSize,
+    );
+    minimumSize = _valueToSet(
+      pJson,
+      ApiObjectProperty.minimumSize,
+      defaultModel.minimumSize,
+      minimumSize,
+      ParseUtil.parseSize,
+    );
+    maximumSize = _valueToSet(
+      pJson,
+      ApiObjectProperty.maximumSize,
+      defaultModel.maximumSize,
+      maximumSize,
+      ParseUtil.parseSize,
+    );
+    bounds = _valueToSet(
+      pJson,
+      ApiObjectProperty.bounds,
+      defaultModel.bounds,
+      bounds,
+      ParseUtil.parseBounds,
+    );
+    background = _valueToSet(
+      pJson,
+      ApiObjectProperty.background,
+      defaultModel.background,
+      background,
+      ParseUtil.parseServerColor,
+    );
+    foreground = _valueToSet(
+      pJson,
+      ApiObjectProperty.foreground,
+      defaultModel.foreground,
+      foreground,
+      ParseUtil.parseServerColor,
+    );
+    verticalAlignment = _valueToSet(
+      pJson,
+      ApiObjectProperty.verticalAlignment,
+      defaultModel.verticalAlignment,
+      verticalAlignment,
+      VerticalAlignmentE.fromDynamic,
+    );
+    horizontalAlignment = _valueToSet(
+      pJson,
+      ApiObjectProperty.horizontalAlignment,
+      defaultModel.horizontalAlignment,
+      horizontalAlignment,
+      HorizontalAlignmentE.fromDynamic,
+    );
+    toolTipText = _valueToSet(
+      pJson,
+      ApiObjectProperty.toolTipText,
+      defaultModel.toolTipText,
+      toolTipText,
+    );
+    classNameEventSourceRef = _valueToSet(
+      pJson,
+      ApiObjectProperty.classNameEventSourceRef,
+      defaultModel.classNameEventSourceRef,
+      classNameEventSourceRef,
+    );
+
+    _parseFont(pJson, ApiObjectProperty.font, defaultModel);
   }
 
   /// If this component is used in a cell editor, some values are overriden.
@@ -262,5 +307,47 @@ abstract class FlComponentModel {
       fontWeight: pFontWeight ?? (isBold ? FontWeight.bold : FontWeight.normal),
       fontFamily: pFontFamily ?? fontName,
     );
+  }
+
+  dynamic _valueToSet(
+    Map<String, dynamic> pJson,
+    String pKey,
+    dynamic pDefault,
+    dynamic pCurrent, [
+    dynamic Function(dynamic)? pConversion,
+  ]) {
+    if (pJson.containsKey(pKey)) {
+      dynamic value = pJson[pKey];
+      if (value != null) {
+        if (pConversion != null) {
+          return pConversion.call(value);
+        } else {
+          return value;
+        }
+      } else {
+        return pDefault;
+      }
+    }
+    return pCurrent;
+  }
+
+  void _parseFont(Map<String, dynamic> pJson, String pKey, FlComponentModel pDefaultModel) {
+    if (pJson.containsKey(pKey)) {
+      dynamic value = pJson[pKey];
+      if (value != null) {
+        var fontValuesList = (value as String).split(",");
+        if (fontValuesList.isNotEmpty && fontValuesList.length == 3) {
+          fontName = fontValuesList[0];
+          fontSize = int.parse(fontValuesList[2]);
+          isBold = (int.parse(fontValuesList[1]) & IFont.TEXT_BOLD) == IFont.TEXT_BOLD;
+          isItalic = (int.parse(fontValuesList[1]) & IFont.TEXT_ITALIC) == IFont.TEXT_ITALIC;
+        }
+      } else {
+        fontName = pDefaultModel.fontName;
+        fontSize = pDefaultModel.fontSize;
+        isBold = pDefaultModel.isBold;
+        isItalic = pDefaultModel.isItalic;
+      }
+    }
   }
 }

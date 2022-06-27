@@ -17,6 +17,11 @@ extension VerticalAlignmentE on VerticalAlignment {
     return VerticalAlignment.values[int.parse(pAlignment)];
   }
 
+  /// Parses [pAlignment] to [VerticalAlignment]
+  static VerticalAlignment fromDynamic(dynamic pAlignment) {
+    return VerticalAlignment.values[int.parse(pAlignment.toString())];
+  }
+
   static TextAlignVertical toTextAlign(VerticalAlignment pAlignment) {
     switch (pAlignment) {
       case VerticalAlignment.TOP:
@@ -46,6 +51,11 @@ extension HorizontalAlignmentE on HorizontalAlignment {
   /// Parses [pAlignment] to [HorizontalAlignment]
   static HorizontalAlignment fromString(String pAlignment) {
     return HorizontalAlignment.values[int.parse(pAlignment)];
+  }
+
+  /// Parses [pAlignment] to [HorizontalAlignment]
+  static HorizontalAlignment fromDynamic(dynamic pAlignment) {
+    return HorizontalAlignment.values[int.parse(pAlignment.toString())];
   }
 
   static TextAlign toTextAlign(HorizontalAlignment pAlignment) {
