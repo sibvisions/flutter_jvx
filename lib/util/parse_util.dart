@@ -7,11 +7,11 @@ import 'constants/i_color.dart';
 abstract class ParseUtil {
   /// Will return true if string == "true", false if string == "false"
   /// otherwise returns null.
-  static bool? parseBoolFromString(String? pBoolString) {
-    if (pBoolString != null) {
-      if (pBoolString == "true") {
+  static bool? parseBool(dynamic pBool) {
+    if (pBool != null) {
+      if (pBool == "true") {
         return true;
-      } else if (pBoolString == "false") {
+      } else if (pBool == "false") {
         return false;
       }
     }
