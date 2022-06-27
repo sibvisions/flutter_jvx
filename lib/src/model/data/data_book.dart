@@ -87,6 +87,9 @@ class DataBook {
     // Remove values with higher index if all records are fetched (clean old data)
     if (isAllFetched) {
       records.removeWhere((key, value) => key > pFetchResponse.to);
+      if (pFetchResponse.records.isEmpty) {
+        records.remove(0);
+      }
     }
   }
 
