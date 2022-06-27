@@ -125,139 +125,139 @@ abstract class FlComponentModel {
     FlComponentModel defaultModel = FlLabelModel();
 
     id = _valueToSet(
-      pJson,
-      ApiObjectProperty.id,
-      defaultModel.id,
-      id,
+      pJson: pJson,
+      pKey: ApiObjectProperty.id,
+      pDefault: defaultModel.id,
+      pCurrent: id,
     );
     name = _valueToSet(
-      pJson,
-      ApiObjectProperty.name,
-      defaultModel.name,
-      name,
+      pJson: pJson,
+      pKey: ApiObjectProperty.name,
+      pDefault: defaultModel.name,
+      pCurrent: name,
     );
     className = _valueToSet(
-      pJson,
-      ApiObjectProperty.className,
-      defaultModel.className,
-      className,
+      pJson: pJson,
+      pKey: ApiObjectProperty.className,
+      pDefault: defaultModel.className,
+      pCurrent: className,
     );
     parent = _valueToSet(
-      pJson,
-      ApiObjectProperty.parent,
-      defaultModel.parent,
-      parent,
+      pJson: pJson,
+      pKey: ApiObjectProperty.parent,
+      pDefault: defaultModel.parent,
+      pCurrent: parent,
     );
     isRemoved = _valueToSet(
-      pJson,
-      ApiObjectProperty.remove,
-      defaultModel.isRemoved,
-      isRemoved,
-      ParseUtil.parseBool,
+      pJson: pJson,
+      pKey: ApiObjectProperty.remove,
+      pDefault: defaultModel.isRemoved,
+      pCurrent: isRemoved,
+      pConversion: ParseUtil.parseBool,
     );
     isVisible = _valueToSet(
-      pJson,
-      ApiObjectProperty.visible,
-      defaultModel.isVisible,
-      isVisible,
+      pJson: pJson,
+      pKey: ApiObjectProperty.visible,
+      pDefault: defaultModel.isVisible,
+      pCurrent: isVisible,
     );
     isEnabled = _valueToSet(
-      pJson,
-      ApiObjectProperty.enabled,
-      defaultModel.isEnabled,
-      isEnabled,
+      pJson: pJson,
+      pKey: ApiObjectProperty.enabled,
+      pDefault: defaultModel.isEnabled,
+      pCurrent: isEnabled,
     );
     isFocusable = _valueToSet(
-      pJson,
-      ApiObjectProperty.focusable,
-      defaultModel.isFocusable,
-      isFocusable,
+      pJson: pJson,
+      pKey: ApiObjectProperty.focusable,
+      pDefault: defaultModel.isFocusable,
+      pCurrent: isFocusable,
     );
     constraints = _valueToSet(
-      pJson,
-      ApiObjectProperty.constraints,
-      defaultModel.constraints,
-      constraints,
+      pJson: pJson,
+      pKey: ApiObjectProperty.constraints,
+      pDefault: defaultModel.constraints,
+      pCurrent: constraints,
     );
     indexOf = _valueToSet(
-      pJson,
-      ApiObjectProperty.indexOf,
-      defaultModel.indexOf,
-      indexOf,
+      pJson: pJson,
+      pKey: ApiObjectProperty.indexOf,
+      pDefault: defaultModel.indexOf,
+      pCurrent: indexOf,
     );
     tabIndex = _valueToSet(
-      pJson,
-      ApiObjectProperty.tabIndex,
-      defaultModel.tabIndex,
-      tabIndex,
+      pJson: pJson,
+      pKey: ApiObjectProperty.tabIndex,
+      pDefault: defaultModel.tabIndex,
+      pCurrent: tabIndex,
     );
     preferredSize = _valueToSet(
-      pJson,
-      ApiObjectProperty.preferredSize,
-      defaultModel.preferredSize,
-      preferredSize,
-      ParseUtil.parseSize,
+      pJson: pJson,
+      pKey: ApiObjectProperty.preferredSize,
+      pDefault: defaultModel.preferredSize,
+      pCurrent: preferredSize,
+      pConversion: ParseUtil.parseSize,
     );
     minimumSize = _valueToSet(
-      pJson,
-      ApiObjectProperty.minimumSize,
-      defaultModel.minimumSize,
-      minimumSize,
-      ParseUtil.parseSize,
+      pJson: pJson,
+      pKey: ApiObjectProperty.minimumSize,
+      pDefault: defaultModel.minimumSize,
+      pCurrent: minimumSize,
+      pConversion: ParseUtil.parseSize,
     );
     maximumSize = _valueToSet(
-      pJson,
-      ApiObjectProperty.maximumSize,
-      defaultModel.maximumSize,
-      maximumSize,
-      ParseUtil.parseSize,
+      pJson: pJson,
+      pKey: ApiObjectProperty.maximumSize,
+      pDefault: defaultModel.maximumSize,
+      pCurrent: maximumSize,
+      pConversion: ParseUtil.parseSize,
     );
     bounds = _valueToSet(
-      pJson,
-      ApiObjectProperty.bounds,
-      defaultModel.bounds,
-      bounds,
-      ParseUtil.parseBounds,
+      pJson: pJson,
+      pKey: ApiObjectProperty.bounds,
+      pDefault: defaultModel.bounds,
+      pCurrent: bounds,
+      pConversion: ParseUtil.parseBounds,
     );
     background = _valueToSet(
-      pJson,
-      ApiObjectProperty.background,
-      defaultModel.background,
-      background,
-      ParseUtil.parseServerColor,
+      pJson: pJson,
+      pKey: ApiObjectProperty.background,
+      pDefault: defaultModel.background,
+      pCurrent: background,
+      pConversion: ParseUtil.parseServerColor,
     );
     foreground = _valueToSet(
-      pJson,
-      ApiObjectProperty.foreground,
-      defaultModel.foreground,
-      foreground,
-      ParseUtil.parseServerColor,
+      pJson: pJson,
+      pKey: ApiObjectProperty.foreground,
+      pDefault: defaultModel.foreground,
+      pCurrent: foreground,
+      pConversion: ParseUtil.parseServerColor,
     );
     verticalAlignment = _valueToSet(
-      pJson,
-      ApiObjectProperty.verticalAlignment,
-      defaultModel.verticalAlignment,
-      verticalAlignment,
-      VerticalAlignmentE.fromDynamic,
+      pJson: pJson,
+      pKey: ApiObjectProperty.verticalAlignment,
+      pDefault: defaultModel.verticalAlignment,
+      pCurrent: verticalAlignment,
+      pConversion: VerticalAlignmentE.fromDynamic,
     );
     horizontalAlignment = _valueToSet(
-      pJson,
-      ApiObjectProperty.horizontalAlignment,
-      defaultModel.horizontalAlignment,
-      horizontalAlignment,
-      HorizontalAlignmentE.fromDynamic,
+      pJson: pJson,
+      pKey: ApiObjectProperty.horizontalAlignment,
+      pDefault: defaultModel.horizontalAlignment,
+      pCurrent: horizontalAlignment,
+      pConversion: HorizontalAlignmentE.fromDynamic,
     );
     toolTipText = _valueToSet(
-      pJson,
-      ApiObjectProperty.toolTipText,
-      defaultModel.toolTipText,
-      toolTipText,
+      pJson: pJson,
+      pKey: ApiObjectProperty.toolTipText,
+      pDefault: defaultModel.toolTipText,
+      pCurrent: toolTipText,
     );
     classNameEventSourceRef = _valueToSet(
-      pJson,
-      ApiObjectProperty.classNameEventSourceRef,
-      defaultModel.classNameEventSourceRef,
-      classNameEventSourceRef,
+      pJson: pJson,
+      pKey: ApiObjectProperty.classNameEventSourceRef,
+      pDefault: defaultModel.classNameEventSourceRef,
+      pCurrent: classNameEventSourceRef,
     );
 
     _parseFont(pJson, ApiObjectProperty.font, defaultModel);
@@ -309,13 +309,13 @@ abstract class FlComponentModel {
     );
   }
 
-  dynamic _valueToSet(
-    Map<String, dynamic> pJson,
-    String pKey,
-    dynamic pDefault,
-    dynamic pCurrent, [
+  dynamic _valueToSet({
+    required Map<String, dynamic> pJson,
+    required String pKey,
+    required dynamic pDefault,
+    required dynamic pCurrent,
     dynamic Function(dynamic)? pConversion,
-  ]) {
+  }) {
     if (pJson.containsKey(pKey)) {
       dynamic value = pJson[pKey];
       if (value != null) {
